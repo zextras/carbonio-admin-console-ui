@@ -12,7 +12,6 @@ import {
   Row,
   Select,
   SelectItem,
-  Text,
 } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -265,9 +264,9 @@ const ResourceDetailSection: FC = () => {
         style={{ overflow: 'auto', padding: '16px' }}
       >
         <Row>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.details', 'Details')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container

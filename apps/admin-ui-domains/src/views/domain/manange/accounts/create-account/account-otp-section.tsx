@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, ChipInput, Container, Padding, Row, Switch, Text } from '@zextras/ui-components';
+import { Button, ChipInput, Container, Padding, Row, Switch } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
@@ -63,12 +63,12 @@ const AccountOtpSection: FC<{
                   style={{ width: '20px', height: '20px' }}
                 ></ds-icon>
               </Padding>
-              <Text overflow="break-word">
+              <ds-text overflow="break-word" as="p">
                 {t(
                   'domain.the_account_has_been_successfully_created',
                   'The account has been successfully created',
                 )}
-              </Text>
+              </ds-text>
             </Row>
           </Container>
           <Container
@@ -157,7 +157,7 @@ const AccountOtpSection: FC<{
                       bottom: 'small',
                     }}
                   >
-                    <Text>{t('account_details.secret_code', 'Secret Code')}</Text>
+                    <ds-text as="p">{t('account_details.secret_code', 'Secret Code')}</ds-text>
                   </Row>
                 </Container>
                 <Container
@@ -174,7 +174,7 @@ const AccountOtpSection: FC<{
                       bottom: 'small',
                     }}
                   >
-                    <Text>{accountDetail?.secrateCode}</Text>
+                    <ds-text as="strong">{accountDetail?.secrateCode}</ds-text>
                   </Row>
                 </Container>
               </Row>
@@ -193,12 +193,12 @@ const AccountOtpSection: FC<{
                   bottom: 'small',
                 }}
               >
-                <Text>
+                <ds-text as="p">
                   {t(
                     'account_details.please_note_code',
                     `Please note: you'll be able to see these codes just once.`,
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
             <Container
@@ -215,12 +215,12 @@ const AccountOtpSection: FC<{
                   bottom: 'small',
                 }}
               >
-                <Text>
+                <ds-text as="p">
                   {t(
                     'account_details.select_email_otp',
                     `Select an email address to send the OTP to or copy the code above`,
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
             <Row

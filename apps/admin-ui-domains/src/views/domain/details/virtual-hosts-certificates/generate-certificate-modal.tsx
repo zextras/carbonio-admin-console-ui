@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Modal, Padding, Row, Text } from '@zextras/ui-components';
+import { Button, Container, Modal, Padding, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -69,33 +69,33 @@ export const GenerateCertificateModal: FC<GenerateCertificateModalProps> = ({
           gap="0.5rem"
         >
           <Row mainAlignment="flex-start" width="fill">
-            <Text weight="bold" size="small" color="gray0">
+            <ds-text as="strong" weight="bold" size="small" color="gray0">
               {t('label.certificate_authority', 'Certificate Authority')}:
-            </Text>
+            </ds-text>
             <Padding left="extrasmall">
-              <Text size="small" color="gray0">
+              <ds-text as="span" size="small" color="gray0">
                 {certificateAuthority}
-              </Text>
+              </ds-text>
             </Padding>
           </Row>
           <Row mainAlignment="flex-start" width="fill">
-            <Text weight="bold" size="small" color="gray0">
+            <ds-text as="strong" weight="bold" size="small" color="gray0">
               {t('label.domain_name', 'Domain Name')}:
-            </Text>
+            </ds-text>
             <Padding left="extrasmall">
-              <Text size="small" color="gray0">
+              <ds-text as="span" size="small" color="gray0">
                 {domainName}
-              </Text>
+              </ds-text>
             </Padding>
           </Row>
           <Row mainAlignment="flex-start" width="fill">
-            <Text weight="bold" size="small" color="gray0">
+            <ds-text as="strong" weight="bold" size="small" color="gray0">
               {t('label.virtual_hosts', 'Virtual Hosts')}:
-            </Text>
+            </ds-text>
             <Padding left="extrasmall">
-              <Text size="small" color="gray0">
+              <ds-text as="span" size="small" color="gray0">
                 {virtualHosts.join(', ')}
-              </Text>
+              </ds-text>
             </Padding>
           </Row>
         </Container>
@@ -107,12 +107,12 @@ export const GenerateCertificateModal: FC<GenerateCertificateModalProps> = ({
           gap="0.5rem"
         >
           <ds-icon icon="InfoOutline" color="gray1" size="medium"></ds-icon>
-          <Text size="small" color="gray1">
+          <ds-text as="small" size="small" color="gray1">
             {t(
               'label.certificate_available_after_proxy_restart',
               'The certificate will be available once the Proxy is restarted',
             )}
-          </Text>
+          </ds-text>
         </Container>
       </Container>
     </Modal>

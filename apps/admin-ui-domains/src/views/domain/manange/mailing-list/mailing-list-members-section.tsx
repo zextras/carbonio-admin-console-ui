@@ -13,7 +13,6 @@ import {
   Padding,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { debounce, sortedUniq, uniq } from 'lodash-es';
@@ -61,7 +60,8 @@ const MailingListMembersSection: FC<any> = () => {
       const allRows = dlm.map((item: any) => ({
         id: item,
         columns: [
-          <Text
+          <ds-text
+            as="span"
             size="medium"
             weight="light"
             key={item}
@@ -71,7 +71,7 @@ const MailingListMembersSection: FC<any> = () => {
             }}
           >
             {item}
-          </Text>,
+          </ds-text>,
           '',
         ],
       }));
@@ -207,9 +207,9 @@ const MailingListMembersSection: FC<any> = () => {
         style={{ overflow: 'auto', padding: '16px' }}
       >
         <Row>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.members', 'Members')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container
@@ -290,17 +290,17 @@ const MailingListMembersSection: FC<any> = () => {
               </Padding>
               <Padding vertical="extralarge" width="100%">
                 <Row mainAlignment="center" width="100%">
-                  <Text size="large" color="secondary" weight="regular">
-                    {t('label.there_are_not_member_here', 'There aren’t members here.')}
-                  </Text>
+                  <ds-text as="p" size="large" color="secondary" weight="regular">
+                    {t('label.there_are_not_member_here', "There aren't members here.")}
+                  </ds-text>
                 </Row>
                 <Row mainAlignment="center" width="100%">
-                  <Text size="large" color="secondary" weight="regular">
+                  <ds-text as="p" size="large" color="secondary" weight="regular">
                     {t(
                       'label.search_for_user_and_clic_to_add',
                       'Search for a user and click on the ADD button.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </Padding>
             </Container>

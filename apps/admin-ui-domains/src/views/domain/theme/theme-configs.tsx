@@ -14,7 +14,6 @@ import {
   Row,
   SelectItem,
   TabBar,
-  Text,
 } from '@zextras/ui-components';
 import { getAllRights, useCurrentUserRights } from '@zextras/ui-shared';
 import { noop } from 'lodash-es';
@@ -42,9 +41,9 @@ const ReusedDefaultTabBar: FC<{
     forceWidthEquallyDistributed={false}
   >
     <Row padding="small">
-      <Text size="small" color={selected ? 'primary' : 'gray'}>
+      <ds-text as="span" size="small" color={selected ? 'primary' : 'gray'}>
         {item.label}
-      </Text>
+      </ds-text>
     </Row>
   </DefaultTabBarItem>
 );
@@ -215,9 +214,9 @@ export const ThemeConfigs: FC<{
         >
           <ListRow>
             <Padding vertical="large" horizontal="small" width="100%">
-              <Text size="small" color="gray0" weight="bold">
+              <ds-text as="h3" size="small" color="gray0" weight="bold">
                 {t('label.apperance', 'Apperance')}
-              </Text>
+              </ds-text>
             </Padding>
           </ListRow>
           <ListRow>
@@ -235,9 +234,9 @@ export const ThemeConfigs: FC<{
           </ListRow>
           <ListRow>
             <Padding vertical="large" horizontal="small" width="100%">
-              <Text size="small" color="gray0" weight="bold">
+              <ds-text as="h4" size="small" color="gray0" weight="bold">
                 {t('label.logo_url_destination', 'Logo URL Destination')}
-              </Text>
+              </ds-text>
             </Padding>
           </ListRow>
           <ListRow>
@@ -256,19 +255,19 @@ export const ThemeConfigs: FC<{
           </ListRow>
           <ListRow>
             <Padding vertical="large" horizontal="small" width="100%">
-              <Text size="small" color="gray0" weight="bold">
+              <ds-text as="h4" size="small" color="gray0" weight="bold">
                 {t('label.color_scheme', 'Color Scheme')}
-              </Text>
+              </ds-text>
             </Padding>
           </ListRow>
           <ListRow>
             <Padding vertical="small" horizontal="small" width="100%">
-              <Text size="small" color="gray0">
+              <ds-text as="p" size="small" color="gray0">
                 {t(
                   'label.primary_color_hint',
                   'To change the Primary color, please use a HEX color code.',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </ListRow>
           <ListRow>
@@ -277,26 +276,26 @@ export const ThemeConfigs: FC<{
               crossAlignment="flex-start"
               padding={{ all: 'small' }}
             >
-              <Text size="small" color="gray0">
+              <ds-text as="label" size="small" color="gray0">
                 <Trans
                   i18nKey="label.primary_color_for_light_mode"
                   defaults="<bold>Primary</bold> Color for Light Mode"
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Container>
             <Container
               mainAlignment="flex-start"
               crossAlignment="flex-start"
               padding={{ all: 'small' }}
             >
-              <Text size="small" color="gray0">
+              <ds-text as="label" size="small" color="gray0">
                 <Trans
                   i18nKey="label.primary_color_for_dark_mode"
                   defaults="<bold>Primary</bold> Color for Dark Mode"
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Container>
           </ListRow>
           <ListRow>

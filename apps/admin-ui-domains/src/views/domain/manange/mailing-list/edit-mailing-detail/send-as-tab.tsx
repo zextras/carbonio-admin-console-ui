@@ -18,7 +18,6 @@ import {
   RadioGroup,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { sortedUniq, uniq } from 'lodash';
@@ -125,7 +124,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
       const allRows = sendEmailsList.map((item: any) => ({
         id: item?.name,
         columns: [
-          <Text
+          <ds-text as="span"
             size="small"
             weight="regular"
             key={item?.id}
@@ -135,8 +134,8 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             }}
           >
             {item?.name}
-          </Text>,
-          <Text
+          </ds-text>,
+          <ds-text as="span"
             size="small"
             weight="regular"
             key={item?.id + '_acl'}
@@ -148,7 +147,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             {item?.sendAcl === 'sendAsDistList'
               ? t('domain.distributionList.sendAs.sendAs', 'Send As')
               : t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
-          </Text>,
+          </ds-text>,
           <Container key="send_email_actions" orientation="horizontal" mainAlignment="flex-start">
             <Button
               type="ghost"
@@ -450,15 +449,15 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           orientation="vertical"
           padding={{ bottom: 'medium', top: 'medium' }}
         >
-          <Text size="medium" color="gray0" weight="bold">
+          <ds-text as="h3" size="medium" color="gray0" weight="bold">
             {t(`domain.distributionList.managePermission`, `Manage permissions`)}
-          </Text>
-          <Text size="small" color="gray0" style={{ marginTop: '0.5rem' }} overflow="break-word">
+          </ds-text>
+          <ds-text as="p" size="small" color="gray0" style={{ marginTop: '0.5rem' }} overflow="break-word">
             {t(
               'domain.distributionList.sendAs.managePermissionDescriptionMsg',
               'Allow others to send emails as this distribution list',
             )}
-          </Text>
+          </ds-text>
         </Row>
         <Container padding={{ bottom: 'large' }} height={'auto'}>
           <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
@@ -486,18 +485,18 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             >
               <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                 <Padding right={'0'}>
-                  <Text size="extrasmall" weight="regular" color="error">
+                  <ds-text as="span" size="extrasmall" weight="regular" color="error">
                     {sendEmailErrorMessage}
-                  </Text>
+                  </ds-text>
                 </Padding>
               </Container>
             </Row>
           )}
           <Container mainAlignment="flex-start">
             <Row width="100%" padding={{ top: 'extralarge' }} mainAlignment="flex-start">
-              <Text size="small" color="gray0" weight="bold">
+              <ds-text as="h4" size="small" color="gray0" weight="bold">
                 {t('domain.distributionList.sendAs.permissionLevel', 'Permission level')}
-              </Text>
+              </ds-text>
             </Row>
             <Row
               width="100%"
@@ -516,7 +515,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                   value="sendAs"
                   iconColor="primary"
                 />
-                <Text
+                <ds-text as="p"
                   key="sendAs-description"
                   size="small"
                   color="gray0"
@@ -526,14 +525,14 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                     'domain.distributionList.sendAs.permissionLevelSendMsg',
                     'Allows a user to send emails that appear to come directly from a distribution list, with no indication of who actually sent it',
                   )}
-                </Text>
+                </ds-text>
                 <Radio
                   key="sendOnBehalfOf"
                   label={t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
                   value="sendOnBehalfOf"
                   iconColor="primary"
                 />
-                <Text
+                <ds-text as="p"
                   key="sendOnBehalfOf-description"
                   size="small"
                   color="gray0"
@@ -543,7 +542,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                     'domain.distributionList.sendAs.permissionLevelSendOnBehalfOfMsg',
                     'Allows a user to send an email where the recipient sees e.g. "name.surname@mail.com on behalf of a distribution list"',
                   )}
-                </Text>
+                </ds-text>
               </RadioGroup>
             </Row>
           </Container>
@@ -578,12 +577,12 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 padding={{ bottom: 'large' }}
                 width="100%"
               >
-                <Text weight="bold" color="gray0">
+                <ds-text as="h4" weight="bold" color="gray0">
                   {t(
                     'domain.distributionList.sendAs.authorizedSendersList',
                     'Authorized senders from this distribution list',
                   )}
-                </Text>
+                </ds-text>
               </Row>
               {sendEmailTableRows.length > 0 && (
                 <ListRow>
@@ -626,14 +625,14 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 </Padding>
                 <Padding vertical="extralarge" width="100%">
                   <Row mainAlignment="center" width="100%">
-                    <Text size="large" color="secondary" weight="regular">
+                    <ds-text as="p" size="large" color="secondary" weight="regular">
                       {t('label.there_are_not_member_here', "There aren't members here.")}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row mainAlignment="center" width="100%">
-                    <Text size="large" color="secondary" weight="regular">
+                    <ds-text as="p" size="large" color="secondary" weight="regular">
                       {searchUserLabelValue}
-                    </Text>
+                    </ds-text>
                   </Row>
                 </Padding>
               </Container>
@@ -834,7 +833,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             padding={{ top: 'extralarge', bottom: 'extralarge' }}
             mainAlignment="flex-start"
           >
-            <Text size={'large'} overflow="break-word">
+            <ds-text as="p" size={'large'} overflow="break-word">
               <Trans
                 i18nKey="domain.distributionList.sendAs.removeAuthorizedSenderMsg"
                 defaults="Are you sure you want to remove <bold>{{name}}</bold> with permission level <bold>{{permission}}</bold> from the list?"
@@ -847,7 +846,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                       : t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of'),
                 }}
               />
-            </Text>
+            </ds-text>
           </Container>
         </Modal>
       )}

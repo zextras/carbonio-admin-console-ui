@@ -17,7 +17,6 @@ import {
   Padding,
   Row,
   Select,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import {
@@ -872,9 +871,9 @@ const DomainGeneralSettings: FC = () => {
         >
           <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
             <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h2" size="medium" weight="bold" color="gray0">
                 {t('label.general_settings', 'General Settings')}
-              </Text>
+              </ds-text>
             </Row>
             <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding right="small">
@@ -1075,9 +1074,9 @@ const DomainGeneralSettings: FC = () => {
                   background="gray6"
                   padding={{ top: 'large', left: 'small' }}
                 >
-                  <Text size="small" weight="bold" color="gray0">
+                  <ds-text as="h3" size="small" weight="bold" color="gray0">
                     {t('label.accountQuotaSetting', 'Account Quota Settings')}
-                  </Text>
+                  </ds-text>
                 </Row>
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
@@ -1109,12 +1108,12 @@ const DomainGeneralSettings: FC = () => {
                   mainAlignment="flex-start"
                   crossAlignment="flex-start"
                 >
-                  <Text size="small" weight="bold">
+                  <ds-text as="h3" size="small" weight="bold">
                     {t(
                       'domains.generalSettings.AllowSearchUserFromSpecificDomains',
                       'Search users in specific domains',
                     )}
-                  </Text>
+                  </ds-text>
 
                   <Padding top="small" />
                   <DomainListChipInput
@@ -1131,9 +1130,9 @@ const DomainGeneralSettings: FC = () => {
               background="gray6"
               padding={{ top: 'large' }}
             >
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h2" size="medium" weight="bold" color="gray0">
                 {t('label.domain_system_notifications', 'Domain System Notifications')}
-              </Text>
+              </ds-text>
             </Row>
             <ListRow>
               <Container
@@ -1244,13 +1243,13 @@ const DomainGeneralSettings: FC = () => {
                   }
                 >
                   <Padding all="medium">
-                    <Text overflow="break-word" weight="regular">
+                    <ds-text as="p" overflow="break-word" weight="regular">
                       {t('label.delete_domain_error_msg', {
                         domainName,
                         defaultValue:
                           'You are deleting {{domainName}}. Are you sure you want to delete {{domainName}}?',
                       })}
-                    </Text>
+                    </ds-text>
                   </Padding>
                 </Modal>
 
@@ -1311,78 +1310,78 @@ const DomainGeneralSettings: FC = () => {
                   }
                 >
                   <Padding all="medium">
-                    <Text overflow="break-word" weight="regular">
+                    <ds-text as="p" overflow="break-word" weight="regular">
                       {t('label.delete_domain_with_all_resources_pre_msg', {
                         domainName,
                         defaultValue: 'Domain {{domainName}} is not empty and contains',
                       })}
-                    </Text>
+                    </ds-text>
                     <br />
                     {domainDirectoies.account.length ? (
-                      <Text overflow="break-word" weight="regular">
+                      <ds-text as="p" overflow="break-word" weight="regular">
                         {domainDirectoies.account.length} {t('label.accounts', 'Accounts')}
-                      </Text>
+                      </ds-text>
                     ) : (
                       <></>
                     )}
                     {filter(domainDirectoies.account, {
                       zimbraIsSystemAccount: 'TRUE',
                     }).length ? (
-                      <Text overflow="break-word" weight="regular">
+                      <ds-text as="p" overflow="break-word" weight="regular">
                         {
                           filter(domainDirectoies.account, {
                             zimbraIsSystemAccount: 'TRUE',
                           }).length
                         }{' '}
                         {t('label.system_account', 'System Accounts')}
-                      </Text>
+                      </ds-text>
                     ) : (
                       <></>
                     )}
                     {domainDirectoies.dl.length ? (
-                      <Text overflow="break-word" weight="regular">
+                      <ds-text as="p" overflow="break-word" weight="regular">
                         {domainDirectoies.dl.length}{' '}
                         {t('label.distribution_list', 'Distribution List')}
-                      </Text>
+                      </ds-text>
                     ) : (
                       <></>
                     )}
                     {domainDirectoies.alias.length ? (
-                      <Text overflow="break-word" weight="regular">
+                      <ds-text as="p" overflow="break-word" weight="regular">
                         {domainDirectoies.alias.length} {t('label.aliases', 'Aliases')}
-                      </Text>
+                      </ds-text>
                     ) : (
                       <></>
                     )}
                     {domainDirectoies.calresource.length ? (
-                      <Text overflow="break-word" weight="regular">
+                      <ds-text as="p" overflow="break-word" weight="regular">
                         {domainDirectoies.calresource.length} {t('label.resources', 'Resources')}
-                      </Text>
+                      </ds-text>
                     ) : (
                       <></>
                     )}
                     <br />
                     {domainStatus.value !== domainStatusItems[1].value ? (
                       <>
-                        <Text overflow="break-word" weight="regular">
+                        <ds-text as="p" overflow="break-word" weight="regular">
                           {t('label.delete_domain_with_all_resources_close_domain', {
                             defaultValue:
                               'If you are not sure, you still can close the domain to avoid any further interaction, leaving all the resources available in case of need.',
                           })}
-                        </Text>
+                        </ds-text>
                         <br />
 
-                        <Text overflow="break-word" weight="regular">
+                        <ds-text as="p" overflow="break-word" weight="regular">
                           {t('label.delete_domain_with_all_resources_permanently_remove', {
                             defaultValue:
                               'Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.',
                           })}
-                        </Text>
+                        </ds-text>
                         <br />
                       </>
                     ) : (
                       <>
-                        <Text overflow="break-word" weight="regular">
+                        <ds-text as="p" overflow="break-word" weight="regular">
                           {t(
                             'label.permanently_delete_domain_with_all_resources_permanently_remove',
                             {
@@ -1390,11 +1389,11 @@ const DomainGeneralSettings: FC = () => {
                                 'Permanently remove all the accounts and domain objects. This operation cannot be reverted.',
                             },
                           )}
-                        </Text>
+                        </ds-text>
                         <br />
                       </>
                     )}
-                    <Text overflow="break-word" weight="regular">
+                    <ds-text as="p" overflow="break-word" weight="regular">
                       <Trans
                         i18nKey="label.type_domain_name"
                         defaults={`To confirm, type here the domain name <bold>"{{domainName}}"</bold>:`}
@@ -1404,7 +1403,7 @@ const DomainGeneralSettings: FC = () => {
                         }}
                         t={t}
                       />
-                    </Text>
+                    </ds-text>
                     <ListRow>
                       <Container padding={{ top: 'large' }}>
                         <Input
@@ -1430,13 +1429,13 @@ const DomainGeneralSettings: FC = () => {
       </Container>
 
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
     </Container>
   );

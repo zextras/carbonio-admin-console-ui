@@ -16,7 +16,6 @@ import {
   Row,
   Select,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { sortedUniq, uniq } from 'lodash';
@@ -193,7 +192,8 @@ export const SendToTab: FC<SendToTabProps> = ({
       const allRows = grantEmailsList.map((item: any) => ({
         id: item,
         columns: [
-          <Text
+          <ds-text
+            as="span"
             size="small"
             weight="regular"
             key={item}
@@ -203,7 +203,7 @@ export const SendToTab: FC<SendToTabProps> = ({
             }}
           >
             {item}
-          </Text>,
+          </ds-text>,
           <Button
             key={item + '_delete'}
             type="ghost"
@@ -244,15 +244,15 @@ export const SendToTab: FC<SendToTabProps> = ({
         orientation="vertical"
         padding={{ bottom: 'medium', top: 'medium' }}
       >
-        <Text size="medium" color="gray0" weight="bold">
+        <ds-text as="h3" size="medium" color="gray0" weight="bold">
           {t(`domain.distributionList.managePermission`, `Manage permissions`)}
-        </Text>
-        <Text size="small" color="gray0" style={{ marginTop: '0.5rem' }} overflow="break-word">
+        </ds-text>
+        <ds-text as="p" size="small" color="gray0" style={{ marginTop: '0.5rem' }} overflow="break-word">
           {t(
             'domain.distributionList.sendTo.managePermissionDescriptionMsg',
             'Control who can send emails to this distribution list',
           )}
-        </Text>
+        </ds-text>
       </Row>
 
       <ListRow>
@@ -304,9 +304,9 @@ export const SendToTab: FC<SendToTabProps> = ({
                 >
                   <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                     <Padding right={'0'}>
-                      <Text size="extrasmall" weight="regular" color="error">
+                      <ds-text as="span" size="extrasmall" weight="regular" color="error">
                         {senderToErrorMessage}
-                      </Text>
+                      </ds-text>
                     </Padding>
                   </Container>
                 </Row>
@@ -339,12 +339,12 @@ export const SendToTab: FC<SendToTabProps> = ({
                 padding={{ bottom: 'large' }}
                 width="100%"
               >
-                <Text weight="bold" color="gray0">
+                <ds-text as="h4" weight="bold" color="gray0">
                   {t(
                     'domain.distributionList.sendTo.authorizedSendersToList',
                     'Authorized senders to this distribution list',
                   )}
-                </Text>
+                </ds-text>
               </Row>
               {grantEmailTableRows.length > 0 && (
                 <ListRow>
@@ -387,14 +387,14 @@ export const SendToTab: FC<SendToTabProps> = ({
                 </Padding>
                 <Padding vertical="extralarge" width="100%">
                   <Row mainAlignment="center" width="100%">
-                    <Text size="large" color="secondary" weight="regular">
+                    <ds-text as="p" size="large" color="secondary" weight="regular">
                       {t('label.there_are_not_member_here', "There aren't members here.")}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row mainAlignment="center" width="100%">
-                    <Text size="large" color="secondary" weight="regular">
+                    <ds-text as="p" size="large" color="secondary" weight="regular">
                       {searchUserLabelValue}
-                    </Text>
+                    </ds-text>
                   </Row>
                 </Padding>
               </Container>

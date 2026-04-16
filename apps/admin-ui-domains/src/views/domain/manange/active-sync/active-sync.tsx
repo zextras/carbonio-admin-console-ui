@@ -13,7 +13,6 @@ import {
   Padding,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
@@ -229,9 +228,9 @@ const ActiveSync: FC = () => {
               setSelectRow([item?.firstSeen]);
             }}
           >
-            <Text size="small" weight="regular" color="gray0" key={index}>
+            <ds-text as="span" size="small" weight="regular" color="gray0" key={index}>
               {item?.accountName}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={index}
@@ -242,9 +241,9 @@ const ActiveSync: FC = () => {
               setSelectRow([item?.firstSeen]);
             }}
           >
-            <Text size="small" weight="light" color="gray0" key={index}>
+            <ds-text as="span" size="small" weight="light" color="gray0" key={index}>
               {item?.deviceId}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={index}
@@ -255,9 +254,9 @@ const ActiveSync: FC = () => {
               setSelectRow([item?.firstSeen]);
             }}
           >
-            <Text size="small" weight="light" color="gray0" key={index}>
+            <ds-text as="span" size="small" weight="light" color="gray0" key={index}>
               {item?.accountEmail}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={index}
@@ -268,9 +267,9 @@ const ActiveSync: FC = () => {
               setSelectRow([item?.firstSeen]);
             }}
           >
-            <Text size="small" weight="light" color="gray0" key={index}>
+            <ds-text as="span" size="small" weight="light" color="gray0" key={index}>
               {format(new Date(item?.lastSeen), 'yy/MM/dd | hh:mm:ss a')}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={index}
@@ -281,9 +280,9 @@ const ActiveSync: FC = () => {
               setSelectRow([item?.firstSeen]);
             }}
           >
-            <Text size="small" weight="light" color="gray0" key={index}>
+            <ds-text as="span" size="small" weight="light" color="gray0" key={index}>
               {''}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={index}
@@ -294,9 +293,9 @@ const ActiveSync: FC = () => {
               setSelectRow([item?.firstSeen]);
             }}
           >
-            <Text size="small" weight="light" color="gray0" key={index}>
+            <ds-text as="span" size="small" weight="light" color="gray0" key={index}>
               {item?.status === 1 ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
-            </Text>
+            </ds-text>
           </Container>,
         ],
       }));
@@ -378,9 +377,9 @@ const ActiveSync: FC = () => {
           <Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
             <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
               <Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h1" size="medium" weight="bold" color="gray0">
                   {t('label.active_sync', 'ActiveSync')}
-                </Text>
+                </ds-text>
               </Row>
               <Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end"></Row>
             </Row>
@@ -464,9 +463,9 @@ const ActiveSync: FC = () => {
                   crossAlignment="center"
                   style={{ textAlign: 'center' }}
                 >
-                  <Text weight="light" color="#828282" size="large" overflow="break-word">
+                  <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                     {t('label.this_list_is_empty', 'This list is empty.')}
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row
                   orientation="vertical"
@@ -475,12 +474,12 @@ const ActiveSync: FC = () => {
                   padding={{ top: 'small' }}
                   width="53%"
                 >
-                  <Text weight="light" color="#828282" size="large" overflow="break-word">
+                  <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                     <Trans
                       i18nKey="label.do_you_need_more_information"
                       defaults="Do you need more information?"
                     />
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row
                   orientation="vertical"
@@ -489,9 +488,9 @@ const ActiveSync: FC = () => {
                   padding={{ top: 'small', bottom: 'small' }}
                   width="53%"
                 >
-                  <Text weight="light" color="primary">
+                  <ds-text as="p" weight="light" color="primary">
                     {t('label.click_here', 'Click here')}
-                  </Text>
+                  </ds-text>
                 </Row>
               </Container>
             )}

@@ -15,7 +15,6 @@ import {
   Padding,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -76,9 +75,9 @@ export const SignatureDetail: FC<any> = ({
       sList.push({
         id: item?.id,
         columns: [
-          <Text size="medium" weight="light" key={`${item?.id}-name`} color="gray0">
+          <ds-text size="medium" weight="light" key={`${item?.id}-name`} color="gray0" as="span">
             {item?.name}
-          </Text>,
+          </ds-text>,
         ],
         item,
         label: item?.name,
@@ -367,9 +366,9 @@ export const SignatureDetail: FC<any> = ({
                 crossAlignment="center"
                 style={{ textAlign: 'center' }}
               >
-                <Text weight="light" color="#828282" size="large" overflow="break-word">
+                <ds-text weight="light" color="#828282" size="large" overflow="break-word" as="p">
                   {t('label.this_list_is_empty', 'This list is empty.')}
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 orientation="vertical"
@@ -378,12 +377,12 @@ export const SignatureDetail: FC<any> = ({
                 padding={{ top: 'small' }}
                 width="53%"
               >
-                <Text weight="light" color="#828282" size="large" overflow="break-word">
+                <ds-text weight="light" color="#828282" size="large" overflow="break-word" as="p">
                   <Trans
                     i18nKey="label.do_you_need_more_information"
                     defaults="Do you need more information?"
                   />
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 orientation="vertical"
@@ -392,9 +391,9 @@ export const SignatureDetail: FC<any> = ({
                 padding={{ top: 'small' }}
                 width="53%"
               >
-                <Text weight="light" color="primary">
+                <ds-text weight="light" color="primary" as="span">
                   {t('label.click_here', 'Click here')}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
           )}

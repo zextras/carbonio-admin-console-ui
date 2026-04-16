@@ -15,7 +15,6 @@ import {
   Padding,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { postSoapFetchRequest, useDomainStore, useUserSettings } from '@zextras/ui-shared';
@@ -461,22 +460,22 @@ const DomainCosLink: FC<{
             id: index.toString(),
             columns: [
               <Container crossAlignment="flex-start" mainAlignment="center" key={index}>
-                <Text size="medium" weight="light" color="gray0">
+                <ds-text as="span" size="medium" weight="light" color="gray0">
                   {item?.name}
-                </Text>
+                </ds-text>
               </Container>,
               <Container crossAlignment="flex-start" mainAlignment="center" key={index}>
-                <Text size="medium" weight="light" color="gray0">
+                <ds-text as="span" size="medium" weight="light" color="gray0">
                   {item?.value}
-                </Text>
+                </ds-text>
               </Container>,
               <Container key={index}>
                 {defaultDomainCosId === item.id && (
                   <Row>
                     <Padding right="small">
-                      <Text size="medium" weight="light" color="gray0">
+                      <ds-text as="span" size="medium" weight="light" color="gray0">
                         {t('label.default_cos', 'Default COS')}
-                      </Text>
+                      </ds-text>
                     </Padding>
                     <ds-icon icon="Star" color="primary"></ds-icon>
                   </Row>
@@ -488,7 +487,7 @@ const DomainCosLink: FC<{
                 <Container>
                   <Row>
                     <Padding right="small">
-                      <Text>{t('label.set_as_default', 'Set as Default')}</Text>
+                      <ds-text as="span">{t('label.set_as_default', 'Set as Default')}</ds-text>
                     </Padding>
                     <Padding right="small">
                       <ds-icon
@@ -575,12 +574,12 @@ const DomainCosLink: FC<{
                     all: 'small',
                   }}
                 >
-                  <Text overflow="break-word">
+                  <ds-text as="p" overflow="break-word">
                     {t(
                       'many_cos_info_msg',
                       'So many COSes! Which one would you like to see? Start typing to filter.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </>
             ),
@@ -616,9 +615,9 @@ const DomainCosLink: FC<{
         width="100%"
         padding={{ top: 'large', bottom: 'large' }}
       >
-        <Text size="medium" weight="bold" color="gray0">
+        <ds-text as="h3" size="medium" weight="bold" color="gray0">
           {t('label.class_of_service', 'Class of Service (cos)')}
-        </Text>
+        </ds-text>
       </Row>
       {isGlobalAdmin && (
         <ListRow>
@@ -725,7 +724,8 @@ const DomainCosLink: FC<{
             style={{ marginTop: '1rem' }}
           >
             <Padding all="medium" width="30.875rem">
-              <Text
+              <ds-text
+                as="p"
                 color="gray1"
                 overflow="break-word"
                 weight="regular"
@@ -736,7 +736,7 @@ const DomainCosLink: FC<{
                   'label.cos_not_included_for_domain_notes',
                   'There are not COS included for this domain, please select one from the dropwdown menu and click on "DUPLICATE" or "LINK"',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Container>
         )}

@@ -22,7 +22,6 @@ import {
   Select,
   Switch,
   Table,
-  Text,
   useSnackbar,
   WizardInSection,
 } from '@zextras/ui-components';
@@ -175,7 +174,7 @@ const EditAccountSecuritySection: FC = () => {
                       bottom: 'small',
                     }}
                   >
-                    <Text>{t('account_details.secret_code', 'Secret Code')}</Text>
+                    <ds-text as="h3">{t('account_details.secret_code', 'Secret Code')}</ds-text>
                   </Row>
                 </Container>
                 <Container
@@ -192,7 +191,7 @@ const EditAccountSecuritySection: FC = () => {
                       bottom: 'small',
                     }}
                   >
-                    <Text>{secrateCode}</Text>
+                    <ds-text as="strong">{secrateCode}</ds-text>
                   </Row>
                 </Container>
               </Row>
@@ -211,12 +210,12 @@ const EditAccountSecuritySection: FC = () => {
                   bottom: 'small',
                 }}
               >
-                <Text>
+                <ds-text as="p">
                   {t(
                     'account_details.please_note_code',
                     `Please note: you'll be able to see these codes just once.`,
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
             <Container
@@ -233,12 +232,12 @@ const EditAccountSecuritySection: FC = () => {
                   bottom: 'small',
                 }}
               >
-                <Text>
+                <ds-text as="p">
                   {t(
                     'account_details.select_email_otp',
                     `Select an email address to send the OTP to or copy the code above`,
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
             <Row
@@ -258,13 +257,13 @@ const EditAccountSecuritySection: FC = () => {
                   hasError={hasEmailError}
                   data-testid="otp-email-input"
                 />
-                <Text color="error" size="small">
+                <ds-text as="strong" color="error" size="small">
                   {hasEmailError &&
                     t(
                       'domain.editAccount.invalidaEmailError',
                       'One or more email addresses are invalid.',
                     )}
-                </Text>
+                </ds-text>
               </Row>
               <Row width="20%" mainAlignment="space-between">
                 <Button
@@ -606,9 +605,9 @@ const EditAccountSecuritySection: FC = () => {
                 >
                   <ListRow>
                     <Container crossAlignment="flex-start">
-                      <Text color="gray0" weight="bold">
+                      <ds-text as="h2" color="gray0" weight="bold">
                         {t('domain.accounts.twoFactorAuthenticator', 'Two-Factor authenticator')}
-                      </Text>
+                      </ds-text>
                       <Row padding={{ top: 'large' }}></Row>
                       <InheritedSwitch
                         subValue={accountDetail?.carbonioFeatureOTPMgmtEnabled}
@@ -625,12 +624,12 @@ const EditAccountSecuritySection: FC = () => {
                       />
                       <Padding left={'extralarge'}>
                         <Row padding={{ left: 'small' }}>
-                          <Text color="gray1" size="small" overflow="break-word">
+                          <ds-text as="small" color="gray1" size="small" overflow="break-word">
                             {t(
                               'domain.accounts.allowUsersToConfigure2FAInfo',
                               'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.',
                             )}
-                          </Text>
+                          </ds-text>
                         </Row>
                       </Padding>
                     </Container>
@@ -701,9 +700,9 @@ const EditAccountSecuritySection: FC = () => {
                         crossAlignment="center"
                         style={{ textAlign: 'center' }}
                       >
-                        <Text weight="light" color="#828282" size="large" overflow="break-word">
+                        <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                           {t('label.this_list_is_empty', 'This list is empty.')}
-                        </Text>
+                        </ds-text>
                       </Row>
                       <Row
                         orientation="vertical"
@@ -712,13 +711,13 @@ const EditAccountSecuritySection: FC = () => {
                         padding={{ top: 'small' }}
                         width="53%"
                       >
-                        <Text weight="light" color="#828282" size="large" overflow="break-word">
+                        <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                           <Trans
                             i18nKey="label.create_otp_list_msg"
                             defaults="You can create a new OTP by clicking on <bold>NEW OTP</bold> button up here"
                             components={{ bold: <strong /> }}
                           />
-                        </Text>
+                        </ds-text>
                       </Row>
                     </Container>
                   )}
@@ -743,12 +742,12 @@ const EditAccountSecuritySection: FC = () => {
       )}
       {isAdvanced && (
         <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
-          <Text weight="bold">
+          <ds-text as="h2" weight="bold">
             {t(
               'domain.accounts.twoFactorAuthSetupEnforcement',
               'Two-Factor authenticator setup enforcement',
             )}
-          </Text>
+          </ds-text>
           <Row mainAlignment="flex-start" width="100%">
             <Container
               height="fit"
@@ -773,12 +772,12 @@ const EditAccountSecuritySection: FC = () => {
                   />
                   <Padding left={'extralarge'}>
                     <Row padding={{ left: 'small' }}>
-                      <Text color="gray1" size="small" overflow="break-word">
+                      <ds-text as="small" color="gray1" size="small" overflow="break-word">
                         {t(
                           'domain.accounts.enforceOnUntrustedNetworksInfo',
                           'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
                         )}
-                      </Text>
+                      </ds-text>
                     </Row>
                   </Padding>
                 </Container>
@@ -800,12 +799,12 @@ const EditAccountSecuritySection: FC = () => {
                   />
                   <Padding left={'extralarge'}>
                     <Row padding={{ left: 'small' }}>
-                      <Text color="gray1" size="small" overflow="break-word">
+                      <ds-text as="small" color="gray1" size="small" overflow="break-word">
                         {t(
                           'domain.accounts.allowSetupDeferralDuringGracePeriodInfo',
                           'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
                         )}
-                      </Text>
+                      </ds-text>
                     </Row>
                   </Padding>
                 </Container>
@@ -836,7 +835,7 @@ const EditAccountSecuritySection: FC = () => {
       )}
       {isAdvanced && (
         <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
-          <Text weight="bold">{t('label.backup', 'Backup')}</Text>
+          <ds-text as="h2" weight="bold">{t('label.backup', 'Backup')}</ds-text>
           <Row mainAlignment="flex-start" width="100%">
             <Container
               height="fit"
@@ -892,12 +891,12 @@ const EditAccountSecuritySection: FC = () => {
                   all: 'small',
                 }}
               >
-                <Text overflow="break-word">
+                <ds-text as="p" overflow="break-word">
                   {t(
                     'label.account_password_setting_note_for_external_authentication',
                     'The settings below ↓ do not affect the passwords set by users in domains that are configured to use external authentication. Changes made here will override COS settings for the password and the failed login lockout.',
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
           </Row>
@@ -907,7 +906,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text weight="bold">{t('cos.password', 'Password')}</Text>
+            <ds-text as="h2" weight="bold">{t('cos.password', 'Password')}</ds-text>
             <Row mainAlignment="flex-start" width="100%">
               <Container
                 height="fit"
@@ -1156,7 +1155,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text weight="bold">{t('label.forgotten_password', 'Forgotten Password')}</Text>
+            <ds-text as="h2" weight="bold">{t('label.forgotten_password', 'Forgotten Password')}</ds-text>
             <Row mainAlignment="center" width="100%">
               <Container
                 height="fit"
@@ -1221,7 +1220,7 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text weight="bold">{t('cos.failed_login_policy', 'Failed Login Policy')}</Text>
+            <ds-text as="h2" weight="bold">{t('cos.failed_login_policy', 'Failed Login Policy')}</ds-text>
             <Row mainAlignment="flex-start" width="100%">
               <Container
                 height="fit"

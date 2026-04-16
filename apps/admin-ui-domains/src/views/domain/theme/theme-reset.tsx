@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Modal, Padding, Row, Text } from '@zextras/ui-components';
+import { Button, Container, Modal, Padding, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -39,22 +39,22 @@ export const ResetTheme: FC<{
     >
       <Container>
         <Padding bottom="medium" top="medium">
-          <Text size={'extralarge'} overflow="break-word">
+          <ds-text as="p" size={'extralarge'} overflow="break-word">
             <Trans
               i18nKey="label.reset_whitelabel_settings_content_1"
               defaults="You are you sure to reset the whitelabel settings ?"
               components={{}}
             />
-          </Text>
+          </ds-text>
         </Padding>
         <Padding bottom="medium">
-          <Text  overflow="break-word">
+          <ds-text as="p" overflow="break-word">
             <Trans
               i18nKey="label.reset_whitelabel_settings_content_2"
               defaults="If you click YES button all data will be lost."
               components={{}}
             />
-          </Text>
+          </ds-text>
         </Padding>
         <Row padding={{ bottom: 'large' }}>
           <ds-icon

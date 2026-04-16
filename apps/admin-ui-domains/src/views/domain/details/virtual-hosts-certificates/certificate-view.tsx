@@ -10,7 +10,6 @@ import {
   LabeledValue,
   ListRow,
   Row,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -138,9 +137,9 @@ export const CertificateView: FC<CertificateViewProps> = ({
         crossAlignment="flex-start"
       >
         <Row>
-          <Text size="medium" color="gray0" weight="bold">
+          <ds-text as="h2">
             {t('label.certificate', 'Certificate')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ left: 'large' }}>
           <Button

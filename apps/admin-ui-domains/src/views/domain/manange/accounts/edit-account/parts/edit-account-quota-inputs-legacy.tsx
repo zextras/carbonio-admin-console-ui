@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, InheritedInput, Padding, Row, Text } from '@zextras/ui-components';
+import { Container, InheritedInput, Padding, Row } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -176,12 +176,12 @@ export const EditAccountQuotaInputsLegacy = ({
         {showAccountQuotaLimitMsg && (
           <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
             <Padding top="small">
-              <Text size="extrasmall" weight="regular" color="primary">
+              <ds-text size="extrasmall" weight="regular" color="primary" as="small">
                 {t(
                   'label.maximum_3_digits_allowed_decimal_point',
                   'Maximum 3 digits allowed after the decimal point',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Container>
         )}
@@ -211,12 +211,12 @@ export const EditAccountQuotaInputsLegacy = ({
           {showFileQuotaLimitMsg && (
             <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
               <Padding top="small">
-                <Text size="extrasmall" weight="regular" color="primary">
+                <ds-text size="extrasmall" weight="regular" color="primary" as="small">
                   {t(
                     'label.maximum_3_digits_allowed_decimal_point',
                     'Maximum 3 digits allowed after the decimal point',
                   )}
-                </Text>
+                </ds-text>
               </Padding>
             </Container>
           )}

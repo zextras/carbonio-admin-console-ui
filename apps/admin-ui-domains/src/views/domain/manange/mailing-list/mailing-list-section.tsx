@@ -16,7 +16,6 @@ import {
   Row,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
@@ -157,9 +156,9 @@ const MailingListSection: FC<any> = () => {
         const searchDlRows = dynamicListMember.map((item: any) => ({
           id: item?.name,
           columns: [
-            <Text size="medium" weight="light" key={item?.id} color="#828282">
+            <ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
               {item?.name}
-            </Text>,
+            </ds-text>,
             '',
           ],
         }));
@@ -174,9 +173,9 @@ const MailingListSection: FC<any> = () => {
         const searchDlRows = allRows.map((item: any) => ({
           id: item?.name,
           columns: [
-            <Text size="medium" weight="light" key={item?.id} color="#828282">
+            <ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
               {item?.name}
-            </Text>,
+            </ds-text>,
             '',
           ],
         }));
@@ -222,9 +221,9 @@ const MailingListSection: FC<any> = () => {
         style={{ overflow: 'auto', padding: '16px' }}
       >
         <Row>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.distribution_list_name', 'Distribution List Name')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container
@@ -377,17 +376,17 @@ const MailingListSection: FC<any> = () => {
               </Container>
             </ListRow>
             <ListRow>
-              <Text size="small" weight="regular" color="gray1">
+              <ds-text as="small" size="small" weight="regular" color="gray1">
                 {`${t('label.example_lbl', 'Example:')} ${LDAP_QUERY}`}
-              </Text>
+              </ds-text>
             </ListRow>
             {isShowLdapQueryMessage && (
               <Row>
                 <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                   <Padding all={'0'}>
-                    <Text size="extrasmall" weight="regular" color="error">
+                    <ds-text as="span" size="extrasmall" weight="regular" color="error">
                       {ldapQueryErrorMessage}
-                    </Text>
+                    </ds-text>
                   </Padding>
                 </Container>
               </Row>
@@ -397,9 +396,9 @@ const MailingListSection: FC<any> = () => {
         {mailingListDetail?.dynamic && (
           <>
             <Row padding={{ top: 'large' }}>
-              <Text size="small" weight="bold">
+              <ds-text as="h3" size="small" weight="bold">
                 {t('label.members', 'Members')}
-              </Text>
+              </ds-text>
             </Row>
             <ListRow padding={{ all: 'small' }}>
               <Container padding={{ bottom: 'large', top: 'large' }}>

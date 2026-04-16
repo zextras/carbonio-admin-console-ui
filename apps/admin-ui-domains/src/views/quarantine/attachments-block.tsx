@@ -10,7 +10,6 @@ import {
   Link,
   Padding,
   Row,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -395,17 +394,17 @@ const Attachment: FC<AttachmentType> = ({
           </span>
           <Row orientation="vertical" crossAlignment="flex-start" takeAvailableSpace>
             <Padding style={{ width: '100%' }} bottom="extrasmall">
-              <Text>
+              <ds-text as="span">
                 {filename ||
                   t('label.attachment_unknown', {
                     mimeType: att?.contentType,
                     defaultValue: 'Unknown <{{mimeType}}>',
                   })}
-              </Text>
+              </ds-text>
             </Padding>
-            <Text color="gray1" size="small">
+            <ds-text as="small" color="gray1" size="small">
               {sizeLabel}
-            </Text>
+            </ds-text>
           </Row>
         </Row>
       </Tooltip>
@@ -528,12 +527,12 @@ const AttachmentsBlock: FC<{
       <Row mainAlignment="flex-start" padding={{ top: 'extrasmall', bottom: 'medium' }}>
         <Padding right="small">
           {attachmentsCount === 1 && (
-            <Text color="gray1">{`1 ${t('label.attachment_one', 'Attachment')}`}</Text>
+            <ds-text as="span" color="gray1">{`1 ${t('label.attachment_one', 'Attachment')}`}</ds-text>
           )}
           {attachmentsCount === 2 && (
-            <Text color="gray1">
+            <ds-text as="span" color="gray1">
               {`${attachmentsCount} ${t('label.attachment_other', 'Attachments')}`}
-            </Text>
+            </ds-text>
           )}
           {attachmentsCount > 2 &&
             (expanded ? (
@@ -543,9 +542,9 @@ const AttachmentsBlock: FC<{
                 style={{ cursor: 'pointer' }}
               >
                 <Padding right="small">
-                  <Text color="primary">
+                  <ds-text as="span" color="primary">
                     {`${attachmentsCount} ${t('label.attachment_other', 'Attachments')}`}
-                  </Text>
+                  </ds-text>
                 </Padding>
                 <ds-icon icon="ArrowIosUpward" color="primary"></ds-icon>
               </Row>
@@ -556,12 +555,12 @@ const AttachmentsBlock: FC<{
                 style={{ cursor: 'pointer' }}
               >
                 <Padding right="small">
-                  <Text color="primary">
+                  <ds-text as="span" color="primary">
                     {`${t('label.show_all', 'Show all')} ${attachmentsCount} ${t(
                       'label.attachment_other',
                       'attachments',
                     )}`}
-                  </Text>
+                  </ds-text>
                 </Padding>
                 <ds-icon icon="ArrowIosDownward" color="primary"></ds-icon>
               </Row>

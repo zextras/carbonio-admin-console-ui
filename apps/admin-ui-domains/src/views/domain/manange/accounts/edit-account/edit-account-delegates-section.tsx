@@ -16,8 +16,7 @@ import {
 	InheritedSelect,
 	Padding,
 	Row,
-	Table,
-	Text,
+  Table,
 	useSnackbar,
 	WizardInSection,
 } from '@zextras/ui-components';
@@ -95,17 +94,17 @@ const EditAccountDelegatesSection: FC = () => {
       identitiesArr.push({
         id: item?.grantee?.[0]?.id,
         columns: [
-          <Text size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
+          <ds-text as="span" size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
             {item?.grantee?.[0]?.name || ' '}
-          </Text>,
-          <Text size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
+          </ds-text>,
+          <ds-text as="span" size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
             {item?.grantee?.[0]?.type === 'usr' ? 'Single User' : 'Group'}
-          </Text>,
-          <Text size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
+          </ds-text>,
+          <ds-text as="span" size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
             {item?.right?.[0]?._content === 'sendAs' ? 'Send As' : ''}
             {item?.right?.[0]?._content === 'sendOnBehalfOf' ? 'Send on Behalf Of' : ''}
-          </Text>,
-          <Text size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
+          </ds-text>,
+          <ds-text as="span" size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
             {find(
               item?.folder || [],
               (ele: any) => ele.perm.includes('r') && !ele.perm.includes('w'),
@@ -113,7 +112,7 @@ const EditAccountDelegatesSection: FC = () => {
               ? 'Read'
               : ' '}
             {find(item?.folder || [], (ele: any) => ele.perm.includes('w')) ? 'Read, Write' : ' '}
-          </Text>,
+          </ds-text>,
         ],
         sendRights: !!(
           item?.right?.[0]?._content === 'sendAs' || item?.right?.[0]?._content === 'sendOnBehalfOf'
@@ -797,7 +796,7 @@ const EditAccountDelegatesSection: FC = () => {
       >
         <Row width="100%">
           {!isSimplified && (
-            <Text
+            <ds-text as="span"
               color="primary"
               size="small"
               weight="bold"
@@ -805,10 +804,10 @@ const EditAccountDelegatesSection: FC = () => {
               style={{ cursor: 'pointer' }}
             >
               {t('account_details.switch_advanced', 'Switch to Advanced View')}
-            </Text>
+            </ds-text>
           )}
           {isSimplified && (
-            <Text
+            <ds-text as="span"
               color="primary"
               size="small"
               weight="bold"
@@ -819,7 +818,7 @@ const EditAccountDelegatesSection: FC = () => {
               style={{ cursor: 'pointer' }}
             >
               {t('account_details.switch_simplified', 'Switch to Simplified View')}
-            </Text>
+            </ds-text>
           )}
         </Row>
       </Container>
@@ -829,9 +828,9 @@ const EditAccountDelegatesSection: FC = () => {
         width="100%"
       >
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="h2" size="small" color="gray0" weight="bold">
             {t(`label.delegate's_general_send_settings`, `Delegate's general Send Settings`)}
-          </Text>
+          </ds-text>
         </Row>
       </Row>
       <Row
@@ -868,9 +867,9 @@ const EditAccountDelegatesSection: FC = () => {
             mainAlignment="flex-start"
             width="100%"
           >
-            <Text size="small" color="gray0" weight="bold">
+            <ds-text as="h2" size="small" color="gray0" weight="bold">
               {t(`label.delegate's_rights`, `Delegate's Rights`)}
-            </Text>
+            </ds-text>
           </Row>
           <Container
             mainAlignment="flex-start"
@@ -932,18 +931,18 @@ const EditAccountDelegatesSection: FC = () => {
                 mainAlignment="flex-start"
                 padding={{ top: 'large', bottom: 'large' }}
               >
-                <Text size="small" color="gray0" weight="bold">
+                <ds-text as="h2" size="small" color="gray0" weight="bold">
                   {t('label.read_options', 'Read options')}
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 width="50%"
                 mainAlignment="flex-start"
                 padding={{ top: 'large', bottom: 'large' }}
               >
-                <Text size="small" color="gray0" weight="bold">
+                <ds-text as="h2" size="small" color="gray0" weight="bold">
                   {t('label.sending_options', 'Send options')}
-                </Text>
+                </ds-text>
               </Row>
               <Row width="25%" mainAlignment="flex-start">
                 <Checkbox
@@ -1034,13 +1033,13 @@ const EditAccountDelegatesSection: FC = () => {
             >
               <Row width="30%" mainAlignment="flex-start" height="auto">
                 <Row width="11rem" padding={{ bottom: 'large' }}>
-                  <Text weight="light" size="large" overflow="break-word">
+                  <ds-text as="h3" weight="light" size="large" overflow="break-word">
                     <Trans
                       i18nKey="account_details.account_with_read_write_rights"
                       defaults="Accounts with <bold>Read/Write</bold> rights"
                       components={{ bold: <strong /> }}
                     />
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Table
                   rows={filter(identityListItem, { writeFolder: true, readFolder: true })}
@@ -1083,13 +1082,13 @@ const EditAccountDelegatesSection: FC = () => {
               </Row>
               <Row width="30%" mainAlignment="flex-start" height="auto">
                 <Row width="11rem" padding={{ bottom: 'large' }}>
-                  <Text weight="light" size="large" overflow="break-word">
+                  <ds-text as="h3" weight="light" size="large" overflow="break-word">
                     <Trans
                       i18nKey="account_details.account_with_read_only_rights"
                       defaults="Accounts with <bold>Read Only</bold> rights"
                       components={{ bold: <strong /> }}
                     />
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Table
                   rows={filter(identityListItem, { writeFolder: false, readFolder: true })}
@@ -1132,13 +1131,13 @@ const EditAccountDelegatesSection: FC = () => {
               </Row>
               <Row width="30%" mainAlignment="flex-start" height="auto">
                 <Row width="16rem" padding={{ bottom: 'large' }}>
-                  <Text weight="light" size="large" overflow="break-word">
+                  <ds-text as="h3" weight="light" size="large" overflow="break-word">
                     <Trans
                       i18nKey="account_details.account_with_send_rights"
                       defaults="Account with <bold>SendAs/SendonBehalf</bold> rights on"
                       components={{ bold: <strong /> }}
                     />
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Table
                   rows={filter(identityListItem, { sendRights: true })}
@@ -1192,9 +1191,9 @@ const EditAccountDelegatesSection: FC = () => {
                 width="100%"
               >
                 <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-                  <Text size="small" color="gray0" weight="bold">
+                  <ds-text as="h2" size="small" color="gray0" weight="bold">
                     {t('label.delegates', 'DELEGATES')}
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
                   <Padding right="large">
@@ -1254,9 +1253,9 @@ const EditAccountDelegatesSection: FC = () => {
                         crossAlignment="center"
                         style={{ textAlign: 'center' }}
                       >
-                        <Text weight="light" color="#828282" size="large" overflow="break-word">
+                        <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                           {t('label.this_list_is_empty', 'This list is empty.')}
-                        </Text>
+                        </ds-text>
                       </Row>
                       <Row
                         orientation="vertical"
@@ -1265,13 +1264,13 @@ const EditAccountDelegatesSection: FC = () => {
                         padding={{ top: 'small' }}
                         width="53%"
                       >
-                        <Text weight="light" color="#828282" size="large" overflow="break-word">
+                        <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                           <Trans
                             i18nKey="label.create_otp_list_msg"
                             defaults="You can create a new OTP by clicking on <bold>NEW OTP</bold> button up here"
                             components={{ bold: <strong /> }}
                           />
-                        </Text>
+                        </ds-text>
                       </Row>
                     </Container>
                   )}

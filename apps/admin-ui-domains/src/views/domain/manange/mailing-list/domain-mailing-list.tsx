@@ -14,7 +14,6 @@ import {
   Paging,
   Row,
   Table,
-  Text,
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -205,14 +204,14 @@ const DomainMailingList: FC = () => {
                     handleClick(e);
                   }}
                 >
-                  <Text
+                  <ds-text as="span"
                     size="small"
                     weight="regular"
                     key={`${item?.id}display-child`}
                     color="gray0"
                   >
                     {item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-                  </Text>
+                  </ds-text>
                 </Container>,
                 <Container
                   crossAlignment="flex-start"
@@ -224,9 +223,9 @@ const DomainMailingList: FC = () => {
                     handleClick(e);
                   }}
                 >
-                  <Text size="small" weight="light" key={`${item?.id}address-child`} color="gray0">
+                  <ds-text as="span" size="small" weight="light" key={`${item?.id}address-child`} color="gray0">
                     {item?.name}
-                  </Text>
+                  </ds-text>
                 </Container>,
                 <Container
                   crossAlignment="flex-start"
@@ -238,11 +237,11 @@ const DomainMailingList: FC = () => {
                     handleClick(e);
                   }}
                 >
-                  <Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
+                  <ds-text as="span" size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
                     {item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
                       ? t('domain.mailingList.canReceive', 'Can Receive')
                       : t('domain.mailingList.cantReceive', "Can't Receive")}
-                  </Text>
+                  </ds-text>
                 </Container>,
                 <Container
                   crossAlignment="flex-start"
@@ -254,9 +253,9 @@ const DomainMailingList: FC = () => {
                     handleClick(e);
                   }}
                 >
-                  <Text size="small" weight="light" key={`${item?.id}dynamic-child`} color="gray0">
+                  <ds-text as="span" size="small" weight="light" key={`${item?.id}dynamic-child`} color="gray0">
                     {item?.dynamic ? t('label.yes', 'Yes') : t('label.no', 'No')}
-                  </Text>
+                  </ds-text>
                 </Container>,
                 <Container
                   crossAlignment="flex-start"
@@ -268,11 +267,11 @@ const DomainMailingList: FC = () => {
                     handleClick(e);
                   }}
                 >
-                  <Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
+                  <ds-text as="span" size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
                     {item?.a?.find((a: any) => a?.n === 'zimbraHideInGal')?._content === 'TRUE'
                       ? t('label.no', 'No')
                       : t('label.yes', 'Yes')}
-                  </Text>
+                  </ds-text>
                 </Container>,
                 <Container
                   crossAlignment="flex-start"
@@ -284,14 +283,14 @@ const DomainMailingList: FC = () => {
                     handleClick(e);
                   }}
                 >
-                  <Text
+                  <ds-text as="span"
                     size="small"
                     weight="light"
                     key={`${item?.id}description-child`}
                     color="gray0"
                   >
                     {item?.a?.find((a: any) => a?.n === 'description')?._content}
-                  </Text>
+                  </ds-text>
                 </Container>,
               ],
             });
@@ -640,9 +639,9 @@ const DomainMailingList: FC = () => {
         >
           <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
             <Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h1" size="medium" weight="bold" color="gray0">
                 {t('label.distribution_list', 'Distribution List')}
-              </Text>
+              </ds-text>
             </Row>
             <Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding all={'0'}>
@@ -738,9 +737,9 @@ const DomainMailingList: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       {t('label.this_list_is_empty', 'This list is empty.')}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row
                     orientation="vertical"
@@ -749,13 +748,13 @@ const DomainMailingList: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       <Trans
                         i18nKey="label.create_distribution_list_msg"
                         defaults="You can create a new Distribution List by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
                         components={{ bold: <strong /> }}
                       />
-                    </Text>
+                    </ds-text>
                   </Row>
                 </Container>
               )}

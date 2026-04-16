@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Padding, Row, Text } from '@zextras/ui-components';
+import { Container, Padding, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -34,12 +34,12 @@ export const AlertBanner: FC<AlertBannerProps> = ({ onClose }) => {
         <Row>
           <ds-icon icon="AlertTriangleOutline" size="large" color="info"></ds-icon>
           <Padding left="large">
-            <Text>
+            <ds-text as="p">
               {t(
                 'label.certificate_alert_helperText',
                 'The certificate will be available once the proxy is restarted',
               )}
-            </Text>
+            </ds-text>
           </Padding>
         </Row>
         <ds-icon

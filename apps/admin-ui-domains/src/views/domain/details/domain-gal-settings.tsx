@@ -19,7 +19,6 @@ import {
   Select,
   Switch,
   Table,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -83,16 +82,16 @@ const ServerListTable: FC<{
         columns: [
           <Tooltip placement="bottom" label={v?.name} key={i}>
             <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-              <Text color="gray0" weight="regular">
+              <ds-text as="span" color="gray0" weight="regular">
                 {v?.name}
-              </Text>
+              </ds-text>
             </Row>
           </Tooltip>,
           <Tooltip placement="bottom" label={v?.name} key={i}>
             <Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-              <Text color="gray0" weight="regular">
+              <ds-text as="span" color="gray0" weight="regular">
                 {v?.galAccount !== null ? v?.galAccount?.name : '-'}
-              </Text>
+              </ds-text>
             </Row>
           </Tooltip>,
         ],
@@ -127,7 +126,8 @@ const ServerListTable: FC<{
       {tableRows.length === 0 && (
         <Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '1rem' }}>
           <Padding all="medium" width="30.875rem">
-            <Text
+            <ds-text
+              as="p"
               color="gray0"
               overflow="break-word"
               weight="regular"
@@ -135,7 +135,7 @@ const ServerListTable: FC<{
               style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
             >
               {t('label.empty_table', 'Empty Table')}
-            </Text>
+            </ds-text>
           </Padding>
         </Container>
       )}
@@ -1049,9 +1049,9 @@ const DomainGalSettings: FC = () => {
               width="50%"
               crossAlignment="flex-start"
             >
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h2" size="medium" weight="bold" color="gray0">
                 {t('label.global_address_list', 'Global Add`ress List')}
-              </Text>
+              </ds-text>
             </Row>
             <Row
               padding={{ all: 'large' }}
@@ -1163,9 +1163,9 @@ const DomainGalSettings: FC = () => {
                 background="gray6"
                 padding={{ all: 'small' }}
               >
-                <Text size="small" weight="bold">
+                <ds-text as="h3" size="small" weight="bold">
                   {t('account_details.general', 'General')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container orientation="horizontal">
@@ -1230,9 +1230,9 @@ const DomainGalSettings: FC = () => {
                 background="gray6"
                 padding={{ all: 'small' }}
               >
-                <Text size="small" weight="bold">
+                <ds-text as="h3" size="small" weight="bold">
                   {t('label.settings', 'Settings')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container padding={{ all: 'small' }}>
@@ -1275,9 +1275,9 @@ const DomainGalSettings: FC = () => {
                     background="gray6"
                     padding={{ all: 'small' }}
                   >
-                    <Text size="small" weight="bold">
+                    <ds-text as="h3" size="small" weight="bold">
                       {t('label.ldap_url', 'LDAP Url')}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row
                     orientation="horizontal"
@@ -1305,13 +1305,13 @@ const DomainGalSettings: FC = () => {
                             maxWidth="40rem"
                             label={EXTERNAL_SERVER_EXAMPLE}
                           >
-                            <Text>
+                            <ds-text as="span">
                               <ds-icon
                                 icon="InfoOutline"
                                 size="large"
                                 color={hasFocus ? 'primary' : 'text'}
                               ></ds-icon>
-                            </Text>
+                            </ds-text>
                           </Tooltip>
                         )}
                       />
@@ -1350,13 +1350,13 @@ const DomainGalSettings: FC = () => {
                           maxWidth="40rem"
                           label={LDAP_FILTER_LABEL}
                         >
-                          <Text>
+                          <ds-text as="span">
                             <ds-icon
                               icon="InfoOutline"
                               size="large"
                               color={hasFocus ? 'primary' : 'text'}
                             ></ds-icon>
-                          </Text>
+                          </ds-text>
                         </Tooltip>
                       )}
                     />
@@ -1380,13 +1380,13 @@ const DomainGalSettings: FC = () => {
                           maxWidth="40rem"
                           label={LDAP_SEARCH_BASE_LABEL}
                         >
-                          <Text>
+                          <ds-text as="span">
                             <ds-icon
                               icon="InfoOutline"
                               size="large"
                               color={hasFocus ? 'primary' : 'text'}
                             ></ds-icon>
-                          </Text>
+                          </ds-text>
                         </Tooltip>
                       )}
                     />
@@ -1412,9 +1412,9 @@ const DomainGalSettings: FC = () => {
                 background="gray6"
                 padding={{ all: 'small' }}
               >
-                <Text size="small" weight="bold">
+                <ds-text as="h3" size="small" weight="bold">
                   {t('label.authentication_settings', 'Authentication Settings')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container
@@ -1453,13 +1453,13 @@ const DomainGalSettings: FC = () => {
                         maxWidth="40rem"
                         label={LDAP_BIND_DN_LABLE}
                       >
-                        <Text>
+                        <ds-text as="span">
                           <ds-icon
                             icon="InfoOutline"
                             size="large"
                             color={hasFocus ? 'primary' : 'text'}
                           ></ds-icon>
-                        </Text>
+                        </ds-text>
                       </Tooltip>
                     )}
                   />
@@ -1478,13 +1478,13 @@ const DomainGalSettings: FC = () => {
         )}
       </Container>
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
     </Container>
   );

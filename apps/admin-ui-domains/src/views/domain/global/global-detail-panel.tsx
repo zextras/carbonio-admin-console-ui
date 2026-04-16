@@ -13,7 +13,6 @@ import {
   Padding,
   Row,
   Switch,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useAllConfig } from '@zextras/ui-shared';
@@ -304,7 +303,7 @@ const GlobalDetailPanel: FC = () => {
         <Container orientation="vertical" mainAlignment="space-around" height="1.9rem">
           <Row orientation="horizontal" width="100%">
             <Row mainAlignment="flex-start" width="50%" crossAlignment="center">
-              <Text weight="bold">{t('label.settings', 'Settings')}</Text>
+              <ds-text as="h1" weight="bold">{t('label.settings', 'Settings')}</ds-text>
             </Row>
             <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding right="small">
@@ -333,9 +332,9 @@ const GlobalDetailPanel: FC = () => {
         padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
       >
         <Row mainAlignment="flex-start" width="100%" background="gray6" padding={{ top: 'small' }}>
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h2" size="small" weight="bold" color="gray0">
             {t('label.domain_system_notifications', 'Domain System Notifications')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container

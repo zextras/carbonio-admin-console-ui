@@ -15,7 +15,6 @@ import {
   Select,
   SelectItem,
   Switch,
-  Text,
   Tooltip as TooltipDefault,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -50,9 +49,9 @@ const Tooltip: FC<{ items: { label?: string }[] }> = ({ items }) => (
     <Padding left="small" right="small" bottom="small">
       {items.map((item, index) => (
         <Padding top="small" key={index}>
-          <Text size="extrasmall" color="text" key={item.label}>
+          <ds-text as="span" size="extrasmall" color="text" key={item.label}>
             {item.label}
-          </Text>
+          </ds-text>
         </Padding>
       ))}
     </Padding>
@@ -588,9 +587,9 @@ const DomainAuthentication: FC = () => {
                 width="50%"
                 crossAlignment="flex-start"
               >
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h2" size="medium" weight="bold" color="gray0">
                   {t('label.authentication', 'Authentication')}
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 padding={{ all: 'large' }}
@@ -639,9 +638,9 @@ const DomainAuthentication: FC = () => {
             >
               <ListRow>
                 <Padding vertical="large" horizontal="small" width="100%">
-                  <Text size="small" color="gray0" weight="bold">
+                  <ds-text as="h3" size="small" color="gray0" weight="bold">
                     {t('label.auth_method', 'Auth Method')}
-                  </Text>
+                  </ds-text>
                 </Padding>
               </ListRow>
               <ListRow>
@@ -657,9 +656,9 @@ const DomainAuthentication: FC = () => {
                   ></Select>
                   <Padding top="medium">
                     {zimbraAuthMech && (
-                      <Text size="small" color="gray1">
+                      <ds-text as="p" size="small" color="gray1">
                         {isAdvanced ? zimbraAuthMech.info_label : zimbraAuthMech.info_label_ce}
-                      </Text>
+                      </ds-text>
                     )}
                   </Padding>
                 </Padding>
@@ -720,11 +719,11 @@ const DomainAuthentication: FC = () => {
                         width="fill"
                       >
                         <Padding top="small">
-                          <Text size="extrasmall" weight="regular" color="error">
+                          <ds-text as="span" size="extrasmall" weight="regular" color="error">
                             {zimbraAuthLdapURL
                               ? t('label.ldap_url_is_not_valid', 'Ldap url is not valid')
                               : t('label.required', 'Required')}
-                          </Text>
+                          </ds-text>
                         </Padding>
                       </Container>
                     </Row>
@@ -823,9 +822,9 @@ const DomainAuthentication: FC = () => {
               </ListRow>
               <ListRow>
                 <Padding vertical="large" horizontal="small" width="100%">
-                  <Text size="small" color="gray0" weight="bold">
+                  <ds-text as="h3" size="small" color="gray0" weight="bold">
                     {t('label.verify_auth', 'Verify Auth')}
-                  </Text>
+                  </ds-text>
                 </Padding>
               </ListRow>
               <ListRow>
@@ -957,13 +956,13 @@ const DomainAuthentication: FC = () => {
       </Container>
 
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
     </Container>
   );

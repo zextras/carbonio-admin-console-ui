@@ -15,7 +15,6 @@ import {
   Select,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { debounce, sortedUniq, uniq } from 'lodash';
@@ -119,7 +118,7 @@ const MailingListSettingsSection: FC<any> = () => {
       const allRows = ownersList.map((item: any) => ({
         id: item,
         columns: [
-          <Text
+          <ds-text as="span"
             size="medium"
             weight="light"
             key={item?.id}
@@ -129,7 +128,7 @@ const MailingListSettingsSection: FC<any> = () => {
             }}
           >
             {item}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setOwnerTableRows(allRows);
@@ -348,7 +347,7 @@ const MailingListSettingsSection: FC<any> = () => {
       const allRows = grantEmailsList.map((item: any) => ({
         id: item,
         columns: [
-          <Text
+          <ds-text as="span"
             size="medium"
             weight="light"
             key={item?.id}
@@ -358,7 +357,7 @@ const MailingListSettingsSection: FC<any> = () => {
             }}
           >
             {item}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setGrantEmailTableRows(allRows);
@@ -381,9 +380,9 @@ const MailingListSettingsSection: FC<any> = () => {
         style={{ overflow: 'auto', padding: '1rem' }}
       >
         <Row>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.main_settings', 'Main Settings')}
-          </Text>
+          </ds-text>
         </Row>
 
         {!mailingListDetail?.dynamic && (
@@ -460,17 +459,17 @@ const MailingListSettingsSection: FC<any> = () => {
           </Container>
         </ListRow>
         <Row padding={{ top: 'large' }}>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.owners_settings_lbl', 'Owners’ Settings')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'small', bottom: 'medium' }}>
-          <Text size="small" weight="light" color="#828282" overflow="break-word">
+          <ds-text as="p" size="small" weight="light" color="#828282" overflow="break-word">
             {t(
               'label.owners_description_msg_1',
               'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.',
             )}
-          </Text>
+          </ds-text>
         </Row>
 
         <ListRow>
@@ -547,17 +546,17 @@ const MailingListSettingsSection: FC<any> = () => {
               </Padding>
               <Padding vertical="extralarge" width="100%">
                 <Row mainAlignment="center" width="100%">
-                  <Text size="large" color="secondary" weight="regular">
+                  <ds-text as="p" size="large" color="secondary" weight="regular">
                     {t('label.there_are_no_owners', 'There aren’t owners here.')}
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row mainAlignment="center" width="100%">
-                  <Text size="large" color="secondary" weight="regular">
+                  <ds-text as="p" size="large" color="secondary" weight="regular">
                     {t(
                       'label.search_for_user_and_clic_to_add',
                       'Search for a user and click on the ADD button.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </Padding>
             </Container>
@@ -570,9 +569,9 @@ const MailingListSettingsSection: FC<any> = () => {
           </Container>
         </ListRow>
         <Row padding={{ top: 'large' }}>
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('label.sending_options', 'Sending Options')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container padding={{ top: 'large' }}>
@@ -663,17 +662,17 @@ const MailingListSettingsSection: FC<any> = () => {
               </Padding>
               <Padding vertical="extralarge" width="100%">
                 <Row mainAlignment="center" width="100%">
-                  <Text size="large" color="secondary" weight="regular">
+                  <ds-text as="p" size="large" color="secondary" weight="regular">
                     {t('label.there_are_not_member_here', 'There aren’t members here.')}
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row mainAlignment="center" width="100%">
-                  <Text size="large" color="secondary" weight="regular">
+                  <ds-text as="p" size="large" color="secondary" weight="regular">
                     {t(
                       'label.search_for_user_and_clic_to_add',
                       'Search for a user and click on the ADD button.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </Padding>
             </Container>

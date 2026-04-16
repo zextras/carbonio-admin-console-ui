@@ -12,7 +12,6 @@ import {
   Padding,
   Row,
   Switch,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useMailstoreServers } from '@zextras/ui-shared';
@@ -214,9 +213,9 @@ const GlobalActiveSync: FC = () => {
                 width="50%"
                 crossAlignment="flex-start"
               >
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h1" size="medium" weight="bold" color="gray0">
                   {t('label.active_sync', 'ActiveSync')}
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 padding={{ all: 'large' }}
@@ -275,9 +274,9 @@ const GlobalActiveSync: FC = () => {
             background="gray6"
             padding={{ left: 'large' }}
           >
-            <Text size="small" weight="bold">
+            <ds-text as="h2" size="small" weight="bold">
               {t('label.mobile_dos_protection', 'Mobile DOS Protection')}
-            </Text>
+            </ds-text>
           </Row>
           <ListRow>
             <Container

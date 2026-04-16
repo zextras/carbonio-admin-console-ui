@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Text } from '@zextras/ui-components';
+import { Container } from '@zextras/ui-components';
 import React, { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -60,7 +60,7 @@ export const EditAccountQuotaBarNew = ({
             used: humanFileSize(used, t),
           }}
           components={{
-            bold: <Text weight="bold" overflow={'break-word'} style={{ display: 'inline' }} />,
+            bold: <ds-text weight="bold" overflow={'break-word'} display="inline" as="strong" />,
           }}
         />
       );
@@ -77,13 +77,13 @@ export const EditAccountQuotaBarNew = ({
   return (
     <Container mainAlignment="flex-start" height="fit" crossAlignment="flex-start" gap="0.5rem">
       <Container orientation="horizontal" width={'100%'} mainAlignment="space-between">
-        <Text size="medium" weight="bold" color="regular">
+        <ds-text size="medium" weight="bold" color="regular" as="h2">
           {t('label.storage_usage', 'Storage usage')}
-        </Text>
+        </ds-text>
         <Container orientation={'horizontal'} width={'fit'} gap={'0.25rem'}>
-          <Text size="small" color="regular">
+          <ds-text size="small" color="regular" as="p">
             {sizeDescription}
-          </Text>
+          </ds-text>
           <TotalQuotaSourceIcon source={source} />
         </Container>
       </Container>

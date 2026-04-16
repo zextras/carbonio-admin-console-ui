@@ -21,7 +21,6 @@ import {
   Select,
   Switch,
   Table,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -351,12 +350,12 @@ export const EditAccountGeneralSection: FC<{
                 </Padding>
               </Row>
               <Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
-                <Text overflow="break-word">
+                <ds-text as="p" overflow="break-word">
                   {t(
                     'many_domain_info_msg',
                     'So many domains! Which one would you like to see? Start typing to filter.',
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </>
           ),
@@ -421,9 +420,9 @@ export const EditAccountGeneralSection: FC<{
           style={{ cursor: 'pointer' }}
           onClick={(): void => addSelection(item)}
         >
-          <Text size="small" weight="light" color="#828282">
+          <ds-text as="span" size="small" weight="light" color="#828282">
             {item?.name}
-          </Text>
+          </ds-text>
         </Container>,
         <Container
           crossAlignment="flex-start"
@@ -431,9 +430,9 @@ export const EditAccountGeneralSection: FC<{
           style={{ cursor: 'pointer' }}
           onClick={(): void => addSelection(item)}
         >
-          <Text size="small" weight="light" key={item?.zid} color="#828282">
+          <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
             {item?.sid}
-          </Text>
+          </ds-text>
         </Container>,
         <Container
           crossAlignment="flex-start"
@@ -441,9 +440,9 @@ export const EditAccountGeneralSection: FC<{
           style={{ cursor: 'pointer' }}
           onClick={(): void => addSelection(item)}
         >
-          <Text size="small" weight="light" key={item?.zid} color="#828282">
+          <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
             {''}
-          </Text>
+          </ds-text>
         </Container>,
         <Container
           crossAlignment="flex-start"
@@ -451,9 +450,9 @@ export const EditAccountGeneralSection: FC<{
           style={{ cursor: 'pointer' }}
           onClick={(): void => addSelection(item)}
         >
-          <Text size="small" weight="light" key={item?.zid} color="#828282">
+          <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
             {''}
-          </Text>
+          </ds-text>
         </Container>,
       ],
     }));
@@ -574,9 +573,9 @@ export const EditAccountGeneralSection: FC<{
     >
       <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="h2" size="small" color="gray0" weight="bold">
             {t('label.account', 'Account')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ vertical: 'large', left: 'large' }} width="100%" mainAlignment="flex-start">
           <EditAccountQuotaBar
@@ -800,13 +799,13 @@ export const EditAccountGeneralSection: FC<{
               iconColor="primary"
             />
             <Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
-              <Text
+              <ds-text as="span"
                 size="small"
                 color="gray0"
                 style={{ textDecoration: 'underline', cursor: 'default' }}
               >
                 ({t('label.what_is_a_gal', "What's a GAL?")})
-              </Text>
+              </ds-text>
             </Tooltip>
           </Row>
           {renderSwitchRow(
@@ -943,9 +942,9 @@ export const EditAccountGeneralSection: FC<{
           </Row>
           <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
             <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-              <Text size="small" color="gray0" weight="bold">
+              <ds-text as="h2" size="small" color="gray0" weight="bold">
                 {t('domain.accounts.editAccount.externalldap', 'External LDAP')}
-              </Text>
+              </ds-text>
             </Row>
             <Row
               padding={{ top: 'large', left: 'large' }}
@@ -974,9 +973,9 @@ export const EditAccountGeneralSection: FC<{
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="h2" size="small" color="gray0" weight="bold">
             {t('label.settings', 'Settings')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="49%" mainAlignment="flex-start">
@@ -1052,9 +1051,9 @@ export const EditAccountGeneralSection: FC<{
         <ds-divider></ds-divider>
       </Row>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-        <Text size="small" color="gray0" weight="bold">
+        <ds-text as="h2" size="small" color="gray0" weight="bold">
           {t('label.distribution_list', 'Distribution List')}
-        </Text>
+        </ds-text>
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="100%" mainAlignment="space-between">
@@ -1093,9 +1092,9 @@ export const EditAccountGeneralSection: FC<{
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="h2" size="small" color="gray0" weight="bold">
             {t('label.description', 'Description')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
           <Input
@@ -1108,9 +1107,9 @@ export const EditAccountGeneralSection: FC<{
           />
         </Row>
         <Row padding={{ top: 'large' }}>
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="h2" size="small" color="gray0" weight="bold">
             {t('label.notes', 'Notes')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
           <CustomTextArea
@@ -1132,9 +1131,9 @@ export const EditAccountGeneralSection: FC<{
         width="100%"
       >
         <Row padding={{ top: 'extralarge' }}>
-          <Text size="small" weight="bold">
+          <ds-text as="h2" size="small" weight="bold">
             {t('label.active_sessions', 'Active Sessions')}
-          </Text>
+          </ds-text>
         </Row>
         <Row
           padding={{ top: 'extralarge' }}
@@ -1217,7 +1216,7 @@ export const EditAccountGeneralSection: FC<{
         showCloseIcon
         onClick={(): void => setShowDeletePasswordModal(false)}
       >
-        <Text
+        <ds-text as="p"
           size={'extralarge'}
           overflow="break-word"
           style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 1rem' }}
@@ -1230,7 +1229,7 @@ export const EditAccountGeneralSection: FC<{
               name: accountDetail?.givenName,
             }}
           />
-        </Text>
+        </ds-text>
       </Modal>
     </Container>
   );

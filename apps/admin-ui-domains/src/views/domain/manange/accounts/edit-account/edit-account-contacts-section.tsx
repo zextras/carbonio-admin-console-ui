@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Row, Text, Tooltip } from '@zextras/ui-components';
+import { Container, Input, Row, Tooltip } from '@zextras/ui-components';
 import React, { ChangeEvent,FC, useCallback, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -40,9 +40,9 @@ const EditAccountContactsSection: FC = () => {
 		>
 			<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-					<Text size="small" color="gray0" weight="bold">
+					<ds-text size="small" color="gray0" weight="bold" as="h2">
 						{t('label.phone', 'Phone')}
-					</Text>
+					</ds-text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="48%" mainAlignment="space-between">
@@ -168,9 +168,9 @@ const EditAccountContactsSection: FC = () => {
 			</Row>
 			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }}>
-					<Text size="small" color="gray0" weight="bold">
+					<ds-text size="small" color="gray0" weight="bold" as="h2">
 						{t('label.company', 'Company')}
-					</Text>
+					</ds-text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
@@ -197,9 +197,9 @@ const EditAccountContactsSection: FC = () => {
 			</Row>
 			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }}>
-					<Text size="small" color="gray0" weight="bold">
+					<ds-text size="small" color="gray0" weight="bold" as="h2">
 						{t('label.address', 'Address')}
-					</Text>
+					</ds-text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">

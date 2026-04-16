@@ -11,7 +11,6 @@ import {
   InheritedSelect,
   InheritedSwitch,
   Row,
-  Text,
 } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -248,9 +247,9 @@ const EditAccountUserPrefrencesSection: FC<{
     >
       <Row mainAlignment="flex-start" width="100%">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.mailing_options', 'Mail Options')}
-          </Text>
+          </ds-text>
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -332,9 +331,9 @@ const EditAccountUserPrefrencesSection: FC<{
       </Row>
       <Row mainAlignment="flex-start" width="100%">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.receiving_mails', 'Receiving Mails')}
-          </Text>
+          </ds-text>
         </Row>
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
@@ -417,9 +416,9 @@ const EditAccountUserPrefrencesSection: FC<{
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.sending_mails', 'Sending Mails')}
-          </Text>
+          </ds-text>
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -482,9 +481,9 @@ const EditAccountUserPrefrencesSection: FC<{
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.composing_mails', 'Composing Mails')}
-          </Text>
+          </ds-text>
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -514,9 +513,9 @@ const EditAccountUserPrefrencesSection: FC<{
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.contact_options', 'Contact Options')}
-          </Text>
+          </ds-text>
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -550,9 +549,9 @@ const EditAccountUserPrefrencesSection: FC<{
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.calendar_options', 'Calendar Options')}
-          </Text>
+          </ds-text>
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">

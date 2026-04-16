@@ -13,7 +13,6 @@ import {
   Row,
   Select,
   Switch,
-  Text,
 } from '@zextras/ui-components';
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -84,9 +83,9 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       style={{ overflow: 'auto' }}
     >
       <Row padding={{ top: 'medium', bottom: 'medium' }}>
-        <Text size="medium" weight="bold" color="gray0">
+        <ds-text as="h3" size="medium" weight="bold" color="gray0">
           {t('domain.list_details', 'List Details')}
-        </Text>
+        </ds-text>
       </Row>
 
       <ListRow padding={{ right: 'small', bottom: 'small' }}>
@@ -214,9 +213,9 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         </Container>
       </ListRow>
       <Row padding={{ top: 'large' }}>
-        <Text size="medium" weight="bold" color="gray0">
+        <ds-text as="h3" size="medium" weight="bold" color="gray0">
           {t('label.description', 'Description')}
-        </Text>
+        </ds-text>
       </Row>
       <ListRow padding={{ all: 'small' }}>
         <Container padding={{ bottom: 'medium' }}>
@@ -234,9 +233,9 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         </Container>
       </ListRow>
       <Row padding={{ top: 'large' }}>
-        <Text size="medium" weight="bold" color="gray0">
+        <ds-text as="h3" size="medium" weight="bold" color="gray0">
           {t('label.notes', 'Notes')}
-        </Text>
+        </ds-text>
       </Row>
       <ListRow padding={{ all: 'small' }}>
         <Container padding={{ bottom: 'medium' }}>
@@ -254,9 +253,9 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       {!selectedMailingList?.dynamic && (
         <>
           <Row padding={{ top: 'small' }}>
-            <Text size="medium" weight="bold" color="gray0">
+            <ds-text as="h3" size="medium" weight="bold" color="gray0">
               {t('label.this_list_included_in', 'This list is included in')}
-            </Text>
+            </ds-text>
           </Row>
           <ListRow padding={{ all: 'small' }}>
             <Container padding={{ bottom: 'small' }}>

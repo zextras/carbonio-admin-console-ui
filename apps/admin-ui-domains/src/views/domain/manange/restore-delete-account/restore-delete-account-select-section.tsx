@@ -13,7 +13,6 @@ import {
   Paging,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useDomainStore } from '@zextras/ui-shared';
@@ -163,9 +162,9 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="regular" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="regular" key={item?.name} color="gray0">
               {item?.name}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.serverName}
@@ -174,9 +173,9 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.serverName} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.serverName} color="gray0">
               {item?.serverName}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.status}
@@ -185,9 +184,9 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.status} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.status} color="gray0">
               {item?.status === 'Active' ? 'Yes' : 'No'}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.creationTimestamp}
@@ -196,9 +195,9 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.creationTimestamp} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.creationTimestamp} color="gray0">
               {getFormatedShortDate(new Date(item?.creationTimestamp))}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.id}
@@ -207,9 +206,9 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.id} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
               {item?.deletedTimestamp ? getFormatedShortDate(new Date(item?.deletedTimestamp)) : ''}
-            </Text>
+            </ds-text>
           </Container>,
         ],
       }));
@@ -260,22 +259,22 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
             padding={{ bottom: 'large', right: 'large', left: 'large' }}
           >
             <Container padding={{ bottom: 'medium' }} crossAlignment="flex-start">
-              <Text size="medium" color="gray0" weight="regular">
+              <ds-text as="p" size="medium" color="gray0" weight="regular">
                 {t(
                   'label.restore_select_account_row_1',
                   `Through this tool, you'll be able to restore an entire account from the backup into a new account.`,
                 )}
-              </Text>
+              </ds-text>
             </Container>
             <Container padding={{ bottom: 'medium' }} crossAlignment="flex-start">
               {
-                <Text size="medium" color="gray0" weight="regular">
+                <ds-text as="p" size="medium" color="gray0" weight="regular">
                   <Trans
                     i18nKey="label.restore_select_account_row_2"
                     defaults="<bold>Note</bold> that all the mails, appointments, contacts, and settings of the account will be restored, as they were at the chosen timestamp."
                     components={{ bold: <strong /> }}
                   />
-                </Text>
+                </ds-text>
               }
             </Container>
             <Container padding={{ bottom: 'medium', top: 'large' }}>

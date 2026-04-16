@@ -15,7 +15,6 @@ import {
   Row,
   Select,
   Switch,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -384,9 +383,9 @@ const CreateDomain: FC = () => {
         >
           <Row width="100%" mainAlignment="flex-start">
             <Padding all="large">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h1" size="medium" weight="bold" color="gray0">
                 {t('label.new_domain', 'New Domain')}
-              </Text>
+              </ds-text>
             </Padding>
             <ds-divider></ds-divider>
           </Row>
@@ -408,9 +407,9 @@ const CreateDomain: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="h2" size="small" weight="bold" color="gray0">
                   {t('label.general_information', 'General Information')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container padding={{ all: 'small' }}>
@@ -496,16 +495,16 @@ const CreateDomain: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="h2" size="small" weight="bold" color="gray0">
                   {t('label.gal', 'GAL')}
-                </Text>
+                </ds-text>
                 <Tooltip
                   placement="top"
                   label={t('label.global_address_list', 'Global Address List')}
                 >
-                  <Text size="small" color="gray0" style={{ textDecoration: 'underline' }}>
+                  <ds-text as="span" size="small" color="gray0" style={{ textDecoration: 'underline' }}>
                     ({t('label.what_is_a_gal', "What's a GAL?")})
-                  </Text>
+                  </ds-text>
                 </Tooltip>
               </Row>
               <ListRow>
@@ -567,9 +566,9 @@ const CreateDomain: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="h2" size="small" weight="bold" color="gray0">
                   {t('label.class_of_service_cos', 'Class Of Service (COS)')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container padding={{ all: 'small' }}>
@@ -604,9 +603,9 @@ const CreateDomain: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="h2" size="small" weight="bold" color="gray0">
                   {t('label.delegated_administration_title', 'Delegated Administration')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container
@@ -637,9 +636,9 @@ const CreateDomain: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="h2" size="small" weight="bold" color="gray0">
                   {t('label.domain_system_notifications', 'Domain System Notifications')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container

@@ -16,7 +16,6 @@ import {
   Padding,
   Row,
   Select,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore, useStickyBarStore } from '@zextras/ui-shared';
@@ -776,9 +775,9 @@ const ResourceEditDetailView: FC<any> = ({
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {selectedResourceList?.name}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -821,9 +820,9 @@ const ResourceEditDetailView: FC<any> = ({
       >
         <Displayer buttons={buttons} pinIcon={isSticky} />
         <Row>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.resource', 'Resource')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container
@@ -1053,9 +1052,9 @@ const ResourceEditDetailView: FC<any> = ({
             <ds-divider color="gray3"></ds-divider>
           </Row>
           <Row padding={{ top: 'extralarge' }}>
-            <Text size="small" weight="bold">
+            <ds-text as="h3" size="small" weight="bold">
               {t('label.password', 'Password')}
-            </Text>
+            </ds-text>
           </Row>
           <ListRow>
             <Container
@@ -1159,7 +1158,7 @@ const ResourceEditDetailView: FC<any> = ({
         >
           <Container>
             <Padding bottom="medium" top="medium">
-              <Text size={'extralarge'} overflow="break-word">
+              <ds-text as="p" size={'extralarge'} overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_1"
                   defaults="Are you sure you want to delete <bold>{{name}}</bod> ?"
@@ -1168,25 +1167,25 @@ const ResourceEditDetailView: FC<any> = ({
                     name: selectedResourceList?.name,
                   }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Padding bottom="medium">
-              <Text overflow="break-word">
+              <ds-text as="p" overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Padding bottom="medium">
-              <Text overflow="break-word">
+              <ds-text as="p" overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Disable it to preserve</bold> the data, instead."
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Row padding={{ bottom: 'large' }}>
               <ds-icon
@@ -1199,13 +1198,13 @@ const ResourceEditDetailView: FC<any> = ({
         </Modal>
       )}
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
     </Container>
   );

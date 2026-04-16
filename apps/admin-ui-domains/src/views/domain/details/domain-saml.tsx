@@ -13,7 +13,6 @@ import {
   Row,
   Switch,
   Table,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -148,9 +147,9 @@ const DomainSaml: FC = () => {
                   openSamlValue(item);
                 }}
               >
-                <Text size="small" weight="regular" color="gray0">
+                <ds-text as="span" size="small" weight="regular" color="gray0">
                   {item?.attribute}
-                </Text>
+                </ds-text>
               </Container>,
               <Container
                 crossAlignment="flex-start"
@@ -160,9 +159,9 @@ const DomainSaml: FC = () => {
                   openSamlValue(item);
                 }}
               >
-                <Text size="small" weight="light" color="gray0">
+                <ds-text as="span" size="small" weight="light" color="gray0">
                   {item?.value as unknown as React.ReactNode}
-                </Text>
+                </ds-text>
               </Container>,
             ],
           });
@@ -401,9 +400,9 @@ const DomainSaml: FC = () => {
                 width="100%"
                 crossAlignment="flex-start"
               >
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h2" size="medium" weight="bold" color="gray0">
                   {t('label.saml', 'SAML')} @{domainName}
-                </Text>
+                </ds-text>
               </Row>
             </Row>
           </Container>
@@ -453,12 +452,12 @@ const DomainSaml: FC = () => {
                       bottom: 'small',
                     }}
                   >
-                    <Text overflow="break-word">
+                    <ds-text as="p" overflow="break-word">
                       {t(
                         'cos.idp_configuration_saml_notes',
                         'Go to your IDP to configure your SAML and copy the EntityID and ServiceURL values',
                       )}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row width="12%" mainAlignment="flex-start">
                     <Tooltip placement="top" label={t('label.entity_id_copied', 'EntityID copied')}>
@@ -510,9 +509,9 @@ const DomainSaml: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'medium' }}
               >
-                <Text size="medium" weight="bold">
+                <ds-text as="h3" size="medium" weight="bold">
                   {t('label.configuration_lbl', 'Configuration')}
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 width="100%"
@@ -628,11 +627,12 @@ const DomainSaml: FC = () => {
                   mainAlignment="flex-start"
                   style={{ marginTop: '1rem' }}
                 >
-                  <Text overflow="break-word" weight="regular" size="large">
+                  <ds-text as="span" overflow="break-word" weight="regular" size="large">
                     <img src={logo} alt="logo" />
-                  </Text>
+                  </ds-text>
                   <Padding all="medium" width="25.875rem">
-                    <Text
+                    <ds-text
+                      as="p"
                       color="gray1"
                       overflow="break-word"
                       weight="regular"
@@ -643,7 +643,7 @@ const DomainSaml: FC = () => {
                         'label.saml_metadata_attribute_notes',
                         'Please import some SAML Metadata in the field above to see its attributes',
                       )}
-                    </Text>
+                    </ds-text>
                   </Padding>
                 </Container>
               )}

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Padding, Row, Text } from '@zextras/ui-components';
+import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
 import { cloneDeep, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -63,7 +63,7 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
               <Trans
                 i18nKey="label.this_domain_is_closed"
                 defaults="<text>The domain  <bold> {{domain}} </bold>  is closed</text>"
-                components={{ bold: <strong />, text: <Text color="white" /> }}
+                components={{ bold: <strong />, text: <ds-text as="p" color="white" /> }}
                 values={{
                   domain: domain?.name ?? '',
                 }}

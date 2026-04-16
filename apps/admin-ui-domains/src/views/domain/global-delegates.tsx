@@ -12,7 +12,6 @@ import {
   Paging,
   Row,
   Table,
-  Text,
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -318,23 +317,23 @@ const GlobalDelegates: FC = () => {
               otpListArr.push({
                 id: item?.id,
                 columns: [
-                  <Text size="medium" key={item?.id} color="gray0">
+                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
                     {item?.label || ' '}
-                  </Text>,
-                  <Text size="medium" key={item?.id} color="gray0">
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
                     {item?.enabled
                       ? t('label.enabled', 'Enabled')
                       : t('label.disabled', 'Disabled')}
-                  </Text>,
-                  <Text size="medium" key={item?.id}>
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id}>
                     {item?.failed_attempts}
-                  </Text>,
-                  <Text size="medium" key={item?.id}>
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id}>
                     {format(new Date(item?.created), 'dd/MMM/yyyy')}
-                  </Text>,
-                  <Text size="medium" key={item?.id} color="gray0">
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
                     {item?.description || <>&nbsp;</>}
-                  </Text>,
+                  </ds-text>,
                 ],
                 item,
                 clickable: true,
@@ -617,7 +616,8 @@ const GlobalDelegates: FC = () => {
             accountListArr.push({
               id: item?.id,
               columns: [
-                <Text
+                <ds-text
+                  as="span"
                   size="small"
                   key={item?.id}
                   color="gray0"
@@ -627,8 +627,9 @@ const GlobalDelegates: FC = () => {
                   }}
                 >
                   {item?.name || ' '}
-                </Text>,
-                <Text
+                </ds-text>,
+                <ds-text
+                  as="span"
                   size="small"
                   key={item?.id}
                   color="gray0"
@@ -638,8 +639,9 @@ const GlobalDelegates: FC = () => {
                   }}
                 >
                   {accountUserType(item)}
-                </Text>,
-                <Text
+                </ds-text>,
+                <ds-text
+                  as="span"
                   size="small"
                   key={item?.id}
                   color="gray0"
@@ -649,8 +651,9 @@ const GlobalDelegates: FC = () => {
                   }}
                 >
                   {item?.name.split('@')[1] || ' '}
-                </Text>,
-                <Text
+                </ds-text>,
+                <ds-text
+                  as="span"
                   size="small"
                   weight="light"
                   key={item?.id}
@@ -661,7 +664,7 @@ const GlobalDelegates: FC = () => {
                   }}
                 >
                   {item?.description || <>&nbsp;</>}
-                </Text>,
+                </ds-text>,
               ],
               item,
               clickable: true,
@@ -696,9 +699,9 @@ const GlobalDelegates: FC = () => {
           height="3.625rem"
         >
           <Row orientation="horizontal" width="100%" mainAlignment="flex-start">
-            <Text size="medium" weight="bold" color="gray0">
+            <ds-text as="h1" size="medium" weight="bold" color="gray0">
               {t('label.administrators', 'Administrators')}
-            </Text>
+            </ds-text>
           </Row>
         </Container>
       </Row>
@@ -725,9 +728,9 @@ const GlobalDelegates: FC = () => {
               width="fill"
               padding={{ bottom: 'large' }}
             >
-              <Text size="small" weight="bold" color="gray0">
+              <ds-text as="h2" size="small" weight="bold" color="gray0">
                 {t('domain.administration_rights', 'Administration Rights')}
-              </Text>
+              </ds-text>
             </Row>
             <Row
               orientation="horizontal"
@@ -772,9 +775,9 @@ const GlobalDelegates: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       {t('label.this_list_is_empty', 'This list is empty.')}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row
                     orientation="vertical"
@@ -783,13 +786,13 @@ const GlobalDelegates: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       <Trans
                         i18nKey="label.create_account_list_msg"
                         defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
                         components={{ bold: <strong /> }}
                       />
-                    </Text>
+                    </ds-text>
                   </Row>
                 </Container>
               )}
