@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, ListRow, NotificationView, Text } from '@zextras/ui-components';
+import { Button, Container, ListRow, NotificationView } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,9 +29,9 @@ const DashboardNotification: FC<{
               <ds-icon icon="BellOutline" size="large"></ds-icon>
             </Container>
             <Container mainAlignment="center" crossAlignment="flex-start">
-              <Text size="medium" color="gray0" weight="bold">
+              <ds-text as="strong" size="medium" color="gray0" weight="bold">
                 {t('dashboard.your_notifications', 'Your Notifications')}
-              </Text>
+              </ds-text>
             </Container>
           </ListRow>
         </Container>

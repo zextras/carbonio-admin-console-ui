@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Padding, Text } from '@zextras/ui-components';
+import { Container, Padding } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,45 +21,42 @@ const CarbonioVersionInformation: FC<{
       crossAlignment="flex-start"
       padding={{ all: 'extralarge' }}
     >
-      <ds-text
-        color="secondary"
-        overflow="break-word"
-        weight="light"
-        size="extralarge"
-        as="h1"
-      >
+      <ds-text color="secondary" overflow="break-word" weight="light" size="extralarge" as="h1">
         {t('welcome', 'Welcome')}
       </ds-text>
-      <Text
+      <ds-text
+        as="span"
         color="secondary"
         overflow="break-word"
         weight="light"
         size="large"
-        style={{ fontSize: '2.25rem' }}
+        style={{ '--ds-text-font-size': '2.25rem' } as React.CSSProperties}
       >
         {userName}
-      </Text>
+      </ds-text>
       {!isAdvanced && (
-        <Text
+        <ds-text
+          as="span"
           color="secondary"
           overflow="break-word"
           weight="light"
           size="large"
-          style={{ fontSize: '2.25rem' }}
+          style={{ '--ds-text-font-size': '2.25rem' } as React.CSSProperties}
         >
           {t('cumminity_edition', 'Community Edition!')}
-        </Text>
+        </ds-text>
       )}
       {serverVersion && (
         <Padding left="0.3rem" top="1rem">
-          <Text
+          <ds-text
+            as="span"
             color="secondary"
             overflow="break-word"
             weight="light"
-            style={{ fontSize: '1.2rem' }}
+            style={{ '--ds-text-font-size': '1.2rem' } as React.CSSProperties}
           >
             {`Version ${serverVersion}`}
-          </Text>
+          </ds-text>
         </Padding>
       )}
     </Container>
