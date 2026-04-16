@@ -182,72 +182,76 @@ const COSQuotas: FC<QuotaProps> = ({
           </ListRow>
         </Container>
       </Row>
-      <Row mainAlignment="flex-start" width="100%">
-        <Container
-          height="fit"
-          crossAlignment="flex-start"
-          background={'gray6'}
-          padding={{ top: 'large' }}
-        >
-          <ListRow>
-            <Container width="100%" padding={{ right: 'small' }}>
-              <Input
-                label={labels.percentageThresholdForQuotaWarningMessages}
-                value={cosAdvanced.zimbraQuotaWarnPercent}
-                backgroundColor="gray5"
-                inputName="zimbraQuotaWarnPercent"
-                onChange={changeValue}
-                disabled={readonlyCOS}
-              />
-            </Container>
-            <Container width="72%" padding={{ left: 'small', right: 'small' }}>
-              <Input
-                label={labels.minimumDurationOfTimeBetweenQuotaWarnings}
-                value={zimbraQuotaWarnIntervalNum}
-                backgroundColor="gray5"
-                inputName="zimbraQuotaWarnInterval"
-                onChange={onZimbraQuotaWarnIntervalNumChange}
-                disabled={readonlyCOS}
-              />
-            </Container>
-            <Container width="26%" padding={{ left: 'small' }}>
-              <Select
-                items={timeItems}
-                background={'gray5'}
-                label={labels.timeRange}
-                selection={
-                  timeItems.find((item) => item.value === zimbraQuotaWarnIntervalType) ??
-                  timeItems[0]
-                }
-                showCheckbox={false}
-                onChange={onZimbraQuotaWarnIntervalTypeChange}
-                disabled={readonlyCOS}
-              />
-            </Container>
-          </ListRow>
-        </Container>
-      </Row>
-      <Row mainAlignment="flex-start" width="100%">
-        <Container
-          height="fit"
-          crossAlignment="flex-start"
-          background={'gray6'}
-          padding={{ top: 'large', bottom: 'large' }}
-        >
-          <ListRow>
-            <Container>
-              <CustomTextArea
-                label={labels.quotaWarningMessageTemplate}
-                value={cosAdvanced.zimbraQuotaWarnMessage}
-                backgroundColor="gray5"
-                inputName="zimbraQuotaWarnMessage"
-                onChange={changeValue}
-                disabled={readonlyCOS}
-              />
-            </Container>
-          </ListRow>
-        </Container>
-      </Row>
+      {!isTotalQuotaActive && (
+        <Row mainAlignment="flex-start" width="100%">
+          <Container
+            height="fit"
+            crossAlignment="flex-start"
+            background={'gray6'}
+            padding={{ top: 'large' }}
+          >
+            <ListRow>
+              <Container width="100%" padding={{ right: 'small' }}>
+                <Input
+                  label={labels.percentageThresholdForQuotaWarningMessages}
+                  value={cosAdvanced.zimbraQuotaWarnPercent}
+                  backgroundColor="gray5"
+                  inputName="zimbraQuotaWarnPercent"
+                  onChange={changeValue}
+                  disabled={readonlyCOS}
+                />
+              </Container>
+              <Container width="72%" padding={{ left: 'small', right: 'small' }}>
+                <Input
+                  label={labels.minimumDurationOfTimeBetweenQuotaWarnings}
+                  value={zimbraQuotaWarnIntervalNum}
+                  backgroundColor="gray5"
+                  inputName="zimbraQuotaWarnInterval"
+                  onChange={onZimbraQuotaWarnIntervalNumChange}
+                  disabled={readonlyCOS}
+                />
+              </Container>
+              <Container width="26%" padding={{ left: 'small' }}>
+                <Select
+                  items={timeItems}
+                  background={'gray5'}
+                  label={labels.timeRange}
+                  selection={
+                    timeItems.find((item) => item.value === zimbraQuotaWarnIntervalType) ??
+                    timeItems[0]
+                  }
+                  showCheckbox={false}
+                  onChange={onZimbraQuotaWarnIntervalTypeChange}
+                  disabled={readonlyCOS}
+                />
+              </Container>
+            </ListRow>
+          </Container>
+        </Row>
+      )}
+      {!isTotalQuotaActive && (
+        <Row mainAlignment="flex-start" width="100%">
+          <Container
+            height="fit"
+            crossAlignment="flex-start"
+            background={'gray6'}
+            padding={{ top: 'large', bottom: 'large' }}
+          >
+            <ListRow>
+              <Container>
+                <CustomTextArea
+                  label={labels.quotaWarningMessageTemplate}
+                  value={cosAdvanced.zimbraQuotaWarnMessage}
+                  backgroundColor="gray5"
+                  inputName="zimbraQuotaWarnMessage"
+                  onChange={changeValue}
+                  disabled={readonlyCOS}
+                />
+              </Container>
+            </ListRow>
+          </Container>
+        </Row>
+      )}
       <divider-wc></divider-wc>
     </Row>
   );
