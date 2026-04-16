@@ -17,7 +17,6 @@ import {
   Paging,
   Row,
   Table,
-  Text,
   Tooltip,
   TrackNumberPerPage,
   useSnackbar,
@@ -399,12 +398,12 @@ const CosGeneralInformation: FC = () => {
             accountListArr.push({
               id: item?.id,
               columns: [
-                <Text size="small" key={item?.id} color="gray0" weight="regular">
+                <ds-text as="span" size="small" key={item?.id} color="gray0" weight="regular">
                   {item?.name || ' '}
-                </Text>,
-                <Text size="small" key={item?.id} color="gray0" weight="light">
+                </ds-text>,
+                <ds-text as="span" size="small" key={item?.id} color="gray0" weight="light">
                   {item?.displayName || <>&nbsp;</>}
-                </Text>,
+                </ds-text>,
                 <>
                   {item?.mail?.length - 1 || 0 ? (
                     <Tooltip
@@ -413,30 +412,31 @@ const CosGeneralInformation: FC = () => {
                       label={item?.mail.slice(1).join(', ')}
                       maxWidth="auto"
                     >
-                      <Text size="small" weight="light" key={item?.id} color="#828282">
+                      <ds-text as="span" size="small" weight="light" key={item?.id} color="#828282">
                         {item?.mail?.length - 1 || 0}
-                      </Text>
+                      </ds-text>
                     </Tooltip>
                   ) : (
-                    <Text size="small" key={item?.id} color="#828282" weight="light">
+                    <ds-text as="span" size="small" key={item?.id} color="#828282" weight="light">
                       0
-                    </Text>
+                    </ds-text>
                   )}
                 </>,
-                <Text size="small" key={item?.id} color="gray0" weight="light">
+                <ds-text as="span" size="small" key={item?.id} color="gray0" weight="light">
                   {accountUserType(item)}
-                </Text>,
-                <Text
+                </ds-text>,
+                <ds-text
+                  as="span"
                   size="small"
                   weight="light"
                   key={item?.id}
                   color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
                 >
                   {STATUS_COLOR[item?.zimbraAccountStatus]?.label}
-                </Text>,
-                <Text size="small" weight="light" key={item?.id} color="gray0">
+                </ds-text>,
+                <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                   {item?.description || <>&nbsp;</>}
-                </Text>,
+                </ds-text>,
               ],
               item,
               clickable: true,
@@ -516,19 +516,19 @@ const CosGeneralInformation: FC = () => {
             domainListArr.push({
               id: item?.id,
               columns: [
-                <Text size="small" key={item?.id} color="gray0" weight="regular">
+                <ds-text as="span" size="small" key={item?.id} color="gray0" weight="regular">
                   {item?.name || ' '}
-                </Text>,
-                <Text size="small" key={item?.id} color="gray0" weight="light">
+                </ds-text>,
+                <ds-text as="span" size="small" key={item?.id} color="gray0" weight="light">
                   {maxAccountValue || ' '}
-                </Text>,
+                </ds-text>,
                 <Container key={item?.id}>
                   {cosDetail?.id === item?.zimbraDomainDefaultCOSId && (
                     <Row>
                       <Padding right="small">
-                        <Text size="small" weight="light" color="gray0">
+                        <ds-text as="span" size="small" weight="light" color="gray0">
                           {t('label.default_cos', 'Default COS')}
-                        </Text>
+                        </ds-text>
                       </Padding>
                       <ds-icon icon="Star" color="primary"></ds-icon>
                     </Row>
@@ -685,9 +685,9 @@ const CosGeneralInformation: FC = () => {
         </Row>
         <Row width="100%" padding={{ vertical: 'large' }}>
           <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-            <Text size="medium" weight="bold" color="gray0">
+            <ds-text as="strong" size="medium" weight="bold" color="gray0">
               {t('cos.domains_that_use_this_cos', 'Domains that use this COS')}
-            </Text>
+            </ds-text>
           </Row>
         </Row>
         <Row
@@ -761,9 +761,9 @@ const CosGeneralInformation: FC = () => {
                   crossAlignment="center"
                   style={{ textAlign: 'center' }}
                 >
-                  <Text weight="light" color="#828282" size="large" overflow="break-word">
+                  <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                     {t('label.this_list_is_empty', 'This list is empty.')}
-                  </Text>
+                  </ds-text>
                 </Row>
               </Container>
             )}
@@ -797,9 +797,9 @@ const CosGeneralInformation: FC = () => {
           style={{ marginTop: domainList.length > 0 ? '3rem' : '0rem' }}
         >
           <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-            <Text size="medium" weight="bold" color="gray0">
+            <ds-text as="strong" size="medium" weight="bold" color="gray0">
               {t('cos.accounts_that_use_this_cos', 'Accounts that use this COS')}
-            </Text>
+            </ds-text>
           </Row>
         </Row>
         <Row
@@ -874,9 +874,9 @@ const CosGeneralInformation: FC = () => {
                   crossAlignment="center"
                   style={{ textAlign: 'center' }}
                 >
-                  <Text weight="light" color="#828282" size="large" overflow="break-word">
+                  <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                     {t('label.this_list_is_empty', 'This list is empty.')}
-                  </Text>
+                  </ds-text>
                 </Row>
               </Container>
             )}
@@ -964,28 +964,28 @@ const CosGeneralInformation: FC = () => {
       >
         <Container>
           <Padding bottom="small" top="extralarge">
-            <Text overflow="break-word" weight="regular">
+            <ds-text as="p" overflow="break-word" weight="regular">
               {t('label.you_are_deleting', {
                 cosname: cosName,
                 defaultValue: 'You are deleting {{cosname}}',
               })}
-            </Text>
+            </ds-text>
           </Padding>
           <Padding bottom="small">
-            <Text overflow="break-word" weight="regular">
+            <ds-text as="p" overflow="break-word" weight="regular">
               {t(
                 'label.are_you_sure_deleting_cos',
                 'Are you sure you want to delete this Class of Service?',
               )}
-            </Text>
+            </ds-text>
           </Padding>
           <Padding bottom="extralarge">
-            <Text overflow="break-word" weight="regular">
+            <ds-text as="p" overflow="break-word" weight="regular">
               {t(
                 'label.delete_cos_instruction_msg',
                 'If you click YES, DELETE the DefaultCOS will be replace the deleted COS.',
               )}
-            </Text>
+            </ds-text>
           </Padding>
         </Container>
       </Modal>

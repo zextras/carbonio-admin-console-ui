@@ -10,7 +10,6 @@ import {
   Padding,
   Switch,
   SwitchProps,
-  Text,
   Tooltip,
 } from '@zextras/ui-components';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -106,9 +105,9 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
       label={
         <>
           <Padding top="small">
-            <Text weight="bold">
+            <ds-text as="strong" weight="bold">
               {t('cos_quota.click_to_revert', 'Click to revert to the inherited value')}
-            </Text>
+            </ds-text>
           </Padding>
         </>
       }
@@ -131,7 +130,7 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
           value={switchValue}
           disabled={readonlyCOS}
         />
-        <Text size="medium">{t('label.unlimited_quota', 'Unlimited quota')}</Text>
+        <ds-text as="span" size="medium">{t('label.unlimited_quota', 'Unlimited quota')}</ds-text>
       </Container>
       <Container
         orientation={'horizontal'}

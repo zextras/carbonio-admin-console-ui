@@ -12,7 +12,6 @@ import {
   ListRow,
   Padding,
   Row,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
@@ -118,9 +117,9 @@ const CreateCos: FC = () => {
         >
           <Row width="100%" mainAlignment="flex-start">
             <Padding all="large">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="strong" size="medium" weight="bold" color="gray0">
                 {t('label.new_cos', 'New COS')}
-              </Text>
+              </ds-text>
             </Padding>
             <ds-divider></ds-divider>
           </Row>
@@ -142,9 +141,9 @@ const CreateCos: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="strong" size="small" weight="bold" color="gray0">
                   {t('label.general_information', 'General Information')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container padding={{ all: 'small' }} crossAlignment="flex-start">
@@ -157,12 +156,12 @@ const CreateCos: FC = () => {
                     }}
                   />
                   <Padding top="small">
-                    <Text size="small" color="gray1">
+                    <ds-text as="span" size="small" color="gray1">
                       {t(
                         'cos.creatCOS.cosNameLowerCaseInfo',
                         'COS name must contain only lowercase letters.',
                       )}
-                    </Text>
+                    </ds-text>
                   </Padding>
                 </Container>
               </ListRow>

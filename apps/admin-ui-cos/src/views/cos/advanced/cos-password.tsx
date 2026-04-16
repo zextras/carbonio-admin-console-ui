@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Input, ListRow, Padding, Row, Switch, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Padding, Row, Switch } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -67,9 +67,9 @@ const COSPassword: FC<COSPasswordProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text  weight="bold">
+      <ds-text as="strong" weight="bold">
         {labels.password}
-      </Text>
+      </ds-text>
       <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
         <Container
           orientation="horizontal"
@@ -100,7 +100,7 @@ const COSPassword: FC<COSPasswordProps> = ({
               bottom: 'small',
             }}
           >
-            <Text overflow="break-word">{labels.externalAuthenticationMessage}</Text>
+            <ds-text as="p" overflow="break-word">{labels.externalAuthenticationMessage}</ds-text>
           </Row>
         </Container>
       </Row>

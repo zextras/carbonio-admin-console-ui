@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Row, Select, SingleSelectionOnChange, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row, Select, SingleSelectionOnChange } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -60,9 +60,9 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text  weight="bold">
+			<ds-text as="strong" weight="bold">
 				{labels.timeoutPolicy}
-			</Text>
+			</ds-text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					height="fit"

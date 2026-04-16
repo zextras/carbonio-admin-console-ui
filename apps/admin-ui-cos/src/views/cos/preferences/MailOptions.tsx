@@ -11,8 +11,7 @@ import {
 	Row,
 	Select,
 	SelectItem,
-	Switch,
-	Text
+	Switch
 } from '@zextras/ui-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -81,9 +80,9 @@ export const MailOptions = ({
 			padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
 			width="100%"
 		>
-			<Text  weight="bold">
+			<ds-text as="strong" weight="bold">
 				{t('label.mailing_options', 'Mail Options')}
-			</Text>
+			</ds-text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					height="fit"
@@ -222,9 +221,9 @@ export const MailOptions = ({
 						</Container>
 						<Container width="25%" crossAlignment="flex-start">
 							<Padding left="small">
-								<Text size="medium" color="gray1">
+								<ds-text as="span" size="medium" color="gray1">
 									{humanFriendlyFileUploadMaxSizePerFileLabel}
-								</Text>
+								</ds-text>
 							</Padding>
 						</Container>
 					</Row>
