@@ -17,7 +17,6 @@ import {
   Row,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { postSoapFetchRequest, soapFetch } from '@zextras/ui-shared';
@@ -108,7 +107,8 @@ const RestoreAccountView: FC<{
       item?.a.find((rec: ZimbraAttribute) => rec?.n === 'displayName')?._content ??
       item?.name,
     customComponent: [
-      <Text
+      <ds-text
+        as="span"
         size="small"
         key={item?.id}
         color="gray0"
@@ -118,7 +118,7 @@ const RestoreAccountView: FC<{
         }}
       >
         {item?.name || ' '}
-      </Text>,
+      </ds-text>,
     ],
   }));
 
@@ -266,7 +266,8 @@ const RestoreAccountView: FC<{
       accountListArr.push({
         id: item?.id,
         columns: [
-          <Text
+          <ds-text
+            as="span"
             size="small"
             key={item?.id}
             color="gray0"
@@ -277,8 +278,9 @@ const RestoreAccountView: FC<{
           >
             {item?.a.find((rec: ZimbraAttribute) => rec?.n === 'displayName')?._content ??
               item?.name}
-          </Text>,
-          <Text
+          </ds-text>,
+          <ds-text
+            as="span"
             size="small"
             key={item?.name}
             color="gray0"
@@ -288,7 +290,7 @@ const RestoreAccountView: FC<{
             }}
           >
             {item?.name ?? ''}
-          </Text>,
+          </ds-text>,
         ],
       });
     });
@@ -447,10 +449,10 @@ const RestoreAccountView: FC<{
         >
           <Row padding={{ horizontal: 'small' }}></Row>
           <Row takeAvailableSpace mainAlignment="flex-start">
-            <Text size="medium" overflow="ellipsis" weight="bold">
+            <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
               {t('legal_hold.restore', 'Restore')} {' - '}
               {legalHoldAccount?.name}
-            </Text>
+            </ds-text>
           </Row>
 
           <Row padding={{ right: 'extrasmall', left: 'small' }}>
@@ -484,14 +486,14 @@ const RestoreAccountView: FC<{
             padding={{ bottom: 'small' }}
           >
             <Container crossAlignment="flex-start" width={'7rem'}>
-              <Text size="small" overflow="ellipsis" weight="bold">
+              <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
                 {t('label.server', 'Server Name')} :
-              </Text>
+              </ds-text>
             </Container>
             <Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
-              <Text size="small" overflow="ellipsis">
+              <ds-text as="span" size="small" overflow="ellipsis">
                 {legalHoldAccount?.serverName}
-              </Text>
+              </ds-text>
             </Container>
           </Container>
           <Container
@@ -502,14 +504,14 @@ const RestoreAccountView: FC<{
             padding={{ bottom: 'small' }}
           >
             <Container crossAlignment="flex-start" width={'7rem'}>
-              <Text size="small" overflow="ellipsis" weight="bold">
+              <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
                 {t('label.account_id', 'Account Id')} :
-              </Text>
+              </ds-text>
             </Container>
             <Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
-              <Text size="small" overflow="ellipsis">
+              <ds-text as="span" size="small" overflow="ellipsis">
                 {legalHoldAccount?.id}
-              </Text>
+              </ds-text>
             </Container>
           </Container>
 
@@ -521,16 +523,16 @@ const RestoreAccountView: FC<{
             padding={{ bottom: 'small' }}
           >
             <Container crossAlignment="flex-start" width={'7rem'}>
-              <Text size="small" overflow="ellipsis" weight="bold">
+              <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
                 {t('label.created_date', 'Created Date')} :
-              </Text>
+              </ds-text>
             </Container>
             <Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
-              <Text size="small" overflow="ellipsis">
+              <ds-text as="span" size="small" overflow="ellipsis">
                 {legalHoldAccount?.creationTimestamp
                   ? format(legalHoldAccount?.creationTimestamp, 'dd/MM/yyyy')
                   : ''}
-              </Text>
+              </ds-text>
             </Container>
           </Container>
 
@@ -542,14 +544,14 @@ const RestoreAccountView: FC<{
               height="auto"
             >
               <Container crossAlignment="flex-start" width={'7rem'}>
-                <Text size="small" overflow="ellipsis" weight="bold">
+                <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
                   {t('label.deleted_date', 'Deleted Date')} :
-                </Text>
+                </ds-text>
               </Container>
               <Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
-                <Text size="small" overflow="ellipsis">
+                <ds-text as="span" size="small" overflow="ellipsis">
                   {format(legalHoldAccount?.deletedTimestamp, 'dd/MM/yyyy')}
-                </Text>
+                </ds-text>
               </Container>
             </Container>
           )}
@@ -560,9 +562,9 @@ const RestoreAccountView: FC<{
             height="auto"
             padding={{ top: 'large' }}
           >
-            <Text size="small" overflow="ellipsis" weight="bold">
+            <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
               {t('legal_hold.restore_settings', 'Restore Settings')}
-            </Text>
+            </ds-text>
           </Container>
           <Container
             orientation="horizontal"
@@ -663,9 +665,9 @@ const RestoreAccountView: FC<{
             height="auto"
             padding={{ top: 'medium', bottom: 'large' }}
           >
-            <Text size="small" overflow="ellipsis" weight="bold">
+            <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
               {t('legal_hold.legal_access', 'Legal Access')}
-            </Text>
+            </ds-text>
           </Container>
 
           <Container crossAlignment="flex-start" height="auto">
@@ -734,7 +736,8 @@ const RestoreAccountView: FC<{
           {accountList.length === 0 && (
             <Container crossAlignment="center" mainAlignment="flex-start" padding={{ all: '3rem' }}>
               <Padding all="medium">
-                <Text
+                <ds-text
+                  as="p"
                   color="gray1"
                   overflow="break-word"
                   weight="regular"
@@ -742,7 +745,7 @@ const RestoreAccountView: FC<{
                   style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
                 >
                   {t('label.this_list_is_empty', 'This list is empty.')}
-                </Text>
+                </ds-text>
               </Padding>
             </Container>
           )}
@@ -758,12 +761,12 @@ const RestoreAccountView: FC<{
             />
           </Container>
           <Container height="auto" padding={{ top: 'medium', bottom: 'large' }}>
-            <Text size="small" overflow="ellipsis" weight="light" color="gray0">
+            <ds-text as="span" size="small" overflow="ellipsis" weight="light" color="gray0">
               {t(
                 'legal_hold.you_must_restore_the_account_before_enable_legal_hold',
                 'You must restore the account before enabling the Legal Hold',
               )}
-            </Text>
+            </ds-text>
           </Container>
         </Container>
       </Container>

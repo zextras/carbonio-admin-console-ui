@@ -17,7 +17,6 @@ import {
   Row,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useDomainInformation } from '@zextras/ui-shared';
@@ -315,9 +314,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.name} color="gray0">
               {item?.name}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -326,9 +325,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.name} color="gray0">
               {item?.id}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -337,9 +336,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.name} color="gray0">
               {item?.serverName}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -348,9 +347,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.name} color="gray0">
               {format(item?.creationTimestamp, 'dd/MM/yyyy')}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -359,9 +358,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.name} color="gray0">
               {item?.deletedTimestamp ? format(item?.deletedTimestamp, 'dd/MM/yyyy') : ''}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -370,9 +369,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="regular" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="regular" key={item?.name} color="gray0">
               {item?.status}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -381,11 +380,11 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="regular" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="regular" key={item?.name} color="gray0">
               {item.legalHold?.toUpperCase() === TRUE
                 ? t('legal_hold.yes', 'Yes')
                 : t('legal_hold.no', 'No')}
-            </Text>
+            </ds-text>
           </Container>,
         ],
       }));
@@ -522,12 +521,12 @@ const LegalHoldPanel: FC = () => {
                     all: 'small',
                   }}
                 >
-                  <Text overflow="break-word">
+                  <ds-text as="p" overflow="break-word">
                     {t(
                       'many_domain_info_msg',
                       'So many domains! Which one would you like to see? Start typing to filter.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </>
             ),
@@ -607,9 +606,9 @@ const LegalHoldPanel: FC = () => {
             padding={{ left: 'extralarge' }}
           >
             <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h2" size="medium" weight="bold" color="gray0">
                 {t('label.legal_hold', 'Legal Hold')}
-              </Text>
+              </ds-text>
             </Row>
           </Row>
         </Container>
@@ -634,7 +633,7 @@ const LegalHoldPanel: FC = () => {
             >
               <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
                 <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-                  <Text size="medium" weight="bold" color="gray0">
+                  <ds-text as="h3" size="medium" weight="bold" color="gray0">
                     <Switch
                       label={t(
                         'legalHold.show_only_accounts_on_legal_hold',
@@ -653,7 +652,7 @@ const LegalHoldPanel: FC = () => {
                       }}
                       iconColor="primary"
                     />
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
                   <Padding right="small">
@@ -734,11 +733,12 @@ const LegalHoldPanel: FC = () => {
                     mainAlignment="flex-start"
                     padding={{ all: '3rem' }}
                   >
-                    <Text overflow="break-word" weight="regular" size="large">
+                    <ds-text as="p" overflow="break-word" weight="regular" size="large">
                       <img src={logo} alt="logo" />
-                    </Text>
+                    </ds-text>
                     <Padding all="medium">
-                      <Text
+                      <ds-text
+                        as="p"
                         color="gray1"
                         overflow="break-word"
                         weight="regular"
@@ -746,7 +746,7 @@ const LegalHoldPanel: FC = () => {
                         style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
                       >
                         {t('label.this_list_is_empty', 'This list is empty.')}
-                      </Text>
+                      </ds-text>
                     </Padding>
                   </Container>
                 )}
