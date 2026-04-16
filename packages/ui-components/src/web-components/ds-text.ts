@@ -49,7 +49,7 @@ export class DsText extends LitElement {
 
   @property({ type: Boolean, reflect: true })
   accessor italic = false;
-  @property({ type: String, reflect: true })
+  @property({ type: String, reflect: true, attribute: 'text-align' })
   accessor textAlign: TextAlign = 'initial';
   @property({ type: Number, attribute: 'line-height' })
   accessor lineHeight: number | undefined;

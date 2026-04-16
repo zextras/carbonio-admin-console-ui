@@ -58,7 +58,7 @@ describe('ds-text', () => {
       await expect.element(page.getByText(text)).toBeVisible();
     });
 
-    it.each([{ tag: 'span' }, { tag: 'small' }, { tag: 'span' }])(
+    it.each([{ tag: 'span' }, { tag: 'small' }, { tag: 'label' }])(
       'should render a <$tag> when as="$tag"',
       async ({ tag }) => {
         const text = `Content in ${tag}`;
@@ -86,6 +86,15 @@ describe('ds-text', () => {
         .toBeVisible();
       expect(el.shadowRoot!.querySelector('span')).toBeNull();
     });
+
+    it('should fall back to <span> when "as" is set to an unrecognized value', async () => {
+      const el = await createDsText({}, 'Fallback content');
+      el.setAttribute('as', 'div');
+      await el.updateComplete;
+
+      expect(el.shadowRoot!.querySelector('span')).not.toBeNull();
+      expect(el.shadowRoot!.querySelector('div')).toBeNull();
+    });
   });
 
   describe('color property', () => {
@@ -111,6 +120,15 @@ describe('ds-text', () => {
       const updatedColor = innerEl.style.getPropertyValue(dsTextVars.color);
       expect(updatedColor).toContain('primary');
     });
+
+    it('should not reflect the color attribute on the host element', async () => {
+      const el = await createDsText({}, 'Non-reflected color');
+
+      el.color = 'error';
+      await el.updateComplete;
+
+      expect(el.hasAttribute('color')).toBe(false);
+    });
   });
 
   describe('size property', () => {
@@ -129,6 +147,30 @@ describe('ds-text', () => {
       const el = await createDsText({ size }, 'Sized text');
       expect(el.size).toBe(size);
     });
+
+    it.each([
+      { size: 'extrasmall', expected: '12px' },
+      { size: 'small', expected: '14px' },
+      { size: 'medium', expected: '16px' },
+      { size: 'large', expected: '18px' },
+      { size: 'extralarge', expected: '20px' },
+    ])('should apply computed font-size for size="$size"', async ({ size, expected }) => {
+      const el = await createDsText({ size }, 'Computed size text');
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computedFontSize = globalThis.getComputedStyle(innerEl).fontSize;
+      expect(computedFontSize).toBe(expected);
+    });
+
+    it('should update computed font-size when size changes dynamically', async () => {
+      const el = await createDsText({ size: 'small' }, 'Dynamic size');
+
+      el.size = 'large';
+      await el.updateComplete;
+
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computedFontSize = globalThis.getComputedStyle(innerEl).fontSize;
+      expect(computedFontSize).toBe('18px');
+    });
   });
 
   describe('weight property', () => {
@@ -144,6 +186,29 @@ describe('ds-text', () => {
         expect(el.weight).toBe(weight);
       },
     );
+
+    it.each([
+      { weight: 'light', expected: '300' },
+      { weight: 'regular', expected: '400' },
+      { weight: 'medium', expected: '500' },
+      { weight: 'bold', expected: '700' },
+    ])('should apply computed font-weight for weight="$weight"', async ({ weight, expected }) => {
+      const el = await createDsText({ weight }, 'Computed weight text');
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computedWeight = globalThis.getComputedStyle(innerEl).fontWeight;
+      expect(computedWeight).toBe(expected);
+    });
+
+    it('should update computed font-weight when weight changes dynamically', async () => {
+      const el = await createDsText({ weight: 'light' }, 'Dynamic weight');
+
+      el.weight = 'bold';
+      await el.updateComplete;
+
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computedWeight = globalThis.getComputedStyle(innerEl).fontWeight;
+      expect(computedWeight).toBe('700');
+    });
   });
 
   describe('overflow property', () => {
@@ -159,6 +224,34 @@ describe('ds-text', () => {
         expect(el.overflow).toBe(overflow);
       },
     );
+
+    it('should apply ellipsis overflow styles when overflow="ellipsis"', async () => {
+      const el = await createDsText({ overflow: 'ellipsis' }, 'Ellipsis text');
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computed = globalThis.getComputedStyle(innerEl);
+      expect(computed.whiteSpace).toBe('nowrap');
+      expect(computed.overflow).toBe('hidden');
+      expect(computed.textOverflow).toBe('ellipsis');
+    });
+
+    it('should apply break-word overflow styles when overflow="break-word"', async () => {
+      const el = await createDsText({ overflow: 'break-word' }, 'Break word text');
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computed = globalThis.getComputedStyle(innerEl);
+      expect(computed.overflowWrap).toBe('break-word');
+    });
+
+    it('should update overflow styles when overflow changes dynamically', async () => {
+      const el = await createDsText({ overflow: 'ellipsis' }, 'Dynamic overflow');
+
+      el.overflow = 'break-word';
+      await el.updateComplete;
+
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computed = globalThis.getComputedStyle(innerEl);
+      expect(computed.overflowWrap).toBe('break-word');
+      expect(computed.whiteSpace).not.toBe('nowrap');
+    });
   });
 
   describe('disabled property', () => {
@@ -216,6 +309,13 @@ describe('ds-text', () => {
 
       expect(el.lineHeight).toBe(32);
     });
+
+    it('should apply computed line-height from CSS variable', async () => {
+      const el = await createDsText({ 'line-height': '2' }, 'Computed line-height');
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computedLineHeight = globalThis.getComputedStyle(innerEl).lineHeight;
+      expect(computedLineHeight).toBe('32px');
+    });
   });
 
   describe('custom CSS variables', () => {
@@ -230,6 +330,113 @@ describe('ds-text', () => {
 
       const computedFontSize = globalThis.getComputedStyle(innerEl).fontSize;
       expect(computedFontSize).toBe(customSize);
+    });
+  });
+
+  describe('italic property', () => {
+    it('should default to false', async () => {
+      const el = await createDsText({}, 'Not italic');
+      expect(el.italic).toBe(false);
+    });
+
+    it('should reflect the italic attribute on the host', async () => {
+      const el = await createDsText({ italic: '' }, 'Italic text');
+      expect(el.italic).toBe(true);
+      expect(el.hasAttribute('italic')).toBe(true);
+    });
+
+    it('should apply font-style italic when italic is set', async () => {
+      const el = await createDsText({ italic: '' }, 'Italic text');
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computedStyle = globalThis.getComputedStyle(innerEl);
+      expect(computedStyle.fontStyle).toBe('italic');
+    });
+
+    it('should not apply italic by default', async () => {
+      const el = await createDsText({}, 'Normal text');
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computedStyle = globalThis.getComputedStyle(innerEl);
+      expect(computedStyle.fontStyle).toBe('normal');
+    });
+
+    it('should toggle italic on and off dynamically', async () => {
+      const el = await createDsText({}, 'Toggle italic');
+
+      el.italic = true;
+      await el.updateComplete;
+
+      let innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      expect(globalThis.getComputedStyle(innerEl).fontStyle).toBe('italic');
+
+      el.italic = false;
+      await el.updateComplete;
+
+      innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      expect(globalThis.getComputedStyle(innerEl).fontStyle).toBe('normal');
+    });
+  });
+
+  describe('textAlign property', () => {
+    it('should default to "initial"', async () => {
+      const el = await createDsText({}, 'Default align');
+      expect(el.textAlign).toBe('initial');
+    });
+
+    it.each([
+      { align: 'left' },
+      { align: 'center' },
+      { align: 'right' },
+      { align: 'justify' },
+    ] as const)('should accept textAlign="$align"', async ({ align }) => {
+      const el = await createDsText({ 'text-align': align }, 'Aligned text');
+      expect(el.textAlign).toBe(align);
+    });
+
+    it('should reflect the text-align attribute on the host', async () => {
+      const el = await createDsText({ 'text-align': 'center' }, 'Centered text');
+      expect(el.getAttribute('text-align')).toBe('center');
+    });
+
+    it.each([
+      { align: 'left', expected: 'left' },
+      { align: 'center', expected: 'center' },
+      { align: 'right', expected: 'right' },
+      { align: 'justify', expected: 'justify' },
+    ] as const)('should apply computed text-align "$expected" for textAlign="$align"', async ({ align, expected }) => {
+      const el = await createDsText({ 'text-align': align }, 'Aligned text');
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computedAlign = globalThis.getComputedStyle(innerEl).textAlign;
+      expect(computedAlign).toBe(expected);
+    });
+
+    it('should update text-align when changed dynamically', async () => {
+      const el = await createDsText({ 'text-align': 'left' }, 'Dynamic align');
+
+      el.textAlign = 'center';
+      await el.updateComplete;
+
+      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const computedAlign = globalThis.getComputedStyle(innerEl).textAlign;
+      expect(computedAlign).toBe('center');
+    });
+  });
+
+  describe('slot content projection', () => {
+    it('should project slotted content inside the inner element', async () => {
+      const el = await createDsText({ as: 'p' });
+      const span = document.createElement('span');
+      span.textContent = 'Slotted child';
+      span.slot = '';
+      el.appendChild(span);
+      document.body.appendChild(el);
+      await el.updateComplete;
+
+      const slot = el.shadowRoot!.querySelector('slot');
+      expect(slot).not.toBeNull();
+
+      const assigned = slot!.assignedNodes();
+      expect(assigned).toHaveLength(1);
+      expect((assigned[0] as HTMLSpanElement).textContent).toBe('Slotted child');
     });
   });
 });

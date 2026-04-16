@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IconName } from '../../web-components/icon-registry';
 import { IconSize } from '../../web-components/ds-icon';
+import { IconName } from '../../web-components/icon-registry';
 import { Dropdown } from '../display/Dropdown';
 import { Input } from '../inputs/Input';
 
