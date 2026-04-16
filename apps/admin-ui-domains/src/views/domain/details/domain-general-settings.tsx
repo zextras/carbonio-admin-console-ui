@@ -1080,7 +1080,12 @@ const DomainGeneralSettings: FC = () => {
                   </Text>
                 </Row>
                 <ListRow>
-                  <Container padding={{ all: 'small' }}>
+                  <Container
+                    orientation="horizontal"
+                    crossAlignment="stretch"
+                    padding={{ all: 'small' }}
+                    gap="1rem"
+                  >
                     <Input
                       label={t(
                         'label.max_quota_per_account_in_this_domain',
@@ -1094,8 +1099,6 @@ const DomainGeneralSettings: FC = () => {
                       }}
                       disabled={!isGlobalAdmin}
                     />
-                  </Container>
-                  <Container crossAlignment="flex-end" padding={{ all: 'small' }}>
                     <QuotaReportDownloadButton domainName={domainName} />
                   </Container>
                 </ListRow>
