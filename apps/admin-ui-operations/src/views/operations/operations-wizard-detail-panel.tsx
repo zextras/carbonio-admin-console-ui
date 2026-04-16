@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, LabeledValue, ListRow, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { Button, Container, LabeledValue, ListRow, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -85,12 +85,12 @@ const OperationsWizardDetailPanel: FC<{
     <Container background="gray6">
       <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
         <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-          <Text  weight="bold">
+          <ds-text as="h2"  weight="bold">
             {t('operations.operationname_on_servername', '{{operationName}} on {{serverName}}', {
               operationName: selectedData?.name,
               serverName: selectedData?.serverName,
             })}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ horizontal: 'small' }}>
           <Button
@@ -135,9 +135,9 @@ const OperationsWizardDetailPanel: FC<{
           )}
         </Row>
         <Row mainAlignment="flex-start" padding={{ vertical: 'large' }} width="100%">
-          <Text size="medium" color="gray0" weight="bold">
+          <ds-text as="h2" size="medium" color="gray0" weight="bold">
             {t('operations.details', 'Details')}
-          </Text>
+          </ds-text>
           <Row width="100%" padding={{ top: 'large' }}>
             <ListRow>
               <Container padding={{ right: 'small' }}>
@@ -186,9 +186,9 @@ const OperationsWizardDetailPanel: FC<{
         <ds-divider></ds-divider>
         <Padding vertical="large" />
         <Row mainAlignment="flex-start" padding={{ vertical: 'large' }} width="100%">
-          <Text size="medium" color="gray0" weight="bold">
+          <ds-text as="h2" size="medium" color="gray0" weight="bold">
             {t('operations.other', 'Other')}
-          </Text>
+          </ds-text>
           <Row width="100%" padding={{ top: 'large' }}>
             <LabeledValue
               backgroundColor="gray6"

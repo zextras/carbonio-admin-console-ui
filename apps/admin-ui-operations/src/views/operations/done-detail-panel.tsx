@@ -10,7 +10,6 @@ import {
   ModalOverlay,
   Paging,
   Row,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useMailstoreServers } from '@zextras/ui-shared';
@@ -122,9 +121,9 @@ const DoneDetailPanel: FC = () => {
         style={{ position: 'relative' }}
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text  weight="bold">
+          <ds-text as="h2"  weight="bold">
             {t('operations.done_panel_heading', 'Done Operations')}
-          </Text>
+          </ds-text>
         </Row>
         <ds-divider></ds-divider>
         <Container
