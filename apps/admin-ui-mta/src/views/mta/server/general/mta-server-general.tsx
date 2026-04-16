@@ -12,7 +12,6 @@ import {
   ListRow,
   Padding,
   Row,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -733,12 +732,12 @@ const MTAServerGeneral: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('label.general_lbl', 'General')}
-          </Text>
-          <Text size="medium" overflow="ellipsis" weight="regular">
+          </ds-text>
+          <ds-text as="p" size="medium" overflow="ellipsis" weight="regular">
             <Padding left={'small'}>{server}</Padding>
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -782,9 +781,9 @@ const MTAServerGeneral: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.authentication', 'Authentication')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container
@@ -888,9 +887,9 @@ const MTAServerGeneral: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.antispam_and_antivirus', 'Antispam & Antivirus')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container
@@ -964,9 +963,9 @@ const MTAServerGeneral: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.logging', 'Logging')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container

@@ -15,7 +15,6 @@ import {
   Row,
   Select,
   Switch,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
@@ -507,9 +506,9 @@ const MTAAdvanced: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('label.advanced', 'Advanced')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -549,9 +548,9 @@ const MTAAdvanced: FC = () => {
         style={{ overflow: 'auto' }}
       >
         <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h3" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.logging', 'Logging')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           crossAlignment="flex-start"
@@ -662,9 +661,9 @@ const MTAAdvanced: FC = () => {
           </Container>
         </Container>
         <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h3" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.tuning', 'Tuning')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container
@@ -770,9 +769,9 @@ const MTAAdvanced: FC = () => {
           mainAlignment="flex-start"
           padding={{ top: 'large' }}
         >
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h3" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.advanced.mail_messages_size', 'Mail messages size')}
-          </Text>
+          </ds-text>
           <Container crossAlignment="flex-start" padding={{ top: 'large' }} height="auto">
             <Row width="100%" mainAlignment="flex-start">
               <RadioGroup value={limitMaxMessageSize.toString()}>

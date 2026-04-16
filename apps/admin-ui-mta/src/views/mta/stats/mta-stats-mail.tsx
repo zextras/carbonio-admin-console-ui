@@ -15,7 +15,6 @@ import {
   Row,
   TabBar,
   Table,
-  Text,
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -68,9 +67,9 @@ const ReusedDefaultTabBar: FC<DefaultTabBarItemProps> = ({ item, selected, onCli
       width="100%"
     >
       <Container mainAlignment="flex-end" crossAlignment="flex-end" width="100%" height="auto">
-        <Text size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
+        <ds-text as="span" size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
           {item.label} ({count ?? 0})
-        </Text>
+        </ds-text>
       </Container>
     </Container>
   </DefaultTabBarItem>
@@ -237,43 +236,43 @@ const MTAStatsMail: FC<{
           id: item?.id,
           columns: [
             <Container crossAlignment="flex-start" key={item?.id}>
-              <Text color="gray0" weight="regular">
+              <ds-text as="span" color="gray0" weight="regular">
                 {item?.id}
-              </Text>
+              </ds-text>
             </Container>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {format(new Date(parseInt(item?.arrivalTime, 10)), 'dd/MM/yy - HH:mm')}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.size}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.fromDomain}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.toDomain}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.sender}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.receiver}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.host}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.ip}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.reason}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.filter}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.receiveid}
-            </Text>,
+            </ds-text>,
           ],
         });
       });
@@ -495,9 +494,9 @@ const MTAStatsMail: FC<{
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {serverState?.serverName}
-          </Text>
+          </ds-text>
         </Row>
         <Row></Row>
         <Row padding={{ right: 'extrasmall', left: 'small' }}>
@@ -660,9 +659,9 @@ const MTAStatsMail: FC<{
               crossAlignment="center"
               style={{ textAlign: 'center' }}
             >
-              <Text weight="light" color="#828282" size="large" overflow="break-word">
+              <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                 {t('label.this_list_is_empty', 'This list is empty.')}
-              </Text>
+              </ds-text>
             </Row>
           </Container>
         )}

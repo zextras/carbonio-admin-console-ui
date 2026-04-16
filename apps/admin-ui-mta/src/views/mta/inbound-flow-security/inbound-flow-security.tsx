@@ -11,7 +11,6 @@ import {
   Padding,
   Row,
   Switch,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -553,9 +552,9 @@ const MTAInboundFlowSecurity: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.inbound_flow_and_security', 'Inbound Flow & Security')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -602,13 +601,13 @@ const MTAInboundFlowSecurity: FC = () => {
             bottom: 'extralarge',
           }}
         >
-          <Text size="small">
+          <ds-text as="p" size="small">
             <Trans
               i18nKey="mta.important_mta_reboot_information_message"
               defaults="<bold>IMPORTANT: Any changes made on this page will require a reboot of the MTA</bold> for them to take effect. Simply saving the changes will not suffice."
               components={{ bold: <strong /> }}
             />
-          </Text>
+          </ds-text>
         </Container>
         <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
           <ds-divider></ds-divider>
@@ -619,9 +618,9 @@ const MTAInboundFlowSecurity: FC = () => {
           height="auto"
           padding={{ top: 'large', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.settings', 'Settings')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           orientation="horizontal"
@@ -728,9 +727,9 @@ const MTAInboundFlowSecurity: FC = () => {
           padding={{ top: 'extralarge', bottom: 'large' }}
           height="auto"
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.rejection', 'Rejection')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           orientation="horizontal"
@@ -818,9 +817,9 @@ const MTAInboundFlowSecurity: FC = () => {
           padding={{ top: 'extralarge', bottom: 'large' }}
           height="auto"
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.protocol_checks', 'Protocol Checks')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           orientation="horizontal"
