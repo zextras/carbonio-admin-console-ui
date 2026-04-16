@@ -8,6 +8,7 @@ import '../ds-text';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
+// eslint-disable-next-line no-duplicate-imports
 import type { DsText } from '../ds-text';
 import { dsTextVars } from '../ds-text.styles';
 
@@ -95,7 +96,8 @@ describe('ds-text', () => {
 
     it('should set the CSS variable when color="error"', async () => {
       const el = await createDsText({ color: 'error' }, 'Colored text');
-      const cssVarValue = el.style.getPropertyValue(dsTextVars.color);
+      const innerEl = el.shadowRoot!.firstElementChild as HTMLElement;
+      const cssVarValue = innerEl.style.getPropertyValue(dsTextVars.color);
       expect(cssVarValue).toContain('error');
     });
 
@@ -105,7 +107,8 @@ describe('ds-text', () => {
       el.color = 'primary';
       await el.updateComplete;
 
-      const updatedColor = el.style.getPropertyValue(dsTextVars.color);
+      const innerEl = el.shadowRoot!.firstElementChild as HTMLElement;
+      const updatedColor = innerEl.style.getPropertyValue(dsTextVars.color);
       expect(updatedColor).toContain('primary');
     });
   });
@@ -176,7 +179,8 @@ describe('ds-text', () => {
       el.disabled = true;
       await el.updateComplete;
 
-      const disabledColor = el.style.getPropertyValue(dsTextVars.color);
+      const innerEl = el.shadowRoot!.firstElementChild as HTMLElement;
+      const disabledColor = innerEl.style.getPropertyValue(dsTextVars.color);
       expect(disabledColor).toContain('disabled');
     });
 
@@ -186,7 +190,8 @@ describe('ds-text', () => {
       el.disabled = false;
       await el.updateComplete;
 
-      const enabledColor = el.style.getPropertyValue(dsTextVars.color);
+      const innerEl = el.shadowRoot!.firstElementChild as HTMLElement;
+      const enabledColor = innerEl.style.getPropertyValue(dsTextVars.color);
       expect(enabledColor).not.toContain('disabled');
     });
   });
