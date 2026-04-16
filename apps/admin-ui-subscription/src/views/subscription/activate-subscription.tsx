@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Input, Text } from '@zextras/ui-components';
+import { Button, Input } from '@zextras/ui-components';
 import { useActivateLicense } from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -71,13 +71,13 @@ export const ActivateSubscription = (): React.JSX.Element => {
   return (
     <div className={styles.outer}>
       <div className={styles.header}>
-        <Text weight="bold" color="gray0">
+        <ds-text as="h2" weight="bold" color="gray0">
           {t('label.subscriptions', 'Subscriptions')}
-        </Text>
+        </ds-text>
       </div>
       <ds-divider></ds-divider>
       <div className={styles.content}>
-        <Text weight="bold">{t('subscription.activate.activation_token', 'Activation token')}</Text>
+        <ds-text as="label" weight="bold">{t('subscription.activate.activation_token', 'Activation token')}</ds-text>
         <div className={styles.inputRow}>
           <div className={styles.inputField}>
             <Input
@@ -99,9 +99,9 @@ export const ActivateSubscription = (): React.JSX.Element => {
               }}
             />
             {validationError !== null && (
-              <Text color="error" size="small" className={styles.errorMessage}>
+              <ds-text as="span" color="error" size="small" style={{ position: 'absolute', top: '100%', left: 0, paddingTop: '4px' }}>
                 {validationError}
-              </Text>
+              </ds-text>
             )}
           </div>
           <div className={styles.buttonWrap}>
@@ -113,12 +113,12 @@ export const ActivateSubscription = (): React.JSX.Element => {
         </div>
         <img src={subscription_logo} alt="subscription logo" className={styles.logo} />
         <div className={styles.text}>
-          <Text color="gray0">
+          <ds-text as="p" color="gray0">
             {t(
               'subscription.activate.disclaimer',
               "Seems like you don't have a subscription token active yet.\nFill the field above or contact a vendor to get a new one.",
             )}
-          </Text>
+          </ds-text>
         </div>
       </div>
       <ActivationProgress
