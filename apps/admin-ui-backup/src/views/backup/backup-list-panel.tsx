@@ -11,7 +11,6 @@ import {
   ListPanelItem,
   Padding,
   Row,
-  Text,
 } from '@zextras/ui-components';
 import {
   getRights,
@@ -276,12 +275,12 @@ const BackupListPanel: FC = () => {
                 {isShowError && (
                   <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                     <Padding top="large" left="small">
-                      <Text size="extrasmall" weight="regular" color="error">
+                      <ds-text as="span" size="extrasmall" weight="regular" color="error">
                         {t(
                           'label.not_found_check_the_text_and_try_again',
                           'Not found - check the text and try again',
                         )}
-                      </Text>
+                      </ds-text>
                     </Padding>
                   </Container>
                 )}
