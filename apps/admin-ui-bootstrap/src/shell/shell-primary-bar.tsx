@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, IconName, Padding, Popper, Row, Text } from '@zextras/ui-components';
+import { Button, Container, IconName, Padding, Popper, Row } from '@zextras/ui-components';
 import {
   type AppRoute,
   type PrimaryBarView,
@@ -54,15 +54,21 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
                 className={styles.primaryBarButton}
               />
             ) : (
-              <Text onClick={onClick}>
+              <ds-text as="span" onClick={onClick}>
                 <view.component active={active} />
-              </Text>
+              </ds-text>
             )}
           </BadgeWrap>
           {isExpanded && (
-            <Text color="text" weight="bold" onClick={onClick} className={styles.customText}>
+            <ds-text
+              as="span"
+              color="text"
+              weight="bold"
+              onClick={onClick}
+              style={{ width: '75%', height: '100%', display: 'flex', alignItems: 'center' }}
+            >
               {view.label}
-            </Text>
+            </ds-text>
           )}
         </Row>
       </Container>
@@ -179,11 +185,11 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
                       width="100%"
                       padding={{ left: 'large', right: 'large' }}
                     >
-                      <Text size="small" weight="bold" color="#CFD5DC">
+                      <ds-text as="strong" size="small" weight="bold" color="#CFD5DC">
                         <Padding top="large" bottom="small">
                           {view?.section?.label}
                         </Padding>
-                      </Text>
+                      </ds-text>
                       <ds-divider></ds-divider>
                     </Row>
                   </>
