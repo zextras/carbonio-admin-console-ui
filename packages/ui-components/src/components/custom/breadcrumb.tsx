@@ -38,7 +38,7 @@ export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: Brea
       splitRoute.forEach((item: string, index: number) => {
         if (index === 0) {
           _storeTempRoute.push({
-            label: <ds-icon icon="HomeOutline" size="large"></ds-icon>,
+            label: t('label.home', 'Home'),
             path: `/${item}`,
             homePath: `/${dashboardRoute}`,
           });

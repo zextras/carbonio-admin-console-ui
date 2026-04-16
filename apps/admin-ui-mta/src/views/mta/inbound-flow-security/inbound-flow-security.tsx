@@ -65,15 +65,15 @@ const MTAInboundFlowSecurity: FC = () => {
   }, [rights]);
 
   const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaInboundSecurityInitialDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaInboundSecurityInitialDetail((prev) => ({ ...prev, [key]: value } as MtaInboundSecurity));
   }, []);
 
   const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaInboundSecurityDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaInboundSecurityDetail((prev) => ({ ...prev, [key]: value } as MtaInboundSecurity));
   }, []);
 
   const setInitialAndCurrentValue = useCallback(
-    (key: string, value: boolean) => {
+    (key: string, value: unknown) => {
       setInitialValue(key, value);
       setValue(key, value);
     },
@@ -105,7 +105,7 @@ const MTAInboundFlowSecurity: FC = () => {
       (item: Record<string, string>) => item?.n === ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,
     );
     if (findCommonBlockExtension && findCommonBlockExtension.length > 0) {
-      setCommonBlockedExtensions(findCommonBlockExtension.map((item: any) => item?._content));
+      setCommonBlockedExtensions(findCommonBlockExtension.map((item: Record<string, string>) => item?._content));
     }
   }, [configInformation, setInitialValue, setValue]);
 
@@ -512,11 +512,12 @@ const MTAInboundFlowSecurity: FC = () => {
   }, [mtaInboundSecurityInitialDetail, setValue]);
 
   const onBlockExtensionChange = useCallback(
-    (ev: any) => {
+    (ev: Array<{ label?: string }>) => {
       if (ev && ev.length > 0) {
         const validExtensionExpression = /^[A-Za-z0-9]*$/;
         const extension = ev
-          .map((item: Record<string, string>) => item?.label)
+          .map((item: Record<string, string | undefined>) => item?.label)
+          .filter((item): item is string => !!item)
           .filter((item: string) => validExtensionExpression.test(item));
         if (extension && extension.length > 0) {
           setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, extension);

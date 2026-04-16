@@ -26,6 +26,7 @@ import { format } from 'date-fns';
 import { find } from 'lodash-es';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Navigate } from 'react-router';
 
 import { CONFIG } from '../../constants';
 import { LicenseBanner } from '../dashboard/license-banner';
@@ -104,7 +105,7 @@ export const Subscription = (): React.JSX.Element => {
   const [open, setOpen] = useState(false);
 
   const { data: version } = useVersion();
-  const { data: licenseData } = useLicenseInfo();
+  const { data: licenseData, isFetching } = useLicenseInfo();
   const [licenseKey, setLicenseKey] = useState('');
   const { data: rights } = useCurrentUserRights();
   const { t } = useTranslation();
@@ -208,6 +209,14 @@ export const Subscription = (): React.JSX.Element => {
     }
     return type ?? '';
   };
+
+  if (isFetching) {
+    return <spinner-wc />;
+  }
+
+  if (!licenseData) {
+    return <Navigate to="activate" replace />;
+  }
 
   return (
     <Container maxWidth="100%" mainAlignment="flex-start" background="gray6">

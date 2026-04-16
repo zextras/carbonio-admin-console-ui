@@ -3,43 +3,57 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
+import { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
+import { ActivateSubscription } from './subscription/activate-subscription';
 import { Subscription } from './subscription/subscription';
+
+const baseStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  boxSizing: 'border-box',
+} as const;
 
 function getContainerStyle(isPrimaryBarExpanded: boolean) {
   return {
+    width: '100%',
     maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
     transition: 'width 300ms',
   };
 }
-const AppView: FC = () => {
+
+export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
+
   return (
-    <Container height={'fit'}>
+    <div style={{ ...baseStyle, height: 'fit-content', width: '100%' }}>
       <Breadcrumb />
       <Routes>
         <Route
-          path={'/'}
+          path="/"
           element={
-            <Container orientation="horizontal" mainAlignment="flex-start">
-              <Container style={{ maxWidth: '100%' }}>
-                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-                  <Suspense fallback={<ds-spinner />}>
-                    <Subscription />
-                  </Suspense>
-                </Container>
-              </Container>
-            </Container>
+            <div style={{ ...baseStyle, ...getContainerStyle(isPrimaryBarExpanded) }}>
+              <Suspense fallback={<spinner-wc />}>
+                <Subscription />
+              </Suspense>
+            </div>
+          }
+        />
+        <Route
+          path="/activate"
+          element={
+            <div style={{ ...baseStyle, ...getContainerStyle(isPrimaryBarExpanded) }}>
+              <Suspense fallback={<spinner-wc />}>
+                <ActivateSubscription />
+              </Suspense>
+            </div>
           }
         />
       </Routes>
-    </Container>
+    </div>
   );
 };
-
-export default AppView;

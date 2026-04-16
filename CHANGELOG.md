@@ -1,3 +1,9 @@
+## [0.13.0-devel.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.13...v0.13.0-devel.14) (2026-04-15)
+
+### Features
+
+* hide mailbox quota section under domain ([#1136](https://github.com/zextras/carbonio-admin-console-ui/issues/1136)) ([2306cc5](https://github.com/zextras/carbonio-admin-console-ui/commit/2306cc5259505f63f48554ef808d746faa1f4040))
+
 ## [0.13.0-devel.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.12...v0.13.0-devel.13) (2026-04-09)
 
 ### Features

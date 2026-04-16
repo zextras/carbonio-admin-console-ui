@@ -24,6 +24,7 @@ import {
   postSoapFetchRequest,
   useDomainStore,
   useIsAdvanced,
+  useTotalQuotaActive,
   useUserAccount,
 } from '@zextras/ui-shared';
 import { format } from 'date-fns';
@@ -71,7 +72,6 @@ import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
-import { useTotalQuotaActive } from '../../../app/hooks/useTotalQuotaActive';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { AccountContext, AccountDetail } from './account-context';

@@ -120,9 +120,25 @@ export type MtaMailQueueItem = {
 	receiveid: string;
 };
 
+export type MailQueueInfo = {
+        name: string;
+        n: number;
+};
+
+export type MailQueueActionRequest = {
+        _jsns: string;
+        server: {
+                name: string;
+                queue: {
+                        name: string;
+                        action: { op: string; by: string; _content: string };
+                };
+        };
+};
+
 export type MtaMailQueue = {
-	name: string;
-	qi: Array<mtaMailQueueItem>;
+        name: string;
+        qi: Array<MtaMailQueueItem>;
 	total: number;
 };
 

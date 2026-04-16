@@ -6,7 +6,7 @@
 
 export type Attribute = {
   n: string;
-  _content: any;
+  _content: string;
 };
 
 export type MtaServer = {

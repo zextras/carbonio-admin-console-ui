@@ -20,7 +20,13 @@ import {
   Text,
   useSnackbar,
 } from '@zextras/ui-components';
-import { replaceHistory, useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
+import {
+  replaceHistory,
+  useDomainStore,
+  useIsAdvanced,
+  useTotalQuotaActive,
+  useUserSettings,
+} from '@zextras/ui-shared';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -48,7 +54,6 @@ import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { setDomainQuota } from '../../../services/set-domain-quota';
 import { unsetDomainQuota } from '../../../services/unset-domain-quota';
-import { useTotalQuotaActive } from '../../app/hooks/useTotalQuotaActive';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import {
@@ -61,6 +66,7 @@ import {
 } from '../../utility/utils';
 import DomainCosLink from './domain-cos-link';
 import DomainListChipInput from './parts/domain-list-chip-input';
+import QuotaReportDownloadButton from './quota-report-download-button';
 
 const DomainGeneralSettings: FC = () => {
   const [t] = useTranslation();
@@ -1088,6 +1094,9 @@ const DomainGeneralSettings: FC = () => {
                       }}
                       disabled={!isGlobalAdmin}
                     />
+                  </Container>
+                  <Container crossAlignment="flex-end" padding={{ all: 'small' }}>
+                    <QuotaReportDownloadButton domainName={domainName} />
                   </Container>
                 </ListRow>
               </>

@@ -10,7 +10,7 @@ import {  FC  } from 'react';
 const ListPanelItem: FC<{
 	title: string;
 	isListExpanded: boolean;
-	setToggleView: any;
+	setToggleView: () => void;
 }> = ({ title, isListExpanded, setToggleView }) => (
 	<>
 		<Container

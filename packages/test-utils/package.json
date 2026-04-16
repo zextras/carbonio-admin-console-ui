@@ -50,6 +50,7 @@
     "@zextras/ui-shared": "workspace:*",
     "i18next": "^22.5.1",
     "react": "^19.2.3",
-    "react-router": "^7.13.0"
+    "react-router": "^7.13.0",
+    "zod": "^4.3.6"
   }
 }

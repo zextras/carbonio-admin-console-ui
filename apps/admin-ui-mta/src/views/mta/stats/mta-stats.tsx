@@ -21,7 +21,7 @@ import { format } from 'date-fns';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { MtaStats } from '../../../../types';
+import { MailQueueInfo, MtaStats, TRow } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING } from '../../../constants';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
@@ -32,7 +32,7 @@ const MTAStats: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { data: mtaServerListData = [] } = useMtaServers();
-  const [serverTableRow, setServerTableRow] = useState<Array<any>>([]);
+  const [serverTableRow, setServerTableRow] = useState<Array<TRow>>([]);
   const [selectedServer, setSelectedServer] = useState<Array<string>>([]);
   const [mtaServerList, setMtaServerList] = useState<Array<Record<string, string>>>([]);
   const [mailServerStats, setMailServerStats] = useState<Array<MtaStats>>([]);
@@ -93,7 +93,7 @@ const MTAStats: FC = () => {
 
   useMemo(() => {
     if (mailServerStats.length > 0) {
-      const list: any[] = [];
+      const list: Array<TRow> = [];
       mailServerStats.forEach((item: MtaStats) => {
         list.push({
           id: item?.id,
@@ -188,28 +188,28 @@ const MTAStats: FC = () => {
         .then((data) => {
           setRequestInprogress(false);
           if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
-            data?.server.forEach((queueInfo: any) => {
+            data?.server.forEach((queueInfo: { queue: Array<MailQueueInfo> }) => {
               setMailServerStats((prev) => [
                 ...prev,
                 ...[
                   {
                     id: item?.id,
                     serverName: item?.name,
-                    active: queueInfo?.queue.find(
-                      (info: Record<string, string>) => info?.name === ACTIVE,
-                    )?.n,
-                    corrupt: queueInfo?.queue.find(
-                      (info: Record<string, string>) => info?.name === CORRUPT,
-                    )?.n,
-                    deferred: queueInfo?.queue.find(
-                      (info: Record<string, string>) => info?.name === DEFERRED,
-                    )?.n,
-                    hold: queueInfo?.queue.find(
-                      (info: Record<string, string>) => info?.name === HOLD,
-                    )?.n,
-                    incoming: queueInfo?.queue.find(
-                      (info: Record<string, string>) => info?.name === INCOMING,
-                    )?.n,
+                    active: String(
+                      queueInfo?.queue.find((info: MailQueueInfo) => info?.name === ACTIVE)?.n ?? '',
+                    ),
+                    corrupt: String(
+                      queueInfo?.queue.find((info: MailQueueInfo) => info?.name === CORRUPT)?.n ?? '',
+                    ),
+                    deferred: String(
+                      queueInfo?.queue.find((info: MailQueueInfo) => info?.name === DEFERRED)?.n ?? '',
+                    ),
+                    hold: String(
+                      queueInfo?.queue.find((info: MailQueueInfo) => info?.name === HOLD)?.n ?? '',
+                    ),
+                    incoming: String(
+                      queueInfo?.queue.find((info: MailQueueInfo) => info?.name === INCOMING)?.n ?? '',
+                    ),
                   },
                 ],
               ]);
@@ -249,7 +249,7 @@ const MTAStats: FC = () => {
   }, [mtaServerListData]);
 
   const flushQueues = useCallback(() => {
-    const flushRequest: any[] = [];
+    const flushRequest: Array<Promise<Record<string, unknown>>> = [];
     if (showMtaStatDetail) {
       const serverName = mtaServerList.find((item) => item?.id === selectedServer[0])?.name;
       if (serverName) {

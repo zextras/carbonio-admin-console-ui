@@ -9,6 +9,7 @@ import {
   Container,
   CustomHeaderFactory,
   DefaultTabBarItem,
+  type DefaultTabBarItemProps,
   HoverableRowFactory,
   Paging,
   Row,
@@ -19,10 +20,17 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { format } from 'date-fns';
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { MtaMailQueueItem, MtaStats, mtaStats } from '../../../../types';
+import {
+  MailQueueActionRequest,
+  MailQueueInfo,
+  MtaMailQueueItem,
+  MtaStats,
+  mtaStats,
+  TRow,
+} from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import {
   ACTIVE,
@@ -40,11 +48,9 @@ import { batchService } from '../../../services/batch-service';
 import { getMailQueue } from '../../../services/get-mail-queue';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 
-const ReusedDefaultTabBar: FC<{
-  item: any;
-  selected: any;
-  onClick: any;
-}> = ({ item, selected, onClick }): ReactElement => (
+const ReusedDefaultTabBar: FC<DefaultTabBarItemProps> = ({ item, selected, onClick }): ReactElement => {
+  const count = (item as { count?: number }).count;
+  return (
   <DefaultTabBarItem
     item={item}
     selected={selected}
@@ -63,12 +69,13 @@ const ReusedDefaultTabBar: FC<{
     >
       <Container mainAlignment="flex-end" crossAlignment="flex-end" width="100%" height="auto">
         <Text size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
-          {item.label} ({item?.count})
+          {item.label} ({count ?? 0})
         </Text>
       </Container>
     </Container>
   </DefaultTabBarItem>
-);
+  );
+};
 
 const MTAStatsMail: FC<{
   serverState: mtaStats | undefined;
@@ -89,7 +96,7 @@ const MTAStatsMail: FC<{
   const createSnackbar = useSnackbar();
   const [change, setChange] = useState(ACTIVE);
   const [selectedRow, setSelectedRow] = useState<Array<string>>([]);
-  const [mailRows, setMailRows] = useState<Array<any>>([]);
+  const [mailRows, setMailRows] = useState<Array<TRow>>([]);
   const [mailStatCount, setMailStatCount] = useState<Record<string, number>>({
     queued: serverState?.active ? parseInt(serverState?.active, 10) : 0,
     corrupted: serverState?.corrupt ? parseInt(serverState?.corrupt, 10) : 0,
@@ -142,17 +149,7 @@ const MTAStatsMail: FC<{
     [t, mailStatCount],
   );
 
-  type THeader = {
-    id: string;
-    label: string;
-    align?: React.ThHTMLAttributes<HTMLTableHeaderCellElement>['align'];
-    width?: string;
-    i18nAllLabel?: string;
-    bold?: boolean;
-    items?: any;
-  };
-
-  const headers: THeader[] = useMemo(
+  const headers = useMemo(
     () => [
       {
         id: 'id',
@@ -234,7 +231,7 @@ const MTAStatsMail: FC<{
     if (qi.length === 0) {
       setMailRows([]);
     } else {
-      const quotaData: Array<any> = [];
+      const quotaData: Array<TRow> = [];
       qi.forEach((item: MtaMailQueueItem) => {
         quotaData.push({
           id: item?.id,
@@ -284,7 +281,7 @@ const MTAStatsMail: FC<{
     }
   }, []);
 
-  const setMailStateCountData = useCallback((queue: any) => {
+  const setMailStateCountData = useCallback((queue: Array<MailQueueInfo>) => {
     setMailStatCount({
       queued: queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n || 0,
       corrupted:
@@ -377,7 +374,7 @@ const MTAStatsMail: FC<{
   }, [getMailFromMailQueue]);
 
   const callAllRequest = useCallback(
-    (request: any) => {
+    (request: Array<MailQueueActionRequest>) => {
       batchService({
         MailQueueActionRequest: request,
         _jsns: 'urn:zimbra',

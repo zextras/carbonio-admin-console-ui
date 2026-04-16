@@ -59,6 +59,7 @@ import {
   ZIMBRA_ADMIN_URN,
 } from './constants';
 import { replaceHistory, useCurrentRoute } from './history/hooks';
+import { useTotalQuotaActive } from './hooks/use-total-quota-active';
 import {
   type CloseSnackbarFn,
   type CreateSnackbarFn,
@@ -227,6 +228,7 @@ export {
   useServerVersion,
   useSnackbar,
   useStickyBarStore,
+  useTotalQuotaActive,
   useUserAccount,
   useUserAccounts,
   useUserSettings,

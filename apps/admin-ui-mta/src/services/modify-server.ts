@@ -10,7 +10,7 @@ export const modifyServer = async (body: {
 	id?: string;
 	_jsns?: string;
 	a?: { n: string; _content?: string }[];
-}): Promise<any> =>
+}): Promise<Record<string, unknown>> =>
 	soapFetch(`ModifyServer`, {
 		...body
 	});

@@ -77,3 +77,4 @@ dist
 **/.vitest-attachments
 /*/*/dist-types
 /.opencode
+/new-translations.txt

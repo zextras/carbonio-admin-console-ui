@@ -6,10 +6,14 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { Server } from '../../types';
+
+type GetServerResponse = { server: Array<Server> };
+
 export const getServerInformationByName = async (
 	serverName: string,
-	applyConfig?: boolean
-): Promise<any> =>
+	applyConfig?: boolean,
+): Promise<GetServerResponse> =>
 	soapFetch(`GetServer`, {
 		_jsns: 'urn:zimbraAdmin',
 		server: {

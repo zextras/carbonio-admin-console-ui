@@ -22,10 +22,10 @@ import {
 } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find, isEqual } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
+import { MtaAntivirusAndAntispam } from '../../../../types';
 import {
   CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
   CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
@@ -50,6 +50,8 @@ import { modifyConfig } from '../../../services/modify-config';
 import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
+  type TableRow = { id: string; columns: Array<string | ReactElement> };
+
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -58,13 +60,13 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
     useState<MtaAntivirusAndAntispam>();
   const [mtaAntiVirusAndAntispamDetail, setMtaAntiVirusAndAntispamDetail] =
     useState<MtaAntivirusAndAntispam>();
-  const [antiVirusMirrorTableRow, setAntiVirusMirrorTableRow] = useState<Array<any>>([]);
-  const [selectedAntivirusMirrors, setSelectedAntivirusMirrors] = useState<any[]>([]);
+  const [antiVirusMirrorTableRow, setAntiVirusMirrorTableRow] = useState<Array<TableRow>>([]);
+  const [selectedAntivirusMirrors, setSelectedAntivirusMirrors] = useState<Array<string>>([]);
   const [antiVirusMirrorsAddText, setAntiVirusMirrorsAddText] = useState<string>('');
   const [additionalAntiVirusDefinitionTableRow, setAdditionalAntiVirusDefinitionTableRow] =
-    useState<Array<any>>([]);
+    useState<Array<TableRow>>([]);
   const [selectedAdditionalAntivirusDefinition, setSelectedAdditionalAntivirusDefinition] =
-    useState<any[]>([]);
+    useState<Array<string>>([]);
   const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
     useState<string>('');
   const isAdvanced = useIsAdvanced();
@@ -77,14 +79,14 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
   }, [rights]);
 
   const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaAntiVirusAndAntispamInitialDetail((prev: any) => ({
+    setMtaAntiVirusAndAntispamInitialDetail((prev) => ({
       ...prev,
       [key]: value,
-    }));
+    } as MtaAntivirusAndAntispam));
   }, []);
 
   const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaAntiVirusAndAntispamDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaAntiVirusAndAntispamDetail((prev) => ({ ...prev, [key]: value } as MtaAntivirusAndAntispam));
   }, []);
 
   const [updateFrequncy, setUpdateFrequncy] = useState<string>('');
@@ -543,7 +545,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
       const calmDatabaseMirror =
         mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
       if (calmDatabaseMirror && calmDatabaseMirror.length > 0) {
-        const tableRow: Array<TRow> = [];
+        const tableRow: Array<TableRow> = [];
         calmDatabaseMirror.forEach((item: string) => {
           tableRow.push({
             id: item,
@@ -639,7 +641,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
       const calmDatabaseMirror =
         mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL.split(',');
       if (calmDatabaseMirror && calmDatabaseMirror.length > 0) {
-        const tableRow: Array<TRow> = [];
+        const tableRow: Array<TableRow> = [];
         calmDatabaseMirror.forEach((item: string) => {
           tableRow.push({
             id: item,

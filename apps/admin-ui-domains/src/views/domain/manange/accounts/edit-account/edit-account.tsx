@@ -19,6 +19,7 @@ import {
   useCurrentUserRights,
   useDomainStore,
   useIsAdvanced,
+  useTotalQuotaActive,
   useUserSettings,
 } from '@zextras/ui-shared';
 import { differenceBy, find, isEqual, reduce, remove } from 'lodash-es';
@@ -64,7 +65,6 @@ import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
-import { useTotalQuotaActive } from '../../../../app/hooks/useTotalQuotaActive';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
@@ -1112,7 +1112,10 @@ const EditAccount: FC<{
         >
           {/* <Container crossAlignment="flex-start" padding={{ all: '0px' }}> */}
           {change === GENERAL_SECTION && (
-            <EditAccountGeneralSection setChange={setChange} onQuotaErrorChange={setHasQuotaError} />
+            <EditAccountGeneralSection
+              setChange={setChange}
+              onQuotaErrorChange={setHasQuotaError}
+            />
           )}
           {change === PROFILE && <EditAccountContactsSection />}
           {change === CONFIGURATION && <EditAccountConfigurationSection />}
