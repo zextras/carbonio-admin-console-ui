@@ -14,6 +14,7 @@ import { dsTextVars, textStyles } from './ds-text.styles';
 export type TextSize = keyof Theme['font']['size'];
 export type TextWeight = keyof Theme['font']['weight'];
 export type TextOverflow = 'ellipsis' | 'break-word';
+export type TextDisplay = 'block' | 'inline' | 'inline-block';
 export type TextAlign = 'left' | 'center' | 'right' | 'justify' | 'initial';
 export type TextTag =
   | 'span'
@@ -32,6 +33,8 @@ export type TextTag =
 export class DsText extends LitElement {
   static override readonly styles = textStyles;
 
+  private _styleObserver?: MutationObserver;
+
   @property({ type: String })
   accessor color = 'text';
 
@@ -43,6 +46,9 @@ export class DsText extends LitElement {
 
   @property({ type: String, reflect: true })
   accessor overflow: TextOverflow = 'ellipsis';
+
+  @property({ type: String, reflect: true })
+  accessor display: TextDisplay = 'block';
 
   @property({ type: Boolean, reflect: true })
   accessor disabled = false;
@@ -57,13 +63,33 @@ export class DsText extends LitElement {
   @property({ type: String })
   accessor as: TextTag = 'span';
 
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this._styleObserver = new MutationObserver(() => this.requestUpdate());
+    this._styleObserver.observe(this, { attributeFilter: ['style'] });
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._styleObserver?.disconnect();
+  }
+
+  private _getHostInlineStyles(): Record<string, string> {
+    const hostStyles: Record<string, string> = {};
+    for (const prop of Array.from(this.style)) {
+      hostStyles[prop] = this.style.getPropertyValue(prop);
+    }
+    return hostStyles;
+  }
+
   override render(): TemplateResult {
-    const styles = {
+    const hostStyles = this._getHostInlineStyles();
+    const componentStyles: Record<string, string> = {
       [dsTextVars.color]: resolveThemeColor(this.color, this.disabled ? 'disabled' : 'regular'),
       ...(this.lineHeight !== undefined && { [dsTextVars.lineHeight]: String(this.lineHeight) }),
     };
 
-    const tagStyle = styleMap(styles);
+    const tagStyle = styleMap({ ...hostStyles, ...componentStyles });
 
     switch (this.as) {
       case 'p':

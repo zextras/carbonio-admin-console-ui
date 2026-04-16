@@ -20,6 +20,14 @@ export const textStyles = css`
     display: block;
   }
 
+  :host([display='inline']) {
+    display: inline;
+  }
+
+  :host([display='inline-block']) {
+    display: inline-block;
+  }
+
   :host > * {
     display: block;
     margin: 0;

@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { TextAlign, TextOverflow, TextSize, TextTag, TextWeight } from './ds-text';
+import { TextAlign, TextDisplay, TextOverflow, TextSize, TextTag, TextWeight } from './ds-text';
 import type { IconName } from './icon-registry';
 
 declare global {
@@ -26,15 +26,16 @@ declare global {
         >;
         'ds-text': React.DetailedHTMLProps<
           React.HTMLAttributes<HTMLElement> & {
-            color?: string,
-            size?: TextSize,
-            weight?: TextWeight,
-            overflow?: TextOverflow,
-            disabled?:boolean,
-            italic?:boolean,
-            textAlign?: TextAlign,
-            lineHeight?: number,
-            as?: TextTag,
+            color?: string;
+            size?: TextSize;
+            weight?: TextWeight;
+            overflow?: TextOverflow;
+            disabled?: boolean;
+            italic?: boolean;
+            display?: TextDisplay;
+            textAlign?: TextAlign;
+            lineHeight?: number;
+            as?: TextTag;
           },
           HTMLElement
         >;
