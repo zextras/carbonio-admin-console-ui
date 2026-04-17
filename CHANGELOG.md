@@ -1,3 +1,9 @@
+## [0.13.0-devel.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.16...v0.13.0-devel.17) (2026-04-17)
+
+### Features
+
+* hide COS quota warning settings when total quota is active (CO-3478) ([#1148](https://github.com/zextras/carbonio-admin-console-ui/issues/1148)) ([e5685f2](https://github.com/zextras/carbonio-admin-console-ui/commit/e5685f28ef5f2d589be595f9761b3c680ca93855))
+
 ## [0.13.0-devel.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.15...v0.13.0-devel.16) (2026-04-17)
 
 ### Bug Fixes
