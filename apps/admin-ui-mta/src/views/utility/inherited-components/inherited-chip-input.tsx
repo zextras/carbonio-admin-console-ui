@@ -9,7 +9,6 @@ import {
 	IconCheckbox,
 	Padding,
 	Row,
-	Text,
 	Tooltip,
 } from '@zextras/ui-components';
 import { map } from 'lodash-es';
@@ -85,19 +84,19 @@ const InheritedChipInput: FC<{
 					label={
 						<>
 							<Row>
-								<Text weight="bold">
+								<ds-text as="label" weight="bold">
 									{t('account_details.inherited_value_was', 'The inherited value was')} :
-								</Text>
-								<Text>{`  ${
+								</ds-text>
+								<ds-text as="span">{`  ${
 									Array.isArray(inheritedValue)
 										? map(inheritedValue, 'label')
 										: inheritedValue || ''
-								}`}</Text>
+								}`}</ds-text>
 							</Row>
 							<Padding top="small">
-								<Text weight="bold">
+								<ds-text as="label" weight="bold">
 									{t('account_details.click_to_revert', 'Click to revert.')}
-								</Text>
+								</ds-text>
 							</Padding>
 						</>
 					}

@@ -11,7 +11,6 @@ import {
   ListItem,
   Padding,
   Row,
-  Text,
   Tooltip,
 } from '@zextras/ui-components';
 import React, { useCallback, useState } from 'react';
@@ -123,9 +122,9 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
               width="fill"
               padding={{ top: 'extrasmall' }}
             >
-              <Text color="error" overflow="break-word" size="extrasmall">
+              <ds-text as="strong" color="error" overflow="break-word" size="extrasmall">
                 {t('domain.virtual_host_name_error', 'Please enter valid virtual host name!')}
-              </Text>
+              </ds-text>
             </Container>
           )}
         </Row>
@@ -158,18 +157,20 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
       >
         <Row mainAlignment="flex-start" takeAvailableSpace>
           {hoveredRow === 'header' || selectedRows.length > 0 ? (
-            <icon-wc
+            <ds-icon
               icon={
                 selectedRows.length === items.length && items.length > 0
                   ? 'CheckmarkSquareOutline'
                   : 'SquareOutline'
               }
-            ></icon-wc>
+            ></ds-icon>
           ) : (
             <Container width="1rem" height="1rem" />
           )}
           <Padding left="small">
-            <Text weight="bold">{t('label.virtual_host_name', 'Virtual Host Name')}</Text>
+            <ds-text as="strong" weight="bold">
+              {t('label.virtual_host_name', 'Virtual Host Name')}
+            </ds-text>
           </Padding>
         </Row>
         {!removeVirtualBtnDisabled && selectedRows.length > 1 && (
@@ -210,21 +211,21 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
                         crossAlignment="center"
                       >
                         {hoveredRow === item.id || selectedRows.includes(item.id) ? (
-                          <icon-wc
+                          <ds-icon
                             icon={
                               selectedRows.includes(item.id)
                                 ? 'CheckmarkSquareOutline'
                                 : 'SquareOutline'
                             }
-                          ></icon-wc>
+                          ></ds-icon>
                         ) : (
-                          <Text>{id + 1}</Text>
+                          <ds-text as="span">{id + 1}</ds-text>
                         )}
                       </Container>
                     </Row>
                     <Row mainAlignment="flex-start">
                       <Padding left="small">
-                        <Text>{item.columns[0]}</Text>
+                        <ds-text as="span">{item.columns[0]}</ds-text>
                       </Padding>
                     </Row>
                     {!removeVirtualBtnDisabled &&
@@ -266,13 +267,19 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
           </Padding>
           <Padding vertical="extralarge" width="100%">
             <Row mainAlignment="center" crossAlignment="center" width="100%">
-              <Text size="large" color="secondary" weight="regular" style={{ textAlign: 'center' }}>
+              <ds-text
+                as="p"
+                size="large"
+                color="secondary"
+                weight="regular"
+                style={{ textAlign: 'center' }}
+              >
                 <Trans
                   i18nKey="label.no_virtual_host_message"
                   defaults="There aren’t any virtual hosts yet."
                   components={{ break: <br /> }}
                 />
-              </Text>
+              </ds-text>
             </Row>
           </Padding>
         </Container>

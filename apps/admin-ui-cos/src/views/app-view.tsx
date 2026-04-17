@@ -34,13 +34,13 @@ const AppView: FC = () => {
               height="calc(100vh - 105px)"
             >
               <Container style={{ maxWidth: '265px' }}>
-                <Suspense fallback={<spinner-wc />}>
+                <Suspense fallback={<ds-spinner />}>
                   <CosListPanel />
                 </Suspense>
               </Container>
               <Container style={{ maxWidth: '100%' }}>
                 <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-                  <Suspense fallback={<spinner-wc />}>
+                  <Suspense fallback={<ds-spinner />}>
                     <CosDetailPanel />
                   </Suspense>
                 </Container>

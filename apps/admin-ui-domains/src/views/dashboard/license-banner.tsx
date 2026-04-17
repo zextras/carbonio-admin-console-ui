@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, ListRow, Row, Text } from '@zextras/ui-components';
+import { Button, Container, ListRow, Row } from '@zextras/ui-components';
 import { useModuleLicenseInfo } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { FC, useMemo } from 'react';
@@ -138,7 +138,7 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
           gap="0.5rem"
         >
           <Row padding={{ right: '0.5rem' }}>
-            <icon-wc size="large" icon="AlertTriangleOutline" color="gray6"></icon-wc>
+            <ds-icon size="large" icon="AlertTriangleOutline" color="gray6"></ds-icon>
           </Row>
           <Container
             width="fill"
@@ -147,12 +147,12 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
             orientation="vertical"
             gap="0.5rem"
           >
-            <Text color="gray6" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
+            <ds-text as="strong" color="gray6" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
               {descriptionToShow}
-            </Text>
-            <Text color="gray6" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
+            </ds-text>
+            <ds-text as="p" color="gray6" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
               {labelToShow}
-            </Text>
+            </ds-text>
           </Container>
           <Row>
             <Button

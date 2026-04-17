@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Row, Text } from '@zextras/ui-components';
+import { Container, Row } from '@zextras/ui-components';
 import { FC, useCallback,useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,9 +32,9 @@ const ResourceSharingSection: FC = () => {
 				style={{ overflow: 'auto', padding: '16px' }}
 			>
 				<Row>
-					<Text size="small" weight="bold">
+					<ds-text as="h3" size="small" weight="bold">
 						{t('label.invites', 'Invites')}
-					</Text>
+					</ds-text>
 				</Row>
 
 				<SendInviteAccounts

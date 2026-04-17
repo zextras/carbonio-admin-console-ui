@@ -12,7 +12,6 @@ import {
   Padding,
   Row,
   TabBar,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import {
@@ -214,9 +213,9 @@ const EditAccount: FC<{
       forceWidthEquallyDistributed={false}
     >
       <Row padding="small">
-        <Text size="small" color={selected ? 'primary' : 'gray'}>
+        <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
           {item.label}
-        </Text>
+        </ds-text>
       </Row>
     </DefaultTabBarItem>
   );
@@ -994,7 +993,7 @@ const EditAccount: FC<{
 
   return (
     <>
-      {(!accountDetail?.name || isLoading) && <spinner-wc></spinner-wc>}
+      {(!accountDetail?.name || isLoading) && <ds-spinner></ds-spinner>}
       <Container
         background="gray5"
         mainAlignment="flex-start"
@@ -1017,9 +1016,9 @@ const EditAccount: FC<{
         >
           <Row padding={{ horizontal: 'small' }}></Row>
           <Row takeAvailableSpace mainAlignment="flex-start">
-            <Text size="medium" overflow="ellipsis" weight="bold">
+            <ds-text size="medium" overflow="ellipsis" weight="bold" as="h1">
               {`${selectedAccount?.name}`}
-            </Text>
+            </ds-text>
           </Row>
           {isDirty && (
             <Row>
@@ -1083,7 +1082,7 @@ const EditAccount: FC<{
           </Row>
         </Row>
         <Row>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <Container
           padding={{ all: 'small' }}
@@ -1100,7 +1099,7 @@ const EditAccount: FC<{
             width="100%"
             background="gray6"
           />
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Container>
         <Container
           padding={{ left: 'large', right: 'large' }}
@@ -1134,13 +1133,13 @@ const EditAccount: FC<{
         </Container>
       </Container>
       <RouteLeavingGuard when={isDirty} onSave={modifyAccountReq}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
       <Modal
         size="small"
@@ -1174,16 +1173,17 @@ const EditAccount: FC<{
           setShowModal && setShowModal(false);
         }}
       >
-        <Text
+        <ds-text
           size={'extralarge'}
           overflow="break-word"
           style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
+          as="p"
         >
           {t(
             'label.are_you_sure_you_want_to_leave_without_saving_he_changes',
             `Are you sure you want to leave without saving he changes?`,
           )}
-        </Text>
+        </ds-text>
       </Modal>
       {isOpenDeleteDialog && (
         <Modal
@@ -1223,47 +1223,47 @@ const EditAccount: FC<{
               (accountUserType(selectedAccount) === 'System' ||
                 accountUserType(selectedAccount) === 'DelegatedAdmin') && (
                 <Padding bottom="medium" top="medium">
-                  <Text color="warning" overflow="break-word">
+                  <ds-text color="warning" overflow="break-word" as="strong">
                     {t(
                       'label.deleting_account_warning_content',
                       'Deleting the system account could impact the system stability.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Padding>
               )}
             <Padding bottom="medium">
-              <Text size={'extralarge'} overflow="break-word">
+              <ds-text size={'extralarge'} overflow="break-word" as="p">
                 <Trans
                   i18nKey="label.deleting_account_content_1"
                   defaults="Are you sure you want to delete <bold>{{name}}</bod> ?"
                   components={{ bold: <strong />, name: selectedAccount?.name }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Padding bottom="medium">
-              <Text overflow="break-word">
+              <ds-text overflow="break-word" as="p">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Padding bottom="medium">
-              <Text overflow="break-word">
+              <ds-text overflow="break-word" as="p">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Close it to preserve</bold> the data, instead."
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Row padding={{ bottom: 'large' }}>
-              <icon-wc
+              <ds-icon
                 icon="AlertTriangleOutline"
                 size="large"
                 style={{ height: '48px', width: '48px' }}
-              ></icon-wc>
+              ></ds-icon>
             </Row>
           </Container>
         </Modal>
@@ -1296,12 +1296,12 @@ const EditAccount: FC<{
         >
           <Container>
             <Padding bottom="medium" top="medium">
-              <Text style={{ textAlign: 'center' }} size={'extralarge'} overflow="break-word">
+              <ds-text style={{ textAlign: 'center' }} size={'extralarge'} overflow="break-word" as="p">
                 {t(
                   'label.delete_delegated_account_content',
                   `The system accounts can't be deleted from here. Please visit the respective module to manage the account.`,
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Container>
         </Modal>

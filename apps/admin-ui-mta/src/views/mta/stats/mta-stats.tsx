@@ -13,7 +13,6 @@ import {
   ModalOverlay,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useMtaServers } from '@zextras/ui-shared';
@@ -106,9 +105,9 @@ const MTAStats: FC = () => {
                 setSelectedServer([item?.id]);
               }}
             >
-              <Text size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
                 {item?.serverName}
-              </Text>
+              </ds-text>
             </Container>,
             <Container
               crossAlignment="flex-start"
@@ -118,9 +117,9 @@ const MTAStats: FC = () => {
                 setSelectedServer([item.id]);
               }}
             >
-              <Text size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
                 {item?.active}
-              </Text>
+              </ds-text>
             </Container>,
             <Container
               crossAlignment="flex-start"
@@ -130,9 +129,9 @@ const MTAStats: FC = () => {
                 setSelectedServer([item?.id]);
               }}
             >
-              <Text size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
                 {item?.corrupt}
-              </Text>
+              </ds-text>
             </Container>,
             <Container
               crossAlignment="flex-start"
@@ -142,9 +141,9 @@ const MTAStats: FC = () => {
                 setSelectedServer([item?.id]);
               }}
             >
-              <Text size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
                 {item?.deferred}
-              </Text>
+              </ds-text>
             </Container>,
             <Container
               crossAlignment="flex-start"
@@ -154,9 +153,9 @@ const MTAStats: FC = () => {
                 setSelectedServer([item?.id]);
               }}
             >
-              <Text size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
                 {item?.incoming}
-              </Text>
+              </ds-text>
             </Container>,
             <Container
               crossAlignment="flex-start"
@@ -166,9 +165,9 @@ const MTAStats: FC = () => {
                 setSelectedServer([item?.id]);
               }}
             >
-              <Text size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
                 {item?.hold}
-              </Text>
+              </ds-text>
             </Container>,
           ],
         });
@@ -347,14 +346,14 @@ const MTAStats: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.queue', 'Queue')}
-          </Text>
+          </ds-text>
         </Row>
         <Row></Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         padding={{ all: 'extralarge' }}
@@ -385,17 +384,17 @@ const MTAStats: FC = () => {
               width="auto"
             >
               <Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
-                <Text size="small" overflow="ellipsis" weight="bold">
+                <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
                   {t('mta.updated_at', 'Updated at')}:
-                </Text>
+                </ds-text>
               </Container>
               <Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
-                <Text size="small" overflow="ellipsis">
+                <ds-text as="span" size="small" overflow="ellipsis">
                   &nbsp;
                   {currentTime === ''
                     ? '-'
                     : format(new Date(currentTime), 'HH:mm:ss dd eeee yyyy')}
-                </Text>
+                </ds-text>
               </Container>
             </Container>
             <Container
@@ -406,17 +405,17 @@ const MTAStats: FC = () => {
               width="auto"
             >
               <Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
-                <Text size="small" overflow="ellipsis" weight="bold">
+                <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
                   {t('mta.status', 'Status')}:
-                </Text>
+                </ds-text>
               </Container>
               <Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
-                <Text size="small" overflow="ellipsis">
+                <ds-text as="span" size="small" overflow="ellipsis">
                   &nbsp;
                   {requestInprogress
                     ? t('mta.scan_in_progress', 'Scan In progress')
                     : t('mta.scan_completed', 'Scan Completed')}
-                </Text>
+                </ds-text>
               </Container>
             </Container>
           </Container>
@@ -460,9 +459,9 @@ const MTAStats: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'large' }}
         >
-          <Text size="small" overflow="ellipsis" weight="light">
+          <ds-text as="span" size="small" overflow="ellipsis" weight="light">
             {t('mta.select_a_mail_server_to_see_stats', 'Select a mail server to see its stats')}
-          </Text>
+          </ds-text>
         </Container>
         <Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
           <Table
@@ -480,7 +479,7 @@ const MTAStats: FC = () => {
               height="auto"
               padding={{ top: 'large' }}
             >
-              <spinner-wc></spinner-wc>
+              <ds-spinner></ds-spinner>
             </Container>
           )}
           {mtaServerList.length === 0 && !requestInprogress && (
@@ -499,9 +498,9 @@ const MTAStats: FC = () => {
                 crossAlignment="center"
                 style={{ textAlign: 'center' }}
               >
-                <Text weight="light" color="#828282" size="large" overflow="break-word">
+                <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                   {t('label.this_list_is_empty', 'This list is empty.')}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
           )}

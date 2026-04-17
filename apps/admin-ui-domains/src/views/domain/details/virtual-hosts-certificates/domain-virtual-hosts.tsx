@@ -10,7 +10,6 @@ import {
   ModalOverlay,
   Padding,
   Row,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
@@ -93,9 +92,9 @@ export const DomainVirtualHosts: FC = () => {
         const virtualHostItems = domainVirtualHostArray.map((domainData: any, index: any) => ({
           id: (index + 1)?.toString(),
           columns: [
-            <Text key={index + 1} color="gray0" weight="regular">
+            <ds-text key={index + 1} as="span" color="gray0" weight="regular">
               {domainData._content}
-            </Text>,
+            </ds-text>,
           ],
         }));
         setItems(virtualHostItems);
@@ -353,9 +352,9 @@ export const DomainVirtualHosts: FC = () => {
                 width="50%"
                 crossAlignment="flex-start"
               >
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h2" size="medium" weight="bold" color="gray0">
                   {t('label.virtual_hosts', 'Virtual Hosts')}
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 padding={{ all: 'large' }}
@@ -378,7 +377,7 @@ export const DomainVirtualHosts: FC = () => {
               </Row>
             </Row>
           </Container>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Container
           orientation="column"
@@ -394,7 +393,7 @@ export const DomainVirtualHosts: FC = () => {
           </Container>
           {alertToggle && <AlertBanner onClose={() => setAlertToggle(false)} />}
           <Row width="100%" padding={{ horizontal: 'large' }}>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <CertificateView
             domainCertiDetails={domainCertiDetails}
@@ -411,13 +410,13 @@ export const DomainVirtualHosts: FC = () => {
         </Container>
       </Container>
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
     </Container>
   );

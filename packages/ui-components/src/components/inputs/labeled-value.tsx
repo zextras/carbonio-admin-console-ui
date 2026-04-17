@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/divider-wc';
+import '../../web-components/ds-divider';
 
 import React, { useMemo } from 'react';
 
@@ -55,7 +55,7 @@ export const LabeledValue = ({
           </span>
         )}
       </div>
-      <divider-wc color={'gray3'}></divider-wc>
+      <ds-divider color={'gray3'}></ds-divider>
     </div>
   );
 };

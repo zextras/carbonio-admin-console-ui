@@ -12,7 +12,6 @@ import {
   Paging,
   Row,
   Table,
-  Text,
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -184,7 +183,8 @@ const CosList: FC = () => {
             cosListArr.push({
               id: item?.id,
               columns: [
-                <Text
+                <ds-text
+                  as="span"
                   size="small"
                   key={item?.id}
                   color="gray0"
@@ -194,9 +194,10 @@ const CosList: FC = () => {
                   }}
                 >
                   {item?.name || ' '}
-                </Text>,
+                </ds-text>,
 
-                <Text
+                <ds-text
+                  as="span"
                   size="small"
                   weight="light"
                   key={item?.id}
@@ -206,7 +207,7 @@ const CosList: FC = () => {
                   }}
                 >
                   {STATUS_COLOR[CosIteam.zimbraCosStatus].label}
-                </Text>,
+                </ds-text>,
               ],
               iteam: CosIteam,
               clickable: true,
@@ -276,15 +277,15 @@ const CosList: FC = () => {
         >
           <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
             <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="strong" size="medium" weight="bold" color="gray0">
                 {t('label.Cos_list', 'COS List')}
-              </Text>
+              </ds-text>
             </Row>
           </Row>
         </Container>
       </Row>
       <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Container
         orientation="column"
@@ -317,7 +318,7 @@ const CosList: FC = () => {
                     setSearchString(e.target.value);
                   }}
                   CustomIcon={(): React.JSX.Element => (
-                    <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                   )}
                 />
               </Container>
@@ -351,7 +352,7 @@ const CosList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <spinner-wc></spinner-wc>
+                  <ds-spinner></ds-spinner>
                 </Container>
               )}
               {cosList.length === 0 && !isRequestInProgress && (
@@ -365,9 +366,9 @@ const CosList: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       {t('label.this_list_is_empty', 'This list is empty.')}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row
                     orientation="vertical"
@@ -376,13 +377,13 @@ const CosList: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       <Trans
                         i18nKey="label.create_Cos_list_msg"
                         defaults="You can create a new Cos by clicking on <bold>Create</bold> button on header menu"
                         components={{ bold: <strong /> }}
                       />
-                    </Text>
+                    </ds-text>
                   </Row>
                 </Container>
               )}

@@ -24,7 +24,7 @@ const AppView: FC = () => {
           element={
             <Container orientation="horizontal" mainAlignment="flex-start">
               <Container style={{ maxWidth: '16.563rem' }}>
-                <Suspense fallback={<spinner-wc />}>
+                <Suspense fallback={<ds-spinner />}>
                   <MTAListPanel />
                 </Suspense>
               </Container>
@@ -32,7 +32,7 @@ const AppView: FC = () => {
                 <Container
                   style={{ maxWidth: `${detailViewMaxWidth}px`, transition: 'max-width 300ms' }}
                 >
-                  <Suspense fallback={<spinner-wc />}>
+                  <Suspense fallback={<ds-spinner />}>
                     <MTADetailPanel />
                   </Suspense>
                 </Container>

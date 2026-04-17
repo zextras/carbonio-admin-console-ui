@@ -16,7 +16,7 @@ type SectionFooterProps = {
 export const SectionFooter: FC<SectionFooterProps> = ({ divider, footer }) => (
 	<Row width="100%">
 		<Row takeAvailableSpace>
-			{divider && <divider-wc></divider-wc>}
+			{divider && <ds-divider></ds-divider>}
 			<Container height="fit" padding={{ all: 'large' }}>
 				{footer}
 			</Container>

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Text } from '@zextras/ui-components';
+import { Container } from '@zextras/ui-components';
 import type { BadgeInfo } from '@zextras/ui-shared';
 import React from 'react';
 
@@ -41,9 +41,14 @@ const BadgeWrap = ({ badge, children, isExpanded, ref }: BadgeWrapProps) => (
     {badge.show && (
       <Container height="fit" width="fit" style={getBadgeStyle(badge.color)}>
         {badge.showCount ? (
-          <Text size="extrasmall" style={{ padding: '2px 4px', fontSize: '10px' }} color="gray6">
+          <ds-text
+            as="span"
+            size="extrasmall"
+            color="gray6"
+            style={{ padding: '2px 4px', fontSize: '10px' }}
+          >
             {badge.count ?? 0}
-          </Text>
+          </ds-text>
         ) : null}
       </Container>
     )}

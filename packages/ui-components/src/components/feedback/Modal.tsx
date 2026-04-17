@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/divider-wc';
+import '../../web-components/ds-divider';
 
 import { noop } from 'lodash-es';
 import React, { HTMLAttributes, useCallback, useRef } from 'react';
@@ -79,13 +79,13 @@ const Modal = ({
         onClose={onClose}
         closeIconTooltip={closeIconTooltip}
       />
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <ModalBody centered={centered} ref={modalBodyRef}>
         {children}
       </ModalBody>
       {!hideFooter && (
         <>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
           <ModalFooter
             centered={centered}
             customFooter={customFooter}

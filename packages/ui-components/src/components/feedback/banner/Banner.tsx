@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../../web-components/icon-wc';
+import '../../../web-components/ds-icon';
 
 import clsx from 'clsx';
 import {
@@ -209,7 +209,7 @@ const Banner = ({
         mainAlignment={'flex-start'}
       >
         <Container width={'fit'} minWidth={'fit'} height={'fit'} minHeight={'fit'}>
-          <icon-wc icon={BANNER_ICON[severity]} color={mainColor} size="large"></icon-wc>
+          <ds-icon icon={BANNER_ICON[severity]} color={mainColor} size="large"></ds-icon>
         </Container>
         <Container
           className={styles.infoContainer}

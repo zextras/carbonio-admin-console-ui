@@ -14,7 +14,6 @@ import {
   Paging,
   Row,
   Table,
-  Text,
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -366,23 +365,23 @@ const ManageDelegates: FC = () => {
               otpListArr.push({
                 id: item?.id,
                 columns: [
-                  <Text size="medium" key={item?.id} color="gray0">
+                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
                     {item?.label || ' '}
-                  </Text>,
-                  <Text size="medium" key={item?.id} color="gray0">
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
                     {item?.enabled
                       ? t('label.enabled', 'Enabled')
                       : t('label.disabled', 'Disabled')}
-                  </Text>,
-                  <Text size="medium" key={item?.id}>
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id}>
                     {item?.failed_attempts}
-                  </Text>,
-                  <Text size="medium" key={item?.id}>
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id}>
                     {format(new Date(item?.created), 'dd/MMM/yyyy')}
-                  </Text>,
-                  <Text size="medium" key={item?.id} color="gray0">
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
                     {item?.description || <>&nbsp;</>}
-                  </Text>,
+                  </ds-text>,
                 ],
                 item,
                 clickable: true,
@@ -813,7 +812,7 @@ const ManageDelegates: FC = () => {
               key={item?.id}
               style={{ textAlign: 'left', justifyContent: 'flex-start' }}
             >
-              <Text weight="light">{item?.name || ' '}</Text>
+              <ds-text as="span" weight="light">{item?.name || ' '}</ds-text>
             </Row>,
           ],
           item,
@@ -988,13 +987,13 @@ const ManageDelegates: FC = () => {
           <Container orientation="vertical" mainAlignment="space-around" height="10.5rem">
             <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
               <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h1" size="medium" weight="bold" color="gray0">
                   {t('label.delegates_domain_admins', 'Delegated Domain Admins')}
-                </Text>
+                </ds-text>
               </Row>
             </Row>
             <Row orientation="horizontal" width="100%" background="gray6">
-              <divider-wc></divider-wc>
+              <ds-divider></ds-divider>
             </Row>
             {isGlobalAdmin && (
               <>
@@ -1011,7 +1010,7 @@ const ManageDelegates: FC = () => {
                   />
                 </ListRow>
                 <Row orientation="horizontal" width="100%" background="gray6">
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Row>
               </>
             )}
@@ -1036,9 +1035,9 @@ const ManageDelegates: FC = () => {
               crossAlignment="flex-start"
               padding={{ vertical: 'large' }}
             >
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h2" size="medium" weight="bold" color="gray0">
                 {t('label.administration_rights', 'Administration Rights')}
-              </Text>
+              </ds-text>
             </Row>
           </Row>
           {/* TODO: uncomment once we fix the delgates feature's bug completely. */}
@@ -1113,7 +1112,7 @@ const ManageDelegates: FC = () => {
                     height="auto"
                     padding={{ top: 'medium' }}
                   >
-                    <spinner-wc></spinner-wc>
+                    <ds-spinner></ds-spinner>
                   </Container>
                 )}
                 {allAccount?.length === 0 && !isRequestInProgress && (
@@ -1127,9 +1126,9 @@ const ManageDelegates: FC = () => {
                       crossAlignment="center"
                       style={{ textAlign: 'center' }}
                     >
-                      <Text weight="light" color="#828282" size="large" overflow="break-word">
+                      <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                         {t('label.this_list_is_empty', 'This list is empty.')}
-                      </Text>
+                      </ds-text>
                     </Row>
                     <Row
                       orientation="vertical"
@@ -1138,13 +1137,13 @@ const ManageDelegates: FC = () => {
                       padding={{ top: 'small' }}
                       width="53%"
                     >
-                      <Text weight="light" color="#828282" size="large" overflow="break-word">
+                      <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                         <Trans
                           i18nKey="label.create_account_list_msg"
                           defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
                           components={{ bold: <strong /> }}
                         />
-                      </Text>
+                      </ds-text>
                     </Row>
                   </Container>
                 )}

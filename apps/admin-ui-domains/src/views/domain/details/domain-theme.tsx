@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { useAllConfig, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, isEqual, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -225,7 +225,7 @@ const DomainTheme: FC = () => {
 
   return (
     <>
-      {isLoading && <spinner-wc></spinner-wc>}
+      {isLoading && <ds-spinner></ds-spinner>}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"
@@ -242,9 +242,9 @@ const DomainTheme: FC = () => {
                   width="50%"
                   crossAlignment="flex-start"
                 >
-                  <Text size="medium" weight="bold" color="gray0">
+                  <ds-text as="h2" size="medium" weight="bold" color="gray0">
                     {t('label.whitelabel_settings', 'Whitelabel Settings')}
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row
                   padding={{ all: 'large' }}
@@ -272,7 +272,7 @@ const DomainTheme: FC = () => {
                 </Row>
               </Row>
             </Container>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <ThemeConfigs
             themeConfig={domainTheme}
@@ -297,13 +297,13 @@ const DomainTheme: FC = () => {
           />
         )}
         <RouteLeavingGuard when={isDirty} onSave={onSave}>
-          <Text>
+          <ds-text as="p">
             {t(
               'label.unsaved_changes_line1',
               'Are you sure you want to leave this page without saving?',
             )}
-          </Text>
-          <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+          </ds-text>
+          <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
         </RouteLeavingGuard>
       </Container>
     </>

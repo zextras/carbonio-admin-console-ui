@@ -15,7 +15,6 @@ import {
   Paging,
   Row,
   Table,
-  Text,
   Tooltip,
   TrackNumberPerPage,
   useSnackbar,
@@ -418,23 +417,23 @@ const ManageAccounts: FC = () => {
               otpListArr.push({
                 id: item?.id,
                 columns: [
-                  <Text size="medium" key={item?.id} color="gray0">
+                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
                     {item?.label || ' '}
-                  </Text>,
-                  <Text size="medium" key={item?.id} color="gray0">
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
                     {item?.enabled
                       ? t('label.enabled', 'Enabled')
                       : t('label.disabled', 'Disabled')}
-                  </Text>,
-                  <Text size="medium" key={item?.id}>
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id}>
                     {item?.failed_attempts}
-                  </Text>,
-                  <Text size="medium" key={item?.id}>
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id}>
                     {format(new Date(item?.created), 'dd/MMM/yyyy')}
-                  </Text>,
-                  <Text size="medium" key={item?.id} color="gray0">
+                  </ds-text>,
+                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
                     {item?.description || <>&nbsp;</>}
-                  </Text>,
+                  </ds-text>,
                 ],
                 item,
                 clickable: true,
@@ -905,7 +904,7 @@ const ManageAccounts: FC = () => {
             accountListArr.push({
               id: item?.id,
               columns: [
-                <Text
+                <ds-text as="span"
                   size="small"
                   key={item?.id}
                   color="gray0"
@@ -915,8 +914,8 @@ const ManageAccounts: FC = () => {
                   }}
                 >
                   {item?.name || ' '}
-                </Text>,
-                <Text
+                </ds-text>,
+                <ds-text as="span"
                   size="small"
                   key={item?.id}
                   color="gray0"
@@ -926,7 +925,7 @@ const ManageAccounts: FC = () => {
                   }}
                 >
                   {item?.displayName || <>&nbsp;</>}
-                </Text>,
+                </ds-text>,
                 <>
                   {item?.mail?.length - 1 || 0 ? (
                     <Tooltip
@@ -935,7 +934,7 @@ const ManageAccounts: FC = () => {
                       label={item?.mail.slice(1).join(', ')}
                       maxWidth="auto"
                     >
-                      <Text
+                      <ds-text as="span"
                         size="small"
                         weight="light"
                         key={item?.id}
@@ -945,10 +944,10 @@ const ManageAccounts: FC = () => {
                         }}
                       >
                         {item?.mail?.length - 1 || 0}
-                      </Text>
+                      </ds-text>
                     </Tooltip>
                   ) : (
-                    <Text
+                    <ds-text as="span"
                       size="small"
                       key={item?.id}
                       color="#828282"
@@ -958,10 +957,10 @@ const ManageAccounts: FC = () => {
                       }}
                     >
                       0
-                    </Text>
+                    </ds-text>
                   )}
                 </>,
-                <Text
+                <ds-text as="span"
                   size="small"
                   key={item?.id}
                   color="gray0"
@@ -971,8 +970,8 @@ const ManageAccounts: FC = () => {
                   }}
                 >
                   {accountUserType(item)}
-                </Text>,
-                <Text
+                </ds-text>,
+                <ds-text as="span"
                   size="small"
                   weight="light"
                   key={item?.id}
@@ -982,9 +981,9 @@ const ManageAccounts: FC = () => {
                   }}
                 >
                   {STATUS_COLOR[item?.zimbraAccountStatus]?.label}
-                </Text>,
+                </ds-text>,
                 <Tooltip key={`${item.id}-userDesc`} label={item?.description || <>&nbsp;</>}>
-                  <Text
+                  <ds-text as="span"
                     size="small"
                     weight="light"
                     key={item?.id}
@@ -995,7 +994,7 @@ const ManageAccounts: FC = () => {
                     }}
                   >
                     {item?.description ?? <>&nbsp;</>}
-                  </Text>
+                  </ds-text>
                 </Tooltip>,
               ],
               item,
@@ -1231,14 +1230,14 @@ const ManageAccounts: FC = () => {
         >
           <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
             <Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h1" size="medium" weight="bold" color="gray0">
                 {t('domain.account_list', 'Accounts List')}
-              </Text>
+              </ds-text>
             </Row>
             <Row mainAlignment="flex-start" width="40%" crossAlignment="flex-start">
-              <Text size="medium" overflow="break-word">
+              <ds-text as="p" size="medium" overflow="break-word">
                 {t('domain.accounts.totalAccounts', 'Total Accounts')} : {totalAccountCreated}
-              </Text>
+              </ds-text>
             </Row>
             <Row width="20%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding all={'0'}>
@@ -1253,7 +1252,7 @@ const ManageAccounts: FC = () => {
         </Container>
       </Row>
       <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Container
         orientation="column"
@@ -1284,7 +1283,7 @@ const ManageAccounts: FC = () => {
                   backgroundColor="gray5"
                   onChange={handleInputChange}
                   CustomIcon={(): any => (
-                    <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                   )}
                 />
               </Container>
@@ -1318,7 +1317,7 @@ const ManageAccounts: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <spinner-wc></spinner-wc>
+                  <ds-spinner></ds-spinner>
                 </Container>
               )}
               {accountList.length === 0 && !isRequestInProgress && (
@@ -1332,9 +1331,9 @@ const ManageAccounts: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       {t('label.this_list_is_empty', 'This list is empty.')}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row
                     orientation="vertical"
@@ -1343,13 +1342,13 @@ const ManageAccounts: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       <Trans
                         i18nKey="label.create_account_list_msg"
                         defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
                         components={{ bold: <strong /> }}
                       />
-                    </Text>
+                    </ds-text>
                   </Row>
                 </Container>
               )}

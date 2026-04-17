@@ -12,7 +12,6 @@ import {
   Row,
   Select,
   SelectItem,
-  Text,
 } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -265,9 +264,9 @@ const ResourceDetailSection: FC = () => {
         style={{ overflow: 'auto', padding: '16px' }}
       >
         <Row>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.details', 'Details')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container
@@ -304,7 +303,7 @@ const ResourceDetailSection: FC = () => {
               />
             </Row>
             <Row width="10%" style={{ padding: '12px' }}>
-              <icon-wc icon="AtOutline" color="gray0" size="large"></icon-wc>
+              <ds-icon icon="AtOutline" color="gray0" size="large"></ds-icon>
             </Row>
             <Row width="45%">
               <LabeledValue
@@ -409,7 +408,7 @@ const ResourceDetailSection: FC = () => {
           </Container>
         </ListRow>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <ListRow>
           <Container

@@ -9,7 +9,6 @@ import {
   HoverableRowFactory,
   Row,
   Table,
-  Text,
 } from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -39,9 +38,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="medium">
+            <ds-text as="span" weight="light" size="medium">
               {v?.serverName || ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -53,9 +52,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.name || ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -69,13 +68,13 @@ export const OperationsTable: FC<{
             }}
           >
             {v?.type === EXCEPTION && (
-              <icon-wc icon="StopCircleOutline" size="medium" color="secondary"></icon-wc>
+              <ds-icon icon="StopCircleOutline" size="medium" color="secondary"></ds-icon>
             )}
             {v?.type === FINISHED && (
-              <icon-wc icon="CloseCircleOutline" size="medium" color="error"></icon-wc>
+              <ds-icon icon="CloseCircleOutline" size="medium" color="error"></ds-icon>
             )}
             {v?.type === STARTED && (
-              <icon-wc icon="CheckmarkCircleOutline" size="medium" color="success"></icon-wc>
+              <ds-icon icon="CheckmarkCircleOutline" size="medium" color="success"></ds-icon>
             )}
           </Row>,
           <Row
@@ -88,9 +87,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.parameters?.requesterAddress}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -102,9 +101,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -116,9 +115,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.humanStartTime ? v?.humanStartTime : ''}
-            </Text>
+            </ds-text>
           </Row>,
         ],
         clickable: true,
@@ -138,9 +137,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="medium">
+            <ds-text as="span" weight="light" size="medium">
               {v?.host || ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -152,9 +151,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.name || ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -166,9 +165,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.parameters?.requesterAddress}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -180,9 +179,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -194,9 +193,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}
-            </Text>
+            </ds-text>
           </Row>,
         ],
         clickable: true,
@@ -223,9 +222,9 @@ export const OperationsTable: FC<{
       />
       {tableRows.length === 0 && (
         <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-          <Text weight="light" size="small">
+          <ds-text as="span" weight="light" size="small">
             {t('label.empty_table', 'Empty Table')}
-          </Text>
+          </ds-text>
         </Row>
       )}
     </Container>

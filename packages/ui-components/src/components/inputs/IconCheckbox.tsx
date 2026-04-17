@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/icon-wc';
+import '../../web-components/ds-icon';
 
 import { useCallback, useMemo, useRef } from 'react';
 
@@ -125,7 +125,7 @@ const IconCheckbox = ({
         tabIndex={disabled ? -1 : 0}
       >
         <Padding all={padding[size]}>
-          <icon-wc size={iconSize} icon={icon}></icon-wc>
+          <ds-icon size={iconSize} icon={icon}></ds-icon>
         </Padding>
       </div>
       {label && (

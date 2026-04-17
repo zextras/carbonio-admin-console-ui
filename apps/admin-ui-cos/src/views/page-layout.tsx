@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Padding, Row, Text } from '@zextras/ui-components';
+import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { FC, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -34,13 +34,13 @@ export const PageLayout: FC<{
     <Container mainAlignment="flex-start" padding={{ all: 'large' }}>
       <Container orientation="horizontal" height="fit" padding={{ all: 'medium' }}>
         <Row takeAvailableSpace mainAlignment="flex-start" minHeight="35px">
-          <Text weight="bold" color="gray0">
+          <ds-text as="strong" weight="bold" color="gray0">
             {title}
-          </Text>
+          </ds-text>
         </Row>
         <Row>{headerButtons}</Row>
       </Container>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <Container
         mainAlignment="flex-start"
         crossAlignment="flex-start"
@@ -51,13 +51,13 @@ export const PageLayout: FC<{
       </Container>
       {onSave && (
         <RouteLeavingGuard when={unSavedChanges} onSave={onSave}>
-          <Text>
+          <ds-text as="p">
             {t(
               'label.unsaved_changes_line1',
               'Are you sure you want to leave this page without saving?',
             )}
-          </Text>
-          <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+          </ds-text>
+          <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
         </RouteLeavingGuard>
       )}
     </Container>
@@ -72,12 +72,12 @@ export const BoxLayout: FC<{
 }> = ({ title, description, disabled = false, children }) => (
   <Container orientation="vertical" height="fit" gap="1rem">
     <Container orientation="vertical" height="fit" crossAlignment="flex-start" gap="0.5rem">
-      <Text weight="bold" overflow="break-word" disabled={disabled}>
+      <ds-text as="strong" weight="bold" overflow="break-word" disabled={disabled}>
         {title}
-      </Text>
-      <Text size="small" overflow="break-word" disabled={disabled}>
+      </ds-text>
+      <ds-text as="span" size="small" overflow="break-word" disabled={disabled}>
         {description}
-      </Text>
+      </ds-text>
     </Container>
     <Container mainAlignment="flex-start" crossAlignment="flex-start" height="fit" gap="1rem">
       {children}
@@ -94,9 +94,9 @@ export const SettingLayout: FC<{
     {children}
     {descriptionGap && <Padding top="small" />}
     <Container height="fit" crossAlignment="flex-start">
-      <Text weight="light" color="gray1" size="small" overflow="break-word">
+      <ds-text as="span" weight="light" color="gray1" size="small" overflow="break-word">
         {description}
-      </Text>
+      </ds-text>
     </Container>
   </Container>
 );

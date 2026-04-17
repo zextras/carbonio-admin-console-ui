@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, ModalOverlay, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { Container, ModalOverlay, Row, useSnackbar } from '@zextras/ui-components';
 import { useAllServers } from '@zextras/ui-shared';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -101,11 +101,11 @@ const QuededDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
         background="white"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text  weight="bold">
+          <ds-text as="h2"  weight="bold">
             {t('operations.queued_panel_heading', 'Queued Operations')}
-          </Text>
+          </ds-text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Container
           orientation="column"
           crossAlignment="flex-start"

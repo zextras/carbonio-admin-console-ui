@@ -13,7 +13,6 @@ import {
   Select,
   SelectItem,
   Switch,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useAllConfig } from '@zextras/ui-shared';
@@ -726,9 +725,9 @@ const MTAPostScreenTuning: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.postscreen_tuning', 'Postscreen Tuning')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -757,7 +756,7 @@ const MTAPostScreenTuning: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         padding={{ all: 'extralarge' }}
@@ -772,9 +771,9 @@ const MTAPostScreenTuning: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: isShowBanner ? 'extrasmall' : 'large' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.blacklisting', 'Blacklisting')}
-          </Text>
+          </ds-text>
         </Container>
         {isShowBanner && (
           <Container
@@ -795,11 +794,11 @@ const MTAPostScreenTuning: FC = () => {
             >
               <Container width="5%" padding={{ left: 'extralarge', right: 'extralarge' }}>
                 <Padding horizontal="small">
-                  <icon-wc
+                  <ds-icon
                     icon="InfoOutline"
                     color="#2196D3"
                     style={{ width: '1.25rem', height: '1.25rem' }}
-                  ></icon-wc>
+                  ></ds-icon>
                 </Padding>
               </Container>
               <Container
@@ -809,12 +808,12 @@ const MTAPostScreenTuning: FC = () => {
                 }}
                 crossAlignment="flex-start"
               >
-                <Text overflow="break-word">
+                <ds-text as="p" overflow="break-word">
                   {t(
                     'mta.graylisting_disabled_warning_message',
                     'This is a form of greylisting, so you need to disable other forms of greylisting.',
                   )}
-                </Text>
+                </ds-text>
               </Container>
             </Container>
 
@@ -870,9 +869,9 @@ const MTAPostScreenTuning: FC = () => {
           height="auto"
           padding={{ top: 'medium' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.dns_black_listing', 'DNS Blacklisting')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           crossAlignment="flex-start"
@@ -1069,9 +1068,9 @@ const MTAPostScreenTuning: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'medium' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.tuning', 'Tuning')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container

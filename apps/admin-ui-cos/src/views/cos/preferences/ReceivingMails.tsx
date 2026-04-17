@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Row, Select, SelectItem, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row, Select, SelectItem } from '@zextras/ui-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -110,9 +110,9 @@ export const ReceivingMails = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text  weight="bold">
+			<ds-text as="strong" weight="bold">
 				{t('label.receiving_mails', 'Receiving Mails')}
-			</Text>
+			</ds-text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					height="fit"

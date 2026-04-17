@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Text } from '@zextras/ui-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -83,16 +82,16 @@ export const ActivationProgress = ({
           <div className={styles.spinner} />
         </div>
       </div>
-      <Text weight="bold" size="large">
+      <ds-text as="h2" weight="bold" size="large">
         {t('subscription.activate.activation_progress.title', 'Activating subscription')}
-      </Text>
+      </ds-text>
       <div className={styles.description}>
-        <Text color="gray0" weight="light">
+        <ds-text as="p" color="gray0" weight="light">
           {t(
             'subscription.activate.activation_progress.description',
             'Please wait while we verify and set up your workspace',
           )}
-        </Text>
+        </ds-text>
       </div>
       <div className={styles.progressBarTrack}>
         <div className={styles.progressBarFill} style={{ width: `${progress}%` }} />

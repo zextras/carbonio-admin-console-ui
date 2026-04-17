@@ -16,7 +16,6 @@ import {
   Select,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
@@ -185,12 +184,12 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
       accountDistributionList?.map((v: any, i) => ({
         id: v.id,
         columns: [
-          <Text key={i} weight="light">
+          <ds-text key={i} weight="light" as="span">
             {v.name.replace(new RegExp('__', 'g'), '').split('@')[0]}
-          </Text>,
-          <Text color="text" key={i} weight="light">
+          </ds-text>,
+          <ds-text color="text" key={i} weight="light" as="span">
             {v.name.replace(new RegExp('__', 'g'), '').split('@')[1]}
-          </Text>,
+          </ds-text>,
         ],
         clickable: true,
       })),
@@ -323,9 +322,9 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
     >
       <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.roles', 'Roles')}
-          </Text>
+          </ds-text>
         </Row>
         {isGlobalAdmin && (
           <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
@@ -433,16 +432,16 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
         accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
           <>
             <Row width="100%" padding={{ top: '2rem' }}>
-              <divider-wc></divider-wc>
+              <ds-divider></ds-divider>
             </Row>
             <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
               <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-                <Text size="small" color="gray0" weight="bold">
+                <ds-text size="small" color="gray0" weight="bold" as="h2">
                   {t(
                     'label.This account has Administration rights for',
                     'This account has Administration rights for',
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Row>
             <Row

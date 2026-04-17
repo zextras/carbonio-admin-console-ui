@@ -12,7 +12,6 @@ import {
   Row,
   Select,
   SingleSelectionOnChange,
-  Text,
 } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -104,7 +103,7 @@ const COSQuotas: FC<QuotaProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text weight="bold">{labels.quotas}</Text>
+      <ds-text as="strong" weight="bold">{labels.quotas}</ds-text>
       <Row mainAlignment="flex-start" width="100%">
         <Container
           height="fit"
@@ -132,9 +131,9 @@ const COSQuotas: FC<QuotaProps> = ({
                         width="fill"
                       >
                         <Padding top="small">
-                          <Text size="extrasmall" weight="regular" color="primary">
+                          <ds-text as="span" size="extrasmall" weight="regular" color="primary">
                             {labels.maximumDigitsAllowed}
-                          </Text>
+                          </ds-text>
                         </Padding>
                       </Container>
                     )}
@@ -152,9 +151,9 @@ const COSQuotas: FC<QuotaProps> = ({
                   {showAccountQuotaLimitMsg && (
                     <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                       <Padding top="small">
-                        <Text size="extrasmall" weight="regular" color="primary">
-                          {labels.maximumDigitsAllowed}
-                        </Text>
+                         <ds-text as="span" size="extrasmall" weight="regular" color="primary">
+                           {labels.maximumDigitsAllowed}
+                         </ds-text>
                       </Padding>
                     </Container>
                   )}
@@ -252,7 +251,7 @@ const COSQuotas: FC<QuotaProps> = ({
           </Container>
         </Row>
       )}
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
     </Row>
   );
 };

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Padding, Row, Text } from '@zextras/ui-components';
+import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 
 interface BackupConfigHeaderProps {
@@ -25,9 +25,9 @@ const BackupConfigHeader: FC<BackupConfigHeaderProps> = ({
 		<Container orientation="vertical" mainAlignment="space-around" background="gray6" height="58px">
 			<Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
 				<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-					<Text size="medium" weight="bold" color="gray0">
+					<ds-text as="h2" size="medium" weight="bold" color="gray0">
 						{title}
-					</Text>
+					</ds-text>
 				</Row>
 				<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
 					<Padding right="small">

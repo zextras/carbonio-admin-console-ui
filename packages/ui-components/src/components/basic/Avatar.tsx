@@ -124,12 +124,12 @@ const Avatar = ({
     if (selecting) {
       if (selected) {
         return (
-          <icon-wc
+          <ds-icon
             size={size === 'extralarge' ? 'large' : size}
             icon="Checkmark"
             color="gray6"
             disabled={disabled}
-          ></icon-wc>
+          ></ds-icon>
         );
       }
       return null;

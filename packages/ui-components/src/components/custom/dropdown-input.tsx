@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { IconSize } from '../../web-components/ds-icon';
 import { IconName } from '../../web-components/icon-registry';
-import { IconSize } from '../../web-components/icon-wc';
 import { Dropdown } from '../display/Dropdown';
 import { Input } from '../inputs/Input';
 
@@ -79,12 +79,12 @@ export const DropDownInput = ({
         onChange={onChange}
         CustomIcon={() =>
           isCustomIcon ? (
-            <icon-wc
+            <ds-icon
               icon={customIconDetail?.icon || 'GlobeOutline'}
               size={customIconDetail?.size || 'large'}
               color={customIconDetail?.color || 'primary'}
               clickHandler={customIconDetail?.onClick}
-            ></icon-wc>
+            ></ds-icon>
           ) : (
             ''
           )
