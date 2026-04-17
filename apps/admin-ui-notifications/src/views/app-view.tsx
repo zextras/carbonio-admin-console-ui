@@ -5,14 +5,14 @@
  */
 import { Container } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
+import { CSSProperties, FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
 
-function getContainerStyle(isPrimaryBarExpanded: boolean) {
+function getContainerStyle(isPrimaryBarExpanded: boolean): CSSProperties {
   return {
     maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
     transition: 'width 300ms',

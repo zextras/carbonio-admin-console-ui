@@ -10,6 +10,7 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LIST } from '../../constants';
+import { type ManageOption } from '../../types/notifications';
 
 const NotificationsListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -17,7 +18,7 @@ const NotificationsListPanel: FC = () => {
 	const [selectedOperationItem, setSelectedOperationItem] = useState(LIST);
 	const [isManageOptionsExpanded, setIsManageOptionsExpanded] = useState<boolean>(true);
 
-	const manageOptions = useMemo(
+	const manageOptions = useMemo<Array<ManageOption>>(
 		() => [
 			{
 				id: LIST,
