@@ -60,7 +60,7 @@ export const EditAccountQuotaBarNew = ({
             used: humanFileSize(used, t),
           }}
           components={{
-            bold: <ds-text weight="bold" overflow={'break-word'} display="inline" as="strong" />,
+            bold: <strong />,
           }}
         />
       );
