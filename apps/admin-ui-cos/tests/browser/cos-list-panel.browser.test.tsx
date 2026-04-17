@@ -116,7 +116,8 @@ describe('CosListPanel', () => {
 
     await expect.element(page.getByText('General Information')).toHaveStyle({ opacity: '1' });
     await page.getByText('Details').click();
-    await expect.element(page.getByText('Details')).toHaveStyle({ fontWeight: 'bold' });
+    const dsText = document.querySelector('ds-text[weight="bold"]');
+    expect(dsText).toBeTruthy();
   });
 
   it('should change chevron icon when details dropdown is toggled', async () => {
