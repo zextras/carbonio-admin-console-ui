@@ -49,6 +49,12 @@ import COSPassword from './advanced/cos-password';
 import COSQuotas from './advanced/cos-quotas';
 import COSTimeoutPolicy from './advanced/cos-timeout-policy';
 
+const EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE: Array<string> = [
+  'zimbraMailQuota',
+  'zimbraQuotaWarnPercent',
+  'zimbraQuotaWarnInterval',
+  'zimbraQuotaWarnMessage',
+] satisfies Array<keyof AccountType>;
 
 type AdvancedBackupAttributes = {
   [BACKUP_ENABLED]: boolean | undefined;
@@ -1238,10 +1244,11 @@ const CosAdvanced: FC = () => {
       }
     }
 
-    // When in new total quota mode, exclude zimbraMailQuota from the attributes saved via modifyCos
     const cosAdvancedToSave = isTotalQuotaActive
       ? (Object.fromEntries(
-          Object.entries(cosAdvanced).filter(([key]) => key !== 'zimbraMailQuota'),
+          Object.entries(cosAdvanced).filter(
+            ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
+          ),
         ) as AccountType)
       : cosAdvanced;
 
