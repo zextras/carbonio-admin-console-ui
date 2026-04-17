@@ -765,6 +765,7 @@ const EditAccountSecuritySection: FC = () => {
                       'domain.accounts.enforceOnUntrustedNetworks',
                       'Enforce on Untrusted Networks',
                     )}
+                    disabled={accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE}
                     iconColor="primary"
                     inheritedValue={cosDetail.carbonioOtpWizardFromUntrusted}
                     fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
@@ -773,7 +774,12 @@ const EditAccountSecuritySection: FC = () => {
                   />
                   <Padding left={'extralarge'}>
                     <Row padding={{ left: 'small' }}>
-                      <Text color="gray1" size="small" overflow="break-word">
+                      <Text
+                        disabled={accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE}
+                        color="gray1"
+                        size="small"
+                        overflow="break-word"
+                      >
                         {t(
                           'domain.accounts.enforceOnUntrustedNetworksInfo',
                           'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
@@ -792,6 +798,10 @@ const EditAccountSecuritySection: FC = () => {
                       'domain.accounts.allowSetupDeferralDuringGracePeriod',
                       'Allow setup deferral during grace period',
                     )}
+                    disabled={
+                      accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                      accountDetail?.carbonioOtpWizardFromUntrusted === FALSE
+                    }
                     iconColor="primary"
                     inheritedValue={cosDetail.carbonioOtpGracePeriodEnabled}
                     fromSubValue={accSpecificDetail?.carbonioOtpGracePeriodEnabled}
@@ -800,7 +810,15 @@ const EditAccountSecuritySection: FC = () => {
                   />
                   <Padding left={'extralarge'}>
                     <Row padding={{ left: 'small' }}>
-                      <Text color="gray1" size="small" overflow="break-word">
+                      <Text
+                        disabled={
+                          accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                          accountDetail?.carbonioOtpWizardFromUntrusted === FALSE
+                        }
+                        color="gray1"
+                        size="small"
+                        overflow="break-word"
+                      >
                         {t(
                           'domain.accounts.allowSetupDeferralDuringGracePeriodInfo',
                           'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
@@ -814,7 +832,11 @@ const EditAccountSecuritySection: FC = () => {
                 <Padding left={'extralarge'} width="100%">
                   <Row width="100%">
                     <DateTimePicker
-                      disabled={accountDetail?.carbonioOtpGracePeriodEnabled === FALSE}
+                      disabled={
+                        accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                        accountDetail?.carbonioOtpWizardFromUntrusted === FALSE ||
+                        accountDetail?.carbonioOtpGracePeriodEnabled === FALSE
+                      }
                       width={'21.625rem'}
                       className="fffff"
                       label={t(

@@ -214,11 +214,22 @@ export const Features: FC<{
                         onChangeReset={(): void =>
                           setEmptyValue?.('carbonioOtpWizardFromUntrusted')
                         }
-                        disabled={readonlyFeatures}
+                        disabled={
+                          readonlyFeatures ||
+                          featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE'
+                        }
                       />
                       <Padding left={'extralarge'}>
                         <Row padding={{ left: 'small' }}>
-                          <Text color="gray1" size="small" overflow="break-word">
+                          <Text
+                            disabled={
+                              readonlyFeatures ||
+                              featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE'
+                            }
+                            color="gray1"
+                            size="small"
+                            overflow="break-word"
+                          >
                             {t(
                               'cos.features.enforceOnUntrustedNetworksInfo',
                               'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
@@ -242,10 +253,24 @@ export const Features: FC<{
                         fromSubValue={accSpecificDetail?.carbonioOtpGracePeriodEnabled}
                         inputName={'carbonioOtpGracePeriodEnabled'}
                         onChangeReset={(): void => setEmptyValue?.('carbonioOtpGracePeriodEnabled')}
+                        disabled={
+                          readonlyFeatures ||
+                          featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE' ||
+                          featuresDetail?.carbonioOtpWizardFromUntrusted === 'FALSE'
+                        }
                       />
                       <Padding left={'extralarge'}>
                         <Row padding={{ left: 'small' }}>
-                          <Text color="gray1" size="small" overflow="break-word">
+                          <Text
+                            size="small"
+                            overflow="break-word"
+                            disabled={
+                              readonlyFeatures ||
+                              featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE' ||
+                              featuresDetail?.carbonioOtpWizardFromUntrusted === 'FALSE'
+                            }
+                            color={'gray1'}
+                          >
                             {t(
                               'cos.features.allowSetupDeferralDuringGracePeriodInfo',
                               'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
