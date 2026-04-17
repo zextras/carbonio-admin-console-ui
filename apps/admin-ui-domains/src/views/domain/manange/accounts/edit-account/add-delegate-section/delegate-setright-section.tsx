@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Checkbox, Container, Radio, RadioGroup, Row, Select, Text } from '@zextras/ui-components';
+import { Checkbox, Container, Radio, RadioGroup, Row, Select } from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
 import { FC, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,9 +42,9 @@ const DelegateSetRightsSection: FC = () => {
       >
         <Row mainAlignment="flex-start" width="100%">
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <Text size="small" color="gray0" weight="bold">
+            <ds-text size="small" color="gray0" weight="bold" as="h3">
               {t('account_details.delegate_rights', 'Delegate`s rights')}
-            </Text>
+            </ds-text>
           </Row>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
@@ -65,7 +65,7 @@ const DelegateSetRightsSection: FC = () => {
           </Row>
         </Row>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         {!(
           deligateDetail?.delegeteRights === SEND_MAILS_ONLY ||
@@ -77,9 +77,9 @@ const DelegateSetRightsSection: FC = () => {
           <>
             <Row mainAlignment="flex-start" width="100%">
               <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-                <Text size="small" color="gray0" weight="bold">
+                <ds-text size="small" color="gray0" weight="bold" as="h3">
                   {t('account_details.sending_options', `Sending Options`)}
-                </Text>
+                </ds-text>
               </Row>
             </Row>
             <Row
@@ -139,12 +139,12 @@ const DelegateSetRightsSection: FC = () => {
           <>
             <Row mainAlignment="flex-start" width="100%">
               <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-                <Text size="small" color="gray0" weight="bold">
+                <ds-text size="small" color="gray0" weight="bold" as="h3">
                   {t(
                     'account_details.select_delegate_folder',
                     `Select which folders the delegate can view`,
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Row>
             <Row

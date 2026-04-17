@@ -50,7 +50,7 @@ const ListPanelItem: FC<ListPanelItemProps> = ({ title, isListExpanded, setToggl
         </Padding>
       </Row>
     </Container>
-    <divider-wc color="gray3"></divider-wc>
+    <ds-divider color="gray3"></ds-divider>
   </>
 );
 

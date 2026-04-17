@@ -12,7 +12,6 @@ import {
   ListPanelItem,
   Padding,
   Row,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import {
@@ -116,7 +115,7 @@ const DomainListPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <spinner-wc></spinner-wc>
+          <ds-spinner></ds-spinner>
         </Container>
       ),
     },
@@ -496,10 +495,10 @@ const DomainListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <icon-wc
+                    <ds-icon
                       style={{ width: '1.25rem', height: '1.25rem' }}
                       icon="InfoOutline"
-                    ></icon-wc>
+                    ></ds-icon>
                   </Padding>
                 </Row>
                 <Row
@@ -509,12 +508,12 @@ const DomainListPanel: FC = () => {
                     all: 'small',
                   }}
                 >
-                  <Text overflow="break-word">
+                  <ds-text as="p" overflow="break-word">
                     {t(
                       'many_domain_info_msg',
                       'So many domains! Which one would you like to see? Start typing to filter.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </>
             ),
@@ -602,12 +601,12 @@ const DomainListPanel: FC = () => {
       {isShowError && (
         <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
           <Padding top="large" left="small">
-            <Text size="extrasmall" weight="regular" color="error">
+            <ds-text as="small" size="extrasmall" weight="regular" color="error">
               {t(
                 'label.not_found_check_the_text_and_try_again',
                 'Not found - check the text and try again',
               )}
-            </Text>
+            </ds-text>
           </Padding>
         </Container>
       )}

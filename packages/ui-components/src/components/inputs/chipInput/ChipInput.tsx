@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../../web-components/divider-wc';
+import '../../../web-components/ds-divider';
 
 import clsx from 'clsx';
 import { debounce, filter, isEmpty, slice, trim, uniq } from 'lodash-es';
@@ -748,7 +748,7 @@ const ChipInputComponent = <TValue = unknown,>({
           </Container>
         </InputContainer>
       </Dropdown>
-      <divider-wc color={dividerColor}></divider-wc>
+      <ds-divider color={dividerColor}></ds-divider>
       {description !== undefined && (
         <InputDescription
           className={styles.customInputDescription}

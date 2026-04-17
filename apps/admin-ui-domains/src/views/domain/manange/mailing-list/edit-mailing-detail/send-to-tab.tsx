@@ -16,7 +16,6 @@ import {
   Row,
   Select,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { sortedUniq, uniq } from 'lodash';
@@ -174,20 +173,27 @@ export const SendToTab: FC<SendToTabProps> = ({
     } else {
       setIsShowSenderToError(true);
       setSenderToErrorMessage(
-        t(
-          'domain.distributionList.blankEmailErrorMsg',
-          'Please enter at least one email address',
-        ),
+        t('domain.distributionList.blankEmailErrorMsg', 'Please enter at least one email address'),
       );
     }
-  }, [grantEmailsList, createSnackbar, grantEmailItem, t, setGrantEmailsList, setGrantEmails, setIsDirty, setIsShowSenderToError]);
+  }, [
+    grantEmailsList,
+    createSnackbar,
+    grantEmailItem,
+    t,
+    setGrantEmailsList,
+    setGrantEmails,
+    setIsDirty,
+    setIsShowSenderToError,
+  ]);
 
   useMemo(() => {
     if (grantEmailsList && grantEmailsList.length > 0) {
       const allRows = grantEmailsList.map((item: any) => ({
         id: item,
         columns: [
-          <Text
+          <ds-text
+            as="span"
             size="small"
             weight="regular"
             key={item}
@@ -197,7 +203,7 @@ export const SendToTab: FC<SendToTabProps> = ({
             }}
           >
             {item}
-          </Text>,
+          </ds-text>,
           <Button
             key={item + '_delete'}
             type="ghost"
@@ -238,20 +244,15 @@ export const SendToTab: FC<SendToTabProps> = ({
         orientation="vertical"
         padding={{ bottom: 'medium', top: 'medium' }}
       >
-        <Text size="medium" color="gray0" weight="bold">
+        <ds-text as="h3" size="medium" color="gray0" weight="bold">
           {t(`domain.distributionList.managePermission`, `Manage permissions`)}
-        </Text>
-        <Text
-          size="small"
-          color="gray0"
-          style={{ marginTop: '0.5rem' }}
-          overflow="break-word"
-        >
+        </ds-text>
+        <ds-text as="p" size="small" color="gray0" style={{ marginTop: '0.5rem' }} overflow="break-word">
           {t(
             'domain.distributionList.sendTo.managePermissionDescriptionMsg',
             'Control who can send emails to this distribution list',
           )}
-        </Text>
+        </ds-text>
       </Row>
 
       <ListRow>
@@ -259,10 +260,7 @@ export const SendToTab: FC<SendToTabProps> = ({
           <Select
             items={grantTypeOptions}
             background="gray5"
-            label={t(
-              'domain.distributionList.sendTo.acceptMessageFrom',
-              'Accept message from',
-            )}
+            label={t('domain.distributionList.sendTo.acceptMessageFrom', 'Accept message from')}
             showCheckbox={false}
             onChange={onGrantTypeChange}
             selection={grantType}
@@ -304,15 +302,11 @@ export const SendToTab: FC<SendToTabProps> = ({
                   width="100%"
                   padding={{ top: 'small' }}
                 >
-                  <Container
-                    mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                    width="fill"
-                  >
+                  <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                     <Padding right={'0'}>
-                      <Text size="extrasmall" weight="regular" color="error">
+                      <ds-text as="span" size="extrasmall" weight="regular" color="error">
                         {senderToErrorMessage}
-                      </Text>
+                      </ds-text>
                     </Padding>
                   </Container>
                 </Row>
@@ -335,7 +329,7 @@ export const SendToTab: FC<SendToTabProps> = ({
             </Container>
           </ListRow>
           <Row width="100%">
-            <divider-wc color="gray2" />
+            <ds-divider color="gray2" />
           </Row>
           <ListRow>
             <Container padding={{ bottom: 'large', top: 'large' }}>
@@ -345,26 +339,23 @@ export const SendToTab: FC<SendToTabProps> = ({
                 padding={{ bottom: 'large' }}
                 width="100%"
               >
-                <Text weight="bold" color="gray0">
+                <ds-text as="h4" weight="bold" color="gray0">
                   {t(
                     'domain.distributionList.sendTo.authorizedSendersToList',
                     'Authorized senders to this distribution list',
                   )}
-                </Text>
+                </ds-text>
               </Row>
               {grantEmailTableRows.length > 0 && (
                 <ListRow>
                   <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
                     <Input
-                      label={t(
-                        'domain.distributionList.sendTo.searchSenders',
-                        'Search senders',
-                      )}
+                      label={t('domain.distributionList.sendTo.searchSenders', 'Search senders')}
                       value={filterGrantEmail}
                       backgroundColor="gray5"
                       onChange={handleInputChangeGrantEmail}
                       CustomIcon={(): any => (
-                        <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                        <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                       )}
                     />
                   </Row>
@@ -396,14 +387,14 @@ export const SendToTab: FC<SendToTabProps> = ({
                 </Padding>
                 <Padding vertical="extralarge" width="100%">
                   <Row mainAlignment="center" width="100%">
-                    <Text size="large" color="secondary" weight="regular">
+                    <ds-text as="p" size="large" color="secondary" weight="regular">
                       {t('label.there_are_not_member_here', "There aren't members here.")}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row mainAlignment="center" width="100%">
-                    <Text size="large" color="secondary" weight="regular">
+                    <ds-text as="p" size="large" color="secondary" weight="regular">
                       {searchUserLabelValue}
-                    </Text>
+                    </ds-text>
                   </Row>
                 </Padding>
               </Container>

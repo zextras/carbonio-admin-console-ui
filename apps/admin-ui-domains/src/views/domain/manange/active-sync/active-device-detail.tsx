@@ -12,7 +12,6 @@ import {
   ListRow,
   Row,
   Select,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useStickyBarStore } from '@zextras/ui-shared';
@@ -377,16 +376,16 @@ const ActiveDeviceDetail: FC<{
           />
         </Row>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <ListRow>
         <Displayer buttons={buttons} pinIcon={isSticky} />
       </ListRow>
       <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
         <ListRow>
           <Row padding={{ top: 'large' }}>
-            <Text size="medium" weight="bold" color="gray0">
+            <ds-text as="h3" size="medium" weight="bold" color="gray0">
               {t('label.status_lbl', 'Status')}
-            </Text>
+            </ds-text>
           </Row>
         </ListRow>
 
@@ -410,9 +409,9 @@ const ActiveDeviceDetail: FC<{
 
         <ListRow>
           <Row padding={{ top: 'large' }}>
-            <Text size="medium" weight="bold" color="gray0">
+            <ds-text as="h3" size="medium" weight="bold" color="gray0">
               {t('label.account', 'Account')}
-            </Text>
+            </ds-text>
           </Row>
         </ListRow>
 

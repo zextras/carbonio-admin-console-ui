@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../../web-components/icon-wc';
+import '../../../web-components/ds-icon';
 
 import React, { useCallback, useEffect } from 'react';
 
@@ -121,7 +121,7 @@ const Snackbar = ({
           >
             <Row flexShrink={0}>
               <Row flexShrink={0}>
-                <icon-wc size="large" icon={icons[severity]} color="gray6"></icon-wc>
+                <ds-icon size="large" icon={icons[severity]} color="gray6"></ds-icon>
               </Row>
             </Row>
             <Container

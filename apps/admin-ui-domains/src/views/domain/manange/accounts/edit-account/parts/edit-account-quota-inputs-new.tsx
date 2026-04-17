@@ -11,7 +11,6 @@ import {
   Row,
   Switch,
   SwitchProps,
-  Text,
   Tooltip,
 } from '@zextras/ui-components';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
@@ -161,13 +160,13 @@ export const EditAccountQuotaInputsNew = ({
     <Tooltip
       label={
         <>
-          <Text weight="bold">
+          <ds-text weight="bold" as="span">
             {t('account_details.inherited_value_was', 'The inherited value was: {{value}}', {
               value: inheritedValue || '',
             })}
-          </Text>
+          </ds-text>
           <Padding top="small">
-            <Text weight="bold">{t('account_details.click_to_revert', 'Click to revert.')}</Text>
+            <ds-text weight="bold" as="span">{t('account_details.click_to_revert', 'Click to revert.')}</ds-text>
           </Padding>
         </>
       }
@@ -195,7 +194,7 @@ export const EditAccountQuotaInputsNew = ({
             value={switchValue}
             disabled={typeof domainQuotaConstraint === 'number'}
           />
-          <Text size="medium">{t('label.unlimited_quota', 'Unlimited quota')}</Text>
+          <ds-text size="medium" as="label">{t('label.unlimited_quota', 'Unlimited quota')}</ds-text>
         </Container>
       </Padding>
       <Row

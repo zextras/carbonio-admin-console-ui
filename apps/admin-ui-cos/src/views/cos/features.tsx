@@ -10,7 +10,6 @@ import {
   ListRow,
   Padding,
   Row,
-  Text,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { FC, useCallback, useMemo } from 'react';
@@ -113,7 +112,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text weight="bold">{t('label.general_lbl', 'General')}</Text>
+          <ds-text as="strong" weight="bold">
+            {t('label.general_lbl', 'General')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.zimbraFeatureOptionsEnabled}
@@ -143,7 +144,7 @@ export const Features: FC<{
             </Row>
           )}
         </Container>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       {cosLevelFeatures && (
         <Row
@@ -158,9 +159,9 @@ export const Features: FC<{
             orientation="vertical"
             padding={{ bottom: 'large' }}
           >
-            <Text weight="bold">
+            <ds-text as="strong" weight="bold">
               {t('cos.features.twoFactorAuthenticator', 'Two-Factor authenticator')}
-            </Text>
+            </ds-text>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
               <InheritedSwitch
                 subValue={featuresDetail?.carbonioFeatureOTPMgmtEnabled}
@@ -176,22 +177,22 @@ export const Features: FC<{
             </Row>
             <Padding left={'extralarge'} bottom={'large'}>
               <Row padding={{ left: 'small' }}>
-                <Text color="gray1" size="small" overflow="break-word">
+                <ds-text as="span" color="gray1" size="small" overflow="break-word">
                   {t(
                     'cos.features.allowUsersToConfigure2FAInfo',
                     'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.',
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Padding>
             {isAdvanced && (
               <Row mainAlignment="flex-start" width="100%" padding={{ vertical: 'large' }}>
-                <Text weight="bold">
+                <ds-text as="strong" weight="bold">
                   {t(
                     'cos.features.twoFactorAuthSetupEnforcement',
                     'Two-Factor authenticator setup enforcement',
                   )}
-                </Text>
+                </ds-text>
                 <Container
                   height="fit"
                   crossAlignment="flex-start"
@@ -221,20 +222,21 @@ export const Features: FC<{
                       />
                       <Padding left={'extralarge'}>
                         <Row padding={{ left: 'small' }}>
-                          <Text
+                          <ds-text
+                            as="span"
+                            color="gray1"
+                            size="small"
+                            overflow="break-word"
                             disabled={
                               readonlyFeatures ||
                               featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE'
                             }
-                            color="gray1"
-                            size="small"
-                            overflow="break-word"
                           >
                             {t(
                               'cos.features.enforceOnUntrustedNetworksInfo',
                               'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
                             )}
-                          </Text>
+                          </ds-text>
                         </Row>
                       </Padding>
                     </Container>
@@ -261,7 +263,9 @@ export const Features: FC<{
                       />
                       <Padding left={'extralarge'}>
                         <Row padding={{ left: 'small' }}>
-                          <Text
+                          <ds-text
+                            as="span"
+                            color="gray1"
                             size="small"
                             overflow="break-word"
                             disabled={
@@ -269,13 +273,12 @@ export const Features: FC<{
                               featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE' ||
                               featuresDetail?.carbonioOtpWizardFromUntrusted === 'FALSE'
                             }
-                            color={'gray1'}
                           >
                             {t(
                               'cos.features.allowSetupDeferralDuringGracePeriodInfo',
                               'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
                             )}
-                          </Text>
+                          </ds-text>
                         </Row>
                       </Padding>
                     </Container>
@@ -305,7 +308,7 @@ export const Features: FC<{
               </Row>
             )}
           </Container>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
       )}
       <Row
@@ -321,7 +324,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text weight="bold">{t('label.mail', 'Mail')}</Text>
+          <ds-text as="strong" weight="bold">
+            {t('label.mail', 'Mail')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.carbonioFeatureMailsAppEnabled}
@@ -362,7 +367,7 @@ export const Features: FC<{
             />
           </Row>
         </Container>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row
         mainAlignment="flex-start"
@@ -377,7 +382,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text weight="bold">{t('label.contacts', 'Contacts')}</Text>
+          <ds-text as="strong" weight="bold">
+            {t('label.contacts', 'Contacts')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.zimbraFeatureContactsEnabled}
@@ -399,7 +406,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text weight="bold">{t('label.calendar', 'Calendar')}</Text>
+          <ds-text as="strong" weight="bold">
+            {t('label.calendar', 'Calendar')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.zimbraFeatureCalendarEnabled}
@@ -414,7 +423,7 @@ export const Features: FC<{
             />
           </Row>
         </Container>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Row
         mainAlignment="flex-start"
@@ -429,7 +438,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text weight="bold">{t('label.files', 'Files')}</Text>
+          <ds-text as="strong" weight="bold">
+            {t('label.files', 'Files')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.carbonioFeatureFilesEnabled}
@@ -464,7 +475,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <Text weight="bold">{t('label.tasks', 'Tasks')}</Text>
+          <ds-text as="strong" weight="bold">
+            {t('label.tasks', 'Tasks')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.carbonioFeatureTasksEnabled}

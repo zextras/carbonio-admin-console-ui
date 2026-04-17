@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Text } from '@zextras/ui-components';
+import { Button } from '@zextras/ui-components';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -47,18 +47,18 @@ export const ActivationSuccess = ({
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
       <div className={styles.imageCircle}>
-        <icon-wc icon="CheckmarkCircle" color="success" size="60px"></icon-wc>
+        <ds-icon icon="CheckmarkCircle" color="success" size="60px"></ds-icon>
       </div>
-      <Text weight="bold" size="large">
+      <ds-text as="h2" weight="bold" size="large">
         {t('subscription.activate.activation_success.title', 'Subscription activated')}
-      </Text>
+      </ds-text>
       <div className={styles.description}>
-        <Text color="gray0" weight="light" style={{ whiteSpace: 'pre-line' }}>
+        <ds-text as="p" color="gray0" weight="light" style={{ whiteSpace: 'pre-line' }}>
           {t(
             'subscription.activate.activation_success.description',
             'License activated.\nYou will be redirected to the subscription page.',
           )}
-        </Text>
+        </ds-text>
       </div>
       <Button label={buttonLabel} width="fill" onClick={onClick} />
     </div>

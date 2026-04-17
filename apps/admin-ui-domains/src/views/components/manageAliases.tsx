@@ -11,7 +11,6 @@ import {
   Modal,
   Row,
   Select,
-  Text,
 } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
 import { cloneDeep, noop, uniqBy } from 'lodash-es';
@@ -44,9 +43,9 @@ const ManageAliases: FC<{
           <>
             <Row width="76%" mainAlignment="flex-start" crossAlignment="flex-start">
               <Row padding={{ left: 'large', bottom: 'small' }}>
-                <Text size="small" color="secondary">
+                <ds-text as="label" size="small" color="secondary">
                   {t('account_details.aliases', 'Aliases')}
-                </Text>
+                </ds-text>
               </Row>
               <Row width="100%">
                 <Container
@@ -63,7 +62,7 @@ const ManageAliases: FC<{
                       ),
                   )}
                   <Row width="100%" padding={{ top: 'medium' }}>
-                    <divider-wc></divider-wc>
+                    <ds-divider></ds-divider>
                   </Row>
                 </Container>
               </Row>
@@ -82,13 +81,13 @@ const ManageAliases: FC<{
             label={t('account_details.aliases', 'Aliases')}
             value={(listAliases?.length || 1) - 1}
             CustomIcon={() => (
-              <icon-wc
+              <ds-icon
                 icon="EditAsNewOutline"
                 onClick={(): void => setShowManageAliesModal(true)}
                 style={{ cursor: 'pointer' }}
                 size="large"
                 onChange={noop}
-              ></icon-wc>
+              ></ds-icon>
             )}
           />
         )}
@@ -106,12 +105,12 @@ const ManageAliases: FC<{
       >
         <Row padding={{ top: 'large', bottom: 'large' }} width="100%">
           <Row padding={{ top: 'medium', bottom: 'large' }}>
-            <Text>
+            <ds-text as="p">
               {t(
                 'account_details.type_the_new_alias_name',
                 'Type the new Alias Name and select a domain to add it to your available aliases',
               )}
-            </Text>
+            </ds-text>
           </Row>
           <Row
             padding={{ bottom: 'large' }}
@@ -132,7 +131,7 @@ const ManageAliases: FC<{
               />
             </Container>
             <Container padding={{ top: 'large', left: 'small', right: 'small' }} width="10%">
-              <icon-wc icon="AtOutline" size="large"></icon-wc>
+              <ds-icon icon="AtOutline" size="large"></ds-icon>
             </Container>
             <Container
               mainAlignment="flex-start"
@@ -179,18 +178,18 @@ const ManageAliases: FC<{
             </Container>
           </Row>
           <Row padding={{ top: 'medium', bottom: 'large' }}>
-            <Text>
+            <ds-text as="p">
               {t(
                 'account_details.click_on_the_pencil_to_edit',
                 'Click on the pencil to edit the available alias or click on the cross to delete it',
               )}
-            </Text>
+            </ds-text>
           </Row>
           <Row width="100%" mainAlignment="flex-start" crossAlignment="flex-start">
             <Row padding={{ left: 'large', bottom: 'small' }}>
-              <Text size="small" color="secondary">
+              <ds-text as="label" size="small" color="secondary">
                 {t('account_details.your_available_aliases', 'Your Available Aliases')}
-              </Text>
+              </ds-text>
             </Row>
             <Row width="100%">
               <Container
@@ -239,7 +238,7 @@ const ManageAliases: FC<{
                     ),
                 )}
                 <Row width="100%" padding={{ top: 'medium' }}>
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Row>
               </Container>
             </Row>

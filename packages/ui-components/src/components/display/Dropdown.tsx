@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/divider-wc';
+import '../../web-components/ds-divider';
 
 import { flip, limitShift, Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
@@ -64,12 +64,12 @@ function ListItemContent({
       <Container orientation="horizontal" mainAlignment="flex-start">
         {icon && (
           <Padding right="small">
-            <icon-wc
+            <ds-icon
               icon={icon}
               size="medium"
               color={disabled ? 'secondary' : 'text'}
               style={{ pointerEvents: 'none' }}
-            ></icon-wc>
+            ></ds-icon>
           </Padding>
         )}
         <Text
@@ -309,7 +309,7 @@ function NestListItem({
               tooltipLabel={tooltipLabel}
             />
           )}
-          <icon-wc size="medium" icon="ChevronRight"></icon-wc>
+          <ds-icon size="medium" icon="ChevronRight"></ds-icon>
         </Container>
       </Dropdown>
     </Container>
@@ -661,7 +661,7 @@ const Dropdown = ({
           const nestedRef = React.createRef<HTMLDivElement>();
           nestedDropdownsRef.current.push(nestedRef);
           return (
-            (type === 'divider' && <divider-wc key={id}></divider-wc>) ||
+            (type === 'divider' && <ds-divider key={id}></ds-divider>) ||
             (subItems && (
               <NestListItem
                 icon={icon}

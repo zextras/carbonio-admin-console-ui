@@ -1,3 +1,9 @@
+## [0.13.0-devel.15](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.14...v0.13.0-devel.15) (2026-04-17)
+
+### Features
+
+* types on admin-ui-notifications ([867dbde](https://github.com/zextras/carbonio-admin-console-ui/commit/867dbde831f7047413cba256abd3c135fd084893))
+
 ## [0.13.0-devel.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.13...v0.13.0-devel.14) (2026-04-15)
 
 ### Features

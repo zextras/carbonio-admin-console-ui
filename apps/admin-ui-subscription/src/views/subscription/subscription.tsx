@@ -12,7 +12,6 @@ import {
   Modal,
   Quota,
   Row,
-  Text,
   Tooltip,
 } from '@zextras/ui-components';
 import {
@@ -211,7 +210,7 @@ export const Subscription = (): React.JSX.Element => {
   };
 
   if (isFetching) {
-    return <spinner-wc />;
+    return <ds-spinner></ds-spinner>;
   }
 
   if (!licenseData) {
@@ -235,15 +234,15 @@ export const Subscription = (): React.JSX.Element => {
           padding={{ all: 'large' }}
         >
           <Row mainAlignment="flex-start" crossAlignment="flex-start">
-            <Text size="medium" weight="bold" color="gray0">
+            <ds-text as="h2" size="medium" weight="bold" color="gray0">
               {t('label.details', 'Details')}
-            </Text>
+            </ds-text>
           </Row>
         </Row>
       </Container>
 
       <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Container
         mainAlignment="flex-start"
@@ -255,7 +254,7 @@ export const Subscription = (): React.JSX.Element => {
         height="calc(100vh - 200px)"
       >
         <Row width="fill" mainAlignment="flex-start" padding={{ vertical: 'large' }}>
-          <Text weight="bold">{t('core.subscription.activation', 'Activation')}</Text>
+          <ds-text as="label" weight="bold">{t('core.subscription.activation', 'Activation')}</ds-text>
         </Row>
         <Container
           orientation="horizontal"
@@ -431,12 +430,12 @@ export const Subscription = (): React.JSX.Element => {
               >
                 <Tooltip
                   label={
-                    <Text style={{ whiteSpace: 'pre-line' }}>
+                    <ds-text as="p" style={{ whiteSpace: 'pre-line' }}>
                       {t(
                         'core.subscription.last_validation_check_tooltip',
                         'This date represents the last day on which the license was validated by the Zextras Subscription Service.\n\nSince this is a Pay Per Use (PPU) subscription, the system automatically reports daily usage data to the Zextras Subscription Service. No user action is required as long as communication is functioning correctly. If the system is unable to contact the service, a 7-day grace period is applied. This grace period is automatically renewed each time the Zextras Subscription Service is successfully contacted.',
                       )}
-                    </Text>
+                    </ds-text>
                   }
                 >
                   <LabeledValue
@@ -459,12 +458,12 @@ export const Subscription = (): React.JSX.Element => {
               >
                 <Tooltip
                   label={
-                    <Text style={{ whiteSpace: 'pre-line' }}>
+                    <ds-text as="p" style={{ whiteSpace: 'pre-line' }}>
                       {t(
                         'core.subscription.next_validation_deadline_tooltip',
                         'This date represents the last day the license will remain fully functional if usage data is not sent to the Zextras Subscription Service.\n\nSince this is a Pay Per Use (PPU) subscription, the system automatically reports daily usage data to the Zextras Subscription Service. No user action is required as long as communication is functioning correctly. If the system is unable to contact the service, a 7-day grace period is applied. This grace period is automatically renewed each time the Zextras Subscription Service is successfully contacted.',
                       )}
-                    </Text>
+                    </ds-text>
                   }
                 >
                   <LabeledValue
@@ -500,16 +499,16 @@ export const Subscription = (): React.JSX.Element => {
               padding={{ top: 'small', bottom: 'large', right: 'small' }}
               style={{ gap: '.5rem' }}
             >
-              <Text size="small" color="#828282">
+              <ds-text as="span" size="small" color="#828282">
                 {t('core.subscription.accounts', 'Accounts')}
-              </Text>
+              </ds-text>
               <Row
                 orientation="vertical"
                 width="100%"
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
               >
-                <Text size="small">{`${services.response.accountCount} / ${services.response.licensedUsers}`}</Text>
+                <ds-text as="span" size="small">{`${services.response.accountCount} / ${services.response.licensedUsers}`}</ds-text>
                 <Quota
                   fill={calculatedAccountQuotaSizePercentage}
                   background="#F5F6F8"
@@ -551,7 +550,7 @@ export const Subscription = (): React.JSX.Element => {
           mainAlignment="flex-start"
           padding={{ top: 'large', bottom: 'large', right: 'large' }}
         >
-          <Text weight="bold">{t('core.subscription.modules', 'Modules')}</Text>
+          <ds-text as="label" weight="bold">{t('core.subscription.modules', 'Modules')}</ds-text>
         </Row>
         <Container
           orientation="horizontal"
@@ -578,7 +577,7 @@ export const Subscription = (): React.JSX.Element => {
             </>
           ))}
         </Container>
-        <divider-wc style={{ marginBlockStart: '2rem' }}></divider-wc>
+        <ds-divider style={{ marginBlockStart: '2rem' }}></ds-divider>
       </Container>
       <Modal
         title={t('core.subscription.modal.label', 'Deactivate Token')}
@@ -602,16 +601,16 @@ export const Subscription = (): React.JSX.Element => {
         }
         showCloseIcon
       >
-        <Text overflow="break-word">
+        <ds-text as="p" overflow="break-word">
           {t(
             'core.subscription.modal.warning',
             'You are trying to deactivate the current token.Doing so will disable all the enabled features.',
           )}
-        </Text>
+        </ds-text>
 
-        <Text overflow="break-word">
+        <ds-text as="p" overflow="break-word">
           {t('core.subscription.modal.confirm', 'Are you sure you want to proceed?')}
-        </Text>
+        </ds-text>
       </Modal>
     </Container>
   );

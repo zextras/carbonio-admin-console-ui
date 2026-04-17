@@ -14,7 +14,6 @@ import {
   Padding,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
@@ -71,9 +70,9 @@ export const SendInviteAccounts: FC<any> = ({
       sList.push({
         id: index?.toString(),
         columns: [
-          <Text size="medium" weight="light" key={index} color="gray0">
+          <ds-text as="span" size="medium" weight="light" key={index} color="gray0">
             {item?._content}
-          </Text>,
+          </ds-text>,
         ],
         item,
         label: item?._content,
@@ -194,9 +193,9 @@ export const SendInviteAccounts: FC<any> = ({
     <>
       {!hideHeaderBar && (
         <Row padding={{ top: 'extralarge' }}>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.send_invite_to', 'Send Invite To')}
-          </Text>
+          </ds-text>
         </Row>
       )}
       {isEditable && (
@@ -274,7 +273,7 @@ export const SendInviteAccounts: FC<any> = ({
                 backgroundColor="gray5"
                 value={searchAccountName}
                 CustomIcon={(): any => (
-                  <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                 )}
                 onChange={(e: any): any => {
                   setSearchAccountName(e.target.value);
@@ -327,9 +326,9 @@ export const SendInviteAccounts: FC<any> = ({
               crossAlignment="center"
               style={{ textAlign: 'center' }}
             >
-              <Text weight="light" color="#828282" size="large" overflow="break-word">
+              <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                 {t('label.this_list_is_empty', 'This list is empty.')}
-              </Text>
+              </ds-text>
             </Row>
             <Row
               orientation="vertical"
@@ -338,12 +337,12 @@ export const SendInviteAccounts: FC<any> = ({
               padding={{ top: 'small' }}
               width="53%"
             >
-              <Text weight="light" color="#828282" size="large" overflow="break-word">
+              <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                 <Trans
                   i18nKey="label.do_you_need_more_information"
                   defaults="Do you need more information?"
                 />
-              </Text>
+              </ds-text>
             </Row>
             <Row
               orientation="vertical"
@@ -352,9 +351,9 @@ export const SendInviteAccounts: FC<any> = ({
               padding={{ top: 'small' }}
               width="53%"
             >
-              <Text weight="light" color="primary">
+              <ds-text as="p" weight="light" color="primary">
                 {t('label.click_here', 'Click here')}
-              </Text>
+              </ds-text>
             </Row>
           </Container>
         </ListRow>

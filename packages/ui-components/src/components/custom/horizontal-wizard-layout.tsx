@@ -57,7 +57,7 @@ const StepNavigator: FC<{
     >
       <Row wrap="nowrap" onClick={onClick} width="80%">
         <Row style={{ padding: renderElement ? '12px 8px' : '', borderRadius: '50%' }}>
-          <icon-wc icon={step.icon} color={color} size="large"></icon-wc>
+          <ds-icon icon={step.icon} color={color} size="large"></ds-icon>
         </Row>
         {renderElement && (
           <Padding left="small">
@@ -68,7 +68,7 @@ const StepNavigator: FC<{
         )}
       </Row>
       <Row wrap="nowrap" style={{ cursor: 'pointer' }} width={'20%'}>
-        {!isLastStep && <icon-wc icon="ChevronRight" color={color} size="large"></icon-wc>}
+        {!isLastStep && <ds-icon icon="ChevronRight" color={color} size="large"></ds-icon>}
       </Row>
     </Row>
   );

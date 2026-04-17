@@ -14,7 +14,6 @@ import {
   Row,
   Select,
   Switch,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import {
@@ -936,7 +935,7 @@ const BackupConfiguration: FC = () => {
 
   return (
     <>
-      {isSaveRequestInProgress && <spinner-wc></spinner-wc>}
+      {isSaveRequestInProgress && <ds-spinner></ds-spinner>}
       <Container mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"
@@ -953,10 +952,10 @@ const BackupConfiguration: FC = () => {
                   width="50%"
                   crossAlignment="flex-start"
                 >
-                  <Text size="medium" weight="bold" color="gray0">
+                  <ds-text as="h2" size="medium" weight="bold" color="gray0">
                     {selectedBackupServer}{' '}
                     {t('backup.backup_configuration', 'backup configuration')}
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row
                   padding={{ all: 'large' }}
@@ -986,7 +985,7 @@ const BackupConfiguration: FC = () => {
                 </Row>
               </Row>
             </Container>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Container
             mainAlignment="flex-start"
@@ -1002,9 +1001,9 @@ const BackupConfiguration: FC = () => {
               height="fit"
               orientation="horizontal"
             >
-              <Text>{t('backup.the_service_is', 'The service is')}</Text>&nbsp;
-              {!backupServiceStart && <Text color="error">{t('backup.stopped', 'stopped')}</Text>}
-              {backupServiceStart && <Text color="primary">{t('backup.running', 'running')}</Text>}
+              <ds-text as="span">{t('backup.the_service_is', 'The service is')}</ds-text>&nbsp;
+              {!backupServiceStart && <ds-text as="span" color="error">{t('backup.stopped', 'stopped')}</ds-text>}
+              {backupServiceStart && <ds-text as="span" color="primary">{t('backup.running', 'running')}</ds-text>}
             </Container>
 
             <Container
@@ -1035,9 +1034,9 @@ const BackupConfiguration: FC = () => {
               padding={{ top: 'extralarge' }}
               height="fit"
             >
-              <Text size="medium" weight="bold">
+              <ds-text as="h3" size="medium" weight="bold">
                 {t('backup.general', 'General')}
-              </Text>
+              </ds-text>
             </Container>
 
             <ListRow>
@@ -1353,7 +1352,7 @@ const BackupConfiguration: FC = () => {
                 orientation="horizontal"
                 padding={{ top: 'large' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
 
@@ -1363,9 +1362,9 @@ const BackupConfiguration: FC = () => {
               padding={{ top: 'large' }}
               height="fit"
             >
-              <Text size="medium" weight="bold">
+              <ds-text as="h3" size="medium" weight="bold">
                 {t('backup.smart_scan_configuration', 'SmartScan Configuration')}
-              </Text>
+              </ds-text>
             </Container>
 
             <Container
@@ -1423,7 +1422,7 @@ const BackupConfiguration: FC = () => {
                 orientation="horizontal"
                 padding={{ top: 'large' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
 
@@ -1433,9 +1432,9 @@ const BackupConfiguration: FC = () => {
               padding={{ top: 'large' }}
               height="fit"
             >
-              <Text size="medium" weight="bold">
+              <ds-text as="h3" size="medium" weight="bold">
                 {t('backup.data_retention_policies', 'Data Retention Policies')}
-              </Text>
+              </ds-text>
             </Container>
 
             <ListRow>
@@ -1578,13 +1577,13 @@ const BackupConfiguration: FC = () => {
           </Container>
         </Container>
         <RouteLeavingGuard when={isDirty} onSave={onSave}>
-          <Text>
+          <ds-text as="p">
             {t(
               'label.unsaved_changes_line1',
               'Are you sure you want to leave this page without saving?',
             )}
-          </Text>
-          <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+          </ds-text>
+          <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
         </RouteLeavingGuard>
       </Container>
     </>

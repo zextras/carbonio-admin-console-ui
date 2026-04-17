@@ -106,7 +106,7 @@ const Dashboard: FC = () => {
 
   return (
     <Container>
-      <divider-wc color="gray6"></divider-wc>
+      <ds-divider color="gray6"></ds-divider>
       <Container
         mainAlignment="flex-start"
         crossAlignment="flex-start"

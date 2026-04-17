@@ -16,7 +16,6 @@ import {
   Padding,
   Select,
   Table,
-  Text,
 } from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -336,7 +335,8 @@ const EditHsmPolicyDetailSection: FC<{
         return {
           id: index,
           columns: [
-            <Text
+            <ds-text
+              as="span"
               size="small"
               weight="regular"
               key={index}
@@ -345,7 +345,7 @@ const EditHsmPolicyDetailSection: FC<{
               }}
             >
               {displayPolicy}
-            </Text>,
+            </ds-text>,
           ],
         };
       });
@@ -463,9 +463,9 @@ const EditHsmPolicyDetailSection: FC<{
       </ListRow>
       <ListRow>
         <Padding bottom="large">
-          <Text size="medium" weight="bold" color="gray0">
+          <ds-text as="h3" size="medium" weight="bold" color="gray0">
             {<Trans i18nKey="hsm.items" defaults="Items" />}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -548,9 +548,9 @@ const EditHsmPolicyDetailSection: FC<{
       </ListRow>
       <ListRow>
         <Padding bottom="large" top="large">
-          <Text size="medium" weight="bold" color="gray0">
+          <ds-text as="h3" size="medium" weight="bold" color="gray0">
             {<Trans i18nKey="hsm.criteria" defaults="Criteria" />}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>

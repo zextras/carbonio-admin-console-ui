@@ -13,7 +13,6 @@ import {
   Radio,
   Row,
   Switch,
-  Text,
 } from '@zextras/ui-components';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -304,12 +303,12 @@ const AdvancedMailstoresConfig: FC<{
           />
         </Row>
         <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-          <Text color="secondary">
+          <ds-text as="p" color="secondary">
             {t(
               'label.enable_current_helptext',
               'Enabling this option will disable the current active volume.',
             )}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
           <Switch
@@ -320,13 +319,13 @@ const AdvancedMailstoresConfig: FC<{
           />
         </Row>
         <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-          <Text color="secondary" style={{ whiteSpace: 'pre-line' }}>
+          <ds-text as="p" color="secondary" style={{ whiteSpace: 'pre-line' }}>
             <Trans
               i18nKey="label.storage_centralized_helpertext"
-              defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it’s easier to manage both the hardware and the data itself. "
+              defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
               components={{ bold: <strong /> }}
             />
-          </Text>
+          </ds-text>
         </Row>
       </Container>
     </>

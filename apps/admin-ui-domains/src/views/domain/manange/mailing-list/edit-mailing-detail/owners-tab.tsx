@@ -16,7 +16,6 @@ import {
   Padding,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { sortedUniq, uniq, uniqBy } from 'lodash';
@@ -153,7 +152,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
       const allRows = sortedOwners.map((item: any) => ({
         id: item?.name,
         columns: [
-          <Text
+          <ds-text as="span"
             size="small"
             weight="regular"
             key={item?.id}
@@ -163,7 +162,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
             }}
           >
             {item?.name}
-          </Text>,
+          </ds-text>,
           <Button
             key="delete_owner_btn"
             type="ghost"
@@ -231,7 +230,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
           setOwnerErrorMessage(
             t(
               'domain.distributionList.invalidEmailErrorMsg',
-              'The account does not exist. Please check the spelling and try again.'
+              'The account does not exist. Please check the spelling and try again.',
             ),
           );
         } else if (ownersList.find((item: any) => item?.name === searchOwner)) {
@@ -302,10 +301,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
                 severity: 'error',
                 label: error?.message
                   ? error?.message
-                  : t(
-                      'label.something_wrong_error_msg',
-                      'Something went wrong. Please try again.',
-                    ),
+                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
                 autoHideTimeout: 3000,
                 hideButton: true,
                 replace: true,
@@ -325,13 +321,20 @@ export const OwnersTab: FC<OwnersTabProps> = ({
     } else {
       setIsShowOwnerError(true);
       setOwnerErrorMessage(
-        t(
-          'domain.distributionList.blankEmailErrorMsg',
-          'Please enter at least one email address',
-        ),
+        t('domain.distributionList.blankEmailErrorMsg', 'Please enter at least one email address'),
       );
     }
-  }, [searchOwner, t, ownersList, selectedMailingList?.id, getOwnerType, createSnackbar, setOwnersList, setPreviousDetail, setIsRequestInProgress]);
+  }, [
+    searchOwner,
+    t,
+    ownersList,
+    selectedMailingList?.id,
+    getOwnerType,
+    createSnackbar,
+    setOwnersList,
+    setPreviousDetail,
+    setIsRequestInProgress,
+  ]);
 
   const closeDeleteOwnerHandler = useCallback(() => {
     setIsOpenDeleteOwnerDialog(false);
@@ -395,10 +398,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
           severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                'label.something_wrong_error_msg',
-                'Something went wrong. Please try again.',
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -431,22 +431,17 @@ export const OwnersTab: FC<OwnersTabProps> = ({
         style={{ overflow: 'auto' }}
       >
         <Row padding={{ top: 'medium' }}>
-          <Text weight="bold" color="gray0">
+          <ds-text as="h4" weight="bold" color="gray0">
             {t('domain.distributionList.manageOwners', 'Manage owners')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow padding={{ top: 'small' }}>
-          <Text
-            size="small"
-            color="gray0"
-            style={{ whiteSpace: 'normal' }}
-            overflow="break-word"
-          >
+          <ds-text as="p" size="small" color="gray0" style={{ whiteSpace: 'normal' }} overflow="break-word">
             {t(
               'label.owners_description_msg_1',
               'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.',
             )}
-          </Text>
+          </ds-text>
         </ListRow>
 
         <ListRow>
@@ -482,9 +477,9 @@ export const OwnersTab: FC<OwnersTabProps> = ({
               >
                 <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                   <Padding right={'0'}>
-                    <Text size="extrasmall" weight="regular" color="error">
+                    <ds-text as="span" size="extrasmall" weight="regular" color="error">
                       {ownerErrorMessage}
-                    </Text>
+                    </ds-text>
                   </Padding>
                 </Container>
               </Row>
@@ -507,7 +502,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
             </Row>
           </Container>
         </ListRow>
-        <divider-wc />
+        <ds-divider />
         <ListRow>
           <Container
             padding={{
@@ -522,9 +517,9 @@ export const OwnersTab: FC<OwnersTabProps> = ({
               padding={{ bottom: 'large' }}
               width="100%"
             >
-              <Text weight="bold" color="gray0">
+              <ds-text as="h4" weight="bold" color="gray0">
                 {t('domain.distributionList.ownersList', 'Owners List')}
-              </Text>
+              </ds-text>
             </Row>
             {ownerTableRows.length > 0 && (
               <ListRow>
@@ -535,7 +530,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
                     backgroundColor="gray5"
                     onChange={handleInputChangeOwner}
                     CustomIcon={(): any => (
-                      <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                      <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                     )}
                   />
                 </Row>
@@ -567,14 +562,14 @@ export const OwnersTab: FC<OwnersTabProps> = ({
               </Padding>
               <Padding vertical="extralarge" width="100%">
                 <Row mainAlignment="center" width="100%">
-                  <Text size="large" color="secondary" weight="regular">
+                  <ds-text as="p" size="large" color="secondary" weight="regular">
                     {t('label.there_are_no_owners', "There aren't owners here.")}
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row mainAlignment="center" width="100%">
-                  <Text size="large" color="secondary" weight="regular">
+                  <ds-text as="p" size="large" color="secondary" weight="regular">
                     {searchUserLabelValue}
-                  </Text>
+                  </ds-text>
                 </Row>
               </Padding>
             </Container>
@@ -612,7 +607,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
             padding={{ top: 'extralarge', bottom: 'extralarge' }}
             mainAlignment="flex-start"
           >
-            <Text size={'large'} overflow="break-word">
+            <ds-text as="p" size={'large'} overflow="break-word">
               <Trans
                 i18nKey="domain.distributionList.owners.areYouSureDeleteOwner"
                 defaults="Are you sure you want to remove <bold>{{name}}</bold> from the owners list?"
@@ -621,7 +616,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
                   name: ownerToDelete?.name,
                 }}
               />
-            </Text>
+            </ds-text>
           </Container>
         </Modal>
       )}

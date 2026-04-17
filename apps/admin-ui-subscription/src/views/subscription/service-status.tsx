@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Row, Text } from '@zextras/ui-components';
+import { Row } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 import { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -53,7 +53,8 @@ export const ServiceStatus = ({ data }: { data: AllModuleConfig }): ReactElement
 						}}
 						padding={{ horizontal: 'extrasmall' }}
 					>
-						<Text
+						<ds-text
+							as="span"
 							size="small"
 							weight="bold"
 							style={{
@@ -62,19 +63,19 @@ export const ServiceStatus = ({ data }: { data: AllModuleConfig }): ReactElement
 							}}
 						>
 							{data?.name?.label}
-						</Text>
+						</ds-text>
 					</Row>
 					<Row>
-						<Text size="extrasmall" weight="bold" style={{ whiteSpace: 'break-spaces' }}>
+						<ds-text as="span" size="extrasmall" weight="bold" style={{ whiteSpace: 'break-spaces' }}>
 							{data?.name?.value}
-						</Text>
+						</ds-text>
 					</Row>
 				</Row>
 				<Row orientation="vertical" crossAlignment="flex-end" width="100%" gap="1.938rem">
-					<Text size="extrasmall" weight="regular" color={data.enabled ? 'text' : 'secondary'}>
+					<ds-text as="span" size="extrasmall" weight="regular" color={data.enabled ? 'text' : 'secondary'}>
 						{}
 						{licenseStatus}
-					</Text>
+					</ds-text>
 				</Row>
 			</Row>
 		</Row>

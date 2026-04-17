@@ -16,7 +16,6 @@ import {
   Row,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, soapFetch, useAllServers } from '@zextras/ui-shared';
@@ -174,7 +173,8 @@ const HSMsettingPanel: FC = () => {
       const allRows = policies.map((item: any) => ({
         id: item?.hsmQuery,
         columns: [
-          <Text
+          <ds-text
+            as="span"
             size="small"
             weight="regular"
             key={item?.hsmQuery}
@@ -186,7 +186,7 @@ const HSMsettingPanel: FC = () => {
           >
             {getHSMType(item?.hsmType)}
             {item?.hsmQuery}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setPoliciesRow(allRows);
@@ -615,7 +615,7 @@ const HSMsettingPanel: FC = () => {
         >
           <Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
             <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h3" size="medium" weight="bold" color="gray0">
                 {
                   <Trans
                     i18nKey="hsm.name_hsm_policies"
@@ -626,7 +626,7 @@ const HSMsettingPanel: FC = () => {
                     }}
                   />
                 }
-              </Text>
+              </ds-text>
             </Row>
             <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding right="small">
@@ -653,7 +653,7 @@ const HSMsettingPanel: FC = () => {
       </Row>
 
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         crossAlignment="flex-start"
@@ -665,9 +665,9 @@ const HSMsettingPanel: FC = () => {
       >
         <ListRow>
           <Padding top="large" bottom="large">
-            <Text size="medium" weight="regular">
+            <ds-text as="p" size="medium" weight="regular">
               {t('hsm.scheduling', 'Scheduling')}
-            </Text>
+            </ds-text>
           </Padding>
         </ListRow>
         <ListRow>
@@ -717,12 +717,12 @@ const HSMsettingPanel: FC = () => {
             mainAlignment="flex-start"
           >
             <Padding left="small">
-              <Text size="extrasmall" weight="regular" color="secondary">
+              <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
                 {t(
                   'hsm.this_function_allow_save_disk_copy_msg',
                   'This function allows you to save disk space by storing a single copy of an item.',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Container>
         </ListRow>
@@ -741,9 +741,9 @@ const HSMsettingPanel: FC = () => {
                 crossAlignment="flex-start"
                 style={{ alignSelf: 'end' }}
               >
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h3" size="medium" weight="bold" color="gray0">
                   {t('hsm.hsm_policies_list', 'HSM Policies List')}
-                </Text>
+                </ds-text>
               </Row>
               <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
                 <Padding right="medium">
@@ -786,12 +786,12 @@ const HSMsettingPanel: FC = () => {
         </Row>
         <ListRow>
           <Padding left="extrasmall" bottom="medium">
-            <Text size="small" weight="light" color="gray0">
+            <ds-text as="span" size="small" weight="light" color="gray0">
               {t(
                 'hsm.default_hsm_policy_warning_message',
                 'At least one policy will always stay up. If you delete the last one, another will be generated',
               )}
-            </Text>
+            </ds-text>
           </Padding>
         </ListRow>
 

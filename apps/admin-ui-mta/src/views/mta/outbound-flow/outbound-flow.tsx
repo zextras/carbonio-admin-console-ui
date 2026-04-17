@@ -17,7 +17,6 @@ import {
   Select,
   Switch,
   Table,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -118,27 +117,27 @@ const MTAOutBoundFlow: FC = () => {
       tableRow.push({
         id: server.id ?? '',
         columns: [
-          <Text size="small" weight="regular" key={tableRow.length} color="gray0">
+          <ds-text as="span" size="small" weight="regular" key={tableRow.length} color="gray0">
             {server?.name}
-          </Text>,
-          <Text size="small" weight="light" key={tableRow.length} color="gray0">
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={tableRow.length} color="gray0">
             {antispam && antispam.length > 0
               ? t('label.active', 'Active')
               : t('label.inactive', 'Inactive')}
-          </Text>,
-          <Text size="small" weight="light" key={tableRow.length} color="gray0">
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={tableRow.length} color="gray0">
             {antivirus && antivirus.length > 0
               ? t('label.active', 'Active')
               : t('label.inactive', 'Inactive')}
-          </Text>,
-          <Text size="small" weight="light" key={tableRow.length} color="gray0">
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={tableRow.length} color="gray0">
             {isAuthEnable}
-          </Text>,
-          <Text size="small" weight="light" key={tableRow.length} color="gray0">
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={tableRow.length} color="gray0">
             {opendkim && opendkim.length > 0
               ? t('label.enabled', 'Enabled')
               : t('label.disabled', 'Disabled')}
-          </Text>,
+          </ds-text>,
         ],
       });
     },
@@ -475,9 +474,9 @@ const MTAOutBoundFlow: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.outbound_flow', 'Outbound Flow')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -506,7 +505,7 @@ const MTAOutBoundFlow: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         padding={{ all: 'extralarge' }}
@@ -521,9 +520,9 @@ const MTAOutBoundFlow: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('label.general_lbl', 'General')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           orientation="horizontal"
@@ -736,9 +735,9 @@ const MTAOutBoundFlow: FC = () => {
           height="auto"
           padding={{ top: 'extralarge', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.instances', 'Instances')}
-          </Text>
+          </ds-text>
         </Container>
         <ListRow>
           <Container

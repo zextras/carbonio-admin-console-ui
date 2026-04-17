@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { AnyColor, Container, Text } from '@zextras/ui-components';
+import { AnyColor, Container } from '@zextras/ui-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -41,7 +41,7 @@ export const QuotaLegendEntry = ({
         flexShrink={0}
         data-testid="color-indicator"
       />
-      <Text size="small">{`${label} (${humanFileSize(used, t)})`}</Text>
+      <ds-text size="small" as="span">{`${label} (${humanFileSize(used, t)})`}</ds-text>
     </Container>
   );
 };

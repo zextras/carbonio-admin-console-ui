@@ -10,7 +10,6 @@ import {
   InheritedSwitch,
   Input,
   Row,
-  Text,
   Tooltip,
 } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
@@ -91,9 +90,9 @@ const EditAccountConfigurationSection: FC = () => {
     >
       <Row mainAlignment="flex-start" width="100%">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.forwarding', 'Forwarding')}
-          </Text>
+          </ds-text>
         </Row>
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">
@@ -228,12 +227,12 @@ const EditAccountConfigurationSection: FC = () => {
           </Row>
         </Row>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.mail_transport', 'Mail Transport')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
           <Input
@@ -251,20 +250,20 @@ const EditAccountConfigurationSection: FC = () => {
                   'protocol:server:port',
                 )}${` | `}:${` lmtp:server.demo.zextras.io:7025`}`}
               >
-                <Text>
-                  <icon-wc icon="InfoOutline" size="large" color="secondary"></icon-wc>
-                </Text>
+                <ds-text as="span">
+                  <ds-icon icon="InfoOutline" size="large" color="secondary"></ds-icon>
+                </ds-text>
               </Tooltip>
             )}
           />
         </Row>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.features', 'Features')}
-          </Text>
+          </ds-text>
         </Row>
         <Features
           featuresDetail={accountDetail}
@@ -274,12 +273,12 @@ const EditAccountConfigurationSection: FC = () => {
           setEmptyValue={setEmptyValue}
         />
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.wsc', 'Chat')}
-          </Text>
+          </ds-text>
         </Row>
         <WscSettings
           featuresDetail={accountDetail}

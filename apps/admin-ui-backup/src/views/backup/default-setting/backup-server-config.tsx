@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Padding, Row, Switch, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Padding, Row, Switch } from '@zextras/ui-components';
 import { useModuleLicenseInfo } from '@zextras/ui-shared';
 import { FC, useEffect, useState } from 'react';
 
@@ -60,7 +60,7 @@ const BackupServerConfig: FC = () => {
             t={t}
           />
           <Row orientation="horizontal" width="100%" background="gray6">
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Container
             orientation="column"
@@ -109,7 +109,7 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'large', bottom: 'large' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
             <ListRow>
@@ -162,7 +162,7 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'small', bottom: 'large' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
             <ListRow>
@@ -193,7 +193,7 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'small', bottom: 'extralarge' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
 
@@ -226,7 +226,7 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'small', bottom: 'extralarge' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
             <ListRow>
@@ -245,12 +245,12 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Padding bottom="large">
-                <Text size="extrasmall" weight="regular" color="secondary">
+                <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
                   {t(
                     'backup.set_backup_forever_msg',
                     'If you set 0, your data will be kept in backup forever',
                   )}
-                </Text>
+                </ds-text>
               </Padding>
             </ListRow>
 
@@ -273,12 +273,12 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Padding bottom="large">
-                <Text size="extrasmall" weight="regular" color="secondary">
+                <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
                   {t(
                     'backup.set_backup_forever_msg',
                     'If you set 0, your data will be kept in backup forever',
                   )}
-                </Text>
+                </ds-text>
               </Padding>
             </ListRow>
           </Container>

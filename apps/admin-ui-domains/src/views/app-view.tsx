@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Padding, Text } from '@zextras/ui-components';
+import { Container, Padding } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -48,16 +48,18 @@ const AppView: FC = () => {
 
   const EmptyState: FC = () => (
     <Container>
-      <Text
+      <ds-text
+        as="span"
         overflow="break-word"
         weight="regular"
         size="large"
         style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
       >
         <img src={logo} alt="logo" />
-      </Text>
+      </ds-text>
       <Padding all="medium" width="47%">
-        <Text
+        <ds-text
+          as="p"
           color="gray1"
           overflow="break-word"
           weight="regular"
@@ -68,16 +70,17 @@ const AppView: FC = () => {
             'select_domain_or_create_new',
             'Please select a domain from the menu on the left or click on "Create" button to create a new one.',
           )}
-        </Text>
+        </ds-text>
       </Padding>
       <Padding all="medium">
-        <Text
+        <ds-text
+          as="span"
           size="small"
           overflow="break-word"
           style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
         >
-          <icon-wc icon="Plus" size="large" color="primary"></icon-wc>
-        </Text>
+          <ds-icon icon="Plus" size="large" color="primary"></ds-icon>
+        </ds-text>
       </Padding>
     </Container>
   );
@@ -87,13 +90,13 @@ const AppView: FC = () => {
       <Breadcrumb />
       <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
         <Container style={{ maxWidth: '265px' }}>
-          <Suspense fallback={<spinner-wc />}>
+          <Suspense fallback={<ds-spinner />}>
             <DomainListPanel />
           </Suspense>
         </Container>
         <Container style={{ maxWidth: '100%' }}>
           <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-            <Suspense fallback={<spinner-wc />}>
+            <Suspense fallback={<ds-spinner />}>
               <Routes>
                 <Route path={GLOBAL_ROUTE} element={<GlobalDetailPanel />} />
                 <Route path={`${GLOBAL_ROUTE}/${WHITELABEL_SETTINGS}`} element={<GlobalTheme />} />

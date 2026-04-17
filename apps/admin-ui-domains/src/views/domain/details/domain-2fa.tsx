@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { 	Button,	Container,	Padding,	Row,	Text,	useSnackbar } from '@zextras/ui-components';
+import { 	Button,	Container,	Padding,	Row,	useSnackbar } from '@zextras/ui-components';
 import {  useDomainStore  } from '@zextras/ui-shared';
 import {  differenceWith, isEqual, map, some  } from 'lodash-es';
 import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
@@ -145,9 +145,9 @@ const DomainTwoFactorAuthentication: FC = () => {
 								width="50%"
 								crossAlignment="flex-start"
 							>
-								<Text size="medium" weight="bold" color="gray0">
+								<ds-text as="h2" size="medium" weight="bold" color="gray0">
 									{t('label.2-factor-authentication', '2-Factor-Authentication')}
-								</Text>
+								</ds-text>
 							</Row>
 							<Row
 								padding={{ all: 'large' }}
@@ -187,7 +187,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 							</Row>
 						</Row>
 					</Container>
-					<divider-wc></divider-wc>
+					<ds-divider></ds-divider>
 				</Row>
 				<TwoFactorAuthencationConfig
 					policies={arrPolicies}
@@ -197,13 +197,13 @@ const DomainTwoFactorAuthentication: FC = () => {
 				/>
 			</Container>
 			<RouteLeavingGuard when={isDirty} onSave={handleOnSave}>
-				<Text>
+				<ds-text as="p">
 					{t(
 						'label.unsaved_changes_line1',
 						'Are you sure you want to leave this page without saving?'
 					)}
-				</Text>
-				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+				</ds-text>
+				<ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
 			</RouteLeavingGuard>
 		</Container>
 	);

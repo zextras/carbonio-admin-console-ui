@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container,Modal, Row, Text } from '@zextras/ui-components';
+import { Button, Container,Modal, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -55,15 +55,14 @@ const DistroyGalsyncAccountModel: FC<{
 				showCloseIcon
 				onClose={closeHandler}
 			>
-				<Text
-					size={'extralarge'}
-					overflow="break-word"
+				<ds-text
+					as="p"
 					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
 				>
 					{t('label.delete_account', `Are you sure you want to delete {{accountId}}?`, {
 						accountId: accountData?.galAccount?.name
 					})}
-				</Text>
+				</ds-text>
 			</Modal>
 		</>
 	);

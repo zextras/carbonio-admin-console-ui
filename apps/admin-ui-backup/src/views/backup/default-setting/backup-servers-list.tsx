@@ -10,7 +10,6 @@ import {
   HoverableRowFactory,
   Row,
   Table,
-  Text,
   Tooltip,
 } from '@zextras/ui-components';
 import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/ui-shared';
@@ -115,46 +114,47 @@ const BackupServersListTable: FC<{
       serverList.map((s, i) => ({
         id: i?.toString(),
         columns: [
-          <Text size="small" weight="regular" key={s?.name} color="gray0">
+          <ds-text as="span" size="small" weight="regular" key={s?.name} color="gray0">
             {s?.name}
-          </Text>,
-          <Text
+          </ds-text>,
+          <ds-text
+            as="span"
             size="small"
             weight="light"
             key={s?.name}
             color={s?.backupAtStartup ? 'gray0' : 'error'}
           >
             {s?.backupAtStartup ? s?.backupAtStartup : t('label.na', 'N/A')}
-          </Text>,
-          <Text size="small" weight="light" key={s?.name} color={s?.rtStatus ? 'gray0' : 'error'}>
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={s?.name} color={s?.rtStatus ? 'gray0' : 'error'}>
             {s?.rtStatus ? s?.rtStatus : t('label.na', 'N/A')}
-          </Text>,
-          <Text size="small" weight="light" key={s?.name} color={s?.type ? 'gray0' : 'error'}>
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={s?.name} color={s?.type ? 'gray0' : 'error'}>
             {s?.type ? s?.type : t('label.na', 'N/A')}
-          </Text>,
+          </ds-text>,
           <Tooltip
             placement="bottom"
             label={s?.smartScanTooltip ? s?.smartScanTooltip : t('label.na', 'N/A')}
             key={s?.name}
           >
-            <Text size="small" weight="light" color={s?.smartScan ? 'gray0' : 'error'}>
+            <ds-text as="span" size="small" weight="light" color={s?.smartScan ? 'gray0' : 'error'}>
               {s?.smartScan ? s?.smartScan : t('label.na', 'N/A')}
-            </Text>
+            </ds-text>
           </Tooltip>,
           <Tooltip
             placement="bottom"
             label={s?.purgeTooltip ? s?.purgeTooltip : t('label.na', 'N/A')}
             key={s?.name}
           >
-            <Text size="small" weight="light" color={s?.purge ? 'gray0' : 'error'}>
+            <ds-text as="span" size="small" weight="light" color={s?.purge ? 'gray0' : 'error'}>
               {s?.purge ? s?.purge : t('label.na', 'N/A')}
-            </Text>
+            </ds-text>
           </Tooltip>,
-          <Text size="small" weight="light" key={s?.name} color="gray0">
+          <ds-text as="span" size="small" weight="light" key={s?.name} color="gray0">
             {s?.description}
-          </Text>,
+          </ds-text>,
           <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-            <icon-wc icon="FolderOutline"></icon-wc>
+            <ds-icon icon="FolderOutline"></ds-icon>
             <Row padding={{ left: 'small' }}>
               <Tooltip
                 placement="bottom"
@@ -164,18 +164,19 @@ const BackupServersListTable: FC<{
                     : t('label.na', 'N/A')
                 }
               >
-                <Text
+                <ds-text
+                  as="span"
                   size="small"
                   weight="light"
                   color={s?.availableMetadataSpace ? 'gray0' : 'error'}
                 >
                   {s?.availableMetadataSpace ? s?.availableMetadataSpace : t('label.na', 'N/A')}
-                </Text>
+                </ds-text>
               </Tooltip>
             </Row>
           </Row>,
           <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-            <icon-wc icon="FolderOutline"></icon-wc>
+            <ds-icon icon="FolderOutline"></ds-icon>
             <Row padding={{ left: 'small' }}>
               <Tooltip
                 placement="bottom"
@@ -185,13 +186,14 @@ const BackupServersListTable: FC<{
                     : t('label.na', 'N/A')
                 }
               >
-                <Text
+                <ds-text
+                  as="span"
                   size="small"
                   weight="light"
                   color={s?.availableBackupSpace ? 'gray0' : 'error'}
                 >
                   {s?.availableBackupSpace ? s?.availableBackupSpace : t('label.na', 'N/A')}
-                </Text>
+                </ds-text>
               </Tooltip>
             </Row>
           </Row>,
@@ -389,14 +391,14 @@ const ServersList: FC = () => {
               mainAlignment="flex-start"
             >
               <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h2" size="medium" weight="bold" color="gray0">
                   {t('label.server_list', 'Server List')}
-                </Text>
+                </ds-text>
               </Row>
             </Row>
           </Container>
           <Row orientation="horizontal" width="100%" background="gray6">
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
         </Row>
         <Container

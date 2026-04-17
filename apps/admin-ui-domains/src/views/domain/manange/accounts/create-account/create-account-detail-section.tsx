@@ -12,7 +12,6 @@ import {
   Row,
   Select,
   Switch,
-  Text,
   Tooltip,
 } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
@@ -194,9 +193,9 @@ const CreateAccountDetailSection: FC = () => {
       }}
     >
       <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-        <Text size="small" color="gray0" weight="bold">
+        <ds-text size="small" color="gray0" weight="bold" as="h2">
           {t('label.account', 'Account')}
-        </Text>
+        </ds-text>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="32%" mainAlignment="space-between">
             <Input
@@ -236,9 +235,9 @@ const CreateAccountDetailSection: FC = () => {
               inputName="name"
             />
             {(accountDetail?.displayName || combineDisplayName) && showAutoFillAlert && (
-              <Text color="error" size="small">
+              <ds-text color="error" size="small" as="strong">
                 {t('accountDetails.auto_fill_user_is_disabled', 'Auto fill user is disabled')}
-              </Text>
+              </ds-text>
             )}
           </Row>
           <Row width="48%" mainAlignment="flex-start">
@@ -248,7 +247,7 @@ const CreateAccountDetailSection: FC = () => {
               width="10%"
               padding={{ top: 'small' }}
             >
-              <icon-wc icon="AtOutline" size="large"></icon-wc>
+              <ds-icon icon="AtOutline" size="large"></ds-icon>
             </Row>
             <Row width="90%" mainAlignment="flex-start" crossAlignment="flex-start">
               <LabeledValue
@@ -307,14 +306,14 @@ const CreateAccountDetailSection: FC = () => {
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'medium' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       {extLdapAuth && (
         <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <Text size="small" color="gray0" weight="bold">
+            <ds-text size="small" color="gray0" weight="bold" as="h2">
               {t('domain.accounts.editAccount.externalldap', 'External LDAP')}
-            </Text>
+            </ds-text>
           </Row>
           <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
             <Row width="100%" mainAlignment="space-between">
@@ -335,9 +334,9 @@ const CreateAccountDetailSection: FC = () => {
       )}
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             Settings
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="100%" mainAlignment="flex-start">
@@ -383,9 +382,9 @@ const CreateAccountDetailSection: FC = () => {
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.description', 'Description')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
           <Input
@@ -399,9 +398,9 @@ const CreateAccountDetailSection: FC = () => {
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.notes', 'Notes')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
           <CustomTextArea
@@ -415,9 +414,9 @@ const CreateAccountDetailSection: FC = () => {
       </Row>
       <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.phone', 'Phone')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="48%" mainAlignment="space-between">
@@ -543,9 +542,9 @@ const CreateAccountDetailSection: FC = () => {
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.company', 'Company')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">
@@ -572,9 +571,9 @@ const CreateAccountDetailSection: FC = () => {
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
         <Row padding={{ top: 'large' }}>
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('label.address', 'Address')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">

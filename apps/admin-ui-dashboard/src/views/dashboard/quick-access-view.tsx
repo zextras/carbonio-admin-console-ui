@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, IconName, ListRow, Text } from '@zextras/ui-components';
+import { Container, IconName, ListRow } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -51,12 +51,12 @@ const QuickAccess: FC<{
       >
         <ListRow>
           <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2rem">
-            <icon-wc size="large" icon="FlashOutline"></icon-wc>
+            <ds-icon size="large" icon="FlashOutline"></ds-icon>
           </Container>
           <Container mainAlignment="flex-start" crossAlignment="flex-start">
-            <Text color="gray0" overflow="break-word" weight="bold" size="medium">
+            <ds-text as="strong" color="gray0" overflow="break-word" weight="bold" size="medium">
               {t('dashboard.quick_access_to', 'Quick Access to')} {domainName}
-            </Text>
+            </ds-text>
           </Container>
         </ListRow>
       </Container>
@@ -83,27 +83,27 @@ const QuickAccess: FC<{
               <ListRow>
                 <Container padding={{ all: 'large' }}>
                   <Container mainAlignment="flex-start" crossAlignment="flex-start">
-                    <Text color="gray6" overflow="break-word" weight="light" size="medium">
+                    <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
                       {item?.upperText}
-                    </Text>
+                    </ds-text>
                   </Container>
                   <Container
                     mainAlignment="flex-start"
                     crossAlignment="flex-start"
                     padding={{ top: 'extrasmall' }}
                   >
-                    <Text color="gray6" overflow="break-word" weight="bold" size="large">
+                    <ds-text as="strong" color="gray6" overflow="break-word" weight="bold" size="large">
                       {item?.operationText}
-                    </Text>
+                    </ds-text>
                   </Container>
                 </Container>
                 <Container crossAlignment="flex-end" padding={{ right: 'large' }}>
-                  <icon-wc color="gray6" icon={item?.operationIcon} size="large"></icon-wc>
+                  <ds-icon color="gray6" icon={item?.operationIcon} size="large"></ds-icon>
                 </Container>
               </ListRow>
               <ListRow>
                 <Container padding={{ left: 'large', right: 'large' }}>
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Container>
               </ListRow>
               <ListRow>
@@ -116,9 +116,9 @@ const QuickAccess: FC<{
                     handleClickedQuickAccess(item?.operation);
                   }}
                 >
-                  <Text color="gray6" overflow="break-word" weight="light" size="medium">
+                  <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
                     {item?.bottomText}
-                  </Text>
+                  </ds-text>
                 </Container>
                 <Container
                   mainAlignment="flex-end"
@@ -129,7 +129,7 @@ const QuickAccess: FC<{
                     handleClickedQuickAccess(item?.operation);
                   }}
                 >
-                  <icon-wc icon={item?.bottomIcon} size="medium" color="gray6"></icon-wc>
+                  <ds-icon icon={item?.bottomIcon} size="medium" color="gray6"></ds-icon>
                 </Container>
               </ListRow>
             </Container>

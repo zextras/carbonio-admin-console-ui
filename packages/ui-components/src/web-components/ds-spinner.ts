@@ -9,7 +9,7 @@ import '../theme/theme.css';
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 
-export class SpinnerWC extends LitElement {
+export class DsSpinner extends LitElement {
   static override styles = css`
     :host {
       display: inline-block;
@@ -55,10 +55,10 @@ export class SpinnerWC extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'spinner-wc': SpinnerWC;
+    'ds-spinner': DsSpinner;
   }
 }
 
-if (!customElements.get('spinner-wc')) {
-  customElements.define('spinner-wc', SpinnerWC);
+if (!customElements.get('ds-spinner')) {
+  customElements.define('ds-spinner', DsSpinner);
 }
