@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import { TextProps } from '../../basic/text/text-types';
+import { TextProps } from '../../../web-components';
 
 type InputDescriptionProps = Omit<TextProps, 'overflow' | 'size' | 'textAlign'>;
 
@@ -15,7 +15,13 @@ export const InputDescription = ({ ...props }: InputDescriptionProps): React.JSX
     as="p"
     overflow="break-word"
     size="extrasmall"
-    style={{ lineHeight: '1.5', paddingTop: '0.25rem', minHeight: 'calc(var(--font-size-extrasmall) * 1.5)' } as React.CSSProperties}
+    style={
+      {
+        lineHeight: '1.5',
+        paddingTop: '0.25rem',
+        minHeight: 'calc(var(--font-size-extrasmall) * 1.5)',
+      } as React.CSSProperties
+    }
     {...props}
   />
 );

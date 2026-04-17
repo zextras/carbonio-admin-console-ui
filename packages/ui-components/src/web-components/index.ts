@@ -11,4 +11,5 @@ import '../theme/theme.css';
 export { DividerElement } from './ds-divider';
 export { DsIcon } from './ds-icon';
 export { DsSpinner } from './ds-spinner';
-export { DsText } from './ds-text'
+export { DsText, type TextProps } from './ds-text';
+

@@ -7,8 +7,8 @@
 import { useMemo } from 'react';
 
 import { resolveThemeColor } from '../../theme/theme-utils';
+import { TextProps } from '../../web-components/ds-text';
 import styles from './link.module.css';
-import { TextProps } from './text/text-types';
 
 type LinkProps = {
   /** Whether link should be underlined */

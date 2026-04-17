@@ -6,11 +6,24 @@
 import { html, LitElement, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
+import { HTMLAttributes } from 'react';
 
 import { Theme } from '../theme/theme';
 import { resolveThemeColor } from '../theme/theme-utils';
+import { AnyColor } from '../types/utils';
 import { dsTextVars, textStyles } from './ds-text.styles';
 
+export type TextProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
+  color?: AnyColor;
+  size?: 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
+  weight?: 'light' | 'regular' | 'medium' | 'bold';
+  overflow?: TextOverflow;
+  disabled?: boolean;
+  italic?: boolean;
+  textAlign?: React.CSSProperties['textAlign'];
+  lineHeight?: number;
+  ref?: React.Ref<HTMLDivElement>;
+};
 export type TextSize = keyof Theme['font']['size'];
 export type TextWeight = keyof Theme['font']['weight'];
 export type TextOverflow = 'ellipsis' | 'break-word';
@@ -107,4 +120,3 @@ declare global {
 if (!customElements.get('ds-text')) {
   customElements.define('ds-text', DsText);
 }
-
