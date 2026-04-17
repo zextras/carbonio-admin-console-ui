@@ -28,10 +28,10 @@ export function resolveThemeColor(colorName: string, state: string): string {
 
   const sanitizedState = state?.trim();
   if (!sanitizedState) {
-    return `var(--color-${trimmed}-regular)`;
+    return `var(--color-${trimmed}-regular, var(--color-${trimmed}))`;
   }
 
-  return `var(--color-${trimmed}-${sanitizedState}, var(--color-${trimmed}-regular))`;
+  return `var(--color-${trimmed}-${sanitizedState}, var(--color-${trimmed}-regular, var(--color-${trimmed})))`;
 }
 
 export type PaddingVarObj =
