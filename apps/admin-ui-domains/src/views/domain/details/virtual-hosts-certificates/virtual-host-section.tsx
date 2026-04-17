@@ -168,7 +168,9 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
             <Container width="1rem" height="1rem" />
           )}
           <Padding left="small">
-            <ds-text as="strong" weight="bold">{t('label.virtual_host_name', 'Virtual Host Name')}</ds-text>
+            <ds-text as="strong" weight="bold">
+              {t('label.virtual_host_name', 'Virtual Host Name')}
+            </ds-text>
           </Padding>
         </Row>
         {!removeVirtualBtnDisabled && selectedRows.length > 1 && (
@@ -265,10 +267,16 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
           </Padding>
           <Padding vertical="extralarge" width="100%">
             <Row mainAlignment="center" crossAlignment="center" width="100%">
-              <ds-text as="p" size="large" color="secondary" weight="regular" style={{ textAlign: 'center' }}>
+              <ds-text
+                as="p"
+                size="large"
+                color="secondary"
+                weight="regular"
+                style={{ textAlign: 'center' }}
+              >
                 <Trans
                   i18nKey="label.no_virtual_host_message"
-                  defaults="There aren't any virtual hosts yet."
+                  defaults="There aren’t any virtual hosts yet."
                   components={{ break: <br /> }}
                 />
               </ds-text>
