@@ -99,7 +99,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
               }}
             />
             {validationError !== null && (
-              <ds-text as="span" color="error" size="small" style={{ position: 'absolute', top: '100%', left: 0, paddingTop: '4px' }}>
+              <ds-text as="span" color="error" size="small" className={styles.errorMessage}>
                 {validationError}
               </ds-text>
             )}

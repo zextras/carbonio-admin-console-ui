@@ -63,33 +63,13 @@ export class DsText extends LitElement {
   @property({ type: String })
   accessor as: TextTag = 'span';
 
-  override connectedCallback(): void {
-    super.connectedCallback();
-    this._styleObserver = new MutationObserver(() => this.requestUpdate());
-    this._styleObserver.observe(this, { attributeFilter: ['style'] });
-  }
-
-  override disconnectedCallback(): void {
-    super.disconnectedCallback();
-    this._styleObserver?.disconnect();
-  }
-
-  private _getHostInlineStyles(): Record<string, string> {
-    const hostStyles: Record<string, string> = {};
-    for (const prop of Array.from(this.style)) {
-      hostStyles[prop] = this.style.getPropertyValue(prop);
-    }
-    return hostStyles;
-  }
-
   override render(): TemplateResult {
-    const hostStyles = this._getHostInlineStyles();
     const componentStyles: Record<string, string> = {
       [dsTextVars.color]: resolveThemeColor(this.color, this.disabled ? 'disabled' : 'regular'),
       ...(this.lineHeight !== undefined && { [dsTextVars.lineHeight]: String(this.lineHeight) }),
     };
 
-    const tagStyle = styleMap({ ...hostStyles, ...componentStyles });
+    const tagStyle = styleMap({ ...componentStyles });
 
     switch (this.as) {
       case 'p':
@@ -129,3 +109,4 @@ declare global {
 if (!customElements.get('ds-text')) {
   customElements.define('ds-text', DsText);
 }
+
