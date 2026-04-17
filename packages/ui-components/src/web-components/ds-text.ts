@@ -33,8 +33,6 @@ export type TextTag =
 export class DsText extends LitElement {
   static override readonly styles = textStyles;
 
-  private _styleObserver?: MutationObserver;
-
   @property({ type: String })
   accessor color = 'text';
 
