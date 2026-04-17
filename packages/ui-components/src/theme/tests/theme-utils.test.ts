@@ -77,34 +77,34 @@ describe('getThemeColorVar', () => {
   describe('token names with state', () => {
     it('should return CSS variable with fallback for hover state', () => {
       const result = resolveThemeColor('primary', 'hover');
-      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular, var(--color-primary)))');
+      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular))');
     });
 
     it('should return CSS variable with fallback for disabled state', () => {
       const result = resolveThemeColor('secondary', 'disabled');
-      expect(result).toBe('var(--color-secondary-disabled, var(--color-secondary-regular, var(--color-secondary)))');
+      expect(result).toBe('var(--color-secondary-disabled, var(--color-secondary-regular))');
     });
 
     it('should return CSS variable with fallback for focus state', () => {
       const result = resolveThemeColor('error', 'focus');
-      expect(result).toBe('var(--color-error-focus, var(--color-error-regular, var(--color-error)))');
+      expect(result).toBe('var(--color-error-focus, var(--color-error-regular))');
     });
   });
 
   describe('whitespace trimming', () => {
     it('should trim whitespace from colorName', () => {
       const result = resolveThemeColor('  primary  ', 'hover');
-      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular, var(--color-primary)))');
+      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular))');
     });
 
     it('should trim whitespace from state', () => {
       const result = resolveThemeColor('primary', '  hover  ');
-      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular, var(--color-primary)))');
+      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular))');
     });
 
     it('should trim whitespace from both colorName and state', () => {
       const result = resolveThemeColor('  primary  ', '  hover  ');
-      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular, var(--color-primary)))');
+      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular))');
     });
   });
 });
