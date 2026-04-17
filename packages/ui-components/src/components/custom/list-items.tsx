@@ -6,7 +6,6 @@
 
 import { type FC, type JSX, useCallback } from 'react';
 
-import { Text } from '../basic/text/Text';
 import { List } from '../display/List/List';
 import { ListItem } from '../display/ListItem';
 import { Container } from '../layout/Container';
@@ -65,13 +64,14 @@ const ListItems: FC<ListItemsProps> = ({
                     mainAlignment="flex-start"
                   >
                     <Padding horizontal="small">
-                      <Text
+                      <ds-text
+                        as="span"
                         color="gray0"
                         weight={item?.id === selectedOperationItem ? 'bold' : 'regular'}
                         style={item?.isSelected ? { opacity: '1' } : { opacity: '0.5' }}
                       >
                         {item.name}
-                      </Text>
+                      </ds-text>
                     </Padding>
                   </Container>
                   <ds-divider color="gray3"></ds-divider>

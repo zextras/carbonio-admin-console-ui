@@ -11,7 +11,6 @@ import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
-import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import styles from './Checkbox.module.css';
@@ -114,7 +113,8 @@ export const Checkbox = ({
       </div>
       {label && (
         <Padding left="small">
-          <Text
+          <ds-text
+            as="label"
             className={styles.customText}
             size={size}
             weight="regular"
@@ -123,7 +123,7 @@ export const Checkbox = ({
             color="gray0"
           >
             {label}
-          </Text>
+          </ds-text>
         </Padding>
       )}
     </Container>

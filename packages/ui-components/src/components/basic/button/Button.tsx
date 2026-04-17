@@ -9,7 +9,6 @@ import React, { ButtonHTMLAttributes, useCallback, useMemo } from 'react';
 
 import type { AnyColor, With$Prefix, Without$Prefix } from '../../../types/utils';
 import { type IconName } from '../../../web-components/icon-registry';
-import { Text } from '../text/Text';
 import styles from './Button.module.css';
 
 type ButtonSize = 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
@@ -314,12 +313,13 @@ const Button = ({
               } as React.CSSProperties
             }
           >
-            <Text
+            <ds-text
+              as="span"
               color="currentColor"
-              style={{ '--text-font-size': textSize } as React.CSSProperties}
+              style={{ '--ds-text-font-size': textSize } as React.CSSProperties}
             >
               {label}
-            </Text>
+            </ds-text>
           </span>
         )}
 

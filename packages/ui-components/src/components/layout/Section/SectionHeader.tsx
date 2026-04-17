@@ -6,7 +6,6 @@
 import React, { type FC } from 'react';
 
 import { Button } from '../../basic/button/Button';
-import { Text } from '../../basic/text/Text';
 import { Row } from '../Row';
 
 type SectionHeaderProps = {
@@ -25,9 +24,9 @@ export const SectionHeader: FC<SectionHeaderProps> = ({
 	<>
 		<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
 			<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-				<Text  weight="bold">
+				<ds-text as="h2" weight="bold">
 					{title}
-				</Text>
+				</ds-text>
 			</Row>
 			{showClose && (
 				<Row padding={{ horizontal: 'small' }}>

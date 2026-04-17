@@ -8,7 +8,6 @@ import { type FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../basic/button/Button';
-import { Text } from '../basic/text/Text';
 import { Container } from '../layout/Container';
 import { Row } from '../layout/Row';
 
@@ -145,7 +144,7 @@ const Paging: FC<PagingProps> = ({
           disabled={isPreviousPageDisabled}
         />
       </Row>
-      <Text size="medium" weight="bold" color="#828282">
+      <ds-text as="span" size="medium" weight="bold" color="#828282">
         <span
           style={{
             color: 'gray0',
@@ -160,7 +159,7 @@ const Paging: FC<PagingProps> = ({
           {currentPage}
         </span>{' '}
         {t('label.of', 'of')} {totalPages}
-      </Text>
+      </ds-text>
       <Row padding={{ left: 'small' }}>
         <Button
           size="large"

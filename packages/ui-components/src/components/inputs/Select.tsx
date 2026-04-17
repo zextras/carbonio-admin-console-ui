@@ -9,7 +9,6 @@ import '../../web-components/ds-icon';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { resolveThemeColor } from '../../theme/theme-utils';
-import { Text } from '../basic/text/Text';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Dropdown, DropdownItem, DropdownProps } from '../display/Dropdown';
 import { Container } from '../layout/Container';
@@ -142,18 +141,19 @@ const DefaultLabelFactory = <T,>({
       >
         <Row takeAvailableSpace mainAlignment="unset">
           <Padding top="medium" width="100%">
-            <Text
+            <ds-text
+              as="label"
               size="medium"
               color={disabled ? 'secondary' : 'text'}
               className={styles.customText}
             >
               {selectedLabels}
-            </Text>
+            </ds-text>
           </Padding>
           <div className={styles.label} style={labelStyle}>
-            <Text size={hasSelection ? 'small' : 'medium'} color={labelColor}>
+            <ds-text as="label" size={hasSelection ? 'small' : 'medium'} color={labelColor}>
               {label}
-            </Text>
+            </ds-text>
           </div>
         </Row>
         <div className={styles.iconWrapper}>

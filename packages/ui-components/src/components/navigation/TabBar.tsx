@@ -10,7 +10,6 @@ import React, { HTMLAttributes, useCallback, useMemo } from 'react';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getKeyboardPreset, useKeyboard } from '../../hooks/useKeyboard';
 import { AnyColor } from '../../types/utils';
-import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import styles from './TabBar.module.css';
 
@@ -116,7 +115,8 @@ const DefaultTabBarItem = (
       {...rest}
     >
       {children || (
-        <Text
+        <ds-text
+          as="span"
           overflow="ellipsis"
           size="small"
           color={selected ? 'text' : 'secondary'}
@@ -124,7 +124,7 @@ const DefaultTabBarItem = (
           className={styles.labelText}
         >
           {item.label}
-        </Text>
+        </ds-text>
       )}
     </Container>
   );

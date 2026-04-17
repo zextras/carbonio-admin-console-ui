@@ -10,7 +10,6 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../basic/button/Button';
-import { Text } from '../basic/text/Text';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
 import styles from './horizontal-wizard-layout.module.css';
@@ -61,9 +60,9 @@ const StepNavigator: FC<{
         </Row>
         {renderElement && (
           <Padding left="small">
-            <Text color={color} weight="medium" style={{ textTransform: 'uppercase' }}>
+            <ds-text as="h2" color={color} weight="medium" style={{ textTransform: 'uppercase' }}>
               {step.label}
-            </Text>
+            </ds-text>
           </Padding>
         )}
       </Row>

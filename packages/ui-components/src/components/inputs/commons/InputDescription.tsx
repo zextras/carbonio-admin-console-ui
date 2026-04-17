@@ -6,11 +6,16 @@
 
 import React from 'react';
 
-import { Text, TextProps } from '../../basic/text/Text';
-import styles from './InputDescription.module.css';
+import { TextProps } from '../../basic/text/text-types';
 
-type InputDescriptionProps = Omit<TextProps, 'overflow' | 'size'>;
+type InputDescriptionProps = Omit<TextProps, 'overflow' | 'size' | 'textAlign'>;
 
 export const InputDescription = ({ ...props }: InputDescriptionProps): React.JSX.Element => (
-  <Text overflow="break-word" size="extrasmall" className={styles.inputDescription} {...props} />
+  <ds-text
+    as="p"
+    overflow="break-word"
+    size="extrasmall"
+    style={{ lineHeight: '1.5', paddingTop: '0.25rem', minHeight: 'calc(var(--font-size-extrasmall) * 1.5)' } as React.CSSProperties}
+    {...props}
+  />
 );

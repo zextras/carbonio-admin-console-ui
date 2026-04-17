@@ -17,7 +17,7 @@ import {
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { setupFloating } from '../../utils/floating-ui';
-import { Text, TextProps } from '../basic/text/Text';
+import { TextProps } from '../basic/text/text-types';
 import { Portal } from '../utilities/Portal';
 import styles from './Tooltip.module.css';
 
@@ -34,17 +34,20 @@ const TooltipWrapper = ({
 	overflow = 'break-word',
 	className,
 	style,
+	textAlign,
 	...rest
 }: TooltipWrapperProps) => {
 	if (!open) return null;
 
 	const tooltipStyle = {
 		maxWidth,
+		textAlign,
 		...style,
 	};
 
 	return (
-		<Text
+		<ds-text
+			as="span"
 			size={size}
 			overflow={overflow}
 			data-testid={'tooltip'}
@@ -53,7 +56,7 @@ const TooltipWrapper = ({
 			{...rest}
 		>
 			{children}
-		</Text>
+		</ds-text>
 	);
 };
 
