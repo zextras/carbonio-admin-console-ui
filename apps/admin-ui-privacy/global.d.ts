@@ -23,7 +23,7 @@ declare global {
   namespace React {
     namespace JSX {
       interface IntrinsicElements {
-        'divider-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+        'ds-divider': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
       }
     }
   }

@@ -11,7 +11,6 @@ import {
   Padding,
   Row,
   TabBar,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
@@ -1208,7 +1207,7 @@ const EditMailingListView: FC<any> = ({
   
   return (
     <>
-      {isLoading && <spinner-wc></spinner-wc>}
+      {isLoading && <ds-spinner></ds-spinner>}
       <Container
         background="gray5"
         mainAlignment="flex-start"
@@ -1233,13 +1232,13 @@ const EditMailingListView: FC<any> = ({
         >
           <Row padding={{ horizontal: 'small' }}></Row>
           <Row takeAvailableSpace mainAlignment="flex-start">
-            <Text size="medium" overflow="ellipsis" weight="bold">
+            <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
               {distributionName} (
               {selectedMailingList?.dynamic
                 ? t('label.dynamic', 'Dynamic')
                 : t('label.standard', 'Standard')}
               )
-            </Text>
+            </ds-text>
           </Row>
           <Row>
             {!isDirty && (
@@ -1281,7 +1280,7 @@ const EditMailingListView: FC<any> = ({
           </Row>
         </Row>
         <Row>
-          <divider-wc color="gray3" />
+          <ds-divider color="gray3" />
         </Row>
 
         <Container
@@ -1308,7 +1307,7 @@ const EditMailingListView: FC<any> = ({
             width="100%"
             background="gray6"
           />
-          <divider-wc color="gray2" />
+          <ds-divider color="gray2" />
         </Container>
 
         {selectedTab === 'general' && (
@@ -1440,24 +1439,24 @@ const EditMailingListView: FC<any> = ({
               padding={{ top: 'extralarge', bottom: 'extralarge' }}
               mainAlignment='flex-start'
             >
-              <Text size="large" overflow="break-word">
+              <ds-text as="p" size="large" overflow="break-word">
                 {t(
                   'domain.distributionList.unsavedChangesMessage',
                   'Are you sure you want to leave this page without saving?',
                 )}
-              </Text>
+              </ds-text>
             </Container>
           </Modal>
         )}
 
         <RouteLeavingGuard when={isDirty} onSave={onSave}>
-          <Text>
+          <ds-text as="p">
             {t(
               'label.unsaved_changes_line1',
               'Are you sure you want to leave this page without saving?',
             )}
-          </Text>
-          <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+          </ds-text>
+          <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
         </RouteLeavingGuard>
         {isOpenDeleteDialog && (
           <Modal
@@ -1496,21 +1495,21 @@ const EditMailingListView: FC<any> = ({
               <Padding bottom="large">
                 {totalGrantRights !== 0 && (
                   <Container >
-                    <Text size={'large'} overflow="break-word">
-                      <Trans
-                        i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
-                        defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. If you delete it all rights will be lost."
-                        components={{
-                          bold: <strong />
-                        }}
-                        values={{
-                          totalAccRights: totalGrantRights,
-                        }}
-                      />
-                    </Text>
+                  <ds-text as="p" size={'large'} overflow="break-word">
+                    <Trans
+                      i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
+                      defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. If you delete it all rights will be lost."
+                      components={{
+                        bold: <strong />
+                      }}
+                      values={{
+                        totalAccRights: totalGrantRights,
+                      }}
+                    />
+                  </ds-text>
                   </Container>
                 )}
-                <Text size={'large'} overflow="break-word">
+                <ds-text as="p" size={'large'} overflow="break-word">
                   <Trans
                     i18nKey="label.are_you_sure_delete_distribution_list"
                     defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"
@@ -1519,7 +1518,7 @@ const EditMailingListView: FC<any> = ({
                       name: displayName || distributionName,
                     }}
                   />
-                </Text>
+                </ds-text>
               </Padding>
             </Container>
           </Modal>

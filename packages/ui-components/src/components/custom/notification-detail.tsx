@@ -116,7 +116,7 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Row width="100%" padding={{ all: 'small' }}>
         <Displayer buttons={buttons} pinIcon={isSticky} />

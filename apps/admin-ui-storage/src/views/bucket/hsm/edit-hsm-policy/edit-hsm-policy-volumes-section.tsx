@@ -12,7 +12,6 @@ import {
   Padding,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -91,23 +90,24 @@ const EditHsmPolicyVolumesSection: FC<{
       const allRows = volumeList.map((item: any) => ({
         id: item?.id,
         columns: [
-          <Text size="small" weight="regular" key={item}>
+          <ds-text as="span" size="small" weight="regular" key={item}>
             {item?.name}
-          </Text>,
-          <Text size="small" weight="light" key={item}>
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={item}>
             {''}
-          </Text>,
-          <Text size="small" weight="light" key={item}>
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={item}>
             {getVoumeType(item?.type)}
-          </Text>,
-          <Text
+          </ds-text>,
+          <ds-text
+            as="span"
             size="small"
             weight="light"
             key={item}
             color={item?.isCurrent ? 'gray0' : '#D74942'}
           >
             {item?.isCurrent ? t('hsm.yes', 'Yes') : t('hsm.no', 'No')}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setVolumeRows(allRows);
@@ -191,19 +191,19 @@ const EditHsmPolicyVolumesSection: FC<{
     >
       <ListRow>
         <Padding bottom="large">
-          <Text size="medium" weight="bold" color="gray0">
+          <ds-text as="h3" size="medium" weight="bold" color="gray0">
             {<Trans i18nKey="hsm.source_volume" defaults="Source Volume" />}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
         <Padding bottom="large">
-          <Text size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
+          <ds-text as="p" size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
             {t(
               'hsm.all_primary_volume_used_source_msg',
               'All primary volumes will be used as source by default. Or select manually other volumes.',
             )}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -255,19 +255,19 @@ const EditHsmPolicyVolumesSection: FC<{
 
       <ListRow>
         <Padding bottom="large">
-          <Text size="medium" weight="bold" color="gray0">
+          <ds-text as="h3" size="medium" weight="bold" color="gray0">
             {<Trans i18nKey="hsm.destination_volume" defaults="Destination Volume" />}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
         <Padding bottom="large">
-          <Text size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
+          <ds-text as="p" size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
             {t(
               'hsm.all_secondary_volume_used_source_msg',
               'The current secondary volume will be used as a destination. Or select manually other volumes.',
             )}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>

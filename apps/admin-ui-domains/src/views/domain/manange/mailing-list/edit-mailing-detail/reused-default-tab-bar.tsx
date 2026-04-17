@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DefaultTabBarItem, Row, Text } from '@zextras/ui-components';
+import { DefaultTabBarItem, Row } from '@zextras/ui-components';
 import { type FC, type ReactElement } from 'react';
 
 type ReusedDefaultTabBarProps = {
@@ -31,9 +31,9 @@ export const ReusedDefaultTabBar: FC<ReusedDefaultTabBarProps> = ({
     forceWidthEquallyDistributed={false}
   >
     <Row padding="small">
-      <Text size="small" color={selected ? 'primary' : 'gray'}>
+      <ds-text as="span" size="small" color={selected ? 'primary' : 'gray'}>
         {item.label}
-      </Text>
+      </ds-text>
     </Row>
   </DefaultTabBarItem>
 );

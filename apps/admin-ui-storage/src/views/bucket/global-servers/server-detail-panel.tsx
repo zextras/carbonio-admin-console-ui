@@ -11,7 +11,6 @@ import {
   Input,
   Row,
   Table,
-  Text,
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
@@ -40,9 +39,9 @@ const ServersListTable: FC<{
         id: i?.toString(),
         columns: [
           <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-            <Text size="small" weight="regular">
+            <ds-text as="span" size="small" weight="regular">
               {v?.name}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -52,9 +51,9 @@ const ServersListTable: FC<{
               textTransform: 'capitalize',
             }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.primaries}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -64,9 +63,9 @@ const ServersListTable: FC<{
               textTransform: 'capitalize',
             }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.secondaries}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -76,9 +75,9 @@ const ServersListTable: FC<{
               textTransform: 'capitalize',
             }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.indexes}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -88,11 +87,11 @@ const ServersListTable: FC<{
               textTransform: 'capitalize',
             }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.hsmScheduled
                 ? t('label.scheduled', 'Scheduled')
                 : t('label.disabled', 'Disabled')}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -102,11 +101,11 @@ const ServersListTable: FC<{
               textTransform: 'capitalize',
             }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v.indexer?.running === true
                 ? t('volume.running', 'Running')
                 : t('volume.not_running', 'Not Running')}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -116,9 +115,9 @@ const ServersListTable: FC<{
               textTransform: 'capitalize',
             }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.description}
-            </Text>
+            </ds-text>
           </Row>,
         ],
         clickable: true,
@@ -132,9 +131,9 @@ const ServersListTable: FC<{
         id: i?.toString(),
         columns: [
           <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-            <Text size="small" weight="regular">
+            <ds-text as="span" size="small" weight="regular">
               {v?.name}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -144,9 +143,9 @@ const ServersListTable: FC<{
               textTransform: 'capitalize',
             }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.description}
-            </Text>
+            </ds-text>
           </Row>,
         ],
         clickable: true,
@@ -171,12 +170,12 @@ const ServersListTable: FC<{
           height="fit"
           padding={{ top: 'medium' }}
         >
-          <spinner-wc></spinner-wc>
+          <ds-spinner></ds-spinner>
         </Container>
       )}
       {(tableRowsAdvance.length === 0 || tableRowCe.length === 0) && !isRequestInProgress && (
         <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-          <Text>{t('label.this_list_is_empty', 'This list is empty.')}</Text>
+          <ds-text as="p">{t('label.this_list_is_empty', 'This list is empty.')}</ds-text>
         </Row>
       )}
     </Container>
@@ -329,11 +328,11 @@ const ServerDetailPanel: FC = () => {
         background="white"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text  weight="bold">
+          <ds-text as="h2" weight="bold">
             {t('buckets.servers_list', 'Servers List')}
-          </Text>
+          </ds-text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Container
           orientation="column"
           crossAlignment="flex-start"
@@ -357,7 +356,7 @@ const ServerDetailPanel: FC = () => {
                     label={t('label.search_for_a_Server', `Search for a Server`)}
                     backgroundColor="gray5"
                     CustomIcon={(): any => (
-                      <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                      <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                     )}
                     value={searchServer}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void => {

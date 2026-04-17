@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, InheritedInput, ListRow, Padding, Text } from '@zextras/ui-components';
+import { Container, InheritedInput, ListRow, Padding } from '@zextras/ui-components';
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -15,9 +15,9 @@ const HttpsErrorMessage: FC = () => {
   return (
     <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
       <Padding top="small">
-        <Text size="extrasmall" weight="regular" color="error">
+        <ds-text as="span" size="extrasmall" weight="regular" color="error">
           {t('label.use_https_protocol_message', 'You need to use the HTTPS protocol')}
-        </Text>
+        </ds-text>
       </Padding>
     </Container>
   );
@@ -48,9 +48,9 @@ const EndUserThemeConfigs: FC<{
     <>
       <ListRow>
         <Padding vertical="large" horizontal="small" width="100%">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="h3" size="small" color="gray0" weight="bold">
             {t('label.end_user_webapp', 'End User Webapp')}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -59,19 +59,19 @@ const EndUserThemeConfigs: FC<{
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="p" size="small" color="gray0">
             {t(
               'label.end_user_theme_description',
               'In this section you can customize the WebApp with your company logo and image.',
             )}
-          </Text>
+          </ds-text>
         </Container>
       </ListRow>
       <ListRow>
         <Padding vertical="large" horizontal="small" width="100%">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="h4" size="small" color="gray0" weight="bold">
             {t('label.title_and_copyrights_information', 'Title & Copyrights Information')}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -80,12 +80,12 @@ const EndUserThemeConfigs: FC<{
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="p" size="small" color="gray0">
             {t(
               'label.title_theme_note',
               'The title is the name that will appear on the browser tab',
             )}
-          </Text>
+          </ds-text>
         </Container>
       </ListRow>
       <ListRow>
@@ -107,12 +107,12 @@ const EndUserThemeConfigs: FC<{
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="p" size="small" color="gray0">
             {t(
               'label.copyrights_theme_note',
               'The copyrights information will appear on the login box footer',
             )}
-          </Text>
+          </ds-text>
         </Container>
       </ListRow>
       <ListRow>
@@ -129,13 +129,13 @@ const EndUserThemeConfigs: FC<{
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <ListRow>
         <Padding vertical="large" horizontal="small" width="100%">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="h4" size="small" color="gray0" weight="bold">
             {t('label.logo', 'Logo')}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -144,12 +144,12 @@ const EndUserThemeConfigs: FC<{
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="p" size="small" color="gray0">
             {t(
               'label.logo_description',
               'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimension 240x120 pixels.',
             )}
-          </Text>
+          </ds-text>
         </Container>
       </ListRow>
       <ListRow>
@@ -158,7 +158,7 @@ const EndUserThemeConfigs: FC<{
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.light_mode"
               defaults="<bold>Light</bold> Mode"
@@ -169,21 +169,21 @@ const EndUserThemeConfigs: FC<{
 
               'Logo for Login Page',
             )}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           mainAlignment="flex-start"
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.dark_mode"
               defaults="<bold>Dark</bold> Mode"
               components={{ bold: <strong /> }}
             />{' '}
             {t('label.logo_for_login_page', 'Logo for Login Page')}
-          </Text>
+          </ds-text>
         </Container>
       </ListRow>
       <ListRow>
@@ -250,7 +250,7 @@ const EndUserThemeConfigs: FC<{
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.light_mode"
               defaults="<bold>Light</bold> Mode"
@@ -261,21 +261,21 @@ const EndUserThemeConfigs: FC<{
 
               'Logo for WebApp',
             )}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           mainAlignment="flex-start"
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.dark_mode"
               defaults="<bold>Dark</bold> Mode"
               components={{ bold: <strong /> }}
             />{' '}
             {t('label.logo_for_webapp', 'Logo for WebApp')}
-          </Text>
+          </ds-text>
         </Container>
       </ListRow>
       <ListRow>
@@ -337,13 +337,13 @@ const EndUserThemeConfigs: FC<{
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <ListRow>
         <Padding vertical="large" horizontal="small" width="100%">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="h4" size="small" color="gray0" weight="bold">
             {t('label.favicon', 'Favicon')}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -352,12 +352,12 @@ const EndUserThemeConfigs: FC<{
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="p" size="small" color="gray0">
             {t(
               'label.favicon_description',
               'Paste the URL of the favicon for the login page. Use an ICO file, dimension 32x32 pixels.',
             )}
-          </Text>
+          </ds-text>
         </Container>
       </ListRow>
       <ListRow>
@@ -391,13 +391,13 @@ const EndUserThemeConfigs: FC<{
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <ListRow>
         <Padding vertical="large" horizontal="small" width="100%">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="h4" size="small" color="gray0" weight="bold">
             {t('label.background_for_the_login_page', 'Background for the Login Page')}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -406,12 +406,12 @@ const EndUserThemeConfigs: FC<{
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="p" size="small" color="gray0">
             {t(
               'label.background_description',
               'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a minimum resolution of 1280x720 pixels, a ratio of 16:9 and smaller than 800KB.',
             )}
-          </Text>
+          </ds-text>
         </Container>
       </ListRow>
       <ListRow>
@@ -420,7 +420,7 @@ const EndUserThemeConfigs: FC<{
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.light_mode"
               defaults="<bold>Light</bold> Mode"
@@ -431,21 +431,21 @@ const EndUserThemeConfigs: FC<{
 
               'Background Login Page',
             )}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           mainAlignment="flex-start"
           crossAlignment="flex-start"
           padding={{ all: 'small' }}
         >
-          <Text size="small" color="gray0">
+          <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.dark_mode"
               defaults="<bold>Dark</bold> Mode"
               components={{ bold: <strong /> }}
             />{' '}
             {t('label.background_login_page', 'Background Login Page')}
-          </Text>
+          </ds-text>
         </Container>
       </ListRow>
       <ListRow>
@@ -507,7 +507,7 @@ const EndUserThemeConfigs: FC<{
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <ListRow>
         <ListRow>
@@ -516,7 +516,7 @@ const EndUserThemeConfigs: FC<{
             crossAlignment="flex-start"
             padding={{ vertical: 'large', horizontal: 'small' }}
           >
-            <Text size="small" color="gray0">
+            <ds-text as="p" size="small" color="gray0">
               <Trans
                 i18nKey="label.please_note"
                 defaults="<bold>Please note</bold>"
@@ -526,7 +526,7 @@ const EndUserThemeConfigs: FC<{
                 'label.virtualhost_avaibility_helpertext',
                 'that in order to make the virtualHost available, nginx configuration must be reloaded on all the proxyes first.',
               )}
-            </Text>
+            </ds-text>
           </Container>
         </ListRow>
       </ListRow>
@@ -534,9 +534,9 @@ const EndUserThemeConfigs: FC<{
         <Container padding={{ bottom: 'small', horizontal: 'small' }}>
           <ListRow>
             <Padding bottom="large" horizontal="small" width="100%">
-              <Text size="small" color="gray0" weight="bold">
+              <ds-text as="h4" size="small" color="gray0" weight="bold">
                 {t('label.login', 'Login')}
-              </Text>
+              </ds-text>
             </Padding>
           </ListRow>
           <InheritedInput
@@ -569,9 +569,9 @@ const EndUserThemeConfigs: FC<{
         <Container padding={{ bottom: 'small', horizontal: 'small' }}>
           <ListRow>
             <Padding bottom="large" horizontal="small" width="100%">
-              <Text size="small" color="gray0" weight="bold">
+              <ds-text as="h4" size="small" color="gray0" weight="bold">
                 {t('label.logout', 'Logout')}
-              </Text>
+              </ds-text>
             </Padding>
           </ListRow>
           <InheritedInput

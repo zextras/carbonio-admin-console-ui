@@ -31,13 +31,13 @@ const AppView: FC = () => {
           element={
             <Container orientation="horizontal" mainAlignment="flex-start">
               <Container style={{ maxWidth: '265px' }}>
-                <Suspense fallback={<spinner-wc />}>
+                <Suspense fallback={<ds-spinner />}>
                   <NotificationsListPanel />
                 </Suspense>
               </Container>
               <Container style={{ maxWidth: '100%' }}>
                 <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-                  <Suspense fallback={<spinner-wc />}>
+                  <Suspense fallback={<ds-spinner />}>
                     <NotificationsDetailPanel />
                   </Suspense>
                 </Container>

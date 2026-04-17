@@ -451,7 +451,7 @@ const CreateAccount: FC<{
   );
   return (
     <>
-      {isLoading && <spinner-wc></spinner-wc>}
+      {isLoading && <ds-spinner></ds-spinner>}
       <Container
         background="gray5"
         mainAlignment="flex-start"

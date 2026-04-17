@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, ListRow, Padding, Text } from '@zextras/ui-components';
+import { Container, ListRow, Padding } from '@zextras/ui-components';
 
 export const SwitchDescription = ({ label }: { label: string }) => (
   <ListRow>
@@ -14,9 +14,9 @@ export const SwitchDescription = ({ label }: { label: string }) => (
       padding={{ left: 'extralarge' }}
     >
       <Padding left="large">
-        <Text size="small" weight="regular" color="gray1">
+        <ds-text as="span" size="small" weight="regular" color="gray1">
           {label}
-        </Text>
+        </ds-text>
       </Padding>
     </Container>
   </ListRow>

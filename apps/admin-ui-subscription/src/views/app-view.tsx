@@ -37,7 +37,7 @@ export const AppView = () => {
           path="/"
           element={
             <div style={{ ...baseStyle, ...getContainerStyle(isPrimaryBarExpanded) }}>
-              <Suspense fallback={<spinner-wc />}>
+              <Suspense fallback={<ds-spinner></ds-spinner>}>
                 <Subscription />
               </Suspense>
             </div>
@@ -47,7 +47,7 @@ export const AppView = () => {
           path="/activate"
           element={
             <div style={{ ...baseStyle, ...getContainerStyle(isPrimaryBarExpanded) }}>
-              <Suspense fallback={<spinner-wc />}>
+              <Suspense fallback={<ds-spinner></ds-spinner>}>
                 <ActivateSubscription />
               </Suspense>
             </div>

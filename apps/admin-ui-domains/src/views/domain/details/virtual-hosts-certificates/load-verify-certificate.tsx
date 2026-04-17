@@ -9,7 +9,6 @@ import {
   Container,
   CustomTextArea,
   Padding,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -303,9 +302,9 @@ export const LoadAndVerifyCert: FC<{
       mainAlignment="flex-start"
       crossAlignment="flex-start"
     >
-      <Text size="large" weight="bold">
+      <ds-text as="h2" size="large" weight="bold">
         {t('label.upload_verify_certificate', 'Upload and Verify Certificate')}
-      </Text>
+      </ds-text>
       <Container
         orientation="horizontal"
         mainAlignment="flex-start"
@@ -313,18 +312,18 @@ export const LoadAndVerifyCert: FC<{
         width="fill"
       >
         <Container padding={{ right: '0.25rem' }} width="fit">
-          <icon-wc icon="InfoOutline" color="secondary"></icon-wc>
+          <ds-icon icon="InfoOutline" color="secondary"></ds-icon>
         </Container>
-        <Text color="secondary">
+        <ds-text as="p" color="secondary">
           {t(
             'label.certificate_alert_helperText',
             'The certificate will be available once the Proxy is restarted',
           )}
-        </Text>
+        </ds-text>
       </Container>
 
       <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
-        <Text weight="bold">{t('label.domain_certificate', 'Domain Certificate')}</Text>
+        <ds-text as="label" weight="bold">{t('label.domain_certificate', 'Domain Certificate')}</ds-text>
         <Padding bottom="small" />
         <CustomTextArea
           isRequired
@@ -361,9 +360,9 @@ export const LoadAndVerifyCert: FC<{
 
       <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
         <Padding bottom="small" />
-        <Text weight="bold">
+        <ds-text as="label" weight="bold">
           {t('label.domain_certificate_ca_chain', 'Domain Certificate CA Chain')}
-        </Text>
+        </ds-text>
         <Padding bottom="small" />
         <CustomTextArea
           isRequired
@@ -403,7 +402,7 @@ export const LoadAndVerifyCert: FC<{
 
       <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
         <Padding bottom="small" />
-        <Text weight="bold">{t('label.domain_certificate_private_key', 'Domain Private Key')}</Text>
+        <ds-text as="label" weight="bold">{t('label.domain_certificate_private_key', 'Domain Private Key')}</ds-text>
         <Padding bottom="small" />
         <CustomTextArea
           isRequired

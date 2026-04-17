@@ -286,7 +286,7 @@ const Button = ({
       >
         {loading && (
           <div className={styles.loadingContainer}>
-            <spinner-wc color="currentColor"></spinner-wc>
+            <ds-spinner color="currentColor"></ds-spinner>
           </div>
         )}
         {icon && (
@@ -300,7 +300,7 @@ const Button = ({
               } as React.CSSProperties
             }
           >
-            <icon-wc icon={icon as IconName} color="currentColor" size={iconSize}></icon-wc>
+            <ds-icon icon={icon as IconName} color="currentColor" size={iconSize}></ds-icon>
           </span>
         )}
         {label && (
@@ -328,11 +328,11 @@ const Button = ({
             className={styles.secondaryPlaceholder}
             style={{ '--placeholder-padding': secondarySizeConfig.padding } as React.CSSProperties}
           >
-            <icon-wc
+            <ds-icon
               icon={secondaryAction.icon as IconName}
               color="currentColor"
               size={secondarySizeConfig.icon}
-            ></icon-wc>
+            ></ds-icon>
           </span>
         )}
       </button>
@@ -349,11 +349,11 @@ const Button = ({
           data-loading={loading ? 'true' : undefined}
           tabIndex={secondaryAction.disabled ? -1 : 0}
         >
-          <icon-wc
+          <ds-icon
             icon={secondaryAction.icon as IconName}
             color="currentColor"
             size={secondarySizeConfig.icon}
-          ></icon-wc>
+          ></ds-icon>
         </button>
       )}
     </div>

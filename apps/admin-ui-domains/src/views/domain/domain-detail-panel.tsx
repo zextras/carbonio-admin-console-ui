@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Padding, Row, Text } from '@zextras/ui-components';
+import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
 import { cloneDeep, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -58,12 +58,12 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
       {isDomainClosed && showDomainClose ? (
         <Row background="warning" width="100%" padding="small" mainAlignment="space-between">
           <Row mainAlignment="flex-start">
-            <icon-wc icon="CloseCircleOutline" size="large" color="white"></icon-wc>
+            <ds-icon icon="CloseCircleOutline" size="large" color="white"></ds-icon>
             <Padding left="large">
               <Trans
                 i18nKey="label.this_domain_is_closed"
                 defaults="<text>The domain  <bold> {{domain}} </bold>  is closed</text>"
-                components={{ bold: <strong />, text: <Text color="white" /> }}
+                components={{ bold: <strong />, text: <ds-text as="p" color="white" /> }}
                 values={{
                   domain: domain?.name ?? '',
                 }}
@@ -88,7 +88,7 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
                 }}
               />
             </Padding>
-            <icon-wc
+            <ds-icon
               icon="Close"
               size="large"
               color="white"
@@ -97,7 +97,7 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
                 setShowDomainClose(false);
                 setCloseDomainNameBanner(domain?.name || '');
               }}
-            ></icon-wc>
+            ></ds-icon>
           </Row>
         </Row>
       ) : (

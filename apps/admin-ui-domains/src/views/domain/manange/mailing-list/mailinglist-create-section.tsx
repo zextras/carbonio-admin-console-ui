@@ -12,7 +12,6 @@ import {
   ListRow,
   Row,
   Table,
-  Text,
 } from '@zextras/ui-components';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -71,9 +70,9 @@ const MailingListCreateSection: FC<any> = () => {
       const allRows = member.map((item: any) => ({
         id: item,
         columns: [
-          <Text size="medium" weight="light" key={item} color="#828282">
+          <ds-text as="span" size="medium" weight="light" key={item} color="#828282">
             {item}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setMemberList(allRows);
@@ -86,9 +85,9 @@ const MailingListCreateSection: FC<any> = () => {
       const allRows = ownersList.map((item: any) => ({
         id: item,
         columns: [
-          <Text size="medium" weight="light" key={item?.id} color="#828282">
+          <ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
             {item}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setOwnerMember(allRows);
@@ -101,9 +100,9 @@ const MailingListCreateSection: FC<any> = () => {
       const allRows = grantList.map((item: any) => ({
         id: item,
         columns: [
-          <Text size="medium" weight="light" key={item?.id} color="#828282">
+          <ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
             {item}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setGrantEmailsList(allRows);
@@ -189,9 +188,9 @@ const MailingListCreateSection: FC<any> = () => {
         </ListRow>
 
         <Row padding={{ top: 'large' }}>
-          <Text size="small" weight="bold">
-            {t('label.main_settings', 'Main Settings')}
-          </Text>
+            <ds-text as="h3" size="small" weight="bold">
+              {t('label.main_settings', 'Main Settings')}
+            </ds-text>
         </Row>
         <ListRow>
           {!mailingListDetail?.dynamic && (
@@ -262,9 +261,9 @@ const MailingListCreateSection: FC<any> = () => {
               orientation="horizontal"
               padding={{ top: 'extralarge', bottom: 'medium' }}
             >
-              <Text size="small" weight="bold">
-                {t('label.members', 'Members')}
-              </Text>
+               <ds-text as="h3" size="small" weight="bold">
+                 {t('label.members', 'Members')}
+               </ds-text>
             </Container>
           </Row>
         )}
@@ -308,9 +307,9 @@ const MailingListCreateSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'extralarge' }}
           >
-            <Text size="small" weight="bold">
-              {t('label.owners_settings', 'Owners’ Settings')}
-            </Text>
+             <ds-text as="h3" size="small" weight="bold">
+                {t('label.owners_settings', "Owners' Settings")}
+             </ds-text>
           </Container>
         </Row>
 
@@ -327,9 +326,9 @@ const MailingListCreateSection: FC<any> = () => {
         </ListRow>
 
         <Row padding={{ top: 'large' }}>
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h4" size="small" weight="bold" color="gray0">
             {t('label.sending_options', 'Sending Options')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <LabeledValue

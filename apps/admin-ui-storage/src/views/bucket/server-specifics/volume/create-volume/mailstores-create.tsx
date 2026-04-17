@@ -13,7 +13,6 @@ import {
   Row,
   Select,
   Switch,
-  Text,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -248,9 +247,9 @@ const MailstoresCreate: FC<{
         />
         {!errName && (
           <Padding top="extrasmall">
-            <Text color="error" overflow="break-word" size="extrasmall">
+            <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
               {t('buckets.invalid_volume_name', 'Volume name is required.')}
-            </Text>
+            </ds-text>
           </Padding>
         )}
       </Row>
@@ -310,9 +309,9 @@ const MailstoresCreate: FC<{
         />
         {!errPath && (
           <Padding top="extrasmall">
-            <Text color="error" overflow="break-word" size="extrasmall">
+            <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
               {t('buckets.invalid_volume_path', 'path is required')}
-            </Text>
+            </ds-text>
           </Padding>
         )}
       </Row>
@@ -336,13 +335,13 @@ const MailstoresCreate: FC<{
               onChange={changeVolCompThresold}
               hasError={!errCompressionThreshold}
               disabled={!volumeDetail?.isCompression}
-              CustomIcon={(): any => <Text color="secondary">{COMPRESSION_THRESHOLD_UNIT}</Text>}
+                CustomIcon={(): any => <ds-text as="span" color="secondary">{COMPRESSION_THRESHOLD_UNIT}</ds-text>}
             />
             {!errCompressionThreshold && (
               <Padding top="extrasmall">
-                <Text color="error" overflow="break-word" size="extrasmall">
+                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
                   {t('buckets.invalid_compression_thresold', 'Compression Threshold is required')}
-                </Text>
+                </ds-text>
               </Padding>
             )}
           </Row>
@@ -357,12 +356,12 @@ const MailstoresCreate: FC<{
         />
       </Row>
       <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-        <Text color="secondary">
+        <ds-text as="p" color="secondary">
           {t(
             'label.enable_current_helptext',
             'Enabling this option will disable the current active volume.',
           )}
-        </Text>
+        </ds-text>
       </Row>
     </Container>
   );

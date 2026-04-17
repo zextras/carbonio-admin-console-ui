@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/divider-wc';
+import '../../web-components/ds-divider';
 
 import { useCallback, useMemo, useState } from 'react';
 
@@ -200,7 +200,7 @@ const Input = ({
           </span>
         )}
       </InputContainer>
-      <divider-wc color={dividerColor}></divider-wc>
+      <ds-divider color={dividerColor}></ds-divider>
       {description !== undefined && (
         <InputDescription
           color={(hasError && 'error') || (hasFocus && 'primary') || 'secondary'}

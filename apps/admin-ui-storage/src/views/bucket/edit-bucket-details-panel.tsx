@@ -15,7 +15,6 @@ import {
   PasswordInput,
   Row,
   Select,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { find, get } from 'lodash-es';
@@ -406,7 +405,7 @@ const EditBucketDetailPanel: FC<{
         height="4.15rem"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-          <Text weight="bold">{title}</Text>
+          <ds-text as="h2" weight="bold">{title}</ds-text>
         </Row>
         <Row
           padding={{ all: 'small' }}
@@ -430,7 +429,7 @@ const EditBucketDetailPanel: FC<{
           />
         </Row>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <Displayer buttons={buttons} pinIcon={false} />
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
         <Row padding={{ top: 'small' }} width="100%">
@@ -557,7 +556,7 @@ const EditBucketDetailPanel: FC<{
             disabled={toggleBtn}
           />
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
 
         {checkError !== '' && (
           <Container
@@ -569,17 +568,17 @@ const EditBucketDetailPanel: FC<{
             style={{ marginTop: '1rem' }}
           >
             <Row width="10%" mainAlignment="flex-start">
-              <icon-wc
+              <ds-icon
                 icon="AlertTriangleOutline"
                 color="gray6"
                 size="large"
                 style={{ height: '2rem', width: '2rem' }}
-              ></icon-wc>
+              ></ds-icon>
             </Row>
             <Row width="86%" mainAlignment="flex-end">
-              <Text overflow="break-word" color="gray6">
+              <ds-text as="p" overflow="break-word" color="gray6">
                 {checkError}
-              </Text>
+              </ds-text>
             </Row>
           </Container>
         )}

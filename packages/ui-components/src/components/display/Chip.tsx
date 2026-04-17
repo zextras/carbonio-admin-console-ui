@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/icon-wc';
+import '../../web-components/ds-icon';
 
 import { map } from 'lodash-es';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
@@ -183,12 +183,12 @@ const Chip = ({
                 onBlur={hideTooltipHandler}
                 style={{ '--action-spacing': SIZES[size].spacing } as React.CSSProperties}
               >
-                <icon-wc
+                <ds-icon
                   icon={action.icon}
                   color={error ? 'error' : action.color}
                   disabled={!!disabled || action.disabled}
                   size={SIZES[size].icon}
-                ></icon-wc>
+                ></ds-icon>
               </div>
             </Tooltip>
           );
@@ -224,12 +224,12 @@ const Chip = ({
                   } as React.CSSProperties
                 }
               >
-                <icon-wc
+                <ds-icon
                   icon={action.icon}
                   color={error ? 'error' : action.color}
                   disabled={!!disabled || action.disabled}
                   size={SIZES[size].icon}
-                ></icon-wc>
+                ></ds-icon>
               </button>
             </Tooltip>
           );

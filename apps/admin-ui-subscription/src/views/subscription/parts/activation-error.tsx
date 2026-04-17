@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Text } from '@zextras/ui-components';
+import { Button } from '@zextras/ui-components';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,18 +29,18 @@ export const ActivationError = ({ isError }: ActivationErrorProps): React.JSX.El
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
       <div className={styles.imageCircle}>
-        <icon-wc icon="AlertTriangleOutline" color="error" size="60px"></icon-wc>
+        <ds-icon icon="AlertTriangleOutline" color="error" size="60px"></ds-icon>
       </div>
-      <Text weight="bold" size="large">
+      <ds-text as="h2" weight="bold" size="large">
         {t('subscription.activate.activation_error.title', 'Something went wrong')}
-      </Text>
+      </ds-text>
       <div className={styles.description}>
-        <Text color="gray0" weight="light" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
+        <ds-text as="p" color="gray0" weight="light" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
           {t(
             'subscription.activate.activation_error.description',
             'Please verify that you have inserted the correct token.\nIf the error persists contact your provider or try again later.',
           )}
-        </Text>
+        </ds-text>
       </div>
       <Button color="gray0" label={buttonLabel} type="outlined" width="fill" onClick={onClick} />
     </div>
