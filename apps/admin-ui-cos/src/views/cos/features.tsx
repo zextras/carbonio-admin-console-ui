@@ -112,7 +112,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <ds-text as="strong" weight="bold">{t('label.general_lbl', 'General')}</ds-text>
+          <ds-text as="strong" weight="bold">
+            {t('label.general_lbl', 'General')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.zimbraFeatureOptionsEnabled}
@@ -213,11 +215,23 @@ export const Features: FC<{
                         onChangeReset={(): void =>
                           setEmptyValue?.('carbonioOtpWizardFromUntrusted')
                         }
-                        disabled={readonlyFeatures}
+                        disabled={
+                          readonlyFeatures ||
+                          featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE'
+                        }
                       />
                       <Padding left={'extralarge'}>
                         <Row padding={{ left: 'small' }}>
-                          <ds-text as="span" color="gray1" size="small" overflow="break-word">
+                          <ds-text
+                            as="span"
+                            color="gray1"
+                            size="small"
+                            overflow="break-word"
+                            disabled={
+                              readonlyFeatures ||
+                              featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE'
+                            }
+                          >
                             {t(
                               'cos.features.enforceOnUntrustedNetworksInfo',
                               'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
@@ -241,10 +255,25 @@ export const Features: FC<{
                         fromSubValue={accSpecificDetail?.carbonioOtpGracePeriodEnabled}
                         inputName={'carbonioOtpGracePeriodEnabled'}
                         onChangeReset={(): void => setEmptyValue?.('carbonioOtpGracePeriodEnabled')}
+                        disabled={
+                          readonlyFeatures ||
+                          featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE' ||
+                          featuresDetail?.carbonioOtpWizardFromUntrusted === 'FALSE'
+                        }
                       />
                       <Padding left={'extralarge'}>
                         <Row padding={{ left: 'small' }}>
-                          <ds-text as="span" color="gray1" size="small" overflow="break-word">
+                          <ds-text
+                            as="span"
+                            color="gray1"
+                            size="small"
+                            overflow="break-word"
+                            disabled={
+                              readonlyFeatures ||
+                              featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE' ||
+                              featuresDetail?.carbonioOtpWizardFromUntrusted === 'FALSE'
+                            }
+                          >
                             {t(
                               'cos.features.allowSetupDeferralDuringGracePeriodInfo',
                               'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
@@ -295,7 +324,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <ds-text as="strong" weight="bold">{t('label.mail', 'Mail')}</ds-text>
+          <ds-text as="strong" weight="bold">
+            {t('label.mail', 'Mail')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.carbonioFeatureMailsAppEnabled}
@@ -351,7 +382,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <ds-text as="strong" weight="bold">{t('label.contacts', 'Contacts')}</ds-text>
+          <ds-text as="strong" weight="bold">
+            {t('label.contacts', 'Contacts')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.zimbraFeatureContactsEnabled}
@@ -373,7 +406,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <ds-text as="strong" weight="bold">{t('label.calendar', 'Calendar')}</ds-text>
+          <ds-text as="strong" weight="bold">
+            {t('label.calendar', 'Calendar')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.zimbraFeatureCalendarEnabled}
@@ -403,7 +438,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <ds-text as="strong" weight="bold">{t('label.files', 'Files')}</ds-text>
+          <ds-text as="strong" weight="bold">
+            {t('label.files', 'Files')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.carbonioFeatureFilesEnabled}
@@ -438,7 +475,9 @@ export const Features: FC<{
           orientation="vertical"
           padding={{ bottom: 'large' }}
         >
-          <ds-text as="strong" weight="bold">{t('label.tasks', 'Tasks')}</ds-text>
+          <ds-text as="strong" weight="bold">
+            {t('label.tasks', 'Tasks')}
+          </ds-text>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <InheritedSwitch
               subValue={featuresDetail?.carbonioFeatureTasksEnabled}

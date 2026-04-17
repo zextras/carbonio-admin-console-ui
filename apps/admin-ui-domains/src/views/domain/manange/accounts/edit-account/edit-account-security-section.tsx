@@ -700,7 +700,13 @@ const EditAccountSecuritySection: FC = () => {
                         crossAlignment="center"
                         style={{ textAlign: 'center' }}
                       >
-                        <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                        <ds-text
+                          as="p"
+                          weight="light"
+                          color="#828282"
+                          size="large"
+                          overflow="break-word"
+                        >
                           {t('label.this_list_is_empty', 'This list is empty.')}
                         </ds-text>
                       </Row>
@@ -711,7 +717,13 @@ const EditAccountSecuritySection: FC = () => {
                         padding={{ top: 'small' }}
                         width="53%"
                       >
-                        <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                        <ds-text
+                          as="p"
+                          weight="light"
+                          color="#828282"
+                          size="large"
+                          overflow="break-word"
+                        >
                           <Trans
                             i18nKey="label.create_otp_list_msg"
                             defaults="You can create a new OTP by clicking on <bold>NEW OTP</bold> button up here"
@@ -764,6 +776,7 @@ const EditAccountSecuritySection: FC = () => {
                       'domain.accounts.enforceOnUntrustedNetworks',
                       'Enforce on Untrusted Networks',
                     )}
+                    disabled={accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE}
                     iconColor="primary"
                     inheritedValue={cosDetail.carbonioOtpWizardFromUntrusted}
                     fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
@@ -772,7 +785,13 @@ const EditAccountSecuritySection: FC = () => {
                   />
                   <Padding left={'extralarge'}>
                     <Row padding={{ left: 'small' }}>
-                      <ds-text as="small" color="gray1" size="small" overflow="break-word">
+                      <ds-text
+                        as="small"
+                        color="gray1"
+                        size="small"
+                        overflow="break-word"
+                        disabled={accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE}
+                      >
                         {t(
                           'domain.accounts.enforceOnUntrustedNetworksInfo',
                           'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
@@ -791,6 +810,10 @@ const EditAccountSecuritySection: FC = () => {
                       'domain.accounts.allowSetupDeferralDuringGracePeriod',
                       'Allow setup deferral during grace period',
                     )}
+                    disabled={
+                      accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                      accountDetail?.carbonioOtpWizardFromUntrusted === FALSE
+                    }
                     iconColor="primary"
                     inheritedValue={cosDetail.carbonioOtpGracePeriodEnabled}
                     fromSubValue={accSpecificDetail?.carbonioOtpGracePeriodEnabled}
@@ -799,7 +822,16 @@ const EditAccountSecuritySection: FC = () => {
                   />
                   <Padding left={'extralarge'}>
                     <Row padding={{ left: 'small' }}>
-                      <ds-text as="small" color="gray1" size="small" overflow="break-word">
+                      <ds-text
+                        as="small"
+                        color="gray1"
+                        size="small"
+                        overflow="break-word"
+                        disabled={
+                          accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                          accountDetail?.carbonioOtpWizardFromUntrusted === FALSE
+                        }
+                      >
                         {t(
                           'domain.accounts.allowSetupDeferralDuringGracePeriodInfo',
                           'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
@@ -813,7 +845,11 @@ const EditAccountSecuritySection: FC = () => {
                 <Padding left={'extralarge'} width="100%">
                   <Row width="100%">
                     <DateTimePicker
-                      disabled={accountDetail?.carbonioOtpGracePeriodEnabled === FALSE}
+                      disabled={
+                        accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                        accountDetail?.carbonioOtpWizardFromUntrusted === FALSE ||
+                        accountDetail?.carbonioOtpGracePeriodEnabled === FALSE
+                      }
                       width={'21.625rem'}
                       className="fffff"
                       label={t(
@@ -835,7 +871,9 @@ const EditAccountSecuritySection: FC = () => {
       )}
       {isAdvanced && (
         <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
-          <ds-text as="h2" weight="bold">{t('label.backup', 'Backup')}</ds-text>
+          <ds-text as="h2" weight="bold">
+            {t('label.backup', 'Backup')}
+          </ds-text>
           <Row mainAlignment="flex-start" width="100%">
             <Container
               height="fit"
@@ -906,7 +944,9 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <ds-text as="h2" weight="bold">{t('cos.password', 'Password')}</ds-text>
+            <ds-text as="h2" weight="bold">
+              {t('cos.password', 'Password')}
+            </ds-text>
             <Row mainAlignment="flex-start" width="100%">
               <Container
                 height="fit"
@@ -1155,7 +1195,9 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <ds-text as="h2" weight="bold">{t('label.forgotten_password', 'Forgotten Password')}</ds-text>
+            <ds-text as="h2" weight="bold">
+              {t('label.forgotten_password', 'Forgotten Password')}
+            </ds-text>
             <Row mainAlignment="center" width="100%">
               <Container
                 height="fit"
@@ -1220,7 +1262,9 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <ds-text as="h2" weight="bold">{t('cos.failed_login_policy', 'Failed Login Policy')}</ds-text>
+            <ds-text as="h2" weight="bold">
+              {t('cos.failed_login_policy', 'Failed Login Policy')}
+            </ds-text>
             <Row mainAlignment="flex-start" width="100%">
               <Container
                 height="fit"
