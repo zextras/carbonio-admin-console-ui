@@ -1,3 +1,9 @@
+## [0.13.0-devel.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.17...v0.13.0-devel.18) (2026-04-17)
+
+### Bug Fixes
+
+* set correct banner's background colors + domain general settings layout ([122a3ed](https://github.com/zextras/carbonio-admin-console-ui/commit/122a3ed895069e74ddf028d4007d807279e606ba))
+
 ## [0.13.0-devel.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.16...v0.13.0-devel.17) (2026-04-17)
 
 ### Features
