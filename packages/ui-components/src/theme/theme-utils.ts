@@ -109,10 +109,36 @@ export function getPaddingVar(padding: string | PaddingVarObj | 0): string | und
   return p.map((val) => paddingTokenToVar(val)).join(' ');
 }
 
+const INHERITED_CSS_PROPERTIES = new Set([
+  'color',
+  'direction',
+  'font-family',
+  'font-size',
+  'font-style',
+  'font-variant',
+  'font-weight',
+  'letter-spacing',
+  'line-height',
+  'overflow-wrap',
+  'text-align',
+  'text-decoration',
+  'text-decoration-color',
+  'text-decoration-line',
+  'text-decoration-style',
+  'text-indent',
+  'text-transform',
+  'visibility',
+  'white-space',
+  'word-break',
+  'word-spacing',
+  'word-wrap',
+]);
+
 export function getInlineStyles(el: HTMLElement): Record<string, string> {
   const result: Record<string, string> = {};
   for (let i = 0; i < el.style.length; i++) {
     const prop = el.style.item(i);
+    if (!prop.startsWith('--') && !INHERITED_CSS_PROPERTIES.has(prop)) continue;
     const value = el.style.getPropertyValue(prop);
     if (value) result[prop] = value;
   }

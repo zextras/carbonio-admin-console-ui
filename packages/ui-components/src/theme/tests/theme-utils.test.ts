@@ -157,7 +157,7 @@ describe('getInlineStyles', () => {
   });
 
   describe('multiple properties', () => {
-    it('should extract multiple CSS properties', () => {
+    it('should extract multiple inherited CSS properties', () => {
       const el = createElementWithStyle('color: red; font-size: 16px');
       const result = getInlineStyles(el);
       expect(result).toEqual({
@@ -166,13 +166,12 @@ describe('getInlineStyles', () => {
       });
     });
 
-    it('should extract three properties', () => {
+    it('should exclude non-inherited properties while keeping inherited ones', () => {
       const el = createElementWithStyle('color: red; font-size: 16px; margin: 0');
       const result = getInlineStyles(el);
       expect(result).toEqual({
         color: 'red',
         'font-size': '16px',
-        margin: '0px',
       });
     });
   });
@@ -202,9 +201,9 @@ describe('getInlineStyles', () => {
 
   describe('complex values', () => {
     it('should handle values with spaces', () => {
-      const el = createElementWithStyle('margin: 10px 20px');
+      const el = createElementWithStyle('text-decoration: underline dotted red');
       const result = getInlineStyles(el);
-      expect(result).toEqual({ margin: '10px 20px' });
+      expect(result).toEqual({ 'text-decoration': 'underline dotted red' });
     });
 
     it('should handle rgb() values', () => {
@@ -217,18 +216,6 @@ describe('getInlineStyles', () => {
       const el = createElementWithStyle('color: rgba(0, 0, 0, 0.5)');
       const result = getInlineStyles(el);
       expect(result).toEqual({ color: 'rgba(0, 0, 0, 0.5)' });
-    });
-
-    it('should handle url() values with data URIs', () => {
-      const el = createElementWithStyle('background: url(data:image/png;base64,abc)');
-      const result = getInlineStyles(el);
-      expect(result).toEqual({ background: 'url("data:image/png;base64,abc")' });
-    });
-
-    it('should handle calc() values', () => {
-      const el = createElementWithStyle('width: calc(100% - 20px)');
-      const result = getInlineStyles(el);
-      expect(result).toEqual({ width: 'calc(100% - 20px)' });
     });
 
     it('should handle var() with fallback values', () => {
@@ -278,22 +265,16 @@ describe('getInlineStyles', () => {
       expect(result).toEqual({});
     });
 
-    it('should handle shorthand properties', () => {
+    it('should exclude non-inherited box-model properties', () => {
       const el = createElementWithStyle('padding: 10px 20px 30px 40px');
       const result = getInlineStyles(el);
-      expect(result).toEqual({ padding: '10px 20px 30px 40px' });
+      expect(result).toEqual({});
     });
 
-    it('should handle border shorthand', () => {
-      const el = createElementWithStyle('border: 1px solid red');
+    it('should exclude non-inherited layout properties', () => {
+      const el = createElementWithStyle('width: calc(100% - 20px)');
       const result = getInlineStyles(el);
-      expect(result).toEqual({ border: '1px solid red' });
-    });
-
-    it('should handle transform with multiple functions', () => {
-      const el = createElementWithStyle('transform: translateX(10px) rotate(45deg)');
-      const result = getInlineStyles(el);
-      expect(result).toEqual({ transform: 'translateX(10px) rotate(45deg)' });
+      expect(result).toEqual({});
     });
 
     it('should return a new object each time (not cached)', () => {
@@ -312,10 +293,21 @@ describe('getInlineStyles', () => {
     });
 
     it('should reflect removed properties', () => {
-      const el = createElementWithStyle('color: red; margin: 10px');
+      const el = createElementWithStyle('color: red; white-space: nowrap');
       expect(Object.keys(getInlineStyles(el))).toHaveLength(2);
       el.style.removeProperty('color');
-      expect(getInlineStyles(el)).toEqual({ margin: '10px' });
+      expect(getInlineStyles(el)).toEqual({ 'white-space': 'nowrap' });
+    });
+
+    it('should only forward inherited properties when mixed with non-inherited', () => {
+      const el = createElementWithStyle(
+        'color: red; padding-left: 0.25rem; margin-top: 0.5rem; white-space: pre-line',
+      );
+      const result = getInlineStyles(el);
+      expect(result).toEqual({
+        color: 'red',
+        'white-space': 'pre-line',
+      });
     });
   });
 });
