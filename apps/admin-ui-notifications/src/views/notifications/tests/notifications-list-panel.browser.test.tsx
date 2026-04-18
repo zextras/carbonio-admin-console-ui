@@ -50,8 +50,11 @@ describe('NotificationsListPanel', () => {
       initialRouterEntry: '/list',
       queryClient,
     });
-    const dsText = document.querySelector('ds-text[weight="bold"]');
-    expect(dsText).toBeTruthy();
+    await expect.element(page.getByText('List')).toBeVisible();
+    const allDsTexts = document.querySelectorAll('ds-text');
+    const listDsText = Array.from(allDsTexts).find((el) => el.textContent?.includes('List'));
+    expect(listDsText).toBeTruthy();
+    expect(listDsText?.getAttribute('weight')).toBe('bold');
   });
 
   it('should show ChevronUpOutline icon when Manage is expanded', async () => {
