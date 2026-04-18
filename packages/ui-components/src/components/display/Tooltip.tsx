@@ -71,7 +71,7 @@ type TooltipProps = TextProps & {
   disabled?: boolean;
   /** Flag to disable the Portal implementation */
   disablePortal?: boolean;
-  /** Show tooltip only when child has class Text and text content is partially hidden */
+  /** Show tooltip only when the child's text content is partially hidden */
   overflowTooltip?: boolean;
   /** Tooltip trigger */
   children: React.ReactElement;
@@ -103,8 +103,7 @@ const Tooltip = ({
     const triggerElement = combinedTriggerRef.current;
     if (triggerElement) {
       const textIsCropped =
-        (triggerElement.className.slice(0, 4) === 'Text' &&
-          triggerElement.clientWidth < triggerElement.scrollWidth) ||
+        triggerElement.clientWidth < triggerElement.scrollWidth ||
         triggerElement.clientHeight < triggerElement.scrollHeight;
       if ((textIsCropped && overflowTooltip) || !overflowTooltip) {
         clearTimeout(timeoutRef.current as ReturnType<typeof setTimeout>);
