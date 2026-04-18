@@ -108,3 +108,13 @@ export function getPaddingVar(padding: string | PaddingVarObj | 0): string | und
   }
   return p.map((val) => paddingTokenToVar(val)).join(' ');
 }
+
+export function getInlineStyles(el: HTMLElement): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (let i = 0; i < el.style.length; i++) {
+    const prop = el.style.item(i);
+    const value = el.style.getPropertyValue(prop);
+    if (value) result[prop] = value;
+  }
+  return result;
+}

@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { resolveThemeColor } from '../theme-utils';
+import { getInlineStyles, resolveThemeColor } from '../theme-utils';
 
 describe('getThemeColorVar', () => {
   describe('empty/falsy colorName', () => {
@@ -105,6 +105,217 @@ describe('getThemeColorVar', () => {
     it('should trim whitespace from both colorName and state', () => {
       const result = resolveThemeColor('  primary  ', '  hover  ');
       expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular))');
+    });
+  });
+});
+
+function createElementWithStyle(styleText: string): HTMLElement {
+  const el = document.createElement('div');
+  el.setAttribute('style', styleText);
+  return el;
+}
+
+describe('getInlineStyles', () => {
+  describe('empty styles', () => {
+    it('should return empty object when no inline styles are set', () => {
+      const el = document.createElement('div');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({});
+    });
+
+    it('should return empty object for empty style attribute', () => {
+      const el = createElementWithStyle('');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({});
+    });
+
+    it('should return empty object for whitespace-only style attribute', () => {
+      const el = createElementWithStyle('   ');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({});
+    });
+  });
+
+  describe('single property', () => {
+    it('should extract a single CSS property', () => {
+      const el = createElementWithStyle('color: red');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ color: 'red' });
+    });
+
+    it('should extract a property with kebab-case name', () => {
+      const el = createElementWithStyle('white-space: break-spaces');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ 'white-space': 'break-spaces' });
+    });
+
+    it('should extract a property with a CSS function value', () => {
+      const el = createElementWithStyle('color: var(--color-primary)');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ color: 'var(--color-primary)' });
+    });
+  });
+
+  describe('multiple properties', () => {
+    it('should extract multiple CSS properties', () => {
+      const el = createElementWithStyle('color: red; font-size: 16px');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({
+        color: 'red',
+        'font-size': '16px',
+      });
+    });
+
+    it('should extract three properties', () => {
+      const el = createElementWithStyle('color: red; font-size: 16px; margin: 0');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({
+        color: 'red',
+        'font-size': '16px',
+        margin: '0px',
+      });
+    });
+  });
+
+  describe('CSS custom properties', () => {
+    it('should extract CSS custom properties', () => {
+      const el = createElementWithStyle('--ds-text-color: var(--color-error)');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ '--ds-text-color': 'var(--color-error)' });
+    });
+
+    it('should extract CSS custom property with a simple value', () => {
+      const el = createElementWithStyle('--my-spacing: 1rem');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ '--my-spacing': '1rem' });
+    });
+
+    it('should extract mixed custom and standard properties', () => {
+      const el = createElementWithStyle('--ds-text-color: red; white-space: nowrap');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({
+        '--ds-text-color': 'red',
+        'white-space': 'nowrap',
+      });
+    });
+  });
+
+  describe('complex values', () => {
+    it('should handle values with spaces', () => {
+      const el = createElementWithStyle('margin: 10px 20px');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ margin: '10px 20px' });
+    });
+
+    it('should handle rgb() values', () => {
+      const el = createElementWithStyle('color: rgb(0, 0, 0)');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ color: 'rgb(0, 0, 0)' });
+    });
+
+    it('should handle rgba() values', () => {
+      const el = createElementWithStyle('color: rgba(0, 0, 0, 0.5)');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ color: 'rgba(0, 0, 0, 0.5)' });
+    });
+
+    it('should handle url() values with data URIs', () => {
+      const el = createElementWithStyle('background: url(data:image/png;base64,abc)');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ background: 'url("data:image/png;base64,abc")' });
+    });
+
+    it('should handle calc() values', () => {
+      const el = createElementWithStyle('width: calc(100% - 20px)');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ width: 'calc(100% - 20px)' });
+    });
+
+    it('should handle var() with fallback values', () => {
+      const el = createElementWithStyle('color: var(--my-color, red)');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ color: 'var(--my-color, red)' });
+    });
+
+    it('should handle nested var() values', () => {
+      const el = createElementWithStyle('color: var(--a, var(--b, blue))');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ color: 'var(--a, var(--b, blue))' });
+    });
+  });
+
+  describe('programmatic style setting', () => {
+    it('should read properties set via style.property', () => {
+      const el = document.createElement('div');
+      el.style.whiteSpace = 'break-spaces';
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ 'white-space': 'break-spaces' });
+    });
+
+    it('should read properties set via setProperty', () => {
+      const el = document.createElement('div');
+      el.style.setProperty('--custom-prop', '42px');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ '--custom-prop': '42px' });
+    });
+
+    it('should read both attribute-set and programmatically-set properties', () => {
+      const el = createElementWithStyle('color: red');
+      el.style.setProperty('--extra', 'value');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({
+        color: 'red',
+        '--extra': 'value',
+      });
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should not include properties with empty values', () => {
+      const el = document.createElement('div');
+      el.style.color = '';
+      const result = getInlineStyles(el);
+      expect(result).toEqual({});
+    });
+
+    it('should handle shorthand properties', () => {
+      const el = createElementWithStyle('padding: 10px 20px 30px 40px');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ padding: '10px 20px 30px 40px' });
+    });
+
+    it('should handle border shorthand', () => {
+      const el = createElementWithStyle('border: 1px solid red');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ border: '1px solid red' });
+    });
+
+    it('should handle transform with multiple functions', () => {
+      const el = createElementWithStyle('transform: translateX(10px) rotate(45deg)');
+      const result = getInlineStyles(el);
+      expect(result).toEqual({ transform: 'translateX(10px) rotate(45deg)' });
+    });
+
+    it('should return a new object each time (not cached)', () => {
+      const el = createElementWithStyle('color: red');
+      const result1 = getInlineStyles(el);
+      const result2 = getInlineStyles(el);
+      expect(result1).toEqual(result2);
+      expect(result1).not.toBe(result2);
+    });
+
+    it('should reflect runtime style changes', () => {
+      const el = createElementWithStyle('color: red');
+      expect(getInlineStyles(el)).toEqual({ color: 'red' });
+      el.style.color = 'blue';
+      expect(getInlineStyles(el)).toEqual({ color: 'blue' });
+    });
+
+    it('should reflect removed properties', () => {
+      const el = createElementWithStyle('color: red; margin: 10px');
+      expect(Object.keys(getInlineStyles(el))).toHaveLength(2);
+      el.style.removeProperty('color');
+      expect(getInlineStyles(el)).toEqual({ margin: '10px' });
     });
   });
 });
