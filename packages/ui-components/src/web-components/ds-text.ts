@@ -59,6 +59,8 @@ const tagRenderers: Record<TextTag, TagRenderer> = {
 export class DsText extends LitElement {
   static override readonly styles = textStyles;
 
+  #styleObserver?: MutationObserver;
+
   @property({ type: String })
   accessor color = 'text';
 
@@ -76,6 +78,17 @@ export class DsText extends LitElement {
 
   @property({ type: String })
   accessor as: TextTag = 'span';
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.#styleObserver = new MutationObserver(() => this.requestUpdate());
+    this.#styleObserver.observe(this, { attributes: true, attributeFilter: ['style'] });
+  }
+
+  override disconnectedCallback(): void {
+    this.#styleObserver?.disconnect();
+    super.disconnectedCallback();
+  }
 
   override render(): TemplateResult {
     const hostStyles = getInlineStyles(this);
