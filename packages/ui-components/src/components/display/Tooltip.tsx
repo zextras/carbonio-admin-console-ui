@@ -34,14 +34,12 @@ const TooltipWrapper = ({
   overflow = 'break-word',
   className,
   style,
-  textAlign,
   ...rest
 }: TooltipWrapperProps) => {
   if (!open) return null;
 
   const tooltipStyle = {
     maxWidth,
-    textAlign,
     ...style,
   };
 

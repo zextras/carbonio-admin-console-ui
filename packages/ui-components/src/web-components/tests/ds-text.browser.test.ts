@@ -289,35 +289,6 @@ describe('ds-text', () => {
     });
   });
 
-  describe('line-height property', () => {
-    it('should default to undefined', async () => {
-      const el = await createDsText({}, 'Default line-height');
-      expect(el.lineHeight).toBeUndefined();
-    });
-
-    it('should accept a numeric line-height via attribute', async () => {
-      const el = await createDsText({ 'line-height': '24' }, 'Custom line-height');
-      expect(el.lineHeight).toBe(24);
-    });
-
-    it('should update when line-height changes dynamically', async () => {
-      const el = await createDsText({}, 'Dynamic line-height');
-      expect(el.lineHeight).toBeUndefined();
-
-      el.lineHeight = 32;
-      await el.updateComplete;
-
-      expect(el.lineHeight).toBe(32);
-    });
-
-    it('should apply computed line-height from CSS variable', async () => {
-      const el = await createDsText({ 'line-height': '2' }, 'Computed line-height');
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
-      const computedLineHeight = globalThis.getComputedStyle(innerEl).lineHeight;
-      expect(computedLineHeight).toBe('32px');
-    });
-  });
-
   describe('custom CSS variables', () => {
     it('should allow overriding font-size via CSS variable', async () => {
       const customSize = '40px';
@@ -330,94 +301,6 @@ describe('ds-text', () => {
 
       const computedFontSize = globalThis.getComputedStyle(innerEl).fontSize;
       expect(computedFontSize).toBe(customSize);
-    });
-  });
-
-  describe('italic property', () => {
-    it('should default to false', async () => {
-      const el = await createDsText({}, 'Not italic');
-      expect(el.italic).toBe(false);
-    });
-
-    it('should reflect the italic attribute on the host', async () => {
-      const el = await createDsText({ italic: '' }, 'Italic text');
-      expect(el.italic).toBe(true);
-      expect(el.hasAttribute('italic')).toBe(true);
-    });
-
-    it('should apply font-style italic when italic is set', async () => {
-      const el = await createDsText({ italic: '' }, 'Italic text');
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
-      const computedStyle = globalThis.getComputedStyle(innerEl);
-      expect(computedStyle.fontStyle).toBe('italic');
-    });
-
-    it('should not apply italic by default', async () => {
-      const el = await createDsText({}, 'Normal text');
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
-      const computedStyle = globalThis.getComputedStyle(innerEl);
-      expect(computedStyle.fontStyle).toBe('normal');
-    });
-
-    it('should toggle italic on and off dynamically', async () => {
-      const el = await createDsText({}, 'Toggle italic');
-
-      el.italic = true;
-      await el.updateComplete;
-
-      let innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
-      expect(globalThis.getComputedStyle(innerEl).fontStyle).toBe('italic');
-
-      el.italic = false;
-      await el.updateComplete;
-
-      innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
-      expect(globalThis.getComputedStyle(innerEl).fontStyle).toBe('normal');
-    });
-  });
-
-  describe('textAlign property', () => {
-    it('should default to "initial"', async () => {
-      const el = await createDsText({}, 'Default align');
-      expect(el.textAlign).toBe('initial');
-    });
-
-    it.each([
-      { align: 'left' },
-      { align: 'center' },
-      { align: 'right' },
-      { align: 'justify' },
-    ] as const)('should accept textAlign="$align"', async ({ align }) => {
-      const el = await createDsText({ 'text-align': align }, 'Aligned text');
-      expect(el.textAlign).toBe(align);
-    });
-
-    it('should reflect the text-align attribute on the host', async () => {
-      const el = await createDsText({ 'text-align': 'center' }, 'Centered text');
-      expect(el.getAttribute('text-align')).toBe('center');
-    });
-
-    it.each([
-      { align: 'left', expected: 'left' },
-      { align: 'center', expected: 'center' },
-      { align: 'right', expected: 'right' },
-      { align: 'justify', expected: 'justify' },
-    ] as const)('should apply computed text-align "$expected" for textAlign="$align"', async ({ align, expected }) => {
-      const el = await createDsText({ 'text-align': align }, 'Aligned text');
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
-      const computedAlign = globalThis.getComputedStyle(innerEl).textAlign;
-      expect(computedAlign).toBe(expected);
-    });
-
-    it('should update text-align when changed dynamically', async () => {
-      const el = await createDsText({ 'text-align': 'left' }, 'Dynamic align');
-
-      el.textAlign = 'center';
-      await el.updateComplete;
-
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
-      const computedAlign = globalThis.getComputedStyle(innerEl).textAlign;
-      expect(computedAlign).toBe('center');
     });
   });
 

@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { TextAlign, TextDisplay, TextOverflow, TextSize, TextTag, TextWeight } from './ds-text';
+import { TextOverflow, TextSize, TextTag, TextWeight } from './ds-text';
 import type { IconName } from './icon-registry';
 
 declare global {
@@ -31,10 +31,6 @@ declare global {
             weight?: TextWeight;
             overflow?: TextOverflow;
             disabled?: boolean;
-            italic?: boolean;
-            display?: TextDisplay;
-            textAlign?: TextAlign;
-            lineHeight?: number;
             as?: TextTag;
           },
           HTMLElement
