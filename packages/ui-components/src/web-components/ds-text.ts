@@ -19,7 +19,6 @@ export type TextProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
   weight?: 'light' | 'regular' | 'medium' | 'bold';
   overflow?: TextOverflow;
   disabled?: boolean;
-  ref?: React.Ref<HTMLDivElement>;
 };
 export type TextSize = keyof Theme['font']['size'];
 export type TextWeight = keyof Theme['font']['weight'];
