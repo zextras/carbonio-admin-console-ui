@@ -13,6 +13,21 @@ import { resolveThemeColor } from '../theme/theme-utils';
 import { AnyColor } from '../types/utils';
 import { dsTextVars, textStyles } from './ds-text.styles';
 
+function parseInlineStyle(cssText: string): Record<string, string> {
+  if (!cssText) return {};
+  const result: Record<string, string> = {};
+  for (const part of cssText.split(';')) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+    const colonIdx = trimmed.indexOf(':');
+    if (colonIdx === -1) continue;
+    const key = trimmed.slice(0, colonIdx).trim();
+    const value = trimmed.slice(colonIdx + 1).trim();
+    if (key && value) result[key] = value;
+  }
+  return result;
+}
+
 export type TextProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
   color?: AnyColor;
   size?: 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
@@ -75,9 +90,11 @@ export class DsText extends LitElement {
   accessor as: TextTag = 'span';
 
   override render(): TemplateResult {
+    const hostStyles = parseInlineStyle(this.style.cssText);
     const componentStyles: Record<string, string> = {
       [dsTextVars.color]: resolveThemeColor(this.color, this.disabled ? 'disabled' : 'regular'),
       ...(this.lineHeight !== undefined && { [dsTextVars.lineHeight]: String(this.lineHeight) }),
+      ...hostStyles,
     };
 
     const tagStyle = styleMap({ ...componentStyles });
