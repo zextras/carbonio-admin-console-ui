@@ -75,7 +75,7 @@ function ListItemContent({
           as="span"
           size={itemTextSize}
           weight={selected ? 'bold' : 'regular'}
-          color={disabled ? 'secondary.regular' : 'text'}
+          color={disabled ? 'secondary' : 'text'}
           disabled={disabled}
         >
           {label}
