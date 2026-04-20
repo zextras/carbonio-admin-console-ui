@@ -18,7 +18,7 @@ import { isEmpty } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { BackupServerType, GetServerResponse, StatusOption, SmartScanTypeOption, TableHeader } from '../../../../types';
+import type { BackupServerType, GetServerResponse, SmartScanTypeOption, StatusOption, TableHeader } from '../../../../types';
 import { bytesToSize } from '../../utility/utils';
 
 const SMART_SCAN_TYPE = {
@@ -31,9 +31,7 @@ const SMART_SCAN_TYPE = {
 
 const BackupServersListTable: FC<{
   serverList: Array<BackupServerType>;
-  selectedRows: [] | [string];
-  onSelectionChange: () => void;
-}> = ({ serverList, selectedRows, onSelectionChange }) => {
+}> = ({ serverList }) => {
   const [t] = useTranslation();
   const headers: Array<TableHeader> = useMemo(
     () => [
@@ -192,8 +190,6 @@ const BackupServersListTable: FC<{
       rows={tableRows}
       showCheckbox={false}
       multiSelect={false}
-      selectedRows={selectedRows}
-      onSelectionChange={onSelectionChange}
       RowFactory={HoverableRowFactory}
       HeaderFactory={CustomHeaderFactory}
     />
@@ -263,7 +259,6 @@ const ServersList: FC = () => {
   );
 
   const [serverList, setServerList] = useState<BackupServerType[]>([]);
-  const [selectedRows] = useState<[] | [string]>([]);
 
   const getSmartScanStatus = useCallback(
     (smartScanStartup: boolean, backupSmartScan: boolean): string => {
@@ -311,7 +306,7 @@ const ServersList: FC = () => {
           : '0 GB';
         const availableBackupSpaceTooltip = backupServer?.properties?.available_space_for_blobs
           ? backupServer?.attributes?.ZxBackup_DestPath?.value
-          : (backupServer?.attributes?.backupArchivingStore?.value as Record<string, string>)?.['cron-pattern'];
+          : undefined;
         const availableMetadataSpaceTooltip = backupServer?.attributes?.ZxBackup_DestPath?.value;
         return {
           backupAtStartup,
@@ -396,8 +391,6 @@ const ServersList: FC = () => {
           <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
             <BackupServersListTable
               serverList={serverList}
-              selectedRows={selectedRows}
-              onSelectionChange={() => null}
             />
           </Row>
         </Container>

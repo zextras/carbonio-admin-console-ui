@@ -30,6 +30,18 @@ import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } fro
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
+import type {
+  BackupArchivingStore,
+  BackupConfigurationState,
+  BucketItem,
+  CoreAttributeBody,
+  ExternalSoapResponse,
+  GetServerResponse,
+  ListBucketsContent,
+  SelectOption,
+  SetCoreAttributesResponse,
+  SoapResponseBody,
+} from '../../../../types';
 import {
   BACKUP_REALTIME,
   CONFIG,
@@ -47,19 +59,6 @@ import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-
-import type {
-  BackupArchivingStore,
-  BackupConfigurationState,
-  BucketItem,
-  CoreAttributeBody,
-  ExternalSoapResponse,
-  GetServerResponse,
-  ListBucketsContent,
-  SelectOption,
-  SetCoreAttributesResponse,
-  SoapResponseBody,
-} from '../../../../types';
 
 const BackupConfiguration: FC = () => {
   const { server } = useParams();
@@ -1145,7 +1144,7 @@ const BackupConfiguration: FC = () => {
                   value={spaceThreshold}
                   backgroundColor="gray5"
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    !allowSetBackup && setSpaceThreshold(e.target.value as unknown as number);
+                    setSpaceThreshold(Number(e.target.value) || 0);
                   }}
                   disabled={!allowSetBackup}
                 />
@@ -1504,7 +1503,7 @@ const BackupConfiguration: FC = () => {
                   )}
                   value={keepDeletedItemInBackup}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    setKeepDeletedItemInBackup(e.target.value as unknown as number);
+                    setKeepDeletedItemInBackup(Number(e.target.value) || 0);
                   }}
                   disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
                   // @ts-expect-error - needs a fix // DS only support string
@@ -1544,7 +1543,7 @@ const BackupConfiguration: FC = () => {
                   backgroundColor="gray5"
                   value={keepDeletedAccountsInBackup}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    setKeepDeletedAccountsInBackup(e.target.value as unknown as number);
+                    setKeepDeletedAccountsInBackup(Number(e.target.value) || 0);
                   }}
                   disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
                   // @ts-expect-error - needs a fix // DS only support string

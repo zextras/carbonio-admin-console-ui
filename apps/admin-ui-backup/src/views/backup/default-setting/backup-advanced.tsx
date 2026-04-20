@@ -6,12 +6,11 @@
 import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 
+import type { GlobalConfig } from '../../../../types';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import { useBackupStore } from '../../../store/backup/store';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
-
-import type { GlobalConfig } from '../../../../types';
 
 const BackupAdvanced: FC = () => {
   const {

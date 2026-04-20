@@ -21,11 +21,6 @@ import { type ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { CONFIG, SERVER } from '../../../constants';
-import { checkLdap } from '../../../services/check-ldap';
-import { setCoreAttributes } from '../../../services/set-core-attributes';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-
 import type {
   CheckLdapResponse,
   CoreAttributeBody,
@@ -33,6 +28,10 @@ import type {
   ServerAdvancedState,
   SetCoreAttributesResponse,
 } from '../../../../types';
+import { CONFIG, SERVER } from '../../../constants';
+import { checkLdap } from '../../../services/check-ldap';
+import { setCoreAttributes } from '../../../services/set-core-attributes';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {
   const { server } = useParams();

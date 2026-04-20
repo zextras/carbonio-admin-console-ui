@@ -8,11 +8,10 @@ import { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router';
 
+import type { DumpGlobalConfigResponse } from '../../../types';
 import { dumpGlobalConfig } from '../../services/dump-global-config';
 import { useBackupStore } from '../../store/backup/store';
 import BackupDetailOperation from './backup-detail-operation';
-
-import type { DumpGlobalConfigResponse } from '../../../types';
 
 const BackupDetailPanel: FC = () => {
   const globalConfig = useBackupStore((state) => state.globalConfig);

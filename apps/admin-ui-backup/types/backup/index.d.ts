@@ -12,6 +12,11 @@ export type CronScheduler = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type GlobalConfig = Record<string, any>;
 
+export type MailstoreServer = {
+	id?: string;
+	name?: string;
+};
+
 export type BackupConfigurationState = {
 	moduleEnableStartup: boolean;
 	enableRealtimeScanner: boolean;

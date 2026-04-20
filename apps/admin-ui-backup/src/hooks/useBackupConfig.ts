@@ -6,7 +6,7 @@
 
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights } from '@zextras/ui-shared';
-import { cloneDeep, find, isEmpty,isEqual, reduce } from 'lodash-es';
+import { cloneDeep, find, isEmpty, isEqual, reduce } from 'lodash-es';
 import {
 	ChangeEvent,
 	Dispatch,
@@ -14,14 +14,14 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
-	useState} from 'react';
+	useState
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { GlobalConfig, ModifyBackupData } from '../../types';
 import { CONFIG } from '../constants';
 import { modifyBackupRequest } from '../services/modify-backup';
 import { useBackupStore } from '../store/backup/store';
-
-import type { GlobalConfig, ModifyBackupData } from '../../types';
 
 export const useBackupConfig = (): {
 	isDirty: boolean;
@@ -137,7 +137,7 @@ export const useBackupConfig = (): {
 			setBackupDetail((prev: GlobalConfig) => ({
 				...prev,
 				[e.target.name]: {
-					...[e.target.name],
+					...prev[e.target.name],
 					'cron-pattern': e.target.value,
 					'cron-enabled': (backupDetail[e.target.name] as { 'cron-enabled': boolean })['cron-enabled']
 				}
@@ -151,7 +151,7 @@ export const useBackupConfig = (): {
 			setBackupDetail((prev: GlobalConfig) => ({
 				...prev,
 				[key]: {
-					...[key],
+					...prev[key],
 					'cron-pattern': (backupDetail[key] as { 'cron-pattern': string })['cron-pattern'],
 					'cron-enabled': (backupDetail[key] as { 'cron-enabled': boolean })['cron-enabled'] !== true
 				}
