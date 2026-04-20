@@ -18,7 +18,6 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Text } from '../basic/text/Text';
 import { Table } from '../display/Table';
 import { Container } from '../layout/Container';
 import { DefaultTabBarItem, TabBar } from '../navigation/TabBar';
@@ -78,9 +77,9 @@ const ReusedDefaultTabBar: FC<{
         <ds-icon icon={item?.icon} color={selected ? 'primary' : 'gray1'}></ds-icon>
       </Container>
       <Container mainAlignment="flex-start" crossAlignment="flex-start" width="auto">
-        <Text size="small" weight="regular" color={selected ? 'primary' : 'gray1'}>
+        <ds-text as="span" size="small" weight="regular" color={selected ? 'primary' : 'gray1'}>
           {item.label} ({item?.count})
-        </Text>
+        </ds-text>
       </Container>
     </Container>
   </DefaultTabBarItem>
@@ -339,7 +338,8 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
       const allRows = filterdNotification.map((item: Notification) => ({
         id: item?.id,
         columns: [
-          <Text
+          <ds-text
+            as="span"
             size="small"
             color="gray0"
             weight="regular"
@@ -354,8 +354,9 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
             }}
           >
             {item?.server}
-          </Text>,
-          <Text
+          </ds-text>,
+          <ds-text
+            as="span"
             size="small"
             color="gray0"
             weight={item?.ack ? 'light' : 'medium'}
@@ -370,8 +371,9 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
             }}
           >
             {format(item?.date, 'dd-MM-yyyy - HH:mm a')}
-          </Text>,
-          <Text
+          </ds-text>,
+          <ds-text
+            as="span"
             size="small"
             color="gray0"
             weight={item?.ack ? 'light' : 'medium'}
@@ -386,8 +388,9 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
             }}
           >
             {item?.level}
-          </Text>,
-          <Text
+          </ds-text>,
+          <ds-text
+            as="span"
             size="small"
             color="gray0"
             weight={item?.ack ? 'light' : 'medium'}
@@ -402,7 +405,7 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
             }}
           >
             {item?.subject}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setNotificationRows(allRows);
@@ -443,9 +446,9 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
           padding={{ left: isAddPadding ? 'large' : '' }}
         >
           {isShowTitle && (
-            <Text size="large" weight="bold" color="gray0">
+            <ds-text as="h2" size="large" weight="bold" color="gray0">
               {t('notification.notifications_list', "Notifications' List") ?? "Notifications' List"}
-            </Text>
+            </ds-text>
           )}
         </Container>
         <Container mainAlignment="flex-end" crossAlignment="flex-end">

@@ -95,7 +95,8 @@ describe('CosDetailPanel', () => {
     await expect.element(page.getByText('100')).toBeVisible();
 
     const listOfElements = page.getByText('10').elements();
-    await expect.element(listOfElements[1]).toHaveStyle({ fontWeight: 'bold' });
+    const dsText = listOfElements[1].closest('ds-text') ?? listOfElements[1].querySelector('ds-text') ?? listOfElements[1];
+    expect(dsText.getAttribute('weight')).toBe('bold');
 
     await page.getByText('15').click();
     expect(page.getByText('10').elements()).toHaveLength(0);

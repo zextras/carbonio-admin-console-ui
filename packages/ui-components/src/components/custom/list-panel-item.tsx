@@ -7,7 +7,6 @@ import { noop } from 'lodash-es';
 import type { FC } from 'react';
 
 import { Button } from '../basic/button/Button';
-import { Text } from '../basic/text/Text';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
@@ -35,9 +34,9 @@ const ListPanelItem: FC<ListPanelItemProps> = ({ title, isListExpanded, setToggl
         onClick={setToggleView}
       >
         <Padding horizontal="small">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text as="span" size="small" color="gray0" weight="bold">
             {title}
-          </Text>
+          </ds-text>
         </Padding>
         <Padding horizontal="small">
           <Button

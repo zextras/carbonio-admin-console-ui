@@ -34,7 +34,6 @@ import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
 import { IconName } from '../../web-components/icon-registry';
-import { Text } from '../basic/text/Text';
 import { FOCUSABLE_SELECTOR, TIMERS } from '../constants';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
@@ -47,7 +46,7 @@ type ListItemContentProps = {
   label: string;
   selected?: boolean;
   disabled?: boolean;
-  itemTextSize: React.ComponentProps<typeof Text>['size'];
+  itemTextSize: React.ComponentProps<'ds-text'>['size'];
   tooltipLabel?: string;
 };
 
@@ -72,14 +71,15 @@ function ListItemContent({
             ></ds-icon>
           </Padding>
         )}
-        <Text
+        <ds-text
+          as="span"
           size={itemTextSize}
           weight={selected ? 'bold' : 'regular'}
-          color={disabled ? 'secondary.regular' : 'text'}
+          color={disabled ? 'secondary' : 'text'}
           disabled={disabled}
         >
           {label}
-        </Text>
+        </ds-text>
       </Container>
     </Tooltip>
   );
@@ -349,7 +349,7 @@ type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> & {
   disablePortal?: boolean;
   forceOpen?: boolean;
   preventDefault?: boolean;
-  itemTextSize?: React.ComponentPropsWithRef<typeof Text>['size'];
+  itemTextSize?: React.ComponentPropsWithRef<'ds-text'>['size'];
   dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
 };
 

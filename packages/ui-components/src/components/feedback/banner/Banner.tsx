@@ -21,7 +21,6 @@ import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { useModal } from '../../../hooks/useModal';
 import { type IconName } from '../../../web-components/icon-registry';
 import { Button, ButtonProps } from '../../basic/button/Button';
-import { Text } from '../../basic/text/Text';
 import { Container } from '../../layout/Container';
 import styles from './Banner.module.css';
 
@@ -153,9 +152,9 @@ const Banner = ({
         : undefined,
       closeIconTooltip: closeLabel,
       children: (
-        <Text size={'medium'} overflow={'break-word'}>
+        <ds-text as="span" size={'medium'} overflow={'break-word'}>
           {description}
-        </Text>
+        </ds-text>
       ),
     });
   }, [closeLabel, closeModal, createModal, description, primaryAction, secondaryAction, title]);
@@ -223,7 +222,8 @@ const Banner = ({
           ref={infoContainerRef}
         >
           {title && (
-            <Text
+            <ds-text
+              as="span"
               className={styles.bannerText}
               color={textColor}
               size={'medium'}
@@ -231,16 +231,17 @@ const Banner = ({
               overflow={'break-word'}
             >
               {title}
-            </Text>
+            </ds-text>
           )}
-          <Text
+          <ds-text
+            as="span"
             className={styles.bannerText}
             color={textColor}
             size={'small'}
             overflow={'break-word'}
           >
             {description}
-          </Text>
+          </ds-text>
         </Container>
       </Container>
       <Container

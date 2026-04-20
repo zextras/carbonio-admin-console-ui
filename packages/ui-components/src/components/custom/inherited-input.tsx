@@ -6,7 +6,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Text } from '../basic/text/Text';
 import { Tooltip } from '../display/Tooltip';
 import { IconCheckbox } from '../inputs/IconCheckbox';
 import { Input } from '../inputs/Input';
@@ -116,15 +115,15 @@ export const InheritedInput: FC<InheritedInputProps> = ({
               label={
                 <>
                   <Row>
-                    <Text weight="bold">
+                    <ds-text as="label" weight="bold">
                       {t('account_details.inherited_value_was', 'The inherited value was')} :
-                    </Text>
-                    <Text>{`  ${inheritedValue || ''}`}</Text>
+                    </ds-text>
+                    <ds-text as="span">{`  ${inheritedValue || ''}`}</ds-text>
                   </Row>
                   <Padding top="small">
-                    <Text weight="bold">
+                    <ds-text as="label" weight="bold">
                       {t('account_details.click_to_revert', 'Click to revert.')}
-                    </Text>
+                    </ds-text>
                   </Padding>
                 </>
               }

@@ -15,7 +15,6 @@ import React, {
   useState,
 } from 'react';
 
-import { Text } from '../basic/text/Text';
 import { Checkbox } from '../inputs/Checkbox';
 import styles from './hoverable-row-factory.module.css';
 
@@ -168,7 +167,7 @@ const HoverableRowFactory = ({
     () =>
       row.columns.map((column, i) => (
         <td className={getTableCellClassName(styles.tableRowCell, cellClassName, i)} key={i}>
-          {typeof column === 'string' ? <Text>{column}</Text> : column}
+          {typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}
         </td>
       )),
     [row.columns, cellClassName],
@@ -207,9 +206,9 @@ const HoverableRowFactory = ({
             {typeof renderIndex === 'function' ? (
               renderIndex(index)
             ) : (
-              <Text size="small" weight="light">
+              <ds-text as="span" size="small" weight="light">
                 {index}
-              </Text>
+              </ds-text>
             )}
           </span>
         )}

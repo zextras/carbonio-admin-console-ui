@@ -94,7 +94,7 @@ export const ShellUtilityBar: FC = () => {
         <UtilityBarItem view={view} key={view.id} />
       ))}
       <Container margin={{ right: 'small' }}>
-        <ds-text as="span" color="primary" text-align="left" style={{ whiteSpace: 'pre-line' }}>
+        <ds-text as="span" color="primary" style={{ whiteSpace: 'pre-line', textAlign: 'left' }}>
           {accountName}
         </ds-text>
       </Container>

@@ -6,7 +6,6 @@
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Text } from '../basic/text/Text';
 import { Tooltip } from '../display/Tooltip';
 import { IconCheckbox } from '../inputs/IconCheckbox';
 import { Switch } from '../inputs/Switch';
@@ -62,17 +61,17 @@ const InheritedSwitch: FC<InheritedSwitchProps> = ({
           label={
             <>
               <Row mainAlignment="flex-start" takeAvailableSpace width="fill">
-                <Text weight="bold">
+                <ds-text as="label" weight="bold">
                   {t('account_details.inherited_value_was', 'The inherited value was')} :
-                </Text>
-                <Text>{`  ${
+                </ds-text>
+                <ds-text as="span">{`  ${
                   inheritedValue === 'TRUE' ? t('label.true', 'true') : t('label.false', 'false')
-                }`}</Text>
+                }`}</ds-text>
               </Row>
               <Padding top="small">
-                <Text weight="bold">
+                <ds-text as="label" weight="bold">
                   {t('account_details.click_to_revert', 'Click to revert.')}
-                </Text>
+                </ds-text>
               </Padding>
             </>
           }

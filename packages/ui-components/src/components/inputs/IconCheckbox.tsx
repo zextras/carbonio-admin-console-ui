@@ -12,7 +12,6 @@ import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { type IconName } from '../../web-components/icon-registry';
-import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import styles from './IconCheckbox.module.css';
@@ -129,9 +128,14 @@ const IconCheckbox = ({
         </Padding>
       </div>
       {label && (
-        <Text className={styles.label} size="medium" weight="regular">
+        <ds-text
+          as="label"
+          style={{ whiteSpace: 'normal', paddingLeft: 'var(--padding-small)', userSelect: 'none' } as React.CSSProperties}
+          size="medium"
+          weight="regular"
+        >
           {label}
-        </Text>
+        </ds-text>
       )}
     </Container>
   );
