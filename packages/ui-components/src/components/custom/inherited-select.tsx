@@ -7,7 +7,6 @@
 import { type FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Text } from '../basic/text/Text';
 import { Tooltip } from '../display/Tooltip';
 import { IconCheckbox } from '../inputs/IconCheckbox';
 import { Select, SelectItem } from '../inputs/Select';
@@ -75,17 +74,17 @@ const InheritedSelect: FC<InheritedSelectProps> = ({
           label={
             <>
               <Row mainAlignment="flex-start" takeAvailableSpace width="fill">
-                <Text weight="bold">
+                <ds-text as="label" weight="bold">
                   {t('account_details.inherited_value_was', 'The inherited value was')} :
-                </Text>
-                <Text>{`  ${
+                </ds-text>
+                <ds-text as="span">{`  ${
                   items.find((item) => item.value === inheritedValue)?.label || ''
-                }`}</Text>
+                }`}</ds-text>
               </Row>
               <Padding top="small">
-                <Text weight="bold">
+                <ds-text as="label" weight="bold">
                   {t('account_details.click_to_revert', 'Click to revert.')}
-                </Text>
+                </ds-text>
               </Padding>
             </>
           }

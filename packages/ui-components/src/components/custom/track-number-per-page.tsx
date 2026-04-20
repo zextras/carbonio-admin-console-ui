@@ -7,7 +7,6 @@
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Text } from '../basic/text/Text';
 import { Select } from '../inputs/Select';
 import { Container } from '../layout/Container';
 import { Row } from '../layout/Row';
@@ -60,7 +59,7 @@ const TrackNumberPerPage: FC<TrackNumberPerPageProps> = ({ setPageSize }) => {
       padding={{ bottom: 'small' }}
     >
       <Row padding={{ right: 'small' }}>
-        <Text size="small">{t('label.showing', 'Showing')}</Text>
+        <ds-text as="span" size="small">{t('label.showing', 'Showing')}</ds-text>
       </Row>
       <Row padding={{ right: 'small' }}>
         <Select
@@ -75,7 +74,7 @@ const TrackNumberPerPage: FC<TrackNumberPerPageProps> = ({ setPageSize }) => {
         />
       </Row>
       <Row>
-        <Text size="small">{t('label.items_per_page', 'items per page')}</Text>
+        <ds-text as="span" size="small">{t('label.items_per_page', 'items per page')}</ds-text>
       </Row>
     </Container>
   );

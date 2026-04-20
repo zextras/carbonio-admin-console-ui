@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/divider-wc';
+import '../../web-components/ds-divider';
 
 import { flip, limitShift, Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
@@ -34,7 +34,6 @@ import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
 import { IconName } from '../../web-components/icon-registry';
-import { Text } from '../basic/text/Text';
 import { FOCUSABLE_SELECTOR, TIMERS } from '../constants';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
@@ -47,7 +46,7 @@ type ListItemContentProps = {
   label: string;
   selected?: boolean;
   disabled?: boolean;
-  itemTextSize: React.ComponentProps<typeof Text>['size'];
+  itemTextSize: React.ComponentProps<'ds-text'>['size'];
   tooltipLabel?: string;
 };
 
@@ -64,22 +63,23 @@ function ListItemContent({
       <Container orientation="horizontal" mainAlignment="flex-start">
         {icon && (
           <Padding right="small">
-            <icon-wc
+            <ds-icon
               icon={icon}
               size="medium"
               color={disabled ? 'secondary' : 'text'}
               style={{ pointerEvents: 'none' }}
-            ></icon-wc>
+            ></ds-icon>
           </Padding>
         )}
-        <Text
+        <ds-text
+          as="span"
           size={itemTextSize}
           weight={selected ? 'bold' : 'regular'}
-          color={disabled ? 'secondary.regular' : 'text'}
+          color={disabled ? 'secondary' : 'text'}
           disabled={disabled}
         >
           {label}
-        </Text>
+        </ds-text>
       </Container>
     </Tooltip>
   );
@@ -309,7 +309,7 @@ function NestListItem({
               tooltipLabel={tooltipLabel}
             />
           )}
-          <icon-wc size="medium" icon="ChevronRight"></icon-wc>
+          <ds-icon size="medium" icon="ChevronRight"></ds-icon>
         </Container>
       </Dropdown>
     </Container>
@@ -349,7 +349,7 @@ type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> & {
   disablePortal?: boolean;
   forceOpen?: boolean;
   preventDefault?: boolean;
-  itemTextSize?: React.ComponentPropsWithRef<typeof Text>['size'];
+  itemTextSize?: React.ComponentPropsWithRef<'ds-text'>['size'];
   dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
 };
 
@@ -661,7 +661,7 @@ const Dropdown = ({
           const nestedRef = React.createRef<HTMLDivElement>();
           nestedDropdownsRef.current.push(nestedRef);
           return (
-            (type === 'divider' && <divider-wc key={id}></divider-wc>) ||
+            (type === 'divider' && <ds-divider key={id}></ds-divider>) ||
             (subItems && (
               <NestListItem
                 icon={icon}

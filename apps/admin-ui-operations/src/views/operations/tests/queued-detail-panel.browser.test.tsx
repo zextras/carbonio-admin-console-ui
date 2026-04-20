@@ -9,9 +9,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useOperationStore } from '../../../store/operation/store';
+import { type Operation } from '../../../types/operations';
 import QuededDetailPanel from '../queued-detail-panel';
 
-const MOCK_QUEUED_OPERATIONS = [
+const MOCK_QUEUED_OPERATIONS: Array<Operation> = [
     {
         id: 'op-1',
         name: 'doBackup',
@@ -62,7 +63,7 @@ function setupGetAllServersInterceptor(serverName = 'mailstore1.test.com'): void
     });
 }
 
-function setQueuedData(data: Array<unknown> = MOCK_QUEUED_OPERATIONS): void {
+function setQueuedData(data: Array<Operation> = MOCK_QUEUED_OPERATIONS): void {
     useOperationStore.getState().setQueuedData(data);
 }
 

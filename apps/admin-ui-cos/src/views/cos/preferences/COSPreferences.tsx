@@ -144,39 +144,39 @@ export const COSPreferences = (): React.JSX.Element => {
           locales={locales}
           onCosAttributeChanged={handleCosPrefAttributeChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <MailOptions
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
           changeSwitchOption={handleSwitchOptionChange}
           onCosAttributeChanged={handleCosPrefAttributeChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <ReceivingMails
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
           onCosAttributeChanged={handleCosPrefAttributeChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <ForwardingOptions
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
           changeSwitchOption={handleSwitchOptionChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <SendingMails
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
           onCosAttributeChanged={handleCosPrefAttributeChange}
           changeSwitchOption={handleSwitchOptionChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <ContactOptions
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
           changeSwitchOption={handleSwitchOptionChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <CalendarOptions
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}

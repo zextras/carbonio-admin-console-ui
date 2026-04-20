@@ -6,177 +6,171 @@
 
 import { flip, limitShift, offset, Placement, shift } from '@floating-ui/dom';
 import {
-	cloneElement,
-	createRef,
-	useCallback,
-	useEffect,
-	useLayoutEffect,
-	useRef,
-	useState
+  cloneElement,
+  createRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
 } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { setupFloating } from '../../utils/floating-ui';
-import { Text, TextProps } from '../basic/text/Text';
+import { TextProps } from '../../web-components/ds-text';
 import { Portal } from '../utilities/Portal';
 import styles from './Tooltip.module.css';
 
 type TooltipWrapperProps = TextProps & {
-	open: boolean;
-	maxWidth: string;
+  open: boolean;
+  maxWidth: string;
 };
 
 const TooltipWrapper = ({
-	open,
-	maxWidth,
-	children,
-	size = 'extrasmall',
-	overflow = 'break-word',
-	className,
-	style,
-	...rest
+  open,
+  maxWidth,
+  children,
+  size = 'extrasmall',
+  overflow = 'break-word',
+  className,
+  style,
+  ...rest
 }: TooltipWrapperProps) => {
-	if (!open) return null;
+  if (!open) return null;
 
-	const tooltipStyle = {
-		maxWidth,
-		...style,
-	};
+  const tooltipStyle = {
+    maxWidth,
+    ...style,
+  };
 
-	return (
-		<Text
-			size={size}
-			overflow={overflow}
-			data-testid={'tooltip'}
-			className={className}
-			style={tooltipStyle}
-			{...rest}
-		>
-			{children}
-		</Text>
-	);
+  return (
+    <ds-text
+      as="span"
+      size={size}
+      overflow={overflow}
+      data-testid={'tooltip'}
+      className={className}
+      style={tooltipStyle}
+      {...rest}
+    >
+      {children}
+    </ds-text>
+  );
 };
 
 type TooltipProps = TextProps & {
-	/** Tooltip text */
-	label: string | React.ReactNode | undefined;
-	/** Tooltip placement */
-	placement?: Placement;
-	/** Fallback placements to use when tooltip cannot fit in the primary placement */
-	fallbackPlacements?: Placement[];
-	/** Tooltip max-width css property */
-	maxWidth?: string;
-	/** Whether to disable the tooltip and render only the child component */
-	disabled?: boolean;
-	/** Flag to disable the Portal implementation */
-	disablePortal?: boolean;
-	/** Show tooltip only when child has class Text and text content is partially hidden */
-	overflowTooltip?: boolean;
-	/** Tooltip trigger */
-	children: React.ReactElement;
-	/** time before tooltip shows, in milliseconds */
-	triggerDelay?: number;
-	/** trigger ref that can be used instead of lost children ref caused by cloneElement */
-	triggerRef?: React.Ref<HTMLElement>;
+  /** Tooltip text */
+  label: string | React.ReactNode | undefined;
+  /** Tooltip placement */
+  placement?: Placement;
+  /** Fallback placements to use when tooltip cannot fit in the primary placement */
+  fallbackPlacements?: Placement[];
+  /** Tooltip max-width css property */
+  maxWidth?: string;
+  /** Whether to disable the tooltip and render only the child component */
+  disabled?: boolean;
+  /** Flag to disable the Portal implementation */
+  disablePortal?: boolean;
+  /** Show tooltip only when the child's text content is partially hidden */
+  overflowTooltip?: boolean;
+  /** Tooltip trigger */
+  children: React.ReactElement;
+  /** time before tooltip shows, in milliseconds */
+  triggerDelay?: number;
+  /** trigger ref that can be used instead of lost children ref caused by cloneElement */
+  triggerRef?: React.Ref<HTMLElement>;
 };
 
 const Tooltip = ({
-	label = '',
-	placement = 'bottom',
-	fallbackPlacements = ['bottom', 'top', 'left'],
-	maxWidth = '17.75rem',
-	children,
-	disabled = false,
-	disablePortal = false,
-	overflowTooltip = false,
-	triggerDelay = 500,
-	triggerRef = createRef<HTMLElement>(),
-	...rest
+  label = '',
+  placement = 'bottom',
+  fallbackPlacements = ['bottom', 'top', 'left'],
+  maxWidth = '17.75rem',
+  children,
+  disabled = false,
+  disablePortal = false,
+  overflowTooltip = false,
+  triggerDelay = 500,
+  triggerRef = createRef<HTMLElement>(),
+  ...rest
 }: TooltipProps) => {
-	const [open, setOpen] = useState(false);
-	const combinedTriggerRef = useCombinedRefs<HTMLElement>(triggerRef);
-	const tooltipRef = useCombinedRefs<HTMLDivElement>();
-	const timeoutRef = useRef<null | ReturnType<typeof setTimeout>>(null);
+  const [open, setOpen] = useState(false);
+  const combinedTriggerRef = useCombinedRefs<HTMLElement>(triggerRef);
+  const tooltipRef = useCombinedRefs<HTMLDivElement>();
+  const timeoutRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
-	const showTooltip = useCallback(() => {
-		const triggerElement = combinedTriggerRef.current;
-		if (triggerElement) {
-			const textIsCropped =
-				(triggerElement.className.slice(0, 4) === 'Text' &&
-					triggerElement.clientWidth < triggerElement.scrollWidth) ||
-				triggerElement.clientHeight < triggerElement.scrollHeight;
-			if ((textIsCropped && overflowTooltip) || !overflowTooltip) {
-				clearTimeout(timeoutRef.current as ReturnType<typeof setTimeout>);
-				timeoutRef.current = setTimeout(() => {
-					setOpen(true);
-				}, triggerDelay);
-			}
-		}
-	}, [overflowTooltip, combinedTriggerRef, triggerDelay]);
+  const showTooltip = useCallback(() => {
+    const triggerElement = combinedTriggerRef.current;
+    if (triggerElement) {
+      const textIsCropped =
+        triggerElement.clientWidth < triggerElement.scrollWidth ||
+        triggerElement.clientHeight < triggerElement.scrollHeight;
+      if ((textIsCropped && overflowTooltip) || !overflowTooltip) {
+        clearTimeout(timeoutRef.current as ReturnType<typeof setTimeout>);
+        timeoutRef.current = setTimeout(() => {
+          setOpen(true);
+        }, triggerDelay);
+      }
+    }
+  }, [overflowTooltip, combinedTriggerRef, triggerDelay]);
 
-	const hideTooltip = useCallback(() => {
-		setOpen(false);
-		timeoutRef.current && clearTimeout(timeoutRef.current);
-	}, []);
+  const hideTooltip = useCallback(() => {
+    setOpen(false);
+    timeoutRef.current && clearTimeout(timeoutRef.current);
+  }, []);
 
-	useLayoutEffect(() => {
-		let cleanup: ReturnType<typeof setupFloating>;
-		if (open && !disabled && combinedTriggerRef.current && tooltipRef.current) {
-			cleanup = setupFloating(combinedTriggerRef.current, tooltipRef.current, {
-				placement,
-				middleware: [offset(8), flip({ fallbackPlacements }), shift({ limiter: limitShift() })]
-			});
-		}
-		return (): void => {
-			cleanup?.();
-		};
-	}, [disabled, fallbackPlacements, open, placement, tooltipRef, combinedTriggerRef]);
+  useLayoutEffect(() => {
+    let cleanup: ReturnType<typeof setupFloating>;
+    if (open && !disabled && combinedTriggerRef.current && tooltipRef.current) {
+      cleanup = setupFloating(combinedTriggerRef.current, tooltipRef.current, {
+        placement,
+        middleware: [offset(8), flip({ fallbackPlacements }), shift({ limiter: limitShift() })],
+      });
+    }
+    return (): void => {
+      cleanup?.();
+    };
+  }, [disabled, fallbackPlacements, open, placement, tooltipRef, combinedTriggerRef]);
 
-	useEffect(() => {
-		if (combinedTriggerRef.current && !disabled) {
-			combinedTriggerRef.current.addEventListener('focus', showTooltip);
-			combinedTriggerRef.current.addEventListener('blur', hideTooltip);
-			combinedTriggerRef.current.addEventListener('mouseenter', showTooltip);
-			combinedTriggerRef.current.addEventListener('mouseleave', hideTooltip);
-		}
-		const refSave = combinedTriggerRef.current;
-		return (): void => {
-			if (refSave) {
-				refSave.removeEventListener('focus', showTooltip);
-				refSave.removeEventListener('blur', hideTooltip);
-				refSave.removeEventListener('mouseenter', showTooltip);
-				refSave.removeEventListener('mouseleave', hideTooltip);
-			}
-		};
-	}, [combinedTriggerRef, showTooltip, hideTooltip, disabled]);
+  useEffect(() => {
+    if (combinedTriggerRef.current && !disabled) {
+      combinedTriggerRef.current.addEventListener('focus', showTooltip);
+      combinedTriggerRef.current.addEventListener('blur', hideTooltip);
+      combinedTriggerRef.current.addEventListener('mouseenter', showTooltip);
+      combinedTriggerRef.current.addEventListener('mouseleave', hideTooltip);
+    }
+    const refSave = combinedTriggerRef.current;
+    return (): void => {
+      if (refSave) {
+        refSave.removeEventListener('focus', showTooltip);
+        refSave.removeEventListener('blur', hideTooltip);
+        refSave.removeEventListener('mouseenter', showTooltip);
+        refSave.removeEventListener('mouseleave', hideTooltip);
+      }
+    };
+  }, [combinedTriggerRef, showTooltip, hideTooltip, disabled]);
 
-	useEffect(
-		() => (): void => {
-			if (timeoutRef.current) {
-				clearTimeout(timeoutRef.current);
-			}
-		},
-		[]
-	);
+  useEffect(
+    () => (): void => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    },
+    [],
+  );
 
-	return (
-		<>
-			{cloneElement(children, {
-				ref: combinedTriggerRef as React.RefObject<HTMLElement>
-			} as Partial<React.HTMLAttributes<HTMLElement>>)}
-			<Portal show={open && !disabled} disablePortal={disablePortal}>
-				<TooltipWrapper
-					ref={tooltipRef}
-					open={open}
-					maxWidth={maxWidth}
-					className={styles.tooltip}
-					{...rest}
-				>
-					{label}
-				</TooltipWrapper>
-			</Portal>
-		</>
-	);
+  return (
+    <>
+      {cloneElement(children, {
+        ref: combinedTriggerRef as React.RefObject<HTMLElement>,
+      } as Partial<React.HTMLAttributes<HTMLElement>>)}
+      <Portal show={open && !disabled} disablePortal={disablePortal}>
+        <TooltipWrapper open={open} maxWidth={maxWidth} className={styles.tooltip} {...rest}>
+          {label}
+        </TooltipWrapper>
+      </Portal>
+    </>
+  );
 };
 
 export type { TooltipProps };

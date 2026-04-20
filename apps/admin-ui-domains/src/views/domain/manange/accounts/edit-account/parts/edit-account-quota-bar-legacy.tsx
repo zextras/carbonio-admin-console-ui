@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Quota, Row, Text } from '@zextras/ui-components';
+import { Quota, Row } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -77,14 +77,14 @@ export const EditAccountQuotaBarLegacy = ({
         onClick={onClickMailboxQuota}
       >
         <Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'small' }}>
-          <Text size="extrasmall" color="secondary">
+          <ds-text size="extrasmall" color="secondary" as="label">
             {t('label.mailbox_space_usage', 'Mailbox Space Usage')}
-          </Text>
+          </ds-text>
         </Row>
         <Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'extrasmall' }}>
-          <Text size="extrasmall" color="gray0">
+          <ds-text size="extrasmall" color="gray0" as="span">
             {mailboxQuotaSize}
-          </Text>
+          </ds-text>
         </Row>
         <Row mainAlignment="flex-start" width="100%">
           <Quota
@@ -99,14 +99,14 @@ export const EditAccountQuotaBarLegacy = ({
       {showFilesQuota && (
         <Row width={'49%'} mainAlignment="space-between" onClick={onClickFilesQuota}>
           <Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'small' }}>
-            <Text size="extrasmall" color="secondary">
+            <ds-text size="extrasmall" color="secondary" as="label">
               {t('label.files_space_usage', 'Files Space Usage')}
-            </Text>
+            </ds-text>
           </Row>
           <Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'extrasmall' }}>
-            <Text size="extrasmall" color="gray0">
+            <ds-text size="extrasmall" color="gray0" as="span">
               {filesQuotaSize}
-            </Text>
+            </ds-text>
           </Row>
           <Row mainAlignment="flex-start" width="100%">
             <Quota

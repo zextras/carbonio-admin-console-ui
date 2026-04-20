@@ -7,11 +7,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
-import { Text } from '../basic/text/Text';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
-import styles from './breadcrumb.module.css';
 
 type BreadcrumbItem = {
   label: string | React.ReactNode;
@@ -38,7 +36,7 @@ export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: Brea
       splitRoute.forEach((item: string, index: number) => {
         if (index === 0) {
           _storeTempRoute.push({
-            label: <icon-wc icon="HomeOutline" size="large"></icon-wc>,
+            label: t('label.home', 'Home'),
             path: `/${item}`,
             homePath: `/${dashboardRoute}`,
           });
@@ -90,33 +88,34 @@ export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: Brea
         {splitRoutes.map((item: BreadcrumbItem, index) => (
           <Row key={item?.path}>
             {isLast(index) ? (
-              <Text size="medium" weight="regular" className={styles.lastBreadcrumbText}>
+              <ds-text as="span" size="medium" weight="regular" style={{ color: 'var(--color-gray0-regular)' } as React.CSSProperties}>
                 {item?.label}
-              </Text>
+              </ds-text>
             ) : (
-              <Text
+              <ds-text
+                as="span"
                 size="medium"
                 weight="regular"
-                className={styles.breadcrumbText}
-                data-is-last="false"
+                color="#cccccc"
+                style={{ cursor: 'pointer' } as React.CSSProperties}
                 onClick={(): void => {
                   navigationClick(item, index);
                 }}
               >
                 {item?.label}
-              </Text>
+              </ds-text>
             )}
 
             {index !== splitRoutes.length - 1 && (
               <Padding left="extrasmall" right="extrasmall">
-                <Text
+                <ds-text
+                  as="span"
                   size="medium"
                   weight="regular"
-                  className={styles.breadcrumbText}
-                  data-is-last="false"
+                  color="#cccccc"
                 >
                   &nbsp;/&nbsp;
-                </Text>
+                </ds-text>
               </Padding>
             )}
           </Row>
@@ -134,9 +133,9 @@ export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: Brea
             padding={{ right: 'small' }}
             margin={{ left: 'auto' }}
           >
-            <Text color="secondary" overflow="break-word" weight="light">
+            <ds-text as="span" color="secondary" overflow="break-word" weight="light">
               {t('label.last_access', 'Last access')} {lastLoginTimestamp}
-            </Text>
+            </ds-text>
           </Container>
         )}
       </Container>

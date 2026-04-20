@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useForm } from '@tanstack/react-form';
-import { Text, useSnackbar } from '@zextras/ui-components';
+import { useSnackbar } from '@zextras/ui-components';
 import { soapFetch, useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useCallback, useMemo } from 'react';
@@ -108,16 +108,16 @@ const PrivacyView: FC = () => {
         {(isDirty) => (
           <>
             <header className={styles.header}>
-              <Text size="medium" weight="bold" color="gray0" className="basis-[30%]">
+              <ds-text as="h2" size="medium" weight="bold" color="gray0" style={{ flexBasis: '30%' } as React.CSSProperties}>
                 {t('label.privacy', 'Privacy')}
-              </Text>
+              </ds-text>
               {isDirty && (
                 <div className="flex flex-row w-[70%] justify-end items-end">
                   <FormButtons onCancel={onCancel} onSave={onSave} />
                 </div>
               )}
             </header>
-            <divider-wc />
+            <ds-divider />
             <div className={styles.formContainer}>
               <form.Field name="sendFullError">
                 {(field) => (

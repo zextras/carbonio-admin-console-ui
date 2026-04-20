@@ -106,7 +106,13 @@ const CosFeatures: FC = () => {
         setSwitchOptionValue('carbonioFeatureFilesEnabled', obj?.carbonioFeatureFilesEnabled);
         setSwitchOptionValue('carbonioFeatureTasksEnabled', obj?.carbonioFeatureTasksEnabled);
         setSwitchOptionValue('zimbraFeatureOptionsEnabled', obj?.zimbraFeatureOptionsEnabled);
+        setSwitchOptionValue('carbonioOtpWizardFromUntrusted', obj?.carbonioOtpWizardFromUntrusted);
         setSwitchOptionValue('carbonioFeatureOTPMgmtEnabled', obj?.carbonioFeatureOTPMgmtEnabled);
+        setSwitchOptionValue(
+          'carbonioOtpGracePeriodEndingTime',
+          obj?.carbonioOtpGracePeriodEndingTime ?? '',
+        );
+        setSwitchOptionValue('carbonioOtpGracePeriodEnabled', obj?.carbonioOtpGracePeriodEnabled);
       }
     },
     [setSwitchOptionValue],

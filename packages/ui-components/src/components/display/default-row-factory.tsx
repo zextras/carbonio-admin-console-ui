@@ -7,7 +7,6 @@
 import clsx from 'clsx';
 import { useCallback, useMemo, useRef } from 'react';
 
-import { Text } from '../basic/text/Text';
 import { Checkbox } from '../inputs/Checkbox';
 import { Row } from '../layout/Row';
 import { TRow } from './Table';
@@ -59,7 +58,7 @@ export const DefaultRowFactory = ({
   const rowData = useMemo(
     () =>
       row.columns.map((column, i) => (
-        <td key={i}>{typeof column === 'string' ? <Text>{column}</Text> : column}</td>
+        <td key={i}>{typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}</td>
       )),
     [row.columns],
   );
@@ -96,9 +95,9 @@ export const DefaultRowFactory = ({
             />
           )}
           {(!showCheckbox || !displayBlockCheckbox) && (
-            <Text className={clsx(styles.text, displayBlockCheckbox && styles.hidden)}>
+            <ds-text as="span">
               {index}
-            </Text>
+            </ds-text>
           )}
         </Row>
       </td>

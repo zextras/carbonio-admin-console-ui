@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container,Modal, Row, Text } from '@zextras/ui-components';
+import { Button, Container,Modal, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -40,13 +40,13 @@ const DeleteCertificateModel: FC<{
 				onClose={closeHandler}
 			>
 				<Row padding={{ vertical: 'extralarge' }} mainAlignment="center" crossAlignment="center">
-					<Text size={'extralarge'} overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
-						<Trans
-							i18nKey="label.delete_all_certificates_content"
-							defaults="You are deleting All Certificates.<br /> Are you sure you want to delete it?"
-							components={{ break: <br /> }}
-						/>
-					</Text>
+				<ds-text as="p" style={{ whiteSpace: 'pre-line' }}>
+					<Trans
+						i18nKey="label.delete_all_certificates_content"
+						defaults="You are deleting All Certificates.<br /> Are you sure you want to delete it?"
+						components={{ break: <br /> }}
+					/>
+				</ds-text>
 				</Row>
 			</Modal>
 		</>

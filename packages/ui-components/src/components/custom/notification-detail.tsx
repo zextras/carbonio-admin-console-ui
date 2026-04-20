@@ -10,7 +10,6 @@ import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../basic/button/Button';
-import { Text } from '../basic/text/Text';
 import { LabeledValue } from '../inputs/labeled-value';
 import { Container } from '../layout/Container';
 import { Row } from '../layout/Row';
@@ -98,10 +97,10 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('notification.notification_details', 'Notification Details')} |{' '}
             {notification?.server}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ right: 'extrasmall' }}>
           <Button
@@ -116,7 +115,7 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Row width="100%" padding={{ all: 'small' }}>
         <Displayer buttons={buttons} pinIcon={isSticky} />
@@ -150,9 +149,9 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
       </ListRow>
       <ListRow>
         <Row padding={{ all: 'extralarge' }}>
-          <Text size="medium" weight="bold" color="gray0">
+          <ds-text as="h3" size="medium" weight="bold" color="gray0">
             {t('label.content', 'Content')}
-          </Text>
+          </ds-text>
         </Row>
       </ListRow>
 

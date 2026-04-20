@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/icon-wc';
+import '../../web-components/ds-icon';
 
 import { map } from 'lodash-es';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
@@ -13,7 +13,6 @@ import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { type IconName } from '../../web-components/icon-registry';
-import { Text } from '../basic/text/Text';
 import { Container } from '../layout/Container';
 import { Row, RowProps } from '../layout/Row';
 import styles from './Chip.module.css';
@@ -183,12 +182,12 @@ const Chip = ({
                 onBlur={hideTooltipHandler}
                 style={{ '--action-spacing': SIZES[size].spacing } as React.CSSProperties}
               >
-                <icon-wc
+                <ds-icon
                   icon={action.icon}
                   color={error ? 'error' : action.color}
                   disabled={!!disabled || action.disabled}
                   size={SIZES[size].icon}
-                ></icon-wc>
+                ></ds-icon>
               </div>
             </Tooltip>
           );
@@ -224,12 +223,12 @@ const Chip = ({
                   } as React.CSSProperties
                 }
               >
-                <icon-wc
+                <ds-icon
                   icon={action.icon}
                   color={error ? 'error' : action.color}
                   disabled={!!disabled || action.disabled}
                   size={SIZES[size].icon}
-                ></icon-wc>
+                ></ds-icon>
               </button>
             </Tooltip>
           );
@@ -310,14 +309,15 @@ const Chip = ({
         >
           {keyLabel && (
             <div className={styles.label} style={{ width: 'auto' }}>
-              <Text
+              <ds-text
+                as="span"
                 weight="regular"
                 size={SIZES[size].font}
                 color={error ? 'gray6' : color}
                 disabled={!!disabled}
               >
                 {keyLabel}
-              </Text>
+              </ds-text>
             </div>
           )}
           {label && (
@@ -340,14 +340,15 @@ const Chip = ({
                 overflowTooltip
                 placement={tooltipPlacement}
               >
-                <Text
+                <ds-text
+                  as="span"
                   weight="light"
                   size={SIZES[size].font}
                   color={error ? 'gray6' : color}
                   disabled={!!disabled}
                 >
                   {typeof label === 'string' ? label : <Row wrap="nowrap">{label}</Row>}
-                </Text>
+                </ds-text>
               </Tooltip>
             </div>
           )}

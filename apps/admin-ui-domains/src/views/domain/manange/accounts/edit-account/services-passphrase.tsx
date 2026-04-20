@@ -11,7 +11,6 @@ import {
   Modal,
   Row,
   Select,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
@@ -183,9 +182,9 @@ export const ServicesPassphrase: FC = () => {
     <>
       <Row mainAlignment="flex-start" width="100%">
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-          <Text size="small" color="gray0" weight="bold">
+          <ds-text size="small" color="gray0" weight="bold" as="h2">
             {t('account_details.services_passphrase', 'Services Passphrase')}
-          </Text>
+          </ds-text>
         </Row>
         {credentialList.map((item: CredentialType, index: number) => (
           <Row
@@ -320,21 +319,21 @@ export const ServicesPassphrase: FC = () => {
             crossAlignment="center"
             padding={{ bottom: 'large' }}
           >
-            <Text size={'extralarge'} overflow="break-word">
+            <ds-text size={'extralarge'} overflow="break-word" as="p">
               {t(
                 'account_details.password_allow_once_user_to_connect',
                 `This password will allow user to connect to this service without the 2FA even from an un-trusted network.`,
               )}
-            </Text>
+            </ds-text>
           </Row>
           <Row width="80%" mainAlignment="center" crossAlignment="center">
-            <Text size={'extralarge'} overflow="break-word">
+            <ds-text size={'extralarge'} overflow="break-word" as="p">
               <Trans
                 i18nKey="account_details.able_to_see_password_once"
                 defaults=" Please note: you'll be able to see the password <bold>just once.</bold>"
                 components={{ bold: <strong /> }}
               />
-            </Text>
+            </ds-text>
           </Row>
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
             <LabeledValue
@@ -342,7 +341,7 @@ export const ServicesPassphrase: FC = () => {
               backgroundColor="gray5"
               value={createCredentialResponse.text_data?.password}
               CustomIcon={(): any => (
-                <icon-wc
+                <ds-icon
                   icon="CopyOutline"
                   size="large"
                   color="Gray0"
@@ -354,7 +353,7 @@ export const ServicesPassphrase: FC = () => {
                     );
                   }}
                   style={{ cursor: 'pointer' }}
-                ></icon-wc>
+                ></ds-icon>
               )}
               textColor={'gray1'}
             />

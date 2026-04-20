@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Dropdown, Text, Tooltip } from '@zextras/ui-components';
+import { Button, Container, Dropdown, Tooltip } from '@zextras/ui-components';
 import {
   CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
@@ -94,9 +94,9 @@ export const ShellUtilityBar: FC = () => {
         <UtilityBarItem view={view} key={view.id} />
       ))}
       <Container margin={{ right: 'small' }}>
-        <Text color="primary" style={{ whiteSpace: 'pre-line', textAlign: 'left' }}>
+        <ds-text as="span" color="primary" style={{ whiteSpace: 'pre-line', textAlign: 'left' }}>
           {accountName}
-        </Text>
+        </ds-text>
       </Container>
       <Tooltip label={t('label.account_menu', 'Account menu')} placement="left-end">
         <Dropdown items={accountItems}>

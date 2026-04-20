@@ -10,7 +10,6 @@ import { CSSProperties, useMemo, useRef } from 'react';
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { resolveThemeColor } from '../../theme/theme-utils';
-import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import styles from './Switch.module.css';
@@ -81,7 +80,7 @@ const Switch = ({
         style={iconWrapperStyle}
         tabIndex={disabled ? -1 : 0}
       >
-        <icon-wc
+        <ds-icon
           icon={checked ? 'ToggleRight' : 'ToggleLeftOutline'}
           size={size === 'medium' ? 'large' : 'medium'}
           color={String(iconColor)}
@@ -90,7 +89,8 @@ const Switch = ({
       </div>
       {label && (
         <Padding left="small">
-          <Text
+          <ds-text
+            as="label"
             className={styles.text}
             size={size === 'medium' ? 'medium' : 'small'}
             weight="regular"
@@ -99,7 +99,7 @@ const Switch = ({
             disabled={disabled}
           >
             {label}
-          </Text>
+          </ds-text>
         </Padding>
       )}
     </Container>

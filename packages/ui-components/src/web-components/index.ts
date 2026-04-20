@@ -8,6 +8,8 @@
 import '../theme/theme.css';
 
 // Import and export the web components to ensure they are bundled and registered
-export { DividerElement } from './divider-wc';
-export { IconWC } from './icon-wc';
-export { SpinnerWC } from './spinner-wc';
+export { DividerElement } from './ds-divider';
+export { DsIcon } from './ds-icon';
+export { DsSpinner } from './ds-spinner';
+export { DsText, type TextProps } from './ds-text';
+

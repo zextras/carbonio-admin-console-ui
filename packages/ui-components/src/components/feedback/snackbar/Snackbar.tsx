@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../../web-components/icon-wc';
+import '../../../web-components/ds-icon';
 
 import React, { useCallback, useEffect } from 'react';
 
 import { resolveThemeColor } from '../../../theme/theme-utils';
 import { type IconName } from '../../../web-components/icon-registry';
 import { Button } from '../../basic/button/Button';
-import { Text } from '../../basic/text/Text';
 import { TIMERS } from '../../constants';
 import { Container } from '../../layout/Container';
 import { Row } from '../../layout/Row';
@@ -121,7 +120,7 @@ const Snackbar = ({
           >
             <Row flexShrink={0}>
               <Row flexShrink={0}>
-                <icon-wc size="large" icon={icons[severity]} color="gray6"></icon-wc>
+                <ds-icon size="large" icon={icons[severity]} color="gray6"></ds-icon>
               </Row>
             </Row>
             <Container
@@ -139,9 +138,9 @@ const Snackbar = ({
                 flexGrow={1}
                 width={'auto'}
               >
-                <Text color="gray6" size="medium" overflow={'break-word'}>
+                <ds-text as="span" color="gray6" size="medium" overflow={'break-word'}>
                   {label}
-                </Text>
+                </ds-text>
               </Row>
               {!hideButton && (
                 <Row

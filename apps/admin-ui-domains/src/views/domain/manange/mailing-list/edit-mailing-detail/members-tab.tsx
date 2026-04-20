@@ -17,7 +17,6 @@ import {
   Paging,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { sortedUniq, uniq } from 'lodash';
@@ -64,9 +63,9 @@ export const MembersTab: FC<MembersTabProps> = ({
   const limit = 15;
   const [dlmTableRows, setDlmTableRows] = useState<Array<any>>([]);
   const [DLMPagedRows, setDLMPagedRows] = useState<Array<any>>([]);
-  const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<
-    Array<any>
-  >([]);
+  const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<Array<any>>(
+    [],
+  );
   const [searchMember, setSearchMember] = useState('');
   const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
   const [isShowMemberError, setIsShowMemberError] = useState(false);
@@ -125,7 +124,7 @@ export const MembersTab: FC<MembersTabProps> = ({
         const allRows = dlm.map((item: any) => ({
           id: item,
           columns: [
-            <Text
+            <ds-text as="span"
               size="small"
               weight="regular"
               key={item}
@@ -135,7 +134,7 @@ export const MembersTab: FC<MembersTabProps> = ({
               }}
             >
               {item}
-            </Text>,
+            </ds-text>,
             selectedMailingList?.dynamic ? null : (
               <Button
                 type="ghost"
@@ -161,7 +160,7 @@ export const MembersTab: FC<MembersTabProps> = ({
           .map((item: any) => ({
             id: item,
             columns: [
-              <Text
+              <ds-text as="span"
                 size="small"
                 weight="regular"
                 key={item}
@@ -171,7 +170,7 @@ export const MembersTab: FC<MembersTabProps> = ({
                 }}
               >
                 {item}
-              </Text>,
+              </ds-text>,
               selectedMailingList?.dynamic ? null : (
                 <Button
                   type="ghost"
@@ -247,7 +246,7 @@ export const MembersTab: FC<MembersTabProps> = ({
           setMemberErrorMessage(
             t(
               'domain.distributionList.invalidEmailErrorMsg',
-              'The account does not exist. Please check the spelling and try again.'
+              'The account does not exist. Please check the spelling and try again.',
             ),
           );
         } else if (dlm.find((item: any) => item === searchMember)) {
@@ -316,10 +315,7 @@ export const MembersTab: FC<MembersTabProps> = ({
                 severity: 'error',
                 label: error?.message
                   ? error?.message
-                  : t(
-                      'label.something_wrong_error_msg',
-                      'Something went wrong. Please try again.',
-                    ),
+                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
                 autoHideTimeout: 3000,
                 hideButton: true,
                 replace: true,
@@ -331,7 +327,7 @@ export const MembersTab: FC<MembersTabProps> = ({
         setMemberErrorMessage(
           t(
             'domain.distributionList.invalidEmailErrorMsg',
-            'The account does not exist. Please check the spelling and try again.'
+            'The account does not exist. Please check the spelling and try again.',
           ),
         );
         setIsShowMemberError(true);
@@ -339,13 +335,19 @@ export const MembersTab: FC<MembersTabProps> = ({
     } else {
       setIsShowMemberError(true);
       setMemberErrorMessage(
-        t(
-          'domain.distributionList.blankEmailErrorMsg',
-          'Please enter at least one email address',
-        ),
+        t('domain.distributionList.blankEmailErrorMsg', 'Please enter at least one email address'),
       );
     }
-  }, [searchMember, t, dlm, selectedMailingList?.id, createSnackbar, setDlm, setPreviousDetail, setIsRequestInProgress]);
+  }, [
+    searchMember,
+    t,
+    dlm,
+    selectedMailingList?.id,
+    createSnackbar,
+    setDlm,
+    setPreviousDetail,
+    setIsRequestInProgress,
+  ]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
@@ -430,10 +432,7 @@ export const MembersTab: FC<MembersTabProps> = ({
           severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                'label.something_wrong_error_msg',
-                'Something went wrong. Please try again.',
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -468,9 +467,9 @@ export const MembersTab: FC<MembersTabProps> = ({
         {selectedMailingList?.dynamic && (
           <>
             <Row padding={{ bottom: 'medium', top: 'medium' }}>
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h3" size="medium" weight="bold" color="gray0">
                 {t('label.dynamic_mode', 'Dynamic Mode')}
-              </Text>
+              </ds-text>
             </Row>
             <ListRow padding={{ all: 'small' }}>
               <Container orientation="horizontal">
@@ -492,16 +491,17 @@ export const MembersTab: FC<MembersTabProps> = ({
         {!selectedMailingList?.dynamic && (
           <>
             <Row padding={{ bottom: 'small', top: 'medium' }}>
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h3" size="medium" weight="bold" color="gray0">
                 {t('label.members', 'Members')}
-              </Text>
+              </ds-text>
             </Row>
             <ListRow>
               <Container orientation="vertical" mainAlignment="flex-start" background="gray6">
-                <Row mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                    width="100%"
-                    padding={{ top: 'large' }}
+                <Row
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                  width="100%"
+                  padding={{ top: 'large' }}
                 >
                   <DropDownInput
                     width="100%"
@@ -527,15 +527,16 @@ export const MembersTab: FC<MembersTabProps> = ({
                   >
                     <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                       <Padding right={'0'}>
-                        <Text size="extrasmall" weight="regular" color="error">
+                        <ds-text as="span" size="extrasmall" weight="regular" color="error">
                           {memberErrorMessage}
-                        </Text>
+                        </ds-text>
                       </Padding>
                     </Container>
                   </Row>
                 )}
 
-                <Row mainAlignment="flex-start"
+                <Row
+                  mainAlignment="flex-start"
                   crossAlignment="flex-start"
                   width="100%"
                   padding={{ top: 'large', bottom: 'large' }}
@@ -554,7 +555,7 @@ export const MembersTab: FC<MembersTabProps> = ({
             </ListRow>
           </>
         )}
-        <divider-wc />
+        <ds-divider />
         <ListRow>
           <Container
             padding={{
@@ -569,9 +570,9 @@ export const MembersTab: FC<MembersTabProps> = ({
               padding={{ bottom: 'large' }}
               width="100%"
             >
-              <Text weight="bold" color="gray0">
+              <ds-text as="h4" weight="bold" color="gray0">
                 {t('domain.distributionList.members.membersList', 'Members List')}
-              </Text>
+              </ds-text>
             </Row>
             {(dlmTableRows.length > 0 || filterMember !== '') && (
               <ListRow>
@@ -582,7 +583,7 @@ export const MembersTab: FC<MembersTabProps> = ({
                     backgroundColor="gray5"
                     onChange={handleInputChange}
                     CustomIcon={(): any => (
-                      <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                      <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                     )}
                   />
                 </Row>
@@ -642,14 +643,14 @@ export const MembersTab: FC<MembersTabProps> = ({
               </Padding>
               <Padding vertical="extralarge" width="100%">
                 <Row mainAlignment="center" width="100%">
-                  <Text size="large" color="secondary" weight="regular">
+                  <ds-text as="p" size="large" color="secondary" weight="regular">
                     {t('label.there_are_not_member_here', "There aren't members here.")}
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row mainAlignment="center" width="100%">
-                  <Text size="large" color="secondary" weight="regular">
+                  <ds-text as="p" size="large" color="secondary" weight="regular">
                     {searchUserLabelValue}
-                  </Text>
+                  </ds-text>
                 </Row>
               </Padding>
             </Container>
@@ -685,9 +686,9 @@ export const MembersTab: FC<MembersTabProps> = ({
         >
           <Container
             padding={{ top: 'extralarge', bottom: 'extralarge' }}
-              mainAlignment="flex-start"
+            mainAlignment="flex-start"
           >
-            <Text size={'large'} overflow="break-word">
+            <ds-text as="p" size={'large'} overflow="break-word">
               <Trans
                 i18nKey="domain.distributionList.members.areYouSureDeleteMember"
                 defaults="Are you sure you want to remove <bold>{{name}}</bold> from the members list?"
@@ -696,7 +697,7 @@ export const MembersTab: FC<MembersTabProps> = ({
                   name: memberToDelete,
                 }}
               />
-            </Text>
+            </ds-text>
           </Container>
         </Modal>
       )}

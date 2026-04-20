@@ -16,7 +16,6 @@ import {
   Row,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
@@ -157,9 +156,9 @@ const MailingListSection: FC<any> = () => {
         const searchDlRows = dynamicListMember.map((item: any) => ({
           id: item?.name,
           columns: [
-            <Text size="medium" weight="light" key={item?.id} color="#828282">
+            <ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
               {item?.name}
-            </Text>,
+            </ds-text>,
             '',
           ],
         }));
@@ -174,9 +173,9 @@ const MailingListSection: FC<any> = () => {
         const searchDlRows = allRows.map((item: any) => ({
           id: item?.name,
           columns: [
-            <Text size="medium" weight="light" key={item?.id} color="#828282">
+            <ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
               {item?.name}
-            </Text>,
+            </ds-text>,
             '',
           ],
         }));
@@ -222,9 +221,9 @@ const MailingListSection: FC<any> = () => {
         style={{ overflow: 'auto', padding: '16px' }}
       >
         <Row>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.distribution_list_name', 'Distribution List Name')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container
@@ -267,7 +266,7 @@ const MailingListSection: FC<any> = () => {
             padding={{ top: 'large', right: 'small' }}
             width="fit"
           >
-            <icon-wc icon="AtOutline" size="large"></icon-wc>
+            <ds-icon icon="AtOutline" size="large"></ds-icon>
           </Container>
           <Container
             mainAlignment="flex-start"
@@ -322,7 +321,7 @@ const MailingListSection: FC<any> = () => {
               padding={{ top: 'small', bottom: 'small' }}
             >
               <Container padding={{ bottom: 'small' }}>
-                <divider-wc />
+                <ds-divider />
               </Container>
             </Row>
             <ListRow>
@@ -365,29 +364,29 @@ const MailingListSection: FC<any> = () => {
                   onChange={changeLdapDetail}
                   hasError={!isValidQuery}
                   CustomIcon={(): any => (
-                    <icon-wc
+                    <ds-icon
                       icon="CheckmarkOutline"
                       size="large"
                       color="grey"
                       onClick={getMemberFromLdapQuery}
                       style={{ cursor: 'pointer' }}
-                    ></icon-wc>
+                    ></ds-icon>
                   )}
                 />
               </Container>
             </ListRow>
             <ListRow>
-              <Text size="small" weight="regular" color="gray1">
+              <ds-text as="small" size="small" weight="regular" color="gray1">
                 {`${t('label.example_lbl', 'Example:')} ${LDAP_QUERY}`}
-              </Text>
+              </ds-text>
             </ListRow>
             {isShowLdapQueryMessage && (
               <Row>
                 <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                   <Padding all={'0'}>
-                    <Text size="extrasmall" weight="regular" color="error">
+                    <ds-text as="span" size="extrasmall" weight="regular" color="error">
                       {ldapQueryErrorMessage}
-                    </Text>
+                    </ds-text>
                   </Padding>
                 </Container>
               </Row>
@@ -397,9 +396,9 @@ const MailingListSection: FC<any> = () => {
         {mailingListDetail?.dynamic && (
           <>
             <Row padding={{ top: 'large' }}>
-              <Text size="small" weight="bold">
+              <ds-text as="h3" size="small" weight="bold">
                 {t('label.members', 'Members')}
-              </Text>
+              </ds-text>
             </Row>
             <ListRow padding={{ all: 'small' }}>
               <Container padding={{ bottom: 'large', top: 'large' }}>
@@ -411,11 +410,11 @@ const MailingListSection: FC<any> = () => {
                       backgroundColor="gray5"
                       onChange={handleInputChangeMember}
                       CustomIcon={(): any => (
-                        <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                        <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                       )}
                     />
                     <Container padding={{ bottom: 'small' }}>
-                      <divider-wc />
+                      <ds-divider />
                     </Container>
                   </>
                 )}

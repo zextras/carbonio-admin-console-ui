@@ -10,7 +10,6 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../basic/button/Button';
-import { Text } from '../basic/text/Text';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
 import styles from './horizontal-wizard-layout.module.css';
@@ -57,18 +56,18 @@ const StepNavigator: FC<{
     >
       <Row wrap="nowrap" onClick={onClick} width="80%">
         <Row style={{ padding: renderElement ? '12px 8px' : '', borderRadius: '50%' }}>
-          <icon-wc icon={step.icon} color={color} size="large"></icon-wc>
+          <ds-icon icon={step.icon} color={color} size="large"></ds-icon>
         </Row>
         {renderElement && (
           <Padding left="small">
-            <Text color={color} weight="medium" style={{ textTransform: 'uppercase' }}>
+            <ds-text as="h2" color={color} weight="medium" style={{ textTransform: 'uppercase' }}>
               {step.label}
-            </Text>
+            </ds-text>
           </Padding>
         )}
       </Row>
       <Row wrap="nowrap" style={{ cursor: 'pointer' }} width={'20%'}>
-        {!isLastStep && <icon-wc icon="ChevronRight" color={color} size="large"></icon-wc>}
+        {!isLastStep && <ds-icon icon="ChevronRight" color={color} size="large"></ds-icon>}
       </Row>
     </Row>
   );

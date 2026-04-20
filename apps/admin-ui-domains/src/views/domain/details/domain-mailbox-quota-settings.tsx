@@ -16,7 +16,6 @@ import {
   Row,
   Select,
   Table,
-  Text,
   THeader,
   TrackNumberPerPage,
   useSnackbar,
@@ -209,34 +208,36 @@ const DomainMailboxQuotaSetting: FC = () => {
             clickable: false,
             selectionMode: false,
             columns: [
-              <Text color="gray0" weight="regular" key={item?.id}>
+              <ds-text as="span" color="gray0" weight="regular" key={item?.id}>
                 {item?.name}
-              </Text>,
+              </ds-text>,
               <Row key={item?.id} mainAlignment="flex-start" width="100%">
-                <Text color="gray0" weight="light">
+                <ds-text as="span" color="gray0" weight="light">
                   {`${item?.mailsQuotaUsed} GB /`}&nbsp;
-                </Text>
-                <Text
+                </ds-text>
+                <ds-text
+                  as="span"
                   weight="light"
                   color={Number(item?.mailsQuotaUsedPercentage) > 100 ? 'error' : 'gray0'}
                 >
                   {`${item?.mailsQuotaUsedPercentage}%`}
-                </Text>
+                </ds-text>
               </Row>,
             ],
           });
           if (fileStorageEnabled) {
             quotaData[index]?.columns.push(
               <Row key={item?.id} mainAlignment="flex-start" width="100%">
-                <Text color="gray0" weight="light">
+                <ds-text as="span" color="gray0" weight="light">
                   {`${item?.filesQuotaUsed} GB /`}&nbsp;
-                </Text>
-                <Text
+                </ds-text>
+                <ds-text
+                  as="span"
                   weight="light"
                   color={Number(item?.filesQuotaUsedPercentage) > 100 ? 'error' : 'gray0'}
                 >
                   {`${item?.filesQuotaUsedPercentage}%`}
-                </Text>
+                </ds-text>
               </Row>,
             );
           }
@@ -534,9 +535,9 @@ const DomainMailboxQuotaSetting: FC = () => {
               width="50%"
               crossAlignment="flex-start"
             >
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h2" size="medium" weight="bold" color="gray0">
                 {t('domain.mailbox_quota', 'Mailbox Quota')}
-              </Text>
+              </ds-text>
             </Row>
             <Row
               padding={{ all: 'small' }}
@@ -568,7 +569,7 @@ const DomainMailboxQuotaSetting: FC = () => {
         </Container>
       </Row>
       <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Container
         orientation="column"
@@ -587,9 +588,9 @@ const DomainMailboxQuotaSetting: FC = () => {
                 background="gray6"
                 padding={{ all: 'small' }}
               >
-                <Text size="small" weight="bold">
+                <ds-text as="h3" size="small" weight="bold">
                   {t('label.domain_quota_settings', 'Domain Quota Settings')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container padding={{ all: 'small' }}>
@@ -687,9 +688,9 @@ const DomainMailboxQuotaSetting: FC = () => {
               background="gray6"
               padding={{ left: 'large', top: 'large' }}
             >
-              <Text size="small" weight="bold">
+              <ds-text as="h3" size="small" weight="bold">
                 {t('label.accounts', 'Accounts')}
-              </Text>
+              </ds-text>
             </Row>
             <Container padding={{ all: 'large' }}>
               <ListRow>
@@ -724,7 +725,7 @@ const DomainMailboxQuotaSetting: FC = () => {
                       height="fit"
                       padding={{ top: 'medium' }}
                     >
-                      <spinner-wc></spinner-wc>
+                      <ds-spinner></ds-spinner>
                     </Container>
                   )}
                 </Row>
@@ -736,7 +737,7 @@ const DomainMailboxQuotaSetting: FC = () => {
                 width="fill"
                 padding={{ top: 'medium' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Row>
               <Container orientation="horizontal" mainAlignment="space-between" width="100%">
                 <Container crossAlignment="flex-start">
@@ -763,13 +764,13 @@ const DomainMailboxQuotaSetting: FC = () => {
       </Container>
 
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
     </Container>
   );

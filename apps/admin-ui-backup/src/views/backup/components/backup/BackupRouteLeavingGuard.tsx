@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Text } from '@zextras/ui-components';
 import { FC } from 'react';
 
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
@@ -16,10 +15,10 @@ interface BackupRouteLeavingGuardProps {
 
 const BackupRouteLeavingGuard: FC<BackupRouteLeavingGuardProps> = ({ isDirty, onSave, t }) => (
 	<RouteLeavingGuard when={isDirty} onSave={onSave}>
-		<Text>
+		<ds-text as="p">
 			{t('label.unsaved_changes_line1', 'Are you sure you want to leave this page without saving?')}
-		</Text>
-		<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+		</ds-text>
+		<ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
 	</RouteLeavingGuard>
 );
 

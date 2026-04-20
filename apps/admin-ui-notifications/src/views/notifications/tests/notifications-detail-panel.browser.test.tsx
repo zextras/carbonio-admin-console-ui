@@ -9,24 +9,15 @@ import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { type Notification, type ZextrasRequestBody } from '../../../types/notifications';
 import NotificationsDetailPanel from '../notifications-detail-panel';
 
 function setupGetAllNotificationsInterceptor(
-	notifications: Array<{
-		id: string;
-		server: string;
-		date: number;
-		level: string;
-		subject: string;
-		text: string;
-		ack: boolean;
-		group: string;
-		operationId: string;
-	}> = [],
+	notifications: Array<Notification> = [],
 ): void {
 	worker.use(
 		http.post('/service/admin/soap/zextras', async ({ request }) => {
-			const body = (await request.json()) as any;
+			const body = (await request.json()) as ZextrasRequestBody;
 			const zextrasBody = body?.Body?.zextras;
 
 			if (zextrasBody?.action === 'getAllNotifications') {

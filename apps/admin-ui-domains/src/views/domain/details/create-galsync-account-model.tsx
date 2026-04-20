@@ -11,7 +11,7 @@ import {
 	Modal,
 	Padding,
 	Row,
-	Text} from '@zextras/ui-components';
+} from '@zextras/ui-components';
 import { useDomainStore } from '@zextras/ui-shared';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -71,12 +71,12 @@ const CreateGalsyncAccountModel: FC<{
 			>
 				<ListRow>
 					<Padding top="large" horizontal="small" width="100%">
-						<Text size="small" color="gray0">
+						<ds-text as="span">
 							{t(
 								'label.type_account_name_for_global_address_list',
 								'Type the Account Name for the Global Address List (GAL)'
 							)}
-						</Text>
+						</ds-text>
 					</Padding>
 				</ListRow>
 				<Row
@@ -105,7 +105,7 @@ const CreateGalsyncAccountModel: FC<{
 						mainAlignment="flex-start"
 						crossAlignment="center"
 					>
-						<Text weight="bold">{`.${accountData?.name}@${domain?.name}`}</Text>
+						<ds-text as="label">{`.${accountData?.name}@${domain?.name}`}</ds-text>
 					</Container>
 				</Row>
 			</Modal>

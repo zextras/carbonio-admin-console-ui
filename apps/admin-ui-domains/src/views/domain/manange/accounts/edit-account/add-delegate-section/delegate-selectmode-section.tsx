@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, DropDownInput, Row, Select, Text, useSnackbar } from '@zextras/ui-components';
+import { Container, DropDownInput, Row, Select, useSnackbar } from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -145,9 +145,9 @@ const DelegateSelectModeSection: FC = () => {
       >
         <Row mainAlignment="flex-start" width="100%">
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <Text size="small" color="gray0" weight="bold">
+            <ds-text size="small" color="gray0" weight="bold" as="h3">
               {t('account_details.i_want_to_create_a_delegate_for', `I want to create a delegate`)}
-            </Text>
+            </ds-text>
           </Row>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Padding, Row, Text } from '@zextras/ui-components';
+import { Container, Padding, Row } from '@zextras/ui-components';
 import { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router';
@@ -42,14 +42,14 @@ const BackupDetailPanel: FC = () => {
       {!Object.keys(globalConfig).length ? (
         <Row background="info" width="100%" padding="small" mainAlignment="space-between">
           <Row mainAlignment="flex-start">
-            <icon-wc icon="CloseCircleOutline" size="large" color="white"></icon-wc>
+            <ds-icon icon="CloseCircleOutline" size="large" color="white"></ds-icon>
             <Padding left="large">
-              <Text color="white">
+              <ds-text as="h2" color="white">
                 {t(
                   'label.you_have_no_sufficient_administrationr_rights_to_see_this_section',
                   'You have no sufficient administration rights to see this section',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Row>
         </Row>

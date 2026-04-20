@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/divider-wc';
+import '../../web-components/ds-divider';
 
 import { useCallback, useMemo, useState } from 'react';
 
@@ -38,6 +38,7 @@ type InputProps = ContainerProps & {
   hideBorder?: boolean;
   onEnter?: (e: KeyboardEvent) => void;
   description?: string;
+  trimOnPaste?: boolean;
   ref?: React.Ref<HTMLDivElement>;
 };
 
@@ -65,6 +66,7 @@ const Input = ({
   hideBorder = false,
   onEnter,
   description,
+  trimOnPaste = false,
   ref,
   ...rest
 }: InputProps) => {
@@ -88,6 +90,18 @@ const Input = ({
   const onInputBlur = useCallback(() => {
     setHasFocus(false);
   }, []);
+
+  const handlePaste = useCallback(
+    (e: React.ClipboardEvent<HTMLInputElement>) => {
+      if (!trimOnPaste) return;
+      e.preventDefault();
+      const pastedText = e.clipboardData.getData('text').trim();
+      const input = e.currentTarget;
+      input.value = pastedText;
+      onChange({ target: input, currentTarget: input } as React.ChangeEvent<HTMLInputElement>);
+    },
+    [trimOnPaste, onChange],
+  );
 
   const keyboardEvents = useMemo<KeyboardPresetObj[]>(() => {
     const events: KeyboardPresetObj[] = [];
@@ -170,6 +184,7 @@ const Input = ({
             defaultValue={defaultValue}
             value={value}
             onChange={onChange}
+            onPaste={handlePaste}
             disabled={disabled}
             placeholder={label}
           />
@@ -185,7 +200,7 @@ const Input = ({
           </span>
         )}
       </InputContainer>
-      <divider-wc color={dividerColor}></divider-wc>
+      <ds-divider color={dividerColor}></ds-divider>
       {description !== undefined && (
         <InputDescription
           color={(hasError && 'error') || (hasFocus && 'primary') || 'secondary'}

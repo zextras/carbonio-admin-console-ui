@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Modal, Padding,Row, Text } from '@zextras/ui-components';
+import { Button, Container, Modal, Padding,Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -73,11 +73,11 @@ const DisableDelegateAdminModel: FC<{
 				onClose={closeHandler}
 			>
 				<Padding vertical="extralarge">
-					<Text
-						size={'extralarge'}
-						overflow="break-word"
-						style={{ whiteSpace: 'pre-line', textAlign: 'left' }}
-					>
+				<ds-text as="p"
+					size={'extralarge'}
+					overflow="break-word"
+					style={{ whiteSpace: 'pre-line', textAlign: 'left' }}
+				>
 						<Trans
 							i18nKey="label.delegated_administration_helper_message"
 							defaults="Delegated administration for {{domainName}} will be disabled. <br /> You have two options: <br /><br /> 1. Remove all ACLs (Access Control Lists) from the domain. <br /> 2. Keep the ACLs (Access Control Lists) in the domain, but disable the associated rights. <br /><br /> How would you like to proceed?"
@@ -87,7 +87,7 @@ const DisableDelegateAdminModel: FC<{
 								domainName
 							}}
 						/>
-					</Text>
+					</ds-text>
 				</Padding>
 			</Modal>
 		</>

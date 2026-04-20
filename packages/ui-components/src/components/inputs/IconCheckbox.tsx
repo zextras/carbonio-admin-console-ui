@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/icon-wc';
+import '../../web-components/ds-icon';
 
 import { useCallback, useMemo, useRef } from 'react';
 
@@ -12,7 +12,6 @@ import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { type IconName } from '../../web-components/icon-registry';
-import { Text } from '../basic/text/Text';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import styles from './IconCheckbox.module.css';
@@ -125,13 +124,18 @@ const IconCheckbox = ({
         tabIndex={disabled ? -1 : 0}
       >
         <Padding all={padding[size]}>
-          <icon-wc size={iconSize} icon={icon}></icon-wc>
+          <ds-icon size={iconSize} icon={icon}></ds-icon>
         </Padding>
       </div>
       {label && (
-        <Text className={styles.label} size="medium" weight="regular">
+        <ds-text
+          as="label"
+          style={{ whiteSpace: 'normal', paddingLeft: 'var(--padding-small)', userSelect: 'none' } as React.CSSProperties}
+          size="medium"
+          weight="regular"
+        >
           {label}
-        </Text>
+        </ds-text>
       )}
     </Container>
   );

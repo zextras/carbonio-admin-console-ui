@@ -11,7 +11,6 @@ import {
   Padding,
   Row,
   Switch,
-  Text,
   TextArea,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -263,9 +262,9 @@ const DomainDisclaimer: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('label.disclaimer', 'Disclaimer')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           <Container
@@ -284,7 +283,7 @@ const DomainDisclaimer: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
 
       <Container
@@ -335,9 +334,9 @@ const DomainDisclaimer: FC = () => {
               bottom: 'extralarge',
             }}
           >
-            <Text size="small" weight="bold" color="gray0">
+            <ds-text as="h3" size="small" weight="bold" color="gray0">
               {t('label.text_editor', 'Text Editor')}
-            </Text>
+            </ds-text>
           </Container>
           <Container
             crossAlignment="flex-start"
@@ -347,9 +346,9 @@ const DomainDisclaimer: FC = () => {
               bottom: 'extralarge',
             }}
           >
-            <Text size="small" weight="bold" color="gray0">
+            <ds-text as="h3" size="small" weight="bold" color="gray0">
               {t('label.rich_text_editor', 'Rich Text Editor')}
-            </Text>
+            </ds-text>
           </Container>
         </ListRow>
         <ListRow>

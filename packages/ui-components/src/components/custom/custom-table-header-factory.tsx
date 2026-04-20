@@ -7,7 +7,6 @@
 import { isEmpty } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Text } from '../basic/text/Text';
 import { Checkbox } from '../inputs/Checkbox';
 import { Select } from '../inputs/Select';
 import { Container } from '../layout/Container';
@@ -60,12 +59,12 @@ export const CustomHeaderFactory: FC<any> = ({
     (column: THeader) => {
       if (column.id === sortedColumn) {
         return sortOrder === ASC ? (
-          <icon-wc icon="ChevronSortUpOutline" size="large"></icon-wc>
+          <ds-icon icon="ChevronSortUpOutline" size="large"></ds-icon>
         ) : (
-          <icon-wc icon="ChevronSortDownOutline" size="large"></icon-wc>
+          <ds-icon icon="ChevronSortDownOutline" size="large"></ds-icon>
         );
       }
-      return <icon-wc icon="ChevronSortEmptyOutline" size="large"></icon-wc>;
+      return <ds-icon icon="ChevronSortEmptyOutline" size="large"></ds-icon>;
     },
     [sortedColumn, sortOrder],
   );
@@ -88,21 +87,22 @@ export const CustomHeaderFactory: FC<any> = ({
           style={{ display: 'inline-table' }}
           width="auto"
         >
-          <Text
+          <ds-text
+            as="span"
             size={size || 'medium'}
             weight={bold ? 'bold' : 'regular'}
             color={open || focus ? 'primary' : 'text'}
           >
             {label}
-          </Text>
+          </ds-text>
         </Row>
         <Container>
-          <icon-wc
+          <ds-icon
             size="medium"
             icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
             color={open || focus ? 'primary' : 'text'}
             style={{ alignSelf: 'center' }}
-          ></icon-wc>
+          ></ds-icon>
         </Container>
       </Container>
     ),
@@ -164,14 +164,14 @@ export const CustomHeaderFactory: FC<any> = ({
               </Container>
             )}
             {!hasItems && (
-              <Text weight={column.bold ? 'bold' : 'regular'} size="small">
+              <ds-text as="span" weight={column.bold ? 'bold' : 'regular'} size="small">
                 <Container orientation="horizontal" mainAlignment="flex-start">
                   <Row style={{ cursor: isSortable ? 'pointer' : 'default' }}>
                     {column.label}
                     {isSortable && renderSortingIcon(column)}
                   </Row>
                 </Container>
-              </Text>
+              </ds-text>
             )}
           </th>
         );

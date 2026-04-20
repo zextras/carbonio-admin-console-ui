@@ -6,15 +6,17 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
+import { type Operation } from '../../types/operations';
+
 type OperationState = {
-	alloperationDetail: Array<any>;
-	setAlloperationDetail: (alloperationDetail: Array<any>) => void;
-	runningData: Array<any>;
-	setRunningData: (runningData: Array<any>) => void;
-	queuedData: Array<any>;
-	setQueuedData: (queuedData: Array<any>) => void;
-	doneData: Array<any>;
-	setDoneData: (doneData: Array<any>) => void;
+	alloperationDetail: Array<Operation>;
+	setAlloperationDetail: (alloperationDetail: Array<Operation>) => void;
+	runningData: Array<Operation>;
+	setRunningData: (runningData: Array<Operation>) => void;
+	queuedData: Array<Operation>;
+	setQueuedData: (queuedData: Array<Operation>) => void;
+	doneData: Array<Operation>;
+	setDoneData: (doneData: Array<Operation>) => void;
 };
 
 export const useOperationStore = create<OperationState>()(

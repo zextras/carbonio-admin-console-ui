@@ -1,3 +1,29 @@
+## [0.13.0-devel.19](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.18...v0.13.0-devel.19) (2026-04-20)
+
+## [0.13.0-devel.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.17...v0.13.0-devel.18) (2026-04-17)
+
+### Bug Fixes
+
+* set correct banner's background colors + domain general settings layout ([122a3ed](https://github.com/zextras/carbonio-admin-console-ui/commit/122a3ed895069e74ddf028d4007d807279e606ba))
+
+## [0.13.0-devel.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.16...v0.13.0-devel.17) (2026-04-17)
+
+### Features
+
+* hide COS quota warning settings when total quota is active (CO-3478) ([#1148](https://github.com/zextras/carbonio-admin-console-ui/issues/1148)) ([e5685f2](https://github.com/zextras/carbonio-admin-console-ui/commit/e5685f28ef5f2d589be595f9761b3c680ca93855))
+
+## [0.13.0-devel.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.15...v0.13.0-devel.16) (2026-04-17)
+
+### Bug Fixes
+
+* default value and configration condition fixed ([#1149](https://github.com/zextras/carbonio-admin-console-ui/issues/1149)) ([1449650](https://github.com/zextras/carbonio-admin-console-ui/commit/14496501c8b2bf68c9d63f9ec0a2647b08a5c3d1))
+
+## [0.13.0-devel.15](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.14...v0.13.0-devel.15) (2026-04-17)
+
+### Features
+
+* types on admin-ui-notifications ([867dbde](https://github.com/zextras/carbonio-admin-console-ui/commit/867dbde831f7047413cba256abd3c135fd084893))
+
 ## [0.13.0-devel.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.13...v0.13.0-devel.14) (2026-04-15)
 
 ### Features

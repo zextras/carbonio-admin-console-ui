@@ -9,7 +9,6 @@ import {
   Input,
   Padding,
   Row,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { noop } from 'lodash-es';
@@ -68,9 +67,9 @@ const RestoreDeleteAccountConfigSection: FC = () => {
       <Container background="gray5" padding={{ top: 'large' }} width="100%">
         <Row>
           <Padding right="large">
-            <Text size="small" weight="bold">
+            <ds-text as="h3" size="small" weight="bold">
               {t('label.domain', 'Domain')}
-            </Text>
+            </ds-text>
           </Padding>
           <Padding left="large">
             <Input

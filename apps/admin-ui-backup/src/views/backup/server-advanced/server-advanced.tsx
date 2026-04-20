@@ -12,7 +12,6 @@ import {
   Padding,
   Row,
   Switch,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useAllServers, useCurrentUserRights } from '@zextras/ui-shared';
@@ -609,9 +608,9 @@ const ServerAdvanced: FC = () => {
                 width="50%"
                 crossAlignment="flex-start"
               >
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h2" size="medium" weight="bold" color="gray0">
                   {t('backup.advanced', 'Advanced')}
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 padding={{ all: 'large' }}
@@ -641,7 +640,7 @@ const ServerAdvanced: FC = () => {
               </Row>
             </Row>
           </Container>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
 
         <Container
@@ -723,9 +722,9 @@ const ServerAdvanced: FC = () => {
             padding={{ top: 'extralarge' }}
             height="fit"
           >
-            <Text size="medium" weight="bold">
+            <ds-text as="h3" size="medium" weight="bold">
               {t('backup.tuning_options', 'Tuning Options')}
-            </Text>
+            </ds-text>
           </Container>
 
           <Container
@@ -734,9 +733,9 @@ const ServerAdvanced: FC = () => {
             padding={{ top: 'large' }}
             height="fit"
           >
-            <Text size="medium" weight="bold">
+            <ds-text as="h3" size="medium" weight="bold">
               {t('backup.latency', 'Latency')}
-            </Text>
+            </ds-text>
           </Container>
 
           <ListRow>
@@ -784,9 +783,9 @@ const ServerAdvanced: FC = () => {
             padding={{ top: 'extralarge' }}
             height="fit"
           >
-            <Text size="medium" weight="bold">
+            <ds-text as="h3" size="medium" weight="bold">
               {t('backup.waiting_time', 'Waititng Time')}
-            </Text>
+            </ds-text>
           </Container>
 
           <ListRow>
@@ -816,9 +815,9 @@ const ServerAdvanced: FC = () => {
             padding={{ top: 'extralarge' }}
             height="fit"
           >
-            <Text size="medium" weight="bold">
+            <ds-text as="h3" size="medium" weight="bold">
               {t('backup.metadata', 'Metadata')}
-            </Text>
+            </ds-text>
           </Container>
 
           <ListRow>
@@ -892,9 +891,9 @@ const ServerAdvanced: FC = () => {
             padding={{ top: 'extralarge' }}
             height="fit"
           >
-            <Text size="medium" weight="bold">
+            <ds-text as="h3" size="medium" weight="bold">
               {t('backup.other_controls', 'Other Controls')}
-            </Text>
+            </ds-text>
           </Container>
 
           <ListRow>
@@ -977,13 +976,13 @@ const ServerAdvanced: FC = () => {
         </Container>
       </Container>
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
     </Container>
   );

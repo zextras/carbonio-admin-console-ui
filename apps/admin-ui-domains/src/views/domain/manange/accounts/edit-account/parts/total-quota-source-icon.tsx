@@ -40,7 +40,7 @@ export const TotalQuotaSourceIcon = React.memo(
 
     return (
       <Tooltip placement={'top-end'} label={tooltipLabel}>
-        <icon-wc icon={icon} size="large" />
+        <ds-icon icon={icon} size="large" />
       </Tooltip>
     );
   },

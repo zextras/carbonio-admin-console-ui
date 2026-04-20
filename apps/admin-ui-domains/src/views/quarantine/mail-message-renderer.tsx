@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Padding, Row, Text } from '@zextras/ui-components';
+import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
 import { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -159,7 +159,8 @@ const TextMessageRenderer: FC<{ body: { content: string; contentType: string } }
   );
   return (
     <>
-      <Text
+      <ds-text
+        as="span"
         overflow="break-word"
         color="text"
         style={{ fontFamily: 'monospace' }}
@@ -350,14 +351,14 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
             }}
           >
             <Padding right="large">
-              <icon-wc icon="AlertTriangleOutline" color="warning" size="large"></icon-wc>
+              <ds-icon icon="AlertTriangleOutline" color="warning" size="large"></ds-icon>
             </Padding>
-            <Text overflow="break-word" size="small">
+            <ds-text as="p" overflow="break-word" size="small">
               {t(
                 'message.external_images_blocked',
                 'External images have been blocked to protect you against potential spam',
               )}
-            </Text>
+            </ds-text>
           </Row>
           <Row
             height="fit"
@@ -410,7 +411,7 @@ const EmptyBody: FC = () => {
   const [t] = useTranslation();
   return (
     <Container padding={{ bottom: 'medium' }}>
-      <Text>{`(${t('messages.no_content', 'This message has no text content')}.)`}</Text>
+      <ds-text as="p">{`(${t('messages.no_content', 'This message has no text content')}.)`}</ds-text>
     </Container>
   );
 };

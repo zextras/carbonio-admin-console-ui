@@ -9,7 +9,6 @@ import React, { ButtonHTMLAttributes, useCallback, useMemo } from 'react';
 
 import type { AnyColor, With$Prefix, Without$Prefix } from '../../../types/utils';
 import { type IconName } from '../../../web-components/icon-registry';
-import { Text } from '../text/Text';
 import styles from './Button.module.css';
 
 type ButtonSize = 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
@@ -286,7 +285,7 @@ const Button = ({
       >
         {loading && (
           <div className={styles.loadingContainer}>
-            <spinner-wc color="currentColor"></spinner-wc>
+            <ds-spinner color="currentColor"></ds-spinner>
           </div>
         )}
         {icon && (
@@ -300,7 +299,7 @@ const Button = ({
               } as React.CSSProperties
             }
           >
-            <icon-wc icon={icon as IconName} color="currentColor" size={iconSize}></icon-wc>
+            <ds-icon icon={icon as IconName} color="currentColor" size={iconSize}></ds-icon>
           </span>
         )}
         {label && (
@@ -314,12 +313,13 @@ const Button = ({
               } as React.CSSProperties
             }
           >
-            <Text
+            <ds-text
+              as="span"
               color="currentColor"
-              style={{ '--text-font-size': textSize } as React.CSSProperties}
+              style={{ '--ds-text-font-size': textSize } as React.CSSProperties}
             >
               {label}
-            </Text>
+            </ds-text>
           </span>
         )}
 
@@ -328,11 +328,11 @@ const Button = ({
             className={styles.secondaryPlaceholder}
             style={{ '--placeholder-padding': secondarySizeConfig.padding } as React.CSSProperties}
           >
-            <icon-wc
+            <ds-icon
               icon={secondaryAction.icon as IconName}
               color="currentColor"
               size={secondarySizeConfig.icon}
-            ></icon-wc>
+            ></ds-icon>
           </span>
         )}
       </button>
@@ -349,11 +349,11 @@ const Button = ({
           data-loading={loading ? 'true' : undefined}
           tabIndex={secondaryAction.disabled ? -1 : 0}
         >
-          <icon-wc
+          <ds-icon
             icon={secondaryAction.icon as IconName}
             color="currentColor"
             size={secondarySizeConfig.icon}
-          ></icon-wc>
+          ></ds-icon>
         </button>
       )}
     </div>

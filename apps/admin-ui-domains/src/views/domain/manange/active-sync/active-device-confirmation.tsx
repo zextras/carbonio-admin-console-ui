@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Checkbox, Container, Modal, Padding, Text } from '@zextras/ui-components';
+import { Button, Checkbox, Container, Modal, Padding } from '@zextras/ui-components';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -89,7 +89,7 @@ const ActiveDeviceConfirmation: FC<{
       }
     >
       <Padding all="medium">
-        <Text overflow="break-word" weight="regular">
+        <ds-text as="p" overflow="break-word" weight="regular">
           {operationType === WIPE_DEVICE &&
             t(
               'label.wiping_device_warning_msg_1',
@@ -100,17 +100,17 @@ const ActiveDeviceConfirmation: FC<{
               'label.rest_device_warning_msg_1',
               'Wiping a device will restore it to the factory settings. Are you sure you want to continue? ',
             )}
-        </Text>
+        </ds-text>
       </Padding>
       <Padding all="medium">
-        <Text overflow="break-word" weight="regular">
+        <ds-text as="p" overflow="break-word" weight="regular">
           {t('label.account', 'Account')}: {mobileDeviceDetail?.accountEmail}
-        </Text>
+        </ds-text>
       </Padding>
       <Padding left="medium" bottom="medium">
-        <Text overflow="break-word" weight="regular">
+        <ds-text as="p" overflow="break-word" weight="regular">
           {t('label.device_id', 'Device ID')}: {mobileDeviceDetail?.deviceId}
-        </Text>
+        </ds-text>
       </Padding>
       {operationType === WIPE_DEVICE && (
         <Padding top="medium" left="medium" bottom="large">

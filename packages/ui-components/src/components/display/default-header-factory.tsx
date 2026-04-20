@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import { useCallback, useMemo, useRef } from 'react';
 
-import { Text } from '../basic/text/Text';
 import { Checkbox } from '../inputs/Checkbox';
 import { Select } from '../inputs/Select';
 import { Container } from '../layout/Container';
@@ -44,20 +43,21 @@ export const DefaultHeaderFactory = ({
         }}
       >
         <Row takeAvailableSpace mainAlignment="unset">
-          <Text
+          <ds-text
+            as="span"
             size="medium"
             weight={bold ? 'bold' : 'regular'}
             color={open || focus ? 'primary' : 'text'}
           >
             {label}
-          </Text>
+          </ds-text>
         </Row>
-        <icon-wc
+        <ds-icon
           size="medium"
           icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
           color={open || focus ? 'primary' : 'text'}
           style={{ alignSelf: 'center' }}
-        ></icon-wc>
+        ></ds-icon>
       </Container>
     ),
     [],
@@ -83,7 +83,7 @@ export const DefaultHeaderFactory = ({
                 }
               />
             )}
-            {!hasItems && <Text weight={column.bold ? 'bold' : 'regular'}>{column.label}</Text>}
+            {!hasItems && <ds-text as="span" weight={column.bold ? 'bold' : 'regular'}>{column.label}</ds-text>}
           </th>
         );
       }),

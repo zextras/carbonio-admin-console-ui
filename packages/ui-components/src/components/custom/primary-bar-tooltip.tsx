@@ -5,7 +5,6 @@
  */
 import { ReactNode } from 'react';
 
-import { Text } from '../basic/text/Text';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 
@@ -24,9 +23,9 @@ export const PrimaryBarTooltip = ({ children }: PrimaryBarTooltipProps) => (
   >
     <Padding left="small" right="small">
       <Padding bottom="small" all="small">
-        <Text size="medium" color="text" weight="regular" style={{ whiteSpace: 'break-spaces' }}>
+        <ds-text as="span" size="medium" color="text" weight="regular" style={{ whiteSpace: 'break-spaces' }}>
           {children}
-        </Text>
+        </ds-text>
       </Padding>
     </Padding>
   </Container>

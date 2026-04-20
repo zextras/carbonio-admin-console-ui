@@ -16,7 +16,7 @@ type HandlerRequest<T> = DefaultBodyType & {
   Body: Record<string, T>;
 };
 
-export type BrowserAPIInterceptor = {
+type BrowserAPIInterceptor = {
   getLastRequest: () => StrictRequest<DefaultBodyType>;
   getCalledTimes: () => number;
 };
@@ -153,5 +153,33 @@ export const delayedSoapApiForBrowser = <RequestParamsType, ResponseType = never
   return {
     getLastRequest: () => requests[requests.length - 1],
     getCalledTimes: () => calledTimes,
+  };
+};
+
+export const createBrowserZextrasActionInterceptor = (
+  action: string,
+  response: () => HttpResponse<DefaultBodyType>,
+) => {
+  let calledTimes = 0;
+  const requestBodies: Array<unknown> = [];
+
+  worker.use(
+    http.post('/service/admin/soap/zextras', async ({ request }) => {
+      const body = (await request.clone().json()) as Record<string, unknown>;
+      const zextras = (body?.Body as Record<string, unknown>)?.zextras as
+        | Record<string, unknown>
+        | undefined;
+      if (zextras?.action !== action) {
+        return HttpResponse.json({ Body: {} });
+      }
+      calledTimes += 1;
+      requestBodies.push(body);
+      return response();
+    }),
+  );
+
+  return {
+    getCalledTimes: () => calledTimes,
+    getLastRequestBody: <T = Record<string, unknown>>() => requestBodies.at(-1) as T | undefined,
   };
 };

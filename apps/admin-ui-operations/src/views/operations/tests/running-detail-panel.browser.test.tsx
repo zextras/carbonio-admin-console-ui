@@ -9,9 +9,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useOperationStore } from '../../../store/operation/store';
+import { type Operation } from '../../../types/operations';
 import RunningDetailPanel from '../running-detail-panel';
 
-const MOCK_RUNNING_OPERATIONS = [
+const MOCK_RUNNING_OPERATIONS: Array<Operation> = [
     {
         id: 'op-1',
         name: 'doBackup',
@@ -62,7 +63,7 @@ function setupGetAllServersInterceptor(serverName = 'mailstore1.test.com'): void
     });
 }
 
-function setRunningData(data: Array<unknown> = MOCK_RUNNING_OPERATIONS): void {
+function setRunningData(data: Array<Operation> = MOCK_RUNNING_OPERATIONS): void {
     useOperationStore.getState().setRunningData(data);
 }
 

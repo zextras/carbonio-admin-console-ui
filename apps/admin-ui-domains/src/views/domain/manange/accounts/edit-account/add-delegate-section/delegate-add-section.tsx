@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, LabeledValue, Row, Text } from '@zextras/ui-components';
+import { Container, LabeledValue, Row } from '@zextras/ui-components';
 import { FC, useContext, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -25,14 +25,14 @@ const DelegateAddSection: FC = () => {
       >
         <Row mainAlignment="flex-start" width="100%">
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <Text size="small" color="gray0" weight="bold">
+            <ds-text size="small" color="gray0" weight="bold" as="h3">
               {t('account_details.abstract', `Abstract`)}
-            </Text>
+            </ds-text>
           </Row>
         </Row>
         <Row mainAlignment="flex-start" width="100%">
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <Text size="small" color="gray0" weight="bold">
+            <ds-text size="small" color="gray0" weight="bold" as="h3">
               {
                 <Trans
                   i18nKey="account_details.deligate_abstract_text"
@@ -47,11 +47,11 @@ const DelegateAddSection: FC = () => {
                   }}
                 />
               }
-            </Text>
+            </ds-text>
           </Row>
         </Row>
-        <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc></divider-wc>
+        <Row width="100%" padding={{ top: "medium" }}>
+          <ds-divider></ds-divider>
         </Row>
         <Row mainAlignment="flex-start" width="100%">
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
