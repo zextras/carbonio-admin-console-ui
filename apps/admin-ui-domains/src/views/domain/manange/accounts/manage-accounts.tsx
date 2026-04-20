@@ -46,6 +46,7 @@ import {
   RECORD_DISPLAY_LIMIT,
   TOTAL_COMPUTED_QUOTA_LIMIT,
   TOTAL_QUOTA_SOURCE,
+  TOTAL_QUOTA_STATUS,
   TOTAL_QUOTA_USED,
   TOTAL_QUOTA_USED_BY_MODULE,
   ZIMBRA_ADMIN_URN,
@@ -554,6 +555,7 @@ const ManageAccounts: FC = () => {
           setAccDetailValue(TOTAL_QUOTA_USED, res.totalUsed);
           setAccDetailValue(TOTAL_QUOTA_USED_BY_MODULE, res.usedByModules);
           setAccDetailValue(TOTAL_QUOTA_SOURCE, res.totalLimitSource);
+          setAccDetailValue(TOTAL_QUOTA_STATUS, res.totalStatus);
         } else {
           createSnackbar({
             key: 'retrieveAccountQuotaError',
@@ -904,7 +906,8 @@ const ManageAccounts: FC = () => {
             accountListArr.push({
               id: item?.id,
               columns: [
-                <ds-text as="span"
+                <ds-text
+                  as="span"
                   size="small"
                   key={item?.id}
                   color="gray0"
@@ -915,7 +918,8 @@ const ManageAccounts: FC = () => {
                 >
                   {item?.name || ' '}
                 </ds-text>,
-                <ds-text as="span"
+                <ds-text
+                  as="span"
                   size="small"
                   key={item?.id}
                   color="gray0"
@@ -934,7 +938,8 @@ const ManageAccounts: FC = () => {
                       label={item?.mail.slice(1).join(', ')}
                       maxWidth="auto"
                     >
-                      <ds-text as="span"
+                      <ds-text
+                        as="span"
                         size="small"
                         weight="light"
                         key={item?.id}
@@ -947,7 +952,8 @@ const ManageAccounts: FC = () => {
                       </ds-text>
                     </Tooltip>
                   ) : (
-                    <ds-text as="span"
+                    <ds-text
+                      as="span"
                       size="small"
                       key={item?.id}
                       color="#828282"
@@ -960,7 +966,8 @@ const ManageAccounts: FC = () => {
                     </ds-text>
                   )}
                 </>,
-                <ds-text as="span"
+                <ds-text
+                  as="span"
                   size="small"
                   key={item?.id}
                   color="gray0"
@@ -971,7 +978,8 @@ const ManageAccounts: FC = () => {
                 >
                   {accountUserType(item)}
                 </ds-text>,
-                <ds-text as="span"
+                <ds-text
+                  as="span"
                   size="small"
                   weight="light"
                   key={item?.id}
@@ -983,7 +991,8 @@ const ManageAccounts: FC = () => {
                   {STATUS_COLOR[item?.zimbraAccountStatus]?.label}
                 </ds-text>,
                 <Tooltip key={`${item.id}-userDesc`} label={item?.description || <>&nbsp;</>}>
-                  <ds-text as="span"
+                  <ds-text
+                    as="span"
                     size="small"
                     weight="light"
                     key={item?.id}
@@ -1331,7 +1340,13 @@ const ManageAccounts: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text
+                      as="p"
+                      weight="light"
+                      color="#828282"
+                      size="large"
+                      overflow="break-word"
+                    >
                       {t('label.this_list_is_empty', 'This list is empty.')}
                     </ds-text>
                   </Row>
@@ -1342,7 +1357,13 @@ const ManageAccounts: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text
+                      as="p"
+                      weight="light"
+                      color="#828282"
+                      size="large"
+                      overflow="break-word"
+                    >
                       <Trans
                         i18nKey="label.create_account_list_msg"
                         defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"

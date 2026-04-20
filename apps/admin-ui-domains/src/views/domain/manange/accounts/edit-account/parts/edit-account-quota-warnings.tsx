@@ -6,12 +6,20 @@
 import { Banner } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-export const EditAccountQuotaWarnings = ({ percentageUsed }: { percentageUsed: number }) => {
+import { QuotaStatus } from '../../../../../../services/get-account-quota';
+
+export const EditAccountQuotaWarnings = ({
+  status,
+  percentageUsed,
+}: {
+  status: QuotaStatus | undefined;
+  percentageUsed: number;
+}) => {
   const [t] = useTranslation();
 
   return (
     <>
-      {percentageUsed >= 100 && (
+      {status === 'OVERQUOTA' && (
         <Banner
           type={'standard'}
           severity="error"
@@ -21,7 +29,7 @@ export const EditAccountQuotaWarnings = ({ percentageUsed }: { percentageUsed: n
           )}
         />
       )}
-      {percentageUsed >= 80 && percentageUsed < 100 && (
+      {percentageUsed >= 80 && status !== 'OVERQUOTA' && (
         <Banner
           type={'standard'}
           severity="warning"

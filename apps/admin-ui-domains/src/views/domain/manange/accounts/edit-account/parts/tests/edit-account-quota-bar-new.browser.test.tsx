@@ -14,6 +14,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should render the quota bar with the correct usage and limit', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        status="UNDERQUOTA"
         source={'account'}
         used={512 * 1024 * 1024}
         limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
@@ -27,6 +28,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should render the correct number of modules with the correct colors', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        status="UNDERQUOTA"
         source={'account'}
         used={500000000}
         limit={{ type: 'limited', value: 1000000000 }}
@@ -44,6 +46,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should show correct size description when quota limit is unlimited', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        status="UNDERQUOTA"
         source={'account'}
         used={500 * 1024 * 1024}
         limit={{ type: 'unlimited' }}
@@ -57,6 +60,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should show correct size description when quota limit is limited', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        status="UNDERQUOTA"
         source={'account'}
         used={512 * 1024 * 1024}
         limit={{ type: 'limited', value: 2 * 1024 * 1024 * 1024 }}
@@ -74,6 +78,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should not show available element in the legend when the limit is unlimited', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        status="UNDERQUOTA"
         source={'account'}
         used={500 * 1024 * 1024}
         limit={{ type: 'unlimited' }}
@@ -92,6 +97,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should show available element in the legend when the limit is limited', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        status="UNDERQUOTA"
         source={'account'}
         used={500 * 1024 * 1024}
         limit={{ type: 'limited', value: 2 * 1024 * 1024 * 1024 }}
@@ -110,6 +116,7 @@ describe('EditAccountQuotaBarNew', () => {
   it('should show warning banner when limit is limited and usage is between 80 and 100%', async () => {
     await setupBrowserTest(
       <EditAccountQuotaBarNew
+        status="UNDERQUOTA"
         source={'account'}
         used={850 * 1024 * 1024}
         limit={{ type: 'limited', value: 1 * 1024 * 1024 * 1024 }}
@@ -132,6 +139,7 @@ describe('EditAccountQuotaBarNew', () => {
     it('should show global icon when totalQuotaSource is global', async () => {
       await setupBrowserTest(
         <EditAccountQuotaBarNew
+          status="UNDERQUOTA"
           source={'global'}
           used={512 * 1024 * 1024}
           limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
@@ -145,6 +153,7 @@ describe('EditAccountQuotaBarNew', () => {
     it('should show proper tooltip when hovering icon and totalQuotaSource is global', async () => {
       await setupBrowserTest(
         <EditAccountQuotaBarNew
+          status="UNDERQUOTA"
           source={'global'}
           used={512 * 1024 * 1024}
           limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
@@ -163,6 +172,7 @@ describe('EditAccountQuotaBarNew', () => {
     it('should show domain icon when totalQuotaSource is domain', async () => {
       await setupBrowserTest(
         <EditAccountQuotaBarNew
+          status="UNDERQUOTA"
           source={'domain'}
           used={512 * 1024 * 1024}
           limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
@@ -176,6 +186,7 @@ describe('EditAccountQuotaBarNew', () => {
     it('should show proper tooltip when hovering icon and totalQuotaSource is domain', async () => {
       await setupBrowserTest(
         <EditAccountQuotaBarNew
+          status="UNDERQUOTA"
           source={'domain'}
           used={512 * 1024 * 1024}
           limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
@@ -194,6 +205,7 @@ describe('EditAccountQuotaBarNew', () => {
     it('should show cos icon when totalQuotaSource is cos', async () => {
       await setupBrowserTest(
         <EditAccountQuotaBarNew
+          status="UNDERQUOTA"
           source={'cos'}
           used={512 * 1024 * 1024}
           limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
@@ -207,6 +219,7 @@ describe('EditAccountQuotaBarNew', () => {
     it('should show proper tooltip when hovering icon and totalQuotaSource is cos', async () => {
       await setupBrowserTest(
         <EditAccountQuotaBarNew
+          status="UNDERQUOTA"
           source={'cos'}
           used={512 * 1024 * 1024}
           limit={{ type: 'limited', value: 1024 * 1024 * 1024 }}
