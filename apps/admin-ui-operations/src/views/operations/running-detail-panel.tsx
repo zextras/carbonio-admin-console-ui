@@ -11,12 +11,13 @@ import { useTranslation } from 'react-i18next';
 
 import { stopOperations } from '../../services/stop-operation';
 import { useOperationStore } from '../../store/operation/store';
+import { type Operation } from '../../types/operations';
 import { OperationsHeader } from '../utility/utils';
 import DeleteOpearationsModel from './delete-operations-model';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 
-const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
+const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: () => void }> = ({
   getAllOperationAPICallHandler,
 }) => {
   const [t] = useTranslation();
@@ -27,14 +28,18 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
   const operationsHeader = useMemo(() => OperationsHeader(t), [t]);
   const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
   const [open, setOpen] = useState(false);
-  const [selectedData, setSelectedData] = useState<any>();
-  const [isSelectedRow, setIsSelectedRow] = useState([]);
+  const [selectedData, setSelectedData] = useState<Operation | undefined>();
+  const [isSelectedRow, setIsSelectedRow] = useState<Array<string>>([]);
 
-  const closeHandler = (): any => {
+  const closeHandler = (): void => {
     setOpen(false);
   };
 
-  const stopHandler = (): any => {
+  const stopHandler = (): void => {
+    if (!selectedData?.id) {
+      return;
+    }
+
     stopOperations(selectedData?.id)
       .then((res) => {
         const result = JSON.parse(res?.Body?.response?.content);
@@ -76,8 +81,8 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
       });
   };
 
-  const handleClick = (i: any): any => {
-    const volumeObject: any = runningData?.find((s: any, index: any) => index === i);
+  const handleClick = (i: number): void => {
+    const volumeObject = runningData?.find((s: Operation, index: number) => index === i);
     setSelectedData(volumeObject);
     setWizardDetailToggle(true);
   };
@@ -127,10 +132,10 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
                 headers={operationsHeader}
                 donePanel={false}
                 selectedRows={isSelectedRow}
-                onSelectionChange={(selected: any): any => {
+                onSelectionChange={(selected: Array<string>): void => {
                   setIsSelectedRow(selected);
                 }}
-                onClick={(i: any): any => {
+                onClick={(i: number): void => {
                   handleClick(i);
                 }}
               />

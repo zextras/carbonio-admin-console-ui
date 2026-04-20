@@ -15,9 +15,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { useOperationStore } from '../../../store/operation/store';
+import { type Operation } from '../../../types/operations';
 import DoneDetailPanel from '../done-detail-panel';
 
-const MOCK_DONE_OPERATIONS = [
+const MOCK_DONE_OPERATIONS: Array<Operation> = [
     {
         id: 'op-1',
         name: 'doBackup',
@@ -89,7 +90,7 @@ function setupGetAllServersInterceptor(): void {
 }
 
 function setupGetOperationLogInterceptor(
-    operations: Array<unknown> = MOCK_DONE_OPERATIONS,
+    operations: Array<Operation> = MOCK_DONE_OPERATIONS,
 ): void {
     worker.use(
         http.post('/service/admin/soap/zextras', async ({ request }) => {

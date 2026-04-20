@@ -14,10 +14,11 @@ import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { EXCEPTION, FINISHED, STARTED } from '../../constants';
+import { type Operation } from '../../types/operations';
 import MiliSecondToDate from './functions/miliSecondToDate';
 
 export const OperationsTable: FC<{
-  operations: Array<any>;
+  operations: Array<Operation>;
   headers: any;
   donePanel: boolean;
   selectedRows: any;

@@ -10,13 +10,14 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DONE_ROUTE_ID, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID } from '../../constants';
+import { type ManageOption } from '../../types/operations';
 
 const OperationsListPanel: FC = () => {
 	const [t] = useTranslation();
 	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 	const [selectedOperationItem, setSelectedOperationItem] = useState(RUNNING_ROUTE_ID);
 
-	const manageOptions = useMemo(
+	const manageOptions = useMemo<Array<ManageOption>>(
 		() => [
 			{
 				id: RUNNING_ROUTE_ID,

@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 
 import { getAllDoneOperations } from '../../services/get-all-done-operation';
 import { useOperationStore } from '../../store/operation/store';
+import { type Operation } from '../../types/operations';
 import { OperationsDoneHeader } from '../utility/utils';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
@@ -30,12 +31,12 @@ const DoneDetailPanel: FC = () => {
   const { doneData, setDoneData } = useOperationStore((state) => state);
   const operationsDoneHeader = useMemo(() => OperationsDoneHeader(t), [t]);
   const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
-  const [selectedData, setSelectedData] = useState<any>();
-  const [isSelectedRow, setIsSelectedRow] = useState([]);
+  const [selectedData, setSelectedData] = useState<Operation | undefined>();
+  const [isSelectedRow, setIsSelectedRow] = useState<Array<string>>([]);
   const [doneOffset, setDoneOffset] = useState<number>(10);
   const [totalData, setTotalData] = useState<number>(0);
   const [doneOperationPaginationData, setDoneOperationPaginationData] = useState<
-    { [key: string]: string }[]
+    Array<Operation>
   >([]);
   const [filteredOperationData, setFilteredOperationData] = useState(doneData);
   const [searchOperation, setSearchOperation] = useState<string>('');
@@ -43,7 +44,7 @@ const DoneDetailPanel: FC = () => {
   const limit = 10;
   const getDoneOperationAPICallHandler = useCallback(() => {
     getAllDoneOperations()
-      .then((response: any) => {
+      .then((response) => {
         const res = JSON.parse(response?.Body?.response?.content);
         if (res?.ok) {
           const result = res?.response?.operationList;
@@ -162,7 +163,7 @@ const DoneDetailPanel: FC = () => {
               headers={operationsDoneHeader}
               donePanel
               selectedRows={isSelectedRow}
-              onSelectionChange={(selected: any): void => {
+              onSelectionChange={(selected: Array<string>): void => {
                 setIsSelectedRow(selected);
               }}
               onClick={(i: number): void => {

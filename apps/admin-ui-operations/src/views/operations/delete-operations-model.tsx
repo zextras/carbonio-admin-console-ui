@@ -8,12 +8,13 @@ import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { STARTED } from '../../constants';
+import { type Operation } from '../../types/operations';
 
 const DeleteOpearationsModel: FC<{
 	open: boolean;
-	closeHandler: any;
-	saveHandler: any;
-	selectedData: any;
+	closeHandler: () => void;
+	saveHandler: () => void;
+	selectedData: Operation | undefined;
 }> = ({ open, closeHandler, saveHandler, selectedData }) => {
 	const [t] = useTranslation();
 
