@@ -12,12 +12,14 @@ import { dumpGlobalConfig } from '../../services/dump-global-config';
 import { useBackupStore } from '../../store/backup/store';
 import BackupDetailOperation from './backup-detail-operation';
 
+import type { DumpGlobalConfigResponse } from '../../../types';
+
 const BackupDetailPanel: FC = () => {
   const globalConfig = useBackupStore((state) => state.globalConfig);
   const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
   const [t] = useTranslation();
   const getGlobalConfig = useCallback((): void => {
-    dumpGlobalConfig().then((data: any) => {
+    dumpGlobalConfig().then((data: DumpGlobalConfigResponse) => {
       if (data?.Body?.response?.content) {
         const parseData = JSON.parse(data.Body.response.content);
         if (parseData?.response) {

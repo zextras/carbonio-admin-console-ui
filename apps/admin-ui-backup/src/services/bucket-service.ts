@@ -6,10 +6,12 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
+import type { SoapResponseBody } from '../../types';
+
 declare global {
 	interface Window {
 		csrfToken: string;
 	}
 }
-export const fetchSoap = async (api: string, body: unknown): Promise<any> =>
+export const fetchSoap = async (api: string, body: unknown): Promise<SoapResponseBody> =>
 	postSoapFetchRequest(`/service/admin/soap/${api}`, body, api);

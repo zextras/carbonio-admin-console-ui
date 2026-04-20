@@ -11,6 +11,8 @@ import { useBackupStore } from '../../../store/backup/store';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 
+import type { GlobalConfig } from '../../../../types';
+
 const BackupAdvanced: FC = () => {
   const {
     isDirty,
@@ -43,8 +45,8 @@ const BackupAdvanced: FC = () => {
     ],
     [],
   );
-  const onBackupCompressionLevelChange = (v: any): any => {
-    setBackupDetail((prev: any) => ({ ...prev, backupCompressionLevel: v }));
+  const onBackupCompressionLevelChange = (v: string | null): void => {
+    setBackupDetail((prev: GlobalConfig) => ({ ...prev, backupCompressionLevel: v ?? '' }));
   };
   return (
     <>
@@ -235,7 +237,7 @@ const BackupAdvanced: FC = () => {
                       background="gray5"
                       label={t('backup.compression_level', 'Compression Level')}
                       defaultSelection={compressLevelItems.find(
-                        (item: any) =>
+                        (item: { label: string; value: string }) =>
                           item.value === globalConfig?.backupCompressionLevel?.toString(),
                       )}
                       onChange={onBackupCompressionLevelChange}

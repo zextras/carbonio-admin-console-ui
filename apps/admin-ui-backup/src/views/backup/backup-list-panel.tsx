@@ -47,7 +47,7 @@ const BackupListPanel: FC = () => {
   const [selectedServer, setSelectedServer] = useState<string>('');
   const [isServerSelect, setIsServerSelect] = useState<boolean>(false);
   const [searchServer, setSearchServer] = useState<string>('');
-  const [serverNames, setServerNames] = useState<any>();
+  const [serverNames, setServerNames] = useState<Array<ListItemType>>();
   const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
   const { moduleLicenseInfo } = useModuleLicenseInfo();
   const { data: rights } = useCurrentUserRights();
@@ -149,9 +149,11 @@ const BackupListPanel: FC = () => {
     }
   }, [selectedServer]);
 
-  const addServerToList = useCallback((list: any) => {
-    const data = list.map((serverItem: any) => ({
+  const addServerToList = useCallback((list: Array<Record<string, string>>) => {
+    const data: Array<ListItemType> = list.map((serverItem: Record<string, string>) => ({
       id: serverItem?.id,
+      name: serverItem?.name ?? '',
+      isSelected: false,
       label: serverItem?.name,
       customComponent: (
         <Row
@@ -179,8 +181,8 @@ const BackupListPanel: FC = () => {
     if (isError || isLoading) {
       return;
     }
-    const filterList = serverList.filter((item: any) => item.name?.includes(searchServer));
-    addServerToList(filterList);
+    const filterList = serverList.filter((item) => item.name?.includes(searchServer));
+    addServerToList(filterList as unknown as Array<Record<string, string>>);
     if (serverList.length > 0 && filterList.length === 0) {
       setIsShowError(true);
     }
