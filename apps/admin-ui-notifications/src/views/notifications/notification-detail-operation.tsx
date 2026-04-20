@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { useParams } from 'react-router';
 
 import { LIST } from '../../constants';
@@ -14,7 +14,7 @@ const NotificationDetailOperation: FC = () => {
   const { operation } = useParams();
   return (
     <>
-      {(() => {
+      {((): ReactNode => {
         switch (operation) {
           case LIST:
             return <NotificationListView />;

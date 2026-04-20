@@ -15,7 +15,6 @@ import {
   Padding,
   Row,
   Table,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -74,9 +73,9 @@ const BucketListTable: FC<{
               }}
               style={{ textAlign: 'left', justifyContent: 'flex-start' }}
             >
-              <Text size="small" weight="regular">
+              <ds-text as="span" size="small" weight="regular">
                 {v.label}
-              </Text>
+              </ds-text>
             </Row>
           </Tooltip>,
           <Tooltip placement="bottom" label={v.notes} key={v.bucketName}>
@@ -90,9 +89,9 @@ const BucketListTable: FC<{
               }}
               style={{ textAlign: 'left', justifyContent: 'flex-start' }}
             >
-              <Text size="small" weight="light">
+              <ds-text as="span" size="small" weight="light">
                 {v.bucketName}
-              </Text>
+              </ds-text>
             </Row>
           </Tooltip>,
           <Tooltip placement="bottom" label={v.notes} key={v.storeType}>
@@ -106,9 +105,9 @@ const BucketListTable: FC<{
               }}
               style={{ textAlign: 'left', justifyContent: 'flex-start' }}
             >
-              <Text size="small" weight="light">
+              <ds-text as="span" size="small" weight="light">
                 {v.storeType}
-              </Text>
+              </ds-text>
             </Row>
           </Tooltip>,
         ],
@@ -142,11 +141,12 @@ const BucketListTable: FC<{
       </ListRow>
       {tableRows.length === 0 && (
         <Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '4rem' }}>
-          <Text overflow="break-word" weight="regular" size="large">
+          <ds-text as="p" overflow="break-word" weight="regular" size="large">
             <img src={logo} alt="logo" />
-          </Text>
+          </ds-text>
           <Padding all="medium" width="30.875rem">
-            <Text
+            <ds-text
+              as="p"
               color="gray1"
               overflow="break-word"
               weight="regular"
@@ -157,7 +157,7 @@ const BucketListTable: FC<{
                 'select_bucket_or_create_bucket',
                 'It seems like you haven\'t setup a bucket type. \n Click on the "CREATE +" button to create a new one.',
               )}
-            </Text>
+            </ds-text>
           </Padding>
         </Container>
       )}
@@ -342,11 +342,11 @@ const BucketDetailPanel: FC = () => {
         background="white"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text  weight="bold">
+          <ds-text as="h2" weight="bold">
             {t('buckets.bucket_list', 'Buckets List')}
-          </Text>
+          </ds-text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Padding vertical="small" />
         <Row
           width="100%"
@@ -380,7 +380,7 @@ const BucketDetailPanel: FC = () => {
             backgroundColor="gray5"
             label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
             CustomIcon={(): React.ReactElement => (
-              <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+              <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
             )}
             onChange={filterBucketList}
           />

@@ -50,61 +50,61 @@ describe('getThemeColorVar', () => {
   describe('token names without state', () => {
     it('should return regular CSS variable when state is undefined', () => {
       const result = resolveThemeColor('primary', undefined as unknown as string);
-      expect(result).toBe('var(--color-primary-regular)');
+      expect(result).toBe('var(--color-primary-regular, var(--color-primary))');
     });
 
     it('should return regular CSS variable when state is empty string', () => {
       const result = resolveThemeColor('primary', '');
-      expect(result).toBe('var(--color-primary-regular)');
+      expect(result).toBe('var(--color-primary-regular, var(--color-primary))');
     });
 
     it('should return regular CSS variable when state is whitespace-only', () => {
       const result = resolveThemeColor('primary', '   ');
-      expect(result).toBe('var(--color-primary-regular)');
+      expect(result).toBe('var(--color-primary-regular, var(--color-primary))');
     });
 
     it('should handle token names with hyphens', () => {
       const result = resolveThemeColor('my-color', '');
-      expect(result).toBe('var(--color-my-color-regular)');
+      expect(result).toBe('var(--color-my-color-regular, var(--color-my-color))');
     });
 
     it('should handle token names with numbers', () => {
       const result = resolveThemeColor('color1', '');
-      expect(result).toBe('var(--color-color1-regular)');
+      expect(result).toBe('var(--color-color1-regular, var(--color-color1))');
     });
   });
 
   describe('token names with state', () => {
     it('should return CSS variable with fallback for hover state', () => {
       const result = resolveThemeColor('primary', 'hover');
-      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular))');
+      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular, var(--color-primary)))');
     });
 
     it('should return CSS variable with fallback for disabled state', () => {
       const result = resolveThemeColor('secondary', 'disabled');
-      expect(result).toBe('var(--color-secondary-disabled, var(--color-secondary-regular))');
+      expect(result).toBe('var(--color-secondary-disabled, var(--color-secondary-regular, var(--color-secondary)))');
     });
 
     it('should return CSS variable with fallback for focus state', () => {
       const result = resolveThemeColor('error', 'focus');
-      expect(result).toBe('var(--color-error-focus, var(--color-error-regular))');
+      expect(result).toBe('var(--color-error-focus, var(--color-error-regular, var(--color-error)))');
     });
   });
 
   describe('whitespace trimming', () => {
     it('should trim whitespace from colorName', () => {
       const result = resolveThemeColor('  primary  ', 'hover');
-      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular))');
+      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular, var(--color-primary)))');
     });
 
     it('should trim whitespace from state', () => {
       const result = resolveThemeColor('primary', '  hover  ');
-      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular))');
+      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular, var(--color-primary)))');
     });
 
     it('should trim whitespace from both colorName and state', () => {
       const result = resolveThemeColor('  primary  ', '  hover  ');
-      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular))');
+      expect(result).toBe('var(--color-primary-hover, var(--color-primary-regular, var(--color-primary)))');
     });
   });
 });

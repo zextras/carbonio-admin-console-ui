@@ -24,7 +24,7 @@ const AppView: FC = () => {
               style={{ overflow: 'hidden' }}
             >
               <Container style={{ maxWidth: '100%' }}>
-                <Suspense fallback={<spinner-wc />}>
+                <Suspense fallback={<ds-spinner />}>
                   <LegalHoldPanel />
                 </Suspense>
               </Container>

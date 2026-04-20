@@ -14,12 +14,12 @@ import BucketRoutePanel from './bucket/bucket-route-panel';
 const BucketComponent = () => (
   <Container orientation="horizontal" mainAlignment="flex-start">
     <Container style={{ maxWidth: '265px' }}>
-      <Suspense fallback={<spinner-wc />}>
+      <Suspense fallback={<ds-spinner />}>
         <BucketListPanel />
       </Suspense>
     </Container>
     <Container style={{ maxWidth: '100%' }}>
-      <Suspense fallback={<spinner-wc />}>
+      <Suspense fallback={<ds-spinner />}>
         <BucketRoutePanel />
       </Suspense>
     </Container>

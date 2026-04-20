@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import '../../web-components/divider-wc';
+import '../../web-components/ds-divider';
 
 import React, {
   TextareaHTMLAttributes,
@@ -247,7 +247,7 @@ export const TextArea = ({
           )}
         </Container>
       </InputContainer>
-      <divider-wc color={dividerColor}></divider-wc>
+      <ds-divider color={dividerColor}></ds-divider>
       {description !== undefined && (
         <InputDescription color={descriptionColor} disabled={disabled}>
           {description}

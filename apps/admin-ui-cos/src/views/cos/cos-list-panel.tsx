@@ -12,7 +12,6 @@ import {
   ListPanelItem,
   Padding,
   Row,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
@@ -228,7 +227,7 @@ export const CosListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <icon-wc icon="InfoOutline" style={{ width: '20px', height: '20px' }}></icon-wc>
+                    <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
                   </Padding>
                 </Row>
                 <Row
@@ -238,12 +237,12 @@ export const CosListPanel: FC = () => {
                     all: 'small',
                   }}
                 >
-                  <Text overflow="break-word">
+                  <ds-text as="p" overflow="break-word">
                     {t(
                       'many_cos_info_msg',
                       'So many COSes! Which one would you like to see? Start typing to filter.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </>
             ),
@@ -310,12 +309,12 @@ export const CosListPanel: FC = () => {
         {isShowError && (
           <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
             <Padding top="large" left="small">
-              <Text size="extrasmall" weight="regular" color="error">
+              <ds-text as="span" size="extrasmall" weight="regular" color="error">
                 {t(
                   'label.not_found_check_the_text_and_try_again',
                   'Not found - check the text and try again',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Container>
         )}

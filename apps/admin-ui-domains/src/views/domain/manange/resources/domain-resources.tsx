@@ -14,7 +14,6 @@ import {
   Paging,
   Row,
   Table,
-  Text,
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -202,9 +201,9 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                       {item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-                    </Text>
+                    </ds-text>
                   </Container>,
                   <Container
                     key={item?.id}
@@ -215,9 +214,9 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                       {item?.name}
-                    </Text>
+                    </ds-text>
                   </Container>,
                   <Container
                     key={item?.id}
@@ -228,9 +227,9 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                       {item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
-                    </Text>
+                    </ds-text>
                   </Container>,
                   <Container
                     key={item?.id}
@@ -241,7 +240,7 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                       {item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
                         ? format(
                             parse(
@@ -253,7 +252,7 @@ const DomainResources: FC = () => {
                             'yy/MM/dd | hh:mm',
                           )
                         : t('label.never_logged_in', 'Never logged In')}
-                    </Text>
+                    </ds-text>
                   </Container>,
                   <Container
                     key={item?.id}
@@ -264,9 +263,9 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                       {item?.a?.find((a: any) => a?.n === 'description')?._content}
-                    </Text>
+                    </ds-text>
                   </Container>,
                 ],
                 item,
@@ -486,9 +485,9 @@ const DomainResources: FC = () => {
         >
           <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
             <Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h1" size="medium" weight="bold" color="gray0">
                 {t('label.resources', 'Resources')}
-              </Text>
+              </ds-text>
             </Row>
             <Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding all={'0'}>
@@ -505,7 +504,7 @@ const DomainResources: FC = () => {
         </Container>
       </Row>
       <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Container
         orientation="column"
@@ -539,7 +538,7 @@ const DomainResources: FC = () => {
                     setSearchString(e.target.value);
                   }}
                   CustomIcon={(): any => (
-                    <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                   )}
                 />
               </Container>
@@ -570,7 +569,7 @@ const DomainResources: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <spinner-wc></spinner-wc>
+                  <ds-spinner></ds-spinner>
                 </Container>
               )}
               {resourceList.length === 0 && !isRequestInProgress && (
@@ -584,9 +583,9 @@ const DomainResources: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       {t('label.this_list_is_empty', 'This list is empty.')}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row
                     orientation="vertical"
@@ -595,13 +594,13 @@ const DomainResources: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       <Trans
                         i18nKey="label.create_resource_msg"
                         defaults="You can create a new resource by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
                         components={{ bold: <strong /> }}
                       />
-                    </Text>
+                    </ds-text>
                   </Row>
                 </Container>
               )}

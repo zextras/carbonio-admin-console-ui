@@ -13,7 +13,7 @@ export const EditAccountQuotaWarnings = ({ percentageUsed }: { percentageUsed: n
     <>
       {percentageUsed >= 100 && (
         <Banner
-          type={'fill'}
+          type={'standard'}
           severity="error"
           description={t(
             'label.accountQuota.banner.overQuota',
@@ -23,7 +23,7 @@ export const EditAccountQuotaWarnings = ({ percentageUsed }: { percentageUsed: n
       )}
       {percentageUsed >= 80 && percentageUsed < 100 && (
         <Banner
-          type={'fill'}
+          type={'standard'}
           severity="warning"
           description={t(
             'label.accountQuota.banner.thresholdReached',

@@ -10,7 +10,6 @@ import {
   ModalOverlay,
   Paging,
   Row,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useMailstoreServers } from '@zextras/ui-shared';
@@ -123,11 +122,11 @@ const DoneDetailPanel: FC = () => {
         style={{ position: 'relative' }}
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text  weight="bold">
+          <ds-text as="h2"  weight="bold">
             {t('operations.done_panel_heading', 'Done Operations')}
-          </Text>
+          </ds-text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Container
           orientation="column"
           crossAlignment="flex-start"
@@ -153,7 +152,7 @@ const DoneDetailPanel: FC = () => {
                   setSearchOperation(e.target.value);
                 }}
                 CustomIcon={(): React.ReactElement => (
-                  <icon-wc icon="FunnelOutline" size="large" color="primary"></icon-wc>
+                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                 )}
               />
             </Container>
@@ -179,7 +178,7 @@ const DoneDetailPanel: FC = () => {
             width="fill"
             padding={{ top: 'large' }}
           >
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           {filteredOperationData.length !== 0 && (
             <Container

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Row, Select, SingleSelectionOnChange, Switch, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row, Select, SingleSelectionOnChange, Switch } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -67,9 +67,9 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text  weight="bold">
+			<ds-text as="strong" weight="bold">
 				{labels.failedLoginPolicy}
-			</Text>
+			</ds-text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					height="fit"
@@ -171,7 +171,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 					</ListRow>
 				</Container>
 			</Row>
-			<divider-wc></divider-wc>
+			<ds-divider></ds-divider>
 		</Row>
 	);
 };

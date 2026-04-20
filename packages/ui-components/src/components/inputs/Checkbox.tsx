@@ -105,7 +105,7 @@ export const Checkbox = ({
       {...rest}
     >
       <div className={iconWrapperClassName} style={iconWrapperStyle} tabIndex={disabled ? -1 : 0}>
-        <icon-wc
+        <ds-icon
           icon={checked ? 'CheckmarkSquare' : 'Square'}
           size={computedIconSize}
           color={iconColor}

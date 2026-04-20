@@ -17,7 +17,6 @@ import {
   SelectItem,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
@@ -558,9 +557,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
                   setSelectedAntivirusMirrors([item]);
                 }}
               >
-                <Text size="small" weight="regular" key={item} color="gray0">
+                <ds-text as="span" size="small" weight="regular" key={item} color="gray0">
                   {item}
-                </Text>
+                </ds-text>
               </Container>,
             ],
           });
@@ -654,9 +653,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
                   setSelectedAdditionalAntivirusDefinition([item]);
                 }}
               >
-                <Text size="small" weight="light" key={item} color="gray0">
+                <ds-text as="span" size="small" weight="light" key={item} color="gray0">
                   {item}
-                </Text>
+                </ds-text>
               </Container>,
             ],
           });
@@ -770,9 +769,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.antivirus_and_antispam', 'Antivirus & Antispam')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -801,7 +800,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         padding={{ all: 'extralarge' }}
@@ -816,9 +815,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('label.antispam', 'Antispam')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           orientation="horizontal"
@@ -942,9 +941,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('label.antivirus_definitions', 'Antivirus Definitions')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container crossAlignment="flex-start" padding={{ bottom: 'large' }} height="auto">
@@ -1224,19 +1223,19 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
           }
         >
           <Container>
-            <Text overflow="break-word" weight="regular">
+            <ds-text as="p" overflow="break-word" weight="regular">
               {t(
                 'mta.remove_virus_difinition_warning_line_1',
                 'Removing a virus definition will reduce the chance to detect potential threats. This operation is not reversible',
               )}
-            </Text>
+            </ds-text>
           </Container>
           <Container
             mainAlignment="flex-start"
             crossAlignment="flex-start"
             padding={{ top: 'extralarge', bottom: 'extralarge' }}
           >
-            <Text overflow="break-word" weight="regular">
+            <ds-text as="p" overflow="break-word" weight="regular">
               {
                 <Trans
                   i18nKey="mta.remove_virus_difinition_warning_line_2"
@@ -1247,7 +1246,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
                   }}
                 />
               }
-            </Text>
+            </ds-text>
           </Container>
         </Modal>
       </Container>

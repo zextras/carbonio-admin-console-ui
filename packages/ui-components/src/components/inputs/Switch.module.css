@@ -14,19 +14,19 @@
 	outline: none;
 }
 
-.iconWrapper:focus > icon-wc {
+.iconWrapper:focus > ds-icon {
 	color: var(--icon-color-focus);
 }
 
-.iconWrapper:hover:not(.disabled) > icon-wc {
+.iconWrapper:hover:not(.disabled) > ds-icon {
 	color: var(--icon-color-hover);
 }
 
-.iconWrapper:active:not(.disabled) > icon-wc {
+.iconWrapper:active:not(.disabled) > ds-icon {
 	color: var(--icon-color-active);
 }
 
-.iconWrapper.disabled > icon-wc {
+.iconWrapper.disabled > ds-icon {
 	color: var(--icon-color-disabled);
 }
 

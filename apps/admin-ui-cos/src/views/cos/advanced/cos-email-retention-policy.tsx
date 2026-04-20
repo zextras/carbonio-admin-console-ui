@@ -11,7 +11,6 @@ import {
   Row,
   Select,
   SingleSelectionOnChange,
-  Text,
 } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -68,9 +67,9 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text  weight="bold">
+      <ds-text as="strong" weight="bold">
         {labels.email.retentionPolicy}
-      </Text>
+      </ds-text>
       <Row mainAlignment="flex-start" width="100%">
         <Container
           height="fit"
@@ -177,7 +176,7 @@ const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
           </ListRow>
         </Container>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
     </Row>
   );
 };

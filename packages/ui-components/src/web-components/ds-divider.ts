@@ -48,10 +48,10 @@ export class DividerElement extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'divider-wc': DividerElement;
+    'ds-divider': DividerElement;
   }
 }
 
-if (!customElements.get('divider-wc')) {
-  customElements.define('divider-wc', DividerElement);
+if (!customElements.get('ds-divider')) {
+  customElements.define('ds-divider', DividerElement);
 }

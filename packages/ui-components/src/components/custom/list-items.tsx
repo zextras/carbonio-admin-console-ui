@@ -74,7 +74,7 @@ const ListItems: FC<ListItemsProps> = ({
                       </Text>
                     </Padding>
                   </Container>
-                  <divider-wc color="gray3"></divider-wc>
+                  <ds-divider color="gray3"></ds-divider>
                 </Container>
               ) : (
                 <div style={{ height: '4rem' }} />

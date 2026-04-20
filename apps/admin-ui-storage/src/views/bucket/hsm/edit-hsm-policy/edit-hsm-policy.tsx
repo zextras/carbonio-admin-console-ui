@@ -11,7 +11,6 @@ import {
   Padding,
   Row,
   TabBar,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { FC, ReactElement, useCallback, useEffect, useState } from 'react';
@@ -93,15 +92,15 @@ const EditHsmPolicy: FC<{
     >
       <Row padding="small">
         <Padding horizontal="small">
-          <icon-wc
+          <ds-icon
             size="medium"
             color={selected ? 'primary' : 'gray'}
             icon={item.icon}
-          ></icon-wc>
+          ></ds-icon>
         </Padding>
-        <Text size="small" color={selected ? 'primary' : 'gray'}>
+        <ds-text as="span" size="small" color={selected ? 'primary' : 'gray'}>
           {item.label}
-        </Text>
+        </ds-text>
       </Row>
     </DefaultTabBarItem>
   );
@@ -176,9 +175,9 @@ const EditHsmPolicy: FC<{
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('hsm.editing_policy', 'Editing Policy')}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ right: 'extrasmall' }}>
           {isDirty && (
@@ -212,7 +211,7 @@ const EditHsmPolicy: FC<{
         </Row>
       </Row>
       <Row>
-        <divider-wc color="gray3"></divider-wc>
+        <ds-divider color="gray3"></ds-divider>
       </Row>
 
       <Container
@@ -238,7 +237,7 @@ const EditHsmPolicy: FC<{
           />
         </Row>
         <Row width="100%">
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <HSMContext.Provider value={{ hsmDetail, setHsmDetail }}>
           <Container crossAlignment="flex-start" padding={{ all: '0rem' }}>

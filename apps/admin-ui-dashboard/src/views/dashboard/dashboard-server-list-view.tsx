@@ -11,7 +11,6 @@ import {
   HoverableRowFactory,
   ListRow,
   Table,
-  Text,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { FC, useEffect, useMemo, useState } from 'react';
@@ -42,7 +41,8 @@ const DashboardServerList: FC<{
       const allRows = mailstoresList.map((item) => ({
         id: item?.id,
         columns: [
-          <Text
+          <ds-text
+            as="span"
             size="small"
             color="gray0"
             weight="regular"
@@ -52,8 +52,9 @@ const DashboardServerList: FC<{
             }}
           >
             {item?.name}
-          </Text>,
-          <Text
+          </ds-text>,
+          <ds-text
+            as="span"
             size="small"
             weight="regular"
             color="gray6"
@@ -64,9 +65,10 @@ const DashboardServerList: FC<{
             }}
           >
             {serverVersion}
-          </Text>,
+          </ds-text>,
           isAdvanced ? (
-            <Text
+            <ds-text
+              as="span"
               size="small"
               weight="regular"
               color="gray6"
@@ -77,11 +79,12 @@ const DashboardServerList: FC<{
               }}
             >
               {serverVersion}
-            </Text>
+            </ds-text>
           ) : (
             ''
           ),
-          <Text
+          <ds-text
+            as="span"
             size="small"
             color="gray0"
             weight="light"
@@ -93,7 +96,7 @@ const DashboardServerList: FC<{
             {item && item?.a
               ? item?.a.find((attribute: any) => attribute?.n === 'description')?._content
               : ''}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setServerListRow(allRows);
@@ -142,12 +145,12 @@ const DashboardServerList: FC<{
         >
           <ListRow>
             <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2.2rem">
-              <icon-wc icon="HardDriveOutline" size="large"></icon-wc>
+              <ds-icon icon="HardDriveOutline" size="large"></ds-icon>
             </Container>
             <Container mainAlignment="center" crossAlignment="flex-start">
-              <Text size="medium" color="gray0" weight="bold">
+              <ds-text as="strong" size="medium" color="gray0" weight="bold">
                 {t('label.mailstores_list', 'Mailstores List')}
-              </Text>
+              </ds-text>
             </Container>
           </ListRow>
         </Container>

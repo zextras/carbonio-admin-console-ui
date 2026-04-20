@@ -81,7 +81,7 @@ const Switch = ({
         style={iconWrapperStyle}
         tabIndex={disabled ? -1 : 0}
       >
-        <icon-wc
+        <ds-icon
           icon={checked ? 'ToggleRight' : 'ToggleLeftOutline'}
           size={size === 'medium' ? 'large' : 'medium'}
           color={String(iconColor)}

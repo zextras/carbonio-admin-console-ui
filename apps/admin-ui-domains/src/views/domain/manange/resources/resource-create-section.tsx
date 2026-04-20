@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, LabeledValue, ListRow, Row, Text } from '@zextras/ui-components';
+import { Container, LabeledValue, ListRow, Row } from '@zextras/ui-components';
 import { FC, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,9 +32,9 @@ const ResourceCreateSection: FC = () => {
         style={{ overflow: 'auto', padding: '16px' }}
       >
         <Row>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.details', 'Details')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container
@@ -65,7 +65,7 @@ const ResourceCreateSection: FC = () => {
               />
             </Row>
             <Row width="10%" style={{ padding: '12px' }}>
-              <icon-wc icon="AtOutline" color="gray0" size="large"></icon-wc>
+              <ds-icon icon="AtOutline" color="gray0" size="large"></ds-icon>
             </Row>
             <Row width="45%">
               <LabeledValue
@@ -151,7 +151,7 @@ const ResourceCreateSection: FC = () => {
           </Container>
         </ListRow>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <SendInviteAccounts
           isEditable={false}
@@ -160,12 +160,12 @@ const ResourceCreateSection: FC = () => {
           hideSearchBar
         />
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <Row padding={{ top: 'large' }}>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.description', 'Description')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container
@@ -175,7 +175,7 @@ const ResourceCreateSection: FC = () => {
             padding={{ top: 'large' }}
           >
             <Row padding={{ top: 'small', bottom: 'small', left: 'medium', right: 'medium' }}>
-              <Text size="small">{resourceDetail?.zimbraNotes}</Text>
+              <ds-text as="p" size="small">{resourceDetail?.zimbraNotes}</ds-text>
             </Row>
           </Container>
         </ListRow>

@@ -42,6 +42,6 @@ export const SectionHeader: FC<SectionHeaderProps> = ({
 				</Row>
 			)}
 		</Row>
-		{divider && <divider-wc></divider-wc>}
+		{divider && <ds-divider></ds-divider>}
 	</>
 );

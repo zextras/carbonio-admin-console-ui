@@ -12,7 +12,6 @@ import {
   ModalOverlay,
   Row,
   Table,
-  Text,
   THeader,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -77,9 +76,9 @@ const VolumeListTable: FC<{
             }}
             style={{ textAlign: 'left', justifyContent: FLEX_START }}
           >
-            <Text size="small" weight="regular">
+            <ds-text as="span" size="small" weight="regular">
               {v?.id}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -88,9 +87,9 @@ const VolumeListTable: FC<{
             }}
             style={{ textAlign: 'left', justifyContent: FLEX_START }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.name}
-            </Text>
+            </ds-text>
           </Row>,
           isAdvanced && (
             <Row
@@ -100,11 +99,11 @@ const VolumeListTable: FC<{
               }}
               style={{ textAlign: 'left', justifyContent: FLEX_START }}
             >
-              <Text size="small" weight="light">
+              <ds-text as="span" size="small" weight="light">
                 {v?.storeType === LOCAL_VALUE
                   ? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
                   : t('volume.volume_allocation_list.object_storage', 'Object Storage')}
-              </Text>
+              </ds-text>
             </Row>
           ),
           <Row
@@ -114,9 +113,9 @@ const VolumeListTable: FC<{
             }}
             style={{ textAlign: 'left', justifyContent: FLEX_START }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v?.storeType === LOCAL_VALUE ? v?.path : v?.rootpath}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -125,9 +124,9 @@ const VolumeListTable: FC<{
             }}
             style={{ textAlign: 'left', justifyContent: FLEX_START }}
           >
-            <Text color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
+            <ds-text as="span" color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
               {v?.isCurrent ? YES : NO}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -136,9 +135,9 @@ const VolumeListTable: FC<{
             }}
             style={{ textAlign: 'left', justifyContent: FLEX_START }}
           >
-            <Text color={v?.compressed ? 'text' : 'error'} size="small" weight="light">
+            <ds-text as="span" color={v?.compressed ? 'text' : 'error'} size="small" weight="light">
               {v?.compressed ? YES : NO}
-            </Text>
+            </ds-text>
           </Row>,
         ];
 
@@ -165,7 +164,7 @@ const VolumeListTable: FC<{
       />
       {tableRows?.length === 0 && (
         <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-          <Text>{t('label.empty_table', 'Empty Table')}</Text>
+          <ds-text as="p">{t('label.empty_table', 'Empty Table')}</ds-text>
         </Row>
       )}
     </Container>
@@ -738,13 +737,13 @@ const VolumesDetailPanel: FC = () => {
           />
         )}
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <Text  weight="bold">
+          <ds-text as="h2" weight="bold">
             {t('volume.serverName_volumes', '{{serverName}} Volumes', {
               serverName: selectedServerName,
             })}
-          </Text>
+          </ds-text>
         </Row>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Container
           orientation="column"
           crossAlignment="flex-start"
@@ -789,7 +788,7 @@ const VolumesDetailPanel: FC = () => {
               orientation="horizontal"
               padding={{ horizontal: 'large', top: 'large', bottom: 'large' }}
             >
-              <Text>{t('volume.primary_helperText', 'Primary')}</Text>
+              <ds-text as="h3">{t('volume.primary_helperText', 'Primary')}</ds-text>
             </Row>
             <Row padding={{ horizontal: 'large', bottom: 'extralarge' }} width="100%">
               <VolumeListTable
@@ -817,7 +816,7 @@ const VolumesDetailPanel: FC = () => {
                     top: 'small',
                   }}
                 >
-                  <Text>{t('volume.secondary_helperText', 'Secondary')}</Text>
+                  <ds-text as="h3">{t('volume.secondary_helperText', 'Secondary')}</ds-text>
                 </Row>
                 <Row padding={{ horizontal: 'large', bottom: 'extralarge' }} width="100%">
                   <VolumeListTable
@@ -842,7 +841,7 @@ const VolumesDetailPanel: FC = () => {
               orientation="horizontal"
               padding={{ horizontal: 'large', bottom: 'large' }}
             >
-              <Text>{t('volume.indexer_helperText', 'Indexer')}</Text>
+              <ds-text as="h3">{t('volume.indexer_helperText', 'Indexer')}</ds-text>
             </Row>
             <Row
               padding={{

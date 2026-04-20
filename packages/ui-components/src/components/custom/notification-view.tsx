@@ -75,7 +75,7 @@ const ReusedDefaultTabBar: FC<{
       width="fill"
     >
       <Container width="2rem" padding={{ right: 'small' }}>
-        <icon-wc icon={item?.icon} color={selected ? 'primary' : 'gray1'}></icon-wc>
+        <ds-icon icon={item?.icon} color={selected ? 'primary' : 'gray1'}></ds-icon>
       </Container>
       <Container mainAlignment="flex-start" crossAlignment="flex-start" width="auto">
         <Text size="small" weight="regular" color={selected ? 'primary' : 'gray1'}>
@@ -461,7 +461,7 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
         </Container>
       </ListRow>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <ListRow>
         <Container

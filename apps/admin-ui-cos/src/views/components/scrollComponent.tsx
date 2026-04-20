@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Padding, Text } from '@zextras/ui-components';
+import { Container, Padding } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -17,11 +17,11 @@ const ScrollContainer: FC<{
   return isVisible ? (
     <Container className={styles.scrollingContainer} data-isShow={isVisible}>
       <Container orientation="horizontal" padding={{ top: 'large' }} width="100%">
-        <icon-wc icon="ArrowheadDown" size="large"></icon-wc>
+        <ds-icon icon="ArrowheadDown" size="large"></ds-icon>
         <Padding left="small">
-          <Text size="large" weight="light" color="gray">
+          <ds-text as="h2" size="large" weight="light" color="gray">
             {t('label.scroll_down_to_view_other_items', 'Scroll down to view other items')}
-          </Text>
+          </ds-text>
         </Padding>
       </Container>
     </Container>
