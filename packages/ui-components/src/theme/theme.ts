@@ -215,7 +215,7 @@ export const theme: Theme = {
     },
     black: '#000000',
     white: '#ffffff',
-    successBanner: '#e6f2d8',
+    successBanner: '#e0f9c3',
     warningBanner: '#fff7de',
     infoBanner: '#d3ebf8',
     errorBanner: '#f6d6d5',

@@ -109,7 +109,7 @@
   --color-white: #ffffff;
 
   /* Banner colors - matches Theme.palette */
-  --color-successBanner: #e6f2d8;
+  --color-banner-success: #e0f9c3;
   --color-warningBanner: #fff7de;
   --color-infoBanner: #d3ebf8;
   --color-errorBanner: #f6d6d5;
