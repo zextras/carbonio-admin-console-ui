@@ -29,6 +29,18 @@ import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } fro
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
+import type {
+  BackupArchivingStore,
+  BackupConfigurationState,
+  BucketItem,
+  CoreAttributeBody,
+  ExternalSoapResponse,
+  GetServerResponse,
+  ListBucketsContent,
+  SelectOption,
+  SetCoreAttributesResponse,
+  SoapResponseBody,
+} from '../../../../types';
 import {
   BACKUP_REALTIME,
   CONFIG,
@@ -46,19 +58,6 @@ import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-
-import type {
-  BackupArchivingStore,
-  BackupConfigurationState,
-  BucketItem,
-  CoreAttributeBody,
-  ExternalSoapResponse,
-  GetServerResponse,
-  ListBucketsContent,
-  SelectOption,
-  SetCoreAttributesResponse,
-  SoapResponseBody,
-} from '../../../../types';
 
 const BackupConfiguration: FC = () => {
   const { server } = useParams();
