@@ -23,7 +23,7 @@ export const PrimaryBarTooltip = ({ children }: PrimaryBarTooltipProps) => (
   >
     <Padding left="small" right="small">
       <Padding bottom="small" all="small">
-        <ds-text as="span" size="medium" color="text" weight="regular" style={{ whiteSpace: 'break-spaces' }}>
+        <ds-text as="span" size="medium" color="text" weight="regular" overflow="break-word" style={{ whiteSpace: 'break-spaces' }}>
           {children}
         </ds-text>
       </Padding>
