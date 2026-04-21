@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DsBadgeProps } from './ds-badge';
 import { TextOverflow, TextSize, TextTag, TextWeight } from './ds-text';
 import type { IconName } from './icon-registry';
 
@@ -25,9 +26,7 @@ declare global {
           HTMLElement
         >;
         'ds-badge': React.DetailedHTMLProps<
-          React.HTMLAttributes<HTMLElement> & {
-            color?: string;
-          },
+          React.HTMLAttributes<HTMLElement> & DsBadgeProps,
           HTMLElement
         >;
         'ds-text': React.DetailedHTMLProps<
