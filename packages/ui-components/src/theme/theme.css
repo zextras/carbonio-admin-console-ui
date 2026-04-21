@@ -225,4 +225,9 @@
   /* Shadows - matches Theme.shadows */
   --shadow-regular: 0 0 0.25rem 0 rgba(166, 166, 166, 0.5);
   --shadow-snackbar: -2px 2px 5px 0 rgba(0, 0, 0, 0.25);
+
+  /* Breakpoints */
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1536px;
 }
