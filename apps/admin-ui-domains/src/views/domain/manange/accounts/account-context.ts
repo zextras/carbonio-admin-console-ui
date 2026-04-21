@@ -5,7 +5,7 @@
  */
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-import { ComputedLimit, QuotaSource } from '../../../../services/get-account-quota';
+import { ComputedLimit, QuotaSource, QuotaStatus } from '../../../../services/get-account-quota';
 
 export type AccountDetail = Record<string, any> & {
   carbonioFeatureWscEnabled?: string;
@@ -26,6 +26,7 @@ export type AccountDetail = Record<string, any> & {
   totalQuotaUsed?: number;
   totalQuotaUsedByModule?: Record<string, number>;
   totalQuotaSource?: QuotaSource;
+  totalQuotaStatus?: QuotaStatus;
 };
 
 export type CosDetail = Record<string, any> & {
