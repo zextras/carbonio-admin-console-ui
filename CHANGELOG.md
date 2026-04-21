@@ -1,3 +1,9 @@
+## [0.13.0-devel.20](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.19...v0.13.0-devel.20) (2026-04-21)
+
+### Features
+
+* add totalQuotaStatus to account quota management ([#1153](https://github.com/zextras/carbonio-admin-console-ui/issues/1153)) ([e2d4373](https://github.com/zextras/carbonio-admin-console-ui/commit/e2d43731eb0f854ece88225472478571466b0a7b))
+
 ## [0.13.0-devel.19](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.18...v0.13.0-devel.19) (2026-04-20)
 
 ## [0.13.0-devel.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.17...v0.13.0-devel.18) (2026-04-17)
