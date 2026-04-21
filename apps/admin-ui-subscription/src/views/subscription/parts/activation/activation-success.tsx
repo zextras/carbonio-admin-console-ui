@@ -7,7 +7,7 @@ import { Button } from '@zextras/ui-components';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ACTIVATION_SUCCESS_AUTO_CLOSE_MS } from '../../../constants';
+import { ACTIVATION_SUCCESS_AUTO_CLOSE_MS } from '../../../../constants';
 import styles from './activation-success.module.css';
 
 type ActivationSuccessProps = {
