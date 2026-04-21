@@ -15,6 +15,7 @@ export const dsTextVars = {
 export const textStyles = css`
   :host {
     display: block;
+    font-family: var(--font-family);
   }
 
   :host > * {
@@ -30,7 +31,6 @@ export const textStyles = css`
       --ds-text-font-weight,
       var(--ds-text-theme-weight, ${unsafeCSS(theme.font.weight.regular)})
     );
-    font-family: var(--text-font-family, var(--font-family));
   }
 
   :host([size='extrasmall']) > * {
