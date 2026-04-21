@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Input } from '@zextras/ui-components';
-import { useActivateLicense } from '@zextras/ui-shared';
+import { useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -35,6 +35,8 @@ export const ActivateSubscription = (): React.JSX.Element => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const activateLicenseMutation = useActivateLicense();
+  const breakpoint = useBreakpoint();
+  const isLargeViewport = breakpoint === 'xl' || breakpoint === '2xl';
 
   const activationTokenSchema = z
     .string()
@@ -113,7 +115,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
         </div>
         <img src={subscription_logo} alt="subscription logo" className={styles.logo} />
         <div className={styles.text}>
-          <ds-text as="p" color="gray0">
+          <ds-text as="p" color="gray0" overflow="break-word" style={{ whiteSpace: isLargeViewport ? 'normal' : 'pre-line' }}>
             {t(
               'subscription.activate.disclaimer',
               "Seems like you don't have a subscription token active yet.\nFill the field above or contact a vendor to get a new one.",
