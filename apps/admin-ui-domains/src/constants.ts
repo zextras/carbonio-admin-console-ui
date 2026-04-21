@@ -189,6 +189,7 @@ export const TOTAL_COMPUTED_QUOTA_LIMIT = 'totalComputedQuotaLimit';
 export const TOTAL_QUOTA_USED = 'totalQuotaUsed';
 export const TOTAL_QUOTA_USED_BY_MODULE = 'totalQuotaUsedByModule';
 export const TOTAL_QUOTA_SOURCE = 'totalQuotaSource';
+export const TOTAL_QUOTA_STATUS = 'totalQuotaStatus';
 export const FILES_QUOTA_LIMIT = 'filesQuotaLimit';
 export const FILES_QUOTA_USED = 'filesQuotaUsed';
 export const MAILBOX_QUOTA_USED = 'mailboxQuotaUsed';
