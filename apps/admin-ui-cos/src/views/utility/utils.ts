@@ -7,7 +7,6 @@
 import { SelectItem } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 import { divide, multiply } from 'lodash-es';
-import { useState } from 'react';
 
 import { NOT_SET } from '../../constants';
 
@@ -1139,19 +1138,3 @@ export function bytesToHumanReadable(bytes: number): string {
   return `${parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
 }
 
-export function useLocalStorage<T>(key: string, initialValue: T): any {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch {
-      return initialValue;
-    }
-  });
-  const setValue = (value: T | ((val: T) => T)): any => {
-    const valueToStore = value instanceof Function ? value(storedValue) : value;
-    setStoredValue(valueToStore);
-    localStorage.setItem(key, JSON.stringify(valueToStore));
-  };
-  return [storedValue, setValue] as const;
-}

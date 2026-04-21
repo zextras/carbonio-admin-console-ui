@@ -61,6 +61,7 @@ import {
 } from './constants';
 import { replaceHistory, useCurrentRoute } from './history/hooks';
 import { useBreakpoint } from './hooks/use-breakpoint';
+import { useLocalStorage } from './hooks/use-local-storage';
 import { useMediaQuery } from './hooks/use-media-query';
 import { useTotalQuotaActive } from './hooks/use-total-quota-active';
 import {
@@ -223,6 +224,7 @@ export {
   useIsAdvanced,
   useLastLoginTimestamp,
   useLicenseInfo,
+  useLocalStorage,
   useLoginConfigStore,
   useMailstoreServers,
   useMediaQuery,
