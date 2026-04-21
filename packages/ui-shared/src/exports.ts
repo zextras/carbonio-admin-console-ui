@@ -34,6 +34,7 @@ export type {
 } from '../types/integrations';
 export type { II18nFactory } from '../types/misc';
 export type { ThemeExtension } from '../types/theme';
+export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext } from './apps/loader';
@@ -59,6 +60,8 @@ import {
   ZIMBRA_ADMIN_URN,
 } from './constants';
 import { replaceHistory, useCurrentRoute } from './history/hooks';
+import { useBreakpoint } from './hooks/use-breakpoint';
+import { useMediaQuery } from './hooks/use-media-query';
 import { useTotalQuotaActive } from './hooks/use-total-quota-active';
 import {
   type CloseSnackbarFn,
@@ -205,6 +208,7 @@ export {
   useAppRoutes,
   useAppStore,
   useBackupServers,
+  useBreakpoint,
   useBridge,
   useConfigAttribute,
   useContextBridge,
@@ -221,6 +225,7 @@ export {
   useLicenseInfo,
   useLoginConfigStore,
   useMailstoreServers,
+  useMediaQuery,
   useModuleLicenseInfo,
   useMtaServers,
   usePrimaryBarState,
