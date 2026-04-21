@@ -8,8 +8,8 @@
 import '../theme/theme.css';
 
 // Import and export the web components to ensure they are bundled and registered
+export { DsBadge } from './ds-badge';
 export { DividerElement } from './ds-divider';
 export { DsIcon } from './ds-icon';
 export { DsSpinner } from './ds-spinner';
 export { DsText, type TextProps } from './ds-text';
-

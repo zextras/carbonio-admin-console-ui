@@ -24,6 +24,12 @@ declare global {
           },
           HTMLElement
         >;
+        'ds-badge': React.DetailedHTMLProps<
+          React.HTMLAttributes<HTMLElement> & {
+            color?: string;
+          },
+          HTMLElement
+        >;
         'ds-text': React.DetailedHTMLProps<
           React.HTMLAttributes<HTMLElement> & {
             color?: string;
