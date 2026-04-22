@@ -7,7 +7,11 @@ import { Container } from '@zextras/ui-components';
 import React, { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { ComputedLimit, QuotaSource } from '../../../../../../services/get-account-quota';
+import {
+  ComputedLimit,
+  QuotaSource,
+  QuotaStatus,
+} from '../../../../../../services/get-account-quota';
 import { EditAccountQuotaWarnings } from './edit-account-quota-warnings';
 import { QuotaBar, QuotaBarEntry } from './quota-bar';
 import { getPercentage, humanFileSize } from './size-utils';
@@ -18,6 +22,7 @@ type EditAccountQuotaBarNewProps = {
   limit: ComputedLimit;
   usedByModule: Record<string, number>;
   source: QuotaSource;
+  status: QuotaStatus;
 };
 
 export const EditAccountQuotaBarNew = ({
@@ -25,6 +30,7 @@ export const EditAccountQuotaBarNew = ({
   limit,
   usedByModule,
   source,
+  status,
 }: EditAccountQuotaBarNewProps): React.JSX.Element => {
   const [t] = useTranslation();
 
@@ -88,7 +94,10 @@ export const EditAccountQuotaBarNew = ({
         </Container>
       </Container>
       {limit.type === 'limited' && (
-        <EditAccountQuotaWarnings percentageUsed={getPercentage(used, limit.value)} />
+        <EditAccountQuotaWarnings
+          status={status}
+          percentageUsed={getPercentage(used, limit.value)}
+        />
       )}
       <QuotaBar modules={quotaModules} limit={limit} used={used} />
     </Container>

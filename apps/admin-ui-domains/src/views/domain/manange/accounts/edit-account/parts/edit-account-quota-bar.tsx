@@ -29,14 +29,16 @@ export const EditAccountQuotaBar = ({
     totalComputedQuotaLimit: limit,
     totalQuotaUsedByModule: usedByModule,
     totalQuotaSource: source,
+    totalQuotaStatus: status,
   } = initAccountDetail;
   const dataMissing = useMemo(
     () =>
       used === undefined ||
       limit === undefined ||
       usedByModule === undefined ||
-      source === undefined,
-    [used, limit, usedByModule, source],
+      source === undefined ||
+      status === undefined,
+    [used, limit, usedByModule, source, status],
   );
 
   if (!isTotalQuotaActive) {
@@ -57,6 +59,7 @@ export const EditAccountQuotaBar = ({
       limit={limit!}
       usedByModule={usedByModule!}
       source={source!}
+      status={status!}
     />
   );
 };

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { usePrimaryBarState } from '@zextras/ui-shared';
+import { useBreakpoint, usePrimaryBarState } from '@zextras/ui-shared';
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
@@ -18,16 +18,27 @@ const baseStyle = {
   boxSizing: 'border-box',
 } as const;
 
-function getContainerStyle(isPrimaryBarExpanded: boolean) {
+function getMaxWidth(breakpoint: string, isSidebarOpen = false) {
+  if (breakpoint === '2xl') return '1125px';
+  if (breakpoint === 'xl') return '1125px';
+  if (breakpoint === 'lg' && !isSidebarOpen) return '1125px';
+  if (breakpoint === 'lg' && isSidebarOpen) return '981px';
+  return '981px';
+}
+
+function getContainerStyle(breakpoint: string, isSidebarOpen = false) {
   return {
     width: '100%',
-    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
-    transition: 'width 300ms',
+    maxWidth: getMaxWidth(breakpoint, isSidebarOpen),
+    transition: 'max-width 300ms',
+    padding: '0 clamp(0.5rem, 2vw, 2rem)',
+    boxSizing: 'border-box' as const,
   };
 }
 
 export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
+  const breakpoint = useBreakpoint();
 
   return (
     <div style={{ ...baseStyle, height: 'fit-content', width: '100%' }}>
@@ -36,7 +47,7 @@ export const AppView = () => {
         <Route
           path="/"
           element={
-            <div style={{ ...baseStyle, ...getContainerStyle(isPrimaryBarExpanded) }}>
+            <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
               <Suspense fallback={<ds-spinner></ds-spinner>}>
                 <Subscription />
               </Suspense>
@@ -46,7 +57,7 @@ export const AppView = () => {
         <Route
           path="/activate"
           element={
-            <div style={{ ...baseStyle, ...getContainerStyle(isPrimaryBarExpanded) }}>
+            <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
               <Suspense fallback={<ds-spinner></ds-spinner>}>
                 <ActivateSubscription />
               </Suspense>
