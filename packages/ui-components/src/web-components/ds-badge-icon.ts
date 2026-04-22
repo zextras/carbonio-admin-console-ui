@@ -9,10 +9,10 @@ import './ds-icon';
 import { css, html, LitElement, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 
-type DsBadgeColor = 'success' | 'warning';
-export type DsBadgeProps = { color?: DsBadgeColor };
+type DsBadgeIconType = 'success' | 'warning';
+export type DsBadgeIconProps = { type?: DsBadgeIconType };
 
-export class DsBadge extends LitElement {
+export class DsBadgeIcon extends LitElement {
   static override styles = css`
     :host {
       display: inline-flex;
@@ -24,25 +24,43 @@ export class DsBadge extends LitElement {
       background: var(--color-banner-success);
     }
 
-    :host([color='warning']) {
+    :host([type='warning']) {
       background: var(--color-banner-warning);
+    }
+
+    .icon {
+      flex-shrink: 0;
+      width: 1em;
+      height: 1em;
     }
   `;
 
   @property({ type: String, reflect: true })
-  accessor color: DsBadgeColor = 'success';
+  accessor type: DsBadgeIconType = 'success';
 
   override render(): TemplateResult {
-    return html` <slot></slot> `;
+    const getIconName = (type: DsBadgeIconType) => {
+      if (type === 'warning') return 'AlertTriangle';
+    };
+
+    return html`
+      <ds-icon
+        class="icon"
+        name=${getIconName(this.type)}
+        color="currentColor"
+        aria-hidden="true"
+      ></ds-icon>
+      <slot></slot>
+    `;
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'ds-badge': DsBadge;
+    'ds-badge-icon': DsBadgeIcon;
   }
 }
 
-if (!customElements.get('ds-badge')) {
-  customElements.define('ds-badge', DsBadge);
+if (!customElements.get('ds-badge-icon')) {
+  customElements.define('ds-badge-icon', DsBadgeIcon);
 }

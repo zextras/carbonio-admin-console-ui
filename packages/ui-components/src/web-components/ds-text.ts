@@ -13,12 +13,13 @@ import { getInlineStyles, resolveThemeColor } from '../theme/theme-utils';
 import { AnyColor } from '../types/utils';
 import { dsTextVars, textStyles } from './ds-text.styles';
 
-export type TextProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
+export type DsTextProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
   color?: AnyColor;
   size?: 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
   weight?: 'light' | 'regular' | 'medium' | 'bold';
   overflow?: TextOverflow;
   disabled?: boolean;
+  as?: TextTag;
 };
 export type TextSize = keyof Theme['font']['size'];
 export type TextWeight = keyof Theme['font']['weight'];
@@ -61,22 +62,22 @@ export class DsText extends LitElement {
   #styleObserver?: MutationObserver;
 
   @property({ type: String })
-  accessor color = 'text';
+  accessor color: DsTextProps['color'] = 'text';
 
   @property({ type: String, reflect: true })
-  accessor size: TextSize = 'medium';
+  accessor size: DsTextProps['size'] = 'medium';
 
   @property({ type: String, reflect: true })
-  accessor weight: TextWeight = 'regular';
+  accessor weight: DsTextProps['weight'] = 'regular';
 
   @property({ type: String, reflect: true })
-  accessor overflow: TextOverflow = 'ellipsis';
+  accessor overflow: DsTextProps['overflow'] = 'ellipsis';
 
   @property({ type: Boolean, reflect: true })
-  accessor disabled = false;
+  accessor disabled: DsTextProps['disabled'] = false;
 
   @property({ type: String })
-  accessor as: TextTag = 'span';
+  accessor as: DsTextProps['as'] = 'span';
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -97,7 +98,7 @@ export class DsText extends LitElement {
     };
 
     const tagStyle = styleMap({ ...componentStyles });
-    const renderTag = tagRenderers[this.as] ?? tagRenderers.span;
+    const renderTag = tagRenderers[this.as ?? 'span'];
     return renderTag(tagStyle);
   }
 }

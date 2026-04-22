@@ -11,7 +11,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 
 import { resolveThemeColor } from '../theme/theme-utils';
-import { type IconName, iconRegistry } from './icon-registry';
+import { IconName, iconRegistry } from './icon-registry';
 
 const ICON_SIZES = ['small', 'medium', 'large'] as const;
 export type IconSize = (typeof ICON_SIZES)[number];
@@ -19,6 +19,14 @@ export type IconSize = (typeof ICON_SIZES)[number];
 type IconSizeValue = IconSize | string;
 
 const DEFAULT_ICON = 'AlertTriangleOutline';
+
+export type DsIconProps = {
+  size?: IconSizeValue;
+  icon?: IconName;
+  color?: string;
+  disabled?: boolean;
+  clickHandler?: (e: Event) => void;
+} & Omit<HTMLElement, 'color'>;
 
 export class DsIcon extends LitElement {
   static override styles = css`
@@ -47,21 +55,22 @@ export class DsIcon extends LitElement {
   `;
 
   @property({ type: String, reflect: true })
-  accessor icon: IconName = DEFAULT_ICON;
+  accessor icon: DsIconProps['icon'] = DEFAULT_ICON;
 
   @property({ type: String, reflect: true })
-  accessor color = 'text';
+  accessor color: DsIconProps['color'] = 'text';
 
   @property({ type: String, reflect: true })
-  accessor size: IconSizeValue = 'medium';
+  accessor size: DsIconProps['size'] = 'medium';
 
   @property({ type: Boolean, reflect: true })
-  accessor disabled = false;
+  accessor disabled: DsIconProps['disabled'] = false;
 
   @property({ attribute: false })
-  accessor clickHandler: ((event: Event) => void) | undefined = undefined;
+  accessor clickHandler: DsIconProps['clickHandler'] = undefined;
 
-  private getSizeValue(size: IconSizeValue): string {
+  private getSizeValue(size: IconSizeValue | undefined): string {
+    if (!size) return `var(--icon-size-medium, 1rem)`;
     if (/^[\d.]+(rem|px|em|vh|vw|%)$/.test(size)) {
       return size;
     }
@@ -70,7 +79,7 @@ export class DsIcon extends LitElement {
   }
 
   private getSvgContent(): string {
-    return iconRegistry[this.icon] ?? iconRegistry[DEFAULT_ICON] ?? '';
+    return iconRegistry[this.icon ?? 'AlertTriangleOutline'] ?? iconRegistry[DEFAULT_ICON] ?? '';
   }
 
   private handleClick(event: Event): void {
