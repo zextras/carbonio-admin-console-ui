@@ -80,9 +80,11 @@
   --color-warning-disabled: #ffe699;
 
   /* not yet defined in Theme.palette, but added here for completeness */
-  --color-warning-text: #995f1f;
+  --color-badge-warning: #995f1f;
+  --color-badge-info: #116fa1;
   --color-banner-success: #e0f9c3;
   --color-banner-warning: #fdf1cc;
+  --color-banner-info: #def3ff;
 
   --color-error-regular: #d74942;
   --color-error-hover: #be3028;

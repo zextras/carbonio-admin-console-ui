@@ -10,7 +10,7 @@ import { css, html, LitElement, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
-type DsBadgeIconType = 'success' | 'warning';
+type DsBadgeIconType = 'success' | 'warning' | 'info';
 export type DsBadgeIconProps = { type?: DsBadgeIconType; label: string };
 
 export class DsBadgeIcon extends LitElement {
@@ -20,13 +20,17 @@ export class DsBadgeIcon extends LitElement {
       align-items: center;
       justify-content: center;
       gap: 0.375rem;
-      padding: 0.25rem 1rem;
-      border-radius: 9999px;
+      padding: 0.25rem 0.5rem;
+      border-radius: 2px;
       background: var(--color-banner-success);
     }
 
     :host([type='warning']) {
       background: var(--color-banner-warning);
+    }
+
+    :host([type='info']) {
+      background: var(--color-banner-info);
     }
 
     .icon {
@@ -46,22 +50,31 @@ export class DsBadgeIcon extends LitElement {
     const getIconName = (type: DsBadgeIconType | undefined) => {
       if (!type) return 'AlertTriangleOutline';
       if (type === 'warning') return 'AlertTriangle';
-      return 'CheckmarkCircle';
+      if (type === 'info') return 'ActivityOutline';
+      return 'AlertTriangleOutline';
     };
     const getIconColor = (type: DsBadgeIconType | undefined) => {
       if (!type) return 'var(--color-warning-text)';
-      if (type === 'warning') return 'var(--color-warning-text)';
-      return 'var(--color-success-active)';
+      if (type === 'warning') return 'var(--color-badge-warning)';
+      if (type === 'info') return 'var(--color-badge-info)';
+      return 'var(--color-badge-warning)';
     };
 
     return html`
       <ds-icon
         class="icon"
-        name=${getIconName(this.type)}
+        icon=${getIconName(this.type)}
         color=${getIconColor(this.type)}
         aria-hidden="true"
       ></ds-icon>
-      <span style=${styleMap({ color: getIconColor(this.type) })}>${this.label}</span>
+      <span
+        style=${styleMap({
+          color: getIconColor(this.type),
+          fontSize: '0.75rem',
+          fontWeight: '500',
+        })}
+        >${this.label}</span
+      >
     `;
   }
 }

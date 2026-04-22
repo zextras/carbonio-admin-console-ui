@@ -6,6 +6,7 @@
 
 import { useTranslation } from 'react-i18next';
 
+import { SeatUtilization } from './parts/cards/seat-utilization';
 import { SubscriptionEdition } from './parts/cards/subscription-edition';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
 import styles from './regular-subscription.module.css';
@@ -22,7 +23,7 @@ export const RegularSubscription = () => {
       <div className={styles.row}>
         <SubscriptionStatus />
         <SubscriptionEdition />
-        <SubscriptionStatus />
+        <SeatUtilization />
         <SubscriptionStatus />
       </div>
     </div>
