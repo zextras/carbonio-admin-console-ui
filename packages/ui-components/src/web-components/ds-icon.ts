@@ -26,7 +26,7 @@ export type DsIconProps = {
   color?: string;
   disabled?: boolean;
   clickHandler?: (e: Event) => void;
-} & Omit<HTMLElement, 'color'>;
+};
 
 export class DsIcon extends LitElement {
   static override styles = css`
