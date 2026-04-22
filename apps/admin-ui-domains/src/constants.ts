@@ -22,6 +22,7 @@ export const HTTPS = 'https';
 export const ACTIVE = 'active';
 export const CLOSED = 'closed';
 export const LOCKED = 'locked';
+export const LOCKEDOUT = 'lockout';
 export const MAINTENANCE = 'maintenance';
 export const PENDING = 'pending';
 export const SUSPENDED = 'suspended';
