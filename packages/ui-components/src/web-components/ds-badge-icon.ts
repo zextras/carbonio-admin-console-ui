@@ -8,6 +8,7 @@ import './ds-icon';
 
 import { css, html, LitElement, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 
 type DsBadgeIconType = 'success' | 'warning';
 export type DsBadgeIconProps = { type?: DsBadgeIconType; label: string };
@@ -45,10 +46,12 @@ export class DsBadgeIcon extends LitElement {
     const getIconName = (type: DsBadgeIconType | undefined) => {
       if (!type) return 'AlertTriangleOutline';
       if (type === 'warning') return 'AlertTriangle';
+      return 'CheckmarkCircle';
     };
     const getIconColor = (type: DsBadgeIconType | undefined) => {
       if (!type) return 'var(--color-warning-text)';
       if (type === 'warning') return 'var(--color-warning-text)';
+      return 'var(--color-success-active)';
     };
 
     return html`
@@ -58,7 +61,7 @@ export class DsBadgeIcon extends LitElement {
         color=${getIconColor(this.type)}
         aria-hidden="true"
       ></ds-icon>
-      <span style="{{textColor: ${getIconColor(this.type)}}">${this.label}</span>
+      <span style=${styleMap({ color: getIconColor(this.type) })}>${this.label}</span>
     `;
   }
 }
