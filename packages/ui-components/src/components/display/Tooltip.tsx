@@ -24,6 +24,9 @@ import styles from './Tooltip.module.css';
 type TooltipWrapperProps = DsTextProps & {
   open: boolean;
   maxWidth: string;
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
 };
 
 const TooltipWrapper = ({
