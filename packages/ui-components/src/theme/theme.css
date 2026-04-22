@@ -79,6 +79,11 @@
   --color-warning-focus: #d39e00;
   --color-warning-disabled: #ffe699;
 
+  /* not yet defined in Theme.palette, but added here for completeness */
+  --color-warning-text: #995f1f;
+  --color-banner-success: #e0f9c3;
+  --color-banner-warning: #fffaf5;
+
   --color-error-regular: #d74942;
   --color-error-hover: #be3028;
   --color-error-active: #a92a24;
@@ -109,8 +114,6 @@
   --color-white: #ffffff;
 
   /* Banner colors - matches Theme.palette */
-  --color-banner-success: #e0f9c3;
-  --color-warningBanner: #fff7de;
   --color-infoBanner: #d3ebf8;
   --color-errorBanner: #f6d6d5;
 
