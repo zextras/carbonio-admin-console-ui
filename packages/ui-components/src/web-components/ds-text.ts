@@ -6,14 +6,13 @@
 import { html, LitElement, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import { HTMLAttributes } from 'react';
 
 import { Theme } from '../theme/theme';
 import { getInlineStyles, resolveThemeColor } from '../theme/theme-utils';
 import { AnyColor } from '../types/utils';
 import { dsTextVars, textStyles } from './ds-text.styles';
 
-export type DsTextProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
+export type DsTextProps = {
   color?: AnyColor;
   size?: 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
   weight?: 'light' | 'regular' | 'medium' | 'bold';
