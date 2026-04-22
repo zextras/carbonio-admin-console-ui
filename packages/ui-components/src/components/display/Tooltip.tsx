@@ -17,11 +17,11 @@ import {
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { setupFloating } from '../../utils/floating-ui';
-import { TextProps } from '../../web-components/ds-text';
+import { DsTextProps } from '../../web-components/ds-text';
 import { Portal } from '../utilities/Portal';
 import styles from './Tooltip.module.css';
 
-type TooltipWrapperProps = TextProps & {
+type TooltipWrapperProps = DsTextProps & {
   open: boolean;
   maxWidth: string;
 };
@@ -58,7 +58,7 @@ const TooltipWrapper = ({
   );
 };
 
-type TooltipProps = TextProps & {
+type TooltipProps = DsTextProps & {
   /** Tooltip text */
   label: string | React.ReactNode | undefined;
   /** Tooltip placement */

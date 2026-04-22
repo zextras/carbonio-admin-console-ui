@@ -12,7 +12,7 @@ type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyo
 const CSS_KEYWORDS = new Set(['currentColor', 'transparent', 'inherit', 'initial', 'unset']);
 const BASE_COLORS = new Set(['white', 'black']);
 
-export function resolveThemeColor(colorName: string, state: string): string {
+export function resolveThemeColor(colorName: string | undefined, state: string): string {
   if (!colorName) return '';
   const trimmed = colorName.trim();
 

@@ -7,14 +7,14 @@
 import { useMemo } from 'react';
 
 import { resolveThemeColor } from '../../theme/theme-utils';
-import { TextProps } from '../../web-components/ds-text';
+import { DsTextProps } from '../../web-components/ds-text';
 import styles from './link.module.css';
 
 type LinkProps = {
   /** Whether link should be underlined */
   underlined?: boolean;
 } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'color' | 'size' | 'weight'> &
-  Pick<TextProps, 'color' | 'size' | 'weight'>;
+  Pick<DsTextProps, 'color' | 'size' | 'weight'>;
 
 const Link = ({ children, underlined = false, color = 'primary', style, ...rest }: LinkProps) => {
   const hoverColorVar = useMemo(() => resolveThemeColor(color, 'hover'), [color]);
