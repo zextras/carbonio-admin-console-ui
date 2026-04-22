@@ -8,9 +8,10 @@ import './ds-icon';
 
 import { css, html, LitElement, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 
 type DsBadgeIconType = 'success' | 'warning';
-export type DsBadgeIconProps = { type?: DsBadgeIconType };
+export type DsBadgeIconProps = { type?: DsBadgeIconType; label: string };
 
 export class DsBadgeIcon extends LitElement {
   static override styles = css`
@@ -36,21 +37,31 @@ export class DsBadgeIcon extends LitElement {
   `;
 
   @property({ type: String, reflect: true })
-  accessor type: DsBadgeIconType = 'success';
+  accessor type: DsBadgeIconProps['type'] = 'success';
+
+  @property({ type: String, reflect: true })
+  accessor label: DsBadgeIconProps['label'] | undefined;
 
   override render(): TemplateResult {
-    const getIconName = (type: DsBadgeIconType) => {
+    const getIconName = (type: DsBadgeIconType | undefined) => {
+      if (!type) return 'AlertTriangleOutline';
       if (type === 'warning') return 'AlertTriangle';
+      return 'CheckmarkCircle';
+    };
+    const getIconColor = (type: DsBadgeIconType | undefined) => {
+      if (!type) return 'var(--color-warning-text)';
+      if (type === 'warning') return 'var(--color-warning-text)';
+      return 'var(--color-success-active)';
     };
 
     return html`
       <ds-icon
         class="icon"
         name=${getIconName(this.type)}
-        color="currentColor"
+        color=${getIconColor(this.type)}
         aria-hidden="true"
       ></ds-icon>
-      <slot></slot>
+      <span style=${styleMap({ color: getIconColor(this.type) })}>${this.label}</span>
     `;
   }
 }

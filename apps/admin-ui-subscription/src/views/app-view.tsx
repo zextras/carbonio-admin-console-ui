@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useBreakpoint, usePrimaryBarState } from '@zextras/ui-shared';
-import { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { ActivateSubscription } from './subscription/activate-subscription';
+import { RegularSubscription } from './subscription/regular-subscription';
 import { Subscription } from './subscription/subscription';
 
 const baseStyle = {
@@ -48,9 +48,7 @@ export const AppView = () => {
           path="/"
           element={
             <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
-              <Suspense fallback={<ds-spinner></ds-spinner>}>
-                <Subscription />
-              </Suspense>
+              <Subscription />
             </div>
           }
         />
@@ -58,9 +56,15 @@ export const AppView = () => {
           path="/activate"
           element={
             <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
-              <Suspense fallback={<ds-spinner></ds-spinner>}>
-                <ActivateSubscription />
-              </Suspense>
+              <ActivateSubscription />
+            </div>
+          }
+        />
+        <Route
+          path="/regular"
+          element={
+            <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
+              <RegularSubscription />
             </div>
           }
         />
