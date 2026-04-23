@@ -1,3 +1,9 @@
+## [0.13.0-devel.21](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.20...v0.13.0-devel.21) (2026-04-23)
+
+### Bug Fixes
+
+* added account status lockout in account general settings ([#1160](https://github.com/zextras/carbonio-admin-console-ui/issues/1160)) ([b50c9b8](https://github.com/zextras/carbonio-admin-console-ui/commit/b50c9b88d212985a6d56ad259d1d6fa6c13940c6))
+
 ## [0.13.0-devel.20](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.19...v0.13.0-devel.20) (2026-04-21)
 
 ### Features
