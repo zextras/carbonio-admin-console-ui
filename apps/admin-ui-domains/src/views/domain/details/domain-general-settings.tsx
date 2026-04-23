@@ -595,6 +595,7 @@ const DomainGeneralSettings: FC = () => {
       { n: 'zimbraHelpDelegatedURL', _content: zimbraHelpDelegatedURL },
       { n: 'zimbraPublicServiceHostname', _content: publicServiceHostName },
       { n: 'carbonioNotificationFrom', _content: carbonioNotificationFrom },
+      { n: 'zimbraPublicServiceProtocol', _content: selectedPublicServiceProtocol.value }
     ];
 
     addConditionalAttributes(attributes);
