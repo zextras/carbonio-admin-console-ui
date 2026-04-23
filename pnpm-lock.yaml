@@ -49,7 +49,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.4(vitest@4.1.4)
       conventional-changelog-conventionalcommits:
-        specifier: ^9.3.0
+        specifier: ^9.3.1
         version: 9.3.1
       depcheck:
         specifier: ^1.4.7
