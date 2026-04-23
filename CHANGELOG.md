@@ -1,3 +1,9 @@
+## [0.13.0-devel.22](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.21...v0.13.0-devel.22) (2026-04-23)
+
+### Bug Fixes
+
+* domain, cos creation date displays values issue ([#1159](https://github.com/zextras/carbonio-admin-console-ui/issues/1159)) ([7a14ca1](https://github.com/zextras/carbonio-admin-console-ui/commit/7a14ca13b1987b7b54a542a0bd7675fa0b5273ba))
+
 ## [0.13.0-devel.21](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.20...v0.13.0-devel.21) (2026-04-23)
 
 ### Bug Fixes
