@@ -10,6 +10,7 @@ import { Route, Routes } from 'react-router';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { ActivateSubscription } from './subscription/activate-subscription';
 import { MeteredSubscription } from './subscription/metered-subscription';
+import { PerpetualSubscription } from './subscription/perpetual-subscription';
 import { RegularSubscription } from './subscription/regular-subscription';
 import { Subscription } from './subscription/subscription';
 
@@ -87,6 +88,16 @@ export const AppView = () => {
             element={
               <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
                 <MeteredSubscription />
+              </div>
+            }
+          />
+        )}
+        {featureFlag && (
+          <Route
+            path="/perpetual"
+            element={
+              <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
+                <PerpetualSubscription />
               </div>
             }
           />
