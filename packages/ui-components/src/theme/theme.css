@@ -236,6 +236,9 @@
   --tag-over-text: #a92a24;
   --tag-over-bg: #fff2f1;
   --color-badge-regular: #e0f9c3;
+  --trial-banner-border: #ffc107;
+  --trial-banner-bg: #fff7de;
+  --trial-icon-color: #c97f00;
 
   /* Breakpoints */
   --breakpoint-lg: 992px;
