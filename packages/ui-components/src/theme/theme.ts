@@ -44,7 +44,6 @@ export type Theme = {
     errorBanner: string;
     currentColor: string;
     avatar: Record<string, string>;
-    badge: Record<string, string>;
   };
   icon: {
     size: {
@@ -102,7 +101,7 @@ export type Theme = {
     high: { text: string; bg: string };
     over: { text: string; bg: string };
   };
-  trial: { banner: Record<string, string> };
+  trial: { box: Record<string, string> };
 };
 
 export const theme: Theme = {
@@ -228,12 +227,11 @@ export const theme: Theme = {
     },
     black: 'var(--color-black)',
     white: 'var(--color-white)',
-    successBanner: 'var(--color-successBanner)',
-    warningBanner: 'var(--color-warningBanner)',
-    infoBanner: 'var(--color-infoBanner)',
-    errorBanner: 'var(--color-errorBanner)',
+    successBanner: 'var(--color-success-banner)',
+    warningBanner: 'var(--color-warning-banner)',
+    infoBanner: 'var(--color-info-banner)',
+    errorBanner: 'var(--color-error-banner)',
     currentColor: 'var(--color-currentColor)',
-    badge: { regular: 'var(--color-badge-regular)' },
     avatar: {
       '1': 'var(--color-avatar-1)',
       '2': 'var(--color-avatar-2)',
@@ -353,13 +351,12 @@ export const theme: Theme = {
     low: { text: 'var(--tag-low-text)', bg: 'var(--tag-low-bg)' },
     moderate: { text: 'var(--tag-moderate-text)', bg: 'var(--tag-moderate-bg)' },
     high: { text: 'var(--tag-high-text)', bg: 'var(--tag-high-bg)' },
-    over: { text: 'var(--tag-over-text)', bg: 'var(--tag-over-bg)' },
+    over: { text: '', bg: 'var(--tag-over-bg)' },
   },
   trial: {
-    banner: {
-      border: 'var(--trial-banner-border)',
-      bg: 'var(--trial-banner-bg)',
-      icon: 'var(--trial-icon-color)',
+    box: {
+      color: 'var(--trial-box-color)',
+      bg: 'var(--trial-box-bg)',
     },
   },
 };

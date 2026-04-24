@@ -17,7 +17,7 @@ function calculateUsagePercentage(used: number, total: number) {
 }
 
 function getTagIconColor(usagePercentage: number) {
-  if (usagePercentage >= 100) return theme.tag.over.text;
+  if (usagePercentage >= 100) return theme.color.error.active;
   if (usagePercentage > 95) return theme.tag.high.text;
   if (usagePercentage > 70) return theme.tag.moderate.text;
   return theme.tag.low.text;

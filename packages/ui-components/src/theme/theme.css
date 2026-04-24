@@ -109,10 +109,10 @@
   --color-white: #ffffff;
 
   /* Banner colors - matches Theme.palette */
-  --color-successBanner: #e0f9c3;
-  --color-warningBanner: #fff7de;
-  --color-infoBanner: #d3ebf8;
-  --color-errorBanner: #f6d6d5;
+  --color-success-banner: #e0f9c3;
+  --color-warning-banner: #fff7de;
+  --color-info-banner: #d3ebf8;
+  --color-error-banner: #f6d6d5;
 
   /* Transparent - matches Theme.palette.transparent */
   --color-transparent: rgba(0, 0, 0, 0);
@@ -233,12 +233,9 @@
   --tag-moderate-bg: #def3ff;
   --tag-high-text: #995f1f;
   --tag-high-bg: #fffaf5;
-  --tag-over-text: #a92a24;
   --tag-over-bg: #fff2f1;
-  --color-badge-regular: #e0f9c3;
-  --trial-banner-border: #ffc107;
-  --trial-banner-bg: #fff7de;
-  --trial-icon-color: #c97f00;
+  --trial-box-color: #c97f00;
+  --trial-box-bg: #fff7ed;
 
   /* Breakpoints */
   --breakpoint-lg: 992px;

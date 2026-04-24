@@ -27,7 +27,7 @@ export const SubscriptionStatus = () => {
       <ds-text size="small" as="span" color="gray0">
         {t('core.subscription.status', 'Subscription status')}
       </ds-text>
-      <ds-badge color={theme.color.badge.regular}>
+      <ds-badge color={theme.color.successBanner}>
         <ds-text weight="bold" color="gray0" style={{ fontSize: '1.5rem' }}>
           {t('label.active', 'Active').toUpperCase()}
         </ds-text>
