@@ -1,0 +1,84 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.outer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--color-gray6-regular);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--padding-size-large);
+  height: 58px;
+  box-sizing: border-box;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--padding-size-large);
+  overflow: auto;
+  width: 100%;
+  height: calc(100vh - 200px);
+  box-sizing: border-box;
+  border-radius: 1rem;
+  border: 1px solid var(--color-gray4-regular);
+}
+
+.card {
+  display: flex;
+  padding: var(--padding-size-large);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1 0 0;
+  align-self: stretch;
+}
+
+.pill {
+  border-radius: 100px;
+  background: #e0f9c3;
+}
+
+.inputField {
+  flex: 1 1 200px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.errorMessage {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding-top: 4px;
+}
+
+.buttonWrap {
+  flex: 0 0 auto;
+  display: flex;
+}
+
+.logo {
+  display: block;
+  margin: 2.5rem auto 0;
+}
+
+.text {
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
+}

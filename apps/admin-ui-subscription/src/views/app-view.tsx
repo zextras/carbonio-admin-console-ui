@@ -13,6 +13,7 @@ import { MeteredSubscription } from './subscription/metered-subscription';
 import { PerpetualSubscription } from './subscription/perpetual-subscription';
 import { RegularSubscription } from './subscription/regular-subscription';
 import { Subscription } from './subscription/subscription';
+import { TrialSubscription } from './subscription/trial-subscription';
 
 const baseStyle = {
   display: 'flex',
@@ -98,6 +99,16 @@ export const AppView = () => {
             element={
               <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
                 <PerpetualSubscription />
+              </div>
+            }
+          />
+        )}
+        {featureFlag && (
+          <Route
+            path="/trial"
+            element={
+              <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
+                <TrialSubscription />
               </div>
             }
           />
