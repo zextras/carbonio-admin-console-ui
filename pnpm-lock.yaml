@@ -49,7 +49,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.5(vitest@4.1.5)
       conventional-changelog-conventionalcommits:
-        specifier: ^9.3.0
+        specifier: ^9.3.1
         version: 9.3.1
       depcheck:
         specifier: ^1.4.7
@@ -233,7 +233,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -420,7 +420,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -547,7 +547,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -695,7 +695,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -849,7 +849,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -997,7 +997,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -1145,7 +1145,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -1293,7 +1293,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -1438,7 +1438,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -1586,7 +1586,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -1731,7 +1731,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -1879,7 +1879,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
@@ -1949,7 +1949,7 @@ importers:
         specifier: ^2.12.0
         version: 2.12.0(eslint@9.39.4(jiti@2.6.1))
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       tailwindcss:
         specifier: ^4.2.1
@@ -2170,7 +2170,7 @@ importers:
         specifier: ^26.1.0
         version: 26.1.0
       msw:
-        specifier: ^2.12.2
+        specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
         specifier: ^1.55.0
