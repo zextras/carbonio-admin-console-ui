@@ -20,6 +20,7 @@ import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
+import { type SearchDirectoryEntry } from '../../../types/cos';
 import {
   ADVANCED,
   COS_LIST,
@@ -44,23 +45,22 @@ export const CosListPanel: FC = () => {
   const { pathname } = useLocation();
   const [searchCosName, setSearchCosName] = useState('');
   const [isCosSelect, setIsCosSelect] = useState(false);
-  const [cosList, setCosList] = useState([]);
+  const [cosList, setCosList] = useState<Array<SearchDirectoryEntry>>([]);
   const [isCosListExpand, setIsCosListExpand] = useState(false);
   const { cosView, setCosView, cos } = useCosStore();
   const setCos = useCosStore((state) => state.setCos);
   const cosInformation = useCosStore((state) => state.cos);
-  const cosName: any = useCosStore((state) => state.cos?.name);
+  const cosName = useCosStore((state) => state.cos?.name);
   const [isShowError, setIsShowError] = useState(false);
-  const prevCosRef = useRef(null);
+  const prevCosRef = useRef<string | undefined>(undefined);
   const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 
   const getCosLists = useCallback(
-    (searchData: string): any => {
+    (searchData: string): void => {
       getCosList(searchData)
         .then((data) => {
-          const searchResponse: any = data;
-          if (!!searchResponse && searchResponse?.searchTotal > 0) {
-            setCosList(searchResponse?.cos);
+          if (data && data?.searchTotal && data.searchTotal > 0 && data.cos) {
+            setCosList(data.cos);
           } else {
             setCosList([]);
             setIsShowError(true);
@@ -149,7 +149,7 @@ export const CosListPanel: FC = () => {
   );
 
   const selectedCos = useCallback(
-    (cosData: any) => {
+    (cosData: SearchDirectoryEntry) => {
       setIsCosSelect(true);
       setSearchCosName(cosData?.name);
       setIsCosListExpand(false);
@@ -222,52 +222,52 @@ export const CosListPanel: FC = () => {
   const items =
     cosList.length > MAX_COS_DISPLAY
       ? [
-          {
-            customComponent: (
-              <>
-                <Row mainAlignment="flex-start">
-                  <Padding horizontal="small">
-                    <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
-                  </Padding>
-                </Row>
-                <Row
-                  mainAlignment="flex-start"
-                  width="100%"
-                  padding={{
-                    all: 'small',
-                  }}
-                >
-                  <ds-text as="p" overflow="break-word">
-                    {t(
-                      'many_cos_info_msg',
-                      'So many COSes! Which one would you like to see? Start typing to filter.',
-                    )}
-                  </ds-text>
-                </Row>
-              </>
-            ),
-          },
-        ]
-      : cosList.map((cosData: any) => ({
-          id: cosData.id,
-          label: cosData.name,
+        {
           customComponent: (
-            <Row
-              style={{
-                display: 'block',
-                textAlign: 'left',
-                height: 'inherit',
-                padding: '3px',
-                width: 'inherit',
-              }}
-              onClick={(): void => {
-                selectedCos(cosData);
-              }}
-            >
-              {cosData?.name}
-            </Row>
+            <>
+              <Row mainAlignment="flex-start">
+                <Padding horizontal="small">
+                  <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
+                </Padding>
+              </Row>
+              <Row
+                mainAlignment="flex-start"
+                width="100%"
+                padding={{
+                  all: 'small',
+                }}
+              >
+                <ds-text as="p" overflow="break-word">
+                  {t(
+                    'many_cos_info_msg',
+                    'So many COSes! Which one would you like to see? Start typing to filter.',
+                  )}
+                </ds-text>
+              </Row>
+            </>
           ),
-        }));
+        },
+      ]
+      : cosList.map((cosData) => ({
+        id: cosData.id,
+        label: cosData.name,
+        customComponent: (
+          <Row
+            style={{
+              display: 'block',
+              textAlign: 'left',
+              height: 'inherit',
+              padding: '3px',
+              width: 'inherit',
+            }}
+            onClick={(): void => {
+              selectedCos(cosData);
+            }}
+          >
+            {cosData?.name}
+          </Row>
+        ),
+      }));
 
   useEffect(() => {
     const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);

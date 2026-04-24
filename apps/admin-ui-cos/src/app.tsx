@@ -104,17 +104,18 @@ const App: FC = () => {
 
   useEffect(() => {
     registerActions({
-      action: (): any => ({
+      action: () => ({
         id: 'new-cos',
         label: t('label.create_new_cos', 'Create New COS'),
         icon: '',
-        onClick: (): void => {
+        click: (): void => {
           navigate(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
           setCosView(CREATE_NEW_COS_ROUTE_ID);
         },
         disabled: !createCosRight,
         group: APP_ID,
         primary: false,
+        type: 'new',
       }),
       id: 'new-cos',
       type: 'new',

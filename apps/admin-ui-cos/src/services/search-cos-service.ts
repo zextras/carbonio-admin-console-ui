@@ -6,11 +6,13 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import { SearchDirectoryResponse } from '../../types/cos';
+
 export const getCosList = async (
 	searchKeyWord: string,
 	limit?: number,
 	offset?: number
-): Promise<any> =>
+): Promise<SearchDirectoryResponse> =>
 	soapFetch(`SearchDirectory`, {
 		method: 'POST',
 		credentials: 'include',

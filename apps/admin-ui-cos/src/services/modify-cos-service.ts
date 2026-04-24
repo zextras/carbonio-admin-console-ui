@@ -6,12 +6,14 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const modifyCos = async (body: ModifyCosBody): Promise<any> =>
+import { CosResponse } from '../../types/cos';
+
+export const modifyCos = async (body: ModifyCosBody): Promise<CosResponse> =>
 	soapFetch(`ModifyCos`, {
 		...body
 	});
 
-export interface ModifyCosBody {
+export type ModifyCosBody = {
 	_jsns: string;
 	id: {
 		_content: string;
@@ -20,4 +22,4 @@ export interface ModifyCosBody {
 		n: string;
 		_content: string;
 	}>;
-}
+};
