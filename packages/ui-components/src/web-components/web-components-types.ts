@@ -8,10 +8,10 @@
 import type { DetailedHTMLProps, HTMLAttributes, RefAttributes } from 'react';
 
 import type { DsBadgeProps } from './ds-badge';
-import type { DsBadgeIconProps } from './ds-badge-icon';
 import type { DsDividerProps } from './ds-divider';
 import type { DsIconProps } from './ds-icon';
 import type { DsSpinnerProps } from './ds-spinner';
+import { DsTagIconProps } from './ds-tag-icon';
 import type { DsTextProps } from './ds-text';
 
 type WebComponentElement<P extends Record<string, unknown>> = DetailedHTMLProps<
@@ -28,7 +28,7 @@ declare global {
         'ds-divider': WebComponentElement<DsDividerProps>;
         'ds-icon': WebComponentElement<DsIconProps>;
         'ds-badge': WebComponentElement<DsBadgeProps>;
-        'ds-badge-icon': WebComponentElement<DsBadgeIconProps>;
+        'ds-tag-icon': WebComponentElement<DsTagIconProps>;
         'ds-text': WebComponentElement<DsTextProps>;
       }
     }

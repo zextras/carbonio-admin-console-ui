@@ -9,8 +9,7 @@ import './ds-icon';
 import { css, html, LitElement, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 
-type DsBadgeColor = 'success' | 'warning';
-export type DsBadgeProps = { color?: DsBadgeColor };
+export type DsBadgeProps = { color?: string };
 
 export class DsBadge extends LitElement {
   static override styles = css`
@@ -21,16 +20,20 @@ export class DsBadge extends LitElement {
       gap: 0.375rem;
       padding: 0.25rem 1rem;
       border-radius: 9999px;
-      background: var(--color-banner-success);
-    }
-
-    :host([color='warning']) {
-      background: var(--color-banner-warning);
+      background: var(--ds-badge-color);
     }
   `;
 
   @property({ type: String, reflect: true })
-  accessor color: DsBadgeColor = 'success';
+  accessor color: string = 'transparent';
+
+  override updated(): void {
+    if (this.color) {
+      this.style.setProperty('--ds-badge-color', this.color);
+    } else {
+      this.style.removeProperty('--ds-badge-color');
+    }
+  }
 
   override render(): TemplateResult {
     return html` <slot></slot> `;

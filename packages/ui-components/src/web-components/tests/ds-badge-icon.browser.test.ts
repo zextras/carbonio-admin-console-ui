@@ -3,21 +3,21 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import '../ds-badge-icon';
+import '../ds-tag-icon';
 
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 // eslint-disable-next-line no-duplicate-imports
-import type { DsBadgeIcon } from '../ds-badge-icon';
+import type { DsTagIcon } from '../ds-tag-icon';
 
-let element: DsBadgeIcon;
+let element: DsTagIcon;
 
 async function createDsBadgeIcon(
   attrs: Record<string, string> = {},
   textContent = '',
-): Promise<DsBadgeIcon> {
-  element = document.createElement('ds-badge-icon');
+): Promise<DsTagIcon> {
+  element = document.createElement('ds-tag-icon');
   for (const [key, value] of Object.entries(attrs)) {
     element.setAttribute(key, value);
   }
@@ -33,15 +33,15 @@ afterEach(() => {
   element?.remove();
 });
 
-describe('ds-badge-icon', () => {
+describe('ds-tag-icon', () => {
   describe('custom element registration', () => {
-    it('should be defined as ds-badge-icon', () => {
-      expect(customElements.get('ds-badge-icon')).toBeDefined();
+    it('should be defined as ds-tag-icon', () => {
+      expect(customElements.get('ds-tag-icon')).toBeDefined();
     });
 
     it('should be an instance of DsBadgeIcon', async () => {
       const el = await createDsBadgeIcon();
-      expect(el).toBeInstanceOf(customElements.get('ds-badge-icon')!);
+      expect(el).toBeInstanceOf(customElements.get('ds-tag-icon')!);
     });
   });
 

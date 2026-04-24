@@ -9,8 +9,8 @@ import '../theme/theme.css';
 
 // Import and export the web components to ensure they are bundled and registered
 export { DsBadge } from './ds-badge';
-export { DsBadgeIcon } from './ds-badge-icon';
 export { DividerElement } from './ds-divider';
 export { DsIcon } from './ds-icon';
 export { DsSpinner } from './ds-spinner';
+export { DsTagIcon } from './ds-tag-icon';
 export { DsText, type DsTextProps as TextProps } from './ds-text';
