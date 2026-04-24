@@ -1,3 +1,21 @@
+## [0.13.0-devel.23](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.22...v0.13.0-devel.23) (2026-04-23)
+
+### Features
+
+* [CO-3477] download button for domain quota report ([40955be](https://github.com/zextras/carbonio-admin-console-ui/commit/40955bed298c7fc77d44111d39da3e11523ee507))
+
+## [0.13.0-devel.22](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.21...v0.13.0-devel.22) (2026-04-23)
+
+### Bug Fixes
+
+* domain, cos creation date displays values issue ([#1159](https://github.com/zextras/carbonio-admin-console-ui/issues/1159)) ([7a14ca1](https://github.com/zextras/carbonio-admin-console-ui/commit/7a14ca13b1987b7b54a542a0bd7675fa0b5273ba))
+
+## [0.13.0-devel.21](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.20...v0.13.0-devel.21) (2026-04-23)
+
+### Bug Fixes
+
+* added account status lockout in account general settings ([#1160](https://github.com/zextras/carbonio-admin-console-ui/issues/1160)) ([b50c9b8](https://github.com/zextras/carbonio-admin-console-ui/commit/b50c9b88d212985a6d56ad259d1d6fa6c13940c6))
+
 ## [0.13.0-devel.20](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.19...v0.13.0-devel.20) (2026-04-21)
 
 ### Features
