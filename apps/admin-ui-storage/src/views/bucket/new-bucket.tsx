@@ -4,89 +4,65 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, HorizontalWizard, WizardInSection } from '@zextras/ui-components';
-import { type FC, useCallback } from 'react';
+import { Button, Container, Row } from '@zextras/ui-components';
+import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { objectType } from '../../../types';
 import Connection from './connection';
 
-const NewBucket: FC<{
-  setToggleWizardSection: any;
-  setDetailsBucket: any;
-  bucketType: any;
-  setConnectionData: any;
-}> = ({ setToggleWizardSection, setDetailsBucket, bucketType, setConnectionData }) => {
+type NewBucketProps = {
+  setToggleWizardSection: (value: boolean) => void;
+  setDetailsBucket: (value: boolean) => void;
+  bucketType?: string;
+  setConnectionData: (value: objectType | undefined) => void;
+};
+
+const NewBucket: FC<NewBucketProps> = ({
+  setToggleWizardSection,
+  setDetailsBucket,
+  bucketType,
+  setConnectionData,
+}) => {
   const { t } = useTranslation();
 
-  const wizardSteps = [
-    {
-      name: 'connection',
-      label: t('new_bucket_connection', 'CONNECTION'),
-      icon: 'Link2Outline',
-      view: Connection,
-      canGoNext: (): any => true,
-      CancelButton: (props: any) => (
-        <Button
-          {...props}
-          type="outlined"
-          key="wizard-cancel"
-          label={t('label.bucket_need_help_button', 'NEED HELP?')}
-          color="secondary"
-          onClick={(): void => setToggleWizardSection(true)}
-        />
-      ),
-      PrevButton: (props: any): any => (
-        <>
-          {!props.completeLoading ? (
-            <Button
-              {...props}
-              key="wizard-cancel"
-              label={t('label.bucket_cancel_button', 'CANCEL')}
-              color="secondary"
-              icon="ChevronLeftOutline"
-              iconPlacement="left"
-              disable={!!props.disabled}
-              onClick={(): void => setToggleWizardSection(false)}
-            />
-          ) : (
-            ''
-          )}
-        </>
-      ),
-      NextButton: (props: any): any => (
-        <Button
-          {...props}
-          label={t('label.bucket_done_button', 'Done')}
-          icon={'CheckmarkCircleOutline'}
-          iconPlacement="right"
-          disable={props.completeLoading}
-          style={{ marginLeft: '16px' }}
-          onClick={(): void => {
-            setToggleWizardSection(false);
-          }}
-        />
-      ),
-    },
-  ];
-
-  const onComplete = useCallback(
-    (data: any) => {
-      setConnectionData(data.steps.connection);
-      setToggleWizardSection(false);
-      setDetailsBucket(false);
-    },
-    [setToggleWizardSection, setDetailsBucket, setConnectionData],
+  return (
+    <Container background="gray6" orientation="vertical">
+      <Row
+        mainAlignment="flex-start"
+        crossAlignment="center"
+        orientation="horizontal"
+        background="white"
+        width="fill"
+        height="4rem"
+      >
+        <Row mainAlignment="flex-start" padding={{ left: 'large'}} takeAvailableSpace>
+          <ds-text as="h2" weight="bold">
+            {t('storages.connectNewS3', 'Connect a new S3')}
+          </ds-text>
+        </Row>
+        <Row padding={{ horizontal: 'small' }}>
+          <Button
+            type="ghost"
+            color="text"
+            icon="CloseOutline"
+            onClick={(): void => {
+              setToggleWizardSection(false);
+              setDetailsBucket(false);
+              setConnectionData(undefined);
+            }}
+          />
+        </Row>
+      </Row>
+      <ds-divider></ds-divider>
+      <Connection
+        externalData={bucketType}
+        onCancel={(): void => {
+          setToggleWizardSection(false);
+          setDetailsBucket(false);
+        }}
+      />
+    </Container>
   );
-
-	return (
-		<HorizontalWizard
-			steps={wizardSteps}
-			title={t('buckets.new.bucket_connection', 'Bucket Connection')}
-			Wrapper={WizardInSection}
-			onComplete={onComplete}
-			setToggleWizardSection={setToggleWizardSection}
-			externalData={bucketType}
-		/>
-	);
 };
 export default NewBucket;
