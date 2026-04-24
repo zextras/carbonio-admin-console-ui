@@ -276,6 +276,12 @@ export const iconRegistry = {
 				data-name="chevron-up"
 			/>
 		</g>`,
+  ClockOutline: `<g data-name="Layer 2">
+			<g data-name="clock">
+				<path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8" />
+				<path d="M16 11h-3V8a1 1 0 0 0-2 0v4a1 1 0 0 0 1 1h4a1 1 0 0 0 0-2" />
+			</g>
+		</g>`,
   Close: `<g data-name="Layer 2">
 			<path
 				d="m13.41 12 4.3-4.29a1 1 0 1 0-1.42-1.42L12 10.59l-4.29-4.3a1 1 0 0 0-1.42 1.42l4.3 4.29-4.3 4.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l4.29-4.3 4.29 4.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42z"
