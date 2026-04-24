@@ -8,7 +8,7 @@ import { useLicenseInfo } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import styles from './subscription-expiry.module.css';
+import styles from './last-data-sent.module.css';
 
 const DATE_FORMAT = 'dd MMM yyyy';
 
