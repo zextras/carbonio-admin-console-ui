@@ -11,13 +11,13 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './seat-utilization.module.css';
 
-function calculatedAccountQuotaSizePercentage(accountCount: number, licensedUsers: number) {
-  if (licensedUsers === 0) {
-    return 0;
-  }
-  return (accountCount / licensedUsers) * 100;
+function calculateUsagePercentage(used: number, total: number) {
+  if (total <= 0) return 0;
+  return (used / total) * 100;
 }
+
 function getTagIconColor(usagePercentage: number) {
+  if (usagePercentage >= 100) return theme.tag.over.text;
   if (usagePercentage > 95) return theme.tag.high.text;
   if (usagePercentage > 70) return theme.tag.moderate.text;
   return theme.tag.low.text;
@@ -50,10 +50,9 @@ export const SeatUtilization = () => {
 
   const { data: licenseData } = useLicenseInfo();
 
-  const usage = calculatedAccountQuotaSizePercentage(
-    licenseData?.response?.accountCount ?? 0,
-    licenseData?.response?.licensedUsers ?? 0,
-  );
+  const activeAccounts = licenseData?.response?.accountCount ?? 0;
+  const totalLicences = licenseData?.response?.licensedUsers ?? 0;
+  const usage = calculateUsagePercentage(activeAccounts, totalLicences);
 
   const usagePercentageLabel = `${Math.round(usage)}%`;
 
@@ -64,7 +63,7 @@ export const SeatUtilization = () => {
       <ds-text size="small" as="span" color="gray0">
         {t('core.subscription.seat_utilization', 'Seat utilization')}
       </ds-text>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <div className={styles.usageRow}>
         <ds-text weight="bold" color="gray0" style={{ fontSize: '1.5rem' }}>
           {usagePercentageLabel}
         </ds-text>
@@ -73,10 +72,9 @@ export const SeatUtilization = () => {
           icon={getTagIconIcon(usage)}
           color={getTagIconColor(usage)}
           background={getTagIconBackground(usage)}
-        ></ds-tag-icon>{' '}
+        ></ds-tag-icon>
       </div>
-      {/* TODO: CO-3521 fix this hardcoded value with real data from the API */}
-      <ds-text style={{ paddingTop: '1rem' }}>{'5200/5600'}</ds-text>
+      <ds-text style={{ paddingTop: '1rem' }}>{`${activeAccounts}/${totalLicences}`}</ds-text>
     </div>
   );
 };

@@ -14,3 +14,9 @@
   height: 8.5rem;
   flex: 1 0 0;
 }
+
+.usageRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
