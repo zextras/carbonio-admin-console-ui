@@ -6,8 +6,8 @@
 
 import { useTranslation } from 'react-i18next';
 
-import { SeatUtilization } from './parts/cards/seat-utilization';
 import { ActiveEdition } from './parts/cards/active-edition';
+import { SeatUtilization } from './parts/cards/seat-utilization';
 import { SubscriptionExpiry } from './parts/cards/subscription-expiry';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
 import styles from './regular-subscription.module.css';
