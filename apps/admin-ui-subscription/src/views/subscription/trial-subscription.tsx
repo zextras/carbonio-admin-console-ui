@@ -10,23 +10,27 @@ import { ActiveEdition } from './parts/cards/active-edition';
 import { SeatUtilization } from './parts/cards/seat-utilization';
 import { SubscriptionExpiry } from './parts/cards/subscription-expiry';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
+import { TrialBanner } from './parts/trial-banner';
 import styles from './perpetual-subscription.module.css';
 
 export const TrialSubscription = () => {
   const { t } = useTranslation();
   return (
-    <div className={styles.outer}>
-      <div className={styles.header}>
-        <ds-text as="h2" weight="bold" size="extralarge" color="gray0">
-          {t('label.subscriptions', 'Subscriptions')}
-        </ds-text>
+    <>
+      <TrialBanner />
+      <div className={styles.outer}>
+        <div className={styles.header}>
+          <ds-text as="h2" weight="bold" size="extralarge" color="gray0">
+            {t('label.subscriptions', 'Subscriptions')}
+          </ds-text>
+        </div>
+        <div className={styles.row}>
+          <SubscriptionStatus />
+          <ActiveEdition />
+          <SeatUtilization />
+          <SubscriptionExpiry />
+        </div>
       </div>
-      <div className={styles.row}>
-        <SubscriptionStatus />
-        <ActiveEdition />
-        <SeatUtilization />
-        <SubscriptionExpiry />
-      </div>
-    </div>
+    </>
   );
 };
