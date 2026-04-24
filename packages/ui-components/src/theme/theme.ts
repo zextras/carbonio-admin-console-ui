@@ -102,6 +102,7 @@ export type Theme = {
     high: { text: string; bg: string };
     over: { text: string; bg: string };
   };
+  trial: { banner: Record<string, string> };
 };
 
 export const theme: Theme = {
@@ -353,5 +354,12 @@ export const theme: Theme = {
     moderate: { text: 'var(--tag-moderate-text)', bg: 'var(--tag-moderate-bg)' },
     high: { text: 'var(--tag-high-text)', bg: 'var(--tag-high-bg)' },
     over: { text: 'var(--tag-over-text)', bg: 'var(--tag-over-bg)' },
+  },
+  trial: {
+    banner: {
+      border: 'var(--trial-banner-border)',
+      bg: 'var(--trial-banner-bg)',
+      icon: 'var(--trial-icon-color)',
+    },
   },
 };
