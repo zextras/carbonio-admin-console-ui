@@ -32,7 +32,15 @@ import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import NewBucket from './new-bucket';
 
-const headers = (t: TFunction): any => [
+type TableHeader = {
+  id: string;
+  label: string;
+  bold: boolean;
+};
+
+type SingleSelection = [] | [string];
+
+const headers = (t: TFunction): Array<TableHeader> => [
   {
     id: 'label',
     label: t('label.label', 'Label'),
@@ -52,16 +60,21 @@ const headers = (t: TFunction): any => [
 
 const BucketListTable: FC<{
   volumes: objectType[];
-  selectedRows: any;
+  selectedRows: SingleSelection;
   onSelectionChange: (selected: string[]) => void;
   onDoubleClick: (i: number) => void;
   onClick: (i: number) => void;
 }> = ({ volumes, selectedRows, onSelectionChange, onDoubleClick, onClick }) => {
   const [t] = useTranslation();
-  const tableRows: any = useMemo(
+  const tableRows: Array<{
+    id: string;
+    columns: Array<string | React.ReactElement>;
+    clickable: boolean;
+  }> =
+    useMemo(
     () =>
       volumes.map((v, i) => ({
-        id: i,
+        id: String(i),
         columns: [
           <Tooltip placement="bottom" label={v.notes} key={v.label}>
             <Row
@@ -168,11 +181,11 @@ const BucketListTable: FC<{
 const BucketDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [bucketselection, setBucketselection] = useState<string[]>([]);
+  const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
   const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>({});
   const bucketType = '';
   const [bucketList, setBucketList] = useState<objectType[]>([]);
-  const [allBucketList, setAllBucketList] = useState([]);
+  const [allBucketList, setAllBucketList] = useState<Array<objectType>>([]);
   const [connectionData, setConnectionData] = useState<objectType | undefined>();
   const [toggleWizardSection, setToggleWizardSection] = useState(false);
   const [open, setOpen] = useState(false);
@@ -209,7 +222,7 @@ const BucketDetailPanel: FC = () => {
       objToSend.targetServer = selectedServerName;
     }
 
-    fetchSoap('zextras', objToSend).then((res: any) => {
+    fetchSoap('zextras', objToSend).then((res: { Body: { response: { content: string } } }) => {
       const response = JSON.parse(res.Body.response.content);
       if (response.ok) {
         setBucketList(response.response.values);
@@ -325,7 +338,7 @@ const BucketDetailPanel: FC = () => {
             setBucketDeleteName={setBucketDeleteName}
             setOpen={setOpen}
             setShowEditDetailView={setShowEditDetailView}
-            title="Bucket Connection"
+            title="S3 details"
             bucketDetail={connectionData}
             getBucketListType={getBucketListType}
             setSelectedRow={setSelectedRow}
@@ -343,7 +356,7 @@ const BucketDetailPanel: FC = () => {
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
           <ds-text as="h2" weight="bold">
-            {t('buckets.bucket_list', 'Buckets List')}
+            {t('storages.s3Connectors', 'S3 connectors')}
           </ds-text>
         </Row>
         <ds-divider></ds-divider>
@@ -356,8 +369,8 @@ const BucketDetailPanel: FC = () => {
           padding={{ top: 'extralarge', right: 'large', left: 'large' }}
         >
           <Button
-            type="outlined"
-            label={t('label.bucket_create_button', 'CREATE')}
+            // type="outlined"
+            label={t('storages.createNewS3', 'CREATE A NEW S3')}
             icon="PlusOutline"
             color="primary"
             onClick={(): void => {
@@ -390,10 +403,16 @@ const BucketDetailPanel: FC = () => {
           <BucketListTable
             volumes={bucketList}
             selectedRows={bucketselection}
-            onSelectionChange={(selected: any): void => {
-              setBucketselection(selected);
+            onSelectionChange={(selected: string[]): void => {
+              const nextSelection: SingleSelection =
+                selected.length > 0 ? [selected[0] as string] : [];
+              setBucketselection(nextSelection);
+              const selectedIndex = Number(selected[0]);
+              if (Number.isNaN(selectedIndex)) {
+                return;
+              }
               const volumeObject: objectType | undefined = bucketList.find(
-                (s, index) => index === selected[0],
+                (s, index) => index === selectedIndex,
               );
               setShowDetails(false);
               setBucketDeleteName(volumeObject);

@@ -106,7 +106,7 @@ const BucketListPanel: FC = () => {
       },
       {
         id: BUCKET_LIST,
-        name: t('label.bucket_list', 'Bucket List'),
+        name: t('storages.s3Connectors', 'S3 connectors'),
         isSelected: isStoreSelect,
       },
     ],

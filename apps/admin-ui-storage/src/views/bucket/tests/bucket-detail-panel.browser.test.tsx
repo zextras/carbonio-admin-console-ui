@@ -88,19 +88,19 @@ function setupListBucketsInterceptor(buckets: Array<BucketEntry> = BUCKETS): voi
 
 describe('BucketDetailPanel (browser)', () => {
 	describe('Rendering', () => {
-		it('should render the Buckets List title', async () => {
+		it('should render the S3 connectors title', async () => {
 			setupListBucketsInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
-				.element(page.getByText('Buckets List', { exact: true }))
+				.element(page.getByText('S3 connectors', { exact: true }))
 				.toBeVisible();
 		});
 
-		it('should render the CREATE button', async () => {
+		it('should render the CREATE A NEW S3 button', async () => {
 			setupListBucketsInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
-				.element(page.getByRole('button', { name: /create/i }))
+				.element(page.getByRole('button', { name: /create a new s3/i }))
 				.toBeVisible();
 		});
 
