@@ -85,7 +85,7 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       pnpm:
         specifier: ^10.15.1
@@ -236,7 +236,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -423,7 +423,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       prop-types:
         specifier: ^15.8.1
@@ -550,7 +550,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -698,7 +698,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -852,7 +852,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -1000,7 +1000,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -1148,7 +1148,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -1296,7 +1296,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -1441,7 +1441,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -1589,7 +1589,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -1734,7 +1734,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -1882,7 +1882,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       react-dom:
         specifier: ^19.1.0
@@ -2173,7 +2173,7 @@ importers:
         specifier: ^2.13.5
         version: 2.13.5(@types/node@22.19.17)(typescript@6.0.3)
       playwright:
-        specifier: ^1.55.0
+        specifier: ^1.59.1
         version: 1.59.1
       prop-types:
         specifier: ^15.8.1
