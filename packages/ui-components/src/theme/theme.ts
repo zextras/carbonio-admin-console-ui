@@ -44,6 +44,7 @@ export type Theme = {
     errorBanner: string;
     currentColor: string;
     avatar: Record<string, string>;
+    badge: Record<string, string>;
   };
   icon: {
     size: {
@@ -231,6 +232,7 @@ export const theme: Theme = {
     infoBanner: 'var(--color-infoBanner)',
     errorBanner: 'var(--color-errorBanner)',
     currentColor: 'var(--color-currentColor)',
+    badge: { regular: 'var(--color-badge-regular)' },
     avatar: {
       '1': 'var(--color-avatar-1)',
       '2': 'var(--color-avatar-2)',

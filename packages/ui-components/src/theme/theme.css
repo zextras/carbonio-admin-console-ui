@@ -235,6 +235,7 @@
   --tag-high-bg: #fffaf5;
   --tag-over-text: #a92a24;
   --tag-over-bg: #fff2f1;
+  --color-badge-regular: #e0f9c3;
 
   /* Breakpoints */
   --breakpoint-lg: 992px;

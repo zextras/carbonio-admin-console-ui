@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { theme } from '@zextras/ui-components';
 import { useLicenseInfo } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +27,7 @@ export const SubscriptionStatus = () => {
       <ds-text size="small" as="span" color="gray0">
         {t('core.subscription.status', 'Subscription status')}
       </ds-text>
-      <ds-badge>
+      <ds-badge color={theme.color.badge.regular}>
         <ds-text weight="bold" color="gray0" style={{ fontSize: '1.5rem' }}>
           {t('label.active', 'Active').toUpperCase()}
         </ds-text>
