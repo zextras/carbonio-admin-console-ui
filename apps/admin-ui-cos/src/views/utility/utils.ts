@@ -5,6 +5,7 @@
  */
 
 import { SelectItem } from '@zextras/ui-components';
+import { parse } from 'date-fns';
 import { TFunction } from 'i18next';
 import { divide, multiply } from 'lodash-es';
 
@@ -946,15 +947,21 @@ export const localeList = (t: TFunction): SelectItem[] => [
 
 export const getDateFromStr = (serverStr: string): any => {
   if (serverStr === null || serverStr === undefined) return null;
-  const d = new Date();
-  const yyyy = parseInt(serverStr.substr(0, 4), 10);
-  const MM = parseInt(serverStr.substr(4, 2), 10);
-  const dd = parseInt(serverStr.substr(6, 2), 10);
-  d.setFullYear(yyyy);
-  d.setMonth(MM - 1);
-  d.setMonth(MM - 1);
-  d.setDate(dd);
-  return d;
+
+  const parsedDateTimeWithMillis = parse(serverStr, 'yyyyMMddHHmmss.SSSX', new Date());
+  if (!Number.isNaN(parsedDateTimeWithMillis.getTime())) {
+    return parsedDateTimeWithMillis;
+  }
+
+  const parsedDateTimeWithoutMillis = parse(serverStr, 'yyyyMMddHHmmssX', new Date());
+  if (!Number.isNaN(parsedDateTimeWithoutMillis.getTime())) {
+    return parsedDateTimeWithoutMillis;
+  }
+
+  const yyyy = parseInt(serverStr.substring(0, 4), 10);
+  const MM = parseInt(serverStr.substring(4, 6), 10);
+  const dd = parseInt(serverStr.substring(6, 8), 10);
+  return new Date(yyyy, MM - 1, dd);
 };
 
 export const getFormatedDate = (date: Date): any => {

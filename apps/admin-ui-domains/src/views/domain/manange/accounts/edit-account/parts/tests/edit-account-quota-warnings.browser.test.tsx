@@ -7,6 +7,7 @@
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { page } from 'vitest/browser';
 
+import { QuotaStatus } from '../../../../../../../services/get-account-quota';
 import { EditAccountQuotaWarnings } from '../edit-account-quota-warnings';
 
 const MB = 1024 * 1024;
@@ -26,20 +27,24 @@ const setupTest = async ({
   files,
   wsc,
   total,
+  status,
 }: {
   mailbox: number;
   files: number;
   wsc: number;
   total: number;
+  status?: QuotaStatus;
 }): Promise<void> => {
   const mailboxUsed = mailbox * MB;
   const filesUsed = files * MB;
   const wscUsed = wsc * MB;
   const used = mailboxUsed + filesUsed + wscUsed;
   const totalLimit = total * MB;
+  const percentageUsed = Math.round((used / totalLimit) * 100);
+  const totalStatus = status ?? (percentageUsed >= 100 ? 'OVERQUOTA' : 'UNDERQUOTA');
 
   await setupBrowserTest(
-    <EditAccountQuotaWarnings percentageUsed={Math.round((used / totalLimit) * 100)} />,
+    <EditAccountQuotaWarnings status={totalStatus} percentageUsed={percentageUsed} />,
   );
 };
 

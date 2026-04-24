@@ -33,6 +33,7 @@ describe('getAccountQuota', () => {
       total: {
         used: 500000000,
         computedLimit: { type: 'limited', value: 1000000000, source: 'account' },
+        status: 'UNDERQUOTA',
       },
       modules: {
         mailbox: { used: 0 },
@@ -52,6 +53,7 @@ describe('getAccountQuota', () => {
       type: 'success',
       totalComputedLimit,
       totalLimitSource: apiResponse.total.computedLimit.source,
+      totalStatus: apiResponse.total.status,
       totalUsed: apiResponse.total.used,
       usedByModules: {
         mailbox: apiResponse.modules.mailbox.used,
