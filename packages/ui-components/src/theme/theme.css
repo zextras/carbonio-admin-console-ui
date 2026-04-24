@@ -79,13 +79,6 @@
   --color-warning-focus: #d39e00;
   --color-warning-disabled: #ffe699;
 
-  /* not yet defined in Theme.palette, but added here for completeness */
-  --color-badge-warning: #995f1f;
-  --color-badge-info: #116fa1;
-  --color-banner-success: #e0f9c3;
-  --color-banner-warning: #fdf1cc;
-  --color-banner-info: #def3ff;
-
   --color-error-regular: #d74942;
   --color-error-hover: #be3028;
   --color-error-active: #a92a24;
@@ -116,6 +109,8 @@
   --color-white: #ffffff;
 
   /* Banner colors - matches Theme.palette */
+  --color-successBanner: #e0f9c3;
+  --color-warningBanner: #fff7de;
   --color-infoBanner: #d3ebf8;
   --color-errorBanner: #f6d6d5;
 
@@ -230,6 +225,16 @@
   /* Shadows - matches Theme.shadows */
   --shadow-regular: 0 0 0.25rem 0 rgba(166, 166, 166, 0.5);
   --shadow-snackbar: -2px 2px 5px 0 rgba(0, 0, 0, 0.25);
+
+  /* not yet defined in Theme.palette, but added here for completeness */
+  --tag-low-text: #3c4042;
+  --tag-low-bg: ##f4f4f4;
+  --tag-moderate-text: #116fa1;
+  --tag-moderate-bg: #def3ff;
+  --tag-high-text: #995f1f;
+  --tag-high-bg: #fffaf5;
+  --tag-over-text: #a92a24;
+  --tag-over-bg: #fff2f1;
 
   /* Breakpoints */
   --breakpoint-lg: 992px;
