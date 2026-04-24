@@ -90,6 +90,17 @@ export type Theme = {
     regular: string;
     snackbar: string;
   };
+  breakpoint: {
+    lg: string;
+    xl: string;
+    '2xl': string;
+  };
+  tag: {
+    low: { text: string; bg: string };
+    moderate: { text: string; bg: string };
+    high: { text: string; bg: string };
+    over: { text: string; bg: string };
+  };
 };
 
 export const theme: Theme = {
@@ -329,5 +340,16 @@ export const theme: Theme = {
   shadow: {
     regular: 'var(--shadow-regular)',
     snackbar: 'var(--shadow-snackbar)',
+  },
+  breakpoint: {
+    lg: 'var(--breakpoint-lg)',
+    xl: 'var(--breakpoint-xl)',
+    '2xl': 'var(--breakpoint-2xl)',
+  },
+  tag: {
+    low: { text: 'var(--tag-low-text)', bg: 'var(--tag-low-bg)' },
+    moderate: { text: 'var(--tag-moderate-text)', bg: 'var(--tag-moderate-bg)' },
+    high: { text: 'var(--tag-high-text)', bg: 'var(--tag-high-bg)' },
+    over: { text: 'var(--tag-over-text)', bg: 'var(--tag-over-bg)' },
   },
 };
