@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './subscription-status.module.css';
 
-export const SubscriptionEdition = () => {
+export const ActiveEdition = () => {
   const { t } = useTranslation();
 
   return (
