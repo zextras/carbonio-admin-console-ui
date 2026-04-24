@@ -64,7 +64,7 @@
     "eslint": "^9.34.0",
     "eslint-plugin-css-modules": "^2.12.0",
     "jsdom": "^26.1.0",
-    "msw": "^2.12.2",
+    "msw": "^2.13.5",
     "playwright": "^1.55.0",
     "prop-types": "^15.8.1",
     "sonarqube-scanner": "^4.3.3",
