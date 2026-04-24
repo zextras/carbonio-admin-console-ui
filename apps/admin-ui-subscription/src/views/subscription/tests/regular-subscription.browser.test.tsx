@@ -22,7 +22,7 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
     type: 'Purchased',
     customer: 'Test Customer',
     accountCount: 7,
-    licensedUsers: 99,
+    licensedUsers: '99',
     notYetValid: false,
     infrastructureId: '8b2458ac-61e5-47c0-b70b-d27701c3c68d',
     authenticationToken: 'TEST_TOKEN',
@@ -137,7 +137,7 @@ describe('RegularSubscription', () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           accountCount: 7,
-          licensedUsers: 99,
+          licensedUsers: '99',
         },
       });
       setupTest(<RegularSubscription />, mockLicenseData);
@@ -150,7 +150,7 @@ describe('RegularSubscription', () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           accountCount: 7,
-          licensedUsers: 99,
+          licensedUsers: '99',
         },
       });
       setupTest(<RegularSubscription />, mockLicenseData);
@@ -162,7 +162,7 @@ describe('RegularSubscription', () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           accountCount: 80,
-          licensedUsers: 100,
+          licensedUsers: '100',
         },
       });
       setupTest(<RegularSubscription />, mockLicenseData);
@@ -175,7 +175,7 @@ describe('RegularSubscription', () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           accountCount: 97,
-          licensedUsers: 100,
+          licensedUsers: '100',
         },
       });
       setupTest(<RegularSubscription />, mockLicenseData);
@@ -188,7 +188,7 @@ describe('RegularSubscription', () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           accountCount: 100,
-          licensedUsers: 100,
+          licensedUsers: '100',
         },
       });
       setupTest(<RegularSubscription />, mockLicenseData);
@@ -201,7 +201,7 @@ describe('RegularSubscription', () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           accountCount: 110,
-          licensedUsers: 100,
+          licensedUsers: '100',
         },
       });
       setupTest(<RegularSubscription />, mockLicenseData);

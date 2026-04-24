@@ -51,7 +51,7 @@ export const SeatUtilization = () => {
   const { data: licenseData } = useLicenseInfo();
 
   const activeAccounts = licenseData?.response?.accountCount ?? 0;
-  const totalLicences = licenseData?.response?.licensedUsers ?? 0;
+  const totalLicences = Number(licenseData?.response?.licensedUsers ?? '0');
   const usage = calculateUsagePercentage(activeAccounts, totalLicences);
 
   const usagePercentageLabel = `${Math.round(usage)}%`;

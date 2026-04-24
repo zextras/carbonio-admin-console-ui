@@ -97,6 +97,13 @@ import {
 } from './react-query/use-rights';
 import { useAllServers, useMtaServers, useServerVersion } from './react-query/use-servers';
 import {
+  type Feature,
+  type LicenseInfo,
+  type LicenseResponse,
+  type LicenseSubType,
+  type LicenseType,
+  type MaintenanceStatus,
+  type ModuleLicenseInfo,
   useActivateLicense,
   useLicenseInfo,
   useModuleLicenseInfo,
@@ -244,3 +251,12 @@ export {
   ZIMBRA_ADMIN_URN,
 };
 export type { CloseSnackbarFn, CreateSnackbarFn, CreateSnackbarFnArgs };
+export type {
+  Feature,
+  LicenseInfo,
+  LicenseResponse,
+  LicenseSubType,
+  LicenseType,
+  MaintenanceStatus,
+  ModuleLicenseInfo,
+};

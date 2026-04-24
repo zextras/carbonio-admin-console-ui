@@ -187,7 +187,7 @@ export const Subscription = (): React.JSX.Element => {
 
   const calculatedAccountQuotaSizePercentage: number = useMemo(() => {
     const accountCount = services?.response?.accountCount ?? 0;
-    const licensedUsers = services?.response?.licensedUsers ?? 0;
+    const licensedUsers = Number(services?.response?.licensedUsers ?? '0');
 
     if (licensedUsers === 0) {
       return 0;
