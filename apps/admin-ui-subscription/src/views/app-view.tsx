@@ -3,7 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useBreakpoint, usePrimaryBarState } from '@zextras/ui-shared';
+import { useBreakpoint, useLocalStorage, usePrimaryBarState } from '@zextras/ui-shared';
+import { useEffect } from 'react';
 import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
@@ -39,6 +40,15 @@ function getContainerStyle(breakpoint: string, isSidebarOpen = false) {
 export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   const breakpoint = useBreakpoint();
+  const [featureFlag, setFeatureFlag] = useLocalStorage<boolean | null>(
+    'new_subscription_feature_flag',
+    null,
+  );
+
+  useEffect(() => {
+    if (featureFlag === true) return;
+    if (featureFlag === null) setFeatureFlag(false);
+  }, [featureFlag, setFeatureFlag]);
 
   return (
     <div style={{ ...baseStyle, height: 'fit-content', width: '100%' }}>
@@ -60,14 +70,16 @@ export const AppView = () => {
             </div>
           }
         />
-        <Route
-          path="/regular"
-          element={
-            <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
-              <RegularSubscription />
-            </div>
-          }
-        />
+        {featureFlag && (
+          <Route
+            path="/regular"
+            element={
+              <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
+                <RegularSubscription />
+              </div>
+            }
+          />
+        )}
       </Routes>
     </div>
   );
