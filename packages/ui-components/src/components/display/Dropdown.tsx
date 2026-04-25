@@ -736,13 +736,12 @@ const Dropdown = ({
           className={clsx(styles.popperList, open && styles.open)}
           style={popperListStyle}
           data-testid="dropdown-popper-list"
-          role="presentation"
           onClick={popperListPreventDefaultHandler}
           onKeyDown={popperListKeyDownHandler}
         >
-          <div tabIndex={0} role="presentation" ref={startSentinelRef} />
+          <div tabIndex={0} ref={startSentinelRef} />
           <div ref={setPopperItemsRefAndFocus}>{popperListItems}</div>
-          <div tabIndex={0} role="presentation" ref={endSentinelRef} />
+          <div tabIndex={0} ref={endSentinelRef} />
         </div>
       </Portal>
     </div>
