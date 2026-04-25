@@ -141,11 +141,11 @@ const Popper = ({
   return (
     <Portal show={open} disablePortal={false}>
       <div ref={popperRef} className={popperContainerClassName} data-testid="popper">
-        <div tabIndex={0} role="presentation" ref={startSentinelRef} />
-        <div ref={wrapperRef} tabIndex={-1} role="presentation" className={styles.popperWrapper}>
+        <div tabIndex={0} ref={startSentinelRef} />
+        <div ref={wrapperRef} tabIndex={-1} className={styles.popperWrapper}>
           {children}
         </div>
-        <div tabIndex={0} role="presentation" ref={endSentinelRef} />
+        <div tabIndex={0} ref={endSentinelRef} />
       </div>
     </Portal>
   );
