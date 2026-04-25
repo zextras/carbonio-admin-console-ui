@@ -701,6 +701,13 @@ const Dropdown = ({
     event?.preventDefault?.();
   }, []);
 
+  const popperListKeyDownHandler = useCallback<React.KeyboardEventHandler<HTMLDivElement>>(
+    (event) => {
+      event?.preventDefault?.();
+    },
+    [],
+  );
+
   const triggerComponent = useMemo(() => {
     const props = { onClick: triggerComponentLeftClickHandler };
     return React.cloneElement(children, {
@@ -731,7 +738,7 @@ const Dropdown = ({
           data-testid="dropdown-popper-list"
           role="presentation"
           onClick={popperListPreventDefaultHandler}
-          onKeyDown={popperListPreventDefaultHandler}
+          onKeyDown={popperListKeyDownHandler}
         >
           <div tabIndex={0} role="presentation" ref={startSentinelRef} />
           <div ref={setPopperItemsRefAndFocus}>{popperListItems}</div>
