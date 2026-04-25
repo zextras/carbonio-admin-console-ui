@@ -1143,7 +1143,7 @@ export function bytesToHumanReadable(bytes: number): string {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   const sizeIndex = Math.min(i, sizes.length - 1);
-  return `${parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
+  return `${Number.parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
 }
 
 export function useLocalStorage<T>(key: string, initialValue: T): any {
