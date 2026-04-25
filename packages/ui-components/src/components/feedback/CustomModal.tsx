@@ -160,7 +160,7 @@ const CustomModal = ({
         data-testid="modal"
         {...rest}
       >
-        <div tabIndex={0} ref={startSentinelRef} />
+        <div tabIndex={0} role="presentation" ref={startSentinelRef} />
         <Transition type="scale-in" apply={delayedOpen}>
           <ModalWrapper>
             <ModalContent $size={size} onClick={onClick}>
@@ -168,7 +168,7 @@ const CustomModal = ({
             </ModalContent>
           </ModalWrapper>
         </Transition>
-        <div tabIndex={0} ref={endSentinelRef} />
+        <div tabIndex={0} role="presentation" ref={endSentinelRef} />
       </ModalContainer>
     </Portal>
   );
