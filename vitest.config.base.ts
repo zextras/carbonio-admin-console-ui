@@ -77,7 +77,7 @@ function browserProjectConfig() {
       sequence: {
         groupOrder: 2,
       },
-      fileParallelism: true,
+      fileParallelism: false,
       retry: process.env.CI ? 2 : 0,
       include: ['**/*.browser.test.{ts,tsx}'],
       browser: {
