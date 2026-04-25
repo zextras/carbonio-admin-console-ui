@@ -78,17 +78,29 @@ const DateTimePickerInput = ({
   onClear,
   isClearable,
   ...rest
-}: DateTimePickerInputProps & any) => {
+}: DateTimePickerInputProps) => {
   const { value, onClick = (): void => undefined, disabled } = rest;
 
   const InputIconsComponent = useMemo<InputProps['CustomIcon']>(
-    () => buildInputIcons({ showClear: isClearable && !!value, onClear, onClick, disabled }),
+    () =>
+      buildInputIcons({
+        showClear: isClearable && !!value,
+        onClear,
+        onClick: onClick as unknown as (
+          e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent,
+        ) => void,
+        disabled,
+      }),
     [disabled, isClearable, onClear, onClick, value],
   );
 
   return (
     <Container width={width}>
-      <Input CustomIcon={InputIconsComponent} {...rest} />
+      <Input
+        CustomIcon={InputIconsComponent}
+        onChange={(): void => undefined}
+        {...rest}
+      />
     </Container>
   );
 };
