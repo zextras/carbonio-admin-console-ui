@@ -176,7 +176,6 @@ const Chip = ({
             >
                <div
                  className={styles.actionContainer}
-                 role="img"
                  onMouseEnter={showTooltipHandler}
                  onMouseLeave={hideTooltipHandler}
                  onFocus={showTooltipHandler}
@@ -264,6 +263,16 @@ const Chip = ({
     [onDoubleClick],
   );
 
+  const keyDownHandler = useCallback<React.KeyboardEventHandler>(
+    (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        onClick?.(event);
+      }
+    },
+    [onClick],
+  );
+
   const backgroundColor = error ? 'error' : background;
   const isClickable = (onClick || onDoubleClick) && !disabled;
   const isDisabled = !!disabled;
@@ -289,30 +298,22 @@ const Chip = ({
       }
       placement={tooltipPlacement}
     >
-      <div
-        data-testid="chip"
-        ref={chipRef}
-        className={styles.chip}
-        style={chipStyle}
-        data-shape={shape}
-        data-clickable={isClickable || undefined}
-        data-disabled={isDisabled || undefined}
-        role={isClickable ? 'button' : undefined}
-        tabIndex={isClickable ? 0 : undefined}
-        onClick={onClick && clickHandler}
-        onDoubleClick={onDoubleClick && dblClickHandler}
-        onKeyDown={
-          isClickable
-            ? (event: React.KeyboardEvent) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
-                  onClick?.(event);
-                }
-              }
-            : undefined
-        }
-        {...rest}
-      >
+      {React.createElement(
+        isClickable ? 'button' : 'div',
+        {
+          type: isClickable ? 'button' : undefined,
+          'data-testid': 'chip',
+          ref: chipRef,
+          className: styles.chip,
+          style: chipStyle,
+          'data-shape': shape,
+          'data-clickable': isClickable || undefined,
+          'data-disabled': isDisabled || undefined,
+          onClick: onClick && clickHandler,
+          onDoubleClick: onDoubleClick && dblClickHandler,
+          onKeyDown: isClickable ? keyDownHandler : undefined,
+          ...rest,
+        },
         <div
           className={styles.content}
           style={{
@@ -336,7 +337,6 @@ const Chip = ({
           {label && (
             <div
               className={styles.label}
-              role="img"
               style={{
                 width: 'fit',
                 flexShrink: maxWidth ? 1 : 0,
@@ -378,7 +378,7 @@ const Chip = ({
             </Container>
           )}
         </div>
-      </div>
+      )}
     </Tooltip>
   );
 };
