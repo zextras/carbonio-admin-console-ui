@@ -143,8 +143,8 @@ pipeline {
                             sh '''
                                 pnpm add -Dw sonarqube-scanner
                                 pnpm exec sonar-scanner \
-                                -Dsonar.projectKey=carbonio-admin-console-ui \
-                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info                           '''
+                                    -Dsonar.projectKey=carbonio-admin-console-ui \
+                                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info                           '''
                         }
                     }
                 }
