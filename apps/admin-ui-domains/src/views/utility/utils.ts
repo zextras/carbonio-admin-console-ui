@@ -1540,7 +1540,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): any {
     }
   });
   const setValue = (value: T | ((val: T) => T)): any => {
-    const valueToStore = value instanceof Function ? value(storedValue) : value;
+    const valueToStore = typeof value === 'function' ? value(storedValue) : value;
     setStoredValue(valueToStore);
     localStorage.setItem(key, JSON.stringify(valueToStore));
   };
