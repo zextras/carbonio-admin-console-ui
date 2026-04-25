@@ -56,8 +56,8 @@ function jsdomProjectConfig() {
       clearMocks: true,
       mockReset: true,
       restoreMocks: true,
-      testTimeout: !!process.env.ci ? 20_000 : 10_000,
-      maxConcurrency: 3,
+      testTimeout: !!process.env.CI ? 20_000 : 10_000,
+      maxConcurrency: 5,
     },
     optimizeDeps: {
       include: getOptimizeDepsInclude(),
@@ -72,20 +72,20 @@ function browserProjectConfig() {
     },
     test: {
       name: 'browser',
-      maxConcurrency: 3,
+      maxConcurrency: 5,
       setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
       sequence: {
         groupOrder: 2,
       },
-      fileParallelism: false,
-      retry: 2,
+      fileParallelism: true,
+      retry: process.env.CI ? 2 : 0,
       include: ['**/*.browser.test.{ts,tsx}'],
       browser: {
         enabled: true,
         provider: playwright() as any,
         instances: [{ browser: 'chromium' as const }],
         viewport: { width: 834, height: 2000 },
-        headless: !!process.env.CI,
+        headless: !process.env.HEADED,
         screenshotFailures: !process.env.CI,
         providerOptions: { launch: { timeout: 60_000 } },
       },
@@ -93,7 +93,7 @@ function browserProjectConfig() {
       globals: true,
       css: true,
       clearMocks: true,
-      testTimeout: !!process.env.ci ? 20_000 : 10_000,
+      testTimeout: !!process.env.CI ? 20_000 : 10_000,
       hookTimeout: 15_000,
       alias: {
         'admin-ui-test-utils': path.resolve(
@@ -148,7 +148,7 @@ export default defineConfig({
   test: {
     globals: true,
     passWithNoTests: true,
-    maxConcurrency: 3,
+    maxConcurrency: 5,
     projects: [jsdomProjectConfig(), browserProjectConfig()],
 
     coverage: {
