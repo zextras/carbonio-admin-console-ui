@@ -89,7 +89,7 @@ const ListItem = ({
   );
 
   return (
-    <div tabIndex={0} role="listitem" ref={itemRef} className={styles.listItem} style={itemStyle} {...rest}>
+    <div tabIndex={0} ref={itemRef} className={styles.listItem} style={itemStyle} {...rest}>
       {children(inView)}
     </div>
   );
