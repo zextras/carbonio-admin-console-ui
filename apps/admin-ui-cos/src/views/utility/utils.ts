@@ -959,9 +959,9 @@ export const getDateFromStr = (serverStr: string): any => {
     return parsedDateTimeWithoutMillis;
   }
 
-  const yyyy = parseInt(serverStr.substring(0, 4), 10);
-  const MM = parseInt(serverStr.substring(4, 6), 10);
-  const dd = parseInt(serverStr.substring(6, 8), 10);
+  const yyyy = Number.parseInt(serverStr.substring(0, 4), 10);
+  const MM = Number.parseInt(serverStr.substring(4, 6), 10);
+  const dd = Number.parseInt(serverStr.substring(6, 8), 10);
   return new Date(yyyy, MM - 1, dd);
 };
 
