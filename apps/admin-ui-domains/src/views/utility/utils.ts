@@ -1119,9 +1119,9 @@ export const getDateFromStr = (serverStr: string): any => {
     return parsedDateTimeWithoutMillis;
   }
 
-  const yyyy = parseInt(serverStr.substring(0, 4), 10);
-  const MM = parseInt(serverStr.substring(4, 6), 10);
-  const dd = parseInt(serverStr.substring(6, 8), 10);
+  const yyyy = Number.parseInt(serverStr.substring(0, 4), 10);
+  const MM = Number.parseInt(serverStr.substring(4, 6), 10);
+  const dd = Number.parseInt(serverStr.substring(6, 8), 10);
   return new Date(yyyy, MM - 1, dd);
 };
 
@@ -1131,12 +1131,12 @@ export const getDateFromStr = (serverStr: string): any => {
  */
 export const getDateTimeFromStr = (serverStr: string): Date | null => {
   if (serverStr === null || serverStr === undefined) return null;
-  const yyyy = parseInt(serverStr.substring(0, 4), 10);
-  const MM = parseInt(serverStr.substring(4, 6), 10);
-  const dd = parseInt(serverStr.substring(6, 8), 10);
-  const hh = parseInt(serverStr.substring(8, 10), 10);
-  const mm = parseInt(serverStr.substring(10, 12), 10);
-  const ss = parseInt(serverStr.substring(12, 14), 10);
+  const yyyy = Number.parseInt(serverStr.substring(0, 4), 10);
+  const MM = Number.parseInt(serverStr.substring(4, 6), 10);
+  const dd = Number.parseInt(serverStr.substring(6, 8), 10);
+  const hh = Number.parseInt(serverStr.substring(8, 10), 10);
+  const mm = Number.parseInt(serverStr.substring(10, 12), 10);
+  const ss = Number.parseInt(serverStr.substring(12, 14), 10);
   return new Date(yyyy, MM - 1, dd, hh, mm, ss);
 };
 
