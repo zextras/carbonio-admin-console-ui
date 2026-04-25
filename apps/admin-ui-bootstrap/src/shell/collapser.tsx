@@ -13,20 +13,13 @@ export const Collapser: FunctionComponent<{ open: boolean; onClick: () => void }
   onClick,
 }) => (
   <div className={styles.verticalDivider}>
-    <div
+    <button
+      type="button"
       className={styles.bubble}
-      role="button"
-      tabIndex={0}
       onClick={onClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      }}
       data-open={open}
     >
       <ds-icon size="medium" icon="ChevronLeft"></ds-icon>
-    </div>
+    </button>
   </div>
 );

@@ -25,6 +25,8 @@
 	width: 24px;
 	height: 24px;
 	border-radius: 50%;
+	border: none;
+	padding: 0;
 	background-color: var(--color-gray2-regular);
 	transition: background-color 0.2s, transform 0.2s;
 	transform: scaleX(1);
