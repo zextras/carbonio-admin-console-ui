@@ -72,7 +72,7 @@ function calcCapitals(label: string): string | null {
 function calcColor(label: string): string {
   let sum = 0;
   for (let i = 0; i < label.length; i += 1) {
-    sum += label.codePointAt(i);
+    sum += label.codePointAt(i) ?? 0;
   }
   return `avatar_${(sum % 50) + 1}`;
 }
