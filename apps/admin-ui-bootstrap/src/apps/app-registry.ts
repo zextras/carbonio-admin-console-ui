@@ -16,6 +16,7 @@ import Privacy from '@zextras/admin-ui-privacy';
 import Storage from '@zextras/admin-ui-storage';
 import Subscription from '@zextras/admin-ui-subscription';
 import type { AppState } from '@zextras/ui-shared';
+import { registerApp } from '@zextras/ui-shared';
 import { ComponentType } from 'react';
 import { StoreApi, UseBoundStore } from 'zustand';
 
@@ -140,7 +141,6 @@ const appModules: Record<string, ComponentType<object>> = {
  */
 export function loadAllAppsFromRegistry(
   useAppStore: UseBoundStore<StoreApi<AppState>>,
-  appContextMap: Map<string, AppManifest | undefined>,
 ): void {
   // Initialize app state
   const appsObject = APP_REGISTRY.reduce<Record<string, object>>(
@@ -187,7 +187,7 @@ export function loadAllAppsFromRegistry(
       },
     }));
 
-    appContextMap.set(
+    registerApp(
       app.packageName,
       APP_REGISTRY.find((a) => a.packageName === app.packageName) as AppManifest,
     );
