@@ -123,10 +123,11 @@ pipeline {
                 }
                 stage('test') {
                     steps {
-                        container('pnpm') {
+                        container('playwright') {
                             script {
                                 sh '''
-                                    pnpm exec playwright install --with-deps
+                                    unset PLAYWRIGHT_BROWSERS_PATH
+                                    pnpm exec playwright install --with-deps chromium
                                     pnpm test:ci
                                 '''
                             }

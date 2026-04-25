@@ -1,3 +1,9 @@
+## [0.13.0-devel.23](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.22...v0.13.0-devel.23) (2026-04-23)
+
+### Features
+
+* [CO-3477] download button for domain quota report ([40955be](https://github.com/zextras/carbonio-admin-console-ui/commit/40955bed298c7fc77d44111d39da3e11523ee507))
+
 ## [0.13.0-devel.22](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.21...v0.13.0-devel.22) (2026-04-23)
 
 ### Bug Fixes
