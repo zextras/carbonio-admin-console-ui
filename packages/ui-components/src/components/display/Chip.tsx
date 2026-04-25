@@ -174,14 +174,15 @@ const Chip = ({
               disabled={actionDisabled}
               placement={tooltipPlacement}
             >
-              <div
-                className={styles.actionContainer}
-                onMouseEnter={showTooltipHandler}
-                onMouseLeave={hideTooltipHandler}
-                onFocus={showTooltipHandler}
-                onBlur={hideTooltipHandler}
-                style={{ '--action-spacing': SIZES[size].spacing } as React.CSSProperties}
-              >
+               <div
+                 className={styles.actionContainer}
+                 role="img"
+                 onMouseEnter={showTooltipHandler}
+                 onMouseLeave={hideTooltipHandler}
+                 onFocus={showTooltipHandler}
+                 onBlur={hideTooltipHandler}
+                 style={{ '--action-spacing': SIZES[size].spacing } as React.CSSProperties}
+               >
                 <ds-icon
                   icon={action.icon}
                   color={error ? 'error' : action.color}
@@ -296,8 +297,20 @@ const Chip = ({
         data-shape={shape}
         data-clickable={isClickable || undefined}
         data-disabled={isDisabled || undefined}
+        role={isClickable ? 'button' : undefined}
+        tabIndex={isClickable ? 0 : undefined}
         onClick={onClick && clickHandler}
         onDoubleClick={onDoubleClick && dblClickHandler}
+        onKeyDown={
+          isClickable
+            ? (event: React.KeyboardEvent) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onClick?.(event);
+                }
+              }
+            : undefined
+        }
         {...rest}
       >
         <div
@@ -323,6 +336,7 @@ const Chip = ({
           {label && (
             <div
               className={styles.label}
+              role="img"
               style={{
                 width: 'fit',
                 flexShrink: maxWidth ? 1 : 0,
