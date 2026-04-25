@@ -205,7 +205,7 @@ const getFileExtension = (
 const calcColor = (label: string): string => {
   let sum = 0;
   for (let i = 0; i < label.length; i += 1) {
-    sum += label.charCodeAt(i);
+    sum += label.codePointAt(i);
   }
 
   return `var(--color-avatar-${(sum % 50) + 1})`;
