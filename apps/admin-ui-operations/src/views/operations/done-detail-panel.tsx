@@ -108,7 +108,7 @@ const DoneDetailPanel: FC = () => {
           <OperationsWizardDetailPanel
             setWizardDetailToggle={setWizardDetailToggle}
             setOpen={(): void => {
-              ('');
+              /* no-op */
             }}
             selectedData={selectedData}
           />
