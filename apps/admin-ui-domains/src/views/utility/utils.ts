@@ -1647,7 +1647,7 @@ export const formatZimbraDate = (timestamp: string | undefined | null): string =
     const parsedDate = parse(timestamp, 'yyyyMMddHHmmss.SSSX', new Date());
 
     // Check if the result is a valid date object
-    if (isNaN(parsedDate.getTime())) {
+    if (Number.isNaN(parsedDate.getTime())) {
       return '';
     }
 
