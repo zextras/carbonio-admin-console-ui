@@ -448,6 +448,10 @@ const Attachment: FC<AttachmentType> = ({
         ref={inputRef2}
         target="_blank"
         href={`${getLocationOrigin()}/service/home/~/?auth=co&id=${message.id}&part=${part}`}
+        aria-label={filename ?? t('label.attachment_unknown', {
+          mimeType: att?.contentType,
+          defaultValue: 'Unknown <{{mimeType}}>',
+        })}
       />
       <a
         className={styles.attachmentLink}
@@ -455,6 +459,7 @@ const Attachment: FC<AttachmentType> = ({
         rel="noopener noreferrer"
         target="_blank"
         href={downloadlink}
+        aria-label={t('label.download_one', 'Download')}
       />
     </Container>
   );
