@@ -22,6 +22,7 @@
     "deploy:dev": "pnpm exec tsx scripts/deploy.ts development",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
+    "test:headed": "HEADED=true turbo run test",
     "type-check": "turbo run type-check",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
