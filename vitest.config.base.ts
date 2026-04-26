@@ -109,6 +109,7 @@ function browserProjectConfig() {
       maxConcurrency: 1,
       retry: isCI ? 2 : 0,
       include: ['**/*.browser.test.{ts,tsx}'],
+      isolate: true,
       browser: {
         enabled: true,
         provider: playwright(),
@@ -116,7 +117,6 @@ function browserProjectConfig() {
         viewport: { width: 834, height: 2000 },
         headless: process.env.HEADED !== 'true',
         screenshotFailures: !isCI,
-        isolate: true,
         connectTimeout: 60_000,
         providerOptions: { launch: { timeout: 60_000 } },
       },
