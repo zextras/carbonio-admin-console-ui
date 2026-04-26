@@ -114,7 +114,7 @@ function browserProjectConfig() {
         provider: playwright(),
         instances: [{ browser: 'chromium' as const }],
         viewport: { width: 834, height: 2000 },
-        headless: !process.env.HEADED,
+        headless: process.env.HEADED !== 'true',
         screenshotFailures: !isCI,
         isolate: true,
         connectTimeout: 60_000,
