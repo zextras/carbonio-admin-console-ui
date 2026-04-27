@@ -77,6 +77,7 @@ function getSubscriptionView(
   if (subscriptionType === 'ISP') {
     return <MeteredSubscription />;
   }
+  return <></>;
 }
 
 export const AppView = () => {
