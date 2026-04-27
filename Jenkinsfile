@@ -123,10 +123,11 @@ pipeline {
                 }
                 stage('test') {
                     steps {
-                        container('pnpm') {
+                        container('playwright') {
                             script {
                                 sh '''
-                                    pnpm exec playwright install --with-deps
+                                    unset PLAYWRIGHT_BROWSERS_PATH
+                                    pnpm exec playwright install --with-deps chromium
                                     pnpm test:ci
                                 '''
                             }
@@ -143,8 +144,8 @@ pipeline {
                             sh '''
                                 pnpm add -Dw sonarqube-scanner
                                 pnpm exec sonar-scanner \
-                                -Dsonar.projectKey=carbonio-admin-console-ui \
-                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info                           '''
+                                    -Dsonar.projectKey=carbonio-admin-console-ui \
+                                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info                           '''
                         }
                     }
                 }

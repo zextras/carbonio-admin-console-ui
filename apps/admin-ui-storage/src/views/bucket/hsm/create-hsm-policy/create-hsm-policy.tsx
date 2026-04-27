@@ -13,16 +13,24 @@ import { HSMContext } from '../hsm-context/hsm-context';
 import HSMcreatePolicy from './hsm-create-policy';
 import HSMpolicySettings from './hsm-policy-settings';
 
-type HsmDetailObj = {
+export type HsmDetailObj = {
 	allVolumes: Array<any>;
 	isAllEnabled: boolean;
 	isMessageEnabled: boolean;
 	isEventEnabled: boolean;
 	isContactEnabled: boolean;
 	isDocumentEnabled: boolean;
-	policyCriteria: Array<any>;
-	sourceVolume: Array<any>;
-	destinationVolume: Array<any>;
+	policyCriteria:Array<{
+    option: string
+    dateScale: string
+    scale:string
+  }>
+  sourceVolume: Array<{
+    id: string
+  }>
+  destinationVolume: Array<{
+    id: string
+  }>
 };
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
