@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Input } from '@zextras/ui-components';
 import { invalidateLicenseQuery, useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
-import { useQueryClient } from '@tanstack/react-query';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
