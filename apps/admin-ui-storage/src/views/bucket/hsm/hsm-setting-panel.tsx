@@ -37,6 +37,7 @@ import { setCoreAttributes } from '../../../services/set-core-attributes';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
+import { asQueryString,HsmPolicyDetail } from './hsm-policy-detail';
 
 type Timeout = ReturnType<typeof setTimeout>;
 
@@ -445,44 +446,6 @@ const HSMsettingPanel: FC = () => {
     [policies, server, selectedPolicies, getHSMPolicyList, showSnackbar, t, errorMessage],
   );
 
-  const generatePolicyString = useCallback((hsmPolicyDetail: any) => {
-    let policy = '';
-    const criteriaScale: string[] = [];
-    if (hsmPolicyDetail?.isAllEnabled) {
-      policy += 'document,message,contact,appointment:';
-    } else {
-      if (hsmPolicyDetail?.isMessageEnabled) {
-        criteriaScale.push('message');
-      }
-      if (hsmPolicyDetail?.isEventEnabled) {
-        criteriaScale.push('appointment');
-      }
-      if (hsmPolicyDetail?.isContactEnabled) {
-        criteriaScale.push('contact');
-      }
-      if (hsmPolicyDetail?.isDocumentEnabled) {
-        criteriaScale.push('document');
-      }
-    }
-    if (criteriaScale.length > 0) {
-      policy += `${criteriaScale.toString()}:`;
-    }
-    if (hsmPolicyDetail?.policyCriteria.length > 0) {
-      hsmPolicyDetail?.policyCriteria.forEach((item: any) => {
-        policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
-      });
-    }
-    if (hsmPolicyDetail?.sourceVolume?.length > 0) {
-      policy += ` source:${hsmPolicyDetail?.sourceVolume.map((item: any) => item?.id).toString()}`;
-    }
-    if (hsmPolicyDetail?.destinationVolume?.length > 0) {
-      policy += ` destination:${hsmPolicyDetail?.destinationVolume
-        .map((item: any) => item?.id)
-        .toString()}`;
-    }
-    return policy;
-  }, []);
-
   const parseResponse = useCallback(
     (isEditSave: boolean | undefined, info: any, isRunOperation?: boolean) => {
       if (info?.ok) {
@@ -520,7 +483,7 @@ const HSMsettingPanel: FC = () => {
   );
 
   const hsmPolicyOperation = useCallback(
-    (hsmPolicyDetail?: any, isEditSave?: boolean, isRunCustomPolicy?: boolean) => {
+    (hsmPolicyDetail?: HsmPolicyDetail, isEditSave?: boolean, isRunCustomPolicy?: boolean) => {
       const request: any = {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
@@ -553,7 +516,7 @@ const HSMsettingPanel: FC = () => {
           );
           return;
         }
-        const policy = generatePolicyString(hsmPolicyDetail);
+        const policy = asQueryString(hsmPolicyDetail);
         request.hsmPolicy = policy.trim();
       }
       fetchSoap('zextras', {
@@ -570,25 +533,25 @@ const HSMsettingPanel: FC = () => {
           showSnackbar('error', 'error', error?.message ? error?.message : errorMessage);
         });
     },
-    [errorMessage, generatePolicyString, parseResponse, server, showSnackbar, t],
+    [errorMessage, parseResponse, server, showSnackbar, t],
   );
 
   const createHSMpolicy = useCallback(
-    (hsmPolicyDetail: any, isEditSave?: boolean) => {
+    (hsmPolicyDetail: HsmPolicyDetail, isEditSave?: boolean) => {
       hsmPolicyOperation(hsmPolicyDetail, isEditSave);
     },
     [hsmPolicyOperation],
   );
 
   const runCustomHSMpolicy = useCallback(
-    (hsmPolicyDetail: any) => {
+    (hsmPolicyDetail: HsmPolicyDetail) => {
       hsmPolicyOperation(hsmPolicyDetail, undefined, true);
     },
     [hsmPolicyOperation],
   );
 
   const onEditSave = useCallback(
-    (editDetail: any) => {
+    (editDetail: HsmPolicyDetail) => {
       setIsEditSaveInProgress(true);
       createHSMpolicy(editDetail, true);
     },
