@@ -42,7 +42,7 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["coverage/**"],
       "cache": true,
-      "passThroughEnv": ["CI"]
+      "passThroughEnv": ["CI", "HEADED"]
     },
     "test:ci": {
       "dependsOn": ["^test:ci"],
