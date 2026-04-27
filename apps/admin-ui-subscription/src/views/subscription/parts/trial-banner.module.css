@@ -41,7 +41,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid var(--trial-icon-color);
   background: #fff7ed;
   border-radius: 2px;
   border: 1px solid var(--trial-box-text);

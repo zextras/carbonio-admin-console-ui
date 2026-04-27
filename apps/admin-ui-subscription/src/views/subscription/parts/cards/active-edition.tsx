@@ -19,8 +19,7 @@ export const ActiveEdition = () => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <ds-icon icon="CheckmarkCircle" color="success" size="1.5rem" />
         <ds-text weight="bold" color="gray0" style={{ fontSize: '1.5rem' }}>
-          {/* TODO: CO-3521 fix this */}
-          {'EMAIL'}
+          {'to be implemented'}
         </ds-text>
       </div>
     </div>
