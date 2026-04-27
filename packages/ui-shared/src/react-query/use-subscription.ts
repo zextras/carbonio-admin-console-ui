@@ -12,7 +12,7 @@ import { ZIMBRA_ADMIN_URN } from '../constants';
 import { useSnackbar } from '../hooks/useSnackbar';
 import { fetchSoap } from '../services/subscription-service';
 
-export type LicenseType = 'ISP' | 'METERED' | 'Purchased' | 'None';
+export type LicenseType = 'ISP' | 'Purchased' | 'None';
 
 export type LicenseSubType = 'PERPETUAL' | 'REGULAR' | 'TRIAL';
 

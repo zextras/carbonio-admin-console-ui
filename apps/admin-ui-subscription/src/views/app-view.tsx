@@ -74,7 +74,7 @@ function getSubscriptionView(
   if (subscriptionType === 'Purchased' && subType === 'TRIAL') {
     return <TrialSubscription />;
   }
-  if (subscriptionType === 'Metered' || subscriptionType === 'ISP') {
+  if (subscriptionType === 'ISP') {
     return <MeteredSubscription />;
   }
 }
