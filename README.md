@@ -275,6 +275,14 @@ The `test:watch` command opens a browser with the Vitest UI for interactive test
 pnpm test:ci
 ```
 
+#### Visible Browser Mode
+
+To run browser tests with a visible browser window (useful for debugging):
+
+```bash
+pnpm test:headed
+```
+
 ## Development Guidelines
 
 ### Commit Message Format
