@@ -3,9 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useBreakpoint, useLocalStorage, usePrimaryBarState } from '@zextras/ui-shared';
+import {
+  useBreakpoint,
+  useLicenseInfo,
+  useLocalStorage,
+  usePrimaryBarState,
+} from '@zextras/ui-shared';
 import { type ReactNode, useEffect } from 'react';
-import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { ActivateSubscription } from './subscription/activate-subscription';
@@ -48,20 +52,32 @@ const RouteContainer = ({ breakpoint, isSidebarOpen, children }: RouteContainerP
   <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isSidebarOpen) }}>{children}</div>
 );
 
-type RouteConfig = {
-  path: string;
-  element: ReactNode;
-  featureFlagged?: boolean;
-};
+function getSubscriptionView(
+  subscriptionType: string | undefined,
+  subType: string | undefined,
+  featureFlag: boolean | null,
+): ReactNode {
+  if (!subscriptionType) {
+    return <ActivateSubscription />;
+  }
 
-const routes: Array<RouteConfig> = [
-  { path: '/', element: <Subscription /> },
-  { path: '/activate', element: <ActivateSubscription /> },
-  { path: '/regular', element: <RegularSubscription />, featureFlagged: true },
-  { path: '/metered', element: <MeteredSubscription />, featureFlagged: true },
-  { path: '/perpetual', element: <PerpetualSubscription />, featureFlagged: true },
-  { path: '/trial', element: <TrialSubscription />, featureFlagged: true },
-];
+  if (featureFlag) {
+    if (subscriptionType === 'Purchased' && subType === 'REGULAR') {
+      return <RegularSubscription />;
+    }
+    if (subscriptionType === 'Purchased' && subType === 'PERPETUAL') {
+      return <PerpetualSubscription />;
+    }
+    if (subscriptionType === 'METERED') {
+      return <MeteredSubscription />;
+    }
+    if (subscriptionType === 'ISP') {
+      return <TrialSubscription />;
+    }
+  }
+
+  return <Subscription />;
+}
 
 export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
@@ -70,6 +86,9 @@ export const AppView = () => {
     'new_subscription_feature_flag',
     null,
   );
+  const { data: licenseData } = useLicenseInfo();
+  const subscriptionType = licenseData?.response?.type;
+  const subType = licenseData?.response?.subType;
 
   useEffect(() => {
     if (featureFlag === null) setFeatureFlag(false);
@@ -78,21 +97,9 @@ export const AppView = () => {
   return (
     <div style={{ ...baseStyle, height: 'fit-content', width: '100%' }}>
       <Breadcrumb />
-      <Routes>
-        {routes.map((route) =>
-          route.featureFlagged && !featureFlag ? null : (
-            <Route
-              key={route.path}
-              path={route.path}
-              element={
-                <RouteContainer breakpoint={breakpoint} isSidebarOpen={isPrimaryBarExpanded}>
-                  {route.element}
-                </RouteContainer>
-              }
-            />
-          ),
-        )}
-      </Routes>
+      <RouteContainer breakpoint={breakpoint} isSidebarOpen={isPrimaryBarExpanded}>
+        {getSubscriptionView(subscriptionType, subType, featureFlag)}
+      </RouteContainer>
     </div>
   );
 };
