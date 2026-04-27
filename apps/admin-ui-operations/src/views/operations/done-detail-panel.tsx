@@ -4,14 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Container,
-  Input,
-  ModalOverlay,
-  Paging,
-  Row,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Container, Input, ModalOverlay, Paging, Row, useSnackbar } from '@zextras/ui-components';
 import { useMailstoreServers } from '@zextras/ui-shared';
 import { find, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -35,9 +28,9 @@ const DoneDetailPanel: FC = () => {
   const [isSelectedRow, setIsSelectedRow] = useState<Array<string>>([]);
   const [doneOffset, setDoneOffset] = useState<number>(10);
   const [totalData, setTotalData] = useState<number>(0);
-  const [doneOperationPaginationData, setDoneOperationPaginationData] = useState<
-    Array<Operation>
-  >([]);
+  const [doneOperationPaginationData, setDoneOperationPaginationData] = useState<Array<Operation>>(
+    [],
+  );
   const [filteredOperationData, setFilteredOperationData] = useState(doneData);
   const [searchOperation, setSearchOperation] = useState<string>('');
 
@@ -107,9 +100,7 @@ const DoneDetailPanel: FC = () => {
         <ModalOverlay open={wizardDetailToggle}>
           <OperationsWizardDetailPanel
             setWizardDetailToggle={setWizardDetailToggle}
-            setOpen={(): void => {
-              /* no-op */
-            }}
+            setOpen={() => {}}
             selectedData={selectedData}
           />
         </ModalOverlay>
@@ -122,7 +113,7 @@ const DoneDetailPanel: FC = () => {
         style={{ position: 'relative' }}
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <ds-text as="h2"  weight="bold">
+          <ds-text as="h2" weight="bold">
             {t('operations.done_panel_heading', 'Done Operations')}
           </ds-text>
         </Row>
