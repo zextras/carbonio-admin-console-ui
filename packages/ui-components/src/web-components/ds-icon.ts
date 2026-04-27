@@ -11,7 +11,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 
 import { resolveThemeColor } from '../theme/theme-utils';
-import { IconName, iconRegistry } from './icon-registry';
+import { type IconName, iconRegistry } from './icon-registry';
 
 const ICON_SIZES = ['small', 'medium', 'large'] as const;
 export type IconSize = (typeof ICON_SIZES)[number];

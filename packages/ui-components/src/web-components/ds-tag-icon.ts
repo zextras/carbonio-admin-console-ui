@@ -14,10 +14,10 @@ import { resolveThemeColor } from '../theme/theme-utils';
 import { type IconName } from './icon-registry';
 
 export type DsTagIconProps = {
-  label: string;
-  icon: IconName;
-  color: string;
-  background: string;
+  label?: string;
+  icon?: IconName;
+  color?: string;
+  background?: string;
 };
 
 export class DsTagIcon extends LitElement {
@@ -29,7 +29,7 @@ export class DsTagIcon extends LitElement {
       gap: 0.375rem;
       padding: 0.25rem 0.5rem;
       border-radius: 2px;
-      background: var(--ds-tag-icon-bg, var(--color-banner-success));
+      background: var(--ds-tag-icon-bg);
     }
 
     .icon {

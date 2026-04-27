@@ -11,7 +11,7 @@ import type { DsBadgeProps } from './ds-badge';
 import type { DsDividerProps } from './ds-divider';
 import type { DsIconProps } from './ds-icon';
 import type { DsSpinnerProps } from './ds-spinner';
-import { DsTagIconProps } from './ds-tag-icon';
+import type { DsTagIconProps } from './ds-tag-icon';
 import type { DsTextProps } from './ds-text';
 
 type WebComponentElement<P extends Record<string, unknown>> = DetailedHTMLProps<
