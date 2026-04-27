@@ -17,7 +17,7 @@
 
   /* Secondary palette - matches Theme.palette.secondary */
   --color-secondary-regular: #828282;
- f --color-secondary-hover: #696969;
+  --color-secondary-hover: #696969;
   --color-secondary-active: #5c5c5c;
   --color-secondary-focus: #696969;
   --color-secondary-disabled: #cccccc;

@@ -77,7 +77,7 @@ export const AppView = () => {
     'new_subscription_feature_flag',
     null,
   );
-  const { data: licenseData } = useLicenseInfo();
+  const { data: licenseData, isFetching } = useLicenseInfo();
   const subscriptionType = licenseData?.response?.type;
   const subType = licenseData?.response?.subType;
 
@@ -88,9 +88,11 @@ export const AppView = () => {
   return (
     <div style={{ ...baseStyle, height: 'fit-content', width: '100%' }}>
       <Breadcrumb />
-      <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
-        {getSubscriptionView(subscriptionType, subType, featureFlag)}
-      </div>
+      {!isFetching && (
+        <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
+          {getSubscriptionView(subscriptionType, subType, featureFlag)}
+        </div>
+      )}
     </div>
   );
 };
