@@ -46,7 +46,7 @@ const CosGeneralInformation: FC = () => {
   const cosDetail = useCosStore((state) => state.cos);
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
-  const [cosData, setCosData] = useState<Record<string, string>>({});
+  const [cosData, setCosData] = useState<Partial<Record<string, string>>>({});
   const [cosName, setCosName] = useState<string>('');
   const [zimbraNotes, setZimbraNotes] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -183,11 +183,11 @@ const CosGeneralInformation: FC = () => {
 
   useEffect(() => {
     if (!!cosInformation && cosInformation.length > 0) {
-      const obj: Record<string, string> = {};
+      const obj: Partial<Record<string, string>> = {};
       cosInformation.forEach((item) => {
         obj[item?.n] = item._content;
       });
-      setCosName(obj.cn);
+      setCosName(obj.cn ?? '');
       if (obj.zimbraNotes) {
         setZimbraNotes(obj.zimbraNotes);
       } else {
@@ -243,7 +243,7 @@ const CosGeneralInformation: FC = () => {
       _jsns: ZIMBRA_ADMIN_URN,
       a: attributes,
       id: {
-        _content: cosData.zimbraId,
+        _content: cosData.zimbraId ?? '',
       },
     };
     modifyCos(body)
@@ -282,7 +282,7 @@ const CosGeneralInformation: FC = () => {
       const renameBody = {
         _jsns: ZIMBRA_ADMIN_URN,
         id: {
-          _content: cosData.zimbraId,
+          _content: cosData.zimbraId ?? '',
         },
         newName: {
           _content: cosName,
@@ -311,9 +311,9 @@ const CosGeneralInformation: FC = () => {
   };
 
   const onCancel = (): void => {
-    setCosName(cosData.cn);
-    setZimbraNotes(cosData.zimbraNotes);
-    setDescription(cosData.description);
+    setCosName(cosData.cn ?? '');
+    setZimbraNotes(cosData.zimbraNotes ?? '');
+    setDescription(cosData.description ?? '');
     setIsDirty(false);
   };
 
@@ -678,7 +678,7 @@ const CosGeneralInformation: FC = () => {
                   label={t('label.notes', 'Notes')}
                   backgroundColor="gray5"
                   value={zimbraNotes}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                  onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
                     setZimbraNotes(e.target.value);
                   }}
                   disabled={readonlyCOS}

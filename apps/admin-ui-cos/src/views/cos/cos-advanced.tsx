@@ -648,7 +648,7 @@ const CosAdvanced: FC = () => {
   }, [cosData.zimbraId, getCOSQuota, isAdvanced, isTotalQuotaActive]);
 
   const changeValue = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setCosAdvanced((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
     },
     [setCosAdvanced],

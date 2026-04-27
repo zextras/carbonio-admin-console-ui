@@ -583,7 +583,7 @@ const CosServerPools: FC = () => {
         <Padding all="medium">
           <ds-text as="p" overflow="break-word" weight="regular">
             {t('cos.create_cos_success_msg', {
-              serverName: serverList.find((sp) => sp?.id === selectedTableRows[0])?.name,
+              serverName: serverList.find((sp) => sp?.id === selectedTableRows[0]?.id)?.name,
               defaultValue:
                 'You are disabling pool on {{serverName}}. All mailboxes will be not moved. Are you sure you want to delete it?',
             })}

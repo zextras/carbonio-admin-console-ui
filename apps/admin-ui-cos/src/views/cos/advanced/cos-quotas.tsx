@@ -36,7 +36,7 @@ type QuotaProps = {
   zimbraQuotaWarnIntervalType: string;
   onFileQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onZimbraMailQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
+  changeValue: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onZimbraQuotaWarnIntervalNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onZimbraQuotaWarnIntervalTypeChange: SingleSelectionOnChange;
   totalComputedQuotaLimit?: ComputedLimit;

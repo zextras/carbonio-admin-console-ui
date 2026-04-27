@@ -185,7 +185,7 @@ const CreateCos: FC = () => {
                     label={t('label.notes', 'Notes')}
                     backgroundColor="gray5"
                     value={zimbraNotes}
-                    onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                    onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
                       setZimbraNotes(e.target.value);
                     }}
                   />

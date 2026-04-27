@@ -29,10 +29,10 @@ const CosFeatures: FC = () => {
   const createSnackbar = useSnackbar();
   const cosInformation = useCosStore((state) => state.cos?.a);
   const cosName = useCosStore((state) => state.cos?.name);
-  const [initCosData, setInitCosData] = useState<Record<string, string>>({});
+  const [initCosData, setInitCosData] = useState<Partial<Record<string, string>>>({});
   const [zimbraId, setZimbraId] = useState<string>('');
   const setCos = useCosStore((state) => state.setCos);
-  const [cosFeatures, setCosFeatures] = useState<Record<string, string>>({});
+  const [cosFeatures, setCosFeatures] = useState<Partial<Record<string, string>>>({});
   const isAdvanced = useIsAdvanced();
   const { data: rights = [] } = useCurrentUserRights();
 
@@ -43,11 +43,11 @@ const CosFeatures: FC = () => {
 
   const setSwitchOptionValue = useCallback(
     (key: string, value: string): void => {
-      setInitCosData((prev: Record<string, string>) => ({
+      setInitCosData((prev: Partial<Record<string, string>>) => ({
         ...prev,
         [key]: value,
       }));
-      setCosFeatures((prev: Record<string, string>) => ({
+      setCosFeatures((prev: Partial<Record<string, string>>) => ({
         ...prev,
         [key]: value,
       }));
@@ -91,7 +91,7 @@ const CosFeatures: FC = () => {
   }, [cosName, createSnackbar, setSwitchOptionValue, t]);
 
   const setInitialValues = useCallback(
-    (obj: Record<string, string>) => {
+    (obj: Partial<Record<string, string>>) => {
       if (obj) {
         setSwitchOptionValue('carbonioFeatureMailsAppEnabled', obj?.carbonioFeatureMailsAppEnabled);
         setSwitchOptionValue(
@@ -120,7 +120,7 @@ const CosFeatures: FC = () => {
 
   useEffect(() => {
     if (!!cosInformation && cosInformation.length > 0) {
-      const obj: Record<string, string> = {};
+      const obj: Partial<Record<string, string>> = {};
       cosInformation.forEach((item) => {
         obj[item?.n] = item._content;
       });
@@ -204,9 +204,9 @@ const CosFeatures: FC = () => {
     } as ModifyCosBody;
     body.a = Object.keys(cosFeatures)
       .filter((ele) => ele !== MOBILE_CALENDAR_FEATURE_SYNC && ele !== MOBILE_CONTACT_FEATURE_SYNC)
-      .map((ele) => ({ n: ele, _content: cosFeatures[ele] }));
+      .map((ele) => ({ n: ele, _content: cosFeatures[ele] ?? '' }));
 
-    const modifiedKeys = reduce<Record<string, string>, Array<string>>(
+    const modifiedKeys = reduce<Partial<Record<string, string>>, Array<string>>(
       cosFeatures,
       (result, value, key) => (isEqual(value, initCosData[key]) ? result : [...result, key]),
       [],
