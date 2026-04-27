@@ -25,7 +25,7 @@ export const TrialBanner = () => {
   });
   const subTitle = t(
     'core.subscription.contact_provider',
-    'If you want to upgrade your license please contact your provider.',
+    'To upgrade your license, please contact your service provider.',
   );
 
   return (
