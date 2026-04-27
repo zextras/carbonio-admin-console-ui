@@ -123,20 +123,20 @@ describe('AppView', () => {
       await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
     });
 
-    it('should render legacy Subscription for Metered license with feature flag off', async () => {
+    it('should render legacy Subscription for ISP license with feature flag off', async () => {
       localStorageStore['new_subscription_feature_flag'] = 'false';
       const licenseData = createMockLicenseData({
-        response: { type: 'Metered', subType: 'METERED' },
+        response: { type: 'ISP' },
       });
       setupTest(licenseData);
 
       await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
     });
 
-    it('should render legacy Subscription for ISP license with feature flag off', async () => {
+    it('should render legacy Subscription for Purchased + TRIAL with feature flag off', async () => {
       localStorageStore['new_subscription_feature_flag'] = 'false';
       const licenseData = createMockLicenseData({
-        response: { type: 'ISP' },
+        response: { type: 'Purchased', subType: 'TRIAL' },
       });
       setupTest(licenseData);
 
@@ -182,11 +182,10 @@ describe('AppView', () => {
       await expect.element(page.getByText('Max version')).toBeVisible();
     });
 
-    it('should render MeteredSubscription for Metered type', async () => {
+    it('should render MeteredSubscription for ISP type', async () => {
       const licenseData = createMockLicenseData({
         response: {
-          type: 'Metered',
-          subType: 'METERED',
+          type: 'ISP',
           renewDaysLeft: 15,
           renewTimeLeft: 15 * 24 * 60 * 60 * 1000,
           lastValidationCheck: new Date('2026-04-20T00:00:00Z').getTime(),
@@ -198,10 +197,11 @@ describe('AppView', () => {
       await expect.element(page.getByText('Data valid until')).toBeVisible();
     });
 
-    it('should render TrialSubscription for ISP type', async () => {
+    it('should render TrialSubscription for Purchased + TRIAL', async () => {
       const licenseData = createMockLicenseData({
         response: {
-          type: 'ISP',
+          type: 'Purchased',
+          subType: 'TRIAL',
           dateEnd: new Date('2029-06-18T00:00:00Z').getTime(),
         },
       });
@@ -212,13 +212,16 @@ describe('AppView', () => {
       await expect.element(page.getByText('Seat utilization')).toBeVisible();
     });
 
-    it('should render legacy Subscription as fallback for unknown type with feature flag on', async () => {
+    it('should render empty for unknown type with feature flag on', async () => {
       const licenseData = createMockLicenseData({
         response: { type: 'Unknown' },
       });
       setupTest(licenseData);
 
-      await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
+      const detailsElements = page.getByText('Details', { exact: true }).elements();
+      expect(detailsElements).toHaveLength(0);
+      const activateElements = page.getByText('Activation token', { exact: true }).elements();
+      expect(activateElements).toHaveLength(0);
     });
 
     it('should not render ActivateSubscription when license is present and feature flag is on', async () => {
