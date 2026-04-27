@@ -13,15 +13,15 @@ import { MeteredSubscription } from '../metered-subscription';
 
 const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
   response: {
-    subType: 'METERED',
     expired: false,
     dateStart: new Date('2023-01-15T00:00:00Z').getTime(),
     dateEnd: new Date('2030-12-31T00:00:00Z').getTime(),
-    maintenanceStatus: 'active' as const,
-    type: 'Metered',
+    type: 'ISP',
     customer: 'Test Customer',
     accountCount: 10,
+    licensedUsers: '999999',
     notYetValid: false,
+    serverID: 'test-server-id',
     infrastructureId: 'test-infra-id',
     authenticationToken: 'TEST_TOKEN',
     endUser: 'Test End User',
@@ -62,9 +62,9 @@ describe('MeteredSubscription', () => {
       setupTest(<MeteredSubscription />, mockLicenseData);
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
-      await expect.element(page.getByText('Billing period')).toBeVisible();
       await expect.element(page.getByText('Last time data has been sent')).toBeVisible();
       await expect.element(page.getByText('Data valid until')).toBeVisible();
+      await expect.element(page.getByText('Total active accounts')).toBeVisible();
     });
   });
 
@@ -97,66 +97,30 @@ describe('MeteredSubscription', () => {
     });
   });
 
-  describe('BillingPeriod card', () => {
-    it('should render the Billing period label', async () => {
+  describe('TotalAccounts card', () => {
+    it('should render the Total active accounts label', async () => {
       const mockLicenseData = createMockLicenseData();
       setupTest(<MeteredSubscription />, mockLicenseData);
 
-      await expect.element(page.getByText('Billing period')).toBeVisible();
+      await expect.element(page.getByText('Total active accounts')).toBeVisible();
     });
 
-    it('should display the formatted next bill date', async () => {
-      const renewTimeLeft = 15 * 24 * 60 * 60 * 1000;
+    it('should display the licensedUsers count', async () => {
       const mockLicenseData = createMockLicenseData({
-        response: {
-          renewTimeLeft,
-          renewDaysLeft: 15,
-        },
+        response: { licensedUsers: '500' },
       });
       setupTest(<MeteredSubscription />, mockLicenseData);
 
-      await expect.element(page.getByText(/\d{1,2}\s+\w+\s+\d{4}/)).toBeVisible();
+      await expect.element(page.getByText('500')).toBeVisible();
     });
 
-    it('should display the next bill days left text for plural days', async () => {
+    it('should render without crashing when licensedUsers is missing', async () => {
       const mockLicenseData = createMockLicenseData({
-        response: {
-          renewDaysLeft: 15,
-          renewTimeLeft: 15 * 24 * 60 * 60 * 1000,
-        },
+        response: { licensedUsers: undefined },
       });
       setupTest(<MeteredSubscription />, mockLicenseData);
 
-      await expect.element(page.getByText(/Next bill in \d+ days/)).toBeVisible();
-    });
-
-    it('should display the next bill days left text for singular day', async () => {
-      const mockLicenseData = createMockLicenseData({
-        response: {
-          renewDaysLeft: 1,
-          renewTimeLeft: 1 * 24 * 60 * 60 * 1000,
-        },
-      });
-      setupTest(<MeteredSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText(/Next bill in \d+ day/)).toBeVisible();
-    });
-
-    it('should render empty date when renewTimeLeft is missing', async () => {
-      const mockLicenseData = createMockLicenseData({
-        response: {
-          renewTimeLeft: undefined,
-          renewDaysLeft: undefined,
-        },
-      });
-      const result = await setupTest(<MeteredSubscription />, mockLicenseData);
-
-      const container = result.container;
-      const cardTexts = container.querySelectorAll('ds-text');
-      const hasEmptyDate = Array.from(cardTexts).some(
-        (el) => el.getAttribute('weight') === 'bold' && el.textContent?.trim() === '',
-      );
-      expect(hasEmptyDate).toBe(true);
+      await expect.element(page.getByText('Total active accounts')).toBeVisible();
     });
   });
 
