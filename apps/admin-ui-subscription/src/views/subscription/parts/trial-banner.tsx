@@ -23,6 +23,11 @@ export const TrialBanner = () => {
     defaultValue_one: 'Trial active — {{count}} day remaining',
     defaultValue_other: 'Trial active — {{count}} days remaining',
   });
+  const daysLeftLabel = t('core.subscription.days_left', {
+    count: daysLeft,
+    defaultValue_one: 'day left',
+    defaultValue_other: 'days left',
+  });
   const subTitle = t(
     'core.subscription.contact_provider',
     'To upgrade your license, please contact your service provider.',
@@ -46,7 +51,7 @@ export const TrialBanner = () => {
           {daysLeft}
         </ds-text>
         <ds-text size="extrasmall" color={theme.trial.box.text}>
-          Days left
+          {daysLeftLabel}
         </ds-text>
       </div>
     </div>

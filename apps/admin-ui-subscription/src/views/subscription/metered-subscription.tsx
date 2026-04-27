@@ -6,11 +6,11 @@
 
 import { useTranslation } from 'react-i18next';
 
-import styles from './metered-subscription.module.css';
 import { BillingPeriod } from './parts/cards/billing-period';
 import { DataValidity } from './parts/cards/data-validity';
 import { LastDataSent } from './parts/cards/last-data-sent';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
+import styles from './subscription-layout.module.css';
 
 export const MeteredSubscription = () => {
   const { t } = useTranslation();

@@ -29,6 +29,7 @@ import { Navigate } from 'react-router';
 
 import { CONFIG } from '../../constants';
 import { LicenseBanner } from '../dashboard/license-banner';
+import { DATE_FORMAT, TIME_FORMAT } from './constants';
 import { ServiceStatus } from './service-status';
 
 type Module = {
@@ -50,9 +51,6 @@ export type AllModuleConfig = {
   quantity: string;
   enabled: boolean;
 };
-
-const DATE_FORMAT = 'dd MMM yyyy';
-const TIME_FORMAT = 'dd MMM yyyy HH:mm';
 
 const moduleName: ModuleName = {
   backup_realtime: { value: 'Realtime', label: 'Backup' },

@@ -11,7 +11,7 @@ import { SeatUtilization } from './parts/cards/seat-utilization';
 import { SubscriptionExpiry } from './parts/cards/subscription-expiry';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
 import { TrialBanner } from './parts/trial-banner';
-import styles from './perpetual-subscription.module.css';
+import styles from './subscription-layout.module.css';
 
 export const TrialSubscription = () => {
   const { t } = useTranslation();

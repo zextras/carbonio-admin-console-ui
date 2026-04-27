@@ -10,7 +10,7 @@ import { ActiveEdition } from './parts/cards/active-edition';
 import { MaxVersion } from './parts/cards/max-version';
 import { SeatUtilization } from './parts/cards/seat-utilization';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
-import styles from './perpetual-subscription.module.css';
+import styles from './subscription-layout.module.css';
 
 export const PerpetualSubscription = () => {
   const { t } = useTranslation();

@@ -8,8 +8,8 @@ import { useLicenseInfo } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
+import { DATE_FORMAT } from '../../constants';
 import styles from './card.module.css';
-import { DATE_FORMAT } from './constants';
 
 export const LastDataSent = () => {
   const { t } = useTranslation();
