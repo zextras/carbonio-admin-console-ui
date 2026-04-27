@@ -9,7 +9,6 @@ import {
   delayedSoapApiForBrowser,
   getQueryClient,
   grantUserConfigRights,
-  LocationDisplay,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -397,49 +396,6 @@ describe('ActivateSubscription', () => {
     });
   });
 
-  describe('Navigation', () => {
-    it('should navigate to subscriptions page after success popup completes', async () => {
-      createBrowserZextrasActionInterceptor('activate-license', () =>
-        HttpResponse.json({
-          Body: {
-            response: {
-              content: JSON.stringify({
-                ok: true,
-                message: 'License activated successfully',
-                response: {
-                  type: 'Purchased',
-                  subType: 'PERPETUAL',
-                  expired: false,
-                  features: [],
-                },
-              }),
-            },
-          },
-        }),
-      );
-
-      const queryClient = getQueryClient();
-      setupBrowserTest(
-        <>
-          <ActivateSubscription />
-          <LocationDisplay />
-        </>,
-        { queryClient },
-      );
-
-      const input = page.getByRole('textbox');
-      await userEvent.type(input, 'TEST-TOKEN');
-
-      const activateButton = page.getByText('Activate subscription');
-      await activateButton.click();
-
-      await expect.element(page.getByText('Subscription activated')).toBeVisible();
-
-      const location = page.getByTestId('location');
-      await expect.element(location).toHaveTextContent('/manage/subscriptions');
-    });
-  });
-
   describe('Error popover interaction', () => {
     it('should hide error popover when back button is clicked', async () => {
       createBrowserZextrasActionInterceptor('activate-license', () =>
@@ -471,52 +427,6 @@ describe('ActivateSubscription', () => {
       await expect
         .element(page.getByText('Something went wrong', { exact: true }))
         .not.toBeVisible();
-    });
-  });
-
-  describe('Success popover interaction', () => {
-    it('should navigate when "go to my subscription" button is clicked', async () => {
-      createBrowserZextrasActionInterceptor('activate-license', () =>
-        HttpResponse.json({
-          Body: {
-            response: {
-              content: JSON.stringify({
-                ok: true,
-                message: 'License activated successfully',
-                response: {
-                  type: 'Purchased',
-                  subType: 'PERPETUAL',
-                  expired: false,
-                  features: [],
-                },
-              }),
-            },
-          },
-        }),
-      );
-
-      const queryClient = getQueryClient();
-      setupBrowserTest(
-        <>
-          <ActivateSubscription />
-          <LocationDisplay />
-        </>,
-        { queryClient },
-      );
-
-      const input = page.getByRole('textbox');
-      await userEvent.type(input, 'TEST-TOKEN');
-
-      const activateButton = page.getByText('Activate subscription');
-      await activateButton.click();
-
-      await expect.element(page.getByText('Subscription activated')).toBeVisible();
-
-      const goButton = page.getByText('go to my subscription');
-      await goButton.click();
-
-      const location = page.getByTestId('location');
-      await expect.element(location).toHaveTextContent('/manage/subscriptions');
     });
   });
 

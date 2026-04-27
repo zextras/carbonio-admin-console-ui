@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Input } from '@zextras/ui-components';
-import { useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
+import { invalidateLicenseQuery, useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
+import { useQueryClient } from '@tanstack/react-query';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
 import { z } from 'zod';
 
 import subscription_logo from '../../assets/subscription_empty.svg';
-import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
 import styles from './activate-subscription.module.css';
 import { ActivationError } from './parts/activation/activation-error';
 import { ActivationProgress } from './parts/activation/activation-progress';
@@ -33,7 +32,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
   const [showResult, setShowResult] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const activateLicenseMutation = useActivateLicense();
   const breakpoint = useBreakpoint();
   const isLargeViewport = breakpoint === 'xl' || breakpoint === '2xl';
@@ -67,8 +66,8 @@ export const ActivateSubscription = (): React.JSX.Element => {
   }, []);
 
   const handleSuccessComplete = useCallback((): void => {
-    navigate(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`, { replace: true });
-  }, [navigate]);
+    invalidateLicenseQuery(queryClient);
+  }, [queryClient]);
 
   return (
     <div className={styles.outer}>

@@ -137,9 +137,11 @@ export const useVersion = () => {
   });
 };
 
-export const useActivateLicense = () => {
-  const queryClient = useQueryClient();
+export function invalidateLicenseQuery(queryClient: ReturnType<typeof useQueryClient>): void {
+  queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+}
 
+export const useActivateLicense = () => {
   return useMutation({
     mutationFn: async ({ token, renewal = false }: { token: string; renewal?: boolean }) => {
       const result = await activateLicense(token, renewal);
@@ -147,9 +149,6 @@ export const useActivateLicense = () => {
         throw new Error(result.message || 'Activation failed');
       }
       return result;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.license() });
     },
   });
 };
