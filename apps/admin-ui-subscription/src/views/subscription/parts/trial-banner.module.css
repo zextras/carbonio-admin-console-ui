@@ -21,13 +21,27 @@
   align-self: stretch;
 }
 
+.icon-wrapper {
+  height: 2.875rem;
+  margin: auto 0;
+}
+
+.text {
+  margin: auto 0;
+}
+
+.subtitle {
+  padding: 0.25rem 0;
+}
+
 .badge {
   display: flex;
   padding: 1.25rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 2px;
   border: 1px solid var(--trial-icon-color);
   background: #fff7ed;
+  border-radius: 2px;
+  border: 1px solid var(--trial-box-text);
 }

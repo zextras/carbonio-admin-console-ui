@@ -357,6 +357,7 @@ export const theme: Theme = {
     box: {
       color: 'var(--trial-box-color)',
       bg: 'var(--trial-box-bg)',
+      text: 'var(--trial-box-text)',
     },
   },
 };

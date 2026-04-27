@@ -23,21 +23,31 @@ export const TrialBanner = () => {
     defaultValue_one: 'Trial active — {{count}} day remaining',
     defaultValue_other: 'Trial active — {{count}} days remaining',
   });
+  const subTitle = t(
+    'core.subscription.contact_provider',
+    'If you want to upgrade your license please contact your provider.',
+  );
 
   return (
     <div className={styles.outer}>
       <div className={styles.banner}>
-        <ds-icon icon="ClockOutline" color={theme.trial.box.color}></ds-icon>
-        <div className="sub-trial-banner-text">
+        <div className={styles.iconWrapper}>
+          <ds-icon icon="ClockOutline" color={theme.trial.box.color}></ds-icon>
+        </div>
+        <div className={styles.text}>
           <ds-text size="medium" weight="bold">
             {title}
           </ds-text>
-          <a className="sub-trial-banner-cta">CONTACT PROVIDER TO UPGRADE</a>
+          <ds-text className={styles.subtitle}>{subTitle}</ds-text>
         </div>
       </div>
       <div className={styles.badge}>
-        <div className="sub-trial-banner-badge-num">{daysLeft}</div>
-        <div className="sub-trial-banner-badge-lbl">Days left</div>
+        <ds-text weight="bold" size="large" color={theme.trial.box.text}>
+          {daysLeft}
+        </ds-text>
+        <ds-text size="extrasmall" color={theme.trial.box.text}>
+          Days left
+        </ds-text>
       </div>
     </div>
   );

@@ -17,7 +17,7 @@
 
   /* Secondary palette - matches Theme.palette.secondary */
   --color-secondary-regular: #828282;
-  --color-secondary-hover: #696969;
+ f --color-secondary-hover: #696969;
   --color-secondary-active: #5c5c5c;
   --color-secondary-focus: #696969;
   --color-secondary-disabled: #cccccc;
@@ -236,6 +236,7 @@
   --tag-over-bg: #fff2f1;
   --trial-box-color: #c97f00;
   --trial-box-bg: #fff7ed;
+  --trial-box-text: #bd6400;
 
   /* Breakpoints */
   --breakpoint-lg: 992px;
