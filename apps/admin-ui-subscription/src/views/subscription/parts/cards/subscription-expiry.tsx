@@ -8,9 +8,8 @@ import { useLicenseInfo } from '@zextras/ui-shared';
 import { differenceInCalendarDays, format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import styles from './subscription-expiry.module.css';
-
-const DATE_FORMAT = 'dd MMM yyyy';
+import styles from './card.module.css';
+import { DATE_FORMAT } from './constants';
 
 export const SubscriptionExpiry = () => {
   const { t } = useTranslation();

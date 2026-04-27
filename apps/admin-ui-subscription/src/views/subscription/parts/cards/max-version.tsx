@@ -7,7 +7,7 @@
 import { useLicenseInfo } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
-import styles from './data-validity.module.css';
+import styles from './card.module.css';
 
 export const MaxVersion = () => {
   const { t } = useTranslation();

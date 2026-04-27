@@ -9,7 +9,8 @@ import { useLicenseInfo } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import styles from './seat-utilization.module.css';
+import styles from './card.module.css';
+import seatStyles from './seat-utilization.module.css';
 
 function calculateUsagePercentage(used: number, total: number) {
   if (total <= 0) return 0;
@@ -63,7 +64,7 @@ export const SeatUtilization = () => {
       <ds-text size="small" as="span" color="gray0">
         {t('core.subscription.seat_utilization', 'Seat utilization')}
       </ds-text>
-      <div className={styles.usageRow}>
+      <div className={seatStyles.usageRow}>
         <ds-text weight="bold" color="gray0" style={{ fontSize: '1.5rem' }}>
           {usagePercentageLabel}
         </ds-text>

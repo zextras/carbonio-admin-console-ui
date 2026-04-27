@@ -4,8 +4,4 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-.usageRow {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+export const DATE_FORMAT = 'dd MMM yyyy';

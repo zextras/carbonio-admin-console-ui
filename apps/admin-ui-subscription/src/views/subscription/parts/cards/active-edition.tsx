@@ -6,7 +6,7 @@
 
 import { useTranslation } from 'react-i18next';
 
-import styles from './subscription-status.module.css';
+import styles from './card.module.css';
 
 export const ActiveEdition = () => {
   const { t } = useTranslation();
