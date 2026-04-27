@@ -14,7 +14,7 @@ import { fetchSoap } from '../services/subscription-service';
 
 export type LicenseType = 'ISP' | 'METERED' | 'Purchased' | 'None';
 
-export type LicenseSubType = 'PERPETUAL' | 'REGULAR';
+export type LicenseSubType = 'PERPETUAL' | 'REGULAR' | 'TRIAL';
 
 export type MaintenanceStatus = 'active' | 'expired' | 'expiring' | 'invalid';
 

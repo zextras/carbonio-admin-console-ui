@@ -71,11 +71,11 @@ function getSubscriptionView(
   if (subscriptionType === 'Purchased' && subType === 'PERPETUAL') {
     return <PerpetualSubscription />;
   }
-  if (subscriptionType === 'Metered') {
-    return <MeteredSubscription />;
-  }
-  if (subscriptionType === 'ISP') {
+  if (subscriptionType === 'Purchased' && subType === 'TRIAL') {
     return <TrialSubscription />;
+  }
+  if (subscriptionType === 'Metered' || subscriptionType === 'ISP') {
+    return <MeteredSubscription />;
   }
 }
 
