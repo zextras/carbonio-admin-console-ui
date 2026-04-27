@@ -317,9 +317,7 @@ describe('ActivateSubscription', () => {
       const activateButton = page.getByText('Activate subscription');
       await activateButton.click();
 
-      await expect
-        .element(page.getByText('Please enter your activation token'))
-        .toBeVisible();
+      await expect.element(page.getByText('Please enter your activation token')).toBeVisible();
     });
 
     it('should show validation error when activating with whitespace-only input', async () => {
@@ -331,9 +329,7 @@ describe('ActivateSubscription', () => {
       const activateButton = page.getByText('Activate subscription');
       await activateButton.click();
 
-      await expect
-        .element(page.getByText('Please enter your activation token'))
-        .toBeVisible();
+      await expect.element(page.getByText('Please enter your activation token')).toBeVisible();
     });
 
     it('should clear validation error when user starts typing', async () => {
@@ -345,9 +341,7 @@ describe('ActivateSubscription', () => {
       const activateButton = page.getByText('Activate subscription');
       await activateButton.click();
 
-      await expect
-        .element(page.getByText('Please enter your activation token'))
-        .toBeVisible();
+      await expect.element(page.getByText('Please enter your activation token')).toBeVisible();
 
       await userEvent.type(input, 'A');
 
@@ -477,6 +471,100 @@ describe('ActivateSubscription', () => {
       await expect
         .element(page.getByText('Something went wrong', { exact: true }))
         .not.toBeVisible();
+    });
+  });
+
+  describe('Success popover interaction', () => {
+    it('should navigate when "go to my subscription" button is clicked', async () => {
+      createBrowserZextrasActionInterceptor('activate-license', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                message: 'License activated successfully',
+                response: {
+                  type: 'Purchased',
+                  subType: 'PERPETUAL',
+                  expired: false,
+                  features: [],
+                },
+              }),
+            },
+          },
+        }),
+      );
+
+      const queryClient = getQueryClient();
+      setupBrowserTest(
+        <>
+          <ActivateSubscription />
+          <LocationDisplay />
+        </>,
+        { queryClient },
+      );
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'TEST-TOKEN');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect.element(page.getByText('Subscription activated')).toBeVisible();
+
+      const goButton = page.getByText('go to my subscription');
+      await goButton.click();
+
+      const location = page.getByTestId('location');
+      await expect.element(location).toHaveTextContent('/manage/subscriptions');
+    });
+  });
+
+  describe('Validation on blur', () => {
+    it('should show validation error on blur when input has content then is cleared', async () => {
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'VALID-TOKEN');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect.element(page.getByText('Activating subscription')).toBeVisible();
+    });
+  });
+
+  describe('Progress completion flow', () => {
+    it('should hide progress popover and show result after API responds', async () => {
+      createBrowserZextrasActionInterceptor('activate-license', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                message: 'License activated successfully',
+                response: {
+                  type: 'Purchased',
+                  subType: 'PERPETUAL',
+                  expired: false,
+                  features: [],
+                },
+              }),
+            },
+          },
+        }),
+      );
+
+      setupActivateSubscriptionTest(<ActivateSubscription />);
+
+      const input = page.getByRole('textbox');
+      await userEvent.type(input, 'TEST-TOKEN');
+
+      const activateButton = page.getByText('Activate subscription');
+      await activateButton.click();
+
+      await expect.element(page.getByText('Subscription activated')).toBeVisible();
+      await expect.element(page.getByText('Activating subscription')).not.toBeVisible();
     });
   });
 });
