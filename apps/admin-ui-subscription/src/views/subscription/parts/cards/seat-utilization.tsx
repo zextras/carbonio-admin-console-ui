@@ -39,11 +39,11 @@ function getTagIconBackground(usagePercentage: number) {
 }
 
 function getUsageWarningLabel(t: TFunction, usagePercentage: number) {
-  if (usagePercentage > 100) return t('core.subscription.over_usage', 'over usage');
-  if (usagePercentage === 100) return t('core.subscription.full_usage', 'full usage');
-  if (usagePercentage > 95) return t('core.subscription.high_usage', 'high usage');
-  if (usagePercentage > 70) return t('core.subscription.moderate_usage', 'moderate usage');
-  return t('core.subscription.low_usage', 'low usage');
+  if (usagePercentage > 100) return t('core.subscription.over_usage', 'over');
+  if (usagePercentage === 100) return t('core.subscription.full_usage', 'full');
+  if (usagePercentage > 95) return t('core.subscription.high_usage', 'high');
+  if (usagePercentage > 70) return t('core.subscription.moderate_usage', 'moderate');
+  return t('core.subscription.low_usage', 'low');
 }
 
 export const SeatUtilization = () => {
