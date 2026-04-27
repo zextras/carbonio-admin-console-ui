@@ -26,6 +26,7 @@ This file provides guidance for agentic coding assistants working in this reposi
 ### Running a Single Test
 - `pnpm vitest run <test-file>` - Run specific test file from root
 - `pnpm vitest run <test-file> --reporter=verbose` - Run with verbose output
+- `HEADED=true vitest run <test-file>` - Run with visible browser window
 - Example: `pnpm vitest run apps/admin-ui-dashboard/src/views/dashboard/tests/license-banner.browser.test.tsx`
 - From within an app: `vitest run <relative-path-to-test-file>`
 

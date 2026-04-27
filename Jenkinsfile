@@ -123,10 +123,11 @@ pipeline {
                 }
                 stage('test') {
                     steps {
-                        container('pnpm') {
+                        container('playwright') {
                             script {
                                 sh '''
-                                    pnpm exec playwright install --with-deps
+                                    unset PLAYWRIGHT_BROWSERS_PATH
+                                    pnpm exec playwright install --with-deps chromium
                                     pnpm test:ci
                                 '''
                             }
@@ -141,12 +142,10 @@ pipeline {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         script {
                             sh '''
-                                npm install -g sonarqube-scanner \
-                                npm install baseline-browser-mapping@latest \
-                                npx sonar-scanner \
+                                pnpm add -Dw sonarqube-scanner
+                                pnpm exec sonar-scanner \
                                     -Dsonar.projectKey=carbonio-admin-console-ui \
-                                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-                            '''
+                                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info                           '''
                         }
                     }
                 }
