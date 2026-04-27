@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import '../ds-text';
+import './../../theme/theme.css';
 
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
@@ -87,13 +88,10 @@ describe('ds-text', () => {
       expect(el.shadowRoot!.querySelector('span')).toBeNull();
     });
 
-    it('should fall back to <span> when "as" is set to an unrecognized value', async () => {
+    it('should throw when "as" is set to an unrecognized value', async () => {
       const el = await createDsText({}, 'Fallback content');
       el.setAttribute('as', 'div');
-      await el.updateComplete;
-
-      expect(el.shadowRoot!.querySelector('span')).not.toBeNull();
-      expect(el.shadowRoot!.querySelector('div')).toBeNull();
+      await expect(el.updateComplete).rejects.toThrow();
     });
   });
 
