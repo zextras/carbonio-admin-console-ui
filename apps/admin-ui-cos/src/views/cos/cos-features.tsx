@@ -42,7 +42,7 @@ const CosFeatures: FC = () => {
   }, [rights]);
 
   const setSwitchOptionValue = useCallback(
-    (key: string, value: string): void => {
+    (key: string, value: string | undefined): void => {
       setInitCosData((prev: Partial<Record<string, string>>) => ({
         ...prev,
         [key]: value,
@@ -124,7 +124,7 @@ const CosFeatures: FC = () => {
       cosInformation.forEach((item) => {
         obj[item?.n] = item._content;
       });
-      setZimbraId(obj?.zimbraId);
+      setZimbraId(obj?.zimbraId ?? '');
       setInitialValues(obj);
       setIsDirty(false);
     }
@@ -178,8 +178,8 @@ const CosFeatures: FC = () => {
   const modifyCoreAttributes = (body: Record<string, unknown>): void => {
     setCoreAttributes(body)
       .then(() => {
-        setSwitchOptionValue('mobileContactFeatureSync', cosFeatures?.mobileContactFeatureSync);
-        setSwitchOptionValue('mobileCalendarFeatureSync', cosFeatures?.mobileCalendarFeatureSync);
+        setSwitchOptionValue('mobileContactFeatureSync', cosFeatures?.mobileContactFeatureSync ?? '');
+        setSwitchOptionValue('mobileCalendarFeatureSync', cosFeatures?.mobileCalendarFeatureSync ?? '');
       })
       .catch((error) => {
         createSnackbar({

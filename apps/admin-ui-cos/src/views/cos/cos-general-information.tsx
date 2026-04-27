@@ -333,7 +333,7 @@ const CosGeneralInformation: FC = () => {
 
   const onDeleteCOS = (): void => {
     setIsRequestInProgress(true);
-    deleteCOS(cosData.zimbraId)
+    deleteCOS(cosData.zimbraId ?? '')
       .then((data) => {
         setIsRequestInProgress(false);
         if (data) {
