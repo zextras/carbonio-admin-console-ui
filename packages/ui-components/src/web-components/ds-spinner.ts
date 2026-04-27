@@ -12,7 +12,7 @@ import { property } from 'lit/decorators.js';
 export type DsSpinnerProps = { color?: string };
 
 export class DsSpinner extends LitElement {
-  static override styles = css`
+  static override readonly styles = css`
     :host {
       display: inline-block;
     }

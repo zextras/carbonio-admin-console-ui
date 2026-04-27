@@ -13,7 +13,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 export type DsDividerProps = { color?: string };
 
 export class DividerElement extends LitElement {
-  static override styles = css`
+  static override readonly styles = css`
     :host {
       display: block;
       width: 100%;

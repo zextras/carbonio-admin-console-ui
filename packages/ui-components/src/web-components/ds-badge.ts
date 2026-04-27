@@ -12,7 +12,7 @@ import { property } from 'lit/decorators.js';
 export type DsBadgeProps = { color?: string };
 
 export class DsBadge extends LitElement {
-  static override styles = css`
+  static override readonly styles = css`
     :host {
       display: inline-flex;
       align-items: center;

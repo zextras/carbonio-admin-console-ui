@@ -21,7 +21,7 @@ export type DsTagIconProps = {
 };
 
 export class DsTagIcon extends LitElement {
-  static override styles = css`
+  static override readonly styles = css`
     :host {
       display: inline-flex;
       align-items: center;
