@@ -174,14 +174,14 @@ const Chip = ({
               disabled={actionDisabled}
               placement={tooltipPlacement}
             >
-               <div
-                 className={styles.actionContainer}
-                 onMouseEnter={showTooltipHandler}
-                 onMouseLeave={hideTooltipHandler}
-                 onFocus={showTooltipHandler}
-                 onBlur={hideTooltipHandler}
-                 style={{ '--action-spacing': SIZES[size].spacing } as React.CSSProperties}
-               >
+              <div
+                className={styles.actionContainer}
+                onMouseEnter={showTooltipHandler}
+                onMouseLeave={hideTooltipHandler}
+                onFocus={showTooltipHandler}
+                onBlur={hideTooltipHandler}
+                style={{ '--action-spacing': SIZES[size].spacing } as React.CSSProperties}
+              >
                 <ds-icon
                   icon={action.icon}
                   color={error ? 'error' : action.color}
@@ -263,16 +263,6 @@ const Chip = ({
     [onDoubleClick],
   );
 
-  const keyDownHandler = useCallback<React.KeyboardEventHandler>(
-    (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        onClick?.(event);
-      }
-    },
-    [onClick],
-  );
-
   const backgroundColor = error ? 'error' : background;
   const isClickable = (onClick || onDoubleClick) && !disabled;
   const isDisabled = !!disabled;
@@ -298,22 +288,18 @@ const Chip = ({
       }
       placement={tooltipPlacement}
     >
-      {React.createElement(
-        isClickable ? 'button' : 'div',
-        {
-          type: isClickable ? 'button' : undefined,
-          'data-testid': 'chip',
-          ref: chipRef,
-          className: styles.chip,
-          style: chipStyle,
-          'data-shape': shape,
-          'data-clickable': isClickable || undefined,
-          'data-disabled': isDisabled || undefined,
-          onClick: onClick && clickHandler,
-          onDoubleClick: onDoubleClick && dblClickHandler,
-          onKeyDown: isClickable ? keyDownHandler : undefined,
-          ...rest,
-        },
+      <div
+        data-testid="chip"
+        ref={chipRef}
+        className={styles.chip}
+        style={chipStyle}
+        data-shape={shape}
+        data-clickable={isClickable || undefined}
+        data-disabled={isDisabled || undefined}
+        onClick={onClick && clickHandler}
+        onDoubleClick={onDoubleClick && dblClickHandler}
+        {...rest}
+      >
         <div
           className={styles.content}
           style={{
@@ -378,7 +364,7 @@ const Chip = ({
             </Container>
           )}
         </div>
-      )}
+      </div>
     </Tooltip>
   );
 };
