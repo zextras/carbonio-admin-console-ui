@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useBreakpoint, useLocalStorage, usePrimaryBarState } from '@zextras/ui-shared';
-import { type FC, type ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
@@ -44,7 +44,7 @@ type RouteContainerProps = {
   children: ReactNode;
 };
 
-const RouteContainer: FC<RouteContainerProps> = ({ breakpoint, isSidebarOpen, children }) => (
+const RouteContainer = ({ breakpoint, isSidebarOpen, children }: RouteContainerProps) => (
   <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isSidebarOpen) }}>{children}</div>
 );
 
