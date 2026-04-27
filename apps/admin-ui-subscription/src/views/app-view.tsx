@@ -61,22 +61,22 @@ function getSubscriptionView(
     return <ActivateSubscription />;
   }
 
-  if (featureFlag) {
-    if (subscriptionType === 'Purchased' && subType === 'REGULAR') {
-      return <RegularSubscription />;
-    }
-    if (subscriptionType === 'Purchased' && subType === 'PERPETUAL') {
-      return <PerpetualSubscription />;
-    }
-    if (subscriptionType === 'Metered') {
-      return <MeteredSubscription />;
-    }
-    if (subscriptionType === 'ISP') {
-      return <TrialSubscription />;
-    }
+  if (!featureFlag) {
+    return <Subscription />;
   }
 
-  return <Subscription />;
+  if (subscriptionType === 'Purchased' && subType === 'REGULAR') {
+    return <RegularSubscription />;
+  }
+  if (subscriptionType === 'Purchased' && subType === 'PERPETUAL') {
+    return <PerpetualSubscription />;
+  }
+  if (subscriptionType === 'Metered') {
+    return <MeteredSubscription />;
+  }
+  if (subscriptionType === 'ISP') {
+    return <TrialSubscription />;
+  }
 }
 
 export const AppView = () => {

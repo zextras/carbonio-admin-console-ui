@@ -29,6 +29,9 @@ export type LicenseInfo = {
   subType?: LicenseSubType;
   endUser?: string;
   customer?: string;
+  company?: string;
+  reseller?: boolean;
+  order_id?: string;
   renewDaysLeft?: number;
   renewTimeLeft?: number;
   infrastructureId?: string;
@@ -42,6 +45,7 @@ export type LicenseInfo = {
   licensedUsers?: string;
   expired?: boolean;
   notYetValid?: boolean;
+  isWithinGraceInterval?: boolean;
   authenticationToken?: string;
   maxCarbonioVersion?: string;
   carbonioVersion?: string;
