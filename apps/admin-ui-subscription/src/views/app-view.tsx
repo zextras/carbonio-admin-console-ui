@@ -42,16 +42,6 @@ function getContainerStyle(breakpoint: string, isSidebarOpen = false) {
   };
 }
 
-type RouteContainerProps = {
-  breakpoint: string;
-  isSidebarOpen: boolean;
-  children: ReactNode;
-};
-
-const RouteContainer = ({ breakpoint, isSidebarOpen, children }: RouteContainerProps) => (
-  <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isSidebarOpen) }}>{children}</div>
-);
-
 function getSubscriptionView(
   subscriptionType: string | undefined,
   subType: string | undefined,
@@ -98,9 +88,9 @@ export const AppView = () => {
   return (
     <div style={{ ...baseStyle, height: 'fit-content', width: '100%' }}>
       <Breadcrumb />
-      <RouteContainer breakpoint={breakpoint} isSidebarOpen={isPrimaryBarExpanded}>
+      <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
         {getSubscriptionView(subscriptionType, subType, featureFlag)}
-      </RouteContainer>
+      </div>
     </div>
   );
 };
