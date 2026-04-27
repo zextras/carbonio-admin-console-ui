@@ -11,7 +11,7 @@ import { property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { resolveThemeColor } from '../theme/theme-utils';
-import { IconName } from './icon-registry';
+import { type IconName } from './icon-registry';
 
 export type DsTagIconProps = {
   label: string;
