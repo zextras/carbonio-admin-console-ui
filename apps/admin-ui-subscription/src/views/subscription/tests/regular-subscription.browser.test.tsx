@@ -143,7 +143,7 @@ describe('RegularSubscription', () => {
       setupTest(<RegularSubscription />, mockLicenseData);
 
       await expect.element(page.getByText('7%')).toBeVisible();
-      await expect.element(page.getByText('LOW USAGE')).toBeVisible();
+      await expect.element(page.getByText('LOW')).toBeVisible();
     });
 
     it('should display account ratio as used/total', async () => {
@@ -158,7 +158,7 @@ describe('RegularSubscription', () => {
       await expect.element(page.getByText('7/99')).toBeVisible();
     });
 
-    it('should display MODERATE USAGE when usage is between 70% and 95%', async () => {
+    it('should display MODERATE when usage is between 70% and 95%', async () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           accountCount: 80,
@@ -168,10 +168,10 @@ describe('RegularSubscription', () => {
       setupTest(<RegularSubscription />, mockLicenseData);
 
       await expect.element(page.getByText('80%')).toBeVisible();
-      await expect.element(page.getByText('MODERATE USAGE')).toBeVisible();
+      await expect.element(page.getByText('MODERATE')).toBeVisible();
     });
 
-    it('should display HIGH USAGE when usage is between 95% and 100%', async () => {
+    it('should display HIGH when usage is between 95% and 100%', async () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           accountCount: 97,
@@ -181,10 +181,10 @@ describe('RegularSubscription', () => {
       setupTest(<RegularSubscription />, mockLicenseData);
 
       await expect.element(page.getByText('97%')).toBeVisible();
-      await expect.element(page.getByText('HIGH USAGE')).toBeVisible();
+      await expect.element(page.getByText('HIGH')).toBeVisible();
     });
 
-    it('should display FULL USAGE when usage is exactly 100%', async () => {
+    it('should display FULL when usage is exactly 100%', async () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           accountCount: 100,
@@ -194,10 +194,10 @@ describe('RegularSubscription', () => {
       setupTest(<RegularSubscription />, mockLicenseData);
 
       await expect.element(page.getByText('100%')).toBeVisible();
-      await expect.element(page.getByText('FULL USAGE')).toBeVisible();
+      await expect.element(page.getByText('FULL')).toBeVisible();
     });
 
-    it('should display OVER USAGE when usage exceeds 100%', async () => {
+    it('should display OVER when usage exceeds 100%', async () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           accountCount: 110,
@@ -207,7 +207,7 @@ describe('RegularSubscription', () => {
       setupTest(<RegularSubscription />, mockLicenseData);
 
       await expect.element(page.getByText('110%')).toBeVisible();
-      await expect.element(page.getByText('OVER USAGE')).toBeVisible();
+      await expect.element(page.getByText('OVER')).toBeVisible();
     });
 
     it('should render ds-tag-icon element in the card', async () => {
@@ -239,7 +239,18 @@ describe('RegularSubscription', () => {
       await expect.element(page.getByText(/\d{1,2}\s+\w+\s+2029/)).toBeVisible();
     });
 
-    it('should display days remaining text', async () => {
+    it('should display days remaining text when expiry is within a year', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          dateEnd: new Date('2026-07-01T00:00:00Z').getTime(),
+        },
+      });
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText(/In\s+\d+\s+days?/)).toBeVisible();
+    });
+
+    it('should display years remaining text when expiry is more than a year away', async () => {
       const mockLicenseData = createMockLicenseData({
         response: {
           dateEnd: new Date('2029-06-18T00:00:00Z').getTime(),
@@ -247,7 +258,9 @@ describe('RegularSubscription', () => {
       });
       setupTest(<RegularSubscription />, mockLicenseData);
 
-      await expect.element(page.getByText(/In\s+\d+\s+days?/)).toBeVisible();
+      await expect
+        .element(page.getByText(/In\s+more\s+than\s+\d+\s+years?/))
+        .toBeVisible();
     });
   });
 });
