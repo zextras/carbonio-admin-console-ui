@@ -491,7 +491,7 @@ const MTAAdvanced: FC = () => {
     [setValue],
   );
   const hasErrorMaxMessageSize = useMemo(
-    () => Number(zimbraMtaMaxMessageSizeState) <= 0 || isNaN(Number(zimbraMtaMaxMessageSizeState)),
+    () => Number(zimbraMtaMaxMessageSizeState) <= 0 || Number.isNaN(Number(zimbraMtaMaxMessageSizeState)),
     [zimbraMtaMaxMessageSizeState],
   );
   return (

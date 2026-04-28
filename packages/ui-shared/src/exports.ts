@@ -37,7 +37,7 @@ export type { ThemeExtension } from '../types/theme';
 export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
-import { getAppContext } from './apps/loader';
+import { getAppContext, registerApp } from './apps/loader';
 import {
   ACTION_TYPES,
   BASENAME,
@@ -201,6 +201,7 @@ export {
   ReactQueryProvider,
   readUnreadNotification,
   registerActions,
+  registerApp,
   removeRoute,
   replaceHistory,
   SCALING_LIMIT,

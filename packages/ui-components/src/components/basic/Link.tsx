@@ -27,7 +27,6 @@ const Link = ({ children, underlined = false, color = 'primary', style, ...rest 
   return (
     <a
       className={styles.styledLink}
-      tabIndex={0}
       data-underlined={underlined ? 'true' : undefined}
       style={linkStyle}
       {...rest}

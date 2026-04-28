@@ -958,9 +958,9 @@ export const getDateFromStr = (serverStr: string): any => {
     return parsedDateTimeWithoutMillis;
   }
 
-  const yyyy = parseInt(serverStr.substring(0, 4), 10);
-  const MM = parseInt(serverStr.substring(4, 6), 10);
-  const dd = parseInt(serverStr.substring(6, 8), 10);
+  const yyyy = Number.parseInt(serverStr.substring(0, 4), 10);
+  const MM = Number.parseInt(serverStr.substring(4, 6), 10);
+  const dd = Number.parseInt(serverStr.substring(6, 8), 10);
   return new Date(yyyy, MM - 1, dd);
 };
 
@@ -1142,6 +1142,6 @@ export function bytesToHumanReadable(bytes: number): string {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   const sizeIndex = Math.min(i, sizes.length - 1);
-  return `${parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
+  return `${Number.parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
 }
 
