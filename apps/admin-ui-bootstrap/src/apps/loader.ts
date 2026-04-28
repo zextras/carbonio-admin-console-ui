@@ -7,10 +7,7 @@
 import { useAppStore } from '@zextras/ui-shared';
 
 import { loadAllAppsFromRegistry } from './app-registry';
-import type { AppManifest } from './types';
-
-const appContextMap = new Map<string, AppManifest>();
 
 export function loadAllApps(): void {
-  loadAllAppsFromRegistry(useAppStore, appContextMap);
+  loadAllAppsFromRegistry(useAppStore);
 }

@@ -18,7 +18,8 @@ export function useLocalStorage<T>(
     }
   });
   const setValue = (value: T | ((val: T) => T)): void => {
-    const valueToStore = value instanceof Function ? value(storedValue) : value;
+    const valueToStore =
+      typeof value === 'function' ? (value as (val: T) => T)(storedValue) : value;
     setStoredValue(valueToStore);
     localStorage.setItem(key, JSON.stringify(valueToStore));
   };
@@ -50,7 +51,7 @@ export const validateIpAddress = (value: string): boolean => {
 };
 
 export function bytesToMB(bytes: number): number {
-  return parseFloat((bytes / 1024 / 1024).toFixed(2));
+  return Number.parseFloat((bytes / 1024 / 1024).toFixed(2));
 }
 
 export function mbToBytes(mb: number): number {
