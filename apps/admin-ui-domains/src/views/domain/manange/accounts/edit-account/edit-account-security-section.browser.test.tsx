@@ -677,6 +677,122 @@ describe('EditAccountSecuritySection (browser)', () => {
       await expect.element(page.getByText('NO, CANCEL')).toBeVisible();
       await expect.element(page.getByText('YES, RESTORE ANYWAY')).toBeVisible();
     });
+
+    it('should restore OTP and show success snackbar when restore is confirmed', async () => {
+      const mockGetListOtp = vi.fn();
+      const contextWithDisabledOtp = {
+        ...mockContextValue,
+        getListOtp: mockGetListOtp,
+        otpList: [
+          {
+            id: 'disabled-otp-id',
+            columns: ['Disabled OTP', 'Disabled', '3', '2024-01-01'],
+            item: { enabled: false },
+          },
+        ],
+      };
+
+      await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
+        HttpResponse.json({
+          Header: {
+            context: { change: { token: 38684 }, _jsns: 'urn:zimbra' },
+          },
+          Body: {
+            response: {
+              content: JSON.stringify({ ok: true, message: 'ok' }),
+            },
+          },
+          _jsns: 'urn:zimbraSoap',
+        }),
+      );
+
+      setupEditAccountSecurityTest(
+        <AccountContext.Provider value={contextWithDisabledOtp}>
+          <EditAccountSecuritySection />
+        </AccountContext.Provider>,
+      );
+
+      await page.getByTestId('restore-otp-disabled-otp-id').click();
+      await page.getByRole('button', { name: /YES, RESTORE ANYWAY/i }).click();
+
+      await expect.element(page.getByText('OTP has been restored successfully')).toBeVisible();
+      await expect.element(page.getByText('Restore OTP')).not.toBeInTheDocument();
+      expect(mockGetListOtp).toHaveBeenCalledWith('test-user@test-domain.com');
+    });
+
+    it('should show error snackbar when restore response has ok false', async () => {
+      const mockGetListOtp = vi.fn();
+      const contextWithDisabledOtp = {
+        ...mockContextValue,
+        getListOtp: mockGetListOtp,
+        otpList: [
+          {
+            id: 'disabled-otp-id',
+            columns: ['Disabled OTP', 'Disabled', '3', '2024-01-01'],
+            item: { enabled: false },
+          },
+        ],
+      };
+
+      await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({ ok: false, message: 'restore failed' }),
+            },
+          },
+        }),
+      );
+
+      setupEditAccountSecurityTest(
+        <AccountContext.Provider value={contextWithDisabledOtp}>
+          <EditAccountSecuritySection />
+        </AccountContext.Provider>,
+      );
+
+      await page.getByTestId('restore-otp-disabled-otp-id').click();
+      await page.getByRole('button', { name: /YES, RESTORE ANYWAY/i }).click();
+
+      await expect.element(page.getByText('Something went wrong. Please try again.')).toBeVisible();
+      expect(mockGetListOtp).not.toHaveBeenCalled();
+    });
+
+    it('should show error snackbar when restore response content is malformed', async () => {
+      const mockGetListOtp = vi.fn();
+      const contextWithDisabledOtp = {
+        ...mockContextValue,
+        getListOtp: mockGetListOtp,
+        otpList: [
+          {
+            id: 'disabled-otp-id',
+            columns: ['Disabled OTP', 'Disabled', '3', '2024-01-01'],
+            item: { enabled: false },
+          },
+        ],
+      };
+
+      await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: '{"ok":',
+            },
+          },
+        }),
+      );
+
+      setupEditAccountSecurityTest(
+        <AccountContext.Provider value={contextWithDisabledOtp}>
+          <EditAccountSecuritySection />
+        </AccountContext.Provider>,
+      );
+
+      await page.getByTestId('restore-otp-disabled-otp-id').click();
+      await page.getByRole('button', { name: /YES, RESTORE ANYWAY/i }).click();
+
+      await expect.element(page.getByText('Something went wrong. Please try again.')).toBeVisible();
+      expect(mockGetListOtp).not.toHaveBeenCalled();
+    });
   });
 
   describe('Inherited Values and Reset', () => {

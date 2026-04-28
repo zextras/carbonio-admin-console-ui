@@ -498,44 +498,39 @@ const EditAccountSecuritySection: FC = () => {
       account: `${accountDetail?.uid}@${domainName}`,
       id: selectedOtpIdForRestore,
     })
-      .then((res: { Body?: { response?: { content?: string } } }) => {
+      .then((res: { ok?: boolean; Body?: { response?: { content?: string } } }) => {
+        let restoreResult: { ok?: boolean } = res;
         try {
           const contentStr = res.Body?.response?.content;
-          if (!contentStr) {
-            throw new Error('Invalid response structure');
+          if (contentStr) {
+            restoreResult = JSON.parse(contentStr) as { ok?: boolean };
           }
-          const parsedContent: { ok?: boolean; message?: string } = JSON.parse(contentStr);
-          if (parsedContent.ok) {
-            createSnackbar({
-              key: 'success',
-              severity: 'success',
-              label: t('label.otp_restored_successfully', 'OTP has been restored successfully'),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-            closeRestoreOtpModal();
-            getListOtp(`${accountDetail?.uid}@${domainName}`);
-            return;
-          }
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
         } catch {
+          restoreResult = { ok: false };
+        }
+
+        if (restoreResult.ok) {
           createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+            key: 'success',
+            severity: 'success',
+            label: t('label.otp_restored_successfully', 'OTP has been restored successfully'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
           });
+          closeRestoreOtpModal();
+          getListOtp(`${accountDetail?.uid}@${domainName}`);
+          return;
         }
+
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
       })
       .catch(() => {
         createSnackbar({
