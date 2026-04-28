@@ -330,31 +330,6 @@ export const SendInviteAccounts: FC<any> = ({
                 {t('label.this_list_is_empty', 'This list is empty.')}
               </ds-text>
             </Row>
-            <Row
-              orientation="vertical"
-              crossAlignment="center"
-              style={{ textAlign: 'center' }}
-              padding={{ top: 'small' }}
-              width="53%"
-            >
-              <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
-                <Trans
-                  i18nKey="label.do_you_need_more_information"
-                  defaults="Do you need more information?"
-                />
-              </ds-text>
-            </Row>
-            <Row
-              orientation="vertical"
-              crossAlignment="center"
-              style={{ textAlign: 'center' }}
-              padding={{ top: 'small' }}
-              width="53%"
-            >
-              <ds-text as="p" weight="light" color="primary">
-                {t('label.click_here', 'Click here')}
-              </ds-text>
-            </Row>
           </Container>
         </ListRow>
       )}
