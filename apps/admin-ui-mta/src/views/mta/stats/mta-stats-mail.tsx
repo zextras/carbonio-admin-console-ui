@@ -97,11 +97,11 @@ const MTAStatsMail: FC<{
   const [selectedRow, setSelectedRow] = useState<Array<string>>([]);
   const [mailRows, setMailRows] = useState<Array<TRow>>([]);
   const [mailStatCount, setMailStatCount] = useState<Record<string, number>>({
-    queued: serverState?.active ? parseInt(serverState?.active, 10) : 0,
-    corrupted: serverState?.corrupt ? parseInt(serverState?.corrupt, 10) : 0,
-    deferred: serverState?.deferred ? parseInt(serverState?.deferred, 10) : 0,
-    incoming: serverState?.incoming ? parseInt(serverState?.incoming, 10) : 0,
-    onhold: serverState?.hold ? parseInt(serverState?.hold, 10) : 0,
+    queued: serverState?.active ? Number.parseInt(serverState?.active, 10) : 0,
+    corrupted: serverState?.corrupt ? Number.parseInt(serverState?.corrupt, 10) : 0,
+    deferred: serverState?.deferred ? Number.parseInt(serverState?.deferred, 10) : 0,
+    incoming: serverState?.incoming ? Number.parseInt(serverState?.incoming, 10) : 0,
+    onhold: serverState?.hold ? Number.parseInt(serverState?.hold, 10) : 0,
   });
   const [isMailQueueLoading, setIsMailQueueLoading] = useState<boolean>(false);
   const [holdInProgress, setHoldInProgress] = useState<boolean>(false);
@@ -241,7 +241,7 @@ const MTAStatsMail: FC<{
               </ds-text>
             </Container>,
             <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {format(new Date(parseInt(item?.arrivalTime, 10)), 'dd/MM/yy - HH:mm')}
+              {format(new Date(Number.parseInt(item?.arrivalTime, 10)), 'dd/MM/yy - HH:mm')}
             </ds-text>,
             <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.size}

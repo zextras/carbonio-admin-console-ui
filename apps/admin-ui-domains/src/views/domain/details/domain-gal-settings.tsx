@@ -731,7 +731,7 @@ const DomainGalSettings: FC = () => {
 
   const onFreqDigitsChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
-      if (parseInt(ev?.target?.value, 10) < 0 || parseInt(ev?.target?.value, 10) > 9) {
+      if (Number.parseInt(ev?.target?.value, 10) < 0 || Number.parseInt(ev?.target?.value, 10) > 9) {
         return;
       }
       setFreqValue({ digits: ev?.target?.value, time: freqValue.time });
