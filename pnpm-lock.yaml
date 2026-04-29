@@ -242,7 +242,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -429,7 +429,7 @@ importers:
         specifier: ^15.8.1
         version: 15.8.1
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -556,7 +556,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -704,7 +704,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -858,7 +858,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -1006,7 +1006,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -1154,7 +1154,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -1302,7 +1302,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -1447,7 +1447,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -1595,7 +1595,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -1740,7 +1740,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -1888,7 +1888,7 @@ importers:
         specifier: ^19.1.0
         version: 19.2.5(react@19.2.5)
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
@@ -2179,7 +2179,7 @@ importers:
         specifier: ^15.8.1
         version: 15.8.1
       sonarqube-scanner:
-        specifier: ^4.3.3
+        specifier: ^4.3.6
         version: 4.3.6
       tailwindcss:
         specifier: ^4.2.1
