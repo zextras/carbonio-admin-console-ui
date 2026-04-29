@@ -286,9 +286,9 @@ const SelectComponent = function SelectFn<T = string>({
 
   useEffect(() => {
     if (isControlled) {
-      if (multiple && selection instanceof Array) {
+      if (multiple && Array.isArray(selection)) {
         setSelected(selection);
-      } else if (!multiple && !(selection instanceof Array)) {
+      } else if (!multiple && !Array.isArray(selection)) {
         setSelected([selection]);
       }
     }

@@ -1119,9 +1119,9 @@ export const getDateFromStr = (serverStr: string): any => {
     return parsedDateTimeWithoutMillis;
   }
 
-  const yyyy = parseInt(serverStr.substring(0, 4), 10);
-  const MM = parseInt(serverStr.substring(4, 6), 10);
-  const dd = parseInt(serverStr.substring(6, 8), 10);
+  const yyyy = Number.parseInt(serverStr.substring(0, 4), 10);
+  const MM = Number.parseInt(serverStr.substring(4, 6), 10);
+  const dd = Number.parseInt(serverStr.substring(6, 8), 10);
   return new Date(yyyy, MM - 1, dd);
 };
 
@@ -1131,12 +1131,12 @@ export const getDateFromStr = (serverStr: string): any => {
  */
 export const getDateTimeFromStr = (serverStr: string): Date | null => {
   if (serverStr === null || serverStr === undefined) return null;
-  const yyyy = parseInt(serverStr.substring(0, 4), 10);
-  const MM = parseInt(serverStr.substring(4, 6), 10);
-  const dd = parseInt(serverStr.substring(6, 8), 10);
-  const hh = parseInt(serverStr.substring(8, 10), 10);
-  const mm = parseInt(serverStr.substring(10, 12), 10);
-  const ss = parseInt(serverStr.substring(12, 14), 10);
+  const yyyy = Number.parseInt(serverStr.substring(0, 4), 10);
+  const MM = Number.parseInt(serverStr.substring(4, 6), 10);
+  const dd = Number.parseInt(serverStr.substring(6, 8), 10);
+  const hh = Number.parseInt(serverStr.substring(8, 10), 10);
+  const mm = Number.parseInt(serverStr.substring(10, 12), 10);
+  const ss = Number.parseInt(serverStr.substring(12, 14), 10);
   return new Date(yyyy, MM - 1, dd, hh, mm, ss);
 };
 
@@ -1540,7 +1540,8 @@ export function useLocalStorage<T>(key: string, initialValue: T): any {
     }
   });
   const setValue = (value: T | ((val: T) => T)): any => {
-    const valueToStore = value instanceof Function ? value(storedValue) : value;
+    const valueToStore =
+      typeof value === 'function' ? (value as (val: T) => T)(storedValue) : value;
     setStoredValue(valueToStore);
     localStorage.setItem(key, JSON.stringify(valueToStore));
   };
@@ -1625,11 +1626,11 @@ export function bytesToHumanReadable(bytes: number): string {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   const sizeIndex = Math.min(i, sizes.length - 1);
-  return `${parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
+  return `${Number.parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
 }
 
 export function bytesToMB(bytes: number): number {
-  return parseFloat((bytes / 1024 / 1024).toFixed(2));
+  return Number.parseFloat((bytes / 1024 / 1024).toFixed(2));
 }
 
 export function mbToBytes(mb: number): number {
@@ -1647,7 +1648,7 @@ export const formatZimbraDate = (timestamp: string | undefined | null): string =
     const parsedDate = parse(timestamp, 'yyyyMMddHHmmss.SSSX', new Date());
 
     // Check if the result is a valid date object
-    if (isNaN(parsedDate.getTime())) {
+    if (Number.isNaN(parsedDate.getTime())) {
       return '';
     }
 
