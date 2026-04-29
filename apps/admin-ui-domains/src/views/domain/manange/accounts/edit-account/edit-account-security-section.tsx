@@ -498,18 +498,37 @@ const EditAccountSecuritySection: FC = () => {
       account: `${accountDetail?.uid}@${domainName}`,
       id: selectedOtpIdForRestore,
     })
-      .then((res: { ok?: boolean; Body?: { response?: { content?: string } } }) => {
-        let restoreResult: { ok?: boolean } = res;
-        try {
-          const contentStr = res.Body?.response?.content;
-          if (contentStr) {
-            restoreResult = JSON.parse(contentStr) as { ok?: boolean };
-          }
-        } catch {
-          restoreResult = { ok: false };
-        }
+      .then(
+        (res: {
+          ok?: boolean | string;
+          Body?: { response?: { content?: unknown } };
+          response?: { content?: unknown };
+        }) => {
+          const parseRestoreResult = (
+            content: unknown,
+          ): { ok?: boolean | string } | undefined => {
+            if (typeof content === 'string') {
+              try {
+                return JSON.parse(content) as { ok?: boolean | string };
+              } catch {
+                return undefined;
+              }
+            }
 
-        if (restoreResult.ok) {
+            if (content && typeof content === 'object') {
+              return content as { ok?: boolean | string };
+            }
+
+            return undefined;
+          };
+
+          const parsedFromBody = parseRestoreResult(res.Body?.response?.content);
+          const parsedFromResponse = parseRestoreResult(res.response?.content);
+          const restoreResult = parsedFromBody ?? parsedFromResponse ?? res;
+          const isRestoreSuccess =
+            restoreResult.ok === true || restoreResult.ok === 'true' || restoreResult.ok === 'ok';
+
+          if (isRestoreSuccess) {
           createSnackbar({
             key: 'success',
             severity: 'success',
@@ -523,15 +542,16 @@ const EditAccountSecuritySection: FC = () => {
           return;
         }
 
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      })
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        },
+      )
       .catch(() => {
         createSnackbar({
           key: 'error',
