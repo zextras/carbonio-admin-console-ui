@@ -18,7 +18,7 @@ import {
 } from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
