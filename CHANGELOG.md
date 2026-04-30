@@ -1,3 +1,9 @@
+## [0.13.0-devel.25](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.24...v0.13.0-devel.25) (2026-04-30)
+
+### Features
+
+* added otp restore option in account settings ([#1177](https://github.com/zextras/carbonio-admin-console-ui/issues/1177)) ([47654e1](https://github.com/zextras/carbonio-admin-console-ui/commit/47654e15f1b7177944ddb0a0e9c789b0ab03acbd))
+
 ## [0.13.0-devel.24](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.23...v0.13.0-devel.24) (2026-04-25)
 
 ### Bug Fixes
