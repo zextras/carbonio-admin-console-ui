@@ -16,3 +16,17 @@
   font-family: monospace;
   padding: 4.95px 0;
 }
+
+.restoreOtpAction {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.restoreOtpModalInfoText {
+  color: var(--gray1);
+}
