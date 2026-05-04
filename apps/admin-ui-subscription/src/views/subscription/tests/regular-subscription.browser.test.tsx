@@ -37,7 +37,7 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
       { name: 'mailreplica', quantity: 'none' },
       { name: 'chats', quantity: 'none' },
       { name: 'files', quantity: 'none' },
-      { name: 'workspace', quantity: 'none' },
+      { name: 'workspace', quantity: '100' },
       { name: 'activesync', quantity: '100' },
       { name: 'mail', quantity: '500' },
     ],
@@ -180,6 +180,56 @@ describe('RegularSubscription', () => {
       setupTest(<RegularSubscription />, mockLicenseData);
 
       await expect.element(page.getByText('EMAIL')).toBeVisible();
+    });
+
+    it('should display WORKSPACE as the edition text', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('WORKSPACE')).toBeVisible();
+    });
+
+    it('should not display WORKSPACE when workspace edition has quantity none', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: '100' },
+            { name: 'workspace', quantity: 'none' },
+          ],
+        },
+      });
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.poll(() => page.getByText('WORKSPACE').query()).toBeNull();
+    });
+
+    it('should not display WORKSPACE when workspace edition has quantity 0', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: '100' },
+            { name: 'workspace', quantity: '0' },
+          ],
+        },
+      });
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.poll(() => page.getByText('WORKSPACE').query()).toBeNull();
+    });
+
+    it('should display both EMAIL and WORKSPACE when both editions are active', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: '500' },
+            { name: 'workspace', quantity: '100' },
+          ],
+        },
+      });
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('EMAIL')).toBeVisible();
+      await expect.element(page.getByText('WORKSPACE')).toBeVisible();
     });
   });
 

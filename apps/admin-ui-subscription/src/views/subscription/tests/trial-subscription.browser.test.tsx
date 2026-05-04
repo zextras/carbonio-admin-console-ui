@@ -33,6 +33,7 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
     ],
     editions: [
       { name: 'mail', quantity: '50' },
+      { name: 'workspace', quantity: '25' },
     ],
     ...overrides.response as Record<string, unknown>,
   },
@@ -214,6 +215,56 @@ describe('TrialSubscription', () => {
       setupTest(<TrialSubscription />, mockLicenseData);
 
       await expect.element(page.getByText('EMAIL')).toBeVisible();
+    });
+
+    it('should display WORKSPACE as the edition text', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<TrialSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('WORKSPACE')).toBeVisible();
+    });
+
+    it('should not display WORKSPACE when workspace edition has quantity none', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: '100' },
+            { name: 'workspace', quantity: 'none' },
+          ],
+        },
+      });
+      setupTest(<TrialSubscription />, mockLicenseData);
+
+      await expect.poll(() => page.getByText('WORKSPACE').query()).toBeNull();
+    });
+
+    it('should not display WORKSPACE when workspace edition has quantity 0', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: '100' },
+            { name: 'workspace', quantity: '0' },
+          ],
+        },
+      });
+      setupTest(<TrialSubscription />, mockLicenseData);
+
+      await expect.poll(() => page.getByText('WORKSPACE').query()).toBeNull();
+    });
+
+    it('should display both EMAIL and WORKSPACE when both editions are active', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: '500' },
+            { name: 'workspace', quantity: '100' },
+          ],
+        },
+      });
+      setupTest(<TrialSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('EMAIL')).toBeVisible();
+      await expect.element(page.getByText('WORKSPACE')).toBeVisible();
     });
   });
 
