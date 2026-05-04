@@ -31,7 +31,6 @@ import {
   SERVERS_LIST,
   STORAGES_ROUTE_ID,
 } from '../../constants';
-import { useServerVersion } from '../../hooks/use-server-version';
 import CarbonioVersionInformation from './carbonio-version-information-view';
 import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
@@ -42,7 +41,6 @@ const Dashboard: FC = () => {
   const navigate = useNavigate();
   const accounts = useUserAccounts();
   const [userName, setUserName] = useState<string>('');
-  const { serverVersion } = useServerVersion();
 
   const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
   const isAdvanced = useIsAdvanced();
