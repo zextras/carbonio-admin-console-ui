@@ -10,6 +10,8 @@ import { playwright } from '@vitest/browser-playwright';
 import svgr from 'vite-plugin-svgr';
 import { getOptimizeDepsInclude } from './vitest.config.utils';
 
+const isCI = !!process.env.CI;
+
 function getPlugins() {
   return [
     react({
@@ -29,22 +31,53 @@ function getPlugins() {
   ];
 }
 
+const tinymceNoopPath = path.resolve(__dirname, './__mocks__/tinymce-noop.js');
+const tinymcePlugins = [
+  'advlist',
+  'anchor',
+  'autolink',
+  'autoresize',
+  'charmap',
+  'code',
+  'directionality',
+  'fullscreen',
+  'help',
+  'image',
+  'insertdatetime',
+  'link',
+  'lists',
+  'media',
+  'preview',
+  'quickbars',
+  'searchreplace',
+  'table',
+  'visualblocks',
+  'wordcount',
+];
+const tinymceSkins = [
+  'tinymce/skins/ui/oxide/skin',
+  'tinymce/skins/content/default/content',
+  'tinymce/skins/ui/oxide/content',
+];
+const tinymceAliases = {
+  'tinymce/tinymce': path.resolve(__dirname, './__mocks__/tinymce.js'),
+  'tinymce/models/dom': tinymceNoopPath,
+  'tinymce/themes/silver': tinymceNoopPath,
+  'tinymce/icons/default': tinymceNoopPath,
+  ...Object.fromEntries(tinymcePlugins.map((p) => [`tinymce/plugins/${p}`, tinymceNoopPath])),
+  ...Object.fromEntries(tinymceSkins.map((s) => [s, tinymceNoopPath])),
+};
+
 function jsdomProjectConfig() {
   return {
     plugins: getPlugins(),
-    define: {
-      BASE_PATH: JSON.stringify(''),
-    },
+    define: { BASE_PATH: JSON.stringify('') },
     test: {
       name: 'unit',
       environment: 'jsdom',
       setupFiles: [path.resolve(__dirname, './vitest-jsdom-setup.ts')],
-      sequence: {
-        groupOrder: 1,
-      },
-      env: {
-        TZ: 'UTC',
-      },
+      sequence: { groupOrder: 1 },
+      env: { TZ: 'UTC' },
       alias: {
         'admin-ui-test-utils': path.resolve(__dirname, './packages/test-utils/src/index.jsdom.ts'),
         '@zextras/ui-shared': path.resolve(__dirname, './__mocks__/@zextras/ui-shared.js'),
@@ -56,101 +89,62 @@ function jsdomProjectConfig() {
       clearMocks: true,
       mockReset: true,
       restoreMocks: true,
-      testTimeout: !!process.env.ci ? 20_000 : 10_000,
-      maxConcurrency: 3,
+      testTimeout: isCI ? 20_000 : 10_000,
+      maxConcurrency: 5,
     },
-    optimizeDeps: {
-      include: getOptimizeDepsInclude(),
-    },
+    optimizeDeps: { include: getOptimizeDepsInclude() },
   };
 }
 
 function browserProjectConfig() {
   return {
-    define: {
-      BASE_PATH: JSON.stringify(''),
-    },
+    define: { BASE_PATH: JSON.stringify('') },
     test: {
       name: 'browser',
-      maxConcurrency: 3,
       setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
-      sequence: {
-        groupOrder: 2,
-      },
-      fileParallelism: false,
-      retry: 2,
+      sequence: { groupOrder: 2 },
+      fileParallelism: true,
+      maxWorkers: '50%',
+      minWorkers: 1,
+      maxConcurrency: 1,
+      retry: isCI ? 2 : 0,
       include: ['**/*.browser.test.{ts,tsx}'],
+      isolate: true,
       browser: {
         enabled: true,
-        provider: playwright() as any,
+        provider: playwright(),
         instances: [{ browser: 'chromium' as const }],
         viewport: { width: 834, height: 2000 },
-        headless: !!process.env.CI,
-        screenshotFailures: !process.env.CI,
+        headless: process.env.HEADED !== 'true',
+        screenshotFailures: !isCI,
+        connectTimeout: 60_000,
         providerOptions: { launch: { timeout: 60_000 } },
       },
       exclude: ['dist/**', 'node_modules/**'],
       globals: true,
       css: true,
       clearMocks: true,
-      testTimeout: !!process.env.ci ? 20_000 : 10_000,
+      testTimeout: isCI ? 20_000 : 10_000,
       hookTimeout: 15_000,
       alias: {
         'admin-ui-test-utils': path.resolve(
           __dirname,
           './packages/test-utils/src/index.browser.ts',
         ),
-        'tinymce/tinymce': path.resolve(__dirname, './__mocks__/tinymce.js'),
-        'tinymce/models/dom': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/themes/silver': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/icons/default': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/skins/ui/oxide/skin': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/skins/content/default/content': path.resolve(
-          __dirname,
-          './__mocks__/tinymce-noop.js',
-        ),
-        'tinymce/skins/ui/oxide/content': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/advlist': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/anchor': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/autolink': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/autoresize': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/charmap': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/code': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/directionality': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/fullscreen': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/help': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/image': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/insertdatetime': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/link': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/lists': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/media': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/preview': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/quickbars': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/searchreplace': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/table': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/visualblocks': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
-        'tinymce/plugins/wordcount': path.resolve(__dirname, './__mocks__/tinymce-noop.js'),
+        ...tinymceAliases,
       },
     },
     plugins: getPlugins(),
-    optimizeDeps: {
-      include: getOptimizeDepsInclude(),
-    },
+    optimizeDeps: { include: getOptimizeDepsInclude() },
   };
 }
 
 export default defineConfig({
-  server: {
-    fs: {
-      allow: ['../..'], // allow monorepo root
-    },
-  },
+  server: { fs: { allow: ['../..'] } },
   test: {
     globals: true,
     passWithNoTests: true,
-    maxConcurrency: 3,
     projects: [jsdomProjectConfig(), browserProjectConfig()],
-
     coverage: {
       provider: 'istanbul',
       reporter: ['text', 'json', 'html', 'lcov'],
@@ -159,6 +153,7 @@ export default defineConfig({
         'coverage/**',
         'dist/**',
         '**/node_modules/**',
+        '**/__mocks__/**',
         '**/[.]**',
         'packages/*/test{,s}/**',
         '**/*.d.ts',

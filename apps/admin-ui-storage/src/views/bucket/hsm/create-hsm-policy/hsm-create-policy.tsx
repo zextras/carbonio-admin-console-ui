@@ -5,9 +5,10 @@
  */
 import { Container, LabeledValue, ListRow, Padding, Tooltip } from '@zextras/ui-components';
 import { FC, useContext, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { HSMContext } from '../hsm-context/hsm-context';
+import { asQueryString, VolumeItem } from '../hsm-policy-detail';
 
 const HSMcreatePolicy: FC<any> = () => {
   const [t] = useTranslation();
@@ -17,96 +18,18 @@ const HSMcreatePolicy: FC<any> = () => {
   const [sourceVolumeNames, setSourceVolumeNames] = useState<string>('');
   const [destinationVolumeNames, setDestinationVolumeNames] = useState<string>('');
   useEffect(() => {
-    const enabledString: string[] = [];
-    const largerSmallerString: string[] = [];
-    const sourceString: string[] = [];
-    const destinationString: string[] = [];
-    let query = '';
-    const criteriaScale: string[] = [];
-    if (hsmDetail?.isAllEnabled) {
-      enabledString.push(t('hsm.message', 'Message'));
-      enabledString.push(t('hsm.document', 'Document'));
-      enabledString.push(t('hsm.event', 'Event'));
-      enabledString.push(t('hsm.contact', 'Contact'));
-      query += 'document,message,contact,appointment';
-    } else {
-      if (hsmDetail?.isDocumentEnabled) {
-        enabledString.push(t('hsm.document', 'Document'));
-        criteriaScale.push('document');
-      }
-      if (hsmDetail?.isMessageEnabled) {
-        enabledString.push(t('hsm.message', 'Message'));
-        criteriaScale.push('message');
-      }
-      if (hsmDetail?.isContactEnabled) {
-        enabledString.push(t('hsm.contact', 'Contact'));
-        criteriaScale.push('contact');
-      }
-      if (hsmDetail?.isEventEnabled) {
-        enabledString.push(t('hsm.event', 'Event'));
-        criteriaScale.push('appointment');
-      }
-    }
-    if (criteriaScale.length > 0) {
-      query += criteriaScale.toString();
-    }
-    if (hsmDetail?.policyCriteria.length > 0) {
-      hsmDetail?.policyCriteria.forEach((item: any) => {
-        if (item?.option === 'before') {
-          query += `:${item?.option}:-${item?.dateScale}${item?.scale}`;
-        } else if (item?.option === 'after') {
-          query += `:${item?.option}:${item?.dateScale}${item?.scale}`;
-        } else if (item?.option === 'larger') {
-          query += `:${item?.option}:${item?.dateScale}${item?.scale}`;
-          largerSmallerString.push(
-            `${(
-              <Trans
-                i18nKey="hsm.larger_size_than"
-                defaults="larger than <bold>{{measure}} {{scale}}</bod>"
-                components={{ bold: <strong />, measure: item?.dateScale, scale: item?.scale }}
-              />
-            )}`,
-          );
-        } else if (item?.option === 'smaller') {
-          query += `:${item?.option}:${item?.dateScale}${item?.scale}`;
-          largerSmallerString.push(
-            `${(
-              <Trans
-                i18nKey="hsm.smaller_size_than"
-                defaults="smaller than <bold>{{measure}} {{scale}}</bod>"
-                components={{ bold: <strong />, measure: item?.dateScale, scale: item?.scale }}
-              />
-            )}`,
-          );
-        }
-      });
-    }
-
-    if (hsmDetail?.sourceVolume.length > 0) {
-      sourceString.push(hsmDetail?.sourceVolume.map((item: any) => item?.name).toString());
-      query += ` source: ${hsmDetail?.sourceVolume.map((item: any) => item?.id).toString()}`;
-    }
-
-    if (hsmDetail?.destinationVolume.length > 0) {
-      destinationString.push(
-        hsmDetail?.destinationVolume.map((item: any) => item?.name).toString(),
-      );
-      query += ` destination: ${hsmDetail?.destinationVolume
-        .map((item: any) => item?.id)
-        .toString()}`;
-    }
-    setHsmQuery(query);
-  }, [hsmDetail, t]);
+    setHsmQuery(asQueryString(hsmDetail));
+  }, [hsmDetail]);
 
   useEffect(() => {
     if (hsmDetail?.sourceVolume.length > 0) {
-      setSourceVolumeNames(hsmDetail?.sourceVolume.map((item: any) => item?.name).join());
+      setSourceVolumeNames(hsmDetail?.sourceVolume.map((item: VolumeItem) => item.name).join());
     }
   }, [hsmDetail?.sourceVolume]);
 
   useEffect(() => {
     if (hsmDetail?.destinationVolume.length > 0) {
-      setDestinationVolumeNames(hsmDetail?.destinationVolume.map((item: any) => item?.name).join());
+      setDestinationVolumeNames(hsmDetail?.destinationVolume.map((item: VolumeItem) => item.name).join());
     }
   }, [hsmDetail?.destinationVolume]);
 

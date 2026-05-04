@@ -4,16 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  advancedSupportedApiForBrowser,
-  getInfoRequestApiForBrowser,
-  loginConfigApiForBrowser,
-  minMaxVersionApiForBrowser,
-  setupBrowserTest,
-} from 'admin-ui-test-utils';
-import { HttpResponse } from 'msw';
+import { setupBrowserTest } from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
+
+vi.mock('../init', () => ({
+  init: vi.fn().mockResolvedValue({ error: 'Advanced is not supported' }),
+}));
 
 import { Bootstrapper } from '../bootstrapper';
 
@@ -27,11 +24,6 @@ describe('Bootstrapper', () => {
   });
 
   it('should display error when is advanced supported api fails', async () => {
-    advancedSupportedApiForBrowser.withError();
-    minMaxVersionApiForBrowser(HttpResponse.error);
-    loginConfigApiForBrowser(HttpResponse.error);
-    getInfoRequestApiForBrowser(HttpResponse.error);
-
     setupBrowserTest(<Bootstrapper />, {
       initialRouterEntry: '/carbonioAdmin',
     });
