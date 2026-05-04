@@ -5,28 +5,25 @@
  */
 
 import {
-  useCurrentUserRights,
-  useDomainStore,
-  useIsAdvanced,
-  useUserSettings,
-} from '@zextras/admin-ui-bootstrap';
-import {
   Button,
   Container,
   DefaultTabBarItem,
-  Icon,
   Modal,
-  OverlayDivision,
   Padding,
   Row,
   TabBar,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import {
+  useCurrentUserRights,
+  useDomainStore,
+  useIsAdvanced,
+  useTotalQuotaActive,
+  useUserSettings,
+} from '@zextras/ui-shared';
 import { differenceBy, find, isEqual, reduce, remove } from 'lodash-es';
 import { FC, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import {
   ABQ_MODE,
@@ -46,6 +43,7 @@ import {
   IS_DEFAULT_USER_NAME,
   PROFILE,
   SECURITY,
+  TOTAL_COMPUTED_QUOTA_LIMIT,
   TRUE,
   UID,
   USER_PREFERENCES,
@@ -54,15 +52,18 @@ import { addAccountAliasRequest } from '../../../../../services/add-account-alia
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
 import { deleteAccount } from '../../../../../services/delete-account-service';
 import { flushCache } from '../../../../../services/flush-cache-service';
+import { getAccountQuota } from '../../../../../services/get-account-quota';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
 import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
 import { getDomainList } from '../../../../../services/search-domain-service';
+import { setAccountQuota } from '../../../../../services/set-account-quota';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
+import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
@@ -74,21 +75,6 @@ import EditAccountDelegatesSection from './edit-account-delegates-section';
 import { EditAccountGeneralSection } from './edit-account-general-section';
 import EditAccountSecuritySection from './edit-account-security-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 58.75rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
 
 const EditAccount: FC<{
   setShowEditAccountView: any;
@@ -122,6 +108,7 @@ const EditAccount: FC<{
   STATUS_COLOR,
 }) => {
   const { t } = useTranslation();
+  const isTotalQuotaActive = useTotalQuotaActive();
   const createSnackbar = useSnackbar();
   const domainList = useDomainStore((state) => state.domainList);
   const [change, setChange] = useState(defaultTab);
@@ -160,6 +147,7 @@ const EditAccount: FC<{
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
   const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+  const [hasQuotaError, setHasQuotaError] = useState<boolean>(false);
 
   const getDomainLists = useCallback(
     (offset: number): any => {
@@ -225,9 +213,9 @@ const EditAccount: FC<{
       forceWidthEquallyDistributed={false}
     >
       <Row padding="small">
-        <Text size="small" color={selected ? 'primary' : 'gray'}>
+        <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
           {item.label}
-        </Text>
+        </ds-text>
       </Row>
     </DefaultTabBarItem>
   );
@@ -545,7 +533,7 @@ const EditAccount: FC<{
       if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
         if (accountDetail?.filesQuotaLimit) {
           setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
-            (res) => {
+            () => {
               if (modifiedKeys?.length === 0) {
                 createSnackbar({
                   key: 'success',
@@ -562,7 +550,7 @@ const EditAccount: FC<{
             },
           );
         } else {
-          resetFileQuotaLimitById(accountDetail?.zimbraId).then((res) => {
+          resetFileQuotaLimitById(accountDetail?.zimbraId).then(() => {
             if (modifiedKeys?.length === 0) {
               createSnackbar({
                 key: 'success',
@@ -594,6 +582,103 @@ const EditAccount: FC<{
       accountDetail?.zimbraId,
       cosDetail.filesQuotaLimit,
       createSnackbar,
+      setAccountDetail,
+      setInitAccountDetail,
+      t,
+    ],
+  );
+
+  const handleTotalComputedQuotaLimitChange = useCallback(
+    (modifiedKeys: string[]) => {
+      if (
+        !modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) ||
+        !isTotalQuotaActive ||
+        !isAdvanced
+      ) {
+        return;
+      }
+
+      const notifyResult = (
+        response:
+          | Awaited<ReturnType<typeof setAccountQuota>>
+          | Awaited<ReturnType<typeof unsetAccountQuota>>,
+      ) => {
+        if (response.type === 'success') {
+          createSnackbar({
+            key: 'setAccountQuotaSuccess',
+            severity: 'success',
+            label: t(
+              'label.the_last_changes_has_been_saved_successfully',
+              'Changes have been saved successfully',
+            ),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        } else {
+          createSnackbar({
+            key: 'setAccountQuotaError',
+            severity: 'error',
+            label: response.error,
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: false,
+          });
+        }
+      };
+
+      /*
+       * If totalComputedQuotaLimit is undefined, it means the quota limit is
+       * being removed, so we call unsetAccountQuota. Otherwise, we set the
+       * new quota limit.
+       * After the operation, we fetch the updated quota limit to get the
+       * possible inherited quota limit
+       */
+      const setOrUnsetPromise =
+        accountDetail.totalComputedQuotaLimit === undefined
+          ? unsetAccountQuota(accountDetail?.zimbraId)
+          : setAccountQuota(accountDetail?.zimbraId, accountDetail.totalComputedQuotaLimit);
+
+      setOrUnsetPromise
+        .then(notifyResult)
+        .then(() => {
+          return getAccountQuota(accountDetail?.zimbraId);
+        })
+        .then((response) => {
+          if (response.type === 'success') {
+            setInitAccountDetail((prev) => ({
+              ...prev,
+              totalComputedQuotaLimit: response.totalComputedLimit,
+              totalQuotaSource: response.totalLimitSource,
+            }));
+            setAccountDetail((prev) => ({
+              ...prev,
+              totalComputedQuotaLimit: response.totalComputedLimit,
+              totalQuotaSource: response.totalLimitSource,
+            }));
+          } else {
+            throw new Error(response.error);
+          }
+        })
+        .catch((error) => {
+          createSnackbar({
+            key: 'getAccountQuotaError',
+            severity: 'error',
+            label: error.message,
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: false,
+          });
+        });
+
+      remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
+    },
+    [
+      accountDetail.totalComputedQuotaLimit,
+      accountDetail?.zimbraId,
+      createSnackbar,
+      isAdvanced,
+      isTotalQuotaActive,
       setAccountDetail,
       setInitAccountDetail,
       t,
@@ -687,6 +772,8 @@ const EditAccount: FC<{
     }
 
     handleFileQuotaLimitChange(modifiedKeys);
+
+    handleTotalComputedQuotaLimitChange(modifiedKeys);
 
     modifiedKeys.forEach((ele: any) => {
       modifiedData[ele] = accountDetail[ele];
@@ -857,7 +944,7 @@ const EditAccount: FC<{
   const onDeleteHandler = useCallback(() => {
     setIsRequestInProgress(true);
     deleteAccount(selectedAccount?.id)
-      .then((data: any) => {
+      .then(() => {
         onSuccess(t('label.account_remove_correctly', 'The account has been correctly removed.'));
         setShowEditAccountView(false);
         setIsAccountDeleted(true);
@@ -906,7 +993,7 @@ const EditAccount: FC<{
 
   return (
     <>
-      {(!accountDetail?.name || isLoading) && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {(!accountDetail?.name || isLoading) && <ds-spinner></ds-spinner>}
       <Container
         background="gray5"
         mainAlignment="flex-start"
@@ -929,9 +1016,9 @@ const EditAccount: FC<{
         >
           <Row padding={{ horizontal: 'small' }}></Row>
           <Row takeAvailableSpace mainAlignment="flex-start">
-            <Text size="medium" overflow="ellipsis" weight="bold">
+            <ds-text size="medium" overflow="ellipsis" weight="bold" as="h1">
               {`${selectedAccount?.name}`}
-            </Text>
+            </ds-text>
           </Row>
           {isDirty && (
             <Row>
@@ -949,6 +1036,7 @@ const EditAccount: FC<{
                     label={t('label.save', 'Save')}
                     color="primary"
                     onClick={modifyAccountReq}
+                    disabled={hasQuotaError}
                   />
                 </Padding>
               </Container>
@@ -962,7 +1050,7 @@ const EditAccount: FC<{
                 type="outlined"
                 color="error"
                 onClick={onDeleteAccount}
-                icon="TrashOutline"
+                icon="Trash2Outline"
                 disabled={
                   !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
                 }
@@ -977,7 +1065,7 @@ const EditAccount: FC<{
                 type="outlined"
                 color="primary"
                 onClick={onViewMail}
-                icon="EmailOutline"
+                icon="MailModOutline"
                 disabled={!allowSetPrivacy}
                 label={t('label.view_mail', 'VIEW MAIL')}
               />
@@ -994,7 +1082,7 @@ const EditAccount: FC<{
           </Row>
         </Row>
         <Row>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <Container
           padding={{ all: 'small' }}
@@ -1011,7 +1099,7 @@ const EditAccount: FC<{
             width="100%"
             background="gray6"
           />
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Container>
         <Container
           padding={{ left: 'large', right: 'large' }}
@@ -1022,7 +1110,12 @@ const EditAccount: FC<{
           style={{ overflow: 'auto' }}
         >
           {/* <Container crossAlignment="flex-start" padding={{ all: '0px' }}> */}
-          {change === GENERAL_SECTION && <EditAccountGeneralSection setChange={setChange} />}
+          {change === GENERAL_SECTION && (
+            <EditAccountGeneralSection
+              setChange={setChange}
+              onQuotaErrorChange={setHasQuotaError}
+            />
+          )}
           {change === PROFILE && <EditAccountContactsSection />}
           {change === CONFIGURATION && <EditAccountConfigurationSection />}
           {change === USER_PREFERENCES && (
@@ -1040,13 +1133,13 @@ const EditAccount: FC<{
         </Container>
       </Container>
       <RouteLeavingGuard when={isDirty} onSave={modifyAccountReq}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
       <Modal
         size="small"
@@ -1080,16 +1173,17 @@ const EditAccount: FC<{
           setShowModal && setShowModal(false);
         }}
       >
-        <Text
+        <ds-text
           size={'extralarge'}
           overflow="break-word"
           style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
+          as="p"
         >
           {t(
             'label.are_you_sure_you_want_to_leave_without_saving_he_changes',
             `Are you sure you want to leave without saving he changes?`,
           )}
-        </Text>
+        </ds-text>
       </Modal>
       {isOpenDeleteDialog && (
         <Modal
@@ -1129,47 +1223,47 @@ const EditAccount: FC<{
               (accountUserType(selectedAccount) === 'System' ||
                 accountUserType(selectedAccount) === 'DelegatedAdmin') && (
                 <Padding bottom="medium" top="medium">
-                  <Text color="warning" size="extralarge" overflow="break-word">
+                  <ds-text color="warning" overflow="break-word" as="strong">
                     {t(
                       'label.deleting_account_warning_content',
                       'Deleting the system account could impact the system stability.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Padding>
               )}
             <Padding bottom="medium">
-              <Text size={'extralarge'} overflow="break-word">
+              <ds-text size={'extralarge'} overflow="break-word" as="p">
                 <Trans
                   i18nKey="label.deleting_account_content_1"
                   defaults="Are you sure you want to delete <bold>{{name}}</bod> ?"
                   components={{ bold: <strong />, name: selectedAccount?.name }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <ds-text overflow="break-word" as="p">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <ds-text overflow="break-word" as="p">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Close it to preserve</bold> the data, instead."
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Row padding={{ bottom: 'large' }}>
-              <Icon
+              <ds-icon
                 icon="AlertTriangleOutline"
                 size="large"
                 style={{ height: '48px', width: '48px' }}
-              />
+              ></ds-icon>
             </Row>
           </Container>
         </Modal>
@@ -1202,12 +1296,12 @@ const EditAccount: FC<{
         >
           <Container>
             <Padding bottom="medium" top="medium">
-              <Text style={{ textAlign: 'center' }} size={'extralarge'} overflow="break-word">
+              <ds-text style={{ textAlign: 'center' }} size={'extralarge'} overflow="break-word" as="p">
                 {t(
                   'label.delete_delegated_account_content',
                   `The system accounts can't be deleted from here. Please visit the respective module to manage the account.`,
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Container>
         </Modal>

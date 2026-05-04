@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Row, Switch, Text } from '@zextras/ui-components';
+import { Container, ListRow, Row, Switch } from '@zextras/ui-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
-import ListRow from '../../list/list-row';
 
 interface ForwardingOptionsProps {
 	cosPrefAttributes: CosPrefAttributes;
@@ -30,9 +29,9 @@ export const ForwardingOptions = ({
 			padding={{ all: 'large' }}
 			width="100%"
 		>
-			<Text size="extralarge" weight="bold">
+			<ds-text as="strong" weight="bold">
 				{t('label.forwarding', 'Forwarding')}
-			</Text>
+			</ds-text>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					height="fit"

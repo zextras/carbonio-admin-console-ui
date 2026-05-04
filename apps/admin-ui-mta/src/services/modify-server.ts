@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrap';
+import { soapFetch } from '@zextras/ui-shared';
 
 export const modifyServer = async (body: {
 	id?: string;
 	_jsns?: string;
 	a?: { n: string; _content?: string }[];
-}): Promise<any> =>
+}): Promise<Record<string, unknown>> =>
 	soapFetch(`ModifyServer`, {
 		...body
 	});

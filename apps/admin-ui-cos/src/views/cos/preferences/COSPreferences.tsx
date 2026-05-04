@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
-import { Container, useSnackbar } from '@zextras/ui-components';
-import { find } from 'lodash-es';
+import {  Container, useSnackbar  } from '@zextras/ui-components';
+import {  useCurrentUserRights  } from '@zextras/ui-shared';
+import {  find  } from 'lodash-es';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -144,39 +144,39 @@ export const COSPreferences = (): React.JSX.Element => {
           locales={locales}
           onCosAttributeChanged={handleCosPrefAttributeChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <MailOptions
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
           changeSwitchOption={handleSwitchOptionChange}
           onCosAttributeChanged={handleCosPrefAttributeChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <ReceivingMails
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
           onCosAttributeChanged={handleCosPrefAttributeChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <ForwardingOptions
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
           changeSwitchOption={handleSwitchOptionChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <SendingMails
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
           onCosAttributeChanged={handleCosPrefAttributeChange}
           changeSwitchOption={handleSwitchOptionChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <ContactOptions
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
           changeSwitchOption={handleSwitchOptionChange}
         />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <CalendarOptions
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}

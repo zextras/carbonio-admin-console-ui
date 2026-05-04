@@ -4,15 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '@zextras/ui-components';
-
-import { addRoute, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { PrimaryBarTooltip } from '@zextras/ui-components';
+import { addRoute, useIsAdvanced } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { LOG_AND_QUEUES, OPERATIONS_ROUTE_ID, PRIMARY_BAR_OPERATIONS } from './constants';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const App: FC = () => {
   const [t] = useTranslation();
@@ -27,35 +25,28 @@ const App: FC = () => {
     [t],
   );
 
-  const operationTooltipItem = useMemo(
-    () => [
-      {
-        header: (
-          <>
-            <Trans
-              i18nKey="label.operation_lbl"
-              defaults="<bold>Operations</bold>"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-            {'\n\n'}
-            <Trans
-              i18nKey="label.operation_primarybar_tooltip"
-              defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-          </>
-        ),
-        options: [],
-      },
-    ],
-    [t],
-  );
-
   const OperationTooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={operationTooltipItem} />,
-    [operationTooltipItem],
+    () => (
+      <PrimaryBarTooltip>
+        <p>
+          <Trans
+            i18nKey="label.operation_lbl"
+            defaults="<bold>Operations</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+        <p>
+          <Trans
+            i18nKey="label.operation_primarybar_tooltip"
+            defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+      </PrimaryBarTooltip>
+    ),
+    [t],
   );
 
   useEffect(() => {

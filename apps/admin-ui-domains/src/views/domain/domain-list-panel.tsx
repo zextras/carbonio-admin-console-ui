@@ -5,6 +5,16 @@
  */
 
 import {
+  Container,
+  DropDownInput,
+  ListItems,
+  type ListItemType,
+  ListPanelItem,
+  Padding,
+  Row,
+  useSnackbar,
+} from '@zextras/ui-components';
+import {
   getAllRights,
   replaceHistory,
   useAllConfig,
@@ -13,22 +23,12 @@ import {
   useDomainStore,
   useGlobalCarbonioSendAnalytics,
   useIsAdvanced,
-} from '@zextras/admin-ui-bootstrap';
-import {
-  Container,
-  DropDownInput,
-  Icon,
-  OverlayDivision,
-  Padding,
-  Row,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
+  useTotalQuotaActive,
+} from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import styled from 'styled-components';
 
 import { DomainResponse } from '../../../types';
 import {
@@ -68,30 +68,7 @@ import {
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import ListItems from '../list/list-items';
-import ListPanelItem from '../list/list-panel-item';
 import GlobalListPanel from './global-list-panel';
-
-const SelectItem = styled(Row)``;
-
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
-const ovelayStyle = styled(Container)`
-  width: 20rem;
-  right: 0;
-  bottom: 0;
-  height: 8rem;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-`;
-
-interface ManageOptions {
-  [key: string]: string | boolean;
-}
 
 const DomainListPanel: FC = () => {
   const [t] = useTranslation();
@@ -117,10 +94,11 @@ const DomainListPanel: FC = () => {
   const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 
   const isAdvanced = useIsAdvanced();
+  const isTotalQuotaActive = useTotalQuotaActive();
   const { data: backupData } = useBackupServers({
     enabled: isAdvanced,
   });
-  const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
+  const [manageOptions, setListItemType] = useState<ListItemType[]>([]);
   const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
   const { data: rights } = useCurrentUserRights();
   const [isShowError, setIsShowError] = useState(false);
@@ -137,7 +115,7 @@ const DomainListPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <OverlayDivision ovelayStyle={ovelayStyle} />
+          <ds-spinner></ds-spinner>
         </Container>
       ),
     },
@@ -333,7 +311,7 @@ const DomainListPanel: FC = () => {
     [t, isDomainSelect, is2FAAvailable, isDisclaimerEnable],
   );
 
-  const allManageOptions = useMemo(
+  const allListItemType = useMemo(
     () => [
       {
         id: ACCOUNTS,
@@ -413,36 +391,43 @@ const DomainListPanel: FC = () => {
   const manageItems = useMemo(
     () =>
       !isAdvanced
-        ? allManageOptions.filter(
-            (item: ManageOptions) =>
+        ? allListItemType.filter(
+            (item: ListItemType) =>
               item?.id !== RESTORE_ACCOUNT &&
               item?.id !== ACTIVE_SYNC &&
               item?.id !== DELEGATES_DOMAIN_ADMINS &&
               item?.id !== SECURITY_GROUP,
           )
-        : allManageOptions,
-    [allManageOptions, isAdvanced],
+        : allListItemType,
+    [allListItemType, isAdvanced],
   );
 
   const detailItems = useMemo(
     () =>
-      !isAdvanced
-        ? detailOptions.filter(
-            (item: ManageOptions) =>
-              item?.id !== WHITELABEL_SETTINGS &&
-              item?.id !== SAML &&
-              item?.id !== TWO_FACTOR_AUTHENTICATION,
-          )
-        : detailOptions,
+      detailOptions.filter((item: ListItemType) => {
+        if (!isAdvanced) {
+          if (
+            item?.id === WHITELABEL_SETTINGS ||
+            item?.id === SAML ||
+            item?.id === TWO_FACTOR_AUTHENTICATION
+          ) {
+            return false;
+          }
+        }
+        if (isTotalQuotaActive && item?.id === MAILBOX_QUOTA) {
+          return false;
+        }
+        return true;
+      }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [detailOptions, isAdvanced, is2FAAvailable],
+    [detailOptions, isAdvanced, is2FAAvailable, isTotalQuotaActive],
   );
 
   const globalOptionsItems = useMemo(
     () =>
       !isAdvanced
         ? globalOptionItems.filter(
-            (item: ManageOptions) =>
+            (item: ListItemType) =>
               item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
               item?.id !== GLOBAL_2FA_ROUTE &&
               item.id !== GLOBAL_ACTIVE_SYNC_ROUTE,
@@ -453,14 +438,14 @@ const DomainListPanel: FC = () => {
 
   useEffect(() => {
     if (backupData && !backupData?.backupModuleEnable && !backupData?.isBackupModuleLicensed) {
-      const options = manageItems.filter((item: ManageOptions) => item?.id !== RESTORE_ACCOUNT);
-      setManageOptions(options);
+      const options = manageItems.filter((item: ListItemType) => item?.id !== RESTORE_ACCOUNT);
+      setListItemType(options);
     }
   }, [manageItems, isDomainSelect, backupData]);
 
   useMemo(() => {
-    setManageOptions(
-      manageItems.map((item: ManageOptions) => {
+    setListItemType(
+      manageItems.map((item: ListItemType) => {
         item.isSelected = isDomainSelect;
         return item;
       }),
@@ -498,11 +483,8 @@ const DomainListPanel: FC = () => {
         setIsDomainSelect(false);
       }
     },
-    style: {
-      width: '1.25rem',
-      height: '1.25rem',
-    },
-    icon: searchDomainName === '' ? 'GlobeOutline' : 'CloseOutline',
+    size: '1.25rem',
+    icon: searchDomainName === '' ? ('GlobeOutline' as const) : ('CloseOutline' as const),
   };
 
   const items =
@@ -513,7 +495,10 @@ const DomainListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                    <ds-icon
+                      style={{ width: '1.25rem', height: '1.25rem' }}
+                      icon="InfoOutline"
+                    ></ds-icon>
                   </Padding>
                 </Row>
                 <Row
@@ -523,12 +508,12 @@ const DomainListPanel: FC = () => {
                     all: 'small',
                   }}
                 >
-                  <Text overflow="break-word">
+                  <ds-text as="p" overflow="break-word">
                     {t(
                       'many_domain_info_msg',
                       'So many domains! Which one would you like to see? Start typing to filter.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </>
             ),
@@ -539,7 +524,7 @@ const DomainListPanel: FC = () => {
             id: domain.id,
             label: domain.name,
             customComponent: (
-              <SelectItem
+              <Row
                 style={{
                   display: 'block',
                   textAlign: 'left',
@@ -553,7 +538,7 @@ const DomainListPanel: FC = () => {
                 }}
               >
                 {domain?.name}
-              </SelectItem>
+              </Row>
             ),
           }),
         );
@@ -616,12 +601,12 @@ const DomainListPanel: FC = () => {
       {isShowError && (
         <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
           <Padding top="large" left="small">
-            <Text size="extrasmall" weight="regular" color="error">
+            <ds-text as="small" size="extrasmall" weight="regular" color="error">
               {t(
                 'label.not_found_check_the_text_and_try_again',
                 'Not found - check the text and try again',
               )}
-            </Text>
+            </ds-text>
           </Padding>
         </Container>
       )}

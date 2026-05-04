@@ -4,20 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllConfig, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
   Input,
+  ListRow,
   Padding,
   Radio,
   RadioGroup,
   Row,
   Select,
   Switch,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
 import { find, isEqual } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +39,6 @@ import {
   ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import ListRow from '../../list/list-row';
 import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
 
 const MTAAdvanced: FC = () => {
@@ -57,11 +56,11 @@ const MTAAdvanced: FC = () => {
   );
 
   const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaAdvancedInitialDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaAdvancedInitialDetail((prev) => ({ ...prev, [key]: value } as MtaAdvanced));
   }, []);
 
   const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaAdvancedDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaAdvancedDetail((prev) => ({ ...prev, [key]: value } as MtaAdvanced));
   }, []);
 
   const [limitMaxMessageSize, setLimitMaxMessageSize] = useState<boolean>(false);
@@ -304,8 +303,8 @@ const MTAAdvanced: FC = () => {
   }, [mtaAdvancedDetail, mtaAdvancedInitialDetail]);
 
   const onAmavisLogLevelChange = useCallback(
-    (v: any) => {
-      setValue(ZIMBRA_AMAVIS_LOG_LEVEL, v);
+    (v: string | null) => {
+      if (v !== null) setValue(ZIMBRA_AMAVIS_LOG_LEVEL, v);
     },
     [setValue],
   );
@@ -492,7 +491,7 @@ const MTAAdvanced: FC = () => {
     [setValue],
   );
   const hasErrorMaxMessageSize = useMemo(
-    () => Number(zimbraMtaMaxMessageSizeState) <= 0 || isNaN(Number(zimbraMtaMaxMessageSizeState)),
+    () => Number(zimbraMtaMaxMessageSizeState) <= 0 || Number.isNaN(Number(zimbraMtaMaxMessageSizeState)),
     [zimbraMtaMaxMessageSizeState],
   );
   return (
@@ -507,9 +506,9 @@ const MTAAdvanced: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('label.advanced', 'Advanced')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -538,7 +537,7 @@ const MTAAdvanced: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
 
       <Container
@@ -549,9 +548,9 @@ const MTAAdvanced: FC = () => {
         style={{ overflow: 'auto' }}
       >
         <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h3" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.logging', 'Logging')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           crossAlignment="flex-start"
@@ -662,9 +661,9 @@ const MTAAdvanced: FC = () => {
           </Container>
         </Container>
         <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h3" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.tuning', 'Tuning')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container
@@ -676,6 +675,7 @@ const MTAAdvanced: FC = () => {
         >
           <Container crossAlignment="flex-start">
             <Input
+              isRequired
               label={t('mta.max_antivirus_threads', 'Max antivirus threads (value)')}
               backgroundColor="gray5"
               value={mtaAdvancedDetail?.zimbraClamAVMaxThreads}
@@ -688,6 +688,7 @@ const MTAAdvanced: FC = () => {
 
           <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
             <Input
+              isRequired
               label={t('mta.lmtp_threads', 'LMTP threads (Value)')}
               backgroundColor="gray5"
               value={mtaAdvancedDetail?.zimbraLmtpNumThreads}
@@ -699,6 +700,7 @@ const MTAAdvanced: FC = () => {
           </Container>
           <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
             <Input
+              isRequired
               label={t('mta.milter_threads', 'MILTER threads (value)')}
               backgroundColor="gray5"
               value={mtaAdvancedDetail?.zimbraMilterNumThreads}
@@ -720,6 +722,7 @@ const MTAAdvanced: FC = () => {
         >
           <Container crossAlignment="flex-start" height="auto">
             <Input
+              isRequired
               label={t(
                 'mta.reject_concurrent_milter_connection_above',
                 'Reject concurrent MILTER connections above (value)',
@@ -766,9 +769,9 @@ const MTAAdvanced: FC = () => {
           mainAlignment="flex-start"
           padding={{ top: 'large' }}
         >
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h3" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.advanced.mail_messages_size', 'Mail messages size')}
-          </Text>
+          </ds-text>
           <Container crossAlignment="flex-start" padding={{ top: 'large' }} height="auto">
             <Row width="100%" mainAlignment="flex-start">
               <RadioGroup value={limitMaxMessageSize.toString()}>
@@ -804,6 +807,7 @@ const MTAAdvanced: FC = () => {
                 padding={{ left: 'extralarge', top: 'large' }}
               >
                 <Input
+                  isRequired
                   label={t(
                     'mta.advanced.max_size_for_mail_messages',
                     'Max size for mail messages (MB)',

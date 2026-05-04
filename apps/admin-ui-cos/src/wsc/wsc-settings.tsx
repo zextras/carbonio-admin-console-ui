@@ -3,17 +3,21 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/admin-ui-bootstrap';
-import { Banner, Container, Padding } from '@zextras/ui-components';
+import {
+  Banner,
+  Container,
+  InheritedInput,
+  InheritedSelect,
+  InheritedSwitch,
+  Padding,
+} from '@zextras/ui-components';
+import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
 import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../types/account';
 import { TRUE } from '../constants';
 import { BoxLayout, SettingLayout } from '../views/page-layout';
-import InheritedInput from '../views/utility/inherited-components/inherited-input';
-import InheritedSelect from '../views/utility/inherited-components/inherited-select';
-import InheritedSwitch from '../views/utility/inherited-components/inherited-switch';
 
 export const WscSettings: FC<{
   featuresDetail: AccountType;
@@ -33,7 +37,7 @@ export const WscSettings: FC<{
   const [t] = useTranslation();
 
   const isAdvanced = useIsAdvanced();
-    const userSetting = useUserSettings();
+  const userSetting = useUserSettings();
 
   const isGlobalAdmin = useMemo(
     () => userSetting?.attrs?.zimbraIsAdminAccount === TRUE,
@@ -129,7 +133,7 @@ export const WscSettings: FC<{
   if (requiresLicenseCheck && isLoading) {
     return (
       <Container height="fit" padding="large" style={{ userSelect: 'none' }}>
-        <spinner-wc />
+        <ds-spinner />
       </Container>
     );
   }
@@ -308,6 +312,7 @@ export const WscSettings: FC<{
               descriptionGap
             >
               <InheritedInput
+                isRequired
                 label={t(
                   'wsc.section.content.input.groupMembers',
                   'Maximum number of group members',
@@ -329,6 +334,7 @@ export const WscSettings: FC<{
               descriptionGap
             >
               <InheritedInput
+                isRequired
                 label={t(
                   'wsc.section.content.input.groupPicture',
                   'Maximum group picture size in MB',
@@ -458,6 +464,7 @@ export const WscSettings: FC<{
               descriptionGap
             >
               <InheritedInput
+                isRequired
                 label={t(
                   'wsc.section.content.input.attachmentSize',
                   'Maximum attachment size in MB',

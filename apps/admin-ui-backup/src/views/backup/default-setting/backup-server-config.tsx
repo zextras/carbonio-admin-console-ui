@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useModuleLicenseInfo } from '@zextras/admin-ui-bootstrap';
-import { Container, Input, Padding, Row, Switch, Text } from '@zextras/ui-components';
+import { Container, Input, ListRow, Padding, Row, Switch } from '@zextras/ui-components';
+import { useModuleLicenseInfo } from '@zextras/ui-shared';
 import { FC, useEffect, useState } from 'react';
 
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
-import ListRow from '../../list/list-row';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 
@@ -61,7 +60,7 @@ const BackupServerConfig: FC = () => {
             t={t}
           />
           <Row orientation="horizontal" width="100%" background="gray6">
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Container
             orientation="column"
@@ -110,13 +109,14 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'large', bottom: 'large' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
             <ListRow>
               <Container padding={{ bottom: 'large' }}>
                 <Input
                   label={t('backup.backup_path', 'Backup Path')}
+                  isRequired
                   value={backupDetail.ZxBackup_DestPath}
                   defaultValue={backupDetail.ZxBackup_DestPath}
                   onChange={changeBackupDetail}
@@ -129,6 +129,7 @@ const BackupServerConfig: FC = () => {
             <ListRow>
               <Container padding={{ bottom: 'large' }}>
                 <Input
+                  isRequired
                   label={`${t('backup.minimum_space_threshold', 'Minimum Space Threshold')} (${t(
                     'label.mb',
                     'MB',
@@ -145,6 +146,7 @@ const BackupServerConfig: FC = () => {
             <ListRow>
               <Container padding={{ bottom: 'medium' }}>
                 <Input
+                  isRequired
                   label={`${t('backup.local_metadata_threshold', 'Local Metadata Threshold')} (${t(
                     'label.mb',
                     'MB',
@@ -160,7 +162,7 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'small', bottom: 'large' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
             <ListRow>
@@ -178,6 +180,7 @@ const BackupServerConfig: FC = () => {
             <ListRow>
               <Container padding={{ bottom: 'medium' }}>
                 <Input
+                  isRequired
                   label={t('backup.schedule', 'Schedule')}
                   value={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
                   defaultValue={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
@@ -190,7 +193,7 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'small', bottom: 'extralarge' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
 
@@ -210,6 +213,7 @@ const BackupServerConfig: FC = () => {
             <ListRow>
               <Container padding={{ bottom: 'large' }}>
                 <Input
+                  isRequired
                   label={t('backup.schedule', 'Schedule')}
                   value={backupDetail.backupPurgeScheduler?.['cron-pattern']}
                   defaultValue={backupDetail.backupPurgeScheduler?.['cron-pattern']}
@@ -222,12 +226,13 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ top: 'small', bottom: 'extralarge' }}>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
             <ListRow>
               <Container padding={{ bottom: 'small' }}>
                 <Input
+                  isRequired
                   label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
                   value={backupDetail.ZxBackup_DataRetentionDays}
                   defaultValue={backupDetail.ZxBackup_DataRetentionDays}
@@ -240,18 +245,19 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Padding bottom="large">
-                <Text size="extrasmall" weight="regular" color="secondary">
+                <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
                   {t(
                     'backup.set_backup_forever_msg',
                     'If you set 0, your data will be kept in backup forever',
                   )}
-                </Text>
+                </ds-text>
               </Padding>
             </ListRow>
 
             <ListRow>
               <Container padding={{ bottom: 'small' }}>
                 <Input
+                  isRequired
                   label={t(
                     'backup.keep_delete_accounts_in_backup',
                     'Keep deleted accounts in the backup',
@@ -267,12 +273,12 @@ const BackupServerConfig: FC = () => {
             </ListRow>
             <ListRow>
               <Padding bottom="large">
-                <Text size="extrasmall" weight="regular" color="secondary">
+                <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
                   {t(
                     'backup.set_backup_forever_msg',
                     'If you set 0, your data will be kept in backup forever',
                   )}
-                </Text>
+                </ds-text>
               </Padding>
             </ListRow>
           </Container>

@@ -4,23 +4,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/admin-ui-bootstrap';
-import { Banner, Container, Padding } from '@zextras/ui-components';
+import {
+  Banner,
+  Container,
+  InheritedInput,
+  InheritedSelect,
+  InheritedSwitch,
+  Padding,
+} from '@zextras/ui-components';
+import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
 import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TRUE } from '../constants';
-import { AccountType } from '../views/domain/manange/accounts/account-types/account-types';
+import { AccountDetail } from '../views/domain/manange/accounts/account-context';
 import { BoxLayout, SettingLayout } from '../views/page-layout';
-import InheritedInput from '../views/utility/inherited-components/inherited-input';
-import InheritedSelect from '../views/utility/inherited-components/inherited-select';
-import InheritedSwitch from '../views/utility/inherited-components/inherited-switch';
 
 export const WscSettings: FC<{
-  featuresDetail: AccountType;
-  setFeaturesDetail: Dispatch<SetStateAction<AccountType>>;
-  cosDetail?: AccountType;
-  accSpecificDetail?: AccountType;
+  featuresDetail: AccountDetail;
+  setFeaturesDetail: Dispatch<SetStateAction<AccountDetail>>;
+  cosDetail?: AccountDetail;
+  accSpecificDetail?: AccountDetail;
   setEmptyValue?: CallableFunction;
   readonlyFeatures?: boolean;
 }> = ({
@@ -54,7 +58,7 @@ export const WscSettings: FC<{
   );
 
   const changeSwitchOption = useCallback(
-    (key: keyof AccountType): void => {
+    (key: keyof AccountDetail): void => {
       setFeaturesDetail((prev) => ({
         ...prev,
         [key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
@@ -64,7 +68,7 @@ export const WscSettings: FC<{
   );
 
   const changeSelectOption = useCallback(
-    (key: keyof AccountType) =>
+    (key: keyof AccountDetail) =>
       (value: string): void => {
         setFeaturesDetail((prev) => ({
           ...prev,
@@ -75,7 +79,7 @@ export const WscSettings: FC<{
   );
 
   const changeInputOption = useCallback(
-    (key: keyof AccountType) =>
+    (key: keyof AccountDetail) =>
       (ev: ChangeEvent<HTMLInputElement>): void => {
         let inputValue = ev.target.value || '0';
         if (/^\d*$/.test(inputValue)) {
@@ -128,7 +132,7 @@ export const WscSettings: FC<{
   if (requiresLicenseCheck && isLoading) {
     return (
       <Container height="fit" padding="large" style={{ userSelect: 'none' }}>
-        <spinner-wc />
+        <ds-spinner />
       </Container>
     );
   }
@@ -307,6 +311,7 @@ export const WscSettings: FC<{
               descriptionGap
             >
               <InheritedInput
+                isRequired
                 label={t(
                   'wsc.section.content.input.groupMembers',
                   'Maximum number of group members',
@@ -328,6 +333,7 @@ export const WscSettings: FC<{
               descriptionGap
             >
               <InheritedInput
+                isRequired
                 label={t(
                   'wsc.section.content.input.groupPicture',
                   'Maximum group picture size in MB',
@@ -457,6 +463,7 @@ export const WscSettings: FC<{
               descriptionGap
             >
               <InheritedInput
+                isRequired
                 label={t(
                   'wsc.section.content.input.attachmentSize',
                   'Maximum attachment size in MB',

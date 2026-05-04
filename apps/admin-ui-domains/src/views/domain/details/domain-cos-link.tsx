@@ -4,23 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { postSoapFetchRequest, useDomainStore, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
   DropDownInput,
-  Icon,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { postSoapFetchRequest, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, KeyboardEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { Attribute } from '../../../../types/attribute';
 import { Cos } from '../../../../types/cos';
@@ -30,17 +30,8 @@ import { copyCos } from '../../../services/copy-cos-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { getCosList } from '../../../services/search-cos-service';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-import ListRow from '../../list/list-row';
 
-const SelectItem = styled(Row)``;
-
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
 const DomainCosLink: FC<{
   cosMaxAccountList: Array<CosMaxAccountValues>;
   defaultCosId: string;
@@ -70,7 +61,7 @@ const DomainCosLink: FC<{
   }, [userSetting?.attrs]);
 
   const customIconDetail = {
-    icon: isCosListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline',
+    icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
     onClick: (): void => {
       setIsCosListExpand(!isCosListExpand);
     },
@@ -97,7 +88,7 @@ const DomainCosLink: FC<{
   }, [cosMaxAccountList, cosList]);
 
   const getCosLists = useCallback(
-    (cos: string): any => {
+    (cos: string) => {
       getCosList(cos, 0)
         .then((data) => {
           const searchResponse: any = data;
@@ -469,24 +460,24 @@ const DomainCosLink: FC<{
             id: index.toString(),
             columns: [
               <Container crossAlignment="flex-start" mainAlignment="center" key={index}>
-                <Text size="medium" weight="light" color="gray0">
+                <ds-text as="span" size="medium" weight="light" color="gray0">
                   {item?.name}
-                </Text>
+                </ds-text>
               </Container>,
               <Container crossAlignment="flex-start" mainAlignment="center" key={index}>
-                <Text size="medium" weight="light" color="gray0">
+                <ds-text as="span" size="medium" weight="light" color="gray0">
                   {item?.value}
-                </Text>
+                </ds-text>
               </Container>,
               <Container key={index}>
                 {defaultDomainCosId === item.id && (
                   <Row>
                     <Padding right="small">
-                      <Text size="medium" weight="light" color="gray0">
+                      <ds-text as="span" size="medium" weight="light" color="gray0">
                         {t('label.default_cos', 'Default COS')}
-                      </Text>
+                      </ds-text>
                     </Padding>
-                    <Icon icon="Star" color="primary" />
+                    <ds-icon icon="Star" color="primary"></ds-icon>
                   </Row>
                 )}
               </Container>,
@@ -496,26 +487,26 @@ const DomainCosLink: FC<{
                 <Container>
                   <Row>
                     <Padding right="small">
-                      <Text>{t('label.set_as_default', 'Set as Default')}</Text>
+                      <ds-text as="span">{t('label.set_as_default', 'Set as Default')}</ds-text>
                     </Padding>
                     <Padding right="small">
-                      <Icon
+                      <ds-icon
                         icon="StarOutline"
                         color="primary"
                         onClick={(event: { stopPropagation: () => void }): void => {
                           event.stopPropagation();
                           markAsDefaultCosToDomain(item?.id);
                         }}
-                      />
+                      ></ds-icon>
                     </Padding>
-                    <Icon
+                    <ds-icon
                       icon="Close"
                       color="primary"
                       onClick={(event: { stopPropagation: () => void }): void => {
                         event.stopPropagation();
                         removeCosLinkRows(item);
                       }}
-                    />
+                    ></ds-icon>
                   </Row>
                 </Container>
               ) : (
@@ -570,7 +561,10 @@ const DomainCosLink: FC<{
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                    <ds-icon
+                      icon="InfoOutline"
+                      style={{ width: '1.25rem', height: '1.25rem' }}
+                    ></ds-icon>
                   </Padding>
                 </Row>
                 <Row
@@ -580,22 +574,22 @@ const DomainCosLink: FC<{
                     all: 'small',
                   }}
                 >
-                  <Text overflow="break-word">
+                  <ds-text as="p" overflow="break-word">
                     {t(
                       'many_cos_info_msg',
                       'So many COSes! Which one would you like to see? Start typing to filter.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </>
             ),
           },
         ]
-      : cosList.map((cos: any, index) => ({
+      : cosList.map((cos: any) => ({
           id: cos.id,
           label: cos.name,
           customComponent: (
-            <SelectItem
+            <Row
               style={{
                 display: 'block',
                 textAlign: 'left',
@@ -608,7 +602,7 @@ const DomainCosLink: FC<{
               }}
             >
               {cos?.name}
-            </SelectItem>
+            </Row>
           ),
         }));
 
@@ -621,9 +615,9 @@ const DomainCosLink: FC<{
         width="100%"
         padding={{ top: 'large', bottom: 'large' }}
       >
-        <Text size="medium" weight="bold" color="gray0">
+        <ds-text as="h3" size="medium" weight="bold" color="gray0">
           {t('label.class_of_service', 'Class of Service (cos)')}
-        </Text>
+        </ds-text>
       </Row>
       {isGlobalAdmin && (
         <ListRow>
@@ -720,7 +714,7 @@ const DomainCosLink: FC<{
           showCheckbox={isGlobalAdmin}
           multiSelect={false}
           style={{ overflow: 'auto', height: '100%' }}
-          RowFactory={HoverContentRowFactory}
+          RowFactory={HoverableRowFactory}
           HeaderFactory={CustomHeaderFactory}
         />
         {cosMaxAccountListRow.length === 0 && (
@@ -730,7 +724,8 @@ const DomainCosLink: FC<{
             style={{ marginTop: '1rem' }}
           >
             <Padding all="medium" width="30.875rem">
-              <Text
+              <ds-text
+                as="p"
                 color="gray1"
                 overflow="break-word"
                 weight="regular"
@@ -741,7 +736,7 @@ const DomainCosLink: FC<{
                   'label.cos_not_included_for_domain_notes',
                   'There are not COS included for this domain, please select one from the dropwdown menu and click on "DUPLICATE" or "LINK"',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Container>
         )}

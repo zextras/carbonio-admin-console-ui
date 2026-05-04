@@ -4,67 +4,73 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Padding } from '@zextras/ui-components';
-import { FC, ReactElement, useCallback, useMemo, useState } from 'react';
+import { Button, Container, HorizontalWizard, Padding, Section } from '@zextras/ui-components';
+import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { HorizontalWizard } from '../../../app/component/hwizard';
-import { Section } from '../../../app/component/section-component';
 import { HSMContext } from '../hsm-context/hsm-context';
 import HSMcreatePolicy from './hsm-create-policy';
 import HSMpolicySettings from './hsm-policy-settings';
 
-interface hsmDetailObj {
-  allVolumes: Array<any>;
-  isAllEnabled: boolean;
-  isMessageEnabled: boolean;
-  isEventEnabled: boolean;
-  isContactEnabled: boolean;
-  isDocumentEnabled: boolean;
-  policyCriteria: Array<any>;
-  sourceVolume: Array<any>;
-  destinationVolume: Array<any>;
-}
+export type HsmDetailObj = {
+	allVolumes: Array<any>;
+	isAllEnabled: boolean;
+	isMessageEnabled: boolean;
+	isEventEnabled: boolean;
+	isContactEnabled: boolean;
+	isDocumentEnabled: boolean;
+	policyCriteria:Array<{
+    option: string
+    dateScale: string
+    scale:string
+  }>
+  sourceVolume: Array<{
+    id: string
+  }>
+  destinationVolume: Array<{
+    id: string
+  }>
+};
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  const { server } = useParams();
+	const { t } = useTranslation();
+	const { server } = useParams();
 
-  return (
-    <Section
-      title={`${server} | ${t('hsm.create_new_policy', 'Create New Policy')}`}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
+	return (
+		<Section
+			title={`${server} | ${t('hsm.create_new_policy', 'Create New Policy')}`}
+			padding={{ all: '0' }}
+			footer={wizardFooter}
+			divider
+			showClose
+			onClose={(): void => {
+				setToggleWizardSection(false);
+			}}
+		>
+			{wizard}
+		</Section>
+	);
 };
 
 const CreateHsmPolicy: FC<{
-  setShowCreateHsmPolicyView: any;
-  volumeList: Array<any>;
-  createHSMpolicy: any;
-  runCustomHSMpolicy: any;
+	setShowCreateHsmPolicyView: any;
+	volumeList: Array<any>;
+	createHSMpolicy: any;
+	runCustomHSMpolicy: any;
 }> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy, runCustomHSMpolicy }) => {
-  const [hsmDetail, setHsmDetail] = useState<hsmDetailObj>({
-    allVolumes: volumeList,
-    isAllEnabled: true,
-    isMessageEnabled: true,
-    isEventEnabled: true,
-    isContactEnabled: true,
-    isDocumentEnabled: true,
-    policyCriteria: [],
-    sourceVolume: [],
-    destinationVolume: [],
-  });
-  const { t } = useTranslation();
+	const [hsmDetail, setHsmDetail] = useState<HsmDetailObj>({
+		allVolumes: volumeList,
+		isAllEnabled: true,
+		isMessageEnabled: true,
+		isEventEnabled: true,
+		isContactEnabled: true,
+		isDocumentEnabled: true,
+		policyCriteria: [],
+		sourceVolume: [],
+		destinationVolume: [],
+	});
+	const { t } = useTranslation();
 
   const onCreate = useCallback(() => {
     createHSMpolicy(hsmDetail);

@@ -4,36 +4,52 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {   Button,  Container,  DefaultTabBarItem,  Row,  TabBar,  Table,  Text,  useSnackbar } from '@zextras/ui-components';
-import {  format  } from 'date-fns';
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-import {  useTranslation  } from 'react-i18next';
-import styled from 'styled-components';
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  DefaultTabBarItem,
+  type DefaultTabBarItemProps,
+  HoverableRowFactory,
+  Paging,
+  Row,
+  TabBar,
+  Table,
+  TrackNumberPerPage,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { format } from 'date-fns';
+import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {  MtaMailQueue, MtaMailQueueItem, MtaStats, mtaStats  } from '../../../../types';
+import {
+  MailQueueActionRequest,
+  MailQueueInfo,
+  MtaMailQueueItem,
+  MtaStats,
+  mtaStats,
+  TRow,
+} from '../../../../types';
 import logo from '../../../assets/gardian.svg';
-import {   ACTIVE,  CORRUPT,  DEFERRED,  DELETE,  HOLD,  INCOMING,  RECORD_DISPLAY_LIMIT,  RELEASE,  REQUEUE,  ZIMBRA_ADMIN_URN } from '../../../constants';
-import {  batchService  } from '../../../services/batch-service';
-import {  getMailQueue  } from '../../../services/get-mail-queue';
-import {  getMailqueueInformation  } from '../../../services/get-mail-queue-info';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import TrackNumberPerPage from '../../app/shared/track-number-per-page';
-import Paging from '../../components/paging';
+import {
+  ACTIVE,
+  CORRUPT,
+  DEFERRED,
+  DELETE,
+  HOLD,
+  INCOMING,
+  RECORD_DISPLAY_LIMIT,
+  RELEASE,
+  REQUEUE,
+  ZIMBRA_ADMIN_URN,
+} from '../../../constants';
+import { batchService } from '../../../services/batch-service';
+import { getMailQueue } from '../../../services/get-mail-queue';
+import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 
-const TableContainer = styled(Table)`
-  width: auto;
-  table {
-    width: auto;
-  }
-`;
-
-const ReusedDefaultTabBar: FC<{
-  item: any;
-  index: any;
-  selected: any;
-  onClick: any;
-}> = ({ item, index, selected, onClick }): ReactElement => (
+const ReusedDefaultTabBar: FC<DefaultTabBarItemProps> = ({ item, selected, onClick }): ReactElement => {
+  const count = (item as { count?: number }).count;
+  return (
   <DefaultTabBarItem
     item={item}
     selected={selected}
@@ -51,13 +67,14 @@ const ReusedDefaultTabBar: FC<{
       width="100%"
     >
       <Container mainAlignment="flex-end" crossAlignment="flex-end" width="100%" height="auto">
-        <Text size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
-          {item.label} ({item?.count})
-        </Text>
+        <ds-text as="span" size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
+          {item.label} ({count ?? 0})
+        </ds-text>
       </Container>
     </Container>
   </DefaultTabBarItem>
-);
+  );
+};
 
 const MTAStatsMail: FC<{
   serverState: mtaStats | undefined;
@@ -78,15 +95,14 @@ const MTAStatsMail: FC<{
   const createSnackbar = useSnackbar();
   const [change, setChange] = useState(ACTIVE);
   const [selectedRow, setSelectedRow] = useState<Array<string>>([]);
-  const [mailRows, setMailRows] = useState<Array<any>>([]);
+  const [mailRows, setMailRows] = useState<Array<TRow>>([]);
   const [mailStatCount, setMailStatCount] = useState<Record<string, number>>({
-    queued: serverState?.active ? parseInt(serverState?.active, 10) : 0,
-    corrupted: serverState?.corrupt ? parseInt(serverState?.corrupt, 10) : 0,
-    deferred: serverState?.deferred ? parseInt(serverState?.deferred, 10) : 0,
-    incoming: serverState?.incoming ? parseInt(serverState?.incoming, 10) : 0,
-    onhold: serverState?.hold ? parseInt(serverState?.hold, 10) : 0,
+    queued: serverState?.active ? Number.parseInt(serverState?.active, 10) : 0,
+    corrupted: serverState?.corrupt ? Number.parseInt(serverState?.corrupt, 10) : 0,
+    deferred: serverState?.deferred ? Number.parseInt(serverState?.deferred, 10) : 0,
+    incoming: serverState?.incoming ? Number.parseInt(serverState?.incoming, 10) : 0,
+    onhold: serverState?.hold ? Number.parseInt(serverState?.hold, 10) : 0,
   });
-  const [mtaMailQueueRecords, setMtaMailQueueRecords] = useState<MtaMailQueue>();
   const [isMailQueueLoading, setIsMailQueueLoading] = useState<boolean>(false);
   const [holdInProgress, setHoldInProgress] = useState<boolean>(false);
   const [releaseInProgress, setReleaseInProgress] = useState<boolean>(false);
@@ -132,17 +148,7 @@ const MTAStatsMail: FC<{
     [t, mailStatCount],
   );
 
-  type THeader = {
-    id: string;
-    label: string;
-    align?: React.ThHTMLAttributes<HTMLTableHeaderCellElement>['align'];
-    width?: string;
-    i18nAllLabel?: string;
-    bold?: boolean;
-    items?: any;
-  };
-
-  const headers: THeader[] = useMemo(
+  const headers = useMemo(
     () => [
       {
         id: 'id',
@@ -224,49 +230,49 @@ const MTAStatsMail: FC<{
     if (qi.length === 0) {
       setMailRows([]);
     } else {
-      const quotaData: Array<any> = [];
+      const quotaData: Array<TRow> = [];
       qi.forEach((item: MtaMailQueueItem) => {
         quotaData.push({
           id: item?.id,
           columns: [
             <Container crossAlignment="flex-start" key={item?.id}>
-              <Text color="gray0" weight="regular">
+              <ds-text as="span" color="gray0" weight="regular">
                 {item?.id}
-              </Text>
+              </ds-text>
             </Container>,
-            <Text color="gray0" weight="light" key={item?.id}>
-              {format(new Date(parseInt(item?.arrivalTime, 10)), 'dd/MM/yy - HH:mm')}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+              {format(new Date(Number.parseInt(item?.arrivalTime, 10)), 'dd/MM/yy - HH:mm')}
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.size}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.fromDomain}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.toDomain}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.sender}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.receiver}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.host}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.ip}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.reason}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.filter}
-            </Text>,
-            <Text color="gray0" weight="light" key={item?.id}>
+            </ds-text>,
+            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
               {item?.receiveid}
-            </Text>,
+            </ds-text>,
           ],
         });
       });
@@ -274,7 +280,7 @@ const MTAStatsMail: FC<{
     }
   }, []);
 
-  const setMailStateCountData = useCallback((queue: any) => {
+  const setMailStateCountData = useCallback((queue: Array<MailQueueInfo>) => {
     setMailStatCount({
       queued: queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n || 0,
       corrupted:
@@ -342,16 +348,10 @@ const MTAStatsMail: FC<{
               });
             });
           }
-          const mailQueueData = {
-            name: queue?.name,
-            qi: queueItem,
-            total: queue?.total,
-          };
-          setMtaMailQueueRecords(mailQueueData);
           setToTable(queueItem);
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setIsMailQueueLoading(false);
         createSnackbar({
           key: 'error',
@@ -373,7 +373,7 @@ const MTAStatsMail: FC<{
   }, [getMailFromMailQueue]);
 
   const callAllRequest = useCallback(
-    (request: any) => {
+    (request: Array<MailQueueActionRequest>) => {
       batchService({
         MailQueueActionRequest: request,
         _jsns: 'urn:zimbra',
@@ -494,9 +494,9 @@ const MTAStatsMail: FC<{
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {serverState?.serverName}
-          </Text>
+          </ds-text>
         </Row>
         <Row></Row>
         <Row padding={{ right: 'extrasmall', left: 'small' }}>
@@ -510,7 +510,7 @@ const MTAStatsMail: FC<{
         </Row>
       </Row>
       <Container>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Container>
       <Container
         padding={{ all: 'extralarge' }}
@@ -522,8 +522,8 @@ const MTAStatsMail: FC<{
       >
         <Container mainAlignment="flex-end" crossAlignment="flex-end" height="auto" width="100%">
           <TabBar
-            // @ts-expect-error - needs a fix // Need to fix it with custom soultion
             items={items}
+            background={''}
             selected={change}
             onChange={(ev: unknown, selectedId: string): void => {
               setOffset(0);
@@ -608,15 +608,15 @@ const MTAStatsMail: FC<{
             position: 'relative',
           }}
         >
-          <TableContainer
+          <Table
             selectedRows={selectedRow}
             rows={mailRows}
             headers={headers}
             onSelectionChange={(selected: Array<string>): void => {
               setSelectedRow(selected);
             }}
-            style={{ overflow: 'auto', height: '100%', width: '100%' }}
-            RowFactory={CustomRowFactory}
+            style={{ overflow: 'auto', height: '100%', width: 'auto' }}
+            RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
           {isMailQueueLoading && (
@@ -627,7 +627,7 @@ const MTAStatsMail: FC<{
               style={{ position: 'absolute' }}
               padding={{ top: 'medium' }}
             >
-              <Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+              <ds-spinner></ds-spinner>
             </Container>
           )}
         </Container>
@@ -659,9 +659,9 @@ const MTAStatsMail: FC<{
               crossAlignment="center"
               style={{ textAlign: 'center' }}
             >
-              <Text weight="light" color="#828282" size="large" overflow="break-word">
+              <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                 {t('label.this_list_is_empty', 'This list is empty.')}
-              </Text>
+              </ds-text>
             </Row>
           </Container>
         )}

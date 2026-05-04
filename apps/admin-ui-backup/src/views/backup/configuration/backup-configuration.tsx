@@ -5,30 +5,29 @@
  */
 
 import {
+  Button,
+  Container,
+  Input,
+  LabeledValue,
+  ListRow,
+  Padding,
+  Row,
+  Select,
+  Switch,
+  useSnackbar,
+} from '@zextras/ui-components';
+import {
   fetchExternalSoap,
   getSoapFetchRequest,
   postSoapFetchRequest,
   useAllServers,
   useCurrentUserRights,
   useModuleLicenseInfo,
-} from '@zextras/admin-ui-bootstrap';
-import {
-  Button,
-  Container,
-  Input,
-  OverlayDivision,
-  Padding,
-  Row,
-  Select,
-  Switch,
-  Text,
-  useSnackbar,
-} from '@zextras/ui-components';
+} from '@zextras/ui-shared';
 import { find, isEmpty } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
-import styled from 'styled-components';
 
 import {
   BACKUP_REALTIME,
@@ -46,23 +45,7 @@ import {
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
-import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
 
 const BackupConfiguration: FC = () => {
   const { server } = useParams();
@@ -485,7 +468,7 @@ const BackupConfiguration: FC = () => {
           });
         }
       })
-      .catch((error: any) => {
+      .catch(() => {
         setIsSaveRequestInProgress(false);
         setCurrentBackupValue((prev: any) => ({
           ...prev,
@@ -952,7 +935,7 @@ const BackupConfiguration: FC = () => {
 
   return (
     <>
-      {isSaveRequestInProgress && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isSaveRequestInProgress && <ds-spinner></ds-spinner>}
       <Container mainAlignment="flex-start" background="gray6">
         <Container
           orientation="column"
@@ -969,10 +952,10 @@ const BackupConfiguration: FC = () => {
                   width="50%"
                   crossAlignment="flex-start"
                 >
-                  <Text size="medium" weight="bold" color="gray0">
+                  <ds-text as="h2" size="medium" weight="bold" color="gray0">
                     {selectedBackupServer}{' '}
                     {t('backup.backup_configuration', 'backup configuration')}
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row
                   padding={{ all: 'large' }}
@@ -1002,7 +985,7 @@ const BackupConfiguration: FC = () => {
                 </Row>
               </Row>
             </Container>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Container
             mainAlignment="flex-start"
@@ -1018,9 +1001,9 @@ const BackupConfiguration: FC = () => {
               height="fit"
               orientation="horizontal"
             >
-              <Text>{t('backup.the_service_is', 'The service is')}</Text>&nbsp;
-              {!backupServiceStart && <Text color="error">{t('backup.stopped', 'stopped')}</Text>}
-              {backupServiceStart && <Text color="primary">{t('backup.running', 'running')}</Text>}
+              <ds-text as="span">{t('backup.the_service_is', 'The service is')}</ds-text>&nbsp;
+              {!backupServiceStart && <ds-text as="span" color="error">{t('backup.stopped', 'stopped')}</ds-text>}
+              {backupServiceStart && <ds-text as="span" color="primary">{t('backup.running', 'running')}</ds-text>}
             </Container>
 
             <Container
@@ -1051,9 +1034,9 @@ const BackupConfiguration: FC = () => {
               padding={{ top: 'extralarge' }}
               height="fit"
             >
-              <Text size="medium" weight="bold">
+              <ds-text as="h3" size="medium" weight="bold">
                 {t('backup.general', 'General')}
-              </Text>
+              </ds-text>
             </Container>
 
             <ListRow>
@@ -1099,7 +1082,7 @@ const BackupConfiguration: FC = () => {
                   type="outlined"
                   label={initializeBackup}
                   color="primary"
-                  icon={showIcon ? 'PowerOutline' : ''}
+                  {...(showIcon && { icon: 'PowerOutline' })}
                   iconPlacement="right"
                   width="fill"
                   style={{ width: '100%' }}
@@ -1126,6 +1109,7 @@ const BackupConfiguration: FC = () => {
             <ListRow>
               <Container padding={{ top: 'large' }}>
                 <Input
+                  isRequired
                   label={t(
                     'backup.local_volume_reload_if_you_changed_this_value',
                     'Local Volume (reload if you changed this value)',
@@ -1157,7 +1141,7 @@ const BackupConfiguration: FC = () => {
               <Container>
                 <ListRow>
                   <Container padding={{ top: 'large' }}>
-                    <Input
+                    <LabeledValue
                       label={t('backup.external_volume', 'External Volume')}
                       value={manageExternalVolumeType}
                       backgroundColor="gray5"
@@ -1166,7 +1150,7 @@ const BackupConfiguration: FC = () => {
                 </ListRow>
                 <ListRow>
                   <Container padding={{ top: 'large', bottom: 'large' }}>
-                    <Input
+                    <LabeledValue
                       label={t('backup.bucket_configuration', 'Bucket Configuration')}
                       value={
                         manageExternalVolumeType.startsWith('LOCAL')
@@ -1288,6 +1272,7 @@ const BackupConfiguration: FC = () => {
                   <ListRow>
                     <Container padding={{ bottom: 'large' }}>
                       <Input
+                        isRequired
                         label={t('backup.local_mountpoint', 'Local Mountpoint')}
                         value={manageExternalVolumeNewLocalMountpoint || ''}
                         backgroundColor="gray5"
@@ -1367,7 +1352,7 @@ const BackupConfiguration: FC = () => {
                 orientation="horizontal"
                 padding={{ top: 'large' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
 
@@ -1377,9 +1362,9 @@ const BackupConfiguration: FC = () => {
               padding={{ top: 'large' }}
               height="fit"
             >
-              <Text size="medium" weight="bold">
+              <ds-text as="h3" size="medium" weight="bold">
                 {t('backup.smart_scan_configuration', 'SmartScan Configuration')}
-              </Text>
+              </ds-text>
             </Container>
 
             <Container
@@ -1400,6 +1385,7 @@ const BackupConfiguration: FC = () => {
             <ListRow>
               <Container padding={{ top: 'large' }}>
                 <Input
+                  isRequired
                   label={t('backup.schedule', 'Schedule')}
                   value={scheduleSmartScan}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
@@ -1436,7 +1422,7 @@ const BackupConfiguration: FC = () => {
                 orientation="horizontal"
                 padding={{ top: 'large' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Container>
             </ListRow>
 
@@ -1446,9 +1432,9 @@ const BackupConfiguration: FC = () => {
               padding={{ top: 'large' }}
               height="fit"
             >
-              <Text size="medium" weight="bold">
+              <ds-text as="h3" size="medium" weight="bold">
                 {t('backup.data_retention_policies', 'Data Retention Policies')}
-              </Text>
+              </ds-text>
             </Container>
 
             <ListRow>
@@ -1475,6 +1461,7 @@ const BackupConfiguration: FC = () => {
             <ListRow>
               <Container padding={{ top: 'large' }}>
                 <Input
+                  isRequired
                   label={t('backup.schedule', 'Schedule')}
                   backgroundColor="gray5"
                   value={retentionPolicySchedule}
@@ -1495,6 +1482,7 @@ const BackupConfiguration: FC = () => {
                 width="35%"
               >
                 <Input
+                  isRequired
                   label={t(
                     'backup.keep_deleted_item_in_backup',
                     'Keep deleted items in the backup',
@@ -1520,10 +1508,9 @@ const BackupConfiguration: FC = () => {
                 padding={{ top: 'large', right: 'large' }}
                 width="15%"
               >
-                <Input
+                <LabeledValue
                   label={t('backup.range', 'Range')}
                   value={t('label.days', 'Days')}
-                  disabled={!allowSetBackup}
                 />
               </Container>
               <Container
@@ -1534,6 +1521,7 @@ const BackupConfiguration: FC = () => {
                 width="35%"
               >
                 <Input
+                  isRequired
                   label={t(
                     'backup.keep_deleted_account_in_the_backup',
                     'Keep deleted account in the backup',
@@ -1560,11 +1548,10 @@ const BackupConfiguration: FC = () => {
                 padding={{ top: 'large' }}
                 width="15%"
               >
-                <Input
+                <LabeledValue
                   label={t('backup.range', 'Range')}
                   backgroundColor="gray5"
                   value={t('label.days', 'Days')}
-                  disabled={!allowSetBackup}
                 />
               </Container>
             </ListRow>
@@ -1590,13 +1577,13 @@ const BackupConfiguration: FC = () => {
           </Container>
         </Container>
         <RouteLeavingGuard when={isDirty} onSave={onSave}>
-          <Text>
+          <ds-text as="p">
             {t(
               'label.unsaved_changes_line1',
               'Are you sure you want to leave this page without saving?',
             )}
-          </Text>
-          <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+          </ds-text>
+          <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
         </RouteLeavingGuard>
       </Container>
     </>

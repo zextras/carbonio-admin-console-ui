@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Container, ListRow } from '@zextras/ui-components';
 import {
   getRights,
   useCurrentUserRights,
@@ -12,8 +13,7 @@ import {
   useHasAllRights,
   useIsAdvanced,
   useUserAccounts,
-} from '@zextras/admin-ui-bootstrap';
-import { Container } from '@zextras/ui-components';
+} from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -31,7 +31,6 @@ import {
   SERVERS_LIST,
   STORAGES_ROUTE_ID,
 } from '../../constants';
-import ListRow from '../list/list-row';
 import CarbonioVersionInformation from './carbonio-version-information-view';
 import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
@@ -106,7 +105,7 @@ const Dashboard: FC = () => {
 
   return (
     <Container>
-      <divider-wc color="gray6"></divider-wc>
+      <ds-divider color="gray6"></ds-divider>
       <Container
         mainAlignment="flex-start"
         crossAlignment="flex-start"

@@ -4,21 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
 import {
   Container,
   DropDownInput,
-  Icon,
+  ListItems,
+  type ListItemType,
+  ListPanelItem,
   Padding,
   Row,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { replaceHistory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import styled from 'styled-components';
 
 import {
   ADVANCED,
@@ -36,16 +36,7 @@ import {
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import ListItems from '../list/list-items';
-import ListPanelItem from '../list/list-panel-item';
 import GeneralListPanel from './general-list-panel';
-
-const SelectItem = styled(Row)``;
-
-const CustomIcon = styled(Icon)`
-  width: 20px;
-  height: 20px;
-`;
 
 export const CosListPanel: FC = () => {
   const [t] = useTranslation();
@@ -173,12 +164,7 @@ export const CosListPanel: FC = () => {
     [setCos, setCosView],
   );
 
-  const detailOptions = useMemo<
-    {
-      id: string;
-      name: string;
-    }[]
-  >(
+  const detailOptions = useMemo<Array<ListItemType>>(
     () => [
       {
         id: GENERAL_INFORMATION,
@@ -215,22 +201,14 @@ export const CosListPanel: FC = () => {
   );
 
   const customIconDetail = {
-    icon: isCosListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline',
+    icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
+    size: '20px',
     onClick: (): void => {
       setIsCosListExpand(!isCosListExpand);
     },
-    style: {
-      width: '20px',
-      height: '20px',
-    },
   };
 
-  const globalOptionItems = useMemo<
-    {
-      id: string;
-      name: string;
-    }[]
-  >(
+  const globalOptionItems = useMemo<Array<ListItemType>>(
     () => [
       {
         id: COS_LIST,
@@ -249,7 +227,7 @@ export const CosListPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                    <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
                   </Padding>
                 </Row>
                 <Row
@@ -259,12 +237,12 @@ export const CosListPanel: FC = () => {
                     all: 'small',
                   }}
                 >
-                  <Text overflow="break-word">
+                  <ds-text as="p" overflow="break-word">
                     {t(
                       'many_cos_info_msg',
                       'So many COSes! Which one would you like to see? Start typing to filter.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </>
             ),
@@ -274,7 +252,7 @@ export const CosListPanel: FC = () => {
           id: cosData.id,
           label: cosData.name,
           customComponent: (
-            <SelectItem
+            <Row
               style={{
                 display: 'block',
                 textAlign: 'left',
@@ -287,7 +265,7 @@ export const CosListPanel: FC = () => {
               }}
             >
               {cosData?.name}
-            </SelectItem>
+            </Row>
           ),
         }));
 
@@ -331,12 +309,12 @@ export const CosListPanel: FC = () => {
         {isShowError && (
           <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
             <Padding top="large" left="small">
-              <Text size="extrasmall" weight="regular" color="error">
+              <ds-text as="span" size="extrasmall" weight="regular" color="error">
                 {t(
                   'label.not_found_check_the_text_and_try_again',
                   'Not found - check the text and try again',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Container>
         )}

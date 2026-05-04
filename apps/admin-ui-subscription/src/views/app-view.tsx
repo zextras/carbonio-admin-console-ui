@@ -3,47 +3,68 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
-import { Container, ContainerProps } from '@zextras/ui-components';
-import { FC, Suspense } from 'react';
+import { useBreakpoint, usePrimaryBarState } from '@zextras/ui-shared';
+import { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import styled from 'styled-components';
 
-import BreadCrumb from './breadcrumb/breadcrumb-view';
+import { Breadcrumb } from './breadcrumb/breadcrumb';
+import { ActivateSubscription } from './subscription/activate-subscription';
 import { Subscription } from './subscription/subscription';
 
-interface ContainerExtendProps extends ContainerProps {
-  isPrimaryBarExpanded?: boolean;
+const baseStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  boxSizing: 'border-box',
+} as const;
+
+function getMaxWidth(breakpoint: string, isSidebarOpen = false) {
+  if (breakpoint === '2xl') return '1125px';
+  if (breakpoint === 'xl') return '1125px';
+  if (breakpoint === 'lg' && !isSidebarOpen) return '1125px';
+  if (breakpoint === 'lg' && isSidebarOpen) return '981px';
+  return '981px';
 }
 
-const DetailViewContainer = styled(Container)<ContainerExtendProps>`
-  max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
-  transition: width 300ms;
-`;
+function getContainerStyle(breakpoint: string, isSidebarOpen = false) {
+  return {
+    width: '100%',
+    maxWidth: getMaxWidth(breakpoint, isSidebarOpen),
+    transition: 'max-width 300ms',
+    padding: '0 clamp(0.5rem, 2vw, 2rem)',
+    boxSizing: 'border-box' as const,
+  };
+}
 
-const AppView: FC = () => {
+export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
+  const breakpoint = useBreakpoint();
+
   return (
-    <Container height={'fit'}>
-      <BreadCrumb />
+    <div style={{ ...baseStyle, height: 'fit-content', width: '100%' }}>
+      <Breadcrumb />
       <Routes>
         <Route
-          path={'/'}
+          path="/"
           element={
-            <Container orientation="horizontal" mainAlignment="flex-start">
-              <Container style={{ maxWidth: '100%' }}>
-                <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-                  <Suspense fallback={<spinner-wc />}>
-                    <Subscription />
-                  </Suspense>
-                </DetailViewContainer>
-              </Container>
-            </Container>
+            <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
+              <Suspense fallback={<ds-spinner></ds-spinner>}>
+                <Subscription />
+              </Suspense>
+            </div>
+          }
+        />
+        <Route
+          path="/activate"
+          element={
+            <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
+              <Suspense fallback={<ds-spinner></ds-spinner>}>
+                <ActivateSubscription />
+              </Suspense>
+            </div>
           }
         />
       </Routes>
-    </Container>
+    </div>
   );
 };
-
-export default AppView;

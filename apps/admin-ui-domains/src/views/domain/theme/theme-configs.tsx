@@ -3,26 +3,34 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {   getAllRights,  useCurrentUserRights } from "@zextras/admin-ui-bootstrap";
-import {   Button,  Container,  DefaultTabBarItem,  Padding,  Row,  SelectItem,  TabBar,  Text } from "@zextras/ui-components";
-import {  noop  } from "lodash-es";
-import {   ChangeEvent,  FC,  ReactElement,  useCallback,  useEffect,  useMemo,  useState } from "react";
-import {  Trans, useTranslation  } from "react-i18next";
+import {
+  Button,
+  Container,
+  DefaultTabBarItem,
+  InheritedInput,
+  InheritedSelect,
+  ListRow,
+  Padding,
+  Row,
+  SelectItem,
+  TabBar,
+} from '@zextras/ui-components';
+import { getAllRights, useCurrentUserRights } from '@zextras/ui-shared';
+import { noop } from 'lodash-es';
+import { ChangeEvent, FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import {  themeConfigStore  } from "../../../../types/domain";
-import {  CONFIG, PRIMARY_COLOR_CODE_EX  } from "../../../constants";
-import ListRow from "../../list/list-row";
-import InheritedInput from "../../utility/inherited-components/inherited-input";
-import InheritedSelect from "../../utility/inherited-components/inherited-select";
-import AdminPanelThemeConfig from "./admin-panel-theme-configs";
-import EndUserThemeConfigs from "./end-user-theme-configs";
+import { themeConfigStore } from '../../../../types/domain';
+import { CONFIG, PRIMARY_COLOR_CODE_EX } from '../../../constants';
+import AdminPanelThemeConfig from './admin-panel-theme-configs';
+import EndUserThemeConfigs from './end-user-theme-configs';
 
 const ReusedDefaultTabBar: FC<{
   item: any;
   index: any;
   selected: any;
   onClick: any;
-}> = ({ item, index, selected, onClick }): ReactElement => (
+}> = ({ item, selected, onClick }): ReactElement => (
   <DefaultTabBarItem
     item={item}
     selected={selected}
@@ -33,9 +41,9 @@ const ReusedDefaultTabBar: FC<{
     forceWidthEquallyDistributed={false}
   >
     <Row padding="small">
-      <Text size="small" color={selected ? "primary" : "gray"}>
+      <ds-text as="span" size="small" color={selected ? 'primary' : 'gray'}>
         {item.label}
-      </Text>
+      </ds-text>
     </Row>
   </DefaultTabBarItem>
 );
@@ -75,7 +83,7 @@ export const ThemeConfigs: FC<{
     isValidCarbonioWebUiLoginBackground: true,
     isValidCarbonioWebUiLoginLogo: true,
   });
-  const [change, setChange] = useState("end_user");
+  const [change, setChange] = useState('end_user');
 
   const [hasModifyRights, setHasModifyRights] = useState<boolean>(false);
   const { data: rights } = useCurrentUserRights();
@@ -104,21 +112,21 @@ export const ThemeConfigs: FC<{
 
   const items: any = [
     {
-      id: "end_user",
-      label: `${t("label.end_user_title", "END USER")}`,
+      id: 'end_user',
+      label: `${t('label.end_user_title', 'END USER')}`,
       CustomComponent: ReusedDefaultTabBar,
     },
     {
-      id: "admin_panel",
-      label: `${t("label.admin_panel_title", "ADMIN PANEL")}`,
+      id: 'admin_panel',
+      label: `${t('label.admin_panel_title', 'ADMIN PANEL')}`,
       CustomComponent: ReusedDefaultTabBar,
     },
   ];
 
   const THEME_MODE: any = useMemo(
     () => [
-      { label: `${t("label.disabled", "Disabled")}`, value: "FALSE" },
-      { label: `${t("label.enabled", "Enabled")}`, value: "TRUE" },
+      { label: `${t('label.disabled', 'Disabled')}`, value: 'FALSE' },
+      { label: `${t('label.enabled', 'Enabled')}`, value: 'TRUE' },
     ],
     [t],
   );
@@ -193,138 +201,128 @@ export const ThemeConfigs: FC<{
       orientation="column"
       crossAlignment="flex-start"
       mainAlignment="flex-start"
-      style={{ overflow: "auto" }}
+      style={{ overflow: 'auto' }}
       width="100%"
       height="calc(100vh - 150px)"
     >
-      <Row mainAlignment="flex-start" width="100%" padding={{ top: "small" }}>
+      <Row mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
         <Container
-          padding={{ all: "small" }}
+          padding={{ all: 'small' }}
           height="fit"
           crossAlignment="flex-start"
           background="gray6"
         >
           <ListRow>
             <Padding vertical="large" horizontal="small" width="100%">
-              <Text size="small" color="gray0" weight="bold">
-                {t("label.apperance", "Apperance")}
-              </Text>
+              <ds-text as="h3" size="small" color="gray0" weight="bold">
+                {t('label.apperance', 'Apperance')}
+              </ds-text>
             </Padding>
           </ListRow>
           <ListRow>
             <InheritedSelect
-              label={t("cos.dark_mode", "Dark Mode")}
+              label={t('cos.dark_mode', 'Dark Mode')}
               items={THEME_MODE}
               subValue={themeConfig.carbonioWebUiDarkMode}
               inheritedValue={globalTheme?.carbonioWebUiDarkMode}
-              fromSubValue={
-                globalTheme ? themeConfig.carbonioWebUiDarkMode : ""
-              }
+              fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkMode : ''}
               background="gray5"
               selectName="carbonioWebUiDarkMode"
               onChange={onThemeModeChange}
-              onChangeReset={(): void => setEmptyValue("carbonioWebUiDarkMode")}
+              onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkMode')}
             />
           </ListRow>
           <ListRow>
             <Padding vertical="large" horizontal="small" width="100%">
-              <Text size="small" color="gray0" weight="bold">
-                {t("label.logo_url_destination", "Logo URL Destination")}
-              </Text>
+              <ds-text as="h4" size="small" color="gray0" weight="bold">
+                {t('label.logo_url_destination', 'Logo URL Destination')}
+              </ds-text>
             </Padding>
           </ListRow>
           <ListRow>
             <InheritedInput
               label={t(
-                "label.logo_redirection_title",
-                "Clicking on the Logo will redirect the users to...",
+                'label.logo_redirection_title',
+                'Clicking on the Logo will redirect the users to...',
               )}
               subValue={themeConfig.carbonioLogoUrl}
               inheritedValue={globalTheme?.carbonioLogoUrl}
-              fromSubValue={globalTheme ? themeConfig.carbonioLogoUrl : ""}
+              fromSubValue={globalTheme ? themeConfig.carbonioLogoUrl : ''}
               inputName="carbonioLogoUrl"
               onChange={onChangeDomainThemeDetail}
-              onChangeReset={(): void => setEmptyValue("carbonioLogoUrl")}
+              onChangeReset={(): void => setEmptyValue('carbonioLogoUrl')}
             />
           </ListRow>
           <ListRow>
             <Padding vertical="large" horizontal="small" width="100%">
-              <Text size="small" color="gray0" weight="bold">
-                {t("label.color_scheme", "Color Scheme")}
-              </Text>
+              <ds-text as="h4" size="small" color="gray0" weight="bold">
+                {t('label.color_scheme', 'Color Scheme')}
+              </ds-text>
             </Padding>
           </ListRow>
           <ListRow>
             <Padding vertical="small" horizontal="small" width="100%">
-              <Text size="small" color="gray0">
+              <ds-text as="p" size="small" color="gray0">
                 {t(
-                  "label.primary_color_hint",
-                  "To change the Primary color, please use a HEX color code.",
+                  'label.primary_color_hint',
+                  'To change the Primary color, please use a HEX color code.',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </ListRow>
           <ListRow>
             <Container
               mainAlignment="flex-start"
               crossAlignment="flex-start"
-              padding={{ all: "small" }}
+              padding={{ all: 'small' }}
             >
-              <Text size="small" color="gray0">
+              <ds-text as="label" size="small" color="gray0">
                 <Trans
                   i18nKey="label.primary_color_for_light_mode"
                   defaults="<bold>Primary</bold> Color for Light Mode"
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Container>
             <Container
               mainAlignment="flex-start"
               crossAlignment="flex-start"
-              padding={{ all: "small" }}
+              padding={{ all: 'small' }}
             >
-              <Text size="small" color="gray0">
+              <ds-text as="label" size="small" color="gray0">
                 <Trans
                   i18nKey="label.primary_color_for_dark_mode"
                   defaults="<bold>Primary</bold> Color for Dark Mode"
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Container>
           </ListRow>
           <ListRow>
-            <Container padding={{ all: "small" }}>
+            <Container padding={{ all: 'small' }}>
               <InheritedInput
                 label={PRIMARY_COLOR_CODE_EX}
                 subValue={themeConfig.carbonioWebUiPrimaryColor}
                 inheritedValue={globalTheme?.carbonioWebUiPrimaryColor}
-                fromSubValue={
-                  globalTheme ? themeConfig.carbonioWebUiPrimaryColor : ""
-                }
+                fromSubValue={globalTheme ? themeConfig.carbonioWebUiPrimaryColor : ''}
                 inputName="carbonioWebUiPrimaryColor"
                 onChange={(e: any): any => {
                   onChangeDomainThemeDetail(e);
                 }}
-                onChangeReset={(): void =>
-                  setEmptyValue("carbonioWebUiPrimaryColor")
-                }
+                onChangeReset={(): void => setEmptyValue('carbonioWebUiPrimaryColor')}
               />
             </Container>
-            <Container padding={{ all: "small" }}>
+            <Container padding={{ all: 'small' }}>
               <InheritedInput
                 label={PRIMARY_COLOR_CODE_EX}
                 subValue={themeConfig.carbonioWebUiDarkPrimaryColor}
                 inheritedValue={globalTheme?.carbonioWebUiDarkPrimaryColor}
-                fromSubValue={
-                  globalTheme ? themeConfig.carbonioWebUiDarkPrimaryColor : ""
-                }
+                fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkPrimaryColor : ''}
                 inputName="carbonioWebUiDarkPrimaryColor"
                 onChange={(e: any): any => {
                   onChangeDomainThemeDetail(e);
                 }}
-                onChangeReset={(): void =>
-                  setEmptyValue("carbonioWebUiDarkPrimaryColor")
-                }
+                onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkPrimaryColor')}
               />
             </Container>
           </ListRow>
@@ -332,7 +330,7 @@ export const ThemeConfigs: FC<{
             width="100%"
             mainAlignment="center"
             crossAlignment="center"
-            padding={{ top: "large" }}
+            padding={{ top: 'large' }}
           >
             <TabBar
               items={items}
@@ -346,10 +344,10 @@ export const ThemeConfigs: FC<{
             />
           </Row>
           <Row width="100%">
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
-          <Container crossAlignment="flex-start" padding={{ all: "0px" }}>
-            {change === "end_user" && (
+          <Container crossAlignment="flex-start" padding={{ all: '0px' }}>
+            {change === 'end_user' && (
               <EndUserThemeConfigs
                 themeConfig={themeConfig}
                 globalTheme={globalTheme}
@@ -361,7 +359,7 @@ export const ThemeConfigs: FC<{
                 setAllData={setAllData}
               />
             )}
-            {change === "admin_panel" && (
+            {change === 'admin_panel' && (
               <AdminPanelThemeConfig
                 themeConfig={themeConfig}
                 globalTheme={globalTheme}
@@ -374,24 +372,20 @@ export const ThemeConfigs: FC<{
               />
             )}
           </Container>
-          <Container padding={{ top: "small" }}>
-            <divider-wc></divider-wc>
+          <Container padding={{ top: 'small' }}>
+            <ds-divider></ds-divider>
           </Container>
           <ListRow>
-            <Container
-              padding={{ all: "small" }}
-              width="100%"
-              style={{ display: "block" }}
-            >
+            <Container padding={{ all: 'small' }} width="100%" style={{ display: 'block' }}>
               <Padding vertical="large" width="100%">
                 <Button
                   type="outlined"
-                  label={t("label.empty_all_fields", "Empty all fields")}
+                  label={t('label.empty_all_fields', 'Empty all fields')}
                   color="error"
                   size="large"
                   width="fill"
                   onClick={onResetTheme}
-                  style={{ width: "100%" }}
+                  style={{ width: '100%' }}
                   disabled={isGlobalTheme && !hasModifyRights}
                 />
               </Padding>

@@ -4,156 +4,141 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '../../web-components/ds-icon';
+
 import { useCallback, useMemo, useRef } from 'react';
-import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { Icon } from '../basic/icon/Icon';
-import { Text } from '../basic/text/Text';
+import { resolveThemeColor } from '../../theme/theme-utils';
+import { type IconName } from '../../web-components/icon-registry';
 import { Container, ContainerProps } from '../layout/Container';
 import { Padding } from '../layout/Padding';
-
-const IconWrapper = styled.div<{
-	$borderRadius: 'regular' | 'round';
-	$isActive: boolean;
-	$disabled: boolean;
-}>`
-	border-radius: ${({ $borderRadius, theme }): string =>
-		$borderRadius === 'regular' ? theme.borderRadius : '50%'};
-	background: ${({ theme, $isActive }): string =>
-		$isActive ? theme.palette.primary.regular : 'transparent'};
-	transition: 0.2s ease-out;
-
-	${({ $disabled, $isActive, theme }): SimpleInterpolation =>
-		$disabled &&
-		css`
-			background: ${theme.palette[$isActive ? 'primary' : 'transparent'].disabled};
-		`};
-	svg {
-		transition: 0.2s ease-out;
-		fill: ${({ theme, $isActive }): string =>
-			$isActive ? theme.palette.gray6.regular : 'currentColor'};
-	}
-	${({ theme, $disabled, $isActive }): SimpleInterpolation =>
-		!$disabled &&
-		css`
-			transition: background 0.2s ease-out;
-			&:focus {
-				outline: none;
-				background: ${theme.palette[$isActive ? 'primary' : 'transparent'].focus};
-				svg {
-					fill: ${$isActive ? theme.palette.gray6.focus : theme.palette.primary.focus};
-				}
-			}
-			&:hover {
-				outline: none;
-				background: ${theme.palette[$isActive ? 'primary' : 'transparent'].hover};
-				svg {
-					fill: ${$isActive ? theme.palette.gray6.hover : theme.palette.primary.hover};
-				}
-			}
-			&:active {
-				outline: none;
-				background: ${theme.palette[$isActive ? 'primary' : 'transparent'].active};
-			}
-		`};
-`;
-
-const CustomText = styled(Text)`
-	white-space: normal;
-	padding-left: ${({ theme }): string => theme.sizes.padding.small};
-	user-select: none;
-`;
+import styles from './IconCheckbox.module.css';
 
 const padding = {
-	small: 'extrasmall',
-	regular: 'small',
-	large: 'medium'
-};
+  small: 'extrasmall',
+  regular: 'small',
+  large: 'medium',
+} as const;
 
 type IconCheckboxProps = Omit<ContainerProps, 'margin'> & {
-	/** Status of the IconCheckbox */
-	defaultChecked?: boolean;
-	/** IconCheckbox text */
-	label?: string;
-	/** IconCheckbox radius */
-	borderRadius?: 'regular' | 'round';
-	/** whether to disable the IconCheckbox or not */
-	disabled?: boolean;
-	/** IconCheckbox icon */
-	icon: keyof DefaultTheme['icons'];
-	/** IconCheckbox size */
-	size?: 'small' | 'regular' | 'large';
-	/** IconCheckbox margin */
-	margin?: keyof DefaultTheme['sizes']['padding'];
-	/** IconCheckbox value */
-	value?: boolean;
-	/** change callback */
-	onChange: () => void;
+  /** Status of the IconCheckbox */
+  defaultChecked?: boolean;
+  /** IconCheckbox text */
+  label?: string;
+  /** IconCheckbox radius */
+  borderRadius?: 'regular' | 'round';
+  /** whether to disable the IconCheckbox or not */
+  disabled?: boolean;
+  /** IconCheckbox icon */
+  icon: IconName;
+  /** IconCheckbox size */
+  size?: 'small' | 'regular' | 'large';
+  /** IconCheckbox margin */
+  margin?: 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
+  /** IconCheckbox value */
+  value?: boolean;
+  /** change callback */
+  onChange: () => void;
 };
 
 const IconCheckbox = ({
-	defaultChecked = false,
-	label,
-	borderRadius = 'round',
-	disabled = false,
-	icon,
-	size = 'regular',
-	margin = 'extrasmall',
-	value,
-	onChange,
-	ref,
-	...rest
+  defaultChecked = false,
+  label,
+  borderRadius = 'round',
+  disabled = false,
+  icon,
+  size = 'regular',
+  margin = 'extrasmall',
+  value,
+  onChange,
+  ref,
+  ...rest
 }: IconCheckboxProps) => {
-	const iconCheckboxRef = useCombinedRefs<HTMLDivElement>(ref);
+  const iconCheckboxRef = useCombinedRefs<HTMLDivElement>(ref);
 
-	const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-	const onClick = useCallback(() => {
-		onChange?.();
-	}, [onChange]);
+  const onClick = useCallback(() => {
+    onChange?.();
+  }, [onChange]);
 
-	const checked = useCheckbox({
-		ref: containerRef,
-		defaultChecked,
-		value,
-		disabled,
-		onClick,
-		onChange
-	});
+  const checked = useCheckbox({
+    ref: containerRef,
+    defaultChecked,
+    value,
+    disabled,
+    onClick,
+    onChange,
+  });
 
-	const iconSize = useMemo(() => (size === 'small' ? 'medium' : 'large'), [size]);
+  const iconSize = useMemo(() => (size === 'small' ? 'medium' : 'large'), [size]);
 
-	return (
-		<Container
-			ref={containerRef}
-			orientation="horizontal"
-			width="fit"
-			height="fit"
-			padding={{ horizontal: margin }}
-			style={{ cursor: disabled ? 'default' : 'pointer' }}
-			crossAlignment="center"
-			{...rest}
-		>
-			<IconWrapper
-				ref={iconCheckboxRef}
-				$isActive={checked}
-				$borderRadius={borderRadius}
-				$disabled={disabled}
-				tabIndex={disabled ? -1 : 0}
-			>
-				<Padding all={padding[size]}>
-					<Icon size={iconSize} icon={icon} />
-				</Padding>
-			</IconWrapper>
-			{label && (
-				<CustomText size="medium" weight="regular">
-					{label}
-				</CustomText>
-			)}
-		</Container>
-	);
+  const iconWrapperStyle = useMemo(
+    () =>
+      ({
+        '--icon-wrapper-radius': borderRadius === 'regular' ? 'var(--border-radius)' : '50%',
+        '--icon-wrapper-bg': checked ? resolveThemeColor('primary', 'regular') : 'transparent',
+        '--icon-wrapper-bg-hover': checked
+          ? resolveThemeColor('primary', 'hover')
+          : resolveThemeColor('transparent', 'hover'),
+        '--icon-wrapper-bg-focus': checked
+          ? resolveThemeColor('primary', 'focus')
+          : resolveThemeColor('transparent', 'focus'),
+        '--icon-wrapper-bg-active': checked
+          ? resolveThemeColor('primary', 'active')
+          : resolveThemeColor('transparent', 'active'),
+        '--icon-wrapper-bg-disabled': checked
+          ? resolveThemeColor('primary', 'disabled')
+          : resolveThemeColor('transparent', 'disabled'),
+        '--icon-fill': checked ? resolveThemeColor('gray6', 'regular') : 'currentColor',
+        '--icon-fill-hover': checked
+          ? resolveThemeColor('gray6', 'hover')
+          : resolveThemeColor('primary', 'hover'),
+        '--icon-fill-focus': checked
+          ? resolveThemeColor('gray6', 'focus')
+          : resolveThemeColor('primary', 'focus'),
+        '--icon-fill-disabled': checked ? resolveThemeColor('gray6', 'disabled') : 'currentColor',
+      } as React.CSSProperties),
+    [borderRadius, checked],
+  );
+
+  const iconWrapperClassName = `${styles.iconWrapper} ${disabled ? styles.disabled : ''}`;
+
+  return (
+    <Container
+      ref={containerRef}
+      orientation="horizontal"
+      width="fit"
+      height="fit"
+      padding={{ horizontal: margin }}
+      style={{ cursor: disabled ? 'default' : 'pointer' }}
+      crossAlignment="center"
+      {...rest}
+    >
+      <div
+        ref={iconCheckboxRef}
+        className={iconWrapperClassName}
+        style={iconWrapperStyle}
+        tabIndex={disabled ? -1 : 0}
+      >
+        <Padding all={padding[size]}>
+          <ds-icon size={iconSize} icon={icon}></ds-icon>
+        </Padding>
+      </div>
+      {label && (
+        <ds-text
+          as="label"
+          style={{ whiteSpace: 'normal', paddingLeft: 'var(--padding-small)', userSelect: 'none' } as React.CSSProperties}
+          size="medium"
+          weight="regular"
+        >
+          {label}
+        </ds-text>
+      )}
+    </Container>
+  );
 };
 
 export type { IconCheckboxProps };

@@ -3,24 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
-  Icon,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
   SelectItem,
   Switch,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig } from '@zextras/ui-shared';
 import { isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { MtaPostTuning } from '../../../../types';
 import {
@@ -45,15 +43,15 @@ import {
   ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import ListRow from '../../list/list-row';
 import { useLocalStorage } from '../../utility/utils';
-
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
 type SelectValue = SelectItem[] | string | null;
 
+const containerStyle = {
+  borderRadius: '0.125rem 0.125rem 0 0',
+  borderBottom: '0.063rem solid #2196D3',
+  marginTop: '0.938rem',
+  marginBottom: '0.938rem',
+};
 const MTAPostScreenTuning: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -64,13 +62,13 @@ const MTAPostScreenTuning: FC = () => {
   const [isShowBanner, setIsShowBanner] = useLocalStorage(IS_SHOW_POST_TUNING_BANNER, true);
 
   const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaPostTuningInitialDetail((prev: any) => ({
+    setMtaPostTuningInitialDetail((prev) => ({
       ...prev,
       [key]: value,
-    }));
+    } as MtaPostTuning));
   }, []);
   const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaPostTuningDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaPostTuningDetail((prev) => ({ ...prev, [key]: value } as MtaPostTuning));
   }, []);
 
   const setInitialAndCurrentValue = useCallback(
@@ -727,9 +725,9 @@ const MTAPostScreenTuning: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.postscreen_tuning', 'Postscreen Tuning')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -758,7 +756,7 @@ const MTAPostScreenTuning: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         padding={{ all: 'extralarge' }}
@@ -773,9 +771,9 @@ const MTAPostScreenTuning: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: isShowBanner ? 'extrasmall' : 'large' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.blacklisting', 'Blacklisting')}
-          </Text>
+          </ds-text>
         </Container>
         {isShowBanner && (
           <Container
@@ -785,12 +783,7 @@ const MTAPostScreenTuning: FC = () => {
             width="100%"
             background="#D3EBF8"
             padding={{ all: 'small' }}
-            style={{
-              borderRadius: '0.125rem 0.125rem 0 0',
-              borderBottom: '0.063rem solid #2196D3',
-              marginTop: '0.938rem',
-              marginBottom: '0.938rem',
-            }}
+            style={containerStyle}
             height="auto"
           >
             <Container
@@ -801,7 +794,11 @@ const MTAPostScreenTuning: FC = () => {
             >
               <Container width="5%" padding={{ left: 'extralarge', right: 'extralarge' }}>
                 <Padding horizontal="small">
-                  <CustomIcon icon="InfoOutline" color="#2196D3"></CustomIcon>
+                  <ds-icon
+                    icon="InfoOutline"
+                    color="#2196D3"
+                    style={{ width: '1.25rem', height: '1.25rem' }}
+                  ></ds-icon>
                 </Padding>
               </Container>
               <Container
@@ -811,12 +808,12 @@ const MTAPostScreenTuning: FC = () => {
                 }}
                 crossAlignment="flex-start"
               >
-                <Text overflow="break-word">
+                <ds-text as="p" overflow="break-word">
                   {t(
                     'mta.graylisting_disabled_warning_message',
                     'This is a form of greylisting, so you need to disable other forms of greylisting.',
                   )}
-                </Text>
+                </ds-text>
               </Container>
             </Container>
 
@@ -856,6 +853,7 @@ const MTAPostScreenTuning: FC = () => {
           </Container>
           <Container crossAlignment="flex-start">
             <Input
+              isRequired
               label={t('mta.access_list_path', 'Access List Path')}
               backgroundColor="gray5"
               value={mtaPostTuningDetail?.zimbraMtaPostscreenAccessList}
@@ -871,9 +869,9 @@ const MTAPostScreenTuning: FC = () => {
           height="auto"
           padding={{ top: 'medium' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.dns_black_listing', 'DNS Blacklisting')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           crossAlignment="flex-start"
@@ -884,6 +882,7 @@ const MTAPostScreenTuning: FC = () => {
         >
           <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
             <Input
+              isRequired
               label={t('mta.dns_blacklist_sites', 'DNS Blacklist Sites')}
               backgroundColor="gray5"
               value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites}
@@ -917,6 +916,7 @@ const MTAPostScreenTuning: FC = () => {
         >
           <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
             <Input
+              isRequired
               label={t('mta.dns_blacklist_threshold_value', 'DNS Blacklist Threshold (value)')}
               backgroundColor="gray5"
               value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold}
@@ -927,6 +927,7 @@ const MTAPostScreenTuning: FC = () => {
           </Container>
           <Container crossAlignment="flex-start">
             <Input
+              isRequired
               label={t(
                 'mta.dns_blacklist_whitelist_threshold_value',
                 'DNS Blacklist Whitelist Threshold  (value)',
@@ -962,12 +963,13 @@ const MTAPostScreenTuning: FC = () => {
               width="75%"
             >
               <Input
+                isRequired
                 label={t(
                   'mta.dns_blacklist_min_time_to_live',
                   'DNS Blacklist Min Time to Live (value)',
                 )}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL?.replaceAll(/\D/g, '')}
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL.replace(/[^0-9]/g, '')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL, e.target.value);
                 }}
@@ -992,12 +994,13 @@ const MTAPostScreenTuning: FC = () => {
           >
             <Container padding={{ right: 'medium' }} width="75%">
               <Input
+                isRequired
                 label={t(
                   'mta.dns_blacklist_max_time_to_live',
                   'DNS Blacklist Max Time to Live (value)',
                 )}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL?.replaceAll(/\D/g, '')}
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL.replace(/[^0-9]/g, '')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL, e.target.value);
                 }}
@@ -1033,9 +1036,13 @@ const MTAPostScreenTuning: FC = () => {
           >
             <Container padding={{ right: 'small' }} width="75%">
               <Input
+                isRequired
                 label={t('mta.dns_blacklist_time_to_live', 'DNS Blacklist Time to Live (value)')}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replaceAll(/\D/g, '')}
+                value={
+                  mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL &&
+                  mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replace(/[^0-9]/g, '')
+                }
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL, e.target.value);
                 }}
@@ -1061,9 +1068,9 @@ const MTAPostScreenTuning: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'medium' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.tuning', 'Tuning')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container
@@ -1114,10 +1121,11 @@ const MTAPostScreenTuning: FC = () => {
           >
             <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
               <Input
+                isRequired
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL?.replaceAll(
-                  /\D/g,
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(
+                  /[^0-9]/g,
                   '',
                 )}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -1186,10 +1194,11 @@ const MTAPostScreenTuning: FC = () => {
           >
             <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
               <Input
+                isRequired
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL?.replaceAll(
-                  /\D/g,
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL.replace(
+                  /[^0-9]/g,
                   '',
                 )}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -1258,9 +1267,10 @@ const MTAPostScreenTuning: FC = () => {
           >
             <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
               <Input
+                isRequired
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL?.replaceAll(/\D/g, '')}
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL.replace(/[^0-9]/g, '')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL, e.target.value);
                 }}

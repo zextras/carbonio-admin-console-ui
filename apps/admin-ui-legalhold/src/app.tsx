@@ -4,15 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '@zextras/ui-components';
-
-import { addRoute, removeRoute, useHasAllRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
+import { PrimaryBarTooltip } from '@zextras/ui-components';
+import { addRoute, removeRoute, useHasAllRights, useIsAdvanced } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { LEGAL_HOLD_ROUTE_ID, PRIMARY_BAR_LEGAL_HOLD, SERVICES_ROUTE_ID } from './constants';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const App: FC = () => {
   const [t] = useTranslation();
@@ -29,26 +27,18 @@ const App: FC = () => {
     [t],
   );
 
-  const leagalHoldTooltipItem = useMemo(
-    () => [
-      {
-        header: (
-          <Trans
-            i18nKey="label.legal_hold_lbl"
-            defaults="<bold>Legal Hold</bold>"
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        ),
-        options: [],
-      },
-    ],
-    [t],
-  );
-
   const LegalHoldTooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={leagalHoldTooltipItem} />,
-    [leagalHoldTooltipItem],
+    () => (
+      <PrimaryBarTooltip>
+        <Trans
+          i18nKey="label.legal_hold_lbl"
+          defaults="<bold>Legal Hold</bold>"
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </PrimaryBarTooltip>
+    ),
+    [t],
   );
 
   useEffect(() => {

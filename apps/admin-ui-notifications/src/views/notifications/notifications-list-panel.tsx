@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/admin-ui-bootstrap';
-import { Container } from '@zextras/ui-components';
+import { Container, ListItems, ListPanelItem } from '@zextras/ui-components';
+import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/ui-shared';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LIST } from '../../constants';
-import ListItems from '../list/list-items';
-import ListPanelItem from '../list/list-panel-item';
+import { type ManageOption } from '../../types/notifications';
 
 const NotificationsListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -19,7 +18,7 @@ const NotificationsListPanel: FC = () => {
 	const [selectedOperationItem, setSelectedOperationItem] = useState(LIST);
 	const [isManageOptionsExpanded, setIsManageOptionsExpanded] = useState<boolean>(true);
 
-	const manageOptions = useMemo(
+	const manageOptions = useMemo<Array<ManageOption>>(
 		() => [
 			{
 				id: LIST,

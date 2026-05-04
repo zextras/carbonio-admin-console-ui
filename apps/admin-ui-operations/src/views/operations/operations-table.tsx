@@ -3,17 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Icon, Row, Table, Text } from '@zextras/ui-components';
+import {
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  Row,
+  Table,
+} from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { EXCEPTION, FINISHED, STARTED } from '../../constants';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
+import { type Operation } from '../../types/operations';
 import MiliSecondToDate from './functions/miliSecondToDate';
 
 export const OperationsTable: FC<{
-  operations: Array<any>;
+  operations: Array<Operation>;
   headers: any;
   donePanel: boolean;
   selectedRows: any;
@@ -34,9 +39,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="medium">
+            <ds-text as="span" weight="light" size="medium">
               {v?.serverName || ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -48,9 +53,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.name || ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -64,11 +69,13 @@ export const OperationsTable: FC<{
             }}
           >
             {v?.type === EXCEPTION && (
-              <Icon icon="StopCircleOutline" size="medium" color="secondary" />
+              <ds-icon icon="StopCircleOutline" size="medium" color="secondary"></ds-icon>
             )}
-            {v?.type === FINISHED && <Icon icon="CloseCircleOutline" size="medium" color="error" />}
+            {v?.type === FINISHED && (
+              <ds-icon icon="CloseCircleOutline" size="medium" color="error"></ds-icon>
+            )}
             {v?.type === STARTED && (
-              <Icon icon="CheckmarkCircleOutline" size="medium" color="success" />
+              <ds-icon icon="CheckmarkCircleOutline" size="medium" color="success"></ds-icon>
             )}
           </Row>,
           <Row
@@ -81,9 +88,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.parameters?.requesterAddress}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -95,9 +102,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -109,9 +116,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.humanStartTime ? v?.humanStartTime : ''}
-            </Text>
+            </ds-text>
           </Row>,
         ],
         clickable: true,
@@ -131,9 +138,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="medium">
+            <ds-text as="span" weight="light" size="medium">
               {v?.host || ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -145,9 +152,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.name || ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -159,9 +166,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.parameters?.requesterAddress}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -173,9 +180,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -187,9 +194,9 @@ export const OperationsTable: FC<{
               onClick(i);
             }}
           >
-            <Text weight="light" size="small">
+            <ds-text as="span" weight="light" size="small">
               {v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}
-            </Text>
+            </ds-text>
           </Row>,
         ],
         clickable: true,
@@ -211,14 +218,14 @@ export const OperationsTable: FC<{
         multiSelect={false}
         selectedRows={selectedRows}
         onSelectionChange={onSelectionChange}
-        RowFactory={CustomRowFactory}
+        RowFactory={HoverableRowFactory}
         HeaderFactory={CustomHeaderFactory}
       />
       {tableRows.length === 0 && (
         <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-          <Text weight="light" size="small">
+          <ds-text as="span" weight="light" size="small">
             {t('label.empty_table', 'Empty Table')}
-          </Text>
+          </ds-text>
         </Row>
       )}
     </Container>

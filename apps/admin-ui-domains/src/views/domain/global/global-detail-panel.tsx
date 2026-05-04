@@ -3,23 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   ChipInput,
   ChipItem,
   Container,
   Input,
+  ListRow,
   Padding,
   Row,
   Switch,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig } from '@zextras/ui-shared';
 import { filter, isEqual, map } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { Attribute, GlobalDisclaimerType } from '../../../../types';
 import {
@@ -30,12 +29,7 @@ import {
   ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
-
-const RelativeContainer = styled(Container)`
-  position: relative;
-`;
 
 const GlobalDetailPanel: FC = () => {
   const [t] = useTranslation();
@@ -298,20 +292,18 @@ const GlobalDetailPanel: FC = () => {
   };
 
   return (
-    <RelativeContainer
+    <Container
       orientation="column"
       crossAlignment="flex-start"
       mainAlignment="flex-start"
-      style={{ overflowY: 'auto' }}
+      style={{ overflowY: 'auto', position: 'relative' }}
       background="white"
     >
       <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
         <Container orientation="vertical" mainAlignment="space-around" height="1.9rem">
           <Row orientation="horizontal" width="100%">
             <Row mainAlignment="flex-start" width="50%" crossAlignment="center">
-              <Text size="extralarge" weight="bold">
-                {t('label.settings', 'Settings')}
-              </Text>
+              <ds-text as="h1" weight="bold">{t('label.settings', 'Settings')}</ds-text>
             </Row>
             <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding right="small">
@@ -330,7 +322,7 @@ const GlobalDetailPanel: FC = () => {
           </Row>
         </Container>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <Container
         orientation="column"
         crossAlignment="flex-start"
@@ -340,9 +332,9 @@ const GlobalDetailPanel: FC = () => {
         padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
       >
         <Row mainAlignment="flex-start" width="100%" background="gray6" padding={{ top: 'small' }}>
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h2" size="small" weight="bold" color="gray0">
             {t('label.domain_system_notifications', 'Domain System Notifications')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container
@@ -351,6 +343,7 @@ const GlobalDetailPanel: FC = () => {
             padding={{ top: 'large', bottom: 'small' }}
           >
             <Input
+              isRequired
               inputName="carbonioNotificationFrom"
               label={t('label.notification_sender', 'Notification Sender')}
               backgroundColor="gray5"
@@ -377,6 +370,7 @@ const GlobalDetailPanel: FC = () => {
             padding={{ top: 'large', bottom: 'small' }}
           >
             <ChipInput
+              isRequired
               placeholder={t('label.send_notifications_to', 'Send notifications to...')}
               background="gray5"
               defaultValue={carbonioNotificationData?.carbonioNotificationRecipients}
@@ -438,6 +432,7 @@ const GlobalDetailPanel: FC = () => {
             />
           </Container>
         </ListRow>
+
         <ListRow>
           <Container
             crossAlignment="flex-start"
@@ -463,7 +458,7 @@ const GlobalDetailPanel: FC = () => {
           </Container>
         </ListRow>
       </Container>
-    </RelativeContainer>
+    </Container>
   );
 };
 

@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FC, ReactElement } from 'react';
+import { HorizontalWizard, Section } from '@zextras/ui-components';
+import { type FC, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { HorizontalWizard } from '../../../app/component/hwizard';
-import { Section } from '../../../app/component/section-component';
 import { LoadAndVerifyCert } from './load-verify-certificate';
 
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
+const WizardInSection: FC<any> = ({ wizard, setToggleWizardSection }) => {
 	const { t } = useTranslation();
 	return (
 		<Section
@@ -29,30 +28,30 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 };
 
 export const LoadVerifyCertificateWizard: FC<{
-	setToggleWizard: any;
-	setAlertToggle: any;
+  setToggleWizard: any;
+  setAlertToggle: any;
 }> = ({ setToggleWizard, setAlertToggle }) => {
-	const { t } = useTranslation();
+  const { t } = useTranslation();
 
-	const wizardSteps = [
-		{
-			name: 'load-certificate',
-			label: t('virtual_hosts.load_certificate', 'LOAD CERTIFICATE'),
-			icon: 'CubeOutline',
-			view: LoadAndVerifyCert,
-			canGoNext: (): any => true,
-			CancelButton: (props: any): ReactElement => <></>,
-			PrevButton: (props: any): ReactElement => <></>,
-			NextButton: (props: any): ReactElement => <></>
-		}
-	];
+  const wizardSteps = [
+    {
+      name: 'load-certificate',
+      label: t('virtual_hosts.load_certificate', 'LOAD CERTIFICATE'),
+      icon: 'CubeOutline',
+      view: LoadAndVerifyCert,
+      canGoNext: () => true,
+      CancelButton: (): ReactElement => <></>,
+      PrevButton: (): ReactElement => <></>,
+      NextButton: (): ReactElement => <></>,
+    },
+  ];
 
-	return (
-		<HorizontalWizard
-			steps={wizardSteps}
-			Wrapper={WizardInSection}
-			setToggleWizardSection={setToggleWizard}
-			externalData={setAlertToggle}
-		/>
-	);
+  return (
+    <HorizontalWizard
+      steps={wizardSteps}
+      Wrapper={WizardInSection}
+      setToggleWizardSection={setToggleWizard}
+      externalData={setAlertToggle}
+    />
+  );
 };

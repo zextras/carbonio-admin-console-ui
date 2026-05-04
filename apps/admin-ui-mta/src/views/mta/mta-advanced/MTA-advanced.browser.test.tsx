@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAppConfigStore } from '@zextras/admin-ui-bootstrap';
 import {
   createBrowserSoapAPIInterceptor,
   grantUserConfigRights,
@@ -18,13 +17,17 @@ import MTAAdvanced from './mta-advanced';
 
 async function expectLoggingSectionVisible() {
   await expect.element(page.getByText('Logging', { exact: true })).toBeVisible();
-  await expect.element(page.getByText('Enable logging of the remote SMTP client port')).toBeVisible();
+  await expect
+    .element(page.getByText('Enable logging of the remote SMTP client port'))
+    .toBeVisible();
 }
 
 async function expectTuningSectionVisible() {
   await expect.element(page.getByText('Tuning', { exact: true })).toBeVisible();
   await expect.element(page.getByText('Max antivirus threads (value)')).toBeVisible();
-  await expect.element(page.getByText('Enable simple authentication and security layer')).toBeVisible();
+  await expect
+    .element(page.getByText('Enable simple authentication and security layer'))
+    .toBeVisible();
 }
 
 async function expectMailMessagesSizeSectionVisible() {
@@ -53,26 +56,8 @@ function getAllConfigResponse(zimbraMtaMaxMessageSize: string) {
 }
 
 describe('MTAAdvanced', () => {
-  const setupConfigStore = (): void => {
-    useAppConfigStore.getState().setConfig([
-      { n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
-      { n: 'zimbraAmavisLogLevel', _content: '2' },
-      { n: 'zimbraAmavisSALogLevel', _content: '0' },
-      { n: 'zimbraMtaSmtpdTlsLoglevel', _content: '1' },
-      { n: 'zimbraMtaLmtpTlsLoglevel', _content: '1' },
-      { n: 'zimbraClamAVMaxThreads', _content: '10' },
-      { n: 'zimbraLmtpNumThreads', _content: '20' },
-      { n: 'zimbraMilterNumThreads', _content: '5' },
-      { n: 'zimbraMilterMaxConnections', _content: '100' },
-      { n: 'zimbraMtaSmtpSaslAuthEnable', _content: 'yes' },
-      { n: 'zimbraMtaSmtpdSenderLoginMaps', _content: 'proxy:ldap://localhost:389' },
-      { n: 'zimbraMtaMaxMessageSize', _content: '10485760' },
-    ]);
-  };
-
   beforeEach(() => {
     grantUserConfigRights();
-    setupConfigStore();
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse('10485760'));
   });
 
@@ -120,9 +105,9 @@ describe('MTAAdvanced', () => {
     await sizeInput.clear();
     await sizeInput.fill('0');
 
-    await expect.element(
-      page.getByText('Value 0 disables email sending: enter a value greater than 0'),
-    ).toBeVisible();
+    await expect
+      .element(page.getByText('Value 0 disables email sending: enter a value greater than 0'))
+      .toBeVisible();
 
     await sizeInput.clear();
     await sizeInput.fill('100');
@@ -216,16 +201,16 @@ describe('MTAAdvanced', () => {
     // Test with invalid value to trigger error state
     await sizeInput.clear();
     await sizeInput.fill('0');
-    await expect.element(
-      page.getByText('Value 0 disables email sending: enter a value greater than 0'),
-    ).toBeVisible();
+    await expect
+      .element(page.getByText('Value 0 disables email sending: enter a value greater than 0'))
+      .toBeVisible();
 
     // Test with negative value
     await sizeInput.clear();
     await sizeInput.fill('-10');
-    await expect.element(
-      page.getByText('Value 0 disables email sending: enter a value greater than 0'),
-    ).toBeVisible();
+    await expect
+      .element(page.getByText('Value 0 disables email sending: enter a value greater than 0'))
+      .toBeVisible();
 
     // Test with valid value again
     await sizeInput.clear();
@@ -234,22 +219,6 @@ describe('MTAAdvanced', () => {
 
   it('should handle component initialization with no message size limit', async () => {
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse(''));
-
-    // Setup config without message size to test the no-limit initial state
-    useAppConfigStore.getState().setConfig([
-      { n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
-      { n: 'zimbraAmavisLogLevel', _content: '2' },
-      { n: 'zimbraAmavisSALogLevel', _content: '0' },
-      { n: 'zimbraMtaSmtpdTlsLoglevel', _content: '1' },
-      { n: 'zimbraMtaLmtpTlsLoglevel', _content: '1' },
-      { n: 'zimbraClamAVMaxThreads', _content: '10' },
-      { n: 'zimbraLmtpNumThreads', _content: '20' },
-      { n: 'zimbraMilterNumThreads', _content: '5' },
-      { n: 'zimbraMilterMaxConnections', _content: '100' },
-      { n: 'zimbraMtaSmtpSaslAuthEnable', _content: 'yes' },
-      { n: 'zimbraMtaSmtpdSenderLoginMaps', _content: 'proxy:ldap://localhost:389' },
-      // Note: No zimbraMtaMaxMessageSize in this config
-    ]);
 
     await setupBrowserTest(<MTAAdvanced />);
 
@@ -287,21 +256,6 @@ describe('MTAAdvanced', () => {
 
   it('should trigger setLimitMaxMessageSize(true) when clicking custom size radio', async () => {
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse(''));
-
-    // Setup config without message size to start with "No size limit" selected
-    useAppConfigStore.getState().setConfig([
-      { n: 'zimbraMtaSmtpdClientPortLogging', _content: 'yes' },
-      { n: 'zimbraAmavisLogLevel', _content: '2' },
-      { n: 'zimbraAmavisSALogLevel', _content: '0' },
-      { n: 'zimbraMtaSmtpdTlsLoglevel', _content: '1' },
-      { n: 'zimbraMtaLmtpTlsLoglevel', _content: '1' },
-      { n: 'zimbraClamAVMaxThreads', _content: '10' },
-      { n: 'zimbraLmtpNumThreads', _content: '20' },
-      { n: 'zimbraMilterNumThreads', _content: '5' },
-      { n: 'zimbraMilterMaxConnections', _content: '100' },
-      { n: 'zimbraMtaSmtpSaslAuthEnable', _content: 'yes' },
-      { n: 'zimbraMtaSmtpdSenderLoginMaps', _content: 'proxy:ldap://localhost:389' },
-    ]);
 
     await setupBrowserTest(<MTAAdvanced />);
 
@@ -348,16 +302,16 @@ describe('MTAAdvanced', () => {
     // Test with zero (should show error)
     await sizeInput.clear();
     await sizeInput.fill('0');
-    await expect.element(
-      page.getByText('Value 0 disables email sending: enter a value greater than 0'),
-    ).toBeVisible();
+    await expect
+      .element(page.getByText('Value 0 disables email sending: enter a value greater than 0'))
+      .toBeVisible();
 
     // Test with negative value (should show error)
     await sizeInput.clear();
     await sizeInput.fill('-5');
-    await expect.element(
-      page.getByText('Value 0 disables email sending: enter a value greater than 0'),
-    ).toBeVisible();
+    await expect
+      .element(page.getByText('Value 0 disables email sending: enter a value greater than 0'))
+      .toBeVisible();
 
     // Test with valid value to clear error
     await sizeInput.clear();
@@ -371,8 +325,12 @@ describe('MTAAdvanced', () => {
     // Note: Select interactions are complex in browser tests, but visibility indicates proper setup
     await expect.element(page.getByText('Log level for Amavis', { exact: true })).toBeVisible();
     await expect.element(page.getByText('SAS Log level for Amavis', { exact: true })).toBeVisible();
-    await expect.element(page.getByText('SMTP client logging of TLS Activity', { exact: true })).toBeVisible();
-    await expect.element(page.getByText('LMTP client logging of TLS activity', { exact: true })).toBeVisible();
+    await expect
+      .element(page.getByText('SMTP client logging of TLS Activity', { exact: true }))
+      .toBeVisible();
+    await expect
+      .element(page.getByText('LMTP client logging of TLS activity', { exact: true }))
+      .toBeVisible();
   });
 
   it('should handle save and cancel functionality', async () => {

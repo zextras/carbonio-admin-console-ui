@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { PrimaryBarTooltip } from '@zextras/ui-components';
 import {
   addRoute,
   registerActions,
   useCurrentUserRights,
   useDomainStore,
-} from '@zextras/admin-ui-bootstrap';
+} from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -26,7 +27,6 @@ import {
   PRIMARY_BAR_DOMAINS,
 } from './constants';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const App: FC = () => {
   const [t] = useTranslation();
@@ -54,32 +54,29 @@ const App: FC = () => {
     [t],
   );
 
-  const DomainTooltipView: FC = useCallback(() => {
-    const domainsTooltipItems = [
-      {
-        header: (
-          <>
-            <Trans
-              i18nKey="label.domains_lbl"
-              defaults="<bold>Domains</bold>"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-            {'\n\n'}
-            <Trans
-              i18nKey="label.domain_primarybar_tooltip"
-              defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, distribution lists, resources</bold> and <bold>more</bold>."
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-          </>
-        ),
-        options: [],
-      },
-    ];
-
-    return <PrimaryBarTooltip items={domainsTooltipItems} />;
-  }, [t]);
+  const DomainTooltipView: FC = useCallback(
+    () => (
+      <PrimaryBarTooltip>
+        <p>
+          <Trans
+            i18nKey="label.domains_lbl"
+            defaults="<bold>Domains</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+        <p>
+          <Trans
+            i18nKey="label.domain_primarybar_tooltip"
+            defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, distribution lists, resources</bold> and <bold>more</bold>."
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+      </PrimaryBarTooltip>
+    ),
+    [t],
+  );
 
   useEffect(() => {
     addRoute({

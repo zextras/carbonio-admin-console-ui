@@ -4,19 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest, soapFetch, useAllServers } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   ModalOverlay,
   Padding,
   Row,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { getSoapFetchRequest, soapFetch, useAllServers } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -32,12 +34,10 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import ListRow from '../../list/list-row';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
+import { asQueryString, HsmPolicyDetail } from './hsm-policy-detail';
 
 type Timeout = ReturnType<typeof setTimeout>;
 
@@ -174,7 +174,8 @@ const HSMsettingPanel: FC = () => {
       const allRows = policies.map((item: any) => ({
         id: item?.hsmQuery,
         columns: [
-          <Text
+          <ds-text
+            as="span"
             size="small"
             weight="regular"
             key={item?.hsmQuery}
@@ -186,7 +187,7 @@ const HSMsettingPanel: FC = () => {
           >
             {getHSMType(item?.hsmType)}
             {item?.hsmQuery}
-          </Text>,
+          </ds-text>,
         ],
       }));
       setPoliciesRow(allRows);
@@ -445,44 +446,6 @@ const HSMsettingPanel: FC = () => {
     [policies, server, selectedPolicies, getHSMPolicyList, showSnackbar, t, errorMessage],
   );
 
-  const generatePolicyString = useCallback((hsmPolicyDetail: any) => {
-    let policy = '';
-    const criteriaScale: string[] = [];
-    if (hsmPolicyDetail?.isAllEnabled) {
-      policy += 'document,message,contact,appointment:';
-    } else {
-      if (hsmPolicyDetail?.isMessageEnabled) {
-        criteriaScale.push('message');
-      }
-      if (hsmPolicyDetail?.isEventEnabled) {
-        criteriaScale.push('appointment');
-      }
-      if (hsmPolicyDetail?.isContactEnabled) {
-        criteriaScale.push('contact');
-      }
-      if (hsmPolicyDetail?.isDocumentEnabled) {
-        criteriaScale.push('document');
-      }
-    }
-    if (criteriaScale.length > 0) {
-      policy += `${criteriaScale.toString()}:`;
-    }
-    if (hsmPolicyDetail?.policyCriteria.length > 0) {
-      hsmPolicyDetail?.policyCriteria.forEach((item: any, index: number) => {
-        policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
-      });
-    }
-    if (hsmPolicyDetail?.sourceVolume?.length > 0) {
-      policy += ` source:${hsmPolicyDetail?.sourceVolume.map((item: any) => item?.id).toString()}`;
-    }
-    if (hsmPolicyDetail?.destinationVolume?.length > 0) {
-      policy += ` destination:${hsmPolicyDetail?.destinationVolume
-        .map((item: any) => item?.id)
-        .toString()}`;
-    }
-    return policy;
-  }, []);
-
   const parseResponse = useCallback(
     (isEditSave: boolean | undefined, info: any, isRunOperation?: boolean) => {
       if (info?.ok) {
@@ -520,7 +483,7 @@ const HSMsettingPanel: FC = () => {
   );
 
   const hsmPolicyOperation = useCallback(
-    (hsmPolicyDetail?: any, isEditSave?: boolean, isRunCustomPolicy?: boolean) => {
+    (hsmPolicyDetail?: HsmPolicyDetail, isEditSave?: boolean, isRunCustomPolicy?: boolean) => {
       const request: any = {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
@@ -553,7 +516,7 @@ const HSMsettingPanel: FC = () => {
           );
           return;
         }
-        const policy = generatePolicyString(hsmPolicyDetail);
+        const policy = asQueryString(hsmPolicyDetail);
         request.hsmPolicy = policy.trim();
       }
       fetchSoap('zextras', {
@@ -570,25 +533,25 @@ const HSMsettingPanel: FC = () => {
           showSnackbar('error', 'error', error?.message ? error?.message : errorMessage);
         });
     },
-    [errorMessage, generatePolicyString, parseResponse, server, showSnackbar, t],
+    [errorMessage, parseResponse, server, showSnackbar, t],
   );
 
   const createHSMpolicy = useCallback(
-    (hsmPolicyDetail: any, isEditSave?: boolean) => {
+    (hsmPolicyDetail: HsmPolicyDetail, isEditSave?: boolean) => {
       hsmPolicyOperation(hsmPolicyDetail, isEditSave);
     },
     [hsmPolicyOperation],
   );
 
   const runCustomHSMpolicy = useCallback(
-    (hsmPolicyDetail: any) => {
+    (hsmPolicyDetail: HsmPolicyDetail) => {
       hsmPolicyOperation(hsmPolicyDetail, undefined, true);
     },
     [hsmPolicyOperation],
   );
 
   const onEditSave = useCallback(
-    (editDetail: any) => {
+    (editDetail: HsmPolicyDetail) => {
       setIsEditSaveInProgress(true);
       createHSMpolicy(editDetail, true);
     },
@@ -615,7 +578,7 @@ const HSMsettingPanel: FC = () => {
         >
           <Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
             <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h3" size="medium" weight="bold" color="gray0">
                 {
                   <Trans
                     i18nKey="hsm.name_hsm_policies"
@@ -626,7 +589,7 @@ const HSMsettingPanel: FC = () => {
                     }}
                   />
                 }
-              </Text>
+              </ds-text>
             </Row>
             <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding right="small">
@@ -653,7 +616,7 @@ const HSMsettingPanel: FC = () => {
       </Row>
 
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         crossAlignment="flex-start"
@@ -665,9 +628,9 @@ const HSMsettingPanel: FC = () => {
       >
         <ListRow>
           <Padding top="large" bottom="large">
-            <Text size="medium" weight="regular">
+            <ds-text as="p" size="medium" weight="regular">
               {t('hsm.scheduling', 'Scheduling')}
-            </Text>
+            </ds-text>
           </Padding>
         </ListRow>
         <ListRow>
@@ -717,12 +680,12 @@ const HSMsettingPanel: FC = () => {
             mainAlignment="flex-start"
           >
             <Padding left="small">
-              <Text size="extrasmall" weight="regular" color="secondary">
+              <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
                 {t(
                   'hsm.this_function_allow_save_disk_copy_msg',
                   'This function allows you to save disk space by storing a single copy of an item.',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Container>
         </ListRow>
@@ -741,15 +704,14 @@ const HSMsettingPanel: FC = () => {
                 crossAlignment="flex-start"
                 style={{ alignSelf: 'end' }}
               >
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h3" size="medium" weight="bold" color="gray0">
                   {t('hsm.hsm_policies_list', 'HSM Policies List')}
-                </Text>
+                </ds-text>
               </Row>
               <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
                 <Padding right="medium">
                   <Button
                     label={t('hsm.new', 'New')}
-                    icon=""
                     type="outlined"
                     color="primary"
                     onClick={(): void => {
@@ -763,7 +725,6 @@ const HSMsettingPanel: FC = () => {
                   <Button
                     label={t('hsm.run_all', 'Run All')}
                     type="outlined"
-                    icon=""
                     color="primary"
                     onClick={(): void => {
                       runAllHSMpolicy();
@@ -776,7 +737,6 @@ const HSMsettingPanel: FC = () => {
                   label={t('hsm.delete', 'Delete')}
                   color="error"
                   type="outlined"
-                  icon=""
                   onClick={(): void => {
                     setShowDeletePolicyView(true);
                   }}
@@ -789,12 +749,12 @@ const HSMsettingPanel: FC = () => {
         </Row>
         <ListRow>
           <Padding left="extrasmall" bottom="medium">
-            <Text size="small" weight="light" color="gray0">
+            <ds-text as="span" size="small" weight="light" color="gray0">
               {t(
                 'hsm.default_hsm_policy_warning_message',
                 'At least one policy will always stay up. If you delete the last one, another will be generated',
               )}
-            </Text>
+            </ds-text>
           </Padding>
         </ListRow>
 
@@ -806,7 +766,7 @@ const HSMsettingPanel: FC = () => {
             multiSelect={false}
             selectedRows={selectedPolicies}
             HeaderFactory={CustomHeaderFactory}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
           />
         </ListRow>
         <ListRow>

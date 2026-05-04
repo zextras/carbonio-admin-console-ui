@@ -7,12 +7,12 @@ import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import BreadCrumb from './breadcrumb/breadcrumb-view';
+import { Breadcrumb } from './breadcrumb/breadcrumb';
 import Dashboard from './dashboard/dashboard-view';
 
 const DashboardComponent = () => (
   <Container orientation="horizontal" mainAlignment="flex-start" background="gray5" height="auto">
-    <Suspense fallback={<spinner-wc />}>
+    <Suspense fallback={<ds-spinner />}>
       <Dashboard />
     </Suspense>
   </Container>
@@ -21,7 +21,7 @@ const DashboardComponent = () => (
 const AppView: FC = () => {
   return (
     <Container height={'fit'}>
-      <BreadCrumb />
+      <Breadcrumb />
       <Routes>
         <Route path={'/*'} element={<DashboardComponent />} />
       </Routes>

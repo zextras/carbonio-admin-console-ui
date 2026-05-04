@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { addRoute, removeRoute, useHasAllRights } from '@zextras/admin-ui-bootstrap';
+import { PrimaryBarTooltip } from '@zextras/ui-components';
+import { addRoute, removeRoute, useHasAllRights } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MANAGE_APP_ID, MTA_ROUTE_ID, PRIMARY_BAR_MTA } from './constants';
 import AppView from './views/app-view';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const App: FC = () => {
   const [t] = useTranslation();
@@ -26,35 +26,28 @@ const App: FC = () => {
     [t],
   );
 
-  const mtaTooltipItem = useMemo(
-    () => [
-      {
-        header: (
-          <>
-            <Trans
-              i18nKey="label.mta_lbl"
-              defaults="<bold>MTA</bold>"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-            {'\n\n'}
-            <Trans
-              i18nKey="label.mta_primarybar_tooltip"
-              defaults="Mail Transfer Agent"
-              components={{ bold: <strong /> }}
-              t={t}
-            />
-          </>
-        ),
-        options: [],
-      },
-    ],
-    [t],
-  );
-
   const MTATooltipView: FC = useCallback(
-    () => <PrimaryBarTooltip items={mtaTooltipItem} />,
-    [mtaTooltipItem],
+    () => (
+      <PrimaryBarTooltip>
+        <p>
+          <Trans
+            i18nKey="label.mta_lbl"
+            defaults="<bold>MTA</bold>"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+        <p>
+          <Trans
+            i18nKey="label.mta_primarybar_tooltip"
+            defaults="Mail Transfer Agent"
+            components={{ bold: <strong /> }}
+            t={t}
+          />
+        </p>
+      </PrimaryBarTooltip>
+    ),
+    [t],
   );
 
   useEffect(() => {

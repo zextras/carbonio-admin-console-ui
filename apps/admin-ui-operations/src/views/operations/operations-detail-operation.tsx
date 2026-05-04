@@ -4,15 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllServers } from '@zextras/admin-ui-bootstrap';
 import { useSnackbar } from '@zextras/ui-components';
-import { FC, useCallback, useEffect } from 'react';
+import { useAllServers } from '@zextras/ui-shared';
+import { FC, ReactNode, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { DONE_ROUTE_ID, QUEUED, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID, STARTED } from '../../constants';
 import { getAllOperations } from '../../services/get-all-operations';
 import { useOperationStore } from '../../store/operation/store';
+import { type Operation } from '../../types/operations';
 import DoneDetailPanel from './done-detail-panel';
 import QuededDetailPanel from './queued-detail-panel';
 import RunningDetailPanel from './running-detail-panel';
@@ -29,14 +30,14 @@ const OperationsDetailOperation: FC = () => {
 
   const getAllOperationAPICallHandler = useCallback(() => {
     getAllOperations()
-      .then((response: any) => {
+      .then((response) => {
         const res = JSON.parse(response?.Body?.response?.content);
         if (res?.response?.[`${serverName}`]?.ok) {
           const result = res?.response?.[`${serverName}`]?.response?.operationList;
           setAlloperationDetail(result);
-          const RunningOperationData = result?.filter((item: any) => item?.state === STARTED);
+          const RunningOperationData = result?.filter((item: Operation) => item?.state === STARTED);
           setRunningData(RunningOperationData);
-          const QueuedOperationData = result?.filter((item: any) => item?.state === QUEUED);
+          const QueuedOperationData = result?.filter((item: Operation) => item?.state === QUEUED);
           setQueuedData(QueuedOperationData);
         }
       })
@@ -57,7 +58,7 @@ const OperationsDetailOperation: FC = () => {
 
   return (
     <>
-      {((): any => {
+      {((): ReactNode => {
         switch (operation) {
           case RUNNING_ROUTE_ID:
             return (

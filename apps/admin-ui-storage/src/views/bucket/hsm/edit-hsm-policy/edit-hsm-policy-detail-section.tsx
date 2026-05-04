@@ -3,24 +3,25 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import {
   Button,
   Checkbox,
   Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  LabeledValue,
+  ListRow,
   Padding,
   Select,
   Table,
-  Text,
 } from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
 const EditHsmPolicyDetailSection: FC<{
@@ -334,7 +335,8 @@ const EditHsmPolicyDetailSection: FC<{
         return {
           id: index,
           columns: [
-            <Text
+            <ds-text
+              as="span"
               size="small"
               weight="regular"
               key={index}
@@ -343,7 +345,7 @@ const EditHsmPolicyDetailSection: FC<{
               }}
             >
               {displayPolicy}
-            </Text>,
+            </ds-text>,
           ],
         };
       });
@@ -456,14 +458,14 @@ const EditHsmPolicyDetailSection: FC<{
     >
       <ListRow>
         <Container padding={{ bottom: 'large' }}>
-          <Input label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
+          <LabeledValue label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
         </Container>
       </ListRow>
       <ListRow>
         <Padding bottom="large">
-          <Text size="medium" weight="bold" color="gray0">
+          <ds-text as="h3" size="medium" weight="bold" color="gray0">
             {<Trans i18nKey="hsm.items" defaults="Items" />}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -546,9 +548,9 @@ const EditHsmPolicyDetailSection: FC<{
       </ListRow>
       <ListRow>
         <Padding bottom="large" top="large">
-          <Text size="medium" weight="bold" color="gray0">
+          <ds-text as="h3" size="medium" weight="bold" color="gray0">
             {<Trans i18nKey="hsm.criteria" defaults="Criteria" />}
-          </Text>
+          </ds-text>
         </Padding>
       </ListRow>
       <ListRow>
@@ -662,7 +664,7 @@ const EditHsmPolicyDetailSection: FC<{
             multiSelect={false}
             selectedRows={selectedPolicies}
             onSelectionChange={(selected: any): void => setSelectedPolicies(selected)}
-            RowFactory={CustomRowFactory}
+            RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Padding>

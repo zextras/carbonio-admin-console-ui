@@ -4,24 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  Container, ContainerProps, Icon, Text  } from '@zextras/ui-components';
-import {  FC  } from 'react';
-import {  useTranslation  } from 'react-i18next';
-import styled from 'styled-components';
-
-import ListRow from '../list/list-row';
-
-interface ContainerExtendProps extends ContainerProps {
-  bgColor: string;
-}
-
-const ActionContainer = styled(Container)<ContainerExtendProps>`
-  background: ${({ theme, bgColor }): string => theme.avatarColors[bgColor as keyof typeof theme.avatarColors]};
-`;
-
-const OperationContainer = styled(Container)`
-  cursor: pointer;
-`;
+import { Container, IconName, ListRow } from '@zextras/ui-components';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const QuickAccess: FC<{
   openOperationView: (operation: string) => void;
@@ -33,18 +18,18 @@ const QuickAccess: FC<{
       upperText: t('label.domains', 'Domains'),
       operationText: t('label.accounts', 'Accounts'),
       bottomText: t('label.open', 'Open'),
-      operationIcon: 'PersonOutline',
-      bottomIcon: 'ChevronRightOutline',
-      bgColor: 'avatar_39',
+      operationIcon: 'PersonOutline' as IconName,
+      bottomIcon: 'ChevronRightOutline' as IconName,
+      bgColor: 'avatar-39',
       operation: 'account',
     },
     {
       upperText: t('label.domains', 'Domains'),
       operationText: t('label.distribution_list', 'Distribution List'),
       bottomText: t('label.open', 'Open'),
-      operationIcon: 'DistributionListOutline',
-      bottomIcon: 'ChevronRightOutline',
-      bgColor: 'avatar_21',
+      operationIcon: 'DistributionListOutline' as IconName,
+      bottomIcon: 'ChevronRightOutline' as IconName,
+      bgColor: 'avatar-21',
       operation: 'malinglist',
     },
   ];
@@ -66,12 +51,12 @@ const QuickAccess: FC<{
       >
         <ListRow>
           <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2rem">
-            <Icon size="large" icon="FlashOutline" />
+            <ds-icon size="large" icon="FlashOutline"></ds-icon>
           </Container>
           <Container mainAlignment="flex-start" crossAlignment="flex-start">
-            <Text color="gray0" overflow="break-word" weight="bold" size="medium">
+            <ds-text as="strong" color="gray0" overflow="break-word" weight="bold" size="medium">
               {t('dashboard.quick_access_to', 'Quick Access to')} {domainName}
-            </Text>
+            </ds-text>
           </Container>
         </ListRow>
       </Container>
@@ -88,65 +73,66 @@ const QuickAccess: FC<{
             padding={{ left: 'extralarge' }}
             key={item?.operation}
           >
-            <ActionContainer
+            <Container
               height={'8.75rem'}
               mainAlignment="flex-start"
               crossAlignment="flex-start"
               width={'21.75rem'}
-              bgColor={item?.bgColor}
-              style={{ borderRadius: '0.5rem' }}
+              style={{ borderRadius: '0.5rem', background: `var(--color-${item?.bgColor})` }}
             >
               <ListRow>
                 <Container padding={{ all: 'large' }}>
                   <Container mainAlignment="flex-start" crossAlignment="flex-start">
-                    <Text color="gray6" overflow="break-word" weight="light" size="medium">
+                    <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
                       {item?.upperText}
-                    </Text>
+                    </ds-text>
                   </Container>
                   <Container
                     mainAlignment="flex-start"
                     crossAlignment="flex-start"
                     padding={{ top: 'extrasmall' }}
                   >
-                    <Text color="gray6" overflow="break-word" weight="bold" size="large">
+                    <ds-text as="strong" color="gray6" overflow="break-word" weight="bold" size="large">
                       {item?.operationText}
-                    </Text>
+                    </ds-text>
                   </Container>
                 </Container>
                 <Container crossAlignment="flex-end" padding={{ right: 'large' }}>
-                  <Icon color="gray6" icon={item?.operationIcon} size="large" />
+                  <ds-icon color="gray6" icon={item?.operationIcon} size="large"></ds-icon>
                 </Container>
               </ListRow>
               <ListRow>
                 <Container padding={{ left: 'large', right: 'large' }}>
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Container>
               </ListRow>
               <ListRow>
-                <OperationContainer
+                <Container
                   mainAlignment="flex-start"
                   crossAlignment="flex-start"
                   padding={{ all: 'large' }}
+                  style={{ cursor: 'pointer' }}
                   onClick={(): void => {
                     handleClickedQuickAccess(item?.operation);
                   }}
                 >
-                  <Text color="gray6" overflow="break-word" weight="light" size="medium">
+                  <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
                     {item?.bottomText}
-                  </Text>
-                </OperationContainer>
-                <OperationContainer
+                  </ds-text>
+                </Container>
+                <Container
                   mainAlignment="flex-end"
                   crossAlignment="flex-end"
                   padding={{ all: 'large' }}
+                  style={{ cursor: 'pointer' }}
                   onClick={(): void => {
                     handleClickedQuickAccess(item?.operation);
                   }}
                 >
-                  <Icon icon={item?.bottomIcon} size="medium" color="gray6" />
-                </OperationContainer>
+                  <ds-icon icon={item?.bottomIcon} size="medium" color="gray6"></ds-icon>
+                </Container>
               </ListRow>
-            </ActionContainer>
+            </Container>
           </Container>
         ))}
       </Container>

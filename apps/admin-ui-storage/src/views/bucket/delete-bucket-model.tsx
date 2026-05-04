@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container,Modal, Row, Text } from '@zextras/ui-components';
+import { Button, Container,Modal, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -43,7 +43,8 @@ const DeleteBucketModel: FC<{
 				showCloseIcon
 				onClose={closeHandler}
 			>
-				<Text
+				<ds-text
+					as="p"
 					size={'extralarge'}
 					overflow="break-word"
 					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '32px 0' }}
@@ -55,7 +56,7 @@ const DeleteBucketModel: FC<{
 							name: BucketDetail.bucketName
 						}
 					)}
-				</Text>
+				</ds-text>
 			</Modal>
 		</>
 	);

@@ -4,8 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrap';
+import { soapFetch } from '@zextras/ui-shared';
 
- 
-export const batchService = async (reqObject: any, otherAccount?: any): Promise<any> =>
-	soapFetch('Batch', reqObject, {otherAccount});
+type BatchRequest = Record<string, unknown>;
+
+export const batchService = async (
+	reqObject: BatchRequest,
+	otherAccount?: string,
+): Promise<Record<string, unknown>> =>
+	soapFetch('Batch', reqObject, { otherAccount });

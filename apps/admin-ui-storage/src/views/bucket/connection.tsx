@@ -6,13 +6,13 @@
 import {
   Button,
   Container,
-  Icon,
+  type IconName,
   Input,
+  LabeledValue,
   Padding,
   PasswordInput,
   Row,
   Select,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -49,7 +49,7 @@ const Connection: FC<{
   const bucketRegionsInAlibaba = useMemo(() => BucketRegionsInAlibaba(t), [t]);
   const createSnackbar = useSnackbar();
   const [buttonColor, setButtonColor] = useState<string>('primary');
-  const [icon, setIcon] = useState<string>('ActivityOutline');
+  const [icon, setIcon] = useState<IconName>('ActivityOutline');
   const [buttonDetail, setButtonDetail] = useState(
     t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR'),
   );
@@ -386,7 +386,7 @@ const Connection: FC<{
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
       {bucketType !== '' ? (
         <Row padding={{ top: 'extralarge' }} width="100%">
-          <Input
+          <LabeledValue
             label={t('label.bucket_type', 'Bucket Type')}
             backgroundColor="gray5"
             value={bucketTypeData}
@@ -506,12 +506,12 @@ const Connection: FC<{
           />
           {!prefixConfirm && (
             <Padding top="extrasmall">
-              <Text color="error" overflow="break-word" size="extrasmall">
+              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
                 {t(
                   'buckets.invalid_prefix',
                   'The prefix should not contain spaces. The allowed letters are a-z, A-Z, and special characters /-.',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           )}
         </Row>
@@ -542,7 +542,7 @@ const Connection: FC<{
       </Row>
       {verifyCheck === SUCCESS && (
         <Row width="100%" padding={{ top: 'large' }}>
-          <Input label={t('label.uuid', 'uuid')} value={BucketUid} />
+          <LabeledValue label={t('label.uuid', 'uuid')} value={BucketUid} />
         </Row>
       )}
       {verifyCheck === ERROR && (
@@ -555,17 +555,17 @@ const Connection: FC<{
           style={{ marginTop: '1rem' }}
         >
           <Row width="10%" mainAlignment="flex-start">
-            <Icon
+            <ds-icon
               icon="AlertTriangleOutline"
               color="gray6"
               size="large"
               style={{ height: '2rem', width: '2rem' }}
-            />
+            ></ds-icon>
           </Row>
           <Row width="86%" mainAlignment="flex-end">
-            <Text overflow="break-word" color="gray6">
+            <ds-text as="p" overflow="break-word" color="gray6">
               {verifyFailErr}
-            </Text>
+            </ds-text>
           </Row>
         </Container>
       )}

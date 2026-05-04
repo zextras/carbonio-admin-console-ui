@@ -10,6 +10,10 @@ import React from 'react';
 import '@zextras/ui-components';
 
 declare module '*.jsx';
+declare module '*.module.css' {
+  const classes: { [key: string]: string };
+  export default classes;
+}
 
 declare global {
   const BASE_PATH: string;
@@ -19,7 +23,7 @@ declare global {
   namespace React {
     namespace JSX {
       interface IntrinsicElements {
-        'divider-wc': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+        'ds-divider': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
       }
     }
   }

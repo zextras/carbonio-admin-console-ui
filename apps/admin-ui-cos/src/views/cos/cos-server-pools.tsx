@@ -3,20 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useCurrentUserRights, useMailstoreServers } from '@zextras/admin-ui-bootstrap';
+
 import {
   Button,
   Container,
-  Icon,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useCurrentUserRights, useMailstoreServers } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,9 +29,6 @@ import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosStore } from '../../store/cos/store';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import ListRow from '../list/list-row';
 import { PageLayout } from '../page-layout';
 
 const CosServerPools: FC = () => {
@@ -75,9 +74,9 @@ const CosServerPools: FC = () => {
               setSelectedTableRowsId([item?.id]);
             }}
           >
-            <Text size="small" weight="regular" key={item?.id} color="gray0">
+            <ds-text as="span" size="small" weight="regular" key={item?.id} color="gray0">
               {item?.name}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             crossAlignment="flex-start"
@@ -89,17 +88,17 @@ const CosServerPools: FC = () => {
               setSelectedTableRowsId([item?.id]);
             }}
           >
-            <Text key={item?.id}>
+            <ds-text as="span" key={item?.id}>
               {zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
-                <Text size="small" weight="light">
+                <ds-text as="span" size="small" weight="light">
                   {t('cos.enabled', 'Enabled')}
-                </Text>
+                </ds-text>
               ) : (
-                <Text size="small" weight="light" color="error">
+                <ds-text as="span" size="small" weight="light" color="error">
                   {t('cos.disabled', 'Disabled')}
-                </Text>
+                </ds-text>
               )}
-            </Text>
+            </ds-text>
           </Container>,
         ],
       }));
@@ -155,9 +154,9 @@ const CosServerPools: FC = () => {
                   setSelectedTableRowsId([item?.id]);
                 }}
               >
-                <Text size="small" weight="regular" key={item?.id} color="gray0">
+                <ds-text as="span" size="small" weight="regular" key={item?.id} color="gray0">
                   {item?.name}
-                </Text>
+                </ds-text>
               </Container>,
               <Container
                 crossAlignment="flex-start"
@@ -169,17 +168,17 @@ const CosServerPools: FC = () => {
                   setSelectedTableRowsId([item?.id]);
                 }}
               >
-                <Text key={item?.id}>
+                <ds-text as="span" key={item?.id}>
                   {zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
-                    <Text size="small" weight="light">
+                    <ds-text as="span" size="small" weight="light">
                       {t('cos.enabled', 'Enabled')}
-                    </Text>
+                    </ds-text>
                   ) : (
-                    <Text size="small" weight="light" color="error">
+                    <ds-text as="span" size="small" weight="light" color="error">
                       {t('cos.disabled', 'Disabled')}
-                    </Text>
+                    </ds-text>
                   )}
-                </Text>
+                </ds-text>
               </Container>,
             ],
           }));
@@ -203,9 +202,9 @@ const CosServerPools: FC = () => {
                   setSelectedTableRowsId([item?.id]);
                 }}
               >
-                <Text size="small" weight="regular" key={item?.id} color="gray0">
+                <ds-text as="span" size="small" weight="regular" key={item?.id} color="gray0">
                   {item?.name}
-                </Text>
+                </ds-text>
               </Container>,
               <Container
                 crossAlignment="flex-start"
@@ -217,17 +216,17 @@ const CosServerPools: FC = () => {
                   setSelectedTableRowsId([item?.id]);
                 }}
               >
-                <Text key={item?.id}>
+                <ds-text as="span" key={item?.id}>
                   {zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
-                    <Text size="small" weight="light">
+                    <ds-text as="span" size="small" weight="light">
                       {t('cos.enabled', 'Enabled')}
-                    </Text>
+                    </ds-text>
                   ) : (
-                    <Text size="small" weight="light" color="error">
+                    <ds-text as="span" size="small" weight="light" color="error">
                       {t('cos.disabled', 'Disabled')}
-                    </Text>
+                    </ds-text>
                   )}
-                </Text>
+                </ds-text>
               </Container>,
             ],
           }));
@@ -372,9 +371,9 @@ const CosServerPools: FC = () => {
                   setSelectedTableRowsId([item?.id]);
                 }}
               >
-                <Text size="small" weight="regular" key={item?.id} color="gray0">
+                <ds-text as="span" size="small" weight="regular" key={item?.id} color="gray0">
                   {item?.name}
-                </Text>
+                </ds-text>
               </Container>,
               <Container
                 crossAlignment="flex-start"
@@ -386,17 +385,17 @@ const CosServerPools: FC = () => {
                   setSelectedTableRowsId([item?.id]);
                 }}
               >
-                <Text key={item?.id}>
+                <ds-text as="span" key={item?.id}>
                   {zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
-                    <Text size="small" weight="light">
+                    <ds-text as="span" size="small" weight="light">
                       {t('cos.enabled', 'Enabled')}
-                    </Text>
+                    </ds-text>
                   ) : (
-                    <Text size="small" weight="light" color="error">
+                    <ds-text as="span" size="small" weight="light" color="error">
                       {t('cos.disabled', 'Disabled')}
-                    </Text>
+                    </ds-text>
                   )}
-                </Text>
+                </ds-text>
               </Container>,
             ],
           }));
@@ -437,9 +436,9 @@ const CosServerPools: FC = () => {
           width="100%"
         >
           <ListRow>
-            <Text size="extralarge" weight="bold">
+            <ds-text as="strong" weight="bold">
               {t('cos.general_options', 'General Options')}
-            </Text>
+            </ds-text>
           </ListRow>
           <ListRow>
             <Padding bottom="large" top="large">
@@ -474,7 +473,7 @@ const CosServerPools: FC = () => {
                         }
                         label={t('cos.search_a_specific_server', 'Search for a specific server')}
                         CustomIcon={(): any => (
-                          <Icon icon="FunnelOutline" size="large" color="primary" />
+                          <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                         )}
                         onChange={(e: any): any => {
                           setSearchServer(e.target.value);
@@ -527,7 +526,7 @@ const CosServerPools: FC = () => {
                   showCheckbox={false}
                   selectedRows={selectedTableRowsId}
                   HeaderFactory={CustomHeaderFactory}
-                  RowFactory={CustomRowFactory}
+                  RowFactory={HoverableRowFactory}
                 />
               </Row>
             </>
@@ -571,13 +570,13 @@ const CosServerPools: FC = () => {
         }
       >
         <Padding all="medium">
-          <Text overflow="break-word" weight="regular">
+          <ds-text as="p" overflow="break-word" weight="regular">
             {t('cos.create_cos_success_msg', {
               serverName: serverList.find((sp: any) => sp?.id === selectedTableRows[0])?.name,
               defaultValue:
                 'You are disabling pool on {{serverName}}. All mailboxes will be not moved. Are you sure you want to delete it?',
             })}
-          </Text>
+          </ds-text>
         </Padding>
       </Modal>
     </PageLayout>

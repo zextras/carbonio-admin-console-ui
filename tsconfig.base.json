@@ -1,26 +1,48 @@
 {
-  "extends": "@tsconfig/node14/tsconfig.json",
+  "extends": "@tsconfig/vite-react",
   "compilerOptions": {
+    "composite": true,
+    "allowImportingTsExtensions": false,
+    "verbatimModuleSyntax": false,
+    "erasableSyntaxOnly": false,
+    "noUnusedParameters": false,
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
     "checkJs": false,
-    "noEmit": true,
-    "module": "esnext",
-    "jsx": "react-jsx",
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "target": "ESNext",
     "allowJs": true,
     "resolveJsonModule": true,
-    "moduleDetection": "force",
     "isolatedModules": true,
-    "strict": true,
     "noImplicitOverride": true,
-    "moduleResolution": "bundler",
-    "lib": ["esnext", "dom", "dom.iterable"],
     "allowSyntheticDefaultImports": true,
     "preserveConstEnums": true,
     "noUncheckedIndexedAccess": false,
     "types": ["@vitest/browser/matchers", "vitest/globals"],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+        "options": {
+          "classnameTransform": "camelCaseOnly"
+        }
+      }
+    ]
   },
-  "include": ["src/**/*", "*.d.ts"]
+  "references": [
+    { "path": "./packages/test-utils/" },
+    { "path": "./packages/ui-components/" },
+    { "path": "./packages/ui-shared/" },
+    { "path": "./apps/admin-ui-backup/" },
+    { "path": "./apps/admin-ui-cos/" },
+    { "path": "./apps/admin-ui-dashboard/" },
+    { "path": "./apps/admin-ui-domains/" },
+    { "path": "./apps/admin-ui-legalhold/" },
+    { "path": "./apps/admin-ui-mta/" },
+    { "path": "./apps/admin-ui-notifications/" },
+    { "path": "./apps/admin-ui-operations/" },
+    { "path": "./apps/admin-ui-privacy/" },
+    { "path": "./apps/admin-ui-storage/" },
+    { "path": "./apps/admin-ui-subscription/" }
+  ]
 }

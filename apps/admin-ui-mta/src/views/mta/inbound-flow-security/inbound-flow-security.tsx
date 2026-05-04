@@ -3,18 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig, useCurrentUserRights } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   ChipInput,
   Container,
+  ListRow,
   Padding,
   Row,
   Switch,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
 import { find, isEqual, uniq } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -44,7 +44,6 @@ import {
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import CustomChip from '../../components/customChip';
-import ListRow from '../../list/list-row';
 
 const MTAInboundFlowSecurity: FC = () => {
   const [t] = useTranslation();
@@ -65,15 +64,15 @@ const MTAInboundFlowSecurity: FC = () => {
   }, [rights]);
 
   const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaInboundSecurityInitialDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaInboundSecurityInitialDetail((prev) => ({ ...prev, [key]: value } as MtaInboundSecurity));
   }, []);
 
   const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaInboundSecurityDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaInboundSecurityDetail((prev) => ({ ...prev, [key]: value } as MtaInboundSecurity));
   }, []);
 
   const setInitialAndCurrentValue = useCallback(
-    (key: string, value: boolean) => {
+    (key: string, value: unknown) => {
       setInitialValue(key, value);
       setValue(key, value);
     },
@@ -93,21 +92,19 @@ const MTAInboundFlowSecurity: FC = () => {
         ZIMBRA_MTA_BLOCKED_EXTENSION,
         findBlockExtension.map((item: Record<string, string>) => item?._content),
       );
-      setValue(
-        ZIMBRA_MTA_BLOCKED_EXTENSION,
-        allExtensions.map((item: Record<string, string>) => item?.label),
-      );
+      if (allExtensions) {
+        setValue(
+          ZIMBRA_MTA_BLOCKED_EXTENSION,
+          allExtensions.map((item: Record<string, string>) => item?.label),
+        );
+      }
       setMtaBlockExtension(allExtensions);
-    } else {
-      setInitialValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
-      setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
-      setMtaBlockExtension([]);
     }
     const findCommonBlockExtension = configInformation.filter(
       (item: Record<string, string>) => item?.n === ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,
     );
     if (findCommonBlockExtension && findCommonBlockExtension.length > 0) {
-      setCommonBlockedExtensions(findCommonBlockExtension.map((item: any) => item?._content));
+      setCommonBlockedExtensions(findCommonBlockExtension.map((item: Record<string, string>) => item?._content));
     }
   }, [configInformation, setInitialValue, setValue]);
 
@@ -399,13 +396,17 @@ const MTAInboundFlowSecurity: FC = () => {
     const attributes: Array<Record<string, string>> = [];
     setMtaRestrictions(attributes);
     setValueForSave(attributes);
-    const blockedExtension = mtaInboundSecurityDetail?.zimbraMtaBlockedExtension;
-    if (blockedExtension && blockedExtension.length > 0) {
-      blockedExtension.forEach((item: string) => {
-        attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: item });
-      });
-    } else {
-      attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: '' });
+    if (mtaInboundSecurityDetail?.zimbraMtaBlockedExtension) {
+      const blockedExtension = mtaInboundSecurityDetail?.zimbraMtaBlockedExtension;
+      if (blockedExtension) {
+        if (blockedExtension.length === 0) {
+          attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: '' });
+        } else {
+          blockedExtension.forEach((item: string) => {
+            attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: item });
+          });
+        }
+      }
     }
     attributes.push({
       n: ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
@@ -510,11 +511,12 @@ const MTAInboundFlowSecurity: FC = () => {
   }, [mtaInboundSecurityInitialDetail, setValue]);
 
   const onBlockExtensionChange = useCallback(
-    (ev: any) => {
+    (ev: Array<{ label?: string }>) => {
       if (ev && ev.length > 0) {
         const validExtensionExpression = /^[A-Za-z0-9]*$/;
         const extension = ev
-          .map((item: Record<string, string>) => item?.label)
+          .map((item: Record<string, string | undefined>) => item?.label)
+          .filter((item): item is string => !!item)
           .filter((item: string) => validExtensionExpression.test(item));
         if (extension && extension.length > 0) {
           setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, extension);
@@ -550,9 +552,9 @@ const MTAInboundFlowSecurity: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.inbound_flow_and_security', 'Inbound Flow & Security')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -581,7 +583,7 @@ const MTAInboundFlowSecurity: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
 
       <Container
@@ -599,16 +601,16 @@ const MTAInboundFlowSecurity: FC = () => {
             bottom: 'extralarge',
           }}
         >
-          <Text size="small">
+          <ds-text as="p" size="small">
             <Trans
               i18nKey="mta.important_mta_reboot_information_message"
               defaults="<bold>IMPORTANT: Any changes made on this page will require a reboot of the MTA</bold> for them to take effect. Simply saving the changes will not suffice."
               components={{ bold: <strong /> }}
             />
-          </Text>
+          </ds-text>
         </Container>
         <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Container>
         <Container
           crossAlignment="flex-start"
@@ -616,9 +618,9 @@ const MTAInboundFlowSecurity: FC = () => {
           height="auto"
           padding={{ top: 'large', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.settings', 'Settings')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           orientation="horizontal"
@@ -717,7 +719,7 @@ const MTAInboundFlowSecurity: FC = () => {
           </Container>
         </Container>
         <ListRow>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </ListRow>
 
         <Container
@@ -725,9 +727,9 @@ const MTAInboundFlowSecurity: FC = () => {
           padding={{ top: 'extralarge', bottom: 'large' }}
           height="auto"
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.rejection', 'Rejection')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           orientation="horizontal"
@@ -807,7 +809,7 @@ const MTAInboundFlowSecurity: FC = () => {
           </Container>
         </Container>
         <ListRow>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </ListRow>
 
         <Container
@@ -815,9 +817,9 @@ const MTAInboundFlowSecurity: FC = () => {
           padding={{ top: 'extralarge', bottom: 'large' }}
           height="auto"
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.protocol_checks', 'Protocol Checks')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           orientation="horizontal"

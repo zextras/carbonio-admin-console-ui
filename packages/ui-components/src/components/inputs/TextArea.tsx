@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import '../../web-components/divider-wc';
+import '../../web-components/ds-divider';
 
 import React, {
   TextareaHTMLAttributes,
@@ -13,17 +13,17 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { getColor } from '../../theme/theme-utils';
-import { AnyColor, PaletteColor } from '../../types/utils';
-import { TextProps } from '../basic/text/Text';
+import { resolveThemeColor } from '../../theme/theme-utils';
+import { AnyColor } from '../../types/utils';
+import { TextProps } from '../../web-components/ds-text';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Container } from '../layout/Container';
 import { InputContainer } from './commons/InputContainer';
 import { InputDescription } from './commons/InputDescription';
 import { InputLabel } from './commons/InputLabel';
+import styles from './TextArea.module.css';
 
 type HTMLTextAreaProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
 
@@ -37,95 +37,20 @@ type AdjustHeightTextAreaProps = HTMLTextAreaProps & {
 export type TextAreaProps = HTMLTextAreaProps & {
   /** Description - helper text */
   description?: string;
-  /** Error state */
-  hasError?: boolean;
   /** Ref for the textarea element */
   textAreaRef?: React.Ref<HTMLTextAreaElement> | null;
   /** Label for the textarea */
   label?: string;
   /** Background color for the textarea */
-  backgroundColor?: string | PaletteColor;
+  backgroundColor?: string;
   /** Color for the text */
   textColor?: string;
   /** Max height for the text area, limit beyond which the scroll is enabled */
   maxHeight?: string;
   /** Divider color */
-  borderColor?: string | PaletteColor;
+  borderColor?: string;
   ref?: React.Ref<HTMLDivElement> | null;
-  _newId?: number;
 };
-
-const StyledTextArea = styled.textarea<{ $color: string }>`
-  resize: none;
-  width: 100%;
-  max-height: 100%;
-  overflow-y: hidden;
-  outline: none;
-  background: transparent;
-  font-size: ${({ theme }): string => theme.sizes.font.medium};
-  font-weight: ${({ theme }): number => theme.fonts.weight.regular};
-  font-family: ${({ theme }): string => theme.fonts.default};
-  line-height: 1.5;
-  border: none;
-  padding: 0;
-  margin: 0;
-
-  &:disabled {
-    color: ${({ theme, $color }): string => getColor(`${$color}.disabled`, theme)};
-  }
-
-  &::placeholder {
-    color: transparent;
-    font-size: 0;
-    user-select: none;
-  }
-`;
-
-const GrowContainer = styled.div<{ $hasLabel: boolean; $maxHeight?: string }>`
-  width: 100%;
-  height: auto;
-  margin-top: ${({ $hasLabel, theme }): SimpleInterpolation =>
-    $hasLabel ? css`calc(${theme.sizes.font.extrasmall} * 1.5)` : '0px'};
-  max-height: ${({ $maxHeight }): SimpleInterpolation => $maxHeight};
-  overflow-y: auto;
-  font-size: ${({ theme }): string => theme.sizes.font.medium};
-  font-weight: ${({ theme }): number => theme.fonts.weight.regular};
-  font-family: ${({ theme }): string => theme.fonts.default};
-  line-height: 1.5;
-  /** set cursor auto so that the scrollbar keep the default cursor and not the text one */
-  cursor: auto;
-
-  /* easy way to plop the elements on top of each other and have them both sized based on the tallest one's height */
-  display: grid;
-
-  &::after {
-    /* Note the weird space! Needed to prevent jumpy behavior */
-    content: attr(data-replicated-value) ' ';
-    /* This is how textarea text behaves */
-    white-space: pre-wrap;
-    /* Hidden from view, clicks, and screen readers */
-    visibility: hidden;
-  }
-
-  & > textarea,
-  &::after {
-    /* Place on top of each other */
-    grid-area: 1 / 1 / 2 / 2;
-  }
-
-  &::-webkit-scrollbar {
-    width: 0.5rem;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }): string => theme.palette.gray2.regular};
-    border-radius: 0.25rem;
-  }
-`;
 
 const AdjustHeightTextArea = ({
   hasLabel,
@@ -145,7 +70,6 @@ const AdjustHeightTextArea = ({
   }, [textAreaRef]);
 
   useEffect(() => {
-    // resize text area when value or default value change
     resizeTextArea();
   }, [resizeTextArea, value, defaultValue]);
 
@@ -157,49 +81,45 @@ const AdjustHeightTextArea = ({
     [resizeTextArea, onInput],
   );
 
+  const growContainerStyle = useMemo(
+    () =>
+      ({
+        '--grow-container-margin-top': hasLabel ? 'calc(var(--font-size-extrasmall) * 1.5)' : '0px',
+        '--grow-max-height': maxHeight,
+        '--color-gray2-regular': resolveThemeColor('gray2', 'regular'),
+      } as React.CSSProperties),
+    [hasLabel, maxHeight],
+  );
+
+  const textAreaStyle = useMemo(
+    () =>
+      ({
+        '--text-color-disabled': resolveThemeColor(color, 'disabled'),
+      } as React.CSSProperties),
+    [color],
+  );
+
   return (
-    <GrowContainer $hasLabel={hasLabel} $maxHeight={maxHeight} ref={containerRef}>
-      <StyledTextArea
+    <div className={styles.growContainer} style={growContainerStyle} ref={containerRef}>
+      <textarea
         {...props}
-        $color={color}
+        className={styles.textArea}
+        style={textAreaStyle}
         onInput={onInputHandler}
         rows={1}
         ref={textAreaRef}
       />
-    </GrowContainer>
+    </div>
   );
 };
 
-const Label = styled(InputLabel)<{ $textAreaHasValue: boolean }>`
-  ${InputContainer}:focus-within & {
-    top: 0.0625rem;
-    transform: translateY(0);
-    font-size: ${({ theme }): string => theme.sizes.font.extrasmall};
-  }
-  ${({ $textAreaHasValue, theme }): SimpleInterpolation =>
-    $textAreaHasValue &&
-    css`
-      top: 0.0625rem;
-      transform: translateY(0);
-      font-size: ${theme.sizes.font.extrasmall};
-    `};
-`;
-
-const RelativeContainer = styled(Container)`
-  position: relative;
-`;
-
 export const TextArea = ({
   maxHeight = '10.313rem',
-  hasError,
   textAreaRef = null,
   label,
   description,
-  backgroundColor = INPUT_BACKGROUND_COLOR,
   textColor = 'text',
-  borderColor = INPUT_DIVIDER_COLOR,
   ref,
-  _newId,
   ...props
 }: TextAreaProps) => {
   const { defaultValue, value, onInput, disabled, onFocus, onBlur } = props;
@@ -253,17 +173,32 @@ export const TextArea = ({
   }, [disabled, innerTextAreaRef]);
 
   const dividerColor = useMemo<AnyColor>(
-    () =>
-      `${(hasError && 'error') || (hasFocus && 'primary') || borderColor}${
-        disabled ? '.disabled' : ''
-      }`,
-    [borderColor, disabled, hasError, hasFocus],
+    () => `${(hasFocus && 'primary') || INPUT_DIVIDER_COLOR}${disabled ? '.disabled' : ''}`,
+    [disabled, hasFocus],
   );
 
   const descriptionColor = useMemo<TextProps['color']>(
-    () => (hasError && 'error') || (hasFocus && 'primary') || 'secondary',
-    [hasError, hasFocus],
+    () => (hasFocus && 'primary') || 'secondary',
+    [hasFocus],
   );
+
+  const labelStyle = useMemo(
+    () =>
+      ({
+        '--label-top': '50%',
+        '--label-transform': 'translateY(-50%)',
+        '--label-font-size': 'var(--font-size-medium)',
+      } as React.CSSProperties),
+    [],
+  );
+
+  const labelClassName = useMemo(() => {
+    const classes = [styles.label];
+    if (hasFocus || textAreaHasValue) {
+      classes.push(styles.labelFocused);
+    }
+    return classes.join(' ');
+  }, [hasFocus, textAreaHasValue]);
 
   return (
     <Container height="fit" width="fill" crossAlignment="flex-start" ref={ref}>
@@ -273,13 +208,14 @@ export const TextArea = ({
         height="fit"
         crossAlignment={label ? 'flex-end' : 'center'}
         borderRadius="half"
-        background={backgroundColor}
+        background={INPUT_BACKGROUND_COLOR}
         onClick={forceFocusOnTextArea}
         $disabled={disabled}
         padding={{ horizontal: '0.75rem' }}
         gap={'0.5rem'}
       >
-        <RelativeContainer
+        <Container
+          className={styles.relativeContainer}
           padding={{ vertical: label ? '0.0625rem' : '0.625rem' }}
           mainAlignment={'flex-end'}
           height={'fill'}
@@ -299,19 +235,19 @@ export const TextArea = ({
             hasLabel={!!label}
           />
           {label && (
-            <Label
+            <InputLabel
               htmlFor={id}
+              className={labelClassName}
+              style={labelStyle}
               $hasFocus={hasFocus}
-              $hasError={hasError}
               $disabled={disabled}
-              $textAreaHasValue={textAreaHasValue}
             >
               {label}
-            </Label>
+            </InputLabel>
           )}
-        </RelativeContainer>
+        </Container>
       </InputContainer>
-      <divider-wc color={dividerColor}></divider-wc>
+      <ds-divider color={dividerColor}></ds-divider>
       {description !== undefined && (
         <InputDescription color={descriptionColor} disabled={disabled}>
           {description}

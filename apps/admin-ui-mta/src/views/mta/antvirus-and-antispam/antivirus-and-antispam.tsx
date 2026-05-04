@@ -3,11 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig, useCurrentUserRights, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
@@ -15,14 +17,14 @@ import {
   SelectItem,
   Switch,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find, isEqual } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
+import { MtaAntivirusAndAntispam } from '../../../../types';
 import {
   CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
   CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
@@ -44,12 +46,11 @@ import {
   ZIMBRA_VIRUS_WARN_RECIPIENT,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import ListRow from '../../list/list-row';
 import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
+  type TableRow = { id: string; columns: Array<string | ReactElement> };
+
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -58,13 +59,13 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
     useState<MtaAntivirusAndAntispam>();
   const [mtaAntiVirusAndAntispamDetail, setMtaAntiVirusAndAntispamDetail] =
     useState<MtaAntivirusAndAntispam>();
-  const [antiVirusMirrorTableRow, setAntiVirusMirrorTableRow] = useState<Array<any>>([]);
-  const [selectedAntivirusMirrors, setSelectedAntivirusMirrors] = useState<any[]>([]);
+  const [antiVirusMirrorTableRow, setAntiVirusMirrorTableRow] = useState<Array<TableRow>>([]);
+  const [selectedAntivirusMirrors, setSelectedAntivirusMirrors] = useState<Array<string>>([]);
   const [antiVirusMirrorsAddText, setAntiVirusMirrorsAddText] = useState<string>('');
   const [additionalAntiVirusDefinitionTableRow, setAdditionalAntiVirusDefinitionTableRow] =
-    useState<Array<any>>([]);
+    useState<Array<TableRow>>([]);
   const [selectedAdditionalAntivirusDefinition, setSelectedAdditionalAntivirusDefinition] =
-    useState<any[]>([]);
+    useState<Array<string>>([]);
   const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
     useState<string>('');
   const isAdvanced = useIsAdvanced();
@@ -77,14 +78,14 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
   }, [rights]);
 
   const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaAntiVirusAndAntispamInitialDetail((prev: any) => ({
+    setMtaAntiVirusAndAntispamInitialDetail((prev) => ({
       ...prev,
       [key]: value,
-    }));
+    } as MtaAntivirusAndAntispam));
   }, []);
 
   const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaAntiVirusAndAntispamDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaAntiVirusAndAntispamDetail((prev) => ({ ...prev, [key]: value } as MtaAntivirusAndAntispam));
   }, []);
 
   const [updateFrequncy, setUpdateFrequncy] = useState<string>('');
@@ -543,7 +544,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
       const calmDatabaseMirror =
         mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
       if (calmDatabaseMirror && calmDatabaseMirror.length > 0) {
-        const tableRow: Array<TRow> = [];
+        const tableRow: Array<TableRow> = [];
         calmDatabaseMirror.forEach((item: string) => {
           tableRow.push({
             id: item,
@@ -556,9 +557,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
                   setSelectedAntivirusMirrors([item]);
                 }}
               >
-                <Text size="small" weight="regular" key={item} color="gray0">
+                <ds-text as="span" size="small" weight="regular" key={item} color="gray0">
                   {item}
-                </Text>
+                </ds-text>
               </Container>,
             ],
           });
@@ -585,7 +586,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
       });
       return;
     }
-
     if (!isValidHostname(antiVirusMirrorsAddText)) {
       createSnackbar({
         key: 'error',
@@ -640,7 +640,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
       const calmDatabaseMirror =
         mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL.split(',');
       if (calmDatabaseMirror && calmDatabaseMirror.length > 0) {
-        const tableRow: Array<TRow> = [];
+        const tableRow: Array<TableRow> = [];
         calmDatabaseMirror.forEach((item: string) => {
           tableRow.push({
             id: item,
@@ -653,9 +653,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
                   setSelectedAdditionalAntivirusDefinition([item]);
                 }}
               >
-                <Text size="small" weight="light" key={item} color="gray0">
+                <ds-text as="span" size="small" weight="light" key={item} color="gray0">
                   {item}
-                </Text>
+                </ds-text>
               </Container>,
             ],
           });
@@ -769,9 +769,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.antivirus_and_antispam', 'Antivirus & Antispam')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -800,7 +800,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         padding={{ all: 'extralarge' }}
@@ -815,9 +815,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('label.antispam', 'Antispam')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           orientation="horizontal"
@@ -828,6 +828,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
         >
           <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
             <Input
+              isRequired
               label={t(
                 'mta.add_this_prefix_to_spam_mail_subject',
                 'Add this prefix to the Spam mail subject',
@@ -940,9 +941,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('label.antivirus_definitions', 'Antivirus Definitions')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container crossAlignment="flex-start" padding={{ bottom: 'large' }} height="auto">
@@ -1068,7 +1069,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
               headers={antiVirusMirrorHeader}
               showCheckbox={false}
               selectedRows={selectedAntivirusMirrors}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>
@@ -1084,7 +1085,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
               headers={additionalVirusDefinitionHeader}
               showCheckbox={false}
               selectedRows={selectedAdditionalAntivirusDefinition}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>
@@ -1098,6 +1099,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
         >
           <Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="70%">
             <Input
+              isRequired
               label={t('mta.definition_update_frequency', 'Definition Update Frenquency')}
               backgroundColor="gray5"
               value={updateFrequncy}
@@ -1122,7 +1124,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
             />
           </Container>
         </Container>
-
         <Container
           orientation="horizontal"
           mainAlignment="space-between"
@@ -1222,19 +1223,19 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
           }
         >
           <Container>
-            <Text overflow="break-word" weight="regular">
+            <ds-text as="p" overflow="break-word" weight="regular">
               {t(
                 'mta.remove_virus_difinition_warning_line_1',
                 'Removing a virus definition will reduce the chance to detect potential threats. This operation is not reversible',
               )}
-            </Text>
+            </ds-text>
           </Container>
           <Container
             mainAlignment="flex-start"
             crossAlignment="flex-start"
             padding={{ top: 'extralarge', bottom: 'extralarge' }}
           >
-            <Text overflow="break-word" weight="regular">
+            <ds-text as="p" overflow="break-word" weight="regular">
               {
                 <Trans
                   i18nKey="mta.remove_virus_difinition_warning_line_2"
@@ -1245,7 +1246,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
                   }}
                 />
               }
-            </Text>
+            </ds-text>
           </Container>
         </Modal>
       </Container>

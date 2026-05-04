@@ -16,6 +16,7 @@ import {
   CLOSED,
   INTERACTIVE,
   LOCKED,
+  LOCKEDOUT,
   MAINTENANCE,
   MANAGE_NO_SEND,
   NOT_SET,
@@ -887,6 +888,13 @@ export const AccountStatus = (t: TFunction): Array<{ value: string; label: strin
     value: LOCKED,
   },
   {
+    label: `${t('label.lockout', 'Lockout')} (${t(
+      'label.login_is_disabled',
+      'Login is disabled',
+    )})`,
+    value: LOCKEDOUT,
+  },
+  {
     label: `${t('label.closed', 'Closed')} (${t('label.soft_deleted', 'Soft-deleted')})`,
     value: CLOSED,
   },
@@ -1100,15 +1108,21 @@ export const CertificateTypes = (t: TFunction): Array<{ value: string; label: st
 
 export const getDateFromStr = (serverStr: string): any => {
   if (serverStr === null || serverStr === undefined) return null;
-  const d = new Date();
-  const yyyy = parseInt(serverStr.substr(0, 4), 10);
-  const MM = parseInt(serverStr.substr(4, 2), 10);
-  const dd = parseInt(serverStr.substr(6, 2), 10);
-  d.setFullYear(yyyy);
-  d.setMonth(MM - 1);
-  d.setMonth(MM - 1);
-  d.setDate(dd);
-  return d;
+
+  const parsedDateTimeWithMillis = parse(serverStr, 'yyyyMMddHHmmss.SSSX', new Date());
+  if (!Number.isNaN(parsedDateTimeWithMillis.getTime())) {
+    return parsedDateTimeWithMillis;
+  }
+
+  const parsedDateTimeWithoutMillis = parse(serverStr, 'yyyyMMddHHmmssX', new Date());
+  if (!Number.isNaN(parsedDateTimeWithoutMillis.getTime())) {
+    return parsedDateTimeWithoutMillis;
+  }
+
+  const yyyy = Number.parseInt(serverStr.substring(0, 4), 10);
+  const MM = Number.parseInt(serverStr.substring(4, 6), 10);
+  const dd = Number.parseInt(serverStr.substring(6, 8), 10);
+  return new Date(yyyy, MM - 1, dd);
 };
 
 /**
@@ -1117,12 +1131,12 @@ export const getDateFromStr = (serverStr: string): any => {
  */
 export const getDateTimeFromStr = (serverStr: string): Date | null => {
   if (serverStr === null || serverStr === undefined) return null;
-  const yyyy = parseInt(serverStr.substring(0, 4), 10);
-  const MM = parseInt(serverStr.substring(4, 6), 10);
-  const dd = parseInt(serverStr.substring(6, 8), 10);
-  const hh = parseInt(serverStr.substring(8, 10), 10);
-  const mm = parseInt(serverStr.substring(10, 12), 10);
-  const ss = parseInt(serverStr.substring(12, 14), 10);
+  const yyyy = Number.parseInt(serverStr.substring(0, 4), 10);
+  const MM = Number.parseInt(serverStr.substring(4, 6), 10);
+  const dd = Number.parseInt(serverStr.substring(6, 8), 10);
+  const hh = Number.parseInt(serverStr.substring(8, 10), 10);
+  const mm = Number.parseInt(serverStr.substring(10, 12), 10);
+  const ss = Number.parseInt(serverStr.substring(12, 14), 10);
   return new Date(yyyy, MM - 1, dd, hh, mm, ss);
 };
 
@@ -1521,12 +1535,13 @@ export function useLocalStorage<T>(key: string, initialValue: T): any {
     try {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
+    } catch {
       return initialValue;
     }
   });
   const setValue = (value: T | ((val: T) => T)): any => {
-    const valueToStore = value instanceof Function ? value(storedValue) : value;
+    const valueToStore =
+      typeof value === 'function' ? (value as (val: T) => T)(storedValue) : value;
     setStoredValue(valueToStore);
     localStorage.setItem(key, JSON.stringify(valueToStore));
   };
@@ -1611,11 +1626,11 @@ export function bytesToHumanReadable(bytes: number): string {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   const sizeIndex = Math.min(i, sizes.length - 1);
-  return `${parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
+  return `${Number.parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
 }
 
 export function bytesToMB(bytes: number): number {
-  return parseFloat((bytes / 1024 / 1024).toFixed(2));
+  return Number.parseFloat((bytes / 1024 / 1024).toFixed(2));
 }
 
 export function mbToBytes(mb: number): number {
@@ -1633,7 +1648,7 @@ export const formatZimbraDate = (timestamp: string | undefined | null): string =
     const parsedDate = parse(timestamp, 'yyyyMMddHHmmss.SSSX', new Date());
 
     // Check if the result is a valid date object
-    if (isNaN(parsedDate.getTime())) {
+    if (Number.isNaN(parsedDate.getTime())) {
       return '';
     }
 

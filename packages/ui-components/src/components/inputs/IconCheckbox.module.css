@@ -1,0 +1,55 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.iconWrapper {
+	border-radius: var(--icon-wrapper-radius);
+	background: var(--icon-wrapper-bg);
+	transition:
+		background 0.2s ease-out,
+		0.2s ease-out;
+}
+
+.iconWrapper svg {
+	transition: fill 0.2s ease-out;
+	fill: var(--icon-fill);
+}
+
+.iconWrapper:not(.disabled):focus {
+	outline: none;
+	background: var(--icon-wrapper-bg-focus);
+}
+
+.iconWrapper:not(.disabled):focus svg {
+	fill: var(--icon-fill-focus);
+}
+
+.iconWrapper:not(.disabled):hover {
+	outline: none;
+	background: var(--icon-wrapper-bg-hover);
+}
+
+.iconWrapper:not(.disabled):hover svg {
+	fill: var(--icon-fill-hover);
+}
+
+.iconWrapper:not(.disabled):active {
+	outline: none;
+	background: var(--icon-wrapper-bg-active);
+}
+
+.iconWrapper.disabled {
+	background: var(--icon-wrapper-bg-disabled);
+}
+
+.iconWrapper.disabled svg {
+	fill: var(--icon-fill-disabled);
+}
+
+.label {
+	white-space: normal;
+	padding-left: var(--padding-small);
+	user-select: none;
+}

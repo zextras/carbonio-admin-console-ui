@@ -3,13 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {   Container,  Input,  Row,  Text } from "@zextras/ui-components";
-import {  FC, useContext, useMemo  } from "react";
-import {  Trans, useTranslation  } from "react-i18next";
+import { Container, LabeledValue, Row } from '@zextras/ui-components';
+import { FC, useContext, useMemo } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import {  READ_MAILS_ONLY  } from "../../../../../../constants";
-import {  delegateRightsType  } from "../../../../../utility/utils";
-import {  AccountContext  } from "../../account-context";
+import { READ_MAILS_ONLY } from '../../../../../../constants';
+import { delegateRightsType } from '../../../../../utility/utils';
+import { AccountContext } from '../../account-context';
 
 const DelegateAddSection: FC = () => {
   const [t] = useTranslation();
@@ -21,26 +21,18 @@ const DelegateAddSection: FC = () => {
     <>
       <Container
         mainAlignment="flex-start"
-        padding={{ left: "large", right: "extralarge", bottom: "large" }}
+        padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
       >
         <Row mainAlignment="flex-start" width="100%">
-          <Row
-            padding={{ top: "large" }}
-            width="100%"
-            mainAlignment="space-between"
-          >
-            <Text size="small" color="gray0" weight="bold">
-              {t("account_details.abstract", `Abstract`)}
-            </Text>
+          <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+            <ds-text size="small" color="gray0" weight="bold" as="h3">
+              {t('account_details.abstract', `Abstract`)}
+            </ds-text>
           </Row>
         </Row>
         <Row mainAlignment="flex-start" width="100%">
-          <Row
-            padding={{ top: "large" }}
-            width="100%"
-            mainAlignment="space-between"
-          >
-            <Text size="small" color="gray0" weight="bold">
+          <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+            <ds-text size="small" color="gray0" weight="bold" as="h3">
               {
                 <Trans
                   i18nKey="account_details.deligate_abstract_text"
@@ -49,39 +41,28 @@ const DelegateAddSection: FC = () => {
                     granteeEmail: deligateDetail?.grantee[0]?.name,
                     targetEmail: accountDetail?.zimbraMailDeliveryAddress,
                     right:
-                      deligateDetail?.right?.[0]?._content === "sendAs"
-                        ? t("account_details.as", "as")
-                        : t("account_details.on_behalf_of", "on behalf of"),
+                      deligateDetail?.right?.[0]?._content === 'sendAs'
+                        ? t('account_details.as', 'as')
+                        : t('account_details.on_behalf_of', 'on behalf of'),
                   }}
                 />
               }
-            </Text>
+            </ds-text>
           </Row>
         </Row>
         <Row width="100%" padding={{ top: "medium" }}>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Row mainAlignment="flex-start" width="100%">
-          <Row
-            padding={{ top: "large" }}
-            width="100%"
-            mainAlignment="space-between"
-          >
-            <Input
-              label={t("account_details.delegate_rights", "Delegate`s rights")}
+          <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+            <LabeledValue
+              label={t('account_details.delegate_rights', 'Delegate`s rights')}
               backgroundColor="gray5"
-              defaultValue={
-                DELEGETES_RIGHTS_TYPE.find(
-                  (item: any) => item.value === deligateDetail?.delegeteRights,
-                )?.label
-              }
               value={
                 DELEGETES_RIGHTS_TYPE.find(
                   (item: any) => item.value === deligateDetail?.delegeteRights,
                 )?.label
               }
-              // onChange={changeAccDetail}
-              inputName="displayName"
             />
           </Row>
         </Row>
@@ -89,39 +70,34 @@ const DelegateAddSection: FC = () => {
           <></>
         ) : (
           <Row mainAlignment="flex-start" width="100%">
-            <Row
-              padding={{ top: "large" }}
-              width="100%"
-              mainAlignment="space-between"
-            >
-              <Input
-                label={t("account_details.sendin_options", "Sending Options")}
+            <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+              <LabeledValue
+                label={t('account_details.sendin_options', 'Sending Options')}
                 backgroundColor="gray5"
                 defaultValue={t(
-                  "account_details.send_recipients_see_the_mail",
-                  "Send {{right}} (recipients will display this sender email {{targetEmail}})",
+                  'account_details.send_recipients_see_the_mail',
+                  'Send {{right}} (recipients will display this sender email {{targetEmail}})',
                   {
                     granteeEmail: deligateDetail?.grantee?.[0]?.name,
                     targetEmail: accountDetail?.zimbraMailDeliveryAddress,
                     right:
-                      deligateDetail?.right?.[0]?._content === "sendAs"
-                        ? t("account_details.as", "as")
-                        : t("account_details.on_behalf_of", "on behalf of"),
+                      deligateDetail?.right?.[0]?._content === 'sendAs'
+                        ? t('account_details.as', 'as')
+                        : t('account_details.on_behalf_of', 'on behalf of'),
                   },
                 )}
                 value={t(
-                  "account_details.send_recipients_see_the_mail",
-                  "Send {{right}} (recipients will display this sender email {{targetEmail}})",
+                  'account_details.send_recipients_see_the_mail',
+                  'Send {{right}} (recipients will display this sender email {{targetEmail}})',
                   {
                     granteeEmail: deligateDetail?.grantee?.[0]?.name,
                     targetEmail: accountDetail?.zimbraMailDeliveryAddress,
                     right:
-                      deligateDetail?.right?.[0]?._content === "sendAs"
-                        ? t("account_details.as", "as")
-                        : t("account_details.on_behalf_of", "on behalf of"),
+                      deligateDetail?.right?.[0]?._content === 'sendAs'
+                        ? t('account_details.as', 'as')
+                        : t('account_details.on_behalf_of', 'on behalf of'),
                   },
                 )}
-                inputName="displayName"
               />
             </Row>
           </Row>

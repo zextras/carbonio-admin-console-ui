@@ -3,15 +3,28 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useDomainStore  } from '@zextras/admin-ui-bootstrap';
-import {   Container,  CustomTextArea,  Icon,  Input,  Row,  Select,  SelectItem,  Text } from '@zextras/ui-components';
-import {  ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState  } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import {
+  Container,
+  CustomTextArea,
+  Input,
+  LabeledValue,
+  ListRow,
+  Row,
+  Select,
+  SelectItem,
+} from '@zextras/ui-components';
+import { useDomainStore } from '@zextras/ui-shared';
+import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import ListRow from '../../../list/list-row';
-import {  checkValidUserName, convertToAscii, getModifiedName  } from '../../../utility/utils';
-import {  ResourceContext  } from './resource-context';
-import {   RESOURCE_TYPE,  SCHEDULE_POLITY_TYPE,  STATUS,  TRUE_FALSE } from './resource-edit-detail-view';
+import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
+import { ResourceContext } from './resource-context';
+import {
+  RESOURCE_TYPE,
+  SCHEDULE_POLITY_TYPE,
+  STATUS,
+  TRUE_FALSE,
+} from './resource-edit-detail-view';
 
 type SelectValue = SelectItem[] | string | null;
 
@@ -251,9 +264,9 @@ const ResourceDetailSection: FC = () => {
         style={{ overflow: 'auto', padding: '16px' }}
       >
         <Row>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.details', 'Details')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container
@@ -263,6 +276,7 @@ const ResourceDetailSection: FC = () => {
             padding={{ top: 'large' }}
           >
             <Input
+              isRequired
               label={t('label.resource_name', 'ResourceName')}
               backgroundColor="gray5"
               value={resourceDetail?.displayName}
@@ -280,6 +294,7 @@ const ResourceDetailSection: FC = () => {
           >
             <Row width="45%">
               <Input
+                isRequired
                 label={t('label.name', 'Name')}
                 backgroundColor="gray5"
                 value={resourceDetail?.name}
@@ -288,15 +303,13 @@ const ResourceDetailSection: FC = () => {
               />
             </Row>
             <Row width="10%" style={{ padding: '12px' }}>
-              <Icon icon="AtOutline" color="gray0" size="large" />
+              <ds-icon icon="AtOutline" color="gray0" size="large"></ds-icon>
             </Row>
             <Row width="45%">
-              <Input
+              <LabeledValue
                 label={t('label.domain', 'Domain')}
                 backgroundColor="gray5"
                 value={resourceDetail?.domain}
-                inputName="domain"
-                disabled
               />
             </Row>
           </Container>
@@ -395,7 +408,7 @@ const ResourceDetailSection: FC = () => {
           </Container>
         </ListRow>
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <ListRow>
           <Container
@@ -408,7 +421,6 @@ const ResourceDetailSection: FC = () => {
               label={t('label.description', 'Description')}
               backgroundColor="gray5"
               value={resourceDetail.zimbraNotes}
-              size="medium"
               inputName="zimbraNotes"
               onChange={changeResourceDetail}
             />

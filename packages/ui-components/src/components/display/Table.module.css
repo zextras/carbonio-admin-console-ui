@@ -1,0 +1,100 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.tableContainer {
+  position: relative;
+  display: block;
+}
+
+.table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table thead,
+.table tbody,
+.table tr {
+  width: 100%;
+}
+
+.table thead {
+  background-color: var(--color-gray3-regular);
+}
+
+.table thead th {
+  background-color: var(--color-gray3-regular);
+  position: sticky;
+  top: 0;
+}
+
+.table th,
+.table td {
+  padding: 0 0.5rem;
+  height: 1.875rem;
+}
+
+.headerRow {
+  /* Base styling for header row */
+}
+
+.bodyRow {
+  transition: background-color 0.2s ease-out;
+}
+
+.bodyRow:nth-child(odd) {
+  background-color: var(--color-gray6-regular);
+}
+
+.bodyRow:nth-child(odd):hover {
+  background-color: var(--color-gray6-hover);
+}
+
+.bodyRow:nth-child(even) {
+  background-color: var(--color-gray5-regular);
+}
+
+.bodyRow:nth-child(even):hover {
+  background-color: var(--color-gray5-hover);
+}
+
+.bodyRow.selected {
+  background-color: var(--color-highlight-regular) !important;
+}
+
+.bodyRow.highlight {
+  background-color: var(--color-highlight-regular) !important;
+}
+
+.bodyRow.clickable {
+  cursor: pointer;
+}
+
+.bodyRow:hover .checkbox,
+.bodyRow:focus .checkbox {
+  display: block;
+}
+
+.checkbox {
+  display: none;
+}
+
+.checkbox.show {
+  display: block;
+}
+
+.text {
+  /* Can be extended if needed */
+}
+
+.bodyRow:hover .text.hidden,
+.bodyRow:focus .text.hidden {
+  display: none;
+}
+
+.text.hidden:not(.checkbox) {
+  /* Target text elements that have hidden class but are not checkboxes */
+}

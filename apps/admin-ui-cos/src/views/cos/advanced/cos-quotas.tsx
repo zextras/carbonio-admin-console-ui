@@ -3,15 +3,26 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {   Container,  CustomTextArea,  Input,  Padding,  Row,  Select,  SingleSelectionOnChange,  Text } from '@zextras/ui-components';
-import {  ChangeEvent, FC  } from 'react';
-import {  useTranslation  } from 'react-i18next';
+import {
+  Container,
+  CustomTextArea,
+  Input,
+  ListRow,
+  Padding,
+  Row,
+  Select,
+  SingleSelectionOnChange,
+} from '@zextras/ui-components';
+import { ChangeEvent, FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {  AccountType  } from '../../../../types/account';
-import {  TimeItems  } from '../../../../types/general';
-import ListRow from '../../list/list-row';
+import { AccountType } from '../../../../types/account';
+import { TimeItems } from '../../../../types/general';
+import { ComputedLimit, QuotaSource } from '../../../services/get-cos-quota';
+import COSQuotasNew from './cos-quotas-new';
 
 type QuotaProps = {
+  isTotalQuotaActive: boolean;
   isAdvanced: boolean;
   showFileQuotaLimitMsg: boolean;
   showAccountQuotaLimitMsg: boolean;
@@ -28,9 +39,14 @@ type QuotaProps = {
   changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
   onZimbraQuotaWarnIntervalNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onZimbraQuotaWarnIntervalTypeChange: SingleSelectionOnChange;
+  totalComputedQuotaLimit?: ComputedLimit;
+  totalQuotaSource?: QuotaSource;
+  initialTotalComputedQuotaLimit?: ComputedLimit;
+  onTotalQuotaChange: (value?: ComputedLimit) => void;
 };
 
 const COSQuotas: FC<QuotaProps> = ({
+  isTotalQuotaActive,
   isAdvanced,
   showFileQuotaLimitMsg,
   showAccountQuotaLimitMsg,
@@ -47,6 +63,10 @@ const COSQuotas: FC<QuotaProps> = ({
   changeValue,
   onZimbraQuotaWarnIntervalNumChange,
   onZimbraQuotaWarnIntervalTypeChange,
+  totalComputedQuotaLimit,
+  totalQuotaSource,
+  initialTotalComputedQuotaLimit,
+  onTotalQuotaChange,
 }) => {
   const [t] = useTranslation();
 
@@ -83,9 +103,7 @@ const COSQuotas: FC<QuotaProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <Text size="extralarge" weight="bold">
-        {labels.quotas}
-      </Text>
+      <ds-text as="strong" weight="bold">{labels.quotas}</ds-text>
       <Row mainAlignment="flex-start" width="100%">
         <Container
           height="fit"
@@ -93,48 +111,64 @@ const COSQuotas: FC<QuotaProps> = ({
           background={'gray6'}
           padding={{ top: 'large' }}
         >
-          <ListRow>
-            {isAdvanced && initFileQuotaLimitGBValue && (
-              <Container padding={{ right: 'small' }}>
-                <Input
-                  label={labels.filesAccountQuotaGB}
-                  value={fileQuotaLimitGBValue}
-                  backgroundColor="gray5"
-                  inputName="fileQuotaLimit"
-                  onChange={onFileQuotaChange}
-                  disabled={readonlyCOS}
-                />
-                {showFileQuotaLimitMsg && (
-                  <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                    <Padding top="small">
-                      <Text size="extrasmall" weight="regular" color="primary">
-                        {labels.maximumDigitsAllowed}
-                      </Text>
-                    </Padding>
+          <ListRow crossAlignment={'flex-end'}>
+            {!isTotalQuotaActive ? (
+              <>
+                {isAdvanced && initFileQuotaLimitGBValue && (
+                  <Container padding={{ right: 'small' }}>
+                    <Input
+                      label={labels.filesAccountQuotaGB}
+                      value={fileQuotaLimitGBValue}
+                      backgroundColor="gray5"
+                      inputName="fileQuotaLimit"
+                      onChange={onFileQuotaChange}
+                      disabled={readonlyCOS}
+                    />
+                    {showFileQuotaLimitMsg && (
+                      <Container
+                        mainAlignment="flex-start"
+                        crossAlignment="flex-start"
+                        width="fill"
+                      >
+                        <Padding top="small">
+                          <ds-text as="span" size="extrasmall" weight="regular" color="primary">
+                            {labels.maximumDigitsAllowed}
+                          </ds-text>
+                        </Padding>
+                      </Container>
+                    )}
                   </Container>
                 )}
-              </Container>
-            )}
-            <Container padding={{ right: 'small' }}>
-              <Input
-                label={labels.mailsAccountQuotaGB}
-                value={accountQuotaGBValue}
-                backgroundColor="gray5"
-                inputName="zimbraMailQuota"
-                onChange={onZimbraMailQuotaChange}
-                disabled={readonlyCOS}
-              />
-              {showAccountQuotaLimitMsg && (
-                <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                  <Padding top="small">
-                    <Text size="extrasmall" weight="regular" color="primary">
-                      {labels.maximumDigitsAllowed}
-                    </Text>
-                  </Padding>
+                <Container padding={{ right: 'small' }}>
+                  <Input
+                    label={labels.mailsAccountQuotaGB}
+                    value={accountQuotaGBValue}
+                    backgroundColor="gray5"
+                    inputName="zimbraMailQuota"
+                    onChange={onZimbraMailQuotaChange}
+                    disabled={readonlyCOS}
+                  />
+                  {showAccountQuotaLimitMsg && (
+                    <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+                      <Padding top="small">
+                         <ds-text as="span" size="extrasmall" weight="regular" color="primary">
+                           {labels.maximumDigitsAllowed}
+                         </ds-text>
+                      </Padding>
+                    </Container>
+                  )}
                 </Container>
-              )}
-            </Container>
-            <Container padding={{ left: 'small' }}>
+              </>
+            ) : (
+              <COSQuotasNew
+                totalComputedQuotaLimit={totalComputedQuotaLimit}
+                totalQuotaSource={totalQuotaSource}
+                initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
+                onChange={onTotalQuotaChange}
+                readonlyCOS={readonlyCOS}
+              />
+            )}
+            <Container>
               <Input
                 label={labels.maxContactsAllowedInTheFolder}
                 value={cosAdvanced.zimbraContactMaxNumEntries}
@@ -147,73 +181,77 @@ const COSQuotas: FC<QuotaProps> = ({
           </ListRow>
         </Container>
       </Row>
-      <Row mainAlignment="flex-start" width="100%">
-        <Container
-          height="fit"
-          crossAlignment="flex-start"
-          background={'gray6'}
-          padding={{ top: 'large' }}
-        >
-          <ListRow>
-            <Container width="100%" padding={{ right: 'small' }}>
-              <Input
-                label={labels.percentageThresholdForQuotaWarningMessages}
-                value={cosAdvanced.zimbraQuotaWarnPercent}
-                backgroundColor="gray5"
-                inputName="zimbraQuotaWarnPercent"
-                onChange={changeValue}
-                disabled={readonlyCOS}
-              />
-            </Container>
-            <Container width="72%" padding={{ left: 'small', right: 'small' }}>
-              <Input
-                label={labels.minimumDurationOfTimeBetweenQuotaWarnings}
-                value={zimbraQuotaWarnIntervalNum}
-                backgroundColor="gray5"
-                inputName="zimbraQuotaWarnInterval"
-                onChange={onZimbraQuotaWarnIntervalNumChange}
-                disabled={readonlyCOS}
-              />
-            </Container>
-            <Container width="26%" padding={{ left: 'small' }}>
-              <Select
-                items={timeItems}
-                background={'gray5'}
-                label={labels.timeRange}
-                selection={
-                  timeItems.find((item) => item.value === zimbraQuotaWarnIntervalType) ??
-                  timeItems[0]
-                }
-                showCheckbox={false}
-                onChange={onZimbraQuotaWarnIntervalTypeChange}
-                disabled={readonlyCOS}
-              />
-            </Container>
-          </ListRow>
-        </Container>
-      </Row>
-      <Row mainAlignment="flex-start" width="100%">
-        <Container
-          height="fit"
-          crossAlignment="flex-start"
-          background={'gray6'}
-          padding={{ top: 'large', bottom: 'large' }}
-        >
-          <ListRow>
-            <Container>
-              <CustomTextArea
-                label={labels.quotaWarningMessageTemplate}
-                value={cosAdvanced.zimbraQuotaWarnMessage}
-                backgroundColor="gray5"
-                inputName="zimbraQuotaWarnMessage"
-                onChange={changeValue}
-                disabled={readonlyCOS}
-              />
-            </Container>
-          </ListRow>
-        </Container>
-      </Row>
-      <divider-wc></divider-wc>
+      {!isTotalQuotaActive && (
+        <Row mainAlignment="flex-start" width="100%">
+          <Container
+            height="fit"
+            crossAlignment="flex-start"
+            background={'gray6'}
+            padding={{ top: 'large' }}
+          >
+            <ListRow>
+              <Container width="100%" padding={{ right: 'small' }}>
+                <Input
+                  label={labels.percentageThresholdForQuotaWarningMessages}
+                  value={cosAdvanced.zimbraQuotaWarnPercent}
+                  backgroundColor="gray5"
+                  inputName="zimbraQuotaWarnPercent"
+                  onChange={changeValue}
+                  disabled={readonlyCOS}
+                />
+              </Container>
+              <Container width="72%" padding={{ left: 'small', right: 'small' }}>
+                <Input
+                  label={labels.minimumDurationOfTimeBetweenQuotaWarnings}
+                  value={zimbraQuotaWarnIntervalNum}
+                  backgroundColor="gray5"
+                  inputName="zimbraQuotaWarnInterval"
+                  onChange={onZimbraQuotaWarnIntervalNumChange}
+                  disabled={readonlyCOS}
+                />
+              </Container>
+              <Container width="26%" padding={{ left: 'small' }}>
+                <Select
+                  items={timeItems}
+                  background={'gray5'}
+                  label={labels.timeRange}
+                  selection={
+                    timeItems.find((item) => item.value === zimbraQuotaWarnIntervalType) ??
+                    timeItems[0]
+                  }
+                  showCheckbox={false}
+                  onChange={onZimbraQuotaWarnIntervalTypeChange}
+                  disabled={readonlyCOS}
+                />
+              </Container>
+            </ListRow>
+          </Container>
+        </Row>
+      )}
+      {!isTotalQuotaActive && (
+        <Row mainAlignment="flex-start" width="100%">
+          <Container
+            height="fit"
+            crossAlignment="flex-start"
+            background={'gray6'}
+            padding={{ top: 'large', bottom: 'large' }}
+          >
+            <ListRow>
+              <Container>
+                <CustomTextArea
+                  label={labels.quotaWarningMessageTemplate}
+                  value={cosAdvanced.zimbraQuotaWarnMessage}
+                  backgroundColor="gray5"
+                  inputName="zimbraQuotaWarnMessage"
+                  onChange={changeValue}
+                  disabled={readonlyCOS}
+                />
+              </Container>
+            </ListRow>
+          </Container>
+        </Row>
+      )}
+      <ds-divider></ds-divider>
     </Row>
   );
 };

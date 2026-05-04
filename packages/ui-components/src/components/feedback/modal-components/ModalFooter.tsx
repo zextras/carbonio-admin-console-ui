@@ -3,47 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import clsx from 'clsx';
 import React, { useMemo } from 'react';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
 import { AnyColor } from '../../../types/utils';
 import { Button } from '../../basic/button/Button';
 import { Tooltip } from '../../display/Tooltip';
 import { Container } from '../../layout/Container';
 import { Padding } from '../../layout/Padding';
-
-const OptionalFooterContainer = styled(Container)`
-	min-width: 0.0625rem;
-	flex-basis: auto;
-	flex-grow: 1;
-`;
-
-const ButtonContainer = styled(Container)<{ $pushLeftFirstChild?: boolean }>`
-	min-width: 0.0625rem;
-	flex-basis: auto;
-	flex-grow: 1;
-	${({ $pushLeftFirstChild }): SimpleInterpolation =>
-		$pushLeftFirstChild &&
-		css`
-			> * {
-				&:first-child {
-					margin-right: auto;
-				}
-			}
-		`}
-`;
-const DismissButton = styled(Button)`
-	margin-right: ${(props): string => props.theme.sizes.padding.large};
-	flex-basis: auto;
-	min-width: 6.25rem;
-	flex-shrink: 1;
-`;
-
-const ConfirmButton = styled(Button)`
-	flex-basis: auto;
-	min-width: 6.25rem;
-	flex-shrink: 1;
-`;
+import styles from './ModalFooter.module.css';
 
 type ModalFooterProps = {
 	/** Modal type */
@@ -84,7 +52,7 @@ type ModalFooterProps = {
 
 type ModalFooterContentProps = Omit<ModalFooterProps, 'customFooter'>;
 
-const ModalFooterContent = ({
+function ModalFooterContent({
 	type,
 	centered,
 	onConfirm,
@@ -100,17 +68,25 @@ const ModalFooterContent = ({
 	errorActionLabel,
 	optionalFooter,
 	onErrorAction,
-	secondaryActionTooltip
-}: ModalFooterContentProps): React.JSX.Element => {
+	secondaryActionTooltip,
+}: ModalFooterContentProps): React.JSX.Element {
 	const secondaryButton = useMemo(() => {
 		let button;
 		if (type === 'error' && onErrorAction) {
-			button = <DismissButton onClick={onErrorAction} color="secondary" label={errorActionLabel} />;
+			button = (
+				<Button
+					className={styles.dismissButton}
+					onClick={onErrorAction}
+					color="secondary"
+					label={errorActionLabel}
+				/>
+			);
 		} else {
 			button =
 				(onSecondaryAction && secondaryActionLabel && (
 					<Tooltip disabled={!secondaryActionTooltip} label={secondaryActionTooltip}>
-						<DismissButton
+						<Button
+							className={styles.dismissButton}
 							color="primary"
 							type="outlined"
 							onClick={onSecondaryAction}
@@ -120,7 +96,12 @@ const ModalFooterContent = ({
 					</Tooltip>
 				)) ||
 				(dismissLabel && onClose && (
-					<DismissButton color="secondary" onClick={onClose} label={dismissLabel} />
+					<Button
+						className={styles.dismissButton}
+						color="secondary"
+						onClick={onClose}
+						label={dismissLabel}
+					/>
 				)) ||
 				undefined;
 		}
@@ -134,31 +115,33 @@ const ModalFooterContent = ({
 		secondaryActionDisabled,
 		secondaryActionTooltip,
 		dismissLabel,
-		onClose
+		onClose,
 	]);
 
 	return (
 		<>
 			{optionalFooter && centered && (
-				<OptionalFooterContainer
+				<Container
+					className={styles.optionalFooterContainer}
 					padding={{ bottom: 'large' }}
 					orientation="horizontal"
 					mainAlignment="flex-start"
 				>
 					{optionalFooter}
-				</OptionalFooterContainer>
+				</Container>
 			)}
-			<ButtonContainer
+			<Container
+				className={clsx(styles.buttonContainer, optionalFooter && !centered && styles.pushLeftFirstChild)}
 				orientation="horizontal"
 				mainAlignment={centered ? 'center' : 'flex-end'}
-				$pushLeftFirstChild={optionalFooter != null && !centered}
 			>
 				{!centered && optionalFooter}
 				{!centered && <Padding right="large" />}
 				{secondaryButton}
 				{(onConfirm || onClose) && (
 					<Tooltip label={confirmTooltip} disabled={!confirmTooltip}>
-						<ConfirmButton
+						<Button
+							className={styles.confirmButton}
 							color={confirmColor}
 							onClick={(onConfirm || onClose) as NonNullable<typeof onClose | typeof onConfirm>}
 							label={confirmLabel}
@@ -166,10 +149,10 @@ const ModalFooterContent = ({
 						/>
 					</Tooltip>
 				)}
-			</ButtonContainer>
+			</Container>
 		</>
 	);
-};
+}
 
 const ModalFooter = ({
 	customFooter,

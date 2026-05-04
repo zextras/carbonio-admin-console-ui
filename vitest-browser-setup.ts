@@ -5,10 +5,16 @@
  */
 import 'vitest-browser-react';
 
-import { resetMockWorker, startMockWorker, stopMockWorker } from 'admin-ui-test-utils';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
+// IMPORTANT: Stub globals BEFORE importing anything that might use them
 vi.stubGlobal('BASE_PATH', '');
+
+import {
+  resetMockWorker,
+  startMockWorker,
+  stopMockWorker,
+} from './packages/test-utils/src/browser/worker';
 
 // Mock TinyMCE global object to prevent errors during module imports
 vi.stubGlobal('tinymce', {
@@ -43,7 +49,7 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(globalThis, 'localStorage', {
   value: localStorageMock,
 });
 

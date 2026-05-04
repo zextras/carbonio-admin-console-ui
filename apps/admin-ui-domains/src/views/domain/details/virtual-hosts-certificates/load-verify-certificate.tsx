@@ -4,17 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch, useDomainStore, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
   CustomTextArea,
-  Icon,
   Padding,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -304,9 +302,9 @@ export const LoadAndVerifyCert: FC<{
       mainAlignment="flex-start"
       crossAlignment="flex-start"
     >
-      <Text size="large" weight="bold">
+      <ds-text as="h2" size="large" weight="bold">
         {t('label.upload_verify_certificate', 'Upload and Verify Certificate')}
-      </Text>
+      </ds-text>
       <Container
         orientation="horizontal"
         mainAlignment="flex-start"
@@ -314,20 +312,21 @@ export const LoadAndVerifyCert: FC<{
         width="fill"
       >
         <Container padding={{ right: '0.25rem' }} width="fit">
-          <Icon icon="InfoOutline" color="secondary" />
+          <ds-icon icon="InfoOutline" color="secondary"></ds-icon>
         </Container>
-        <Text color="secondary">
+        <ds-text as="p" color="secondary">
           {t(
             'label.certificate_alert_helperText',
             'The certificate will be available once the Proxy is restarted',
           )}
-        </Text>
+        </ds-text>
       </Container>
 
       <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
-        <Text weight="bold">{t('label.domain_certificate', 'Domain Certificate')}</Text>
+        <ds-text as="label" weight="bold">{t('label.domain_certificate', 'Domain Certificate')}</ds-text>
         <Padding bottom="small" />
         <CustomTextArea
+          isRequired
           label={t('label.upload_paste_certificate', 'Upload or paste your Certificate')}
           backgroundColor="gray5"
           value={objDomainCertificate.content || ''}
@@ -361,11 +360,12 @@ export const LoadAndVerifyCert: FC<{
 
       <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
         <Padding bottom="small" />
-        <Text weight="bold">
+        <ds-text as="label" weight="bold">
           {t('label.domain_certificate_ca_chain', 'Domain Certificate CA Chain')}
-        </Text>
+        </ds-text>
         <Padding bottom="small" />
         <CustomTextArea
+          isRequired
           label={t(
             'label.upload_paste_certificate_ca_chain',
             'Upload or paste your Certificate CA Chain',
@@ -402,9 +402,10 @@ export const LoadAndVerifyCert: FC<{
 
       <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
         <Padding bottom="small" />
-        <Text weight="bold">{t('label.domain_certificate_private_key', 'Domain Private Key')}</Text>
+        <ds-text as="label" weight="bold">{t('label.domain_certificate_private_key', 'Domain Private Key')}</ds-text>
         <Padding bottom="small" />
         <CustomTextArea
+          isRequired
           label={t('label.upload_paste_private_key', 'Upload or paste your Private Key')}
           backgroundColor="gray5"
           value={objDomainCertificatePrivateKey.content || ''}

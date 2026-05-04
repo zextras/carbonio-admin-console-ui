@@ -1,0 +1,45 @@
+.verticalDivider {
+	position: relative;
+	overflow: visible;
+	height: 100%;
+	width: 1px;
+	max-width: 1px;
+	min-width: 1px;
+	background-color: var(--color-gray2-regular);
+	transition: background 0.2s;
+}
+
+.verticalDivider:hover {
+	background-color: var(--color-gray2-hover);
+}
+
+.bubble {
+	cursor: pointer;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	top: 50%;
+	left: -12px;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	border: none;
+	padding: 0;
+	background-color: var(--color-gray2-regular);
+	transition: background-color 0.2s, transform 0.2s;
+	transform: scaleX(1);
+}
+
+.bubble:hover {
+	background-color: var(--color-gray2-hover);
+}
+
+.bubble:active {
+	background-color: var(--color-gray2-active);
+}
+
+.bubble[data-open='false'] {
+	transform: scaleX(-1);
+}

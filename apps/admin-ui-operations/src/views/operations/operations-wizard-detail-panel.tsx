@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Input, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import { Button, Container, LabeledValue, ListRow, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -16,7 +16,6 @@ import {
   STARTED,
   TRUE_OPERTION,
 } from '../../constants';
-import ListRow from '../list/list-row';
 import { copyTextToClipboard } from '../utility/utils';
 import MiliSecondToDate from './functions/miliSecondToDate';
 
@@ -86,12 +85,12 @@ const OperationsWizardDetailPanel: FC<{
     <Container background="gray6">
       <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
         <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-          <Text size="extralarge" weight="bold">
+          <ds-text as="h2"  weight="bold">
             {t('operations.operationname_on_servername', '{{operationName}} on {{serverName}}', {
               operationName: selectedData?.name,
               serverName: selectedData?.serverName,
             })}
-          </Text>
+          </ds-text>
         </Row>
         <Row padding={{ horizontal: 'small' }}>
           <Button
@@ -102,7 +101,7 @@ const OperationsWizardDetailPanel: FC<{
           />
         </Row>
       </Row>
-      <divider-wc></divider-wc>
+      <ds-divider></ds-divider>
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
         <Row
           mainAlignment="flex-end"
@@ -136,27 +135,27 @@ const OperationsWizardDetailPanel: FC<{
           )}
         </Row>
         <Row mainAlignment="flex-start" padding={{ vertical: 'large' }} width="100%">
-          <Text size="medium" color="gray0" weight="bold">
+          <ds-text as="h2" size="medium" color="gray0" weight="bold">
             {t('operations.details', 'Details')}
-          </Text>
+          </ds-text>
           <Row width="100%" padding={{ top: 'large' }}>
             <ListRow>
               <Container padding={{ right: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.operation_type', 'Operation Type')}
                   value={selectedData?.module || ''}
                 />
               </Container>
               <Container padding={{ right: 'small', left: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.who_started_it', 'Who started it?')}
                   value={selectedData?.parameters?.requesterAddress || ''}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.status', 'Status')}
                   value={(selectedData?.type ? selectedData?.type : status) || ''}
@@ -167,14 +166,14 @@ const OperationsWizardDetailPanel: FC<{
           <Row width="100%" padding={{ top: 'large' }}>
             <ListRow>
               <Container padding={{ right: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.submitted_at', 'Submitted at')}
                   value={selectedData?.startTime ? MiliSecondToDate(selectedData?.startTime) : ''}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.started_at', 'Started at')}
                   value={selectedData?.humanStartTime ? selectedData?.humanStartTime : ''}
@@ -184,14 +183,14 @@ const OperationsWizardDetailPanel: FC<{
           </Row>
         </Row>
         <Padding vertical="large" />
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
         <Padding vertical="large" />
         <Row mainAlignment="flex-start" padding={{ vertical: 'large' }} width="100%">
-          <Text size="medium" color="gray0" weight="bold">
+          <ds-text as="h2" size="medium" color="gray0" weight="bold">
             {t('operations.other', 'Other')}
-          </Text>
+          </ds-text>
           <Row width="100%" padding={{ top: 'large' }}>
-            <Input
+            <LabeledValue
               backgroundColor="gray6"
               label={t('operations.label.notifications', 'Notifications')}
               value={
@@ -204,14 +203,14 @@ const OperationsWizardDetailPanel: FC<{
           <Row width="100%" padding={{ top: 'large' }}>
             <ListRow>
               <Container padding={{ right: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.create_fake_blob', 'Create Fake Blob')}
                   value={selectedData?.parameters?.createFakeBlob ? TRUE_OPERTION : FALSE_OPERTION}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
-                <Input
+                <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.Deep', 'Deep')}
                   value={selectedData?.parameters?.isDeep ? TRUE_OPERTION : FALSE_OPERTION}

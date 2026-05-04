@@ -94,9 +94,7 @@ export type themeConfigStore = {
 export interface IpRangeValue {
 	label?: string;
 	value?: string;
-}
-
-interface ChildObject {
+        error?: boolean;
 	trustedIpRange?: string[];
 	trustedDevice?: number;
 }

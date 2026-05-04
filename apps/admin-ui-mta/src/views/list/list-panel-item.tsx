@@ -3,14 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  Button,Container, Padding, Row, Text  } from '@zextras/ui-components';
+import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { noop } from 'lodash-es';
 import {  FC  } from 'react';
 
 const ListPanelItem: FC<{
 	title: string;
 	isListExpanded: boolean;
-	setToggleView: any;
+	setToggleView: () => void;
 }> = ({ title, isListExpanded, setToggleView }) => (
 	<>
 		<Container
@@ -28,9 +28,9 @@ const ListPanelItem: FC<{
 				onClick={setToggleView}
 			>
 				<Padding horizontal="small">
-					<Text size="small" color="gray0" weight="bold">
+					<ds-text as="span" size="small" color="gray0" weight="bold">
 						{title}
-					</Text>
+					</ds-text>
 				</Padding>
 				<Padding horizontal="small">
 					<Button
@@ -43,7 +43,7 @@ const ListPanelItem: FC<{
 				</Padding>
 			</Row>
 		</Container>
-		<divider-wc color="gray3"></divider-wc>
+		<ds-divider color="gray3"></ds-divider>
 	</>
 );
 

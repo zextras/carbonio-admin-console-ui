@@ -4,14 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
-import { Container, Icon, Row, Table, Text, Tooltip } from '@zextras/ui-components';
+import {
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  Row,
+  Table,
+  Tooltip,
+} from '@zextras/ui-components';
+import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import { bytesToSize } from '../../utility/utils';
 
 const SMART_SCAN_TYPE = {
@@ -109,46 +114,47 @@ const BackupServersListTable: FC<{
       serverList.map((s, i) => ({
         id: i?.toString(),
         columns: [
-          <Text size="small" weight="regular" key={s?.name} color="gray0">
+          <ds-text as="span" size="small" weight="regular" key={s?.name} color="gray0">
             {s?.name}
-          </Text>,
-          <Text
+          </ds-text>,
+          <ds-text
+            as="span"
             size="small"
             weight="light"
             key={s?.name}
             color={s?.backupAtStartup ? 'gray0' : 'error'}
           >
             {s?.backupAtStartup ? s?.backupAtStartup : t('label.na', 'N/A')}
-          </Text>,
-          <Text size="small" weight="light" key={s?.name} color={s?.rtStatus ? 'gray0' : 'error'}>
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={s?.name} color={s?.rtStatus ? 'gray0' : 'error'}>
             {s?.rtStatus ? s?.rtStatus : t('label.na', 'N/A')}
-          </Text>,
-          <Text size="small" weight="light" key={s?.name} color={s?.type ? 'gray0' : 'error'}>
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={s?.name} color={s?.type ? 'gray0' : 'error'}>
             {s?.type ? s?.type : t('label.na', 'N/A')}
-          </Text>,
+          </ds-text>,
           <Tooltip
             placement="bottom"
             label={s?.smartScanTooltip ? s?.smartScanTooltip : t('label.na', 'N/A')}
             key={s?.name}
           >
-            <Text size="small" weight="light" color={s?.smartScan ? 'gray0' : 'error'}>
+            <ds-text as="span" size="small" weight="light" color={s?.smartScan ? 'gray0' : 'error'}>
               {s?.smartScan ? s?.smartScan : t('label.na', 'N/A')}
-            </Text>
+            </ds-text>
           </Tooltip>,
           <Tooltip
             placement="bottom"
             label={s?.purgeTooltip ? s?.purgeTooltip : t('label.na', 'N/A')}
             key={s?.name}
           >
-            <Text size="small" weight="light" color={s?.purge ? 'gray0' : 'error'}>
+            <ds-text as="span" size="small" weight="light" color={s?.purge ? 'gray0' : 'error'}>
               {s?.purge ? s?.purge : t('label.na', 'N/A')}
-            </Text>
+            </ds-text>
           </Tooltip>,
-          <Text size="small" weight="light" key={s?.name} color="gray0">
+          <ds-text as="span" size="small" weight="light" key={s?.name} color="gray0">
             {s?.description}
-          </Text>,
+          </ds-text>,
           <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-            <Icon icon="FolderOutline" size="medium" />
+            <ds-icon icon="FolderOutline"></ds-icon>
             <Row padding={{ left: 'small' }}>
               <Tooltip
                 placement="bottom"
@@ -158,18 +164,19 @@ const BackupServersListTable: FC<{
                     : t('label.na', 'N/A')
                 }
               >
-                <Text
+                <ds-text
+                  as="span"
                   size="small"
                   weight="light"
                   color={s?.availableMetadataSpace ? 'gray0' : 'error'}
                 >
                   {s?.availableMetadataSpace ? s?.availableMetadataSpace : t('label.na', 'N/A')}
-                </Text>
+                </ds-text>
               </Tooltip>
             </Row>
           </Row>,
           <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-            <Icon icon="FolderOutline" size="medium" />
+            <ds-icon icon="FolderOutline"></ds-icon>
             <Row padding={{ left: 'small' }}>
               <Tooltip
                 placement="bottom"
@@ -179,13 +186,14 @@ const BackupServersListTable: FC<{
                     : t('label.na', 'N/A')
                 }
               >
-                <Text
+                <ds-text
+                  as="span"
                   size="small"
                   weight="light"
                   color={s?.availableBackupSpace ? 'gray0' : 'error'}
                 >
                   {s?.availableBackupSpace ? s?.availableBackupSpace : t('label.na', 'N/A')}
-                </Text>
+                </ds-text>
               </Tooltip>
             </Row>
           </Row>,
@@ -203,7 +211,7 @@ const BackupServersListTable: FC<{
       multiSelect={false}
       selectedRows={selectedRows}
       onSelectionChange={onSelectionChange}
-      RowFactory={CustomRowFactory}
+      RowFactory={HoverableRowFactory}
       HeaderFactory={CustomHeaderFactory}
     />
   );
@@ -383,14 +391,14 @@ const ServersList: FC = () => {
               mainAlignment="flex-start"
             >
               <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h2" size="medium" weight="bold" color="gray0">
                   {t('label.server_list', 'Server List')}
-                </Text>
+                </ds-text>
               </Row>
             </Row>
           </Container>
           <Row orientation="horizontal" width="100%" background="gray6">
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
         </Row>
         <Container
@@ -406,7 +414,7 @@ const ServersList: FC = () => {
             <BackupServersListTable
               serverList={serverList}
               selectedRows={selectedRows}
-              onSelectionChange={(selected: any): any => null}
+              onSelectionChange={() => null}
             />
           </Row>
         </Container>

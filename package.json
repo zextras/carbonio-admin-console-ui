@@ -22,6 +22,7 @@
     "deploy:dev": "pnpm exec tsx scripts/deploy.ts development",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
+    "test:headed": "HEADED=true turbo run test --no-cache",
     "type-check": "turbo run type-check",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
@@ -30,6 +31,7 @@
     "reset": "pnpm exec tsx scripts/reset.ts"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.29.0",
     "react": "^19.1.0"
   },
   "devDependencies": {
@@ -37,14 +39,14 @@
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^12.0.2",
-    "@tsconfig/node14": "^14.1.0",
+    "@tsconfig/vite-react": "^7.0.2",
     "@vitejs/plugin-react": "^5.0.2",
-    "@vitest/browser": "^4.0.5",
-    "@vitest/browser-playwright": "^4.0.5",
-    "@vitest/browser-preview": "^4.0.14",
-    "@vitest/coverage-istanbul": "^4.0.5",
-    "@vitest/ui": "^4.0.5",
-    "conventional-changelog-conventionalcommits": "^9.1.0",
+    "@vitest/browser": "^4.1.0",
+    "@vitest/browser-playwright": "^4.1.0",
+    "@vitest/browser-preview": "^4.1.0",
+    "@vitest/coverage-istanbul": "^4.1.0",
+    "@vitest/ui": "^4.1.0",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
     "depcheck": "^1.4.7",
     "eslint": "^9.39.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -54,20 +56,20 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-testing-library": "^7.6.6",
     "eslint-plugin-unused-imports": "^4.3.0",
-    "knip": "^5.70.1",
+    "knip": "^5.88.1",
     "lit": "^3.3.2",
-    "playwright": "^1.55.0",
+    "playwright": "^1.59.1",
     "pnpm": "^10.15.1",
     "react-router": "^7.13.0",
     "semantic-release": "^25.0.2",
-    "sonarqube-scanner": "^4.3.2",
+    "sonarqube-scanner": "^4.3.6",
     "tsx": "^4.21.0",
     "turbo": "latest",
-    "typescript": "^5.7.2",
+    "typescript": "^6.0.0",
     "typescript-eslint": "^8.49.0",
     "vite-plugin-svgr": "^4.5.0",
-    "vitest": "^4.0.14",
-    "vitest-browser-react": "^2.0.2"
+    "vitest": "^4.1.0",
+    "vitest-browser-react": "^2.1.0"
   },
   "browserslist": [
     ">1%",
@@ -75,19 +77,10 @@
     "Firefox ESR",
     "not dead"
   ],
-  "pnpm": {
-    "overrides": {
-      "styled-components": "5.3.11"
-    },
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "styled-components": "5.3.11"
-      }
-    }
-  },
   "msw": {
     "workerDirectory": [
       "./packages/test-utils/public",
+      "./packages/ui-shared/public",
       "./apps/admin-ui-bootstrap/public",
       "./apps/admin-ui-console/public",
       "./apps/admin-ui-dashboard/public",

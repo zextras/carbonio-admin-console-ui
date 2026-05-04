@@ -8,10 +8,10 @@ import {
   ChipInput,
   ChipItem,
   Container,
+  ListRow,
   Padding,
   Row,
   Select,
-  Text,
 } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
 import { FC, useMemo, useState } from 'react';
@@ -19,7 +19,6 @@ import { useTranslation } from 'react-i18next';
 
 import { IpRangeValue, TwoFactorAuthPolicyValues } from '../../../../types';
 import CustomChip from '../../components/customChip';
-import ListRow from '../../list/list-row';
 import { isValidIpRange, twoFactorWhatToTrust } from '../../utility/utils';
 
 type TwoFactorPolicy = {
@@ -113,17 +112,17 @@ export const TwoFactorAuthencationConfig: FC<{
           background="gray6"
         >
           <ListRow padding={{ top: 'large' }}>
-            <Text size="medium" color="gray0" weight="bold">
+            <ds-text as="h2" size="medium" color="gray0" weight="bold">
               {t('label.configuration_lbl', 'Configuration')}
-            </Text>
+            </ds-text>
           </ListRow>
           <ListRow padding={{ top: 'large' }}>
-            <Text size="small" color="gray1">
+            <ds-text as="p" size="small" color="gray1">
               {t(
                 'label.configuration_help_text',
                 'Setup the networks or the devices (IPs) that will not require the 2FA authentication',
               )}
-            </Text>
+            </ds-text>
           </ListRow>
           <ListRow padding={{ top: 'large' }}>
             <Padding right="large" width="30%">
@@ -183,7 +182,7 @@ export const TwoFactorAuthencationConfig: FC<{
                 mainAlignment="flex-start"
                 height="fill"
               >
-                <Text>{cVal.label}</Text>
+                <ds-text as="span">{cVal.label}</ds-text>
               </Container>
 
               <Padding right="large" width="30%">

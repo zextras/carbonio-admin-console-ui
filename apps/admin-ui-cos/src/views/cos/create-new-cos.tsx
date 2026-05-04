@@ -4,32 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { replaceHistory } from '@zextras/admin-ui-bootstrap';
-import { Button, Container, CustomTextArea, Input, OverlayDivision, Padding, Row, Text, useSnackbar } from '@zextras/ui-components';
+import {
+  Button,
+  Container,
+  CustomTextArea,
+  Input,
+  ListRow,
+  Padding,
+  Row,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import styled from 'styled-components';
 
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
 import { useCosStore } from '../../store/cos/store';
-import ListRow from '../list/list-row';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 6.5rem;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
 
 const CreateCos: FC = () => {
   const [t] = useTranslation();
@@ -115,7 +107,7 @@ const CreateCos: FC = () => {
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isLoading && <ds-spinner></ds-spinner>}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           crossAlignment="flex-start"
@@ -125,11 +117,11 @@ const CreateCos: FC = () => {
         >
           <Row width="100%" mainAlignment="flex-start">
             <Padding all="large">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="strong" size="medium" weight="bold" color="gray0">
                 {t('label.new_cos', 'New COS')}
-              </Text>
+              </ds-text>
             </Padding>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
         </Container>
         <Container
@@ -149,9 +141,9 @@ const CreateCos: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="strong" size="small" weight="bold" color="gray0">
                   {t('label.general_information', 'General Information')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container padding={{ all: 'small' }} crossAlignment="flex-start">
@@ -164,12 +156,12 @@ const CreateCos: FC = () => {
                     }}
                   />
                   <Padding top="small">
-                    <Text size="small" color="gray1">
+                    <ds-text as="span" size="small" color="gray1">
                       {t(
                         'cos.creatCOS.cosNameLowerCaseInfo',
                         'COS name must contain only lowercase letters.',
                       )}
-                    </Text>
+                    </ds-text>
                   </Padding>
                 </Container>
               </ListRow>

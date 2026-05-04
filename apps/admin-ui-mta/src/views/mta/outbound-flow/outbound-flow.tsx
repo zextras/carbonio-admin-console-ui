@@ -3,26 +3,29 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   ChipInput,
+  type ChipItem,
   Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Padding,
   Row,
   Select,
   Switch,
   Table,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
 import { find, isEqual, join, map, some, split, trim } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IpRangeValue, MtaOutboundFlow, Server, TRow } from '../../../../types';
+import { Attribute, IpRangeValue, MtaOutboundFlow, Server, TRow } from '../../../../types';
 import {
   ANTISPAM,
   ANTIVIRUS,
@@ -42,10 +45,7 @@ import {
   ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomChip from '../../components/customChip';
-import ListRow from '../../list/list-row';
 import { validateIpAddress } from '../../utility/utils';
 
 const MTAOutBoundFlow: FC = () => {
@@ -54,10 +54,10 @@ const MTAOutBoundFlow: FC = () => {
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const { data: configInformation = [], invalidate } = useAllConfig();
   const { data: mtaServersList = [] } = useMtaServers();
-  const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
+  const [instancesTableRows, setInstancesTableRows] = useState<Array<TRow>>([]);
 
   const { data: rights } = useCurrentUserRights();
-  const [networkValue, setNetworkValue] = useState<any>([]);
+  const [networkValue, setNetworkValue] = useState<Array<IpRangeValue>>([]);
 
   const allowSetMTA = useMemo(() => {
     const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
@@ -69,15 +69,15 @@ const MTAOutBoundFlow: FC = () => {
   const [mtaOutboundDetail, setMtaOutboundDetail] = useState<MtaOutboundFlow>();
 
   const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaOutboundFlowInitialDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaOutboundFlowInitialDetail((prev) => ({ ...prev, [key]: value } as MtaOutboundFlow));
   }, []);
 
   const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaOutboundDetail((prev: any) => ({ ...prev, [key]: value }));
+    setMtaOutboundDetail((prev) => ({ ...prev, [key]: value } as MtaOutboundFlow));
   }, []);
 
   const setInitialAndCurrentValue = useCallback(
-    (key: string, value: any) => {
+    (key: string, value: unknown) => {
       setInitialValue(key, value);
       setValue(key, value);
     },
@@ -85,16 +85,16 @@ const MTAOutBoundFlow: FC = () => {
   );
 
   const setTableValues = useCallback(
-    (server: any, tableRow: Array<TRow>) => {
-      const serviceEnabled = server?.a.filter(
+    (server: Server, tableRow: Array<TRow>) => {
+      const serviceEnabled = server?.a?.filter(
         (item: Record<string, unknown>) => item?.n === 'zimbraServiceEnabled',
       );
-      const zimbraMtaAuthEnabled = server?.a.find(
+      const zimbraMtaAuthEnabled = server?.a?.find(
         (item: Record<string, unknown>) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED,
       );
-      let antivirus = [];
-      let antispam = [];
-      let opendkim = [];
+      let antivirus: Array<Attribute> = [];
+      let antispam: Array<Attribute> = [];
+      let opendkim: Array<Attribute> = [];
       if (serviceEnabled && serviceEnabled.length > 0) {
         antivirus = serviceEnabled.filter(
           (item: Record<string, unknown>) => item?._content === ANTIVIRUS,
@@ -115,29 +115,29 @@ const MTAOutBoundFlow: FC = () => {
         isAuthEnable = t('label.enabled', 'Enabled');
       }
       tableRow.push({
-        id: server.id,
+        id: server.id ?? '',
         columns: [
-          <Text size="small" weight="regular" key={tableRow.length} color="gray0">
+          <ds-text as="span" size="small" weight="regular" key={tableRow.length} color="gray0">
             {server?.name}
-          </Text>,
-          <Text size="small" weight="light" key={tableRow.length} color="gray0">
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={tableRow.length} color="gray0">
             {antispam && antispam.length > 0
               ? t('label.active', 'Active')
               : t('label.inactive', 'Inactive')}
-          </Text>,
-          <Text size="small" weight="light" key={tableRow.length} color="gray0">
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={tableRow.length} color="gray0">
             {antivirus && antivirus.length > 0
               ? t('label.active', 'Active')
               : t('label.inactive', 'Inactive')}
-          </Text>,
-          <Text size="small" weight="light" key={tableRow.length} color="gray0">
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={tableRow.length} color="gray0">
             {isAuthEnable}
-          </Text>,
-          <Text size="small" weight="light" key={tableRow.length} color="gray0">
+          </ds-text>,
+          <ds-text as="span" size="small" weight="light" key={tableRow.length} color="gray0">
             {opendkim && opendkim.length > 0
               ? t('label.enabled', 'Enabled')
               : t('label.disabled', 'Disabled')}
-          </Text>,
+          </ds-text>,
         ],
       });
     },
@@ -258,7 +258,7 @@ const MTAOutBoundFlow: FC = () => {
   const modifyConfigRequest = useCallback(
     (attributes: Array<Record<string, string>>): void => {
       modifyConfig(attributes)
-        .then((data) => {
+        .then(() => {
           createSnackbar({
             key: 'success',
             severity: 'success',
@@ -443,10 +443,13 @@ const MTAOutBoundFlow: FC = () => {
   );
 
   const onBlockExtensionChange = useCallback(
-    (ips: IpRangeValue[]) => {
-      const data: any = [];
-      map(ips, (ip: IpRangeValue) => {
-        validateIpAddress(ip.label ?? '') ? data.push(ip) : data.push({ ...ip, error: true });
+    (ips: Array<ChipItem<string>>) => {
+      const data: Array<IpRangeValue> = [];
+      map(ips, (ip) => {
+        const ipValue: IpRangeValue = { label: ip.label };
+        validateIpAddress(ipValue.label ?? '')
+          ? data.push(ipValue)
+          : data.push({ ...ipValue, error: true });
       });
       const value = data.length === 0 ? '' : join(map(data, 'label'), ' ');
       const isErrorValueAvail = some(data || [], { error: true });
@@ -471,9 +474,9 @@ const MTAOutBoundFlow: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('mta.outbound_flow', 'Outbound Flow')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -502,7 +505,7 @@ const MTAOutBoundFlow: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         padding={{ all: 'extralarge' }}
@@ -517,9 +520,9 @@ const MTAOutBoundFlow: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('label.general_lbl', 'General')}
-          </Text>
+          </ds-text>
         </Container>
         <Container
           orientation="horizontal"
@@ -732,9 +735,9 @@ const MTAOutBoundFlow: FC = () => {
           height="auto"
           padding={{ top: 'extralarge', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.instances', 'Instances')}
-          </Text>
+          </ds-text>
         </Container>
         <ListRow>
           <Container
@@ -749,7 +752,7 @@ const MTAOutBoundFlow: FC = () => {
               rows={instancesTableRows}
               headers={instanceTableHeader}
               showCheckbox={false}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           </Container>

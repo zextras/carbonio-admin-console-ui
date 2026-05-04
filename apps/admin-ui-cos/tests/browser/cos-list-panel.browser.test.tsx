@@ -116,7 +116,11 @@ describe('CosListPanel', () => {
 
     await expect.element(page.getByText('General Information')).toHaveStyle({ opacity: '1' });
     await page.getByText('Details').click();
-    await expect.element(page.getByText('Details')).toHaveStyle({ fontWeight: 'bold' });
+    await expect.element(page.getByText('Details')).toBeVisible();
+    const allDsTexts = document.querySelectorAll('ds-text');
+    const detailsDsText = Array.from(allDsTexts).find((el) => el.textContent?.includes('Details'));
+    expect(detailsDsText).toBeTruthy();
+    expect(detailsDsText?.getAttribute('weight')).toBe('bold');
   });
 
   it('should change chevron icon when details dropdown is toggled', async () => {
@@ -129,11 +133,11 @@ describe('CosListPanel', () => {
     await expect.element(page.getByText('General Information')).toBeVisible();
 
     const buttonBeforeClick = page.getByRole('button').nth(1).element();
-    expect(buttonBeforeClick.innerHTML).toContain('icon: ChevronUpOutline');
+    expect(buttonBeforeClick.innerHTML).toContain('ChevronUpOutline');
 
     await page.getByText('Details').click();
     const buttonAfterClick = page.getByRole('button').nth(1).element();
-    expect(buttonAfterClick.innerHTML).toContain('icon: ChevronDownOutline');
+    expect(buttonAfterClick.innerHTML).toContain('ChevronDownOutline');
   });
 
   it('should change General icon when its section is toggled', async () => {
@@ -143,10 +147,10 @@ describe('CosListPanel', () => {
 
     await expect.element(page.getByText('General')).toBeVisible();
     const buttonBeforeClick = page.getByRole('button').first().element();
-    expect(buttonBeforeClick.innerHTML).toContain('icon: ChevronUpOutline');
+    expect(buttonBeforeClick.innerHTML).toContain('ChevronUpOutline');
 
     await page.getByText('General', { exact: true }).click();
     const buttonAfterClick = page.getByRole('button').first().element();
-    expect(buttonAfterClick.innerHTML).toContain('icon: ChevronDownOutline');
+    expect(buttonAfterClick.innerHTML).toContain('ChevronDownOutline');
   });
 });

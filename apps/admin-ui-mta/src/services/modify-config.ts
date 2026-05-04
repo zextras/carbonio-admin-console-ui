@@ -4,10 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/admin-ui-bootstrap';
+import { soapFetch } from '@zextras/ui-shared';
 
-export const modifyConfig = async (a: Array<any>): Promise<any> =>
+export const modifyConfig = async (
+	a: Array<Record<string, string>>,
+): Promise<Record<string, unknown>> =>
 	soapFetch(`ModifyConfig`, {
 		_jsns: 'urn:zimbraAdmin',
-		a
+		a,
 	});

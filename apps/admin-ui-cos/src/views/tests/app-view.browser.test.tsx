@@ -48,8 +48,7 @@ describe('AppView', () => {
       queryClient,
     });
 
-    // BreadCrumb should show the home icon
-    await expect.element(page.getByTestId('icon: HomeOutline')).toBeVisible();
+    await expect.element(page.getByText('Home').nth(0)).toBeVisible();
   });
 
   it('should render main container structure', async () => {
@@ -61,8 +60,7 @@ describe('AppView', () => {
       queryClient,
     });
 
-    // BreadCrumb is rendered
-    await expect.element(page.getByTestId('icon: HomeOutline')).toBeVisible();
+    await expect.element(page.getByText('Home').nth(0)).toBeVisible();
   });
 
   it('should render BreadCrumb on different routes', async () => {
@@ -74,8 +72,7 @@ describe('AppView', () => {
       queryClient,
     });
 
-    // BreadCrumb should always be visible regardless of route
-    await expect.element(page.getByTestId('icon: HomeOutline')).toBeVisible();
+    await expect.element(page.getByText('Home').nth(0)).toBeVisible();
   });
 
   it('should render CosListPanel and CosDetailPanel on list route', async () => {

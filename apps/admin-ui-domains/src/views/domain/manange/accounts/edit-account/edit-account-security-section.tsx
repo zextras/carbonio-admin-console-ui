@@ -4,82 +4,45 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useIsAdvanced } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   ChipInput,
   Container,
-  Icon,
+  CustomHeaderFactory,
+  DateTimePicker,
+  HorizontalWizard,
+  HoverableRowFactory,
+  InheritedInput,
+  InheritedSelect,
+  InheritedSwitch,
   Input,
+  ListRow,
+  Modal,
   Padding,
   Row,
   Select,
   Switch,
   Table,
-  Text,
+  Tooltip,
   useSnackbar,
+  WizardInSection,
 } from '@zextras/ui-components';
+import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { ChangeEvent, FC, ReactElement, useCallback, useContext, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import logo from '../../../../../assets/gardian.svg';
-import { DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../../../../constants';
+import { DISABLED, ENABLED, FALSE, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
-import { Section } from '../../../../app/component/section-component';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
-import ListRow from '../../../../list/list-row';
-import InheritedInput from '../../../../utility/inherited-components/inherited-input';
-import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
+import styles from './edit-account-security-section.module.css';
 import { ServicesPassphrase } from './services-passphrase';
-
-const StaticCodesContainer = styled(Row)`
-  max-width: 350px;
-`;
-const StaticCodesWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  column-count: 2;
-  padding: 16px;
-`;
-const StaticCode = styled.label`
-  display: block;
-  font-family: monospace;
-  padding: 4.95px 0;
-`;
-
-const CustomIcon = styled(Icon)`
-  width: 20px;
-  height: 20px;
-`;
-
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={t('account.new.create_otp_wizard', 'Create OTP Wizard')}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
-};
 
 const EditAccountSecuritySection: FC = () => {
   const context = useContext(AccountContext);
@@ -92,6 +55,9 @@ const EditAccountSecuritySection: FC = () => {
   const [sendEmailTo, setSendEmailTo] = useState<any[]>([]);
   const [pinCodes, setPinCodes] = useState<any>([]);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [isRestoreOtpModalOpen, setIsRestoreOtpModalOpen] = useState<boolean>(false);
+  const [selectedOtpIdForRestore, setSelectedOtpIdForRestore] = useState<string | undefined>();
+  const [isRestoreOtpInProgress, setIsRestoreOtpInProgress] = useState<boolean>(false);
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const isAdvanced = useIsAdvanced();
@@ -181,19 +147,21 @@ const EditAccountSecuritySection: FC = () => {
               mainAlignment="space-between"
             >
               <Row width="40%" mainAlignment="flex-start">
-                <QRCode data-testid="qrcode-password" size={179} value={qrData} />
+                <QRCodeSVG data-testid="qrcode-password" size={179} value={qrData} />
               </Row>
               <Row width="60%" mainAlignment="flex-start">
                 <Container>
                   <Padding top="large">
                     <Row mainAlignment="center">
-                      <StaticCodesContainer background="gray5">
-                        <StaticCodesWrapper>
+                      <Row background="gray5" style={{ maxWidth: '350px' }}>
+                        <div className={styles.staticCodesWrapper}>
                           {map(pinCodes, (singleCode: any) => (
-                            <StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
+                            <label key={singleCode.code} className={styles.staticCode}>
+                              {singleCode.code}
+                            </label>
                           ))}
-                        </StaticCodesWrapper>
-                      </StaticCodesContainer>
+                        </div>
+                      </Row>
                     </Row>
                   </Padding>
                 </Container>
@@ -211,7 +179,7 @@ const EditAccountSecuritySection: FC = () => {
                       bottom: 'small',
                     }}
                   >
-                    <Text>{t('account_details.secret_code', 'Secret Code')}</Text>
+                    <ds-text as="h3">{t('account_details.secret_code', 'Secret Code')}</ds-text>
                   </Row>
                 </Container>
                 <Container
@@ -228,7 +196,7 @@ const EditAccountSecuritySection: FC = () => {
                       bottom: 'small',
                     }}
                   >
-                    <Text>{secrateCode}</Text>
+                    <ds-text as="strong">{secrateCode}</ds-text>
                   </Row>
                 </Container>
               </Row>
@@ -247,12 +215,12 @@ const EditAccountSecuritySection: FC = () => {
                   bottom: 'small',
                 }}
               >
-                <Text>
+                <ds-text as="p">
                   {t(
                     'account_details.please_note_code',
                     `Please note: you'll be able to see these codes just once.`,
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
             <Container
@@ -269,12 +237,12 @@ const EditAccountSecuritySection: FC = () => {
                   bottom: 'small',
                 }}
               >
-                <Text>
+                <ds-text as="p">
                   {t(
                     'account_details.select_email_otp',
                     `Select an email address to send the OTP to or copy the code above`,
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
             <Row
@@ -294,13 +262,13 @@ const EditAccountSecuritySection: FC = () => {
                   hasError={hasEmailError}
                   data-testid="otp-email-input"
                 />
-                <Text color="error" size="small">
+                <ds-text as="strong" color="error" size="small">
                   {hasEmailError &&
                     t(
                       'domain.editAccount.invalidaEmailError',
                       'One or more email addresses are invalid.',
                     )}
-                </Text>
+                </ds-text>
               </Row>
               <Row width="20%" mainAlignment="space-between">
                 <Button
@@ -330,29 +298,26 @@ const EditAccountSecuritySection: FC = () => {
       },
     ],
     [
-      accountDetail?.name,
-      domainName,
+      handleEmailChange,
+      handleSendOTPEmail,
+      hasEmailError,
+      isSendDisabled,
       pinCodes,
       qrData,
       secrateCode,
       sendEmailTo,
-      createSnackbar,
       t,
-      handleEmailChange,
-      hasEmailError,
-      isSendDisabled,
     ],
   );
   const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
     accountDetail?.zimbraPasswordLockoutDuration?.slice(0, -1),
   );
-  const [zimbraPasswordLockoutDurationType, setZimbraPasswordLockoutDurationType] = useState(
-    accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || '',
-  );
+  const zimbraPasswordLockoutDurationType =
+    accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || '';
   const [zimbraPasswordLockoutFailureLifetimeNum, setZimbraPasswordLockoutFailureLifetimeNum] =
     useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1));
-  const [zimbraPasswordLockoutFailureLifetimeType, setZimbraPasswordLockoutFailureLifetimeType] =
-    useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '');
+  const zimbraPasswordLockoutFailureLifetimeType =
+    accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '';
   const [recoveryEmailError, setRecoveryEmailError] = useState<boolean>(false);
 
   const headers: any = useMemo(
@@ -378,11 +343,56 @@ const EditAccountSecuritySection: FC = () => {
       {
         id: 'creation-date',
         label: t('label.creation_date', 'Creation Date'),
-        width: '20%',
+        width: '15%',
+        bold: true,
+      },
+      {
+        id: 'actions',
+        label: t('label.actions', 'Actions'),
+        width: '15%',
         bold: true,
       },
     ],
     [t],
+  );
+
+  const openRestoreOtpModal = useCallback((otpId: string): void => {
+    setSelectedOtpIdForRestore(otpId);
+    setIsRestoreOtpModalOpen(true);
+  }, []);
+
+  const closeRestoreOtpModal = useCallback((): void => {
+    setSelectedOtpIdForRestore(undefined);
+    setIsRestoreOtpModalOpen(false);
+  }, []);
+
+  const otpRows = useMemo(
+    () =>
+      map(otpList, (otpRow: any) => {
+        const isDisabledOtp = otpRow?.item?.enabled === false;
+        const visibleColumns = (otpRow?.columns ?? []).slice(0, 4);
+        return {
+          ...otpRow,
+          columns: [
+            ...visibleColumns,
+            isDisabledOtp ? (
+              <Tooltip label={t('domain.editAccount.restoreOtpTooltip', "Restore OTP's")}>
+                <button
+                  type="button"
+                  className={styles.restoreOtpAction}
+                  onClick={(): void => openRestoreOtpModal(otpRow.id)}
+                  data-testid={`restore-otp-${otpRow.id}`}
+                >
+                  <ds-icon icon="RefreshOutline"></ds-icon>
+                </button>
+              </Tooltip>
+            ) : (
+              <>&nbsp;</>
+            ),
+          ],
+        };
+      }),
+    [otpList, t, openRestoreOtpModal],
   );
 
   const timeItems: any[] = useMemo(
@@ -474,6 +484,96 @@ const EditAccountSecuritySection: FC = () => {
       }
     });
   };
+
+  const handleRestoreOTP = useCallback((): void => {
+    if (!selectedOtpIdForRestore) {
+      return;
+    }
+
+    setIsRestoreOtpInProgress(true);
+    fetchSoap('zextras', {
+      _jsns: ZIMBRA_ADMIN_URN,
+      module: 'ZxAuth',
+      action: 'restore-otp',
+      account: `${accountDetail?.uid}@${domainName}`,
+      id: selectedOtpIdForRestore,
+    })
+      .then(
+        (res: {
+          ok?: boolean | string;
+          Body?: { response?: { content?: unknown } };
+          response?: { content?: unknown };
+        }) => {
+          const parseRestoreResult = (
+            content: unknown,
+          ): { ok?: boolean | string } | undefined => {
+            if (typeof content === 'string') {
+              try {
+                return JSON.parse(content) as { ok?: boolean | string };
+              } catch {
+                return undefined;
+              }
+            }
+
+            if (content && typeof content === 'object') {
+              return content as { ok?: boolean | string };
+            }
+
+            return undefined;
+          };
+
+          const parsedFromBody = parseRestoreResult(res.Body?.response?.content);
+          const parsedFromResponse = parseRestoreResult(res.response?.content);
+          const restoreResult = parsedFromBody ?? parsedFromResponse ?? res;
+          const isRestoreSuccess =
+            restoreResult.ok === true || restoreResult.ok === 'true' || restoreResult.ok === 'ok';
+
+          if (isRestoreSuccess) {
+          createSnackbar({
+            key: 'success',
+            severity: 'success',
+            label: t('label.otp_restored_successfully', 'OTP has been restored successfully'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+          closeRestoreOtpModal();
+          getListOtp(`${accountDetail?.uid}@${domainName}`);
+          return;
+        }
+
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        },
+      )
+      .catch(() => {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+      })
+      .finally(() => {
+        setIsRestoreOtpInProgress(false);
+      });
+  }, [
+    selectedOtpIdForRestore,
+    accountDetail?.uid,
+    domainName,
+    createSnackbar,
+    t,
+    closeRestoreOtpModal,
+    getListOtp,
+  ]);
 
   const changeValue = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -572,6 +672,58 @@ const EditAccountSecuritySection: FC = () => {
     },
     [accountDetail, setAccountDetail],
   );
+  const handleFromDateChange = useCallback(
+    (d: Date | null) => {
+      if (!d) {
+        setAccountDetail((prev: any) => ({
+          ...prev,
+          carbonioOtpGracePeriodEndingTime: '',
+        }));
+        return;
+      }
+      const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(
+        d.getUTCDate(),
+      ).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}${String(
+        d.getUTCMinutes(),
+      ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
+      setAccountDetail((prev: any) => ({
+        ...prev,
+        carbonioOtpGracePeriodEndingTime: gentime,
+      }));
+    },
+    [setAccountDetail],
+  );
+
+  const gracePeriodDefaultDate = useMemo(() => {
+    const gentimeValue =
+      accSpecificDetail?.carbonioOtpGracePeriodEndingTime ??
+      accountDetail?.carbonioOtpGracePeriodEndingTime;
+    if (gentimeValue) {
+      const match = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})Z$/.exec(gentimeValue);
+      if (match) {
+        return new Date(
+          Date.UTC(
+            Number(match[1]),
+            Number(match[2]) - 1,
+            Number(match[3]),
+            Number(match[4]),
+            Number(match[5]),
+            Number(match[6]),
+          ),
+        );
+      }
+    }
+    if (accountDetail?.carbonioOtpGracePeriodEnabled) {
+      const date = new Date();
+      date.setMonth(date.getMonth() + 1);
+      return date;
+    }
+    return null;
+  }, [
+    accSpecificDetail?.carbonioOtpGracePeriodEndingTime,
+    accountDetail?.carbonioOtpGracePeriodEndingTime,
+    accountDetail?.carbonioOtpGracePeriodEnabled,
+  ]);
 
   return (
     <Container
@@ -593,9 +745,9 @@ const EditAccountSecuritySection: FC = () => {
                 >
                   <ListRow>
                     <Container crossAlignment="flex-start">
-                      <Text size="extralarge" color="gray0" weight="bold">
+                      <ds-text as="h2" color="gray0" weight="bold">
                         {t('domain.accounts.twoFactorAuthenticator', 'Two-Factor authenticator')}
-                      </Text>
+                      </ds-text>
                       <Row padding={{ top: 'large' }}></Row>
                       <InheritedSwitch
                         subValue={accountDetail?.carbonioFeatureOTPMgmtEnabled}
@@ -612,12 +764,12 @@ const EditAccountSecuritySection: FC = () => {
                       />
                       <Padding left={'extralarge'}>
                         <Row padding={{ left: 'small' }}>
-                          <Text color="gray1" size="small" overflow="break-word">
+                          <ds-text as="small" color="gray1" size="small" overflow="break-word">
                             {t(
                               'domain.accounts.allowUsersToConfigure2FAInfo',
                               'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.',
                             )}
-                          </Text>
+                          </ds-text>
                         </Row>
                       </Padding>
                     </Container>
@@ -643,7 +795,7 @@ const EditAccountSecuritySection: FC = () => {
                 <Button
                   type="outlined"
                   label={t('label.DELETE', 'DELETE')}
-                  icon="CloseOutline"
+                  icon="Trash2Outline"
                   iconPlacement="right"
                   color="error"
                   disabled={!selectedRows?.length}
@@ -660,16 +812,15 @@ const EditAccountSecuritySection: FC = () => {
                   mainAlignment="space-between"
                   crossAlignment="flex-start"
                   width="fill"
-                  // height="calc(100vh - 340px)"
                 >
                   {otpList.length !== 0 && (
                     <Table
-                      rows={otpList}
+                      rows={otpRows}
                       headers={headers}
                       multiSelect={false}
                       onSelectionChange={setSelectedRows}
                       style={{ overflow: 'auto', height: '100%' }}
-                      RowFactory={CustomRowFactory}
+                      RowFactory={HoverableRowFactory}
                       HeaderFactory={CustomHeaderFactory}
                     />
                   )}
@@ -689,9 +840,15 @@ const EditAccountSecuritySection: FC = () => {
                         crossAlignment="center"
                         style={{ textAlign: 'center' }}
                       >
-                        <Text weight="light" color="#828282" size="large" overflow="break-word">
+                        <ds-text
+                          as="p"
+                          weight="light"
+                          color="#828282"
+                          size="large"
+                          overflow="break-word"
+                        >
                           {t('label.this_list_is_empty', 'This list is empty.')}
-                        </Text>
+                        </ds-text>
                       </Row>
                       <Row
                         orientation="vertical"
@@ -700,26 +857,70 @@ const EditAccountSecuritySection: FC = () => {
                         padding={{ top: 'small' }}
                         width="53%"
                       >
-                        <Text weight="light" color="#828282" size="large" overflow="break-word">
+                        <ds-text
+                          as="p"
+                          weight="light"
+                          color="#828282"
+                          size="large"
+                          overflow="break-word"
+                        >
                           <Trans
                             i18nKey="label.create_otp_list_msg"
                             defaults="You can create a new OTP by clicking on <bold>NEW OTP</bold> button up here"
                             components={{ bold: <strong /> }}
                           />
-                        </Text>
+                        </ds-text>
                       </Row>
                     </Container>
                   )}
                 </Row>
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Row>
             </Row>
           )}
+          <Modal
+            title={t('domain.editAccount.restoreOtpTitle', 'Restore OTP')}
+            open={isRestoreOtpModalOpen}
+            showCloseIcon
+            onClose={closeRestoreOtpModal}
+            customFooter={
+              <Container orientation="horizontal" mainAlignment="flex-end">
+                <Padding right="small">
+                  <Button
+                    label={t('label.no_cancel', 'NO, CANCEL')}
+                    color="secondary"
+                    onClick={closeRestoreOtpModal}
+                  />
+                </Padding>
+                <Button
+                  label={t('domain.editAccount.yesRestoreOtpAnyway', 'YES, RESTORE ANYWAY')}
+                  color="primary"
+                  onClick={handleRestoreOTP}
+                  disabled={isRestoreOtpInProgress}
+                />
+              </Container>
+            }
+          >
+            <Padding all="medium">
+              <ds-text as="p" overflow="break-word" className={styles.restoreOtpModalInfoText}>
+                {t(
+                  'domain.editAccount.restoreOtpInfo',
+                  'Before proceeding, verify the user requested this. If you suspect an unauthorized attack, do not restore.',
+                )}
+              </ds-text>
+              <Padding top="medium">
+                <ds-text as="p" overflow="break-word">
+                  {t('domain.editAccount.restoreOtpQuestion', 'Are you sure you want to proceed?')}
+                </ds-text>
+              </Padding>
+            </Padding>
+          </Modal>
           {showCreateOTP && (
             <>
               <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
                 <HorizontalWizard
                   steps={wizardSteps}
+                  title={t('account.new.create_otp_wizard', 'Create OTP Wizard')}
                   Wrapper={WizardInSection}
                   setToggleWizardSection={setShowCreateOTP}
                 />
@@ -728,11 +929,129 @@ const EditAccountSecuritySection: FC = () => {
           )}
         </>
       )}
+      
       {isAdvanced && (
         <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
-          <Text size="extralarge" weight="bold">
+          <ds-text as="h2" weight="bold">
+            {t(
+              'domain.accounts.twoFactorAuthSetupEnforcement',
+              'Two-Factor authenticator setup enforcement',
+            )}
+          </ds-text>
+          <Row mainAlignment="flex-start" width="100%">
+            <Container
+              height="fit"
+              crossAlignment="flex-start"
+              background="gray6"
+              padding={{ top: 'large' }}
+            >
+              <ListRow>
+                <Container crossAlignment="flex-start">
+                  <InheritedSwitch
+                    subValue={accountDetail?.carbonioOtpWizardFromUntrusted}
+                    onChange={changeSwitchOption}
+                    label={t(
+                      'domain.accounts.enforceOnUntrustedNetworks',
+                      'Enforce on Untrusted Networks',
+                    )}
+                    disabled={accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE}
+                    iconColor="primary"
+                    inheritedValue={cosDetail.carbonioOtpWizardFromUntrusted}
+                    fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
+                    inputName={'carbonioOtpWizardFromUntrusted'}
+                    onChangeReset={(): void => setEmptyValue('carbonioOtpWizardFromUntrusted')}
+                  />
+                  <Padding left={'extralarge'}>
+                    <Row padding={{ left: 'small' }}>
+                      <ds-text
+                        as="small"
+                        color="gray1"
+                        size="small"
+                        overflow="break-word"
+                        disabled={accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE}
+                      >
+                        {t(
+                          'domain.accounts.enforceOnUntrustedNetworksInfo',
+                          'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
+                        )}
+                      </ds-text>
+                    </Row>
+                  </Padding>
+                </Container>
+              </ListRow>
+              <ListRow padding={{ top: 'large' }}>
+                <Container crossAlignment="flex-start">
+                  <InheritedSwitch
+                    subValue={accountDetail?.carbonioOtpGracePeriodEnabled}
+                    onChange={changeSwitchOption}
+                    label={t(
+                      'domain.accounts.allowSetupDeferralDuringGracePeriod',
+                      'Allow setup deferral during grace period',
+                    )}
+                    disabled={
+                      accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                      accountDetail?.carbonioOtpWizardFromUntrusted === FALSE
+                    }
+                    iconColor="primary"
+                    inheritedValue={cosDetail.carbonioOtpGracePeriodEnabled}
+                    fromSubValue={accSpecificDetail?.carbonioOtpGracePeriodEnabled}
+                    inputName={'carbonioOtpGracePeriodEnabled'}
+                    onChangeReset={(): void => setEmptyValue('carbonioOtpGracePeriodEnabled')}
+                  />
+                  <Padding left={'extralarge'}>
+                    <Row padding={{ left: 'small' }}>
+                      <ds-text
+                        as="small"
+                        color="gray1"
+                        size="small"
+                        overflow="break-word"
+                        disabled={
+                          accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                          accountDetail?.carbonioOtpWizardFromUntrusted === FALSE
+                        }
+                      >
+                        {t(
+                          'domain.accounts.allowSetupDeferralDuringGracePeriodInfo',
+                          'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
+                        )}
+                      </ds-text>
+                    </Row>
+                  </Padding>
+                </Container>
+              </ListRow>
+              <ListRow padding={{ top: 'large' }}>
+                <Padding left={'extralarge'} width="100%">
+                  <Row width="100%">
+                    <DateTimePicker
+                      disabled={
+                        accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                        accountDetail?.carbonioOtpWizardFromUntrusted === FALSE ||
+                        accountDetail?.carbonioOtpGracePeriodEnabled === FALSE
+                      }
+                      width={'21.625rem'}
+                      className="fffff"
+                      label={t(
+                        'domain.accounts.gracePeriodExpirationDate',
+                        'Set grace period expiration date',
+                      )}
+                      onChange={handleFromDateChange}
+                      dateFormat="dd/MM/yyyy"
+                      includeTime={false}
+                      minDate={new Date()}
+                      defaultValue={gracePeriodDefaultDate}
+                    />
+                  </Row>
+                </Padding>
+              </ListRow>
+            </Container>
+          </Row>
+        </Row>
+      )}
+      {isAdvanced && (
+        <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
+          <ds-text as="h2" weight="bold">
             {t('label.backup', 'Backup')}
-          </Text>
+          </ds-text>
           <Row mainAlignment="flex-start" width="100%">
             <Container
               height="fit"
@@ -774,7 +1093,11 @@ const EditAccountSecuritySection: FC = () => {
             >
               <Row mainAlignment="flex-start">
                 <Padding horizontal="small">
-                  <CustomIcon icon="InfoOutline" color="primary"></CustomIcon>
+                  <ds-icon
+                    icon="InfoOutline"
+                    color="primary"
+                    style={{ width: '20px', height: '20px' }}
+                  ></ds-icon>
                 </Padding>
               </Row>
               <Row
@@ -784,12 +1107,12 @@ const EditAccountSecuritySection: FC = () => {
                   all: 'small',
                 }}
               >
-                <Text overflow="break-word">
+                <ds-text as="p" overflow="break-word">
                   {t(
                     'label.account_password_setting_note_for_external_authentication',
                     'The settings below ↓ do not affect the passwords set by users in domains that are configured to use external authentication. Changes made here will override COS settings for the password and the failed login lockout.',
                   )}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
           </Row>
@@ -799,9 +1122,9 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <ds-text as="h2" weight="bold">
               {t('cos.password', 'Password')}
-            </Text>
+            </ds-text>
             <Row mainAlignment="flex-start" width="100%">
               <Container
                 height="fit"
@@ -838,6 +1161,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container padding={{ right: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t('cos.minimum_password_length', 'Minimum password length')}
                       subValue={accountDetail.zimbraPasswordMinLength}
                       inheritedValue={cosDetail.zimbraPasswordMinLength}
@@ -850,6 +1174,7 @@ const EditAccountSecuritySection: FC = () => {
                   </Container>
                   <Container padding={{ left: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t('cos.maximum_password_length', 'Maximum password length')}
                       subValue={accountDetail.zimbraPasswordMaxLength}
                       inheritedValue={cosDetail.zimbraPasswordMaxLength}
@@ -873,6 +1198,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container padding={{ right: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t(
                         'cos.minimum_upper_case_characters',
                         'Minimum upper case characters',
@@ -888,6 +1214,7 @@ const EditAccountSecuritySection: FC = () => {
                   </Container>
                   <Container padding={{ left: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t(
                         'cos.minimum_lower_case_characters',
                         'Minimum lower case characters',
@@ -914,6 +1241,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container padding={{ right: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
                       subValue={accountDetail.zimbraPasswordMinPunctuationChars}
                       inheritedValue={cosDetail.zimbraPasswordMinPunctuationChars}
@@ -926,6 +1254,7 @@ const EditAccountSecuritySection: FC = () => {
                   </Container>
                   <Container padding={{ left: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
                       subValue={accountDetail.zimbraPasswordMinNumericChars}
                       inheritedValue={cosDetail.zimbraPasswordMinNumericChars}
@@ -949,6 +1278,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container padding={{ right: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
                       subValue={accountDetail.zimbraPasswordMinAge}
                       inheritedValue={cosDetail.zimbraPasswordMinAge}
@@ -961,6 +1291,7 @@ const EditAccountSecuritySection: FC = () => {
                   </Container>
                   <Container padding={{ left: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
                       subValue={accountDetail.zimbraPasswordMaxAge}
                       inheritedValue={cosDetail.zimbraPasswordMaxAge}
@@ -984,6 +1315,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container padding={{ right: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t(
                         'cos.minimum_numeric_characters_or_punctuation_symbols',
                         'Minimum numeric characters or punctuation symbols',
@@ -999,6 +1331,7 @@ const EditAccountSecuritySection: FC = () => {
                   </Container>
                   <Container padding={{ left: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t(
                         'cos.minimum_number_of_unique_password_history',
                         'Minimum number of unique passwords history',
@@ -1040,9 +1373,9 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <ds-text as="h2" weight="bold">
               {t('label.forgotten_password', 'Forgotten Password')}
-            </Text>
+            </ds-text>
             <Row mainAlignment="center" width="100%">
               <Container
                 height="fit"
@@ -1107,9 +1440,9 @@ const EditAccountSecuritySection: FC = () => {
             padding={{ all: 'large' }}
             width="100%"
           >
-            <Text size="extralarge" weight="bold">
+            <ds-text as="h2" weight="bold">
               {t('cos.failed_login_policy', 'Failed Login Policy')}
-            </Text>
+            </ds-text>
             <Row mainAlignment="flex-start" width="100%">
               <Container
                 height="fit"
@@ -1143,6 +1476,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container crossAlignment="flex-start">
                     <InheritedInput
+                      isRequired
                       label={t(
                         'cos.number_of_consecutive_failed_login_allowed',
                         'Number of consecutive failed logins allowed',
@@ -1170,6 +1504,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container width="75%" padding={{ right: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
                       subValue={accountDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
                       inheritedValue={cosDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
@@ -1208,6 +1543,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container width="75%" padding={{ right: 'small' }}>
                     <InheritedInput
+                      isRequired
                       label={t(
                         'cos.time_window_failed_logins_must_occur_to_lock_account',
                         'Time window in which the failed logins must occur to lock the account:',

@@ -3,33 +3,38 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {   useDomainStore,  useIsAdvanced,  useUserSettings } from "@zextras/admin-ui-bootstrap";
-import {   Button,  Container,  Icon,  Input,  Padding,  PasswordInput,  Popper,  Row,  Select,  SelectItem,  Switch,  Text,  Tooltip as TooltipDefault,  useSnackbar } from "@zextras/ui-components";
-import {  isEmpty  } from "lodash-es";
-import React, {
-  FC,
-  RefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {  useTranslation  } from "react-i18next";
+import {
+  Button,
+  Container,
+  Input,
+  ListRow,
+  Padding,
+  PasswordInput,
+  Popper,
+  Row,
+  Select,
+  SelectItem,
+  Switch,
+  Tooltip as TooltipDefault,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
+import { isEmpty } from 'lodash-es';
+import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {  Attribute, objectType  } from "../../../../types";
-import {   CHECK_OK,  DISABLED,  ENABLED,  TRUE,  ZIMBRA_ADMIN_URN } from "../../../constants";
-import {  CheckAuthConfig  } from "../../../services/check-auth-config-service";
-import {  flushCache  } from "../../../services/flush-cache-service";
-import {  modifyDomain  } from "../../../services/modify-domain-service";
-import ListRow from "../../list/list-row";
-import {  RouteLeavingGuard  } from "../../ui-extras/nav-guard";
-import {  isValidLdapBaseUrl  } from "../../utility/utils";
+import { Attribute, objectType } from '../../../../types';
+import { CHECK_OK, DISABLED, ENABLED, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
+import { CheckAuthConfig } from '../../../services/check-auth-config-service';
+import { flushCache } from '../../../services/flush-cache-service';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { isValidLdapBaseUrl } from '../../utility/utils';
 
 const ZimbraAuthMethod = {
-  INTERNAL: "zimbra",
-  LDAP: "ldap",
-  EXTERNAL: "ad",
+  INTERNAL: 'zimbra',
+  LDAP: 'ldap',
+  EXTERNAL: 'ad',
 } as const;
 
 const Tooltip: FC<{ items: { label?: string }[] }> = ({ items }) => (
@@ -44,9 +49,9 @@ const Tooltip: FC<{ items: { label?: string }[] }> = ({ items }) => (
     <Padding left="small" right="small" bottom="small">
       {items.map((item, index) => (
         <Padding top="small" key={index}>
-          <Text size="extrasmall" color="text" key={item.label}>
+          <ds-text as="span" size="extrasmall" color="text" key={item.label}>
             {item.label}
-          </Text>
+          </ds-text>
         </Padding>
       ))}
     </Padding>
@@ -62,35 +67,25 @@ const DomainAuthentication: FC = () => {
   const [domainAuthData, setDomainAuthData] = useState<objectType>({});
 
   const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
-  const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] =
-    useState<string>("");
-  const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] =
-    useState<boolean>(false);
-  const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>("");
-  const [zimbraAuthLdapSearchBindDn, setZimbraAuthLdapSearchBindDn] =
-    useState<string>("");
-  const [
-    zimbraAuthLdapSearchBindPassword,
-    setZimbraAuthLdapSearchBindPassword,
-  ] = useState<string>("");
+  const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
+  const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
+  const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>('');
+  const [zimbraAuthLdapSearchBindDn, setZimbraAuthLdapSearchBindDn] = useState<string>('');
+  const [zimbraAuthLdapSearchBindPassword, setZimbraAuthLdapSearchBindPassword] =
+    useState<string>('');
   const [zimbraAuthLdapStartTlsEnabled, setZimbraAuthLdapStartTlsEnabled] =
     useState<boolean>(false);
-  const [zimbraAuthLdapSearchFilter, setZimbraAuthLdapSearchFilter] =
-    useState<string>("");
-  const [zimbraAuthLdapSearchBase, setZimbraAuthLdapSearchBase] =
-    useState<string>("");
-  const [
-    zimbraFeatureResetPasswordStatus,
-    setZimbraFeatureResetPasswordStatus,
-  ] = useState<boolean>(false);
+  const [zimbraAuthLdapSearchFilter, setZimbraAuthLdapSearchFilter] = useState<string>('');
+  const [zimbraAuthLdapSearchBase, setZimbraAuthLdapSearchBase] = useState<string>('');
+  const [zimbraFeatureResetPasswordStatus, setZimbraFeatureResetPasswordStatus] =
+    useState<boolean>(false);
 
-  const [toggleLoginVerifyBtn, setToggleLoginVerifyBtn] =
-    useState<boolean>(true);
+  const [toggleLoginVerifyBtn, setToggleLoginVerifyBtn] = useState<boolean>(true);
   const [isSuccessVerify, setIsSuccessVerify] = useState<boolean>(false);
   const [isValidUserName, setIsValidUserName] = useState<boolean>(true);
   const [isValidPassword, setIsValidPassword] = useState<boolean>(true);
-  const [verifyAuthUserName, setVerifyAuthUserName] = useState<string>("");
-  const [verifyAuthPassword, setVerifyAuthPassword] = useState<string>("");
+  const [verifyAuthUserName, setVerifyAuthUserName] = useState<string>('');
+  const [verifyAuthPassword, setVerifyAuthPassword] = useState<string>('');
 
   const domainInformation = useDomainStore((state) => state.domain?.a);
   const setDomain = useDomainStore((state) => state.setDomain);
@@ -117,48 +112,48 @@ const DomainAuthentication: FC = () => {
 
   const isAdvanced = useIsAdvanced();
   const localLdapTrans = t(
-    "label.method_allows_local_ldap_only",
-    "This method allows usage of Local LDAP",
+    'label.method_allows_local_ldap_only',
+    'This method allows usage of Local LDAP',
   );
   const DOMAIN_AUTH_LIST = useMemo(
     () => [
       {
-        label: `${t("label.carbonio", "Carbonio")}`,
-        value: "",
+        label: `${t('label.carbonio', 'Carbonio')}`,
+        value: '',
         info_label: `${t(
-          "domain.authentication.carbonio_info",
-          "This method allows usage of Local LDAP, External AD/LDAP, Credential Password and SAML.",
+          'domain.authentication.carbonio_info',
+          'This method allows usage of Local LDAP, External AD/LDAP, Credential Password and SAML.',
         )}`,
         info_label_ce: `${localLdapTrans}`,
       },
       {
-        label: `${t("label.local_ldap_only", "Local LDAP only")}`,
+        label: `${t('label.local_ldap_only', 'Local LDAP only')}`,
         value: ZimbraAuthMethod.INTERNAL,
         info_label: `${localLdapTrans}`,
         info_label_ce: `${localLdapTrans}`,
       },
       {
-        label: `${t("label.external_ldap_only", "External LDAP only")}`,
+        label: `${t('label.external_ldap_only', 'External LDAP only')}`,
         value: ZimbraAuthMethod.LDAP,
         info_label: `${t(
-          "label.external_ldap_only_infor",
-          "This method allows usage of external LDAP",
+          'label.external_ldap_only_infor',
+          'This method allows usage of external LDAP',
         )}`,
         info_label_ce: `${t(
-          "label.external_ldap_only_info_ce",
-          "This method allows usage of external LDAP",
+          'label.external_ldap_only_info_ce',
+          'This method allows usage of external LDAP',
         )}`,
       },
       {
-        label: `${t("label.external_ad_only", "External AD only")}`,
+        label: `${t('label.external_ad_only', 'External AD only')}`,
         value: ZimbraAuthMethod.EXTERNAL,
         info_label: `${t(
-          "label.external_ad_only_info",
-          "This method allows usage of external AD",
+          'label.external_ad_only_info',
+          'This method allows usage of external AD',
         )}`,
         info_label_ce: `${t(
-          "label.external_ad_only_info_ce",
-          "This method allows usage of external AD",
+          'label.external_ad_only_info_ce',
+          'This method allows usage of external AD',
         )}`,
       },
     ],
@@ -168,24 +163,24 @@ const DomainAuthentication: FC = () => {
   const DN_TEMPLATE_TOOLTIP = useMemo(
     () => [
       {
-        label: `%n = ${t("label.username_with", "username with")} @ (${t(
-          "label.example",
-          "example",
+        label: `%n = ${t('label.username_with', 'username with')} @ (${t(
+          'label.example',
+          'example',
         )} username@domain.tld)`,
       },
       {
-        label: `%u = ${t("label.username_without", "username without")} @ (${t(
-          "label.example",
-          "example",
+        label: `%u = ${t('label.username_without', 'username without')} @ (${t(
+          'label.example',
+          'example',
         )} username)`,
       },
       {
-        label: `%d = ${t("label.domain", "domain")} (${t("label.example", "example")} domain.tld)`,
+        label: `%d = ${t('label.domain', 'domain')} (${t('label.example', 'example')} domain.tld)`,
       },
       {
-        label: `%D = ${t("label.domain", "domain")} (${t(
-          "label.example",
-          "example",
+        label: `%D = ${t('label.domain', 'domain')} (${t(
+          'label.example',
+          'example',
         )} dc=domain,dc=tld)`,
       },
     ],
@@ -200,10 +195,10 @@ const DomainAuthentication: FC = () => {
   const LDAP_URL_TOOLTIP = useMemo(
     () => [
       {
-        label: `${t("label.ex", "ex.")} ldap[s]://${t(
-          "label.external_ldap_server",
-          "external-ldap-server",
-        )}${zimbraAuthMech?.value !== ZimbraAuthMethod.EXTERNAL ? "[:389]" : "[:3268]"}`,
+        label: `${t('label.ex', 'ex.')} ldap[s]://${t(
+          'label.external_ldap_server',
+          'external-ldap-server',
+        )}${zimbraAuthMech?.value !== ZimbraAuthMethod.EXTERNAL ? '[:389]' : '[:3268]'}`,
       },
     ],
     [t, zimbraAuthMech],
@@ -217,16 +212,13 @@ const DomainAuthentication: FC = () => {
   const FILTER_TOOLTIP = useMemo(
     () => [
       {
-        label: `${t("label.ex", "ex.")} (ou=text)`,
+        label: `${t('label.ex', 'ex.')} (ou=text)`,
       },
     ],
     [t],
   );
 
-  const FilterTooltip: FC = useCallback(
-    () => <Tooltip items={FILTER_TOOLTIP} />,
-    [FILTER_TOOLTIP],
-  );
+  const FilterTooltip: FC = useCallback(() => <Tooltip items={FILTER_TOOLTIP} />, [FILTER_TOOLTIP]);
 
   useEffect(() => {
     if (!!domainInformation && domainInformation.length > 0) {
@@ -237,9 +229,9 @@ const DomainAuthentication: FC = () => {
 
       setZimbraAuthMech(
         obj.zimbraAuthMech
-          ? (DOMAIN_AUTH_LIST.find(
+          ? DOMAIN_AUTH_LIST.find(
               (item: { value?: string }) => item.value === obj.zimbraAuthMech,
-            ) ?? DOMAIN_AUTH_LIST[0])
+            ) ?? DOMAIN_AUTH_LIST[0]
           : DOMAIN_AUTH_LIST[0],
       );
 
@@ -253,40 +245,16 @@ const DomainAuthentication: FC = () => {
         setter(value);
       };
 
-      setValue<string>(
-        "zimbraPasswordChangeListener",
-        setZimbraPasswordChangeListener,
-        "",
-      );
-      setValue<string>("zimbraAuthLdapURL", setZimbraAuthLdapURL, "");
-      setValue<string>(
-        "zimbraAuthLdapSearchBindDn",
-        setZimbraAuthLdapSearchBindDn,
-        "",
-      );
-      setValue<string>(
-        "zimbraAuthLdapSearchBindPassword",
-        setZimbraAuthLdapSearchBindPassword,
-        "",
-      );
-      setValue<string>(
-        "zimbraAuthLdapSearchFilter",
-        setZimbraAuthLdapSearchFilter,
-        "",
-      );
-      setValue<string>(
-        "zimbraAuthLdapSearchBase",
-        setZimbraAuthLdapSearchBase,
-        "",
-      );
+      setValue<string>('zimbraPasswordChangeListener', setZimbraPasswordChangeListener, '');
+      setValue<string>('zimbraAuthLdapURL', setZimbraAuthLdapURL, '');
+      setValue<string>('zimbraAuthLdapSearchBindDn', setZimbraAuthLdapSearchBindDn, '');
+      setValue<string>('zimbraAuthLdapSearchBindPassword', setZimbraAuthLdapSearchBindPassword, '');
+      setValue<string>('zimbraAuthLdapSearchFilter', setZimbraAuthLdapSearchFilter, '');
+      setValue<string>('zimbraAuthLdapSearchBase', setZimbraAuthLdapSearchBase, '');
 
-      setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === "TRUE");
-      setZimbraAuthLdapStartTlsEnabled(
-        obj.zimbraAuthLdapStartTlsEnabled === "TRUE",
-      );
-      setZimbraFeatureResetPasswordStatus(
-        obj.zimbraFeatureResetPasswordStatus === ENABLED,
-      );
+      setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
+      setZimbraAuthLdapStartTlsEnabled(obj.zimbraAuthLdapStartTlsEnabled === 'TRUE');
+      setZimbraFeatureResetPasswordStatus(obj.zimbraFeatureResetPasswordStatus === ENABLED);
 
       setDomainAuthData(obj);
       setIsDirty(false);
@@ -307,10 +275,7 @@ const DomainAuthentication: FC = () => {
 
   useEffect(() => {
     if (!isEmpty(domainAuthData)) {
-      if (
-        domainAuthData.zimbraPasswordChangeListener !==
-        zimbraPasswordChangeListener
-      ) {
+      if (domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener) {
         setIsDirty(true);
       }
     }
@@ -318,8 +283,7 @@ const DomainAuthentication: FC = () => {
 
   useEffect(() => {
     if (!isEmpty(domainAuthData)) {
-      const oldFallbackToLocalValue =
-        domainAuthData.zimbraAuthFallbackToLocal === "TRUE";
+      const oldFallbackToLocalValue = domainAuthData.zimbraAuthFallbackToLocal === 'TRUE';
       if (oldFallbackToLocalValue !== zimbraAuthFallbackToLocal) {
         setIsDirty(true);
       }
@@ -336,9 +300,7 @@ const DomainAuthentication: FC = () => {
 
   useEffect(() => {
     if (!isEmpty(domainAuthData)) {
-      if (
-        domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase
-      ) {
+      if (domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase) {
         setIsDirty(true);
       }
     }
@@ -346,9 +308,7 @@ const DomainAuthentication: FC = () => {
 
   useEffect(() => {
     if (!isEmpty(domainAuthData)) {
-      if (
-        domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter
-      ) {
+      if (domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter) {
         setIsDirty(true);
       }
     }
@@ -356,8 +316,7 @@ const DomainAuthentication: FC = () => {
 
   useEffect(() => {
     if (!isEmpty(domainAuthData)) {
-      const oldAuthLdapStartTlsValue =
-        domainAuthData.zimbraAuthLdapStartTlsEnabled === "TRUE";
+      const oldAuthLdapStartTlsValue = domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE';
       if (oldAuthLdapStartTlsValue !== zimbraAuthLdapStartTlsEnabled) {
         setIsDirty(true);
       }
@@ -366,18 +325,14 @@ const DomainAuthentication: FC = () => {
 
   useEffect(() => {
     if (!isEmpty(domainAuthData)) {
-      const oldResetPasswordStatus =
-        domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED;
+      const oldResetPasswordStatus = domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED;
       if (oldResetPasswordStatus !== zimbraFeatureResetPasswordStatus) {
         setIsDirty(true);
       }
     }
   }, [domainAuthData, zimbraFeatureResetPasswordStatus]);
 
-  const authFallbackToLocal = useCallback(
-    () => setZimbraAuthFallbackToLocal((c) => !c),
-    [],
-  );
+  const authFallbackToLocal = useCallback(() => setZimbraAuthFallbackToLocal((c) => !c), []);
   const authLdapStartTlsEnabled = useCallback(
     () => setZimbraAuthLdapStartTlsEnabled((c) => !c),
     [],
@@ -389,9 +344,7 @@ const DomainAuthentication: FC = () => {
 
   const onAuthMethodChange = useCallback(
     (v: SelectItem[] | string | null): void => {
-      setZimbraAuthMech(
-        DOMAIN_AUTH_LIST.find((item: { value: string }) => item.value === v),
-      );
+      setZimbraAuthMech(DOMAIN_AUTH_LIST.find((item: { value: string }) => item.value === v));
       if (v === ZimbraAuthMethod.EXTERNAL || v === ZimbraAuthMethod.LDAP) {
         if (!zimbraAuthLdapURL) {
           setIsValidLdapUrl(false);
@@ -407,26 +360,17 @@ const DomainAuthentication: FC = () => {
   const onCancel = (): void => {
     setZimbraAuthMech(
       DOMAIN_AUTH_LIST.find(
-        (item: { value?: string }) =>
-          item.value === domainAuthData.zimbraAuthMech,
+        (item: { value?: string }) => item.value === domainAuthData.zimbraAuthMech,
       ),
     );
-    setZimbraPasswordChangeListener(
-      domainAuthData.zimbraPasswordChangeListener,
-    );
-    setZimbraAuthFallbackToLocal(
-      domainAuthData.zimbraAuthFallbackToLocal === "TRUE",
-    );
+    setZimbraPasswordChangeListener(domainAuthData.zimbraPasswordChangeListener);
+    setZimbraAuthFallbackToLocal(domainAuthData.zimbraAuthFallbackToLocal === 'TRUE');
     setZimbraAuthLdapSearchBase(domainAuthData.zimbraAuthLdapSearchBase);
     setZimbraAuthLdapSearchFilter(domainAuthData.zimbraAuthLdapSearchFilter);
     setZimbraAuthLdapURL(domainAuthData.zimbraAuthLdapURL);
     setZimbraAuthLdapSearchBindDn(domainAuthData.zimbraAuthLdapSearchBindDn);
-    setZimbraAuthLdapSearchBindPassword(
-      domainAuthData.zimbraAuthLdapSearchBindPassword,
-    );
-    setZimbraAuthLdapStartTlsEnabled(
-      domainAuthData.zimbraAuthLdapStartTlsEnabled === "TRUE",
-    );
+    setZimbraAuthLdapSearchBindPassword(domainAuthData.zimbraAuthLdapSearchBindPassword);
+    setZimbraAuthLdapStartTlsEnabled(domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE');
     setZimbraFeatureResetPasswordStatus(
       domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED,
     );
@@ -446,48 +390,48 @@ const DomainAuthentication: FC = () => {
     body._jsns = ZIMBRA_ADMIN_URN;
 
     attributes.push({
-      n: "zimbraAuthMech",
+      n: 'zimbraAuthMech',
       _content: zimbraAuthMech?.value,
     });
     attributes.push({
-      n: "zimbraPasswordChangeListener",
+      n: 'zimbraPasswordChangeListener',
       _content: zimbraPasswordChangeListener,
     });
     if (zimbraAuthFallbackToLocal !== null) {
       attributes.push({
-        n: "zimbraAuthFallbackToLocal",
-        _content: zimbraAuthFallbackToLocal ? "TRUE" : "FALSE",
+        n: 'zimbraAuthFallbackToLocal',
+        _content: zimbraAuthFallbackToLocal ? 'TRUE' : 'FALSE',
       });
     }
 
     attributes.push({
-      n: "zimbraAuthLdapURL",
+      n: 'zimbraAuthLdapURL',
       _content: zimbraAuthLdapURL,
     });
     attributes.push({
-      n: "zimbraAuthLdapSearchBindDn",
+      n: 'zimbraAuthLdapSearchBindDn',
       _content: zimbraAuthLdapSearchBindDn,
     });
     attributes.push({
-      n: "zimbraAuthLdapSearchBindPassword",
+      n: 'zimbraAuthLdapSearchBindPassword',
       _content: zimbraAuthLdapSearchBindPassword,
     });
 
     attributes.push({
-      n: "zimbraAuthLdapStartTlsEnabled",
-      _content: zimbraAuthLdapStartTlsEnabled ? "TRUE" : "FALSE",
+      n: 'zimbraAuthLdapStartTlsEnabled',
+      _content: zimbraAuthLdapStartTlsEnabled ? 'TRUE' : 'FALSE',
     });
     attributes.push({
-      n: "zimbraAuthLdapSearchFilter",
+      n: 'zimbraAuthLdapSearchFilter',
       _content: zimbraAuthLdapSearchFilter,
     });
     attributes.push({
-      n: "zimbraAuthLdapSearchBase",
+      n: 'zimbraAuthLdapSearchBase',
       _content: zimbraAuthLdapSearchBase,
     });
     if (isAdvanced) {
       attributes.push({
-        n: "zimbraFeatureResetPasswordStatus",
+        n: 'zimbraFeatureResetPasswordStatus',
         _content: zimbraFeatureResetPasswordStatus ? ENABLED : DISABLED,
       });
     }
@@ -495,18 +439,15 @@ const DomainAuthentication: FC = () => {
     modifyDomain(body)
       .then((data) => {
         createSnackbar({
-          key: "success",
-          severity: "success",
-          label: t(
-            "label.change_save_success_msg",
-            "The change has been saved successfully",
-          ),
+          key: 'success',
+          severity: 'success',
+          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
         });
         if (isGlobalAdmin) {
-          flushCache("domain", "id", domainAuthData.zimbraId).then((): void => {
+          flushCache('domain', 'id', domainAuthData.zimbraId).then((): void => {
             // no operation
           });
         }
@@ -517,14 +458,11 @@ const DomainAuthentication: FC = () => {
       })
       .catch((error) => {
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -534,12 +472,12 @@ const DomainAuthentication: FC = () => {
 
   useEffect(() => {
     if (
-      (zimbraAuthMech?.value === "ldap" || zimbraAuthMech?.value === "ad") &&
-      zimbraAuthLdapURL !== "" &&
+      (zimbraAuthMech?.value === 'ldap' || zimbraAuthMech?.value === 'ad') &&
+      zimbraAuthLdapURL !== '' &&
       isValidLdapUrl &&
-      zimbraAuthLdapSearchBindDn !== "" &&
+      zimbraAuthLdapSearchBindDn !== '' &&
       isValidUserName &&
-      zimbraAuthLdapSearchBindPassword !== "" &&
+      zimbraAuthLdapSearchBindPassword !== '' &&
       isValidPassword
     ) {
       setIsSuccessVerify(false);
@@ -569,23 +507,23 @@ const DomainAuthentication: FC = () => {
     body._jsns = ZIMBRA_ADMIN_URN;
 
     attributes.push({
-      n: "zimbraAuthMech",
+      n: 'zimbraAuthMech',
       _content: zimbraAuthMech?.value,
     });
     attributes.push({
-      n: "zimbraAuthLdapURL",
+      n: 'zimbraAuthLdapURL',
       _content: zimbraAuthLdapURL,
     });
     attributes.push({
-      n: "zimbraAuthLdapSearchFilter",
+      n: 'zimbraAuthLdapSearchFilter',
       _content: zimbraAuthLdapSearchFilter,
     });
     attributes.push({
-      n: "zimbraAuthLdapSearchBindDn",
+      n: 'zimbraAuthLdapSearchBindDn',
       _content: zimbraAuthLdapSearchBindDn,
     });
     attributes.push({
-      n: "zimbraAuthLdapSearchBindPassword",
+      n: 'zimbraAuthLdapSearchBindPassword',
       _content: zimbraAuthLdapSearchBindPassword,
     });
     body.a = attributes;
@@ -597,12 +535,9 @@ const DomainAuthentication: FC = () => {
           setIsSuccessVerify(true);
         } else {
           createSnackbar({
-            key: "error",
-            severity: "error",
-            label: t(
-              "label.something_wrong_error_msg",
-              "Something went wrong. Please try again.",
-            ),
+            key: 'error',
+            severity: 'error',
+            label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 5000,
             hideButton: true,
             replace: true,
@@ -612,14 +547,11 @@ const DomainAuthentication: FC = () => {
       })
       .catch((error) => {
         createSnackbar({
-          key: "error",
-          severity: "error",
+          key: 'error',
+          severity: 'error',
           label: error?.message
             ? error?.message
-            : t(
-                "label.something_wrong_error_msg",
-                "Something went wrong. Please try again.",
-              ),
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 5000,
           hideButton: true,
           replace: true,
@@ -639,11 +571,7 @@ const DomainAuthentication: FC = () => {
   ]);
 
   return (
-    <Container
-      padding={{ all: "large" }}
-      mainAlignment="flex-start"
-      background="gray6"
-    >
+    <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
       <Container
         orientation="column"
         background="gray6"
@@ -651,24 +579,20 @@ const DomainAuthentication: FC = () => {
         mainAlignment="flex-start"
       >
         <Row mainAlignment="flex-start" width="100%">
-          <Container
-            orientation="vertical"
-            mainAlignment="space-around"
-            height="56px"
-          >
+          <Container orientation="vertical" mainAlignment="space-around" height="56px">
             <Row orientation="horizontal" width="100%">
               <Row
-                padding={{ all: "large" }}
+                padding={{ all: 'large' }}
                 mainAlignment="flex-start"
                 width="50%"
                 crossAlignment="flex-start"
               >
-                <Text size="medium" weight="bold" color="gray0">
-                  {t("label.authentication", "Authentication")}
-                </Text>
+                <ds-text as="h2" size="medium" weight="bold" color="gray0">
+                  {t('label.authentication', 'Authentication')}
+                </ds-text>
               </Row>
               <Row
-                padding={{ all: "large" }}
+                padding={{ all: 'large' }}
                 width="50%"
                 mainAlignment="flex-end"
                 crossAlignment="flex-end"
@@ -676,8 +600,8 @@ const DomainAuthentication: FC = () => {
                 <Padding right="small">
                   {isDirty && (
                     <Button
-                      data-testid={"cancel-button"}
-                      label={t("label.cancel", "Cancel")}
+                      data-testid={'cancel-button'}
+                      label={t('label.cancel', 'Cancel')}
                       color="secondary"
                       onClick={onCancel}
                     />
@@ -685,8 +609,8 @@ const DomainAuthentication: FC = () => {
                 </Padding>
                 {isDirty && (
                   <Button
-                    data-testid={"save-button"}
-                    label={t("label.save", "Save")}
+                    data-testid={'save-button'}
+                    label={t('label.save', 'Save')}
                     color="primary"
                     onClick={onSave}
                     disabled={!isValidLdapUrl || !isValidLdapDN}
@@ -695,43 +619,36 @@ const DomainAuthentication: FC = () => {
               </Row>
             </Row>
           </Container>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Container
           orientation="column"
           crossAlignment="flex-start"
           mainAlignment="flex-start"
-          style={{ overflow: "auto" }}
+          style={{ overflow: 'auto' }}
           width="100%"
           height="calc(100vh - 150px)"
         >
-          <Row
-            mainAlignment="flex-start"
-            width="100%"
-            padding={{ top: "small" }}
-          >
+          <Row mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
             <Container
-              padding={{ all: "small" }}
+              padding={{ all: 'small' }}
               height="fit"
               crossAlignment="flex-start"
               background="gray6"
             >
               <ListRow>
                 <Padding vertical="large" horizontal="small" width="100%">
-                  <Text size="small" color="gray0" weight="bold">
-                    {t("label.auth_method", "Auth Method")}
-                  </Text>
+                  <ds-text as="h3" size="small" color="gray0" weight="bold">
+                    {t('label.auth_method', 'Auth Method')}
+                  </ds-text>
                 </Padding>
               </ListRow>
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
                   <Select
-                    data-testid={"auth-method-select"}
+                    data-testid={'auth-method-select'}
                     background="gray5"
-                    label={t(
-                      "label.your_auth_method_is",
-                      "Your Auth Method is",
-                    )}
+                    label={t('label.your_auth_method_is', 'Your Auth Method is')}
                     showCheckbox={false}
                     items={DOMAIN_AUTH_LIST}
                     selection={zimbraAuthMech}
@@ -739,11 +656,9 @@ const DomainAuthentication: FC = () => {
                   ></Select>
                   <Padding top="medium">
                     {zimbraAuthMech && (
-                      <Text size="small" color="gray1">
-                        {isAdvanced
-                          ? zimbraAuthMech.info_label
-                          : zimbraAuthMech.info_label_ce}
-                      </Text>
+                      <ds-text as="p" size="small" color="gray1">
+                        {isAdvanced ? zimbraAuthMech.info_label : zimbraAuthMech.info_label_ce}
+                      </ds-text>
                     )}
                   </Padding>
                 </Padding>
@@ -755,7 +670,6 @@ const DomainAuthentication: FC = () => {
                     anchorEl={iconRef as RefObject<HTMLElement>}
                     placement="top-end"
                     onClose={(): void => setOpen(false)}
-                    disableRestoreFocus
                   >
                     <DnTemplateTooltip />
                   </Popper>
@@ -764,12 +678,11 @@ const DomainAuthentication: FC = () => {
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
                   <Input
-                    label={t("label.url", "URL")}
+                    isRequired
+                    label={t('label.url', 'URL')}
                     value={zimbraAuthLdapURL}
                     backgroundColor="gray5"
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>,
-                    ): void => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                       if (e.target.value) {
                         const validLdapUrl = isValidLdapBaseUrl(e.target.value);
                         setIsValidLdapUrl(validLdapUrl);
@@ -790,11 +703,11 @@ const DomainAuthentication: FC = () => {
                         onMouseEnter={(): void => setLdapUrlOpen(true)}
                         onMouseLeave={(): void => setLdapUrlOpen(false)}
                       >
-                        <Icon
+                        <ds-icon
                           icon="QuestionMarkCircleOutline"
                           size="large"
                           color="secondary"
-                        />
+                        ></ds-icon>
                       </Container>
                     )}
                   />
@@ -806,18 +719,11 @@ const DomainAuthentication: FC = () => {
                         width="fill"
                       >
                         <Padding top="small">
-                          <Text
-                            size="extrasmall"
-                            weight="regular"
-                            color="error"
-                          >
+                          <ds-text as="span" size="extrasmall" weight="regular" color="error">
                             {zimbraAuthLdapURL
-                              ? t(
-                                  "label.ldap_url_is_not_valid",
-                                  "Ldap url is not valid",
-                                )
-                              : t("label.required", "Required")}
-                          </Text>
+                              ? t('label.ldap_url_is_not_valid', 'Ldap url is not valid')
+                              : t('label.required', 'Required')}
+                          </ds-text>
                         </Padding>
                       </Container>
                     </Row>
@@ -827,7 +733,6 @@ const DomainAuthentication: FC = () => {
                     anchorEl={ldapUrlIconRef as RefObject<HTMLElement>}
                     placement="top-end"
                     onClose={(): void => setLdapUrlOpen(false)}
-                    disableRestoreFocus
                   >
                     <LdapUrlTooltip />
                   </Popper>
@@ -836,12 +741,10 @@ const DomainAuthentication: FC = () => {
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
                   <Input
-                    label={t("label.filter", "Filter")}
+                    label={t('label.filter', 'Filter')}
                     value={zimbraAuthLdapSearchFilter}
                     backgroundColor="gray5"
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>,
-                    ): void => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                       setZimbraAuthLdapSearchFilter(e.target.value);
                     }}
                     CustomIcon={(): React.ReactElement => (
@@ -850,11 +753,11 @@ const DomainAuthentication: FC = () => {
                         onMouseEnter={(): void => setFilterOpen(true)}
                         onMouseLeave={(): void => setFilterOpen(false)}
                       >
-                        <Icon
+                        <ds-icon
                           icon="QuestionMarkCircleOutline"
                           size="large"
                           color="secondary"
-                        />
+                        ></ds-icon>
                       </Container>
                     )}
                   />
@@ -863,19 +766,16 @@ const DomainAuthentication: FC = () => {
                     anchorEl={filterIconRef as RefObject<HTMLElement>}
                     placement="top-end"
                     onClose={(): void => setFilterOpen(false)}
-                    disableRestoreFocus
                   >
                     <FilterTooltip />
                   </Popper>
                 </Padding>
                 <Padding vertical="small" horizontal="small" width="100%">
                   <Input
-                    label={t("label.search_base", "Basic Search")}
+                    label={t('label.search_base', 'Basic Search')}
                     value={zimbraAuthLdapSearchBase}
                     backgroundColor="gray5"
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>,
-                    ): void => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                       setZimbraAuthLdapSearchBase(e.target.value);
                     }}
                   />
@@ -884,17 +784,12 @@ const DomainAuthentication: FC = () => {
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
                   <Input
-                    label={t(
-                      "domain.authentication.search_bind_user",
-                      "Search Bind User",
-                    )}
+                    label={t('domain.authentication.search_bind_user', 'Search Bind User')}
                     value={zimbraAuthLdapSearchBindDn}
                     backgroundColor="gray5"
                     inputName="user"
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>,
-                    ): void => {
-                      if (e.target.value !== "") {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                      if (e.target.value !== '') {
                         setIsValidUserName(true);
                       } else {
                         setIsValidUserName(false);
@@ -905,17 +800,12 @@ const DomainAuthentication: FC = () => {
                 </Padding>
                 <Padding vertical="small" horizontal="small" width="100%">
                   <PasswordInput
-                    label={t(
-                      "domain.authentication.search_bind_password",
-                      "Search Bind Password",
-                    )}
+                    label={t('domain.authentication.search_bind_password', 'Search Bind Password')}
                     backgroundColor="gray5"
                     inputName="zimbraQuotaWarnInterval"
                     value={zimbraAuthLdapSearchBindPassword}
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>,
-                    ): void => {
-                      if (e.target.value !== "") {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                      if (e.target.value !== '') {
                         setIsValidPassword(true);
                       } else {
                         setIsValidPassword(false);
@@ -927,39 +817,35 @@ const DomainAuthentication: FC = () => {
               </ListRow>
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Padding>
               </ListRow>
               <ListRow>
                 <Padding vertical="large" horizontal="small" width="100%">
-                  <Text size="small" color="gray0" weight="bold">
-                    {t("label.verify_auth", "Verify Auth")}
-                  </Text>
+                  <ds-text as="h3" size="small" color="gray0" weight="bold">
+                    {t('label.verify_auth', 'Verify Auth')}
+                  </ds-text>
                 </Padding>
               </ListRow>
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="38%">
                   <Input
-                    label={t("label.user_name", "User Name")}
+                    label={t('label.user_name', 'User Name')}
                     value={verifyAuthUserName}
                     backgroundColor="gray5"
                     inputName="user"
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>,
-                    ): void => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                       setVerifyAuthUserName(e.target.value);
                     }}
                   />
                 </Padding>
                 <Padding vertical="small" horizontal="small" width="38%">
                   <PasswordInput
-                    label={t("label.password", "Password")}
+                    label={t('label.password', 'Password')}
                     backgroundColor="gray5"
                     inputName="verifyAuthPassword"
                     value={verifyAuthPassword}
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>,
-                    ): void => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                       setVerifyAuthPassword(e.target.value);
                     }}
                     hasError={!isValidPassword}
@@ -970,18 +856,12 @@ const DomainAuthentication: FC = () => {
                     type="outlined"
                     label={
                       isSuccessVerify
-                        ? t(
-                            "label.login_verified_button_title",
-                            "LOGIN VERIFIED",
-                          )
-                        : t(
-                            "label.login_verify_button_title",
-                            "LOGIN AND VERIFY",
-                          )
+                        ? t('label.login_verified_button_title', 'LOGIN VERIFIED')
+                        : t('label.login_verify_button_title', 'LOGIN AND VERIFY')
                     }
                     icon="CheckmarkOutline"
                     iconPlacement="right"
-                    color={isSuccessVerify ? "success" : "primary"}
+                    color={isSuccessVerify ? 'success' : 'primary'}
                     width="fill"
                     size="extralarge"
                     onClick={handleClickLoginAndVerify}
@@ -991,7 +871,7 @@ const DomainAuthentication: FC = () => {
               </ListRow>
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
-                  <divider-wc></divider-wc>
+                  <ds-divider></ds-divider>
                 </Padding>
               </ListRow>
               <Padding horizontal="small" width="90%"></Padding>
@@ -1002,7 +882,7 @@ const DomainAuthentication: FC = () => {
                       data-testid="reset-password-switch"
                       value={zimbraFeatureResetPasswordStatus}
                       label={t(
-                        "label.show_forget_password_link",
+                        'label.show_forget_password_link',
                         'Show "Forget Password" link in the login page',
                       )}
                       onClick={resetPasswordStatusChange}
@@ -1015,35 +895,27 @@ const DomainAuthentication: FC = () => {
                     label={
                       zimbraAuthFallbackToLocal === null
                         ? t(
-                            "label.enable_global_enforce_external_auth_ldap",
-                            "You must enable the Global Enforce External Auth (LDAP/AD) first",
+                            'label.enable_global_enforce_external_auth_ldap',
+                            'You must enable the Global Enforce External Auth (LDAP/AD) first',
                           )
                         : t(
-                            "label.please_add_ldap_url_endpoint_first",
-                            "To enable this, please add a ldap URL endpoint first",
+                            'label.please_add_ldap_url_endpoint_first',
+                            'To enable this, please add a ldap URL endpoint first',
                           )
                     }
                     disabled={
                       !(
-                        zimbraAuthFallbackToLocal === null ||
-                        !isValidLdapBaseUrl(zimbraAuthLdapURL)
+                        zimbraAuthFallbackToLocal === null || !isValidLdapBaseUrl(zimbraAuthLdapURL)
                       )
                     }
                   >
                     <Switch
-                      value={
-                        !!zimbraAuthFallbackToLocal &&
-                        isValidLdapBaseUrl(zimbraAuthLdapURL)
-                      }
-                      label={t(
-                        "label.enforce_external_auth",
-                        "Enforce External Auth (LDAP/AD)",
-                      )}
+                      value={!!zimbraAuthFallbackToLocal && isValidLdapBaseUrl(zimbraAuthLdapURL)}
+                      label={t('label.enforce_external_auth', 'Enforce External Auth (LDAP/AD)')}
                       onClick={authFallbackToLocal}
                       iconColor="primary"
                       disabled={
-                        zimbraAuthFallbackToLocal === null ||
-                        !isValidLdapBaseUrl(zimbraAuthLdapURL)
+                        zimbraAuthFallbackToLocal === null || !isValidLdapBaseUrl(zimbraAuthLdapURL)
                       }
                     />
                   </TooltipDefault>
@@ -1052,11 +924,11 @@ const DomainAuthentication: FC = () => {
               <ListRow>
                 <Padding vertical="small" horizontal="small" width="100%">
                   <Switch
-                    data-testid={"enable-secure-connection"}
+                    data-testid={'enable-secure-connection'}
                     value={zimbraAuthLdapStartTlsEnabled}
                     label={t(
-                      "label.enable_secure_connection",
-                      "Enable Secure Connection (StartTLS/SSL)",
+                      'label.enable_secure_connection',
+                      'Enable Secure Connection (StartTLS/SSL)',
                     )}
                     onClick={authLdapStartTlsEnabled}
                     iconColor="primary"
@@ -1067,14 +939,12 @@ const DomainAuthentication: FC = () => {
                 <Padding vertical="small" horizontal="small" width="100%">
                   <Input
                     label={t(
-                      "label.external_password_change_listener",
-                      "Endpoint to be used for password change",
+                      'label.external_password_change_listener',
+                      'Endpoint to be used for password change',
                     )}
                     backgroundColor="gray5"
                     value={zimbraPasswordChangeListener}
-                    onChange={(
-                      e: React.ChangeEvent<HTMLInputElement>,
-                    ): void => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                       setZimbraPasswordChangeListener(e.target.value);
                     }}
                   />
@@ -1086,18 +956,13 @@ const DomainAuthentication: FC = () => {
       </Container>
 
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <Text>
+        <ds-text as="p">
           {t(
-            "label.unsaved_changes_line1",
-            "Are you sure you want to leave this page without saving?",
+            'label.unsaved_changes_line1',
+            'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>
-          {t(
-            "label.unsaved_changes_line2",
-            "All your unsaved changes will be lost",
-          )}
-        </Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
     </Container>
   );

@@ -4,15 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
+  Container,
+  DropDownInput,
+  ListItems,
+  ListPanelItem,
+  Padding,
+  Row,
+} from '@zextras/ui-components';
+import {
   replaceHistory,
   useGlobalCarbonioSendAnalytics,
   useIsAdvanced,
   useMailstoreServers,
-} from '@zextras/admin-ui-bootstrap';
-import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
+} from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import {
   BUCKET_LIST,
@@ -23,10 +29,6 @@ import {
   SERVERS_LIST,
 } from '../../constants';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import ListItems from '../list/list-items';
-import ListPanelItem from '../list/list-panel-item';
-
-const SelectItem = styled(Row)``;
 
 const BucketListPanel: FC = () => {
   const [t] = useTranslation();
@@ -63,7 +65,7 @@ const BucketListPanel: FC = () => {
         id: volume.id,
         label: volume.name,
         customComponent: (
-          <SelectItem
+          <Row
             style={{
               display: 'block',
               textAlign: 'left',
@@ -76,7 +78,7 @@ const BucketListPanel: FC = () => {
             }}
           >
             {volume?.name}
-          </SelectItem>
+          </Row>
         ),
       }));
       setItemsVolume(data);
@@ -186,7 +188,7 @@ const BucketListPanel: FC = () => {
   };
 
   const customIconDetail = {
-    icon: searchVolumeName === '' ? 'HardDriveOutline' : 'CloseOutline',
+    icon: searchVolumeName === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
     onClick: (): void => {
       setIsVolumeListExpand(!isVolumeListExpand);
       setIsShowError(false);
@@ -259,12 +261,12 @@ const BucketListPanel: FC = () => {
             {isShowError && (
               <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                 <Padding top="large" left="small">
-                  <Text size="extrasmall" weight="regular" color="error">
+                  <ds-text as="span" size="extrasmall" weight="regular" color="error">
                     {t(
                       'label.not_found_check_the_text_and_try_again',
                       'Not found - check the text and try again',
                     )}
-                  </Text>
+                  </ds-text>
                 </Padding>
               </Container>
             )}

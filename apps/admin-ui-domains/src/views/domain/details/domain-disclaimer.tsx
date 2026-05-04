@@ -4,21 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore, useUserSettings } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
+  ListRow,
   Padding,
   Row,
   Switch,
-  Text,
   TextArea,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { DomainDisclaimerType, objectType } from '../../../../types';
 import Composer from '../../../composer/composer';
@@ -33,18 +32,7 @@ import {
 } from '../../../constants';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import ListRow from '../../list/list-row';
-
-const EditorWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-`;
-
-const TextAreaEditor = styled(TextArea)`
-  min-height: 20.5rem;
-`;
+import styles from './domain-disclaimer.module.css';
 
 const DomainDisclaimer: FC = () => {
   const [t] = useTranslation();
@@ -274,9 +262,9 @@ const DomainDisclaimer: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('label.disclaimer', 'Disclaimer')}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           <Container
@@ -295,7 +283,7 @@ const DomainDisclaimer: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
 
       <Container
@@ -346,9 +334,9 @@ const DomainDisclaimer: FC = () => {
               bottom: 'extralarge',
             }}
           >
-            <Text size="small" weight="bold" color="gray0">
+            <ds-text as="h3" size="small" weight="bold" color="gray0">
               {t('label.text_editor', 'Text Editor')}
-            </Text>
+            </ds-text>
           </Container>
           <Container
             crossAlignment="flex-start"
@@ -358,9 +346,9 @@ const DomainDisclaimer: FC = () => {
               bottom: 'extralarge',
             }}
           >
-            <Text size="small" weight="bold" color="gray0">
+            <ds-text as="h3" size="small" weight="bold" color="gray0">
               {t('label.rich_text_editor', 'Rich Text Editor')}
-            </Text>
+            </ds-text>
           </Container>
         </ListRow>
         <ListRow>
@@ -373,7 +361,7 @@ const DomainDisclaimer: FC = () => {
               right: 'extralarge',
             }}
           >
-            <TextAreaEditor
+            <TextArea
               label={''}
               value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText}
               // @ts-expect-error - needs a fix
@@ -391,7 +379,7 @@ const DomainDisclaimer: FC = () => {
               bottom: 'extralarge',
             }}
           >
-            <EditorWrapper>
+            <div className={styles.editorWrapper}>
               <Composer
                 initialValue={defaulRichTextContent}
                 value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML}
@@ -399,7 +387,7 @@ const DomainDisclaimer: FC = () => {
                   setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, ev[1]);
                 }}
               />
-            </EditorWrapper>
+            </div>
           </Container>
         </ListRow>
       </Container>

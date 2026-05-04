@@ -4,60 +4,73 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  getSoapFetchRequest, useDomainInformation  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  Container,  DropDownInput,  Icon,  Input,  OverlayDivision,  Padding,  Row,  Switch,  Table,  Text,  useScreenMode,  useSnackbar } from '@zextras/ui-components';
-import {  format  } from 'date-fns';
-import {  debounce  } from 'lodash-es';
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  DropDownInput,
+  HoverableRowFactory,
+  Input,
+  ListRow,
+  Padding,
+  Paging,
+  Row,
+  Switch,
+  Table,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { getSoapFetchRequest, useDomainInformation } from '@zextras/ui-shared';
+import { format } from 'date-fns';
+import { debounce } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
-import {  useTranslation  } from 'react-i18next';
-import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
-import {  BackupAccountItem, DomainResponse  } from '../../../types';
+import {
+  ApiError,
+  BackupAccountItem,
+  BackupAccountsApiResponse,
+  DomainItem,
+  DomainResponse,
+  LegalHoldOperationResponse,
+  ServerBackupResponse,
+  TableRow,
+} from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
-import {   ERROR_LABLE,  MAX_DOMAIN_DISPLAY,  MOBILE,  RECORD_DISPLAY_LIMIT,  SET,  TRUE,  UNSET } from '../../constants';
-import {  getDomainList  } from '../../services/search-domain-service';
-import {  setUnsetLegalHold  } from '../../services/set-unset-legalhold';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import Paging from '../components/paging';
-import {  generateSnackbarFromError  } from '../error/generate-snackbar-error';
-import ListRow from '../list/list-row';
+import {
+  ERROR_LABLE,
+  MAX_DOMAIN_DISPLAY,
+  RECORD_DISPLAY_LIMIT,
+  SET,
+  TRUE,
+  UNSET,
+} from '../../constants';
+import { getDomainList } from '../../services/search-domain-service';
+import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import RestoreAccountView from './restore/restore-account';
 
-const ovelayStyle = styled(Container)`
-  width: 20rem;
-  right: 0;
-  bottom: 0;
-  height: 8rem;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-`;
+const absoluteContainerItemStyle: React.CSSProperties = {
+  position: 'absolute',
+  zIndex: 1,
+  top: '8rem',
+};
 
-const AbsoluteContainerItem = styled(Container)`
-  position: absolute;
-  z-index: 1;
-  top: 8rem;
-`;
-
-const CustomIcon = styled(Icon)`
-  width: 1.25rem;
-  height: 1.25rem;
-`;
+const customIconStyle = {
+  width: '1.25rem',
+  height: '1.25rem',
+};
 
 const LegalHoldPanel: FC = () => {
   const [t] = useTranslation();
-  const screenMode = useScreenMode();
   const [totalItem, setTotalItem] = useState(1);
   const accountLimit = RECORD_DISPLAY_LIMIT;
   const [accountOffset, setAccountOffset] = useState<number>(0);
   const createSnackbar = useSnackbar();
   const [backupAccountList, setBackupAccountList] = useState<Array<BackupAccountItem>>([]);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
+  const [selectedAccountRows, setSelectedAccountRows] = useState<Array<BackupAccountItem>>([]);
   const [isShowRestoreView, setIsShowRestoreView] = useState<boolean>(false);
-  const [accountRows, setAccountRows] = useState<any>([]);
+  const [accountRows, setAccountRows] = useState<Array<TableRow>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isShowError, setIsShowError] = useState(false);
   const [searchAccountName, setSearchAccountName] = useState<string>('');
@@ -69,9 +82,7 @@ const LegalHoldPanel: FC = () => {
     'label.something_wrong_error_msg',
     'Something went wrong. Please try again.',
   );
-  const [domainList, setDomainList] = useState<
-    { name: string; id: string; a: { n: string; _content: string }[] }[]
-  >([]);
+  const [domainList, setDomainList] = useState<Array<DomainItem>>([]);
   const [isDomainSelect, setIsDomainSelect] = useState(false);
   const { data: domainData } = useDomainInformation();
   const domainName = domainData?.name || '';
@@ -98,7 +109,7 @@ const LegalHoldPanel: FC = () => {
     {
       customComponent: (
         <Container>
-          <OverlayDivision ovelayStyle={ovelayStyle} />
+          <ds-spinner></ds-spinner>
         </Container>
       ),
     },
@@ -169,7 +180,7 @@ const LegalHoldPanel: FC = () => {
   );
 
   const setBackupAccountAndPage = useCallback(
-    (backupAccounts: Array<BackupAccountItem> | undefined, page: number) => {
+    (backupAccounts: Array<BackupAccountItem> | null, page: number) => {
       if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
         setBackupAccountList(backupAccounts);
       } else {
@@ -186,18 +197,19 @@ const LegalHoldPanel: FC = () => {
   );
 
   const setBackupAccountPage = useCallback(
-    (data: any, page: number) => {
+    (data: BackupAccountsApiResponse, page: number) => {
       let backupAccounts;
       const allServers = Object.keys(data);
       let allServerAccounts: Array<BackupAccountItem> = [];
       const maxPageList: Array<number> = [];
       let backupPage = page;
       allServers.forEach((item: string) => {
-        if (data[item]?.response?.accounts) {
-          allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
+        const serverData = data[item] as ServerBackupResponse;
+        if (serverData?.response?.accounts) {
+          allServerAccounts = allServerAccounts.concat(serverData.response.accounts);
         }
-        if (data[item]?.response?.maxPage >= 0) {
-          maxPageList.push(data[item]?.response?.maxPage);
+        if (serverData?.response?.maxPage !== undefined && serverData.response.maxPage >= 0) {
+          maxPageList.push(serverData.response.maxPage);
         }
       });
       if (allServerAccounts && allServerAccounts.length > 0) {
@@ -209,7 +221,7 @@ const LegalHoldPanel: FC = () => {
           }
         }
       }
-      setBackupAccountAndPage(backupAccounts, backupPage);
+      setBackupAccountAndPage(backupAccounts ?? null, backupPage);
     },
     [setBackupAccountAndPage],
   );
@@ -220,12 +232,12 @@ const LegalHoldPanel: FC = () => {
       setDisableSwitch(true);
       setAccountRows([]);
       const domainNameItem =
-        selectedDomainName === '' || selectedDomainName === undefined
+        selectedDomainName === ''
           ? domainName
           : selectedDomainName;
       const url = `/service/extension/zextras_admin/backup/getBackupAccounts?page=${offSet}&pageSize=${accountLimit}&domains=${domainNameItem}&filter=${searchText}&legalHold=${isShowOnlyLegalHoldAccount}`;
-      getSoapFetchRequest(url)
-        .then((data: any) => {
+      getSoapFetchRequest<BackupAccountsApiResponse>(url)
+        .then((data) => {
           setIsRequestInProgress(false);
           setDisableSwitch(false);
           const error = data?.all_server?.error?.message;
@@ -237,16 +249,16 @@ const LegalHoldPanel: FC = () => {
             return;
           }
 
-          if (backupAccounts === undefined && !!data) {
-            setBackupAccountPage(data, page);
+          if (!backupAccounts && !!data) {
+            setBackupAccountPage(data, page ?? 0);
           } else {
-            setBackupAccountAndPage(backupAccounts, page);
+            setBackupAccountAndPage(backupAccounts ?? null, page ?? 0);
           }
         })
-        .catch((error: any) => {
+        .catch((error: ApiError) => {
           setIsRequestInProgress(false);
           setDisableSwitch(false);
-          showSnackbar(ERROR_LABLE, ERROR_LABLE, error?.message ? error?.message : errorMessage);
+          showSnackbar(ERROR_LABLE, ERROR_LABLE, error?.message ?? errorMessage);
         });
     },
     [
@@ -302,9 +314,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.name} color="gray0">
               {item?.name}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -313,9 +325,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.name} color="gray0">
               {item?.id}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -324,9 +336,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.name} color="gray0">
               {item?.serverName}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -335,9 +347,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.name} color="gray0">
               {format(item?.creationTimestamp, 'dd/MM/yyyy')}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -346,9 +358,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="light" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="light" key={item?.name} color="gray0">
               {item?.deletedTimestamp ? format(item?.deletedTimestamp, 'dd/MM/yyyy') : ''}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -357,9 +369,9 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="regular" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="regular" key={item?.name} color="gray0">
               {item?.status}
-            </Text>
+            </ds-text>
           </Container>,
           <Container
             key={item?.name}
@@ -368,11 +380,11 @@ const LegalHoldPanel: FC = () => {
             }}
             crossAlignment="flex-start"
           >
-            <Text size="small" weight="regular" key={item?.name} color="gray0">
+            <ds-text as="span" size="small" weight="regular" key={item?.name} color="gray0">
               {item.legalHold?.toUpperCase() === TRUE
                 ? t('legal_hold.yes', 'Yes')
                 : t('legal_hold.no', 'No')}
-            </Text>
+            </ds-text>
           </Container>,
         ],
       }));
@@ -397,15 +409,16 @@ const LegalHoldPanel: FC = () => {
   );
 
   const setUnsetLegalHoldResponse = useCallback(
-    (data: any, status: string, id: string, serverName: string) => {
+    (data: LegalHoldOperationResponse, status: string, id: string, serverName: string) => {
       if (data?.accounts?.length) {
         setAccountAfterLegalHold(status, id, serverName);
       } else {
         const allServers = Object.keys(data);
-        let allServerAccounts: Array<Record<string, unknown>> = [];
+        let allServerAccounts: Array<BackupAccountItem> = [];
         allServers.forEach((item: string) => {
-          if (data[item]?.response?.accounts) {
-            allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
+          const serverData = data[item] as ServerBackupResponse;
+          if (serverData?.response?.accounts) {
+            allServerAccounts = allServerAccounts.concat(serverData.response.accounts);
           }
         });
         if (allServerAccounts.length) {
@@ -436,11 +449,11 @@ const LegalHoldPanel: FC = () => {
       height: '1.25rem',
       cursor: 'pointer',
     },
-    icon: searchDomainName === '' ? 'ChevronDown' : 'CloseOutline',
+    icon: searchDomainName === '' ? ('ChevronDown' as const) : ('CloseOutline' as const),
   };
 
   const selectedDomain = useCallback(
-    (domain: { name: string; id: string; a: { n: string; _content: string }[] }) => {
+    (domain: DomainItem) => {
       setIsDomainSelect(true);
       setSearchDomainName(domain?.name);
       setSelectedDomainName(domain?.name);
@@ -498,7 +511,7 @@ const LegalHoldPanel: FC = () => {
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <CustomIcon icon="InfoOutline"></CustomIcon>
+                    <ds-icon icon="InfoOutline" style={customIconStyle}></ds-icon>
                   </Padding>
                 </Row>
                 <Row
@@ -508,19 +521,19 @@ const LegalHoldPanel: FC = () => {
                     all: 'small',
                   }}
                 >
-                  <Text overflow="break-word">
+                  <ds-text as="p" overflow="break-word">
                     {t(
                       'many_domain_info_msg',
                       'So many domains! Which one would you like to see? Start typing to filter.',
                     )}
-                  </Text>
+                  </ds-text>
                 </Row>
               </>
             ),
           },
         ]
       : domainList.map(
-          (domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
+          (domain: DomainItem) => ({
             id: domain.id,
             label: domain.name,
             customComponent: (
@@ -559,7 +572,7 @@ const LegalHoldPanel: FC = () => {
   }, [selectedAccountRows, t]);
 
   const customIcon = useCallback(
-    () => <Icon icon="FunnelOutline" size="large" color="primary" />,
+    () => <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>,
     [],
   );
 
@@ -593,14 +606,14 @@ const LegalHoldPanel: FC = () => {
             padding={{ left: 'extralarge' }}
           >
             <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h2" size="medium" weight="bold" color="gray0">
                 {t('label.legal_hold', 'Legal Hold')}
-              </Text>
+              </ds-text>
             </Row>
           </Row>
         </Container>
         <Row orientation="horizontal" width="100%" background="gray6">
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
         <Container
           orientation="column"
@@ -620,7 +633,7 @@ const LegalHoldPanel: FC = () => {
             >
               <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
                 <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-                  <Text size="medium" weight="bold" color="gray0">
+                  <ds-text as="h3" size="medium" weight="bold" color="gray0">
                     <Switch
                       label={t(
                         'legalHold.show_only_accounts_on_legal_hold',
@@ -639,7 +652,7 @@ const LegalHoldPanel: FC = () => {
                       }}
                       iconColor="primary"
                     />
-                  </Text>
+                  </ds-text>
                 </Row>
                 <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
                   <Padding right="small">
@@ -703,20 +716,15 @@ const LegalHoldPanel: FC = () => {
                 style={{ position: 'relative' }}
               >
                 {isRequestInProgress && (
-                  <AbsoluteContainerItem
+                  <Container
                     crossAlignment="center"
                     mainAlignment="center"
                     height="auto"
                     padding={{ top: 'medium' }}
+                    style={absoluteContainerItemStyle}
                   >
-                    <Button
-                      type="ghost"
-                      color="primary"
-                      label=""
-                      loading
-                      onClick={(): null => null}
-                    />
-                  </AbsoluteContainerItem>
+                    <ds-spinner></ds-spinner>
+                  </Container>
                 )}
 
                 {accountRows.length === 0 && (
@@ -725,11 +733,12 @@ const LegalHoldPanel: FC = () => {
                     mainAlignment="flex-start"
                     padding={{ all: '3rem' }}
                   >
-                    <Text overflow="break-word" weight="regular" size="large">
+                    <ds-text as="p" overflow="break-word" weight="regular" size="large">
                       <img src={logo} alt="logo" />
-                    </Text>
+                    </ds-text>
                     <Padding all="medium">
-                      <Text
+                      <ds-text
+                        as="p"
                         color="gray1"
                         overflow="break-word"
                         weight="regular"
@@ -737,7 +746,7 @@ const LegalHoldPanel: FC = () => {
                         style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
                       >
                         {t('label.this_list_is_empty', 'This list is empty.')}
-                      </Text>
+                      </ds-text>
                     </Padding>
                   </Container>
                 )}
@@ -749,7 +758,7 @@ const LegalHoldPanel: FC = () => {
                       crossAlignment="flex-start"
                       width="fill"
                       style={{
-                        height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 25rem)',
+                        height: 'calc(100vh - 25rem)',
                       }}
                       padding={{ all: 'large' }}
                     >
@@ -762,8 +771,8 @@ const LegalHoldPanel: FC = () => {
                           overflow: 'auto',
                           height: '100%',
                         }}
-                        selectedRows={selectedAccountRows}
-                        RowFactory={CustomRowFactory}
+                        selectedRows={selectedAccountRows.map((item) => `${item.id}-${item.serverName}`) as [] | [string]}
+                        RowFactory={HoverableRowFactory}
                         HeaderFactory={CustomHeaderFactory}
                       />
                     </Row>

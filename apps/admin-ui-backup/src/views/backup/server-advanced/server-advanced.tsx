@@ -5,20 +5,16 @@
  */
 
 import {
-  getSoapFetchRequest,
-  useAllServers,
-  useCurrentUserRights,
-} from '@zextras/admin-ui-bootstrap';
-import {
   Button,
   Container,
   Input,
+  ListRow,
   Padding,
   Row,
   Switch,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
+import { getSoapFetchRequest, useAllServers, useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +23,6 @@ import { useParams } from 'react-router';
 import { CONFIG, SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {
@@ -606,9 +601,9 @@ const ServerAdvanced: FC = () => {
                 width="50%"
                 crossAlignment="flex-start"
               >
-                <Text size="medium" weight="bold" color="gray0">
+                <ds-text as="h2" size="medium" weight="bold" color="gray0">
                   {t('backup.advanced', 'Advanced')}
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 padding={{ all: 'large' }}
@@ -638,7 +633,7 @@ const ServerAdvanced: FC = () => {
               </Row>
             </Row>
           </Container>
-          <divider-wc></divider-wc>
+          <ds-divider></ds-divider>
         </Row>
 
         <Container
@@ -720,9 +715,9 @@ const ServerAdvanced: FC = () => {
             padding={{ top: 'extralarge' }}
             height="fit"
           >
-            <Text size="medium" weight="bold">
+            <ds-text as="h3" size="medium" weight="bold">
               {t('backup.tuning_options', 'Tuning Options')}
-            </Text>
+            </ds-text>
           </Container>
 
           <Container
@@ -731,9 +726,9 @@ const ServerAdvanced: FC = () => {
             padding={{ top: 'large' }}
             height="fit"
           >
-            <Text size="medium" weight="bold">
+            <ds-text as="h3" size="medium" weight="bold">
               {t('backup.latency', 'Latency')}
-            </Text>
+            </ds-text>
           </Container>
 
           <ListRow>
@@ -745,6 +740,7 @@ const ServerAdvanced: FC = () => {
               width="50%"
             >
               <Input
+                isRequired
                 label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
                 backgroundColor="gray5"
                 value={backupLatencyHighThreshold}
@@ -762,6 +758,7 @@ const ServerAdvanced: FC = () => {
               width="50%"
             >
               <Input
+                isRequired
                 label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
                 backgroundColor="gray5"
                 value={backupLatencyLowThreshold}
@@ -779,9 +776,9 @@ const ServerAdvanced: FC = () => {
             padding={{ top: 'extralarge' }}
             height="fit"
           >
-            <Text size="medium" weight="bold">
+            <ds-text as="h3" size="medium" weight="bold">
               {t('backup.waiting_time', 'Waititng Time')}
-            </Text>
+            </ds-text>
           </Container>
 
           <ListRow>
@@ -811,9 +808,9 @@ const ServerAdvanced: FC = () => {
             padding={{ top: 'extralarge' }}
             height="fit"
           >
-            <Text size="medium" weight="bold">
+            <ds-text as="h3" size="medium" weight="bold">
               {t('backup.metadata', 'Metadata')}
-            </Text>
+            </ds-text>
           </Container>
 
           <ListRow>
@@ -825,6 +822,7 @@ const ServerAdvanced: FC = () => {
               width="100%"
             >
               <Input
+                isRequired
                 label={t('backup.maximum_metadata_size_mb', 'Maximum Metadata Size (MB)')}
                 backgroundColor="gray5"
                 value={backupMaxMetaDataSize}
@@ -886,9 +884,9 @@ const ServerAdvanced: FC = () => {
             padding={{ top: 'extralarge' }}
             height="fit"
           >
-            <Text size="medium" weight="bold">
+            <ds-text as="h3" size="medium" weight="bold">
               {t('backup.other_controls', 'Other Controls')}
-            </Text>
+            </ds-text>
           </Container>
 
           <ListRow>
@@ -900,6 +898,7 @@ const ServerAdvanced: FC = () => {
               width="500%"
             >
               <Input
+                isRequired
                 label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
                 backgroundColor="gray5"
                 value={backupMaxOperationPerAccount}
@@ -917,6 +916,7 @@ const ServerAdvanced: FC = () => {
               width="500%"
             >
               <Input
+                isRequired
                 label={t('backup.compression_level', 'Compression Level')}
                 backgroundColor="gray5"
                 value={backupCompressionLevel}
@@ -937,6 +937,7 @@ const ServerAdvanced: FC = () => {
               width="500%"
             >
               <Input
+                isRequired
                 label={t('backup.thread_number_for_items', 'Thread number for items')}
                 backgroundColor="gray5"
                 value={backupNumberThreadsForItems}
@@ -954,6 +955,7 @@ const ServerAdvanced: FC = () => {
               width="500%"
             >
               <Input
+                isRequired
                 label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
                 backgroundColor="gray5"
                 value={backupNumberThreadsForAccounts}
@@ -967,13 +969,13 @@ const ServerAdvanced: FC = () => {
         </Container>
       </Container>
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
     </Container>
   );

@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Row, Select, Switch } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import { useBackupStore } from '../../../store/backup/store';
-import ListRow from '../../list/list-row';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 
@@ -66,7 +65,7 @@ const BackupAdvanced: FC = () => {
                 t={t}
               />
             </Container>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Container
             orientation="column"
@@ -87,6 +86,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequired
                       label={`${t('backup.latency_high_threshold', 'Latency High Threshold')} (${t(
                         'backup.kb',
                         'KB',
@@ -103,6 +103,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequired
                       label={`${t('backup.latency_low_threshold', 'Latency Low Threshold')} (${t(
                         'backup.kb',
                         'KB',
@@ -186,6 +187,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequired
                       label={t('backup.metatdata_size', 'Metadata Size')}
                       value={backupDetail.ZxBackup_MaxMetadataSize}
                       defaultValue={backupDetail.ZxBackup_MaxMetadataSize}
@@ -215,6 +217,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequired
                       label={t('backup.max_operations_account', 'Max Operations / Account')}
                       value={backupDetail.ZxBackup_MaxOperationPerAccount}
                       defaultValue={backupDetail.ZxBackup_MaxOperationPerAccount}
@@ -244,6 +247,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequired
                       label={t('backup.threads_for_items', 'Threads For Items')}
                       value={backupDetail.backupNumberThreadsForAccounts}
                       defaultValue={backupDetail.backupNumberThreadsForAccounts}
@@ -257,6 +261,7 @@ const BackupAdvanced: FC = () => {
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
                     <Input
+                      isRequired
                       label={t('backup.threads_for_account', 'Threads For Account')}
                       value={backupDetail.backupNumberThreadsForAccounts}
                       defaultValue={backupDetail.backupNumberThreadsForAccounts}

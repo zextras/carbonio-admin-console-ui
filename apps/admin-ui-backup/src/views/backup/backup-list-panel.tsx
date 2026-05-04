@@ -4,14 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
+  Container,
+  DropDownInput,
+  ListItems,
+  type ListItemType,
+  ListPanelItem,
+  Padding,
+  Row,
+} from '@zextras/ui-components';
+import {
   getRights,
   replaceHistory,
   useCurrentUserRights,
   useGlobalCarbonioSendAnalytics,
   useMailstoreServers,
   useModuleLicenseInfo,
-} from '@zextras/admin-ui-bootstrap';
-import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
+} from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,8 +35,6 @@ import {
   SERVER_CONFIG,
   SERVERS_LIST,
 } from '../../constants';
-import ListItems from '../list/list-items';
-import ListPanelItem from '../list/list-panel-item';
 
 const BackupListPanel: FC = () => {
   const [t] = useTranslation();
@@ -79,8 +85,7 @@ const BackupListPanel: FC = () => {
     [t, isBackupModuleLicensed],
   );
 
-  const [defaultOptions, setDefaultOptions] =
-    useState<Array<Record<string, unknown>>>(defaultSettingsOptions);
+  const [defaultOptions, setDefaultOptions] = useState<Array<ListItemType>>(defaultSettingsOptions);
 
   useEffect(() => {
     if (!hasListServerRights) {
@@ -195,7 +200,7 @@ const BackupListPanel: FC = () => {
   }, [rights]);
 
   const customIconDetail = {
-    icon: searchServer === '' ? 'HardDriveOutline' : 'CloseOutline',
+    icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
     onClick: (): void => {
       setIsShowError(false);
       if (searchServer !== '') {
@@ -270,12 +275,12 @@ const BackupListPanel: FC = () => {
                 {isShowError && (
                   <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                     <Padding top="large" left="small">
-                      <Text size="extrasmall" weight="regular" color="error">
+                      <ds-text as="span" size="extrasmall" weight="regular" color="error">
                         {t(
                           'label.not_found_check_the_text_and_try_again',
                           'Not found - check the text and try again',
                         )}
-                      </Text>
+                      </ds-text>
                     </Padding>
                   </Container>
                 )}

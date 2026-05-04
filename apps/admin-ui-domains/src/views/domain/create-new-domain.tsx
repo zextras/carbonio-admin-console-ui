@@ -4,46 +4,49 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  replaceHistory, useDomainStore, useMailstoreServers  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  ChipInput,  Container,  CustomTextArea,  Input,  OverlayDivision,  Padding,  Row,  Select,  Switch,  Text,  Tooltip,  useSnackbar } from '@zextras/ui-components';
-import {  map, some  } from 'lodash-es';
+import {
+  Button,
+  ChipInput,
+  Container,
+  CustomTextArea,
+  Input,
+  ListRow,
+  Padding,
+  Row,
+  Select,
+  Switch,
+  Tooltip,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { replaceHistory, useDomainStore, useMailstoreServers } from '@zextras/ui-shared';
+import { map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import {  useTranslation  } from 'react-i18next';
-import {  useNavigate  } from 'react-router';
-import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
-import {  Attribute, DomainResponse, objectType, SelectItem  } from '../../../types';
-import {   ACTIVE,  DOMAINS_ROUTE_ID,  GENERAL_SETTINGS,  HTTPS,  INTERNAL_GAL,  MANAGE,  ZIMBRA_ADMIN_URN } from '../../constants';
-import {  createDomain  } from '../../services/create-domain';
-import {  createGalSyncAccount  } from '../../services/create-gal-sync-service';
-import {  createObjectAttribute  } from '../../services/create-object-attribute-service';
-import {  InitDomainForDelegation  } from '../../services/init-domain-for-delegation';
-import {  getCosList  } from '../../services/search-cos-service';
-import {  generateSnackbarFromError  } from '../error/generate-snackbar-error';
-import ListRow from '../list/list-row';
-import {  GbToBytes, isValidEmail  } from '../utility/utils';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 70.35rem;
-  top: 6.5rem;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
+import { Attribute, DomainResponse, objectType, SelectItem } from '../../../types';
+import {
+  ACTIVE,
+  DOMAINS_ROUTE_ID,
+  GENERAL_SETTINGS,
+  HTTPS,
+  INTERNAL_GAL,
+  MANAGE,
+  ZIMBRA_ADMIN_URN,
+} from '../../constants';
+import { createDomain } from '../../services/create-domain';
+import { createGalSyncAccount } from '../../services/create-gal-sync-service';
+import { createObjectAttribute } from '../../services/create-object-attribute-service';
+import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
+import { getCosList } from '../../services/search-cos-service';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+import { GbToBytes, isValidEmail } from '../utility/utils';
 
 const GAL_MODE = {
   INTERNAL: 'zimbra',
   EXTERNAL: 'external',
   BOTH: 'both',
 } as const;
-
 const CreateDomain: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -304,7 +307,7 @@ const CreateDomain: FC = () => {
               GAL_MODE.INTERNAL,
               attributes,
               `_${dataSourceName}`,
-            ).then((resp) => {
+            ).then(() => {
               if (isDomainDelegatedAdmin) {
                 handleRevokesGrants();
               }
@@ -370,7 +373,7 @@ const CreateDomain: FC = () => {
 
   return (
     <>
-      {isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+      {isLoading && <ds-spinner></ds-spinner>}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           crossAlignment="flex-start"
@@ -380,11 +383,11 @@ const CreateDomain: FC = () => {
         >
           <Row width="100%" mainAlignment="flex-start">
             <Padding all="large">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h1" size="medium" weight="bold" color="gray0">
                 {t('label.new_domain', 'New Domain')}
-              </Text>
+              </ds-text>
             </Padding>
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
         </Container>
         <Container
@@ -404,9 +407,9 @@ const CreateDomain: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="h2" size="small" weight="bold" color="gray0">
                   {t('label.general_information', 'General Information')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container padding={{ all: 'small' }}>
@@ -482,7 +485,7 @@ const CreateDomain: FC = () => {
             mainAlignment="flex-start"
             padding={{ vertical: 'large', horizontal: 'small' }}
           >
-            <divider-wc></divider-wc>
+            <ds-divider></ds-divider>
           </Row>
           <Row mainAlignment="flex-start" width="100%">
             <Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -492,16 +495,16 @@ const CreateDomain: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="h2" size="small" weight="bold" color="gray0">
                   {t('label.gal', 'GAL')}
-                </Text>
+                </ds-text>
                 <Tooltip
                   placement="top"
                   label={t('label.global_address_list', 'Global Address List')}
                 >
-                  <Text size="small" color="gray0" style={{ textDecoration: 'underline' }}>
+                  <ds-text as="span" size="small" color="gray0" style={{ textDecoration: 'underline' }}>
                     ({t('label.what_is_a_gal', "What's a GAL?")})
-                  </Text>
+                  </ds-text>
                 </Tooltip>
               </Row>
               <ListRow>
@@ -555,7 +558,7 @@ const CreateDomain: FC = () => {
                 mainAlignment="flex-start"
                 padding={{ vertical: 'large', horizontal: 'small' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Row>
               <Row
                 mainAlignment="flex-start"
@@ -563,9 +566,9 @@ const CreateDomain: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="h2" size="small" weight="bold" color="gray0">
                   {t('label.class_of_service_cos', 'Class Of Service (COS)')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container padding={{ all: 'small' }}>
@@ -592,7 +595,7 @@ const CreateDomain: FC = () => {
                 mainAlignment="flex-start"
                 padding={{ vertical: 'large', horizontal: 'small' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Row>
               <Row
                 mainAlignment="flex-start"
@@ -600,9 +603,9 @@ const CreateDomain: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="h2" size="small" weight="bold" color="gray0">
                   {t('label.delegated_administration_title', 'Delegated Administration')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container
@@ -625,7 +628,7 @@ const CreateDomain: FC = () => {
                 mainAlignment="flex-start"
                 padding={{ vertical: 'large', horizontal: 'small' }}
               >
-                <divider-wc></divider-wc>
+                <ds-divider></ds-divider>
               </Row>
               <Row
                 mainAlignment="flex-start"
@@ -633,9 +636,9 @@ const CreateDomain: FC = () => {
                 background="gray6"
                 padding={{ left: 'large', top: 'large' }}
               >
-                <Text size="small" weight="bold" color="gray0">
+                <ds-text as="h2" size="small" weight="bold" color="gray0">
                   {t('label.domain_system_notifications', 'Domain System Notifications')}
-                </Text>
+                </ds-text>
               </Row>
               <ListRow>
                 <Container

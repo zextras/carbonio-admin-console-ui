@@ -4,28 +4,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAllConfig } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Collapse,
   Container,
-  Icon,
-  Input,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  LabeledValue,
+  ListRow,
   Modal,
   ModalOverlay,
-  OverlayDivision,
   Padding,
   Row,
   Table,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import logo from '../../assets/ninja_robo.svg';
 import { batchService } from '../../services/batch-service';
@@ -37,27 +36,9 @@ import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request
 import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
 import { msgActionRequest } from '../../services/message-action';
 import { modifyConfig } from '../../services/modify-config';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import ListRow from '../list/list-row';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
-
-const ovelayStyle = styled(Container)`
-  position: fixed;
-  width: 58.75rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  background: #0d0d0d;
-  opacity: 0.4;
-  z-index: 11;
-  padding-top: 2rem;
-`;
 
 type AttachmentPart = {
   part?: string;
@@ -210,9 +191,9 @@ const MessageListTable: FC<{
               setMessage(v);
             }}
           >
-            <Text size="small" weight="regular">
+            <ds-text as="span" size="small" weight="regular">
               {getDateTime(v?.date)}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -222,9 +203,9 @@ const MessageListTable: FC<{
               setMessage(v);
             }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v.envelopeFrom || ''}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -234,9 +215,9 @@ const MessageListTable: FC<{
               setMessage(v);
             }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v.subject}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -246,13 +227,14 @@ const MessageListTable: FC<{
               setMessage(v);
             }}
           >
-            <Text
+            <ds-text
+              as="span"
               size="small"
               weight="bold"
               color={v.score > 50 ? 'secondry' : v.score > 35 ? 'warning' : 'error'}
             >
               {v.score}
-            </Text>
+            </ds-text>
           </Row>,
           <Row
             key={i}
@@ -262,9 +244,9 @@ const MessageListTable: FC<{
               setMessage(v);
             }}
           >
-            <Text size="small" weight="light">
+            <ds-text as="span" size="small" weight="light">
               {v.reason}
-            </Text>
+            </ds-text>
           </Row>,
         ],
         clickable: true,
@@ -283,8 +265,8 @@ const MessageListTable: FC<{
             multiSelect={false}
             selectedRows={selectedRows}
             onSelectionChange={onSelectionChange}
-            RowFactory={CustomRowFactory}
             HeaderFactory={CustomHeaderFactory}
+            RowFactory={HoverableRowFactory}
           />
           {requestInprogress && (
             <Container
@@ -293,7 +275,7 @@ const MessageListTable: FC<{
               height="auto"
               padding={{ top: 'large' }}
             >
-              <Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+              <ds-spinner></ds-spinner>
             </Container>
           )}
           {tableRows.length === 0 && !requestInprogress && (
@@ -312,9 +294,9 @@ const MessageListTable: FC<{
                 crossAlignment="center"
                 style={{ textAlign: 'center' }}
               >
-                <Text weight="light" color="#828282" size="large" overflow="break-word">
+                <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                   {t('label.this_list_is_empty', 'This list is empty.')}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
           )}
@@ -1077,16 +1059,16 @@ const QuarantineList: FC = () => {
         >
           <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
             <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h1" size="medium" weight="bold" color="gray0">
                 {t('quarantine.quarantine', 'Quarantine')}
-              </Text>
+              </ds-text>
             </Row>
           </Row>
         </Container>
       </Row>
 
       <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Container
         orientation="column"
@@ -1103,12 +1085,12 @@ const QuarantineList: FC = () => {
                 {!quarantineAccountName ? (
                   <>
                     <Row>
-                      <Text size="small">
+                      <ds-text as="p" size="small">
                         {t(
                           'quarantine.not_quarantine_account',
                           'There is not quarantine account in any of the domains, yet. Do you want to create a system quarantine account?',
                         )}
-                      </Text>
+                      </ds-text>
                     </Row>
                     <Row width="100%" padding={{ top: 'large' }}>
                       <Button
@@ -1126,7 +1108,7 @@ const QuarantineList: FC = () => {
                   <>
                     <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
                       <Row width="100%" mainAlignment="space-between">
-                        <Input
+                        <LabeledValue
                           label={t('quarantine.quarantine_account', 'Quarantine Account')}
                           value={quarantineAccountName}
                         />
@@ -1147,12 +1129,12 @@ const QuarantineList: FC = () => {
                       />
                     </Row>
                     <Row padding={{ top: 'small' }} width="100%" mainAlignment="center">
-                      <Text size="small" color={'gray1'}>
+                      <ds-text as="small" size="small" color={'gray1'}>
                         {t(
                           'quarantine.to_make_changes_restart_the_MTA',
                           'To make the changes effective, please restart the MTA.',
                         )}
-                      </Text>
+                      </ds-text>
                     </Row>
                     <Row
                       padding={{ top: 'large' }}
@@ -1160,13 +1142,13 @@ const QuarantineList: FC = () => {
                       width="100%"
                       background="gray6"
                     >
-                      <divider-wc></divider-wc>
+                      <ds-divider></ds-divider>
                     </Row>
                     <Row orientation="horizontal" width="100%" padding={{ vertical: 'large' }}>
                       <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-                        <Text size="medium" weight="bold" color="gray0">
+                        <ds-text as="h2" size="medium" weight="bold" color="gray0">
                           {t('label.settings', 'Settings')}
-                        </Text>
+                        </ds-text>
                       </Row>
                     </Row>
                     <ListRow>
@@ -1177,7 +1159,7 @@ const QuarantineList: FC = () => {
                         padding={{ right: 'small', bottom: 'small' }}
                         width="79%"
                       >
-                        <Input
+                        <LabeledValue
                           label={t('label.retention_period', 'Retention Period (value)')}
                           backgroundColor="gray5"
                           value={zimbraMailMessageLifetimeNum}
@@ -1190,7 +1172,7 @@ const QuarantineList: FC = () => {
                         orientation="horizontal"
                         width="20%"
                       >
-                        <Input
+                        <LabeledValue
                           label={t('label.interval', 'Interval')}
                           backgroundColor="gray5"
                           value={
@@ -1200,7 +1182,6 @@ const QuarantineList: FC = () => {
                                   (item: any) => item.value === zimbraMailMessageLifetimeType,
                                 ).label
                           }
-                          style={{ pointerEvents: 'none' }}
                         />
                       </Container>
                     </ListRow>
@@ -1210,7 +1191,7 @@ const QuarantineList: FC = () => {
                       width="100%"
                       background="gray6"
                     >
-                      <divider-wc></divider-wc>
+                      <ds-divider></ds-divider>
                     </Row>
                     <Row
                       orientation="horizontal"
@@ -1218,9 +1199,9 @@ const QuarantineList: FC = () => {
                       padding={{ top: 'small', bottom: 'large' }}
                     >
                       <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-                        <Text size="medium" weight="bold" color="gray0">
+                        <ds-text as="h2" size="medium" weight="bold" color="gray0">
                           {t('label.messages', 'Messages')}
-                        </Text>
+                        </ds-text>
                       </Row>
                     </Row>
                     <Row width="100%" padding={{ bottom: 'large' }}>
@@ -1259,13 +1240,7 @@ const QuarantineList: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <ds-spinner></ds-spinner>
                 </Container>
               </>
             )}
@@ -1306,7 +1281,8 @@ const QuarantineList: FC = () => {
         showCloseIcon
         onClose={(): void => setDeleteQuarantuneAccModal(false)}
       >
-        <Text
+        <ds-text
+          as="p"
           size={'extralarge'}
           overflow="break-word"
           style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
@@ -1315,7 +1291,7 @@ const QuarantineList: FC = () => {
             'quarantine.delete_and_recrate_quarantine_account_warning',
             `Are you sure you want to delete and re-create quarantine account?`,
           )}
-        </Text>
+        </ds-text>
       </Modal>
       <Modal
         size="small"
@@ -1344,17 +1320,18 @@ const QuarantineList: FC = () => {
         showCloseIcon
         onClose={(): void => setDeleteQuarantuneAccModal(false)}
       >
-        <Text
+        <ds-text
+          as="p"
           size={'extralarge'}
           overflow="break-word"
           style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
         >
           {t('quarantine.delete_msg_warning', `Are you sure you want to delete message?`)}
-        </Text>
+        </ds-text>
       </Modal>
       {showMessageView && message.id && (
         <ModalOverlay open={showMessageView} maxWidth="58.75rem">
-          {messageViewLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+          {messageViewLoading && <ds-spinner></ds-spinner>}
           <Container background="white" mainAlignment="flex-start">
             <Row
               mainAlignment="flex-start"
@@ -1367,9 +1344,9 @@ const QuarantineList: FC = () => {
             >
               <Row padding={{ horizontal: 'small' }}></Row>
               <Row takeAvailableSpace mainAlignment="flex-start">
-                <Text size="medium" overflow="ellipsis" weight="bold">
+                <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
                   {`${find(message?.participants, { type: 'f' })?.address} <${message?.subject}>`}
-                </Text>
+                </ds-text>
               </Row>
               <Row padding={{ right: 'extrasmall' }}>
                 <Button
@@ -1393,30 +1370,29 @@ const QuarantineList: FC = () => {
                 width="70%"
                 padding={{ all: 'large' }}
               >
-                <Text size="large">{t('label.score', 'Score')}</Text>
+                <ds-text as="label" size="large">{t('label.score', 'Score')}</ds-text>
                 {' : '}
-                <Text
+                <ds-text
+                  as="strong"
                   size="large"
                   weight="bold"
                   // @ts-expect-error - needs a fix
-
                   color={message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'}
                   style={{ display: 'flex', paddingLeft: '0.25rem' }}
                 >
                   {message.score}
-                </Text>
+                </ds-text>
                 <Tooltip placement="top" label={message.reason}>
-                  <Text style={{ paddingLeft: '0.25rem' }}>
-                    <Icon
+                  <ds-text as="span" style={{ paddingLeft: '0.25rem' }}>
+                    <ds-icon
                       color={
                         // @ts-expect-error - needs a fix
-
                         message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'
                       }
                       size="large"
                       icon={'QuestionMarkCircleOutline'}
-                    />
-                  </Text>
+                    ></ds-icon>
+                  </ds-text>
                 </Tooltip>
               </Row>
               <Button
@@ -1467,9 +1443,9 @@ const QuarantineList: FC = () => {
                     orientation="horizontal"
                   >
                     <Row width="95%" mainAlignment="flex-start">
-                      <Text size="large" weight="bold">
+                      <ds-text as="h3" size="large" weight="bold">
                         {message?.subject}
-                      </Text>
+                      </ds-text>
                     </Row>
                   </Row>
                   <Row
@@ -1479,20 +1455,20 @@ const QuarantineList: FC = () => {
                     orientation="vertical"
                   >
                     <Row width="95%" mainAlignment="flex-end" orientation="horizontal">
-                      <Text size="small" weight="bold">
+                      <ds-text as="label" size="small" weight="bold">
                         {t('label.date', 'Date')} :{' '}
-                      </Text>
-                      <Text size="small"> {format(message?.date, 'dd-MM-yyyy - HH:mm a')}</Text>
+                      </ds-text>
+                      <ds-text as="span" size="small"> {format(message?.date, 'dd-MM-yyyy - HH:mm a')}</ds-text>
                     </Row>
                     <Row width="95%" mainAlignment="flex-end" orientation="horizontal">
-                      <Text size="small" weight="bold">
+                      <ds-text as="label" size="small" weight="bold">
                         {t('label.received', 'Received')} :{' '}
-                      </Text>
-                      <Text size="small">{format(message?.date, 'dd-MM-yyyy - HH:mm a')}</Text>
+                      </ds-text>
+                      <ds-text as="span" size="small">{format(message?.date, 'dd-MM-yyyy - HH:mm a')}</ds-text>
                     </Row>
                   </Row>
                   <Row width="100%" padding={{ top: 'medium' }}>
-                    <divider-wc></divider-wc>
+                    <ds-divider></ds-divider>
                   </Row>
                   <Row
                     width="100%"
@@ -1500,10 +1476,10 @@ const QuarantineList: FC = () => {
                     orientation="horizontal"
                     padding={{ top: 'large' }}
                   >
-                    <Text size="small" weight="bold">
+                    <ds-text as="label" size="small" weight="bold">
                       {t('label.from', 'From')} :{' '}
-                    </Text>
-                    <Text size="small"> {message.envelopeFrom || ''}</Text>
+                    </ds-text>
+                    <ds-text as="span" size="small"> {message.envelopeFrom || ''}</ds-text>
                   </Row>
                   <Row
                     width="100%"
@@ -1511,10 +1487,10 @@ const QuarantineList: FC = () => {
                     orientation="horizontal"
                     padding={{ top: 'medium' }}
                   >
-                    <Text size="small" weight="bold">
+                    <ds-text as="label" size="small" weight="bold">
                       {t('label.to', 'To')} :{' '}
-                    </Text>
-                    <Text size="small"> {message.envelopeTo || ''}</Text>
+                    </ds-text>
+                    <ds-text as="span" size="small"> {message.envelopeTo || ''}</ds-text>
                   </Row>
                   <Row
                     width="100%"
@@ -1545,11 +1521,11 @@ const QuarantineList: FC = () => {
                     type="ghost"
                   />
                 </Row>
-                <Collapse orientation="vertical" open={showTextMsgView}>
+                <Collapse open={showTextMsgView}>
                   <Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
-                    <Text overflow="break-word" color="text" style={{ fontFamily: 'monospace' }}>
+                    <ds-text as="span" overflow="break-word" color="text" style={{ fontFamily: 'monospace' }}>
                       {message?.body?.content}
-                    </Text>
+                    </ds-text>
                   </Row>
                 </Collapse>
               </Row>
@@ -1589,12 +1565,12 @@ const QuarantineList: FC = () => {
             }
           >
             <Padding all="medium">
-              <Text overflow="break-word" weight="regular">
+              <ds-text as="p" overflow="break-word" weight="regular">
                 {t(
                   'quarantine.please_note_email_contains_dangerous_file_not_be_delivered',
                   'Please note that if the email still contains a dangerous file it will not be delivered',
                 )}
-              </Text>
+              </ds-text>
             </Padding>
           </Modal>
         </ModalOverlay>

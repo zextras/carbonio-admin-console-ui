@@ -3,12 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {  useIsAdvanced  } from '@zextras/admin-ui-bootstrap';
-import {  Container,Row, Text  } from '@zextras/ui-components';
-import {  FC, useCallback  } from 'react';
-import {  useTranslation  } from 'react-i18next';
-
-import InheritedSwitch from '../utility/inherited-components/inherited-switch';
+import { Container, InheritedSwitch, Row } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
+import { FC, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const Features: FC<{
 	featuresDetail: Record<string, string>;
@@ -55,9 +53,9 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<ds-text as="h3" weight="bold">
 						{t('label.general_lbl', 'General')}
-					</Text>
+					</ds-text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
 							subValue={featuresDetail?.zimbraFeatureOptionsEnabled}
@@ -95,9 +93,9 @@ export const Features: FC<{
 						orientation="vertical"
 						padding={{ bottom: 'large' }}
 					>
-						<Text size="extralarge" weight="bold">
+						<ds-text as="h3" weight="bold">
 							{t('label.two_factor_auth', 'Second Factor Authentication')}
-						</Text>
+						</ds-text>
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 							<InheritedSwitch
 								subValue={featuresDetail?.carbonioFeatureOTPMgmtEnabled}
@@ -127,9 +125,9 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<ds-text as="h3" weight="bold">
 						{t('label.mail', 'Mail')}
-					</Text>
+					</ds-text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
 							subValue={featuresDetail?.carbonioFeatureMailsAppEnabled}
@@ -170,7 +168,7 @@ export const Features: FC<{
 						/>
 					</Row>
 				</Container>
-				<divider-wc></divider-wc>
+				<ds-divider></ds-divider>
 			</Row>
 			<Row
 				mainAlignment="flex-start"
@@ -185,9 +183,9 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<ds-text as="h3" weight="bold">
 						{t('label.contacts', 'Contacts')}
-					</Text>
+					</ds-text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
 							subValue={featuresDetail?.zimbraFeatureContactsEnabled}
@@ -209,9 +207,9 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<ds-text as="h3" weight="bold">
 						{t('label.calendar', 'Calendar')}
-					</Text>
+					</ds-text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
 							subValue={featuresDetail?.zimbraFeatureCalendarEnabled}
@@ -226,7 +224,7 @@ export const Features: FC<{
 						/>
 					</Row>
 				</Container>
-				<divider-wc></divider-wc>
+				<ds-divider></ds-divider>
 			</Row>
 			<Row
 				mainAlignment="flex-start"
@@ -241,9 +239,9 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<ds-text as="h3" weight="bold">
 						{t('label.files', 'Files')}
-					</Text>
+					</ds-text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
 							subValue={featuresDetail?.carbonioFeatureFilesEnabled}
@@ -278,9 +276,9 @@ export const Features: FC<{
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
-					<Text size="extralarge" weight="bold">
+					<ds-text as="h3" weight="bold">
 						{t('label.tasks', 'Tasks')}
-					</Text>
+					</ds-text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
 							subValue={featuresDetail?.carbonioFeatureTasksEnabled}

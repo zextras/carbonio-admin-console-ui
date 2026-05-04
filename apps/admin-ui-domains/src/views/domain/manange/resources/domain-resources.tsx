@@ -4,18 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/admin-ui-bootstrap';
 import {
   Button,
   Container,
-  Icon,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
   Padding,
+  Paging,
   Row,
   Table,
-  Text,
+  TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useDomainStore } from '@zextras/ui-shared';
 import { format, parse } from 'date-fns';
 import { debounce } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -27,10 +29,6 @@ import { createResource } from '../../../../services/create-cal-resource-service
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
-import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateResource from './create-resource';
@@ -190,7 +188,7 @@ const DomainResources: FC = () => {
           if (resourceListResponse && Array.isArray(resourceListResponse)) {
             setTotalAccount(data?.searchTotal || 0);
             const rList: any[] = [];
-            resourceListResponse.forEach((item: any, index: number) => {
+            resourceListResponse.forEach((item: any) => {
               rList.push({
                 id: item?.id,
                 columns: [
@@ -203,9 +201,9 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                       {item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-                    </Text>
+                    </ds-text>
                   </Container>,
                   <Container
                     key={item?.id}
@@ -216,9 +214,9 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                       {item?.name}
-                    </Text>
+                    </ds-text>
                   </Container>,
                   <Container
                     key={item?.id}
@@ -229,9 +227,9 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                       {item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
-                    </Text>
+                    </ds-text>
                   </Container>,
                   <Container
                     key={item?.id}
@@ -242,7 +240,7 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                       {item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
                         ? format(
                             parse(
@@ -254,7 +252,7 @@ const DomainResources: FC = () => {
                             'yy/MM/dd | hh:mm',
                           )
                         : t('label.never_logged_in', 'Never logged In')}
-                    </Text>
+                    </ds-text>
                   </Container>,
                   <Container
                     key={item?.id}
@@ -265,9 +263,9 @@ const DomainResources: FC = () => {
                       handleClick(e);
                     }}
                   >
-                    <Text size="small" weight="light" key={item?.id} color="gray0">
+                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
                       {item?.a?.find((a: any) => a?.n === 'description')?._content}
-                    </Text>
+                    </ds-text>
                   </Container>,
                 ],
                 item,
@@ -420,7 +418,7 @@ const DomainResources: FC = () => {
                       attrList.push({ n: ele, _content: signtureAttr[ele] }),
                     );
                     modifyCalendarResource(resourceId, attrList)
-                      .then((modifyData) => {
+                      .then(() => {
                         setShowCreateResourceView(false);
                         successSnackBar(resourceName);
                         setIsUpdateRecord(true);
@@ -430,7 +428,7 @@ const DomainResources: FC = () => {
                       });
                   }
                 })
-                .catch((error) => {
+                .catch(() => {
                   errorSnackBar();
                 });
             } else {
@@ -487,9 +485,9 @@ const DomainResources: FC = () => {
         >
           <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
             <Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
-              <Text size="medium" weight="bold" color="gray0">
+              <ds-text as="h1" size="medium" weight="bold" color="gray0">
                 {t('label.resources', 'Resources')}
-              </Text>
+              </ds-text>
             </Row>
             <Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding all={'0'}>
@@ -506,7 +504,7 @@ const DomainResources: FC = () => {
         </Container>
       </Row>
       <Row orientation="horizontal" width="100%" background="gray6">
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </Row>
       <Container
         orientation="column"
@@ -539,7 +537,9 @@ const DomainResources: FC = () => {
                   onChange={(e: any): any => {
                     setSearchString(e.target.value);
                   }}
-                  CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+                  CustomIcon={(): any => (
+                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+                  )}
                 />
               </Container>
             </Row>
@@ -559,7 +559,7 @@ const DomainResources: FC = () => {
                   overflow: 'auto',
                   height: isRequestInProgress || resourceList.length === 0 ? '50%' : '100%',
                 }}
-                RowFactory={CustomRowFactory}
+                RowFactory={HoverableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
               {isRequestInProgress && (
@@ -569,13 +569,7 @@ const DomainResources: FC = () => {
                   height="auto"
                   padding={{ top: 'medium' }}
                 >
-                  <Button
-                    type="ghost"
-                    color="primary"
-                    label=""
-                    loading
-                    onClick={(): null => null}
-                  />
+                  <ds-spinner></ds-spinner>
                 </Container>
               )}
               {resourceList.length === 0 && !isRequestInProgress && (
@@ -589,9 +583,9 @@ const DomainResources: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       {t('label.this_list_is_empty', 'This list is empty.')}
-                    </Text>
+                    </ds-text>
                   </Row>
                   <Row
                     orientation="vertical"
@@ -600,13 +594,13 @@ const DomainResources: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <Text weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                       <Trans
                         i18nKey="label.create_resource_msg"
                         defaults="You can create a new resource by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
                         components={{ bold: <strong /> }}
                       />
-                    </Text>
+                    </ds-text>
                   </Row>
                 </Container>
               )}

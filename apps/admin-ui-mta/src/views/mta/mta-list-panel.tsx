@@ -4,11 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-  replaceHistory,
-  useGlobalCarbonioSendAnalytics,
-  useMtaServers,
-} from '@zextras/admin-ui-bootstrap';
-import { Container, DropDownInput, Padding, Row, Text } from '@zextras/ui-components';
+  Container,
+  DropDownInput,
+  ListItems,
+  ListPanelItem,
+  Padding,
+  Row,
+} from '@zextras/ui-components';
+import { replaceHistory, useGlobalCarbonioSendAnalytics, useMtaServers } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,8 +26,6 @@ import {
   QUEUE,
 } from '../../constants';
 import type { DropdownItem, MtaServer } from '../../types/mta';
-import ListItems from '../list/list-items';
-import ListPanelItem from '../list/list-panel-item';
 
 const MTAListPanel: FC = () => {
   const [t] = useTranslation();
@@ -164,7 +165,7 @@ const MTAListPanel: FC = () => {
 
   const customIconDetail = useMemo(
     () => ({
-      icon: searchServer === '' ? 'HardDriveOutline' : 'CloseOutline',
+      icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
       onClick: handleCustomIconClick,
     }),
     [searchServer, handleCustomIconClick],
@@ -223,12 +224,12 @@ const MTAListPanel: FC = () => {
               {isShowError && (
                 <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                   <Padding top="large" left="small">
-                    <Text size="extrasmall" weight="regular" color="error">
+                    <ds-text as="span" size="extrasmall" weight="regular" color="error">
                       {t(
                         'label.not_found_check_the_text_and_try_again',
                         'Not found - check the text and try again',
                       )}
-                    </Text>
+                    </ds-text>
                   </Padding>
                 </Container>
               )}

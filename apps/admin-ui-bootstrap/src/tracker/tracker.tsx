@@ -5,7 +5,7 @@
  */
 
 import { usePostHog } from '@posthog/react';
-import { useIsAdvanced, useUserAccount } from '@zextras/admin-ui-bootstrap';
+import { useIsAdvanced, useUserAccount } from '@zextras/ui-shared';
 import type { CaptureOptions, Properties } from 'posthog-js';
 import { useCallback, useEffect } from 'react';
 
@@ -25,7 +25,7 @@ const hashToSHA256 = async (value: string): Promise<ArrayBuffer> => {
 
 const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
   const bytes = new Uint8Array(buffer);
-  const binary = bytes.reduce((res, byte) => res + String.fromCharCode(byte), '');
+  const binary = bytes.reduce((res, byte) => res + String.fromCodePoint(byte), '');
   return window.btoa(binary);
 };
 

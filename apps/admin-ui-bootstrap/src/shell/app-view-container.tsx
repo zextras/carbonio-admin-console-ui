@@ -5,25 +5,14 @@
  */
 
 import { Container } from '@zextras/ui-components';
+import { useAppList, useAppRoutes, useAppStore } from '@zextras/ui-shared';
 import { find, map } from 'lodash-es';
 import { useMemo } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
-import styled from 'styled-components';
-
-import AppContextProvider from '../boot/app/app-context-provider';
-import { useAppList, useAppStore, useRoutes } from '../store/app';
-
-const _BoardsRouterContainer = styled(Container)`
-  flex-grow: 1;
-  flex-basis: 0;
-  min-width: 1px;
-  max-height: calc(100vh - 60px);
-  overflow-y: auto;
-`;
 
 const FirstAppRedirect = () => {
   const apps = useAppList();
-  const routes = useRoutes();
+  const routes = useAppRoutes();
   const location = useLocation();
   const mainRoute = useMemo(
     () => find(routes, (r) => apps[0]?.name === r.app)?.route,
@@ -37,26 +26,26 @@ export default function AppViewContainer() {
   const routes = useMemo(
     () => [
       ...map(appViews, (view) => (
-        <Route
-          key={view.id}
-          path={`/${view.route}/*`}
-          element={
-            <AppContextProvider key={view.app} pkg={view.app}>
-              <view.component />
-            </AppContextProvider>
-          }
-        />
+        <Route key={view.id} path={`/${view.route}/*`} element={<view.component />} />
       )),
     ],
     [appViews],
   );
 
   return (
-    <_BoardsRouterContainer>
+    <Container
+      style={{
+        flexGrow: 1,
+        flexBasis: 0,
+        minWidth: '1px',
+        maxHeight: 'calc(100vh - 60px)',
+        overflowY: 'auto',
+      }}
+    >
       <Container mainAlignment="flex-start">
         <Routes>{routes}</Routes>
         <FirstAppRedirect />
       </Container>
-    </_BoardsRouterContainer>
+    </Container>
   );
 }

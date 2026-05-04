@@ -3,37 +3,30 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import {
   Button,
   Container,
-  Icon,
+  CustomHeaderFactory,
+  HoverableRowFactory,
   Input,
+  ListRow,
   Modal,
   Padding,
   Row,
   Table,
-  Text,
   useSnackbar,
 } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import logo from '../../../../../assets/gardian.svg';
 import Composer from '../../../../../composer/composer';
 import { createSignature } from '../../../../../services/create-signature-service';
 import { deleteSignature } from '../../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../../services/modify-signature-service';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
-import ListRow from '../../../../list/list-row';
+import styles from './signature-detail.module.css';
 
-const EditorWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-`;
 export const SignatureDetail: FC<any> = ({
   isEditable,
   signatureList,
@@ -82,9 +75,9 @@ export const SignatureDetail: FC<any> = ({
       sList.push({
         id: item?.id,
         columns: [
-          <Text size="medium" weight="light" key={`${item?.id}-name`} color="gray0">
+          <ds-text size="medium" weight="light" key={`${item?.id}-name`} color="gray0" as="span">
             {item?.name}
-          </Text>,
+          </ds-text>,
         ],
         item,
         label: item?.name,
@@ -122,7 +115,7 @@ export const SignatureDetail: FC<any> = ({
       selectedSignature.forEach((item: string) => {
         deleteRequest.push(deleteSignature(accountId, item));
       });
-      Promise.all(deleteRequest).then((response) => {
+      Promise.all(deleteRequest).then(() => {
         deleteSignatureIntoList(selectedSignature);
       });
     } else {
@@ -309,7 +302,7 @@ export const SignatureDetail: FC<any> = ({
               <Button
                 type="outlined"
                 label={t('label.delete', 'Delete')}
-                icon="Close"
+                icon="Trash2Outline"
                 color="error"
                 disabled={selectedSignature.length === 0}
                 onClick={onDeleteSignature}
@@ -332,7 +325,9 @@ export const SignatureDetail: FC<any> = ({
                 label={t('label.search_a_signature', 'Search for a signature')}
                 backgroundColor="gray5"
                 value={searchSignatureName}
-                CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+                CustomIcon={(): any => (
+                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+                )}
                 onChange={(e: any): any => {
                   setSearchSignatureName(e.target.value);
                 }}
@@ -356,7 +351,7 @@ export const SignatureDetail: FC<any> = ({
               style={{ overflow: 'auto', height: '100%' }}
               selectedRows={selectedSignature}
               onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
-              RowFactory={CustomRowFactory}
+              RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           )}
@@ -371,9 +366,9 @@ export const SignatureDetail: FC<any> = ({
                 crossAlignment="center"
                 style={{ textAlign: 'center' }}
               >
-                <Text weight="light" color="#828282" size="large" overflow="break-word">
+                <ds-text weight="light" color="#828282" size="large" overflow="break-word" as="p">
                   {t('label.this_list_is_empty', 'This list is empty.')}
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 orientation="vertical"
@@ -382,12 +377,12 @@ export const SignatureDetail: FC<any> = ({
                 padding={{ top: 'small' }}
                 width="53%"
               >
-                <Text weight="light" color="#828282" size="large" overflow="break-word">
+                <ds-text weight="light" color="#828282" size="large" overflow="break-word" as="p">
                   <Trans
                     i18nKey="label.do_you_need_more_information"
                     defaults="Do you need more information?"
                   />
-                </Text>
+                </ds-text>
               </Row>
               <Row
                 orientation="vertical"
@@ -396,9 +391,9 @@ export const SignatureDetail: FC<any> = ({
                 padding={{ top: 'small' }}
                 width="53%"
               >
-                <Text weight="light" color="primary">
+                <ds-text weight="light" color="primary" as="span">
                   {t('label.click_here', 'Click here')}
-                </Text>
+                </ds-text>
               </Row>
             </Container>
           )}
@@ -471,7 +466,7 @@ export const SignatureDetail: FC<any> = ({
               />
             </Container>
             <Container>
-              <EditorWrapper>
+              <div className={styles.editorWrapper}>
                 <Composer
                   initialValue={defaultSignatureContent}
                   value={signatureContent}
@@ -479,7 +474,7 @@ export const SignatureDetail: FC<any> = ({
                     setSignatureContent(ev[1]);
                   }}
                 />
-              </EditorWrapper>
+              </div>
             </Container>
           </Container>
         </Modal>

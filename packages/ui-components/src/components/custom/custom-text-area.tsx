@@ -4,185 +4,119 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useState } from 'react';
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
+import clsx from 'clsx';
+import { useCallback, useMemo, useState } from 'react';
 
-import { Container, ContainerProps } from '../layout/Container';
+import { resolveThemeColor } from '../../theme/theme-utils';
+import { Container } from '../layout/Container';
+import styles from './custom-text-area.module.css';
 
-interface ContainerExtendProps extends ContainerProps {
-	disabled: boolean;
-	background: string;
-}
+type TextareaProps = {
+  backgroundColor?: string;
+  disabled?: boolean;
+  label: string;
+  onChange?: (e: any) => void;
+  value?: string | number;
+  defaultValue?: string | number;
+  hasError?: boolean;
+  autoFocus?: boolean;
+  autoComplete?: string;
+  inputName?: string;
+  onEnter?: (e: KeyboardEvent) => void;
+  rows?: number;
+  ref?: React.Ref<HTMLDivElement>;
+  isRequired?: boolean;
+};
 
-const ContainerEl = styled(Container)<ContainerExtendProps>`
-	${(props): FlattenSimpleInterpolation | string =>
-		(props.disabled &&
-			css`
-				opacity: 0.5;
-			`) ||
-		''};
-	${({ theme, background, disabled }): FlattenSimpleInterpolation | string =>
-		(!disabled &&
-			css`
-				transition: background 0.2s ease-out;
-				&:focus {
-					outline: none;
-					background: ${theme.palette[background as keyof typeof theme.palette].focus};
-				}
-				&:hover {
-					outline: none;
-					background: ${theme.palette[background as keyof typeof theme.palette].hover};
-				}
-				&:active {
-					outline: none;
-					background: ${theme.palette[background as keyof typeof theme.palette].active};
-				}
-			`) ||
-		''};
-`;
+type CustomTextAreaType = React.FC<TextareaProps> & {
+  _newId?: number;
+};
 
-const TextAreaEl = styled.textarea`
-	border: none !important;
-	height: auto !important;
-	width: 100%;
-	outline: 0;
-	resize: none;
-	background: transparent !important;
-	font-size: ${({ theme }): string => theme.sizes.font.medium};
-	font-weight: ${({ theme }): number => theme.fonts.weight.regular};
-	font-family: ${({ theme }): string => theme.fonts.default};
-	transition: background 0.2s ease-out;
-	padding: ${({ theme }): string =>
-		`calc(${theme.sizes.padding.large} + ${theme.sizes.padding.extrasmall}) ${theme.sizes.padding.large} ${theme.sizes.padding.small}`}!important;
-	&::placeholder {
-		color: transparent;
-	}
-`;
+const CustomTextArea: CustomTextAreaType = ({
+  isRequired = false,
+  autoFocus = false,
+  autoComplete = 'off',
+  backgroundColor = 'gray6',
+  defaultValue,
+  disabled = false,
+  label,
+  value,
+  onChange,
+  hasError = false,
+  inputName,
+  rows = 3,
+  ref,
+  ...rest
+}) => {
+  const [hasFocus, setHasFocus] = useState(false);
+  const [id] = useState(() => {
+    if (!CustomTextArea._newId) {
+      CustomTextArea._newId = 0;
+    }
 
-const Label = styled.label<{ hasError: boolean; hasFocus: boolean }>`
-	position: absolute;
-	top: 20%;
-	left: ${({ theme }): string => theme.sizes.padding.large};
-	font-size: ${({ theme }): string => theme.sizes.font.medium};
-	font-weight: ${({ theme }): number => theme.fonts.weight.regular};
-	font-family: ${({ theme }): string => theme.fonts.default};
-	color: ${({ theme, hasError, hasFocus }): string =>
-		theme.palette[(hasError && 'error') || (hasFocus && 'primary') || 'secondary'].regular};
-	transform: translateY(-50%);
-	transition:
-		transform 150ms ease-out,
-		font-size 150ms ease-out,
-		top 150ms ease-out,
-		left 150ms ease-out;
-	pointer-events: none;
-	user-select: none;
-	max-width: calc(100% - ${({ theme }): string => `${theme.sizes.padding.large} * 2`});
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	${TextAreaEl}:focus + &,
-    ${TextAreaEl}:not(:placeholder-shown) + & {
-		top: ${({ theme }): string => `calc(${theme.sizes.padding.small} - 1px)`};
-		transform: translateY(0);
-		font-size: ${({ theme }): string => theme.sizes.font.small};
-	}
-`;
+    return `textarea-${CustomTextArea._newId++}`;
+  });
 
-interface TextareaProps {
-	/** Textarea's background color */
-	backgroundColor?: string;
-	/** whether to disable the Textarea or not */
-	disabled?: boolean;
+  const onTextAreaFocus = useCallback(() => {
+    if (!disabled) {
+      setHasFocus(true);
+    }
+  }, [disabled]);
 
-	/** Label of the Textarea, will act (graphically) as placeholder when the Textarea is not focused */
-	label: string;
-	/** Textarea change callback */
-	onChange?: (e: React.SyntheticEvent) => void;
-	/** value of the Textarea */
-	value?: string | number;
-	/** default value of the Textarea */
-	defaultValue?: string | number;
-	/** Whether or not the Textarea has an error */
-	hasError?: boolean;
-	/** Whether or not the Textarea should focus on load */
-	autoFocus?: boolean;
-	/** Textarea autocompletion type (HTML Textarea attribute) */
-	autoComplete?: string;
-	/** HTML Textarea name */
-	inputName?: string;
-	/** on Enter key callback */
-	onEnter?: (e: KeyboardEvent) => void;
-	rows?: number;
-	ref?: React.Ref<HTMLDivElement>;
-}
+  const onTextAreaBlur = useCallback(() => setHasFocus(false), []);
 
-export const CustomTextArea: any = ({
-	autoFocus = false,
-	autoComplete = 'off',
-	backgroundColor = 'gray6',
-	defaultValue,
-	disabled = false,
-	label,
-	value,
-	onChange,
-	hasError = false,
-	inputName,
-	rows = 3,
-	ref,
-	...rest
-}: TextareaProps) => {
-	const [hasFocus, setHasFocus] = useState(false);
-	const [id] = useState(() => {
-		if (!CustomTextArea._newId) {
-			CustomTextArea._newId = 0;
-		}
+  const containerStyle = useMemo<React.CSSProperties>(
+    () =>
+      ({
+        '--container-bg': resolveThemeColor(backgroundColor, 'regular'),
+        '--container-bg-hover': resolveThemeColor(backgroundColor, 'hover'),
+        '--container-bg-focus': resolveThemeColor(backgroundColor, 'focus'),
+        '--container-bg-active': resolveThemeColor(backgroundColor, 'active'),
+        '--label-color': resolveThemeColor(
+          (hasError && 'error') || (hasFocus && 'primary') || 'secondary',
+          'regular',
+        ),
+      } as React.CSSProperties),
+    [backgroundColor, hasError, hasFocus],
+  );
 
-		return `textarea-${CustomTextArea._newId++}`;
-	});
-
-	const onTextAreaFocus = useCallback(() => {
-		if (!disabled) {
-			setHasFocus(true);
-		}
-	}, [setHasFocus, disabled]);
-
-	const onTextAreaBlur = useCallback(() => setHasFocus(false), [setHasFocus]);
-
-	return (
-		<ContainerEl
-			ref={ref}
-			orientation="horizontal"
-			width="fill"
-			height="fit"
-			borderRadius="half"
-			background={backgroundColor}
-			style={{
-				cursor: 'text',
-				position: 'relative'
-			}}
-			onClick={onTextAreaFocus}
-			disabled={disabled}
-			{...rest}
-		>
-			<TextAreaEl
-				autoFocus={autoFocus || undefined}
-				autoComplete={autoComplete || 'off'} // This one seems to be a React quirk, 'off' doesn't really work
-				onFocus={onTextAreaFocus}
-				onBlur={onTextAreaBlur}
-				id={id}
-				name={inputName || label}
-				defaultValue={defaultValue}
-				value={value}
-				onChange={onChange}
-				disabled={disabled}
-				placeholder={label}
-				rows={rows}
-			/>
-			<Label htmlFor={id} hasFocus={hasFocus} hasError={hasError}>
-				{label}
-			</Label>
-		</ContainerEl>
-	);
+  return (
+    <Container
+      ref={ref}
+      className={clsx(styles.container, disabled && styles.disabled)}
+      style={containerStyle}
+      orientation="horizontal"
+      width="fill"
+      height="fit"
+      borderRadius="half"
+      onClick={onTextAreaFocus}
+      {...rest}
+    >
+      <textarea
+        required={isRequired}
+        aria-required={isRequired}
+        className={styles.textarea}
+        autoFocus={autoFocus || undefined}
+        autoComplete={autoComplete || 'off'}
+        onFocus={onTextAreaFocus}
+        onBlur={onTextAreaBlur}
+        id={id}
+        name={inputName || label}
+        defaultValue={defaultValue}
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+        placeholder={label}
+        rows={rows}
+      />
+      <label htmlFor={id} className={styles.label}>
+        {label}
+      </label>
+    </Container>
+  );
 };
 
 CustomTextArea._newId = 0;
+
+export { CustomTextArea };
+export type { TextareaProps };

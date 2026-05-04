@@ -4,19 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-  useAllConfig,
-  useCurrentUserRights,
-  useMtaServers,
-} from '@zextras/admin-ui-bootstrap';
-import {
   Button,
   Container,
+  InheritedInput,
+  InheritedSelect,
+  InheritedSwitch,
+  ListRow,
   Padding,
   Row,
-  Text,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -43,11 +42,7 @@ import {
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
 import CustomChip from '../../../components/customChip';
-import ListRow from '../../../list/list-row';
 import InheritedChipInput from '../../../utility/inherited-components/inherited-chip-input';
-import InheritedInput from '../../../utility/inherited-components/inherited-input';
-import InheritedSelect from '../../../utility/inherited-components/inherited-select';
-import InheritedSwitch from '../../../utility/inherited-components/inherited-switch';
 import { validateIpAddress } from '../../../utility/utils';
 
 const MTAServerGeneral: FC = () => {
@@ -60,8 +55,8 @@ const MTAServerGeneral: FC = () => {
   const [mtaServerGeneralInitialDetail, setMtaServerGeneralInitialDetail] =
     useState<MtaServerGeneral>();
   const [mtaServerGeneralDetail, setMtaServerGeneralDetail] = useState<MtaServerGeneral>();
-  const [networkValue, setNetworkValue] = useState<Array<any>>([]);
-  const [networkValueGlobal, setNetworkValueGlobal] = useState<Array<any>>([]);
+  const [networkValue, setNetworkValue] = useState<Array<IpRangeValue>>([]);
+  const [networkValueGlobal, setNetworkValueGlobal] = useState<Array<IpRangeValue>>([]);
   const { data: mtaServerList = [] } = useMtaServers();
   const { data: configInformation = [] } = useAllConfig();
   const [serverSpecificAttributes, setServerSpecificAttributes] = useState<
@@ -70,19 +65,25 @@ const MTAServerGeneral: FC = () => {
   const [mtaServerSpecificGeneralDetail, setMtaServerSpecificGeneralDetail] =
     useState<MtaServerGeneral>();
 
-  const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaServerGeneralDetail((prev: any) => ({ ...prev, [key]: value }));
-  }, []);
+  const setValue = useCallback(
+    (key: string, value: unknown): void => {
+      setMtaServerGeneralDetail((prev) => ({ ...prev, [key]: value } as MtaServerGeneral));
+    },
+    [],
+  );
 
-  const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaServerGeneralInitialDetail((prev: any) => ({
-      ...prev,
-      [key]: value,
-    }));
-  }, []);
+  const setInitialValue = useCallback(
+    (key: string, value: unknown): void => {
+      setMtaServerGeneralInitialDetail((prev) => ({
+        ...prev,
+        [key]: value,
+      } as MtaServerGeneral));
+    },
+    [],
+  );
 
   const setInitialAndCurrentValue = useCallback(
-    (key: string, value: string) => {
+    (key: string, value: unknown) => {
       setInitialValue(key, value);
       setValue(key, value);
     },
@@ -91,7 +92,7 @@ const MTAServerGeneral: FC = () => {
 
   const setServerSpecificCurrentValue = useCallback(
     (
-      key: string,
+      key: keyof MtaServerGeneral,
       value:
         | string
         | {
@@ -99,10 +100,10 @@ const MTAServerGeneral: FC = () => {
           }[]
         | undefined,
     ) => {
-      setMtaServerSpecificGeneralDetail((prev: any) => ({
+      setMtaServerSpecificGeneralDetail((prev) => ({
         ...prev,
         [key]: value,
-      }));
+      } as MtaServerGeneral));
     },
     [setMtaServerSpecificGeneralDetail],
   );
@@ -603,13 +604,13 @@ const MTAServerGeneral: FC = () => {
   }, []);
 
   const onSave = useCallback(() => {
-    const modifiedKeys: any = reduce(
-      mtaServerGeneralDetail,
-      (result, value, key: any): any => {
-        const initialKeyValue: any = mtaServerGeneralInitialDetail;
-        return isEqual(value, initialKeyValue[key]) ? result : [...result, key];
+    const modifiedKeys: Array<keyof MtaServerGeneral> = reduce(
+      mtaServerGeneralDetail ?? ({} as MtaServerGeneral),
+        (result: Array<keyof MtaServerGeneral>, value, key: string): Array<keyof MtaServerGeneral> => {
+          const k = key as keyof MtaServerGeneral;
+          return isEqual(value, mtaServerGeneralInitialDetail?.[k]) ? result : [...result, k];
       },
-      [],
+        [] as Array<keyof MtaServerGeneral>,
     );
     const attributes: Array<Record<string, string>> = [];
     if (modifiedKeys.length > 0) {
@@ -640,35 +641,35 @@ const MTAServerGeneral: FC = () => {
 
   const onAmavisLogLevelChange = useCallback(
     (v: string) => {
-      setMtaServerGeneralDetail((prev: any) => ({ ...prev, zimbraAmavisLogLevel: v }));
+      setMtaServerGeneralDetail((prev) => ({ ...prev, zimbraAmavisLogLevel: v } as MtaServerGeneral));
     },
     [setMtaServerGeneralDetail],
   );
 
   const onAmavisSALogLevelChange = useCallback(
     (v: string) => {
-      setMtaServerGeneralDetail((prev: any) => ({ ...prev, zimbraAmavisSALogLevel: v }));
+      setMtaServerGeneralDetail((prev) => ({ ...prev, zimbraAmavisSALogLevel: v } as MtaServerGeneral));
     },
     [setMtaServerGeneralDetail],
   );
 
   const onSMTPClientLogLevelChange = useCallback(
     (v: string) => {
-      setMtaServerGeneralDetail((prev: any) => ({ ...prev, zimbraMtaSmtpdTlsLoglevel: v }));
+      setMtaServerGeneralDetail((prev) => ({ ...prev, zimbraMtaSmtpdTlsLoglevel: v } as MtaServerGeneral));
     },
     [setMtaServerGeneralDetail],
   );
 
   const onLMTPTlsLogLevelChange = useCallback(
     (v: string) => {
-      setMtaServerGeneralDetail((prev: any) => ({ ...prev, zimbraMtaLmtpTlsLoglevel: v }));
+      setMtaServerGeneralDetail((prev) => ({ ...prev, zimbraMtaLmtpTlsLoglevel: v } as MtaServerGeneral));
     },
     [setMtaServerGeneralDetail],
   );
 
   const onBlockExtensionChange = useCallback(
     (ips: IpRangeValue[]) => {
-      const data: Array<unknown> = [];
+      const data: Array<IpRangeValue> = [];
       map(ips, (ip: IpRangeValue) => {
         validateIpAddress(ip.label ?? '') ? data.push(ip) : data.push({ ...ip, error: true });
       });
@@ -683,15 +684,15 @@ const MTAServerGeneral: FC = () => {
   );
 
   const setEmptyValue = useCallback(
-    (keyName: string) => {
-      setMtaServerGeneralDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+    (keyName: keyof MtaServerGeneral) => {
+      setMtaServerGeneralDetail((prev) => ({ ...prev, [keyName]: undefined } as MtaServerGeneral));
     },
     [setMtaServerGeneralDetail],
   );
 
   const setEmptyValueMyNetwork = useCallback(
-    (keyName: string) => {
-      setMtaServerGeneralDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+    (keyName: keyof MtaServerGeneral) => {
+      setMtaServerGeneralDetail((prev) => ({ ...prev, [keyName]: undefined } as MtaServerGeneral));
       setNetworkValue([]);
     },
     [setMtaServerGeneralDetail],
@@ -700,10 +701,10 @@ const MTAServerGeneral: FC = () => {
   const changeSwitchOption = useCallback(
     (key: keyof MtaServerGeneral): void => {
       if (mtaServerGeneralDetail) {
-        setMtaServerGeneralDetail((prev: any) => ({
+        setMtaServerGeneralDetail((prev) => ({
           ...prev,
           [key]: mtaServerGeneralDetail[key] === TRUE ? FALSE : TRUE,
-        }));
+          } as MtaServerGeneral));
       }
     },
     [mtaServerGeneralDetail],
@@ -711,7 +712,10 @@ const MTAServerGeneral: FC = () => {
 
   const changeValue = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setMtaServerGeneralDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+      setMtaServerGeneralDetail((prev) => ({
+        ...prev,
+        [e.target.name as keyof MtaServerGeneral]: e.target.value,
+        } as MtaServerGeneral));
     },
     [setMtaServerGeneralDetail],
   );
@@ -728,12 +732,12 @@ const MTAServerGeneral: FC = () => {
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {t('label.general_lbl', 'General')}
-          </Text>
-          <Text size="medium" overflow="ellipsis" weight="regular">
+          </ds-text>
+          <ds-text as="p" size="medium" overflow="ellipsis" weight="regular">
             <Padding left={'small'}>{server}</Padding>
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -762,7 +766,7 @@ const MTAServerGeneral: FC = () => {
         </Row>
       </Row>
       <ListRow>
-        <divider-wc></divider-wc>
+        <ds-divider></ds-divider>
       </ListRow>
       <Container
         padding={{ all: 'extralarge' }}
@@ -777,9 +781,9 @@ const MTAServerGeneral: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.authentication', 'Authentication')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container
@@ -883,9 +887,9 @@ const MTAServerGeneral: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.antispam_and_antivirus', 'Antispam & Antivirus')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container
@@ -959,9 +963,9 @@ const MTAServerGeneral: FC = () => {
           height="auto"
           padding={{ top: 'medium', bottom: 'extralarge' }}
         >
-          <Text size="small" weight="bold" color="gray0">
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
             {t('mta.logging', 'Logging')}
-          </Text>
+          </ds-text>
         </Container>
 
         <Container

@@ -3,18 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, DropDownInput, Row, Select, Text, useSnackbar } from '@zextras/ui-components';
+import { Container, DropDownInput, Row, Select, useSnackbar } from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { accountListDirectory } from '../../../../../../services/account-list-directory-service';
 import { generateSnackbarFromError } from '../../../../../error/generate-snackbar-error';
 import { delegateType } from '../../../../../utility/utils';
 import { AccountContext } from '../../account-context';
-
-const SelectItem = styled(Row)``;
 
 const DelegateSelectModeSection: FC = () => {
   const [t] = useTranslation();
@@ -24,8 +21,8 @@ const DelegateSelectModeSection: FC = () => {
   const [isDelegateAccountListExpand, setIsDelegateAccountListExpand] = useState(false);
   const DELEGETES_TYPE = useMemo(() => delegateType(t), [t]);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(20);
+  const offset = 0;
+  const limit = 20;
   const context = useContext(AccountContext);
   const { deligateDetail, setDeligateDetail, accountDetail } = context;
 
@@ -82,7 +79,7 @@ const DelegateSelectModeSection: FC = () => {
                 id: delegateAccount.id,
                 label: delegateAccount.name,
                 customComponent: (
-                  <SelectItem
+                  <Row
                     style={{
                       display: 'block',
                       textAlign: 'left',
@@ -94,7 +91,7 @@ const DelegateSelectModeSection: FC = () => {
                     }}
                   >
                     {delegateAccount?.name}
-                  </SelectItem>
+                  </Row>
                 ),
               }),
           );
@@ -130,7 +127,7 @@ const DelegateSelectModeSection: FC = () => {
   };
 
   const customIconDetail = {
-    icon: 'GlobeOutline',
+    icon: 'GlobeOutline' as const,
     color: 'text',
     onClick: (): void => {
       setIsDelegateAccountListExpand(!isDelegateAccountListExpand);
@@ -148,9 +145,9 @@ const DelegateSelectModeSection: FC = () => {
       >
         <Row mainAlignment="flex-start" width="100%">
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <Text size="small" color="gray0" weight="bold">
+            <ds-text size="small" color="gray0" weight="bold" as="h3">
               {t('account_details.i_want_to_create_a_delegate_for', `I want to create a delegate`)}
-            </Text>
+            </ds-text>
           </Row>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">

@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../../web-components/divider-wc';
+import '../../../web-components/ds-divider';
 
+import clsx from 'clsx';
 import { debounce, filter, isEmpty, slice, trim, uniq } from 'lodash-es';
 import React, {
   InputHTMLAttributes,
@@ -16,7 +17,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import styled, { css, DefaultTheme, SimpleInterpolation } from 'styled-components';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import {
@@ -26,9 +26,7 @@ import {
   useKeyboard,
 } from '../../../hooks/useKeyboard';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { getColor } from '../../../theme/theme-utils';
-import { AnyColor, PaletteColor } from '../../../types/utils';
-import { Icon } from '../../basic/icon/Icon';
+import { AnyColor } from '../../../types/utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../../constants';
 import { Chip, ChipProps } from '../../display/Chip';
 import { Dropdown, DropdownItem } from '../../display/Dropdown';
@@ -36,84 +34,17 @@ import { Container, ContainerProps } from '../../layout/Container';
 import { InputContainer } from '../commons/InputContainer';
 import { InputDescription } from '../commons/InputDescription';
 import { InputLabel } from '../commons/InputLabel';
-import { IconButton } from '../IconButton';
+import styles from './ChipInput.module.css';
 
-const ContainerEl = styled(InputContainer)<{
-  background: PaletteColor;
-  $inputDisabled: boolean;
-  $dropdownDisabled: boolean;
-}>`
-  cursor: ${({ $inputDisabled, $dropdownDisabled }): string | false => {
-    if ($inputDisabled && !$dropdownDisabled) {
-      return 'pointer';
-    }
-    if (!$inputDisabled) {
-      return 'text';
-    }
-    return false;
-  }};
-`;
-
-const ScrollContainer = styled(Container)<{ $hasLabel: boolean }>`
-  overflow: auto;
-  scrollbar-width: ${({ wrap }): string => (wrap === 'wrap' ? 'auto' : 'none')};
-  &::-webkit-scrollbar {
-    display: ${({ wrap }): string => (wrap === 'wrap' ? 'auto' : 'none')};
+function getThemeColorVar(colorName: string, state: string): string {
+  if (!colorName) return '';
+  const hexPattern = /^#([a-fA-F0-9]{3,4}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
+  if (hexPattern.test(colorName)) {
+    return colorName;
   }
-  ${({ theme, $hasLabel }): SimpleInterpolation =>
-    $hasLabel &&
-    css`
-      margin-block-start: calc(${theme.sizes.font.extrasmall} * 1.5);
-    `}
-`;
-
-const RelativeContainer = styled(Container)`
-  position: relative;
-`;
-
-const InputEl = styled.input<{ $color: PaletteColor }>`
-  border: none !important;
-  height: auto !important;
-  width: 1em;
-  outline: 0;
-  background: transparent !important;
-  font-size: ${({ theme }): string => theme.sizes.font.medium};
-  font-weight: ${({ theme }): number => theme.fonts.weight.regular};
-  font-family: ${({ theme }): string => theme.fonts.default};
-  color: ${({ theme, $color }): string => getColor($color, theme)};
-
-  &:disabled {
-    color: ${({ theme, $color }): string => getColor(`${$color}.disabled`, theme)};
-    pointer-events: none;
-  }
-
-  transition: background 0.2s ease-out;
-  line-height: 1.5;
-  padding: 0;
-  min-width: 1em;
-  overflow-wrap: break-word;
-  max-width: 100%;
-
-  &::placeholder {
-    color: transparent;
-    font-size: 0;
-    user-select: none;
-  }
-`;
-
-const HiddenSpan = styled.span`
-  position: absolute;
-  height: 0;
-  overflow: hidden;
-  white-space: pre;
-`;
-
-const AdjustWidthInputContainer = styled.div`
-  position: relative;
-  flex: 1 1 auto;
-  overflow-wrap: break-word;
-  max-width: 100%;
-`;
+  const sanitized = colorName.replace(/[^a-zA-Z0-9-]/g, '');
+  return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${colorName}))`;
+}
 
 /**
  * Adapt input width on typing
@@ -127,11 +58,13 @@ const AdjustWidthInputContainer = styled.div`
  *
  */
 const AdjustWidthInput = ({
+  isRequired = false,
   color,
   ref,
   ...rest
 }: {
-  color: PaletteColor;
+  color: string;
+  isRequired: boolean;
   ref?: React.Ref<HTMLInputElement>;
 } & InputHTMLAttributes<HTMLInputElement>) => {
   const hiddenSpanRef = useRef<HTMLSpanElement | null>(null);
@@ -161,54 +94,29 @@ const AdjustWidthInput = ({
     };
   }, [inputRef, resizeInput]);
 
+  const inputStyle: React.CSSProperties = useMemo(
+    () =>
+      ({
+        '--input-color': getThemeColorVar(color, 'regular'),
+        '--input-color-disabled': getThemeColorVar(color, 'disabled'),
+      } as React.CSSProperties),
+    [color],
+  );
+
   return (
-    <AdjustWidthInputContainer>
-      <HiddenSpan ref={hiddenSpanRef} />
-      <InputEl $color={color} {...rest} ref={inputRef} />
-    </AdjustWidthInputContainer>
+    <div className={styles.adjustWidthInputContainer}>
+      <span ref={hiddenSpanRef} className={styles.hiddenSpan} />
+      <input
+        required={isRequired}
+        aria-required={isRequired}
+        className={styles.inputEl}
+        style={inputStyle}
+        {...rest}
+        ref={inputRef}
+      />
+    </div>
   );
 };
-
-const Label = styled(InputLabel)<{
-  $hasItems: boolean;
-}>`
-  ${AdjustWidthInputContainer}:focus-within + & {
-    top: 0;
-    transform: translateY(0);
-    font-size: ${({ theme }): string => theme.sizes.font.extrasmall};
-  }
-
-  ${({ $hasItems, theme }): SimpleInterpolation =>
-    $hasItems &&
-    css`
-      top: 0;
-      transform: translateY(0);
-      font-size: ${theme.sizes.font.extrasmall};
-    `};
-`;
-
-const CustomInputDescription = styled(InputDescription)<{
-  $backgroundColor?: string;
-}>`
-  background-color: ${({ $backgroundColor, theme }): string | undefined =>
-    $backgroundColor && getColor($backgroundColor, theme)};
-`;
-
-const CustomIcon = styled(({ onClick, iconColor, ...rest }) =>
-  onClick ? (
-    <IconButton onClick={onClick} iconColor={iconColor} {...rest} />
-  ) : (
-    <Icon color={iconColor} {...rest} />
-  ),
-)`
-  padding: 0.125rem;
-  ${({ onClick }): SimpleInterpolation =>
-    !onClick &&
-    css`
-      width: 1.25rem;
-      height: 1.25rem;
-    `};
-`;
 
 type ReducerAction<TValue> =
   | { type: 'push' | 'replace'; item: ChipItem<TValue> }
@@ -290,13 +198,13 @@ type ChipInputProps<TValue = unknown> = Omit<ContainerProps, 'defaultValue' | 'o
   /** Set the current input text as a Chip when it loses focus */
   confirmChipOnBlur?: boolean;
   /** ChipInput backgroundColor */
-  background?: PaletteColor;
+  background?: string;
   /** Chip generation triggers */
   separators?: KeyboardPresetKey[];
   /** Show the error  */
   hasError?: boolean;
   /** Background color for the error status */
-  errorBackgroundColor?: PaletteColor;
+  errorBackgroundColor?: string;
   /** Set the limit for chip inputs <br />
    * <strong>Warning</strong>: be aware that this check is performed only on internal changes on items.
    * If you change the value from outside, you are in charge of apply this check on the new value itself.
@@ -309,14 +217,6 @@ type ChipInputProps<TValue = unknown> = Omit<ContainerProps, 'defaultValue' | 'o
    * To avoid options to be shown at all, leave options empty
    */
   disableOptions?: boolean;
-  /** Icon on the right of the input */
-  icon?: keyof DefaultTheme['icons'];
-  /** Action on Icon click */
-  iconAction?: React.ReactEventHandler;
-  /** Disable the icon */
-  iconDisabled?: boolean;
-  /** Icon color */
-  iconColor?: AnyColor;
   /** select single replaceable value from options */
   singleSelection?: boolean;
   /** hide the input's bottom border */
@@ -350,6 +250,7 @@ type ChipInputProps<TValue = unknown> = Omit<ContainerProps, 'defaultValue' | 'o
   /** maxHeight of Input in case of no horizontal scroll */
   maxHeight?: string;
   onOptionsDisplayChange?: (isVisible: boolean) => void;
+  isRequired?: boolean;
 };
 
 type ChipInputType = (<TValue = unknown>(
@@ -376,10 +277,6 @@ const ChipInputComponent = <TValue = unknown,>({
     { key: ',', ctrlKey: false },
     { key: ' ', ctrlKey: false },
   ],
-  icon,
-  iconAction,
-  iconDisabled = false,
-  iconColor,
   disabled = false,
   requireUniqueChips = false,
   createChipOnPaste = false,
@@ -387,6 +284,7 @@ const ChipInputComponent = <TValue = unknown,>({
   maxChips = null,
   hasError = false,
   hideBorder = false,
+  isRequired = false,
   errorBackgroundColor,
   disableOptions = true,
   singleSelection = false,
@@ -722,6 +620,29 @@ const ChipInputComponent = <TValue = unknown,>({
     [bottomBorderColor, disabled, hasError, hasFocus, hideBorder],
   );
 
+  const cursorState = useMemo(() => {
+    if (disabled || isInputDisabled) {
+      if (!isDropdownDisabled) return 'pointer';
+      return undefined;
+    }
+    return 'text';
+  }, [disabled, isInputDisabled, isDropdownDisabled]);
+
+  const containerElClassName = clsx(styles.containerEl);
+
+  const descriptionStyle: React.CSSProperties = useMemo(
+    () =>
+      ({
+        '--description-bg-color': errorBackgroundColor
+          ? getThemeColorVar(errorBackgroundColor, 'regular')
+          : 'transparent',
+        paddingTop: description ? '0.25rem' : undefined,
+        minHeight: description ? '1.125rem' : undefined,
+        lineHeight: description ? '1.5' : undefined,
+      } as React.CSSProperties),
+    [description, errorBackgroundColor],
+  );
+
   return (
     <Container height="fit" width="fill" crossAlignment="flex-start">
       <Dropdown
@@ -737,8 +658,10 @@ const ChipInputComponent = <TValue = unknown,>({
         maxHeight={dropdownMaxHeight}
         maxWidth={dropdownMaxWidth}
       >
-        <ContainerEl
+        <InputContainer
           ref={ref}
+          className={containerElClassName}
+          data-cursor={cursorState}
           orientation="horizontal"
           width="fill"
           maxWidth={'fill'}
@@ -750,12 +673,11 @@ const ChipInputComponent = <TValue = unknown,>({
           borderRadius="half"
           background={background}
           $disabled={(disabled || isInputDisabled) && isDropdownDisabled}
-          $inputDisabled={disabled || isInputDisabled}
-          $dropdownDisabled={isDropdownDisabled}
           onClick={setFocus}
           {...rest}
         >
-          <RelativeContainer
+          <Container
+            className={styles.relativeContainer}
             padding={{
               top: placeholder ? '0.0625rem' : '0.625rem',
               bottom: placeholder ? '0.175rem' : '0.625rem',
@@ -770,8 +692,11 @@ const ChipInputComponent = <TValue = unknown,>({
             flexShrink={1}
             minWidth={0}
           >
-            <ScrollContainer
+            <Container
               ref={scrollContainerRef}
+              className={styles.scrollContainer}
+              data-wrap={wrap}
+              data-has-label={placeholder ? 'true' : undefined}
               flexBasis={'auto'}
               flexGrow={1}
               flexShrink={1}
@@ -782,18 +707,17 @@ const ChipInputComponent = <TValue = unknown,>({
               gap={'0.5rem'}
               wrap={wrap}
               maxHeight={maxHeight}
-              $hasLabel={!!placeholder}
             >
               {items.map((item, index) => (
                 <ChipComp
                   key={`${index}-${item.value}`}
                   maxWidth={(wrap === 'wrap' && '100%') || undefined}
                   {...item}
-                  closable
                   onClose={(): void => onChipClose(index)}
                 />
               ))}
               <AdjustWidthInput
+                isRequired={isRequired}
                 color="text"
                 autoComplete="off"
                 ref={inputElRef}
@@ -807,40 +731,33 @@ const ChipInputComponent = <TValue = unknown,>({
                 onPaste={onPaste}
               />
               {placeholder && (
-                <Label
+                <InputLabel
+                  className={styles.label}
+                  data-has-items={
+                    items.length > 0 || !!inputElRef.current?.value ? 'true' : undefined
+                  }
                   htmlFor={id}
                   $hasFocus={hasFocus}
                   $hasError={hasError}
-                  $disabled={disabled && isDropdownDisabled && (!iconAction || iconDisabled)}
-                  $hasItems={items.length > 0 || !!inputElRef.current?.value}
+                  $disabled={disabled && isDropdownDisabled}
                 >
                   {placeholder}
-                </Label>
+                </InputLabel>
               )}
-            </ScrollContainer>
-          </RelativeContainer>
-          {icon && (
-            <span>
-              <CustomIcon
-                icon={icon}
-                onClick={iconAction}
-                disabled={iconDisabled}
-                iconColor={iconColor}
-                size="large"
-              />
-            </span>
-          )}
-        </ContainerEl>
+            </Container>
+          </Container>
+        </InputContainer>
       </Dropdown>
-      <divider-wc color={dividerColor}></divider-wc>
+      <ds-divider color={dividerColor}></ds-divider>
       {description !== undefined && (
-        <CustomInputDescription
+        <InputDescription
+          className={styles.customInputDescription}
+          style={descriptionStyle}
           color={(hasError && 'error') || (hasFocus && 'primary') || 'secondary'}
-          disabled={disabled && isDropdownDisabled && (!iconAction || iconDisabled)}
-          $backgroundColor={errorBackgroundColor}
+          disabled={disabled && isDropdownDisabled}
         >
           {description}
-        </CustomInputDescription>
+        </InputDescription>
       )}
     </Container>
   );

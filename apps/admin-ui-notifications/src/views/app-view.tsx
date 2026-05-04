@@ -3,46 +3,44 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { usePrimaryBarState } from '@zextras/admin-ui-bootstrap';
-import { Container, ContainerProps } from '@zextras/ui-components';
-import { FC, Suspense } from 'react';
+import { Container } from '@zextras/ui-components';
+import { usePrimaryBarState } from '@zextras/ui-shared';
+import { CSSProperties, FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import styled from 'styled-components';
 
-import BreadCrumb from './breadcrumb/breadcrumb-view';
+import { Breadcrumb } from './breadcrumb/breadcrumb';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
 
-interface ContainerExtendProps extends ContainerProps {
-  isPrimaryBarExpanded?: boolean;
+function getContainerStyle(isPrimaryBarExpanded: boolean): CSSProperties {
+  return {
+    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
+    transition: 'width 300ms',
+  };
 }
-
-const DetailViewContainer = styled(Container)<ContainerExtendProps>`
-  max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
-  transition: width 300ms;
-`;
 
 const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container height={'fit'}>
-      <BreadCrumb />
+      <Breadcrumb />
+
       <Routes>
         <Route
           path="/*"
           element={
             <Container orientation="horizontal" mainAlignment="flex-start">
               <Container style={{ maxWidth: '265px' }}>
-                <Suspense fallback={<spinner-wc />}>
+                <Suspense fallback={<ds-spinner />}>
                   <NotificationsListPanel />
                 </Suspense>
               </Container>
               <Container style={{ maxWidth: '100%' }}>
-                <DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-                  <Suspense fallback={<spinner-wc />}>
+                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
+                  <Suspense fallback={<ds-spinner />}>
                     <NotificationsDetailPanel />
                   </Suspense>
-                </DetailViewContainer>
+                </Container>
               </Container>
             </Container>
           }

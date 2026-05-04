@@ -4,23 +4,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {  useDomainStore, useStickyBarStore  } from '@zextras/admin-ui-bootstrap';
-import {   Button,  Container,  CustomTextArea,  Icon,  Input,  Modal,  Padding,  Row,  Select,  Text,  useSnackbar } from '@zextras/ui-components';
-import {  format, parse  } from 'date-fns';
-import {  isEqual  } from 'lodash-es';
-import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
-import {  Trans, useTranslation  } from 'react-i18next';
+import {
+  Button,
+  Container,
+  CustomTextArea,
+  Displayer,
+  Input,
+  LabeledValue,
+  ListRow,
+  Modal,
+  Padding,
+  Row,
+  Select,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { useDomainStore, useStickyBarStore } from '@zextras/ui-shared';
+import { format, parse } from 'date-fns';
+import { isEqual } from 'lodash-es';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import {  deleteCalendarResource  } from '../../../../services/delete-cal-resource-service';
-import {  getCalenderResource  } from '../../../../services/get-cal-resource-service';
-import {  getDelegateAuthRequest  } from '../../../../services/get-delegate-auth-request';
-import {  modifyCalendarResource  } from '../../../../services/modify-cal-resource-service';
-import {  renameCalendarResource  } from '../../../../services/rename-cal-resource-service';
-import {  setPasswordRequest  } from '../../../../services/set-password-service';
-import Displayer from '../../../components/displayer';
-import ListRow from '../../../list/list-row';
-import {  RouteLeavingGuard  } from '../../../ui-extras/nav-guard';
-import {  SendInviteAccounts  } from './send-invite-accounts';
+import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
+import { getCalenderResource } from '../../../../services/get-cal-resource-service';
+import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
+import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
+import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
+import { setPasswordRequest } from '../../../../services/set-password-service';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
+import { SendInviteAccounts } from './send-invite-accounts';
 
 export const RESOURCE_TYPE = {
   LOCATION: 'Location',
@@ -56,7 +67,6 @@ const ResourceEditDetailView: FC<any> = ({
   const [resourceDetailData, setResourceDetailData]: any = useState({});
   const [sendInviteList, setSendInviteList] = useState<any[]>([]);
   const [sendInviteData, setSendInviteData]: any = useState([]);
-  const [signatureData, setSignatureData]: any = useState([]);
   const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
   const [cosItems, setCosItems] = useState<any[]>([]);
   const [resourceName, setResourceName] = useState<string>('');
@@ -70,19 +80,6 @@ const ResourceEditDetailView: FC<any> = ({
   const { isSticky, setIsSticky } = useStickyBarStore();
   const errorMessage = useMemo(
     () => t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-    [t],
-  );
-  const STATUS_COLOR: any = useMemo(
-    () => ({
-      active: {
-        color: '#8BC34A',
-        label: t('label.active', 'Active'),
-      },
-      closed: {
-        color: '#828282',
-        label: t('label.closed', 'Closed'),
-      },
-    }),
     [t],
   );
 
@@ -729,20 +726,20 @@ const ResourceEditDetailView: FC<any> = ({
 
   const buttons = [
     {
-      align: 'right',
+      align: 'right' as const,
       label: t('label.view_mail', 'VIEW MAIL'),
       color: 'primary',
       onClick: onViewMail,
     },
     {
-      align: 'right',
-      type: 'outlined',
+      align: 'right' as const,
+      type: 'outlined' as const,
       color: 'error',
       onClick: onDeleteResource,
       label: t('label.delete', 'delete'),
     },
     {
-      align: 'left',
+      align: 'left' as const,
       icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
       onClick: (): void => {
         setIsSticky(!isSticky);
@@ -778,9 +775,9 @@ const ResourceEditDetailView: FC<any> = ({
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          <Text size="medium" overflow="ellipsis" weight="bold">
+          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
             {selectedResourceList?.name}
-          </Text>
+          </ds-text>
         </Row>
         <Row>
           {isDirty && (
@@ -810,7 +807,7 @@ const ResourceEditDetailView: FC<any> = ({
         </Row>
       </Row>
       <Row>
-        <divider-wc color="gray3"></divider-wc>
+        <ds-divider color="gray3"></ds-divider>
       </Row>
 
       <Container
@@ -823,9 +820,9 @@ const ResourceEditDetailView: FC<any> = ({
       >
         <Displayer buttons={buttons} pinIcon={isSticky} />
         <Row>
-          <Text size="small" weight="bold">
+          <ds-text as="h3" size="small" weight="bold">
             {t('label.resource', 'Resource')}
-          </Text>
+          </ds-text>
         </Row>
         <ListRow>
           <Container
@@ -836,6 +833,7 @@ const ResourceEditDetailView: FC<any> = ({
           >
             <Row width="100%" padding={{ right: 'small' }}>
               <Input
+                isRequired
                 label={t('label.name', 'Name')}
                 backgroundColor="gray5"
                 value={resourceName}
@@ -853,6 +851,7 @@ const ResourceEditDetailView: FC<any> = ({
           >
             <Row width="100%" padding={{ left: 'small' }}>
               <Input
+                isRequired
                 label={t('label.email', 'Email')}
                 backgroundColor="gray5"
                 value={resourceMail}
@@ -871,7 +870,7 @@ const ResourceEditDetailView: FC<any> = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%" padding={{ right: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.server', 'Server')}
                 backgroundColor="gray6"
                 value={resourceDetailData?.zimbraMailHost}
@@ -1014,7 +1013,7 @@ const ResourceEditDetailView: FC<any> = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%" padding={{ right: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.id_lbl', 'ID')}
                 backgroundColor="gray6"
                 value={selectedResourceList?.id}
@@ -1028,7 +1027,7 @@ const ResourceEditDetailView: FC<any> = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%" padding={{ left: 'small' }}>
-              <Input
+              <LabeledValue
                 label={t('label.creation_date', 'Creation Date')}
                 backgroundColor="gray6"
                 value={
@@ -1050,12 +1049,12 @@ const ResourceEditDetailView: FC<any> = ({
 
         <>
           <Row width="100%" padding={{ top: 'medium' }}>
-            <divider-wc color="gray3"></divider-wc>
+            <ds-divider color="gray3"></ds-divider>
           </Row>
           <Row padding={{ top: 'extralarge' }}>
-            <Text size="small" weight="bold">
+            <ds-text as="h3" size="small" weight="bold">
               {t('label.password', 'Password')}
-            </Text>
+            </ds-text>
           </Row>
           <ListRow>
             <Container
@@ -1066,6 +1065,7 @@ const ResourceEditDetailView: FC<any> = ({
             >
               <Row width="100%">
                 <Input
+                  isRequired
                   label={t('label.password', 'Password')}
                   backgroundColor="gray5"
                   value={password}
@@ -1088,6 +1088,7 @@ const ResourceEditDetailView: FC<any> = ({
             >
               <Row width="100%">
                 <Input
+                  isRequired
                   label={t('label.repeat_password', 'Repeat Password')}
                   backgroundColor="gray5"
                   value={repeatPassword}
@@ -1104,7 +1105,7 @@ const ResourceEditDetailView: FC<any> = ({
         </>
 
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
         <SendInviteAccounts
           isEditable
@@ -1112,7 +1113,7 @@ const ResourceEditDetailView: FC<any> = ({
           setSendInviteList={setSendInviteList}
         />
         <Row width="100%" padding={{ top: 'medium' }}>
-          <divider-wc color="gray3"></divider-wc>
+          <ds-divider color="gray3"></ds-divider>
         </Row>
 
         <Row padding={{ top: 'extralarge' }} width="100%">
@@ -1120,7 +1121,6 @@ const ResourceEditDetailView: FC<any> = ({
             label={t('label.description', 'Description')}
             backgroundColor="gray5"
             value={zimbraNotes}
-            size="medium"
             onChange={(e: any): any => {
               setZimbraNotes(e.target.value);
             }}
@@ -1158,7 +1158,7 @@ const ResourceEditDetailView: FC<any> = ({
         >
           <Container>
             <Padding bottom="medium" top="medium">
-              <Text size={'extralarge'} overflow="break-word">
+              <ds-text as="p" size={'extralarge'} overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_1"
                   defaults="Are you sure you want to delete <bold>{{name}}</bod> ?"
@@ -1167,44 +1167,44 @@ const ResourceEditDetailView: FC<any> = ({
                     name: selectedResourceList?.name,
                   }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <ds-text as="p" overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_2"
                   defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Padding bottom="medium">
-              <Text size="extralarge" overflow="break-word">
+              <ds-text as="p" overflow="break-word">
                 <Trans
                   i18nKey="label.deleting_account_content_3"
                   defaults="You can <bold>Disable it to preserve</bold> the data, instead."
                   components={{ bold: <strong /> }}
                 />
-              </Text>
+              </ds-text>
             </Padding>
             <Row padding={{ bottom: 'large' }}>
-              <Icon
+              <ds-icon
                 icon="AlertTriangleOutline"
                 size="large"
                 style={{ height: '48px', width: '48px' }}
-              />
+              ></ds-icon>
             </Row>
           </Container>
         </Modal>
       )}
       <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <Text>
+        <ds-text as="p">
           {t(
             'label.unsaved_changes_line1',
             'Are you sure you want to leave this page without saving?',
           )}
-        </Text>
-        <Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+        </ds-text>
+        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
     </Container>
   );
