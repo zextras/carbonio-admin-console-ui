@@ -33,6 +33,14 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
       { name: 'storages_basic', quantity: 'unlimited', enabled: true },
       { name: 'admins_basic', quantity: 'unlimited', enabled: true },
     ],
+    editions: [
+      { name: 'mailreplica', quantity: 'none' },
+      { name: 'chats', quantity: 'none' },
+      { name: 'files', quantity: 'none' },
+      { name: 'workspace', quantity: 'none' },
+      { name: 'activesync', quantity: '100' },
+      { name: 'mail', quantity: '500' },
+    ],
   },
   ok: true,
   ...overrides,
@@ -122,6 +130,56 @@ describe('RegularSubscription', () => {
       const container = result.container;
       const icon = container.querySelector('ds-icon[icon="CheckmarkCircle"]');
       expect(icon).not.toBeNull();
+    });
+
+    it('should not display EMAIL when mail edition has quantity none', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: 'none' },
+          ],
+        },
+      });
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.poll(() => page.getByText('EMAIL').query()).toBeNull();
+    });
+
+    it('should not display EMAIL when mail edition has quantity 0', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: '0' },
+          ],
+        },
+      });
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.poll(() => page.getByText('EMAIL').query()).toBeNull();
+    });
+
+    it('should not display EMAIL when editions are empty', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [],
+        },
+      });
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.poll(() => page.getByText('EMAIL').query()).toBeNull();
+    });
+
+    it('should display EMAIL when mail edition has positive quantity', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: '100' },
+          ],
+        },
+      });
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('EMAIL')).toBeVisible();
     });
   });
 

@@ -31,6 +31,9 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
       { name: 'backup_realtime', quantity: 'unlimited', enabled: true },
       { name: 'files_basic', quantity: 'unlimited', enabled: true },
     ],
+    editions: [
+      { name: 'mail', quantity: '50' },
+    ],
     ...overrides.response as Record<string, unknown>,
   },
   ok: true,
@@ -161,6 +164,56 @@ describe('TrialSubscription', () => {
 
       const icon = result.container.querySelector('ds-icon[icon="CheckmarkCircle"]');
       expect(icon).not.toBeNull();
+    });
+
+    it('should not display EMAIL when mail edition has quantity none', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: 'none' },
+          ],
+        },
+      });
+      setupTest(<TrialSubscription />, mockLicenseData);
+
+      await expect.poll(() => page.getByText('EMAIL').query()).toBeNull();
+    });
+
+    it('should not display EMAIL when mail edition has quantity 0', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: '0' },
+          ],
+        },
+      });
+      setupTest(<TrialSubscription />, mockLicenseData);
+
+      await expect.poll(() => page.getByText('EMAIL').query()).toBeNull();
+    });
+
+    it('should not display EMAIL when editions are empty', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [],
+        },
+      });
+      setupTest(<TrialSubscription />, mockLicenseData);
+
+      await expect.poll(() => page.getByText('EMAIL').query()).toBeNull();
+    });
+
+    it('should display EMAIL when mail edition has positive quantity', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'mail', quantity: '100' },
+          ],
+        },
+      });
+      setupTest(<TrialSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('EMAIL')).toBeVisible();
     });
   });
 

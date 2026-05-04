@@ -18,6 +18,11 @@ export type LicenseSubType = 'PERPETUAL' | 'REGULAR' | 'TRIAL';
 
 export type MaintenanceStatus = 'active' | 'expired' | 'expiring' | 'invalid';
 
+export type Edition = {
+  name: string;
+  quantity: string;
+};
+
 export type Feature = {
   name: string;
   quantity: string;
@@ -53,6 +58,7 @@ export type LicenseInfo = {
   serverID?: string;
   withinSilentWarningInterval?: boolean;
   ispLegacy?: boolean;
+  editions?: Array<Edition>;
   features: Array<Feature>;
 };
 
