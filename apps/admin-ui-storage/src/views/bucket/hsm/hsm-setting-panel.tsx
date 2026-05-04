@@ -41,6 +41,8 @@ import { asQueryString,HsmPolicyDetail } from './hsm-policy-detail';
 
 type Timeout = ReturnType<typeof setTimeout>;
 
+type Timeout = ReturnType<typeof setTimeout>;
+
 const HSMsettingPanel: FC = () => {
   const { server } = useParams() as { server: string };
   const [t] = useTranslation();
