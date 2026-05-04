@@ -1,3 +1,9 @@
+## [0.13.0-devel.27](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.26...v0.13.0-devel.27) (2026-05-04)
+
+### Features
+
+* types on adminUI backup ([fe0656f](https://github.com/zextras/carbonio-admin-console-ui/commit/fe0656f738e5ca60000665a333249018445ea20d))
+
 ## [0.13.0-devel.26](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.25...v0.13.0-devel.26) (2026-05-04)
 
 ### Bug Fixes
