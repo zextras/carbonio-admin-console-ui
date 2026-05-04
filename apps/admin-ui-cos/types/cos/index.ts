@@ -49,3 +49,34 @@ export type CosPrefAttributes = {
 export type CosAttributes = CosPrefAttributes & {
   zimbraId: string;
 };
+
+export type CosResponse = {
+  cos: Array<Cos>;
+};
+
+export type SearchDirectoryEntry = {
+  id: string;
+  name: string;
+  a: Array<Attribute>;
+};
+
+export type SearchDirectoryResponse = {
+  cos?: Array<SearchDirectoryEntry>;
+  account?: Array<SearchDirectoryEntry>;
+  dl?: Array<SearchDirectoryEntry>;
+  domain?: Array<SearchDirectoryEntry>;
+  more?: boolean;
+  searchTotal?: number;
+};
+
+export type CoreAttributeValue = {
+  value: string;
+};
+
+export type GetCoreAttributesResponse = {
+  attributes: Record<string, Array<CoreAttributeValue>>;
+};
+
+export type FileQuotaResponse = {
+  limit: string;
+};

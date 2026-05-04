@@ -28,7 +28,7 @@ type QuotaProps = {
   showAccountQuotaLimitMsg: boolean;
   readonlyCOS: boolean;
   cosAdvanced: AccountType;
-  initFileQuotaLimitGBValue: number | undefined;
+  initFileQuotaLimitGBValue: string | undefined;
   fileQuotaLimitGBValue: string | undefined;
   accountQuotaGBValue: string;
   zimbraQuotaWarnIntervalNum: string | undefined;
@@ -151,9 +151,9 @@ const COSQuotas: FC<QuotaProps> = ({
                   {showAccountQuotaLimitMsg && (
                     <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
                       <Padding top="small">
-                         <ds-text as="span" size="extrasmall" weight="regular" color="primary">
-                           {labels.maximumDigitsAllowed}
-                         </ds-text>
+                        <ds-text as="span" size="extrasmall" weight="regular" color="primary">
+                          {labels.maximumDigitsAllowed}
+                        </ds-text>
                       </Padding>
                     </Container>
                   )}
