@@ -17,7 +17,7 @@ import React, {
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
-import { TextProps } from '../../web-components/ds-text';
+import { DsTextProps } from '../../web-components/ds-text';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Container } from '../layout/Container';
 import { InputContainer } from './commons/InputContainer';
@@ -177,7 +177,7 @@ export const TextArea = ({
     [disabled, hasFocus],
   );
 
-  const descriptionColor = useMemo<TextProps['color']>(
+  const descriptionColor = useMemo<DsTextProps['color']>(
     () => (hasFocus && 'primary') || 'secondary',
     [hasFocus],
   );

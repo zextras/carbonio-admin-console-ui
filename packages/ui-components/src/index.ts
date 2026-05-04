@@ -8,6 +8,7 @@
 
 // global definitions
 export * from './global';
+export * from './theme/theme';
 
 // Web components setup (imports theme CSS)
 export * from './web-components';

@@ -3,28 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useState } from 'react';
-
-export function useLocalStorage<T>(
-  key: string,
-  initialValue: T,
-): readonly [T, (value: T | ((val: T) => T)) => void] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch {
-      return initialValue;
-    }
-  });
-  const setValue = (value: T | ((val: T) => T)): void => {
-    const valueToStore =
-      typeof value === 'function' ? (value as (val: T) => T)(storedValue) : value;
-    setStoredValue(valueToStore);
-    localStorage.setItem(key, JSON.stringify(valueToStore));
-  };
-  return [storedValue, setValue] as const;
-}
 
 export const isValidProxy = (value: string): boolean => {
   const pattern = '(proxy|pcre|regexp|inline):(ldap:)?[/\\w.-]+';

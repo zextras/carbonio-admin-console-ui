@@ -8,7 +8,6 @@ import { SelectItem } from '@zextras/ui-components';
 import { parse } from 'date-fns';
 import { TFunction } from 'i18next';
 import { divide, multiply } from 'lodash-es';
-import { useState } from 'react';
 
 import { NOT_SET } from '../../constants';
 
@@ -1146,20 +1145,3 @@ export function bytesToHumanReadable(bytes: number): string {
   return `${Number.parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
 }
 
-export function useLocalStorage<T>(key: string, initialValue: T): readonly [T, (value: T | ((val: T) => T)) => void] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch {
-      return initialValue;
-    }
-  });
-  const setValue = (value: T | ((val: T) => T)): void => {
-    const valueToStore =
-      typeof value === 'function' ? (value as (val: T) => T)(storedValue) : value;
-    setStoredValue(valueToStore);
-    localStorage.setItem(key, JSON.stringify(valueToStore));
-  };
-  return [storedValue, setValue] as const;
-}

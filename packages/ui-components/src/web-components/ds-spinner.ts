@@ -9,8 +9,10 @@ import '../theme/theme.css';
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 
+export type DsSpinnerProps = { color?: string };
+
 export class DsSpinner extends LitElement {
-  static override styles = css`
+  static override readonly styles = css`
     :host {
       display: inline-block;
     }
@@ -33,12 +35,7 @@ export class DsSpinner extends LitElement {
   `;
 
   @property({ type: String, reflect: true })
-  accessor color = 'primary';
-
-  override connectedCallback(): void {
-    super.connectedCallback();
-    this.dataset.testid = 'spinner';
-  }
+  accessor color: DsSpinnerProps['color'] = 'primary';
 
   override render() {
     return html`
