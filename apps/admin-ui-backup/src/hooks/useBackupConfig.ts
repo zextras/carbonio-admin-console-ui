@@ -6,7 +6,7 @@
 
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights } from '@zextras/ui-shared';
-import { cloneDeep, find, isEmpty,isEqual, reduce } from 'lodash-es';
+import { cloneDeep, find, isEmpty, isEqual, reduce } from 'lodash-es';
 import {
 	ChangeEvent,
 	Dispatch,
@@ -14,17 +14,19 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
-	useState} from 'react';
+	useState
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { GlobalConfig, ModifyBackupData } from '../../types';
 import { CONFIG } from '../constants';
 import { modifyBackupRequest } from '../services/modify-backup';
 import { useBackupStore } from '../store/backup/store';
 
 export const useBackupConfig = (): {
 	isDirty: boolean;
-	backupDetail: any;
-	setBackupDetail: Dispatch<SetStateAction<any>>;
+	backupDetail: GlobalConfig;
+	setBackupDetail: Dispatch<SetStateAction<GlobalConfig>>;
 	allowSetBackup: boolean;
 	onCancel: () => void;
 	onSave: () => void;
@@ -38,7 +40,7 @@ export const useBackupConfig = (): {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const globalConfig = useBackupStore((state) => state.globalConfig);
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
-	const [backupDetail, setBackupDetail] = useState<any>(cloneDeep(globalConfig));
+	const [backupDetail, setBackupDetail] = useState<GlobalConfig>(cloneDeep(globalConfig));
 	const createSnackbar = useSnackbar();
 	const { data: rights } = useCurrentUserRights();
 	const allowSetBackup = useMemo(() => {
@@ -51,15 +53,15 @@ export const useBackupConfig = (): {
 	}, [globalConfig]);
 
 	const onSave = useCallback((): void => {
-		const modifiedKeys: any = reduce(
+		const modifiedKeys = reduce<GlobalConfig, Array<string>>(
 			globalConfig,
-			function (result, value, key): any {
+			function (result, value, key): Array<string> {
 				return isEqual(value, backupDetail[key]) ? result : [...result, key];
 			},
 			[]
 		);
-		const modifiedData: any = {};
-		modifiedKeys.forEach((ele: any) => {
+		const modifiedData: ModifyBackupData = {};
+		modifiedKeys.forEach((ele: string) => {
 			modifiedData[ele] = backupDetail[ele];
 		});
 
@@ -85,7 +87,7 @@ export const useBackupConfig = (): {
 						label:
 							data?.errors?.[0]?.error ??
 							data?.statusText ??
-							data?.error ??
+							(typeof data?.error === 'string' ? data?.error : '') ??
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -118,7 +120,7 @@ export const useBackupConfig = (): {
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
-			setBackupDetail((prev: any) => ({
+			setBackupDetail((prev: GlobalConfig) => ({
 				...prev,
 				[key]: backupDetail[key] !== true
 			}));
@@ -127,17 +129,17 @@ export const useBackupConfig = (): {
 	);
 
 	const changeBackupDetail = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-		setBackupDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+		setBackupDetail((prev: GlobalConfig) => ({ ...prev, [e.target.name]: e.target.value }));
 	}, []);
 
 	const changeBackupSchedulerInput = useCallback(
 		(e: ChangeEvent<HTMLInputElement>) => {
-			setBackupDetail((prev: any) => ({
+			setBackupDetail((prev: GlobalConfig) => ({
 				...prev,
 				[e.target.name]: {
-					...[e.target.name],
+					...prev[e.target.name],
 					'cron-pattern': e.target.value,
-					'cron-enabled': backupDetail[e.target.name]['cron-enabled']
+					'cron-enabled': (backupDetail[e.target.name] as { 'cron-enabled': boolean })['cron-enabled']
 				}
 			}));
 		},
@@ -146,12 +148,12 @@ export const useBackupConfig = (): {
 
 	const changeBackupSchedulerSwitch = useCallback(
 		(key: string): void => {
-			setBackupDetail((prev: any) => ({
+			setBackupDetail((prev: GlobalConfig) => ({
 				...prev,
 				[key]: {
-					...[key],
-					'cron-pattern': backupDetail[key]['cron-pattern'],
-					'cron-enabled': backupDetail[key]['cron-enabled'] !== true
+					...prev[key],
+					'cron-pattern': (backupDetail[key] as { 'cron-pattern': string })['cron-pattern'],
+					'cron-enabled': (backupDetail[key] as { 'cron-enabled': boolean })['cron-enabled'] !== true
 				}
 			}));
 		},

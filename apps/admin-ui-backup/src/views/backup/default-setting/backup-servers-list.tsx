@@ -17,6 +17,7 @@ import { isEmpty } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { BackupServerType, GetServerResponse, SmartScanTypeOption, StatusOption, TableHeader } from '../../../../types';
 import { bytesToSize } from '../../utility/utils';
 
 const SMART_SCAN_TYPE = {
@@ -26,30 +27,12 @@ const SMART_SCAN_TYPE = {
   SCHEDULED: 4,
 } as const;
 
-type BackupServerType = {
-  id: string;
-  name: string;
-  description: string;
-  backupAtStartup?: string;
-  rtStatus?: string;
-  type?: string;
-  purge?: string;
-  smartScan?: boolean;
-  availableMetadataSpace?: string;
-  availableBackupSpace?: string;
-  purgeTooltip?: string;
-  smartScanTooltip?: string;
-  availableMetadataSpaceTooltip?: string;
-  availableBackupSpaceTooltip?: string;
-};
 
 const BackupServersListTable: FC<{
   serverList: Array<BackupServerType>;
-  selectedRows: any;
-  onSelectionChange: any;
-}> = ({ serverList, selectedRows, onSelectionChange }) => {
+}> = ({ serverList }) => {
   const [t] = useTranslation();
-  const headers: any[] = useMemo(
+  const headers: Array<TableHeader> = useMemo(
     () => [
       {
         id: 'server',
@@ -209,8 +192,6 @@ const BackupServersListTable: FC<{
       rows={tableRows}
       showCheckbox={false}
       multiSelect={false}
-      selectedRows={selectedRows}
-      onSelectionChange={onSelectionChange}
       RowFactory={HoverableRowFactory}
       HeaderFactory={CustomHeaderFactory}
     />
@@ -229,7 +210,7 @@ const ServersList: FC = () => {
     [backupData?.backupServerList],
   );
 
-  const STATUS: any[] = useMemo(
+  const STATUS: Array<StatusOption> = useMemo(
     () => [
       {
         label: t('label.scheduled', 'Scheduled'),
@@ -243,7 +224,7 @@ const ServersList: FC = () => {
     [t],
   );
 
-  const TYPE: any[] = useMemo(
+  const TYPE: Array<StatusOption> = useMemo(
     () => [
       {
         label: t('label.ext_volume', 'Ext. Volume'),
@@ -257,7 +238,7 @@ const ServersList: FC = () => {
     [t],
   );
 
-  const smartScanType: any[] = useMemo(
+  const smartScanType: Array<SmartScanTypeOption> = useMemo(
     () => [
       {
         label: t('label.disabled', 'Disabled'),
@@ -280,10 +261,9 @@ const ServersList: FC = () => {
   );
 
   const [serverList, setServerList] = useState<BackupServerType[]>([]);
-  const [selectedRows] = useState<any[]>([]);
 
   const getSmartScanStatus = useCallback(
-    (smartScanStartup: boolean, backupSmartScan: boolean): any => {
+    (smartScanStartup: boolean, backupSmartScan: boolean): string => {
       if (smartScanStartup === false && backupSmartScan === false) {
         return smartScanType[0]?.label;
       }
@@ -299,8 +279,8 @@ const ServersList: FC = () => {
   );
 
   const getBackupServerValue = useCallback(
-    (backupServer: any): any => {
-      const serverValue = {};
+    (backupServer: GetServerResponse): Partial<BackupServerType> => {
+      const serverValue: Partial<BackupServerType> = {};
       if (backupServer) {
         const backupAtStartup = STATUS.find(
           (st) => st.value === backupServer?.attributes?.ZxBackup_ModuleEnabledAtStartup?.value,
@@ -317,7 +297,7 @@ const ServersList: FC = () => {
         const smartScanStartup = backupServer?.attributes?.ZxBackup_DoSmartScanOnStartup?.value;
         const backupSmartScan =
           backupServer?.attributes?.backupSmartScanScheduler?.value['cron-enabled'];
-        const smartScan = getSmartScanStatus(smartScanStartup, backupSmartScan);
+        const smartScan = getSmartScanStatus(smartScanStartup ?? false, backupSmartScan ?? false);
         const smartScanTooltip =
           backupServer?.attributes?.backupSmartScanScheduler?.value['cron-pattern'];
         const availableMetadataSpace = backupServer?.properties?.available_space_for_metadata
@@ -328,7 +308,7 @@ const ServersList: FC = () => {
           : '0 GB';
         const availableBackupSpaceTooltip = backupServer?.properties?.available_space_for_blobs
           ? backupServer?.attributes?.ZxBackup_DestPath?.value
-          : backupServer?.attributes?.backupArchivingStore?.value['cron-pattern'];
+          : undefined;
         const availableMetadataSpaceTooltip = backupServer?.attributes?.ZxBackup_DestPath?.value;
         return {
           backupAtStartup,
@@ -351,15 +331,15 @@ const ServersList: FC = () => {
 
   useEffect(() => {
     if (servers && servers?.length > 0) {
-      const sList: BackupServerType[] = [];
-      servers.forEach((item: any) => {
-        const id = item?.id;
-        const name = item?.name;
-        const description = item?.a?.filter((value: any) => value.n === 'description')[0]?._content;
+      const sList: Array<BackupServerType> = [];
+      servers.forEach((item) => {
+        const id = item?.id ?? '';
+        const name = item?.name ?? '';
+        const description = item?.a?.filter((value) => value.n === 'description')[0]?._content ?? '';
         if (backupServerList && backupServerList.length > 0) {
-          const backupServerItem = backupServerList.filter((backupItem) => backupItem[item?.id])[0];
+          const backupServerItem = backupServerList.filter((backupItem: Record<string, unknown>) => backupItem[id])[0];
           if (backupServerItem) {
-            const zxBackItem = backupServerItem[item?.id];
+            const zxBackItem = (backupServerItem as Record<string, Record<string, GetServerResponse>>)[id];
             if (zxBackItem && zxBackItem?.ZxBackup) {
               const backupValues = getBackupServerValue(zxBackItem?.ZxBackup);
               sList.push({ id, name, description, ...backupValues });
@@ -413,8 +393,6 @@ const ServersList: FC = () => {
           <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
             <BackupServersListTable
               serverList={serverList}
-              selectedRows={selectedRows}
-              onSelectionChange={() => null}
             />
           </Row>
         </Container>

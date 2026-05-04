@@ -6,6 +6,7 @@
 import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 
+import type { GlobalConfig } from '../../../../types';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import { useBackupStore } from '../../../store/backup/store';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
@@ -43,8 +44,8 @@ const BackupAdvanced: FC = () => {
     ],
     [],
   );
-  const onBackupCompressionLevelChange = (v: any): any => {
-    setBackupDetail((prev: any) => ({ ...prev, backupCompressionLevel: v }));
+  const onBackupCompressionLevelChange = (v: string | null): void => {
+    setBackupDetail((prev: GlobalConfig) => ({ ...prev, backupCompressionLevel: v ?? '' }));
   };
   return (
     <>
@@ -235,7 +236,7 @@ const BackupAdvanced: FC = () => {
                       background="gray5"
                       label={t('backup.compression_level', 'Compression Level')}
                       defaultSelection={compressLevelItems.find(
-                        (item: any) =>
+                        (item: { label: string; value: string }) =>
                           item.value === globalConfig?.backupCompressionLevel?.toString(),
                       )}
                       onChange={onBackupCompressionLevelChange}
