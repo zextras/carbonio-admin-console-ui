@@ -12,7 +12,8 @@ import styles from './card.module.css';
 export const MaxVersion = () => {
   const { t } = useTranslation();
 
-  const title = t('core.subscription.max_version', 'Max version available');
+  const title = t('core.subscription.maxCarbonioVersion', 'Max Carbonio Version');
+
   const { data: licenseData } = useLicenseInfo();
 
   const maxVersionAvailable = licenseData?.response?.maxCarbonioVersion;

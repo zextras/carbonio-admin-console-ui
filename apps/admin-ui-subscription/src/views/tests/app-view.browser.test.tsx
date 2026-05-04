@@ -4,7 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getQueryClient, grantUserConfigRights, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
+import {
+  getQueryClient,
+  grantUserConfigRights,
+  resetMockWorker,
+  setupBrowserTest,
+} from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -179,7 +184,7 @@ describe('AppView', () => {
       });
       setupTest(licenseData);
 
-      await expect.element(page.getByText('Max version')).toBeVisible();
+      await expect.element(page.getByText('Max Carbonio version')).toBeVisible();
     });
 
     it('should render MeteredSubscription for ISP type', async () => {
