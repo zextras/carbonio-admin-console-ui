@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { ListItems, ListPanelItem } from '@zextras/ui-components';
+import { ListItems, ListItemType, ListPanelItem } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,11 @@ import { useTranslation } from 'react-i18next';
 import { COS_LIST, IS_GENERAL_LIST_EXPANDED } from '../../constants';
 import { useCosStore } from '../../store/cos/store';
 
-const GeneralListPanel: FC<any> = ({ generalOptionItems }) => {
+type GeneralListPanelProps = {
+  generalOptionItems: Array<ListItemType>;
+};
+
+const GeneralListPanel: FC<GeneralListPanelProps> = ({ generalOptionItems }) => {
   const [t] = useTranslation();
   const [isGeneralListExpanded, setIsGeneralListExpanded] = useState(true);
   const { cosView, setCosView } = useCosStore();
