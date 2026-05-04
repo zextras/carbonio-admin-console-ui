@@ -17,11 +17,13 @@ import {
   InheritedSwitch,
   Input,
   ListRow,
+  Modal,
   Padding,
   Row,
   Select,
   Switch,
   Table,
+  Tooltip,
   useSnackbar,
   WizardInSection,
 } from '@zextras/ui-components';
@@ -53,6 +55,9 @@ const EditAccountSecuritySection: FC = () => {
   const [sendEmailTo, setSendEmailTo] = useState<any[]>([]);
   const [pinCodes, setPinCodes] = useState<any>([]);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [isRestoreOtpModalOpen, setIsRestoreOtpModalOpen] = useState<boolean>(false);
+  const [selectedOtpIdForRestore, setSelectedOtpIdForRestore] = useState<string | undefined>();
+  const [isRestoreOtpInProgress, setIsRestoreOtpInProgress] = useState<boolean>(false);
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const isAdvanced = useIsAdvanced();
@@ -338,11 +343,56 @@ const EditAccountSecuritySection: FC = () => {
       {
         id: 'creation-date',
         label: t('label.creation_date', 'Creation Date'),
-        width: '20%',
+        width: '15%',
+        bold: true,
+      },
+      {
+        id: 'actions',
+        label: t('label.actions', 'Actions'),
+        width: '15%',
         bold: true,
       },
     ],
     [t],
+  );
+
+  const openRestoreOtpModal = useCallback((otpId: string): void => {
+    setSelectedOtpIdForRestore(otpId);
+    setIsRestoreOtpModalOpen(true);
+  }, []);
+
+  const closeRestoreOtpModal = useCallback((): void => {
+    setSelectedOtpIdForRestore(undefined);
+    setIsRestoreOtpModalOpen(false);
+  }, []);
+
+  const otpRows = useMemo(
+    () =>
+      map(otpList, (otpRow: any) => {
+        const isDisabledOtp = otpRow?.item?.enabled === false;
+        const visibleColumns = (otpRow?.columns ?? []).slice(0, 4);
+        return {
+          ...otpRow,
+          columns: [
+            ...visibleColumns,
+            isDisabledOtp ? (
+              <Tooltip label={t('domain.editAccount.restoreOtpTooltip', "Restore OTP's")}>
+                <button
+                  type="button"
+                  className={styles.restoreOtpAction}
+                  onClick={(): void => openRestoreOtpModal(otpRow.id)}
+                  data-testid={`restore-otp-${otpRow.id}`}
+                >
+                  <ds-icon icon="RefreshOutline"></ds-icon>
+                </button>
+              </Tooltip>
+            ) : (
+              <>&nbsp;</>
+            ),
+          ],
+        };
+      }),
+    [otpList, t, openRestoreOtpModal],
   );
 
   const timeItems: any[] = useMemo(
@@ -434,6 +484,96 @@ const EditAccountSecuritySection: FC = () => {
       }
     });
   };
+
+  const handleRestoreOTP = useCallback((): void => {
+    if (!selectedOtpIdForRestore) {
+      return;
+    }
+
+    setIsRestoreOtpInProgress(true);
+    fetchSoap('zextras', {
+      _jsns: ZIMBRA_ADMIN_URN,
+      module: 'ZxAuth',
+      action: 'restore-otp',
+      account: `${accountDetail?.uid}@${domainName}`,
+      id: selectedOtpIdForRestore,
+    })
+      .then(
+        (res: {
+          ok?: boolean | string;
+          Body?: { response?: { content?: unknown } };
+          response?: { content?: unknown };
+        }) => {
+          const parseRestoreResult = (
+            content: unknown,
+          ): { ok?: boolean | string } | undefined => {
+            if (typeof content === 'string') {
+              try {
+                return JSON.parse(content) as { ok?: boolean | string };
+              } catch {
+                return undefined;
+              }
+            }
+
+            if (content && typeof content === 'object') {
+              return content as { ok?: boolean | string };
+            }
+
+            return undefined;
+          };
+
+          const parsedFromBody = parseRestoreResult(res.Body?.response?.content);
+          const parsedFromResponse = parseRestoreResult(res.response?.content);
+          const restoreResult = parsedFromBody ?? parsedFromResponse ?? res;
+          const isRestoreSuccess =
+            restoreResult.ok === true || restoreResult.ok === 'true' || restoreResult.ok === 'ok';
+
+          if (isRestoreSuccess) {
+          createSnackbar({
+            key: 'success',
+            severity: 'success',
+            label: t('label.otp_restored_successfully', 'OTP has been restored successfully'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+          closeRestoreOtpModal();
+          getListOtp(`${accountDetail?.uid}@${domainName}`);
+          return;
+        }
+
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        },
+      )
+      .catch(() => {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+      })
+      .finally(() => {
+        setIsRestoreOtpInProgress(false);
+      });
+  }, [
+    selectedOtpIdForRestore,
+    accountDetail?.uid,
+    domainName,
+    createSnackbar,
+    t,
+    closeRestoreOtpModal,
+    getListOtp,
+  ]);
 
   const changeValue = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -675,7 +815,7 @@ const EditAccountSecuritySection: FC = () => {
                 >
                   {otpList.length !== 0 && (
                     <Table
-                      rows={otpList}
+                      rows={otpRows}
                       headers={headers}
                       multiSelect={false}
                       onSelectionChange={setSelectedRows}
@@ -738,6 +878,43 @@ const EditAccountSecuritySection: FC = () => {
               </Row>
             </Row>
           )}
+          <Modal
+            title={t('domain.editAccount.restoreOtpTitle', 'Restore OTP')}
+            open={isRestoreOtpModalOpen}
+            showCloseIcon
+            onClose={closeRestoreOtpModal}
+            customFooter={
+              <Container orientation="horizontal" mainAlignment="flex-end">
+                <Padding right="small">
+                  <Button
+                    label={t('label.no_cancel', 'NO, CANCEL')}
+                    color="secondary"
+                    onClick={closeRestoreOtpModal}
+                  />
+                </Padding>
+                <Button
+                  label={t('domain.editAccount.yesRestoreOtpAnyway', 'YES, RESTORE ANYWAY')}
+                  color="primary"
+                  onClick={handleRestoreOTP}
+                  disabled={isRestoreOtpInProgress}
+                />
+              </Container>
+            }
+          >
+            <Padding all="medium">
+              <ds-text as="p" overflow="break-word" className={styles.restoreOtpModalInfoText}>
+                {t(
+                  'domain.editAccount.restoreOtpInfo',
+                  'Before proceeding, verify the user requested this. If you suspect an unauthorized attack, do not restore.',
+                )}
+              </ds-text>
+              <Padding top="medium">
+                <ds-text as="p" overflow="break-word">
+                  {t('domain.editAccount.restoreOtpQuestion', 'Are you sure you want to proceed?')}
+                </ds-text>
+              </Padding>
+            </Padding>
+          </Modal>
           {showCreateOTP && (
             <>
               <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
@@ -752,6 +929,7 @@ const EditAccountSecuritySection: FC = () => {
           )}
         </>
       )}
+      
       {isAdvanced && (
         <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
           <ds-text as="h2" weight="bold">
