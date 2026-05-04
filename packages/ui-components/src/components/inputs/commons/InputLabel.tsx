@@ -13,6 +13,7 @@ type InputLabelProps = LabelHTMLAttributes<HTMLLabelElement> & {
   $hasError?: boolean;
   $hasFocus?: boolean;
   $disabled?: boolean;
+  children?: React.ReactNode;
 };
 
 export const InputLabel: FC<InputLabelProps> = ({
@@ -21,6 +22,7 @@ export const InputLabel: FC<InputLabelProps> = ({
   $disabled,
   className,
   style,
+  children,
   ...rest
 }) => {
   const labelColor = useMemo(() => {
@@ -37,5 +39,9 @@ export const InputLabel: FC<InputLabelProps> = ({
     [labelColor, style],
   );
 
-  return <label className={clsx(styles.label, className)} style={labelStyle} {...rest} />;
+  return (
+    <label className={clsx(styles.label, className)} style={labelStyle} {...rest}>
+      {children}
+    </label>
+  );
 };
