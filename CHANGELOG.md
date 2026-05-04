@@ -1,3 +1,9 @@
+## [0.13.0-devel.26](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.25...v0.13.0-devel.26) (2026-05-04)
+
+### Bug Fixes
+
+* not set in  public service protocol option does not work ([#1162](https://github.com/zextras/carbonio-admin-console-ui/issues/1162)) ([ab71089](https://github.com/zextras/carbonio-admin-console-ui/commit/ab7108928ee152df35457504cb46c59156325587))
+
 ## [0.13.0-devel.25](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.24...v0.13.0-devel.25) (2026-04-30)
 
 ### Features
