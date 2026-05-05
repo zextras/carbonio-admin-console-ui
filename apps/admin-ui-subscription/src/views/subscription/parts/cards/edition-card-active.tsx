@@ -47,8 +47,8 @@ export const EditionCardActive = ({ editions, accountCount, config }: EditionCar
         </div>
         <Quota
           fill={fillPercent}
-          background="#F5F6F8"
-          fillBackground="linear-gradient(90deg, #EBF4FF -34.98%, #2B73D2 100%)"
+          background={theme.color.gray5.regular}
+          fillBackground="linear-gradient(90deg, #ebf4ff -34.98%, #2b73d2 100%)"
           style={{ borderRadius: '2px' }}
         />
       </div>
