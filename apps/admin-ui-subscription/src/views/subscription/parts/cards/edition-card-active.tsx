@@ -25,15 +25,16 @@ export const EditionCardActive = ({ editions, accountCount, config }: EditionCar
   const activeLabel = t('label.active', 'Active').toUpperCase();
   const fillPercent = total > 0 ? (assigned / total) * 100 : 0;
   const seatUsageLabel = t('core.subscription.seat_usage', 'Seat usage');
-  const editionLabel = t(config.labelKey, config.labelDefault).toUpperCase();
+  const editionLabel = t(config.labelKey, config.labelDefault);
 
   return (
     <div key={config.name} className={styles.editionCard}>
       <div className={styles.editionCardHeader}>
-        <ds-icon icon={config.icon} size="1.25rem" />
-        <ds-text weight="bold" size="large">
+        <ds-icon icon={config.icon} size="1.5rem" />
+        <ds-text weight="bold" size="medium">
           {editionLabel}
         </ds-text>
+        <span style={{ width: '0.5rem' }} />
         <ds-badge color={theme.color.successBanner}>
           <ds-text size="small">{activeLabel}</ds-text>
         </ds-badge>
