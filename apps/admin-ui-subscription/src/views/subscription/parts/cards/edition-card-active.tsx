@@ -22,10 +22,7 @@ export const EditionCardActive = ({ editions, accountCount, config }: EditionCar
   const { t } = useTranslation();
   const assigned = Math.min(accountCount, total);
   const available = Math.max(0, total - assigned);
-  const activeLabel =
-    total > 0
-      ? t('label.active', 'Active').toUpperCase()
-      : t('label.inactive', 'Inactive').toUpperCase();
+  const activeLabel = t('label.active', 'Active').toUpperCase();
   const fillPercent = total > 0 ? (assigned / total) * 100 : 0;
   const seatUsageLabel = t('core.subscription.seat_usage', 'Seat usage');
   const editionLabel = t(config.labelKey, config.labelDefault).toUpperCase();
