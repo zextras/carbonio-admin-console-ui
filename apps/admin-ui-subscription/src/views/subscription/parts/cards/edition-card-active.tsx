@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Quota, theme } from '@zextras/ui-components';
+import { theme } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { type EditionDisplayConfig } from '../sections/active-edition-section';
 import styles from './edition-card.module.css';
+import { QuotaProgressBar } from './quota-progress-bar';
 
 type EditionCardProps = {
   editions: Array<{ name: string; quantity: string }>;
@@ -46,12 +47,7 @@ export const EditionCardActive = ({ editions, accountCount, config }: EditionCar
             {`${assigned}/${total}`}
           </ds-text>
         </div>
-        <Quota
-          fill={fillPercent}
-          background={theme.color.gray5.regular}
-          fillBackground="linear-gradient(90deg, #ebf4ff -34.98%, #2b73d2 100%)"
-          style={{ borderRadius: '2px' }}
-        />
+        <QuotaProgressBar fillPercent={fillPercent} />
       </div>
       <div className={styles.statsRow}>
         <div className={styles.statItem}>
