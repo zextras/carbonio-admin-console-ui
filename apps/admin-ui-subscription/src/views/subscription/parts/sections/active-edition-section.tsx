@@ -66,7 +66,7 @@ export const ActiveEditionSection = () => {
             </ds-text>
           )}
           <Button
-            label={t('label.update_data', 'Update data').toUpperCase()}
+            label={t('label.update_data', 'Update data')}
             type="outlined"
             icon="Sync"
             iconPlacement="right"
