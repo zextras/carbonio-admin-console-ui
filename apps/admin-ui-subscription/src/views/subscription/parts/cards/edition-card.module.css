@@ -34,6 +34,7 @@
   flex: 0 1 400px;
   max-width: 400px;
   overflow-wrap: break-word;
+  background: var(--color-gray5-regular);
 }
 
 .statsRow {
