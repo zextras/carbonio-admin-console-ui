@@ -32,16 +32,12 @@ import {
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { ComputedLimit, getCosQuota, QuotaSource } from '../../services/get-cos-quota';
-import { getFileQuotaById } from '../../services/get-file-quota';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
-import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setCosQuota } from '../../services/set-cos-quota';
-import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { unsetCosQuota } from '../../services/unset-cos-quota';
 import { useCosStore } from '../../store/cos/store';
 import { PageLayout } from '../page-layout';
-import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
 import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
 import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
 import COSForwarding from './advanced/cos-forwarding';
@@ -173,11 +169,7 @@ const CosAdvanced: FC = () => {
   const [cosAdvanced, setCosAdvanced] = useState<AccountType>({
     zimbraMailForwardingAddressMaxLength: '',
     zimbraMailForwardingAddressMaxNumAddrs: '',
-    zimbraMailQuota: '',
     zimbraContactMaxNumEntries: '',
-    zimbraQuotaWarnPercent: '',
-    zimbraQuotaWarnInterval: '',
-    zimbraQuotaWarnMessage: '',
     zimbraPasswordLocked: 'FALSE',
     zimbraPasswordMinLength: '',
     zimbraPasswordMaxLength: '',
@@ -207,12 +199,6 @@ const CosAdvanced: FC = () => {
   );
   const [zimbraMailMessageLifetimeType, setZimbraMailMessageLifetimeType] = useState(
     cosAdvanced?.zimbraMailMessageLifetime?.slice(-1) || '',
-  );
-  const [zimbraQuotaWarnIntervalNum, setZimbraQuotaWarnIntervalNum] = useState(
-    cosAdvanced?.zimbraQuotaWarnInterval?.slice(0, -1),
-  );
-  const [zimbraQuotaWarnIntervalType, setzimbraQuotaWarnIntervalType] = useState(
-    cosAdvanced?.zimbraQuotaWarnInterval?.slice(-1) || '',
   );
   const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
     cosAdvanced?.zimbraPasswordLockoutDuration?.slice(0, -1),
@@ -254,11 +240,6 @@ const CosAdvanced: FC = () => {
   const [zimbraMailSpamLifetimeType, setZimbraMailSpamLifetimeType] = useState(
     cosAdvanced?.zimbraMailSpamLifetime?.slice(-1) || '',
   );
-  const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState<string | undefined>(undefined);
-  const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState<string | undefined>(undefined);
-  const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
-  const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
-  const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
   const [totalComputedQuotaLimit, setTotalComputedQuotaLimit] = useState<ComputedLimit | undefined>(
     undefined,
   );
@@ -304,22 +285,9 @@ const CosAdvanced: FC = () => {
             ? obj?.zimbraMailForwardingAddressMaxNumAddrs
             : '',
         );
-        setValue('zimbraMailQuota', obj?.zimbraMailQuota ? obj?.zimbraMailQuota : '');
         setValue(
           'zimbraContactMaxNumEntries',
           obj?.zimbraContactMaxNumEntries ? obj?.zimbraContactMaxNumEntries : '',
-        );
-        setValue(
-          'zimbraQuotaWarnPercent',
-          obj?.zimbraQuotaWarnPercent ? obj?.zimbraQuotaWarnPercent : '',
-        );
-        setValue(
-          'zimbraQuotaWarnInterval',
-          obj?.zimbraQuotaWarnInterval ? obj?.zimbraQuotaWarnInterval : '',
-        );
-        setValue(
-          'zimbraQuotaWarnMessage',
-          obj?.zimbraQuotaWarnMessage ? obj?.zimbraQuotaWarnMessage : '',
         );
         setValue(
           'zimbraDataSourceMinPollingInterval',
@@ -449,12 +417,6 @@ const CosAdvanced: FC = () => {
 
       if (obj) {
         setTimeValues(
-          obj?.zimbraQuotaWarnInterval,
-          setZimbraQuotaWarnIntervalNum,
-          setzimbraQuotaWarnIntervalType,
-          timeItems,
-        );
-        setTimeValues(
           obj?.zimbraPasswordLockoutDuration,
           setZimbraPasswordLockoutDurationNum,
           setZimbraPasswordLockoutDurationType,
@@ -497,10 +459,6 @@ const CosAdvanced: FC = () => {
           timeItems,
         );
 
-        setAccountQuotaGBValue(
-          obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(2) : '',
-        );
-
         setTimeValues(
           obj?.zimbraMailMessageLifetime,
           setZimbraMailMessageLifetimeNum,
@@ -524,20 +482,8 @@ const CosAdvanced: FC = () => {
       if (!obj.zimbraMailForwardingAddressMaxNumAddrs) {
         obj.zimbraMailForwardingAddressMaxNumAddrs = '';
       }
-      if (!obj.zimbraMailQuota) {
-        obj.zimbraMailQuota = '';
-      }
       if (!obj.zimbraContactMaxNumEntries) {
         obj.zimbraContactMaxNumEntries = '';
-      }
-      if (!obj.zimbraQuotaWarnPercent) {
-        obj.zimbraQuotaWarnPercent = '';
-      }
-      if (!obj.zimbraQuotaWarnInterval) {
-        obj.zimbraQuotaWarnInterval = '';
-      }
-      if (!obj.zimbraQuotaWarnMessage) {
-        obj.zimbraQuotaWarnMessage = '';
       }
       if (!obj.zimbraPasswordLocked) {
         obj.zimbraPasswordLocked = 'FALSE';
@@ -615,15 +561,6 @@ const CosAdvanced: FC = () => {
     }
   }, [cosInformation, setInitalValues, setStateAttrValues, setValue, timeItems]);
 
-  const getFileQuota = useCallback((cosId: string): void => {
-    getFileQuotaById(cosId, COS).then((res: { limit: string }) => {
-      if (res?.limit) {
-        setInitFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
-        setFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
-      }
-    });
-  }, []);
-
   const getCOSQuota = useCallback((cosId: string): void => {
     getCosQuota(cosId).then((res) => {
       if (res.type === 'success') {
@@ -634,12 +571,6 @@ const CosAdvanced: FC = () => {
       }
     });
   }, []);
-
-  useEffect(() => {
-    if (cosData?.zimbraId && isAdvanced && !isTotalQuotaActive) {
-      getFileQuota(cosData.zimbraId);
-    }
-  }, [cosData.zimbraId, getFileQuota, isAdvanced, isTotalQuotaActive]);
 
   useEffect(() => {
     if (cosData?.zimbraId && isAdvanced && isTotalQuotaActive) {
@@ -674,11 +605,8 @@ const CosAdvanced: FC = () => {
   const onCancel = (): void => {
     setInitalValues(cosData);
     setStateAttrValues(cosData);
-    setFileQuotaLimitGBValue(initFileQuotaLimitGBValue);
-    if (isTotalQuotaActive) {
-      setTotalComputedQuotaLimit(initialTotalComputedQuotaLimit);
-      setTotalQuotaSource(initialTotalQuotaSource);
-    }
+    setTotalComputedQuotaLimit(initialTotalComputedQuotaLimit);
+    setTotalQuotaSource(initialTotalQuotaSource);
     setIsDirty(false);
   };
 
@@ -710,48 +638,12 @@ const CosAdvanced: FC = () => {
 
   useEffect(() => {
     if (
-      cosData.zimbraMailQuota !== undefined &&
-      cosData.zimbraMailQuota !== cosAdvanced.zimbraMailQuota
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraMailQuota, cosData.zimbraMailQuota]);
-
-  useEffect(() => {
-    if (
       cosData.zimbraContactMaxNumEntries !== undefined &&
       cosData.zimbraContactMaxNumEntries !== cosAdvanced.zimbraContactMaxNumEntries
     ) {
       setIsDirty(true);
     }
   }, [cosAdvanced.zimbraContactMaxNumEntries, cosData.zimbraContactMaxNumEntries]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraQuotaWarnPercent !== undefined &&
-      cosData.zimbraQuotaWarnPercent !== cosAdvanced.zimbraQuotaWarnPercent
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraQuotaWarnPercent, cosData.zimbraQuotaWarnPercent]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraQuotaWarnInterval !== undefined &&
-      cosData.zimbraQuotaWarnInterval !== cosAdvanced.zimbraQuotaWarnInterval
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraQuotaWarnInterval, cosData.zimbraQuotaWarnInterval]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraQuotaWarnMessage !== undefined &&
-      cosData.zimbraQuotaWarnMessage !== cosAdvanced.zimbraQuotaWarnMessage
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraQuotaWarnMessage, cosData.zimbraQuotaWarnMessage]);
 
   useEffect(() => {
     if (
@@ -936,44 +828,6 @@ const CosAdvanced: FC = () => {
       setIsDirty(true);
     }
   }, [cosAdvanced.zimbraFreebusyExchangeUserOrg, cosData.zimbraFreebusyExchangeUserOrg]);
-
-  useEffect(() => {
-    if (
-      fileQuotaLimitGBValue !== undefined &&
-      initFileQuotaLimitGBValue !== fileQuotaLimitGBValue
-    ) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [initFileQuotaLimitGBValue, fileQuotaLimitGBValue]);
-
-  const onZimbraQuotaWarnIntervalTypeChange = useCallback<SingleSelectionOnChange>(
-    (v) => {
-      if (v) {
-        setCosAdvanced((prev: AccountType) => ({
-          ...prev,
-          zimbraQuotaWarnInterval: zimbraQuotaWarnIntervalNum
-            ? `${zimbraQuotaWarnIntervalNum}${v}`
-            : '',
-        }));
-        setzimbraQuotaWarnIntervalType(v);
-      }
-    },
-    [zimbraQuotaWarnIntervalNum, setCosAdvanced],
-  );
-  const onZimbraQuotaWarnIntervalNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setCosAdvanced((prev: AccountType) => ({
-        ...prev,
-        zimbraQuotaWarnInterval: e.target.value
-          ? `${e.target.value}${zimbraQuotaWarnIntervalType}`
-          : '',
-      }));
-      setZimbraQuotaWarnIntervalNum(e.target.value);
-    },
-    [zimbraQuotaWarnIntervalType, setCosAdvanced],
-  );
 
   const onZimbraPasswordLockoutDurationTypeChange = useCallback<SingleSelectionOnChange>(
     (v) => {
@@ -1164,35 +1018,6 @@ const CosAdvanced: FC = () => {
     [zimbraMailSpamLifetimeType, setCosAdvanced],
   );
 
-  const onFileQuotaChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    if (!isValidDecimalNumber(e.target.value)) return;
-    const decimalPoints = e.target.value?.split('.')[1];
-    if (!!decimalPoints && decimalPoints?.length > 3) {
-      setShowFileQuotaLimitMsg(true);
-      return;
-    }
-    setShowFileQuotaLimitMsg(false);
-    setFileQuotaLimitGBValue(e.target.value);
-  }, []);
-
-  const onZimbraMailQuotaChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      if (!isValidDecimalNumber(e.target.value)) return;
-      const decimalPoints = e.target.value?.split('.')[1];
-      if (!!decimalPoints && decimalPoints?.length > 3) {
-        setShowAccountQuotaLimitMsg(true);
-        return;
-      }
-      setShowAccountQuotaLimitMsg(false);
-      setAccountQuotaGBValue(e.target.value);
-      setCosAdvanced((prev: AccountType) => ({
-        ...prev,
-        zimbraMailQuota: e.target.value ? Math.round(GbToBytes(e.target.value)) : '',
-      }));
-    },
-    [setCosAdvanced],
-  );
-
   const onZimbraMailMessageLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
     (v) => {
       if (v) {
@@ -1221,17 +1046,6 @@ const CosAdvanced: FC = () => {
   );
 
   const cosName = useCosStore((state) => state.cos?.name);
-  const setFileQuotaLimit = useCallback((cosId: string, limit: string) => {
-    setFileQuotaLimitById(cosId, limit, COS).then(() => {
-      setShowFileQuotaLimitMsg(false);
-    });
-  }, []);
-
-  const resetFileQuotaLimit = useCallback((cosId: string) => {
-    resetFileQuotaLimitById(cosId, COS).then(() => {
-      setShowFileQuotaLimitMsg(false);
-    });
-  }, []);
 
   const onSave = async (): Promise<void> => {
     const { zimbraId = '' } = cosData;
@@ -1254,13 +1068,11 @@ const CosAdvanced: FC = () => {
       }
     }
 
-    const cosAdvancedToSave = isTotalQuotaActive
-      ? (Object.fromEntries(
-        Object.entries(cosAdvanced).filter(
-          ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
-        ),
-      ) as AccountType)
-      : cosAdvanced;
+    const cosAdvancedToSave = Object.fromEntries(
+      Object.entries(cosAdvanced).filter(
+        ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
+      ),
+    ) as AccountType;
 
     saveCosAdvanced(cosAdvancedToSave, zimbraId)
       .then(({ cosId, cos }) => {
@@ -1275,17 +1087,6 @@ const CosAdvanced: FC = () => {
         });
         if (cos) {
           setCos(cos);
-        }
-        if (
-          !isTotalQuotaActive &&
-          isAdvanced &&
-          initFileQuotaLimitGBValue !== fileQuotaLimitGBValue
-        ) {
-          if (fileQuotaLimitGBValue) {
-            setFileQuotaLimit(zimbraId, Math.round(GbToBytes(fileQuotaLimitGBValue)).toString());
-          } else {
-            resetFileQuotaLimit(zimbraId);
-          }
         }
         setIsDirty(false);
       })
@@ -1372,29 +1173,17 @@ const CosAdvanced: FC = () => {
           changeValue={changeValue}
           readonlyCOS={readonlyCOS}
         />
-        <COSQuotas
-          isTotalQuotaActive={isTotalQuotaActive}
-          isAdvanced={isAdvanced}
-          showFileQuotaLimitMsg={showFileQuotaLimitMsg}
-          showAccountQuotaLimitMsg={showAccountQuotaLimitMsg}
-          readonlyCOS={readonlyCOS}
-          cosAdvanced={cosAdvanced}
-          initFileQuotaLimitGBValue={initFileQuotaLimitGBValue}
-          fileQuotaLimitGBValue={fileQuotaLimitGBValue}
-          accountQuotaGBValue={accountQuotaGBValue}
-          zimbraQuotaWarnIntervalNum={zimbraQuotaWarnIntervalNum}
-          timeItems={timeItems}
-          zimbraQuotaWarnIntervalType={zimbraQuotaWarnIntervalType}
-          onFileQuotaChange={onFileQuotaChange}
-          onZimbraMailQuotaChange={onZimbraMailQuotaChange}
-          changeValue={changeValue}
-          onZimbraQuotaWarnIntervalNumChange={onZimbraQuotaWarnIntervalNumChange}
-          onZimbraQuotaWarnIntervalTypeChange={onZimbraQuotaWarnIntervalTypeChange}
-          totalComputedQuotaLimit={totalComputedQuotaLimit}
-          totalQuotaSource={totalQuotaSource}
-          initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
-          onTotalQuotaChange={onTotalQuotaChange}
-        />
+        {isTotalQuotaActive && (
+          <COSQuotas
+            readonlyCOS={readonlyCOS}
+            cosAdvanced={cosAdvanced}
+            changeValue={changeValue}
+            totalComputedQuotaLimit={totalComputedQuotaLimit}
+            totalQuotaSource={totalQuotaSource}
+            initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
+            onTotalQuotaChange={onTotalQuotaChange}
+          />
+        )}
         <COSPassword
           cosAdvanced={cosAdvanced}
           readonlyCOS={readonlyCOS}
