@@ -12,7 +12,6 @@ export const GENERAL_SETTINGS = 'general_settings';
 export const GAL = 'gal';
 export const AUTHENTICATION = 'authentication';
 export const VIRTUAL_HOSTS = 'virtual_hosts';
-export const MAILBOX_QUOTA = 'mailbox_quota';
 export const WHITELABEL_SETTINGS = 'whitelabel_settings';
 export const DOMAINS = 'domains';
 export const TWO_FACTOR_AUTHENTICATION = '2-factor-authentication';

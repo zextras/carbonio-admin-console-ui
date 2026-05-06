@@ -19,7 +19,6 @@ import {
   GAL,
   GENERAL_INFORMATION,
   GENERAL_SETTINGS,
-  MAILBOX_QUOTA,
   RESOURCES,
   RESTORE_ACCOUNT,
   SAML,
@@ -36,7 +35,6 @@ import DomainAuthentication from './details/domain-authentication';
 import DomainDisclaimer from './details/domain-disclaimer';
 import DomainGalSettings from './details/domain-gal-settings';
 import DomainGeneralSettings from './details/domain-general-settings';
-import DomainMailboxQuotaSetting from './details/domain-mailbox-quota-settings';
 import DomainSaml from './details/domain-saml';
 import DomainTheme from './details/domain-theme';
 import { DomainVirtualHosts } from './details/virtual-hosts-certificates/domain-virtual-hosts';
@@ -112,8 +110,6 @@ const DomainOperations: FC = (): React.JSX.Element => {
             return <DomainAuthentication />;
           case VIRTUAL_HOSTS:
             return <DomainVirtualHosts />;
-          case MAILBOX_QUOTA:
-            return <DomainMailboxQuotaSetting />;
           case TWO_FACTOR_AUTHENTICATION:
             return <DomainTwoFactorAuthentication />;
           case WHITELABEL_SETTINGS:
