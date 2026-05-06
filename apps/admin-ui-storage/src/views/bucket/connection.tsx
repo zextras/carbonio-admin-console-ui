@@ -12,7 +12,6 @@ import {
   Row,
   Select,
   Switch,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,17 +19,17 @@ import { useTranslation } from 'react-i18next';
 import { TestConnectionObjectType } from '../../../types';
 import {
   AMAZON_WEB_SERVICE_S3,
-  ERROR,
-  FAIL,
   HTTP,
   HTTPS,
-  SUCCESS,
   V4,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { BucketRegions } from '../utility/utils';
+import { VerifyError } from './parts/verify/verify-error';
+import { VerifyProgress } from './parts/verify/verify-progress';
+import { VerifySuccess } from './parts/verify/verify-success';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 const bucketNameRegex = /^\S+$/;
@@ -52,7 +51,6 @@ const Connection: FC<{
     ],
     [bucketRegions, t],
   );
-  const createSnackbar = useSnackbar();
   const [buttonColor, setButtonColor] = useState<string>('primary');
   const [buttonDetail, setButtonDetail] = useState(
     t('buckets.connection.verify_and_create_connector', 'VERIFY & CREATE CONNECTOR'),
@@ -66,20 +64,30 @@ const Connection: FC<{
   const [prefix, setPrefix] = useState('');
   const [customRegion, setCustomRegion] = useState('');
   const [isCustomRegion, setIsCustomRegion] = useState(false);
-  const [verifyCheck, setVerifyCheck] = useState<string>('');
-  const [verifyFailErr, setverifyFailErr] = useState('');
-  const [bothFail, setbothFail] = useState('');
+  const [verifyFailError, setVerifyFailError] = useState(t(
+            'storages.s3Connectors.verifyError.doNotSupport',
+            'We do not support this specific connector. Try again with a different one',
+          ));
   const [prefixConfirm, setprefixConfirm] = useState(true);
   const [bucketNameConfirm, setBucketNameConfirm] = useState(true);
   const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
   const [regionSelection, setRegionSelection] = useState<{ value: string; label: string }>(
     bucketRegions[0],
   );
+  const [showVerifyResult, setVerifyShowResult] = useState(false);
+  const [isVerifyPending, setIsVerifyPending] = useState(false);
+  const [isVerifySuccess, setIsVerifySuccess] = useState(false);
+  const [isVerifyError, setIsVerifyError] = useState(false);
 
   const storeType = externalData || AMAZON_WEB_SERVICE_S3;
   const { selectedServerName } = useBucketVolumeStore((state) => state);
 
   const handleVerifyConnector = (): void => {
+    setVerifyShowResult(true);
+    // setIsVerifyPending(true);
+    // setIsVerifySuccess(true);
+    setIsVerifyError(true);
+
     if (
       bucketLabel &&
       bucketName &&
@@ -88,6 +96,11 @@ const Connection: FC<{
       secretKey &&
       (!isCustomRegion || customRegion.trim() !== '')
     ) {
+      setVerifyShowResult(false);
+      setIsVerifySuccess(false);
+      setIsVerifyError(false);
+      setIsVerifyPending(true);
+
       const objectToSend: TestConnectionObjectType = {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxCore',
@@ -112,64 +125,81 @@ const Connection: FC<{
         delete objectToSend?.targetServers;
       }
 
-      fetchSoap('zextras', objectToSend).then((res) => {
-        const soapResponse = res as { Body: { response: { content: string } } };
-        const response = JSON.parse(soapResponse.Body.response.content);
-        if (response.ok) {
-          const data = response.response.message;
-          const responseData = data.split("'");
+      fetchSoap('zextras', objectToSend)
+        .then((res) => {
+          const soapResponse = res as { Body: { response: { content: string } } };
+          const response = JSON.parse(soapResponse.Body.response.content);
+          if (response.ok) {
+            const data = response.response.message;
+            const responseData = data.split("'");
 
-          const objToSendTestConnection: TestConnectionObjectType = {
-            _jsns: ZIMBRA_ADMIN_URN,
-            module: 'ZxCore',
-            action: 'testS3Connection',
-            targetServers: selectedServerName,
-            bucketId: responseData[1],
-          };
+            const objToSendTestConnection: TestConnectionObjectType = {
+              _jsns: ZIMBRA_ADMIN_URN,
+              module: 'ZxCore',
+              action: 'testS3Connection',
+              targetServers: selectedServerName,
+              bucketId: responseData[1],
+            };
 
-          if (selectedServerName === '') {
-            delete objToSendTestConnection?.targetServers;
+            if (selectedServerName === '') {
+              delete objToSendTestConnection?.targetServers;
+            }
+
+            return fetchSoap('zextras', objToSendTestConnection).then((responseVerify) => {
+              const responseVerifyData = JSON.parse(responseVerify.Body.response.content);
+              if (
+                responseVerifyData.ok &&
+                responseVerifyData.response[selectedServerName] &&
+                responseVerifyData.response[selectedServerName].ok
+              ) {
+                setIsVerifySuccess(true);
+              } else {
+                const errorResponse = responseVerifyData?.error;
+
+                const errorResponsePart = errorResponse.split(objToSendTestConnection?.bucketId);
+                const errorStoreTypeMessage = errorResponsePart[1].replace('as', '');
+
+                setVerifyFailError(
+                  t(
+                    'label.bucket_verification_failed_message',
+                    'Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})',
+                    {
+                      bucketType: errorStoreTypeMessage,
+                      bucketId: objToSendTestConnection?.bucketId,
+                    },
+                  ),
+                );
+                setIsVerifyError(true);
+              }
+            });
           }
 
-          fetchSoap('zextras', objToSendTestConnection).then((responseVerify) => {
-            const responseVerifyData = JSON.parse(responseVerify.Body.response.content);
-            if (
-              responseVerifyData.ok &&
-              responseVerifyData.response[selectedServerName] &&
-              responseVerifyData.response[selectedServerName].ok
-            ) {
-              setVerifyCheck(SUCCESS);
-            } else {
-              const errorResponse = responseVerifyData?.error;
-
-              const errorResponsePart = errorResponse.split(objToSendTestConnection?.bucketId);
-              const errorStoreTypeMessage = errorResponsePart[1].replace('as', '');
-
-              setVerifyCheck(ERROR);
-              setverifyFailErr(
-                t(
-                  'label.bucket_verification_failed_message',
-                  'Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})',
-                  {
-                    bucketType: errorStoreTypeMessage,
-                    bucketId: objToSendTestConnection?.bucketId,
-                  },
-                ),
-              );
-            }
-          });
-        } else {
-          setbothFail(
-            response?.error?.message ||
-              response?.error ||
-              response?.exception?.message ||
-              response.response[selectedServerName].error.message,
-          );
-          setVerifyCheck(FAIL);
-        }
-      });
+          // setbothFail(
+          //   response?.error?.message ||
+          //     response?.error ||
+          //     response?.exception?.message ||
+          //     response.response[selectedServerName].error.message,
+          // );
+          setIsVerifyError(true);
+          return undefined;
+        })
+        .catch(() => {
+          setIsVerifyError(true);
+        })
+        .finally(() => {
+          setIsVerifyPending(false);
+        });
     }
   };
+
+  const handleProgressComplete = useCallback((): void => {
+    setVerifyShowResult(true);
+  }, []);
+
+  const handleSuccessComplete = useCallback((): void => {
+    setVerifyShowResult(false);
+    onCancel?.();
+  }, [onCancel]);
 
   useEffect(() => {
     if (regionsData === undefined) {
@@ -216,43 +246,43 @@ const Connection: FC<{
     [bucketRegions, t],
   );
 
-  useEffect(() => {
-    if (verifyCheck === SUCCESS) {
-      setButtonColor('success');
-      setButtonDetail(
-        t('label.connector_is_create_and_verified', 'CONNECTOR IS CREATED AND VERIFIED'),
-      );
-    } else if (verifyCheck === ERROR) {
-      setButtonColor('error');
-      setButtonDetail(
-        t(
-          'label.connection_is_created_verify_connector_fail',
-          'CONNECTOR IS CREATED BUT VERIFICATION HAS FAILED',
-        ),
-      );
-    } else if (verifyCheck === FAIL) {
-      setButtonColor('error');
-      setButtonDetail(
-        t(
-          'label.connector_is_not_created_and_verification_failed',
-          'CONNECTOR IS NOT CREATED AND VERIFICATION HAS FAILED',
-        ),
-      );
-      createSnackbar({
-        key: '1',
-        severity: 'error',
-        label: t('label.verify_error', '{{name}}', {
-          name: bothFail,
-        }),
-        autoHideTimeout: 5000,
-      });
-    } else {
-      setButtonColor('primary');
-      setButtonDetail(
-        t('buckets.connection.verify_and_create_connector', 'VERIFY & CREATE CONNECTOR'),
-      );
-    }
-  }, [bothFail, createSnackbar, t, verifyCheck, verifyFailErr]);
+  // useEffect(() => {
+  //   if (verifyCheck === SUCCESS) {
+  //     setButtonColor('success');
+  //     setButtonDetail(
+  //       t('label.connector_is_create_and_verified', 'CONNECTOR IS CREATED AND VERIFIED'),
+  //     );
+  //   } else if (verifyCheck === ERROR) {
+  //     setButtonColor('error');
+  //     setButtonDetail(
+  //       t(
+  //         'label.connection_is_created_verify_connector_fail',
+  //         'CONNECTOR IS CREATED BUT VERIFICATION HAS FAILED',
+  //       ),
+  //     );
+  //   } else if (verifyCheck === FAIL) {
+  //     setButtonColor('error');
+  //     setButtonDetail(
+  //       t(
+  //         'label.connector_is_not_created_and_verification_failed',
+  //         'CONNECTOR IS NOT CREATED AND VERIFICATION HAS FAILED',
+  //       ),
+  //     );
+  //     createSnackbar({
+  //       key: '1',
+  //       severity: 'error',
+  //       label: t('label.verify_error', '{{name}}', {
+  //         name: bothFail,
+  //       }),
+  //       autoHideTimeout: 5000,
+  //     });
+  //   } else {
+  //     setButtonColor('primary');
+  //     setButtonDetail(
+  //       t('buckets.connection.verify_and_create_connector', 'VERIFY & CREATE CONNECTOR'),
+  //     );
+  //   }
+  // }, [bothFail, createSnackbar, t, verifyCheck, verifyFailErr]);
 
   return (
     <Container
@@ -265,16 +295,17 @@ const Connection: FC<{
         mainAlignment="flex-start"
         padding={{ horizontal: 'large' }}
         style={{ paddingBottom: '1rem' }}
+        height={"100%"}
       >
         <Row padding={{ top: 'extralarge' }} width="100%" mainAlignment="flex-start">
         <ds-text as="h5" weight="bold" color="gray1">
-          {t('buckets.connection.section_title', 'S3 connection')}
+          {t('storages.s3Connectors.sectionTitle', 'S3 connection')}
         </ds-text>
         </Row>
         <Row padding={{ top: 'extrasmall' }} width="100%" mainAlignment="flex-start">
         <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
           {t(
-            'storages.newconnectDescription',
+            'storages.s3Connectors.newconnectDescription',
             'Before starting the connection, an S3 bucket must be previously created in your system',
           )}
         </ds-text>
@@ -282,7 +313,7 @@ const Connection: FC<{
         <Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
         <Input
           backgroundColor="gray5"
-          label={t('label.descriptive_name', 'Descriptive name*')}
+          label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
           value={bucketLabel}
           onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
             setBucketLabel(ev.target.value);
@@ -308,7 +339,7 @@ const Connection: FC<{
               overflow="break-word"
               size="extrasmall"
             >
-              {t('buckets.invalid_bucket_name', "This field can't be blank or have white space")}
+              {t('storages.s3Connectors.invalidBucketName', "This field can't be blank or have white space")}
             </ds-text>
           </Padding>
         </Row>
@@ -317,7 +348,7 @@ const Connection: FC<{
         <Row width="48%" mainAlignment="flex-start">
           <Input
             backgroundColor="gray5"
-            label={t('label.access_key', 'Access Key ID*')}
+            label={t('storages.s3Connectors.accessKey', 'Access Key ID*')}
             value={accessKeyData}
             onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
               setAccessKeyData(ev.target.value);
@@ -348,7 +379,7 @@ const Connection: FC<{
         <Padding top="extrasmall">
           <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall" >
             {t(
-              'buckets.endpoint_url_help',
+              'storages.s3Connectors.endpointUrlHelp',
               'The endpoint URL of your storage provider. Not needed if your connector are AWS',
             )}
           </ds-text>
@@ -398,7 +429,7 @@ const Connection: FC<{
           <Padding top="extrasmall">
             <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
               {t(
-                'buckets.prefix_hint',
+                'storages.s3Connectors.prefixHint',
                 'Optional. Limits access to a specific path within the bucket (e.g. mydomains/folder)',
               )}
             </ds-text>
@@ -407,7 +438,7 @@ const Connection: FC<{
             <Padding top="extrasmall">
               <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
                 {t(
-                  'buckets.invalid_prefix',
+                  'storages.s3Connectors.invalidPrefix',
                   'The prefix should not contain spaces. The allowed letters are a-z, A-Z, and special characters /-.',
                 )}
               </ds-text>
@@ -422,7 +453,7 @@ const Connection: FC<{
         <Row width="100%" padding={{ top: 'small' }} mainAlignment="space-between">
           <Row width="90%" mainAlignment="flex-start">
             <Switch
-              label={t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates')}
+              label={t('storages.s3Connectors.acceptUntrustedSSL', 'Accept untrusted SSL certificates')}
               value={acceptUntrustedSSL}
               onClick={(): void => {
                 setAcceptUntrustedSSL(!acceptUntrustedSSL);
@@ -437,48 +468,18 @@ const Connection: FC<{
         <Row width="100%" padding={{ top: 'extrasmall' }} mainAlignment="flex-start">
           <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
             {t(
-              'buckets.untrusted_ssl_hint',
+              'storages.s3Connectors.untrustedSSLHint',
               'Allow connections with self-signed or unverifiable certificates.',
             )}
           </ds-text>
         </Row>
-        {verifyCheck === SUCCESS && (
-          <Row width="100%" padding={{ top: 'large' }}>
-            <ds-text as="span" size="small" color="success">
-              {t('label.connector_is_create_and_verified', 'CONNECTOR IS CREATED AND VERIFIED')}
-            </ds-text>
-          </Row>
-        )}
-        {verifyCheck === ERROR && (
-          <Container
-            background="warning"
-            width="100%"
-            orientation="horizontal"
-            height="auto"
-            padding={{ all: 'large' }}
-            style={{ marginTop: '1rem' }}
-          >
-            <Row width="10%" mainAlignment="flex-start">
-              <ds-icon
-                icon="AlertTriangleOutline"
-                color="gray6"
-                size="large"
-                style={{ height: '2rem', width: '2rem' }}
-              ></ds-icon>
-            </Row>
-            <Row width="86%" mainAlignment="flex-end">
-              <ds-text as="p" overflow="break-word" color="gray6">
-                {verifyFailErr}
-              </ds-text>
-            </Row>
-          </Container>
-        )}
       </Container>
 
       <Container
         width="100%"
         background="white"
         style={{ position: 'sticky', bottom: 0, zIndex: 1 }}
+        height={'4.5rem'}
       >
         <ds-divider></ds-divider>
         <Row width="100%" padding={{ all: 'large' }} mainAlignment="space-between">
@@ -510,6 +511,15 @@ const Connection: FC<{
           </Row>
         </Row>
       </Container>
+      <VerifyProgress
+        isPending={isVerifyPending}
+        onComplete={handleProgressComplete}
+      />
+      <VerifySuccess
+        isSuccess={showVerifyResult && isVerifySuccess}
+        onComplete={handleSuccessComplete}
+      />
+      <VerifyError verifyFailError={verifyFailError} isError={showVerifyResult && isVerifyError} />
     </Container>
   );
 };

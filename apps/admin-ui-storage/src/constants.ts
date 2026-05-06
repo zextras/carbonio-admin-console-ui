@@ -67,3 +67,6 @@ export const INDEX = 'index';
 export const PRIMARY_BAR_STORAGE = 'pb_storage';
 export const FLEX_START = 'flex-start';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
+export const VERIFY_PROGRESS_MIN_DISPLAY_MS = 5000;
+export const VERIFY_PROGRESS_COMPLETE_DELAY_MS = 600;
+export const VERIFY_SUCCESS_AUTO_CLOSE_MS = 3000;

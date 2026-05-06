@@ -1,0 +1,118 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.popover {
+  inset: 0;
+  margin: auto;
+  border: none;
+  border-radius: 1.5rem;
+  background: var(--color-gray6-regular, white);
+  padding: 2rem 2rem 2rem;
+  width: calc(500px - 4rem);
+  height: calc(388px - 4rem);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  text-align: left;
+  gap: 0.75rem;
+}
+
+.popover:popover-open {
+  display: flex;
+  flex-direction: column;
+}
+
+.popover::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.spinnerCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 82px;
+  height: 82px;
+  border-radius: 1000px;
+  border: 1px solid var(--color-primary-regular);
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 5px solid var(--color-primary-regular);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--color-gray0-regular, #333);
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+.description {
+  margin-top: 0;
+}
+
+.stepList {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.stepSpinner {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid var(--color-primary-regular);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+.progressBarTrack {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-gray3-regular, #e0e0e0);
+  overflow: hidden;
+  margin-top: 1.25rem;
+}
+
+.progressBarFill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #ebf4ff -34.98%, var(--color-primary-regular) 100%);
+  transition: width 200ms ease-out;
+}
