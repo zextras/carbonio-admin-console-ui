@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Quota, theme } from '@zextras/ui-components';
+import { Quota } from '@zextras/ui-components';
 
 function getProgressBarColor(usagePercentage: number) {
   if (usagePercentage > 95) return 'linear-gradient(90deg, #FFE9E8 -14.73%, #D74942 100%);';
@@ -17,7 +17,7 @@ export const SubscriptionQuotaProgressBar = ({ fillPercent }: { fillPercent: num
   return (
     <Quota
       fill={fillPercent}
-      background={theme.color.gray5.regular}
+      background="gray5"
       fillBackground={progressBarColor}
       style={{ borderRadius: '2px' }}
     />
