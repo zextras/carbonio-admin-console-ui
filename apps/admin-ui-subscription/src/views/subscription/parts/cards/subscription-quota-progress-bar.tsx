@@ -7,12 +7,12 @@
 import { Quota, theme } from '@zextras/ui-components';
 
 function getProgressBarColor(usagePercentage: number) {
-  if (usagePercentage > 95) return 'linear-gradient(90deg, #FFE0E0 -14.73%, #D32B2B 100%)';
+  if (usagePercentage > 95) return 'linear-gradient(90deg, #FFE9E8 -14.73%, #D74942 100%);';
   if (usagePercentage > 70) return 'linear-gradient(90deg, #FFF7E0 -14.73%, #FFC107 100%)';
   return 'linear-gradient(90deg, #ebf4ff -34.98%, #2b73d2 100%)';
 }
 
-export const QuotaProgressBar = ({ fillPercent }: { fillPercent: number }) => {
+export const SubscriptionQuotaProgressBar = ({ fillPercent }: { fillPercent: number }) => {
   const progressBarColor = getProgressBarColor(fillPercent);
   return (
     <Quota

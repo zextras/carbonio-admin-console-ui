@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import { type EditionDisplayConfig } from '../sections/active-edition-section';
 import styles from './edition-card.module.css';
-import { SubscriptionQuotaProgressBar } from './quota-progress-bar';
+import { SubscriptionQuotaProgressBar } from './subscription-quota-progress-bar';
 
 type EditionCardProps = {
   editions: Array<{ name: string; quantity: string }>;
