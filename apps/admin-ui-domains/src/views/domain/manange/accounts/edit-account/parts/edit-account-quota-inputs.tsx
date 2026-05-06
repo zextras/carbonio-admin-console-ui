@@ -7,18 +7,9 @@ import { useTotalQuotaActive } from '@zextras/ui-shared';
 import React, { ComponentProps, Dispatch, SetStateAction, useCallback } from 'react';
 
 import { AccountDetail, CosDetail } from '../../account-context';
-import { EditAccountQuotaInputsLegacy } from './edit-account-quota-inputs-legacy';
 import { EditAccountQuotaInputsNew } from './edit-account-quota-inputs-new';
 
 type EditAccountQuotaInputsProps = {
-  focusableFileQuota: boolean;
-  highlightFileQuota: boolean;
-  focusableMailboxQuota: boolean;
-  highlightMailboxQuota: boolean;
-  setFocusableFileQuota: (value: boolean) => void;
-  setHighlightFileQuota: (value: boolean) => void;
-  setFocusableMailboxQuota: (value: boolean) => void;
-  setHighlightMailboxQuota: (value: boolean) => void;
   accountDetail: AccountDetail;
   cosDetail: CosDetail;
   initialAccountDetail: AccountDetail;
@@ -27,20 +18,12 @@ type EditAccountQuotaInputsProps = {
 };
 
 export const EditAccountQuotaInputs = ({
-  focusableFileQuota,
-  highlightFileQuota,
-  focusableMailboxQuota,
-  highlightMailboxQuota,
-  setFocusableFileQuota,
-  setHighlightFileQuota,
-  setFocusableMailboxQuota,
-  setHighlightMailboxQuota,
   accountDetail,
   cosDetail,
   initialAccountDetail,
   setAccountDetail,
   onQuotaErrorChange,
-}: EditAccountQuotaInputsProps): React.JSX.Element => {
+}: EditAccountQuotaInputsProps): React.JSX.Element | null => {
   const isTotalQuotaActive = useTotalQuotaActive();
 
   const onTotalComputedQuotaLimitChange: ComponentProps<
@@ -52,47 +35,36 @@ export const EditAccountQuotaInputs = ({
     [setAccountDetail],
   );
 
-  if (isTotalQuotaActive) {
-    return (
-      <EditAccountQuotaInputsNew
-        cosComputedLimit={
-          cosDetail.totalComputedQuotaLimit === undefined
-            ? undefined
-            : cosDetail.totalComputedQuotaLimit.type === 'unlimited'
-            ? 'unlimited'
-            : cosDetail.totalComputedQuotaLimit.value
-        }
-        totalComputedQuotaLimit={
-          accountDetail.totalComputedQuotaLimit === undefined
-            ? undefined
-            : accountDetail.totalComputedQuotaLimit.type === 'unlimited'
-            ? 'unlimited'
-            : accountDetail.totalComputedQuotaLimit.value
-        }
-        initialTotalComputedQuotaLimit={
-          initialAccountDetail.totalComputedQuotaLimit === undefined
-            ? undefined
-            : initialAccountDetail.totalComputedQuotaLimit.type === 'unlimited'
-            ? 'unlimited'
-            : initialAccountDetail.totalComputedQuotaLimit.value
-        }
-        totalQuotaSource={accountDetail.totalQuotaSource}
-        onChange={onTotalComputedQuotaLimitChange}
-        onQuotaErrorChange={onQuotaErrorChange}
-      />
-    );
+  if (!isTotalQuotaActive) {
+    return null;
   }
 
   return (
-    <EditAccountQuotaInputsLegacy
-      focusableFileQuota={focusableFileQuota}
-      highlightFileQuota={highlightFileQuota}
-      focusableMailboxQuota={focusableMailboxQuota}
-      highlightMailboxQuota={highlightMailboxQuota}
-      setFocusableFileQuota={setFocusableFileQuota}
-      setHighlightFileQuota={setHighlightFileQuota}
-      setFocusableMailboxQuota={setFocusableMailboxQuota}
-      setHighlightMailboxQuota={setHighlightMailboxQuota}
+    <EditAccountQuotaInputsNew
+      cosComputedLimit={
+        cosDetail.totalComputedQuotaLimit === undefined
+          ? undefined
+          : cosDetail.totalComputedQuotaLimit.type === 'unlimited'
+          ? 'unlimited'
+          : cosDetail.totalComputedQuotaLimit.value
+      }
+      totalComputedQuotaLimit={
+        accountDetail.totalComputedQuotaLimit === undefined
+          ? undefined
+          : accountDetail.totalComputedQuotaLimit.type === 'unlimited'
+          ? 'unlimited'
+          : accountDetail.totalComputedQuotaLimit.value
+      }
+      initialTotalComputedQuotaLimit={
+        initialAccountDetail.totalComputedQuotaLimit === undefined
+          ? undefined
+          : initialAccountDetail.totalComputedQuotaLimit.type === 'unlimited'
+          ? 'unlimited'
+          : initialAccountDetail.totalComputedQuotaLimit.value
+      }
+      totalQuotaSource={accountDetail.totalQuotaSource}
+      onChange={onTotalComputedQuotaLimitChange}
+      onQuotaErrorChange={onQuotaErrorChange}
     />
   );
 };

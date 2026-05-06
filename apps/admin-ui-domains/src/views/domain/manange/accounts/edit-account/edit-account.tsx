@@ -38,7 +38,6 @@ import {
   CONFIGURATION,
   DELEGATES,
   DOMAIN_NAME,
-  FILES_QUOTA_LIMIT,
   GENERAL_SECTION,
   IS_DEFAULT_USER_NAME,
   PROFILE,
@@ -57,11 +56,9 @@ import { getDelegateAuthRequest } from '../../../../../services/get-delegate-aut
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
-import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { setAccountQuota } from '../../../../../services/set-account-quota';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
-import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
@@ -528,73 +525,9 @@ const EditAccount: FC<{
     remove(modifiedKeys, (ele) => ele === 'mail');
   };
 
-  const handleFileQuotaLimitChange = useCallback(
-    (modifiedKeys: string[]) => {
-      if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
-        if (accountDetail?.filesQuotaLimit) {
-          setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
-            () => {
-              if (modifiedKeys?.length === 0) {
-                createSnackbar({
-                  key: 'success',
-                  severity: 'success',
-                  label: t(
-                    'label.the_last_changes_has_been_saved_successfully',
-                    'Changes have been saved successfully',
-                  ),
-                  autoHideTimeout: 3000,
-                  hideButton: true,
-                  replace: true,
-                });
-              }
-            },
-          );
-        } else {
-          resetFileQuotaLimitById(accountDetail?.zimbraId).then(() => {
-            if (modifiedKeys?.length === 0) {
-              createSnackbar({
-                key: 'success',
-                severity: 'success',
-                label: t(
-                  'label.the_last_changes_has_been_saved_successfully',
-                  'Changes have been saved successfully',
-                ),
-                autoHideTimeout: 3000,
-                hideButton: true,
-                replace: true,
-              });
-              setInitAccountDetail((prev: any) => ({
-                ...prev,
-                [FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit,
-              }));
-              setAccountDetail((prev: any) => ({
-                ...prev,
-                [FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit,
-              }));
-            }
-          });
-        }
-        remove(modifiedKeys, (ele) => ele === FILES_QUOTA_LIMIT);
-      }
-    },
-    [
-      accountDetail?.filesQuotaLimit,
-      accountDetail?.zimbraId,
-      cosDetail.filesQuotaLimit,
-      createSnackbar,
-      setAccountDetail,
-      setInitAccountDetail,
-      t,
-    ],
-  );
-
   const handleTotalComputedQuotaLimitChange = useCallback(
     (modifiedKeys: string[]) => {
-      if (
-        !modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) ||
-        !isTotalQuotaActive ||
-        !isAdvanced
-      ) {
+      if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) || !isTotalQuotaActive) {
         return;
       }
 
@@ -677,7 +610,6 @@ const EditAccount: FC<{
       accountDetail.totalComputedQuotaLimit,
       accountDetail?.zimbraId,
       createSnackbar,
-      isAdvanced,
       isTotalQuotaActive,
       setAccountDetail,
       setInitAccountDetail,
@@ -771,8 +703,6 @@ const EditAccount: FC<{
       await handleAliasChanges(deleteAliasArr, addAliasArr, modifiedKeys);
     }
 
-    handleFileQuotaLimitChange(modifiedKeys);
-
     handleTotalComputedQuotaLimitChange(modifiedKeys);
 
     modifiedKeys.forEach((ele: any) => {
@@ -810,7 +740,6 @@ const EditAccount: FC<{
     getAccountDetail,
     getAccountList,
     initAccountDetail,
-    isAdvanced,
     setInitAccountDetail,
     setShowEditAccountView,
     deleteAdministrationRights,

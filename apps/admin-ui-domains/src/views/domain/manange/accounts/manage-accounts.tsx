@@ -631,10 +631,10 @@ const ManageAccounts: FC = () => {
           getAccountSpecificDetail(id);
           setDefaultCOS(!obj.zimbraCOSId);
           getMailboxQuotaUsed(id);
+          if (isTotalQuotaActive) {
+            retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
+          }
           if (isAdvanced) {
-            if (isTotalQuotaActive) {
-              retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
-            }
             getListOtp(data?.account?.[0]?.name);
             getCredentialList(data?.account?.[0]?.name);
             getABQStatus(id);
@@ -663,6 +663,8 @@ const ManageAccounts: FC = () => {
       getAccountSpecificDetail,
       getCosDetail,
       getMailboxQuotaUsed,
+      isTotalQuotaActive,
+      retrieveAccountQuotaByAccountId,
       isAdvanced,
       getListOtp,
       getCredentialList,

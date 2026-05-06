@@ -541,21 +541,6 @@ export const EditAccountGeneralSection: FC<{
     [allUserSessionList, setUserSessionList],
   );
 
-  const [focusableFileQuota, setFocusableFileQuota] = useState(false);
-  const [highlightFileQuota, setHighlightFileQuota] = useState(false);
-  const [focusableMailboxQuota, setFocusableMailboxQuota] = useState(false);
-  const [highlightMailboxQuota, setHighlightMailboxQuota] = useState(false);
-
-  const focusFileQuota = useCallback(() => {
-    setFocusableFileQuota(true);
-    setHighlightFileQuota(true);
-  }, []);
-
-  const focusMailBoxQuota = useCallback(() => {
-    setFocusableMailboxQuota(true);
-    setHighlightMailboxQuota(true);
-  }, []);
-
   const renderSwitchRow = (
     label: string,
     value: boolean,
@@ -578,10 +563,7 @@ export const EditAccountGeneralSection: FC<{
           </ds-text>
         </Row>
         <Row padding={{ vertical: 'large', left: 'large' }} width="100%" mainAlignment="flex-start">
-          <EditAccountQuotaBar
-            onClickMailboxQuota={focusMailBoxQuota}
-            onClickFilesQuota={focusFileQuota}
-          />
+          <EditAccountQuotaBar />
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="32%" mainAlignment="space-between">
@@ -743,14 +725,6 @@ export const EditAccountGeneralSection: FC<{
           accountDetail={accountDetail}
           initialAccountDetail={initAccountDetail}
           setAccountDetail={setAccountDetail}
-          focusableFileQuota={focusableFileQuota}
-          highlightFileQuota={highlightFileQuota}
-          focusableMailboxQuota={focusableMailboxQuota}
-          highlightMailboxQuota={highlightMailboxQuota}
-          setFocusableFileQuota={setFocusableFileQuota}
-          setHighlightFileQuota={setHighlightFileQuota}
-          setFocusableMailboxQuota={setFocusableMailboxQuota}
-          setHighlightMailboxQuota={setHighlightMailboxQuota}
           onQuotaErrorChange={onQuotaErrorChange}
         />
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">

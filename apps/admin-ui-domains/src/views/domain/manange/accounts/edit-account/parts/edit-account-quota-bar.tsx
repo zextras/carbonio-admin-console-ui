@@ -4,23 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
+import { useTotalQuotaActive } from '@zextras/ui-shared';
 import { useContext, useMemo } from 'react';
 
 import { AccountContext } from '../../account-context';
-import { EditAccountQuotaBarLegacy } from './edit-account-quota-bar-legacy';
 import { EditAccountQuotaBarNew } from './edit-account-quota-bar-new';
 
-export type EditAccountQuotaBarProps = {
-  onClickMailboxQuota: () => void;
-  onClickFilesQuota: () => void;
-};
-
-export const EditAccountQuotaBar = ({
-  onClickMailboxQuota,
-  onClickFilesQuota,
-}: EditAccountQuotaBarProps): React.JSX.Element | null => {
-  const isAdvanced = useIsAdvanced();
+export const EditAccountQuotaBar = (): React.JSX.Element | null => {
   const isTotalQuotaActive = useTotalQuotaActive();
 
   const { initAccountDetail } = useContext(AccountContext);
@@ -42,15 +32,10 @@ export const EditAccountQuotaBar = ({
   );
 
   if (!isTotalQuotaActive) {
-    return (
-      <EditAccountQuotaBarLegacy
-        onClickMailboxQuota={onClickMailboxQuota}
-        onClickFilesQuota={onClickFilesQuota}
-      />
-    );
+    return null;
   }
 
-  if (!isAdvanced || dataMissing) {
+  if (dataMissing) {
     return null;
   }
   return (
