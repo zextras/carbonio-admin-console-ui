@@ -1,0 +1,97 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.sectionWrapper {
+  width: 100%;
+  padding: 1.5rem 0;
+  box-sizing: border-box;
+}
+
+.sectionWrapper:last-child {
+  border-bottom: none;
+}
+
+/* Active edition section */
+
+.sectionHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.syncRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.editionGrid {
+  display: flex;
+  gap: 1rem;
+}
+
+.quotaLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.375rem;
+}
+
+.statsRow {
+  display: flex;
+  gap: 2rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+/* Details section */
+
+.detailsToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.5rem 0;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2rem;
+  padding-top: 0.75rem;
+}
+
+.copyFieldWrapper {
+  position: relative;
+}
+
+.copyButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  margin-top: -0.75rem;
+}
+
+.addonsContainer {
+  margin-top: 1.5rem;
+  background: var(--color-card-bg);
+  padding: 1.25rem;
+}

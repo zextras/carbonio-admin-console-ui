@@ -1,0 +1,78 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.addonRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--color-gray5-regular);
+  gap: 1.5rem;
+}
+
+.addonRow:last-child {
+  border-bottom: none;
+}
+
+.addonLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1 1 0;
+}
+
+.addonNameRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.addonSeatUsage {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1 1 0;
+}
+
+.addonStats {
+  display: flex;
+  gap: 2rem;
+  flex: 0 0 auto;
+}
+
+.addonRightInactive {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 320px;
+}
+
+.addonCta {
+  color: var(--color-primary-regular);
+  font-weight: bold;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.quotaLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.375rem;
+}
+
+.statsRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
