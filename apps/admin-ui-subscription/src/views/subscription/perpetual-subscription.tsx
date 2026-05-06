@@ -10,6 +10,9 @@ import { ActiveEdition } from './parts/cards/active-edition';
 import { MaxVersion } from './parts/cards/max-version';
 import { SeatUtilization } from './parts/cards/seat-utilization';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
+import { ActiveEditionSection } from './parts/sections/active-edition-section';
+import { AddonsSection } from './parts/sections/addons-section';
+import { DetailsSection } from './parts/sections/details-section';
 import styles from './subscription-layout.module.css';
 
 export const PerpetualSubscription = () => {
@@ -26,6 +29,11 @@ export const PerpetualSubscription = () => {
         <ActiveEdition />
         <SeatUtilization />
         <MaxVersion />
+      </div>
+      <div className={styles.content}>
+        <ActiveEditionSection />
+        <AddonsSection />
+        <DetailsSection />
       </div>
     </div>
   );

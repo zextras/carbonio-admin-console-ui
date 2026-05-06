@@ -27,10 +27,9 @@
   padding: var(--padding-size-large);
   overflow: auto;
   width: 100%;
-  height: calc(100vh - 200px);
+  /* height: calc(100vh - 200px); */
   box-sizing: border-box;
   border-radius: 1rem;
-  border: 1px solid var(--color-gray4-regular);
 }
 
 .card {

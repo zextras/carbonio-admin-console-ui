@@ -23,9 +23,9 @@ export type EditionDisplayConfig = {
 };
 
 const MAIN_EDITION_CONFIGS: Array<EditionDisplayConfig> = [
-  { name: 'mail', labelKey: 'label.email', labelDefault: 'Email', icon: 'EmailOutline' },
+  { name: 'email_edition', labelKey: 'label.email', labelDefault: 'Email', icon: 'EmailOutline' },
   {
-    name: 'workspace',
+    name: 'workspace_edition',
     labelKey: 'label.workspace',
     labelDefault: 'Workspace',
     icon: 'BuildingOutline',
