@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import { type EditionDisplayConfig } from '../sections/active-edition-section';
 import styles from './edition-card.module.css';
-import { QuotaProgressBar } from './quota-progress-bar';
+import { SubscriptionQuotaProgressBar } from './quota-progress-bar';
 
 type EditionCardProps = {
   editions: Array<{ name: string; quantity: string }>;
@@ -47,7 +47,7 @@ export const EditionCardActive = ({ editions, accountCount, config }: EditionCar
             {`${assigned}/${total}`}
           </ds-text>
         </div>
-        <QuotaProgressBar fillPercent={fillPercent} />
+        <SubscriptionQuotaProgressBar fillPercent={fillPercent} />
       </div>
       <div className={styles.statsRow}>
         <div className={styles.statItem}>

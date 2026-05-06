@@ -14,7 +14,6 @@
   border-radius: 0.25rem;
   box-sizing: border-box;
   flex: 1;
-  min-width: 0;
 }
 
 .editionCardHeader {
@@ -33,7 +32,6 @@
   border-left: 0.25rem solid var(--color-gray0-disabled);
   flex: 0 1 400px;
   max-width: 400px;
-  overflow-wrap: break-word;
   background: var(--color-gray5-regular);
 }
 

@@ -17,12 +17,13 @@ type EditionCardProps = {
 export const EditionCardInactive = ({ config }: EditionCardProps) => {
   const { t } = useTranslation();
   const activeLabel = t('label.inactive', 'Inactive').toUpperCase();
-  const editionLabel = t(config.labelKey, config.labelDefault).toUpperCase();
+  const editionLabel = t(config.labelKey, config.labelDefault);
 
   const description = (
     <Trans
       i18nKey="core.subscription.inactive_edition_description"
-      defaults="Upgrade your subscription to unlock the <bold>Workspace</bold> edition and expand your collaboration capabilities."
+      defaults="Upgrade your subscription to unlock the <bold>{{editionLabel}}</bold> edition and expand your collaboration capabilities."
+      values={{ editionLabel }}
       components={{ bold: <strong /> }}
       t={t}
     />
@@ -31,10 +32,11 @@ export const EditionCardInactive = ({ config }: EditionCardProps) => {
   return (
     <div key={config.name} className={`${styles.editionCard} ${styles.editionCardInactive}`}>
       <div className={styles.editionCardHeader}>
-        <ds-icon icon={config.icon} size="1.25rem" />
+        <ds-icon icon={config.icon} size="1.5rem" />
         <ds-text weight="bold" size="large">
           {editionLabel}
         </ds-text>
+        <span style={{ width: '0.5rem' }} />
         <ds-badge color={theme.color.gray0.disabled}>
           <ds-text size="small">{activeLabel}</ds-text>
         </ds-badge>
