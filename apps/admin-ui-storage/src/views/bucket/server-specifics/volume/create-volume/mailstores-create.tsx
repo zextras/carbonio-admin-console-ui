@@ -18,7 +18,6 @@ import { useIsAdvanced } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType } from '../../../../../../types';
 import {
   COMPRESSION_THRESHOLD_UNIT,
   EMPTY_TYPE_VALUE,
@@ -30,9 +29,9 @@ import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils'
 import { VolumeContext } from './volume-context';
 
 const MailstoresCreate: FC<{
-  onSelection: any;
+  onSelection: (data: Record<string, unknown>, flag: boolean) => void;
   externalData: string;
-  setCompleteLoading: any;
+  setCompleteLoading: (value: boolean) => void;
 }> = ({ onSelection, externalData, setCompleteLoading }) => {
   const context = useContext(VolumeContext);
   const { t } = useTranslation();
@@ -48,11 +47,11 @@ const MailstoresCreate: FC<{
   const [primaryRadio, setPrimaryRadio] = useState(false);
   const [secondaryRadio, setSecondaryRadio] = useState(false);
   const [indexRadio, setIndexRadio] = useState(false);
-  const [allocation, setAllocation] = useState<any>();
+  const [allocation, setAllocation] = useState<{ label: string; value?: number }>();
 
-  const onVolMainChange = (v: any): void => {
+  const onVolMainChange = (v: number): void => {
     if (!isAdvanced) {
-      setVolumeDetail((prev: any) => ({ ...prev, volumeMain: v }));
+      setVolumeDetail((prev) => ({ ...prev, volumeMain: v }));
       onSelection({ volumeMain: v }, true);
       if (v === INDEX_TYPE_VALUE) {
         setToggleIndexer(true);
@@ -64,7 +63,7 @@ const MailstoresCreate: FC<{
 
   const changeVolPath = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setVolumeDetail((prev: object) => ({ ...prev, path: e?.target?.value }));
+      setVolumeDetail((prev) => ({ ...prev, path: e?.target?.value }));
       onSelection({ path: e?.target?.value }, true);
       if (e?.target?.value !== '') {
         setErrPath(true);
@@ -79,7 +78,7 @@ const MailstoresCreate: FC<{
       const regex = /^[0-9]*$/;
       const result = regex?.test(e?.target?.value);
       if (result) {
-        setVolumeDetail((prev: object) => ({ ...prev, compressionThreshold: e?.target?.value }));
+        setVolumeDetail((prev) => ({ ...prev, compressionThreshold: e?.target?.value }));
         onSelection({ compressionThreshold: e?.target?.value }, true);
         if (e?.target?.value !== '') {
           setErrCompressionThreshold(true);
@@ -92,22 +91,22 @@ const MailstoresCreate: FC<{
   );
 
   const changeSwitchIsCurrent = useCallback((): void => {
-    setVolumeDetail((prev: object) => ({ ...prev, isCurrent: !volumeDetail?.isCurrent }));
+    setVolumeDetail((prev) => ({ ...prev, isCurrent: !volumeDetail?.isCurrent }));
     onSelection({ isCurrent: !volumeDetail?.isCurrent }, true);
   }, [onSelection, setVolumeDetail, volumeDetail?.isCurrent]);
 
   const changeSwitchIsCompression = useCallback((): void => {
-    setVolumeDetail((prev: object) => ({ ...prev, isCompression: !volumeDetail?.isCompression }));
+    setVolumeDetail((prev) => ({ ...prev, isCompression: !volumeDetail?.isCompression }));
     onSelection({ isCompression: !volumeDetail?.isCompression }, true);
   }, [onSelection, setVolumeDetail, volumeDetail?.isCompression]);
 
-  const onVolAllocationChange = (v: any): any => {
-    setVolumeDetail((prev: any) => ({ ...prev, volumeAllocation: v }));
+  const onVolAllocationChange = (v: number): void => {
+    setVolumeDetail((prev) => ({ ...prev, volumeAllocation: v }));
   };
 
   const onVolNamechange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
+      setVolumeDetail((prev) => ({ ...prev, volumeName: e?.target?.value }));
       if (e?.target?.value !== '') {
         setErrName(true);
       } else {
@@ -154,20 +153,20 @@ const MailstoresCreate: FC<{
   useEffect(() => {
     if (isAdvanced) {
       if (primaryRadio) {
-        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
+        setVolumeDetail((prev) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
         onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
       } else if (secondaryRadio) {
-        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
+        setVolumeDetail((prev) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
         onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
       } else if (indexRadio) {
-        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: INDEX_TYPE_VALUE }));
+        setVolumeDetail((prev) => ({ ...prev, volumeMain: INDEX_TYPE_VALUE }));
         onSelection({ volumeMain: INDEX_TYPE_VALUE }, true);
       } else {
-        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
+        setVolumeDetail((prev) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
         onSelection({ volumeMain: EMPTY_TYPE_VALUE }, true);
       }
       const volumeTypeObject = volAllocationList?.find(
-        (item: any) => item?.value === volumeDetail?.volumeAllocation,
+        (item) => item?.value === volumeDetail?.volumeAllocation,
       );
       setAllocation(volumeTypeObject);
     }
@@ -196,7 +195,7 @@ const MailstoresCreate: FC<{
 
   useEffect(() => {
     if (!volumeDetail?.isCompression) {
-      setVolumeDetail((prev: object) => ({ ...prev, compressionThreshold: '' }));
+      setVolumeDetail((prev) => ({ ...prev, compressionThreshold: '' }));
       onSelection({ compressionThreshold: '' }, true);
     }
   }, [onSelection, setVolumeDetail, volumeDetail?.isCompression]);
@@ -261,7 +260,7 @@ const MailstoresCreate: FC<{
                 label={t('label.primary_volume', 'This is a Primary Volume')}
                 value={PRIMARY_TYPE_VALUE}
                 checked={primaryRadio}
-                onClick={(): any => {
+                onClick={(): void => {
                   setPrimaryRadio(!primaryRadio);
                   setSecondaryRadio(false);
                   setIndexRadio(false);
@@ -274,7 +273,7 @@ const MailstoresCreate: FC<{
                 label={t('label.secondary_volume', 'This is a Secondary Volume')}
                 value={SECONDARY_TYPE_VALUE}
                 checked={secondaryRadio}
-                onClick={(): any => {
+                onClick={(): void => {
                   setSecondaryRadio(!secondaryRadio);
                   setPrimaryRadio(false);
                   setIndexRadio(false);
@@ -288,7 +287,7 @@ const MailstoresCreate: FC<{
               label={t('label.index_volume', 'This is a Index Volume')}
               value={INDEX_TYPE_VALUE}
               checked={indexRadio}
-              onClick={(): any => {
+              onClick={(): void => {
                 setIndexRadio(!indexRadio);
                 setPrimaryRadio(false);
                 setSecondaryRadio(false);
@@ -335,7 +334,7 @@ const MailstoresCreate: FC<{
               onChange={changeVolCompThresold}
               hasError={!errCompressionThreshold}
               disabled={!volumeDetail?.isCompression}
-                CustomIcon={(): any => <ds-text as="span" color="secondary">{COMPRESSION_THRESHOLD_UNIT}</ds-text>}
+              CustomIcon={(): void => <ds-text as="span" color="secondary">{COMPRESSION_THRESHOLD_UNIT}</ds-text>}
             />
             {!errCompressionThreshold && (
               <Padding top="extrasmall">

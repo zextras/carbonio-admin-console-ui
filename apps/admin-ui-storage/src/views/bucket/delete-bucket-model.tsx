@@ -3,15 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container,Modal, Row } from '@zextras/ui-components';
+import { Button, Container, Modal, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const DeleteBucketModel: FC<{
 	open: boolean;
-	closeHandler: any;
-	saveHandler: any;
-	BucketDetail: any;
+	closeHandler: () => void;
+	saveHandler: () => void;
+	BucketDetail: { bucketName: string };
 }> = ({ open, closeHandler, saveHandler, BucketDetail }) => {
 	const [t] = useTranslation();
 	return (

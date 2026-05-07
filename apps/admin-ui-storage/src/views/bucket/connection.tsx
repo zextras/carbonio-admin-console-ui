@@ -37,11 +37,16 @@ import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utili
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 
+type SelectionItem = {
+  label: string;
+  value: string;
+};
+
 const Connection: FC<{
-  isActive: any;
-  onSelection: any;
-  externalData: any;
-  setCompleteLoading: any;
+  isActive: boolean;
+  onSelection: (data: Record<string, unknown>, flag: boolean) => void;
+  externalData: string;
+  setCompleteLoading: (value: boolean) => void;
 }> = ({ isActive, onSelection, externalData, setCompleteLoading }) => {
   const [t] = useTranslation();
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
@@ -58,7 +63,7 @@ const Connection: FC<{
   const [bucketNotes, setBucketNotes] = useState('');
   const [accessKeyData, setAccessKeyData] = useState('');
   const [secretKey, setSecretKey] = useState('');
-  const [regionsData, setRegionsData] = useState<any>();
+  const [regionsData, setRegionsData] = useState<SelectionItem | undefined>();
   const [urlInput, setUrlInput] = useState('');
   const [prefix, setPrefix] = useState('');
   const [BucketUid, setBucketUid] = useState('');
@@ -73,10 +78,10 @@ const Connection: FC<{
   const [showRegion, setShowRegion] = useState(true);
   const [showURL, setShowURL] = useState(true);
   const [prefixConfirm, setprefixConfirm] = useState(true);
-  const [regionSelection, setRegionSelection] = useState<any>(bucketRegions[0]);
+  const [regionSelection, setRegionSelection] = useState<SelectionItem | undefined>(bucketRegions[0]);
   const bucketType = externalData;
   const { selectedServerName } = useBucketVolumeStore((state) => state);
-  const handleVerifyConnector = (): any => {
+  const handleVerifyConnector = (): void => {
     if (bucketName && accessKeyData && secretKey) {
       const storeType = bucketType || bucketTypeData;
       const objectToSend: TestConnectionObjectType = {
@@ -94,9 +99,9 @@ const Connection: FC<{
         protocol: urlInput.startsWith(HTTPS) ? HTTPS : HTTP,
         url:
           bucketTypeData === AMAZON_WEB_SERVICE_S3 ||
-          bucketType === AMAZON_WEB_SERVICE_S3 ||
-          bucketTypeData === ALIBABA ||
-          bucketType === ALIBABA
+            bucketType === AMAZON_WEB_SERVICE_S3 ||
+            bucketTypeData === ALIBABA ||
+            bucketType === ALIBABA
             ? ''
             : urlInput,
         prefix,
@@ -112,7 +117,7 @@ const Connection: FC<{
         delete objectToSend?.targetServers;
       }
 
-      fetchSoap('zextras', objectToSend).then((res: any) => {
+      fetchSoap('zextras', objectToSend).then((res) => {
         const response = JSON.parse(res.Body.response.content);
         if (response.ok) {
           const data = response.response.message;
@@ -170,9 +175,9 @@ const Connection: FC<{
           setBucketDetailButton(false);
           setbothFail(
             response?.error?.message ||
-              response?.error ||
-              response?.exception?.message ||
-              response.response[selectedServerName].error.message,
+            response?.error ||
+            response?.exception?.message ||
+            response.response[selectedServerName].error.message,
           );
           setVerifyCheck(FAIL);
         }
@@ -280,7 +285,7 @@ const Connection: FC<{
 
   useEffect(() => {
     if (bucketType !== '') {
-      const volumeObject: any = bucketTypeItems.find((s: any) => s.value === bucketType);
+      const volumeObject = bucketTypeItems.find((s) => s.value === bucketType);
       setBucketTypeData(volumeObject?.label);
       onSelection({ storeType: bucketType }, false);
     }
@@ -301,8 +306,8 @@ const Connection: FC<{
   }, [bucketTypeData, t]);
 
   const onSelectBucketTypeChange = useCallback(
-    (e: any): void => {
-      const volumeObject: any = bucketTypeItems.find((s: any) => s.value === e);
+    (e: string): void => {
+      const volumeObject = bucketTypeItems.find((s) => s.value === e);
       setVerifyCheck('');
       setBucketTypeData(volumeObject?.value);
       onSelection({ storeType: bucketTypeData }, false);
@@ -328,11 +333,11 @@ const Connection: FC<{
   );
 
   const onSelectRegionChange = useCallback(
-    (e: any): any => {
-      const volumeObject: any =
+    (e: string): void => {
+      const volumeObject =
         bucketType === ALIBABA || bucketTypeData === ALIBABA
-          ? bucketRegionsInAlibaba.find((s: any) => s.value === e)
-          : bucketRegions.find((s: any) => s.value === e);
+          ? bucketRegionsInAlibaba.find((s) => s.value === e)
+          : bucketRegions.find((s) => s.value === e);
       setRegionsData(volumeObject);
       setRegionSelection(volumeObject);
       onSelection({ region: volumeObject?.value }, false);

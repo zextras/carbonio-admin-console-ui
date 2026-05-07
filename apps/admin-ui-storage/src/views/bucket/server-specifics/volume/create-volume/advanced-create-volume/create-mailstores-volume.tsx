@@ -7,6 +7,7 @@ import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { WizardButtonProps } from '../../../../../../../types';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { volumeTypeList } from '../../../../../utility/utils';
 import AdvancedMailstoresConfig from './advanced-mailstores-config';
@@ -14,22 +15,22 @@ import AdvancedMailstoresCreate from './advanced-mailstores-create';
 import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
-	const { t } = useTranslation();
-	return (
-		<Section
-			title={`${externalData} | ${t('volume.create_storage_volume', 'Create Storage Volume')}`}
-			padding={{ all: '0' }}
-			footer={wizardFooter}
-			divider
-			showClose
-			onClose={(): void => {
-				setToggleWizardSection(false);
-			}}
-		>
-			{wizard}
-		</Section>
-	);
+const WizardInSection: FC<{ wizard: React.ReactNode; wizardFooter: React.ReactNode; setToggleWizardSection: (v: boolean) => void; externalData: string }> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
+  const { t } = useTranslation();
+  return (
+    <Section
+      title={`${externalData} | ${t('volume.create_storage_volume', 'Create Storage Volume')}`}
+      padding={{ all: '0' }}
+      footer={wizardFooter}
+      divider
+      showClose
+      onClose={(): void => {
+        setToggleWizardSection(false);
+      }}
+    >
+      {wizard}
+    </Section>
+  );
 };
 
 type VolumeDetailObj = {
@@ -48,10 +49,10 @@ type VolumeDetailObj = {
 }
 
 const CreateMailstoresVolume: FC<{
-  setToggleWizardExternal: any;
-  setToggleWizardLocal: any;
-  volName: any;
-  CreateAdvancedRequest: any;
+  setToggleWizardExternal: (v: boolean) => void;
+  setToggleWizardLocal: (v: boolean) => void;
+  volName: string;
+  CreateAdvancedRequest: (data: Record<string, unknown>) => void;
 }> = ({ setToggleWizardExternal, setToggleWizardLocal, volName, CreateAdvancedRequest }) => {
   const { t } = useTranslation();
   const volTypeList = useMemo(() => volumeTypeList(t), [t]);
@@ -77,8 +78,8 @@ const CreateMailstoresVolume: FC<{
       label: t('label.volume_definition', 'DEFINITION'),
       icon: 'CubeOutline',
       view: AdvancedMailstoresDefinition,
-      canGoNext: (): any => true,
-      CancelButton: (props: any) => (
+      canGoNext: (): boolean => true,
+      CancelButton: (props: WizardButtonProps) => (
         <Button
           {...props}
           type="outlined"
@@ -90,8 +91,8 @@ const CreateMailstoresVolume: FC<{
           onClick={(): void => setToggleWizardExternal(false)}
         />
       ),
-      PrevButton: (): any => '',
-      NextButton: (props: any): ReactElement =>
+      PrevButton: (): React.ReactNode => '',
+      NextButton: (props: WizardButtonProps): ReactElement =>
         !props.toggleNextBtn ? (
           <Button
             {...props}
@@ -114,9 +115,9 @@ const CreateMailstoresVolume: FC<{
       label: t('label.new_volume_config', 'CONFIGURATION'),
       icon: 'Options2Outline',
       view: AdvancedMailstoresConfig,
-      canGoNext: (): any => true,
+      canGoNext: (): boolean => true,
       clickDisabled: !!isAllocationToggle,
-      CancelButton: (props: any) => (
+      CancelButton: (props: WizardButtonProps) => (
         <Button
           {...props}
           type="outlined"
@@ -128,7 +129,7 @@ const CreateMailstoresVolume: FC<{
           onClick={(): void => setToggleWizardExternal(false)}
         />
       ),
-      PrevButton: (props: any): any => (
+      PrevButton: (props: WizardButtonProps): React.ReactNode => (
         <Button
           {...props}
           label={t('label.volume_back_button', 'BACK')}
@@ -138,7 +139,7 @@ const CreateMailstoresVolume: FC<{
           color="secondary"
         />
       ),
-      NextButton: (props: any): any => (
+      NextButton: (props: WizardButtonProps): React.ReactNode => (
         <Button
           {...props}
           label={t('label.volume_next_button', 'NEXT')}
@@ -153,9 +154,9 @@ const CreateMailstoresVolume: FC<{
       label: t('label.new_volume_create', 'CREATE VOLUME'),
       icon: 'CubeOutline',
       view: AdvancedMailstoresCreate,
-      canGoNext: (): any => true,
+      canGoNext: (): boolean => true,
       clickDisabled: !!isAllocationToggle,
-      CancelButton: (props: any) => (
+      CancelButton: (props: WizardButtonProps) => (
         <Button
           {...props}
           type="outlined"
@@ -167,7 +168,7 @@ const CreateMailstoresVolume: FC<{
           onClick={(): void => setToggleWizardExternal(false)}
         />
       ),
-      PrevButton: (props: any): any => (
+      PrevButton: (props: WizardButtonProps): React.ReactNode => (
         <Button
           {...props}
           label={t('label.volume_back_button', 'BACK')}
@@ -177,7 +178,7 @@ const CreateMailstoresVolume: FC<{
           color="secondary"
         />
       ),
-      NextButton: (props: any): any => (
+      NextButton: (props: WizardButtonProps): React.ReactNode => (
         <Button
           {...props}
           label={t('label.volume_create', 'CREATE')}

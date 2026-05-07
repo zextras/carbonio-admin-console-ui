@@ -11,10 +11,11 @@ import {
   Input,
   Row,
   Table,
+  type THeader,
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -26,10 +27,20 @@ import {
 import { fetchSoap } from '../../../services/bucket-service';
 import { headerAdvanced } from '../../utility/utils';
 
+type ServerItem = {
+  name: string;
+  primaries?: string;
+  secondaries?: string;
+  indexes?: string;
+  hsmScheduled?: string;
+  indexer?: { running?: boolean } | string;
+  description?: string;
+};
+
 const ServersListTable: FC<{
-  volumes: Array<any>;
-  headers: any;
-  isAdvanced: any;
+  volumes: Array<ServerItem>;
+  headers: Array<THeader>;
+  isAdvanced: boolean;
   t: TFunction;
   isRequestInProgress: boolean;
 }> = ({ volumes, headers, isAdvanced, t, isRequestInProgress }) => {
@@ -186,8 +197,8 @@ const ServerDetailPanel: FC = () => {
   const [t] = useTranslation();
   const { data: allServersList = [] } = useMailstoreServers();
   const isAdvanced = useIsAdvanced();
-  const [serversList, setServersList] = useState<any>([]);
-  const [serverListAll, setServerListAll] = useState<any>([]);
+  const [serversList, setServersList] = useState<Array<ServerItem>>([]);
+  const [serverListAll, setServerListAll] = useState<Array<ServerItem>>([]);
   const serverHeaderAdvanced = useMemo(() => headerAdvanced(t), [t]);
   const [searchServer, setSearchServer] = useState<string>('');
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -201,14 +212,14 @@ const ServerDetailPanel: FC = () => {
         action: 'getAllVolumes',
         targetServers: 'all_servers',
       })
-        .then((res: any) => {
+        .then((res) => {
           setIsRequestInProgress(true);
           getSoapFetchRequest(
             `/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`,
           )
-            .then((powerStoreData: any) => {
+            .then((powerStoreData: Record<string, unknown>) => {
               setIsRequestInProgress(false);
-              const powerStoreServer = powerStoreData?.servers.map((s: any) => Object.values(s)[0]);
+              const powerStoreServer = (powerStoreData?.servers as Array<Record<string, unknown>>).map((s) => Object.values(s)[0]) as Array<Record<string, unknown>>;
               const responseData = JSON.parse(res?.Body?.response?.content);
 
               if (responseData && responseData.ok) {
@@ -221,7 +232,7 @@ const ServerDetailPanel: FC = () => {
                     let indexer = '';
                     let hsmScheduled = '';
                     const findPowerStoreServer = powerStoreServer?.find(
-                      (s: any) => s.name === item?.name,
+                      (s) => (s as Record<string, unknown>)?.name === item?.name,
                     );
                     if (findPowerStoreServer) {
                       indexer = findPowerStoreServer?.ZxPowerstore?.services?.[INDEXER_MANAGER_KEY];
@@ -241,7 +252,7 @@ const ServerDetailPanel: FC = () => {
                         secondaries = data?.secondaries.length;
                         indexes = data?.indexes.length;
                         const descriptionData = item?.a?.filter(
-                          (items: any) => items?.n === DESCRIPTION,
+                          (items: Record<string, string>) => items?.n === DESCRIPTION,
                         );
                         if (descriptionData && descriptionData.length > 0) {
                           description = descriptionData[0]?._content || '';
@@ -274,7 +285,7 @@ const ServerDetailPanel: FC = () => {
       if (allServersList.length > 0) {
         const serverList = allServersList.map((item) => {
           let description = '';
-          const descriptionData = item?.a?.filter((items: any) => items?.n === DESCRIPTION);
+          const descriptionData = item?.a?.filter((items: Record<string, string>) => items?.n === DESCRIPTION);
           if (descriptionData && descriptionData.length > 0) {
             description = descriptionData[0]?._content || '';
           }
@@ -293,7 +304,7 @@ const ServerDetailPanel: FC = () => {
     getServersListType();
   }, [getServersListType]);
 
-  const headerCE: any[] = useMemo(
+  const headerCE: Array<THeader> = useMemo(
     () => [
       {
         id: 'Server',
@@ -314,7 +325,7 @@ const ServerDetailPanel: FC = () => {
   );
 
   useEffect(() => {
-    const fildterdServer = serverListAll.filter((item: any) => item.name.includes(searchServer));
+    const fildterdServer = serverListAll.filter((item) => item.name.includes(searchServer));
     setServersList(fildterdServer);
   }, [searchServer, serverListAll]);
 
@@ -355,7 +366,7 @@ const ServerDetailPanel: FC = () => {
                     disabled={serversList.length === 0 && searchServer.length === 0}
                     label={t('label.search_for_a_Server', `Search for a Server`)}
                     backgroundColor="gray5"
-                    CustomIcon={(): any => (
+                    CustomIcon={(): React.ReactNode => (
                       <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                     )}
                     value={searchServer}

@@ -22,7 +22,7 @@ import { VolumeContext } from '../volume-context';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresDefinition: FC<{
-  externalData: any;
+  externalData: string;
   setCompleteLoading: (newValue: boolean) => void;
   setToggleNextBtn: (newValue: boolean) => void;
 }> = ({ externalData, setToggleNextBtn, setCompleteLoading }) => {
@@ -36,10 +36,10 @@ const AdvancedMailstoresDefinition: FC<{
   );
   const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
-  const [allocation, setAllocation] = useState<any>();
-  const [unusedType, setUnusedType] = useState<any>();
+  const [allocation, setAllocation] = useState<{ label: string; value: number } | undefined>();
+  const [unusedType, setUnusedType] = useState<{ label: string; value: string } | undefined>();
   const [errName, setErrName] = useState(true);
-  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
+  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<Array<{ label: string; value: string }>>([]);
 
   const changeVolName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +54,7 @@ const AdvancedMailstoresDefinition: FC<{
     [setAdvancedVolumeDetail, setVolumeDetail],
   );
 
-  const onVolAllocationChange = (v: any): void => {
+  const onVolAllocationChange = (v: number): void => {
     setVolumeDetail((prev: objectType) => ({ ...prev, volumeAllocation: v }));
     const volumeTypeObject = volAllocationList?.find(
       (item: { label: string; value?: number }) => item?.value === v,
@@ -70,7 +70,7 @@ const AdvancedMailstoresDefinition: FC<{
     }
   };
 
-  const onUnusedBucketListChange = (e: any): void => {
+  const onUnusedBucketListChange = (e: string): void => {
     const selectedBucketDetail = isVolumeAllDetail?.filter(
       (item: objectType) => item?.uuid === e,
     )[0];

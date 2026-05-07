@@ -29,9 +29,9 @@ import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/stor
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresConfig: FC<{
-  onSelection: any;
-  externalData: any;
-  setCompleteLoading: any;
+  onSelection: (data: Record<string, unknown>, flag: boolean) => void;
+  externalData: string;
+  setCompleteLoading: (loading: boolean) => void;
 }> = ({ onSelection, externalData, setCompleteLoading }) => {
   const context = useContext(AdvancedVolumeContext);
   const { t } = useTranslation();
@@ -43,20 +43,20 @@ const AdvancedMailstoresConfig: FC<{
 
   const changeVolDetail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAdvancedVolumeDetail((prev: any) => ({ ...prev, [e?.target?.name]: e?.target?.value }));
+      setAdvancedVolumeDetail(prev => ({ ...prev, [e?.target?.name]: e?.target?.value }));
     },
     [setAdvancedVolumeDetail],
   );
 
   useEffect(() => {
     if (primaryRadio) {
-      setAdvancedVolumeDetail((prev: any) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
+      setAdvancedVolumeDetail(prev => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
       onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
     } else if (secondaryRadio) {
-      setAdvancedVolumeDetail((prev: any) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
+      setAdvancedVolumeDetail(prev => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
       onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
     } else {
-      setAdvancedVolumeDetail((prev: any) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
+      setAdvancedVolumeDetail(prev => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
       onSelection({ volumeMain: EMPTY_TYPE_VALUE }, true);
     }
   }, [onSelection, primaryRadio, secondaryRadio, setAdvancedVolumeDetail]);
@@ -70,7 +70,7 @@ const AdvancedMailstoresConfig: FC<{
   }, [advancedVolumeDetail?.volumeMain]);
 
   const changeSwitchInfraquentAccess = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    setAdvancedVolumeDetail(prev => ({
       ...prev,
       useInfrequentAccess: !advancedVolumeDetail?.useInfrequentAccess,
     }));
@@ -78,7 +78,7 @@ const AdvancedMailstoresConfig: FC<{
   }, [advancedVolumeDetail?.useInfrequentAccess, onSelection, setAdvancedVolumeDetail]);
 
   const changeSwitchInfraquentTiering = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    setAdvancedVolumeDetail(prev => ({
       ...prev,
       useIntelligentTiering: !advancedVolumeDetail?.useIntelligentTiering,
     }));
@@ -86,7 +86,7 @@ const AdvancedMailstoresConfig: FC<{
   }, [advancedVolumeDetail?.useIntelligentTiering, onSelection, setAdvancedVolumeDetail]);
 
   const changeSwitchIsCurrent = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    setAdvancedVolumeDetail(prev => ({
       ...prev,
       isCurrent: !advancedVolumeDetail?.isCurrent,
     }));
@@ -94,7 +94,7 @@ const AdvancedMailstoresConfig: FC<{
   }, [advancedVolumeDetail?.isCurrent, onSelection, setAdvancedVolumeDetail]);
 
   const changeSwitchCentralized = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    setAdvancedVolumeDetail(prev => ({
       ...prev,
       centralized: !advancedVolumeDetail?.centralized,
     }));

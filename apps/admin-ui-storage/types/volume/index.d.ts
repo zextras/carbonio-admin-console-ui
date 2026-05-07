@@ -36,9 +36,9 @@ export type Volume = {
 
 export type VolumeType =
 	| {
-			label?: string;
-			value?: number | undefined;
-	  }
+		label?: string;
+		value?: number | undefined;
+	}
 	| undefined;
 
 export type BucketVolume = {
@@ -51,8 +51,8 @@ export type BucketVolume = {
 	uuid?: string;
 	signatureVersion?: string;
 	url?: string;
-	'usage in powerstore volumes'?: string | Array<any>;
-	'usage in external backup'?: string | Array<any>;
+	'usage in powerstore volumes'?: string | Array<string>;
+	'usage in external backup'?: string | Array<string>;
 	notes?: string;
 	region?: string;
 };
@@ -62,7 +62,7 @@ export type Bucket = {
 	value?: string;
 };
 
-interface VolumeDetails {
+export type VolumeDetails = {
 	id: number;
 	name: string;
 	rootpath: string;
@@ -74,7 +74,52 @@ interface VolumeDetails {
 	fgbits: number;
 	fbits: number;
 	isCurrent: boolean;
-}
+};
+
+export type VolumeItem = {
+	id: string;
+	name?: string;
+	type?: number;
+	isCurrent?: boolean;
+};
+
+export type VolumeDetailObj = {
+	id: string;
+	volumeName: string;
+	volumeMain: number;
+	path: string;
+	isCurrent: boolean;
+	isCompression: boolean;
+	compressionThreshold: number | string;
+	volumeAllocation: number;
+};
+
+export type AdvancedVolumeDetailObj = {
+	volumeName: string;
+	volumeMain: number;
+	isCurrent: boolean;
+	volumeAllocation: string;
+	bucketName: string;
+	unusedBucketType: string;
+	bucketId: string;
+	prefix: string;
+	centralized: boolean;
+	useInfrequentAccess: boolean;
+	infrequentAccessThreshold: string;
+	useIntelligentTiering: boolean;
+};
+
+export type RegionOption = {
+	label: string;
+	value: string;
+};
+
+export type WizardButtonProps = {
+	completeLoading?: boolean;
+	disabled?: boolean;
+	toggleNextBtn?: boolean;
+	[key: string]: unknown;
+};
 
 export type typeVolApiProperty = {
 	_jsns: string;

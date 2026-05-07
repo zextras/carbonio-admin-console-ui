@@ -7,19 +7,20 @@ import { Container, LabeledValue, ListRow, Row } from '@zextras/ui-components';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { VolumeType } from '../../../../../../../types';
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../../../constants';
 import { volumeTypeList } from '../../../../../utility/utils';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresCreate: FC<{
   externalData: string;
-  setCompleteLoading: any;
+  setCompleteLoading: (loading: boolean) => void;
 }> = ({ externalData, setCompleteLoading }) => {
   const context = useContext(AdvancedVolumeContext);
   const { t } = useTranslation();
   const { advancedVolumeDetail } = context;
   const volTypeList = useMemo(() => volumeTypeList(t), [t]);
-  const [volumeType, setVolumeType] = useState<any>('');
+  const [volumeType, setVolumeType] = useState<string>('');
   const [bucketS3, setBucketS3] = useState(false);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const AdvancedMailstoresCreate: FC<{
 
   useEffect(() => {
     const volumeTypeObject = volTypeList?.find(
-      (item: any) => item?.value === advancedVolumeDetail?.volumeMain,
+      (item: VolumeType) => item?.value === advancedVolumeDetail?.volumeMain,
     )?.label;
     setVolumeType(volumeTypeObject);
   }, [advancedVolumeDetail?.volumeMain, volTypeList]);

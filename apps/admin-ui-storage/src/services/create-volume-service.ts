@@ -6,8 +6,18 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const createVoume = async (attribute?: Record<string, unknown>): Promise<any> => {
-	const request: any = {
+export const createVoume = async (attribute?: Record<string, unknown>): Promise<unknown> => {
+	const request: {
+		_jsns: string;
+		volume?: {
+			compressBlobs: unknown;
+			compressionThreshold: unknown;
+			isCurrent: boolean;
+			name: unknown;
+			rootpath: unknown;
+			type: unknown;
+		};
+	} = {
 		_jsns: 'urn:zimbraAdmin'
 	};
 	if (attribute) {

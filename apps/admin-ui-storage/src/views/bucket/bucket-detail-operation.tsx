@@ -7,23 +7,13 @@ import { Container } from '@zextras/ui-components';
 import { FC, useState } from 'react';
 import { useParams } from 'react-router';
 
+import { type VolumeDetailObj } from '../../../types';
 import { BUCKET_LIST, DATA_VOLUMES, HSM_SETTINGS, SERVERS_LIST } from '../../constants';
 import BucketDetailPanel from './bucket-detail-panel';
 import ServersDetailPanel from './global-servers/server-detail-panel';
 import HSMsettingPanel from './hsm/hsm-setting-panel';
 import { VolumeContext } from './server-specifics/volume/create-volume/volume-context';
 import VolumesDetailPanel from './server-specifics/volume/volumes-list';
-
-interface VolumeDetailObj {
-  id: string;
-  volumeName: string;
-  volumeMain: number;
-  path: string;
-  isCurrent: boolean;
-  isCompression: boolean;
-  compressionThreshold: number;
-  volumeAllocation: number;
-}
 
 const BucketOperation: FC = () => {
   const { operation } = useParams();
@@ -40,7 +30,7 @@ const BucketOperation: FC = () => {
 
   return (
     <>
-      {((): any => {
+      {((): React.ReactNode => {
         switch (operation) {
           case SERVERS_LIST:
             return (

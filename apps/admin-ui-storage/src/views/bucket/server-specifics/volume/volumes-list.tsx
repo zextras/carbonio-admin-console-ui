@@ -58,14 +58,14 @@ import ModifyVolume from './modify-volume/modify-volume';
 
 const VolumeListTable: FC<{
   volumes: Array<Volume>;
-  selectedRows: any;
+  selectedRows: Array<string>;
   onSelectionChange: (selected: string[]) => void;
   headers: THeader[];
   onClick: (i: number) => void;
   isAdvanced: boolean;
 }> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
   const [t] = useTranslation();
-  const tableRows: any = useMemo(
+  const tableRows = useMemo(
     () =>
       volumes.map((v, i) => {
         const columns = [
@@ -187,7 +187,7 @@ const VolumesDetailPanel: FC = () => {
   const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
   const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
   const { data: serverList = [] } = useAllServers();
-  const [selectedServerId, setSelectedServerId] = useState<any>('');
+  const [selectedServerId, setSelectedServerId] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [volume, setVolume] = useState<Volume | undefined>({
     compressBlobs: '',
@@ -519,8 +519,8 @@ const VolumesDetailPanel: FC = () => {
           label: error?.message
             ? error?.message
             : t('label.volume_detail_error', '{{message}}', {
-                message: 'Something went wrong, please try again',
-              }),
+              message: 'Something went wrong, please try again',
+            }),
           autoHideTimeout: 5000,
         });
         return error;
@@ -659,8 +659,8 @@ const VolumesDetailPanel: FC = () => {
             label: error?.message
               ? error?.message
               : t('label.volume_detail_error', '{{message}}', {
-                  message: 'Something went wrong, please try again',
-                }),
+                message: 'Something went wrong, please try again',
+              }),
             autoHideTimeout: 5000,
           });
           setIsLoading(false);

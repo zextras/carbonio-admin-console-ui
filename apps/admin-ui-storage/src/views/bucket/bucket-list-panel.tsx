@@ -48,7 +48,7 @@ const BucketListPanel: FC = () => {
   const [isShowError, setIsShowError] = useState(false);
 
   const selectedVolume = useCallback(
-    (volume: any) => {
+    (volume: { id: string; name: string }) => {
       setIsStoreSelect(true);
       setSelectedServerName(volume?.name);
       setSearchVolumeName(volume?.name);
@@ -60,8 +60,8 @@ const BucketListPanel: FC = () => {
   );
 
   const addServerToList = useCallback(
-    (list: any) => {
-      const data = list.map((volume: any) => ({
+    (list: Array<{ id: string; name: string }>) => {
+      const data = list.map((volume: { id: string; name: string }) => ({
         id: volume.id,
         label: volume.name,
         customComponent: (
@@ -90,7 +90,7 @@ const BucketListPanel: FC = () => {
     if (isError || isLoading) {
       return;
     }
-    const filterList = volumeList.filter((item: any) => item.name?.includes(searchVolumeName));
+    const filterList = volumeList.filter(item => item.name?.includes(searchVolumeName));
     addServerToList(filterList);
     if (volumeList.length > 0 && filterList.length === 0) {
       setIsShowError(true);
@@ -116,7 +116,7 @@ const BucketListPanel: FC = () => {
   const globalOptions = useMemo(
     () =>
       !isAdvanced
-        ? globalServerOption.filter((item: any) => item?.id !== BUCKET_LIST)
+        ? globalServerOption.filter(item => item?.id !== BUCKET_LIST)
         : globalServerOption,
     [isAdvanced, globalServerOption],
   );
@@ -140,7 +140,7 @@ const BucketListPanel: FC = () => {
   const serverOptions = useMemo(
     () =>
       !isAdvanced
-        ? serverSpecificOption.filter((item: any) => item?.id !== HSM_SETTINGS)
+        ? serverSpecificOption.filter(item => item?.id !== HSM_SETTINGS)
         : serverSpecificOption,
     [isAdvanced, serverSpecificOption],
   );

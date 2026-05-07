@@ -6,7 +6,9 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
-export const setCoreAttributes = async (body: { [key: string]: unknown }): Promise<any> =>
+import { type CoreAttributeResponse } from '../../types';
+
+export const setCoreAttributes = async (body: { [key: string]: unknown }): Promise<CoreAttributeResponse> =>
 	fetchExternalSoap(`/service/extension/zextras_admin/core/attribute/set`, {
 		...body
 	});

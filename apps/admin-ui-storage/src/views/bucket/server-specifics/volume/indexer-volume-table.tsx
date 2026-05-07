@@ -10,22 +10,24 @@ import {
   HoverableRowFactory,
   Row,
   Table,
+  type THeader,
 } from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { type Volume } from '../../../../../types';
 import { FLEX_START, LOCAL_VALUE, NO, YES } from '../../../../constants';
 
 const IndexerVolumeTable: FC<{
-  volumes: Array<any>;
-  selectedRows: any;
-  onSelectionChange: any;
-  headers: any;
-  onClick: any;
+  volumes: Array<Volume>;
+  selectedRows: Array<string>;
+  onSelectionChange: (selected: string[]) => void;
+  headers: Array<THeader>;
+  onClick: (i: number) => void;
   isAdvanced: boolean;
 }> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
   const [t] = useTranslation();
-  const tableRows: any = useMemo(
+  const tableRows = useMemo(
     () =>
       volumes.map((v, i) => {
         const columns = [

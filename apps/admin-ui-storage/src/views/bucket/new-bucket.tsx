@@ -8,13 +8,14 @@ import { Button, HorizontalWizard, WizardInSection } from '@zextras/ui-component
 import { type FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { type objectType, type WizardButtonProps } from '../../../types';
 import Connection from './connection';
 
 const NewBucket: FC<{
-  setToggleWizardSection: any;
-  setDetailsBucket: any;
-  bucketType: any;
-  setConnectionData: any;
+  setToggleWizardSection: (value: boolean) => void;
+  setDetailsBucket: (value: boolean) => void;
+  bucketType: string;
+  setConnectionData: (data: objectType | undefined) => void;
 }> = ({ setToggleWizardSection, setDetailsBucket, bucketType, setConnectionData }) => {
   const { t } = useTranslation();
 
@@ -24,8 +25,8 @@ const NewBucket: FC<{
       label: t('new_bucket_connection', 'CONNECTION'),
       icon: 'Link2Outline',
       view: Connection,
-      canGoNext: (): any => true,
-      CancelButton: (props: any) => (
+      canGoNext: (): boolean => true,
+      CancelButton: (props: WizardButtonProps) => (
         <Button
           {...props}
           type="outlined"
@@ -35,7 +36,7 @@ const NewBucket: FC<{
           onClick={(): void => setToggleWizardSection(true)}
         />
       ),
-      PrevButton: (props: any): any => (
+      PrevButton: (props: WizardButtonProps): React.ReactNode => (
         <>
           {!props.completeLoading ? (
             <Button
@@ -53,7 +54,7 @@ const NewBucket: FC<{
           )}
         </>
       ),
-      NextButton: (props: any): any => (
+      NextButton: (props: WizardButtonProps): React.ReactNode => (
         <Button
           {...props}
           label={t('label.bucket_done_button', 'Done')}
@@ -70,7 +71,7 @@ const NewBucket: FC<{
   ];
 
   const onComplete = useCallback(
-    (data: any) => {
+    (data: { steps: { connection: objectType } }) => {
       setConnectionData(data.steps.connection);
       setToggleWizardSection(false);
       setDetailsBucket(false);
@@ -78,15 +79,15 @@ const NewBucket: FC<{
     [setToggleWizardSection, setDetailsBucket, setConnectionData],
   );
 
-	return (
-		<HorizontalWizard
-			steps={wizardSteps}
-			title={t('buckets.new.bucket_connection', 'Bucket Connection')}
-			Wrapper={WizardInSection}
-			onComplete={onComplete}
-			setToggleWizardSection={setToggleWizardSection}
-			externalData={bucketType}
-		/>
-	);
+  return (
+    <HorizontalWizard
+      steps={wizardSteps}
+      title={t('buckets.new.bucket_connection', 'Bucket Connection')}
+      Wrapper={WizardInSection}
+      onComplete={onComplete}
+      setToggleWizardSection={setToggleWizardSection}
+      externalData={bucketType}
+    />
+  );
 };
 export default NewBucket;

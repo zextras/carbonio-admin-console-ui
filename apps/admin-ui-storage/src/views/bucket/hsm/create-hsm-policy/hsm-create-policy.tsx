@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { HSMContext } from '../hsm-context/hsm-context';
 import { asQueryString, VolumeItem } from '../hsm-policy-detail';
 
-const HSMcreatePolicy: FC<any> = () => {
+const HSMcreatePolicy: FC = () => {
   const [t] = useTranslation();
   const context = useContext(HSMContext);
   const { hsmDetail } = context;

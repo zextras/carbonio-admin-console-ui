@@ -5,8 +5,7 @@
  */
 import { createContext } from 'react';
 
-type HSMContext = {
-	hsmDetail: any;
-	setHsmDetail: (arg: any) => void;
-};
-export const HSMContext = createContext({} as HSMContext);
+import { type EditHSMContextType, type HSMContextType } from '../../../../../types';
+
+export const HSMContext = createContext({} as HSMContextType);
+export const EditHSMContext = createContext({} as EditHSMContextType);

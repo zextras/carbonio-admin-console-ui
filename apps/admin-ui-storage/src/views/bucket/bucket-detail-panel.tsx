@@ -32,7 +32,7 @@ import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import NewBucket from './new-bucket';
 
-const headers = (t: TFunction): any => [
+const headers = (t: TFunction): Array<{ id: string; label: string; bold: boolean }> => [
   {
     id: 'label',
     label: t('label.label', 'Label'),
@@ -52,13 +52,13 @@ const headers = (t: TFunction): any => [
 
 const BucketListTable: FC<{
   volumes: objectType[];
-  selectedRows: any;
+  selectedRows: Array<string>;
   onSelectionChange: (selected: string[]) => void;
   onDoubleClick: (i: number) => void;
   onClick: (i: number) => void;
 }> = ({ volumes, selectedRows, onSelectionChange, onDoubleClick, onClick }) => {
   const [t] = useTranslation();
-  const tableRows: any = useMemo(
+  const tableRows = useMemo(
     () =>
       volumes.map((v, i) => ({
         id: i,
@@ -209,7 +209,7 @@ const BucketDetailPanel: FC = () => {
       objToSend.targetServer = selectedServerName;
     }
 
-    fetchSoap('zextras', objToSend).then((res: any) => {
+    fetchSoap('zextras', objToSend).then((res) => {
       const response = JSON.parse(res.Body.response.content);
       if (response.ok) {
         setBucketList(response.response.values);
@@ -390,7 +390,7 @@ const BucketDetailPanel: FC = () => {
           <BucketListTable
             volumes={bucketList}
             selectedRows={bucketselection}
-            onSelectionChange={(selected: any): void => {
+            onSelectionChange={(selected: Array<string>): void => {
               setBucketselection(selected);
               const volumeObject: objectType | undefined = bucketList.find(
                 (s, index) => index === selected[0],
