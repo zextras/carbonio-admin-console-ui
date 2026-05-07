@@ -16,17 +16,12 @@ import {
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TestConnectionObjectType } from '../../../types';
+import { CreateS3ConnectorRequest } from '../../../types';
 import {
   AMAZON_WEB_SERVICE_S3,
-  HTTP,
-  HTTPS,
-  V4,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
-import { fetchSoap } from '../../services/bucket-service';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import { BucketRegions } from '../utility/utils';
+import { createS3Connector, listS3Regions } from '../../services/bucket-service';
 import { VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
@@ -34,13 +29,14 @@ import { VerifySuccess } from './parts/verify/verify-success';
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 const bucketNameRegex = /^\S+$/;
 const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
+const EMPTY_REGION = { value: '', label: '' };
 
 const Connection: FC<{
   externalData?: string;
   onCancel?: () => void;
 }> = ({ externalData, onCancel }) => {
   const [t] = useTranslation();
-  const bucketRegions = useMemo(() => BucketRegions(t), [t]);
+  const [bucketRegions, setBucketRegions] = useState<Array<{ value: string; label: string }>>([]);
   const regionItems = useMemo(
     () => [
       ...bucketRegions,
@@ -72,7 +68,7 @@ const Connection: FC<{
   const [bucketNameConfirm, setBucketNameConfirm] = useState(true);
   const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
   const [regionSelection, setRegionSelection] = useState<{ value: string; label: string }>(
-    bucketRegions[0],
+    EMPTY_REGION,
   );
   const [showVerifyResult, setVerifyShowResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
@@ -80,13 +76,9 @@ const Connection: FC<{
   const [isVerifyError, setIsVerifyError] = useState(false);
 
   const storeType = externalData || AMAZON_WEB_SERVICE_S3;
-  const { selectedServerName } = useBucketVolumeStore((state) => state);
 
   const handleVerifyConnector = (): void => {
-    setVerifyShowResult(true);
-    // setIsVerifyPending(true);
-    // setIsVerifySuccess(true);
-    setIsVerifyError(true);
+    const selectedRegion = isCustomRegion ? customRegion.trim() : regionsData?.value ?? '';
 
     if (
       bucketLabel &&
@@ -94,96 +86,60 @@ const Connection: FC<{
       bucketNameRegex.test(bucketName) &&
       accessKeyData &&
       secretKey &&
-      (!isCustomRegion || customRegion.trim() !== '')
+      selectedRegion !== ''
     ) {
       setVerifyShowResult(false);
       setIsVerifySuccess(false);
       setIsVerifyError(false);
       setIsVerifyPending(true);
 
-      const objectToSend: TestConnectionObjectType = {
+      const payload: CreateS3ConnectorRequest = {
         _jsns: ZIMBRA_ADMIN_URN,
-        module: 'ZxCore',
-        action: 'doCreateBucket',
-        storeType,
+        module: 'ZxPowerstore',
+        action: 'createS3Connector',
+        iAmSure: true,
         bucketName,
         label: bucketLabel,
         accessKey: accessKeyData,
         secret: secretKey,
-        region: isCustomRegion ? customRegion : regionsData?.value,
-        signatureVersion: V4,
-        protocol: urlInput.startsWith(HTTPS) ? HTTPS : HTTP,
-        url: urlInput,
-        prefix,
-        targetServer: selectedServerName,
+        region: selectedRegion,
+        insecureHttps: acceptUntrustedSSL,
+        notes: storeType === AMAZON_WEB_SERVICE_S3 ? '' : '',
       };
 
-      if (prefix === '') {
-        delete objectToSend.prefix;
+      if (urlInput.trim() !== '') {
+        payload.url = urlInput.trim();
       }
-      if (selectedServerName === '') {
-        delete objectToSend?.targetServers;
+      if (prefix.trim() !== '') {
+        payload.prefix = prefix.trim();
       }
 
-      fetchSoap('zextras', objectToSend)
-        .then((res) => {
-          const soapResponse = res as { Body: { response: { content: string } } };
-          const response = JSON.parse(soapResponse.Body.response.content);
-          if (response.ok) {
-            const data = response.response.message;
-            const responseData = data.split("'");
-
-            const objToSendTestConnection: TestConnectionObjectType = {
-              _jsns: ZIMBRA_ADMIN_URN,
-              module: 'ZxCore',
-              action: 'testS3Connection',
-              targetServers: selectedServerName,
-              bucketId: responseData[1],
-            };
-
-            if (selectedServerName === '') {
-              delete objToSendTestConnection?.targetServers;
-            }
-
-            return fetchSoap('zextras', objToSendTestConnection).then((responseVerify) => {
-              const responseVerifyData = JSON.parse(responseVerify.Body.response.content);
-              if (
-                responseVerifyData.ok &&
-                responseVerifyData.response[selectedServerName] &&
-                responseVerifyData.response[selectedServerName].ok
-              ) {
-                setIsVerifySuccess(true);
-              } else {
-                const errorResponse = responseVerifyData?.error;
-
-                const errorResponsePart = errorResponse.split(objToSendTestConnection?.bucketId);
-                const errorStoreTypeMessage = errorResponsePart[1].replace('as', '');
-
-                setVerifyFailError(
-                  t(
-                    'label.bucket_verification_failed_message',
-                    'Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})',
-                    {
-                      bucketType: errorStoreTypeMessage,
-                      bucketId: objToSendTestConnection?.bucketId,
-                    },
-                  ),
-                );
-                setIsVerifyError(true);
-              }
-            });
+      createS3Connector(payload)
+        .then((rawResponse) => {
+          const response = rawResponse as { ok?: boolean; error?: string | { message?: string } };
+          if (response?.ok) {
+            setIsVerifySuccess(true);
+            return;
           }
 
-          // setbothFail(
-          //   response?.error?.message ||
-          //     response?.error ||
-          //     response?.exception?.message ||
-          //     response.response[selectedServerName].error.message,
-          // );
+          setVerifyFailError(
+            typeof response?.error === 'string'
+              ? response.error
+              : response?.error?.message ||
+                  t(
+                    'storages.s3Connectors.verifyError.doNotSupport',
+                    'We do not support this specific connector. Try again with a different one',
+                  ),
+          );
           setIsVerifyError(true);
-          return undefined;
         })
         .catch(() => {
+          setVerifyFailError(
+            t(
+              'storages.s3Connectors.verifyError.doNotSupport',
+              'We do not support this specific connector. Try again with a different one',
+            ),
+          );
           setIsVerifyError(true);
         })
         .finally(() => {
@@ -202,8 +158,23 @@ const Connection: FC<{
   }, [onCancel]);
 
   useEffect(() => {
-    if (regionsData === undefined) {
+    listS3Regions()
+      .then((regions) => {
+        const mappedRegions = regions.map((region) => ({
+          value: region.id,
+          label: region.description,
+        }));
+        setBucketRegions(mappedRegions);
+      })
+      .catch(() => {
+        setBucketRegions([]);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (regionsData === undefined && bucketRegions.length > 0) {
       setRegionsData(bucketRegions[0]);
+      setRegionSelection(bucketRegions[0]);
     }
   }, [bucketRegions, regionsData]);
 
@@ -219,8 +190,13 @@ const Connection: FC<{
     setPrefix('');
     setCustomRegion('');
     setIsCustomRegion(false);
-    setRegionSelection(bucketRegions[0]);
-    setRegionsData(bucketRegions[0]);
+    if (bucketRegions.length > 0) {
+      setRegionSelection(bucketRegions[0]);
+      setRegionsData(bucketRegions[0]);
+    } else {
+      setRegionSelection(EMPTY_REGION);
+      setRegionsData(undefined);
+    }
   }, [bucketRegions, t]);
 
   const onSelectRegionChange = useCallback(

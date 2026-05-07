@@ -23,11 +23,10 @@ import { filter } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType, TestConnectionObjectType } from '../../../types';
+import { DeleteS3ConnectorRequest, objectType } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
-import { fetchSoap } from '../../services/bucket-service';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
+import { deleteS3Connector, listS3Connector } from '../../services/bucket-service';
 import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import NewBucket from './new-bucket';
@@ -200,56 +199,44 @@ const BucketDetailPanel: FC = () => {
     setShowDetails(!showDetails);
   };
 
-  const { selectedServerName } = useBucketVolumeStore((state) => state);
-
   const getBucketListType = useCallback((): void => {
-    const objToSend: {
-      _jsns: string;
-      module: string;
-      action: string;
-      type: string;
-      showSecrets: boolean;
-      targetServer?: string;
-    } = {
-      _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'listBuckets',
-      type: 'all',
-      showSecrets: true,
-    };
-
-    if (selectedServerName !== '') {
-      objToSend.targetServer = selectedServerName;
-    }
-
-    fetchSoap('zextras', objToSend).then((res: { Body: { response: { content: string } } }) => {
-      const response = JSON.parse(res.Body.response.content);
-      if (response.ok) {
-        setBucketList(response.response.values);
-        setAllBucketList(response.response.values);
-      } else {
+    listS3Connector()
+      .then((connectors) => {
+        const mappedConnectors: Array<objectType> = connectors.map((connector) => ({
+          uuid: connector.id,
+          id: connector.id,
+          label: connector.label || '',
+          bucketName: connector.bucketName || '',
+          region: connector.region || '',
+          url: connector.url || '',
+          accessKey: connector.accessKey || '',
+          prefix: connector.prefix || '',
+          insecureHttps: String(connector.insecureHttps ?? false),
+          notes: connector.notes || '',
+          storeType: ((connector as unknown as { storeType?: string }).storeType || 'S3'),
+        }));
+        setBucketList(mappedConnectors);
+        setAllBucketList(mappedConnectors);
+      })
+      .catch(() => {
         setBucketList([]);
-      }
-    });
-  }, [selectedServerName]);
+        setAllBucketList([]);
+      });
+  }, []);
 
   const deleteHandler = useCallback(() => {
     // delete  api call here
     setOpen(false);
-    const objectToSendDeleteBucket: TestConnectionObjectType = {
+    const objectToSendDeleteBucket: DeleteS3ConnectorRequest = {
       _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'doDeleteBucket',
-      storeType: bucketDeleteName?.storeType,
-      bucketConfigurationId: bucketDeleteName?.uuid,
-      targetServer: selectedServerName,
+      module: 'ZxPowerstore',
+      action: 'deleteS3Connector',
+      id: bucketDeleteName?.uuid || '',
+      iAmSure: true,
     };
 
-    if (selectedServerName === '') {
-      delete objectToSendDeleteBucket?.targetServers;
-    }
-    fetchSoap('zextras', objectToSendDeleteBucket).then((res) => {
-      const response = JSON.parse(res.Body.response.content);
+    deleteS3Connector(objectToSendDeleteBucket).then((rawResponse) => {
+      const response = rawResponse as { ok?: boolean };
       if (response.ok) {
         getBucketListType();
         createSnackbar({
@@ -273,10 +260,8 @@ const BucketDetailPanel: FC = () => {
       }
     });
   }, [
-    bucketDeleteName?.storeType,
     bucketDeleteName?.uuid,
     bucketDeleteName?.bucketName,
-    selectedServerName,
     getBucketListType,
     createSnackbar,
     t,

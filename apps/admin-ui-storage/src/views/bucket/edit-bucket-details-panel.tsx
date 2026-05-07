@@ -19,11 +19,9 @@ import {
 import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType, TestConnectionObjectType } from '../../../types';
-import { ALIBABA, ZIMBRA_ADMIN_URN } from '../../constants';
-import { fetchSoap } from '../../services/bucket-service';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import { BucketRegions, BucketRegionsInAlibaba } from '../utility/utils';
+import { objectType, UpdateS3ConnectorRequest } from '../../../types';
+import { ZIMBRA_ADMIN_URN } from '../../constants';
+import { listS3Regions, updateS3Connector } from '../../services/bucket-service';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
@@ -75,17 +73,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
 }) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const { selectedServerName } = useBucketVolumeStore((state) => state);
-
-  const bucketRegions = useMemo(() => BucketRegions(t), [t]);
-  const bucketRegionsInAlibaba = useMemo(() => BucketRegionsInAlibaba(t), [t]);
-  const baseRegions = useMemo(
-    () =>
-      bucketDetail?.storeType?.toUpperCase() === ALIBABA.toUpperCase()
-        ? bucketRegionsInAlibaba
-        : bucketRegions,
-    [bucketDetail?.storeType, bucketRegions, bucketRegionsInAlibaba],
-  );
+  const [baseRegions, setBaseRegions] = useState<Array<SelectItem<string>>>([]);
 
   const initialRegion = useMemo(
     () =>
@@ -112,7 +100,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   );
   const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
 
-  const [verifyError, setVerifyError] = useState('');
   const [requestError, setRequestError] = useState('');
 
   const currentRegionValue = isCustomRegion ? customRegion : regionSelection?.value;
@@ -125,7 +112,8 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     secretKey !== (bucketDetail?.secret ?? '') ||
     urlData !== (bucketDetail?.url ?? '') ||
     prefix !== (bucketDetail?.prefix ?? '') ||
-    currentRegionValue !== initialRegionValue;
+    currentRegionValue !== initialRegionValue ||
+    String(acceptUntrustedSSL) !== String(bucketDetail?.insecureHttps ?? true);
 
   const showDeleteConnector = isBucketUnused(bucketDetail);
 
@@ -133,69 +121,43 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     setSelectedRow(bucketDetail);
   }, [bucketDetail, setSelectedRow]);
 
-  async function verifyConnector(): Promise<boolean> {
-    if (!bucketDetail?.uuid) {
-      return false;
-    }
+  useEffect(() => {
+    listS3Regions()
+      .then((regions) => {
+        const mappedRegions = regions.map((region) => ({
+          value: region.id,
+          label: region.description,
+        }));
+        setBaseRegions(mappedRegions);
+      })
+      .catch(() => {
+        setBaseRegions([]);
+      });
+  }, []);
 
-    const objToSendTestConnection: TestConnectionObjectType = {
-      _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'testS3Connection',
-      targetServers: selectedServerName,
-      bucketId: bucketDetail.uuid,
-    };
+  useEffect(() => {
+    setAcceptUntrustedSSL(String(bucketDetail?.insecureHttps ?? true) === 'true');
+  }, [bucketDetail?.insecureHttps]);
 
-    if (selectedServerName === '') {
-      delete objToSendTestConnection.targetServers;
-    }
-
-    const res = await fetchSoap('zextras', objToSendTestConnection);
-    const response = JSON.parse(res.Body.response.content);
-
-    if (
-      response.ok ||
-      (response.ok === true &&
-        response.response[selectedServerName] &&
-        response.response[selectedServerName].ok)
-    ) {
-      setVerifyError('');
-      return true;
-    }
-
-    const errorResponse =
-      response.error ||
-      response.response[selectedServerName]?.error ||
-      response.response[selectedServerName]?.error?.message;
-
-    const errorResponsePart = String(errorResponse).split(bucketDetail.uuid);
-    const errorStoreTypeMessage = errorResponsePart[1]?.replace('as', '') || bucketDetail?.storeType;
-
-    setVerifyError(
-      t(
-        'label.bucket_verification_failed_message',
-        'Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})',
-        {
-          bucketType: errorStoreTypeMessage,
-          bucketId: bucketDetail?.uuid,
-        },
-      ),
-    );
-
-    return false;
-  }
+  useEffect(() => {
+    setRegionSelection(initialRegion);
+    const isCustom = initialRegion.value === CUSTOM_REGION_VALUE;
+    setIsCustomRegion(isCustom);
+    setCustomRegion(isCustom ? bucketDetail?.region ?? '' : '');
+  }, [bucketDetail?.region, initialRegion]);
 
   async function saveChanges(): Promise<boolean> {
     if (!isDirty) {
       return true;
     }
 
-    const payload: TestConnectionObjectType = {
+    const payload: UpdateS3ConnectorRequest = {
       _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'doUpdateBucket',
-      bucketConfigurationId: bucketDetail?.uuid,
-      storeType: bucketDetail?.storeType,
+      module: 'ZxPowerstore',
+      action: 'updateS3Connector',
+      id: bucketDetail?.uuid ?? '',
+      iAmSure: true,
+      insecureHttps: acceptUntrustedSSL,
     };
 
     if (bucketLabel !== (bucketDetail?.label ?? '')) {
@@ -220,8 +182,12 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       payload.region = currentRegionValue;
     }
 
-    const res = await fetchSoap('zextras', payload);
-    const updateResData = JSON.parse(res?.Body?.response?.content);
+    const updateResData = (await updateS3Connector(payload)) as {
+      ok?: boolean;
+      error?: string | { message?: string };
+      response?: { message?: string };
+      message?: string;
+    };
 
     if (updateResData?.ok) {
       getBucketListType();
@@ -240,12 +206,17 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       return true;
     }
 
-    setRequestError(updateResData?.error?.message || updateResData?.error || '');
+    const errorMessage =
+      typeof updateResData?.error === 'string'
+        ? updateResData.error
+        : updateResData?.error?.message || '';
+
+    setRequestError(errorMessage);
     createSnackbar({
       key: 'error',
       severity: 'error',
       label: t('label.error', '{{message}}', {
-        message: updateResData?.error?.message || updateResData?.error,
+        message: errorMessage,
       }),
       autoHideTimeout: 3000,
       hideButton: true,
@@ -269,7 +240,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       return;
     }
 
-    await verifyConnector();
+    setRequestError('');
   }
 
   return (
@@ -489,7 +460,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           </ds-text>
         </Row>
 
-        {(verifyError || requestError) && (
+        {requestError && (
           <Container
             background="warning"
             width="100%"
@@ -508,7 +479,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
             </Row>
             <Row width="86%" mainAlignment="flex-end">
               <ds-text as="p" overflow="break-word" color="gray6">
-                {verifyError || requestError}
+                {requestError}
               </ds-text>
             </Row>
           </Container>

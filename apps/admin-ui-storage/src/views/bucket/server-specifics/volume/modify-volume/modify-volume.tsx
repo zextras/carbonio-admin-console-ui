@@ -48,9 +48,8 @@ import {
   SWIFT,
   UNUSED,
   USAGE_IN_EXTERNAL_BACKUP,
-  ZIMBRA_ADMIN_URN,
 } from '../../../../../constants';
-import { fetchSoap } from '../../../../../services/bucket-service';
+import { listS3Connector } from '../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
 import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 
@@ -414,17 +413,15 @@ const ModifyVolume: FC<{
   ];
 
   const getAllBuckets = useCallback(() => {
-    fetchSoap('zextras', {
-      _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'listBuckets',
-      type: 'all',
-      targetServer: selectedServerName,
-      showSecrets: true,
-    }).then((res) => {
-      const response = JSON.parse(res.Body.response.content);
-      if (response.ok) {
-        const bucName = response.response.values.find(
+    listS3Connector().then((values) => {
+      const connectors = values.map((items) => ({
+        ...items,
+        uuid: items.id,
+        storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
+      })) as Array<objectType>;
+
+      if (connectors.length > 0) {
+        const bucName = connectors.find(
           (b: objectType) => b?.uuid === externalVolDetail?.bucketConfigurationId,
         )?.bucketName;
         setBucketName(bucName);
@@ -432,8 +429,11 @@ const ModifyVolume: FC<{
         setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
 
         const volUnusedBucketList: object[] = [];
-        const allData = response?.response?.values
-          ?.filter((items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
+        const allData = connectors
+          .filter(
+            (items: objectType) =>
+              !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
+          )
           .map((items: objectType) => {
             const volumeObject: string | undefined = bucketTypeItems?.find(
               (s) => s?.value?.toLowerCase() === items?.storeType?.toLowerCase(),
@@ -452,7 +452,6 @@ const ModifyVolume: FC<{
     bucketTypeItems,
     externalVolDetail?.bucketConfigurationId,
     externalVolDetail?.storeType,
-    selectedServerName,
     setIsVolumeAllDetail,
   ]);
 

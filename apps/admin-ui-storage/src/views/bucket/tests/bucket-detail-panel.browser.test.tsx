@@ -62,19 +62,23 @@ const BUCKETS: Array<BucketEntry> = [
 	}),
 ];
 
-function setupListBucketsInterceptor(buckets: Array<BucketEntry> = BUCKETS): void {
+function setupListS3ConnectorInterceptor(buckets: Array<BucketEntry> = BUCKETS): void {
 	worker.use(
 		http.post('/service/admin/soap/zextras', async ({ request }) => {
 			const body = (await request.json()) as any;
 			const zextrasBody = body?.Body?.zextras;
 
-			if (zextrasBody?.action === 'listBuckets') {
+			if (zextrasBody?.action === 'listS3Connector') {
+				const values = buckets.map((bucket) => ({
+					...bucket,
+					id: bucket.uuid,
+				}));
 				return HttpResponse.json({
 					Body: {
 						response: {
 							content: JSON.stringify({
 								ok: true,
-								response: { values: buckets },
+								response: { values },
 							}),
 						},
 					},
@@ -89,7 +93,7 @@ function setupListBucketsInterceptor(buckets: Array<BucketEntry> = BUCKETS): voi
 describe('BucketDetailPanel (browser)', () => {
 	describe('Rendering', () => {
 		it('should render the S3 connectors title', async () => {
-			setupListBucketsInterceptor();
+			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByText('S3 connectors', { exact: true }))
@@ -97,7 +101,7 @@ describe('BucketDetailPanel (browser)', () => {
 		});
 
 		it('should render the CREATE A NEW S3 button', async () => {
-			setupListBucketsInterceptor();
+			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByRole('button', { name: /create a new s3/i }))
@@ -105,7 +109,7 @@ describe('BucketDetailPanel (browser)', () => {
 		});
 
 		it('should render the filter input', async () => {
-			setupListBucketsInterceptor();
+			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByLabelText('Filter Buckets List'))
@@ -115,7 +119,7 @@ describe('BucketDetailPanel (browser)', () => {
 
 	describe('Table headers', () => {
 		it('should render the Label column header', async () => {
-			setupListBucketsInterceptor();
+			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByText('Label', { exact: true }))
@@ -123,7 +127,7 @@ describe('BucketDetailPanel (browser)', () => {
 		});
 
 		it('should render the Name column header', async () => {
-			setupListBucketsInterceptor();
+			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByText('Name', { exact: true }))
@@ -131,7 +135,7 @@ describe('BucketDetailPanel (browser)', () => {
 		});
 
 		it('should render the Type column header', async () => {
-			setupListBucketsInterceptor();
+			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByText('Type', { exact: true }))
@@ -141,7 +145,7 @@ describe('BucketDetailPanel (browser)', () => {
 
 	describe('Bucket list with data', () => {
 		it('should display bucket labels', async () => {
-			setupListBucketsInterceptor();
+			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByText('Production S3'))
@@ -155,7 +159,7 @@ describe('BucketDetailPanel (browser)', () => {
 		});
 
 		it('should display bucket names', async () => {
-			setupListBucketsInterceptor();
+			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByText('prod-bucket'))
@@ -169,7 +173,7 @@ describe('BucketDetailPanel (browser)', () => {
 		});
 
 		it('should display bucket store types', async () => {
-			setupListBucketsInterceptor();
+			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByText('S3', { exact: true }))
@@ -185,7 +189,7 @@ describe('BucketDetailPanel (browser)', () => {
 
 	describe('Empty state', () => {
 		it('should show empty state message when no buckets exist', async () => {
-			setupListBucketsInterceptor([]);
+			setupListS3ConnectorInterceptor([]);
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByText(/haven't setup a bucket type/i))
@@ -193,7 +197,7 @@ describe('BucketDetailPanel (browser)', () => {
 		});
 
 		it('should show the CREATE instruction in empty state', async () => {
-			setupListBucketsInterceptor([]);
+			setupListS3ConnectorInterceptor([]);
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByText(/CREATE \+/i))
@@ -201,7 +205,7 @@ describe('BucketDetailPanel (browser)', () => {
 		});
 
 		it('should disable filter input when bucket list is empty', async () => {
-			setupListBucketsInterceptor([]);
+			setupListS3ConnectorInterceptor([]);
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
 				.element(page.getByText(/haven't setup a bucket type/i))

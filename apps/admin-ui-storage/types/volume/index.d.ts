@@ -107,3 +107,81 @@ export type TestConnectionObjectType = {
 	targetServer?: string;
 	bucketConfigurationId?: string;
 };
+
+export type S3Region = {
+	id: string;
+	description: string;
+};
+
+export type S3Connector = {
+	id: string;
+	label: string;
+	bucketName: string;
+	region: string;
+	url?: string;
+	accessKey?: string;
+	prefix?: string;
+	insecureHttps?: boolean;
+	tieringSupported?: boolean;
+	chunkEncoding?: boolean;
+	calculateMD5WhenDeleting?: boolean;
+	directorySymbol?: string;
+	notes?: string;
+};
+
+export type ListS3RegionsResponseContent = {
+	ok: boolean;
+	response?: {
+		values: Array<S3Region>;
+	};
+	error?: string;
+};
+
+export type ListS3ConnectorResponseContent = {
+	ok: boolean;
+	response?: {
+		values: Array<S3Connector>;
+	};
+	error?: string;
+};
+
+export type CreateS3ConnectorRequest = {
+	_jsns: string;
+	module: 'ZxPowerstore';
+	action: 'createS3Connector';
+	iAmSure: boolean;
+	bucketName: string;
+	label: string;
+	region: string;
+	url?: string;
+	accessKey: string;
+	secret: string;
+	prefix?: string;
+	insecureHttps?: boolean;
+	notes?: string;
+};
+
+export type UpdateS3ConnectorRequest = {
+	_jsns: string;
+	module: 'ZxPowerstore';
+	action: 'updateS3Connector';
+	id: string;
+	iAmSure: boolean;
+	bucketName?: string;
+	label?: string;
+	region?: string;
+	url?: string;
+	accessKey?: string;
+	secret?: string;
+	prefix?: string;
+	insecureHttps?: boolean;
+	notes?: string;
+};
+
+export type DeleteS3ConnectorRequest = {
+	_jsns: string;
+	module: 'ZxPowerstore';
+	action: 'deleteS3Connector';
+	id: string;
+	iAmSure: boolean;
+};
