@@ -354,7 +354,6 @@ const BucketDetailPanel: FC = () => {
           padding={{ top: 'extralarge', right: 'large', left: 'large' }}
         >
           <Button
-            // type="outlined"
             label={t('storages.createNewS3', 'CREATE A NEW S3')}
             icon="PlusOutline"
             color="primary"

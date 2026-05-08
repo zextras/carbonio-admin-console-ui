@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { objectType, UpdateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { listS3Regions, updateS3Connector } from '../../services/bucket-service';
+import { VerifyChangesModal } from './verify-changes-modal';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
@@ -99,11 +100,99 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     initialRegion.value === CUSTOM_REGION_VALUE ? bucketDetail?.region ?? '' : '',
   );
   const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
+  const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
 
   const [requestError, setRequestError] = useState('');
 
   const currentRegionValue = isCustomRegion ? customRegion : regionSelection?.value;
   const initialRegionValue = bucketDetail?.region ?? '';
+
+  const changedFields = useMemo(() => {
+    const fields: Array<{ label: string; value: string }> = [];
+
+    if (bucketLabel !== (bucketDetail?.label ?? '')) {
+      fields.push({
+        label: t('label.descriptive_name', 'Descriptive name'),
+        value: bucketLabel.trim() || '-',
+      });
+    }
+
+    if (urlData !== (bucketDetail?.url ?? '')) {
+      fields.push({
+        label: t('label.endpoint_url', 'Endpoint URL'),
+        value: urlData.trim() || '-',
+      });
+    }
+
+    if (currentRegionValue !== initialRegionValue) {
+      const regionLabel = isCustomRegion
+        ? customRegion.trim() || '-'
+        : String(regionSelection?.label ?? regionSelection?.value ?? '-');
+      fields.push({
+        label: t('label.region', 'Region'),
+        value: regionLabel,
+      });
+    }
+
+    if (bucketName !== (bucketDetail?.bucketName ?? '')) {
+      fields.push({
+        label: t('label.bucket_name', 'Bucket name'),
+        value: bucketName.trim() || '-',
+      });
+    }
+
+    if (prefix !== (bucketDetail?.prefix ?? '')) {
+      fields.push({
+        label: t('label.prefix', 'Prefix'),
+        value: prefix.trim() || '-',
+      });
+    }
+
+    if (accessKeyData !== (bucketDetail?.accessKey ?? '')) {
+      fields.push({
+        label: t('label.access_key', 'Access Key ID'),
+        value: accessKeyData.trim() || '-',
+      });
+    }
+
+    if (secretKey !== (bucketDetail?.secret ?? '')) {
+      fields.push({
+        label: t('label.secret_key', 'Secret Access Key'),
+        value: '********',
+      });
+    }
+
+    if (String(acceptUntrustedSSL) !== String(bucketDetail?.insecureHttps ?? true)) {
+      fields.push({
+        label: t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates'),
+        value: acceptUntrustedSSL ? t('label.yes', 'Yes') : t('label.no', 'No'),
+      });
+    }
+
+    return fields;
+  }, [
+    accessKeyData,
+    acceptUntrustedSSL,
+    bucketDetail?.accessKey,
+    bucketDetail?.bucketName,
+    bucketDetail?.insecureHttps,
+    bucketDetail?.label,
+    bucketDetail?.prefix,
+    bucketDetail?.secret,
+    bucketDetail?.url,
+    bucketLabel,
+    bucketName,
+    currentRegionValue,
+    customRegion,
+    initialRegionValue,
+    isCustomRegion,
+    prefix,
+    regionSelection?.label,
+    regionSelection?.value,
+    secretKey,
+    t,
+    urlData,
+  ]);
 
   const isDirty =
     bucketLabel !== (bucketDetail?.label ?? '') ||
@@ -235,7 +324,25 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       return;
     }
 
+    if (!isDirty || changedFields.length === 0) {
+      createSnackbar({
+        key: 'no-changes',
+        severity: 'info',
+        label: t('label.no_changes_have_been_made', 'No changes have been made'),
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
+      });
+      return;
+    }
+
+    setIsVerifyModalOpen(true);
+  }
+
+  async function onApplyChanges(): Promise<void> {
     const saved = await saveChanges();
+    setIsVerifyModalOpen(false);
+
     if (!saved) {
       return;
     }
@@ -244,7 +351,8 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   }
 
   return (
-    <Container background="gray6">
+    <>
+      <Container background="gray6">
       <Row
         mainAlignment="flex-start"
         crossAlignment="center"
@@ -527,7 +635,14 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           />
         </Row>
       </Row>
-    </Container>
+      </Container>
+      <VerifyChangesModal
+        open={isVerifyModalOpen}
+        changedFields={changedFields}
+        closeHandler={(): void => setIsVerifyModalOpen(false)}
+        applyHandler={onApplyChanges}
+      />
+    </>
   );
 };
 
