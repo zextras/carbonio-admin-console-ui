@@ -22,6 +22,9 @@ import { useTranslation } from 'react-i18next';
 import { objectType, UpdateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { listS3Regions, updateS3Connector } from '../../services/bucket-service';
+import { VerifyError } from './parts/verify/verify-error';
+import { VerifyProgress } from './parts/verify/verify-progress';
+import { VerifySuccess } from './parts/verify/verify-success';
 import { VerifyChangesModal } from './verify-changes-modal';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
@@ -101,8 +104,16 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   );
   const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
-
-  const [requestError, setRequestError] = useState('');
+  const [verifyFailError, setVerifyFailError] = useState(
+    t(
+      'storages.s3Connectors.verifyError.doNotSupport',
+      'We do not support this specific connector. Try again with a different one',
+    ),
+  );
+  const [showVerifyResult, setVerifyShowResult] = useState(false);
+  const [isVerifyPending, setIsVerifyPending] = useState(false);
+  const [isVerifySuccess, setIsVerifySuccess] = useState(false);
+  const [isVerifyError, setIsVerifyError] = useState(false);
 
   const currentRegionValue = isCustomRegion ? customRegion : regionSelection?.value;
   const initialRegionValue = bucketDetail?.region ?? '';
@@ -235,9 +246,9 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     setCustomRegion(isCustom ? bucketDetail?.region ?? '' : '');
   }, [bucketDetail?.region, initialRegion]);
 
-  async function saveChanges(): Promise<boolean> {
+  async function saveChanges(): Promise<{ ok: boolean; errorMessage: string }> {
     if (!isDirty) {
-      return true;
+      return { ok: true, errorMessage: '' };
     }
 
     const payload: UpdateS3ConnectorRequest = {
@@ -281,18 +292,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     if (updateResData?.ok) {
       getBucketListType();
       setToggleForGetAPICall(!toggleForGetAPICall);
-      setRequestError('');
-      createSnackbar({
-        key: 'success',
-        severity: 'success',
-        label: t('label.changes_have_been_updated', '{{message}}', {
-          message: updateResData?.response?.message || updateResData?.message,
-        }),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-      return true;
+      return { ok: true, errorMessage: '' };
     }
 
     const errorMessage =
@@ -300,19 +300,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         ? updateResData.error
         : updateResData?.error?.message || '';
 
-    setRequestError(errorMessage);
-    createSnackbar({
-      key: 'error',
-      severity: 'error',
-      label: t('label.error', '{{message}}', {
-        message: errorMessage,
-      }),
-      autoHideTimeout: 3000,
-      hideButton: true,
-      replace: true,
-    });
-
-    return false;
+    return { ok: false, errorMessage };
   }
 
   async function onVerifyAndSaveChanges(): Promise<void> {
@@ -340,14 +328,37 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   }
 
   async function onApplyChanges(): Promise<void> {
-    const saved = await saveChanges();
     setIsVerifyModalOpen(false);
+    setVerifyShowResult(false);
+    setIsVerifySuccess(false);
+    setIsVerifyError(false);
+    setIsVerifyPending(true);
 
-    if (!saved) {
-      return;
+    const { ok, errorMessage } = await saveChanges();
+
+    if (ok) {
+      setIsVerifySuccess(true);
+    } else {
+      setVerifyFailError(
+        errorMessage ||
+          t(
+            'storages.s3Connectors.verifyError.doNotSupport',
+            'We do not support this specific connector. Try again with a different one',
+          ),
+      );
+      setIsVerifyError(true);
     }
 
-    setRequestError('');
+    setIsVerifyPending(false);
+  }
+
+  function handleProgressComplete(): void {
+    setVerifyShowResult(true);
+  }
+
+  function handleSuccessComplete(): void {
+    setVerifyShowResult(false);
+    setIsVerifySuccess(false);
   }
 
   return (
@@ -567,31 +578,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
             )}
           </ds-text>
         </Row>
-
-        {requestError && (
-          <Container
-            background="warning"
-            width="100%"
-            orientation="horizontal"
-            height="auto"
-            padding={{ all: 'large' }}
-            style={{ marginTop: '1rem' }}
-          >
-            <Row width="10%" mainAlignment="flex-start">
-              <ds-icon
-                icon="AlertTriangleOutline"
-                color="gray6"
-                size="large"
-                style={{ height: '2rem', width: '2rem' }}
-              ></ds-icon>
-            </Row>
-            <Row width="86%" mainAlignment="flex-end">
-              <ds-text as="p" overflow="break-word" color="gray6">
-                {requestError}
-              </ds-text>
-            </Row>
-          </Container>
-        )}
       </Container>
 
       <ds-divider></ds-divider>
@@ -641,6 +627,15 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         changedFields={changedFields}
         closeHandler={(): void => setIsVerifyModalOpen(false)}
         applyHandler={onApplyChanges}
+      />
+      <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
+      <VerifySuccess
+        isSuccess={showVerifyResult && isVerifySuccess}
+        onComplete={handleSuccessComplete}
+      />
+      <VerifyError
+        verifyFailError={verifyFailError}
+        isError={showVerifyResult && isVerifyError}
       />
     </>
   );
