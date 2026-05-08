@@ -181,7 +181,7 @@ const BucketDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
-  const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>({});
+  const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>(undefined);
   const bucketType = '';
   const [bucketList, setBucketList] = useState<objectType[]>([]);
   const [allBucketList, setAllBucketList] = useState<Array<objectType>>([]);
@@ -196,7 +196,7 @@ const BucketDetailPanel: FC = () => {
 
   const closeHandler = (): void => {
     setOpen(false);
-    setShowDetails(!showDetails);
+    setShowDetails(false);
   };
 
   const getBucketListType = useCallback((): void => {
@@ -364,12 +364,11 @@ const BucketDetailPanel: FC = () => {
             }}
           />
         </Row>
-        {bucketDeleteName && (
+        {open && bucketDeleteName && (
           <BucketDeleteModel
             open={open}
             closeHandler={closeHandler}
             saveHandler={deleteHandler}
-            BucketDetail={bucketDeleteName}
           />
         )}
         <Row width="100%" padding={{ all: 'large' }}>

@@ -254,7 +254,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         height="4.15rem"
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-          <ds-text as="h2" weight="bold">
+          <ds-text as="h1" weight="bold" size='large'>
             {title}
           </ds-text>
         </Row>
@@ -434,7 +434,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         </Row>
 
         <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-          <ds-text as="h6" weight="bold" color="gray1">
+          <ds-text weight="bold" color="gray0" size='small'>
             {t('label.security', 'Security')}
           </ds-text>
         </Row>
