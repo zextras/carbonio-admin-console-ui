@@ -114,7 +114,7 @@ export type S3Region = {
 };
 
 export type S3Connector = {
-	id: string;
+	uuid: string;
 	label: string;
 	bucketName: string;
 	region: string;

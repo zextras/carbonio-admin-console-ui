@@ -41,18 +41,23 @@ type SingleSelection = [] | [string];
 
 const headers = (t: TFunction): Array<TableHeader> => [
   {
+    id: 'id',
+    label: t('label.id', 'ID'),
+    bold: true,
+  },
+  {
     id: 'label',
-    label: t('label.label', 'Label'),
+    label: t('label.descriptive_name', 'Descriptive Name'),
     bold: true,
   },
   {
-    id: 'name',
-    label: t('label.bucket_name', 'Name'),
+    id: 'bucketName',
+    label: t('label.bucket_name', 'Bucket name'),
     bold: true,
   },
   {
-    id: 'type',
-    label: t('label.type', 'Type'),
+    id: 'actions',
+    label: t('label.actions', 'Actions'),
     bold: true,
   },
 ];
@@ -75,53 +80,46 @@ const BucketListTable: FC<{
       volumes.map((v, i) => ({
         id: String(i),
         columns: [
-          <Tooltip placement="bottom" label={v.notes} key={v.label}>
+          <Tooltip placement="bottom" label={v.uuid} key={`id-${i}`}>
             <Row
-              onDoubleClick={(): void => {
-                onDoubleClick(i);
-              }}
-              onClick={(): void => {
-                onClick(i);
-              }}
-              style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-            >
-              <ds-text as="span" size="small" weight="regular">
-                {v.label}
-              </ds-text>
-            </Row>
-          </Tooltip>,
-          <Tooltip placement="bottom" label={v.notes} key={v.bucketName}>
-            <Row
-              key={i}
-              onDoubleClick={(): void => {
-                onDoubleClick(i);
-              }}
-              onClick={(): void => {
-                onClick(i);
-              }}
+              onDoubleClick={(): void => { onDoubleClick(i); }}
+              onClick={(): void => { onClick(i); }}
               style={{ textAlign: 'left', justifyContent: 'flex-start' }}
             >
               <ds-text as="span" size="small" weight="light">
-                {v.bucketName}
+                {v.uuid}
               </ds-text>
             </Row>
           </Tooltip>,
-          <Tooltip placement="bottom" label={v.notes} key={v.storeType}>
-            <Row
-              key={i}
-              onDoubleClick={(): void => {
-                onDoubleClick(i);
-              }}
-              onClick={(): void => {
-                onClick(i);
-              }}
-              style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+          <Row
+            key={`label-${i}`}
+            onDoubleClick={(): void => { onDoubleClick(i); }}
+            onClick={(): void => { onClick(i); }}
+            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+          >
+            <ds-text as="span" size="small" weight="regular">
+              {v.label}
+            </ds-text>
+          </Row>,
+          <Row
+            key={`bucket-${i}`}
+            onDoubleClick={(): void => { onDoubleClick(i); }}
+            onClick={(): void => { onClick(i); }}
+            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+          >
+            <ds-text as="span" size="small" weight="light">
+              {v.bucketName}
+            </ds-text>
+          </Row>,
+          <Row key={`actions-${i}`} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+            <button
+              type="button"
+              onClick={(): void => { onClick(i); }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 0px 0px 14px', display: 'inline-flex', alignItems: 'center' }}
             >
-              <ds-text as="span" size="small" weight="light">
-                {v.storeType}
-              </ds-text>
-            </Row>
-          </Tooltip>,
+              <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
+            </button>
+          </Row>,
         ],
         clickable: true,
       })),
@@ -203,8 +201,8 @@ const BucketDetailPanel: FC = () => {
     listS3Connector()
       .then((connectors) => {
         const mappedConnectors: Array<objectType> = connectors.map((connector) => ({
-          uuid: connector.id,
-          id: connector.id,
+          uuid: connector.uuid,
+          id: connector.uuid,
           label: connector.label || '',
           bucketName: connector.bucketName || '',
           region: connector.region || '',
@@ -374,7 +372,7 @@ const BucketDetailPanel: FC = () => {
           <Input
             disabled={bucketList.length === 0 && searchBucket.length === 0}
             backgroundColor="gray5"
-            label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
+            label={t('storages.s3Connectors.filterS3List', 'Filter S3 List')}
             CustomIcon={(): React.ReactElement => (
               <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
             )}
