@@ -43,8 +43,8 @@ const AdvancedMailstoresDefinition: FC<{
 
   const changeVolName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
-      setAdvancedVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
+      setVolumeDetail((prev) => ({ ...prev, volumeName: e?.target?.value }));
+      setAdvancedVolumeDetail((prev) => ({ ...prev, volumeName: e?.target?.value }));
       if (e?.target?.value !== '') {
         setErrName(true);
       } else {
@@ -55,11 +55,11 @@ const AdvancedMailstoresDefinition: FC<{
   );
 
   const onVolAllocationChange = (v: any): void => {
-    setVolumeDetail((prev: objectType) => ({ ...prev, volumeAllocation: v }));
+    setVolumeDetail((prev) => ({ ...prev, volumeAllocation: v }));
     const volumeTypeObject = volAllocationList?.find(
       (item: { label: string; value?: number }) => item?.value === v,
     )?.label;
-    setAdvancedVolumeDetail((prev: objectType) => ({
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
       volumeAllocation: volumeTypeObject,
     }));
@@ -72,9 +72,9 @@ const AdvancedMailstoresDefinition: FC<{
 
   const onUnusedBucketListChange = (e: any): void => {
     const selectedBucketDetail = isVolumeAllDetail?.filter(
-      (item: objectType) => item?.uuid === e,
+      (item) => item?.uuid === e,
     )[0];
-    setAdvancedVolumeDetail((prev: objectType) => ({
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
       bucketName: selectedBucketDetail?.bucketName,
       unusedBucketType: selectedBucketDetail?.storeType,
@@ -92,7 +92,7 @@ const AdvancedMailstoresDefinition: FC<{
     }).then((res) => {
       const response = JSON.parse(res?.Body?.response?.content);
       if (response?.ok && response?.response?.values?.lenght !== 0) {
-        const volUnusedBucketList: objectType[] = [];
+        const volUnusedBucketList: Array<{ label: string; value: string }> = [];
         const allData = response?.response?.values
           ?.filter((items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
           .map((items: objectType) => {
@@ -146,7 +146,7 @@ const AdvancedMailstoresDefinition: FC<{
 
   useEffect(() => {
     const volumeTypeObject = isVolumeAllDetail?.filter(
-      (item: { uuid: string }) => item?.uuid === advancedVolumeDetail?.bucketId,
+      (item) => item?.uuid === advancedVolumeDetail?.bucketId,
     )[0];
     setUnusedType(volumeTypeObject);
   }, [

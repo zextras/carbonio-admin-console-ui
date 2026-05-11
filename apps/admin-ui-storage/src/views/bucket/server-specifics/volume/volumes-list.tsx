@@ -25,7 +25,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { objectType, Volume } from '../../../../../types';
+import { Volume } from '../../../../../types';
 import {
   ALIBABA,
   CENTRALIZED,
@@ -404,7 +404,7 @@ const VolumesDetailPanel: FC = () => {
 
   const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
     const bucketDetails = isVolumeAllDetail?.filter(
-      (items: objectType) => items?.uuid === attr?.bucketConfigurationId,
+      (items) => items?.uuid === attr?.bucketConfigurationId,
     );
     const obj: { [key: string]: string | boolean | number | undefined } = {};
     obj._jsns = ZIMBRA_ADMIN_URN;
@@ -519,8 +519,8 @@ const VolumesDetailPanel: FC = () => {
           label: error?.message
             ? error?.message
             : t('label.volume_detail_error', '{{message}}', {
-                message: 'Something went wrong, please try again',
-              }),
+              message: 'Something went wrong, please try again',
+            }),
           autoHideTimeout: 5000,
         });
         return error;
@@ -659,8 +659,8 @@ const VolumesDetailPanel: FC = () => {
             label: error?.message
               ? error?.message
               : t('label.volume_detail_error', '{{message}}', {
-                  message: 'Something went wrong, please try again',
-                }),
+                message: 'Something went wrong, please try again',
+              }),
             autoHideTimeout: 5000,
           });
           setIsLoading(false);

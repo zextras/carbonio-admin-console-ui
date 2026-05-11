@@ -36,9 +36,9 @@ export type Volume = {
 
 export type VolumeType =
 	| {
-			label?: string;
-			value?: number | undefined;
-	  }
+		label?: string;
+		value?: number | undefined;
+	}
 	| undefined;
 
 export type BucketVolume = {
@@ -51,8 +51,8 @@ export type BucketVolume = {
 	uuid?: string;
 	signatureVersion?: string;
 	url?: string;
-	'usage in powerstore volumes'?: string | Array<any>;
-	'usage in external backup'?: string | Array<any>;
+	'usage in powerstore volumes'?: string | Array<string>;
+	'usage in external backup'?: string | Array<string>;
 	notes?: string;
 	region?: string;
 };
@@ -106,4 +106,72 @@ export type TestConnectionObjectType = {
 	prefix?: string;
 	targetServer?: string;
 	bucketConfigurationId?: string;
+};
+
+export type CreateVolumeRequest = {
+	compressBlobs?: string | boolean;
+	compressionThreshold?: string | number;
+	isCurrent?: boolean | number;
+	name?: string;
+	rootpath?: string;
+	type?: number;
+};
+
+export type CreateVolumeResponse = {
+	volume?: Array<Volume>;
+	_jsns?: string;
+};
+
+export type SetCurrentVolumeRequest = {
+	_jsns: string;
+	id: number | string;
+	type?: number;
+};
+
+/**
+ * Allocation type used in dropdowns (e.g. "Local Block Device", "Object Storage")
+ */
+export type VolumeAllocationItem = {
+	label: string;
+	value: string;
+};
+
+/**
+ * Bucket type / region dropdown item
+ */
+export type SelectItem = {
+	label: string;
+	value: string;
+};
+
+/**
+ * Wizard state for creating a new local volume (CE mode)
+ */
+export type VolumeWizardDetail = {
+	id?: string | number;
+	volumeName?: string;
+	volumeMain?: number;
+	path?: string;
+	isCurrent?: boolean;
+	isCompression?: boolean;
+	compressionThreshold?: string | number;
+	volumeAllocation?: number | string;
+};
+
+/**
+ * Wizard state for creating a new advanced volume (ZxPowerstore mode)
+ */
+export type AdvancedVolumeWizardDetail = VolumeWizardDetail & {
+	useInfrequentAccess?: boolean;
+	useIntelligentTiering?: boolean;
+	centralized?: boolean;
+	infrequentAccessThreshold?: number | string;
+	volumePrefix?: string;
+	bucketConfigurationId?: string;
+	bucketName?: string;
+	unusedBucketType?: string;
+	bucketId?: string;
+	prefix?: string;
+	volumeType?: string;
+	storeType?: string;
 };

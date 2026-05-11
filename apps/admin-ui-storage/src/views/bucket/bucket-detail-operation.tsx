@@ -7,6 +7,7 @@ import { Container } from '@zextras/ui-components';
 import { FC, useState } from 'react';
 import { useParams } from 'react-router';
 
+import type { VolumeWizardDetail } from '../../../types';
 import { BUCKET_LIST, DATA_VOLUMES, HSM_SETTINGS, SERVERS_LIST } from '../../constants';
 import BucketDetailPanel from './bucket-detail-panel';
 import ServersDetailPanel from './global-servers/server-detail-panel';
@@ -14,27 +15,16 @@ import HSMsettingPanel from './hsm/hsm-setting-panel';
 import { VolumeContext } from './server-specifics/volume/create-volume/volume-context';
 import VolumesDetailPanel from './server-specifics/volume/volumes-list';
 
-interface VolumeDetailObj {
-  id: string;
-  volumeName: string;
-  volumeMain: number;
-  path: string;
-  isCurrent: boolean;
-  isCompression: boolean;
-  compressionThreshold: number;
-  volumeAllocation: number;
-}
-
 const BucketOperation: FC = () => {
   const { operation } = useParams();
-  const [volumeDetail, setVolumeDetail] = useState<VolumeDetailObj>({
+  const [volumeDetail, setVolumeDetail] = useState<VolumeWizardDetail>({
     id: '',
     volumeName: '',
     volumeMain: 1,
     path: '',
     isCurrent: false,
     isCompression: false,
-    compressionThreshold: 0,
+    compressionThreshold: '',
     volumeAllocation: 0,
   });
 

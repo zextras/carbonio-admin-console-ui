@@ -5,8 +5,10 @@
  */
 import { createContext } from 'react';
 
+import type { HsmPolicyEditDetail } from '../../../../../types';
+
 type HSMContext = {
-	hsmDetail: any;
-	setHsmDetail: (arg: any) => void;
+	hsmDetail: HsmPolicyEditDetail;
+	setHsmDetail: (arg: HsmPolicyEditDetail | ((prev: HsmPolicyEditDetail) => HsmPolicyEditDetail)) => void;
 };
 export const HSMContext = createContext({} as HSMContext);
