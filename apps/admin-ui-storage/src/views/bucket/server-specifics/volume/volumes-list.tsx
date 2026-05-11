@@ -25,7 +25,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { objectType, Volume } from '../../../../../types';
+import { BucketVolume, Volume } from '../../../../../types';
 import {
   ALIBABA,
   CENTRALIZED,
@@ -142,7 +142,7 @@ const VolumeListTable: FC<{
         ];
 
         return {
-          id: v?.id,
+          id: String(v?.id ?? ''),
           columns: columns.filter((column) => column !== false), // Changed filter condition to remove false instead of null
           clickable: true,
         };
@@ -156,7 +156,6 @@ const VolumeListTable: FC<{
         headers={headers}
         rows={tableRows}
         showCheckbox={false}
-        multiSelect={false}
         selectedRows={selectedRows}
         onSelectionChange={onSelectionChange}
         RowFactory={HoverableRowFactory}
@@ -404,7 +403,7 @@ const VolumesDetailPanel: FC = () => {
 
   const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
     const bucketDetails = isVolumeAllDetail?.filter(
-      (items: objectType) => items?.uuid === attr?.bucketConfigurationId,
+      (items: BucketVolume) => items?.uuid === attr?.bucketConfigurationId,
     );
     const obj: { [key: string]: string | boolean | number | undefined } = {};
     obj._jsns = ZIMBRA_ADMIN_URN;
@@ -613,8 +612,9 @@ const VolumesDetailPanel: FC = () => {
     } else {
       await createVoume(attr)
         .then(async (res) => {
-          if (res?.volume && Array.isArray(res?.volume)) {
-            const vol = res?.volume[0];
+          const typedRes = res as { volume?: Array<Volume> };
+          if (typedRes?.volume && Array.isArray(typedRes?.volume)) {
+            const vol = typedRes?.volume[0];
 
             if (vol && vol?.id) {
               if (attr?.isCurrent === 1) {
@@ -711,7 +711,7 @@ const VolumesDetailPanel: FC = () => {
       {modifyVolumeToggle && volume && (
         <ModalOverlay open={modifyVolumeToggle}>
           <ModifyVolume
-            volumeId={volume?.id}
+            volumeId={String(volume?.id ?? '')}
             setOpen={setOpen}
             setmodifyVolumeToggle={setmodifyVolumeToggle}
             getAllVolumesRequest={getAllVolumesRequest}
@@ -733,7 +733,7 @@ const VolumesDetailPanel: FC = () => {
             open={open}
             closeHandler={closeHandler}
             deleteHandler={deleteHandler}
-            volumeDetail={volume}
+            volumeDetail={volume!}
           />
         )}
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>

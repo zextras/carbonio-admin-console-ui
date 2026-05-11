@@ -98,13 +98,7 @@ export const volTableHeader = (t: TFunction, isAdvanced: boolean): THeader[] =>
 export const indexerHeaders = (
 	t: TFunction,
 	isAdvanced: boolean
-): Array<{
-	id: string;
-	label: string;
-	width: string;
-	bold: boolean;
-	align: string;
-}> =>
+): THeader[] =>
 	[
 		{
 			id: 'id',
@@ -141,13 +135,7 @@ export const indexerHeaders = (
 			align: 'left',
 			bold: true
 		}
-	].filter(Boolean) as Array<{
-		id: string;
-		label: string;
-		width: string;
-		bold: boolean;
-		align: string;
-	}>;
+	].filter(Boolean) as THeader[];
 
 export const volumeTypeList = (
 	t: TFunction,
@@ -188,56 +176,56 @@ export const headerAdvanced = (
 	bold: boolean;
 	i18nAllLabel: string;
 }> => [
-	{
-		id: 'Server',
-		label: t('volume.server_list_header.server', 'Server'),
-		i18nAllLabel: 'All',
-		width: '187px',
-		bold: true
-	},
-	{
-		id: 'Primary',
-		label: t('volume.server_list_header.primary', 'Primary'),
-		i18nAllLabel: 'All',
-		width: '87px',
-		bold: true
-	},
-	{
-		id: 'Secondary',
-		label: t('volume.server_list_header.secondary', 'Secondary'),
-		i18nAllLabel: 'All',
-		width: '87px',
-		bold: true
-	},
-	{
-		id: 'Index',
-		label: t('volume.server_list_header.index', 'Index'),
-		i18nAllLabel: 'All',
-		width: '87px',
-		bold: true
-	},
-	{
-		id: 'HSM Scheduling',
-		label: t('volume.server_list_header.HSM Scheduling', 'HSM Scheduling'),
-		i18nAllLabel: 'All',
-		width: '138px',
-		bold: true
-	},
-	{
-		id: 'Indexer',
-		label: t('volume.server_list_header.indexer', 'Indexer'),
-		i18nAllLabel: 'All',
-		width: '100px',
-		bold: true
-	},
-	{
-		id: 'Description',
-		label: t('volume.server_list_header.description', 'Description'),
-		i18nAllLabel: 'All',
-		width: '177px',
-		bold: true
-	}
-];
+		{
+			id: 'Server',
+			label: t('volume.server_list_header.server', 'Server'),
+			i18nAllLabel: 'All',
+			width: '187px',
+			bold: true
+		},
+		{
+			id: 'Primary',
+			label: t('volume.server_list_header.primary', 'Primary'),
+			i18nAllLabel: 'All',
+			width: '87px',
+			bold: true
+		},
+		{
+			id: 'Secondary',
+			label: t('volume.server_list_header.secondary', 'Secondary'),
+			i18nAllLabel: 'All',
+			width: '87px',
+			bold: true
+		},
+		{
+			id: 'Index',
+			label: t('volume.server_list_header.index', 'Index'),
+			i18nAllLabel: 'All',
+			width: '87px',
+			bold: true
+		},
+		{
+			id: 'HSM Scheduling',
+			label: t('volume.server_list_header.HSM Scheduling', 'HSM Scheduling'),
+			i18nAllLabel: 'All',
+			width: '138px',
+			bold: true
+		},
+		{
+			id: 'Indexer',
+			label: t('volume.server_list_header.indexer', 'Indexer'),
+			i18nAllLabel: 'All',
+			width: '100px',
+			bold: true
+		},
+		{
+			id: 'Description',
+			label: t('volume.server_list_header.description', 'Description'),
+			i18nAllLabel: 'All',
+			width: '177px',
+			bold: true
+		}
+	];
 
 export const BucketRegions = (t: TFunction): Array<{ value: string; label: string }> => [
 	{

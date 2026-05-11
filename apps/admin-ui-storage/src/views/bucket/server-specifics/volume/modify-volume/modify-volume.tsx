@@ -84,20 +84,20 @@ const ModifyVolume: FC<{
       name: '',
       id: 0,
       type: 0,
-      compressBlobs: false,
+      compressBlobs: '',
       isCurrent: false,
       rootpath: '',
       compressionThreshold: '',
     });
-    const [name, setName] = useState<string>(volumeDetail?.name);
+    const [name, setName] = useState<string>(volumeDetail?.name ?? '');
     const [type, setType] = useState<VolumeType | undefined>();
-    const [id, setId] = useState<string>(volumeDetail?.id);
-    const [rootpath, setRootpath] = useState<string>(volumeDetail?.rootpath);
-    const [compressBlobs, setCompressBlobs] = useState<boolean>(volumeDetail?.compressBlobs);
-    const [isCurrent, setIsCurrent] = useState<boolean>(volumeDetail?.isCurrent);
+    const [id, setId] = useState<string>(String(volumeDetail?.id ?? ''));
+    const [rootpath, setRootpath] = useState<string>(volumeDetail?.rootpath ?? '');
+    const [compressBlobs, setCompressBlobs] = useState<boolean>(Boolean(volumeDetail?.compressBlobs));
+    const [isCurrent, setIsCurrent] = useState<boolean>(Boolean(volumeDetail?.isCurrent));
     const isCurrentRef = useRef<HTMLDivElement>(null);
     const [compressionThreshold, setCompressionThreshold] = useState<string>(
-      volumeDetail?.compressionThreshold,
+      volumeDetail?.compressionThreshold ?? '',
     );
     const [previousDetail, setPreviousDetail] = useState<Record<string, string | boolean | number | undefined | VolumeType>>({});
     const [externalVolDetail, setExternalVolDetail] = useState<Volume>({});
@@ -133,12 +133,13 @@ const ModifyVolume: FC<{
       2: SECONDARY,
       10: INDEX,
     };
-    const onUnusedBucketListChange = (e: string): void => {
+    const onUnusedBucketListChange = (e: string | null): void => {
+      if (!e) return;
       const selectedBucketDetail = isVolumeAllDetail?.filter(
         (item: BucketVolume) => item?.uuid === e,
       )[0];
 
-      setBucketName(selectedBucketDetail?.bucketName);
+      setBucketName(selectedBucketDetail?.bucketName ?? '');
       setStoreType(selectedBucketDetail?.storeType);
       setBucketConfigurationId(selectedBucketDetail?.uuid);
     };
@@ -167,7 +168,7 @@ const ModifyVolume: FC<{
       setIsLoading(true);
       if (isAdvanced) {
         if (type) {
-          type.label = labelMap[type?.value];
+          type.label = type?.value !== undefined ? labelMap[type.value] : undefined;
         }
         const obj: { [key: string]: string | boolean | number | undefined } = {};
 
@@ -295,7 +296,9 @@ const ModifyVolume: FC<{
               isCurrent: isCurrent ? 1 : 0,
             },
           },
-          selectedServerId,
+          {
+            otherAccount: selectedServerId,
+          },
         )
           .then(() => {
             if (isCurrent) {
@@ -349,38 +352,38 @@ const ModifyVolume: FC<{
     };
 
     const onUndo = (): void => {
-      previousDetail?.name ? setName(previousDetail?.name) : setName(volumeDetail?.name);
+      previousDetail?.name ? setName(previousDetail?.name as string) : setName(volumeDetail?.name ?? '');
       const volumeTypeObject = volTypeList?.find(
         (item: VolumeType) => item?.value === volumeDetail?.type,
       );
-      previousDetail?.type ? setType(previousDetail?.type) : setType(volumeTypeObject);
-      previousDetail?.id ? setId(previousDetail?.id) : setId(volumeDetail?.id);
+      previousDetail?.type ? setType(previousDetail?.type as VolumeType) : setType(volumeTypeObject);
+      previousDetail?.id ? setId(previousDetail?.id as string) : setId(String(volumeDetail?.id ?? ''));
       previousDetail?.rootpath
-        ? setRootpath(previousDetail?.rootpath)
-        : setRootpath(volumeDetail?.rootpath);
+        ? setRootpath(previousDetail?.rootpath as string)
+        : setRootpath(volumeDetail?.rootpath ?? '');
       previousDetail?.compressBlobs
-        ? setCompressBlobs(previousDetail?.compressBlobs)
-        : setCompressBlobs(volumeDetail?.compressBlobs);
+        ? setCompressBlobs(previousDetail?.compressBlobs as boolean)
+        : setCompressBlobs(Boolean(volumeDetail?.compressBlobs));
       previousDetail?.isCurrent
-        ? setIsCurrent(previousDetail?.isCurrent)
-        : setIsCurrent(volumeDetail?.isCurrent);
+        ? setIsCurrent(previousDetail?.isCurrent as boolean)
+        : setIsCurrent(Boolean(volumeDetail?.isCurrent));
       previousDetail?.compressionThreshold
-        ? setCompressionThreshold(previousDetail?.compressionThreshold)
-        : setCompressionThreshold(volumeDetail?.compressionThreshold);
+        ? setCompressionThreshold(previousDetail?.compressionThreshold as string)
+        : setCompressionThreshold(volumeDetail?.compressionThreshold ?? '');
       previousDetail?.bucketConfigurationId
-        ? setBucketConfigurationId(previousDetail?.bucketConfigurationId)
+        ? setBucketConfigurationId(previousDetail?.bucketConfigurationId as string)
         : setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
       previousDetail?.volumePrefix
-        ? setVolumePrefix(previousDetail?.volumePrefix)
+        ? setVolumePrefix(previousDetail?.volumePrefix as string)
         : setVolumePrefix(externalVolDetail?.volumePrefix);
       previousDetail?.infrequentAccessThreshold
-        ? setInfrequentAccessThreshold(previousDetail?.infrequentAccessThreshold)
+        ? setInfrequentAccessThreshold(previousDetail?.infrequentAccessThreshold as string | number)
         : setInfrequentAccessThreshold(externalVolDetail?.infrequentAccessThreshold);
       previousDetail?.useInfrequentAccess
-        ? setUseInfrequentAccess(previousDetail?.useInfrequentAccess)
+        ? setUseInfrequentAccess(previousDetail?.useInfrequentAccess as boolean)
         : setUseInfrequentAccess(externalVolDetail?.useInfrequentAccess);
       previousDetail?.useIntelligentTiering
-        ? setUseIntelligentTiering(previousDetail?.useIntelligentTiering)
+        ? setUseIntelligentTiering(previousDetail?.useIntelligentTiering as boolean)
         : setUseIntelligentTiering(externalVolDetail?.useIntelligentTiering);
       setIsDirty(false);
     };
@@ -431,7 +434,7 @@ const ModifyVolume: FC<{
           setStoreType(externalVolDetail?.storeType);
           setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
 
-          const volUnusedBucketList: object[] = [];
+          const volUnusedBucketList: Array<{ label: string; value: string }> = [];
           const allData = response?.response?.values
             ?.filter((items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
             .map((items: objectType) => {
@@ -481,7 +484,7 @@ const ModifyVolume: FC<{
     }, [type?.value, volumeDetail]);
 
     useEffect(() => {
-      if (volumeDetail !== undefined && volumeDetail?.id !== id) {
+      if (volumeDetail !== undefined && String(volumeDetail?.id) !== id) {
         setIsDirty(true);
       }
     }, [volumeDetail, id]);
@@ -493,7 +496,7 @@ const ModifyVolume: FC<{
     }, [volumeDetail, rootpath]);
 
     useEffect(() => {
-      if (volumeDetail !== undefined && volumeDetail?.compressBlobs !== compressBlobs) {
+      if (volumeDetail !== undefined && Boolean(volumeDetail?.compressBlobs) !== compressBlobs) {
         setIsDirty(true);
       }
     }, [volumeDetail, compressBlobs]);
@@ -557,16 +560,16 @@ const ModifyVolume: FC<{
     }, [externalVolDetail, infrequentAccessThreshold]);
 
     useEffect(() => {
-      setName(volumeDetail?.name);
+      setName(volumeDetail?.name ?? '');
       const volumeTypeObject = volTypeList?.find(
         (item: VolumeType) => item?.value === volumeDetail?.type,
       );
       setType(volumeTypeObject);
-      setId(volumeDetail?.id);
-      setRootpath(volumeDetail?.rootpath);
-      setCompressBlobs(volumeDetail?.compressBlobs);
-      setIsCurrent(volumeDetail?.isCurrent);
-      setCompressionThreshold(volumeDetail?.compressionThreshold);
+      setId(String(volumeDetail?.id ?? ''));
+      setRootpath(volumeDetail?.rootpath ?? '');
+      setCompressBlobs(Boolean(volumeDetail?.compressBlobs));
+      setIsCurrent(Boolean(volumeDetail?.isCurrent));
+      setCompressionThreshold(volumeDetail?.compressionThreshold ?? '');
       setIsDirty(false);
     }, [volTypeList, volumeDetail]);
 
@@ -764,7 +767,7 @@ const ModifyVolume: FC<{
                   items={volTypeList}
                   background="gray5"
                   label={t('label.volume_main', 'Volume Main')}
-                  selection={type}
+                  selection={{ label: type?.label ?? '', value: type?.value ?? 0 }}
                   showCheckbox={false}
                   onChange={onVolumeTypeChange}
                   disabled
@@ -916,7 +919,7 @@ const ModifyVolume: FC<{
                   background="gray5"
                   label={t('label.storage_type', 'Storage Type')}
                   showCheckbox={false}
-                  selection={allocation}
+                  selection={{ label: allocation?.label ?? '', value: allocation?.value ?? 0 }}
                   disabled
                   onChange={(): void => {
                     // console.log('__');
@@ -944,9 +947,12 @@ const ModifyVolume: FC<{
                         'Available Buckets List (that are not in use in the backup)',
                       )}
                       showCheckbox={false}
-                      selection={backupUnusedBucketList?.find(
-                        (b: Bucket) => b.value === bucketConfigurationId,
-                      )}
+                      {...(() => {
+                        const found = backupUnusedBucketList?.find(
+                          (b: Bucket) => b.value === bucketConfigurationId,
+                        );
+                        return found ? { selection: found } : {};
+                      })()}
                       onChange={onUnusedBucketListChange}
                     />
                   </Row>
