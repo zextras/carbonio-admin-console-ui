@@ -114,10 +114,10 @@
   --color-white: var(--color-white);
   --color-current: var(--color-currentColor);
 
-  --color-success-banner: var(--color-successBanner);
-  --color-warning-banner: var(--color-warningBanner);
-  --color-info-banner: var(--color-infoBanner);
-  --color-error-banner: var(--color-errorBanner);
+  --color-success-banner: var(--color-success-banner);
+  --color-warning-banner: var(--color-warning-banner);
+  --color-info-banner: var(--color-info-banner);
+  --color-error-banner: var(--color-error-banner);
 
   --color-avatar-1: var(--color-avatar-1);
   --color-avatar-2: var(--color-avatar-2);

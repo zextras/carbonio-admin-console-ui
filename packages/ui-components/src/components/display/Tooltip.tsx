@@ -8,6 +8,7 @@ import { flip, limitShift, offset, Placement, shift } from '@floating-ui/dom';
 import {
   cloneElement,
   createRef,
+  forwardRef,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -17,25 +18,31 @@ import {
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { setupFloating } from '../../utils/floating-ui';
-import { TextProps } from '../../web-components/ds-text';
+import { DsTextProps } from '../../web-components/ds-text';
 import { Portal } from '../utilities/Portal';
 import styles from './Tooltip.module.css';
 
-type TooltipWrapperProps = TextProps & {
+type TooltipWrapperProps = DsTextProps & {
   open: boolean;
   maxWidth: string;
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
 };
 
-const TooltipWrapper = ({
-  open,
-  maxWidth,
-  children,
-  size = 'extrasmall',
-  overflow = 'break-word',
-  className,
-  style,
-  ...rest
-}: TooltipWrapperProps) => {
+const TooltipWrapper = forwardRef<HTMLElement, TooltipWrapperProps>(function TooltipWrapper(
+  {
+    open,
+    maxWidth,
+    children,
+    size = 'extrasmall',
+    overflow = 'break-word',
+    className,
+    style,
+    ...rest
+  },
+  ref,
+) {
   if (!open) return null;
 
   const tooltipStyle = {
@@ -45,6 +52,7 @@ const TooltipWrapper = ({
 
   return (
     <ds-text
+      ref={ref}
       as="span"
       size={size}
       overflow={overflow}
@@ -56,9 +64,9 @@ const TooltipWrapper = ({
       {children}
     </ds-text>
   );
-};
+});
 
-type TooltipProps = TextProps & {
+type TooltipProps = DsTextProps & {
   /** Tooltip text */
   label: string | React.ReactNode | undefined;
   /** Tooltip placement */
@@ -96,7 +104,7 @@ const Tooltip = ({
 }: TooltipProps) => {
   const [open, setOpen] = useState(false);
   const combinedTriggerRef = useCombinedRefs<HTMLElement>(triggerRef);
-  const tooltipRef = useCombinedRefs<HTMLDivElement>();
+  const tooltipRef = useCombinedRefs<HTMLElement>();
   const timeoutRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
   const showTooltip = useCallback(() => {
@@ -116,7 +124,9 @@ const Tooltip = ({
 
   const hideTooltip = useCallback(() => {
     setOpen(false);
-    timeoutRef.current && clearTimeout(timeoutRef.current);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
   }, []);
 
   useLayoutEffect(() => {
@@ -165,7 +175,13 @@ const Tooltip = ({
         ref: combinedTriggerRef as React.RefObject<HTMLElement>,
       } as Partial<React.HTMLAttributes<HTMLElement>>)}
       <Portal show={open && !disabled} disablePortal={disablePortal}>
-        <TooltipWrapper open={open} maxWidth={maxWidth} className={styles.tooltip} {...rest}>
+        <TooltipWrapper
+          ref={tooltipRef}
+          open={open}
+          maxWidth={maxWidth}
+          className={styles.tooltip}
+          {...rest}
+        >
           {label}
         </TooltipWrapper>
       </Portal>

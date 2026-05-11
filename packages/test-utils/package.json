@@ -34,7 +34,7 @@
     "clsx": "^2.1.1",
     "eslint": "^9.34.0",
     "eslint-plugin-css-modules": "^2.12.0",
-    "msw": "^2.13.5",
+    "msw": "^2.14.2",
     "tailwindcss": "^4.2.1",
     "typescript-plugin-css-modules": "^5.2.0",
     "vitest": "^4.1.0",

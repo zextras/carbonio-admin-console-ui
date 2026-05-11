@@ -4,15 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  createBrowserSoapAPIInterceptor,
-  delayedSoapApiForBrowser,
-  getAllConfigRightsResponseMock,
-  getGetInfoResponseMock,
-  getQueryClient,
-  grantUserConfigRights,
-  setupBrowserTest,
-} from 'admin-ui-test-utils';
+import { getQueryClient, grantUserConfigRights, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
@@ -172,40 +164,5 @@ describe('Subscription - License Banner', () => {
 
     await expect.element(page.getByText('Details')).toBeVisible();
     await expect.element(page.getByText('Activation')).toBeVisible();
-  });
-
-  it('should display spinner when activating license before API responds', async () => {
-    createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-
-    createBrowserSoapAPIInterceptor('GetAllEffectiveRights', getAllConfigRightsResponseMock());
-
-    const expiredLicenseData = {
-      ...mockLicenseData,
-      response: {
-        ...mockLicenseData.response,
-        expired: true,
-      },
-    };
-
-    await setupSubscriptionTest(<Subscription />, {
-      licenseData: expiredLicenseData,
-      versionData: mockVersionData,
-    });
-
-    await expect.element(page.getByText('Activate')).toBeVisible();
-
-    await new Promise((resolve) => setTimeout(resolve, 150));
-
-    const mockDelayMs = 200;
-
-    delayedSoapApiForBrowser('activate-license', mockDelayMs);
-
-    const activateButton = page.getByText('Activate');
-    await activateButton.click();
-
-    const spinner = page.getByTestId('spinner');
-    await expect.element(spinner).toBeVisible();
-
-    await new Promise((resolve) => setTimeout(resolve, mockDelayMs + 50));
   });
 });

@@ -16,10 +16,17 @@ import {
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useAllServers, useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
+import type {
+  CheckLdapResponse,
+  CoreAttributeBody,
+  GetServerResponse,
+  ServerAdvancedState,
+  SetCoreAttributesResponse,
+} from '../../../../types';
 import { CONFIG, SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
@@ -44,7 +51,7 @@ const ServerAdvanced: FC = () => {
   const [backupCompressionLevel, setBackupCompressionLevel] = useState<number>(0);
   const [backupNumberThreadsForItems, setBackupNumberThreadsForItems] = useState<number>(0);
   const [backupNumberThreadsForAccounts, setBackupNumberThreadsForAccounts] = useState<number>(0);
-  const [currentBackupValue, setCurrentBackupValue] = useState<any>({});
+  const [currentBackupValue, setCurrentBackupValue] = useState<ServerAdvancedState>({} as ServerAdvancedState);
   const [scheduledMetadataArchivingEnabled, setScheduledMetadataArchivingEnabled] =
     useState<boolean>(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -56,13 +63,13 @@ const ServerAdvanced: FC = () => {
 
   useEffect(() => {
     if (allServers && allServers.length > 0) {
-      const selectedServer = allServers.find((serverItem: any) => serverItem?.name === server);
+      const selectedServer = allServers.find((serverItem) => serverItem?.name === server);
       if (selectedServer && selectedServer?.id) {
-        const currentBackupObject: any = {};
-        getSoapFetchRequest(
+        const currentBackupObject: Partial<ServerAdvancedState> = {};
+        getSoapFetchRequest<GetServerResponse>(
           `/service/extension/zextras_admin/core/getServer/${selectedServer?.id}?module=zxbackup`,
         )
-          .then((data: any) => {
+          .then((data: GetServerResponse) => {
             const attributes = data?.attributes;
             if (data && data?.attributes) {
               if (attributes?.ldapDumpEnabled) {
@@ -212,10 +219,10 @@ const ServerAdvanced: FC = () => {
                 }
               }
             }
-            setCurrentBackupValue(currentBackupObject);
+            setCurrentBackupValue(currentBackupObject as ServerAdvancedState);
             setIsDirty(false);
           })
-          .catch((error: any) => {
+          .catch((error: Error) => {
             setIsDirty(false);
             createSnackbar({
               key: 'error',
@@ -392,7 +399,7 @@ const ServerAdvanced: FC = () => {
   }, [currentBackupValue.serverConfiguration, serverConfiguration]);
 
   const onSave = useCallback(() => {
-    const body: any = {
+    const body: CoreAttributeBody = {
       ldapDumpEnabled: {
         value: ldapDumpEnabled,
         objectName: server,
@@ -466,7 +473,7 @@ const ServerAdvanced: FC = () => {
     };
     setIsRequestInProgress(true);
     setCoreAttributes(body)
-      .then((data: any) => {
+      .then((data: SetCoreAttributesResponse) => {
         setIsRequestInProgress(false);
         if (data?.errors && Array.isArray(data?.errors)) {
           createSnackbar({
@@ -480,7 +487,7 @@ const ServerAdvanced: FC = () => {
             replace: true,
           });
         } else {
-          setCurrentBackupValue((prev: any) => ({
+          setCurrentBackupValue((prev: ServerAdvancedState) => ({
             ...prev,
             ldapDumpEnabled,
             backupLatencyLowThreshold,
@@ -511,7 +518,7 @@ const ServerAdvanced: FC = () => {
           });
         }
       })
-      .catch((error: any) => {
+      .catch((error: Error) => {
         setIsRequestInProgress(false);
         createSnackbar({
           key: 'error',
@@ -547,7 +554,7 @@ const ServerAdvanced: FC = () => {
   const checkLdapStatus = useCallback(() => {
     setIsRequestInProgress(true);
     checkLdap()
-      .then((data: any) => {
+      .then((data: CheckLdapResponse) => {
         setIsRequestInProgress(false);
         if (data?.ok && data?.ok === true) {
           createSnackbar({
@@ -569,7 +576,7 @@ const ServerAdvanced: FC = () => {
           });
         }
       })
-      .catch((error: any) => {
+      .catch((error: Error) => {
         setIsRequestInProgress(false);
         createSnackbar({
           key: 'error',
@@ -744,8 +751,8 @@ const ServerAdvanced: FC = () => {
                 label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
                 backgroundColor="gray5"
                 value={backupLatencyHighThreshold}
-                onChange={(e: any): void => {
-                  setBackupLatencyHighThreshold(e.target.value);
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                  setBackupLatencyHighThreshold(Number(e.target.value));
                 }}
                 disabled={!allowSetBackup}
               />
@@ -762,8 +769,8 @@ const ServerAdvanced: FC = () => {
                 label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
                 backgroundColor="gray5"
                 value={backupLatencyLowThreshold}
-                onChange={(e: any): void => {
-                  setBackupLatencyLowThreshold(e.target.value);
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                  setBackupLatencyLowThreshold(Number(e.target.value));
                 }}
                 disabled={!allowSetBackup}
               />
@@ -794,8 +801,8 @@ const ServerAdvanced: FC = () => {
                 backgroundColor="gray5"
                 borderColor="gray3"
                 value={backupMaxWaitTime}
-                onChange={(e: any): void => {
-                  setBackupMaxWaitTime(e.target.value);
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                  setBackupMaxWaitTime(Number(e.target.value));
                 }}
                 disabled={!allowSetBackup}
               />
@@ -826,8 +833,8 @@ const ServerAdvanced: FC = () => {
                 label={t('backup.maximum_metadata_size_mb', 'Maximum Metadata Size (MB)')}
                 backgroundColor="gray5"
                 value={backupMaxMetaDataSize}
-                onChange={(e: any): void => {
-                  setBackupMaxMetaDataSize(e.target.value);
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                  setBackupMaxMetaDataSize(Number(e.target.value));
                 }}
                 disabled={!allowSetBackup}
               />
@@ -902,8 +909,8 @@ const ServerAdvanced: FC = () => {
                 label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
                 backgroundColor="gray5"
                 value={backupMaxOperationPerAccount}
-                onChange={(e: any): void => {
-                  setBackupMaxOperationPerAccount(e.target.value);
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                  setBackupMaxOperationPerAccount(Number(e.target.value));
                 }}
                 disabled={!allowSetBackup}
               />
@@ -920,8 +927,8 @@ const ServerAdvanced: FC = () => {
                 label={t('backup.compression_level', 'Compression Level')}
                 backgroundColor="gray5"
                 value={backupCompressionLevel}
-                onChange={(e: any): void => {
-                  setBackupCompressionLevel(e.target.value);
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                  setBackupCompressionLevel(Number(e.target.value));
                 }}
                 disabled={!allowSetBackup}
               />
@@ -941,8 +948,8 @@ const ServerAdvanced: FC = () => {
                 label={t('backup.thread_number_for_items', 'Thread number for items')}
                 backgroundColor="gray5"
                 value={backupNumberThreadsForItems}
-                onChange={(e: any): void => {
-                  setBackupNumberThreadsForItems(e.target.value);
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                  setBackupNumberThreadsForItems(Number(e.target.value));
                 }}
                 disabled={!allowSetBackup}
               />
@@ -959,8 +966,8 @@ const ServerAdvanced: FC = () => {
                 label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
                 backgroundColor="gray5"
                 value={backupNumberThreadsForAccounts}
-                onChange={(e: any): void => {
-                  setBackupNumberThreadsForAccounts(e.target.value);
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                  setBackupNumberThreadsForAccounts(Number(e.target.value));
                 }}
                 disabled={!allowSetBackup}
               />

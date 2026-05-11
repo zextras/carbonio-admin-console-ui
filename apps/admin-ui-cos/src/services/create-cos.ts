@@ -6,8 +6,17 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const createCos = async (name: string, a?: Array<any>): Promise<any> => {
-	const request: any = {
+import { Attribute } from '../../types/attribute';
+import { CosResponse } from '../../types/cos';
+
+type CreateCosRequest = {
+	_jsns: string;
+	name?: { _content: string };
+	a?: Array<Attribute>;
+};
+
+export const createCos = async (name: string, a?: Array<Attribute>): Promise<CosResponse> => {
+	const request: CreateCosRequest = {
 		_jsns: 'urn:zimbraAdmin'
 	};
 	if (name) {

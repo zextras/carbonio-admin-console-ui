@@ -3,19 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Input } from '@zextras/ui-components';
-import { useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
+import { invalidateLicenseQuery, useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
 import { z } from 'zod';
 
 import subscription_logo from '../../assets/subscription_empty.svg';
-import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
 import styles from './activate-subscription.module.css';
-import { ActivationError } from './parts/activation-error';
-import { ActivationProgress } from './parts/activation-progress';
-import { ActivationSuccess } from './parts/activation-success';
+import { ActivationError } from './parts/activation/activation-error';
+import { ActivationProgress } from './parts/activation/activation-progress';
+import { ActivationSuccess } from './parts/activation/activation-success';
 
 type Module = {
   value: string;
@@ -33,7 +32,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
   const [showResult, setShowResult] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const activateLicenseMutation = useActivateLicense();
   const breakpoint = useBreakpoint();
   const isLargeViewport = breakpoint === 'xl' || breakpoint === '2xl';
@@ -67,8 +66,8 @@ export const ActivateSubscription = (): React.JSX.Element => {
   }, []);
 
   const handleSuccessComplete = useCallback((): void => {
-    navigate(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`, { replace: true });
-  }, [navigate]);
+    invalidateLicenseQuery(queryClient);
+  }, [queryClient]);
 
   return (
     <div className={styles.outer}>
@@ -79,7 +78,9 @@ export const ActivateSubscription = (): React.JSX.Element => {
       </div>
       <ds-divider></ds-divider>
       <div className={styles.content}>
-        <ds-text as="label" weight="bold">{t('subscription.activate.activation_token', 'Activation token')}</ds-text>
+        <ds-text as="label" weight="bold">
+          {t('subscription.activate.activation_token', 'Activation token')}
+        </ds-text>
         <div className={styles.inputRow}>
           <div className={styles.inputField}>
             <Input
@@ -115,7 +116,12 @@ export const ActivateSubscription = (): React.JSX.Element => {
         </div>
         <img src={subscription_logo} alt="subscription logo" className={styles.logo} />
         <div className={styles.text}>
-          <ds-text as="p" color="gray0" overflow="break-word" style={{ whiteSpace: isLargeViewport ? 'normal' : 'pre-line' }}>
+          <ds-text
+            as="p"
+            color="gray0"
+            overflow="break-word"
+            style={{ whiteSpace: isLargeViewport ? 'normal' : 'pre-line' }}
+          >
             {t(
               'subscription.activate.disclaimer',
               "Seems like you don't have a subscription token active yet.\nFill the field above or contact a vendor to get a new one.",

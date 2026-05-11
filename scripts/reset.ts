@@ -18,14 +18,14 @@ function reset() {
     colorLog(`Resetting monorepo at: ${rootDir}`, 'blue');
 
     const steps = [
-      { name: 'Cleaning root', command: 'rm -rf node_modules pnpm-lock.yaml .turbo' },
+      { name: 'Cleaning root', command: 'rm -rf node_modules pnpm-lock.yaml .turbo tsconfig.tsbuildinfo' },
       {
         name: 'Cleaning apps',
-        command: 'rm -rf apps/**/node_modules apps/**/.turbo',
+        command: 'rm -rf apps/**/node_modules apps/**/.turbo apps/**/tsconfig.tsbuildinfo apps/**/dist-types',
       },
       {
         name: 'Cleaning packages',
-        command: 'rm -rf packages/**/node_modules packages/**/.turbo',
+        command: 'rm -rf packages/**/node_modules packages/**/.turbo packages/**/tsconfig.tsbuildinfo packages/**/dist-types',
       },
       { name: 'Pruning store', command: 'pnpm store prune --force' },
       { name: 'Installing', command: 'pnpm install' },

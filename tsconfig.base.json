@@ -5,6 +5,7 @@
     "allowImportingTsExtensions": false,
     "verbatimModuleSyntax": false,
     "erasableSyntaxOnly": false,
+    "noUncheckedSideEffectImports": false,
     "noUnusedParameters": false,
     "noEmit": false,
     "declaration": true,

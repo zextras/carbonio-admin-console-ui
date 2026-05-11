@@ -4,5 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+export * from './api';
+export * from './backup';
 export * from './domain';
 export * from './legalholds';

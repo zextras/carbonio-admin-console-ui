@@ -553,12 +553,6 @@ const DomainGeneralSettings: FC = () => {
     if (selectedTimeZone.value !== NOT_SET) {
       attributes.push({ n: 'zimbraPrefTimeZoneId', _content: selectedTimeZone.value });
     }
-    if (selectedPublicServiceProtocol.value !== NOT_SET) {
-      attributes.push({
-        n: 'zimbraPublicServiceProtocol',
-        _content: selectedPublicServiceProtocol.value,
-      });
-    }
     if (zimbraDomainDefaultCOSId && zimbraDomainDefaultCOSId !== '') {
       attributes.push({ n: 'zimbraDomainDefaultCOSId', _content: zimbraDomainDefaultCOSId });
     }
@@ -595,6 +589,7 @@ const DomainGeneralSettings: FC = () => {
       { n: 'zimbraHelpDelegatedURL', _content: zimbraHelpDelegatedURL },
       { n: 'zimbraPublicServiceHostname', _content: publicServiceHostName },
       { n: 'carbonioNotificationFrom', _content: carbonioNotificationFrom },
+      { n: 'zimbraPublicServiceProtocol', _content: selectedPublicServiceProtocol.value }
     ];
 
     addConditionalAttributes(attributes);
