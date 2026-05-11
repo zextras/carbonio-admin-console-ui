@@ -46,7 +46,7 @@ const NewBucket: FC<{
               color="secondary"
               icon="ChevronLeftOutline"
               iconPlacement="left"
-              disable={!!props.disabled}
+              disabled={!!props.disabled}
               onClick={(): void => setToggleWizardSection(false)}
             />
           ) : (
@@ -60,7 +60,7 @@ const NewBucket: FC<{
           label={t('label.bucket_done_button', 'Done')}
           icon={'CheckmarkCircleOutline'}
           iconPlacement="right"
-          disable={props.completeLoading}
+          disabled={props.completeLoading}
           style={{ marginLeft: '16px' }}
           onClick={(): void => {
             setToggleWizardSection(false);
