@@ -38,11 +38,7 @@ import {
   ASC,
   BACKUP_ENABLED,
   BACKUP_SELF_UNDELETE_ALLOWED,
-  COS,
   DESC,
-  FILES_QUOTA_LIMIT,
-  FILES_QUOTA_USED,
-  MAILBOX_QUOTA_USED,
   RECORD_DISPLAY_LIMIT,
   TOTAL_COMPUTED_QUOTA_LIMIT,
   TOTAL_QUOTA_SOURCE,
@@ -51,10 +47,7 @@ import {
   TOTAL_QUOTA_USED_BY_MODULE,
   ZIMBRA_ADMIN_URN,
 } from '../../../../constants';
-import {
-  accountListDirectory,
-  getMailboxQuota,
-} from '../../../../services/account-list-directory-service';
+import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import { checkRightRequest } from '../../../../services/check-right';
 import {
   CosA,
@@ -68,7 +61,6 @@ import { getAccountQuota } from '../../../../services/get-account-quota';
 import { getCoreAttributes } from '../../../../services/get-core-attributes';
 import { getCosQuota } from '../../../../services/get-cos-quota';
 import { getDomainQuota } from '../../../../services/get-domain-quota';
-import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -506,36 +498,6 @@ const ManageAccounts: FC = () => {
     [setAccountDetail, setInitAccountDetail],
   );
 
-  const getFileQuotaByAccId = useCallback(
-    (accId: string): Promise<void> =>
-      getFileQuotaById(accId).then((res: any) => {
-        if (res?.limit) {
-          setAccDetailValue(FILES_QUOTA_LIMIT, res?.limit);
-        }
-        if (res?.used) {
-          setAccDetailValue(FILES_QUOTA_USED, res?.used);
-        }
-      }),
-    [setAccDetailValue],
-  );
-
-  const getFileQuotaByCosId = useCallback(
-    (cosId: string): Promise<void> =>
-      getFileQuotaById(cosId, COS).then((res: any) => {
-        if (res?.limit) {
-          setCosDetail((prev: any) => ({ ...prev, [FILES_QUOTA_LIMIT]: res?.limit }));
-        }
-      }),
-    [],
-  );
-
-  const getMailboxQuotaUsed = useCallback(
-    (accId: string): Promise<void> =>
-      getMailboxQuota(accId).then((data) => {
-        setAccDetailValue(MAILBOX_QUOTA_USED, data?.mbox?.[0]?.s || 0);
-      }),
-    [setAccDetailValue],
-  );
   const getDeletePasswordRight = useCallback(
     (target: string): void => {
       checkRightRequest(target, account?.name ?? '', 'set.account.userPassword').then(
@@ -630,7 +592,6 @@ const ManageAccounts: FC = () => {
           getCosDetail(obj.zimbraCOSId);
           getAccountSpecificDetail(id);
           setDefaultCOS(!obj.zimbraCOSId);
-          getMailboxQuotaUsed(id);
           if (isTotalQuotaActive) {
             retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
           }
@@ -638,10 +599,6 @@ const ManageAccounts: FC = () => {
             getListOtp(data?.account?.[0]?.name);
             getCredentialList(data?.account?.[0]?.name);
             getABQStatus(id);
-            getFileQuotaByAccId(id);
-            setTimeout(() => {
-              getFileQuotaByCosId(obj.zimbraCOSId);
-            }, 2000);
           }
         })
 
@@ -662,15 +619,12 @@ const ManageAccounts: FC = () => {
     [
       getAccountSpecificDetail,
       getCosDetail,
-      getMailboxQuotaUsed,
       isTotalQuotaActive,
       retrieveAccountQuotaByAccountId,
       isAdvanced,
       getListOtp,
       getCredentialList,
       getABQStatus,
-      getFileQuotaByAccId,
-      getFileQuotaByCosId,
       createSnackbar,
       t,
     ],
