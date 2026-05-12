@@ -91,7 +91,7 @@ const AdvancedMailstoresDefinition: FC<{
       showSecrets: true,
     }).then((res) => {
       const response = JSON.parse(res?.Body?.response?.content);
-      if (response?.ok && response?.response?.values?.lenght !== 0) {
+      if (response?.ok && Array.isArray(response?.response?.values) && response.response.values.length !== 0) {
         const volUnusedBucketList: Array<{ label: string; value: string }> = [];
         const allData = response?.response?.values
           ?.filter((items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)

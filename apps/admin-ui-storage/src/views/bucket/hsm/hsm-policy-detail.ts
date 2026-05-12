@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 export type VolumeItem = {
-        id: string
-        name?: string
-    }
+    id: string | number
+    name?: string
+}
 
 export type HsmPolicyDetail = {
     isAllEnabled: boolean
@@ -25,7 +25,18 @@ export type HsmPolicyDetail = {
 
 export type PolicyCriteriaItem = HsmPolicyDetail["policyCriteria"][number]
 
-export function asQueryString(hsmDetail: HsmPolicyDetail):string {
+type AsQueryStringParam = {
+    isAllEnabled: boolean;
+    isMessageEnabled: boolean;
+    isEventEnabled: boolean;
+    isContactEnabled: boolean;
+    isDocumentEnabled: boolean;
+    policyCriteria: Array<PolicyCriteriaItem>;
+    sourceVolume: Array<{ id?: string | number }>;
+    destinationVolume: Array<{ id?: string | number }>;
+};
+
+export function asQueryString(hsmDetail: AsQueryStringParam): string {
     let query = '';
     const criteriaScale: string[] = [];
     if (hsmDetail.isAllEnabled) {
@@ -53,17 +64,17 @@ export function asQueryString(hsmDetail: HsmPolicyDetail):string {
                 query += `:${item.option}:-${item.dateScale}${item.scale}`;
             } else if (item.option === 'larger' || item.option === 'smaller') {
                 query += `:${item.option}:${item.dateScale}${item.scale}`;
-            } 
+            }
         });
     }
 
     if (hsmDetail.sourceVolume.length > 0) {
-        query += ` source: ${hsmDetail.sourceVolume.map((item: VolumeItem) => item.id).toString()}`;
+        query += ` source: ${hsmDetail.sourceVolume.map((item) => item.id).toString()}`;
     }
 
     if (hsmDetail.destinationVolume.length > 0) {
         query += ` destination: ${hsmDetail.destinationVolume
-            .map((item: VolumeItem) => item.id)
+            .map((item) => item.id)
             .toString()}`;
     }
     return query;

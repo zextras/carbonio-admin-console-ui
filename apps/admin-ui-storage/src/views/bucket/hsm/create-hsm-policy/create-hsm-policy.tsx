@@ -4,73 +4,53 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, HorizontalWizard, Padding, Section } from '@zextras/ui-components';
+import { Button, type ButtonProps, Container, HorizontalWizard, Padding, Section } from '@zextras/ui-components';
 import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
+import type { CreateHsmPolicyProps, HsmPolicyEditDetail } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 import HSMcreatePolicy from './hsm-create-policy';
 import HSMpolicySettings from './hsm-policy-settings';
 
-export type HsmDetailObj = {
-	allVolumes: Array<any>;
-	isAllEnabled: boolean;
-	isMessageEnabled: boolean;
-	isEventEnabled: boolean;
-	isContactEnabled: boolean;
-	isDocumentEnabled: boolean;
-	policyCriteria:Array<{
-    option: string
-    dateScale: string
-    scale:string
-  }>
-  sourceVolume: Array<{
-    id: string
-  }>
-  destinationVolume: Array<{
-    id: string
-  }>
+export type HsmDetailObj = HsmPolicyEditDetail;
+
+type WizardButtonProps = Partial<ButtonProps> & { onClick?: ButtonProps['onClick'] };
+
+const WizardInSection: FC<{ wizard: ReactElement; wizardFooter: ReactElement; setToggleWizardSection: (v: boolean) => void }> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
+  const { t } = useTranslation();
+  const { server } = useParams();
+
+  return (
+    <Section
+      title={`${server} | ${t('hsm.create_new_policy', 'Create New Policy')}`}
+      padding={{ all: '0' }}
+      footer={wizardFooter}
+      divider
+      showClose
+      onClose={(): void => {
+        setToggleWizardSection(false);
+      }}
+    >
+      {wizard}
+    </Section>
+  );
 };
 
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-	const { t } = useTranslation();
-	const { server } = useParams();
-
-	return (
-		<Section
-			title={`${server} | ${t('hsm.create_new_policy', 'Create New Policy')}`}
-			padding={{ all: '0' }}
-			footer={wizardFooter}
-			divider
-			showClose
-			onClose={(): void => {
-				setToggleWizardSection(false);
-			}}
-		>
-			{wizard}
-		</Section>
-	);
-};
-
-const CreateHsmPolicy: FC<{
-	setShowCreateHsmPolicyView: any;
-	volumeList: Array<any>;
-	createHSMpolicy: any;
-	runCustomHSMpolicy: any;
-}> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy, runCustomHSMpolicy }) => {
-	const [hsmDetail, setHsmDetail] = useState<HsmDetailObj>({
-		allVolumes: volumeList,
-		isAllEnabled: true,
-		isMessageEnabled: true,
-		isEventEnabled: true,
-		isContactEnabled: true,
-		isDocumentEnabled: true,
-		policyCriteria: [],
-		sourceVolume: [],
-		destinationVolume: [],
-	});
-	const { t } = useTranslation();
+const CreateHsmPolicy: FC<CreateHsmPolicyProps> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy, runCustomHSMpolicy }) => {
+  const [hsmDetail, setHsmDetail] = useState<HsmDetailObj>({
+    allVolumes: volumeList,
+    isAllEnabled: true,
+    isMessageEnabled: true,
+    isEventEnabled: true,
+    isContactEnabled: true,
+    isDocumentEnabled: true,
+    policyCriteria: [],
+    sourceVolume: [],
+    destinationVolume: [],
+  });
+  const { t } = useTranslation();
 
   const onCreate = useCallback(() => {
     createHSMpolicy(hsmDetail);
@@ -87,9 +67,9 @@ const CreateHsmPolicy: FC<{
         label: t('hsm.policy_settings', 'Policy Settings'),
         icon: 'OptionsOutline',
         view: HSMpolicySettings,
-        CancelButton: (props: any): ReactElement => (
+        CancelButton: ({ ...rest }: WizardButtonProps): ReactElement => (
           <Button
-            {...props}
+            onClick={rest.onClick!}
             type="outlined"
             key="wizard-cancel"
             label={t('label.cancel', 'Cancel')}
@@ -99,9 +79,9 @@ const CreateHsmPolicy: FC<{
           />
         ),
         PrevButton: () => null,
-        NextButton: (props: any) => (
+        NextButton: ({ ...rest }: WizardButtonProps) => (
           <Button
-            {...props}
+            onClick={rest.onClick!}
             label={t('label.next', 'NEXT')}
             icon="ChevronRightOutline"
             iconPlacement="right"
@@ -113,9 +93,9 @@ const CreateHsmPolicy: FC<{
         label: t('hsm.create_policy', 'Create Policy'),
         icon: 'PowerOutline',
         view: HSMcreatePolicy,
-        CancelButton: (props: any): ReactElement => (
+        CancelButton: ({ ...rest }: WizardButtonProps): ReactElement => (
           <Button
-            {...props}
+            onClick={rest.onClick!}
             type="outlined"
             key="wizard-cancel"
             label={t('label.cancel', 'Cancel')}
@@ -124,27 +104,25 @@ const CreateHsmPolicy: FC<{
             iconPlacement="right"
           />
         ),
-        PrevButton: (props: any) => (
+        PrevButton: ({ ...rest }: WizardButtonProps) => (
           <Button
-            {...props}
+            onClick={rest.onClick!}
             label={t('label.back', 'BACK')}
             icon="ChevronLeftOutline"
             color="secondary"
             iconPlacement="left"
           />
         ),
-        NextButton: (props: any) => (
+        NextButton: (): React.ReactElement => (
           <>
             <Padding right="medium">
               <Button
-                {...props}
                 label={t('label.run_only', 'RUN ONLY (SKIP CREATE)')}
                 iconPlacement="left"
                 onClick={onRunCustomPolicy}
               />
             </Padding>
             <Button
-              {...props}
               label={t('label.create', 'CREATE')}
               icon="PowerOutline"
               iconPlacement="right"

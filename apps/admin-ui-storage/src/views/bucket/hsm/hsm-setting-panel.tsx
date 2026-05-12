@@ -23,6 +23,7 @@ import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
+import type { HsmPolicyEditDetail, HsmPolicyFromServer, HsmSettingsValues, Volume } from '../../../../types';
 import {
   APPOINTMENT,
   CONTACT,
@@ -37,7 +38,7 @@ import { setCoreAttributes } from '../../../services/set-core-attributes';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
-import { asQueryString,HsmPolicyDetail } from './hsm-policy-detail';
+import { asQueryString } from './hsm-policy-detail';
 
 type Timeout = ReturnType<typeof setTimeout>;
 
@@ -45,8 +46,8 @@ const HSMsettingPanel: FC = () => {
   const { server } = useParams() as { server: string };
   const [t] = useTranslation();
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [policies, setPolicies] = useState<any>([]);
-  const [policiesRow, setPoliciesRow] = useState<any>([]);
+  const [policies, setPolicies] = useState<Array<HsmPolicyFromServer>>([]);
+  const [policiesRow, setPoliciesRow] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>([]);
   const [showCreateHsmPolicyView, setShowCreateHsmPolicyView] = useState<boolean>(false);
   const [showEditHsmPolicyView, setShowEditHsmPolicyView] = useState<boolean>(false);
   const [showDeletePolicyView, setShowDeletePolicyView] = useState<boolean>(false);
@@ -57,10 +58,10 @@ const HSMsettingPanel: FC = () => {
   const [powerstoreSpaceThreshold, setPowerstoreSpaceThreshold] = useState<number>(0);
   const [deduplicateAfterScheduledMoveBlobs, setDeduplicateAfterScheduledMoveBlobs] =
     useState<boolean>(false);
-  const [oldValues, setOldValues] = useState<any>({});
-  const [volumeList, setVolumeList] = useState<any>([]);
+  const [oldValues, setOldValues] = useState<HsmSettingsValues>({} as HsmSettingsValues);
+  const [volumeList, setVolumeList] = useState<Array<Volume>>([]);
   const createSnackbar = useSnackbar();
-  const [selectedPolicies, setSelectedPolicies] = useState<any>([]);
+  const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [isVolumeInProgress, setIsVolumeInProgress] = useState<boolean>(false);
   const [isEditSaveInProgress, setIsEditSaveInProgress] = useState<boolean>(false);
@@ -106,7 +107,7 @@ const HSMsettingPanel: FC = () => {
       module: 'ZxPowerstore',
       action: 'getHSMPolicy',
       targetServers: server,
-    }).then((res: any) => {
+    }).then((res) => {
       if (res?.Body?.response?.content) {
         const content = JSON.parse(res?.Body?.response?.content);
         if (
@@ -126,14 +127,14 @@ const HSMsettingPanel: FC = () => {
     getHSMPolicyList();
   }, [server, getHSMPolicyList]);
 
-  const getHSMType = (hsmType: Array<any>): string => {
+  const getHSMType = (hsmType: Array<number>): string => {
     let hsmTypeString = '';
     if (hsmType.length > 0) {
       const item: string[] = [];
       if (hsmType.length === 4) {
         hsmTypeString = 'document,message,contact,appointment:';
       } else {
-        hsmType.forEach((element: any) => {
+        hsmType.forEach((element: number) => {
           if (element === 5) {
             item.push(MESSAGE);
           } else if (element === 8) {
@@ -150,14 +151,14 @@ const HSMsettingPanel: FC = () => {
     return hsmTypeString;
   };
 
-  const doClickAction = useCallback((): void => {}, []);
+  const doClickAction = useCallback((): void => { }, []);
 
   const doDoubleClickAction = useCallback((): void => {
     setShowEditHsmPolicyView(true);
   }, []);
 
   const handleClick = useCallback(
-    (event: any) => {
+    (event: React.MouseEvent) => {
       event.stopPropagation();
       clearTimeout(timer.current);
       if (event.detail === 1) {
@@ -171,7 +172,7 @@ const HSMsettingPanel: FC = () => {
 
   useEffect(() => {
     if (policies.length > 0) {
-      const allRows = policies.map((item: any) => ({
+      const allRows = policies.map((item: HsmPolicyFromServer) => ({
         id: item?.hsmQuery,
         columns: [
           <ds-text
@@ -179,7 +180,7 @@ const HSMsettingPanel: FC = () => {
             size="small"
             weight="regular"
             key={item?.hsmQuery}
-            onClick={(e: { stopPropagation: () => void }): void => {
+            onClick={(e: React.MouseEvent): void => {
               e.stopPropagation();
               setSelectedPolicies([item?.hsmQuery]);
               handleClick(e);
@@ -196,19 +197,19 @@ const HSMsettingPanel: FC = () => {
     }
   }, [handleClick, policies]);
 
-  const setValuesFromAttributes = useCallback((attributes: any) => {
+  const setValuesFromAttributes = useCallback((attributes: Record<string, { value: unknown }> | undefined) => {
     if (!attributes) return;
-    const olderValues: any = {};
+    const olderValues = {} as HsmSettingsValues;
     if (attributes) {
       if (attributes?.powerstoreMoveScheduler) {
-        const schedulePattern = attributes?.powerstoreMoveScheduler?.value?.['cron-pattern'];
+        const schedulePattern = (attributes?.powerstoreMoveScheduler?.value as Record<string, string> | undefined)?.['cron-pattern'];
         const pattern = schedulePattern || '';
         setPowerstoreMoveSchedulerValue(pattern);
         olderValues.powerstoreMoveSchedulerValue = pattern;
       }
       if (attributes?.ZxPowerstore_SpaceThreshold) {
         const spaceThreshold = attributes?.ZxPowerstore_SpaceThreshold?.value;
-        const val = spaceThreshold || 0;
+        const val = (spaceThreshold as number) || 0;
         setPowerstoreSpaceThreshold(val);
         olderValues.powerstoreSpaceThreshold = val;
       }
@@ -233,15 +234,15 @@ const HSMsettingPanel: FC = () => {
   const getZxPowerStoreServers = useCallback(() => {
     getSoapFetchRequest(
       `/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`,
-    ).then((data: any) => {
-      const serv = data?.servers;
+    ).then((data: unknown) => {
+      const serv = (data as { servers?: Array<Record<string, Record<string, unknown>>> })?.servers;
       if (serv && serv.length > 0) {
-        const object: Array<unknown> = Object.values(serv).map((i: any) => Object.values(i)[0]);
-        const selectedServer = object.find((sItem: any) => sItem.name === server);
+        const object = Object.values(serv).map((i) => Object.values(i)[0]) as Array<Record<string, unknown>>;
+        const selectedServer = object.find((sItem) => (sItem as { name?: string }).name === server) as Record<string, unknown> | undefined;
         if (selectedServer) {
-          const values: Record<string, any> = selectedServer;
+          const values = selectedServer;
           if (values) {
-            const attributes = values?.ZxPowerstore?.attributes;
+            const attributes = (values?.ZxPowerstore as { attributes?: Record<string, { value: unknown }> })?.attributes;
             setValuesFromAttributes(attributes);
           }
         }
@@ -251,22 +252,22 @@ const HSMsettingPanel: FC = () => {
   }, [server, setValuesFromAttributes]);
 
   const getAllVolumes = useCallback(() => {
-    const serverId: any = serverList.find((item: any) => item?.name === server);
+    const serverId = serverList.find((item: { name?: string }) => item?.name === server);
     setIsVolumeInProgress(true);
     setVolumeList([]);
     if (serverId) {
-      soapFetch(
+      (soapFetch(
         'GetAllVolumes',
         {
           _jsns: ZIMBRA_ADMIN_URN,
         },
         {
-          targetServer: serverId,
+          targetServer: serverId.id,
         },
-      ).then((response: any) => {
+      ) as Promise<{ volume?: Array<Volume> }>).then((response) => {
         setIsVolumeInProgress(false);
         if (response?.volume && response?.volume.length > 0) {
-          setVolumeList(response?.volume.filter((item: any) => item.type !== VOLUME_INDEX_TYPE));
+          setVolumeList(response?.volume.filter((item: Volume) => item.type !== VOLUME_INDEX_TYPE));
         }
       });
     }
@@ -294,7 +295,7 @@ const HSMsettingPanel: FC = () => {
 
   const onSave = useCallback(() => {
     setIsRequestInProgress(true);
-    const body: any = {
+    const body = {
       powerstoreMoveScheduler: {
         value: {
           'cron-pattern': powerstoreMoveSchedulerValue,
@@ -320,7 +321,7 @@ const HSMsettingPanel: FC = () => {
       },
     };
     setCoreAttributes(body)
-      .then((data: any) => {
+      .then((data: { errors?: Array<{ error: string }>; error?: string } | undefined) => {
         setIsRequestInProgress(false);
         if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
           let errMessage = errorMessage;
@@ -332,7 +333,7 @@ const HSMsettingPanel: FC = () => {
           showSnackbar('error', 'error', errMessage);
         } else {
           setIsDirty(false);
-          setOldValues((prev: any) => ({
+          setOldValues((prev) => ({
             ...prev,
             isZxPowerstoreMoveSchedulingEnabled,
             powerstoreMoveSchedulerValue,
@@ -349,9 +350,9 @@ const HSMsettingPanel: FC = () => {
           );
         }
       })
-      .catch((error: any) => {
+      .catch((error: { error?: string }) => {
         setIsRequestInProgress(false);
-        showSnackbar('error', 'error', error ? error?.error : errorMessage);
+        showSnackbar('error', 'error', error ? error?.error ?? errorMessage : errorMessage);
       });
   }, [
     powerstoreMoveSchedulerValue,
@@ -403,15 +404,15 @@ const HSMsettingPanel: FC = () => {
   const onDeletePolicy = useCallback(
     (isEditSave?: boolean) => {
       setIsRequestInProgress(true);
-      const hType = policies.find((item: any) => item?.hsmQuery === selectedPolicies[0]);
+      const hType = policies.find((item: HsmPolicyFromServer) => item?.hsmQuery === selectedPolicies[0]);
       fetchSoap('zextras', {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
         action: 'removeHSMPolicy',
         targetServers: server,
-        hsmPolicy: `${getHSMType(hType?.hsmType)}${selectedPolicies[0]}`.trim(),
+        hsmPolicy: `${getHSMType(hType?.hsmType ?? [])}${selectedPolicies[0]}`.trim(),
       })
-        .then((res: any) => {
+        .then((res) => {
           setIsRequestInProgress(false);
           if (res?.Body?.response?.content) {
             const info = JSON.parse(res?.Body?.response?.content);
@@ -447,7 +448,7 @@ const HSMsettingPanel: FC = () => {
   );
 
   const parseResponse = useCallback(
-    (isEditSave: boolean | undefined, info: any, isRunOperation?: boolean) => {
+    (isEditSave: boolean | undefined, info: { ok?: boolean; error?: { code?: string; message?: string }; exception?: { message: string } }, isRunOperation?: boolean) => {
       if (info?.ok) {
         if (isEditSave) {
           onDeletePolicy(isEditSave);
@@ -483,8 +484,8 @@ const HSMsettingPanel: FC = () => {
   );
 
   const hsmPolicyOperation = useCallback(
-    (hsmPolicyDetail?: HsmPolicyDetail, isEditSave?: boolean, isRunCustomPolicy?: boolean) => {
-      const request: any = {
+    (hsmPolicyDetail?: HsmPolicyEditDetail, isEditSave?: boolean, isRunCustomPolicy?: boolean) => {
+      const request: Record<string, unknown> = {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
         action: isRunCustomPolicy ? 'doMoveBlobs' : 'setHSMPolicy',
@@ -522,7 +523,7 @@ const HSMsettingPanel: FC = () => {
       fetchSoap('zextras', {
         ...request,
       })
-        .then((res: any) => {
+        .then((res) => {
           if (res?.Body?.response?.content) {
             const info = JSON.parse(res?.Body?.response?.content);
             parseResponse(isEditSave, info?.response?.[server], isRunCustomPolicy);
@@ -537,21 +538,21 @@ const HSMsettingPanel: FC = () => {
   );
 
   const createHSMpolicy = useCallback(
-    (hsmPolicyDetail: HsmPolicyDetail, isEditSave?: boolean) => {
+    (hsmPolicyDetail: HsmPolicyEditDetail, isEditSave?: boolean) => {
       hsmPolicyOperation(hsmPolicyDetail, isEditSave);
     },
     [hsmPolicyOperation],
   );
 
   const runCustomHSMpolicy = useCallback(
-    (hsmPolicyDetail: HsmPolicyDetail) => {
+    (hsmPolicyDetail: HsmPolicyEditDetail) => {
       hsmPolicyOperation(hsmPolicyDetail, undefined, true);
     },
     [hsmPolicyOperation],
   );
 
   const onEditSave = useCallback(
-    (editDetail: HsmPolicyDetail) => {
+    (editDetail: HsmPolicyEditDetail) => {
       setIsEditSaveInProgress(true);
       createHSMpolicy(editDetail, true);
     },
@@ -654,7 +655,7 @@ const HSMsettingPanel: FC = () => {
               )})`}
               backgroundColor="gray5"
               value={powerstoreMoveSchedulerValue}
-              onChange={(e: any): void => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 setPowerstoreMoveSchedulerValue(e.target.value);
               }}
             />
@@ -764,7 +765,7 @@ const HSMsettingPanel: FC = () => {
             headers={headers}
             showCheckbox={false}
             multiSelect={false}
-            selectedRows={selectedPolicies}
+            selectedRows={selectedPolicies as [] | [string]}
             HeaderFactory={CustomHeaderFactory}
             RowFactory={HoverableRowFactory}
           />
@@ -775,8 +776,8 @@ const HSMsettingPanel: FC = () => {
               label={t('hsm.minimum_space_threshold', 'Minimum Space Threshold')}
               backgroundColor="gray5"
               value={powerstoreSpaceThreshold}
-              onChange={(e: any): void => {
-                setPowerstoreSpaceThreshold(e.target.value);
+              onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                setPowerstoreSpaceThreshold(Number(e.target.value) || 0);
               }}
             />
           </Container>
