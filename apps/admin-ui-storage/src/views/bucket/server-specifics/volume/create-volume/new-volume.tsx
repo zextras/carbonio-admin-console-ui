@@ -6,43 +6,38 @@
 
 import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { type FC, useCallback, useContext } from 'react';
+import { type FC, type ReactElement, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { NewVolumeProps, WizardButtonProps, WizardInSectionProps } from '../../../../../../types';
 import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
 
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
-	const { t } = useTranslation();
-	return (
-		<Section
-			title={t(
-				'volume.serverName_volumes_create_mailstores_volume',
-				'{{serverName}} | Create Mailstores Volume',
-				{
-					serverName: externalData,
-				},
-			)}
-			padding={{ all: '0' }}
-			footer={wizardFooter}
-			divider
-			showClose
-			onClose={(): void => {
-				setToggleWizardSection(false);
-			}}
-		>
-			{wizard}
-		</Section>
-	);
+const WizardInSection: FC<WizardInSectionProps> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
+  const { t } = useTranslation();
+  return (
+    <Section
+      title={t(
+        'volume.serverName_volumes_create_mailstores_volume',
+        '{{serverName}} | Create Mailstores Volume',
+        {
+          serverName: externalData,
+        },
+      )}
+      padding={{ all: '0' }}
+      footer={wizardFooter}
+      divider
+      showClose
+      onClose={(): void => {
+        setToggleWizardSection(false);
+      }}
+    >
+      {wizard}
+    </Section>
+  );
 };
 
-const NewVolume: FC<{
-  setToggleWizardLocal: any;
-  setToggleWizardExternal: any;
-  volName: any;
-  CreateVolumeRequest: any;
-  isLoading: boolean;
-}> = ({
+const NewVolume: FC<NewVolumeProps> = ({
   setToggleWizardLocal,
   setToggleWizardExternal,
   volName,
@@ -61,7 +56,7 @@ const NewVolume: FC<{
       label: t('label.new_volume_create', 'CREATE'),
       icon: 'CubeOutline',
       view: MailstoresCreate,
-      CancelButton: (props: any) => (
+      CancelButton: (props: WizardButtonProps) => (
         <Button
           {...props}
           type="outlined"
@@ -73,14 +68,14 @@ const NewVolume: FC<{
           onClick={(): void => setToggleWizardLocal(false)}
         />
       ),
-      PrevButton: (props: any): any =>
+      PrevButton: (props: WizardButtonProps): ReactElement =>
         isAdvanced ? (
           <Button
             {...props}
             label={t('label.volume_back_button', 'BACK')}
             icon={'ChevronLeftOutline'}
             iconPlacement="left"
-            disable={props?.completeLoading}
+            disable={(props as { completeLoading?: boolean })?.completeLoading}
             color="secondary"
             onClick={(): void => {
               setToggleWizardLocal(false);
@@ -90,14 +85,14 @@ const NewVolume: FC<{
         ) : (
           <></>
         ),
-      NextButton: (props: any) =>
+      NextButton: (props: WizardButtonProps) =>
         isAdvanced ? (
           <Button
             {...props}
             label={t('label.volume_create', 'CREATE')}
             icon={'PowerOutline'}
             iconPlacement="right"
-            disable={props?.completeLoading}
+            disable={(props as { completeLoading?: boolean })?.completeLoading}
           />
         ) : (
           <Button
@@ -105,7 +100,7 @@ const NewVolume: FC<{
             label={t('label.volume_create', 'CREATE')}
             icon={'ChevronRightOutline'}
             iconPlacement="right"
-            disable={props?.completeLoading}
+            disable={(props as { completeLoading?: boolean })?.completeLoading}
           />
         ),
     },

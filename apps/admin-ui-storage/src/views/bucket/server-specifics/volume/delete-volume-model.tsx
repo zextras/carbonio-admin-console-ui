@@ -3,16 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container,Modal, Row } from '@zextras/ui-components';
+import { Button, Container, Modal, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const DeleteVolumeModel: FC<{
-	open: boolean;
-	closeHandler: any;
-	deleteHandler: any;
-	volumeDetail: any;
-}> = ({ open, closeHandler, deleteHandler, volumeDetail }) => {
+import type { DeleteVolumeModelProps } from '../../../../../types';
+
+const DeleteVolumeModel: FC<DeleteVolumeModelProps> = ({ open, closeHandler, deleteHandler, volumeDetail }) => {
 	const [t] = useTranslation();
 	return (
 		<>
@@ -61,19 +58,19 @@ const DeleteVolumeModel: FC<{
 				>
 					{volumeDetail?.isCurrent
 						? t(
-								'label.delete_content_is_current',
-								`You're trying to delete {{name}}. This volume is set as current. You should set a different volume as the current one before deleting it.`,
-								{
-									name: volumeDetail?.name
-								}
-						  )
+							'label.delete_content_is_current',
+							`You're trying to delete {{name}}. This volume is set as current. You should set a different volume as the current one before deleting it.`,
+							{
+								name: volumeDetail?.name
+							}
+						)
 						: t(
-								'label.delete_content',
-								`You are deleting {{name}}. Are you sure you want to delete it?`,
-								{
-									name: volumeDetail?.name
-								}
-						  )}
+							'label.delete_content',
+							`You are deleting {{name}}. Are you sure you want to delete it?`,
+							{
+								name: volumeDetail?.name
+							}
+						)}
 				</ds-text>
 			</Modal>
 		</>

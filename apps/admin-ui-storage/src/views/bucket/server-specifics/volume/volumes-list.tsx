@@ -58,14 +58,14 @@ import ModifyVolume from './modify-volume/modify-volume';
 
 const VolumeListTable: FC<{
   volumes: Array<Volume>;
-  selectedRows: any;
+  selectedRows: Array<string>;
   onSelectionChange: (selected: string[]) => void;
   headers: THeader[];
   onClick: (i: number) => void;
   isAdvanced: boolean;
 }> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
   const [t] = useTranslation();
-  const tableRows: any = useMemo(
+  const tableRows = useMemo(
     () =>
       volumes.map((v, i) => {
         const columns = [
@@ -142,7 +142,7 @@ const VolumeListTable: FC<{
         ];
 
         return {
-          id: v?.id,
+          id: String(v?.id ?? ''),
           columns: columns.filter((column) => column !== false), // Changed filter condition to remove false instead of null
           clickable: true,
         };
@@ -157,7 +157,7 @@ const VolumeListTable: FC<{
         rows={tableRows}
         showCheckbox={false}
         multiSelect={false}
-        selectedRows={selectedRows}
+        selectedRows={selectedRows as [] | [string]}
         onSelectionChange={onSelectionChange}
         RowFactory={HoverableRowFactory}
         HeaderFactory={CustomHeaderFactory}
@@ -187,7 +187,7 @@ const VolumesDetailPanel: FC = () => {
   const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
   const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
   const { data: serverList = [] } = useAllServers();
-  const [selectedServerId, setSelectedServerId] = useState<any>('');
+  const [selectedServerId, setSelectedServerId] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [volume, setVolume] = useState<Volume | undefined>({
     compressBlobs: '',
@@ -295,7 +295,10 @@ const VolumesDetailPanel: FC = () => {
     }
   }, [isAdvanced, selectedServerName, selectedServerId, createSnackbar, t]);
 
-  const deleteHandler = async (data: { name: string; id: number }): Promise<void> => {
+  const deleteHandler = async (data: Volume | undefined): Promise<void> => {
+    if (!data) {
+      return;
+    }
     if (isAdvanced) {
       await fetchSoap('zextras', {
         _jsns: ZIMBRA_ADMIN_URN,
@@ -711,7 +714,7 @@ const VolumesDetailPanel: FC = () => {
       {modifyVolumeToggle && volume && (
         <ModalOverlay open={modifyVolumeToggle}>
           <ModifyVolume
-            volumeId={volume?.id}
+            volumeId={volume?.id ?? 0}
             setOpen={setOpen}
             setmodifyVolumeToggle={setmodifyVolumeToggle}
             getAllVolumesRequest={getAllVolumesRequest}
@@ -776,9 +779,11 @@ const VolumesDetailPanel: FC = () => {
                     compressionThreshold: '',
                     volumeAllocation: 0,
                   });
-                  isAdvanced
-                    ? setToggleWizardExternal(!toggleWizardExternal)
-                    : setToggleWizardLocal(!toggleWizardLocal);
+                  if (isAdvanced) {
+                    setToggleWizardExternal(!toggleWizardExternal);
+                  } else {
+                    setToggleWizardLocal(!toggleWizardLocal);
+                  }
                 }}
               />
             </Row>

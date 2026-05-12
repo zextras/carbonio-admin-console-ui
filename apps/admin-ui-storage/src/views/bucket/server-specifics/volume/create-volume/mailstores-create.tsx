@@ -15,9 +15,10 @@ import {
   Switch,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { MailstoresCreateProps, VolumeAllocationItem } from '../../../../../../types';
 import {
   COMPRESSION_THRESHOLD_UNIT,
   EMPTY_TYPE_VALUE,
@@ -28,11 +29,7 @@ import {
 import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 import { VolumeContext } from './volume-context';
 
-const MailstoresCreate: FC<{
-  onSelection: any;
-  externalData: string;
-  setCompleteLoading: any;
-}> = ({ onSelection, externalData, setCompleteLoading }) => {
+const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData, setCompleteLoading }) => {
   const context = useContext(VolumeContext);
   const { t } = useTranslation();
 
@@ -47,11 +44,11 @@ const MailstoresCreate: FC<{
   const [primaryRadio, setPrimaryRadio] = useState(false);
   const [secondaryRadio, setSecondaryRadio] = useState(false);
   const [indexRadio, setIndexRadio] = useState(false);
-  const [allocation, setAllocation] = useState<any>();
+  const [allocation, setAllocation] = useState<VolumeAllocationItem>();
 
-  const onVolMainChange = (v: any): void => {
-    if (!isAdvanced) {
-      setVolumeDetail((prev: any) => ({ ...prev, volumeMain: v }));
+  const onVolMainChange = (v: number | null): void => {
+    if (!isAdvanced && v !== null) {
+      setVolumeDetail((prev) => ({ ...prev, volumeMain: v }));
       onSelection({ volumeMain: v }, true);
       if (v === INDEX_TYPE_VALUE) {
         setToggleIndexer(true);
@@ -100,8 +97,8 @@ const MailstoresCreate: FC<{
     onSelection({ isCompression: !volumeDetail?.isCompression }, true);
   }, [onSelection, setVolumeDetail, volumeDetail?.isCompression]);
 
-  const onVolAllocationChange = (v: any): any => {
-    setVolumeDetail((prev) => ({ ...prev, volumeAllocation: v }));
+  const onVolAllocationChange = (v: number | null): void => {
+    setVolumeDetail((prev) => ({ ...prev, volumeAllocation: v ?? undefined }));
   };
 
   const onVolNamechange = useCallback(
@@ -153,20 +150,20 @@ const MailstoresCreate: FC<{
   useEffect(() => {
     if (isAdvanced) {
       if (primaryRadio) {
-        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
+        setVolumeDetail((prev) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
         onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
       } else if (secondaryRadio) {
-        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
+        setVolumeDetail((prev) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
         onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
       } else if (indexRadio) {
-        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: INDEX_TYPE_VALUE }));
+        setVolumeDetail((prev) => ({ ...prev, volumeMain: INDEX_TYPE_VALUE }));
         onSelection({ volumeMain: INDEX_TYPE_VALUE }, true);
       } else {
-        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
+        setVolumeDetail((prev) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
         onSelection({ volumeMain: EMPTY_TYPE_VALUE }, true);
       }
       const volumeTypeObject = volAllocationList?.find(
-        (item: any) => item?.value === volumeDetail?.volumeAllocation,
+        (item: VolumeAllocationItem) => item?.value === volumeDetail?.volumeAllocation,
       );
       setAllocation(volumeTypeObject);
     }
@@ -216,7 +213,7 @@ const MailstoresCreate: FC<{
             background="gray5"
             label={t('label.volume_type', 'Volume Type')}
             defaultSelection={
-              volTypeList?.filter((items) => items?.value === volumeDetail?.volumeMain)[0]
+              volTypeList?.find((items) => items?.value === volumeDetail?.volumeMain)
             }
             showCheckbox={false}
             onChange={onVolMainChange}
@@ -230,7 +227,7 @@ const MailstoresCreate: FC<{
             background="gray5"
             label={t('label.volume_allocation', 'Allocation')}
             showCheckbox={false}
-            selection={allocation}
+            defaultSelection={allocation}
             onChange={onVolAllocationChange}
           />
         </Row>
@@ -260,7 +257,7 @@ const MailstoresCreate: FC<{
                 label={t('label.primary_volume', 'This is a Primary Volume')}
                 value={PRIMARY_TYPE_VALUE}
                 checked={primaryRadio}
-                onClick={(): any => {
+                onClick={(): void => {
                   setPrimaryRadio(!primaryRadio);
                   setSecondaryRadio(false);
                   setIndexRadio(false);
@@ -273,7 +270,7 @@ const MailstoresCreate: FC<{
                 label={t('label.secondary_volume', 'This is a Secondary Volume')}
                 value={SECONDARY_TYPE_VALUE}
                 checked={secondaryRadio}
-                onClick={(): any => {
+                onClick={(): void => {
                   setSecondaryRadio(!secondaryRadio);
                   setPrimaryRadio(false);
                   setIndexRadio(false);
@@ -287,7 +284,7 @@ const MailstoresCreate: FC<{
               label={t('label.index_volume', 'This is a Index Volume')}
               value={INDEX_TYPE_VALUE}
               checked={indexRadio}
-              onClick={(): any => {
+              onClick={(): void => {
                 setIndexRadio(!indexRadio);
                 setPrimaryRadio(false);
                 setSecondaryRadio(false);
@@ -334,7 +331,7 @@ const MailstoresCreate: FC<{
               onChange={changeVolCompThresold}
               hasError={!errCompressionThreshold}
               disabled={!volumeDetail?.isCompression}
-              CustomIcon={(): any => <ds-text as="span" color="secondary">{COMPRESSION_THRESHOLD_UNIT}</ds-text>}
+              CustomIcon={(): ReactElement => <ds-text as="span" color="secondary">{COMPRESSION_THRESHOLD_UNIT}</ds-text>}
             />
             {!errCompressionThreshold && (
               <Padding top="extrasmall">

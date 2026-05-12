@@ -133,7 +133,7 @@ export type SetCurrentVolumeRequest = {
  */
 export type VolumeAllocationItem = {
 	label: string;
-	value: string;
+	value: number;
 };
 
 /**
@@ -150,7 +150,7 @@ export type SelectItem = {
 export type VolumeWizardDetail = {
 	id?: string | number;
 	volumeName?: string;
-	volumeMain?: number;
+	volumeMain?: number | string;
 	path?: string;
 	isCurrent?: boolean;
 	isCompression?: boolean;
@@ -174,4 +174,111 @@ export type AdvancedVolumeWizardDetail = VolumeWizardDetail & {
 	prefix?: string;
 	volumeType?: string;
 	storeType?: string;
+};
+
+/**
+ * Props passed to wizard step button components (CancelButton, PrevButton, NextButton).
+ * The wizard injects ButtonProps plus extra fields like toggleNextBtn, completeLoading, etc.
+ */
+export type WizardButtonProps = Partial<import('react').ButtonHTMLAttributes<HTMLButtonElement>> & Record<string, unknown>;
+
+/**
+ * Props for the WizardInSection wrapper component.
+ */
+export type WizardInSectionProps = {
+	wizard: React.ReactNode;
+	wizardFooter: React.ReactNode;
+	setToggleWizardSection: (v: boolean) => void;
+	externalData: string;
+};
+
+/**
+ * Props for CreateMailstoresVolume (advanced wizard)
+ */
+export type CreateMailstoresVolumeProps = {
+	setToggleWizardExternal: (v: boolean) => void;
+	setToggleWizardLocal: (v: boolean) => void;
+	volName: string;
+	CreateAdvancedRequest: (params: Record<string, unknown>) => void;
+};
+
+/**
+ * Props for NewVolume (CE wizard)
+ */
+export type NewVolumeProps = {
+	setToggleWizardLocal: (v: boolean) => void;
+	setToggleWizardExternal: (v: boolean) => void;
+	volName: string;
+	CreateVolumeRequest: (attr: Partial<Volume>) => void;
+	isLoading: boolean;
+};
+
+/**
+ * Props for MailstoresCreate step
+ */
+export type MailstoresCreateProps = {
+	onSelection: (data: Record<string, unknown>, flag: boolean) => void;
+	externalData: string;
+	setCompleteLoading: (v: boolean) => void;
+};
+
+/**
+ * Props for IndexerVolumeTable
+ */
+export type IndexerVolumeTableProps = {
+	volumes: Array<Volume>;
+	selectedRows: Array<string>;
+	onSelectionChange: (selected: Array<string>) => void;
+	headers: Array<{ id: string; label: string; width: string; bold?: boolean }>;
+	onClick: (index: number) => void;
+	isAdvanced: boolean;
+};
+
+/**
+ * Props for DeleteVolumeModel
+ */
+export type DeleteVolumeModelProps = {
+	open: boolean;
+	closeHandler: () => void;
+	deleteHandler: (data: Volume | undefined) => void;
+	volumeDetail: Volume | undefined;
+};
+
+/**
+ * Props for ModifyVolume
+ */
+export type ModifyVolumeProps = {
+	volumeId: number | string;
+	setmodifyVolumeToggle: (v: boolean) => void;
+	getAllVolumesRequest: () => void;
+	selectedServerId: string;
+	volumeList: {
+		primaries: Array<Volume>;
+		indexes: Array<Volume>;
+		secondaries: Array<Volume>;
+	};
+	setOpen: (v: boolean) => void;
+};
+
+/**
+ * Props for AdvancedMailstoresConfig step
+ */
+export type AdvancedMailstoresConfigProps = {
+	onSelection: (data: Record<string, unknown>, flag: boolean) => void;
+	externalData: string;
+	setCompleteLoading: (v: boolean) => void;
+};
+
+/**
+ * Props for AdvancedMailstoresDefinition step
+ */
+export type AdvancedMailstoresDefinitionProps = {
+	externalData: string;
+};
+
+/**
+ * Props for AdvancedMailstoresCreate step
+ */
+export type AdvancedMailstoresCreateProps = {
+	setCompleteLoading: (v: boolean) => void;
 };
