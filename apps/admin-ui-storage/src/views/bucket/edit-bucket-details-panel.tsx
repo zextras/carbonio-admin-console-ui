@@ -95,6 +95,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const [urlData, setUrlData] = useState(bucketDetail?.url ?? '');
   const [prefix, setPrefix] = useState(bucketDetail?.prefix ?? '');
   const [prefixConfirm, setPrefixConfirm] = useState(true);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [regionSelection, setRegionSelection] = useState(initialRegion);
   const [isCustomRegion, setIsCustomRegion] = useState(
     initialRegion.value === CUSTOM_REGION_VALUE,
@@ -304,6 +305,12 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   }
 
   async function onVerifyAndSaveChanges(): Promise<void> {
+    setHasSubmitted(true);
+
+    if (bucketLabel.trim() === '' || bucketName.trim() === '') {
+      return;
+    }
+
     if (!prefixConfirm) {
       return;
     }
@@ -402,23 +409,42 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
           <Input
             backgroundColor="gray5"
-            label={t('label.descriptive_name', 'Descriptive name*')}
+            label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
             value={bucketLabel}
             onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
               setBucketLabel(ev.target.value);
             }}
+            hasError={hasSubmitted && bucketLabel.trim() === ''}
           />
+          {hasSubmitted && bucketLabel.trim() === '' && (
+            <Padding top="extrasmall">
+              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                {t('storages.s3Connectors.descriptiveNameRequired', 'This field is mandatory')}
+              </ds-text>
+            </Padding>
+          )}
         </Row>
 
         <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
           <Input
             backgroundColor="gray5"
-            label={t('label.bucket_name', 'Bucket name*')}
+            label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
             value={bucketName}
             onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
               setBucketName(ev.target.value);
             }}
+            hasError={hasSubmitted && bucketName.trim() === ''}
           />
+          {hasSubmitted && bucketName.trim() === '' && (
+            <Padding top="extrasmall">
+              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                {t(
+                  'storages.s3Connectors.invalidBucketName',
+                  "This field can't be blank or have white space",
+                )}
+              </ds-text>
+            </Padding>
+          )}
         </Row>
 
         <Row width="100%" padding={{ top: 'large' }}>

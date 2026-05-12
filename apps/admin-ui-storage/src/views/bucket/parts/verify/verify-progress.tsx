@@ -90,14 +90,6 @@ export const VerifyProgress = ({
         <div className={styles.spinnerCircle}>
           <div className={styles.spinner} />
         </div>
-        <button
-          type="button"
-          className={styles.closeButton}
-          onClick={handleClose}
-          aria-label={t('label.close', 'Close')}
-        >
-          <ds-icon icon="CloseOutline" size="24px" />
-        </button>
       </div>
       <ds-text as="h2" weight="bold" size="large">
         {t('storages.s3Connectors.verifyProgress.verifyingConnectors', 'Verifying connectors')}

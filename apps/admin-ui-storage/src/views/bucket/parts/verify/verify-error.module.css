@@ -7,6 +7,7 @@
 .popover {
   inset: 0;
   margin: auto;
+  position: relative;
   border: none;
   border-radius: 1.5rem;
   background: var(--color-gray6-regular, white);
@@ -39,12 +40,15 @@
 
 .header {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 1.5rem;
 }
 
 .closeButton {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;

@@ -12,6 +12,7 @@ import {
   Row,
   Select,
   Switch,
+  Tooltip,
 } from '@zextras/ui-components';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -66,6 +67,7 @@ const Connection: FC<{
           ));
   const [prefixConfirm, setprefixConfirm] = useState(true);
   const [bucketNameConfirm, setBucketNameConfirm] = useState(true);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
   const [regionSelection, setRegionSelection] = useState<{ value: string; label: string }>(
     EMPTY_REGION,
@@ -78,8 +80,8 @@ const Connection: FC<{
   const storeType = externalData || AMAZON_WEB_SERVICE_S3;
 
   const handleVerifyConnector = (): void => {
+    setHasSubmitted(true);
     const selectedRegion = isCustomRegion ? customRegion.trim() : regionsData?.value ?? '';
-
     if (
       bucketLabel &&
       bucketName &&
@@ -222,44 +224,6 @@ const Connection: FC<{
     [bucketRegions, t],
   );
 
-  // useEffect(() => {
-  //   if (verifyCheck === SUCCESS) {
-  //     setButtonColor('success');
-  //     setButtonDetail(
-  //       t('label.connector_is_create_and_verified', 'CONNECTOR IS CREATED AND VERIFIED'),
-  //     );
-  //   } else if (verifyCheck === ERROR) {
-  //     setButtonColor('error');
-  //     setButtonDetail(
-  //       t(
-  //         'label.connection_is_created_verify_connector_fail',
-  //         'CONNECTOR IS CREATED BUT VERIFICATION HAS FAILED',
-  //       ),
-  //     );
-  //   } else if (verifyCheck === FAIL) {
-  //     setButtonColor('error');
-  //     setButtonDetail(
-  //       t(
-  //         'label.connector_is_not_created_and_verification_failed',
-  //         'CONNECTOR IS NOT CREATED AND VERIFICATION HAS FAILED',
-  //       ),
-  //     );
-  //     createSnackbar({
-  //       key: '1',
-  //       severity: 'error',
-  //       label: t('label.verify_error', '{{name}}', {
-  //         name: bothFail,
-  //       }),
-  //       autoHideTimeout: 5000,
-  //     });
-  //   } else {
-  //     setButtonColor('primary');
-  //     setButtonDetail(
-  //       t('buckets.connection.verify_and_create_connector', 'VERIFY & CREATE CONNECTOR'),
-  //     );
-  //   }
-  // }, [bothFail, createSnackbar, t, verifyCheck, verifyFailErr]);
-
   return (
     <Container
       orientation="vertical"
@@ -294,30 +258,35 @@ const Connection: FC<{
           onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
             setBucketLabel(ev.target.value);
           }}
+          hasError={hasSubmitted && bucketLabel === ''}
         />
+        {hasSubmitted && bucketLabel === '' && (
+          <Padding top="extrasmall">
+            <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+              {t('storages.s3Connectors.descriptiveNameRequired', 'This field is mandatory')}
+            </ds-text>
+          </Padding>
+        )}
         </Row>
         <Row width="100%" padding={{ top: 'large' }}>
         <Row width="100%" mainAlignment="flex-start">
           <Input
             backgroundColor="gray5"
-            label={t('label.bucket_name', 'Bucket name*')}
+            label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
             value={bucketName}
             onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
               setBucketName(ev.target.value);
               setBucketNameConfirm(ev.target.value === '' || bucketNameRegex.test(ev.target.value));
             }}
-            hasError={!bucketNameConfirm}
+            hasError={hasSubmitted && (bucketName === '' || !bucketNameConfirm)}
           />
-          <Padding top="extrasmall">
-            <ds-text
-              as="span"
-              color={!bucketNameConfirm ? 'error' : 'secondary'}
-              overflow="break-word"
-              size="extrasmall"
-            >
-              {t('storages.s3Connectors.invalidBucketName', "This field can't be blank or have white space")}
-            </ds-text>
-          </Padding>
+          {hasSubmitted && (bucketName === '' || !bucketNameConfirm) && (
+            <Padding top="extrasmall">
+              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                {t('storages.s3Connectors.invalidBucketName', "This field can't be blank or have white space")}
+              </ds-text>
+            </Padding>
+          )}
         </Row>
         </Row>
         <Row width="100%" padding={{ top: 'large' }}>
@@ -438,7 +407,14 @@ const Connection: FC<{
             />
           </Row>
           <Row width="10%" mainAlignment="flex-end">
-            <ds-icon icon="InfoOutline" size="medium" color="gray2"></ds-icon>
+            <Tooltip
+                placement="top"
+                label={t('storages.s3Connectors.untrustedSSLTooltip', 'Use this only for testing environments or internal infrastructure with custom certificates. Not recommended for production.')}
+              >
+                <ds-text as="span">
+                  <ds-icon icon="InfoOutline" size="large" color="gray0"></ds-icon>
+                </ds-text>
+            </Tooltip>
           </Row>
         </Row>
         <Row width="100%" padding={{ top: 'extrasmall' }} mainAlignment="flex-start">
@@ -458,13 +434,7 @@ const Connection: FC<{
         height={'4.5rem'}
       >
         <ds-divider></ds-divider>
-        <Row width="100%" padding={{ all: 'large' }} mainAlignment="space-between">
-          <Button
-            type="outlined"
-            label={t('label.bucket_need_help_button', 'NEED HELP?')}
-            color="secondary"
-            onClick={(): void => undefined}
-          />
+        <Row width="100%" padding={{ all: 'large' }} mainAlignment="flex-end">
           <Row width="auto" mainAlignment="flex-end">
             <Padding right="small">
               <Button
