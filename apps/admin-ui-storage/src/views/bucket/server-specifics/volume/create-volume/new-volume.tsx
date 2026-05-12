@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
+import { Button, type ButtonProps, HorizontalWizard, Section } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { type FC, type ReactElement, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -56,9 +56,8 @@ const NewVolume: FC<NewVolumeProps> = ({
       label: t('label.new_volume_create', 'CREATE'),
       icon: 'CubeOutline',
       view: MailstoresCreate,
-      CancelButton: (props: WizardButtonProps) => (
+      CancelButton: () => (
         <Button
-          {...props}
           type="outlined"
           key="wizard-cancel"
           label={t('label.volume_cancel_button', 'CANCEL')}
@@ -71,11 +70,10 @@ const NewVolume: FC<NewVolumeProps> = ({
       PrevButton: (props: WizardButtonProps): ReactElement =>
         isAdvanced ? (
           <Button
-            {...props}
             label={t('label.volume_back_button', 'BACK')}
             icon={'ChevronLeftOutline'}
             iconPlacement="left"
-            disable={(props as { completeLoading?: boolean })?.completeLoading}
+            disabled={!(props as { completeLoading?: boolean })?.completeLoading}
             color="secondary"
             onClick={(): void => {
               setToggleWizardLocal(false);
@@ -88,19 +86,19 @@ const NewVolume: FC<NewVolumeProps> = ({
       NextButton: (props: WizardButtonProps) =>
         isAdvanced ? (
           <Button
-            {...props}
             label={t('label.volume_create', 'CREATE')}
             icon={'PowerOutline'}
             iconPlacement="right"
-            disable={(props as { completeLoading?: boolean })?.completeLoading}
+            disabled={!(props as { completeLoading?: boolean })?.completeLoading}
+            onClick={props.onClick as ButtonProps['onClick']}
           />
         ) : (
           <Button
-            {...props}
             label={t('label.volume_create', 'CREATE')}
             icon={'ChevronRightOutline'}
             iconPlacement="right"
-            disable={(props as { completeLoading?: boolean })?.completeLoading}
+            disabled={!(props as { completeLoading?: boolean })?.completeLoading}
+            onClick={props.onClick as ButtonProps['onClick']}
           />
         ),
     },
@@ -108,12 +106,12 @@ const NewVolume: FC<NewVolumeProps> = ({
 
   const onComplete = useCallback(() => {
     CreateVolumeRequest({
-      id: volumeDetail?.id,
+      id: volumeDetail?.id as number | undefined,
       name: volumeDetail?.volumeName,
       rootpath: volumeDetail?.path,
-      type: volumeDetail?.volumeMain,
-      compressBlobs: volumeDetail?.isCompression ? 1 : 0,
-      compressionThreshold: volumeDetail?.isCompression ? volumeDetail?.compressionThreshold : 0,
+      type: volumeDetail?.volumeMain as number | undefined,
+      compressBlobs: volumeDetail?.isCompression ? '1' : '0',
+      compressionThreshold: volumeDetail?.isCompression ? String(volumeDetail?.compressionThreshold ?? '') : '0',
       isCurrent: volumeDetail?.isCurrent ? 1 : 0,
     });
   }, [volumeDetail, CreateVolumeRequest]);

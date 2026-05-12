@@ -39,7 +39,7 @@ const AdvancedMailstoresCreate: FC<{
     const volumeTypeObject = volTypeList?.find(
       (item: { label?: string; value?: number }) => item?.value === advancedVolumeDetail?.volumeMain,
     )?.label;
-    setVolumeType(volumeTypeObject);
+    setVolumeType(volumeTypeObject ?? '');
   }, [advancedVolumeDetail?.volumeMain, volTypeList]);
 
   useEffect(() => {

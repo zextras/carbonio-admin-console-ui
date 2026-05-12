@@ -85,7 +85,7 @@ const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selectedRows
         ];
 
         return {
-          id: v?.id,
+          id: String(v?.id ?? ''),
           columns: columns.filter((column) => column !== false),
           clickable: true,
         };
@@ -100,7 +100,7 @@ const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selectedRows
         rows={tableRows}
         showCheckbox={false}
         multiSelect={false}
-        selectedRows={selectedRows}
+        selectedRows={selectedRows as [] | [string]}
         onSelectionChange={onSelectionChange}
         RowFactory={HoverableRowFactory}
         HeaderFactory={CustomHeaderFactory}
