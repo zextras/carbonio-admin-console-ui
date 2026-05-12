@@ -205,8 +205,8 @@ export const Features: FC<{
                         subValue={featuresDetail?.carbonioOtpWizardFromUntrusted}
                         onChange={changeSwitchOption}
                         label={t(
-                          'cos.features.enforceOnUntrustedNetworks',
-                          'Enforce on Untrusted Networks',
+                          'cos.features.allowSetupFromUntrustedNetworks',
+                          'Allow 2FA setup from untrusted networks',
                         )}
                         iconColor="primary"
                         inheritedValue={cosDetail?.carbonioOtpWizardFromUntrusted}
@@ -233,8 +233,8 @@ export const Features: FC<{
                             }
                           >
                             {t(
-                              'cos.features.enforceOnUntrustedNetworksInfo',
-                              'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
+                              'cos.features.allowSetupFromUntrustedNetworksInfo',
+                              'Lets users without an OTP complete the 2FA setup wizard at sign-in from untrusted networks. Disable this option to block access from untrusted networks until 2FA is already configured.',
                             )}
                           </ds-text>
                         </Row>
