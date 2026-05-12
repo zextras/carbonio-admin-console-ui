@@ -19,7 +19,7 @@ const TRANSLATIONS: Record<string, string> = {
 	'last_access': 'Last access',
 };
 
-function createI18nInstance(resources?: Record<string, string>): i18next.i18n {
+function createI18nInstance(resources?: Record<string, string>) {
 	const instance = i18next.createInstance();
 	instance.init({
 		lng: 'en',
