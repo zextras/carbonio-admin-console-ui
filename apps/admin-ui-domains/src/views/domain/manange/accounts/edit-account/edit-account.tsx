@@ -118,7 +118,6 @@ const EditAccount: FC<{
     setInitAccountDetail,
     deleteAdministrationRights,
     setDefaultCOS,
-    cosDetail,
   } = context;
   const setDomainListStore = useDomainStore((state) => state.setDomainList);
   const isAdvanced = useIsAdvanced();
@@ -1068,7 +1067,9 @@ const EditAccount: FC<{
             'Are you sure you want to leave this page without saving?',
           )}
         </ds-text>
-        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
+        <ds-text as="p">
+          {t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}
+        </ds-text>
       </RouteLeavingGuard>
       <Modal
         size="small"
@@ -1225,7 +1226,12 @@ const EditAccount: FC<{
         >
           <Container>
             <Padding bottom="medium" top="medium">
-              <ds-text style={{ textAlign: 'center' }} size={'extralarge'} overflow="break-word" as="p">
+              <ds-text
+                style={{ textAlign: 'center' }}
+                size={'extralarge'}
+                overflow="break-word"
+                as="p"
+              >
                 {t(
                   'label.delete_delegated_account_content',
                   `The system accounts can't be deleted from here. Please visit the respective module to manage the account.`,
