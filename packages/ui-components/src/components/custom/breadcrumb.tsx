@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation } from 'react-router';
 
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
@@ -24,13 +24,12 @@ type BreadcrumbProps = {
 
 export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: BreadcrumbProps) => {
   const [t] = useTranslation();
-  const loc = useLocation();
-  const navigate = useNavigate();
+  const location = useLocation();
   const [splitRoutes, setSplitRoutes] = useState<Array<BreadcrumbItem>>([]);
 
   useEffect(() => {
-    if (loc?.pathname) {
-      const currentRoute = loc?.pathname.substring(1);
+    if (location?.pathname) {
+      const currentRoute = location?.pathname.substring(1);
       const splitRoute = currentRoute?.split('/');
       const _storeTempRoute: Array<BreadcrumbItem> = [];
       splitRoute.forEach((item: string, index: number) => {
@@ -44,34 +43,24 @@ export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: Brea
           const path = _storeTempRoute.map((i) => i?.path);
           _storeTempRoute.push({
             /* i18next-extract-disable-next-line */
-            label: t(`label.${item}`),
+            label: t(`label.${item}`, item.charAt(0).toUpperCase() + item.slice(1)),
             path: `${path[index - 1]}/${item}`,
             homePath: `/${dashboardRoute}`,
           });
-          if (
-            _storeTempRoute.find(
-              (sr) => typeof sr?.label === 'string' && sr?.label.startsWith('label.'),
-            )
-          ) {
-            _storeTempRoute.splice(index, 1);
-          }
         }
       });
 
+      if (splitRoute.length === 1) {
+        _storeTempRoute.push({
+          label: t('label.dashboard', 'Dashboard'),
+          path: `/${splitRoute[0]}/dashboard`,
+          homePath: `/${dashboardRoute}`,
+        });
+      }
+
       setSplitRoutes(_storeTempRoute);
     }
-  }, [loc, t, dashboardRoute]);
-
-  const navigationClick = useCallback(
-    (item: BreadcrumbItem, index: number) => {
-      if (index === 0) {
-        navigate(item?.homePath);
-      } else {
-        navigate(item?.path);
-      }
-    },
-    [navigate],
-  );
+  }, [location, t, dashboardRoute]);
 
   const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
 
@@ -88,43 +77,29 @@ export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: Brea
         {splitRoutes.map((item: BreadcrumbItem, index) => (
           <Row key={item?.path}>
             {isLast(index) ? (
-              <ds-text as="span" size="medium" weight="regular" style={{ color: 'var(--color-gray0-regular)' } as React.CSSProperties}>
-                {item?.label}
-              </ds-text>
-            ) : (
               <ds-text
                 as="span"
                 size="medium"
                 weight="regular"
-                color="#cccccc"
-                style={{ cursor: 'pointer' } as React.CSSProperties}
-                onClick={(): void => {
-                  navigationClick(item, index);
-                }}
+                style={{ color: 'var(--color-gray0-regular)' } as React.CSSProperties}
               >
+                {item?.label}
+              </ds-text>
+            ) : (
+              <ds-text as="span" size="medium" weight="regular" color="#cccccc">
                 {item?.label}
               </ds-text>
             )}
 
             {index !== splitRoutes.length - 1 && (
               <Padding left="extrasmall" right="extrasmall">
-                <ds-text
-                  as="span"
-                  size="medium"
-                  weight="regular"
-                  color="#cccccc"
-                >
+                <ds-text as="span" size="medium" weight="regular" color="#cccccc">
                   &nbsp;/&nbsp;
                 </ds-text>
               </Padding>
             )}
           </Row>
         ))}
-        {splitRoutes.length === 1 && (
-          <Container mainAlignment="center" crossAlignment="flex-start" padding={{ left: 'small' }}>
-            {t('label.home', 'Home')}
-          </Container>
-        )}
         {lastLoginTimestamp && (
           <Container
             mainAlignment="center"

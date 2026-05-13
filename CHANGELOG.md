@@ -1,136 +1,52 @@
-## [0.13.0-devel.28](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.27...v0.13.0-devel.28) (2026-05-04)
-
-### Features
-
-* improvements on types of adminUI cos ([#1171](https://github.com/zextras/carbonio-admin-console-ui/issues/1171)) ([bd830d7](https://github.com/zextras/carbonio-admin-console-ui/commit/bd830d75cb91dce3b2d7e14a6b3953c84bf157c1))
-
-## [0.13.0-devel.27](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.26...v0.13.0-devel.27) (2026-05-04)
-
-### Features
-
-* types on adminUI backup ([fe0656f](https://github.com/zextras/carbonio-admin-console-ui/commit/fe0656f738e5ca60000665a333249018445ea20d))
-
-## [0.13.0-devel.26](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.25...v0.13.0-devel.26) (2026-05-04)
-
-### Bug Fixes
-
-* not set in  public service protocol option does not work ([#1162](https://github.com/zextras/carbonio-admin-console-ui/issues/1162)) ([ab71089](https://github.com/zextras/carbonio-admin-console-ui/commit/ab7108928ee152df35457504cb46c59156325587))
-
-## [0.13.0-devel.25](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.24...v0.13.0-devel.25) (2026-04-30)
-
-### Features
-
-* added otp restore option in account settings ([#1177](https://github.com/zextras/carbonio-admin-console-ui/issues/1177)) ([47654e1](https://github.com/zextras/carbonio-admin-console-ui/commit/47654e15f1b7177944ddb0a0e9c789b0ab03acbd))
-
-## [0.13.0-devel.24](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.23...v0.13.0-devel.24) (2026-04-25)
-
-### Bug Fixes
-
-* **deps:** update dependency i18next-http-backend to v3 [security] ([#1161](https://github.com/zextras/carbonio-admin-console-ui/issues/1161)) ([87af8da](https://github.com/zextras/carbonio-admin-console-ui/commit/87af8da47a593761c6520aefb294c0f15176bf6d))
-
-## [0.13.0-devel.23](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.22...v0.13.0-devel.23) (2026-04-23)
+## [0.13.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.8...v0.13.0) (2026-05-04)
 
 ### Features
 
 * [CO-3477] download button for domain quota report ([40955be](https://github.com/zextras/carbonio-admin-console-ui/commit/40955bed298c7fc77d44111d39da3e11523ee507))
-
-## [0.13.0-devel.22](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.21...v0.13.0-devel.22) (2026-04-23)
-
-### Bug Fixes
-
-* domain, cos creation date displays values issue ([#1159](https://github.com/zextras/carbonio-admin-console-ui/issues/1159)) ([7a14ca1](https://github.com/zextras/carbonio-admin-console-ui/commit/7a14ca13b1987b7b54a542a0bd7675fa0b5273ba))
-
-## [0.13.0-devel.21](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.20...v0.13.0-devel.21) (2026-04-23)
+* add domain quota management ([792ca0f](https://github.com/zextras/carbonio-admin-console-ui/commit/792ca0fa782aaef6a34c832a56e872d7b3de7aaf)), closes [#1108](https://github.com/zextras/carbonio-admin-console-ui/issues/1108)
+* add totalQuotaStatus to account quota management ([#1153](https://github.com/zextras/carbonio-admin-console-ui/issues/1153)) ([e2d4373](https://github.com/zextras/carbonio-admin-console-ui/commit/e2d43731eb0f854ece88225472478571466b0a7b))
+* add warning banners for account quota ([#1078](https://github.com/zextras/carbonio-admin-console-ui/issues/1078)) ([a44e013](https://github.com/zextras/carbonio-admin-console-ui/commit/a44e0136f8f8a08bc73b438a54bf39778ccda94c))
+* added otp restore option in account settings ([#1177](https://github.com/zextras/carbonio-admin-console-ui/issues/1177)) ([47654e1](https://github.com/zextras/carbonio-admin-console-ui/commit/47654e15f1b7177944ddb0a0e9c789b0ab03acbd))
+* enforce on untrusted networks ([#1121](https://github.com/zextras/carbonio-admin-console-ui/issues/1121)) ([d9363b1](https://github.com/zextras/carbonio-admin-console-ui/commit/d9363b1391e628e3ec49b1028241adbdd84e09f9))
+* hide COS quota warning settings when total quota is active (CO-3478) ([#1148](https://github.com/zextras/carbonio-admin-console-ui/issues/1148)) ([e5685f2](https://github.com/zextras/carbonio-admin-console-ui/commit/e5685f28ef5f2d589be595f9761b3c680ca93855))
+* hide mailbox quota section under domain ([#1136](https://github.com/zextras/carbonio-admin-console-ui/issues/1136)) ([2306cc5](https://github.com/zextras/carbonio-admin-console-ui/commit/2306cc5259505f63f48554ef808d746faa1f4040))
+* implement COS quota management with unlimited quota support ([f7f19b0](https://github.com/zextras/carbonio-admin-console-ui/commit/f7f19b0aa77d5cd5672a5ea65519f76c174a1ccb)), closes [#1104](https://github.com/zextras/carbonio-admin-console-ui/issues/1104)
+* integrate total quota active hook in account management ([#1076](https://github.com/zextras/carbonio-admin-console-ui/issues/1076)) ([1054574](https://github.com/zextras/carbonio-admin-console-ui/commit/1054574762be2a96851b20938ed8a1900a9aea4d))
+* merge ([2e9a847](https://github.com/zextras/carbonio-admin-console-ui/commit/2e9a847e8079c2c11dd1a32b31517fc72d421da0))
+* show total quota usage by module ([#1077](https://github.com/zextras/carbonio-admin-console-ui/issues/1077)) ([c2e3a77](https://github.com/zextras/carbonio-admin-console-ui/commit/c2e3a77cb5de100e5c331059c42491b4962dad2d))
+* support unlimited quota for single account ([9f05adb](https://github.com/zextras/carbonio-admin-console-ui/commit/9f05adb04616a211048ff0bbe45ffcb35838bb45))
+* test ([ef71ee5](https://github.com/zextras/carbonio-admin-console-ui/commit/ef71ee5771fa346c81bc2a0032de840e176f1b11))
+* test on adminUI legalhold ([#1138](https://github.com/zextras/carbonio-admin-console-ui/issues/1138)) ([b655145](https://github.com/zextras/carbonio-admin-console-ui/commit/b655145b9b887c621e3efdae0d5f8a47c030e6b8))
+* tests ([767a5a1](https://github.com/zextras/carbonio-admin-console-ui/commit/767a5a129dfb06ece9f7eaf5c1f83f11bdb0be0c))
+* tests ([48f2ea6](https://github.com/zextras/carbonio-admin-console-ui/commit/48f2ea66b578b1ad806c8c7c4ac1562857abfff1))
+* tests o adminUI notifications ([#1125](https://github.com/zextras/carbonio-admin-console-ui/issues/1125)) ([83edff5](https://github.com/zextras/carbonio-admin-console-ui/commit/83edff575bfb175e9d751d20599413b3986b7b1f))
+* tests on adminUI operations ([#1130](https://github.com/zextras/carbonio-admin-console-ui/issues/1130)) ([39ab55e](https://github.com/zextras/carbonio-admin-console-ui/commit/39ab55e4abeac044d3b159d33c3c950d1c4df5d0))
+* tests on MTA ([cdc5f48](https://github.com/zextras/carbonio-admin-console-ui/commit/cdc5f4810baec200d5ce1e3eddb9b860af3e0de9))
+* types on admin-ui-notifications ([867dbde](https://github.com/zextras/carbonio-admin-console-ui/commit/867dbde831f7047413cba256abd3c135fd084893))
 
 ### Bug Fixes
 
 * added account status lockout in account general settings ([#1160](https://github.com/zextras/carbonio-admin-console-ui/issues/1160)) ([b50c9b8](https://github.com/zextras/carbonio-admin-console-ui/commit/b50c9b88d212985a6d56ad259d1d6fa6c13940c6))
-
-## [0.13.0-devel.20](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.19...v0.13.0-devel.20) (2026-04-21)
-
-### Features
-
-* add totalQuotaStatus to account quota management ([#1153](https://github.com/zextras/carbonio-admin-console-ui/issues/1153)) ([e2d4373](https://github.com/zextras/carbonio-admin-console-ui/commit/e2d43731eb0f854ece88225472478571466b0a7b))
-
-## [0.13.0-devel.19](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.18...v0.13.0-devel.19) (2026-04-20)
-
-## [0.13.0-devel.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.17...v0.13.0-devel.18) (2026-04-17)
-
-### Bug Fixes
-
+* default value and configration condition fixed ([#1149](https://github.com/zextras/carbonio-admin-console-ui/issues/1149)) ([1449650](https://github.com/zextras/carbonio-admin-console-ui/commit/14496501c8b2bf68c9d63f9ec0a2647b08a5c3d1))
+* delegates for  dynamic dl ([#1117](https://github.com/zextras/carbonio-admin-console-ui/issues/1117)) ([61af1ba](https://github.com/zextras/carbonio-admin-console-ui/commit/61af1ba9f53167d856ee6e0355062b24251edaae))
+* **deps:** update dependency i18next-http-backend to v3 [security] ([#1161](https://github.com/zextras/carbonio-admin-console-ui/issues/1161)) ([87af8da](https://github.com/zextras/carbonio-admin-console-ui/commit/87af8da47a593761c6520aefb294c0f15176bf6d))
+* domain, cos creation date displays values issue ([#1159](https://github.com/zextras/carbonio-admin-console-ui/issues/1159)) ([7a14ca1](https://github.com/zextras/carbonio-admin-console-ui/commit/7a14ca13b1987b7b54a542a0bd7675fa0b5273ba))
+* error when create a new distribution list ([#1128](https://github.com/zextras/carbonio-admin-console-ui/issues/1128)) ([11e4070](https://github.com/zextras/carbonio-admin-console-ui/commit/11e4070c398ab7f808ed052db61676f86c5e1571))
+* fetch server version dynamically ([#1137](https://github.com/zextras/carbonio-admin-console-ui/issues/1137)) ([061c895](https://github.com/zextras/carbonio-admin-console-ui/commit/061c89534585bd3c6b9c8bac5d8a41276c064b8c))
+* fix copilot suggestions ([995e144](https://github.com/zextras/carbonio-admin-console-ui/commit/995e144223b2b171ab64b99cc26649be153b02b2))
+* fix imports ([4c222d4](https://github.com/zextras/carbonio-admin-console-ui/commit/4c222d43c7a97c8fecba9e5e6a8cd0cc80355dfb))
+* fix imports ([df1fa66](https://github.com/zextras/carbonio-admin-console-ui/commit/df1fa66a1f8a5b43212b0777cac4236456ac7649))
+* fix type ([b718f6b](https://github.com/zextras/carbonio-admin-console-ui/commit/b718f6b9ad3a361578eb5b26c50bce7b5a43aa3b))
+* not set in  public service protocol option does not work ([#1162](https://github.com/zextras/carbonio-admin-console-ui/issues/1162)) ([ab71089](https://github.com/zextras/carbonio-admin-console-ui/commit/ab7108928ee152df35457504cb46c59156325587))
+* removed import ([d94150a](https://github.com/zextras/carbonio-admin-console-ui/commit/d94150a744f403f4cdbaabc7ef708c6c2c731949))
 * set correct banner's background colors + domain general settings layout ([122a3ed](https://github.com/zextras/carbonio-admin-console-ui/commit/122a3ed895069e74ddf028d4007d807279e606ba))
 
-## [0.13.0-devel.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.16...v0.13.0-devel.17) (2026-04-17)
-
-### Features
-
-* hide COS quota warning settings when total quota is active (CO-3478) ([#1148](https://github.com/zextras/carbonio-admin-console-ui/issues/1148)) ([e5685f2](https://github.com/zextras/carbonio-admin-console-ui/commit/e5685f28ef5f2d589be595f9761b3c680ca93855))
-
-## [0.13.0-devel.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.15...v0.13.0-devel.16) (2026-04-17)
+## [0.12.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.7...v0.12.8) (2026-03-20)
 
 ### Bug Fixes
 
-* default value and configration condition fixed ([#1149](https://github.com/zextras/carbonio-admin-console-ui/issues/1149)) ([1449650](https://github.com/zextras/carbonio-admin-console-ui/commit/14496501c8b2bf68c9d63f9ec0a2647b08a5c3d1))
-
-## [0.13.0-devel.15](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.14...v0.13.0-devel.15) (2026-04-17)
-
-### Features
-
-* types on admin-ui-notifications ([867dbde](https://github.com/zextras/carbonio-admin-console-ui/commit/867dbde831f7047413cba256abd3c135fd084893))
-
-## [0.13.0-devel.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.13...v0.13.0-devel.14) (2026-04-15)
-
-### Features
-
-* hide mailbox quota section under domain ([#1136](https://github.com/zextras/carbonio-admin-console-ui/issues/1136)) ([2306cc5](https://github.com/zextras/carbonio-admin-console-ui/commit/2306cc5259505f63f48554ef808d746faa1f4040))
-
-## [0.13.0-devel.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.12...v0.13.0-devel.13) (2026-04-09)
-
-### Features
-
-* test on adminUI legalhold ([#1138](https://github.com/zextras/carbonio-admin-console-ui/issues/1138)) ([b655145](https://github.com/zextras/carbonio-admin-console-ui/commit/b655145b9b887c621e3efdae0d5f8a47c030e6b8))
-
-## [0.13.0-devel.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.11...v0.13.0-devel.12) (2026-04-08)
-
-### Bug Fixes
-
-* fetch server version dynamically ([#1137](https://github.com/zextras/carbonio-admin-console-ui/issues/1137)) ([061c895](https://github.com/zextras/carbonio-admin-console-ui/commit/061c89534585bd3c6b9c8bac5d8a41276c064b8c))
-
-## [0.13.0-devel.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.10...v0.13.0-devel.11) (2026-04-06)
-
-### Features
-
-* enforce on untrusted networks ([#1121](https://github.com/zextras/carbonio-admin-console-ui/issues/1121)) ([d9363b1](https://github.com/zextras/carbonio-admin-console-ui/commit/d9363b1391e628e3ec49b1028241adbdd84e09f9))
-
-## [0.13.0-devel.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.9...v0.13.0-devel.10) (2026-04-02)
-
-### Features
-
-* tests on adminUI operations ([#1130](https://github.com/zextras/carbonio-admin-console-ui/issues/1130)) ([39ab55e](https://github.com/zextras/carbonio-admin-console-ui/commit/39ab55e4abeac044d3b159d33c3c950d1c4df5d0))
-
-## [0.13.0-devel.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.8...v0.13.0-devel.9) (2026-04-02)
-
-### Bug Fixes
-
-* error when create a new distribution list ([#1128](https://github.com/zextras/carbonio-admin-console-ui/issues/1128)) ([11e4070](https://github.com/zextras/carbonio-admin-console-ui/commit/11e4070c398ab7f808ed052db61676f86c5e1571))
-
-## [0.13.0-devel.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.7...v0.13.0-devel.8) (2026-03-30)
-
-### Features
-
-* tests o adminUI notifications ([#1125](https://github.com/zextras/carbonio-admin-console-ui/issues/1125)) ([83edff5](https://github.com/zextras/carbonio-admin-console-ui/commit/83edff575bfb175e9d751d20599413b3986b7b1f))
-
-## [0.13.0-devel.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.6...v0.13.0-devel.7) (2026-03-27)
-
-### Features
-
-* tests on MTA ([cdc5f48](https://github.com/zextras/carbonio-admin-console-ui/commit/cdc5f4810baec200d5ce1e3eddb9b860af3e0de9))
-
-## [0.13.0-devel.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.5...v0.13.0-devel.6) (2026-03-20)
-
-### Bug Fixes
-
-* delegates for  dynamic dl ([#1117](https://github.com/zextras/carbonio-admin-console-ui/issues/1117)) ([61af1ba](https://github.com/zextras/carbonio-admin-console-ui/commit/61af1ba9f53167d856ee6e0355062b24251edaae))
+* **[admin-ui-domains] edit-account-general-section:** export as named export ([6ef6461](https://github.com/zextras/carbonio-admin-console-ui/commit/6ef6461777b4d555224450be78180547e121eb5c))
+* **[admin-ui-storage] hsm-setting-panel:** update timer ref type ([821deca](https://github.com/zextras/carbonio-admin-console-ui/commit/821decac6eb9ed996690d0e5ce6dc83eac1f33a3))
 
 ## [0.12.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.6...v0.12.7) (2026-03-13)
 
