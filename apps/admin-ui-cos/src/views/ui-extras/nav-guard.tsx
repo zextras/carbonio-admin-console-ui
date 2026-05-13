@@ -8,7 +8,7 @@
 import { Modal } from '@zextras/ui-components';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type Location,useLocation, useNavigate } from 'react-router';
+import { type Location, useLocation, useNavigate } from 'react-router';
 
 export const RouteLeavingGuard: FC<{
 	when?: boolean;
@@ -52,7 +52,7 @@ export const RouteLeavingGuard: FC<{
 				location.pathname !== lastLocationInitial.pathname &&
 				location.pathname !== lastLocation?.pathname
 			) {
-				const shouldBlock = handleBlockedNavigation(location as any);
+				const shouldBlock = handleBlockedNavigation(location);
 				if (!shouldBlock) {
 					navigate(lastLocation?.pathname || lastLocationInitial.pathname, { replace: true });
 				}

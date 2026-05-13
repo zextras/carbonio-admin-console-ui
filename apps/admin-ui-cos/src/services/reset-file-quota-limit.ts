@@ -8,9 +8,9 @@ import { fetchExternalSoap } from '@zextras/ui-shared';
 
 import { ACCOUNTS, COS } from '../constants';
 
-export const resetFileQuotaLimitById = async (accId: string, type?: string): Promise<any> => {
+export const resetFileQuotaLimitById = async (accId: string, type?: string): Promise<void> => {
 	const fetchType = type === COS ? COS : ACCOUNTS;
-	fetchExternalSoap(
+	return fetchExternalSoap(
 		`/services/storages/admin/quota/config/${fetchType}/${accId}`,
 		{},
 		'',

@@ -35,7 +35,7 @@ const CosDetailOperation: FC = () => {
   const setTotalDomain = useCosStore((state) => state.setTotalDomain);
 
   const getTotalDomain = useCallback(
-    (id: any): any => {
+    (id: string): void => {
       const query = `(zimbraDomainDefaultCOSId=${id})`;
       searchDirectory('', 'domains', '', query, 0, -1).then((data) => {
         const totalDomain = data?.searchTotal || 0;
@@ -46,7 +46,7 @@ const CosDetailOperation: FC = () => {
   );
 
   const getTotalAccount = useCallback(
-    (id: any): any => {
+    (id: string): void => {
       const query = `(&(zimbraCOSId=${id})(!(zimbraIsSystemAccount=TRUE)))`;
       searchDirectory('', 'accounts', '', query, 0, -1).then((data) => {
         const totalAccount = data?.searchTotal || 0;
@@ -57,14 +57,16 @@ const CosDetailOperation: FC = () => {
   );
 
   const getSelectedCosInformation = useCallback(
-    (id: any): any => {
+    (id: string): void => {
       getCosGeneralInformation(id)
         .then((data) => {
           const cos = data?.cos[0];
           if (cos) {
             setCos(cos);
-            getTotalAccount(cos.id);
-            getTotalDomain(cos.id);
+            if (cos.id) {
+              getTotalAccount(cos.id);
+              getTotalDomain(cos.id);
+            }
           }
         })
         .catch((error) => {
@@ -84,12 +86,14 @@ const CosDetailOperation: FC = () => {
   );
 
   useEffect(() => {
-    getSelectedCosInformation(cosId);
+    if (cosId) {
+      getSelectedCosInformation(cosId);
+    }
   }, [cosId, getSelectedCosInformation]);
 
   return (
     <>
-      {((): any => {
+      {((): React.ReactElement | null => {
         switch (operation) {
           case GENERAL_INFORMATION:
             return <CosGeneralInformation />;

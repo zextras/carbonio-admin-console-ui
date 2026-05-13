@@ -18,7 +18,7 @@ import {
 } from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
@@ -328,31 +328,6 @@ export const SendInviteAccounts: FC<any> = ({
             >
               <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
                 {t('label.this_list_is_empty', 'This list is empty.')}
-              </ds-text>
-            </Row>
-            <Row
-              orientation="vertical"
-              crossAlignment="center"
-              style={{ textAlign: 'center' }}
-              padding={{ top: 'small' }}
-              width="53%"
-            >
-              <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
-                <Trans
-                  i18nKey="label.do_you_need_more_information"
-                  defaults="Do you need more information?"
-                />
-              </ds-text>
-            </Row>
-            <Row
-              orientation="vertical"
-              crossAlignment="center"
-              style={{ textAlign: 'center' }}
-              padding={{ top: 'small' }}
-              width="53%"
-            >
-              <ds-text as="p" weight="light" color="primary">
-                {t('label.click_here', 'Click here')}
               </ds-text>
             </Row>
           </Container>

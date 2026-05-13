@@ -20,8 +20,16 @@ type IconSizeValue = IconSize | string;
 
 const DEFAULT_ICON = 'AlertTriangleOutline';
 
+export type DsIconProps = {
+  size?: IconSizeValue;
+  icon?: IconName;
+  color?: string;
+  disabled?: boolean;
+  clickHandler?: (e: Event) => void;
+};
+
 export class DsIcon extends LitElement {
-  static override styles = css`
+  static override readonly styles = css`
     :host {
       display: inline-flex;
       align-items: center;
@@ -47,21 +55,22 @@ export class DsIcon extends LitElement {
   `;
 
   @property({ type: String, reflect: true })
-  accessor icon: IconName = DEFAULT_ICON;
+  accessor icon: DsIconProps['icon'] = DEFAULT_ICON;
 
   @property({ type: String, reflect: true })
-  accessor color = 'text';
+  accessor color: DsIconProps['color'] = 'text';
 
   @property({ type: String, reflect: true })
-  accessor size: IconSizeValue = 'medium';
+  accessor size: DsIconProps['size'] = 'medium';
 
   @property({ type: Boolean, reflect: true })
-  accessor disabled = false;
+  accessor disabled: DsIconProps['disabled'] = false;
 
   @property({ attribute: false })
-  accessor clickHandler: ((event: Event) => void) | undefined = undefined;
+  accessor clickHandler: DsIconProps['clickHandler'] = undefined;
 
-  private getSizeValue(size: IconSizeValue): string {
+  private getSizeValue(size: IconSizeValue | undefined): string {
+    if (!size) return `var(--icon-size-medium, 1rem)`;
     if (/^[\d.]+(rem|px|em|vh|vw|%)$/.test(size)) {
       return size;
     }
@@ -70,7 +79,7 @@ export class DsIcon extends LitElement {
   }
 
   private getSvgContent(): string {
-    return iconRegistry[this.icon] ?? iconRegistry[DEFAULT_ICON] ?? '';
+    return iconRegistry[this.icon ?? 'AlertTriangleOutline'] ?? iconRegistry[DEFAULT_ICON] ?? '';
   }
 
   private handleClick(event: Event): void {

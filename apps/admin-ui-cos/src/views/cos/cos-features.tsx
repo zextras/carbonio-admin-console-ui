@@ -29,10 +29,10 @@ const CosFeatures: FC = () => {
   const createSnackbar = useSnackbar();
   const cosInformation = useCosStore((state) => state.cos?.a);
   const cosName = useCosStore((state) => state.cos?.name);
-  const [initCosData, setInitCosData]: any = useState({});
+  const [initCosData, setInitCosData] = useState<Partial<Record<string, string>>>({});
   const [zimbraId, setZimbraId] = useState<string>('');
   const setCos = useCosStore((state) => state.setCos);
-  const [cosFeatures, setCosFeatures] = useState<any>({});
+  const [cosFeatures, setCosFeatures] = useState<Partial<Record<string, string>>>({});
   const isAdvanced = useIsAdvanced();
   const { data: rights = [] } = useCurrentUserRights();
 
@@ -42,12 +42,12 @@ const CosFeatures: FC = () => {
   }, [rights]);
 
   const setSwitchOptionValue = useCallback(
-    (key: string, value: string): void => {
-      setInitCosData((prev: Record<string, string>) => ({
+    (key: string, value: string | undefined): void => {
+      setInitCosData((prev: Partial<Record<string, string>>) => ({
         ...prev,
         [key]: value,
       }));
-      setCosFeatures((prev: Record<string, string>) => ({
+      setCosFeatures((prev: Partial<Record<string, string>>) => ({
         ...prev,
         [key]: value,
       }));
@@ -91,7 +91,7 @@ const CosFeatures: FC = () => {
   }, [cosName, createSnackbar, setSwitchOptionValue, t]);
 
   const setInitialValues = useCallback(
-    (obj: any) => {
+    (obj: Partial<Record<string, string>>) => {
       if (obj) {
         setSwitchOptionValue('carbonioFeatureMailsAppEnabled', obj?.carbonioFeatureMailsAppEnabled);
         setSwitchOptionValue(
@@ -120,11 +120,11 @@ const CosFeatures: FC = () => {
 
   useEffect(() => {
     if (!!cosInformation && cosInformation.length > 0) {
-      const obj: any = {};
-      cosInformation.forEach((item: any) => {
+      const obj: Partial<Record<string, string>> = {};
+      cosInformation.forEach((item) => {
         obj[item?.n] = item._content;
       });
-      setZimbraId(obj?.zimbraId);
+      setZimbraId(obj?.zimbraId ?? '');
       setInitialValues(obj);
       setIsDirty(false);
     }
@@ -156,7 +156,7 @@ const CosFeatures: FC = () => {
           hideButton: true,
           replace: true,
         });
-        const cos: any = data.cos[0];
+        const cos = data.cos[0];
         if (cos) {
           setCos(cos);
         }
@@ -175,11 +175,11 @@ const CosFeatures: FC = () => {
       });
   };
 
-  const modifyCoreAttributes = (body: any): void => {
+  const modifyCoreAttributes = (body: Record<string, unknown>): void => {
     setCoreAttributes(body)
       .then(() => {
-        setSwitchOptionValue('mobileContactFeatureSync', cosFeatures?.mobileContactFeatureSync);
-        setSwitchOptionValue('mobileCalendarFeatureSync', cosFeatures?.mobileCalendarFeatureSync);
+        setSwitchOptionValue('mobileContactFeatureSync', cosFeatures?.mobileContactFeatureSync ?? '');
+        setSwitchOptionValue('mobileCalendarFeatureSync', cosFeatures?.mobileCalendarFeatureSync ?? '');
       })
       .catch((error) => {
         createSnackbar({
@@ -204,11 +204,11 @@ const CosFeatures: FC = () => {
     } as ModifyCosBody;
     body.a = Object.keys(cosFeatures)
       .filter((ele) => ele !== MOBILE_CALENDAR_FEATURE_SYNC && ele !== MOBILE_CONTACT_FEATURE_SYNC)
-      .map((ele) => ({ n: ele, _content: cosFeatures[ele] }));
+      .map((ele) => ({ n: ele, _content: cosFeatures[ele] ?? '' }));
 
-    const modifiedKeys: any = reduce(
+    const modifiedKeys = reduce<Partial<Record<string, string>>, Array<string>>(
       cosFeatures,
-      (result, value, key): any => (isEqual(value, initCosData[key]) ? result : [...result, key]),
+      (result, value, key) => (isEqual(value, initCosData[key]) ? result : [...result, key]),
       [],
     );
     if (
@@ -216,7 +216,7 @@ const CosFeatures: FC = () => {
         modifiedKeys.includes(MOBILE_CONTACT_FEATURE_SYNC)) &&
       isAdvanced
     ) {
-      const coreAttrBody: any = {
+      const coreAttrBody: Record<string, unknown> = {
         mobileCalendarFeatureSync: {
           value: cosFeatures.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
           objectName: cosName,

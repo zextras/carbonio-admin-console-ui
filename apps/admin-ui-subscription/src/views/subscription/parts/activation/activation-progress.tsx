@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ACTIVATION_PROGRESS_COMPLETE_DELAY_MS,
   ACTIVATION_PROGRESS_MIN_DISPLAY_MS,
-} from '../../../constants';
+} from '../../../../constants';
 import styles from './activation-progress.module.css';
 
 type ActivationProgressProps = {

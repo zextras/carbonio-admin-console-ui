@@ -8,7 +8,11 @@ import React from 'react';
 
 import { TextProps } from '../../../web-components';
 
-type InputDescriptionProps = Omit<TextProps, 'overflow' | 'size' | 'textAlign'>;
+type InputDescriptionProps = Omit<TextProps, 'overflow' | 'size' | 'textAlign'> & {
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+};
 
 export const InputDescription = ({ ...props }: InputDescriptionProps): React.JSX.Element => (
   <ds-text

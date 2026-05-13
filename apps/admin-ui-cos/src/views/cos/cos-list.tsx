@@ -37,19 +37,6 @@ type ZimbraCosAttribute = {
   _content: string;
 };
 
-type ZimbraCos = {
-  name: string;
-  id: string;
-  a: ZimbraCosAttribute[];
-};
-
-type ZimbraCosResponse = {
-  Cos: ZimbraCos[];
-  more: boolean;
-  searchTotal: number;
-  _jsns: string;
-};
-
 type ZimbraCosEntry = {
   name: string;
   id: string;
@@ -150,7 +137,7 @@ const CosList: FC = () => {
     setIsRequestInProgress(true);
     getCosList(searchQuery, limit, offset)
       .then((data) => {
-        const cosListResponse: ZimbraCosResponse = data?.cos || [];
+        const cosListResponse = data?.cos || [];
         if (cosListResponse && Array.isArray(cosListResponse)) {
           const cosListArr: {
             id: string;
@@ -159,7 +146,7 @@ const CosList: FC = () => {
             clickable: boolean;
           }[] = [];
           setTotalCos(data.searchTotal || 0);
-          cosListResponse.forEach((item: ZimbraCosEntry) => {
+          cosListResponse.forEach((item) => {
             const CosIteam: ZimbraCosEntry = {
               name: item.name,
               id: item.id,

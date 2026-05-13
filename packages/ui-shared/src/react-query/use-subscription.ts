@@ -12,35 +12,54 @@ import { ZIMBRA_ADMIN_URN } from '../constants';
 import { useSnackbar } from '../hooks/useSnackbar';
 import { fetchSoap } from '../services/subscription-service';
 
-type LicenseResponse = {
+export type LicenseType = 'ISP' | 'Purchased' | 'None';
+
+export type LicenseSubType = 'PERPETUAL' | 'REGULAR' | 'TRIAL';
+
+export type MaintenanceStatus = 'active' | 'expired' | 'expiring' | 'invalid';
+
+export type Feature = {
+  name: string;
+  quantity: string;
+  enabled: boolean;
+};
+
+export type LicenseInfo = {
+  type: LicenseType;
+  subType?: LicenseSubType;
+  endUser?: string;
+  customer?: string;
+  company?: string;
+  reseller?: boolean;
+  order_id?: string;
+  renewDaysLeft?: number;
+  renewTimeLeft?: number;
+  infrastructureId?: string;
+  dateStart?: number;
+  dateEnd?: number;
+  maintenanceEndDate?: number;
+  maintenanceStatus?: MaintenanceStatus;
+  lastValidationCheck?: number;
+  nextValidationDeadline?: number;
+  accountCount?: number;
+  licensedUsers?: string;
+  expired?: boolean;
+  notYetValid?: boolean;
+  isWithinGraceInterval?: boolean;
+  authenticationToken?: string;
+  maxCarbonioVersion?: string;
+  carbonioVersion?: string;
+  updateTime?: number;
+  serverID?: string;
+  withinSilentWarningInterval?: boolean;
+  ispLegacy?: boolean;
+  features: Array<Feature>;
+};
+
+export type LicenseResponse = {
   ok: boolean;
   message?: string;
-  response?: {
-    type: string;
-    subType?: string;
-    endUser?: string;
-    customer?: string;
-    infrastructureId?: string;
-    dateStart?: number;
-    dateEnd?: number;
-    maintenanceEndDate?: number;
-    maintenanceStatus?: 'active' | 'expired' | 'expiring' | 'invalid';
-    lastValidationCheck?: number;
-    nextValidationDeadline?: number;
-    accountCount?: number;
-    licensedUsers?: number;
-    expired?: boolean;
-    notYetValid?: boolean;
-    authenticationToken?: string;
-    maxCarbonioVersion?: string;
-    carbonioVersion?: string;
-    updateTime?: number;
-    features: Array<{
-      name: string;
-      quantity: string;
-      enabled: boolean;
-    }>;
-  };
+  response?: LicenseInfo;
 };
 
 type VersionResponse = {
@@ -118,9 +137,11 @@ export const useVersion = () => {
   });
 };
 
-export const useActivateLicense = () => {
-  const queryClient = useQueryClient();
+export function invalidateLicenseQuery(queryClient: ReturnType<typeof useQueryClient>): void {
+  queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+}
 
+export const useActivateLicense = () => {
   return useMutation({
     mutationFn: async ({ token, renewal = false }: { token: string; renewal?: boolean }) => {
       const result = await activateLicense(token, renewal);
@@ -128,9 +149,6 @@ export const useActivateLicense = () => {
         throw new Error(result.message || 'Activation failed');
       }
       return result;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.license() });
     },
   });
 };
@@ -178,16 +196,12 @@ export const useRemoveLicense = () => {
   });
 };
 
-type ModuleLicenseInfo = {
+export type ModuleLicenseInfo = {
   maintenanceEndDate?: number;
-  maintenanceStatus?: 'active' | 'expired' | 'expiring' | 'invalid';
+  maintenanceStatus?: MaintenanceStatus;
   expired?: boolean;
-  subType?: string;
-  features?: Array<{
-    name: string;
-    quantity: string;
-    enabled: boolean;
-  }>;
+  subType?: LicenseSubType;
+  features?: Array<Feature>;
   updateTime?: number;
   maxCarbonioVersion?: string;
   carbonioVersion?: string;
