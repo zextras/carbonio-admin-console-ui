@@ -48,7 +48,6 @@ type ContainerElProps = {
 export type ContainerProps = Omit<ContainerElProps, 'orientation'> &
   Omit<HTMLAttributes<HTMLDivElement>, keyof ContainerElProps> & {
     orientation?: 'vertical' | 'horizontal' | ContainerElProps['orientation'];
-    children?: React.ReactNode | React.ReactNode[];
   };
 
 const COLOR_VARIANTS = ['regular', 'hover', 'focus', 'active', 'disabled'] as const;

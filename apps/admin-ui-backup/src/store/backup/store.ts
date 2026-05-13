@@ -6,9 +6,11 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
+import type { GlobalConfig } from '../../../types';
+
 type BackupState = {
-	globalConfig: any;
-	setGlobalConfig: (backup: any) => void;
+	globalConfig: GlobalConfig;
+	setGlobalConfig: (backup: GlobalConfig) => void;
 	selectedServer: string;
 	setSelectedBackupServer: (server: string) => void;
 };

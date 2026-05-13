@@ -10,8 +10,10 @@ import { css, html, LitElement, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
+export type DsDividerProps = { color?: string };
+
 export class DividerElement extends LitElement {
-  static override styles = css`
+  static override readonly styles = css`
     :host {
       display: block;
       width: 100%;
@@ -29,7 +31,7 @@ export class DividerElement extends LitElement {
   `;
 
   @property({ type: String, reflect: true })
-  accessor color = 'gray2';
+  accessor color: DsDividerProps['color'] = 'gray2';
 
   override render(): TemplateResult {
     const styles = styleMap({
@@ -37,7 +39,6 @@ export class DividerElement extends LitElement {
     });
 
     return html`<hr
-      data-testid="divider"
       role="separator"
       style=${styles}
       class="divider"

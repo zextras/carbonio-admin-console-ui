@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../../types/account';
 import { Attribute } from '../../../types/attribute';
+import { Cos } from '../../../types/cos';
 import { TimeItems } from '../../../types/general';
 import {
   BACKUP_ENABLED,
@@ -88,7 +89,16 @@ function saveBackupAttributes(
     setCoreAttributes(updateBackupAttributes);
   }
 }
-function saveCosAdvanced(cosAdvanced: AccountType, zimbraId: string): Promise<any> {
+
+type SaveCosAdvancedResult = {
+  cosId: string;
+  cos: Cos | undefined;
+};
+
+function saveCosAdvanced(
+  cosAdvanced: AccountType,
+  zimbraId: string,
+): Promise<SaveCosAdvancedResult> {
   const attributes: Attribute[] = Object.keys(cosAdvanced).map((ele) => ({
     n: ele,
     _content: cosAdvanced[ele as keyof AccountType]?.toString() ?? '',
@@ -244,7 +254,7 @@ const CosAdvanced: FC = () => {
   const [zimbraMailSpamLifetimeType, setZimbraMailSpamLifetimeType] = useState(
     cosAdvanced?.zimbraMailSpamLifetime?.slice(-1) || '',
   );
-  const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState(undefined);
+  const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState<string | undefined>(undefined);
   const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState<string | undefined>(undefined);
   const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
   const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
@@ -676,7 +686,7 @@ const CosAdvanced: FC = () => {
     if (
       cosData.zimbraMailForwardingAddressMaxLength !== undefined &&
       cosData.zimbraMailForwardingAddressMaxLength !==
-        cosAdvanced.zimbraMailForwardingAddressMaxLength
+      cosAdvanced.zimbraMailForwardingAddressMaxLength
     ) {
       setIsDirty(true);
     }
@@ -689,7 +699,7 @@ const CosAdvanced: FC = () => {
     if (
       cosData.zimbraMailForwardingAddressMaxNumAddrs !== undefined &&
       cosData.zimbraMailForwardingAddressMaxNumAddrs !==
-        cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs
+      cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs
     ) {
       setIsDirty(true);
     }
@@ -855,7 +865,7 @@ const CosAdvanced: FC = () => {
     if (
       cosData.zimbraPasswordLockoutFailureLifetime !== undefined &&
       cosData.zimbraPasswordLockoutFailureLifetime !==
-        cosAdvanced.zimbraPasswordLockoutFailureLifetime
+      cosAdvanced.zimbraPasswordLockoutFailureLifetime
     ) {
       setIsDirty(true);
     }
@@ -1246,10 +1256,10 @@ const CosAdvanced: FC = () => {
 
     const cosAdvancedToSave = isTotalQuotaActive
       ? (Object.fromEntries(
-          Object.entries(cosAdvanced).filter(
-            ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
-          ),
-        ) as AccountType)
+        Object.entries(cosAdvanced).filter(
+          ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
+        ),
+      ) as AccountType)
       : cosAdvanced;
 
     saveCosAdvanced(cosAdvancedToSave, zimbraId)

@@ -5,36 +5,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { TextOverflow, TextSize, TextTag, TextWeight } from './ds-text';
-import type { IconName } from './icon-registry';
+import type { DetailedHTMLProps, HTMLAttributes, RefAttributes } from 'react';
+
+import type { DsBadgeProps } from './ds-badge';
+import type { DsDividerProps } from './ds-divider';
+import type { DsIconProps } from './ds-icon';
+import type { DsSpinnerProps } from './ds-spinner';
+import type { DsTagIconProps } from './ds-tag-icon';
+import type { DsTextProps } from './ds-text';
+
+type WebComponentElement<P extends Record<string, unknown>> = DetailedHTMLProps<
+  HTMLAttributes<HTMLElement> & P,
+  HTMLElement
+> &
+  RefAttributes<HTMLElement>;
 
 declare global {
   namespace React {
     namespace JSX {
       interface IntrinsicElements {
-        'ds-spinner': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-        'ds-divider': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-        'ds-icon': React.DetailedHTMLProps<
-          React.HTMLAttributes<HTMLElement> & {
-            icon?: IconName;
-            color?: string;
-            size?: string;
-            disabled?: boolean;
-            clickHandler?: (e: Event) => void;
-          },
-          HTMLElement
-        >;
-        'ds-text': React.DetailedHTMLProps<
-          React.HTMLAttributes<HTMLElement> & {
-            color?: string;
-            size?: TextSize;
-            weight?: TextWeight;
-            overflow?: TextOverflow;
-            disabled?: boolean;
-            as?: TextTag;
-          },
-          HTMLElement
-        >;
+        'ds-spinner': WebComponentElement<DsSpinnerProps>;
+        'ds-divider': WebComponentElement<DsDividerProps>;
+        'ds-icon': WebComponentElement<DsIconProps>;
+        'ds-badge': WebComponentElement<DsBadgeProps>;
+        'ds-tag-icon': WebComponentElement<DsTagIconProps>;
+        'ds-text': WebComponentElement<DsTextProps>;
       }
     }
   }

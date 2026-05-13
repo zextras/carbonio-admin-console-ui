@@ -1,4 +1,35 @@
 ## [0.13.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.8...v0.13.0) (2026-05-04)
+## [0.13.0-devel.28](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.27...v0.13.0-devel.28) (2026-05-04)
+
+### Features
+
+* improvements on types of adminUI cos ([#1171](https://github.com/zextras/carbonio-admin-console-ui/issues/1171)) ([bd830d7](https://github.com/zextras/carbonio-admin-console-ui/commit/bd830d75cb91dce3b2d7e14a6b3953c84bf157c1))
+
+## [0.13.0-devel.27](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.26...v0.13.0-devel.27) (2026-05-04)
+
+### Features
+
+* types on adminUI backup ([fe0656f](https://github.com/zextras/carbonio-admin-console-ui/commit/fe0656f738e5ca60000665a333249018445ea20d))
+
+## [0.13.0-devel.26](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.25...v0.13.0-devel.26) (2026-05-04)
+
+### Bug Fixes
+
+* not set in  public service protocol option does not work ([#1162](https://github.com/zextras/carbonio-admin-console-ui/issues/1162)) ([ab71089](https://github.com/zextras/carbonio-admin-console-ui/commit/ab7108928ee152df35457504cb46c59156325587))
+
+## [0.13.0-devel.25](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.24...v0.13.0-devel.25) (2026-04-30)
+
+### Features
+
+* added otp restore option in account settings ([#1177](https://github.com/zextras/carbonio-admin-console-ui/issues/1177)) ([47654e1](https://github.com/zextras/carbonio-admin-console-ui/commit/47654e15f1b7177944ddb0a0e9c789b0ab03acbd))
+
+## [0.13.0-devel.24](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.23...v0.13.0-devel.24) (2026-04-25)
+
+### Bug Fixes
+
+* **deps:** update dependency i18next-http-backend to v3 [security] ([#1161](https://github.com/zextras/carbonio-admin-console-ui/issues/1161)) ([87af8da](https://github.com/zextras/carbonio-admin-console-ui/commit/87af8da47a593761c6520aefb294c0f15176bf6d))
+
+## [0.13.0-devel.23](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.22...v0.13.0-devel.23) (2026-04-23)
 
 ### Features
 

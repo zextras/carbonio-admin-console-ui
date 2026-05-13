@@ -15,7 +15,7 @@ import {
   Switch,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useAllConfig } from '@zextras/ui-shared';
+import { useAllConfig, useLocalStorage } from '@zextras/ui-shared';
 import { isEqual } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +43,6 @@ import {
   ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION,
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
-import { useLocalStorage } from '../../utility/utils';
 type SelectValue = SelectItem[] | string | null;
 
 const containerStyle = {

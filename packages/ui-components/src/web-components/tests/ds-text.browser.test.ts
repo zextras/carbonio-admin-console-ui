@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import '../ds-text';
+import './../../theme/theme.css';
 
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
@@ -87,13 +88,10 @@ describe('ds-text', () => {
       expect(el.shadowRoot!.querySelector('span')).toBeNull();
     });
 
-    it('should fall back to <span> when "as" is set to an unrecognized value', async () => {
+    it('should throw when "as" is set to an unrecognized value', async () => {
       const el = await createDsText({}, 'Fallback content');
       el.setAttribute('as', 'div');
-      await el.updateComplete;
-
-      expect(el.shadowRoot!.querySelector('span')).not.toBeNull();
-      expect(el.shadowRoot!.querySelector('div')).toBeNull();
+      await expect(el.updateComplete).rejects.toThrow();
     });
   });
 
@@ -156,7 +154,7 @@ describe('ds-text', () => {
       { size: 'extralarge', expected: '20px' },
     ])('should apply computed font-size for size="$size"', async ({ size, expected }) => {
       const el = await createDsText({ size }, 'Computed size text');
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const innerEl = el.shadowRoot!.querySelector(el.as!) as HTMLElement;
       const computedFontSize = globalThis.getComputedStyle(innerEl).fontSize;
       expect(computedFontSize).toBe(expected);
     });
@@ -167,7 +165,7 @@ describe('ds-text', () => {
       el.size = 'large';
       await el.updateComplete;
 
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const innerEl = el.shadowRoot!.querySelector(el.as!) as HTMLElement;
       const computedFontSize = globalThis.getComputedStyle(innerEl).fontSize;
       expect(computedFontSize).toBe('18px');
     });
@@ -194,7 +192,7 @@ describe('ds-text', () => {
       { weight: 'bold', expected: '700' },
     ])('should apply computed font-weight for weight="$weight"', async ({ weight, expected }) => {
       const el = await createDsText({ weight }, 'Computed weight text');
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const innerEl = el.shadowRoot!.querySelector(el.as!) as HTMLElement;
       const computedWeight = globalThis.getComputedStyle(innerEl).fontWeight;
       expect(computedWeight).toBe(expected);
     });
@@ -205,7 +203,7 @@ describe('ds-text', () => {
       el.weight = 'bold';
       await el.updateComplete;
 
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const innerEl = el.shadowRoot!.querySelector(el.as!) as HTMLElement;
       const computedWeight = globalThis.getComputedStyle(innerEl).fontWeight;
       expect(computedWeight).toBe('700');
     });
@@ -227,7 +225,7 @@ describe('ds-text', () => {
 
     it('should apply ellipsis overflow styles when overflow="ellipsis"', async () => {
       const el = await createDsText({ overflow: 'ellipsis' }, 'Ellipsis text');
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const innerEl = el.shadowRoot!.querySelector(el.as!) as HTMLElement;
       const computed = globalThis.getComputedStyle(innerEl);
       expect(computed.whiteSpace).toBe('nowrap');
       expect(computed.overflow).toBe('hidden');
@@ -236,7 +234,7 @@ describe('ds-text', () => {
 
     it('should apply break-word overflow styles when overflow="break-word"', async () => {
       const el = await createDsText({ overflow: 'break-word' }, 'Break word text');
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const innerEl = el.shadowRoot!.querySelector(el.as!) as HTMLElement;
       const computed = globalThis.getComputedStyle(innerEl);
       expect(computed.overflowWrap).toBe('break-word');
     });
@@ -247,7 +245,7 @@ describe('ds-text', () => {
       el.overflow = 'break-word';
       await el.updateComplete;
 
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const innerEl = el.shadowRoot!.querySelector(el.as!) as HTMLElement;
       const computed = globalThis.getComputedStyle(innerEl);
       expect(computed.overflowWrap).toBe('break-word');
       expect(computed.whiteSpace).not.toBe('nowrap');
@@ -297,7 +295,7 @@ describe('ds-text', () => {
         'Custom pixel size',
       );
 
-      const innerEl = el.shadowRoot!.querySelector(el.as) as HTMLElement;
+      const innerEl = el.shadowRoot!.querySelector(el.as!) as HTMLElement;
 
       const computedFontSize = globalThis.getComputedStyle(innerEl).fontSize;
       expect(computedFontSize).toBe(customSize);

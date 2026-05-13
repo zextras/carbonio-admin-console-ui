@@ -6,7 +6,7 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const flushCache = async (cacheType: string, type?: string, value?: string): Promise<any> =>
+export const flushCache = async (cacheType: string, type?: string, value?: string): Promise<void> =>
 	soapFetch(`FlushCache`, {
 		_jsns: 'urn:zimbraAdmin',
 		cache: {

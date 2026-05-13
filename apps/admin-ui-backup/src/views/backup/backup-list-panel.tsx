@@ -23,6 +23,7 @@ import {
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { MailstoreServer } from '../../../types';
 import {
   ADVANCED,
   ADVANCED_LBL,
@@ -46,7 +47,7 @@ const BackupListPanel: FC = () => {
   const [selectedServer, setSelectedServer] = useState<string>('');
   const [isServerSelect, setIsServerSelect] = useState<boolean>(false);
   const [searchServer, setSearchServer] = useState<string>('');
-  const [serverNames, setServerNames] = useState<any>();
+  const [serverNames, setServerNames] = useState<Array<ListItemType>>([]);
   const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
   const { moduleLicenseInfo } = useModuleLicenseInfo();
   const { data: rights } = useCurrentUserRights();
@@ -148,10 +149,12 @@ const BackupListPanel: FC = () => {
     }
   }, [selectedServer]);
 
-  const addServerToList = useCallback((list: any) => {
-    const data = list.map((serverItem: any) => ({
-      id: serverItem?.id,
-      label: serverItem?.name,
+  const addServerToList = useCallback((list: Array<MailstoreServer>) => {
+    const data: Array<ListItemType> = list.map((serverItem) => ({
+      id: serverItem?.id ?? '',
+      name: serverItem?.name ?? '',
+      isSelected: false,
+      label: serverItem?.name ?? '',
       customComponent: (
         <Row
           style={{
@@ -162,8 +165,8 @@ const BackupListPanel: FC = () => {
             width: 'inherit',
           }}
           onClick={(): void => {
-            setSelectedServer(serverItem?.name);
-            setSearchServer(serverItem?.name);
+            setSelectedServer(serverItem?.name ?? '');
+            setSearchServer(serverItem?.name ?? '');
             setSelectedOperationItem(CONFIGURATION_BACKUP);
           }}
         >
@@ -178,7 +181,7 @@ const BackupListPanel: FC = () => {
     if (isError || isLoading) {
       return;
     }
-    const filterList = serverList.filter((item: any) => item.name?.includes(searchServer));
+    const filterList = serverList.filter((item) => item.name?.includes(searchServer));
     addServerToList(filterList);
     if (serverList.length > 0 && filterList.length === 0) {
       setIsShowError(true);

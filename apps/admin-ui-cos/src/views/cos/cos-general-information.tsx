@@ -19,11 +19,12 @@ import {
   Table,
   Tooltip,
   TrackNumberPerPage,
+  type TRow,
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory, useCurrentUserRights } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Attribute } from '../../../types/attribute';
@@ -45,7 +46,7 @@ const CosGeneralInformation: FC = () => {
   const cosDetail = useCosStore((state) => state.cos);
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
-  const [cosData, setCosData]: any = useState({});
+  const [cosData, setCosData] = useState<Partial<Record<string, string>>>({});
   const [cosName, setCosName] = useState<string>('');
   const [zimbraNotes, setZimbraNotes] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -55,7 +56,7 @@ const CosGeneralInformation: FC = () => {
   const totalAccount = useCosStore((state) => state.totalAccount);
   const totalDomain = useCosStore((state) => state.totalDomain);
   const { data: rights = [] } = useCurrentUserRights();
-  const [accountList, setAccountList] = useState<any[]>([]);
+  const [accountList, setAccountList] = useState<Array<TRow>>([]);
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [accountLimit, setAccountLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
@@ -64,14 +65,14 @@ const CosGeneralInformation: FC = () => {
   const [totalAccounts, setTotalAccounts] = useState<number>(0);
   const tableRef = useRef(null);
   const [isAccountRequestInProgress, setIsAccountRequestInProgress] = useState<boolean>(false);
-  const [domainList, setDomainList] = useState<any[]>([]);
+  const [domainList, setDomainList] = useState<Array<TRow>>([]);
   const [searchDomainString, setSearchDomainString] = useState<string>('');
   const [searchDomainQuery, setSearchDomainQuery] = useState<string>('');
   const [totalDomains, setTotalDomains] = useState<number>(0);
   const [isDomainRequestInProgress, setIsDomainRequestInProgress] = useState<boolean>(false);
   const [domainOffset, setDomainOffset] = useState<number>(0);
 
-  const accountHeaders: any = useMemo(
+  const accountHeaders = useMemo(
     () => [
       {
         id: 'email',
@@ -113,7 +114,7 @@ const CosGeneralInformation: FC = () => {
     [t],
   );
 
-  const STATUS_COLOR: any = useMemo(
+  const STATUS_COLOR: Record<string, { color: string; label: string }> = useMemo(
     () => ({
       active: {
         color: '#8BC34A',
@@ -143,7 +144,7 @@ const CosGeneralInformation: FC = () => {
     [t],
   );
 
-  const accountUserType = useCallback((item: any): string => {
+  const accountUserType = useCallback((item: Record<string, string>): string => {
     if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
     if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
     if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
@@ -151,7 +152,7 @@ const CosGeneralInformation: FC = () => {
     return 'Normal';
   }, []);
 
-  const domainHeaders: any[] = useMemo(
+  const domainHeaders = useMemo(
     () => [
       {
         id: 'domains',
@@ -182,11 +183,11 @@ const CosGeneralInformation: FC = () => {
 
   useEffect(() => {
     if (!!cosInformation && cosInformation.length > 0) {
-      const obj: any = {};
-      cosInformation.forEach((item: any) => {
+      const obj: Partial<Record<string, string>> = {};
+      cosInformation.forEach((item) => {
         obj[item?.n] = item._content;
       });
-      setCosName(obj.cn);
+      setCosName(obj.cn ?? '');
       if (obj.zimbraNotes) {
         setZimbraNotes(obj.zimbraNotes);
       } else {
@@ -242,7 +243,7 @@ const CosGeneralInformation: FC = () => {
       _jsns: ZIMBRA_ADMIN_URN,
       a: attributes,
       id: {
-        _content: cosData.zimbraId,
+        _content: cosData.zimbraId ?? '',
       },
     };
     modifyCos(body)
@@ -256,7 +257,7 @@ const CosGeneralInformation: FC = () => {
           hideButton: true,
           replace: true,
         });
-        const cos: any = data?.cos[0];
+        const cos = data?.cos[0];
         if (cos) {
           setCos(cos);
         }
@@ -278,16 +279,15 @@ const CosGeneralInformation: FC = () => {
 
   const onSave = (): void => {
     if (cosData.cn !== cosName) {
-      const renameBody: any = {};
-      renameBody._jsns = ZIMBRA_ADMIN_URN;
-      const id = {
-        _content: cosData.zimbraId,
+      const renameBody = {
+        _jsns: ZIMBRA_ADMIN_URN,
+        id: {
+          _content: cosData.zimbraId ?? '',
+        },
+        newName: {
+          _content: cosName,
+        },
       };
-      renameBody.id = id;
-      const newName = {
-        _content: cosName,
-      };
-      renameBody.newName = newName;
 
       renameCos(renameBody)
         .then(() => {
@@ -311,16 +311,16 @@ const CosGeneralInformation: FC = () => {
   };
 
   const onCancel = (): void => {
-    setCosName(cosData.cn);
-    setZimbraNotes(cosData.zimbraNotes);
-    setDescription(cosData.description);
+    setCosName(cosData.cn ?? '');
+    setZimbraNotes(cosData.zimbraNotes ?? '');
+    setDescription(cosData.description ?? '');
     setIsDirty(false);
   };
 
   const cosCreationDate = useMemo(
     () =>
       !!cosData.zimbraCreateTimestamp && cosData.zimbraCreateTimestamp !== null
-        ? getFormatedDate(getDateFromStr(cosData.zimbraCreateTimestamp))
+        ? getFormatedDate(getDateFromStr(cosData.zimbraCreateTimestamp)) ?? ''
         : '',
     [cosData.zimbraCreateTimestamp],
   );
@@ -333,11 +333,10 @@ const CosGeneralInformation: FC = () => {
 
   const onDeleteCOS = (): void => {
     setIsRequestInProgress(true);
-    deleteCOS(cosData.zimbraId)
+    deleteCOS(cosData.zimbraId ?? '')
       .then((data) => {
-        const isCosDelete: any = data;
         setIsRequestInProgress(false);
-        if (isCosDelete) {
+        if (data) {
           createSnackbar({
             key: 'info',
             severity: 'info',
@@ -379,20 +378,22 @@ const CosGeneralInformation: FC = () => {
       'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
     searchDirectory(attrs, type, '', searchAccountQuery, offset, accountLimit)
       .then((data) => {
-        const accountListResponse: any = data?.account || [];
+        const accountListResponse = data?.account || [];
         if (accountListResponse && Array.isArray(accountListResponse)) {
-          const accountListArr: any = [];
+          const accountListArr: Array<TRow> = [];
           setTotalAccounts(data.searchTotal || 0);
-          accountListResponse.forEach((item: any): any => {
-            item?.a?.forEach((ele: any) => {
+          accountListResponse.forEach((item) => {
+            const acc = item as Record<string, unknown>;
+            item?.a?.forEach((ele) => {
               if (ele?.n === 'mail') {
-                if (item[ele?.n]) {
-                  item[ele?.n].push(ele._content);
+                const existing = acc[ele?.n];
+                if (Array.isArray(existing)) {
+                  existing.push(ele._content);
                 } else {
-                  item[ele?.n] = [ele._content];
+                  acc[ele?.n] = [ele._content];
                 }
               } else {
-                item[ele?.n] = ele._content;
+                acc[ele?.n] = ele._content;
               }
             });
             accountListArr.push({
@@ -402,18 +403,18 @@ const CosGeneralInformation: FC = () => {
                   {item?.name || ' '}
                 </ds-text>,
                 <ds-text as="span" size="small" key={item?.id} color="gray0" weight="light">
-                  {item?.displayName || <>&nbsp;</>}
+                  {(acc?.displayName as string) || <>&nbsp;</>}
                 </ds-text>,
                 <>
-                  {item?.mail?.length - 1 || 0 ? (
+                  {Array.isArray(acc?.mail) && (acc.mail as Array<string>).length - 1 > 0 ? (
                     <Tooltip
                       key={item?.id}
                       placement="bottom"
-                      label={item?.mail.slice(1).join(', ')}
+                      label={(acc.mail as Array<string>).slice(1).join(', ')}
                       maxWidth="auto"
                     >
                       <ds-text as="span" size="small" weight="light" key={item?.id} color="#828282">
-                        {item?.mail?.length - 1 || 0}
+                        {(acc.mail as Array<string>).length - 1}
                       </ds-text>
                     </Tooltip>
                   ) : (
@@ -423,22 +424,21 @@ const CosGeneralInformation: FC = () => {
                   )}
                 </>,
                 <ds-text as="span" size="small" key={item?.id} color="gray0" weight="light">
-                  {accountUserType(item)}
+                  {accountUserType(acc as Record<string, string>)}
                 </ds-text>,
                 <ds-text
                   as="span"
                   size="small"
                   weight="light"
                   key={item?.id}
-                  color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
+                  color={STATUS_COLOR[acc?.zimbraAccountStatus as string]?.color}
                 >
-                  {STATUS_COLOR[item?.zimbraAccountStatus]?.label}
+                  {STATUS_COLOR[acc?.zimbraAccountStatus as string]?.label}
                 </ds-text>,
                 <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
-                  {item?.description || <>&nbsp;</>}
+                  {(acc?.description as string) || <>&nbsp;</>}
                 </ds-text>,
               ],
-              item,
               clickable: true,
             });
           });
@@ -494,25 +494,30 @@ const CosGeneralInformation: FC = () => {
       'description,zimbraDomainName,zimbraDomainStatus,zimbraId,zimbraDomainType,zimbraDomainCOSMaxAccounts,zimbraDomainDefaultCOSId';
     searchDirectory(attrs, type, '', searchDomainQuery, domainOffset, limit)
       .then((data) => {
-        const domainListResponse: any = data?.domain || [];
+        const domainListResponse = data?.domain || [];
         if (domainListResponse && Array.isArray(domainListResponse)) {
-          const domainListArr: any = [];
+          const domainListArr: Array<TRow> = [];
           setTotalDomains(data.searchTotal || 0);
-          domainListResponse.forEach((item: any): any => {
-            item?.a?.forEach((ele: any) => {
+          domainListResponse.forEach((item) => {
+            const domainItem = item as Record<string, unknown>;
+            item?.a?.forEach((ele) => {
               if (ele?.n === 'zimbraDomainCOSMaxAccounts') {
-                if (item[ele?.n]) {
-                  item[ele?.n].push(ele._content);
+                const existing = domainItem[ele?.n];
+                if (Array.isArray(existing)) {
+                  existing.push(ele._content);
                 } else {
-                  item[ele?.n] = [ele._content];
+                  domainItem[ele?.n] = [ele._content];
                 }
               } else {
-                item[ele?.n] = ele._content;
+                domainItem[ele?.n] = ele._content;
               }
             });
-            const maxAccountValue = item?.zimbraDomainCOSMaxAccounts
-              ?.filter((acc: string) => acc?.split(':')[0] === cosDetail?.id)[0]
-              ?.split(':')[1];
+            const cosMaxAccounts = domainItem?.zimbraDomainCOSMaxAccounts;
+            const maxAccountValue = Array.isArray(cosMaxAccounts)
+              ? (cosMaxAccounts as Array<string>)
+                .filter((acc) => acc?.split(':')[0] === cosDetail?.id)[0]
+                ?.split(':')[1]
+              : undefined;
             domainListArr.push({
               id: item?.id,
               columns: [
@@ -523,7 +528,7 @@ const CosGeneralInformation: FC = () => {
                   {maxAccountValue || ' '}
                 </ds-text>,
                 <Container key={item?.id}>
-                  {cosDetail?.id === item?.zimbraDomainDefaultCOSId && (
+                  {cosDetail?.id === domainItem?.zimbraDomainDefaultCOSId && (
                     <Row>
                       <Padding right="small">
                         <ds-text as="span" size="small" weight="light" color="gray0">
@@ -535,7 +540,6 @@ const CosGeneralInformation: FC = () => {
                   )}
                 </Container>,
               ],
-              item,
               clickable: true,
             });
           });
@@ -594,7 +598,7 @@ const CosGeneralInformation: FC = () => {
         mainAlignment="flex-start"
         style={{ overflow: 'auto' }}
         width="100%"
-        // height="calc(100vh - 230px)"
+      // height="calc(100vh - 230px)"
       >
         <Row mainAlignment="flex-start" width="100%">
           <Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -605,7 +609,7 @@ const CosGeneralInformation: FC = () => {
                   label={t('label.name', 'Name')}
                   backgroundColor={canDeleteCOS ? 'gray6' : 'gray5'}
                   value={cosName}
-                  onChange={(e: any): any => {
+                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     setCosName(e.target.value);
                   }}
                   disabled={canDeleteCOS || readonlyCOS}
@@ -661,7 +665,7 @@ const CosGeneralInformation: FC = () => {
                   label={t('label.description', 'Description')}
                   backgroundColor="gray5"
                   value={description}
-                  onChange={(e: any): any => {
+                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     setDescription(e.target.value);
                   }}
                   disabled={readonlyCOS}
@@ -674,7 +678,7 @@ const CosGeneralInformation: FC = () => {
                   label={t('label.notes', 'Notes')}
                   backgroundColor="gray5"
                   value={zimbraNotes}
-                  onChange={(e: any): any => {
+                  onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
                     setZimbraNotes(e.target.value);
                   }}
                   disabled={readonlyCOS}
@@ -702,10 +706,10 @@ const CosGeneralInformation: FC = () => {
               disabled={domainList.length === 0 && searchDomainString.length === 0}
               value={searchDomainString}
               backgroundColor="gray5"
-              onChange={(e: any): any => {
+              onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                 setSearchDomainString(e.target.value);
               }}
-              CustomIcon={(): any => (
+              CustomIcon={(): ReactElement => (
                 <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
               )}
             />
@@ -814,10 +818,10 @@ const CosGeneralInformation: FC = () => {
               disabled={accountList.length === 0 && searchAccountString.length === 0}
               value={searchAccountString}
               backgroundColor="gray5"
-              onChange={(e: any): any => {
+              onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                 setSearchAccountString(e.target.value);
               }}
-              CustomIcon={(): any => (
+              CustomIcon={(): ReactElement => (
                 <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
               )}
             />

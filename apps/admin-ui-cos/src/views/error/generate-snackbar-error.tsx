@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { type CreateSnackbarFnArgs } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 
 import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../../constants';
@@ -11,7 +12,7 @@ import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../../constants';
 export const generateSnackbarFromError = (
 	error: Error,
 	t: TFunction<'translation', undefined, 'translation'>
-): any => {
+): CreateSnackbarFnArgs => {
 	let errorText = '';
 
 	if (error?.message) {

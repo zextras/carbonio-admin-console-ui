@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { FC, useEffect } from 'react';
+import { FC, type ReactNode, useEffect } from 'react';
 import { useParams } from 'react-router';
 
 import {
@@ -34,7 +34,7 @@ const BackupDetailOperation: FC = () => {
 
   return (
     <>
-      {((): any => {
+      {((): ReactNode => {
         switch (operation) {
           case SERVER_CONFIG:
             return <BackupServerConfig />;

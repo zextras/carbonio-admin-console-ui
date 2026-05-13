@@ -19,6 +19,8 @@ import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
+import { Attribute } from '../../../types/attribute';
+import { CosResponse } from '../../../types/cos';
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
 import { useCosStore } from '../../store/cos/store';
@@ -47,7 +49,7 @@ const CreateCos: FC = () => {
     });
   };
 
-  const routeToCos = (resp: any): void => {
+  const routeToCos = (resp: CosResponse): void => {
     const cos = resp?.cos[0];
     if (cos) {
       setCos({
@@ -63,7 +65,7 @@ const CreateCos: FC = () => {
   };
 
   const onCreate = (): void => {
-    const attributes: any[] = [];
+    const attributes: Array<Attribute> = [];
     setIsLoading(true);
     attributes.push({
       n: 'zimbraNotes',
@@ -79,7 +81,7 @@ const CreateCos: FC = () => {
     });
     createCos(cosName, attributes)
       .then((data) => {
-        const cos: any = data?.cos[0];
+        const cos = data?.cos[0];
         if (cos) {
           showSuccessSnackBar();
           routeToCos(data);
@@ -171,7 +173,7 @@ const CreateCos: FC = () => {
                     label={t('label.description', 'Description')}
                     backgroundColor="gray5"
                     value={description}
-                    onChange={(e: any): any => {
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                       setDescription(e.target.value);
                     }}
                   />
@@ -183,7 +185,7 @@ const CreateCos: FC = () => {
                     label={t('label.notes', 'Notes')}
                     backgroundColor="gray5"
                     value={zimbraNotes}
-                    onChange={(e: any): any => {
+                    onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
                       setZimbraNotes(e.target.value);
                     }}
                   />
