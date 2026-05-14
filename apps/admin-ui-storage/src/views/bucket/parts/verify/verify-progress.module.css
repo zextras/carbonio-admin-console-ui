@@ -12,7 +12,6 @@
   background: var(--color-gray6-regular, white);
   padding: 2rem 2rem 2rem;
   width: calc(500px - 4rem);
-  height: auto;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   text-align: left;
   gap: 0.75rem;
