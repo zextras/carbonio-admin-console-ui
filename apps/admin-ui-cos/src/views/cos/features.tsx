@@ -129,18 +129,125 @@ export const Features: FC<{
               />
             </Row>
             {isAdvanced && (
-              <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-                <InheritedSwitch
-                  subValue={featuresDetail?.zimbraFeatureMobileSyncEnabled}
-                  onChange={changeSwitchOption}
-                  label={t('cos.features.active_sync_access', 'Active Sync Access')}
-                  iconColor="primary"
-                  inheritedValue={cosDetail?.zimbraFeatureMobileSyncEnabled}
-                  fromSubValue={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
-                  inputName={'zimbraFeatureMobileSyncEnabled'}
-                  onChangeReset={(): void => setEmptyValue?.('zimbraFeatureMobileSyncEnabled')}
-                  disabled={readonlyFeatures}
-                />
+              <Row mainAlignment="flex-start" width="100%" padding={{ vertical: 'large' }}>
+                <ds-text as="strong" weight="bold">
+                  {t(
+                    'cos.features.twoFactorAuthSetupEnforcement',
+                    'Two-Factor authenticator setup enforcement',
+                  )}
+                </ds-text>
+                <Container
+                  height="fit"
+                  crossAlignment="flex-start"
+                  background="gray6"
+                  padding={{ top: 'large' }}
+                >
+                  <ListRow>
+                    <Container crossAlignment="flex-start">
+                      <InheritedSwitch
+                        subValue={featuresDetail?.carbonioOtpWizardFromUntrusted}
+                        onChange={changeSwitchOption}
+                        label={t(
+                          'cos.features.allowSetupFromUntrustedNetworks',
+                          'Allow 2FA setup from untrusted networks',
+                        )}
+                        iconColor="primary"
+                        inheritedValue={cosDetail?.carbonioOtpWizardFromUntrusted}
+                        fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
+                        inputName={'carbonioOtpWizardFromUntrusted'}
+                        onChangeReset={(): void =>
+                          setEmptyValue?.('carbonioOtpWizardFromUntrusted')
+                        }
+                        disabled={
+                          readonlyFeatures ||
+                          featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE'
+                        }
+                      />
+                      <Padding left={'extralarge'}>
+                        <Row padding={{ left: 'small' }}>
+                          <ds-text
+                            as="span"
+                            color="gray1"
+                            size="small"
+                            overflow="break-word"
+                            disabled={
+                              readonlyFeatures ||
+                              featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE'
+                            }
+                          >
+                            {t(
+                              'cos.features.allowSetupFromUntrustedNetworksInfo',
+                              'Lets users without an OTP complete the 2FA setup wizard at sign-in from untrusted networks. Disable this option to block access from untrusted networks until 2FA is already configured.',
+                            )}
+                          </ds-text>
+                        </Row>
+                      </Padding>
+                    </Container>
+                  </ListRow>
+                  <ListRow padding={{ top: 'large' }}>
+                    <Container crossAlignment="flex-start">
+                      <InheritedSwitch
+                        subValue={featuresDetail?.carbonioOtpGracePeriodEnabled}
+                        onChange={changeSwitchOption}
+                        label={t(
+                          'cos.features.allowSetupDeferralDuringGracePeriod',
+                          'Allow setup deferral during grace period',
+                        )}
+                        iconColor="primary"
+                        inheritedValue={cosDetail?.carbonioOtpGracePeriodEnabled}
+                        fromSubValue={accSpecificDetail?.carbonioOtpGracePeriodEnabled}
+                        inputName={'carbonioOtpGracePeriodEnabled'}
+                        onChangeReset={(): void => setEmptyValue?.('carbonioOtpGracePeriodEnabled')}
+                        disabled={
+                          readonlyFeatures ||
+                          featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE' ||
+                          featuresDetail?.carbonioOtpWizardFromUntrusted === 'FALSE'
+                        }
+                      />
+                      <Padding left={'extralarge'}>
+                        <Row padding={{ left: 'small' }}>
+                          <ds-text
+                            as="span"
+                            color="gray1"
+                            size="small"
+                            overflow="break-word"
+                            disabled={
+                              readonlyFeatures ||
+                              featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'FALSE' ||
+                              featuresDetail?.carbonioOtpWizardFromUntrusted === 'FALSE'
+                            }
+                          >
+                            {t(
+                              'cos.features.allowSetupDeferralDuringGracePeriodInfo',
+                              'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
+                            )}
+                          </ds-text>
+                        </Row>
+                      </Padding>
+                    </Container>
+                  </ListRow>
+                  <ListRow padding={{ top: 'large' }}>
+                    <Padding left={'extralarge'} width="100%">
+                      <Row width="100%">
+                        <DateTimePicker
+                          disabled={featuresDetail?.carbonioOtpGracePeriodEnabled === 'FALSE'}
+                          width={'21.625rem'}
+                          className="fffff"
+                          label={t(
+                            'cos.features.gracePeriodExpirationDate',
+                            'Set grace period expiration date',
+                          )}
+                          onChange={handleFromDateChange}
+                          dateFormat="dd/MM/yyyy"
+                          includeTime={false}
+                          minDate={new Date()}
+                          defaultValue={gracePeriodDefaultDate}
+                        />
+                      </Row>
+                    </Padding>
+                  </ListRow>
+                </Container>
+                {/* </Row> */}
               </Row>
             )}
           </Container>
