@@ -1,5 +1,6 @@
 {
   "name": "admin-ui",
+  "description": "Carbonio Admin Console UI — monorepo for the Zextras Carbonio administration web interface",
   "version": "0.0.0-semantically-released",
   "private": true,
   "type": "module",
