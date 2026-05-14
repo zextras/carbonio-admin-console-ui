@@ -112,33 +112,33 @@ describe('BucketDetailPanel (browser)', () => {
 			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
-				.element(page.getByLabelText('Filter Buckets List'))
+				.element(page.getByLabelText('Filter S3 List'))
 				.toBeInTheDocument();
 		});
 	});
 
 	describe('Table headers', () => {
-		it('should render the Label column header', async () => {
+		it('should render the ID column header', async () => {
 			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
-				.element(page.getByText('Label', { exact: true }))
+				.element(page.getByText('ID', { exact: true }))
 				.toBeInTheDocument();
 		});
 
-		it('should render the Name column header', async () => {
+		it('should render the Descriptive Name column header', async () => {
 			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
-				.element(page.getByText('Name', { exact: true }))
+				.element(page.getByText('Descriptive Name', { exact: true }))
 				.toBeInTheDocument();
 		});
 
-		it('should render the Type column header', async () => {
+		it('should render the Bucket name column header', async () => {
 			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
-				.element(page.getByText('Type', { exact: true }))
+				.element(page.getByText('Bucket name', { exact: true }))
 				.toBeInTheDocument();
 		});
 	});
@@ -172,17 +172,17 @@ describe('BucketDetailPanel (browser)', () => {
 				.toBeInTheDocument();
 		});
 
-		it('should display bucket store types', async () => {
+		it('should display bucket IDs', async () => {
 			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
 			await expect
-				.element(page.getByText('S3', { exact: true }))
+				.element(page.getByText('bucket-1', { exact: true }))
 				.toBeInTheDocument();
 			await expect
-				.element(page.getByText('CEPH', { exact: true }))
+				.element(page.getByText('bucket-2', { exact: true }))
 				.toBeInTheDocument();
 			await expect
-				.element(page.getByText('Custom_S3', { exact: true }))
+				.element(page.getByText('bucket-3', { exact: true }))
 				.toBeInTheDocument();
 		});
 	});
@@ -210,7 +210,7 @@ describe('BucketDetailPanel (browser)', () => {
 			await expect
 				.element(page.getByText(/haven't setup a bucket type/i))
 				.toBeInTheDocument();
-			const filterInput = page.getByLabelText('Filter Buckets List');
+			const filterInput = page.getByLabelText('Filter S3 List');
 			await expect.element(filterInput).toHaveAttribute('disabled');
 		});
 	});
