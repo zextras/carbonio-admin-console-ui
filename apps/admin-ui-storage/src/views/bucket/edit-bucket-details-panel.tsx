@@ -22,13 +22,14 @@ import { useTranslation } from 'react-i18next';
 import { objectType, UpdateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { listS3Regions, updateS3Connector } from '../../services/bucket-service';
-import { VerifyError } from './parts/verify/verify-error';
+import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
 import { VerifyChangesModal } from './verify-changes-modal';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
+const NO_REGION_VALUE = '';
 
 function isBucketUnused(bucketDetail: objectType | undefined): boolean {
   const usageCandidates = [
@@ -80,11 +81,20 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const [baseRegions, setBaseRegions] = useState<Array<SelectItem<string>>>([]);
 
   const initialRegion = useMemo(
-    () =>
-      baseRegions.find((item) => item.value === bucketDetail?.region) || {
-        label: t('label.region_set_custom', 'Set custom'),
-        value: CUSTOM_REGION_VALUE,
-      },
+    () => {
+      if (!bucketDetail?.region) {
+        return {
+          label: t('label.region_none', 'None'),
+          value: NO_REGION_VALUE,
+        };
+      }
+      return (
+        baseRegions.find((item) => item.value === bucketDetail?.region) || {
+          label: t('label.region_set_custom', 'Set custom'),
+          value: CUSTOM_REGION_VALUE,
+        }
+      );
+    },
     [baseRegions, bucketDetail?.region, t],
   );
 
@@ -111,12 +121,13 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       'We do not support this specific connector. Try again with a different one',
     ),
   );
+  const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [showVerifyResult, setVerifyShowResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);
   const [isVerifyError, setIsVerifyError] = useState(false);
 
-  const currentRegionValue = isCustomRegion ? customRegion : regionSelection?.value;
+  const currentRegionValue = isCustomRegion ? customRegion : regionSelection?.value ?? '';
   const initialRegionValue = bucketDetail?.region ?? '';
 
   const changedFields = useMemo(() => {
@@ -137,9 +148,14 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     }
 
     if (currentRegionValue !== initialRegionValue) {
-      const regionLabel = isCustomRegion
-        ? customRegion.trim() || '-'
-        : String(regionSelection?.label ?? regionSelection?.value ?? '-');
+      let regionLabel = '-';
+      if (regionSelection?.value === NO_REGION_VALUE) {
+        regionLabel = t('label.region_none', 'None');
+      } else if (isCustomRegion) {
+        regionLabel = customRegion.trim() || '-';
+      } else {
+        regionLabel = String(regionSelection?.label ?? regionSelection?.value ?? '-');
+      }
       fields.push({
         label: t('label.region', 'Region'),
         value: regionLabel,
@@ -244,10 +260,12 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     setRegionSelection(initialRegion);
     const isCustom = initialRegion.value === CUSTOM_REGION_VALUE;
     setIsCustomRegion(isCustom);
-    setCustomRegion(isCustom ? bucketDetail?.region ?? '' : '');
+    setCustomRegion(
+      isCustom && initialRegion.value !== NO_REGION_VALUE ? bucketDetail?.region ?? '' : '',
+    );
   }, [bucketDetail?.region, initialRegion]);
 
-  async function saveChanges(): Promise<{ ok: boolean; errorMessage: string }> {
+  async function saveChanges(): Promise<{ ok: boolean; errorMessage: string; errorDetails?: CheckResult }> {
     if (!isDirty) {
       return { ok: true, errorMessage: '' };
     }
@@ -285,7 +303,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
 
     const updateResData = (await updateS3Connector(payload)) as {
       ok?: boolean;
-      error?: string | { message?: string };
+      error?: string | { message?: string; details?: CheckResult };
       response?: { message?: string };
       message?: string;
     };
@@ -300,8 +318,9 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       typeof updateResData?.error === 'string'
         ? updateResData.error
         : updateResData?.error?.message || '';
+    const errorDetails = typeof updateResData?.error === 'string' ? undefined : updateResData?.error?.details;
 
-    return { ok: false, errorMessage };
+    return { ok: false, errorMessage, errorDetails };
   }
 
   async function onVerifyAndSaveChanges(): Promise<void> {
@@ -312,10 +331,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     }
 
     if (!prefixConfirm) {
-      return;
-    }
-
-    if (isCustomRegion && customRegion.trim() === '') {
       return;
     }
 
@@ -341,7 +356,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     setIsVerifyError(false);
     setIsVerifyPending(true);
 
-    const { ok, errorMessage } = await saveChanges();
+    const { ok, errorMessage, errorDetails } = await saveChanges();
 
     if (ok) {
       setIsVerifySuccess(true);
@@ -353,6 +368,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
             'We do not support this specific connector. Try again with a different one',
           ),
       );
+      setCheckDetails(errorDetails);
       setIsVerifyError(true);
     }
 
@@ -493,6 +509,10 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
           <Select
             items={[
+              {
+                label: t('label.region_none', 'None'),
+                value: NO_REGION_VALUE,
+              },
               ...baseRegions,
               {
                 label: t('label.region_set_custom', 'Set custom'),
@@ -508,12 +528,26 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
                 ? (selectedValue[0] as SelectItem<string> | undefined)?.value
                 : selectedValue;
 
-              if (regionValue !== CUSTOM_REGION_VALUE && typeof regionValue !== 'string') {
+              if (
+                regionValue !== CUSTOM_REGION_VALUE &&
+                regionValue !== NO_REGION_VALUE &&
+                typeof regionValue !== 'string'
+              ) {
                 return;
               }
 
               const nextSelection =
                 typeof regionValue === 'string' ? regionValue : CUSTOM_REGION_VALUE;
+
+              if (nextSelection === NO_REGION_VALUE) {
+                setIsCustomRegion(false);
+                setRegionSelection({
+                  label: t('label.region_none', 'None'),
+                  value: NO_REGION_VALUE,
+                });
+                setCustomRegion('');
+                return;
+              }
 
               if (nextSelection === CUSTOM_REGION_VALUE) {
                 setIsCustomRegion(true);
@@ -643,7 +677,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
             color="primary"
             label={t('label.verify_and_save_changes', 'VERIFY & SAVE CHANGES')}
             onClick={onVerifyAndSaveChanges}
-            disabled={isCustomRegion && customRegion.trim() === ''}
+            disabled={(isCustomRegion && customRegion.trim() === '') || changedFields.length === 0}
           />
         </Row>
       </Row>
@@ -662,6 +696,8 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       <VerifyError
         verifyFailError={verifyFailError}
         isError={showVerifyResult && isVerifyError}
+        checkDetails={checkDetails}
+        onRetry={() => setVerifyShowResult(false)}
       />
     </>
   );

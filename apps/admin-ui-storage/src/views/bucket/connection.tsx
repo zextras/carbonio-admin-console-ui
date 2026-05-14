@@ -23,7 +23,7 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
 import { createS3Connector, listS3Regions } from '../../services/bucket-service';
-import { VerifyError } from './parts/verify/verify-error';
+import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
 
@@ -65,6 +65,7 @@ const Connection: FC<{
             'storages.s3Connectors.verifyError.doNotSupport',
             'We do not support this specific connector. Try again with a different one',
           ));
+  const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [prefixConfirm, setprefixConfirm] = useState(true);
   const [bucketNameConfirm, setBucketNameConfirm] = useState(true);
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -118,21 +119,23 @@ const Connection: FC<{
 
       createS3Connector(payload)
         .then((rawResponse) => {
-          const response = rawResponse as { ok?: boolean; error?: string | { message?: string } };
+          const response = rawResponse as { ok?: boolean; error?: string | { message?: string; details?: CheckResult } };
           if (response?.ok) {
             setIsVerifySuccess(true);
             return;
           }
 
-          setVerifyFailError(
-            typeof response?.error === 'string'
-              ? response.error
-              : response?.error?.message ||
-                  t(
-                    'storages.s3Connectors.verifyError.doNotSupport',
-                    'We do not support this specific connector. Try again with a different one',
-                  ),
-          );
+          const errorMessage = typeof response?.error === 'string'
+            ? response.error
+            : response?.error?.message ||
+                t(
+                  'storages.s3Connectors.verifyError.doNotSupport',
+                  'We do not support this specific connector. Try again with a different one',
+                );
+          const errorDetails = typeof response?.error === 'string' ? undefined : response?.error?.details;
+
+          setVerifyFailError(errorMessage);
+          setCheckDetails(errorDetails);
           setIsVerifyError(true);
         })
         .catch(() => {
@@ -142,6 +145,7 @@ const Connection: FC<{
               'We do not support this specific connector. Try again with a different one',
             ),
           );
+          setCheckDetails(undefined);
           setIsVerifyError(true);
         })
         .finally(() => {
@@ -465,7 +469,12 @@ const Connection: FC<{
         isSuccess={showVerifyResult && isVerifySuccess}
         onComplete={handleSuccessComplete}
       />
-      <VerifyError verifyFailError={verifyFailError} isError={showVerifyResult && isVerifyError} />
+      <VerifyError
+        verifyFailError={verifyFailError}
+        isError={showVerifyResult && isVerifyError}
+        checkDetails={checkDetails}
+        onRetry={() => setVerifyShowResult(false)}
+      />
     </Container>
   );
 };

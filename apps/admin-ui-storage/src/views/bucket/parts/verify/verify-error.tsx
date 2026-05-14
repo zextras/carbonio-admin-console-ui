@@ -9,13 +9,29 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './verify-error.module.css';
 
+export type CheckResult = {
+  connectionOk?: string;
+  secureHttpsOk?: string;
+  bucketExists?: string;
+  createDirectoryOk?: string;
+  uploadFileOk?: string;
+  uploadBigFileOk?: string;
+  downloadFileOk?: string;
+  listObjectsOk?: string;
+  copyFileOk?: string;
+  deleteFileOk?: string;
+  deleteDirectoryOk?: string;
+  error?: string;
+};
+
 type VerifyErrorProps = {
   isError: boolean;
   verifyFailError?: string;
+  checkDetails?: CheckResult;
   onRetry?: () => void;
 };
 
-export const VerifyError = ({ isError, verifyFailError, onRetry }: VerifyErrorProps): React.JSX.Element => {
+export const VerifyError = ({ isError, verifyFailError, checkDetails, onRetry }: VerifyErrorProps): React.JSX.Element => {
   const { t } = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -33,6 +49,29 @@ export const VerifyError = ({ isError, verifyFailError, onRetry }: VerifyErrorPr
     popoverRef.current?.hidePopover();
     onRetry?.();
   }
+
+  const checkLabels: Record<string, string> = {
+    connectionOk: t('storages.s3Connectors.verifyProgress.connectionOk', 'Connection'),
+    secureHttpsOk: t('storages.s3Connectors.verifyProgress.secureHttpsOk', 'Secure HTTPS'),
+    bucketExists: t('storages.s3Connectors.verifyProgress.bucketExists', 'Bucket Exists'),
+    createDirectoryOk: t('storages.s3Connectors.verifyProgress.createDirectoryOk', 'Create Directory'),
+    uploadFileOk: t('storages.s3Connectors.verifyProgress.uploadFileOk', 'Upload File'),
+    uploadBigFileOk: t('storages.s3Connectors.verifyProgress.uploadBigFileOk', 'Upload Big File'),
+    downloadFileOk: t('storages.s3Connectors.verifyProgress.downloadFileOk', 'Download File'),
+    listObjectsOk: t('storages.s3Connectors.verifyProgress.listObjectsOk', 'List Objects'),
+    copyFileOk: t('storages.s3Connectors.verifyProgress.copyFileOk', 'Copy File'),
+    deleteFileOk: t('storages.s3Connectors.verifyProgress.deleteFileOk', 'Delete File'),
+    deleteDirectoryOk: t('storages.s3Connectors.verifyProgress.deleteDirectoryOk', 'Delete Directory'),
+  };
+
+  const displayedChecks = checkDetails
+    ? Object.entries(checkDetails)
+        .filter(([key]) => key in checkLabels)
+        .map(([key, value]) => ({
+          label: checkLabels[key],
+          status: value === 'true',
+        }))
+    : [];
 
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
@@ -77,6 +116,28 @@ export const VerifyError = ({ isError, verifyFailError, onRetry }: VerifyErrorPr
           {verifyFailError}
         </ds-text>
       </div>
+      {displayedChecks.length > 0 && (
+        <>
+          <div className={styles.divider} />
+          <div className={styles.checksContainer}>
+            <ds-text as="span" weight="bold" size="small">
+              {t('storages.s3Connectors.verifyError.checkResults', 'Check Results')}
+            </ds-text>
+            {displayedChecks.map((check) => (
+              <div key={check.label} className={styles.checkItem}>
+                <ds-icon
+                  icon={check.status ? 'CheckmarkOutline' : 'CloseOutline'}
+                  color={check.status ? 'success' : 'error'}
+                  size="20px"
+                />
+                <ds-text as="span" size="small">
+                  {check.label}
+                </ds-text>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
       <div className={styles.divider} />
       <div className={styles.actions}>
         <Button
