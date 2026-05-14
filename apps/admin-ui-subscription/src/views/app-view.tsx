@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
+  getResponsiveContainerStyle,
   useBreakpoint,
   useLicenseInfo,
   useLocalStorage,
@@ -31,6 +32,15 @@ function getContainerStyle(breakpoint: string, isSidebarOpen = false): CSSProper
     maxWidth: getMaxWidth(breakpoint, isSidebarOpen),
   };
 }
+const baseStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  boxSizing: 'border-box',
+} as const;
+
+// Subscription caps at 1125px even at the 2xl breakpoint — the wider 1400px tier is COS-specific.
+const SUBSCRIPTION_MAX_BASE_WIDTH_PX = 1125;
 
 function getSubscriptionView(
   subscriptionType: string | undefined,
@@ -68,7 +78,7 @@ export const AppView = () => {
     null,
   );
 
-  const { data: licenseData, isLoading } = useLicenseInfo();
+  const { data: licenseData, isLoading, isFetching } = useLicenseInfo();
   const subscriptionType = licenseData?.response?.type;
   const subType = licenseData?.response?.subType;
 
@@ -87,6 +97,20 @@ export const AppView = () => {
           >
             {getSubscriptionView(subscriptionType, subType, featureFlag)}
           </div>
+        </div>
+      )}
+      {!isFetching && (
+        <div
+          style={{
+            ...baseStyle,
+            ...getResponsiveContainerStyle({
+              breakpoint,
+              isPrimaryBarExpanded,
+              maxBaseWidthPx: SUBSCRIPTION_MAX_BASE_WIDTH_PX,
+            }),
+          }}
+        >
+          {getSubscriptionView(subscriptionType, subType, featureFlag)}
         </div>
       )}
     </div>

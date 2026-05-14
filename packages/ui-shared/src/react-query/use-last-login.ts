@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQuery } from "@tanstack/react-query";
-import { format, parse } from "date-fns";
+import { useQuery } from '@tanstack/react-query';
+import { format, parse } from 'date-fns';
 
-import { soapFetch } from "../network/fetch";
+import { soapFetch } from '../network/fetch';
 
 type LastLoginTimestampOptions = {
   enabled?: boolean;
@@ -17,46 +17,49 @@ type LastLoginTimestampOptions = {
 /**
  * Hook to fetch and format the last login timestamp for a user account
  */
-export const useLastLoginTimestamp = (
-  options: LastLoginTimestampOptions = {},
-) => {
+export const useLastLoginTimestamp = (options: LastLoginTimestampOptions = {}) => {
   const { enabled = true, accountId } = options;
 
   async function queryFn(): Promise<string> {
-    const response = await soapFetch("GetAccount", {
-      _jsns: "urn:zimbraAdmin",
+    const response = await soapFetch('GetAccount', {
+      _jsns: 'urn:zimbraAdmin',
       account: [
         {
-          _content: accountId || "",
-          by: accountId ? "id" : "name",
+          _content: accountId || '',
+          by: accountId ? 'id' : 'name',
         },
       ],
       applyCos: 0,
-      attrs: "zimbraLastLogonTimestamp",
+      attrs: 'zimbraLastLogonTimestamp',
     });
 
     const lastLoginAttribute = (response as any)?.account?.[0]?.a?.find(
-      (attr: any) => attr.n === "zimbraLastLogonTimestamp",
+      (attr: any) => attr.n === 'zimbraLastLogonTimestamp',
     );
 
     if (!lastLoginAttribute?._content) {
-      return "";
+      return '';
     }
     return format(
-      parse(lastLoginAttribute._content, "yyyyMMddHHmmss.SSSxx", new Date()),
-      "EEEE dd MMM yyyy | h:mm a",
+      parse(lastLoginAttribute._content, 'yyyyMMddHHmmss.SSSxx', new Date()),
+      'EEEE dd MMM yyyy | h:mm a',
     );
   }
 
+  const retryFn = () => (failureCount: number, error: Error) => {
+    failureCount < 3 &&
+      console.warn(`Failed to fetch last login timestamp (attempt ${failureCount}):`, error);
+    return failureCount < 3;
+  };
+
   return useQuery({
-    queryKey: ["last-login-timestamp", accountId],
+    queryKey: ['last-login-timestamp', accountId],
     queryFn,
     enabled: enabled && Boolean(accountId),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
-    retry: 2,
-    retryDelay: (attemptIndex: number) =>
-      Math.min(1000 * 2 ** attemptIndex, 30000),
+    retry: retryFn(),
+    retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 30000),
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
   });

@@ -1,0 +1,47 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.appRoot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: fit-content;
+}
+
+.routesRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+  height: calc(100vh - 105px);
+}
+
+.detailPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: hidden;
+  width: 100%;
+  background: var(--color-gray6-regular);
+}
+
+/* min-width: 0 lets the centered child shrink instead of overflowing its flex parent. */
+.contentCenter {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
+}
+
+.fullWidthCenter {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 2rem;
+}
