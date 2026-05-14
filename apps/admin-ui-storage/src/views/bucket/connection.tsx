@@ -30,6 +30,7 @@ import { VerifySuccess } from './parts/verify/verify-success';
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 const bucketNameRegex = /^\S+$/;
 const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
+const NO_REGION_VALUE = '';
 const EMPTY_REGION = { value: '', label: '' };
 
 const Connection: FC<{
@@ -40,6 +41,10 @@ const Connection: FC<{
   const [bucketRegions, setBucketRegions] = useState<Array<{ value: string; label: string }>>([]);
   const regionItems = useMemo(
     () => [
+      {
+        label: t('label.region_none', 'None'),
+        value: NO_REGION_VALUE,
+      },
       ...bucketRegions,
       {
         label: t('label.region_set_custom', 'Set custom'),
@@ -88,8 +93,7 @@ const Connection: FC<{
       bucketName &&
       bucketNameRegex.test(bucketName) &&
       accessKeyData &&
-      secretKey &&
-      selectedRegion !== ''
+      secretKey
     ) {
       setVerifyShowResult(false);
       setIsVerifySuccess(false);
@@ -179,10 +183,12 @@ const Connection: FC<{
 
   useEffect(() => {
     if (regionsData === undefined && bucketRegions.length > 0) {
-      setRegionsData(bucketRegions[0]);
-      setRegionSelection(bucketRegions[0]);
+      setRegionSelection({
+        label: t('label.region_none', 'None'),
+        value: NO_REGION_VALUE,
+      });
     }
-  }, [bucketRegions, regionsData]);
+  }, [bucketRegions, regionsData, t]);
 
   useEffect(() => {
     setButtonColor('primary');
@@ -196,13 +202,11 @@ const Connection: FC<{
     setPrefix('');
     setCustomRegion('');
     setIsCustomRegion(false);
-    if (bucketRegions.length > 0) {
-      setRegionSelection(bucketRegions[0]);
-      setRegionsData(bucketRegions[0]);
-    } else {
-      setRegionSelection(EMPTY_REGION);
-      setRegionsData(undefined);
-    }
+    setRegionSelection({
+      label: t('label.region_none', 'None'),
+      value: NO_REGION_VALUE,
+    });
+    setRegionsData(undefined);
   }, [bucketRegions, t]);
 
   const onSelectRegionChange = useCallback(
@@ -212,6 +216,17 @@ const Connection: FC<{
         setRegionSelection({
           label: t('label.region_set_custom', 'Set custom'),
           value: CUSTOM_REGION_VALUE,
+        });
+        return;
+      }
+
+      if (e === NO_REGION_VALUE) {
+        setIsCustomRegion(false);
+        setCustomRegion('');
+        setRegionsData(undefined);
+        setRegionSelection({
+          label: t('label.region_none', 'None'),
+          value: NO_REGION_VALUE,
         });
         return;
       }
