@@ -13,9 +13,10 @@
   background: var(--color-gray6-regular, white);
   padding: 2rem 2rem 2rem;
   width: calc(500px - 4rem);
-  height: calc(375px - 4rem);
+  height: auto;
   box-shadow: 0 0.25rem 1.5rem rgba(0, 0, 0, 0.08);
   color: var(--color-gray0-regular);
+  overflow: visible;
 }
 
 .popover:popover-open {
