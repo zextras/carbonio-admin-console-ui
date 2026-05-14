@@ -56,6 +56,14 @@ import DeleteVolumeModel from './delete-volume-model';
 import IndexerVolumeTable from './indexer-volume-table';
 import ModifyVolume from './modify-volume/modify-volume';
 
+type SoapContentResponse = {
+  Body?: {
+    response?: {
+      content?: string;
+    };
+  };
+};
+
 const VolumeListTable: FC<{
   volumes: Array<Volume>;
   selectedRows: any;
@@ -227,7 +235,8 @@ const VolumesDetailPanel: FC = () => {
         targetServers: selectedServerName,
       })
         .then((res) => {
-          const result = JSON.parse(res?.Body?.response?.content);
+          const typedRes = res as SoapContentResponse;
+          const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
           const getAllVolResponse = Object.keys(result?.response).map(
             (key) => result?.response[key],
           )[0];
@@ -305,7 +314,8 @@ const VolumesDetailPanel: FC = () => {
         volumeName: data?.name,
       })
         .then((res) => {
-          const result = JSON.parse(res?.Body?.response?.content);
+          const typedRes = res as SoapContentResponse;
+          const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
           const deleteResponse = Object.keys(result?.response).map(
             (key) => result?.response[key],
           )[0];
@@ -480,7 +490,8 @@ const VolumesDetailPanel: FC = () => {
 
     await fetchSoap('zextras', obj)
       .then(async (res) => {
-        const result = JSON.parse(res?.Body?.response?.content);
+        const typedRes = res as SoapContentResponse;
+        const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
         if (result?.ok) {
           if (result?.response[selectedServerName]?.ok) {
             getAllVolumesRequest();
@@ -510,7 +521,7 @@ const VolumesDetailPanel: FC = () => {
             }),
           });
         }
-        return res;
+        return typedRes;
       })
       .catch((error) => {
         createSnackbar({

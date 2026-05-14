@@ -48,10 +48,19 @@ import {
   SWIFT,
   UNUSED,
   USAGE_IN_EXTERNAL_BACKUP,
+  ZIMBRA_ADMIN_URN,
 } from '../../../../../constants';
-import { listS3Connector } from '../../../../../services/bucket-service';
+import { fetchSoap, listS3Connector } from '../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
 import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
+
+type SoapContentResponse = {
+  Body?: {
+    response?: {
+      content?: string;
+    };
+  };
+};
 
 const ModifyVolume: FC<{
   volumeId: any;
@@ -238,7 +247,8 @@ const ModifyVolume: FC<{
 
       await fetchSoap('zextras', obj)
         .then((res) => {
-          const result = JSON.parse(res?.Body?.response?.content);
+          const typedRes = res as SoapContentResponse;
+          const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
           const updateResponse = result?.response?.[selectedServerName];
 
           if (updateResponse?.ok) {
@@ -414,17 +424,18 @@ const ModifyVolume: FC<{
 
   const getAllBuckets = useCallback(() => {
     listS3Connector().then((values) => {
-      const connectors = values.map((items) => ({
-        ...items,
-        uuid: items.id,
+      const connectors: Array<objectType> = values.map((items) => ({
+        uuid: items.uuid,
+        label: items.label || '',
+        bucketName: items.bucketName || '',
         storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
-      })) as Array<objectType>;
+      }));
 
       if (connectors.length > 0) {
         const bucName = connectors.find(
           (b: objectType) => b?.uuid === externalVolDetail?.bucketConfigurationId,
         )?.bucketName;
-        setBucketName(bucName);
+        setBucketName(bucName || '');
         setStoreType(externalVolDetail?.storeType);
         setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
 

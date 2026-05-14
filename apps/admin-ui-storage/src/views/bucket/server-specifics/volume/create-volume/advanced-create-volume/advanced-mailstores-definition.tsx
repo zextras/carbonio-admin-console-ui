@@ -94,7 +94,7 @@ const AdvancedMailstoresDefinition: FC<{
   const getBucketListType = useCallback((): void => {
     listS3Connector().then((values) => {
       const connectors: Array<objectType> = values.map((items) => ({
-        uuid: items.id,
+        uuid: items.uuid,
         label: items.label || '',
         bucketName: items.bucketName || '',
         storeType: (items as unknown as { storeType?: string }).storeType || 'S3',

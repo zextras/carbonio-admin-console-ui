@@ -71,18 +71,6 @@ export const VerifyProgress = ({
     };
   }, [isPending]);
 
-  const handleClose = (): void => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    popoverRef.current?.hidePopover();
-    setProgress(0);
-  };
 
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
