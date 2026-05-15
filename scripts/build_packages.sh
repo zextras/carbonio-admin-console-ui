@@ -10,8 +10,8 @@ OS=${1:-"ubuntu-jammy"}
 echo "Building for OS: $OS"
 
 docker run --rm \
-	--entrypoint=yap \
-	-v "$(pwd)/artifacts/${OS}":/artifacts \
-	-v "$(pwd)":/tmp/build \
-	"docker.io/m0rf30/yap-${OS}:1.8" \
-	build "${OS}" /tmp/build
+  --entrypoint=./dist/yap \
+  -v "$(pwd)/artifacts/${OS}":/artifacts \
+  -v "$(pwd)":/tmp/build \
+  "docker.io/m0rf30/yap-${OS}:1.8" \
+  build "${OS}" /tmp/build
