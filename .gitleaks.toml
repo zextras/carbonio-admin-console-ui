@@ -7,7 +7,7 @@
 #
 # How to add new entries:
 #   - For patterns: add a regex to the `regexes` list (e.g. phc_* PostHog keys).
-#   - For one-off commits: add the commit SHA to the `commits` list with a comment.
+#   - For paths: add a path regex to the `paths` list in the appropriate allowlist.
 
 title = "carbonio-admin-console-ui gitleaks config"
 
@@ -16,7 +16,13 @@ title = "carbonio-admin-console-ui gitleaks config"
 useDefault = true
 
 [[allowlists]]
-description = "False positives: PostHog public project API key and test fixture passwords"
-# PostHog project API keys (phc_*) are public frontend keys intentionally bundled into
-# browser JS. They are not secrets — analogous to Google Analytics tracking IDs.
-regexes = ['''phc_[A-Za-z0-9]{40,}''']
+description = "PostHog public project API keys (phc_*) are public frontend keys, not secrets"
+regexes = [
+  '''phc_[A-Za-z0-9]{40,}''',
+]
+
+[[allowlists]]
+description = "Test files may contain fixture passwords/secrets that are not real credentials"
+paths = [
+  '''\.test\.(ts|tsx|js|jsx)$''',
+]
