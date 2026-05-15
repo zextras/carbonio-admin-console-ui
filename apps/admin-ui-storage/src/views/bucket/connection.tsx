@@ -33,6 +33,11 @@ const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
 const NO_REGION_VALUE = '';
 const EMPTY_REGION = { value: '', label: '' };
 
+type S3ConnectorError = {
+  message?: string;
+  details?: CheckResult;
+};
+
 const Connection: FC<{
   externalData?: string;
   onCancel?: () => void;
@@ -123,7 +128,7 @@ const Connection: FC<{
 
       createS3Connector(payload)
         .then((rawResponse) => {
-          const response = rawResponse as { ok?: boolean; error?: string | { message?: string } };
+          const response = rawResponse as { ok?: boolean; error?: string | S3ConnectorError };
           if (response?.ok) {
             setIsVerifySuccess(true);
             return;
