@@ -21,6 +21,7 @@ export function postBuildPlugin(): Plugin {
       const targetDir = resolve(
         rootDir,
         'dist',
+        'package',
         'opt',
         'zextras',
         'admin',
