@@ -6,8 +6,8 @@
 # This file contains allowlist entries for known false positives.
 #
 # How to add new entries:
-#   1. Run gitleaks and note the "Fingerprint" field of any false positive.
-#   2. Add the fingerprint to the [[allowlists]] commits list below with a comment explaining why.
+#   - For patterns: add a regex to the `regexes` list (e.g. phc_* PostHog keys).
+#   - For paths: add a path regex to the `paths` list in the appropriate allowlist.
 
 title = "carbonio-admin-console-ui gitleaks config"
 
@@ -16,35 +16,13 @@ title = "carbonio-admin-console-ui gitleaks config"
 useDefault = true
 
 [[allowlists]]
-description = "False positives: PostHog public project API key and test fixture passwords"
-# PostHog project API keys (phc_*) are public frontend keys intentionally bundled into
-# browser JS. They are not secrets — analogous to Google Analytics tracking IDs.
-# StrongPass456 is a test fixture password in a deleted test file (historical commits only).
-commits = [
-  # StrongPass456 in apps/admin-ui-domains/src/services/tests/create-account.test.ts (deleted file, test fixture)
-  "243f19a14923e9dee276900655f7e38e2f3ea643",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-bootstrap/src/tracker/provider.tsx
-  "3169d384cf9022197ad19bad78aa6e66e535bcba",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-notifications/src/constants.ts
-  "0e9114c46d17bc286a8a8ef8bf6c267389c29e12",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-legalhold/src/constants.ts
-  "5245211a00ccfa2dfe8f631b68a92df30bc3b9d4",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-backup/src/constants.ts
-  "6df2feecf29d8bbead3f34e7f2613b2ef1803956",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-storage/src/constants.ts
-  "46de62e707d7e91c6a9c1b43949161b01fd1afb7",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-mta/src/constants.ts
-  "b19d87c8b93e02373d1f4b9a7396be6ea84b25b7",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-privacy/src/constants.ts
-  "129b94fc0a1c93e8237f9c64f0f458353cfee752",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-subscription/src/constants.ts
-  "d855b053e62e1c61fed343e3928df473c4de54c1",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-domains/src/constants.ts
-  "b127e8ecdf02e2ff72c67056e4d2639efc8afd2e",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-dashboard/src/constants.ts
-  "eae4eb36fa0c4696328512975e74b5c6dbf939ef",
-  # PH_PROJECT_API_KEY (PostHog public key) in apps/admin-ui-cos/src/constants.ts
-  "ac24991fd55c667e174607494569528356f7f89c",
-  # PH_PROJECT_API_KEY (PostHog public key) in src/constants.ts
-  "04309baf72f5ae1f90e2b12559cec445efa8c90e",
+description = "PostHog public project API keys (phc_*) are public frontend keys, not secrets"
+regexes = [
+  '''phc_[A-Za-z0-9]{40,}''',
+]
+
+[[allowlists]]
+description = "Test files may contain fixture passwords/secrets that are not real credentials"
+paths = [
+  '''\.test\.(ts|tsx|js|jsx)$''',
 ]
