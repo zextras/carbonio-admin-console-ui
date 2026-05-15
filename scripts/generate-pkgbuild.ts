@@ -20,7 +20,7 @@ const main = (): void => {
   const rootDir = getWorkspaceRoot();
   const distDir = join(rootDir, 'dist');
   const pkgVersion = getLastTag().replace(/^v/, '');
-  const appsDir = join(distDir, 'opt', 'zextras', 'admin', 'iris');
+  const appsDir = join(distDir, 'package', 'opt', 'zextras', 'admin', 'iris');
   const componentList = readdirSync(appsDir).join(' ');
 
   colorLog('Creating PKGBUILD...', 'blue');
@@ -86,7 +86,7 @@ postinst() {
 }
 `;
 
-  writeFileSync(join(distDir, 'PKGBUILD'), pkgbuildContent);
+  writeFileSync(join(distDir, 'package', 'PKGBUILD'), pkgbuildContent);
 
   colorLog('PKGBUILD created', 'green');
 };
