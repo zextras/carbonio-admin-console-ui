@@ -22,7 +22,7 @@
     "deploy": "pnpm exec tsx scripts/deploy.ts",
     "deploy:dev": "pnpm exec tsx scripts/deploy.ts development",
     "test": "turbo run test",
-    "pretest:ci": "playwright install chromium",
+    "pretest:ci": "rm -rf \"${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/ms-playwright}\" && playwright install chromium",
     "test:ci": "turbo run test:ci",
     "test:headed": "HEADED=true turbo run test --no-cache",
     "type-check": "turbo run type-check",
