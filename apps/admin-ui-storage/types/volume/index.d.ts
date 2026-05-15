@@ -165,7 +165,7 @@ export type UpdateS3ConnectorRequest = {
 	_jsns: string;
 	module: 'ZxPowerstore';
 	action: 'updateS3Connector';
-	id: string;
+	uuid: string;
 	iAmSure: boolean;
 	bucketName?: string;
 	label?: string;
@@ -182,6 +182,22 @@ export type DeleteS3ConnectorRequest = {
 	_jsns: string;
 	module: 'ZxPowerstore';
 	action: 'deleteS3Connector';
-	id: string;
+	uuid: string;
 	iAmSure: boolean;
+};
+
+export type S3ConnectorApiError = {
+	code?: string;
+	message?: string;
+	time?: number;
+	details?: Record<string, string>;
+};
+
+export type S3ConnectorMutationResponse = {
+	ok?: boolean;
+	response?: {
+		message?: string;
+	};
+	error?: string | S3ConnectorApiError;
+	message?: string;
 };

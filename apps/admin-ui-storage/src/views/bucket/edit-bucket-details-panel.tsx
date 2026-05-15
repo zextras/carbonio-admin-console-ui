@@ -19,7 +19,11 @@ import {
 import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType, UpdateS3ConnectorRequest } from '../../../types';
+import {
+  objectType,
+  S3ConnectorMutationResponse,
+  UpdateS3ConnectorRequest,
+} from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { listS3Regions, updateS3Connector } from '../../services/bucket-service';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
@@ -274,7 +278,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       _jsns: ZIMBRA_ADMIN_URN,
       module: 'ZxPowerstore',
       action: 'updateS3Connector',
-      id: bucketDetail?.uuid ?? '',
+      uuid: bucketDetail?.uuid ?? '',
       iAmSure: true,
       insecureHttps: acceptUntrustedSSL,
     };
@@ -301,12 +305,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       payload.region = currentRegionValue;
     }
 
-    const updateResData = (await updateS3Connector(payload)) as {
-      ok?: boolean;
-      error?: string | { message?: string; details?: CheckResult };
-      response?: { message?: string };
-      message?: string;
-    };
+    const updateResData = (await updateS3Connector(payload)) as S3ConnectorMutationResponse;
 
     if (updateResData?.ok) {
       getBucketListType();

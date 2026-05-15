@@ -12,6 +12,7 @@ import {
 	ListS3ConnectorResponseContent,
 	ListS3RegionsResponseContent,
 	S3Connector,
+	S3ConnectorMutationResponse,
 	S3Region,
 	UpdateS3ConnectorRequest,
 } from '../../types';
@@ -75,17 +76,23 @@ export async function listS3Connector(): Promise<Array<S3Connector>> {
 	return parsed.response?.values ?? [];
 }
 
-export async function createS3Connector(payload: CreateS3ConnectorRequest): Promise<unknown> {
+export async function createS3Connector(
+	payload: CreateS3ConnectorRequest,
+): Promise<S3ConnectorMutationResponse> {
 	const res = (await fetchSoap('zextras', payload)) as SoapContentResponse;
-	return parseSoapContent<unknown>(res);
+	return parseSoapContent<S3ConnectorMutationResponse>(res);
 }
 
-export async function updateS3Connector(payload: UpdateS3ConnectorRequest): Promise<unknown> {
+export async function updateS3Connector(
+	payload: UpdateS3ConnectorRequest,
+): Promise<S3ConnectorMutationResponse> {
 	const res = (await fetchSoap('zextras', payload)) as SoapContentResponse;
-	return parseSoapContent<unknown>(res);
+	return parseSoapContent<S3ConnectorMutationResponse>(res);
 }
 
-export async function deleteS3Connector(payload: DeleteS3ConnectorRequest): Promise<unknown> {
+export async function deleteS3Connector(
+	payload: DeleteS3ConnectorRequest,
+): Promise<S3ConnectorMutationResponse> {
 	const res = (await fetchSoap('zextras', payload)) as SoapContentResponse;
-	return parseSoapContent<unknown>(res);
+	return parseSoapContent<S3ConnectorMutationResponse>(res);
 }

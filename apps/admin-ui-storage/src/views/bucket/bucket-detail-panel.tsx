@@ -23,7 +23,11 @@ import { filter } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { DeleteS3ConnectorRequest, objectType } from '../../../types';
+import {
+  DeleteS3ConnectorRequest,
+  objectType,
+  S3ConnectorMutationResponse,
+} from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { deleteS3Connector, listS3Connector } from '../../services/bucket-service';
@@ -234,12 +238,12 @@ const BucketDetailPanel: FC = () => {
       _jsns: ZIMBRA_ADMIN_URN,
       module: 'ZxPowerstore',
       action: 'deleteS3Connector',
-      id: bucketDeleteName?.uuid || '',
+      uuid: bucketDeleteName?.uuid || '',
       iAmSure: true,
     };
 
     deleteS3Connector(objectToSendDeleteBucket).then((rawResponse) => {
-      const response = rawResponse as { ok?: boolean };
+      const response = rawResponse as S3ConnectorMutationResponse;
       if (response.ok) {
         getBucketListType();
         createSnackbar({
@@ -252,12 +256,19 @@ const BucketDetailPanel: FC = () => {
         });
         setShowEditDetailView(false);
       } else {
+        const errorMessage =
+          typeof response?.error === 'string'
+            ? response.error
+            : response?.error?.message;
+
         createSnackbar({
           key: '1',
           severity: 'error',
-          label: t('label.delete_bucket_fail', 'The {{name}} has not been removed', {
-            name: bucketDeleteName?.bucketName,
-          }),
+          label:
+            errorMessage ||
+            t('label.delete_bucket_fail', 'The {{name}} has not been removed', {
+              name: bucketDeleteName?.bucketName,
+            }),
           autoHideTimeout: 2000,
         });
       }

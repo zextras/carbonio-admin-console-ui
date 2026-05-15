@@ -123,7 +123,7 @@ const Connection: FC<{
 
       createS3Connector(payload)
         .then((rawResponse) => {
-          const response = rawResponse as { ok?: boolean; error?: string | { message?: string; details?: CheckResult } };
+          const response = rawResponse as { ok?: boolean; error?: string | { message?: string } };
           if (response?.ok) {
             setIsVerifySuccess(true);
             return;
