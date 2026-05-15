@@ -158,7 +158,7 @@ export default defineConfig(({ command, mode }) => {
       BASE_PATH: JSON.stringify(basePath),
     },
     build: {
-      outDir: resolve(rootDir, 'dist', 'package', 'opt', 'zextras', 'admin', 'iris', packageName),
+      outDir: resolve(rootDir, 'dist', 'opt', 'zextras', 'admin', 'iris', packageName),
       emptyOutDir: true,
       sourcemap: isDev,
       rollupOptions: createBootstrapRolldownOptions(),

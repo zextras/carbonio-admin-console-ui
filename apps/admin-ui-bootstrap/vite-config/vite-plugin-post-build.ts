@@ -21,7 +21,6 @@ export function postBuildPlugin(): Plugin {
       const targetDir = resolve(
         rootDir,
         'dist',
-        'package',
         'opt',
         'zextras',
         'admin',
@@ -39,15 +38,6 @@ export function postBuildPlugin(): Plugin {
       if (existsSync(indexHtmlPath)) {
         copyFileSync(indexHtmlPath, resolve(currentDir, 'index.html'));
         colorLog('Copied index.html to current directory', 'green');
-      }
-
-      const yapJsonSrc = resolve(rootDir, 'yap.json');
-      const yapJsonDest = resolve(rootDir, 'dist', 'yap.json');
-      if (existsSync(yapJsonSrc)) {
-        copyFileSync(yapJsonSrc, yapJsonDest);
-        colorLog('Copied yap.json to dist directory', 'green');
-      } else {
-        colorLog('yap.json not found, skipping copy', 'orange');
       }
 
       colorLog('✅ Post-build tasks completed!\n', 'green');
