@@ -7,7 +7,6 @@
 .addonRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 1.25rem 0;
   border-bottom: 1px solid var(--color-gray5-regular);
   gap: 1.5rem;
@@ -22,6 +21,7 @@
   flex-direction: column;
   gap: 0.5rem;
   flex: 1 1 0;
+  min-width: 0;
 }
 
 .addonNameRow {
@@ -32,9 +32,13 @@
 
 .addonSeatUsage {
   display: flex;
+  margin: 0 1rem;
   flex-direction: column;
   gap: 0.5rem;
-  flex: 1 1 0;
+  /* flex: 1 1 0; */
+  max-width: 25rem;
+  /* width: 400px; */
+  min-width: 25rem;
 }
 
 .addonStats {

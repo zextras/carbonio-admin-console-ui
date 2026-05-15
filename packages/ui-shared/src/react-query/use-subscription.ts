@@ -8,17 +8,17 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import * as response from '../../../../response-perpetual.json';
 import { ZIMBRA_ADMIN_URN } from '../constants';
 import { useSnackbar } from '../hooks/useSnackbar';
 import { fetchSoap } from '../services/subscription-service';
-
 export type LicenseType = 'ISP' | 'Purchased' | 'None';
 
 export type LicenseSubType = 'PERPETUAL' | 'REGULAR' | 'TRIAL';
 
 export type MaintenanceStatus = 'active' | 'expired' | 'expiring' | 'invalid';
 
-export type Edition = {
+type Edition = {
   name: string;
   quantity: string;
 };
@@ -82,12 +82,7 @@ const queryKeys = {
 };
 
 const fetchVersion = async (): Promise<VersionResponse> => {
-  const res = await fetchSoap('zextras', {
-    _jsns: ZIMBRA_ADMIN_URN,
-    module: 'ZxCore',
-    action: 'getVersion',
-  });
-  return JSON.parse(res.response.content);
+  return JSON.parse(response.response.content);
 };
 
 const activateLicense = async (token: string, renewal = false): Promise<LicenseResponse> => {
@@ -112,12 +107,7 @@ const removeLicense = async (): Promise<LicenseResponse> => {
 };
 
 const fetchLicenseInfo = async (): Promise<LicenseResponse> => {
-  const res = await fetchSoap('zextras', {
-    _jsns: ZIMBRA_ADMIN_URN,
-    module: 'ZxCore',
-    action: 'getLicenseInfo',
-  });
-  return JSON.parse(res.response.content);
+  return JSON.parse(response.response.content);
 };
 
 export const useLicenseInfo = () => {

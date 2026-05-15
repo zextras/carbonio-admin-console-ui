@@ -43,7 +43,9 @@ export const AddonsCardActive = ({ editions, accountCount, config }: AddonsCardP
             </ds-text>
           </ds-badge>
         </div>
-        <ds-text size="small">{t(config.descriptionKey, config.descriptionDefault)}</ds-text>
+        <ds-text size="small" overflow="break-word">
+          {t(config.descriptionKey, config.descriptionDefault)}
+        </ds-text>
       </div>
       <div className={styles.addonSeatUsage}>
         <div className={styles.quotaLabelRow}>
@@ -56,19 +58,19 @@ export const AddonsCardActive = ({ editions, accountCount, config }: AddonsCardP
       </div>
       <div className={styles.addonStats}>
         <div className={styles.statItem}>
-          <ds-text size="small">{t('label.assigned', 'Assigned')}</ds-text>
+          <ds-text size="extrasmall">{t('label.assigned', 'Assigned')}</ds-text>
           <ds-text weight="bold" color="gray0" style={{ fontSize: '1rem' }}>
             {assigned}
           </ds-text>
         </div>
         <div className={styles.statItem}>
-          <ds-text size="small">{t('label.available', 'Available')}</ds-text>
+          <ds-text size="extrasmall">{t('label.available', 'Available')}</ds-text>
           <ds-text weight="bold" color="gray0" style={{ fontSize: '1rem' }}>
             {available}
           </ds-text>
         </div>
         <div className={styles.statItem}>
-          <ds-text size="small">{t('label.total_seat', 'Total seat')}</ds-text>
+          <ds-text size="extrasmall">{t('label.total_seat', 'Total seat')}</ds-text>
           <ds-text weight="bold" color="gray0" style={{ fontSize: '1rem' }}>
             {total}
           </ds-text>

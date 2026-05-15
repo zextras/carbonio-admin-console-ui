@@ -3,11 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { Button } from '@zextras/ui-components';
 import {
   useBreakpoint,
   useLicenseInfo,
   useLocalStorage,
   usePrimaryBarState,
+  useRemoveLicense,
 } from '@zextras/ui-shared';
 import { type CSSProperties, type ReactNode, useEffect } from 'react';
 
@@ -30,7 +32,7 @@ function getContainerStyle(breakpoint: string, isSidebarOpen = false): CSSProper
   return {
     maxWidth: getMaxWidth(breakpoint, isSidebarOpen),
     transition: 'max-width 300ms',
-    padding: '0 clamp(0.5rem, 2vw, 2rem)',
+    // padding: '0 clamp(0.5rem, 2vw, 2rem)',
   };
 }
 
@@ -69,6 +71,12 @@ export const AppView = () => {
     'new_subscription_feature_flag',
     null,
   );
+
+  const removeLicenseMutation = useRemoveLicense();
+
+  const doRemoveLicense = (): void => {
+    removeLicenseMutation.mutate(undefined);
+  };
   const { data: licenseData, isFetching } = useLicenseInfo();
   const subscriptionType = licenseData?.response?.type;
   const subType = licenseData?.response?.subType;
@@ -82,11 +90,21 @@ export const AppView = () => {
       <Breadcrumb />
       {!isFetching && (
         <div className={styles.scrollableContent}>
-          <div className={styles.innerContent} style={getContainerStyle(breakpoint, isPrimaryBarExpanded)}>
+          <div
+            className={styles.innerContent}
+            style={getContainerStyle(breakpoint, isPrimaryBarExpanded)}
+          >
             {getSubscriptionView(subscriptionType, subType, featureFlag)}
           </div>
         </div>
       )}
+      <Button
+        label={'deactivate'}
+        type="outlined"
+        color="error"
+        onClick={(): void => doRemoveLicense()}
+        size="extralarge"
+      />
     </div>
   );
 };
