@@ -5,7 +5,7 @@
  */
 
 import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/ui-components';
-import { isValidDecimalNumber, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
+import { isValidDecimalInput, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import {
   ChangeEvent,
@@ -1165,7 +1165,7 @@ const CosAdvanced: FC = () => {
   );
 
   const onFileQuotaChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    if (!isValidDecimalNumber(e.target.value)) return;
+    if (!isValidDecimalInput(e.target.value)) return;
     const decimalPoints = e.target.value?.split('.')[1];
     if (!!decimalPoints && decimalPoints?.length > 3) {
       setShowFileQuotaLimitMsg(true);
@@ -1177,7 +1177,7 @@ const CosAdvanced: FC = () => {
 
   const onZimbraMailQuotaChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      if (!isValidDecimalNumber(e.target.value)) return;
+      if (!isValidDecimalInput(e.target.value)) return;
       const decimalPoints = e.target.value?.split('.')[1];
       if (!!decimalPoints && decimalPoints?.length > 3) {
         setShowAccountQuotaLimitMsg(true);

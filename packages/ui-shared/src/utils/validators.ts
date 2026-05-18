@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export const isValidDecimalNumber = (value: string): boolean => {
+export const isValidDecimalInput = (value: string): boolean => {
   const regex = /^\d*(?:\.\d*)?$/;
   return regex.test(value);
 };

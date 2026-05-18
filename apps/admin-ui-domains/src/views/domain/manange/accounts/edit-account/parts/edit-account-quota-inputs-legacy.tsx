@@ -5,7 +5,7 @@
  */
 
 import { Container, InheritedInput, Padding, Row } from '@zextras/ui-components';
-import { isValidDecimalNumber,useIsAdvanced } from '@zextras/ui-shared';
+import { isValidDecimalInput,useIsAdvanced } from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -73,7 +73,7 @@ export const EditAccountQuotaInputsLegacy = ({
       setQuotaGBValue: (value: string) => void,
       name: string,
     ) => {
-      if (!isValidDecimalNumber(value)) return;
+      if (!isValidDecimalInput(value)) return;
       const decimalPoints = value?.split('.')[1];
       if (!!decimalPoints && decimalPoints?.length > 3) {
         setQuotaLimitMsg(true);
