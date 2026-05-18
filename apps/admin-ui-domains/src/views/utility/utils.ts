@@ -1180,8 +1180,12 @@ export const isValidLdapQuery = (query: string): boolean => {
 };
 
 export const isValidHttpsUrl = (url: string): boolean => {
-  const reqex = /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
-  return reqex.test(url);
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
 };
 
 export const isValidPhoneNumber = (str: string): boolean => {
@@ -1568,7 +1572,10 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
   },
 ];
 
-export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);
+export const generateRandomString = (length = 10): string => {
+  const bytes = crypto.getRandomValues(new Uint8Array(Math.ceil(length / 2)));
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('').substring(0, length);
+};
 
 export const BytesToGB = (data: any): any => divide(data || 0, 1024 ** 3);
 
@@ -1584,11 +1591,6 @@ export const checkValidUserName = (name: string): boolean => /^[a-zA-Z_][a-zA-Z0
 export const convertToAscii = (inputString: string): string => {
   const normalizedString = inputString.normalize('NFKD');
   return normalizedString.replace(/[^\p{ASCII}]/gu, '');
-};
-
-export const isValidDecimalNumber = (value: string): boolean => {
-  const regex = /^\d*\.?\d*$/;
-  return regex.test(value);
 };
 
 export const isValidVirtualHostname = (hostname: string): boolean => {

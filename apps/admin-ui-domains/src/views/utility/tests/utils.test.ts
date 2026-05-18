@@ -3,14 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
 import {
   bytesToHumanReadable,
   bytesToMB,
   formatZimbraDate,
+  generateRandomString,
   getAllEmailFromString,
   isValidEmail,
+  isValidHttpsUrl,
   mbToBytes,
 } from '../utils';
 
@@ -335,6 +337,56 @@ describe('getAllEmailFromString', () => {
   });
 });
 
+describe('generateRandomString', () => {
+  test('should return a string of default length 10', () => {
+    const result = generateRandomString();
+    expect(result).toHaveLength(10);
+  });
+
+  test('should return a string of specified length', () => {
+    expect(generateRandomString(5)).toHaveLength(5);
+    expect(generateRandomString(20)).toHaveLength(20);
+    expect(generateRandomString(1)).toHaveLength(1);
+  });
+
+  test('should return only hex characters', () => {
+    const result = generateRandomString(100);
+    expect(result).toMatch(/^[0-9a-f]+$/);
+  });
+
+  test('should return different strings on successive calls', () => {
+    const results = new Set(Array.from({ length: 50 }, () => generateRandomString()));
+    expect(results.size).toBeGreaterThan(1);
+  });
+
+  test('should return empty string for length 0', () => {
+    expect(generateRandomString(0)).toBe('');
+  });
+
+  test('should use crypto.getRandomValues', () => {
+    const spy = vi.spyOn(crypto, 'getRandomValues');
+    generateRandomString(10);
+    expect(spy).toHaveBeenCalledWith(expect.any(Uint8Array));
+    expect(spy).toHaveBeenCalledTimes(1);
+    spy.mockRestore();
+  });
+
+  test('should allocate a Uint8Array of half the requested length (rounded up)', () => {
+    const spy = vi.spyOn(crypto, 'getRandomValues');
+    generateRandomString(15);
+    const passedArray = spy.mock.calls[0][0] as Uint8Array;
+    expect(passedArray).toBeInstanceOf(Uint8Array);
+    expect(passedArray.length).toBe(8);
+    spy.mockRestore();
+  });
+
+  test('should handle large length values', () => {
+    const result = generateRandomString(500);
+    expect(result).toHaveLength(500);
+    expect(result).toMatch(/^[0-9a-f]+$/);
+  });
+});
+
 describe('formatZimbraDate()', () => {
   describe('Valid Zimbra Timestamps', () => {
     it('should correctly format a valid Zimbra timestamp with milliseconds', () => {
@@ -389,6 +441,76 @@ describe('formatZimbraDate()', () => {
       const input = '20250105090501.123Z';
       const result = formatZimbraDate(input);
       expect(result).toBe('05 Jan 2025 | 09:05:01 AM');
+    });
+  });
+});
+
+describe('isValidHttpsUrl', () => {
+  describe('valid HTTPS URLs', () => {
+    test('should accept standard HTTPS URL', () => {
+      expect(isValidHttpsUrl('https://example.com')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with path', () => {
+      expect(isValidHttpsUrl('https://example.com/logo.png')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with query string', () => {
+      expect(isValidHttpsUrl('https://example.com/image?v=1&t=2')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with port', () => {
+      expect(isValidHttpsUrl('https://example.com:8443/resource')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with subdomains', () => {
+      expect(isValidHttpsUrl('https://cdn.static.example.com')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with encoded characters', () => {
+      expect(isValidHttpsUrl('https://example.com/path%20with%20spaces')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with fragment', () => {
+      expect(isValidHttpsUrl('https://example.com/page#section')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with authentication', () => {
+      expect(isValidHttpsUrl('https://user:pass@example.com')).toBe(true);
+    });
+
+    test('should accept HTTPS localhost', () => {
+      expect(isValidHttpsUrl('https://localhost:3000')).toBe(true);
+    });
+  });
+
+  describe('invalid inputs', () => {
+    test('should reject HTTP URL', () => {
+      expect(isValidHttpsUrl('http://example.com')).toBe(false);
+    });
+
+    test('should reject FTP URL', () => {
+      expect(isValidHttpsUrl('ftp://example.com')).toBe(false);
+    });
+
+    test('should reject URL without protocol', () => {
+      expect(isValidHttpsUrl('example.com')).toBe(false);
+    });
+
+    test('should reject empty string', () => {
+      expect(isValidHttpsUrl('')).toBe(false);
+    });
+
+    test('should reject random text', () => {
+      expect(isValidHttpsUrl('not a url')).toBe(false);
+    });
+
+    test('should reject javascript: URL', () => {
+      expect(isValidHttpsUrl('javascript:alert(1)')).toBe(false);
+    });
+
+    test('should reject malformed URL', () => {
+      expect(isValidHttpsUrl('https://')).toBe(false);
     });
   });
 });
