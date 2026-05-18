@@ -76,7 +76,7 @@ const ModifyVolume: FC<{
   const { t } = useTranslation();
 
   const isAdvanced = useIsAdvanced();
-  const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+  const volTypeList = useMemo(() => volumeTypeList(t, isAdvanced), [t, isAdvanced]);
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
   const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
   const [isDirty, setIsDirty] = useState(false);
@@ -826,10 +826,9 @@ const ModifyVolume: FC<{
                   label={t('label.primary_volume', 'This is a Primary Volume')}
                   value={PRIMARY_TYPE_VALUE}
                   checked={type?.value === 1}
-                  onClick={(): void => {
-                    onVolumeTypeChange(1);
-                  }}
+                  onClick={(): void => {}}
                   iconColor="primary"
+                  disabled
                 />
               </Row>
               {isAdvanced && (
@@ -838,10 +837,9 @@ const ModifyVolume: FC<{
                     label={t('label.secondary_volume', 'This is a Secondary Volume')}
                     value={SECONDARY_TYPE_VALUE}
                     checked={type?.value === 2}
-                    onClick={(): void => {
-                      onVolumeTypeChange(2);
-                    }}
+                    onClick={(): void => {}}
                     iconColor="primary"
+                    disabled
                   />
                 </Row>
               )}
@@ -1021,10 +1019,9 @@ const ModifyVolume: FC<{
                   label={t('label.primary_volume', 'This is a Primary Volume')}
                   value={PRIMARY_TYPE_VALUE}
                   checked={type?.value === 1}
-                  onClick={(): void => {
-                    onVolumeTypeChange(1);
-                  }}
+                  onClick={(): void => {}}
                   iconColor="primary"
+                  disabled
                 />
               </Row>
               <Row width="48%">
@@ -1032,10 +1029,9 @@ const ModifyVolume: FC<{
                   label={t('label.secondary_volume', 'This is a Secondary Volume')}
                   value={SECONDARY_TYPE_VALUE}
                   checked={type?.value === 2}
-                  onClick={(): void => {
-                    onVolumeTypeChange(2);
-                  }}
+                  onClick={(): void => {}}
                   iconColor="primary"
+                  disabled
                 />
               </Row>
             </Row>
