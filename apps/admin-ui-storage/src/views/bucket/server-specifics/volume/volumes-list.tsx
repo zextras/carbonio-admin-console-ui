@@ -693,12 +693,13 @@ const VolumesDetailPanel: FC = () => {
 
   useEffect(() => {
     if (serverList && serverList?.length > 0) {
-      const serverData = serverList?.find((s: { name?: string }) => s?.name === server);
+      const lookupName = server || selectedServerName;
+      const serverData = serverList?.find((s: { name?: string }) => s?.name === lookupName);
       if (serverData && serverData?.id) {
         setSelectedServerId(serverData?.id);
       }
     }
-  }, [serverList, server]);
+  }, [serverList, server, selectedServerName]);
 
   return (
     <>

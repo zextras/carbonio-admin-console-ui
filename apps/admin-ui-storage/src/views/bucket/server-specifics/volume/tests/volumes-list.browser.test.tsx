@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { queryClient } from '@zextras/ui-shared';
 import {
 	advancedSupportedApiForBrowser,
 	createBrowserSoapAPIInterceptor,
+	getQueryClient,
 	setupBrowserTest,
 	worker,
 } from 'admin-ui-test-utils';
@@ -88,9 +88,9 @@ function setupGetAllVolumesCE(): void {
 }
 
 function setupGetAllVolumesAdvanced(
-	primaries = PRIMARIES,
-	secondaries = SECONDARIES,
-	indexes = INDEXES,
+	primaries: Array<Record<string, unknown>> = PRIMARIES,
+	secondaries: Array<Record<string, unknown>> = SECONDARIES,
+	indexes: Array<Record<string, unknown>> = INDEXES,
 ): void {
 	worker.use(
 		http.post('/service/admin/soap/zextras', async ({ request }) => {
@@ -348,22 +348,19 @@ describe('VolumesDetailPanel (browser)', () => {
 		});
 
 		describe('mapAdvancedVolume field mapping', () => {
-			beforeEach(() => {
-				queryClient.setQueryData(['all-servers'], [
+			function createPreSeededQueryClient() {
+				const qc = getQueryClient();
+				qc.setQueryData(['all-servers'], [
 					{
 						id: SERVER_ID,
 						name: SERVER_NAME,
 						a: [{ n: 'zimbraServiceHostname', _content: SERVER_NAME }],
 					},
 				]);
-			});
-
-			afterEach(() => {
-				queryClient.removeQueries({ queryKey: ['all-servers'] });
-			});
+				return qc;
+			}
 
 			it('should map volumeType "primary" to type 1 and display volume data', async () => {
-				setupAllServersInterceptor();
 				setupGetAllVolumesAdvanced([
 					{
 						id: 5,
@@ -378,6 +375,7 @@ describe('VolumesDetailPanel (browser)', () => {
 				]);
 				await setupBrowserTest(renderWithContext(), {
 					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+					queryClient: createPreSeededQueryClient(),
 				});
 				await expect
 					.element(page.getByText('primary-s3', { exact: true }))
@@ -388,7 +386,6 @@ describe('VolumesDetailPanel (browser)', () => {
 			});
 
 			it('should map volumeType "secondary" to type 2 and display in secondary table', async () => {
-				setupAllServersInterceptor();
 				setupGetAllVolumesAdvanced(
 					[],
 					[
@@ -406,6 +403,7 @@ describe('VolumesDetailPanel (browser)', () => {
 				);
 				await setupBrowserTest(renderWithContext(), {
 					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+					queryClient: createPreSeededQueryClient(),
 				});
 				await expect
 					.element(page.getByText('sec-vol-mapped', { exact: true }))
@@ -416,7 +414,6 @@ describe('VolumesDetailPanel (browser)', () => {
 			});
 
 			it('should map volumeType "index" to type 10 and display in indexer table', async () => {
-				setupAllServersInterceptor();
 				setupGetAllVolumesAdvanced(
 					[],
 					[],
@@ -435,6 +432,7 @@ describe('VolumesDetailPanel (browser)', () => {
 				);
 				await setupBrowserTest(renderWithContext(), {
 					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+					queryClient: createPreSeededQueryClient(),
 				});
 				await expect
 					.element(page.getByText('idx-vol-mapped', { exact: true }))
@@ -445,7 +443,6 @@ describe('VolumesDetailPanel (browser)', () => {
 			});
 
 			it('should map S3 volume with uuid to bucketConfigurationId', async () => {
-				setupAllServersInterceptor();
 				setupGetAllVolumesAdvanced([
 					{
 						id: 8,
@@ -465,6 +462,7 @@ describe('VolumesDetailPanel (browser)', () => {
 				]);
 				await setupBrowserTest(renderWithContext(), {
 					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+					queryClient: createPreSeededQueryClient(),
 				});
 				await expect
 					.element(page.getByText('minio-vol', { exact: true }))
@@ -472,7 +470,6 @@ describe('VolumesDetailPanel (browser)', () => {
 			});
 
 			it('should display isCurrent as Yes when volume is current', async () => {
-				setupAllServersInterceptor();
 				setupGetAllVolumesAdvanced([
 					{
 						id: 1,
@@ -487,14 +484,14 @@ describe('VolumesDetailPanel (browser)', () => {
 				]);
 				await setupBrowserTest(renderWithContext(), {
 					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+					queryClient: createPreSeededQueryClient(),
 				});
 				await expect
-					.element(page.getByText('Yes', { exact: true }).first())
+				.element(page.getByText('YES', { exact: true }).first())
 					.toBeVisible();
 			});
 
 			it('should display isCurrent as No when volume is not current', async () => {
-				setupAllServersInterceptor();
 				setupGetAllVolumesAdvanced([
 					{
 						id: 1,
@@ -509,6 +506,7 @@ describe('VolumesDetailPanel (browser)', () => {
 				]);
 				await setupBrowserTest(renderWithContext(), {
 					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+					queryClient: createPreSeededQueryClient(),
 				});
 				await expect
 					.element(page.getByText('No', { exact: true }).first())
@@ -516,7 +514,6 @@ describe('VolumesDetailPanel (browser)', () => {
 			});
 
 			it('should display Local Block Device for LOCAL storeType', async () => {
-				setupAllServersInterceptor();
 				setupGetAllVolumesAdvanced([
 					{
 						id: 1,
@@ -531,6 +528,7 @@ describe('VolumesDetailPanel (browser)', () => {
 				]);
 				await setupBrowserTest(renderWithContext(), {
 					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+					queryClient: createPreSeededQueryClient(),
 				});
 				await expect
 					.element(page.getByText('Local Block Device', { exact: true }).first())
@@ -538,7 +536,6 @@ describe('VolumesDetailPanel (browser)', () => {
 			});
 
 			it('should display Object Storage for S3 storeType', async () => {
-				setupAllServersInterceptor();
 				setupGetAllVolumesAdvanced([
 					{
 						id: 1,
@@ -552,6 +549,7 @@ describe('VolumesDetailPanel (browser)', () => {
 				]);
 				await setupBrowserTest(renderWithContext(), {
 					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+					queryClient: createPreSeededQueryClient(),
 				});
 				await expect
 					.element(page.getByText('Object Storage', { exact: true }).first())
