@@ -656,6 +656,19 @@ const ModifyVolume: FC<{
 
   const getVolumeDetailData = useCallback(
     (volId: string): void => {
+      if (isAdvanced) {
+        const allVolumes = [
+          ...volumeList.primaries,
+          ...volumeList.secondaries,
+          ...volumeList.indexes,
+        ];
+        const volData = allVolumes.find((v: Volume) => v?.id === Number(volId));
+        if (volData) {
+          setVolumeDetail(volData);
+          setmodifyVolumeToggle(true);
+        }
+        return;
+      }
       setIsLoading(true);
       soapFetch(
         'GetVolume',
@@ -689,6 +702,8 @@ const ModifyVolume: FC<{
         });
     },
     [
+      isAdvanced,
+      volumeList,
       setVolumeDetail,
       setmodifyVolumeToggle,
       createSnackbar,

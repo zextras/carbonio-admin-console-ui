@@ -188,6 +188,7 @@ export const postSoapFetchRequest = <Request, Response>(
   body: Request,
   api?: string,
   otherAccount?: string,
+  targetServer?: string,
 ): Promise<Response> => {
   const { zimbraVersion, account } = getAccountDataFromCache();
   let bodyItem: any = {};
@@ -217,6 +218,7 @@ export const postSoapFetchRequest = <Request, Response>(
               name: userAgent,
               version: zimbraVersion,
             },
+            targetServer: targetServer ?? undefined,
           },
         },
       }),
