@@ -1593,7 +1593,7 @@ export const convertToAscii = (inputString: string): string => {
 };
 
 export const isValidDecimalNumber = (value: string): boolean => {
-  const regex = /^\d*\.?\d*$/;
+  const regex = /^\d*(?:\.\d*)?$/;
   return regex.test(value);
 };
 

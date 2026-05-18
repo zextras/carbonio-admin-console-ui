@@ -1133,7 +1133,7 @@ export const BytesToGB = (data: string | number): number => divide(Number(data) 
 export const GbToBytes = (data: string | number): number => multiply(Number(data), 1024 ** 3);
 
 export const isValidDecimalNumber = (value: string): boolean => {
-  const regex = /^\d*\.?\d*$/;
+  const regex = /^\d*(?:\.\d*)?$/;
   return regex.test(value);
 };
 
