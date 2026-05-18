@@ -295,7 +295,9 @@ const ModifyVolume: FC<{
             isCurrent: isCurrent ? 1 : 0,
           },
         },
-        selectedServerId,
+        {
+          targetServer: selectedServerId,
+        },
       )
         .then(() => {
           if (isCurrent) {
@@ -309,7 +311,7 @@ const ModifyVolume: FC<{
                 type: type?.value,
               },
               {
-                otherAccount: selectedServerId,
+                targetServer: selectedServerId,
               },
             ).catch(() => {
               createSnackbar({
@@ -678,7 +680,7 @@ const ModifyVolume: FC<{
           id: volId,
         },
         {
-          otherAccount: selectedServerId,
+          targetServer: selectedServerId,
         },
       )
         .then((response) => {

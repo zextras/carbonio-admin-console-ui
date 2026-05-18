@@ -282,7 +282,7 @@ const VolumesDetailPanel: FC = () => {
           _jsns: ZIMBRA_ADMIN_URN,
         },
         {
-          otherAccount: selectedServerId,
+          targetServer: selectedServerId,
         },
       )
         .then((response) => {
@@ -366,7 +366,7 @@ const VolumesDetailPanel: FC = () => {
           id,
         },
         {
-          otherAccount: selectedServerId,
+          targetServer: selectedServerId,
         },
       )
         .then((res) => {
