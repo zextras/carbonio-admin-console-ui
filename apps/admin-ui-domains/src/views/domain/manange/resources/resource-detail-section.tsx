@@ -184,7 +184,7 @@ const ResourceDetailSection: FC = () => {
       setResourceDetail((prev: any) => ({ ...prev, changeNameBool: true }));
       setResourceDetail((prev: any) => ({
         ...prev,
-        [e.target.name]: e.target.value?.replace(/ /g, '')?.toLowerCase(),
+        [e.target.name]: e.target.value?.replaceAll(' ', '')?.toLowerCase(),
       }));
     },
     [setResourceDetail],

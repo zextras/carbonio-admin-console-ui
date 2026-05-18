@@ -99,7 +99,7 @@ const CreateAccountDetailSection: FC = () => {
       setAccountDetail((prev: any) => ({ ...prev, changeNameBool: true }));
       setAccountDetail((prev: any) => ({
         ...prev,
-        [e.target.name]: e.target.value?.replace(/ /g, '')?.toLowerCase(),
+        [e.target.name]: e.target.value?.replaceAll(' ', '')?.toLowerCase(),
       }));
     },
     [setAccountDetail],
