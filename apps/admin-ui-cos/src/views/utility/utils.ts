@@ -1132,11 +1132,6 @@ export const BytesToGB = (data: string | number): number => divide(Number(data) 
 
 export const GbToBytes = (data: string | number): number => multiply(Number(data), 1024 ** 3);
 
-export const isValidDecimalNumber = (value: string): boolean => {
-  const regex = /^\d*(?:\.\d*)?$/;
-  return regex.test(value);
-};
-
 export function bytesToHumanReadable(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];

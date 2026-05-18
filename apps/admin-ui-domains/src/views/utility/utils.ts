@@ -1592,11 +1592,6 @@ export const convertToAscii = (inputString: string): string => {
   return normalizedString.replace(/[^\p{ASCII}]/gu, '');
 };
 
-export const isValidDecimalNumber = (value: string): boolean => {
-  const regex = /^\d*(?:\.\d*)?$/;
-  return regex.test(value);
-};
-
 export const isValidVirtualHostname = (hostname: string): boolean => {
   const hostnamePartRegex = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/;
   const tldRegex = /^[A-Za-z]{2,}$/;

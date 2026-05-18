@@ -5,7 +5,7 @@
  */
 
 import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/ui-components';
-import { useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
+import { isValidDecimalNumber, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import {
   ChangeEvent,
@@ -41,7 +41,7 @@ import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { unsetCosQuota } from '../../services/unset-cos-quota';
 import { useCosStore } from '../../store/cos/store';
 import { PageLayout } from '../page-layout';
-import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
+import { BytesToGB, GbToBytes } from '../utility/utils';
 import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
 import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
 import COSForwarding from './advanced/cos-forwarding';

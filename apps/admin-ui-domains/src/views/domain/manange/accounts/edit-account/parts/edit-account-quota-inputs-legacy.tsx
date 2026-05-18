@@ -5,11 +5,11 @@
  */
 
 import { Container, InheritedInput, Padding, Row } from '@zextras/ui-components';
-import { useIsAdvanced } from '@zextras/ui-shared';
+import { isValidDecimalNumber,useIsAdvanced } from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../../../../../utility/utils';
+import { BytesToGB, GbToBytes } from '../../../../../utility/utils';
 import { AccountContext } from '../../account-context';
 
 type EditAccountQuotaInputsLegacyProps = {
