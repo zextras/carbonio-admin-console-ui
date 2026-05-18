@@ -5,7 +5,7 @@
  */
 
 import { Container, InheritedInput, Padding, Row } from '@zextras/ui-components';
-import { isValidDecimalInput,useIsAdvanced } from '@zextras/ui-shared';
+import { isValidDecimalInput, useIsAdvanced } from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
