@@ -1088,7 +1088,7 @@ const DomainGeneralSettings: FC = () => {
                       value={domainQuotaGB}
                       backgroundColor="gray5"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                        const digits = e.target.value.replaceAll(/[^0-9]/g, '');
+                        const digits = e.target.value.replaceAll(/\D/g, '');
                         setDomainQuotaGB(digits.replace(/^0+/, ''));
                       }}
                       disabled={!isGlobalAdmin}

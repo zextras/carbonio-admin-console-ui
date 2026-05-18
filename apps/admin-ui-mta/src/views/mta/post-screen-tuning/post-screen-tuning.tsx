@@ -968,7 +968,7 @@ const MTAPostScreenTuning: FC = () => {
                   'DNS Blacklist Min Time to Live (value)',
                 )}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL.replaceAll(/[^0-9]/g, '')}
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL.replaceAll(/\D/g, '')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL, e.target.value);
                 }}
@@ -999,7 +999,7 @@ const MTAPostScreenTuning: FC = () => {
                   'DNS Blacklist Max Time to Live (value)',
                 )}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL.replaceAll(/[^0-9]/g, '')}
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL.replaceAll(/\D/g, '')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL, e.target.value);
                 }}
@@ -1040,7 +1040,7 @@ const MTAPostScreenTuning: FC = () => {
                 backgroundColor="gray5"
                 value={
                   mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL &&
-                  mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replaceAll(/[^0-9]/g, '')
+                  mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replaceAll(/\D/g, '')
                 }
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL, e.target.value);
@@ -1124,7 +1124,7 @@ const MTAPostScreenTuning: FC = () => {
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
                 value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(
-                  /[^0-9]/g,
+                  /\D/g,
                   '',
                 )}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -1197,7 +1197,7 @@ const MTAPostScreenTuning: FC = () => {
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
                 value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL.replace(
-                  /[^0-9]/g,
+                  /\D/g,
                   '',
                 )}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -1269,7 +1269,7 @@ const MTAPostScreenTuning: FC = () => {
                 isRequired
                 label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                 backgroundColor="gray5"
-                value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL.replaceAll(/[^0-9]/g, '')}
+                value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL.replaceAll(/\D/g, '')}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL, e.target.value);
                 }}
