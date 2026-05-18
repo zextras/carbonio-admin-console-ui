@@ -218,23 +218,37 @@ const VolumesDetailPanel: FC = () => {
     setOpen(false);
   };
 
+  const mapAdvancedVolume = useCallback((vol: any): Volume => {
+    const volumeTypeMap: Record<string, number> = {
+      primary: 1,
+      secondary: 2,
+      index: 10,
+    };
+    return {
+      ...vol,
+      rootpath: vol?.path ?? vol?.rootpath,
+      path: vol?.path,
+      type: volumeTypeMap[vol?.volumeType] ?? vol?.type,
+      compressBlobs: vol?.compressed ?? vol?.compressBlobs,
+      compressionThreshold: vol?.threshold ?? vol?.compressionThreshold,
+      compressed: vol?.compressed,
+      bucketConfigurationId: vol?.uuid ?? vol?.bucketConfigurationId,
+    };
+  }, []);
+
   const getAllVolumesRequest = useCallback((): void => {
     if (isAdvanced) {
       fetchSoap('zextras', {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
         action: 'getAllVolumes',
-        targetServers: selectedServerName,
-      })
+      }, selectedServerId)
         .then((res) => {
           const result = JSON.parse(res?.Body?.response?.content);
-          const getAllVolResponse = Object.keys(result?.response).map(
-            (key) => result?.response[key],
-          )[0];
-          if (getAllVolResponse?.ok) {
-            const primaries = getAllVolResponse?.response?.primaries;
-            const secondaries = getAllVolResponse?.response?.secondaries;
-            const indexes = getAllVolResponse?.response?.indexes;
+          if (result?.ok) {
+            const primaries = (result?.response?.primaries ?? []).map(mapAdvancedVolume);
+            const secondaries = (result?.response?.secondaries ?? []).map(mapAdvancedVolume);
+            const indexes = (result?.response?.indexes ?? []).map(mapAdvancedVolume);
             setVolumeList({
               primaries,
               indexes,
@@ -268,7 +282,7 @@ const VolumesDetailPanel: FC = () => {
           _jsns: ZIMBRA_ADMIN_URN,
         },
         {
-          otherAccount: selectedServerId,
+          targetServer: selectedServerId,
         },
       )
         .then((response) => {
@@ -293,7 +307,7 @@ const VolumesDetailPanel: FC = () => {
           });
         });
     }
-  }, [isAdvanced, selectedServerName, selectedServerId, createSnackbar, t]);
+  }, [isAdvanced, selectedServerId, createSnackbar, t, mapAdvancedVolume]);
 
   const deleteHandler = async (data: { name: string; id: number }): Promise<void> => {
     if (isAdvanced) {
@@ -352,7 +366,7 @@ const VolumesDetailPanel: FC = () => {
           id,
         },
         {
-          otherAccount: selectedServerId,
+          targetServer: selectedServerId,
         },
       )
         .then((res) => {
@@ -398,9 +412,10 @@ const VolumesDetailPanel: FC = () => {
   };
 
   useEffect(() => {
-    getAllVolumesRequest();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (selectedServerId) {
+      getAllVolumesRequest();
+    }
+  }, [selectedServerId, getAllVolumesRequest]);
 
   const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
     const bucketDetails = isVolumeAllDetail?.filter(
@@ -678,12 +693,13 @@ const VolumesDetailPanel: FC = () => {
 
   useEffect(() => {
     if (serverList && serverList?.length > 0) {
-      const serverData = serverList?.find((s: { name?: string }) => s?.name === server);
+      const lookupName = server || selectedServerName;
+      const serverData = serverList?.find((s: { name?: string }) => s?.name === lookupName);
       if (serverData && serverData?.id) {
         setSelectedServerId(serverData?.id);
       }
     }
-  }, [serverList, server]);
+  }, [serverList, server, selectedServerName]);
 
   return (
     <>
