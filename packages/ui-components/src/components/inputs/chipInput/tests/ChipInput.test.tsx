@@ -863,11 +863,6 @@ describe('ChipInput', () => {
       });
     });
 
-    it('keeps previous dropdownItems when options and prevState are both empty', () => {
-      const { rerender } = render(<ChipInput options={[]} />);
-      rerender(<ChipInput options={[]} />);
-    });
-
     it('does not call showDropdown when options are empty', () => {
       const onOptionsDisplayChange = vi.fn();
       render(<ChipInput onOptionsDisplayChange={onOptionsDisplayChange} />);
@@ -1035,12 +1030,6 @@ describe('ChipInput', () => {
   });
 
   describe('onOpen / onClose callbacks', () => {
-    it('calls showDropdown(true) on dropdown open', () => {
-      const onOptionsDisplayChange = vi.fn();
-      const options = makeOptions({ id: 'opt', label: 'Opt', value: 'opt' });
-      render(<ChipInput options={options} onOptionsDisplayChange={onOptionsDisplayChange} />);
-    });
-
     it('calls showDropdown(false) on dropdown close via rerender', () => {
       const onOptionsDisplayChange = vi.fn();
       const options = makeOptions({ id: 'opt', label: 'Opt', value: 'opt' });
