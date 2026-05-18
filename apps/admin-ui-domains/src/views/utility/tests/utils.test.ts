@@ -3,12 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
 import {
   bytesToHumanReadable,
   bytesToMB,
   formatZimbraDate,
+  generateRandomString,
   getAllEmailFromString,
   isValidEmail,
   mbToBytes,
@@ -332,6 +333,56 @@ describe('getAllEmailFromString', () => {
       );
       expect(result).toEqual(['support@example.com']);
     });
+  });
+});
+
+describe('generateRandomString', () => {
+  test('should return a string of default length 10', () => {
+    const result = generateRandomString();
+    expect(result).toHaveLength(10);
+  });
+
+  test('should return a string of specified length', () => {
+    expect(generateRandomString(5)).toHaveLength(5);
+    expect(generateRandomString(20)).toHaveLength(20);
+    expect(generateRandomString(1)).toHaveLength(1);
+  });
+
+  test('should return only alphanumeric characters', () => {
+    const result = generateRandomString(100);
+    expect(result).toMatch(/^[0-9a-z]+$/);
+  });
+
+  test('should return different strings on successive calls', () => {
+    const results = new Set(Array.from({ length: 50 }, () => generateRandomString()));
+    expect(results.size).toBeGreaterThan(1);
+  });
+
+  test('should return empty string for length 0', () => {
+    expect(generateRandomString(0)).toBe('');
+  });
+
+  test('should use crypto.getRandomValues', () => {
+    const spy = vi.spyOn(crypto, 'getRandomValues');
+    generateRandomString(10);
+    expect(spy).toHaveBeenCalledWith(expect.any(Uint8Array));
+    expect(spy).toHaveBeenCalledTimes(1);
+    spy.mockRestore();
+  });
+
+  test('should allocate a Uint8Array of the requested length', () => {
+    const spy = vi.spyOn(crypto, 'getRandomValues');
+    generateRandomString(15);
+    const passedArray = spy.mock.calls[0][0] as Uint8Array;
+    expect(passedArray).toBeInstanceOf(Uint8Array);
+    expect(passedArray.length).toBe(15);
+    spy.mockRestore();
+  });
+
+  test('should handle large length values', () => {
+    const result = generateRandomString(500);
+    expect(result).toHaveLength(500);
+    expect(result).toMatch(/^[0-9a-z]+$/);
   });
 });
 

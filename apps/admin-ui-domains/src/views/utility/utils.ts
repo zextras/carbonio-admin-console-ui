@@ -1568,7 +1568,7 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
   },
 ];
 
-export const RandomString = (length = 10): string => {
+export const generateRandomString = (length = 10): string => {
   const array = new Uint8Array(length);
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(36).padStart(2, '0'))
