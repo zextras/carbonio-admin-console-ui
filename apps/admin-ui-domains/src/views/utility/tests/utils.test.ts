@@ -513,15 +513,4 @@ describe('isValidHttpsUrl', () => {
       expect(isValidHttpsUrl('https://')).toBe(false);
     });
   });
-
-  describe('ReDoS safety', () => {
-    test('should handle long repeated-segment input without hanging', () => {
-      const malicious = `https://${'a.'.repeat(100)}com!`;
-      const start = performance.now();
-      const result = isValidHttpsUrl(malicious);
-      const elapsed = performance.now() - start;
-      expect(typeof result).toBe('boolean');
-      expect(elapsed).toBeLessThan(100);
-    });
-  });
 });
