@@ -38,7 +38,7 @@ import { setCoreAttributes } from '../../../services/set-core-attributes';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
-import { asQueryString, HsmPolicyDetail } from './hsm-policy-detail';
+import { asQueryString } from './hsm-policy-detail';
 
 type Timeout = ReturnType<typeof setTimeout>;
 

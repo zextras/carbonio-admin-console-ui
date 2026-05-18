@@ -663,7 +663,15 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
         ];
         const volData = allVolumes.find((v: Volume) => v?.id === Number(volId));
         if (volData) {
-          setVolumeDetail(volData);
+          setVolumeDetail({
+            name: volData.name ?? '',
+            id: volData.id ?? 0,
+            type: volData.type ?? 0,
+            compressBlobs: volData.compressBlobs === 'true' || volData.compressBlobs === '1',
+            isCurrent: volData.isCurrent === true || volData.isCurrent === 1,
+            rootpath: volData.rootpath ?? '',
+            compressionThreshold: volData.compressionThreshold ?? '',
+          });
           setmodifyVolumeToggle(true);
         }
         return;

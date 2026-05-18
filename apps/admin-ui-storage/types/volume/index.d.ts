@@ -34,6 +34,19 @@ export type Volume = {
 	serverName?: string;
 };
 
+/**
+ * Normalized volume state used in ModifyVolume component.
+ */
+export type VolumeDetailState = {
+	name: string;
+	id: number;
+	type: number;
+	compressBlobs: boolean;
+	isCurrent: boolean;
+	rootpath: string;
+	compressionThreshold: string;
+};
+
 export type VolumeType =
 	| {
 		label?: string;
