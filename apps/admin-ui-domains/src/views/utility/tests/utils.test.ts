@@ -12,6 +12,7 @@ import {
   generateRandomString,
   getAllEmailFromString,
   isValidEmail,
+  isValidHttpsUrl,
   mbToBytes,
 } from '../utils';
 
@@ -440,6 +441,87 @@ describe('formatZimbraDate()', () => {
       const input = '20250105090501.123Z';
       const result = formatZimbraDate(input);
       expect(result).toBe('05 Jan 2025 | 09:05:01 AM');
+    });
+  });
+});
+
+describe('isValidHttpsUrl', () => {
+  describe('valid HTTPS URLs', () => {
+    test('should accept standard HTTPS URL', () => {
+      expect(isValidHttpsUrl('https://example.com')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with path', () => {
+      expect(isValidHttpsUrl('https://example.com/logo.png')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with query string', () => {
+      expect(isValidHttpsUrl('https://example.com/image?v=1&t=2')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with port', () => {
+      expect(isValidHttpsUrl('https://example.com:8443/resource')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with subdomains', () => {
+      expect(isValidHttpsUrl('https://cdn.static.example.com')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with encoded characters', () => {
+      expect(isValidHttpsUrl('https://example.com/path%20with%20spaces')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with fragment', () => {
+      expect(isValidHttpsUrl('https://example.com/page#section')).toBe(true);
+    });
+
+    test('should accept HTTPS URL with authentication', () => {
+      expect(isValidHttpsUrl('https://user:pass@example.com')).toBe(true);
+    });
+
+    test('should accept HTTPS localhost', () => {
+      expect(isValidHttpsUrl('https://localhost:3000')).toBe(true);
+    });
+  });
+
+  describe('invalid inputs', () => {
+    test('should reject HTTP URL', () => {
+      expect(isValidHttpsUrl('http://example.com')).toBe(false);
+    });
+
+    test('should reject FTP URL', () => {
+      expect(isValidHttpsUrl('ftp://example.com')).toBe(false);
+    });
+
+    test('should reject URL without protocol', () => {
+      expect(isValidHttpsUrl('example.com')).toBe(false);
+    });
+
+    test('should reject empty string', () => {
+      expect(isValidHttpsUrl('')).toBe(false);
+    });
+
+    test('should reject random text', () => {
+      expect(isValidHttpsUrl('not a url')).toBe(false);
+    });
+
+    test('should reject javascript: URL', () => {
+      expect(isValidHttpsUrl('javascript:alert(1)')).toBe(false);
+    });
+
+    test('should reject malformed URL', () => {
+      expect(isValidHttpsUrl('https://')).toBe(false);
+    });
+  });
+
+  describe('ReDoS safety', () => {
+    test('should handle long repeated-segment input without hanging', () => {
+      const malicious = `https://${'a.'.repeat(100)}com!`;
+      const start = performance.now();
+      const result = isValidHttpsUrl(malicious);
+      const elapsed = performance.now() - start;
+      expect(typeof result).toBe('boolean');
+      expect(elapsed).toBeLessThan(100);
     });
   });
 });

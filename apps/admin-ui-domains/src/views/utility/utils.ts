@@ -1180,8 +1180,12 @@ export const isValidLdapQuery = (query: string): boolean => {
 };
 
 export const isValidHttpsUrl = (url: string): boolean => {
-  const reqex = /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
-  return reqex.test(url);
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
 };
 
 export const isValidPhoneNumber = (str: string): boolean => {
