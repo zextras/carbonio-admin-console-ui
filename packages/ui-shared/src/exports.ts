@@ -126,6 +126,7 @@ import { useLoginConfigStore } from './store/login/store';
 import { useDomainStore } from './store/shared/domains';
 import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
+import { isValidDecimalInput } from './utils/validators';
 
 // Default fallback pkg for when app context cannot be determined
 const defaultPkg: Pick<CarbonioModule, 'name' | 'priority' | 'icon'> = {
@@ -189,6 +190,7 @@ export {
   getShell,
   getSoapFetchRequest,
   invalidateLicenseQuery,
+  isValidDecimalInput,
   LOCAL_STORAGE_LAST_PRIMARY_KEY,
   LOGIN_V3_CONFIG_PATH,
   loginConfig,

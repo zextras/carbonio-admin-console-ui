@@ -13,5 +13,9 @@ declare global {
 		csrfToken: string;
 	}
 }
-export const fetchSoap = async (api: string, body: unknown): Promise<ZextrasRawResponse> =>
-	postSoapFetchRequest<unknown, ZextrasRawResponse>(`/service/admin/soap/${api}`, body, api);
+export const fetchSoap = async (
+	api: string,
+	body: unknown,
+	targetServer?: string,
+): Promise<ZextrasRawResponse> =>
+	postSoapFetchRequest(`/service/admin/soap/${api}`, body, api);

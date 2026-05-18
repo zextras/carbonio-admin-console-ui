@@ -65,7 +65,7 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
   const { t } = useTranslation();
 
   const isAdvanced = useIsAdvanced();
-  const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+  const volTypeList = useMemo(() => volumeTypeList(t, isAdvanced), [t, isAdvanced]);
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
   const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
   const [isDirty, setIsDirty] = useState(false);
@@ -292,7 +292,9 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
             isCurrent: isCurrent ? 1 : 0,
           },
         },
-        { otherAccount: selectedServerId },
+        {
+          targetServer: selectedServerId,
+        },
       )
         .then(() => {
           if (isCurrent) {
@@ -306,7 +308,7 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
                 type: type?.value,
               },
               {
-                otherAccount: selectedServerId,
+                targetServer: selectedServerId,
               },
             ).catch(() => {
               createSnackbar({
@@ -653,6 +655,19 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
 
   const getVolumeDetailData = useCallback(
     (volId: string): void => {
+      if (isAdvanced) {
+        const allVolumes = [
+          ...volumeList.primaries,
+          ...volumeList.secondaries,
+          ...volumeList.indexes,
+        ];
+        const volData = allVolumes.find((v: Volume) => v?.id === Number(volId));
+        if (volData) {
+          setVolumeDetail(volData);
+          setmodifyVolumeToggle(true);
+        }
+        return;
+      }
       setIsLoading(true);
       soapFetch(
         'GetVolume',
@@ -662,7 +677,7 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
           id: volId,
         },
         {
-          otherAccount: selectedServerId,
+          targetServer: selectedServerId,
         },
       )
         .then((response) => {
@@ -694,6 +709,8 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
         });
     },
     [
+      isAdvanced,
+      volumeList,
       setVolumeDetail,
       setmodifyVolumeToggle,
       createSnackbar,
@@ -814,10 +831,9 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
                   label={t('label.primary_volume', 'This is a Primary Volume')}
                   value={PRIMARY_TYPE_VALUE}
                   checked={type?.value === 1}
-                  onClick={(): void => {
-                    onVolumeTypeChange(1);
-                  }}
+                  onClick={(): void => { }}
                   iconColor="primary"
+                  disabled
                 />
               </Row>
               {isAdvanced && (
@@ -826,10 +842,9 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
                     label={t('label.secondary_volume', 'This is a Secondary Volume')}
                     value={SECONDARY_TYPE_VALUE}
                     checked={type?.value === 2}
-                    onClick={(): void => {
-                      onVolumeTypeChange(2);
-                    }}
+                    onClick={(): void => { }}
                     iconColor="primary"
+                    disabled
                   />
                 </Row>
               )}
@@ -1009,10 +1024,9 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
                   label={t('label.primary_volume', 'This is a Primary Volume')}
                   value={PRIMARY_TYPE_VALUE}
                   checked={type?.value === 1}
-                  onClick={(): void => {
-                    onVolumeTypeChange(1);
-                  }}
+                  onClick={(): void => { }}
                   iconColor="primary"
+                  disabled
                 />
               </Row>
               <Row width="48%">
@@ -1020,10 +1034,9 @@ const ModifyVolume: FC<ModifyVolumeProps> = ({
                   label={t('label.secondary_volume', 'This is a Secondary Volume')}
                   value={SECONDARY_TYPE_VALUE}
                   checked={type?.value === 2}
-                  onClick={(): void => {
-                    onVolumeTypeChange(2);
-                  }}
+                  onClick={(): void => { }}
                   iconColor="primary"
+                  disabled
                 />
               </Row>
             </Row>

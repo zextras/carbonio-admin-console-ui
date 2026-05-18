@@ -42,14 +42,14 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["coverage/**"],
       "cache": true,
-      "passThroughEnv": ["CI", "HEADED"]
+      "passThroughEnv": ["CI", "HEADED", "PLAYWRIGHT_BROWSERS_PATH"]
     },
     "test:ci": {
       "dependsOn": ["^test:ci"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["coverage/**"],
       "cache": true,
-      "passThroughEnv": ["CI"]
+      "passThroughEnv": ["CI", "PLAYWRIGHT_BROWSERS_PATH"]
     },
     "dev": {
       "cache": false,

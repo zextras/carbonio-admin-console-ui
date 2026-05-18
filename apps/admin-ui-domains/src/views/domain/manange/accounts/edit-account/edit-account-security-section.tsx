@@ -951,8 +951,8 @@ const EditAccountSecuritySection: FC = () => {
                     subValue={accountDetail?.carbonioOtpWizardFromUntrusted}
                     onChange={changeSwitchOption}
                     label={t(
-                      'domain.accounts.enforceOnUntrustedNetworks',
-                      'Enforce on Untrusted Networks',
+                      'domain.accounts.allowSetupFromUntrustedNetworks',
+                      'Allow 2FA setup from untrusted networks',
                     )}
                     disabled={accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE}
                     iconColor="primary"
@@ -971,8 +971,8 @@ const EditAccountSecuritySection: FC = () => {
                         disabled={accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE}
                       >
                         {t(
-                          'domain.accounts.enforceOnUntrustedNetworksInfo',
-                          'Prompts unconfigured users to set up 2FA when login from public or unknown networks.',
+                          'domain.accounts.allowSetupFromUntrustedNetworksInfo',
+                          'Lets users without an OTP complete the 2FA setup wizard at sign-in from untrusted networks. Disable this option to block access from untrusted networks until 2FA is already configured.',
                         )}
                       </ds-text>
                     </Row>
