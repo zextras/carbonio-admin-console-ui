@@ -175,7 +175,8 @@ describe('LegalHoldPanel', () => {
     it('should enable buttons when an account row is clicked', async () => {
         await setupBrowserTest(<LegalHoldPanel />);
         await expect.element(page.getByText('admin@test.com')).toBeVisible();
-        await page.getByText('admin@test.com').click();
+        const adminRow = page.getByRole('row').filter({ hasText: 'admin@test.com' });
+        await adminRow.click();
         const restoreButton = page.getByRole('button', { name: 'Restore' });
         await expect.element(restoreButton).toBeEnabled();
     });
