@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { queryClient } from '@zextras/ui-shared';
 import {
 	advancedSupportedApiForBrowser,
 	createBrowserSoapAPIInterceptor,
@@ -26,13 +27,14 @@ const PRIMARIES = [
 	{
 		id: 1,
 		name: 'message1',
-		rootpath: '/opt/zextras/store',
 		path: '/opt/zextras/store',
-		type: 1,
-		isCurrent: true,
 		compressed: true,
-		compressionThreshold: 4096,
+		threshold: 4096,
+		totalSpace: 36846,
+		availableSpace: 19308,
 		storeType: 'LOCAL',
+		isCurrent: true,
+		volumeType: 'primary',
 	},
 ];
 
@@ -40,13 +42,14 @@ const SECONDARIES = [
 	{
 		id: 3,
 		name: 'secondary-vol',
-		rootpath: '/opt/zextras/secondary',
 		path: '/opt/zextras/secondary',
-		type: 2,
-		isCurrent: false,
 		compressed: false,
-		compressionThreshold: 4096,
+		threshold: 4096,
+		totalSpace: 36846,
+		availableSpace: 19308,
 		storeType: 'LOCAL',
+		isCurrent: false,
+		volumeType: 'secondary',
 	},
 ];
 
@@ -54,12 +57,14 @@ const INDEXES = [
 	{
 		id: 2,
 		name: 'index1',
-		rootpath: '/opt/zextras/index',
 		path: '/opt/zextras/index',
-		type: 10,
-		isCurrent: true,
 		compressed: false,
+		threshold: 4096,
+		totalSpace: 36846,
+		availableSpace: 19308,
 		storeType: 'LOCAL',
+		isCurrent: true,
+		volumeType: 'index',
 	},
 ];
 
@@ -93,17 +98,12 @@ function setupGetAllVolumesAdvanced(
 			const zextrasBody = body?.Body?.zextras;
 
 			if (zextrasBody?.action === 'getAllVolumes') {
-				const responseObj: Record<string, any> = {};
-				responseObj[SERVER_NAME] = {
-					ok: true,
-					response: { primaries, secondaries, indexes },
-				};
 				return HttpResponse.json({
 					Body: {
 						response: {
 							content: JSON.stringify({
+								response: { primaries, secondaries, indexes },
 								ok: true,
-								response: responseObj,
 							}),
 						},
 					},
@@ -128,17 +128,12 @@ function setupEmptyVolumesAdvanced(): void {
 			const zextrasBody = body?.Body?.zextras;
 
 			if (zextrasBody?.action === 'getAllVolumes') {
-				const responseObj: Record<string, any> = {};
-				responseObj[SERVER_NAME] = {
-					ok: true,
-					response: { primaries: [], secondaries: [], indexes: [] },
-				};
 				return HttpResponse.json({
 					Body: {
 						response: {
 							content: JSON.stringify({
+								response: { primaries: [], secondaries: [], indexes: [] },
 								ok: true,
-								response: responseObj,
 							}),
 						},
 					},
@@ -349,6 +344,218 @@ describe('VolumesDetailPanel (browser)', () => {
 				});
 				const emptyMessages = page.getByText('Empty Table');
 				await expect.element(emptyMessages.first()).toBeInTheDocument();
+			});
+		});
+
+		describe('mapAdvancedVolume field mapping', () => {
+			beforeEach(() => {
+				queryClient.setQueryData(['all-servers'], [
+					{
+						id: SERVER_ID,
+						name: SERVER_NAME,
+						a: [{ n: 'zimbraServiceHostname', _content: SERVER_NAME }],
+					},
+				]);
+			});
+
+			afterEach(() => {
+				queryClient.removeQueries({ queryKey: ['all-servers'] });
+			});
+
+			it('should map volumeType "primary" to type 1 and display volume data', async () => {
+				setupAllServersInterceptor();
+				setupGetAllVolumesAdvanced([
+					{
+						id: 5,
+						name: 'primary-s3',
+						path: '/opt/zextras/primary-store',
+						compressed: true,
+						threshold: 2048,
+						storeType: 'LOCAL',
+						isCurrent: true,
+						volumeType: 'primary',
+					},
+				]);
+				await setupBrowserTest(renderWithContext(), {
+					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+				});
+				await expect
+					.element(page.getByText('primary-s3', { exact: true }))
+					.toBeVisible();
+				await expect
+					.element(page.getByText('/opt/zextras/primary-store', { exact: true }))
+					.toBeVisible();
+			});
+
+			it('should map volumeType "secondary" to type 2 and display in secondary table', async () => {
+				setupAllServersInterceptor();
+				setupGetAllVolumesAdvanced(
+					[],
+					[
+						{
+							id: 6,
+							name: 'sec-vol-mapped',
+							path: '/opt/zextras/sec-path',
+							compressed: false,
+							threshold: 4096,
+							storeType: 'LOCAL',
+							isCurrent: false,
+							volumeType: 'secondary',
+						},
+					],
+				);
+				await setupBrowserTest(renderWithContext(), {
+					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+				});
+				await expect
+					.element(page.getByText('sec-vol-mapped', { exact: true }))
+					.toBeVisible();
+				await expect
+					.element(page.getByText('/opt/zextras/sec-path', { exact: true }))
+					.toBeVisible();
+			});
+
+			it('should map volumeType "index" to type 10 and display in indexer table', async () => {
+				setupAllServersInterceptor();
+				setupGetAllVolumesAdvanced(
+					[],
+					[],
+					[
+						{
+							id: 7,
+							name: 'idx-vol-mapped',
+							path: '/opt/zextras/idx-path',
+							compressed: false,
+							threshold: 4096,
+							storeType: 'LOCAL',
+							isCurrent: true,
+							volumeType: 'index',
+						},
+					],
+				);
+				await setupBrowserTest(renderWithContext(), {
+					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+				});
+				await expect
+					.element(page.getByText('idx-vol-mapped', { exact: true }))
+					.toBeVisible();
+				await expect
+					.element(page.getByText('/opt/zextras/idx-path', { exact: true }))
+					.toBeVisible();
+			});
+
+			it('should map S3 volume with uuid to bucketConfigurationId', async () => {
+				setupAllServersInterceptor();
+				setupGetAllVolumesAdvanced([
+					{
+						id: 8,
+						name: 'minio-vol',
+						compressed: true,
+						uuid: '2c371853-3dd4-4826-a071-592963977172',
+						useInfrequentAccess: false,
+						infrequentAccessThreshold: 65536,
+						useIntelligentTiering: false,
+						volumePrefix: '',
+						centralized: false,
+						storeType: 'S3',
+						isDrivePrimary: true,
+						isCurrent: true,
+						volumeType: 'primary',
+					},
+				]);
+				await setupBrowserTest(renderWithContext(), {
+					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+				});
+				await expect
+					.element(page.getByText('minio-vol', { exact: true }))
+					.toBeVisible();
+			});
+
+			it('should display isCurrent as Yes when volume is current', async () => {
+				setupAllServersInterceptor();
+				setupGetAllVolumesAdvanced([
+					{
+						id: 1,
+						name: 'current-vol',
+						path: '/opt/store',
+						compressed: true,
+						threshold: 4096,
+						storeType: 'LOCAL',
+						isCurrent: true,
+						volumeType: 'primary',
+					},
+				]);
+				await setupBrowserTest(renderWithContext(), {
+					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+				});
+				await expect
+					.element(page.getByText('Yes', { exact: true }).first())
+					.toBeVisible();
+			});
+
+			it('should display isCurrent as No when volume is not current', async () => {
+				setupAllServersInterceptor();
+				setupGetAllVolumesAdvanced([
+					{
+						id: 1,
+						name: 'not-current-vol',
+						path: '/opt/store',
+						compressed: false,
+						threshold: 4096,
+						storeType: 'LOCAL',
+						isCurrent: false,
+						volumeType: 'primary',
+					},
+				]);
+				await setupBrowserTest(renderWithContext(), {
+					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+				});
+				await expect
+					.element(page.getByText('No', { exact: true }).first())
+					.toBeVisible();
+			});
+
+			it('should display Local Block Device for LOCAL storeType', async () => {
+				setupAllServersInterceptor();
+				setupGetAllVolumesAdvanced([
+					{
+						id: 1,
+						name: 'local-vol',
+						path: '/opt/store',
+						compressed: false,
+						threshold: 4096,
+						storeType: 'LOCAL',
+						isCurrent: true,
+						volumeType: 'primary',
+					},
+				]);
+				await setupBrowserTest(renderWithContext(), {
+					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+				});
+				await expect
+					.element(page.getByText('Local Block Device', { exact: true }).first())
+					.toBeVisible();
+			});
+
+			it('should display Object Storage for S3 storeType', async () => {
+				setupAllServersInterceptor();
+				setupGetAllVolumesAdvanced([
+					{
+						id: 1,
+						name: 's3-vol',
+						compressed: true,
+						uuid: 'some-uuid',
+						storeType: 'S3',
+						isCurrent: true,
+						volumeType: 'primary',
+					},
+				]);
+				await setupBrowserTest(renderWithContext(), {
+					initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+				});
+				await expect
+					.element(page.getByText('Object Storage', { exact: true }).first())
+					.toBeVisible();
 			});
 		});
 	});
