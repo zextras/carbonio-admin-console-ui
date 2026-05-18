@@ -60,7 +60,7 @@ export const EditAccountQuotaInputsNew = ({
 
   const inputOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const filteredStringValue = e.target.value.replace(/\D/g, '');
+      const filteredStringValue = e.target.value.replaceAll(/\D/g, '');
       const parsedValue =
         filteredStringValue === '' ? undefined : Number.parseInt(filteredStringValue, 10);
       const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;

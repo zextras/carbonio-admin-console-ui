@@ -50,12 +50,12 @@ function withLocationRewrite(config: {
         if (cookies) {
           if (Array.isArray(cookies)) {
             proxyRes.headers['set-cookie'] = cookies.map((cookie: string) =>
-              cookie.replace(/;\s*Secure/gi, '').replace(/;\s*SameSite=\w+/gi, ''),
+              cookie.replaceAll(/;\s*Secure/gi, '').replaceAll(/;\s*SameSite=\w+/gi, ''),
             );
           } else if (typeof cookies === 'string') {
             proxyRes.headers['set-cookie'] = cookies
-              .replace(/;\s*Secure/gi, '')
-              .replace(/;\s*SameSite=\w+/gi, '');
+              .replaceAll(/;\s*Secure/gi, '')
+              .replaceAll(/;\s*SameSite=\w+/gi, '');
           }
         }
         const location = proxyRes.headers['location'];

@@ -1586,11 +1586,11 @@ export const isValidHexColor = (value: string): boolean => {
   return regex.test(value);
 };
 
-export const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
+export const getModifiedName = (name: string): string => name?.replaceAll(' ', '')?.toLowerCase();
 export const checkValidUserName = (name: string): boolean => /^[a-zA-Z_][a-zA-Z0-9_.]*$/.test(name);
 export const convertToAscii = (inputString: string): string => {
   const normalizedString = inputString.normalize('NFKD');
-  return normalizedString.replace(/[^\p{ASCII}]/gu, '');
+  return normalizedString.replaceAll(/[^\p{ASCII}]/gu, '');
 };
 
 export const isValidVirtualHostname = (hostname: string): boolean => {

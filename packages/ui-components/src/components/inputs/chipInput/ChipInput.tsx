@@ -42,7 +42,7 @@ function getThemeColorVar(colorName: string, state: string): string {
   if (hexPattern.test(colorName)) {
     return colorName;
   }
-  const sanitized = colorName.replace(/[^a-zA-Z0-9-]/g, '');
+  const sanitized = colorName.replaceAll(/[^a-zA-Z0-9-]/g, '');
   return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${colorName}))`;
 }
 

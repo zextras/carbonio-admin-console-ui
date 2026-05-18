@@ -28,7 +28,7 @@ const LINE_BREAK_REGEX = /(?:\r\n|\r|\n)/g;
 
 const plainTextToHTML = (str: string): string => {
   if (str !== undefined && str !== null) {
-    return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(LINE_BREAK_REGEX, '<br />');
+    return str.replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(LINE_BREAK_REGEX, '<br />');
   }
   return '';
 };
@@ -138,11 +138,11 @@ const replaceLinkToAnchor = (content: string): string => {
   return content.replace(LINK_REGEX, (url) => {
     const wrap = document.createElement('div');
     const anchor = document.createElement('a');
-    let href = url.replace(/&amp;/g, '&');
+    let href = url.replaceAll(/&amp;/g, '&');
     if (!url.startsWith('http') && !url.startsWith('https')) {
       href = `http://${url}`;
     }
-    anchor.href = href.replace(/&#64;/g, '@').replace(/&#61;/g, '=');
+    anchor.href = href.replaceAll(/&#64;/g, '@').replaceAll(/&#61;/g, '=');
     anchor.target = '_blank';
     anchor.innerHTML = url;
     wrap.appendChild(anchor);
