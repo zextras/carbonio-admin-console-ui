@@ -1039,8 +1039,7 @@ const MTAPostScreenTuning: FC = () => {
                 label={t('mta.dns_blacklist_time_to_live', 'DNS Blacklist Time to Live (value)')}
                 backgroundColor="gray5"
                 value={
-                  mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL &&
-                  mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replaceAll(/\D/g, '')
+                  mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL?.replaceAll(/\D/g, '')
                 }
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL, e.target.value);
