@@ -1573,11 +1573,8 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 ];
 
 export const generateRandomString = (length = 10): string => {
-  const array = new Uint8Array(length);
-  crypto.getRandomValues(array);
-  return Array.from(array, (byte) => byte.toString(36).padStart(2, '0'))
-    .join('')
-    .substring(0, length);
+  const bytes = crypto.getRandomValues(new Uint8Array(Math.ceil(length / 2)));
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('').substring(0, length);
 };
 
 export const BytesToGB = (data: any): any => divide(data || 0, 1024 ** 3);

@@ -349,9 +349,9 @@ describe('generateRandomString', () => {
     expect(generateRandomString(1)).toHaveLength(1);
   });
 
-  test('should return only alphanumeric characters', () => {
+  test('should return only hex characters', () => {
     const result = generateRandomString(100);
-    expect(result).toMatch(/^[0-9a-z]+$/);
+    expect(result).toMatch(/^[0-9a-f]+$/);
   });
 
   test('should return different strings on successive calls', () => {
@@ -371,19 +371,19 @@ describe('generateRandomString', () => {
     spy.mockRestore();
   });
 
-  test('should allocate a Uint8Array of the requested length', () => {
+  test('should allocate a Uint8Array of half the requested length (rounded up)', () => {
     const spy = vi.spyOn(crypto, 'getRandomValues');
     generateRandomString(15);
     const passedArray = spy.mock.calls[0][0] as Uint8Array;
     expect(passedArray).toBeInstanceOf(Uint8Array);
-    expect(passedArray.length).toBe(15);
+    expect(passedArray.length).toBe(8);
     spy.mockRestore();
   });
 
   test('should handle large length values', () => {
     const result = generateRandomString(500);
     expect(result).toHaveLength(500);
-    expect(result).toMatch(/^[0-9a-z]+$/);
+    expect(result).toMatch(/^[0-9a-f]+$/);
   });
 });
 
