@@ -9,11 +9,15 @@ import { join } from 'path';
 
 import { colorLog, getWorkspaceRoot } from './utils';
 
-function getLastTag() {
-  return execSync('git describe --tags --abbrev=0', {
-    encoding: 'utf-8',
-    stdio: 'pipe',
-  }).trim();
+function getLastTag(): string {
+  try {
+    return execSync('git describe --tags --abbrev=0', {
+      encoding: 'utf-8',
+      stdio: 'pipe',
+    }).trim();
+  } catch {
+    return 'v0.0.0';
+  }
 }
 
 const main = (): void => {
@@ -31,7 +35,7 @@ pkgver="${pkgVersion}"
 pkgrel="1"
 pkgdesc="Carbonio Admin UI"
 maintainer="Zextras (packages@zextras.com)"
-arch=("x86_64")
+arch=("any")
 license=("AGPL-3.0-only")
 copyright=("2025, Zextras <https://www.zextras.com>")
 section="admin"
