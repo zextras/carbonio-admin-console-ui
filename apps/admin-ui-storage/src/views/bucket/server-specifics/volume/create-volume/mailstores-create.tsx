@@ -18,7 +18,6 @@ import { useIsAdvanced } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType } from '../../../../../../types';
 import {
   COMPRESSION_THRESHOLD_UNIT,
   EMPTY_TYPE_VALUE,
@@ -107,7 +106,7 @@ const MailstoresCreate: FC<{
 
   const onVolNamechange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
+      setVolumeDetail((prev) => ({ ...prev, volumeName: e?.target?.value }));
       if (e?.target?.value !== '') {
         setErrName(true);
       } else {
@@ -335,7 +334,7 @@ const MailstoresCreate: FC<{
               onChange={changeVolCompThresold}
               hasError={!errCompressionThreshold}
               disabled={!volumeDetail?.isCompression}
-                CustomIcon={(): any => <ds-text as="span" color="secondary">{COMPRESSION_THRESHOLD_UNIT}</ds-text>}
+              CustomIcon={(): any => <ds-text as="span" color="secondary">{COMPRESSION_THRESHOLD_UNIT}</ds-text>}
             />
             {!errCompressionThreshold && (
               <Padding top="extrasmall">
