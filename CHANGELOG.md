@@ -1,3 +1,9 @@
+## [0.13.0-devel.29](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0-devel.28...v0.13.0-devel.29) (2026-05-20)
+
+### Features
+
+* types on adminUI storage ([#1188](https://github.com/zextras/carbonio-admin-console-ui/issues/1188)) ([e6818fc](https://github.com/zextras/carbonio-admin-console-ui/commit/e6818fc8a575f72ec8d3a9b4e51048448d300da0))
+
 ## [0.13.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.8...v0.13.0) (2026-05-04)
 
 ### Features
