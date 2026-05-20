@@ -4,5 +4,21 @@
     "github>zextras/infra-renovate-config",
     "github>zextras/infra-renovate-config:docker",
     "github>zextras/infra-renovate-config:javascript"
+  ],
+  "automergeType": "pr",
+  "automergeStrategy": "auto",
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      "matchUpdateTypes": ["minor"],
+      "automerge": true
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    }
   ]
 }
