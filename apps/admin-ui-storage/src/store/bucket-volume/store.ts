@@ -6,11 +6,13 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
+import type { BucketVolume } from '../../../types';
+
 type BucketVolumeServerNameState = {
 	selectedServerName: string;
 	setSelectedServerName: (v: string) => void;
-	isVolumeAllDetail: Array<any>;
-	setIsVolumeAllDetail: (isVolumeAllDetail: Array<any>) => void;
+	isVolumeAllDetail: Array<BucketVolume>;
+	setIsVolumeAllDetail: (isVolumeAllDetail: Array<BucketVolume>) => void;
 	isAllocationToggle: boolean;
 	setIsAllocationToggle: (isAllocationToggle: boolean) => void;
 };

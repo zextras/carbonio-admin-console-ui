@@ -7,6 +7,7 @@ import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { AdvancedVolumeWizardDetail } from '../../../../../../../types';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { volumeTypeList } from '../../../../../utility/utils';
 import AdvancedMailstoresConfig from './advanced-mailstores-config';
@@ -15,37 +16,24 @@ import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
-	const { t } = useTranslation();
-	return (
-		<Section
-			title={`${externalData} | ${t('volume.create_storage_volume', 'Create Storage Volume')}`}
-			padding={{ all: '0' }}
-			footer={wizardFooter}
-			divider
-			showClose
-			onClose={(): void => {
-				setToggleWizardSection(false);
-			}}
-		>
-			{wizard}
-		</Section>
-	);
+  const { t } = useTranslation();
+  return (
+    <Section
+      title={`${externalData} | ${t('volume.create_storage_volume', 'Create Storage Volume')}`}
+      padding={{ all: '0' }}
+      footer={wizardFooter}
+      divider
+      showClose
+      onClose={(): void => {
+        setToggleWizardSection(false);
+      }}
+    >
+      {wizard}
+    </Section>
+  );
 };
 
-type VolumeDetailObj = {
-  volumeName: string;
-  volumeMain: number;
-  isCurrent: boolean;
-  volumeAllocation: string;
-  bucketName: string;
-  unusedBucketType: string;
-  bucketId: string;
-  prefix: string;
-  centralized: boolean;
-  useInfrequentAccess: boolean;
-  infrequentAccessThreshold: string;
-  useIntelligentTiering: boolean;
-}
+
 
 const CreateMailstoresVolume: FC<{
   setToggleWizardExternal: any;
@@ -56,7 +44,7 @@ const CreateMailstoresVolume: FC<{
   const { t } = useTranslation();
   const volTypeList = useMemo(() => volumeTypeList(t), [t]);
   const isAllocationToggle = useBucketVolumeStore((state) => state?.isAllocationToggle);
-  const [advancedVolumeDetail, setAdvancedVolumeDetail] = useState<VolumeDetailObj>({
+  const [advancedVolumeDetail, setAdvancedVolumeDetail] = useState<AdvancedVolumeWizardDetail>({
     volumeName: '',
     volumeMain: 0,
     isCurrent: false,

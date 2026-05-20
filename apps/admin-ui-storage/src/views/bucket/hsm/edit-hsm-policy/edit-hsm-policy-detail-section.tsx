@@ -22,11 +22,14 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
+import type { HsmPolicyFromServer, PolicyCriteriaItem } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 
+type SelectOption = { label: string; value: string };
+
 const EditHsmPolicyDetailSection: FC<{
-  currentPolicy: any;
-  setIsDirty: any;
+  currentPolicy: HsmPolicyFromServer | undefined;
+  setIsDirty: (isDirty: boolean) => void;
 }> = ({ currentPolicy, setIsDirty }) => {
   const { server } = useParams();
   const [t] = useTranslation();
@@ -37,29 +40,29 @@ const EditHsmPolicyDetailSection: FC<{
   const [isEventEnable, setIsEventEnable] = useState<boolean>(hsmDetail?.isEventEnabled);
   const [isContactEnable, setIsContactEnable] = useState<boolean>(hsmDetail?.isContactEnabled);
   const [isDocument, setIsDocument] = useState<boolean>(hsmDetail?.isDocumentEnabled);
-  const [policyCriteriaRows, setPolicyCriteriaRows] = useState<Array<any>>();
-  const [policyCriteria, setPolicyCriteria] = useState<Array<any>>([]);
+  const [policyCriteriaRows, setPolicyCriteriaRows] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>();
+  const [policyCriteria, setPolicyCriteria] = useState<Array<PolicyCriteriaItem>>([]);
   const [isShowDateScale, setIsShowDateScale] = useState<boolean>(true);
   const [value, setValue] = useState<string>();
-  const [selectedPolicies, setSelectedPolicies] = useState<any>([]);
+  const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
   const [isUpdatePolicyCriteria, setIsUpdatePolicyCriteria] = useState<boolean>(false);
-  const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<any>>(
-    hsmDetail?.destinationVolume.map((item: any) => item?.id),
+  const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<string>>(
+    hsmDetail?.destinationVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
   );
-  const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<any>>(
-    hsmDetail?.sourceVolume.map((item: any) => item?.id),
+  const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<string>>(
+    hsmDetail?.sourceVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
   );
 
   useEffect(() => {
     if (!isDocument || !isContactEnable || !isMessageEnable || !isEventEnable) {
       setAll(false);
-      setHsmDetail((prev: any) => ({
+      setHsmDetail((prev) => ({
         ...prev,
         isAllEnabled: false,
       }));
     } else if (isDocument && isContactEnable && isMessageEnable && isEventEnable) {
       setAll(true);
-      setHsmDetail((prev: any) => ({
+      setHsmDetail((prev) => ({
         ...prev,
         isAllEnabled: true,
       }));
@@ -73,7 +76,7 @@ const EditHsmPolicyDetailSection: FC<{
         setIsContactEnable(true);
         setIsMessageEnable(true);
         setIsEventEnable(true);
-        setHsmDetail((prev: any) => ({
+        setHsmDetail((prev) => ({
           ...prev,
           isMessageEnabled: true,
           isDocumentEnabled: true,
@@ -84,25 +87,25 @@ const EditHsmPolicyDetailSection: FC<{
         currentPolicy?.hsmType.forEach((element: number) => {
           if (element === 5) {
             setIsMessageEnable(true);
-            setHsmDetail((prev: any) => ({
+            setHsmDetail((prev) => ({
               ...prev,
               isMessageEnabled: true,
             }));
           } else if (element === 8) {
             setIsDocument(true);
-            setHsmDetail((prev: any) => ({
+            setHsmDetail((prev) => ({
               ...prev,
               isDocumentEnabled: true,
             }));
           } else if (element === 11) {
             setIsEventEnable(true);
-            setHsmDetail((prev: any) => ({
+            setHsmDetail((prev) => ({
               ...prev,
               isEventEnabled: true,
             }));
           } else if (element === 6) {
             setIsContactEnable(true);
-            setHsmDetail((prev: any) => ({
+            setHsmDetail((prev) => ({
               ...prev,
               isContactEnabled: true,
             }));
@@ -125,8 +128,8 @@ const EditHsmPolicyDetailSection: FC<{
               setPolicyCriteria((prev) => [
                 ...prev,
                 {
-                  option,
-                  scale,
+                  option: option ?? '',
+                  scale: scale ?? '',
                   dateScale: valueItem,
                 },
               ]);
@@ -141,10 +144,10 @@ const EditHsmPolicyDetailSection: FC<{
 
   const setSourceAndDestinationValues = useCallback((option: string, valueItem: string) => {
     if (option.startsWith('source')) {
-      setSelectedSourceVolume(valueItem.split(',').map((item: string) => +item));
+      setSelectedSourceVolume(valueItem.split(','));
     }
     if (option.startsWith('destination')) {
-      setSelectedDestinationVolume(valueItem.split(',').map((item: string) => +item));
+      setSelectedDestinationVolume(valueItem.split(','));
     }
   }, []);
 
@@ -171,7 +174,7 @@ const EditHsmPolicyDetailSection: FC<{
       setHsmPolicyType();
       setHSMQuery();
       setHSMPolicyQuerySourceAndDestination();
-      setHsmDetail((prev: any) => ({
+      setHsmDetail((prev) => ({
         ...prev,
         isDataLoaded: true,
       }));
@@ -185,13 +188,13 @@ const EditHsmPolicyDetailSection: FC<{
   ]);
 
   useEffect(() => {
-    setHsmDetail((prev: any) => ({
+    setHsmDetail((prev) => ({
       ...prev,
       policyCriteria,
     }));
   }, [policyCriteria, setHsmDetail]);
 
-  const options: any[] = useMemo(
+  const options: Array<SelectOption> = useMemo(
     () => [
       {
         label: t('hsm.after_date', 'After (Date)'),
@@ -213,7 +216,7 @@ const EditHsmPolicyDetailSection: FC<{
     [t],
   );
 
-  const dateScaleOption: any[] = useMemo(
+  const dateScaleOption: Array<SelectOption> = useMemo(
     () => [
       {
         label: t('hsm.minutes', 'Minutes'),
@@ -239,7 +242,7 @@ const EditHsmPolicyDetailSection: FC<{
     [t],
   );
 
-  const scaleOptions: any[] = useMemo(
+  const scaleOptions: Array<SelectOption> = useMemo(
     () => [
       {
         label: t('hsm.bytes', 'Byte (B)'),
@@ -272,12 +275,12 @@ const EditHsmPolicyDetailSection: FC<{
     ],
     [t],
   );
-  const [selectedOption, setSelectedOption]: any = useState<any>(options[0]);
-  const [selectedScale, setSelectedScale]: any = useState<any>(
+  const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>(options[0]);
+  const [selectedScale, setSelectedScale] = useState<SelectOption | undefined>(
     isShowDateScale ? dateScaleOption[2] : scaleOptions[0],
   );
-  const onOptionChange = (v: any): any => {
-    const it = options.find((item: any) => item.value === v);
+  const onOptionChange = (v: string | null): void => {
+    const it = options.find((item) => item.value === v);
     setSelectedOption(it);
     if (it?.value === 'after' || it?.value === 'before') {
       setIsShowDateScale(true);
@@ -289,16 +292,16 @@ const EditHsmPolicyDetailSection: FC<{
   };
 
   const onScaleChange = useCallback(
-    (v: any): any => {
-      const it = scaleOptions.find((item: any) => item.value === v);
+    (v: string | null): void => {
+      const it = scaleOptions.find((item) => item.value === v);
       setSelectedScale(it);
     },
     [scaleOptions],
   );
 
   const onDateScaleChange = useCallback(
-    (v: any): any => {
-      const it = dateScaleOption.find((item: any) => item.value === v);
+    (v: string | null): void => {
+      const it = dateScaleOption.find((item) => item.value === v);
       setSelectedScale(it);
     },
     [dateScaleOption],
@@ -307,7 +310,7 @@ const EditHsmPolicyDetailSection: FC<{
   const onClickAll = useCallback(
     (check: boolean) => {
       setAll(check);
-      setHsmDetail((prev: any) => ({
+      setHsmDetail((prev) => ({
         ...prev,
         isAllEnabled: check,
         isMessageEnabled: check,
@@ -326,14 +329,14 @@ const EditHsmPolicyDetailSection: FC<{
   useEffect(() => {
     if (policyCriteria.length > 0) {
       let displayPolicy = '';
-      const allRows = policyCriteria.map((item: any, index: number) => {
+      const allRows = policyCriteria.map((item: PolicyCriteriaItem, index: number) => {
         if (item?.option === 'before' || item?.option === 'after') {
           displayPolicy = `${item?.option} ${item?.dateScale} ${item?.scale}`;
         } else if (item?.option === 'larger' || item?.option === 'smaller') {
           displayPolicy = `${item?.option}  ${item?.dateScale} ${item?.scale}`;
         }
         return {
-          id: index,
+          id: String(index),
           columns: [
             <ds-text
               as="span"
@@ -341,7 +344,7 @@ const EditHsmPolicyDetailSection: FC<{
               weight="regular"
               key={index}
               onClick={(): void => {
-                setSelectedPolicies([index]);
+                setSelectedPolicies([String(index)]);
               }}
             >
               {displayPolicy}
@@ -356,10 +359,10 @@ const EditHsmPolicyDetailSection: FC<{
   }, [policyCriteria, t]);
 
   const onAdd = useCallback(() => {
-    const data = {
-      option: selectedOption?.value,
-      scale: selectedScale?.value,
-      dateScale: value,
+    const data: PolicyCriteriaItem = {
+      option: selectedOption?.value ?? '',
+      scale: selectedScale?.value ?? '',
+      dateScale: value ?? '',
     };
     setPolicyCriteria((prev) => [...prev, data]);
     setIsDirty(true);
@@ -367,7 +370,7 @@ const EditHsmPolicyDetailSection: FC<{
 
   const onDeletePolicy = useCallback(() => {
     const reducedArr = policyCriteria.filter(
-      (item, itemIndex) => itemIndex !== selectedPolicies[0],
+      (item, itemIndex) => itemIndex !== Number(selectedPolicies[0]),
     );
     setPolicyCriteria(reducedArr);
     setSelectedPolicies([]);
@@ -377,8 +380,8 @@ const EditHsmPolicyDetailSection: FC<{
   useEffect(() => {
     if (selectedPolicies.length > 0) {
       setIsUpdatePolicyCriteria(true);
-      const policy = policyCriteria[selectedPolicies[0]];
-      const it = options.find((item: any) => item.value === policy?.option);
+      const policy = policyCriteria[Number(selectedPolicies[0])];
+      const it = options.find((item) => item.value === policy?.option);
       setSelectedOption(it);
       if (policy) {
         if (policy?.option === 'after' || policy?.option === 'before') {
@@ -398,13 +401,13 @@ const EditHsmPolicyDetailSection: FC<{
 
   const onUpdate = useCallback(() => {
     setPolicyCriteria([]);
-    const data = {
-      option: selectedOption?.value,
-      scale: selectedScale?.value,
-      dateScale: value,
+    const data: PolicyCriteriaItem = {
+      option: selectedOption?.value ?? '',
+      scale: selectedScale?.value ?? '',
+      dateScale: value ?? '',
     };
     const _policy = cloneDeep(policyCriteria);
-    _policy[selectedPolicies[0]] = data;
+    _policy[Number(selectedPolicies[0])] = data;
     setPolicyCriteria(_policy);
     setIsUpdatePolicyCriteria(false);
     setValue('');
@@ -413,16 +416,16 @@ const EditHsmPolicyDetailSection: FC<{
   }, [selectedOption, selectedScale, value, selectedPolicies, policyCriteria, setIsDirty]);
 
   useEffect(() => {
-    const sourceVol = hsmDetail?.allVolumes?.filter((item: any) =>
-      selectedSourceVolume?.includes(item?.id),
+    const sourceVol = hsmDetail?.allVolumes?.filter((item) =>
+      item?.id != null && selectedSourceVolume?.includes(String(item.id)),
     );
     if (sourceVol && sourceVol.length > 0) {
-      setHsmDetail((prev: any) => ({
+      setHsmDetail((prev) => ({
         ...prev,
         sourceVolume: sourceVol,
       }));
     } else {
-      setHsmDetail((prev: any) => ({
+      setHsmDetail((prev) => ({
         ...prev,
         sourceVolume: [],
       }));
@@ -431,16 +434,16 @@ const EditHsmPolicyDetailSection: FC<{
 
   useEffect(() => {
     if (Array.isArray(hsmDetail?.allVolumes)) {
-      const destVol = hsmDetail?.allVolumes?.filter((item: any) =>
-        selectedDestinationVolume?.includes(item?.id),
+      const destVol = hsmDetail?.allVolumes?.filter((item) =>
+        item?.id != null && selectedDestinationVolume?.includes(String(item.id)),
       );
       if (destVol && destVol.length > 0) {
-        setHsmDetail((prev: any) => ({
+        setHsmDetail((prev) => ({
           ...prev,
           destinationVolume: destVol,
         }));
       } else {
-        setHsmDetail((prev: any) => ({
+        setHsmDetail((prev) => ({
           ...prev,
           destinationVolume: [],
         }));
@@ -489,7 +492,7 @@ const EditHsmPolicyDetailSection: FC<{
             value={isMessageEnable}
             onClick={(): void => {
               setIsMessageEnable(!isMessageEnable);
-              setHsmDetail((prev: any) => ({
+              setHsmDetail((prev) => ({
                 ...prev,
                 isMessageEnabled: !isMessageEnable,
               }));
@@ -505,7 +508,7 @@ const EditHsmPolicyDetailSection: FC<{
             value={isDocument}
             onClick={(): void => {
               setIsDocument(!isDocument);
-              setHsmDetail((prev: any) => ({
+              setHsmDetail((prev) => ({
                 ...prev,
                 isDocumentEnabled: !isDocument,
               }));
@@ -521,7 +524,7 @@ const EditHsmPolicyDetailSection: FC<{
             value={isEventEnable}
             onClick={(): void => {
               setIsEventEnable(!isEventEnable);
-              setHsmDetail((prev: any) => ({
+              setHsmDetail((prev) => ({
                 ...prev,
                 isEventEnabled: !isEventEnable,
               }));
@@ -537,7 +540,7 @@ const EditHsmPolicyDetailSection: FC<{
             value={isContactEnable}
             onClick={(): void => {
               setIsContactEnable(!isContactEnable);
-              setHsmDetail((prev: any) => ({
+              setHsmDetail((prev) => ({
                 ...prev,
                 isContactEnabled: !isContactEnable,
               }));
@@ -564,7 +567,7 @@ const EditHsmPolicyDetailSection: FC<{
             background="gray5"
             label={t('hsm.option', 'Option')}
             showCheckbox={false}
-            selection={selectedOption}
+            defaultSelection={selectedOption}
             onChange={onOptionChange}
           />
         </Container>
@@ -579,7 +582,7 @@ const EditHsmPolicyDetailSection: FC<{
               background="gray5"
               label={t('hsm.value', 'Value')}
               showCheckbox={false}
-              selection={selectedScale}
+              defaultSelection={selectedScale}
               onChange={onDateScaleChange}
             />
           </Container>
@@ -595,7 +598,7 @@ const EditHsmPolicyDetailSection: FC<{
               background="gray5"
               label={t('hsm.value', 'Value')}
               showCheckbox={false}
-              selection={selectedScale}
+              defaultSelection={selectedScale}
               onChange={onScaleChange}
             />
           </Container>
@@ -609,7 +612,7 @@ const EditHsmPolicyDetailSection: FC<{
             label={t('hsm.value', 'Value')}
             backgroundColor="gray5"
             value={value}
-            onChange={(e: any): any => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setValue(e.target.value);
             }}
           />
@@ -662,8 +665,8 @@ const EditHsmPolicyDetailSection: FC<{
             headers={headers}
             showCheckbox
             multiSelect={false}
-            selectedRows={selectedPolicies}
-            onSelectionChange={(selected: any): void => setSelectedPolicies(selected)}
+            selectedRows={selectedPolicies as [] | [string]}
+            onSelectionChange={(selected): void => setSelectedPolicies(selected.map(String))}
             RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />

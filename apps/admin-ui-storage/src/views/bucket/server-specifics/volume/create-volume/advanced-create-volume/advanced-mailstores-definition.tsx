@@ -7,7 +7,7 @@ import { Container, Input, LabeledValue, Padding, Row, Select } from '@zextras/u
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType } from '../../../../../../../types';
+import type { objectType, VolumeAllocationItem } from '../../../../../../../types';
 import {
   EXTERNAL_TYPE_VALUE,
   LOCAL_TYPE_VALUE,
@@ -22,7 +22,7 @@ import { VolumeContext } from '../volume-context';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresDefinition: FC<{
-  externalData: any;
+  externalData: string;
   setCompleteLoading: (newValue: boolean) => void;
   setToggleNextBtn: (newValue: boolean) => void;
 }> = ({ externalData, setToggleNextBtn, setCompleteLoading }) => {
@@ -36,30 +36,30 @@ const AdvancedMailstoresDefinition: FC<{
   );
   const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
-  const [allocation, setAllocation] = useState<any>();
-  const [unusedType, setUnusedType] = useState<any>();
+  const [allocation, setAllocation] = useState<VolumeAllocationItem>();
+  const [unusedType, setUnusedType] = useState<{ label: string; value: string }>();
   const [errName, setErrName] = useState(true);
-  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
+  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<Array<{ label: string; value: string }>>([]);
 
   const changeVolName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
-      setAdvancedVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
-      if (e?.target?.value !== '') {
-        setErrName(true);
-      } else {
+      setVolumeDetail((prev) => ({ ...prev, volumeName: e?.target?.value }));
+      setAdvancedVolumeDetail((prev) => ({ ...prev, volumeName: e?.target?.value }));
+      if (e?.target?.value === '') {
         setErrName(false);
+      } else {
+        setErrName(true);
       }
     },
     [setAdvancedVolumeDetail, setVolumeDetail],
   );
 
-  const onVolAllocationChange = (v: any): void => {
-    setVolumeDetail((prev: objectType) => ({ ...prev, volumeAllocation: v }));
+  const onVolAllocationChange = (v: number | null): void => {
+    setVolumeDetail((prev) => ({ ...prev, volumeAllocation: v ?? undefined }));
     const volumeTypeObject = volAllocationList?.find(
-      (item: { label: string; value?: number }) => item?.value === v,
+      (item: VolumeAllocationItem) => item?.value === v,
     )?.label;
-    setAdvancedVolumeDetail((prev: objectType) => ({
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
       volumeAllocation: volumeTypeObject,
     }));
@@ -70,11 +70,11 @@ const AdvancedMailstoresDefinition: FC<{
     }
   };
 
-  const onUnusedBucketListChange = (e: any): void => {
-    const selectedBucketDetail = isVolumeAllDetail?.filter(
-      (item: objectType) => item?.uuid === e,
-    )[0];
-    setAdvancedVolumeDetail((prev: objectType) => ({
+  const onUnusedBucketListChange = (e: string | null): void => {
+    const selectedBucketDetail = isVolumeAllDetail?.find(
+      (item) => item?.uuid === e,
+    );
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
       bucketName: selectedBucketDetail?.bucketName,
       unusedBucketType: selectedBucketDetail?.storeType,
@@ -91,8 +91,8 @@ const AdvancedMailstoresDefinition: FC<{
       showSecrets: true,
     }).then((res) => {
       const response = JSON.parse(res?.Body?.response?.content);
-      if (response?.ok && response?.response?.values?.lenght !== 0) {
-        const volUnusedBucketList: objectType[] = [];
+      if (response?.ok && Array.isArray(response?.response?.values) && response.response.values.length !== 0) {
+        const volUnusedBucketList: Array<{ label: string; value: string }> = [];
         const allData = response?.response?.values
           ?.filter((items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
           .map((items: objectType) => {
@@ -113,7 +113,7 @@ const AdvancedMailstoresDefinition: FC<{
 
   useEffect(() => {
     const volumeTypeObject = volAllocationList?.find(
-      (item: { label: string; value?: number }) => item?.value === volumeDetail?.volumeAllocation,
+      (item: VolumeAllocationItem) => item?.value === volumeDetail?.volumeAllocation,
     );
     setAllocation(volumeTypeObject);
   }, [volAllocationList, volumeDetail?.volumeAllocation]);
@@ -145,10 +145,10 @@ const AdvancedMailstoresDefinition: FC<{
   ]);
 
   useEffect(() => {
-    const volumeTypeObject = isVolumeAllDetail?.filter(
-      (item: { uuid: string }) => item?.uuid === advancedVolumeDetail?.bucketId,
-    )[0];
-    setUnusedType(volumeTypeObject);
+    const matchingItem = backupUnusedBucketList?.find(
+      (item) => item?.value === advancedVolumeDetail?.bucketId,
+    );
+    setUnusedType(matchingItem);
   }, [
     backupUnusedBucketList,
     advancedVolumeDetail?.unusedBucketType,
@@ -162,61 +162,59 @@ const AdvancedMailstoresDefinition: FC<{
   }, []);
 
   return (
-    <>
-      <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-        <Row padding={{ top: 'large' }} width="100%">
-          <LabeledValue
-            label={t('label.volume_server_name', 'Server')}
-            backgroundColor="gray6"
-            value={externalData}
-          />
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-          <Input
-            inputName="volumeName"
-            label={t('label.volume_name', 'Volume Name')}
-            backgroundColor="gray5"
-            value={volumeDetail?.volumeName}
-            onChange={changeVolName}
-            hasError={!errName}
-          />
-          {!errName && (
-            <Padding top="extrasmall">
-              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-                {t('buckets.invalid_volume_name', 'Volume name is required.')}
-              </ds-text>
-            </Padding>
-          )}
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%">
-          <Select
-            items={volAllocationList}
-            background="gray5"
-            label={t('label.storage_type', 'Storage Type')}
-            showCheckbox={false}
-            selection={allocation}
-            onChange={onVolAllocationChange}
-          />
-        </Row>
-        {advancedVolumeDetail?.volumeAllocation !== undefined &&
-          volumeDetail?.volumeAllocation === EXTERNAL_TYPE_VALUE &&
-          backupUnusedBucketList?.length !== 0 && (
-            <Row padding={{ top: 'large' }} width="100%">
-              <Select
-                items={backupUnusedBucketList}
-                background="gray5"
-                label={t(
-                  'label.volume_available_unused_Buckets_list_in_backup',
-                  'Available Buckets List (that are not in use in the backup)',
-                )}
-                showCheckbox={false}
-                selection={unusedType}
-                onChange={onUnusedBucketListChange}
-              />
-            </Row>
-          )}
-      </Container>
-    </>
+    <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t('label.volume_server_name', 'Server')}
+          backgroundColor="gray6"
+          value={externalData}
+        />
+      </Row>
+      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+        <Input
+          inputName="volumeName"
+          label={t('label.volume_name', 'Volume Name')}
+          backgroundColor="gray5"
+          value={volumeDetail?.volumeName}
+          onChange={changeVolName}
+          hasError={!errName}
+        />
+        {!errName && (
+          <Padding top="extrasmall">
+            <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+              {t('buckets.invalid_volume_name', 'Volume name is required.')}
+            </ds-text>
+          </Padding>
+        )}
+      </Row>
+      <Row padding={{ top: 'large' }} width="100%">
+        <Select
+          items={volAllocationList}
+          background="gray5"
+          label={t('label.storage_type', 'Storage Type')}
+          showCheckbox={false}
+          defaultSelection={allocation}
+          onChange={onVolAllocationChange}
+        />
+      </Row>
+      {advancedVolumeDetail?.volumeAllocation !== undefined &&
+        volumeDetail?.volumeAllocation === EXTERNAL_TYPE_VALUE &&
+        backupUnusedBucketList?.length !== 0 && (
+          <Row padding={{ top: 'large' }} width="100%">
+            <Select
+              items={backupUnusedBucketList}
+              background="gray5"
+              label={t(
+                'label.volume_available_unused_Buckets_list_in_backup',
+                'Available Buckets List (that are not in use in the backup)',
+              )}
+              showCheckbox={false}
+              defaultSelection={unusedType}
+              onChange={onUnusedBucketListChange}
+            />
+          </Row>
+        )}
+    </Container>
   );
 };
 

@@ -13,13 +13,13 @@ import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresCreate: FC<{
   externalData: string;
-  setCompleteLoading: any;
+  setCompleteLoading: (v: boolean) => void;
 }> = ({ externalData, setCompleteLoading }) => {
   const context = useContext(AdvancedVolumeContext);
   const { t } = useTranslation();
   const { advancedVolumeDetail } = context;
   const volTypeList = useMemo(() => volumeTypeList(t), [t]);
-  const [volumeType, setVolumeType] = useState<any>('');
+  const [volumeType, setVolumeType] = useState<string>('');
   const [bucketS3, setBucketS3] = useState(false);
 
   useEffect(() => {
@@ -37,9 +37,9 @@ const AdvancedMailstoresCreate: FC<{
 
   useEffect(() => {
     const volumeTypeObject = volTypeList?.find(
-      (item: any) => item?.value === advancedVolumeDetail?.volumeMain,
+      (item: { label?: string; value?: number }) => item?.value === advancedVolumeDetail?.volumeMain,
     )?.label;
-    setVolumeType(volumeTypeObject);
+    setVolumeType(volumeTypeObject ?? '');
   }, [advancedVolumeDetail?.volumeMain, volTypeList]);
 
   useEffect(() => {

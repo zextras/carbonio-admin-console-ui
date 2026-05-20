@@ -17,6 +17,7 @@ import {
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import type { AdvancedMailstoresConfigProps } from '../../../../../../../types';
 import {
   AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
   AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
@@ -28,11 +29,7 @@ import {
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
-const AdvancedMailstoresConfig: FC<{
-  onSelection: any;
-  externalData: any;
-  setCompleteLoading: any;
-}> = ({ onSelection, externalData, setCompleteLoading }) => {
+const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelection, externalData, setCompleteLoading }) => {
   const context = useContext(AdvancedVolumeContext);
   const { t } = useTranslation();
   const { advancedVolumeDetail, setAdvancedVolumeDetail } = context;
@@ -43,20 +40,20 @@ const AdvancedMailstoresConfig: FC<{
 
   const changeVolDetail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAdvancedVolumeDetail((prev: any) => ({ ...prev, [e?.target?.name]: e?.target?.value }));
+      setAdvancedVolumeDetail((prev) => ({ ...prev, [e?.target?.name]: e?.target?.value }));
     },
     [setAdvancedVolumeDetail],
   );
 
   useEffect(() => {
     if (primaryRadio) {
-      setAdvancedVolumeDetail((prev: any) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
+      setAdvancedVolumeDetail((prev) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
       onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
     } else if (secondaryRadio) {
-      setAdvancedVolumeDetail((prev: any) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
+      setAdvancedVolumeDetail((prev) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
       onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
     } else {
-      setAdvancedVolumeDetail((prev: any) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
+      setAdvancedVolumeDetail((prev) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
       onSelection({ volumeMain: EMPTY_TYPE_VALUE }, true);
     }
   }, [onSelection, primaryRadio, secondaryRadio, setAdvancedVolumeDetail]);

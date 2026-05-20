@@ -21,23 +21,13 @@ import { find, get } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TestConnectionObjectType } from '../../../types';
+import { type BucketPreviousDetail, type EditBucketDetailsPanelProps, type ModifiedBucketDetails, type SelectItem, TestConnectionObjectType, type ZextrasRawResponse } from '../../../types';
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC, ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 
-const EditBucketDetailPanel: FC<{
-  setShowEditDetailView: any;
-  title: string;
-  setBucketDeleteName: any;
-  bucketDetail: any;
-  setOpen: any;
-  getBucketListType: any;
-  setSelectedRow: any;
-  setToggleForGetAPICall: any;
-  toggleForGetAPICall: any;
-}> = ({
+const EditBucketDetailPanel: FC<EditBucketDetailsPanelProps> = ({
   setShowEditDetailView,
   title,
   bucketDetail,
@@ -54,8 +44,8 @@ const EditBucketDetailPanel: FC<{
   const [bucketLabel, setBucketLabel] = useState(bucketDetail?.label);
   const [bucketNotes, setBucketNotes] = useState(bucketDetail?.notes);
 
-  const [bucketType, setBucketType] = useState<any>();
-  const [regionData, setRegionData] = useState(
+  const [bucketType, setBucketType] = useState<SelectItem>();
+  const [regionData, setRegionData] = useState<SelectItem | string | false | undefined>(
     bucketDetail?.region !== undefined && bucketDetail?.region,
   );
   const [accessKeyData, setAccessKeyData] = useState(bucketDetail?.accessKey);
@@ -66,7 +56,7 @@ const EditBucketDetailPanel: FC<{
   const [ButtonLabel, setButtonLabel] = useState(t('label.verify_connector', 'VERIFY CONNECTOR'));
   const [buttonIcon, setButtonIcon] = useState<IconName>('ActivityOutline');
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [previousDetail, setPreviousDetail] = useState<any>({});
+  const [previousDetail, setPreviousDetail] = useState<BucketPreviousDetail>({});
   const [showURL, setShowURL] = useState(true);
   const [toggleBtn, setToggleBtn] = useState(false);
   const [checkError, setCheckError] = useState<string>('');
@@ -74,7 +64,7 @@ const EditBucketDetailPanel: FC<{
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
   const bucketRegions = useMemo(() => BucketRegions(t), [t]);
   const bucketRegionsInAlibaba = useMemo(() => BucketRegionsInAlibaba(t), [t]);
-  const [modifiedBucketDetails, setModifiedBucketDetails] = useState<any>({
+  const [modifiedBucketDetails, setModifiedBucketDetails] = useState<ModifiedBucketDetails>({
     _jsns: ZIMBRA_ADMIN_URN,
     module: 'ZxCore',
     action: 'doUpdateBucket',
@@ -156,7 +146,7 @@ const EditBucketDetailPanel: FC<{
   }, [bucketDetail?.url]);
 
   const updatePreviousDetail = (): void => {
-    const latestData: any = {};
+    const latestData: BucketPreviousDetail = {};
     latestData.bucketName = bucketName;
     latestData.bucketLabel = bucketLabel;
     latestData.regionData = bucketDetail?.region !== undefined && regionData;
@@ -168,17 +158,17 @@ const EditBucketDetailPanel: FC<{
   };
 
   const checkIfChanged = useCallback(
-    (name: string, newValue: any): void => {
+    (name: string, newValue: string): void => {
       const currentValue = get(bucketDetail, name);
       if (currentValue !== newValue) {
-        setModifiedBucketDetails((prev: any) => ({
+        setModifiedBucketDetails((prev) => ({
           ...prev,
           [name]: newValue,
         }));
       } else {
-        setModifiedBucketDetails((current: any) => {
+        setModifiedBucketDetails((current) => {
           const copy = { ...current };
-          delete copy[name];
+          delete copy[name as keyof ModifiedBucketDetails];
           return copy;
         });
       }
@@ -187,7 +177,7 @@ const EditBucketDetailPanel: FC<{
   );
   const onSave = (): void => {
     // API CALL
-    fetchSoap('zextras', modifiedBucketDetails).then((res: any) => {
+    fetchSoap('zextras', modifiedBucketDetails).then((res: ZextrasRawResponse) => {
       const updateResData = JSON.parse(res?.Body?.response?.content);
       if (updateResData?.ok) {
         getBucketListType();
@@ -229,9 +219,9 @@ const EditBucketDetailPanel: FC<{
     const upperBucketType =
       bucketDetail?.storeType !== EMC
         ? bucketDetail.storeType.charAt(0).toUpperCase() +
-          bucketDetail.storeType.slice(1).toLowerCase()
+        bucketDetail.storeType.slice(1).toLowerCase()
         : bucketDetail?.storeType;
-    const bucketTypeValue: any = find(
+    const bucketTypeValue = find(
       bucketTypeItems,
       (o) => o.value?.toLowerCase() === upperBucketType?.toLowerCase(),
     );
@@ -244,7 +234,7 @@ const EditBucketDetailPanel: FC<{
     previousDetail?.bucketName
       ? setBucketName(previousDetail?.bucketName)
       : setBucketName(bucketDetail?.bucketName);
-    const regionValue: any = find(
+    const regionValue = find(
       upperBucketType === ALIBABA && bucketDetail?.region !== undefined
         ? bucketRegionsInAlibaba
         : bucketRegions,
@@ -255,22 +245,23 @@ const EditBucketDetailPanel: FC<{
       : setRegionData(regionValue);
     previousDetail?.accessKeyData
       ? setAccessKeyData(previousDetail?.accessKeyData)
-      : setAccessKeyData(bucketDetail.accessKey);
+      : setAccessKeyData(bucketDetail.accessKey ?? '');
     previousDetail?.secretKey
       ? setSecretKey(previousDetail?.secretKey)
-      : setSecretKey(bucketDetail.secret);
-    previousDetail?.url ? setUrlData(previousDetail?.url) : setUrlData(bucketDetail.url);
+      : setSecretKey(bucketDetail.secret ?? '');
+    previousDetail?.url ? setUrlData(previousDetail?.url) : setUrlData(bucketDetail.url ?? '');
     setIsDirty(false);
   };
 
   const onSelectionChange = useCallback(
-    (e: any): any => {
+    (e: string | null): void => {
+      if (!e) return;
       const volumeObject =
         bucketDetail?.region !== undefined && bucketDetail?.storeType === ALIBABA.toUpperCase()
           ? bucketRegionsInAlibaba.find((s) => s.value === e)
           : bucketRegions.find((s) => s.value === e);
       setRegionData(volumeObject);
-      checkIfChanged('region', volumeObject?.value);
+      checkIfChanged('region', volumeObject?.value ?? '');
     },
     [
       bucketDetail?.region,
@@ -285,15 +276,15 @@ const EditBucketDetailPanel: FC<{
     const upperBucketType =
       bucketDetail?.storeType !== EMC && bucketDetail?.storeType !== AMAZON_WEB_SERVICE_S3
         ? bucketDetail.storeType.charAt(0).toUpperCase() +
-          bucketDetail.storeType.slice(1).toLowerCase()
+        bucketDetail.storeType.slice(1).toLowerCase()
         : bucketDetail?.storeType;
     const customType =
       bucketDetail?.storeType === CUSTOM_S3 &&
       bucketDetail.storeType.charAt(0).toUpperCase() +
-        bucketDetail.storeType.slice(1, 7).toLowerCase() +
-        bucketDetail.storeType.charAt(7).toUpperCase() +
-        bucketDetail.storeType.slice(8).toLowerCase();
-    const bucketTypeValue: any = find(
+      bucketDetail.storeType.slice(1, 7).toLowerCase() +
+      bucketDetail.storeType.charAt(7).toUpperCase() +
+      bucketDetail.storeType.slice(8).toLowerCase();
+    const bucketTypeValue = find(
       bucketTypeItems,
       (o) => o.value === (bucketDetail?.storeType === CUSTOM_S3 ? customType : upperBucketType),
     )?.value;
@@ -313,9 +304,9 @@ const EditBucketDetailPanel: FC<{
     const upperBucketType =
       bucketDetail.storeType !== EMC
         ? bucketDetail.storeType.charAt(0).toUpperCase() +
-          bucketDetail.storeType.slice(1).toLowerCase()
+        bucketDetail.storeType.slice(1).toLowerCase()
         : bucketDetail.storeType;
-    const regionValue: any = find(
+    const regionValue = find(
       bucketDetail?.region !== undefined && upperBucketType === ALIBABA
         ? bucketRegionsInAlibaba
         : bucketRegions,
@@ -323,6 +314,7 @@ const EditBucketDetailPanel: FC<{
     )?.value;
     if (
       bucketDetail?.region !== undefined &&
+      typeof regionData === 'object' && regionData && 'value' in regionData &&
       regionData?.value !== undefined &&
       regionValue !== regionData?.value
     ) {
@@ -366,15 +358,15 @@ const EditBucketDetailPanel: FC<{
     const upperBucketType =
       bucketDetail.storeType !== EMC
         ? bucketDetail.storeType.charAt(0).toUpperCase() +
-          bucketDetail.storeType.slice(1).toLowerCase()
+        bucketDetail.storeType.slice(1).toLowerCase()
         : bucketDetail.storeType;
-    const regionValue: any = find(
+    const regionValue = find(
       bucketDetail?.region !== undefined && upperBucketType === ALIBABA
         ? bucketRegionsInAlibaba
         : bucketRegions,
       (o) => o.value === bucketDetail.region,
     );
-    const bucketTypeValue: any = find(
+    const bucketTypeValue = find(
       bucketTypeItems,
       (o) => o.value?.toLowerCase() === upperBucketType?.toLowerCase(),
     );
@@ -425,7 +417,7 @@ const EditBucketDetailPanel: FC<{
             type="ghost"
             color={'text'}
             icon="CloseOutline"
-            onClick={(): any => setShowEditDetailView(false)}
+            onClick={(): void => setShowEditDetailView(false)}
           />
         </Row>
       </Row>
@@ -479,7 +471,7 @@ const EditBucketDetailPanel: FC<{
                   background="gray6"
                   label={t('label.region', 'Region')}
                   onChange={onSelectionChange}
-                  selection={regionData}
+                  defaultSelection={typeof regionData === 'object' && regionData ? regionData : undefined}
                   showCheckbox={false}
                 />
               </Row>
