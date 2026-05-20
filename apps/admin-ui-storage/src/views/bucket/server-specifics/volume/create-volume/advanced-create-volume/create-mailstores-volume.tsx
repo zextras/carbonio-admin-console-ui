@@ -3,11 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, type ButtonProps, HorizontalWizard, Section } from '@zextras/ui-components';
+import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { AdvancedVolumeWizardDetail, CreateMailstoresVolumeProps, WizardButtonProps, WizardInSectionProps } from '../../../../../../../types';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { volumeTypeList } from '../../../../../utility/utils';
 import AdvancedMailstoresConfig from './advanced-mailstores-config';
@@ -15,29 +14,49 @@ import AdvancedMailstoresCreate from './advanced-mailstores-create';
 import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
-const WizardInSection: FC<WizardInSectionProps> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
-  const { t } = useTranslation();
-  return (
-    <Section
-      title={`${externalData} | ${t('volume.create_storage_volume', 'Create Storage Volume')}`}
-      padding={{ all: '0' }}
-      footer={wizardFooter}
-      divider
-      showClose
-      onClose={(): void => {
-        setToggleWizardSection(false);
-      }}
-    >
-      {wizard}
-    </Section>
-  );
+const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
+	const { t } = useTranslation();
+	return (
+		<Section
+			title={`${externalData} | ${t('volume.create_storage_volume', 'Create Storage Volume')}`}
+			padding={{ all: '0' }}
+			footer={wizardFooter}
+			divider
+			showClose
+			onClose={(): void => {
+				setToggleWizardSection(false);
+			}}
+		>
+			{wizard}
+		</Section>
+	);
 };
 
-const CreateMailstoresVolume: FC<CreateMailstoresVolumeProps> = ({ setToggleWizardExternal, setToggleWizardLocal, volName, CreateAdvancedRequest }) => {
+type VolumeDetailObj = {
+  volumeName: string;
+  volumeMain: number;
+  isCurrent: boolean;
+  volumeAllocation: string;
+  bucketName: string;
+  unusedBucketType: string;
+  bucketId: string;
+  prefix: string;
+  centralized: boolean;
+  useInfrequentAccess: boolean;
+  infrequentAccessThreshold: string;
+  useIntelligentTiering: boolean;
+}
+
+const CreateMailstoresVolume: FC<{
+  setToggleWizardExternal: any;
+  setToggleWizardLocal: any;
+  volName: any;
+  CreateAdvancedRequest: any;
+}> = ({ setToggleWizardExternal, setToggleWizardLocal, volName, CreateAdvancedRequest }) => {
   const { t } = useTranslation();
   const volTypeList = useMemo(() => volumeTypeList(t), [t]);
   const isAllocationToggle = useBucketVolumeStore((state) => state?.isAllocationToggle);
-  const [advancedVolumeDetail, setAdvancedVolumeDetail] = useState<AdvancedVolumeWizardDetail>({
+  const [advancedVolumeDetail, setAdvancedVolumeDetail] = useState<VolumeDetailObj>({
     volumeName: '',
     volumeMain: 0,
     isCurrent: false,
@@ -58,9 +77,10 @@ const CreateMailstoresVolume: FC<CreateMailstoresVolumeProps> = ({ setToggleWiza
       label: t('label.volume_definition', 'DEFINITION'),
       icon: 'CubeOutline',
       view: AdvancedMailstoresDefinition,
-      canGoNext: (): boolean => true,
-      CancelButton: () => (
+      canGoNext: (): any => true,
+      CancelButton: (props: any) => (
         <Button
+          {...props}
           type="outlined"
           key="wizard-cancel"
           label={t('label.volume_cancel_button', 'CANCEL')}
@@ -70,21 +90,22 @@ const CreateMailstoresVolume: FC<CreateMailstoresVolumeProps> = ({ setToggleWiza
           onClick={(): void => setToggleWizardExternal(false)}
         />
       ),
-      PrevButton: (): ReactElement | string => '',
-      NextButton: (props: WizardButtonProps): ReactElement =>
-        (props as { toggleNextBtn?: boolean }).toggleNextBtn ? (
+      PrevButton: (): any => '',
+      NextButton: (props: any): ReactElement =>
+        !props.toggleNextBtn ? (
           <Button
+            {...props}
+            label={t('label.volume_next_step_button', 'NEXT STEP')}
+            icon={'ChevronRightOutline'}
+            iconPlacement="right"
+          />
+        ) : (
+          <Button
+            {...props}
             label={t('label.volume_next_step_button', 'NEXT STEP')}
             icon={'ChevronRightOutline'}
             iconPlacement="right"
             onClick={(): void => setToggleWizardLocal(true)}
-          />
-        ) : (
-          <Button
-            label={t('label.volume_next_step_button', 'NEXT STEP')}
-            icon={'ChevronRightOutline'}
-            iconPlacement="right"
-            onClick={props.onClick as ButtonProps['onClick']}
           />
         ),
     },
@@ -93,10 +114,11 @@ const CreateMailstoresVolume: FC<CreateMailstoresVolumeProps> = ({ setToggleWiza
       label: t('label.new_volume_config', 'CONFIGURATION'),
       icon: 'Options2Outline',
       view: AdvancedMailstoresConfig,
-      canGoNext: (): boolean => true,
+      canGoNext: (): any => true,
       clickDisabled: !!isAllocationToggle,
-      CancelButton: () => (
+      CancelButton: (props: any) => (
         <Button
+          {...props}
           type="outlined"
           key="wizard-cancel"
           label={t('label.volume_cancel_button', 'CANCEL')}
@@ -106,23 +128,23 @@ const CreateMailstoresVolume: FC<CreateMailstoresVolumeProps> = ({ setToggleWiza
           onClick={(): void => setToggleWizardExternal(false)}
         />
       ),
-      PrevButton: (props: WizardButtonProps): ReactElement => (
+      PrevButton: (props: any): any => (
         <Button
+          {...props}
           label={t('label.volume_back_button', 'BACK')}
           icon={'ChevronLeftOutline'}
           iconPlacement="left"
-          disabled={!(props as { completeLoading?: boolean })?.completeLoading}
+          disable={props?.completeLoading}
           color="secondary"
-          onClick={props.onClick as ButtonProps['onClick']}
         />
       ),
-      NextButton: (props: WizardButtonProps): ReactElement => (
+      NextButton: (props: any): any => (
         <Button
+          {...props}
           label={t('label.volume_next_button', 'NEXT')}
           icon={'ChevronRightOutline'}
           iconPlacement="right"
-          disabled={!(props as { completeLoading?: boolean })?.completeLoading}
-          onClick={props.onClick as ButtonProps['onClick']}
+          disable={props?.completeLoading}
         />
       ),
     },
@@ -131,10 +153,11 @@ const CreateMailstoresVolume: FC<CreateMailstoresVolumeProps> = ({ setToggleWiza
       label: t('label.new_volume_create', 'CREATE VOLUME'),
       icon: 'CubeOutline',
       view: AdvancedMailstoresCreate,
-      canGoNext: (): boolean => true,
+      canGoNext: (): any => true,
       clickDisabled: !!isAllocationToggle,
-      CancelButton: () => (
+      CancelButton: (props: any) => (
         <Button
+          {...props}
           type="outlined"
           key="wizard-cancel"
           label={t('label.volume_cancel_button', 'CANCEL')}
@@ -144,23 +167,23 @@ const CreateMailstoresVolume: FC<CreateMailstoresVolumeProps> = ({ setToggleWiza
           onClick={(): void => setToggleWizardExternal(false)}
         />
       ),
-      PrevButton: (props: WizardButtonProps): ReactElement => (
+      PrevButton: (props: any): any => (
         <Button
+          {...props}
           label={t('label.volume_back_button', 'BACK')}
           icon={'ChevronLeftOutline'}
           iconPlacement="left"
-          disabled={!(props as { completeLoading?: boolean })?.completeLoading}
+          disable={props?.completeLoading}
           color="secondary"
-          onClick={props.onClick as ButtonProps['onClick']}
         />
       ),
-      NextButton: (props: WizardButtonProps): ReactElement => (
+      NextButton: (props: any): any => (
         <Button
+          {...props}
           label={t('label.volume_create', 'CREATE')}
           icon={'PowerOutline'}
           iconPlacement="right"
-          disabled={!(props as { completeLoading?: boolean })?.completeLoading}
-          onClick={props.onClick as ButtonProps['onClick']}
+          disable={props?.completeLoading}
         />
       ),
     },
@@ -168,7 +191,7 @@ const CreateMailstoresVolume: FC<CreateMailstoresVolumeProps> = ({ setToggleWiza
 
   const onComplete = useCallback(() => {
     const volumeType = volTypeList
-      ?.find((item) => item?.value === advancedVolumeDetail?.volumeMain)
+      ?.filter((item) => item?.value === advancedVolumeDetail?.volumeMain)[0]
       ?.label?.toLowerCase();
     CreateAdvancedRequest({
       volumeName: advancedVolumeDetail?.volumeName,

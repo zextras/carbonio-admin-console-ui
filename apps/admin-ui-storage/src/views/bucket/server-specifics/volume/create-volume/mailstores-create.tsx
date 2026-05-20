@@ -15,10 +15,10 @@ import {
   Switch,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { ChangeEvent, FC, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { MailstoresCreateProps, VolumeAllocationItem } from '../../../../../../types';
+import { objectType } from '../../../../../../types';
 import {
   COMPRESSION_THRESHOLD_UNIT,
   EMPTY_TYPE_VALUE,
@@ -29,7 +29,11 @@ import {
 import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 import { VolumeContext } from './volume-context';
 
-const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData, setCompleteLoading }) => {
+const MailstoresCreate: FC<{
+  onSelection: any;
+  externalData: string;
+  setCompleteLoading: any;
+}> = ({ onSelection, externalData, setCompleteLoading }) => {
   const context = useContext(VolumeContext);
   const { t } = useTranslation();
 
@@ -44,11 +48,11 @@ const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData
   const [primaryRadio, setPrimaryRadio] = useState(false);
   const [secondaryRadio, setSecondaryRadio] = useState(false);
   const [indexRadio, setIndexRadio] = useState(false);
-  const [allocation, setAllocation] = useState<VolumeAllocationItem>();
+  const [allocation, setAllocation] = useState<any>();
 
-  const onVolMainChange = (v: number | null): void => {
-    if (!isAdvanced && v !== null) {
-      setVolumeDetail((prev) => ({ ...prev, volumeMain: v }));
+  const onVolMainChange = (v: any): void => {
+    if (!isAdvanced) {
+      setVolumeDetail((prev: any) => ({ ...prev, volumeMain: v }));
       onSelection({ volumeMain: v }, true);
       if (v === INDEX_TYPE_VALUE) {
         setToggleIndexer(true);
@@ -88,22 +92,22 @@ const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData
   );
 
   const changeSwitchIsCurrent = useCallback((): void => {
-    setVolumeDetail((prev) => ({ ...prev, isCurrent: !volumeDetail?.isCurrent }));
+    setVolumeDetail((prev: object) => ({ ...prev, isCurrent: !volumeDetail?.isCurrent }));
     onSelection({ isCurrent: !volumeDetail?.isCurrent }, true);
   }, [onSelection, setVolumeDetail, volumeDetail?.isCurrent]);
 
   const changeSwitchIsCompression = useCallback((): void => {
-    setVolumeDetail((prev) => ({ ...prev, isCompression: !volumeDetail?.isCompression }));
+    setVolumeDetail((prev: object) => ({ ...prev, isCompression: !volumeDetail?.isCompression }));
     onSelection({ isCompression: !volumeDetail?.isCompression }, true);
   }, [onSelection, setVolumeDetail, volumeDetail?.isCompression]);
 
-  const onVolAllocationChange = (v: number | null): void => {
-    setVolumeDetail((prev) => ({ ...prev, volumeAllocation: v ?? undefined }));
+  const onVolAllocationChange = (v: any): any => {
+    setVolumeDetail((prev: any) => ({ ...prev, volumeAllocation: v }));
   };
 
   const onVolNamechange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setVolumeDetail((prev) => ({ ...prev, volumeName: e?.target?.value }));
+      setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
       if (e?.target?.value !== '') {
         setErrName(true);
       } else {
@@ -150,20 +154,20 @@ const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData
   useEffect(() => {
     if (isAdvanced) {
       if (primaryRadio) {
-        setVolumeDetail((prev) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
+        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
         onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
       } else if (secondaryRadio) {
-        setVolumeDetail((prev) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
+        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
         onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
       } else if (indexRadio) {
-        setVolumeDetail((prev) => ({ ...prev, volumeMain: INDEX_TYPE_VALUE }));
+        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: INDEX_TYPE_VALUE }));
         onSelection({ volumeMain: INDEX_TYPE_VALUE }, true);
       } else {
-        setVolumeDetail((prev) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
+        setVolumeDetail((prev: any) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
         onSelection({ volumeMain: EMPTY_TYPE_VALUE }, true);
       }
       const volumeTypeObject = volAllocationList?.find(
-        (item: VolumeAllocationItem) => item?.value === volumeDetail?.volumeAllocation,
+        (item: any) => item?.value === volumeDetail?.volumeAllocation,
       );
       setAllocation(volumeTypeObject);
     }
@@ -213,7 +217,7 @@ const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData
             background="gray5"
             label={t('label.volume_type', 'Volume Type')}
             defaultSelection={
-              volTypeList?.find((items) => items?.value === volumeDetail?.volumeMain)
+              volTypeList?.filter((items) => items?.value === volumeDetail?.volumeMain)[0]
             }
             showCheckbox={false}
             onChange={onVolMainChange}
@@ -227,7 +231,7 @@ const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData
             background="gray5"
             label={t('label.volume_allocation', 'Allocation')}
             showCheckbox={false}
-            defaultSelection={allocation}
+            selection={allocation}
             onChange={onVolAllocationChange}
           />
         </Row>
@@ -257,7 +261,7 @@ const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData
                 label={t('label.primary_volume', 'This is a Primary Volume')}
                 value={PRIMARY_TYPE_VALUE}
                 checked={primaryRadio}
-                onClick={(): void => {
+                onClick={(): any => {
                   setPrimaryRadio(!primaryRadio);
                   setSecondaryRadio(false);
                   setIndexRadio(false);
@@ -270,7 +274,7 @@ const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData
                 label={t('label.secondary_volume', 'This is a Secondary Volume')}
                 value={SECONDARY_TYPE_VALUE}
                 checked={secondaryRadio}
-                onClick={(): void => {
+                onClick={(): any => {
                   setSecondaryRadio(!secondaryRadio);
                   setPrimaryRadio(false);
                   setIndexRadio(false);
@@ -284,7 +288,7 @@ const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData
               label={t('label.index_volume', 'This is a Index Volume')}
               value={INDEX_TYPE_VALUE}
               checked={indexRadio}
-              onClick={(): void => {
+              onClick={(): any => {
                 setIndexRadio(!indexRadio);
                 setPrimaryRadio(false);
                 setSecondaryRadio(false);
@@ -331,7 +335,7 @@ const MailstoresCreate: FC<MailstoresCreateProps> = ({ onSelection, externalData
               onChange={changeVolCompThresold}
               hasError={!errCompressionThreshold}
               disabled={!volumeDetail?.isCompression}
-              CustomIcon={(): ReactElement => <ds-text as="span" color="secondary">{COMPRESSION_THRESHOLD_UNIT}</ds-text>}
+                CustomIcon={(): any => <ds-text as="span" color="secondary">{COMPRESSION_THRESHOLD_UNIT}</ds-text>}
             />
             {!errCompressionThreshold && (
               <Padding top="extrasmall">

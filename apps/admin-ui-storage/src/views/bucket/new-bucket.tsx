@@ -8,10 +8,14 @@ import { Button, HorizontalWizard, WizardInSection } from '@zextras/ui-component
 import { type FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { ConnectionStepData, NewBucketProps } from '../../../types';
 import Connection from './connection';
 
-const NewBucket: FC<NewBucketProps> = ({ setToggleWizardSection, setDetailsBucket, bucketType, setConnectionData }) => {
+const NewBucket: FC<{
+  setToggleWizardSection: any;
+  setDetailsBucket: any;
+  bucketType: any;
+  setConnectionData: any;
+}> = ({ setToggleWizardSection, setDetailsBucket, bucketType, setConnectionData }) => {
   const { t } = useTranslation();
 
   const wizardSteps = [
@@ -20,8 +24,8 @@ const NewBucket: FC<NewBucketProps> = ({ setToggleWizardSection, setDetailsBucke
       label: t('new_bucket_connection', 'CONNECTION'),
       icon: 'Link2Outline',
       view: Connection,
-      canGoNext: (): boolean => true,
-      CancelButton: (props: Record<string, unknown>) => (
+      canGoNext: (): any => true,
+      CancelButton: (props: any) => (
         <Button
           {...props}
           type="outlined"
@@ -31,16 +35,17 @@ const NewBucket: FC<NewBucketProps> = ({ setToggleWizardSection, setDetailsBucke
           onClick={(): void => setToggleWizardSection(true)}
         />
       ),
-      PrevButton: ({ completeLoading, disabled }: { completeLoading?: boolean; disabled?: boolean }): React.ReactElement => (
+      PrevButton: (props: any): any => (
         <>
-          {!completeLoading ? (
+          {!props.completeLoading ? (
             <Button
+              {...props}
               key="wizard-cancel"
               label={t('label.bucket_cancel_button', 'CANCEL')}
               color="secondary"
               icon="ChevronLeftOutline"
               iconPlacement="left"
-              disabled={!!disabled}
+              disable={!!props.disabled}
               onClick={(): void => setToggleWizardSection(false)}
             />
           ) : (
@@ -48,12 +53,13 @@ const NewBucket: FC<NewBucketProps> = ({ setToggleWizardSection, setDetailsBucke
           )}
         </>
       ),
-      NextButton: ({ completeLoading }: { completeLoading?: boolean }): React.ReactElement => (
+      NextButton: (props: any): any => (
         <Button
+          {...props}
           label={t('label.bucket_done_button', 'Done')}
           icon={'CheckmarkCircleOutline'}
           iconPlacement="right"
-          disabled={!!completeLoading}
+          disable={props.completeLoading}
           style={{ marginLeft: '16px' }}
           onClick={(): void => {
             setToggleWizardSection(false);
@@ -64,7 +70,7 @@ const NewBucket: FC<NewBucketProps> = ({ setToggleWizardSection, setDetailsBucke
   ];
 
   const onComplete = useCallback(
-    (data: { steps: { connection: ConnectionStepData } }) => {
+    (data: any) => {
       setConnectionData(data.steps.connection);
       setToggleWizardSection(false);
       setDetailsBucket(false);
@@ -72,15 +78,15 @@ const NewBucket: FC<NewBucketProps> = ({ setToggleWizardSection, setDetailsBucke
     [setToggleWizardSection, setDetailsBucket, setConnectionData],
   );
 
-  return (
-    <HorizontalWizard
-      steps={wizardSteps}
-      title={t('buckets.new.bucket_connection', 'Bucket Connection')}
-      Wrapper={WizardInSection}
-      onComplete={onComplete}
-      setToggleWizardSection={setToggleWizardSection}
-      externalData={bucketType}
-    />
-  );
+	return (
+		<HorizontalWizard
+			steps={wizardSteps}
+			title={t('buckets.new.bucket_connection', 'Bucket Connection')}
+			Wrapper={WizardInSection}
+			onComplete={onComplete}
+			setToggleWizardSection={setToggleWizardSection}
+			externalData={bucketType}
+		/>
+	);
 };
 export default NewBucket;
