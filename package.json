@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.29.0",
-    "react": "^19.1.0"
+    "react": "^19.2.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
