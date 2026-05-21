@@ -23,7 +23,7 @@ describe('AppView', () => {
 
   beforeEach(async () => {
     queryClient = getQueryClient();
-    await grantUserConfigRights();
+    await grantUserConfigRights(queryClient);
   });
 
   async function setupAppViewTest(initialRoute?: string) {

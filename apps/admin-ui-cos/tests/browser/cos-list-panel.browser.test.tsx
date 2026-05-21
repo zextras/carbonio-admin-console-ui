@@ -42,7 +42,7 @@ describe('CosListPanel', () => {
     queryClient = getQueryClient();
     // Set up config data for useGlobalCarbonioSendAnalytics hook
     queryClient.setQueryData(['all-config'], [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }]);
-    await grantUserConfigRights();
+    await grantUserConfigRights(queryClient);
     useCosStore.getState().reset();
   });
 
