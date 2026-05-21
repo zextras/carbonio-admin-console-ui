@@ -24,6 +24,7 @@
     "@posthog/react": "^1.8.1",
     "@vitest/browser-preview": "^4.1.0",
     "@zextras/ui-components": "workspace:*",
+    "@zextras/ui-i18n": "workspace:*",
     "@zextras/ui-shared": "workspace:*",
     "i18next": "^22.5.1",
     "immer": "^10.1.3",

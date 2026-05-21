@@ -1,0 +1,31 @@
+{
+  "name": "@zextras/ui-i18n",
+  "description": "Shared i18n utilities for Carbonio Admin Panel",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "dist-types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist-types/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "type-check": "tsc --build",
+    "lint": "eslint --cache --quiet",
+    "lint:fix": "eslint --fix --quiet --cache",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "i18next": "^22.5.1",
+    "react": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.7",
+    "typescript": "^6.0.0",
+    "vitest": "^4.1.0"
+  },
+  "license": "AGPL-3.0-only"
+}

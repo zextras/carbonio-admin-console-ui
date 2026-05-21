@@ -32,6 +32,7 @@
   },
   "references": [
     { "path": "./packages/test-utils/" },
+    { "path": "./packages/ui-i18n/" },
     { "path": "./packages/ui-components/" },
     { "path": "./packages/ui-shared/" },
     { "path": "./apps/admin-ui-backup/" },

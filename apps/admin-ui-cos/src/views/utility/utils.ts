@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SelectItem } from '@zextras/ui-components';
+export { localeList } from '@zextras/ui-i18n';
 import { parse } from 'date-fns';
 import { TFunction } from 'i18next';
 import { divide, multiply } from 'lodash-es';
@@ -853,98 +853,6 @@ export const timeZoneList = (
     },
   ];
 
-export const localeList = (t: TFunction): SelectItem[] => [
-  {
-    label: t('locale.label_english', { value: 'English', defaultValue: 'English - {{value}}' }),
-    value: 'en',
-  },
-  {
-    label: t('locale.label_dutch', { value: 'Nederlands', defaultValue: 'Dutch - {{value}}' }),
-    value: 'nl',
-  },
-  {
-    label: t('locale.label_german', { value: 'Deutsch', defaultValue: 'German - {{value}}' }),
-    value: 'de',
-  },
-  {
-    label: t('locale.label_hindi', { value: 'हिंदी', defaultValue: 'Hindi - {{value}}' }),
-    value: 'hi',
-  },
-  {
-    label: t('locale.label_hungarian', { value: 'Magyar', defaultValue: 'Hungarian - {{value}}' }),
-    value: 'hu',
-  },
-  {
-    label: t('locale.label_indonesian', {
-      value: 'Bahasa Indonesia',
-      defaultValue: 'Indonesian - {{value}}',
-    }),
-    value: 'id',
-  },
-  {
-    label: t('locale.label_italian', { value: 'italiano', defaultValue: 'Italian - {{value}}' }),
-    value: 'it',
-  },
-  {
-    label: t('locale.label_japanese', { value: '日本語', defaultValue: 'Japanese - {{value}}' }),
-    value: 'ja',
-  },
-  {
-    label: t('locale.label_kyrgyz', { value: 'Кыргызча', defaultValue: 'Kyrgyz - {{value}}' }),
-    value: 'ky',
-  },
-  {
-    label: t('locale.label_portuguese', {
-      value: 'português',
-      defaultValue: 'Portuguese - {{value}}',
-    }),
-    value: 'pt',
-  },
-  {
-    label: 'Polish - polski',
-    value: 'pl',
-  },
-  {
-    label: t('locale.label_romanian', { value: 'română', defaultValue: 'Romanian - {{value}}' }),
-    value: 'ro',
-  },
-  {
-    label: t('locale.label_russian', { value: 'русский', defaultValue: 'Russian - {{value}}' }),
-    value: 'ru',
-  },
-  {
-    label: t('locale.label_spanish', { value: 'español', defaultValue: 'Spanish - {{value}}' }),
-    value: 'es',
-  },
-  {
-    label: t('locale.label_thai', { value: 'ไทย', defaultValue: 'Thai - {{value}}' }),
-    value: 'th',
-  },
-  {
-    label: t('locale.label_turkish', { value: 'Türkçe', defaultValue: 'Turkish - {{value}}' }),
-    value: 'tr',
-  },
-  {
-    label: t('locale.label_french', { value: 'français', defaultValue: 'French - {{value}}' }),
-    value: 'fr',
-  },
-  {
-    label: 'Vietnamese - Tiếng Việt',
-    value: 'vi',
-  },
-  {
-    label: t('locale.label_bosnian', { value: 'bosanski', defaultValue: 'Bosnian - {{value}}' }),
-    value: 'bs',
-  },
-  {
-    label: t('locale.label_slovenian', {
-      value: 'Slovenščina',
-      defaultValue: 'Slovenian - {{value}}',
-    }),
-    value: 'sl',
-  },
-];
-
 export const getDateFromStr = (serverStr: string): Date | null => {
   if (serverStr === null || serverStr === undefined) return null;
 
@@ -1139,4 +1047,3 @@ export function bytesToHumanReadable(bytes: number): string {
   const sizeIndex = Math.min(i, sizes.length - 1);
   return `${Number.parseFloat((bytes / 1024 ** sizeIndex).toFixed(2))} ${sizes[sizeIndex]}`;
 }
-

@@ -467,6 +467,9 @@ importers:
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-i18n':
+        specifier: workspace:*
+        version: link:../../packages/ui-i18n
       '@zextras/ui-shared':
         specifier: workspace:*
         version: link:../../packages/ui-shared
@@ -748,6 +751,9 @@ importers:
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
+      '@zextras/ui-i18n':
+        specifier: workspace:*
+        version: link:../../packages/ui-i18n
       '@zextras/ui-shared':
         specifier: workspace:*
         version: link:../../packages/ui-shared
@@ -2057,6 +2063,28 @@ importers:
       typescript-plugin-css-modules:
         specifier: ^5.2.0
         version: 5.2.0(ts-node@10.9.2(@types/node@22.19.19)(typescript@6.0.3))(typescript@6.0.3)
+
+  packages/ui-i18n:
+    dependencies:
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.2.1
+      i18next:
+        specifier: ^22.5.1
+        version: 22.5.1
+      react:
+        specifier: ^19.1.0
+        version: 19.2.6
+    devDependencies:
+      '@types/node':
+        specifier: ^22.19.7
+        version: 22.19.19
+      typescript:
+        specifier: ^6.0.0
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.0
+        version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@22.19.19)(@vitest/browser-playwright@4.1.6)(@vitest/browser-preview@4.1.6)(@vitest/coverage-istanbul@4.1.6)(@vitest/ui@4.1.6)(jsdom@26.1.0)(msw@2.14.6(@types/node@22.19.19)(typescript@6.0.3))(vite@8.0.13(@types/node@22.19.19)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.99.0)(stylus@0.62.0)(tsx@4.22.2)(yaml@2.9.0))
 
   packages/ui-shared:
     dependencies:

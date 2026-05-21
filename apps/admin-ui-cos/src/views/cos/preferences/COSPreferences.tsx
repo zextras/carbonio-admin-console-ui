@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {  Container, useSnackbar  } from '@zextras/ui-components';
+import { useLocaleList } from '@zextras/ui-i18n';
 import {  useCurrentUserRights  } from '@zextras/ui-shared';
 import {  find  } from 'lodash-es';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -15,7 +16,6 @@ import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosStore } from '../../../store/cos/store';
 import { PageLayout } from '../../page-layout';
-import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
 import { AttributeValue } from '../constants/types';
 import { CalendarOptions } from './CalendarOptions';
@@ -34,7 +34,7 @@ export const COSPreferences = (): React.JSX.Element => {
   const { data: rights = [] } = useCurrentUserRights();
   const setCos = useCosStore((state) => state.setCos);
 
-  const locales = useMemo(() => localeList(t), [t]);
+  const locales = useLocaleList(t);
   const isReadOnlyCos = useMemo(() => {
     const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
     return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;

@@ -24,6 +24,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
+import { useLocaleList } from '@zextras/ui-i18n';
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { debounce, map } from 'lodash-es';
 import React, {
@@ -51,7 +52,6 @@ import {
   AccountStatus,
   backupEnabledStatus,
   formatZimbraDate,
-  localeList,
 } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
@@ -99,7 +99,7 @@ export const EditAccountGeneralSection: FC<{
   const domainName = useDomainStore((state) => state.domain?.name);
   const cosList = useDomainStore((state) => state.cosList);
   const [t] = useTranslation();
-  const localeZone = useMemo(() => localeList(t), [t]);
+  const localeZone = useLocaleList(t);
   const ACCOUNT_STATUS: Array<{ value: string; label: string }> = useMemo(
     () => AccountStatus(t),
     [t],
