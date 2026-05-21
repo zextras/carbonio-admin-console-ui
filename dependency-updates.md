@@ -95,13 +95,16 @@ Root `devDependencies`.
 
 ## Phase 3 — Core Library Major Updates (high effort, test thoroughly)
 
-### 11. `zustand` 4 → 5
+### 11. `zustand` 4 → 5 ✅
 
-**Current:** 4.5.7 | **Latest:** 5.0.13
+**Current:** ~~4.5.7~~ 5.0.13 | **Latest:** 5.0.13
 
 Breaking API changes in store creators. 13 workspaces affected.
 
-Migration: review `create()` API changes, middleware signatures.
+Migration: No source code changes needed. The `create()` API, `devtools` middleware,
+and `set(state, replace, action)` pattern are all backward-compatible in v5.
+The mock file (`__mocks__/zustand.ts`) already used v5-compatible APIs (`getInitialState`).
+Peer dependency `use-sync-external-store >=1.2.0` was already satisfied (1.6.0).
 
 ### 12. `i18next` 22 → 26 + `react-i18next` 12 → 17 + `i18next-http-backend` 3 → 4
 
