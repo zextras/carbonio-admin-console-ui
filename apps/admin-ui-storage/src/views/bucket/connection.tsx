@@ -23,6 +23,7 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
 import { createS3Connector, listS3Regions } from '../../services/bucket-service';
+import { formatedErrorMessage } from './../utility/utils';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
@@ -34,6 +35,7 @@ const NO_REGION_VALUE = '';
 const EMPTY_REGION = { value: '', label: '' };
 
 type S3ConnectorError = {
+  error?: string | { message: string; details?: CheckResult };
   message?: string;
   details?: CheckResult;
 };
@@ -142,7 +144,7 @@ const Connection: FC<{
                   'We do not support this specific connector. Try again with a different one',
                 );
           const errorDetails = typeof response?.error === 'string' ? undefined : response?.error?.details;
-
+          const formatedError = formatedErrorMessage(response?.error as S3ConnectorError);
           setVerifyFailError(errorMessage);
           setCheckDetails(errorDetails);
           setIsVerifyError(true);
