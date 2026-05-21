@@ -132,13 +132,17 @@ Source code changes required:
 No source code changes required. `produce()` API is backward-compatible.
 13 workspaces updated.
 
-### 14. `ua-parser-js` 1 → 2
+### 14. `ua-parser-js` 1 → 2 ✅
 
-**Current:** 1.0.41 | **Latest:** 2.0.10
+**Current:** ~~1.0.41~~ 2.0.10 | **Latest:** 2.0.10
 
-Only 2 workspaces:
-- `apps/admin-ui-bootstrap`
-- `packages/ui-shared`
+Source code changes:
+- Changed `import UAParser from 'ua-parser-js'` to `import { UAParser } from 'ua-parser-js'`
+  in `packages/ui-shared/src/network/user-agent.ts` (v2 removed default export)
+- Note: v2 renames `"Mac OS"` → `"macOS"` in `os.name` results — this changes the user-agent
+  string sent in SOAP headers (cosmetic, non-breaking for server)
+
+Only 2 workspaces: `packages/ui-shared`, `apps/admin-ui-bootstrap`.
 
 ---
 
