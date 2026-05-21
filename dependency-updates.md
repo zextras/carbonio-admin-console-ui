@@ -125,11 +125,12 @@ Source code changes required:
   native fetch available in Node 22+)
 - Ran `lint:fix` to re-sort imports after adding `i18next` imports
 
-### 13. `immer` 10 → 11
+### 13. `immer` 10 → 11 ✅
 
-**Current:** 10.2.0 | **Latest:** 11.1.8
+**Current:** ~~10.2.0~~ 11.1.8 | **Latest:** 11.1.8
 
-13 workspaces. Check for produce/recipe API changes.
+No source code changes required. `produce()` API is backward-compatible.
+13 workspaces updated.
 
 ### 14. `ua-parser-js` 1 → 2
 
