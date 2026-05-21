@@ -93,9 +93,6 @@ importers:
       playwright:
         specifier: ^1.59.1
         version: 1.60.0
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -131,7 +128,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.11(react@19.2.6)
@@ -155,7 +152,7 @@ importers:
         version: 11.1.8
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -270,7 +267,7 @@ importers:
         version: 5.2.10
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.11(react@19.2.6)
@@ -328,9 +325,6 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       react:
         specifier: ^19.1.0
         version: 19.2.6
@@ -457,7 +451,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@vitest/browser-preview':
         specifier: ^4.1.0
         version: 4.1.7(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.99.0)(stylus@0.62.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@4.1.7)
@@ -473,12 +467,9 @@ importers:
       immer:
         specifier: ^11.1.8
         version: 11.1.8
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       react:
         specifier: ^19.1.0
         version: 19.2.6
@@ -578,7 +569,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.11(react@19.2.6)
@@ -609,12 +600,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -723,7 +711,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.11(react@19.2.6)
@@ -757,12 +745,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -874,7 +859,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.11(react@19.2.6)
@@ -905,12 +890,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1019,7 +1001,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.11(react@19.2.6)
@@ -1050,12 +1032,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1164,7 +1143,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.11(react@19.2.6)
@@ -1192,12 +1171,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1309,7 +1285,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.11(react@19.2.6)
@@ -1337,12 +1313,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1451,7 +1424,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-form':
         specifier: ^1.27.0
         version: 1.32.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1482,12 +1455,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1596,7 +1566,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.11(react@19.2.6)
@@ -1624,12 +1594,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1738,7 +1705,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.11(react@19.2.6)
@@ -1769,12 +1736,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       posthog-js:
         specifier: ^1.261.0
-        version: 1.374.4
+        version: 1.375.0
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1883,7 +1847,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -1944,7 +1908,7 @@ importers:
         version: 1.7.6
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)
       '@zextras/ui-shared':
         specifier: workspace:*
         version: link:../ui-shared
@@ -2045,9 +2009,6 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
-      pnpm:
-        specifier: ^10.15.1
-        version: 10.33.4
       react:
         specifier: ^19.1.0
         version: 19.2.6
@@ -3507,48 +3468,56 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-arm64-musl@0.130.0':
     resolution: {integrity: sha512-EiJ/gC0ljbcwVpycC8YWw6ggMbtsPX8XMOt0mPx0aqWeMsNR+L9m05Flbvd5T+GlivG+GkSWQL7tM9SRFpM/dw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-parser/binding-linux-ppc64-gnu@0.130.0':
     resolution: {integrity: sha512-b+h/lsLLurp756dMGizNs5uPaJfyEdWrTcV5t8M609jWm1DEHB1StpRXCkyvwtkJx3m+qL5BNQ0dEKan/4yGFA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-riscv64-gnu@0.130.0':
     resolution: {integrity: sha512-O19Cil83XAyjEFfo8WhkMwY58ALqZ7ckjGL+25mjMIuF84urWBeANH0FC8B8BsSSygWU3/1aY3ADdDbp+wlBnw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-riscv64-musl@0.130.0':
     resolution: {integrity: sha512-BgXRVC0+83n3YzCscLQjj6nbyeBIVeZYPTI4fFMAE4WNm2+4RXhWp03IVizL7esIz36kgmT48aebk1iM+cs8sw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-parser/binding-linux-s390x-gnu@0.130.0':
     resolution: {integrity: sha512-6tJz0xvnGhsokE7N1WlUSBXibpYmT9xSJFS1Ce41Km/+8gQvdlW8MLhRv8PD0L7ix8vRG0FDDepp3jdOFzdVdw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-x64-gnu@0.130.0':
     resolution: {integrity: sha512-9aCWj83dp3heTQGmGnZGdIWgxjZrr/7VQ0TGFHH5PKByxJKF2Hcr4qvaSUHhhGEa3MSsDjTL1YDP8RAgdL5/Cg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-parser/binding-linux-x64-musl@0.130.0':
     resolution: {integrity: sha512-afXt87aZBqrUVli8TB/I8H1G50RDWcwirjWtXGXYqJ2ZqWEiErH7V72j3LUSDZaivmtu2OLX0KQ/mbhP81mr7A==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-parser/binding-openharmony-arm64@0.130.0':
     resolution: {integrity: sha512-I0NCrZV/YZuCGWgqwNN/GO/iXlLF2z+Wgc7u+Aa9N4P51oYeIa0XT+zVBUne4csO9GqxskXgI4g8JzzWGRpfOw==}
@@ -3624,41 +3593,49 @@ packages:
     resolution: {integrity: sha512-heV2+jmXyYnUrpUXSPugqWDRpnsQcDm2AX4wzTuvgdlZfoNYO0O3W2AVpJYaDn9AG4JdM6Kxom8+foE7/BcSig==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-arm64-musl@11.19.1':
     resolution: {integrity: sha512-jvo2Pjs1c9KPxMuMPIeQsgu0mOJF9rEb3y3TdpsrqwxRM+AN6/nDDwv45n5ZrUnQMsdBy5gIabioMKnQfWo9ew==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-resolver/binding-linux-ppc64-gnu@11.19.1':
     resolution: {integrity: sha512-vLmdNxWCdN7Uo5suays6A/+ywBby2PWBBPXctWPg5V0+eVuzsJxgAn6MMB4mPlshskYbppjpN2Zg83ArHze9gQ==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-riscv64-gnu@11.19.1':
     resolution: {integrity: sha512-/b+WgR+VTSBxzgOhDO7TlMXC1ufPIMR6Vj1zN+/x+MnyXGW7prTLzU9eW85Aj7Th7CCEG9ArCbTeqxCzFWdg2w==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-riscv64-musl@11.19.1':
     resolution: {integrity: sha512-YlRdeWb9j42p29ROh+h4eg/OQ3dTJlpHSa+84pUM9+p6i3djtPz1q55yLJhgW9XfDch7FN1pQ/Vd6YP+xfRIuw==}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-resolver/binding-linux-s390x-gnu@11.19.1':
     resolution: {integrity: sha512-EDpafVOQWF8/MJynsjOGFThcqhRHy417sRyLfQmeiamJ8qVhSKAn2Dn2VVKUGCjVB9C46VGjhNo7nOPUi1x6uA==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-x64-gnu@11.19.1':
     resolution: {integrity: sha512-NxjZe+rqWhr+RT8/Ik+5ptA3oz7tUw361Wa5RWQXKnfqwSSHdHyrw6IdcTfYuml9dM856AlKWZIUXDmA9kkiBQ==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@oxc-resolver/binding-linux-x64-musl@11.19.1':
     resolution: {integrity: sha512-cM/hQwsO3ReJg5kR+SpI69DMfvNCp+A/eVR4b4YClE5bVZwz8rh2Nh05InhwI5HR/9cArbEkzMjcKgTHS6UaNw==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@oxc-resolver/binding-openharmony-arm64@11.19.1':
     resolution: {integrity: sha512-QF080IowFB0+9Rh6RcD19bdgh49BpQHUW5TajG1qvWHvmrQznTZZjYlgE2ltLXyKY+qs4F/v5xuX1XS7Is+3qA==}
@@ -3714,36 +3691,42 @@ packages:
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-arm-musl@2.5.6':
     resolution: {integrity: sha512-Ve3gUCG57nuUUSyjBq/MAM0CzArtuIOxsBdQ+ftz6ho8n7s1i9E1Nmk/xmP323r2YL0SONs1EuwqBp2u1k5fxg==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-linux-arm64-glibc@2.5.6':
     resolution: {integrity: sha512-f2g/DT3NhGPdBmMWYoxixqYr3v/UXcmLOYy16Bx0TM20Tchduwr4EaCbmxh1321TABqPGDpS8D/ggOTaljijOA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-arm64-musl@2.5.6':
     resolution: {integrity: sha512-qb6naMDGlbCwdhLj6hgoVKJl2odL34z2sqkC7Z6kzir8b5W65WYDpLB6R06KabvZdgoHI/zxke4b3zR0wAbDTA==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-linux-x64-glibc@2.5.6':
     resolution: {integrity: sha512-kbT5wvNQlx7NaGjzPFu8nVIW1rWqV780O7ZtkjuWaPUgpv2NMFpjYERVi0UYj1msZNyCzGlaCWEtzc+exjMGbQ==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-x64-musl@2.5.6':
     resolution: {integrity: sha512-1JRFeC+h7RdXwldHzTsmdtYR/Ku8SylLgTU/reMuqdVD7CtLwf0VR1FqeprZ0eHQkO0vqsbvFLXUmYm/uNKJBg==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-win32-arm64@2.5.6':
     resolution: {integrity: sha512-3ukyebjc6eGlw9yRt678DxVF7rjXatWiHvTXqphZLvo7aC5NdEgFufVwjFfY51ijYEWpXbqF5jtrK275z52D4Q==}
@@ -3782,8 +3765,8 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@posthog/core@1.29.7':
-    resolution: {integrity: sha512-WcBD9/YQVGI9r/5+/IGeaPgsmTIg0YfyzaTei5TNlhmAeFOccnhs269rhtQJcAXngZFpvWSj+RTxX2ONdgxBDQ==}
+  '@posthog/core@1.29.8':
+    resolution: {integrity: sha512-wdX4/WzZ+sV92z4ppC9SjOWdztY/0bN74SbJFy1X8/1N8+aNTSHsGEKHtbHitkIkJc861oYWr4ZzOoV0iVDP4w==}
 
   '@posthog/react@1.9.1':
     resolution: {integrity: sha512-tIGjs8WzKPrHQmSyM/2a3GoedQkttkxgmCsdn0kgy+6mIiSNk36FAFGKbWFJ7/Kln5bHwcM/MQhiGYbwQG8bQQ==}
@@ -3795,8 +3778,8 @@ packages:
       '@types/react':
         optional: true
 
-  '@posthog/types@1.374.4':
-    resolution: {integrity: sha512-OHBo+gReFwPJtt/yLY6xxa1EYMp7Ti07O1C1KE9ZXXyyuLNqekRaHZxJ/SKUfEvt1LhFV/9sioz8O0xfsSffsQ==}
+  '@posthog/types@1.375.0':
+    resolution: {integrity: sha512-ykjHtJv1eUnEUQIuCavMi/+lnBhZPRVnFDrbG6m4fS+vZ3ajn8dGooPpbWjF33Uo4g7W4ew51dBtJGf2evvurA==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -3863,36 +3846,42 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rolldown/binding-linux-arm64-musl@1.0.2':
     resolution: {integrity: sha512-QVLO/czFMdoMFSqlX3bcswcJNm/23r+qoa/jgtmFc/qEp6/jXmIkDjF/XIo8dPfGaiwy1xfQn8o77L79GeXFgw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rolldown/binding-linux-ppc64-gnu@1.0.2':
     resolution: {integrity: sha512-hgO5Abm0w5UL6FEa2iFnZqo2KlK7TQ5QhV5x09hujBf7t5KzHQ1VmfPuTpqRy/rNlSxua3eWH374xxiVrP+lcA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rolldown/binding-linux-s390x-gnu@1.0.2':
     resolution: {integrity: sha512-fy8rXxuYEu602abC8MUNaPjYLIFzReOaEIEMKMUa0rFEUxNpVXhs15KSSQ4qlqSaM7B6rcj9rDZgADh/IGDzLQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rolldown/binding-linux-x64-gnu@1.0.2':
     resolution: {integrity: sha512-0+bOkiQ779+r1WpoHOWHqncvyySci0vKph+myNDYb+im6meJAzHQXay6oEgnkHuUGouM1LKTZwqKpBow6Kj7CQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rolldown/binding-linux-x64-musl@1.0.2':
     resolution: {integrity: sha512-mjSkrzZK5Qsl0a9d1JgILOiuZOSDTVdKENcSXBoqbzSrspLR/4/IRVDo5wd2GgZjNss/viBFJdeq+j7qH2nypw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rolldown/binding-openharmony-arm64@1.0.2':
     resolution: {integrity: sha512-1v5vHasdfQAZoEHakBV72LIFAC9JjnymsiKxp+GEr/ma3+NJCPSaYK+qavInOovJkgwFrs7GccX2d6IgDA3Z5w==}
@@ -3966,66 +3955,79 @@ packages:
     resolution: {integrity: sha512-EIPRXTVQpHyF8WOo219AD2yEltPehLTcTMz2fn6JsatLYSzQf00hj3rulF+yauOlF9/FtM2WpkT/hJh/KJFGhA==}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.60.4':
     resolution: {integrity: sha512-J3Yh9PzzF1Ovah2At+lHiGQdsYgArxBbXv/zHfSyaiFQEqvNv7DcW98pCrmdjCZBrqBiKrKKe2V+aaSGWuBe/w==}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.60.4':
     resolution: {integrity: sha512-BFDEZMYfUvLn37ONE1yMBojPxnMlTFsdyNoqncT0qFq1mAfllL+ATMMJd8TeuVMiX84s1KbcxcZbXInmcO2mRg==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.60.4':
     resolution: {integrity: sha512-pc9EYOSlOgdQ2uPl1o9PF6/kLSgaUosia7gOuS8mB69IxJvlclko1MECXysjs5ryez1/5zjYqx3+xYU0TU6R1A==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.60.4':
     resolution: {integrity: sha512-NxnomyxYerDh5n4iLrNa+sH+Z+U4BMEE46V2PgQ/hoB909i8gV1M5wPojWg9fk1jWpO3IQnOs20K4wyZuFLEFQ==}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-loong64-musl@4.60.4':
     resolution: {integrity: sha512-nbJnQ8a3z1mtmrwImCYhc6BGpThAyYVRQxw9uKSKG4wR6aAYno9sVjJ0zaZcW9BPJX1GbrDPf+SvdWjgTuDmnw==}
     cpu: [loong64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-gnu@4.60.4':
     resolution: {integrity: sha512-2EU6acNrQLd8tYvo/LXW535wupT3m6fo7HKo6lr7ktQoItxTyOL1ZCR/GfGCuXl2vR+zmfI6eRXkSemafv+iVg==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-musl@4.60.4':
     resolution: {integrity: sha512-WeBtoMuaMxiiIrO2IYP3xs6GMWkJP2C0EoT8beTLkUPmzV1i/UcOSVw1d5r9KBODtHKilG5yFxsGRnBbK3wJ4A==}
     cpu: [ppc64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-gnu@4.60.4':
     resolution: {integrity: sha512-FJHFfqpKUI3A10WrWKiFbBZ7yVbGT4q4B5o1qKFFojqpaYoh9LrQgqWCmmcxQzVSXYtyB5bzkXrYzlHTs21MYA==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.60.4':
     resolution: {integrity: sha512-mcEl6CUT5IAUmQf1m9FYSmVqCJlpQ8r8eyftFUHG8i9OhY7BkBXSUdnLH5DOf0wCOjcP9v/QO93zpmF1SptCCw==}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.60.4':
     resolution: {integrity: sha512-ynt3JxVd2w2buzoKDWIyiV1pJW93xlQic1THVLXilz429oijRpSHivZAgp65KBu+cMcgf1eVVjdnTLvPxgCuoQ==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.60.4':
     resolution: {integrity: sha512-Boiz5+MsaROEWDf+GGEwF8VMHGhlUoQMtIPjOgA5fv4osupqTVnJteQNKJwUcnUog2G55jYXH7KZFFiJe0TEzQ==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.60.4':
     resolution: {integrity: sha512-+qfSY27qIrFfI/Hom04KYFw3GKZSGU4lXus51wsb5EuySfFlWRwjkKWoE9emgRw/ukoT4Udsj4W/+xxG8VbPKg==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-openbsd-x64@4.60.4':
     resolution: {integrity: sha512-VpTfOPHgVXEBeeR8hZ2O0F3aSso+JDWqTWmTmzcQKted54IAdUVbxE+j/MVxUsKa8L20HJhv3vUezVPoquqWjA==}
@@ -4242,24 +4244,28 @@ packages:
     engines: {node: '>= 20'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@tailwindcss/oxide-linux-arm64-musl@4.3.0':
     resolution: {integrity: sha512-Z6sukiQsngnWO+l39X4pPbiWT81IC+PLKF+PHxIlyZbGNb9MODfYlXEVlFvej5BOZInWX01kVyzeLvHsXhfczQ==}
     engines: {node: '>= 20'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@tailwindcss/oxide-linux-x64-gnu@4.3.0':
     resolution: {integrity: sha512-DRNdQRpSGzRGfARVuVkxvM8Q12nh19l4BF/G7zGA1oe+9wcC6saFBHTISrpIcKzhiXtSrlSrluCfvMuledoCTQ==}
     engines: {node: '>= 20'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@tailwindcss/oxide-linux-x64-musl@4.3.0':
     resolution: {integrity: sha512-Z0IADbDo8bh6I7h2IQMx601AdXBLfFpEdUotft86evd/8ZPflZe9COPO8Q1vw+pfLWIUo9zN/JGZvwuAJqduqg==}
     engines: {node: '>= 20'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@tailwindcss/oxide-wasm32-wasi@4.3.0':
     resolution: {integrity: sha512-HNZGOUxEmElksYR7S6sC5jTeNGpobAsy9u7Gu0AskJ8/20FR9GqebUyB+HBcU/ax6BHuiuJi+Oda4B+YX6H1yA==}
@@ -6284,24 +6290,28 @@ packages:
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   lightningcss-linux-arm64-musl@1.32.0:
     resolution: {integrity: sha512-UpQkoenr4UJEzgVIYpI80lDFvRmPVg6oqboNHfoH4CQIfNA+HOrZ7Mo7KZP02dC6LjghPQJeBsvXhJod/wnIBg==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   lightningcss-linux-x64-gnu@1.32.0:
     resolution: {integrity: sha512-V7Qr52IhZmdKPVr+Vtw8o+WLsQJYCTd8loIfpDaMRWGUZfBOYEJeyJIkqGIDMZPwPx24pUMfwSxxI8phr/MbOA==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   lightningcss-linux-x64-musl@1.32.0:
     resolution: {integrity: sha512-bYcLp+Vb0awsiXg/80uCRezCYHNg1/l3mt0gzHnWV9XP1W5sKa5/TCdGWaR/zBM2PeF/HbsQv/j2URNOiVuxWg==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   lightningcss-win32-arm64-msvc@1.32.0:
     resolution: {integrity: sha512-8SbC8BR40pS6baCM8sbtYDSwEVQd4JlFTOlaD3gWGHfThTcABnNDBda6eTZeqbofalIJhFx0qKzgHJmcPTnGdw==}
@@ -6914,11 +6924,6 @@ packages:
     resolution: {integrity: sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==}
     engines: {node: '>=14.19.0'}
 
-  pnpm@10.33.4:
-    resolution: {integrity: sha512-HGezs1my1AgRm6HtKJ80uPw8aHNBK+xv0mT73IJInlEPy+y5zp0i2ufzt2Jp2EQQRgFL3KU7mXnNelYa1jG4AA==}
-    engines: {node: '>=18.12'}
-    hasBin: true
-
   polished@4.3.1:
     resolution: {integrity: sha512-OBatVyC/N7SCW/FaDHrSd+vn0o5cS855TOmYi4OkdWUMSJCET/xip//ch8xGUvtr3i44X9LVyWwQlRMTN3pwSA==}
     engines: {node: '>=10'}
@@ -6968,8 +6973,8 @@ packages:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.374.4:
-    resolution: {integrity: sha512-6RtCHzeUKsfkd21QFXnOUbBhorVqemZ57xuJwxEpb0fTj4wrX+tlItm7seY0LsX5LXLRHPxA02uwL/DaGfWXKg==}
+  posthog-js@1.375.0:
+    resolution: {integrity: sha512-aHr9LPwEmL1/QDv+HpXBXuCtAdFaamDBqUqzTTVEIoHrN+ZZUQVr0kfv3v5w79TvUS7QezvHyUeigDQdCZRbSQ==}
 
   preact@10.29.2:
     resolution: {integrity: sha512-7tNmwg/7mzzAoB/8kSg6Hl37JraAZw3Z3A0JSY7VXlZwo82Xn0G7wKbNNs2qoF4ZEEsQGTwDAroNdqKs1ofJxQ==}
@@ -7274,8 +7279,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  semver@7.8.0:
-    resolution: {integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA==}
+  semver@7.8.1:
+    resolution: {integrity: sha512-rkVq3IXh+4FDGch+KwzX3aV9W3kO54GyEgpvBzSyctDA6Xtd7RJQV1xmXbeQp5v7+VzLOfVqiutSE6GICgPFvg==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -9694,18 +9699,18 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@posthog/core@1.29.7':
+  '@posthog/core@1.29.8':
     dependencies:
-      '@posthog/types': 1.374.4
+      '@posthog/types': 1.375.0
 
-  '@posthog/react@1.9.1(@types/react@19.2.15)(posthog-js@1.374.4)(react@19.2.6)':
+  '@posthog/react@1.9.1(@types/react@19.2.15)(posthog-js@1.375.0)(react@19.2.6)':
     dependencies:
-      posthog-js: 1.374.4
+      posthog-js: 1.375.0
       react: 19.2.6
     optionalDependencies:
       '@types/react': 19.2.15
 
-  '@posthog/types@1.374.4': {}
+  '@posthog/types@1.375.0': {}
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -9946,7 +9951,7 @@ snapshots:
       read-pkg: 10.1.0
       registry-auth-token: 5.1.1
       semantic-release: 25.0.3(typescript@6.0.3)
-      semver: 7.8.0
+      semver: 7.8.1
       tempy: 3.2.0
 
   '@semantic-release/release-notes-generator@14.1.1(semantic-release@25.0.3(typescript@6.0.3))':
@@ -10400,7 +10405,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.59.4
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.8.0
+      semver: 7.8.1
       tinyglobby: 0.2.16
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
@@ -11067,7 +11072,7 @@ snapshots:
       conventional-commits-filter: 5.0.0
       handlebars: 4.7.9
       meow: 13.2.0
-      semver: 7.8.0
+      semver: 7.8.1
 
   conventional-commits-filter@5.0.0: {}
 
@@ -11255,7 +11260,7 @@ snapshots:
       require-package-name: 2.0.1
       resolve: 1.22.12
       resolve-from: 5.0.0
-      semver: 7.8.0
+      semver: 7.8.1
       yargs: 16.2.0
     transitivePeerDependencies:
       - supports-color
@@ -12601,7 +12606,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.8.0
+      semver: 7.8.1
 
   make-error@1.3.6: {}
 
@@ -12760,13 +12765,13 @@ snapshots:
   normalize-package-data@6.0.2:
     dependencies:
       hosted-git-info: 7.0.2
-      semver: 7.8.0
+      semver: 7.8.1
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@8.0.0:
     dependencies:
       hosted-git-info: 9.0.3
-      semver: 7.8.0
+      semver: 7.8.1
       validate-npm-package-license: 3.0.4
 
   normalize-url@9.0.1: {}
@@ -13047,8 +13052,6 @@ snapshots:
 
   pngjs@7.0.0: {}
 
-  pnpm@10.33.4: {}
-
   polished@4.3.1:
     dependencies:
       '@babel/runtime': 7.29.2
@@ -13092,15 +13095,15 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.374.4:
+  posthog-js@1.375.0:
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/api-logs': 0.208.0
       '@opentelemetry/exporter-logs-otlp-http': 0.208.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/resources': 2.7.1(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-logs': 0.208.0(@opentelemetry/api@1.9.1)
-      '@posthog/core': 1.29.7
-      '@posthog/types': 1.374.4
+      '@posthog/core': 1.29.8
+      '@posthog/types': 1.375.0
       core-js: 3.49.0
       dompurify: 3.4.5
       fflate: 0.4.8
@@ -13473,7 +13476,7 @@ snapshots:
       p-reduce: 3.0.0
       read-package-up: 12.0.0
       resolve-from: 5.0.0
-      semver: 7.8.0
+      semver: 7.8.1
       signale: 1.4.0
       yargs: 18.0.0
     transitivePeerDependencies:
@@ -13491,7 +13494,7 @@ snapshots:
 
   semver@7.7.4: {}
 
-  semver@7.8.0: {}
+  semver@7.8.1: {}
 
   set-blocking@2.0.0: {}
 

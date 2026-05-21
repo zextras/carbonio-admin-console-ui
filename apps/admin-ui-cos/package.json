@@ -27,7 +27,6 @@
     "@zextras/ui-shared": "workspace:*",
     "i18next": "^26.2.0",
     "immer": "^11.1.8",
-    "pnpm": "^10.15.1",
     "posthog-js": "^1.261.0",
     "react": "^19.1.0",
     "react-i18next": "^17.0.8",
