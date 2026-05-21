@@ -6,6 +6,10 @@ Files: **/*.json
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
 
+Files: *.md
+Copyright: 2021 Zextras <https://www.zextras.com>
+License: AGPL-3.0-only
+
 Files: **/*.css
 Copyright: 2025 Zextras <https://www.zextras.com>
 License: AGPL-3.0-only
