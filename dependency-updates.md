@@ -49,7 +49,11 @@ Only in `packages/ui-components`.
 **eslint:** 9.39.4 → 10.4.0 (14 workspaces)
 **@eslint/js:** 9.39.4 → 10.0.1 (root)
 
-Update together. Check for config format changes (flat config may have adjustments).
+> **BLOCKED** — `eslint-plugin-react@7.37.5` is incompatible with ESLint 10
+> (`contextOrFilename.getFilename is not a function`). The plugin's `next` tag
+> (`7.8.0-rc.0`) may resolve this. Revisit once `eslint-plugin-react` releases
+> stable ESLint 10 support. Also blocked: `eslint-plugin-react-hooks`,
+> `eslint-plugin-jsx-a11y` (same peer dep issue).
 
 ### 5. `eslint-plugin-react-hooks` 5 → 7
 
