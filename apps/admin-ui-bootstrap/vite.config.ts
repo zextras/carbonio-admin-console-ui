@@ -109,7 +109,10 @@ export default defineConfig(({ command, mode }) => {
       ...(isServeCommand ? [] : [postBuildPlugin()]),
       react({
         babel: {
-          plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+          plugins: [
+            ['babel-plugin-react-compiler', { panicThreshold: 'none' }],
+            ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
+          ],
         },
       }),
       svgr({
