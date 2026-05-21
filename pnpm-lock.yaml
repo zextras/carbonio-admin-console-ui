@@ -34,8 +34,8 @@ importers:
         specifier: ^14.1.0
         version: 14.1.1(semantic-release@25.0.3(typescript@6.0.3))
       '@tsconfig/vite-react':
-        specifier: ^7.0.2
-        version: 7.0.2
+        specifier: ^8.0.6
+        version: 8.0.6
       '@vitejs/plugin-react':
         specifier: ^5.0.2
         version: 5.2.0(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.99.0)(stylus@0.62.0)(tsx@4.22.3)(yaml@2.9.0))
@@ -4094,8 +4094,8 @@ packages:
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
-  '@tsconfig/vite-react@7.0.2':
-    resolution: {integrity: sha512-lEj4y5SPRcH+bjw0tyuxrEnPqQUwfQzBKgd1YamD9xyet9zLwh2gwy5F8w/Nxg5DjdgYVjjKo5aLJUf0BTDz4w==}
+  '@tsconfig/vite-react@8.0.6':
+    resolution: {integrity: sha512-O+Eg45m/oNBY9r0EsI/N3VnXvrT4SZbcjTYW5M50eoBVnIUXL+W+ha0uDkK1WqezflsBrHkBSEyn+WdewFJJmw==}
 
   '@turbo/darwin-64@2.9.14':
     resolution: {integrity: sha512-t7QiPflaEyBE4oayeZtSmu4mEfjgIrcNlNNl1z1dmIVPqEdtA7+CfTf8d7KXsOGPh6aNgWjKxyvQg9uGfDQF+A==}
@@ -9720,7 +9720,7 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
-  '@tsconfig/vite-react@7.0.2': {}
+  '@tsconfig/vite-react@8.0.6': {}
 
   '@turbo/darwin-64@2.9.14':
     optional: true
