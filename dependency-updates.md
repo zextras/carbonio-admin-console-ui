@@ -106,16 +106,24 @@ and `set(state, replace, action)` pattern are all backward-compatible in v5.
 The mock file (`__mocks__/zustand.ts`) already used v5-compatible APIs (`getInitialState`).
 Peer dependency `use-sync-external-store >=1.2.0` was already satisfied (1.6.0).
 
-### 12. `i18next` 22 → 26 + `react-i18next` 12 → 17 + `i18next-http-backend` 3 → 4
+### 12. `i18next` 22 → 26 + `react-i18next` 12 → 17 + `i18next-http-backend` 3 → 4 ✅
 
-| Package | Current | Latest |
+| Package | ~~Current~~ | Latest |
 |---|---|---|
-| i18next | 22.5.1 | 26.2.0 |
-| react-i18next | 12.3.1 | 17.0.8 |
-| i18next-http-backend | 3.0.6 | 4.0.0 |
+| i18next | ~~22.5.1~~ | 26.2.0 |
+| react-i18next | ~~12.3.1~~ | 17.0.8 |
+| i18next-http-backend | ~~3.0.0~~ | 4.0.0 |
 
-Update together — these are tightly coupled. Major API changes expected.
-13 workspaces for i18next/react-i18next, 2 for i18next-http-backend.
+Source code changes required:
+- Removed `jsonFormat: 'v4'` from all 13 `i18next.d.ts` type declarations (removed in i18next v24)
+- Replaced `TFunction<'translation', undefined, 'translation'>` with `TFunction` in 3 files
+  (v26 TFunction takes 0–2 type params, not 3)
+- Replaced `(key: string, fallback?: string) => string` with `TFunction` in 3 backup files
+- Renamed `i18n-test-factory.jsx` → `.tsx` and added explicit `i18n` return type (TS2883)
+- Removed `globalThis.fetch = require('node-fetch')` from `vitest-jsdom-setup.ts`
+  (node-fetch was a transitive dep of cross-fetch, removed in i18next-http-backend v4;
+  native fetch available in Node 22+)
+- Ran `lint:fix` to re-sort imports after adding `i18next` imports
 
 ### 13. `immer` 10 → 11
 

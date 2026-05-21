@@ -14,7 +14,6 @@ declare module 'i18next' {
 			[defaultNs: i18next.TypeOptions['defaultNS']]: Record<string, string>;
 		};
 		returnNull: false;
-		jsonFormat: 'v4';
 		allowObjectInHTMLChildren: true;
 	}
 }
