@@ -6,11 +6,35 @@
 
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, removeRoute, useHasAllRights, useIsAdvanced } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MANAGE_APP_ID, PRIMARY_BAR_SUBSCRIPTIONS, SUBSCRIPTIONS_ROUTE_ID } from './constants';
 import { AppView } from './views/app-view';
+
+const SubscriptionTooltipView: FC = () => {
+  const [t] = useTranslation();
+  return (
+    <PrimaryBarTooltip>
+      <p>
+        <Trans
+          i18nKey="label.subscription_lbl"
+          defaults="<bold>Subscription</bold>"
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </p>
+      <p>
+        <Trans
+          i18nKey="label.subscription_primarybar_tooltip"
+          defaults="View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one."
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </p>
+    </PrimaryBarTooltip>
+  );
+};
 
 const App: FC = () => {
   const [t] = useTranslation();
@@ -18,38 +42,11 @@ const App: FC = () => {
 
   const hasAllConfigRights = useHasAllRights();
 
-  const managementSection = useMemo(
-    () => ({
-      id: MANAGE_APP_ID,
-      label: t('label.management', 'Management'),
-      position: 3,
-    }),
-    [t],
-  );
-
-  const SubscriptionTooltipView: FC = useCallback(
-    () => (
-      <PrimaryBarTooltip>
-        <p>
-          <Trans
-            i18nKey="label.subscription_lbl"
-            defaults="<bold>Subscription</bold>"
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-        <p>
-          <Trans
-            i18nKey="label.subscription_primarybar_tooltip"
-            defaults="View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one."
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-      </PrimaryBarTooltip>
-    ),
-    [t],
-  );
+  const managementSection = {
+    id: MANAGE_APP_ID,
+    label: t('label.management', 'Management'),
+    position: 3,
+  };
 
   useEffect(() => {
     if (isAdvanced && hasAllConfigRights) {
@@ -67,7 +64,7 @@ const App: FC = () => {
     } else {
       removeRoute(SUBSCRIPTIONS_ROUTE_ID);
     }
-  }, [SubscriptionTooltipView, hasAllConfigRights, isAdvanced, managementSection, t]);
+  }, [hasAllConfigRights, isAdvanced, managementSection, t]);
 
   return null;
 };

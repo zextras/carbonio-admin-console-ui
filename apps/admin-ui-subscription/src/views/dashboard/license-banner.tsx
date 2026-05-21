@@ -7,12 +7,11 @@
 import { Button, Container, ListRow, Row } from '@zextras/ui-components';
 import { useModuleLicenseInfo } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
-
 
 type licenseBannerProps = {
   redirectButtonHasToAppear?: boolean;
@@ -38,20 +37,24 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
     'Maintenance expires on {{maintenanceEndDate}}.',
     { maintenanceEndDate: maintenanceEndDateFormatted },
   );
+
   const bannerExpiringLabel = t(
     'banner.maintenance-expiring-label',
     'Renew to continue receiving updates.\nYour maintenance supports upgrades up to Carbonio {{maxCarbonioVersion}}.\nPlease contact your licensing provider to plan your maintenance renewal.\nLast license update: {{updateTime}}',
     { maxCarbonioVersion: maxCarbonioVersion, updateTime: updateTimeFormatted },
   );
+
   const bannerExpiringWithoutMaxVersionLabel = t(
     'banner.maintenance-expiring-empty-max-version-label',
     'Renew to continue receiving updates.\nYour maintenance supports upgrades up to Carbonio Not defined.\nPlease contact your licensing provider to plan your maintenance renewal.\nLast license update: {{updateTime}}',
     { updateTime: updateTimeFormatted },
   );
+
   const bannerExpiredDescription = t(
     'banner.maintenance-expired-description',
     'Maintenance has expired.',
   );
+
   const bannerExpiredLabel = t(
     'banner.maintenance-expired-label',
     'Your maintenance supports Carbonio versions up to {{maxCarbonioVersion}}. Installed version: {{carbonioVersion}}.\nDo not upgrade beyond {{maxCarbonioVersion}} to avoid service disruption.\nTo continue receiving updates, please contact your licensing provider to renew your maintenance.\nLast license update: {{updateTime}}',
@@ -79,42 +82,23 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
 
   const detailsButton = t('button.view_subscription_details', 'View Subscription Details');
 
-  const labelToShow = useMemo(
-    () =>
-      maintenanceStatus === 'expiring'
-        ? maxCarbonioVersion
-          ? bannerExpiringLabel
-          : bannerExpiringWithoutMaxVersionLabel
-        : maintenanceStatus === 'expired'
-        ? maxCarbonioVersion
-          ? bannerExpiredLabel
-          : bannerExpiredWithoutMaxVersionLabel
-        : bannerInvalidLabel,
-    [
-      bannerExpiringLabel,
-      bannerExpiringWithoutMaxVersionLabel,
-      bannerExpiredWithoutMaxVersionLabel,
-      bannerExpiredLabel,
-      maintenanceStatus,
-      maxCarbonioVersion,
-      bannerInvalidLabel,
-    ],
-  );
+  const labelToShow =
+    maintenanceStatus === 'expiring'
+      ? maxCarbonioVersion
+        ? bannerExpiringLabel
+        : bannerExpiringWithoutMaxVersionLabel
+      : maintenanceStatus === 'expired'
+      ? maxCarbonioVersion
+        ? bannerExpiredLabel
+        : bannerExpiredWithoutMaxVersionLabel
+      : bannerInvalidLabel;
 
-  const descriptionToShow = useMemo(
-    () =>
-      maintenanceStatus === 'expiring'
-        ? bannerExpiringDescription
-        : maintenanceStatus === 'expired'
-        ? bannerExpiredDescription
-        : bannerInvalidDescription,
-    [
-      bannerExpiringDescription,
-      bannerExpiredDescription,
-      maintenanceStatus,
-      bannerInvalidDescription,
-    ],
-  );
+  const descriptionToShow =
+    maintenanceStatus === 'expiring'
+      ? bannerExpiringDescription
+      : maintenanceStatus === 'expired'
+      ? bannerExpiredDescription
+      : bannerInvalidDescription;
 
   const onClose = () => setIsLicenseBannerOpen(false);
   const navigate = useNavigate();
