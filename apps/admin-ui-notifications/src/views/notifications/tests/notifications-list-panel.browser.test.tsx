@@ -18,11 +18,11 @@ import NotificationsListPanel from '../notifications-list-panel';
 describe('NotificationsListPanel', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.resetAllMocks();
     queryClient = getQueryClient();
     queryClient.setQueryData(['all-config'], [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }]);
-    grantUserConfigRights(queryClient);
+    await grantUserConfigRights(queryClient);
   });
 
   afterEach(() => {

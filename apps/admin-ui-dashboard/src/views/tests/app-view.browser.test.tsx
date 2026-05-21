@@ -21,9 +21,9 @@ import AppView from '../app-view';
 describe('AppView', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     queryClient = getQueryClient();
-    grantUserConfigRights();
+    await grantUserConfigRights();
   });
 
   async function setupAppViewTest(initialRoute?: string) {
@@ -147,4 +147,3 @@ describe('AppView', () => {
     });
   });
 });
-

@@ -30,7 +30,7 @@ describe('AppView', () => {
   beforeEach(async () => {
     queryClient = getQueryClient();
     queryClient.setQueryData(['all-config'], [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }]);
-    grantUserConfigRights();
+    await grantUserConfigRights();
     useCosStore.getState().reset();
   });
 
