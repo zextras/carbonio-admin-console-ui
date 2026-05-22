@@ -23,7 +23,7 @@ import {
 } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { find } from 'lodash-es';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router';
 
@@ -110,12 +110,15 @@ export const Subscription = (): React.JSX.Element => {
   const activateLicenseMutation = useActivateLicense();
 
   const removeLicenseMutation = useRemoveLicense();
-  const allowSetSubsciption = (() => {
+  const allowSetSubsciption = useMemo(() => {
     const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
     return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  })();
+  }, [rights]);
 
-  const services = licenseData ?? null;
+  const services = useMemo(() => {
+    if (!licenseData) return null;
+    return licenseData;
+  }, [licenseData]);
 
   useEffect(() => {
     if (licenseData?.response?.authenticationToken) {
@@ -123,7 +126,7 @@ export const Subscription = (): React.JSX.Element => {
     }
   }, [licenseData?.response?.authenticationToken]);
 
-  const modules: Array<AllModuleConfig> = (() => {
+  const modules: Array<AllModuleConfig> = useMemo(() => {
     if (!licenseData?.response?.features) return [];
 
     const featurs = licenseData.response.features;
@@ -161,7 +164,7 @@ export const Subscription = (): React.JSX.Element => {
 
     const sortedModules = [...formatModules].sort(ModuleSort);
     return sortedModules.filter((module: AllModuleConfig) => module.name.value !== 'SproxyD');
-  })();
+  }, [licenseData]);
 
   const activeLicence = (): void => {
     activateLicenseMutation.mutate({ token: licenseKey, renewal: false });
@@ -180,7 +183,7 @@ export const Subscription = (): React.JSX.Element => {
     activateLicenseMutation.mutate({ token: licenseKey, renewal: true });
   };
 
-  const calculatedAccountQuotaSizePercentage: number = (() => {
+  const calculatedAccountQuotaSizePercentage: number = useMemo(() => {
     const accountCount = services?.response?.accountCount ?? 0;
     const licensedUsers = Number(services?.response?.licensedUsers ?? '0');
 
@@ -189,7 +192,7 @@ export const Subscription = (): React.JSX.Element => {
     }
 
     return (accountCount / licensedUsers) * 100;
-  })();
+  }, [services]);
 
   const getTypeDisplayValue = (): string => {
     if (!services?.response) return '';
