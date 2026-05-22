@@ -9,7 +9,6 @@ import {
   createBrowserSoapAPIInterceptor,
   getGetInfoResponseMock,
   getQueryClient,
-  grantUserConfigRights,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -21,9 +20,8 @@ import AppView from '../app-view';
 describe('AppView', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     queryClient = getQueryClient();
-    grantUserConfigRights();
   });
 
   async function setupAppViewTest(initialRoute?: string) {
@@ -147,4 +145,3 @@ describe('AppView', () => {
     });
   });
 });
-
