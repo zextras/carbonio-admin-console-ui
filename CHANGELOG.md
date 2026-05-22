@@ -1,3 +1,9 @@
+## [0.13.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0...v0.13.1) (2026-05-22)
+
+### Bug Fixes
+
+* admin account type detection ([#1209](https://github.com/zextras/carbonio-admin-console-ui/issues/1209)) ([e8507b8](https://github.com/zextras/carbonio-admin-console-ui/commit/e8507b80718bbb2ed5e461bf23c6c9691968e34b))
+
 ## [0.13.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.12.2...v0.13.0) (2026-05-21)
 
 ### Features

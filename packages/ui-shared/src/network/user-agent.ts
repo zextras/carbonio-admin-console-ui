@@ -6,5 +6,5 @@
 
 import { UAParser } from 'ua-parser-js';
 
-const { os, browser } = UAParser();
+const { os, browser } = new UAParser().getResult();
 export const userAgent = `CarbonioWebClient - ${browser.name} ${browser.version} (${os.name})`;
