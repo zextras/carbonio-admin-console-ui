@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { getCosList } from './search-cos-service';
 
@@ -23,5 +23,6 @@ export const useCosList = ({ searchQuery, limit, offset, enabled = true }: UseCo
     staleTime: 30_000,
     retry: 1,
     refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
   });
 };
