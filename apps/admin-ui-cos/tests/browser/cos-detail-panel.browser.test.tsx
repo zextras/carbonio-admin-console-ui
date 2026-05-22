@@ -13,7 +13,6 @@ import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useCosStore } from '../../src/store/cos/store';
 import { CosDetailPanel } from '../../src/views/cos/cos-detail-panel';
 
 const mockApiResponse = {
@@ -49,7 +48,6 @@ describe('CosDetailPanel', () => {
   });
 
   afterEach(() => {
-    useCosStore.getState().reset();
   });
 
   it('should render the COS detail panel with basic structure', async () => {

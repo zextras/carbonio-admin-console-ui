@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Container,
@@ -26,35 +27,41 @@ import { replaceHistory, useCurrentUserRights } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
 import { ChangeEvent, FC, ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
 import logo from '../../assets/gardian.svg';
 import { COS, DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
+import { cosQueryKeys } from '../../services/cos-query-keys';
 import { deleteCOS } from '../../services/delete-cos-service';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
-import { useCosStore } from '../../store/cos/store';
+import { useCosDetail } from '../../services/use-cos-detail';
+import { useTotalAccounts } from '../../services/use-total-accounts';
+import { useTotalDomains } from '../../services/use-total-domains';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import { PageLayout } from '../page-layout';
 import { getDateFromStr, getFormatedDate } from '../utility/utils';
 
 const CosGeneralInformation: FC = () => {
   const [t] = useTranslation();
-  const cosInformation = useCosStore((state) => state.cos?.a);
-  const cosDetail = useCosStore((state) => state.cos);
+  const { cosId } = useParams();
+  const { data: cosDetailData } = useCosDetail(cosId);
+  const cosInformation = cosDetailData?.cos?.[0]?.a;
+  const cosDetail = cosDetailData?.cos?.[0];
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
   const [cosData, setCosData] = useState<Partial<Record<string, string>>>({});
   const [cosName, setCosName] = useState<string>('');
   const [zimbraNotes, setZimbraNotes] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const setCos = useCosStore((state) => state.setCos);
   const [openDeleteCOSConfirmDialog, setOpenDeleteCOSConfirmDialog] = useState<boolean>(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const totalAccount = useCosStore((state) => state.totalAccount);
-  const totalDomain = useCosStore((state) => state.totalDomain);
+  const { data: totalAccount = 0 } = useTotalAccounts(cosId);
+  const { data: totalDomain = 0 } = useTotalDomains(cosId);
+  const queryClient = useQueryClient();
   const { data: rights = [] } = useCurrentUserRights();
   const [accountList, setAccountList] = useState<Array<TRow>>([]);
   const [offset, setOffset] = useState<number>(0);
@@ -238,8 +245,11 @@ const CosGeneralInformation: FC = () => {
       },
     };
     modifyCos(body)
-      .then((data) => {
+      .then(() => {
         flushCache('cos', 'id', body.id._content);
+        if (cosId) {
+          queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
+        }
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -248,10 +258,6 @@ const CosGeneralInformation: FC = () => {
           hideButton: true,
           replace: true,
         });
-        const cos = data?.cos[0];
-        if (cos) {
-          setCos(cos);
-        }
         setIsDirty(false);
       })
       .catch((error) => {
@@ -468,7 +474,7 @@ const CosGeneralInformation: FC = () => {
     }, 700),
   );
   useEffect(() => {
-    searchAccountListRef.current(searchAccountString, cosDetail.id);
+        searchAccountListRef.current(searchAccountString, cosDetail?.id);
   }, [cosDetail?.id, searchAccountString]);
 
   const getDomainList = (): void => {
@@ -568,7 +574,7 @@ const CosGeneralInformation: FC = () => {
     }, 700),
   );
   useEffect(() => {
-    searchDomainListRef.current(searchDomainString, cosDetail.id);
+        searchDomainListRef.current(searchDomainString, cosDetail?.id);
   }, [cosDetail?.id, searchDomainString]);
 
   return (

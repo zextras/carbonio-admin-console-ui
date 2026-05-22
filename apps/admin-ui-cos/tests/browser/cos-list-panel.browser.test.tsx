@@ -14,7 +14,6 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useCosStore } from '../../src/store/cos/store';
 import { CosListPanel } from '../../src/views/cos/cos-list-panel';
 
 const mockApiResponse = {
@@ -40,15 +39,12 @@ describe('CosListPanel', () => {
   beforeEach(async () => {
     vi.resetAllMocks();
     queryClient = getQueryClient();
-    // Set up config data for useGlobalCarbonioSendAnalytics hook
     queryClient.setQueryData(['all-config'], [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }]);
     await grantUserConfigRights(queryClient);
-    useCosStore.getState().reset();
   });
 
   afterEach(() => {
     resetMockWorker();
-    useCosStore.getState().reset();
   });
 
   it('should render all parts of the component', async () => {

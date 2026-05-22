@@ -4,33 +4,37 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights } from '@zextras/ui-shared'
 import { find, forEach, isEqual, size } from 'lodash-es';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { AccountType } from '../../types/account';
 import { Attribute } from '../../types/attribute';
-import { Cos } from '../../types/cos';
 import { COS, ZIMBRA_ADMIN_URN } from '../constants';
+import { cosQueryKeys } from '../services/cos-query-keys';
 import { flushCache } from '../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../services/modify-cos-service';
-import { useCosStore } from '../store/cos/store';
+import { useCosDetail } from '../services/use-cos-detail';
 import { PageLayout } from '../views/page-layout';
 import { WscSettings } from './wsc-settings';
 
 const WscCosSettings: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
+	const { cosId } = useParams();
 
 	const [zimbraId, setZimbraId] = useState<string | undefined>(undefined);
 	const [initCosData, setInitCosData] = useState<AccountType>({});
 	const [cosFeatures, setCosFeatures] = useState<AccountType>({});
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 
-	const cosInformation = useCosStore((state) => state.cos?.a);
-	const setCos = useCosStore((state) => state.setCos);
+	const { data: cosDetailData } = useCosDetail(cosId);
+	const cosInformation = cosDetailData?.cos?.[0]?.a;
+	const queryClient = useQueryClient();
 	const { data: rights = [] } = useCurrentUserRights();
 
 	const readonlyCOS = (() => {
@@ -96,8 +100,11 @@ const WscCosSettings: FC = () => {
 
 	const modifyCosRequest = (body: ModifyCosBody) => {
 		modifyCos(body)
-			.then((data) => {
+			.then(() => {
 				flushCache('cos', 'id', body.id._content);
+				if (cosId) {
+					queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
+				}
 				createSnackbar({
 					key: 'success',
 					severity: 'success',
@@ -106,10 +113,6 @@ const WscCosSettings: FC = () => {
 					hideButton: true,
 					replace: true
 				});
-				const cos: Cos = data.cos[0];
-				if (cos) {
-					setCos(cos);
-				}
 			})
 			.catch((error) => {
 				createSnackbar({

@@ -3,11 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find, isEqual, reduce } from 'lodash-es';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import {
   COS,
@@ -15,25 +17,28 @@ import {
   MOBILE_CONTACT_FEATURE_SYNC,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
+import { cosQueryKeys } from '../../services/cos-query-keys';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
-import { useCosStore } from '../../store/cos/store';
+import { useCosDetail } from '../../services/use-cos-detail';
 import { PageLayout } from '../page-layout';
 import { Features } from './features';
 
 const CosFeatures: FC = () => {
   const [t] = useTranslation();
+  const { cosId } = useParams();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
-  const cosInformation = useCosStore((state) => state.cos?.a);
-  const cosName = useCosStore((state) => state.cos?.name);
+  const { data: cosDetailData } = useCosDetail(cosId);
+  const cosInformation = cosDetailData?.cos?.[0]?.a;
+  const cosName = cosDetailData?.cos?.[0]?.name;
   const [initCosData, setInitCosData] = useState<Partial<Record<string, string>>>({});
   const [zimbraId, setZimbraId] = useState<string>('');
-  const setCos = useCosStore((state) => state.setCos);
   const [cosFeatures, setCosFeatures] = useState<Partial<Record<string, string>>>({});
   const isAdvanced = useIsAdvanced();
+  const queryClient = useQueryClient();
   const { data: rights = [] } = useCurrentUserRights();
 
   const readonlyCOS = (() => {
@@ -142,8 +147,11 @@ const CosFeatures: FC = () => {
 
   const modifyCosRequest = (body: ModifyCosBody): void => {
     modifyCos(body)
-      .then((data) => {
+      .then(() => {
         flushCache('cos', 'id', body.id._content);
+        if (cosId) {
+          queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
+        }
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -152,10 +160,6 @@ const CosFeatures: FC = () => {
           hideButton: true,
           replace: true,
         });
-        const cos = data.cos[0];
-        if (cos) {
-          setCos(cos);
-        }
       })
       .catch((error) => {
         createSnackbar({

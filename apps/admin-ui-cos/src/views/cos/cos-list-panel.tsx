@@ -35,7 +35,7 @@ import {
   WSC,
 } from '../../constants';
 import { getCosList } from '../../services/search-cos-service';
-import { useCosStore } from '../../store/cos/store';
+import { useCosDetail } from '../../services/use-cos-detail';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import GeneralListPanel from './general-list-panel';
 
@@ -47,13 +47,18 @@ export const CosListPanel: FC = () => {
   const [isCosSelect, setIsCosSelect] = useState(false);
   const [cosList, setCosList] = useState<Array<SearchDirectoryEntry>>([]);
   const [isCosListExpand, setIsCosListExpand] = useState(false);
-  const { cosView, setCosView, cos } = useCosStore();
-  const setCos = useCosStore((state) => state.setCos);
-  const cosInformation = useCosStore((state) => state.cos);
-  const cosName = useCosStore((state) => state.cos?.name);
+  const [selectedCosId, setSelectedCosId] = useState<string | undefined>(undefined);
+  const { data: cosDetailData } = useCosDetail(selectedCosId);
+  const cosInformation = cosDetailData?.cos?.[0];
+  const cosName = cosInformation?.name;
   const [isShowError, setIsShowError] = useState(false);
   const prevCosRef = useRef<string | undefined>(undefined);
   const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
+
+  const cosView = (() => {
+    const match = pathname.match(/\/[^/]+\/([^/]+)/);
+    return match?.[1] ?? null;
+  })();
 
   const getCosLists = (searchData: string): void => {
     getCosList(searchData)
@@ -89,13 +94,11 @@ export const CosListPanel: FC = () => {
       setSearchCosName(cosInformation?.name);
       setIsCosSelect(true);
       setIsCosListExpand(false);
-      setCosView(GENERAL_INFORMATION);
       if (cosInformation?.id) {
-        setCos({ name: cosInformation?.name, id: cosInformation?.id });
         replaceHistory(`/${cosInformation.id}/${GENERAL_INFORMATION}`);
       }
     }
-  }, [cosInformation?.id, cosInformation?.name, setCos, setCosView]);
+  }, [cosInformation?.id, cosInformation?.name]);
 
   useEffect(() => {
     if (
@@ -106,11 +109,10 @@ export const CosListPanel: FC = () => {
       setIsCosSelect(false);
       setSearchCosName('');
       setIsCosListExpand(false);
-      setCosView('');
-      setCos({});
+      setSelectedCosId(undefined);
       replaceHistory(`/${COS_LIST}`);
     }
-  }, [pathname, setCos, setCosView]);
+  }, [pathname]);
 
   const searchCosCallRef = useRef(
     debounce((searchData: string) => {
@@ -136,9 +138,8 @@ export const CosListPanel: FC = () => {
   };
 
   const navigateToCosView = (view: string) => {
-    if (isCosSelect && cos?.id) {
-      setCosView(view);
-      replaceHistory(`/${cos.id}/${view}`);
+    if (isCosSelect && selectedCosId) {
+      replaceHistory(`/${selectedCosId}/${view}`);
     }
   };
 
@@ -146,12 +147,7 @@ export const CosListPanel: FC = () => {
     setIsCosSelect(true);
     setSearchCosName(cosData?.name);
     setIsCosListExpand(false);
-    setCos({
-      a: cosData?.a,
-      id: cosData?.id,
-      name: cosData?.name,
-    });
-    setCosView(GENERAL_INFORMATION);
+    setSelectedCosId(cosData?.id);
     replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
   };
 
@@ -271,7 +267,7 @@ export const CosListPanel: FC = () => {
       background="gray5"
       style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
     >
-      <GeneralListPanel generalOptionItems={globalOptionItems} />
+      <GeneralListPanel generalOptionItems={globalOptionItems} selectedOperationItem={cosView} />
       <Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
       <Row mainAlignment="flex-start" width="100%">
         <DropDownInput

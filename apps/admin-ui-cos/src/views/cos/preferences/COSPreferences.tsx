@@ -3,17 +3,20 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import {  Container, useSnackbar  } from '@zextras/ui-components';
 import {  useCurrentUserRights  } from '@zextras/ui-shared';
 import {  find  } from 'lodash-es';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { CosAttributes, CosPrefAttributes } from '../../../../types/cos';
 import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
+import { cosQueryKeys } from '../../../services/cos-query-keys';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
-import { useCosStore } from '../../../store/cos/store';
+import { useCosDetail } from '../../../services/use-cos-detail';
 import { PageLayout } from '../../page-layout';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
@@ -30,9 +33,11 @@ import { SendingMails } from './SendingMails';
 export const COSPreferences = (): React.JSX.Element => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const cosInformation = useCosStore((state) => state.cos?.a);
+  const { cosId } = useParams();
+  const { data: cosDetailData } = useCosDetail(cosId);
+  const cosInformation = cosDetailData?.cos?.[0]?.a;
   const { data: rights = [] } = useCurrentUserRights();
-  const setCos = useCosStore((state) => state.setCos);
+  const queryClient = useQueryClient();
 
   const locales = localeList(t);
   const isReadOnlyCos = (() => {
@@ -88,8 +93,11 @@ export const COSPreferences = (): React.JSX.Element => {
     };
 
     modifyCos(body)
-      .then((data) => {
+      .then(() => {
         flushCache('cos', 'id', body.id._content);
+        if (cosId) {
+          queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
+        }
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -98,7 +106,6 @@ export const COSPreferences = (): React.JSX.Element => {
           hideButton: true,
           replace: true,
         });
-        setCos(data?.cos[0]);
       })
       .catch((error) => {
         createSnackbar({
@@ -128,7 +135,7 @@ export const COSPreferences = (): React.JSX.Element => {
       setCurrentCosAttributes(initialCosPrefAttributes);
       setInitialValues(initialCosPrefAttributes);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [cosInformation]);
 
   return (

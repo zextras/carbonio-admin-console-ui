@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Container,
@@ -28,9 +29,10 @@ import { useParams } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
 import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
+import { cosQueryKeys } from '../../services/cos-query-keys';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
-import { useCosStore } from '../../store/cos/store';
+import { useCosDetail } from '../../services/use-cos-detail';
 import { PageLayout } from '../page-layout';
 
 type ServerItem = {
@@ -42,7 +44,9 @@ type ServerItem = {
 const CosServerPools: FC = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
-  const cosInformation = useCosStore((state) => state.cos?.a);
+  const { data: cosDetailData } = useCosDetail(cosId);
+  const cosInformation = cosDetailData?.cos?.[0]?.a;
+  const queryClient = useQueryClient();
   const [zimbraMailHostPool, setZimbraMailHostPool] = useState<boolean>(true);
   const [serverList, setServerList] = useState<Array<ServerItem>>([]);
   const [zimbraMailHostPoolList, setZimbraMailHostPoolList] = useState<Array<Attribute>>([]);
@@ -51,7 +55,6 @@ const CosServerPools: FC = () => {
   const [selectedTableRowsId, setSelectedTableRowsId] = useState<Array<string>>([]);
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
-  const setCos = useCosStore((state) => state.setCos);
   const [searchServer, setSearchServer] = useState<string>('');
   const { data: allMailStoreList = [] } = useMailstoreServers();
   const { data: rights = [] } = useCurrentUserRights();
@@ -280,23 +283,22 @@ const CosServerPools: FC = () => {
   const onModifyCOS = useCallback(
     (body: ModifyCosBody) => {
       modifyCos(body)
-        .then((data) => {
-          const cos = data?.cos[0];
-          if (cos) {
-            flushCache('cos', 'id', body.id._content);
-            createSnackbar({
-              key: 'success',
-              severity: 'success',
-              label: t(
-                'label.the_last_changes_has_been_saved_successfully',
-                'Changes have been saved successfully',
-              ),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-            setCos(cos);
+        .then(() => {
+          flushCache('cos', 'id', body.id._content);
+          if (cosId) {
+            queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
           }
+          createSnackbar({
+            key: 'success',
+            severity: 'success',
+            label: t(
+              'label.the_last_changes_has_been_saved_successfully',
+              'Changes have been saved successfully',
+            ),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
           setOpenConfirmDialog(false);
           setSelectedTableRows([]);
           setSelectedTableRowsId([]);
@@ -314,7 +316,7 @@ const CosServerPools: FC = () => {
           });
         });
     },
-    [createSnackbar, t, setCos],
+    [createSnackbar, t, cosId, queryClient],
   );
 
   const onEnable = useCallback(() => {

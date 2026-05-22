@@ -14,12 +14,10 @@ import {
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useCosStore } from '../../store/cos/store';
 import AppView from '../app-view';
 
 afterEach(() => {
   resetMockWorker();
-  useCosStore.getState().reset();
 });
 
 describe('AppView', () => {
@@ -27,14 +25,12 @@ describe('AppView', () => {
 
   vi.resetAllMocks();
   beforeEach(async () => {
-    useCosStore.getState().reset();
     queryClient = getQueryClient();
     queryClient.setQueryData(['all-config'], [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }]);
   });
 
   afterEach(() => {
     resetMockWorker();
-    useCosStore.getState().reset();
   });
 
   it('should render BreadCrumb component', async () => {

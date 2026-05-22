@@ -22,7 +22,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { useCosList } from '../../services/use-cos-list';
-import { useCosStore } from '../../store/cos/store';
 import ScrollContainer from '../components/scrollComponent';
 
 type ZimbraCosAttribute = {
@@ -69,7 +68,6 @@ const STATUS_LABEL_DEFAULTS: Record<string, string> = {
 
 const CosList: FC = () => {
   const [t] = useTranslation();
-  const { setCos, setCosView } = useCosStore();
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [isTableTooTall, setIsTableTooTall] = useState(false);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
@@ -104,12 +102,6 @@ const CosList: FC = () => {
   const totalCos = data?.searchTotal || 0;
 
   const onCosSelect = (Cos: ZimbraCosEntry) => {
-    setCos({
-      a: Cos?.a,
-      id: Cos?.id,
-      name: Cos?.name,
-    });
-    setCosView(GENERAL_INFORMATION);
     replaceHistory(`/${Cos.id}/${GENERAL_INFORMATION}`);
   };
 

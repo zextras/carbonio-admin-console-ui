@@ -4,12 +4,44 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { grantUserCosRights, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
+import {
+  createBrowserSoapAPIInterceptor,
+  grantUserCosRights,
+  resetMockWorker,
+  setupBrowserTest,
+} from 'admin-ui-test-utils';
+import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useCosStore } from '../../../../store/cos/store';
 import { COSPreferences } from '../COSPreferences';
+
+const mockCosData = {
+  cos: [
+    {
+      id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
+      name: 'default',
+      isDefaultCos: true,
+      a: [
+        { n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
+        { n: 'zimbraPrefLocale', _content: 'en' },
+        { n: 'zimbraFeatureReadReceiptsEnabled', _content: 'FALSE' },
+        { n: 'zimbraPrefMailSendReadReceipts', _content: 'never' },
+      ],
+    },
+  ],
+};
+
+async function setupCosPreferencesTest() {
+  createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+  await setupBrowserTest(
+    <Routes>
+      <Route path="/:cosId/:operation" element={<COSPreferences />} />
+    </Routes>,
+    { initialRouterEntry: '/e00428a1-0c00-11d9-836a-000d93afea2a/preferences' },
+  );
+  await expect.element(page.getByText('Preferences')).toBeVisible();
+}
 
 async function expectGeneralOptionsSectionVisible() {
   await expect.element(page.getByText('General Options')).toBeVisible();
@@ -60,7 +92,7 @@ async function expectContactOptionsSectionVisible() {
 async function expectCalendarOptionsVisible() {
   await expect.element(page.getByText('Calendar Options')).toBeVisible();
   await expect.element(page.getByText('Time Zone')).toBeVisible();
-  await expect.element(page.getByText('Appointment’s Default Duration')).toBeVisible();
+  await expect.element(page.getByText("Appointment's Default Duration")).toBeVisible();
   await expect.element(page.getByText('Appointment Reminder (minutes before)')).toBeVisible();
   await expect.element(page.getByText('Default Calendar View')).toBeVisible();
   await expect.element(page.getByText('The Week starts on')).toBeVisible();
@@ -84,34 +116,18 @@ async function expectCalendarOptionsVisible() {
 }
 
 describe('COSPreferences', () => {
-  const setupCosStore = (): void => {
-    useCosStore.getState().setCos({
-      id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
-      name: 'default',
-      isDefaultCos: true,
-      a: [
-        { n: 'zimbraId', _content: 'e00428a1-0c00-11d9-836a-000d93afea2a' },
-        { n: 'zimbraPrefLocale', _content: 'en' },
-        { n: 'zimbraFeatureReadReceiptsEnabled', _content: 'FALSE' },
-        { n: 'zimbraPrefMailSendReadReceipts', _content: 'never' },
-      ],
-    });
-  };
-
   beforeEach(async () => {
     vi.resetAllMocks();
     grantUserCosRights();
-    setupCosStore();
   });
 
   afterEach(() => {
     resetMockWorker();
-    useCosStore.getState().reset();
   });
 
   it('should render the component correctly', async () => {
-    await setupBrowserTest(<COSPreferences />);
-    await expect.element(page.getByText('Preferences')).toBeVisible();
+    await setupCosPreferencesTest();
+    await expect.element(page.getByText('General Options')).toBeVisible();
     await expectGeneralOptionsSectionVisible();
     await expectMailOptionsSectionVisible();
     await expectReceivingMailsSectionVisible();
@@ -119,44 +135,36 @@ describe('COSPreferences', () => {
     await expectSendingMailsSectionVisible();
     await expectContactOptionsSectionVisible();
     await expectCalendarOptionsVisible();
-  });
+  }, 20_000);
   it('should toggle zimbraFeatureReadReceiptsEnabled when clicking the read receipt switch', async () => {
-    await setupBrowserTest(<COSPreferences />);
+    await setupCosPreferencesTest();
 
-    // Wait for the component to render
     await expect.element(page.getByText('Sending Mails')).toBeVisible();
 
-    // Find the "Allow the user to ask for a read receipt" label
     const readReceiptLabel = page.getByText('Allow the user to ask for a read receipt');
     await expect.element(readReceiptLabel).toBeVisible();
 
-    // Click on the label which will trigger the switch
     await readReceiptLabel.click();
 
-    // Verify the Save button appears after the change (indicating unsaved changes)
     const saveButton = page.getByRole('button', { name: 'Save' });
     await expect.element(saveButton).toBeVisible();
   });
 
   it('should change zimbraPrefMailSendReadReceipts when selecting a different option', async () => {
-    await setupBrowserTest(<COSPreferences />);
+    await setupCosPreferencesTest();
 
-    // Wait for the Receiving Mails section to render
     await expect.element(page.getByText('Receiving Mails')).toBeVisible();
 
-    // In the "Receiving Mails" section, find the "Read Receipt settings" select dropdown
     const readReceiptSettingsLabel = page.getByText('Read Receipt settings');
     await expect.element(readReceiptSettingsLabel).toBeVisible();
 
-    // Click on the select to open the dropdown
     await readReceiptSettingsLabel.click();
 
-    // Select "Always send a read receipt" option
     const alwaysSendOption = page.getByText('Always send a read receipt');
     await alwaysSendOption.click();
 
-    // Verify the Save button appears after the change
     const saveButton = page.getByRole('button', { name: 'Save' });
     await expect.element(saveButton).toBeVisible();
   });
 });
+

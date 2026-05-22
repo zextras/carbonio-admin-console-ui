@@ -23,7 +23,6 @@ import { Attribute } from '../../../types/attribute';
 import { CosResponse } from '../../../types/cos';
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
-import { useCosStore } from '../../store/cos/store';
 
 const CreateCos: FC = () => {
   const [t] = useTranslation();
@@ -33,7 +32,6 @@ const CreateCos: FC = () => {
   const [description, setDescription] = useState<string>('');
   const [cosName, setCosName] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const { setCosView, setCos } = useCosStore();
 
   const showSuccessSnackBar = (): void => {
     createSnackbar({
@@ -52,12 +50,6 @@ const CreateCos: FC = () => {
   const routeToCos = (resp: CosResponse): void => {
     const cos = resp?.cos[0];
     if (cos) {
-      setCos({
-        a: cos?.a,
-        id: cos?.id,
-        name: cos?.name,
-      });
-      setCosView('general_information');
       replaceHistory(`/${cos.id}/general_information`);
     } else {
       replaceHistory(`/`);

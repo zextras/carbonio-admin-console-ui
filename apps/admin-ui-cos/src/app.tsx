@@ -7,23 +7,11 @@
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, registerActions, removeRoute, useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import {
-  APP_ID,
-  COS,
-  COS_ROUTE_ID,
-  CREATE_COS,
-  CREATE_NEW_COS_ROUTE_ID,
-  GLOBAL,
-  LIST_COS,
-  MANAGE,
-  MANAGE_APP_ID,
-  PRIMARY_BAR_COS,
-} from './constants';
-import { useCosStore } from './store/cos/store';
+import { APP_ID, COS, COS_ROUTE_ID, CREATE_COS, CREATE_NEW_COS_ROUTE_ID, GLOBAL, LIST_COS, MANAGE, MANAGE_APP_ID, PRIMARY_BAR_COS } from './constants';
 import AppView from './views/app-view';
 
 type RightEntry = {
@@ -81,18 +69,16 @@ const App: FC = () => {
   const [t] = useTranslation();
   const navigate = useNavigate();
 
-  const { setCosView } = useCosStore();
   const { data: rights } = useCurrentUserRights();
 
   const showCOS = checkShowCOS(rights);
   const createCosRight = checkCreateCosRight(rights);
 
-  const managementSectionRef = useRef({
+  const managementSection = {
     id: MANAGE_APP_ID,
     label: t('label.management', 'Management'),
     position: 3,
-  });
-  managementSectionRef.current.label = t('label.management', 'Management');
+  };
 
   useEffect(() => {
     if (showCOS) {
@@ -103,7 +89,7 @@ const App: FC = () => {
         label: t('label.cos', 'COS') || '',
         primaryBar: 'SettingsModOutline',
         appView: AppView,
-        primarybarSection: managementSectionRef.current,
+        primarybarSection: managementSection,
         tooltip: CosTooltipView,
         trackerLabel: PRIMARY_BAR_COS,
       });
@@ -120,7 +106,6 @@ const App: FC = () => {
         icon: '',
         onClick: (): void => {
           navigate(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
-          setCosView(CREATE_NEW_COS_ROUTE_ID);
         },
         disabled: !createCosRight,
         group: APP_ID,
@@ -129,7 +114,7 @@ const App: FC = () => {
       id: 'new-cos',
       type: 'new',
     });
-  }, [createCosRight, navigate, setCosView, t]);
+  }, [createCosRight, navigate, t]);
 
   return null;
 };

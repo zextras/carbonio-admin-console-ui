@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from '@tanstack/react-query';
 import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/ui-components';
 import { isValidDecimalInput, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
@@ -16,6 +17,7 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { AccountType } from '../../../types/account';
 import { Attribute } from '../../../types/attribute';
@@ -27,6 +29,7 @@ import {
   COS,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
+import { cosQueryKeys } from '../../services/cos-query-keys';
 import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { ComputedLimit, getCosQuota, QuotaSource } from '../../services/get-cos-quota';
@@ -37,7 +40,7 @@ import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setCosQuota } from '../../services/set-cos-quota';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { unsetCosQuota } from '../../services/unset-cos-quota';
-import { useCosStore } from '../../store/cos/store';
+import { useCosDetail } from '../../services/use-cos-detail';
 import { PageLayout } from '../page-layout';
 import { BytesToGB, GbToBytes } from '../utility/utils';
 import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
@@ -118,12 +121,14 @@ function saveCosAdvanced(
 
 const CosAdvanced: FC = () => {
   const [t] = useTranslation();
+  const { cosId } = useParams();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
   const isTotalQuotaActive = useTotalQuotaActive();
-  const cosInformation = useCosStore((state) => state.cos?.a);
+  const { data: cosDetailData } = useCosDetail(cosId);
+  const cosInformation = cosDetailData?.cos?.[0]?.a;
   const [cosData, setCosData] = useState<AccountType>({});
-  const setCos = useCosStore((state) => state.setCos);
+  const queryClient = useQueryClient();
   const { data: rights = [] } = useCurrentUserRights();
   const isAdvanced = useIsAdvanced();
   const readonlyCOS = (() => {
@@ -626,14 +631,14 @@ const CosAdvanced: FC = () => {
     if (cosData?.zimbraId && isAdvanced && !isTotalQuotaActive) {
       getFileQuota(cosData.zimbraId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [cosData.zimbraId, isAdvanced, isTotalQuotaActive]);
 
   useEffect(() => {
     if (cosData?.zimbraId && isAdvanced && isTotalQuotaActive) {
       getCOSQuota(cosData.zimbraId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [cosData.zimbraId, isAdvanced, isTotalQuotaActive]);
 
   const changeValue = (e: ChangeEvent<HTMLInputElement>) => {
@@ -1164,7 +1169,7 @@ const CosAdvanced: FC = () => {
     setZimbraMailMessageLifetimeNum(e.target.value);
   };
 
-  const cosName = useCosStore((state) => state.cos?.name);
+  const cosName = cosDetailData?.cos?.[0]?.name;
   const setFileQuotaLimit = (cosId: string, limit: string) => {
     setFileQuotaLimitById(cosId, limit, COS).then(() => {
       setShowFileQuotaLimitMsg(false);
@@ -1207,8 +1212,11 @@ const CosAdvanced: FC = () => {
       : cosAdvanced;
 
     saveCosAdvanced(cosAdvancedToSave, zimbraId)
-      .then(({ cosId, cos }) => {
-        flushCache('cos', 'id', cosId);
+      .then(({ cosId: savedCosId }) => {
+        flushCache('cos', 'id', savedCosId);
+        if (cosId) {
+          queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
+        }
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -1217,9 +1225,6 @@ const CosAdvanced: FC = () => {
           hideButton: true,
           replace: true,
         });
-        if (cos) {
-          setCos(cos);
-        }
         if (
           !isTotalQuotaActive &&
           isAdvanced &&
@@ -1280,7 +1285,7 @@ const CosAdvanced: FC = () => {
     cosName,
     createSnackbar,
     isAdvanced,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     t,
     labels.snackbar.errorMessage,
   ]);

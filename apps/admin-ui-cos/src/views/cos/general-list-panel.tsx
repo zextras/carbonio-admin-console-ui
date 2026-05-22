@@ -9,19 +9,17 @@ import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { COS_LIST, IS_GENERAL_LIST_EXPANDED } from '../../constants';
-import { useCosStore } from '../../store/cos/store';
 
 type GeneralListPanelProps = {
   generalOptionItems: Array<ListItemType>;
+  selectedOperationItem?: string | null;
 };
 
-const GeneralListPanel: FC<GeneralListPanelProps> = ({ generalOptionItems }) => {
+const GeneralListPanel: FC<GeneralListPanelProps> = ({ generalOptionItems, selectedOperationItem }) => {
   const [t] = useTranslation();
   const [isGeneralListExpanded, setIsGeneralListExpanded] = useState(true);
-  const { cosView, setCosView } = useCosStore();
 
   const navigateToGeneralView = (view: string) => {
-    setCosView(view);
     if (view === COS_LIST) {
       replaceHistory(`/${COS_LIST}`);
     }
@@ -56,7 +54,7 @@ const GeneralListPanel: FC<GeneralListPanelProps> = ({ generalOptionItems }) => 
       {isGeneralListExpanded && (
         <ListItems
           items={generalOptionItems}
-          selectedOperationItem={cosView}
+          selectedOperationItem={selectedOperationItem ?? null}
           setSelectedOperationItem={navigateToGeneralView}
         />
       )}
