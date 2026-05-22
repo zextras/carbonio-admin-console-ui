@@ -79,7 +79,7 @@ export const CosListPanel: FC = () => {
 
   useEffect(() => {
     getCosLists('');
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -87,7 +87,7 @@ export const CosListPanel: FC = () => {
       getCosLists('');
     }
     prevCosRef.current = cosName;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cosName]);
 
   useEffect(() => {
@@ -204,52 +204,52 @@ export const CosListPanel: FC = () => {
   const items =
     cosList.length > MAX_COS_DISPLAY
       ? [
-        {
-          customComponent: (
-            <>
-              <Row mainAlignment="flex-start">
-                <Padding horizontal="small">
-                  <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
-                </Padding>
-              </Row>
-              <Row
-                mainAlignment="flex-start"
-                width="100%"
-                padding={{
-                  all: 'small',
-                }}
-              >
-                <ds-text as="p" overflow="break-word">
-                  {t(
-                    'many_cos_info_msg',
-                    'So many COSes! Which one would you like to see? Start typing to filter.',
-                  )}
-                </ds-text>
-              </Row>
-            </>
-          ),
-        },
-      ]
+          {
+            customComponent: (
+              <>
+                <Row mainAlignment="flex-start">
+                  <Padding horizontal="small">
+                    <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
+                  </Padding>
+                </Row>
+                <Row
+                  mainAlignment="flex-start"
+                  width="100%"
+                  padding={{
+                    all: 'small',
+                  }}
+                >
+                  <ds-text as="p" overflow="break-word">
+                    {t(
+                      'many_cos_info_msg',
+                      'So many COSes! Which one would you like to see? Start typing to filter.',
+                    )}
+                  </ds-text>
+                </Row>
+              </>
+            ),
+          },
+        ]
       : cosList.map((cosData) => ({
-        id: cosData.id,
-        label: cosData.name,
-        customComponent: (
-          <Row
-            style={{
-              display: 'block',
-              textAlign: 'left',
-              height: 'inherit',
-              padding: '3px',
-              width: 'inherit',
-            }}
-            onClick={(): void => {
-              selectedCos(cosData);
-            }}
-          >
-            {cosData?.name}
-          </Row>
-        ),
-      }));
+          id: cosData.id,
+          label: cosData.name,
+          customComponent: (
+            <Row
+              style={{
+                display: 'block',
+                textAlign: 'left',
+                height: 'inherit',
+                padding: '3px',
+                width: 'inherit',
+              }}
+              onClick={(): void => {
+                selectedCos(cosData);
+              }}
+            >
+              {cosData?.name}
+            </Row>
+          ),
+        }));
 
   useEffect(() => {
     const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
@@ -268,7 +268,7 @@ export const CosListPanel: FC = () => {
       background="gray5"
       style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
     >
-      <GeneralListPanel generalOptionItems={globalOptionItems} selectedOperationItem={cosView} />
+      <GeneralListPanel generalOptionItems={globalOptionItems} />
       <Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
       <Row mainAlignment="flex-start" width="100%">
         <DropDownInput
