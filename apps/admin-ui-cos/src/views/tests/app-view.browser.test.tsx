@@ -8,7 +8,6 @@ import {
   createBrowserSoapAPIInterceptor,
   getGetInfoResponseMock,
   getQueryClient,
-  grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -28,10 +27,9 @@ describe('AppView', () => {
 
   vi.resetAllMocks();
   beforeEach(async () => {
+    useCosStore.getState().reset();
     queryClient = getQueryClient();
     queryClient.setQueryData(['all-config'], [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }]);
-    grantUserConfigRights();
-    useCosStore.getState().reset();
   });
 
   afterEach(() => {

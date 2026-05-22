@@ -1086,7 +1086,7 @@ export const localeList = (t: TFunction): SelectItem[] => [
     value: 'vi',
   },
   {
-    label: t('locale.label_bosnian', { value: 'bosanski', defaultValue: 'Bosnian - {{value}}' }),
+    label: t('locale.label_bosnian', { value: 'Bosanski', defaultValue: 'Bosnian - {{value}}' }),
     value: 'bs',
   },
   {
