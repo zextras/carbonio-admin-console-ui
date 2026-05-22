@@ -14,7 +14,7 @@ type UseTimeFieldStateReturn = {
   reset: (value: string | undefined, defaultType?: string) => void;
 };
 
-function useTimeFieldState(
+export function useTimeFieldState(
   onChange: (combinedValue: string) => void,
 ): UseTimeFieldStateReturn {
   const [num, setNum] = useState<string | undefined>(undefined);
@@ -51,6 +51,3 @@ function useTimeFieldState(
 
   return { num, type, onNumChange, onTypeChange, reset };
 }
-
-export { useTimeFieldState };
-export type { UseTimeFieldStateReturn };

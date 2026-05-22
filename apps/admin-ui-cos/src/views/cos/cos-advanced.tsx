@@ -5,14 +5,14 @@
  */
 
 import { Container, useSnackbar } from '@zextras/ui-components';
-import { isValidDecimalInput, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
-import { find } from 'lodash-es';
 import {
-  ChangeEvent,
-  FC,
-  useEffect,
-  useState,
-} from 'react';
+  isValidDecimalInput,
+  useCurrentUserRights,
+  useIsAdvanced,
+  useTotalQuotaActive,
+} from '@zextras/ui-shared';
+import { find } from 'lodash-es';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -45,7 +45,7 @@ import COSGeneralOptions from './advanced/cos-general-options';
 import COSPassword from './advanced/cos-password';
 import COSQuotas from './advanced/cos-quotas';
 import COSTimeoutPolicy from './advanced/cos-timeout-policy';
-import { useTimeFieldState } from './advanced/hooks/useTimeFieldState';
+import { useTimeFieldState } from './advanced/hooks/use-time-field-state';
 
 const EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE: Array<string> = [
   'zimbraMailQuota',
@@ -197,7 +197,9 @@ const CosAdvanced: FC = () => {
   const mailSpamLifetime = useTimeFieldState((v) =>
     setCosAdvanced((prev: AccountType) => ({ ...prev, zimbraMailSpamLifetime: v })),
   );
-  const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState<string | undefined>(undefined);
+  const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState<string | undefined>(
+    undefined,
+  );
   const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState<string | undefined>(undefined);
   const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
   const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
@@ -213,10 +215,7 @@ const CosAdvanced: FC = () => {
     undefined,
   );
 
-  const setValue = (
-    key: keyof AccountType,
-    value: AccountType[keyof AccountType],
-  ): void => {
+  const setValue = (key: keyof AccountType, value: AccountType[keyof AccountType]): void => {
     setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
   };
 
@@ -233,9 +232,7 @@ const CosAdvanced: FC = () => {
     if (obj) {
       setValue(
         'zimbraMailForwardingAddressMaxLength',
-        obj?.zimbraMailForwardingAddressMaxLength
-          ? obj?.zimbraMailForwardingAddressMaxLength
-          : '',
+        obj?.zimbraMailForwardingAddressMaxLength ? obj?.zimbraMailForwardingAddressMaxLength : '',
       );
       setValue(
         'zimbraMailForwardingAddressMaxNumAddrs',
@@ -306,14 +303,8 @@ const CosAdvanced: FC = () => {
         'zimbraPasswordMinDigitsOrPuncs',
         obj?.zimbraPasswordMinDigitsOrPuncs ? obj?.zimbraPasswordMinDigitsOrPuncs : '',
       );
-      setValue(
-        'zimbraPasswordMinAge',
-        obj?.zimbraPasswordMinAge ? obj?.zimbraPasswordMinAge : '',
-      );
-      setValue(
-        'zimbraPasswordMaxAge',
-        obj?.zimbraPasswordMaxAge ? obj?.zimbraPasswordMaxAge : '',
-      );
+      setValue('zimbraPasswordMinAge', obj?.zimbraPasswordMinAge ? obj?.zimbraPasswordMinAge : '');
+      setValue('zimbraPasswordMaxAge', obj?.zimbraPasswordMaxAge ? obj?.zimbraPasswordMaxAge : '');
       setValue(
         'zimbraPasswordEnforceHistory',
         obj?.zimbraPasswordEnforceHistory ? obj?.zimbraPasswordEnforceHistory : '',
@@ -337,9 +328,7 @@ const CosAdvanced: FC = () => {
 
       setValue(
         'zimbraPasswordLockoutFailureLifetime',
-        obj?.zimbraPasswordLockoutFailureLifetime
-          ? obj?.zimbraPasswordLockoutFailureLifetime
-          : '',
+        obj?.zimbraPasswordLockoutFailureLifetime ? obj?.zimbraPasswordLockoutFailureLifetime : '',
       );
       setValue(
         'zimbraAdminAuthTokenLifetime',
@@ -385,9 +374,7 @@ const CosAdvanced: FC = () => {
     mailSpamLifetime.reset(obj?.zimbraMailSpamLifetime, defaultType);
     mailMessageLifetime.reset(obj?.zimbraMailMessageLifetime, defaultType);
 
-    setAccountQuotaGBValue(
-      obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(2) : '',
-    );
+    setAccountQuotaGBValue(obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(2) : '');
   };
 
   useEffect(() => {
@@ -518,14 +505,12 @@ const CosAdvanced: FC = () => {
     if (cosData?.zimbraId && isAdvanced && !isTotalQuotaActive) {
       getFileQuota(cosData.zimbraId);
     }
-     
   }, [cosData.zimbraId, isAdvanced, isTotalQuotaActive]);
 
   useEffect(() => {
     if (cosData?.zimbraId && isAdvanced && isTotalQuotaActive) {
       getCOSQuota(cosData.zimbraId);
     }
-     
   }, [cosData.zimbraId, isAdvanced, isTotalQuotaActive]);
 
   const changeValue = (e: ChangeEvent<HTMLInputElement>) => {
@@ -561,7 +546,7 @@ const CosAdvanced: FC = () => {
     if (
       cosData.zimbraMailForwardingAddressMaxLength !== undefined &&
       cosData.zimbraMailForwardingAddressMaxLength !==
-      cosAdvanced.zimbraMailForwardingAddressMaxLength
+        cosAdvanced.zimbraMailForwardingAddressMaxLength
     ) {
       setIsDirty(true);
     }
@@ -574,7 +559,7 @@ const CosAdvanced: FC = () => {
     if (
       cosData.zimbraMailForwardingAddressMaxNumAddrs !== undefined &&
       cosData.zimbraMailForwardingAddressMaxNumAddrs !==
-      cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs
+        cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs
     ) {
       setIsDirty(true);
     }
@@ -740,7 +725,7 @@ const CosAdvanced: FC = () => {
     if (
       cosData.zimbraPasswordLockoutFailureLifetime !== undefined &&
       cosData.zimbraPasswordLockoutFailureLifetime !==
-      cosAdvanced.zimbraPasswordLockoutFailureLifetime
+        cosAdvanced.zimbraPasswordLockoutFailureLifetime
     ) {
       setIsDirty(true);
     }
@@ -885,10 +870,10 @@ const CosAdvanced: FC = () => {
 
     const cosAdvancedToSave = isTotalQuotaActive
       ? (Object.fromEntries(
-        Object.entries(cosAdvanced).filter(
-          ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
-        ),
-      ) as AccountType)
+          Object.entries(cosAdvanced).filter(
+            ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
+          ),
+        ) as AccountType)
       : cosAdvanced;
 
     const attributes: Attribute[] = Object.keys(cosAdvancedToSave).map((ele) => ({
@@ -951,14 +936,7 @@ const CosAdvanced: FC = () => {
           replace: true,
         });
       });
-  }, [
-    cosName,
-    createSnackbar,
-    isAdvanced,
-     
-    t,
-    labels.snackbar.errorMessage,
-  ]);
+  }, [cosName, createSnackbar, isAdvanced, t, labels.snackbar.errorMessage]);
 
   const changeBackupAttribute = (key: AdvancedBackupAttributesKeys): void => {
     setCosAdvancedBackupAttributes((prev: AdvancedBackupAttributes) => ({
