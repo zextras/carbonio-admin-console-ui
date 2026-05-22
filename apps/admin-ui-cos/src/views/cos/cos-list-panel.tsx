@@ -56,8 +56,9 @@ export const CosListPanel: FC = () => {
   const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 
   const cosView = (() => {
-    const match = pathname.match(/\/[^/]+\/([^/]+)/);
-    return match?.[1] ?? null;
+    if (pathname === `/${COS_LIST}` || pathname === '/') return COS_LIST;
+    const segments = pathname.split('/').filter(Boolean);
+    return segments.length >= 2 ? segments[segments.length - 1] : null;
   })();
 
   const getCosLists = (searchData: string): void => {
