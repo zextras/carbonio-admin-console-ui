@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQueryClient } from '@tanstack/react-query';
 import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/ui-components';
 import { isValidDecimalInput, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
@@ -21,7 +20,6 @@ import { useParams } from 'react-router';
 
 import { AccountType } from '../../../types/account';
 import { Attribute } from '../../../types/attribute';
-import { Cos } from '../../../types/cos';
 import { TimeItems } from '../../../types/general';
 import {
   BACKUP_ENABLED,
@@ -29,18 +27,17 @@ import {
   COS,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
-import { cosQueryKeys } from '../../services/cos-query-keys';
-import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { ComputedLimit, getCosQuota, QuotaSource } from '../../services/get-cos-quota';
 import { getFileQuotaById } from '../../services/get-file-quota';
-import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
+import { ModifyCosBody } from '../../services/modify-cos-service';
 import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setCosQuota } from '../../services/set-cos-quota';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { unsetCosQuota } from '../../services/unset-cos-quota';
 import { useCosDetail } from '../../services/use-cos-detail';
+import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
 import { BytesToGB, GbToBytes } from '../utility/utils';
 import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
@@ -91,34 +88,6 @@ function saveBackupAttributes(
   }
 }
 
-type SaveCosAdvancedResult = {
-  cosId: string;
-  cos: Cos | undefined;
-};
-
-function saveCosAdvanced(
-  cosAdvanced: AccountType,
-  zimbraId: string,
-): Promise<SaveCosAdvancedResult> {
-  const attributes: Attribute[] = Object.keys(cosAdvanced).map((ele) => ({
-    n: ele,
-    _content: cosAdvanced[ele as keyof AccountType]?.toString() ?? '',
-  }));
-
-  const body: ModifyCosBody = {
-    _jsns: ZIMBRA_ADMIN_URN,
-    id: {
-      _content: zimbraId,
-    },
-    a: attributes,
-  };
-
-  return modifyCos(body).then((data) => ({
-    cosId: body.id._content,
-    cos: data?.cos[0],
-  }));
-}
-
 const CosAdvanced: FC = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
@@ -128,8 +97,8 @@ const CosAdvanced: FC = () => {
   const { data: cosDetailData } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
   const [cosData, setCosData] = useState<AccountType>({});
-  const queryClient = useQueryClient();
   const { data: rights = [] } = useCurrentUserRights();
+  const modifyCosMutation = useModifyCos(cosId);
   const isAdvanced = useIsAdvanced();
   const readonlyCOS = (() => {
     const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
@@ -1211,20 +1180,19 @@ const CosAdvanced: FC = () => {
       ) as AccountType)
       : cosAdvanced;
 
-    saveCosAdvanced(cosAdvancedToSave, zimbraId)
-      .then(({ cosId: savedCosId }) => {
-        flushCache('cos', 'id', savedCosId);
-        if (cosId) {
-          queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
-        }
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: labels.snackbar.successMessage,
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
+    const attributes: Attribute[] = Object.keys(cosAdvancedToSave).map((ele) => ({
+      n: ele,
+      _content: cosAdvancedToSave[ele as keyof AccountType]?.toString() ?? '',
+    }));
+
+    const body: ModifyCosBody = {
+      _jsns: ZIMBRA_ADMIN_URN,
+      id: { _content: zimbraId },
+      a: attributes,
+    };
+
+    modifyCosMutation.mutate(body, {
+      onSuccess: () => {
         if (
           !isTotalQuotaActive &&
           isAdvanced &&
@@ -1237,17 +1205,8 @@ const CosAdvanced: FC = () => {
           }
         }
         setIsDirty(false);
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message ? error?.message : labels.snackbar.errorMessage,
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+      },
+    });
   };
 
   useEffect(() => {

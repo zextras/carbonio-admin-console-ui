@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Container,
@@ -19,7 +18,6 @@ import {
   Table,
   type THeader,
   type TRow,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useMailstoreServers } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
@@ -29,10 +27,9 @@ import { useParams } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
 import { COS, ZIMBRA_ADMIN_URN } from '../../constants';
-import { cosQueryKeys } from '../../services/cos-query-keys';
-import { flushCache } from '../../services/flush-cache-service';
-import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
+import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosDetail } from '../../services/use-cos-detail';
+import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
 
 type ServerItem = {
@@ -50,10 +47,9 @@ export const CosServerPools: FC = () => {
   const { cosId } = useParams();
   const { data: cosDetailData } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
-  const queryClient = useQueryClient();
-  const createSnackbar = useSnackbar();
   const { data: allMailStoreList = [] } = useMailstoreServers();
   const { data: rights = [] } = useCurrentUserRights();
+  const modifyCosMutation = useModifyCos(cosId);
 
   const [selectedTableRows, setSelectedTableRows] = useState<Array<ServerItem>>([]);
   const [selectedTableRowsId, setSelectedTableRowsId] = useState<Array<string>>([]);
@@ -159,39 +155,13 @@ export const CosServerPools: FC = () => {
   ];
 
   function onModifyCOS(body: ModifyCosBody) {
-    modifyCos(body)
-      .then(() => {
-        flushCache('cos', 'id', body.id._content);
-        if (cosId) {
-          queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
-        }
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t(
-            'label.the_last_changes_has_been_saved_successfully',
-            'Changes have been saved successfully',
-          ),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
+    modifyCosMutation.mutate(body, {
+      onSuccess: () => {
         setOpenConfirmDialog(false);
         setSelectedTableRows([]);
         setSelectedTableRowsId([]);
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+      },
+    });
   }
 
   function onEnable() {

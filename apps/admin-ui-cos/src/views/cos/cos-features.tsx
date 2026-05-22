@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find, isEqual, reduce } from 'lodash-es';
@@ -17,12 +16,11 @@ import {
   MOBILE_CONTACT_FEATURE_SYNC,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
-import { cosQueryKeys } from '../../services/cos-query-keys';
-import { flushCache } from '../../services/flush-cache-service';
 import { getCoreAttributes } from '../../services/get-core-attributes';
-import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
+import { ModifyCosBody } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
+import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
 import { Features } from './features';
 
@@ -38,8 +36,8 @@ const CosFeatures: FC = () => {
   const [zimbraId, setZimbraId] = useState<string>('');
   const [cosFeatures, setCosFeatures] = useState<Partial<Record<string, string>>>({});
   const isAdvanced = useIsAdvanced();
-  const queryClient = useQueryClient();
   const { data: rights = [] } = useCurrentUserRights();
+  const modifyCosMutation = useModifyCos(cosId);
 
   const readonlyCOS = (() => {
     const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
@@ -145,36 +143,6 @@ const CosFeatures: FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cosName, isAdvanced]);
 
-  const modifyCosRequest = (body: ModifyCosBody): void => {
-    modifyCos(body)
-      .then(() => {
-        flushCache('cos', 'id', body.id._content);
-        if (cosId) {
-          queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
-        }
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  };
-
   const modifyCoreAttributes = (body: Record<string, unknown>): void => {
     setCoreAttributes(body)
       .then(() => {
@@ -230,7 +198,7 @@ const CosFeatures: FC = () => {
       };
       modifyCoreAttributes(coreAttrBody);
     }
-    modifyCosRequest(body);
+    modifyCosMutation.mutate(body);
   };
 
   const onCancel = (): void => {

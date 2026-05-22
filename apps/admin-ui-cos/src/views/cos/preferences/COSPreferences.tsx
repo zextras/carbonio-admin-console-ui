@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
-import {  Container, useSnackbar  } from '@zextras/ui-components';
+import {  Container  } from '@zextras/ui-components';
 import {  useCurrentUserRights  } from '@zextras/ui-shared';
 import {  find  } from 'lodash-es';
 import React, { useEffect, useState } from 'react';
@@ -13,10 +12,9 @@ import { useParams } from 'react-router';
 
 import { CosAttributes, CosPrefAttributes } from '../../../../types/cos';
 import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
-import { cosQueryKeys } from '../../../services/cos-query-keys';
-import { flushCache } from '../../../services/flush-cache-service';
-import { modifyCos, ModifyCosBody } from '../../../services/modify-cos-service';
+import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosDetail } from '../../../services/use-cos-detail';
+import { useModifyCos } from '../../../services/use-modify-cos';
 import { PageLayout } from '../../page-layout';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
@@ -32,12 +30,11 @@ import { SendingMails } from './SendingMails';
 
 export const COSPreferences = (): React.JSX.Element => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
   const { cosId } = useParams();
   const { data: cosDetailData } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
   const { data: rights = [] } = useCurrentUserRights();
-  const queryClient = useQueryClient();
+  const modifyCosMutation = useModifyCos(cosId);
 
   const locales = localeList(t);
   const isReadOnlyCos = (() => {
@@ -92,33 +89,7 @@ export const COSPreferences = (): React.JSX.Element => {
       })),
     };
 
-    modifyCos(body)
-      .then(() => {
-        flushCache('cos', 'id', body.id._content);
-        if (cosId) {
-          queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
-        }
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label:
-            error?.message ||
-            t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+    modifyCosMutation.mutate(body);
   };
 
   const handleCancel = (): void => {

@@ -3,9 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
-import {
-  Button,
+import { Button,
   Container,
   CustomHeaderFactory,
   CustomTextArea,
@@ -32,13 +30,12 @@ import { useParams } from 'react-router';
 import { Attribute } from '../../../types/attribute';
 import logo from '../../assets/gardian.svg';
 import { COS, DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
-import { cosQueryKeys } from '../../services/cos-query-keys';
 import { deleteCOS } from '../../services/delete-cos-service';
-import { flushCache } from '../../services/flush-cache-service';
-import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
+import { ModifyCosBody } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosDetail } from '../../services/use-cos-detail';
+import { useModifyCos } from '../../services/use-modify-cos';
 import { useTotalAccounts } from '../../services/use-total-accounts';
 import { useTotalDomains } from '../../services/use-total-domains';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
@@ -61,8 +58,8 @@ const CosGeneralInformation: FC = () => {
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const { data: totalAccount = 0 } = useTotalAccounts(cosId);
   const { data: totalDomain = 0 } = useTotalDomains(cosId);
-  const queryClient = useQueryClient();
   const { data: rights = [] } = useCurrentUserRights();
+  const modifyCosMutation = useModifyCos(cosId);
   const [accountList, setAccountList] = useState<Array<TRow>>([]);
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
@@ -244,34 +241,11 @@ const CosGeneralInformation: FC = () => {
         _content: cosData.zimbraId ?? '',
       },
     };
-    modifyCos(body)
-      .then(() => {
-        flushCache('cos', 'id', body.id._content);
-        if (cosId) {
-          queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
-        }
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
+    modifyCosMutation.mutate(body, {
+      onSuccess: () => {
         setIsDirty(false);
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+      },
+    });
   };
 
   const onSave = (): void => {
