@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { FC } from 'react';
 import { useParams } from 'react-router';
 
 import {
@@ -18,10 +17,10 @@ import WscCosSettings from '../../wsc/wsc-cos-settings';
 import CosAdvanced from './cos-advanced';
 import CosFeatures from './cos-features';
 import CosGeneralInformation from './cos-general-information';
-import CosServerPools from './cos-server-pools';
+import { CosServerPools } from './cos-server-pools';
 import { COSPreferences } from './preferences/COSPreferences';
 
-const CosDetailOperation: FC = () => {
+export const CosDetailOperation = () => {
   const { operation } = useParams();
 
   switch (operation) {
@@ -41,5 +40,3 @@ const CosDetailOperation: FC = () => {
       return null;
   }
 };
-
-export default CosDetailOperation;

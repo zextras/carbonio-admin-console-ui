@@ -7,7 +7,7 @@ import { Container } from '@zextras/ui-components';
 import { Route, Routes } from 'react-router';
 
 import { CREATE_NEW_COS_ROUTE_ID } from '../../constants';
-import CosOperations from './cos-detail-operation';
+import { CosDetailOperation } from './cos-detail-operation';
 import CosList from './cos-list';
 import CreateCos from './create-new-cos';
 
@@ -20,7 +20,7 @@ export const CosDetailPanel = () => (
     background="gray6"
   >
     <Routes>
-      <Route path={'/:cosId/:operation'} element={<CosOperations />} />
+      <Route path={'/:cosId/:operation'} element={<CosDetailOperation />} />
       <Route path={`/${CREATE_NEW_COS_ROUTE_ID}`} element={<CreateCos />} />
       <Route path={'/cos_list'} element={<CosList />} />
     </Routes>
