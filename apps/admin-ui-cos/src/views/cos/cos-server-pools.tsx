@@ -23,12 +23,12 @@ import {
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useMailstoreServers } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
-import { ChangeEvent, FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
-import { COS, DISABLED, ENABLED, ZIMBRA_ADMIN_URN } from '../../constants';
+import { COS, ZIMBRA_ADMIN_URN } from '../../constants';
 import { cosQueryKeys } from '../../services/cos-query-keys';
 import { flushCache } from '../../services/flush-cache-service';
 import { modifyCos, ModifyCosBody } from '../../services/modify-cos-service';
@@ -41,295 +41,170 @@ type ServerItem = {
   a?: Array<Attribute>;
 };
 
-const CosServerPools: FC = () => {
+function isPoolEnabled(poolList: Array<Attribute>, serverId?: string): boolean {
+  return !!poolList.find((sp) => serverId === sp?._content)?.c;
+}
+
+export const CosServerPools: FC = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
   const { data: cosDetailData } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
   const queryClient = useQueryClient();
-  const [zimbraMailHostPool, setZimbraMailHostPool] = useState<boolean>(true);
-  const [serverList, setServerList] = useState<Array<ServerItem>>([]);
-  const [zimbraMailHostPoolList, setZimbraMailHostPoolList] = useState<Array<Attribute>>([]);
-  const [serverTableRows, setServerTableRows] = useState<Array<TRow>>([]);
-  const [selectedTableRows, setSelectedTableRows] = useState<Array<ServerItem>>([]);
-  const [selectedTableRowsId, setSelectedTableRowsId] = useState<Array<string>>([]);
-  const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
-  const [searchServer, setSearchServer] = useState<string>('');
   const { data: allMailStoreList = [] } = useMailstoreServers();
   const { data: rights = [] } = useCurrentUserRights();
 
-  const readonlyCOS = useMemo(() => {
-    const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
-    return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  const [selectedTableRows, setSelectedTableRows] = useState<Array<ServerItem>>([]);
+  const [selectedTableRowsId, setSelectedTableRowsId] = useState<Array<string>>([]);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
+  const [searchServer, setSearchServer] = useState<string>('');
+  const [debouncedSearch, setDebouncedSearch] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('');
 
-  useEffect(() => {
-    if (allMailStoreList && allMailStoreList.length > 0) {
-      setServerList(allMailStoreList);
+  const searchDebounceRef = useRef(debounce((text: string) => setDebouncedSearch(text), 700));
+
+  const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
+  const readonlyCOS = !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+
+  const poolList: Array<Attribute> =
+    cosInformation?.filter((item) => item?.n === 'zimbraMailHostPool') ?? [];
+
+  const allDisabled = poolList.length > 0 && poolList.every((item) => !item?.c);
+
+  const selectedServer = selectedTableRows[0];
+
+  const enable = !!selectedServer && !isPoolEnabled(poolList, selectedServer.id);
+  const disable = !!selectedServer && isPoolEnabled(poolList, selectedServer.id);
+
+  const handleSelect = (item: ServerItem) => {
+    setSelectedTableRows([item]);
+    setSelectedTableRowsId([item?.id ?? '']);
+  };
+
+  const filteredServers = (() => {
+    let items: Array<ServerItem> = allMailStoreList;
+    if (statusFilter === 'enabled') {
+      items = items.filter((item) => isPoolEnabled(poolList, item.id));
+    } else if (statusFilter === 'disabled') {
+      items = items.filter((item) => !isPoolEnabled(poolList, item.id));
     }
-  }, [allMailStoreList]);
+    if (debouncedSearch !== '') {
+      items = items.filter((item) => item?.name?.includes(debouncedSearch));
+    }
+    return items;
+  })();
 
-  useMemo(() => {
-    if (serverList && serverList.length > 0) {
-      const allRows = serverList.map((item) => ({
-        id: item?.id ?? '',
-        columns: [
-          <Container
-            crossAlignment="flex-start"
-            key={item?.id}
-            style={{ cursor: 'pointer' }}
-            onClick={(e: React.MouseEvent): void => {
-              e.stopPropagation();
-              setSelectedTableRows([item]);
-              setSelectedTableRowsId([item?.id ?? '']);
-            }}
-          >
-            <ds-text as="span" size="small" weight="regular" key={item?.id} color="gray0">
-              {item?.name}
+  const serverTableRows: Array<TRow> = filteredServers.map((item) => ({
+    id: item?.id ?? '',
+    columns: [
+      <Container
+        crossAlignment="flex-start"
+        key={`name-${item?.id}`}
+        style={{ cursor: 'pointer' }}
+        onClick={(e: React.MouseEvent): void => {
+          e.stopPropagation();
+          handleSelect(item);
+        }}
+      >
+        <ds-text as="span" size="small" weight="regular" color="gray0">
+          {item?.name}
+        </ds-text>
+      </Container>,
+      <Container
+        crossAlignment="flex-start"
+        key={`status-${item?.id}`}
+        style={{ cursor: 'pointer' }}
+        onClick={(e: React.MouseEvent): void => {
+          e.stopPropagation();
+          handleSelect(item);
+        }}
+      >
+        <ds-text as="span">
+          {isPoolEnabled(poolList, item.id) ? (
+            <ds-text as="span" size="small" weight="light">
+              {t('cos.enabled', 'Enabled')}
             </ds-text>
-          </Container>,
-          <Container
-            crossAlignment="flex-start"
-            key={item?.id}
-            style={{ cursor: 'pointer' }}
-            onClick={(e: React.MouseEvent): void => {
-              e.stopPropagation();
-              setSelectedTableRows([item]);
-              setSelectedTableRowsId([item?.id ?? '']);
-            }}
-          >
-            <ds-text as="span" key={item?.id}>
-              {zimbraMailHostPoolList.find((sp) => item?.id === sp?._content)?.c ? (
-                <ds-text as="span" size="small" weight="light">
-                  {t('cos.enabled', 'Enabled')}
-                </ds-text>
-              ) : (
-                <ds-text as="span" size="small" weight="light" color="error">
-                  {t('cos.disabled', 'Disabled')}
-                </ds-text>
-              )}
+          ) : (
+            <ds-text as="span" size="small" weight="light" color="error">
+              {t('cos.disabled', 'Disabled')}
             </ds-text>
-          </Container>,
-        ],
-      }));
-      setServerTableRows(allRows);
-    }
-  }, [serverList, zimbraMailHostPoolList, t]);
-
-  const enable = useMemo(
-    () =>
-      selectedTableRows.length > 0 &&
-      !zimbraMailHostPoolList.find((sp) => selectedTableRows[0]?.id === sp?._content)?.c,
-    [selectedTableRows, zimbraMailHostPoolList],
-  );
-
-  const disable = useMemo(
-    () =>
-      (selectedTableRows.length > 0 &&
-        zimbraMailHostPoolList.find((sp) => selectedTableRows[0]?.id === sp?._content)?.c) ||
-      false,
-    [selectedTableRows, zimbraMailHostPoolList],
-  );
-
-  useEffect(() => {
-    if (!!cosInformation && cosInformation.length > 0) {
-      const list = cosInformation.filter((item) => item?.n === 'zimbraMailHostPool');
-      if (list) {
-        setZimbraMailHostPoolList(list);
-      }
-    }
-  }, [cosInformation]);
-
-  const onFilterApply = useCallback(
-    (e: string) => {
-      if (e === null) {
-        return;
-      }
-      if (e === ENABLED) {
-        const allRows = serverList
-          .filter(
-            (item) =>
-              zimbraMailHostPoolList.find((sp) => item?.id === sp?._content)?.c === true,
-          )
-          .map((item) => ({
-            id: item?.id ?? '',
-            columns: [
-              <Container
-                crossAlignment="flex-start"
-                key={item?.id}
-                style={{ cursor: 'pointer' }}
-                onClick={(ev: React.MouseEvent): void => {
-                  ev.stopPropagation();
-                  setSelectedTableRows([item]);
-                  setSelectedTableRowsId([item?.id ?? '']);
-                }}
-              >
-                <ds-text as="span" size="small" weight="regular" key={item?.id} color="gray0">
-                  {item?.name}
-                </ds-text>
-              </Container>,
-              <Container
-                crossAlignment="flex-start"
-                key={item?.id}
-                style={{ cursor: 'pointer' }}
-                onClick={(ev: React.MouseEvent): void => {
-                  ev.stopPropagation();
-                  setSelectedTableRows([item]);
-                  setSelectedTableRowsId([item?.id ?? '']);
-                }}
-              >
-                <ds-text as="span" key={item?.id}>
-                  {zimbraMailHostPoolList.find((sp) => item?.id === sp?._content)?.c ? (
-                    <ds-text as="span" size="small" weight="light">
-                      {t('cos.enabled', 'Enabled')}
-                    </ds-text>
-                  ) : (
-                    <ds-text as="span" size="small" weight="light" color="error">
-                      {t('cos.disabled', 'Disabled')}
-                    </ds-text>
-                  )}
-                </ds-text>
-              </Container>,
-            ],
-          }));
-        setServerTableRows(allRows);
-      }
-      if (e === DISABLED) {
-        const allRows = serverList
-          .filter(
-            (item) => !zimbraMailHostPoolList.find((sp) => item?.id === sp?._content)?.c,
-          )
-          .map((item) => ({
-            id: item?.id ?? '',
-            columns: [
-              <Container
-                crossAlignment="flex-start"
-                key={item?.id}
-                style={{ cursor: 'pointer' }}
-                onClick={(ev: React.MouseEvent): void => {
-                  ev.stopPropagation();
-                  setSelectedTableRows([item]);
-                  setSelectedTableRowsId([item?.id ?? '']);
-                }}
-              >
-                <ds-text as="span" size="small" weight="regular" key={item?.id} color="gray0">
-                  {item?.name}
-                </ds-text>
-              </Container>,
-              <Container
-                crossAlignment="flex-start"
-                key={item?.id}
-                style={{ cursor: 'pointer' }}
-                onClick={(ev: React.MouseEvent): void => {
-                  ev.stopPropagation();
-                  setSelectedTableRows([item]);
-                  setSelectedTableRowsId([item?.id ?? '']);
-                }}
-              >
-                <ds-text as="span" key={item?.id}>
-                  {zimbraMailHostPoolList.find((sp) => item?.id === sp?._content)?.c ? (
-                    <ds-text as="span" size="small" weight="light">
-                      {t('cos.enabled', 'Enabled')}
-                    </ds-text>
-                  ) : (
-                    <ds-text as="span" size="small" weight="light" color="error">
-                      {t('cos.disabled', 'Disabled')}
-                    </ds-text>
-                  )}
-                </ds-text>
-              </Container>,
-            ],
-          }));
-        setServerTableRows(allRows);
-      }
-    },
-    [t, serverList, zimbraMailHostPoolList],
-  );
-
-  const tableHeader = useMemo<Array<THeader>>(
-    () => [
-      {
-        id: 'name_server',
-        label: t('cos.name_server', 'Name Server'),
-        width: '80%',
-        bold: true,
-      },
-      {
-        id: 'status',
-        label: t('cos.status', 'Status'),
-        width: '20%',
-        align: 'left' as const,
-        bold: true,
-        items: [
-          { label: t('cos.enabled', 'Enabled'), value: 'enabled' },
-          { label: t('cos.disabled', 'Disabled'), value: 'disabled' },
-        ],
-        onChange: (selected): void => {
-          const value = selected[0]?.value;
-          if (value) {
-            onFilterApply(value);
-          }
-        },
-      },
+          )}
+        </ds-text>
+      </Container>,
     ],
-    [t, onFilterApply],
-  );
+  }));
 
-  const onDisable = useCallback(() => {
-    setOpenConfirmDialog(true);
-  }, []);
-
-  const onModifyCOS = useCallback(
-    (body: ModifyCosBody) => {
-      modifyCos(body)
-        .then(() => {
-          flushCache('cos', 'id', body.id._content);
-          if (cosId) {
-            queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
-          }
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t(
-              'label.the_last_changes_has_been_saved_successfully',
-              'Changes have been saved successfully',
-            ),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          setOpenConfirmDialog(false);
-          setSelectedTableRows([]);
-          setSelectedTableRowsId([]);
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
+  const tableHeader: Array<THeader> = [
+    {
+      id: 'name_server',
+      label: t('cos.name_server', 'Name Server'),
+      width: '80%',
+      bold: true,
     },
-    [createSnackbar, t, cosId, queryClient],
-  );
+    {
+      id: 'status',
+      label: t('cos.status', 'Status'),
+      width: '20%',
+      align: 'left' as const,
+      bold: true,
+      items: [
+        { label: t('cos.enabled', 'Enabled'), value: 'enabled' },
+        { label: t('cos.disabled', 'Disabled'), value: 'disabled' },
+      ],
+      onChange: (selected): void => {
+        setStatusFilter(selected[0]?.value ?? '');
+      },
+    },
+  ];
 
-  const onEnable = useCallback(() => {
+  function onModifyCOS(body: ModifyCosBody) {
+    modifyCos(body)
+      .then(() => {
+        flushCache('cos', 'id', body.id._content);
+        if (cosId) {
+          queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
+        }
+        createSnackbar({
+          key: 'success',
+          severity: 'success',
+          label: t(
+            'label.the_last_changes_has_been_saved_successfully',
+            'Changes have been saved successfully',
+          ),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+        setOpenConfirmDialog(false);
+        setSelectedTableRows([]);
+        setSelectedTableRowsId([]);
+      })
+      .catch((error) => {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: error?.message
+            ? error?.message
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+      });
+  }
+
+  function onEnable() {
     const body: ModifyCosBody = {
       _jsns: ZIMBRA_ADMIN_URN,
       a: [
-        ...zimbraMailHostPoolList.map((item) => ({
+        ...poolList.map((item) => ({
           n: 'zimbraMailHostPool',
           _content: item?._content,
         })),
         {
           n: 'zimbraMailHostPool',
-          _content: selectedTableRows[0]?.id ?? '',
+          _content: selectedServer?.id ?? '',
         },
       ],
       id: {
@@ -337,19 +212,17 @@ const CosServerPools: FC = () => {
       },
     };
     onModifyCOS(body);
-  }, [selectedTableRows, onModifyCOS, zimbraMailHostPoolList, cosId]);
+  }
 
-  const onDisableServer = useCallback(() => {
-    const allServers = zimbraMailHostPoolList.filter(
-      (item) => item?._content !== selectedTableRows[0]?.id,
-    );
-    const attributes: Attribute[] =
+  function onDisableServer() {
+    const allServers = poolList.filter((item) => item?._content !== selectedServer?.id);
+    const attributes: Array<Attribute> =
       allServers.length === 0
         ? [{ n: 'zimbraMailHostPool', _content: '' }]
         : allServers.map((item) => ({
-          n: 'zimbraMailHostPool',
-          _content: item?._content,
-        }));
+            n: 'zimbraMailHostPool',
+            _content: item?._content,
+          }));
     const body: ModifyCosBody = {
       _jsns: ZIMBRA_ADMIN_URN,
       id: {
@@ -359,79 +232,17 @@ const CosServerPools: FC = () => {
     } as ModifyCosBody;
 
     onModifyCOS(body);
-  }, [selectedTableRows, zimbraMailHostPoolList, onModifyCOS, cosId]);
+  }
 
-  const hideConfirmDialog = useCallback(() => {
-    setOpenConfirmDialog(false);
-  }, []);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchServerLists = useCallback(
-    debounce((searchText: string, serverListItems: Array<ServerItem>) => {
-      if (searchText !== '') {
-        const allRows = serverListItems
-          .filter((item) => item?.name?.includes(searchText))
-          .map((item) => ({
-            id: item?.id ?? '',
-            columns: [
-              <Container
-                crossAlignment="flex-start"
-                key={item?.id}
-                style={{ cursor: 'pointer' }}
-                onClick={(ev: React.MouseEvent): void => {
-                  ev.stopPropagation();
-                  setSelectedTableRows([item]);
-                  setSelectedTableRowsId([item?.id ?? '']);
-                }}
-              >
-                <ds-text as="span" size="small" weight="regular" key={item?.id} color="gray0">
-                  {item?.name}
-                </ds-text>
-              </Container>,
-              <Container
-                crossAlignment="flex-start"
-                key={item?.id}
-                style={{ cursor: 'pointer' }}
-                onClick={(ev: React.MouseEvent): void => {
-                  ev.stopPropagation();
-                  setSelectedTableRows([item]);
-                  setSelectedTableRowsId([item?.id ?? '']);
-                }}
-              >
-                <ds-text as="span" key={item?.id}>
-                  {zimbraMailHostPoolList.find((sp) => item?.id === sp?._content)?.c ? (
-                    <ds-text as="span" size="small" weight="light">
-                      {t('cos.enabled', 'Enabled')}
-                    </ds-text>
-                  ) : (
-                    <ds-text as="span" size="small" weight="light" color="error">
-                      {t('cos.disabled', 'Disabled')}
-                    </ds-text>
-                  )}
-                </ds-text>
-              </Container>,
-            ],
-          }));
-        setServerTableRows(allRows);
-      }
-    }, 700),
-    [debounce],
-  );
-
-  useEffect(() => {
-    searchServerLists(searchServer, serverList);
-  }, [searchServer, searchServerLists, serverList]);
-
-  useEffect(() => {
-    if (zimbraMailHostPoolList && serverList.length > 0) {
-      if (
-        zimbraMailHostPoolList.length ===
-        zimbraMailHostPoolList.filter((item) => !item?.c).length
-      ) {
-        setZimbraMailHostPool(false);
-      }
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchServer(value);
+    if (value === '') {
+      setDebouncedSearch('');
+    } else {
+      searchDebounceRef.current(value);
     }
-  }, [zimbraMailHostPoolList, serverList]);
+  };
 
   return (
     <PageLayout title={t('label.server_pools', 'Server Pools')}>
@@ -456,19 +267,19 @@ const CosServerPools: FC = () => {
           <ListRow>
             <Padding bottom="large" top="large">
               <Switch
-                value={zimbraMailHostPool}
+                value={!allDisabled}
                 label={t(
                   'cos.limt_serverpool_avaiable_create_user',
                   'Limit server pool available for creating new users in this COS',
                 )}
                 onClick={(): void => {
-                  setZimbraMailHostPool(!zimbraMailHostPool);
+                  // Toggle is read-only display based on pool data — actual changes go through onEnable/onDisableServer
                 }}
                 iconColor="primary"
               />
             </Padding>
           </ListRow>
-          {zimbraMailHostPool && (
+          {!allDisabled && (
             <>
               <Row mainAlignment="flex-start" width="100%">
                 <Container orientation="vertical" mainAlignment="space-around" height="56px">
@@ -482,22 +293,21 @@ const CosServerPools: FC = () => {
                       <Input
                         value={searchServer}
                         disabled={
-                          (serverTableRows.length === 0 && searchServer.length === 0) || readonlyCOS
+                          (allMailStoreList.length === 0 && searchServer.length === 0) ||
+                          readonlyCOS
                         }
                         label={t('cos.search_a_specific_server', 'Search for a specific server')}
                         CustomIcon={(): ReactElement => (
                           <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                         )}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                          setSearchServer(e.target.value);
-                        }}
+                        onChange={handleSearchChange}
                       />
                     </Row>
                     <Row padding={{ all: 'small' }} width="35%">
                       <Padding left="small" right="large">
                         <Button
                           type="outlined"
-                          key="add-button"
+                          key="enable-button"
                           label={t('label.enable', 'enable')}
                           color="primary"
                           icon="CheckmarkCircleOutline"
@@ -510,14 +320,14 @@ const CosServerPools: FC = () => {
 
                       <Button
                         type="outlined"
-                        key="add-button"
+                        key="disable-button"
                         label={t('label.disable', 'disable')}
                         color="error"
                         icon="CloseCircleOutline"
                         iconPlacement="right"
                         size="extralarge"
                         disabled={!disable || readonlyCOS}
-                        onClick={onDisable}
+                        onClick={() => setOpenConfirmDialog(true)}
                       />
                     </Row>
                   </Row>
@@ -561,7 +371,7 @@ const CosServerPools: FC = () => {
                 label={t('label.helo', 'Help')}
                 type="outlined"
                 color="primary"
-                onClick={hideConfirmDialog}
+                onClick={() => setOpenConfirmDialog(false)}
               />
             </Container>
 
@@ -570,7 +380,7 @@ const CosServerPools: FC = () => {
                 <Button
                   label={t('label.no_go_back', 'No, Go Back')}
                   color="secondary"
-                  onClick={hideConfirmDialog}
+                  onClick={() => setOpenConfirmDialog(false)}
                 />
               </Padding>
               <Button
@@ -585,7 +395,7 @@ const CosServerPools: FC = () => {
         <Padding all="medium">
           <ds-text as="p" overflow="break-word" weight="regular">
             {t('cos.create_cos_success_msg', {
-              serverName: serverList.find((sp) => sp?.id === selectedTableRows[0]?.id)?.name,
+              serverName: allMailStoreList.find((sp) => sp?.id === selectedServer?.id)?.name,
               defaultValue:
                 'You are disabling pool on {{serverName}}. All mailboxes will be not moved. Are you sure you want to delete it?',
             })}
@@ -595,5 +405,3 @@ const CosServerPools: FC = () => {
     </PageLayout>
   );
 };
-
-export default CosServerPools;
