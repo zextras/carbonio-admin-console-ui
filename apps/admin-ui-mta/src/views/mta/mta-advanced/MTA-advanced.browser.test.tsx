@@ -56,8 +56,8 @@ function getAllConfigResponse(zimbraMtaMaxMessageSize: string) {
 }
 
 describe('MTAAdvanced', () => {
-  beforeEach(() => {
-    grantUserConfigRights();
+  beforeEach(async () => {
+    await grantUserConfigRights();
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse('10485760'));
   });
 
@@ -66,7 +66,6 @@ describe('MTAAdvanced', () => {
   });
 
   it('should render the component correctly', async () => {
-    grantUserConfigRights();
     await setupBrowserTest(<MTAAdvanced />);
     await expect.element(page.getByText('Advanced', { exact: true })).toBeVisible();
     await expectLoggingSectionVisible();

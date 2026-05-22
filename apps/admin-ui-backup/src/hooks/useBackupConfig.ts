@@ -6,6 +6,7 @@
 
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights } from '@zextras/ui-shared';
+import { TFunction } from 'i18next';
 import { cloneDeep, find, isEmpty, isEqual, reduce } from 'lodash-es';
 import {
 	ChangeEvent,
@@ -34,7 +35,7 @@ export const useBackupConfig = (): {
 	changeBackupDetail: (e: ChangeEvent<HTMLInputElement>) => void;
 	changeBackupSchedulerInput: (e: ChangeEvent<HTMLInputElement>) => void;
 	changeBackupSchedulerSwitch: (key: string) => void;
-	t: (key: string, fallback?: string) => string;
+	t: TFunction;
 } => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);

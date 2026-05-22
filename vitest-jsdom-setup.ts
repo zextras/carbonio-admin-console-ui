@@ -91,8 +91,6 @@ window.resizeTo = function resizeTo(width, height): void {
   }).dispatchEvent(new this.Event('resize'));
 };
 
-globalThis.fetch = require('node-fetch');
-
 beforeEach(() => {
   // cleanup local storage
   globalThis.localStorage.clear();
