@@ -13,6 +13,43 @@ import { useNavigate } from 'react-router';
 
 import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
 
+function getDescriptionToShow(options: {
+  maintenanceStatus: string;
+  bannerExpiringDescription: string;
+  bannerExpiredDescription: string;
+  bannerInvalidDescription: string;
+}): string {
+  if (options.maintenanceStatus === 'expiring') {
+    return options.bannerExpiringDescription;
+  }
+  if (options.maintenanceStatus === 'expired') {
+    return options.bannerExpiredDescription;
+  }
+  return options.bannerInvalidDescription;
+}
+
+function getLabelToShow(options: {
+  maintenanceStatus: string;
+  maxCarbonioVersion: string;
+  bannerExpiringLabel: string;
+  bannerExpiringWithoutMaxVersionLabel: string;
+  bannerExpiredLabel: string;
+  bannerExpiredWithoutMaxVersionLabel: string;
+  bannerInvalidLabel: string;
+}): string {
+  if (options.maintenanceStatus === 'expiring') {
+    return options.maxCarbonioVersion
+      ? options.bannerExpiringLabel
+      : options.bannerExpiringWithoutMaxVersionLabel;
+  }
+  if (options.maintenanceStatus === 'expired') {
+    return options.maxCarbonioVersion
+      ? options.bannerExpiredLabel
+      : options.bannerExpiredWithoutMaxVersionLabel;
+  }
+  return options.bannerInvalidLabel;
+}
+
 type licenseBannerProps = {
   redirectButtonHasToAppear?: boolean;
 };
@@ -82,23 +119,22 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
 
   const detailsButton = t('button.view_subscription_details', 'View Subscription Details');
 
-  const labelToShow =
-    maintenanceStatus === 'expiring'
-      ? maxCarbonioVersion
-        ? bannerExpiringLabel
-        : bannerExpiringWithoutMaxVersionLabel
-      : maintenanceStatus === 'expired'
-      ? maxCarbonioVersion
-        ? bannerExpiredLabel
-        : bannerExpiredWithoutMaxVersionLabel
-      : bannerInvalidLabel;
+  const labelToShow = getLabelToShow({
+    maintenanceStatus,
+    maxCarbonioVersion,
+    bannerExpiringLabel,
+    bannerExpiringWithoutMaxVersionLabel,
+    bannerExpiredLabel,
+    bannerExpiredWithoutMaxVersionLabel,
+    bannerInvalidLabel,
+  });
 
-  const descriptionToShow =
-    maintenanceStatus === 'expiring'
-      ? bannerExpiringDescription
-      : maintenanceStatus === 'expired'
-      ? bannerExpiredDescription
-      : bannerInvalidDescription;
+  const descriptionToShow = getDescriptionToShow({
+    maintenanceStatus,
+    bannerExpiringDescription,
+    bannerExpiredDescription,
+    bannerInvalidDescription,
+  });
 
   const onClose = () => setIsLicenseBannerOpen(false);
   const navigate = useNavigate();
