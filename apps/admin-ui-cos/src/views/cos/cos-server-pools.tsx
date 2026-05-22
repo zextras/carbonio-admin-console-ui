@@ -252,7 +252,7 @@ export const CosServerPools: FC = () => {
           {!allDisabled && (
             <>
               <Row mainAlignment="flex-start" width="100%">
-                <Container orientation="vertical" mainAlignment="space-around" height="56px">
+                <Container orientation="vertical" mainAlignment="space-around" height="fit">
                   <Row orientation="horizontal" width="100%">
                     <Row
                       padding={{ right: 'small' }}
