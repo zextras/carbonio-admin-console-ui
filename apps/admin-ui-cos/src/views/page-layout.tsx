@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
-import { FC, ReactNode, useMemo } from 'react';
+import { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RouteLeavingGuard } from './ui-extras/nav-guard';
@@ -18,7 +18,7 @@ export const PageLayout: FC<{
 }> = ({ title, onSave, onCancel, unSavedChanges, children }) => {
   const [t] = useTranslation();
 
-  const headerButtons = useMemo(() => {
+  const headerButtons = (() => {
     if (!unSavedChanges) return null;
     return (
       <Container orientation="horizontal" width="fit" gap="1rem">
@@ -28,7 +28,7 @@ export const PageLayout: FC<{
         {onSave && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
       </Container>
     );
-  }, [unSavedChanges, onCancel, onSave, t]);
+  })();
 
   return (
     <Container mainAlignment="flex-start" padding={{ all: 'large' }}>

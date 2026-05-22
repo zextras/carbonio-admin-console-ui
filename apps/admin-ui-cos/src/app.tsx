@@ -7,7 +7,7 @@
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, registerActions, removeRoute, useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -26,6 +26,57 @@ import {
 import { useCosStore } from './store/cos/store';
 import AppView from './views/app-view';
 
+type RightEntry = {
+  all?: Array<{
+    getAttrs?: Array<{ all?: boolean }>;
+    setAttrs?: Array<{ all?: boolean }>;
+    right?: Array<{ n: string }>;
+  }>;
+  type: string;
+};
+
+function checkShowCOS(rights: RightEntry[] | undefined): boolean {
+  const rightsConfig = find(rights, { type: COS }) ?? { all: [], type: COS };
+  return !!(
+    rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
+    rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
+    find(rightsConfig?.all?.[0]?.right, { n: LIST_COS })
+  );
+}
+
+function checkCreateCosRight(rights: RightEntry[] | undefined): boolean {
+  const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
+  return !!(
+    rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
+    rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
+    find(rightsConfig?.all?.[0]?.right, { n: CREATE_COS })
+  );
+}
+
+const CosTooltipView: FC = () => {
+  const [t] = useTranslation();
+  return (
+    <PrimaryBarTooltip>
+      <p>
+        <Trans
+          i18nKey="label.class_of_service_lbl"
+          defaults="<bold>Class of Service</bold>"
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </p>
+      <p>
+        <Trans
+          i18nKey="label.cos_primarybar_tooltip"
+          defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </p>
+    </PrimaryBarTooltip>
+  );
+};
+
 const App: FC = () => {
   const [t] = useTranslation();
   const navigate = useNavigate();
@@ -33,56 +84,15 @@ const App: FC = () => {
   const { setCosView } = useCosStore();
   const { data: rights } = useCurrentUserRights();
 
-  const showCOS = useMemo(() => {
-    const rightsConfig = find(rights, { type: COS }) ?? { all: [], type: COS };
-    return !!(
-      rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-      rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-      find(rightsConfig?.all?.[0]?.right, { n: LIST_COS })
-    );
-  }, [rights]);
+  const showCOS = checkShowCOS(rights);
+  const createCosRight = checkCreateCosRight(rights);
 
-  const createCosRight = useMemo(() => {
-    const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
-    return !!(
-      rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-      rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-      find(rightsConfig?.all?.[0]?.right, { n: CREATE_COS })
-    );
-  }, [rights]);
-
-  const managementSection = useMemo(
-    () => ({
-      id: MANAGE_APP_ID,
-      label: t('label.management', 'Management'),
-      position: 3,
-    }),
-    [t],
-  );
-
-  const CosTooltipView: FC = useCallback(
-    () => (
-      <PrimaryBarTooltip>
-        <p>
-          <Trans
-            i18nKey="label.class_of_service_lbl"
-            defaults="<bold>Class of Service</bold>"
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-        <p>
-          <Trans
-            i18nKey="label.cos_primarybar_tooltip"
-            defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-      </PrimaryBarTooltip>
-    ),
-    [t],
-  );
+  const managementSectionRef = useRef({
+    id: MANAGE_APP_ID,
+    label: t('label.management', 'Management'),
+    position: 3,
+  });
+  managementSectionRef.current.label = t('label.management', 'Management');
 
   useEffect(() => {
     if (showCOS) {
@@ -93,14 +103,14 @@ const App: FC = () => {
         label: t('label.cos', 'COS') || '',
         primaryBar: 'SettingsModOutline',
         appView: AppView,
-        primarybarSection: { ...managementSection },
+        primarybarSection: managementSectionRef.current,
         tooltip: CosTooltipView,
         trackerLabel: PRIMARY_BAR_COS,
       });
     } else {
       removeRoute(COS_ROUTE_ID);
     }
-  }, [CosTooltipView, managementSection, showCOS, t]);
+  }, [showCOS, t]);
 
   useEffect(() => {
     registerActions({

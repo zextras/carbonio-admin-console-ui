@@ -13,25 +13,18 @@ import {
   Row,
   Table,
   TrackNumberPerPage,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../constants';
-import { getCosList } from '../../services/search-cos-service';
+import { useCosList } from '../../services/use-cos-list';
 import { useCosStore } from '../../store/cos/store';
 import ScrollContainer from '../components/scrollComponent';
-import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 
-type StatusTypes = {
-  [key: string]: {
-    [key: string]: string;
-  };
-};
 type ZimbraCosAttribute = {
   n: string;
   _content: string;
@@ -47,182 +40,152 @@ type ZimbraCosEntry = {
   zimbraId: string;
 };
 
+const STATUS_COLOR = {
+  active: '#8BC34A',
+  maintenance: '#2196D3',
+  locked: '#D74942',
+  closed: '#828282',
+  pending: '#828282',
+  lockout: '#D74942',
+} as const;
+
+const STATUS_LABEL_KEYS: Record<string, string> = {
+  active: 'label.active',
+  maintenance: 'label.in_maintenance',
+  locked: 'label.locked',
+  closed: 'label.closed',
+  pending: 'label.pending',
+  lockout: 'label.lockout',
+};
+
+const STATUS_LABEL_DEFAULTS: Record<string, string> = {
+  active: 'Active',
+  maintenance: 'In maintenance',
+  locked: 'Locked',
+  closed: 'Closed',
+  pending: 'Pending',
+  lockout: 'Lockout',
+};
+
 const CosList: FC = () => {
   const [t] = useTranslation();
   const { setCos, setCosView } = useCosStore();
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
-  const [hasError, setHasError] = useState<boolean>(false);
-  const createSnackbar = useSnackbar();
   const [isTableTooTall, setIsTableTooTall] = useState(false);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
-
   const tableRef = useRef<HTMLTableElement>(null);
 
-  const headers = useMemo(
-    () => [
-      {
-        id: 'name',
-        label: t('label.Cos_name', 'Cos Name'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'status',
-        label: t('label.status', 'Status'),
-        width: '75%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
-
-  const [cosList, setcosList] = useState<
+  const headers = [
     {
-      id: string;
-      columns: ReactElement[];
-      iteam: ZimbraCosEntry;
-      clickable: boolean;
-    }[]
-  >([]);
+      id: 'name',
+      label: t('label.Cos_name', 'Cos Name'),
+      width: '25%',
+      bold: true,
+    },
+    {
+      id: 'status',
+      label: t('label.status', 'Status'),
+      width: '75%',
+      bold: true,
+    },
+  ];
+
   const [offset, setOffset] = useState<number>(0);
   const [searchString, setSearchString] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [totalCos, setTotalCos] = useState<number>(0);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
-  const STATUS_COLOR: StatusTypes = useMemo(
-    () => ({
-      active: {
-        color: '#8BC34A',
-        label: t('label.active', 'Active'),
-      },
-      maintenance: {
-        color: '#2196D3',
-        label: t('label.in_maintenance', 'In maintenance'),
-      },
-      locked: {
-        color: '#D74942',
-        label: t('label.locked', 'Locked'),
-      },
-      closed: {
-        color: '#828282',
-        label: t('label.closed', 'Closed'),
-      },
-      pending: {
-        color: '#828282',
-        label: t('label.pending', 'Pending'),
-      },
-      lockout: {
-        color: '#D74942',
-        label: t('label.lockout', 'Lockout'),
-      },
-    }),
-    [t],
-  );
+  const { data, isPending, isError } = useCosList({
+    searchQuery,
+    limit,
+    offset,
+  });
 
-  const onCosSelect = useCallback(
-    (Cos: ZimbraCosEntry) => {
-      setCos({
-        a: Cos?.a,
-        id: Cos?.id,
-        name: Cos?.name,
-      });
-      setCosView(GENERAL_INFORMATION);
-      replaceHistory(`/${Cos.id}/${GENERAL_INFORMATION}`);
-    },
-    [setCos, setCosView],
-  );
+  const cosListResponse = data?.cos || [];
+  const totalCos = data?.searchTotal || 0;
 
-  const getAllcosList = useCallback((): void => {
-    setIsRequestInProgress(true);
-    getCosList(searchQuery, limit, offset)
-      .then((data) => {
-        const cosListResponse = data?.cos || [];
-        if (cosListResponse && Array.isArray(cosListResponse)) {
-          const cosListArr: {
-            id: string;
-            columns: ReactElement[];
-            iteam: ZimbraCosEntry;
-            clickable: boolean;
-          }[] = [];
-          setTotalCos(data.searchTotal || 0);
-          cosListResponse.forEach((item) => {
-            const CosIteam: ZimbraCosEntry = {
-              name: item.name,
-              id: item.id,
-              zimbraCosType: '',
-              zimbraCosStatus: 'active',
-              zimbraCosName: '',
-              zimbraId: '',
-              a: item.a,
-            };
-            item?.a?.forEach((ele: ZimbraCosAttribute) => {
-              if (ele.n === 'zimbraCosType') {
-                CosIteam.zimbraCosType = ele._content;
-              } else if (ele.n === 'zimbraCosStatus') {
-                CosIteam.zimbraCosStatus = ele._content;
-              } else if (ele.n === 'zimbraCosName') {
-                CosIteam.zimbraCosName = ele._content;
-              } else if (ele.n === 'zimbraId') {
-                CosIteam.zimbraId = ele._content;
-              }
-            });
-            cosListArr.push({
-              id: item?.id,
-              columns: [
-                <ds-text
-                  as="span"
-                  size="small"
-                  key={item?.id}
-                  color="gray0"
-                  weight="regular"
-                  onClick={(): void => {
-                    onCosSelect(CosIteam);
-                  }}
-                >
-                  {item?.name || ' '}
-                </ds-text>,
+  const onCosSelect = (Cos: ZimbraCosEntry) => {
+    setCos({
+      a: Cos?.a,
+      id: Cos?.id,
+      name: Cos?.name,
+    });
+    setCosView(GENERAL_INFORMATION);
+    replaceHistory(`/${Cos.id}/${GENERAL_INFORMATION}`);
+  };
 
-                <ds-text
-                  as="span"
-                  size="small"
-                  weight="light"
-                  key={item?.id}
-                  color={STATUS_COLOR[CosIteam.zimbraCosStatus].color}
-                  onClick={(): void => {
-                    onCosSelect(CosIteam);
-                  }}
-                >
-                  {STATUS_COLOR[CosIteam.zimbraCosStatus].label}
-                </ds-text>,
-              ],
-              iteam: CosIteam,
-              clickable: true,
-            });
-          });
-          setcosList(cosListArr);
+  const cosList = (() => {
+    if (!cosListResponse || !Array.isArray(cosListResponse)) return [];
+
+    return cosListResponse.map((item) => {
+      const CosIteam: ZimbraCosEntry = {
+        name: item.name,
+        id: item.id,
+        zimbraCosType: '',
+        zimbraCosStatus: 'active',
+        zimbraCosName: '',
+        zimbraId: '',
+        a: item.a,
+      };
+      item?.a?.forEach((ele: ZimbraCosAttribute) => {
+        if (ele.n === 'zimbraCosType') {
+          CosIteam.zimbraCosType = ele._content;
+        } else if (ele.n === 'zimbraCosStatus') {
+          CosIteam.zimbraCosStatus = ele._content;
+        } else if (ele.n === 'zimbraCosName') {
+          CosIteam.zimbraCosName = ele._content;
+        } else if (ele.n === 'zimbraId') {
+          CosIteam.zimbraId = ele._content;
         }
-        setIsRequestInProgress(false);
-      })
-      .catch((error) => {
-        const snackbarConfig = generateSnackbarFromError(error, t);
-        createSnackbar(snackbarConfig);
-        setHasError(true);
       });
-  }, [STATUS_COLOR, offset, onCosSelect, searchQuery, limit, t, createSnackbar]);
-  useEffect(() => {
-    getAllcosList();
-  }, [getAllcosList]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchcosList = useCallback(
-    debounce((searchText) => {
+      const status = CosIteam.zimbraCosStatus;
+      const statusColor = STATUS_COLOR[status as keyof typeof STATUS_COLOR] ?? '#828282';
+      const statusLabel = t(
+        STATUS_LABEL_KEYS[status] ?? 'label.active',
+        STATUS_LABEL_DEFAULTS[status] ?? 'Active',
+      );
+      return {
+        id: item?.id,
+        columns: [
+          <ds-text
+            as="span"
+            size="small"
+            key={item?.id}
+            color="gray0"
+            weight="regular"
+            onClick={(): void => {
+              onCosSelect(CosIteam);
+            }}
+          >
+            {item?.name || ' '}
+          </ds-text>,
+
+          <ds-text
+            as="span"
+            size="small"
+            weight="light"
+            key={item?.id}
+            color={statusColor}
+            onClick={(): void => {
+              onCosSelect(CosIteam);
+            }}
+          >
+            {statusLabel}
+          </ds-text>,
+        ],
+        iteam: CosIteam,
+        clickable: true,
+      };
+    });
+  })();
+
+  const searchcosListRef = useRef(
+    debounce((searchText: string) => {
       setSearchQuery(searchText);
     }, 700),
-    [debounce],
   );
   useEffect(() => {
-    searchcosList(searchString);
-  }, [offset, searchcosList, searchString]);
+    searchcosListRef.current(searchString);
+  }, [offset, searchString]);
 
   useEffect(() => {
     const table = tableRef.current;
@@ -298,7 +261,7 @@ const CosList: FC = () => {
               <Container>
                 <Input
                   label={t('label.i_am_looking_for_this_Cos', `I'm looking for this Cos…`)}
-                  disabled={cosList.length === 0 && searchString.length === 0 && !hasError}
+                  disabled={cosList.length === 0 && searchString.length === 0 && isError}
                   value={searchString}
                   backgroundColor="gray5"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -320,19 +283,19 @@ const CosList: FC = () => {
               }}
             >
               <Table
-                rows={!isRequestInProgress ? cosList : []}
+                rows={!isPending ? cosList : []}
                 headers={headers}
                 showCheckbox={false}
                 multiSelect={false}
                 ref={tableRef}
                 style={{
                   overflow: 'auto',
-                  height: isRequestInProgress || cosList.length === 0 ? '50%' : '100%',
+                  height: isPending || cosList.length === 0 ? '50%' : '100%',
                 }}
                 RowFactory={HoverableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
-              {isRequestInProgress && (
+              {isPending && (
                 <Container
                   crossAlignment="center"
                   mainAlignment="center"
@@ -342,7 +305,7 @@ const CosList: FC = () => {
                   <ds-spinner></ds-spinner>
                 </Container>
               )}
-              {cosList.length === 0 && !isRequestInProgress && (
+              {cosList.length === 0 && !isPending && (
                 <Container orientation="column" crossAlignment="center" mainAlignment="center">
                   <Row>
                     <img src={logo} alt="logo" />
@@ -353,7 +316,13 @@ const CosList: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text
+                      as="p"
+                      weight="light"
+                      color="#828282"
+                      size="large"
+                      overflow="break-word"
+                    >
                       {t('label.this_list_is_empty', 'This list is empty.')}
                     </ds-text>
                   </Row>
@@ -364,7 +333,13 @@ const CosList: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text
+                      as="p"
+                      weight="light"
+                      color="#828282"
+                      size="large"
+                      overflow="break-word"
+                    >
                       <Trans
                         i18nKey="label.create_Cos_list_msg"
                         defaults="You can create a new Cos by clicking on <bold>Create</bold> button on header menu"

@@ -5,7 +5,7 @@
  */
 import { ListItems, ListItemType, ListPanelItem } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { COS_LIST, IS_GENERAL_LIST_EXPANDED } from '../../constants';
@@ -20,15 +20,12 @@ const GeneralListPanel: FC<GeneralListPanelProps> = ({ generalOptionItems }) => 
   const [isGeneralListExpanded, setIsGeneralListExpanded] = useState(true);
   const { cosView, setCosView } = useCosStore();
 
-  const navigateToGeneralView = useCallback(
-    (view: string) => {
-      setCosView(view);
-      if (view === COS_LIST) {
-        replaceHistory(`/${COS_LIST}`);
-      }
-    },
-    [setCosView],
-  );
+  const navigateToGeneralView = (view: string) => {
+    setCosView(view);
+    if (view === COS_LIST) {
+      replaceHistory(`/${COS_LIST}`);
+    }
+  };
 
   const toggleGeneralView = (): void => {
     if (isGeneralListExpanded) {

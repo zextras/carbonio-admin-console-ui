@@ -12,7 +12,7 @@ import {
   Padding,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
-import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
+import { ChangeEvent, Dispatch, FC, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../types/account';
@@ -39,10 +39,7 @@ export const WscSettings: FC<{
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
 
-  const isGlobalAdmin = useMemo(
-    () => userSetting?.attrs?.zimbraIsAdminAccount === TRUE,
-    [userSetting?.attrs?.zimbraIsAdminAccount],
-  );
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
   const { data: licenseData, isLoading, error } = useLicenseInfo();
 
@@ -58,51 +55,39 @@ export const WscSettings: FC<{
     "These settings can't be changed because your Chats license is not valid.",
   );
 
-  const changeSwitchOption = useCallback(
-    (key: keyof AccountType): void => {
+  const changeSwitchOption = (key: keyof AccountType): void => {
+    setFeaturesDetail((prev) => ({
+      ...prev,
+      [key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+    }));
+  };
+
+  const changeSelectOption = (key: keyof AccountType) =>
+    (value: string): void => {
       setFeaturesDetail((prev) => ({
         ...prev,
-        [key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+        [key]: value,
       }));
-    },
-    [featuresDetail, setFeaturesDetail],
-  );
+    };
 
-  const changeSelectOption = useCallback(
-    (key: keyof AccountType) =>
-      (value: string): void => {
+  const changeInputOption = (key: keyof AccountType) =>
+    (ev: ChangeEvent<HTMLInputElement>): void => {
+      let inputValue = ev.target.value || '0';
+      if (/^\d*$/.test(inputValue)) {
+        inputValue = inputValue.replace(/^0+/, '') || '0';
         setFeaturesDetail((prev) => ({
           ...prev,
-          [key]: value,
+          [key]: inputValue.toString(),
         }));
-      },
-    [setFeaturesDetail],
-  );
+      }
+    };
 
-  const changeInputOption = useCallback(
-    (key: keyof AccountType) =>
-      (ev: ChangeEvent<HTMLInputElement>): void => {
-        let inputValue = ev.target.value || '0';
-        if (/^\d*$/.test(inputValue)) {
-          inputValue = inputValue.replace(/^0+/, '') || '0';
-          setFeaturesDetail((prev) => ({
-            ...prev,
-            [key]: inputValue.toString(),
-          }));
-        }
-      },
-    [setFeaturesDetail],
-  );
+  const disableWscSettings =
+    featuresDetail?.carbonioFeatureWscEnabled === 'FALSE' ||
+    readonlyFeatures ||
+    (requiresLicenseCheck && !isLicensed);
 
-  const disableWscSettings = useMemo(
-    () =>
-      featuresDetail?.carbonioFeatureWscEnabled === 'FALSE' ||
-      readonlyFeatures ||
-      (requiresLicenseCheck && !isLicensed),
-    [featuresDetail?.carbonioFeatureWscEnabled, readonlyFeatures, isLicensed, requiresLicenseCheck],
-  );
-
-  const deleteMessageOptions = useMemo(() => {
+  const deleteMessageOptions = (() => {
     const timeLimitLabel = t('wsc.section.content.select.timeLimit', 'minute time limit');
     const userCannotDelete = t(
       'wsc.section.content.select.deleteLimit.zero',
@@ -114,9 +99,9 @@ export const WscSettings: FC<{
       { value: '10m', label: `10 ${timeLimitLabel}` },
       { value: '30m', label: `30 ${timeLimitLabel}` },
     ];
-  }, [t]);
+  })();
 
-  const editMessageOptions = useMemo(() => {
+  const editMessageOptions = (() => {
     const timeLimitLabel = t('wsc.section.content.select.timeLimit', 'minute time limit');
     const userCannotEdit = t(
       'wsc.section.content.select.zero.editLimit',
@@ -128,7 +113,7 @@ export const WscSettings: FC<{
       { value: '10m', label: `10 ${timeLimitLabel}` },
       { value: '30m', label: `30 ${timeLimitLabel}` },
     ];
-  }, [t]);
+  })();
 
   if (requiresLicenseCheck && isLoading) {
     return (

@@ -6,7 +6,7 @@
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find, isEqual, reduce } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -36,26 +36,23 @@ const CosFeatures: FC = () => {
   const isAdvanced = useIsAdvanced();
   const { data: rights = [] } = useCurrentUserRights();
 
-  const readonlyCOS = useMemo(() => {
+  const readonlyCOS = (() => {
     const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
     return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  })();
 
-  const setSwitchOptionValue = useCallback(
-    (key: string, value: string | undefined): void => {
-      setInitCosData((prev: Partial<Record<string, string>>) => ({
-        ...prev,
-        [key]: value,
-      }));
-      setCosFeatures((prev: Partial<Record<string, string>>) => ({
-        ...prev,
-        [key]: value,
-      }));
-    },
-    [setCosFeatures, setInitCosData],
-  );
+  const setSwitchOptionValue = (key: string, value: string | undefined): void => {
+    setInitCosData((prev: Partial<Record<string, string>>) => ({
+      ...prev,
+      [key]: value,
+    }));
+    setCosFeatures((prev: Partial<Record<string, string>>) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
-  const getMobileFeatureSync = useCallback(() => {
+  const getMobileFeatureSync = () => {
     const body = [
       {
         configType: COS,
@@ -88,35 +85,32 @@ const CosFeatures: FC = () => {
           replace: true,
         });
       });
-  }, [cosName, createSnackbar, setSwitchOptionValue, t]);
+  };
 
-  const setInitialValues = useCallback(
-    (obj: Partial<Record<string, string>>) => {
-      if (obj) {
-        setSwitchOptionValue('carbonioFeatureMailsAppEnabled', obj?.carbonioFeatureMailsAppEnabled);
-        setSwitchOptionValue(
-          'zimbraFeatureOutOfOfficeReplyEnabled',
-          obj?.zimbraFeatureOutOfOfficeReplyEnabled,
-        );
-        setSwitchOptionValue('zimbraFeatureSignaturesEnabled', obj?.zimbraFeatureSignaturesEnabled);
-        setSwitchOptionValue('zimbraFeatureMobileSyncEnabled', obj?.zimbraFeatureMobileSyncEnabled);
-        setSwitchOptionValue('zimbraFeatureContactsEnabled', obj?.zimbraFeatureContactsEnabled);
-        setSwitchOptionValue('zimbraFeatureCalendarEnabled', obj?.zimbraFeatureCalendarEnabled);
-        setSwitchOptionValue('carbonioFeatureFilesAppEnabled', obj?.carbonioFeatureFilesAppEnabled);
-        setSwitchOptionValue('carbonioFeatureFilesEnabled', obj?.carbonioFeatureFilesEnabled);
-        setSwitchOptionValue('carbonioFeatureTasksEnabled', obj?.carbonioFeatureTasksEnabled);
-        setSwitchOptionValue('zimbraFeatureOptionsEnabled', obj?.zimbraFeatureOptionsEnabled);
-        setSwitchOptionValue('carbonioOtpWizardFromUntrusted', obj?.carbonioOtpWizardFromUntrusted);
-        setSwitchOptionValue('carbonioFeatureOTPMgmtEnabled', obj?.carbonioFeatureOTPMgmtEnabled);
-        setSwitchOptionValue(
-          'carbonioOtpGracePeriodEndingTime',
-          obj?.carbonioOtpGracePeriodEndingTime ?? '',
-        );
-        setSwitchOptionValue('carbonioOtpGracePeriodEnabled', obj?.carbonioOtpGracePeriodEnabled);
-      }
-    },
-    [setSwitchOptionValue],
-  );
+  const setInitialValues = (obj: Partial<Record<string, string>>) => {
+    if (obj) {
+      setSwitchOptionValue('carbonioFeatureMailsAppEnabled', obj?.carbonioFeatureMailsAppEnabled);
+      setSwitchOptionValue(
+        'zimbraFeatureOutOfOfficeReplyEnabled',
+        obj?.zimbraFeatureOutOfOfficeReplyEnabled,
+      );
+      setSwitchOptionValue('zimbraFeatureSignaturesEnabled', obj?.zimbraFeatureSignaturesEnabled);
+      setSwitchOptionValue('zimbraFeatureMobileSyncEnabled', obj?.zimbraFeatureMobileSyncEnabled);
+      setSwitchOptionValue('zimbraFeatureContactsEnabled', obj?.zimbraFeatureContactsEnabled);
+      setSwitchOptionValue('zimbraFeatureCalendarEnabled', obj?.zimbraFeatureCalendarEnabled);
+      setSwitchOptionValue('carbonioFeatureFilesAppEnabled', obj?.carbonioFeatureFilesAppEnabled);
+      setSwitchOptionValue('carbonioFeatureFilesEnabled', obj?.carbonioFeatureFilesEnabled);
+      setSwitchOptionValue('carbonioFeatureTasksEnabled', obj?.carbonioFeatureTasksEnabled);
+      setSwitchOptionValue('zimbraFeatureOptionsEnabled', obj?.zimbraFeatureOptionsEnabled);
+      setSwitchOptionValue('carbonioOtpWizardFromUntrusted', obj?.carbonioOtpWizardFromUntrusted);
+      setSwitchOptionValue('carbonioFeatureOTPMgmtEnabled', obj?.carbonioFeatureOTPMgmtEnabled);
+      setSwitchOptionValue(
+        'carbonioOtpGracePeriodEndingTime',
+        obj?.carbonioOtpGracePeriodEndingTime ?? '',
+      );
+      setSwitchOptionValue('carbonioOtpGracePeriodEnabled', obj?.carbonioOtpGracePeriodEnabled);
+    }
+  };
 
   useEffect(() => {
     if (!!cosInformation && cosInformation.length > 0) {
@@ -128,7 +122,8 @@ const CosFeatures: FC = () => {
       setInitialValues(obj);
       setIsDirty(false);
     }
-  }, [cosInformation, setInitialValues, setSwitchOptionValue, setZimbraId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cosInformation]);
 
   useEffect(() => {
     if (zimbraId && !isEqual(cosFeatures, initCosData)) {
@@ -142,7 +137,8 @@ const CosFeatures: FC = () => {
     if (isAdvanced && cosName) {
       getMobileFeatureSync();
     }
-  }, [cosName, getMobileFeatureSync, isAdvanced]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cosName, isAdvanced]);
 
   const modifyCosRequest = (body: ModifyCosBody): void => {
     modifyCos(body)

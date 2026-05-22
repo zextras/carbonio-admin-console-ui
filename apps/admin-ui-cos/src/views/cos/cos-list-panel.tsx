@@ -16,7 +16,7 @@ import {
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
@@ -55,35 +55,34 @@ export const CosListPanel: FC = () => {
   const prevCosRef = useRef<string | undefined>(undefined);
   const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 
-  const getCosLists = useCallback(
-    (searchData: string): void => {
-      getCosList(searchData)
-        .then((data) => {
-          if (data && data?.searchTotal && data.searchTotal > 0 && data.cos) {
-            setCosList(data.cos);
-          } else {
-            setCosList([]);
-            setIsShowError(true);
-          }
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, t],
-  );
+  const getCosLists = (searchData: string): void => {
+    getCosList(searchData)
+      .then((data) => {
+        if (data && data?.searchTotal && data.searchTotal > 0 && data.cos) {
+          setCosList(data.cos);
+        } else {
+          setCosList([]);
+          setIsShowError(true);
+        }
+      })
+      .catch((error) => {
+        const snackbarConfig = generateSnackbarFromError(error, t);
+        createSnackbar(snackbarConfig);
+      });
+  };
 
   useEffect(() => {
     getCosLists('');
-  }, [getCosLists]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!!prevCosRef.current && prevCosRef.current !== cosName) {
       getCosLists('');
     }
     prevCosRef.current = cosName;
-  }, [cosName, getCosLists]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cosName]);
 
   useEffect(() => {
     if (cosInformation?.name) {
@@ -113,19 +112,17 @@ export const CosListPanel: FC = () => {
     }
   }, [pathname, setCos, setCosView]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchCosCall = useCallback(
-    debounce((searchData) => {
+  const searchCosCallRef = useRef(
+    debounce((searchData: string) => {
       getCosLists(searchData);
     }, 700),
-    [debounce],
   );
 
   useEffect(() => {
     if (!isCosSelect) {
-      searchCosCall(searchCosName);
+      searchCosCallRef.current(searchCosName);
     }
-  }, [searchCosName, isCosSelect, searchCosCall]);
+  }, [searchCosName, isCosSelect]);
 
   const toggleDetailView = (): void => {
     if (isDetailListExpanded) {
@@ -138,67 +135,58 @@ export const CosListPanel: FC = () => {
     setIsDetailListExpanded(!isDetailListExpanded);
   };
 
-  const navigateToCosView = useCallback(
-    (view: string) => {
-      if (isCosSelect && cos?.id) {
-        setCosView(view);
-        replaceHistory(`/${cos.id}/${view}`);
-      }
-    },
-    [isCosSelect, cos?.id, setCosView],
-  );
+  const navigateToCosView = (view: string) => {
+    if (isCosSelect && cos?.id) {
+      setCosView(view);
+      replaceHistory(`/${cos.id}/${view}`);
+    }
+  };
 
-  const selectedCos = useCallback(
-    (cosData: SearchDirectoryEntry) => {
-      setIsCosSelect(true);
-      setSearchCosName(cosData?.name);
-      setIsCosListExpand(false);
-      setCos({
-        a: cosData?.a,
-        id: cosData?.id,
-        name: cosData?.name,
-      });
-      setCosView(GENERAL_INFORMATION);
-      replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
-    },
-    [setCos, setCosView],
-  );
+  const selectedCos = (cosData: SearchDirectoryEntry) => {
+    setIsCosSelect(true);
+    setSearchCosName(cosData?.name);
+    setIsCosListExpand(false);
+    setCos({
+      a: cosData?.a,
+      id: cosData?.id,
+      name: cosData?.name,
+    });
+    setCosView(GENERAL_INFORMATION);
+    replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
+  };
 
-  const detailOptions = useMemo<Array<ListItemType>>(
-    () => [
-      {
-        id: GENERAL_INFORMATION,
-        name: t('label.general_information', 'General Information'),
-        isSelected: isCosSelect,
-      },
-      {
-        id: FEATURES,
-        name: t('label.features', 'Features'),
-        isSelected: isCosSelect,
-      },
-      {
-        id: WSC,
-        name: t('label.wsc', 'Chat'),
-        isSelected: isCosSelect,
-      },
-      {
-        id: PREFERENCES,
-        name: t('label.preferences', 'Preferences'),
-        isSelected: isCosSelect,
-      },
-      {
-        id: SERVER_POOLS,
-        name: t('label.server_pools', 'Server Pools'),
-        isSelected: isCosSelect,
-      },
-      {
-        id: ADVANCED,
-        name: t('label.advanced', 'Advanced'),
-        isSelected: isCosSelect,
-      },
-    ],
-    [t, isCosSelect],
-  );
+  const detailOptions: Array<ListItemType> = [
+    {
+      id: GENERAL_INFORMATION,
+      name: t('label.general_information', 'General Information'),
+      isSelected: isCosSelect,
+    },
+    {
+      id: FEATURES,
+      name: t('label.features', 'Features'),
+      isSelected: isCosSelect,
+    },
+    {
+      id: WSC,
+      name: t('label.wsc', 'Chat'),
+      isSelected: isCosSelect,
+    },
+    {
+      id: PREFERENCES,
+      name: t('label.preferences', 'Preferences'),
+      isSelected: isCosSelect,
+    },
+    {
+      id: SERVER_POOLS,
+      name: t('label.server_pools', 'Server Pools'),
+      isSelected: isCosSelect,
+    },
+    {
+      id: ADVANCED,
+      name: t('label.advanced', 'Advanced'),
+      isSelected: isCosSelect,
+    },
+  ];
 
   const customIconDetail = {
     icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
@@ -208,16 +196,13 @@ export const CosListPanel: FC = () => {
     },
   };
 
-  const globalOptionItems = useMemo<Array<ListItemType>>(
-    () => [
-      {
-        id: COS_LIST,
-        name: t('label.Cos_list', 'COS List'),
-        isSelected: true,
-      },
-    ],
-    [t],
-  );
+  const globalOptionItems: Array<ListItemType> = [
+    {
+      id: COS_LIST,
+      name: t('label.Cos_list', 'COS List'),
+      isSelected: true,
+    },
+  ];
 
   const items =
     cosList.length > MAX_COS_DISPLAY

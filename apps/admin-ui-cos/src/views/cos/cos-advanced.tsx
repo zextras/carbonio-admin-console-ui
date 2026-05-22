@@ -12,9 +12,7 @@ import {
   Dispatch,
   FC,
   SetStateAction,
-  useCallback,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -128,31 +126,28 @@ const CosAdvanced: FC = () => {
   const setCos = useCosStore((state) => state.setCos);
   const { data: rights = [] } = useCurrentUserRights();
   const isAdvanced = useIsAdvanced();
-  const readonlyCOS = useMemo(() => {
+  const readonlyCOS = (() => {
     const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
     return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
-  const timeItems = useMemo<TimeItems>(
-    () => [
-      {
-        label: t('label.seconds', 'Seconds'),
-        value: 's',
-      },
-      {
-        label: t('label.minutes', 'Minutes'),
-        value: 'm',
-      },
-      {
-        label: t('label.hours', 'Hours'),
-        value: 'h',
-      },
-      {
-        label: t('label.days', 'Days'),
-        value: 'd',
-      },
-    ],
-    [t],
-  );
+  })();
+  const timeItems: TimeItems = [
+    {
+      label: t('label.seconds', 'Seconds'),
+      value: 's',
+    },
+    {
+      label: t('label.minutes', 'Minutes'),
+      value: 'm',
+    },
+    {
+      label: t('label.hours', 'Hours'),
+      value: 'h',
+    },
+    {
+      label: t('label.days', 'Days'),
+      value: 'd',
+    },
+  ];
 
   const labels = {
     snackbar: {
@@ -270,247 +265,238 @@ const CosAdvanced: FC = () => {
     undefined,
   );
 
-  const setValue = useCallback<
-    (key: keyof AccountType, value: AccountType[keyof AccountType]) => void
-  >(
-    (key, value): void => {
-      setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
-    },
-    [setCosAdvanced],
-  );
+  const setValue = (
+    key: keyof AccountType,
+    value: AccountType[keyof AccountType],
+  ): void => {
+    setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
+  };
 
-  const setCosAdvancedAttributeValues = useCallback(
-    (entries: Array<[keyof AdvancedBackupAttributes, boolean | undefined]>): void => {
-      setCosAdvancedBackupAttributes((prev) => ({
-        ...prev,
-        ...(Object.fromEntries(entries) as Partial<AdvancedBackupAttributes>),
-      }));
-    },
-    [setCosAdvancedBackupAttributes],
-  );
+  const setCosAdvancedAttributeValues = (
+    entries: Array<[keyof AdvancedBackupAttributes, boolean | undefined]>,
+  ): void => {
+    setCosAdvancedBackupAttributes((prev) => ({
+      ...prev,
+      ...(Object.fromEntries(entries) as Partial<AdvancedBackupAttributes>),
+    }));
+  };
 
-  const setInitalValues = useCallback(
-    (obj: AccountType): void => {
-      if (obj) {
-        setValue(
-          'zimbraMailForwardingAddressMaxLength',
-          obj?.zimbraMailForwardingAddressMaxLength
-            ? obj?.zimbraMailForwardingAddressMaxLength
-            : '',
-        );
-        setValue(
-          'zimbraMailForwardingAddressMaxNumAddrs',
-          obj?.zimbraMailForwardingAddressMaxNumAddrs
-            ? obj?.zimbraMailForwardingAddressMaxNumAddrs
-            : '',
-        );
-        setValue('zimbraMailQuota', obj?.zimbraMailQuota ? obj?.zimbraMailQuota : '');
-        setValue(
-          'zimbraContactMaxNumEntries',
-          obj?.zimbraContactMaxNumEntries ? obj?.zimbraContactMaxNumEntries : '',
-        );
-        setValue(
-          'zimbraQuotaWarnPercent',
-          obj?.zimbraQuotaWarnPercent ? obj?.zimbraQuotaWarnPercent : '',
-        );
-        setValue(
-          'zimbraQuotaWarnInterval',
-          obj?.zimbraQuotaWarnInterval ? obj?.zimbraQuotaWarnInterval : '',
-        );
-        setValue(
-          'zimbraQuotaWarnMessage',
-          obj?.zimbraQuotaWarnMessage ? obj?.zimbraQuotaWarnMessage : '',
-        );
-        setValue(
-          'zimbraDataSourceMinPollingInterval',
-          obj?.zimbraDataSourceMinPollingInterval ? obj?.zimbraDataSourceMinPollingInterval : '',
-        );
-        setValue(
-          'zimbraDataSourceCalendarPollingInterval',
-          obj?.zimbraDataSourceCalendarPollingInterval
-            ? obj?.zimbraDataSourceCalendarPollingInterval
-            : '',
-        );
-        setValue(
-          'zimbraDataSourceRssPollingInterval',
-          obj?.zimbraDataSourceRssPollingInterval ? obj?.zimbraDataSourceRssPollingInterval : '',
-        );
-        setValue(
-          'zimbraPasswordLocked',
-          obj?.zimbraPasswordLocked ? obj?.zimbraPasswordLocked : 'FALSE',
-        );
-        setValue(
-          'zimbraPasswordMinLength',
-          obj?.zimbraPasswordMinLength ? obj?.zimbraPasswordMinLength : '',
-        );
-        setValue(
-          'zimbraPasswordMaxLength',
-          obj?.zimbraPasswordMaxLength ? obj?.zimbraPasswordMaxLength : '',
-        );
-        setValue(
-          'zimbraPasswordMinUpperCaseChars',
-          obj?.zimbraPasswordMinUpperCaseChars ? obj?.zimbraPasswordMinUpperCaseChars : '',
-        );
-        setValue(
-          'zimbraPasswordMinLowerCaseChars',
-          obj?.zimbraPasswordMinLowerCaseChars ? obj?.zimbraPasswordMinLowerCaseChars : '',
-        );
-        setValue(
-          'zimbraPasswordMinPunctuationChars',
-          obj?.zimbraPasswordMinPunctuationChars ? obj?.zimbraPasswordMinPunctuationChars : '',
-        );
-        setValue(
-          'zimbraPasswordMinNumericChars',
-          obj?.zimbraPasswordMinNumericChars ? obj?.zimbraPasswordMinNumericChars : '',
-        );
-        setValue(
-          'zimbraPasswordMinDigitsOrPuncs',
-          obj?.zimbraPasswordMinDigitsOrPuncs ? obj?.zimbraPasswordMinDigitsOrPuncs : '',
-        );
-        setValue(
-          'zimbraPasswordMinAge',
-          obj?.zimbraPasswordMinAge ? obj?.zimbraPasswordMinAge : '',
-        );
-        setValue(
-          'zimbraPasswordMaxAge',
-          obj?.zimbraPasswordMaxAge ? obj?.zimbraPasswordMaxAge : '',
-        );
-        setValue(
-          'zimbraPasswordEnforceHistory',
-          obj?.zimbraPasswordEnforceHistory ? obj?.zimbraPasswordEnforceHistory : '',
-        );
-        setValue(
-          'zimbraPasswordBlockCommonEnabled',
-          obj?.zimbraPasswordBlockCommonEnabled ? obj?.zimbraPasswordBlockCommonEnabled : 'FALSE',
-        );
-        setValue(
-          'zimbraPasswordLockoutEnabled',
-          obj?.zimbraPasswordLockoutEnabled ? obj?.zimbraPasswordLockoutEnabled : 'FALSE',
-        );
-        setValue(
-          'zimbraPasswordLockoutMaxFailures',
-          obj?.zimbraPasswordLockoutMaxFailures ? obj?.zimbraPasswordLockoutMaxFailures : '',
-        );
-        setValue(
-          'zimbraPasswordLockoutDuration',
-          obj?.zimbraPasswordLockoutDuration ? obj?.zimbraPasswordLockoutDuration : '',
-        );
+  const setInitalValues = (obj: AccountType): void => {
+    if (obj) {
+      setValue(
+        'zimbraMailForwardingAddressMaxLength',
+        obj?.zimbraMailForwardingAddressMaxLength
+          ? obj?.zimbraMailForwardingAddressMaxLength
+          : '',
+      );
+      setValue(
+        'zimbraMailForwardingAddressMaxNumAddrs',
+        obj?.zimbraMailForwardingAddressMaxNumAddrs
+          ? obj?.zimbraMailForwardingAddressMaxNumAddrs
+          : '',
+      );
+      setValue('zimbraMailQuota', obj?.zimbraMailQuota ? obj?.zimbraMailQuota : '');
+      setValue(
+        'zimbraContactMaxNumEntries',
+        obj?.zimbraContactMaxNumEntries ? obj?.zimbraContactMaxNumEntries : '',
+      );
+      setValue(
+        'zimbraQuotaWarnPercent',
+        obj?.zimbraQuotaWarnPercent ? obj?.zimbraQuotaWarnPercent : '',
+      );
+      setValue(
+        'zimbraQuotaWarnInterval',
+        obj?.zimbraQuotaWarnInterval ? obj?.zimbraQuotaWarnInterval : '',
+      );
+      setValue(
+        'zimbraQuotaWarnMessage',
+        obj?.zimbraQuotaWarnMessage ? obj?.zimbraQuotaWarnMessage : '',
+      );
+      setValue(
+        'zimbraDataSourceMinPollingInterval',
+        obj?.zimbraDataSourceMinPollingInterval ? obj?.zimbraDataSourceMinPollingInterval : '',
+      );
+      setValue(
+        'zimbraDataSourceCalendarPollingInterval',
+        obj?.zimbraDataSourceCalendarPollingInterval
+          ? obj?.zimbraDataSourceCalendarPollingInterval
+          : '',
+      );
+      setValue(
+        'zimbraDataSourceRssPollingInterval',
+        obj?.zimbraDataSourceRssPollingInterval ? obj?.zimbraDataSourceRssPollingInterval : '',
+      );
+      setValue(
+        'zimbraPasswordLocked',
+        obj?.zimbraPasswordLocked ? obj?.zimbraPasswordLocked : 'FALSE',
+      );
+      setValue(
+        'zimbraPasswordMinLength',
+        obj?.zimbraPasswordMinLength ? obj?.zimbraPasswordMinLength : '',
+      );
+      setValue(
+        'zimbraPasswordMaxLength',
+        obj?.zimbraPasswordMaxLength ? obj?.zimbraPasswordMaxLength : '',
+      );
+      setValue(
+        'zimbraPasswordMinUpperCaseChars',
+        obj?.zimbraPasswordMinUpperCaseChars ? obj?.zimbraPasswordMinUpperCaseChars : '',
+      );
+      setValue(
+        'zimbraPasswordMinLowerCaseChars',
+        obj?.zimbraPasswordMinLowerCaseChars ? obj?.zimbraPasswordMinLowerCaseChars : '',
+      );
+      setValue(
+        'zimbraPasswordMinPunctuationChars',
+        obj?.zimbraPasswordMinPunctuationChars ? obj?.zimbraPasswordMinPunctuationChars : '',
+      );
+      setValue(
+        'zimbraPasswordMinNumericChars',
+        obj?.zimbraPasswordMinNumericChars ? obj?.zimbraPasswordMinNumericChars : '',
+      );
+      setValue(
+        'zimbraPasswordMinDigitsOrPuncs',
+        obj?.zimbraPasswordMinDigitsOrPuncs ? obj?.zimbraPasswordMinDigitsOrPuncs : '',
+      );
+      setValue(
+        'zimbraPasswordMinAge',
+        obj?.zimbraPasswordMinAge ? obj?.zimbraPasswordMinAge : '',
+      );
+      setValue(
+        'zimbraPasswordMaxAge',
+        obj?.zimbraPasswordMaxAge ? obj?.zimbraPasswordMaxAge : '',
+      );
+      setValue(
+        'zimbraPasswordEnforceHistory',
+        obj?.zimbraPasswordEnforceHistory ? obj?.zimbraPasswordEnforceHistory : '',
+      );
+      setValue(
+        'zimbraPasswordBlockCommonEnabled',
+        obj?.zimbraPasswordBlockCommonEnabled ? obj?.zimbraPasswordBlockCommonEnabled : 'FALSE',
+      );
+      setValue(
+        'zimbraPasswordLockoutEnabled',
+        obj?.zimbraPasswordLockoutEnabled ? obj?.zimbraPasswordLockoutEnabled : 'FALSE',
+      );
+      setValue(
+        'zimbraPasswordLockoutMaxFailures',
+        obj?.zimbraPasswordLockoutMaxFailures ? obj?.zimbraPasswordLockoutMaxFailures : '',
+      );
+      setValue(
+        'zimbraPasswordLockoutDuration',
+        obj?.zimbraPasswordLockoutDuration ? obj?.zimbraPasswordLockoutDuration : '',
+      );
 
-        setValue(
-          'zimbraPasswordLockoutFailureLifetime',
-          obj?.zimbraPasswordLockoutFailureLifetime
-            ? obj?.zimbraPasswordLockoutFailureLifetime
-            : '',
-        );
-        setValue(
-          'zimbraAdminAuthTokenLifetime',
-          obj?.zimbraAdminAuthTokenLifetime ? obj?.zimbraAdminAuthTokenLifetime : '',
-        );
-        setValue(
-          'zimbraAuthTokenLifetime',
-          obj?.zimbraAuthTokenLifetime ? obj?.zimbraAuthTokenLifetime : '',
-        );
-        setValue(
-          'zimbraMailIdleSessionTimeout',
-          obj?.zimbraMailIdleSessionTimeout ? obj?.zimbraMailIdleSessionTimeout : '',
-        );
-        setValue(
-          'zimbraMailMessageLifetime',
-          obj?.zimbraMailMessageLifetime ? obj?.zimbraMailMessageLifetime : '',
-        );
-        setValue(
-          'zimbraMailTrashLifetime',
-          obj?.zimbraMailTrashLifetime ? obj?.zimbraMailTrashLifetime : '',
-        );
-        setValue(
-          'zimbraMailSpamLifetime',
-          obj?.zimbraMailSpamLifetime ? obj?.zimbraMailSpamLifetime : '',
-        );
-        setValue(
-          'zimbraFreebusyExchangeUserOrg',
-          obj?.zimbraFreebusyExchangeUserOrg ? obj?.zimbraFreebusyExchangeUserOrg : '',
-        );
-      }
-    },
-    [setValue],
-  );
+      setValue(
+        'zimbraPasswordLockoutFailureLifetime',
+        obj?.zimbraPasswordLockoutFailureLifetime
+          ? obj?.zimbraPasswordLockoutFailureLifetime
+          : '',
+      );
+      setValue(
+        'zimbraAdminAuthTokenLifetime',
+        obj?.zimbraAdminAuthTokenLifetime ? obj?.zimbraAdminAuthTokenLifetime : '',
+      );
+      setValue(
+        'zimbraAuthTokenLifetime',
+        obj?.zimbraAuthTokenLifetime ? obj?.zimbraAuthTokenLifetime : '',
+      );
+      setValue(
+        'zimbraMailIdleSessionTimeout',
+        obj?.zimbraMailIdleSessionTimeout ? obj?.zimbraMailIdleSessionTimeout : '',
+      );
+      setValue(
+        'zimbraMailMessageLifetime',
+        obj?.zimbraMailMessageLifetime ? obj?.zimbraMailMessageLifetime : '',
+      );
+      setValue(
+        'zimbraMailTrashLifetime',
+        obj?.zimbraMailTrashLifetime ? obj?.zimbraMailTrashLifetime : '',
+      );
+      setValue(
+        'zimbraMailSpamLifetime',
+        obj?.zimbraMailSpamLifetime ? obj?.zimbraMailSpamLifetime : '',
+      );
+      setValue(
+        'zimbraFreebusyExchangeUserOrg',
+        obj?.zimbraFreebusyExchangeUserOrg ? obj?.zimbraFreebusyExchangeUserOrg : '',
+      );
+    }
+  };
 
-  const setStateAttrValues = useCallback(
-    (obj: AccountType): void => {
-      const setTimeValues = (
-        value: string | undefined,
-        setValueFn: Dispatch<SetStateAction<string | undefined>>,
-        setValueTypeFn: Dispatch<SetStateAction<string>>,
-        timeItem: TimeItems,
-      ): void => {
-        setValueFn(value?.slice(0, -1));
-        setValueTypeFn(value?.slice(-1) ? value?.slice(-1) : timeItem[0]?.value);
-      };
+  const setStateAttrValues = (obj: AccountType): void => {
+    const setTimeValues = (
+      value: string | undefined,
+      setValueFn: Dispatch<SetStateAction<string | undefined>>,
+      setValueTypeFn: Dispatch<SetStateAction<string>>,
+      timeItem: TimeItems,
+    ): void => {
+      setValueFn(value?.slice(0, -1));
+      setValueTypeFn(value?.slice(-1) ? value?.slice(-1) : timeItem[0]?.value);
+    };
 
-      if (obj) {
-        setTimeValues(
-          obj?.zimbraQuotaWarnInterval,
-          setZimbraQuotaWarnIntervalNum,
-          setzimbraQuotaWarnIntervalType,
-          timeItems,
-        );
-        setTimeValues(
-          obj?.zimbraPasswordLockoutDuration,
-          setZimbraPasswordLockoutDurationNum,
-          setZimbraPasswordLockoutDurationType,
-          timeItems,
-        );
-        setTimeValues(
-          obj?.zimbraPasswordLockoutFailureLifetime,
-          setZimbraPasswordLockoutFailureLifetimeNum,
-          setZimbraPasswordLockoutFailureLifetimeType,
-          timeItems,
-        );
-        setTimeValues(
-          obj?.zimbraAdminAuthTokenLifetime,
-          setZimbraAdminAuthTokenLifetimeNum,
-          setZimbraAdminAuthTokenLifetimeType,
-          timeItems,
-        );
-        setTimeValues(
-          obj?.zimbraAuthTokenLifetime,
-          setZimbraAuthTokenLifetimeNum,
-          setZimbraAuthTokenLifetimeType,
-          timeItems,
-        );
-        setTimeValues(
-          obj?.zimbraMailIdleSessionTimeout,
-          setZimbraMailIdleSessionTimeoutNum,
-          setZimbraMailIdleSessionTimeoutType,
-          timeItems,
-        );
-        setTimeValues(
-          obj?.zimbraMailTrashLifetime,
-          setZimbraMailTrashLifetimeNum,
-          setZimbraMailTrashLifetimeType,
-          timeItems,
-        );
-        setTimeValues(
-          obj?.zimbraMailSpamLifetime,
-          setZimbraMailSpamLifetimeNum,
-          setZimbraMailSpamLifetimeType,
-          timeItems,
-        );
+    if (obj) {
+      setTimeValues(
+        obj?.zimbraQuotaWarnInterval,
+        setZimbraQuotaWarnIntervalNum,
+        setzimbraQuotaWarnIntervalType,
+        timeItems,
+      );
+      setTimeValues(
+        obj?.zimbraPasswordLockoutDuration,
+        setZimbraPasswordLockoutDurationNum,
+        setZimbraPasswordLockoutDurationType,
+        timeItems,
+      );
+      setTimeValues(
+        obj?.zimbraPasswordLockoutFailureLifetime,
+        setZimbraPasswordLockoutFailureLifetimeNum,
+        setZimbraPasswordLockoutFailureLifetimeType,
+        timeItems,
+      );
+      setTimeValues(
+        obj?.zimbraAdminAuthTokenLifetime,
+        setZimbraAdminAuthTokenLifetimeNum,
+        setZimbraAdminAuthTokenLifetimeType,
+        timeItems,
+      );
+      setTimeValues(
+        obj?.zimbraAuthTokenLifetime,
+        setZimbraAuthTokenLifetimeNum,
+        setZimbraAuthTokenLifetimeType,
+        timeItems,
+      );
+      setTimeValues(
+        obj?.zimbraMailIdleSessionTimeout,
+        setZimbraMailIdleSessionTimeoutNum,
+        setZimbraMailIdleSessionTimeoutType,
+        timeItems,
+      );
+      setTimeValues(
+        obj?.zimbraMailTrashLifetime,
+        setZimbraMailTrashLifetimeNum,
+        setZimbraMailTrashLifetimeType,
+        timeItems,
+      );
+      setTimeValues(
+        obj?.zimbraMailSpamLifetime,
+        setZimbraMailSpamLifetimeNum,
+        setZimbraMailSpamLifetimeType,
+        timeItems,
+      );
 
-        setAccountQuotaGBValue(
-          obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(2) : '',
-        );
+      setAccountQuotaGBValue(
+        obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(2) : '',
+      );
 
-        setTimeValues(
-          obj?.zimbraMailMessageLifetime,
-          setZimbraMailMessageLifetimeNum,
-          setZimbraMailMessageLifetimeType,
-          timeItems,
-        );
-      }
-    },
-    [timeItems],
-  );
+      setTimeValues(
+        obj?.zimbraMailMessageLifetime,
+        setZimbraMailMessageLifetimeNum,
+        setZimbraMailMessageLifetimeType,
+        timeItems,
+      );
+    }
+  };
 
   useEffect(() => {
     if (!!cosInformation && cosInformation.length > 0) {
@@ -613,18 +599,19 @@ const CosAdvanced: FC = () => {
       setStateAttrValues(obj);
       setIsDirty(false);
     }
-  }, [cosInformation, setInitalValues, setStateAttrValues, setValue, timeItems]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cosInformation]);
 
-  const getFileQuota = useCallback((cosId: string): void => {
+  const getFileQuota = (cosId: string): void => {
     getFileQuotaById(cosId, COS).then((res: { limit: string }) => {
       if (res?.limit) {
         setInitFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
         setFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
       }
     });
-  }, []);
+  };
 
-  const getCOSQuota = useCallback((cosId: string): void => {
+  const getCOSQuota = (cosId: string): void => {
     getCosQuota(cosId).then((res) => {
       if (res.type === 'success') {
         setTotalComputedQuotaLimit(res.totalComputedLimit);
@@ -633,43 +620,39 @@ const CosAdvanced: FC = () => {
         setInitialTotalQuotaSource(res.totalQuotaSource);
       }
     });
-  }, []);
+  };
 
   useEffect(() => {
     if (cosData?.zimbraId && isAdvanced && !isTotalQuotaActive) {
       getFileQuota(cosData.zimbraId);
     }
-  }, [cosData.zimbraId, getFileQuota, isAdvanced, isTotalQuotaActive]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cosData.zimbraId, isAdvanced, isTotalQuotaActive]);
 
   useEffect(() => {
     if (cosData?.zimbraId && isAdvanced && isTotalQuotaActive) {
       getCOSQuota(cosData.zimbraId);
     }
-  }, [cosData.zimbraId, getCOSQuota, isAdvanced, isTotalQuotaActive]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cosData.zimbraId, isAdvanced, isTotalQuotaActive]);
 
-  const changeValue = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setCosAdvanced((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
-    },
-    [setCosAdvanced],
-  );
+  const changeValue = (e: ChangeEvent<HTMLInputElement>) => {
+    setCosAdvanced((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-  const changeSwitchOption = useCallback(
-    (key: keyof AccountType): void => {
-      setCosAdvanced((prev: AccountType) => ({
-        ...prev,
-        [key]: cosAdvanced[key] === 'TRUE' ? 'FALSE' : 'TRUE',
-      }));
-      setIsDirty(true);
-    },
-    [cosAdvanced, setCosAdvanced, setIsDirty],
-  );
+  const changeSwitchOption = (key: keyof AccountType): void => {
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      [key]: cosAdvanced[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+    }));
+    setIsDirty(true);
+  };
 
-  const onTotalQuotaChange = useCallback((value?: ComputedLimit) => {
+  const onTotalQuotaChange = (value?: ComputedLimit) => {
     setTotalComputedQuotaLimit(value);
     setTotalQuotaSource(value !== undefined ? 'cos' : 'global');
     setIsDirty(true);
-  }, []);
+  };
 
   const onCancel = (): void => {
     setInitalValues(cosData);
@@ -948,223 +931,191 @@ const CosAdvanced: FC = () => {
     }
   }, [initFileQuotaLimitGBValue, fileQuotaLimitGBValue]);
 
-  const onZimbraQuotaWarnIntervalTypeChange = useCallback<SingleSelectionOnChange>(
-    (v) => {
-      if (v) {
-        setCosAdvanced((prev: AccountType) => ({
-          ...prev,
-          zimbraQuotaWarnInterval: zimbraQuotaWarnIntervalNum
-            ? `${zimbraQuotaWarnIntervalNum}${v}`
-            : '',
-        }));
-        setzimbraQuotaWarnIntervalType(v);
-      }
-    },
-    [zimbraQuotaWarnIntervalNum, setCosAdvanced],
-  );
-  const onZimbraQuotaWarnIntervalNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const onZimbraQuotaWarnIntervalTypeChange = (v: Parameters<SingleSelectionOnChange>[0]) => {
+    if (v) {
       setCosAdvanced((prev: AccountType) => ({
         ...prev,
-        zimbraQuotaWarnInterval: e.target.value
-          ? `${e.target.value}${zimbraQuotaWarnIntervalType}`
+        zimbraQuotaWarnInterval: zimbraQuotaWarnIntervalNum
+          ? `${zimbraQuotaWarnIntervalNum}${v}`
           : '',
       }));
-      setZimbraQuotaWarnIntervalNum(e.target.value);
-    },
-    [zimbraQuotaWarnIntervalType, setCosAdvanced],
-  );
+      setzimbraQuotaWarnIntervalType(v);
+    }
+  };
+  const onZimbraQuotaWarnIntervalNumChange = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      zimbraQuotaWarnInterval: e.target.value
+        ? `${e.target.value}${zimbraQuotaWarnIntervalType}`
+        : '',
+    }));
+    setZimbraQuotaWarnIntervalNum(e.target.value);
+  };
 
-  const onZimbraPasswordLockoutDurationTypeChange = useCallback<SingleSelectionOnChange>(
-    (v) => {
-      if (v) {
-        setCosAdvanced((prev: AccountType) => ({
-          ...prev,
-          zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
-            ? `${zimbraPasswordLockoutDurationNum}${v}`
-            : '',
-        }));
-        setZimbraPasswordLockoutDurationType(v);
-      }
-    },
-    [zimbraPasswordLockoutDurationNum, setCosAdvanced],
-  );
-  const onZimbraPasswordLockoutDurationNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const onZimbraPasswordLockoutDurationTypeChange = (v: Parameters<SingleSelectionOnChange>[0]) => {
+    if (v) {
       setCosAdvanced((prev: AccountType) => ({
         ...prev,
-        zimbraPasswordLockoutDuration: e.target.value
-          ? `${e.target.value}${zimbraPasswordLockoutDurationType}`
+        zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
+          ? `${zimbraPasswordLockoutDurationNum}${v}`
           : '',
       }));
-      setZimbraPasswordLockoutDurationNum(e.target.value);
-    },
-    [zimbraPasswordLockoutDurationType, setCosAdvanced],
-  );
+      setZimbraPasswordLockoutDurationType(v);
+    }
+  };
+  const onZimbraPasswordLockoutDurationNumChange = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      zimbraPasswordLockoutDuration: e.target.value
+        ? `${e.target.value}${zimbraPasswordLockoutDurationType}`
+        : '',
+    }));
+    setZimbraPasswordLockoutDurationNum(e.target.value);
+  };
 
-  const onZimbraPasswordLockoutFailureLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
-    (v) => {
-      if (v) {
-        setCosAdvanced((prev: AccountType) => ({
-          ...prev,
-          zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
-            ? `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
-            : '',
-        }));
-        setZimbraPasswordLockoutFailureLifetimeType(v);
-      }
-    },
-    [zimbraPasswordLockoutFailureLifetimeNum, setCosAdvanced],
-  );
-  const onZimbraPasswordLockoutFailureLifetimeNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const onZimbraPasswordLockoutFailureLifetimeTypeChange = (v: Parameters<SingleSelectionOnChange>[0]) => {
+    if (v) {
       setCosAdvanced((prev: AccountType) => ({
         ...prev,
-        zimbraPasswordLockoutFailureLifetime: e.target.value
-          ? `${e.target.value}${zimbraPasswordLockoutFailureLifetimeType}`
+        zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
+          ? `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
           : '',
       }));
-      setZimbraPasswordLockoutFailureLifetimeNum(e.target.value);
-    },
-    [zimbraPasswordLockoutFailureLifetimeType, setCosAdvanced],
-  );
+      setZimbraPasswordLockoutFailureLifetimeType(v);
+    }
+  };
+  const onZimbraPasswordLockoutFailureLifetimeNumChange = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      zimbraPasswordLockoutFailureLifetime: e.target.value
+        ? `${e.target.value}${zimbraPasswordLockoutFailureLifetimeType}`
+        : '',
+    }));
+    setZimbraPasswordLockoutFailureLifetimeNum(e.target.value);
+  };
 
-  const onZimbraAdminAuthTokenLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
-    (v) => {
-      if (v) {
-        setCosAdvanced((prev: AccountType) => ({
-          ...prev,
-          zimbraAdminAuthTokenLifetime: zimbraAdminAuthTokenLifetimeNum
-            ? `${zimbraAdminAuthTokenLifetimeNum}${v}`
-            : '',
-        }));
-        setZimbraAdminAuthTokenLifetimeType(v);
-      }
-    },
-    [zimbraAdminAuthTokenLifetimeNum, setCosAdvanced],
-  );
-  const onZimbraAdminAuthTokenLifetimeNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const onZimbraAdminAuthTokenLifetimeTypeChange = (v: Parameters<SingleSelectionOnChange>[0]) => {
+    if (v) {
       setCosAdvanced((prev: AccountType) => ({
         ...prev,
-        zimbraAdminAuthTokenLifetime: e.target.value
-          ? `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
+        zimbraAdminAuthTokenLifetime: zimbraAdminAuthTokenLifetimeNum
+          ? `${zimbraAdminAuthTokenLifetimeNum}${v}`
           : '',
       }));
-      setZimbraAdminAuthTokenLifetimeNum(e.target.value);
-    },
-    [zimbraAdminAuthTokenLifetimeType, setCosAdvanced],
-  );
+      setZimbraAdminAuthTokenLifetimeType(v);
+    }
+  };
+  const onZimbraAdminAuthTokenLifetimeNumChange = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      zimbraAdminAuthTokenLifetime: e.target.value
+        ? `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
+        : '',
+    }));
+    setZimbraAdminAuthTokenLifetimeNum(e.target.value);
+  };
 
-  const onZimbraAuthTokenLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
-    (v) => {
-      if (v) {
-        setCosAdvanced((prev: AccountType) => ({
-          ...prev,
-          zimbraAuthTokenLifetime: zimbraAuthTokenLifetimeNum
-            ? `${zimbraAuthTokenLifetimeNum}${v}`
-            : '',
-        }));
-        setZimbraAuthTokenLifetimeType(v);
-      }
-    },
-    [zimbraAuthTokenLifetimeNum, setCosAdvanced],
-  );
-  const onZimbraAuthTokenLifetimeNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const onZimbraAuthTokenLifetimeTypeChange = (v: Parameters<SingleSelectionOnChange>[0]) => {
+    if (v) {
       setCosAdvanced((prev: AccountType) => ({
         ...prev,
-        zimbraAuthTokenLifetime: e.target.value
-          ? `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
+        zimbraAuthTokenLifetime: zimbraAuthTokenLifetimeNum
+          ? `${zimbraAuthTokenLifetimeNum}${v}`
           : '',
       }));
-      setZimbraAuthTokenLifetimeNum(e.target.value);
-    },
-    [zimbraAdminAuthTokenLifetimeType, setCosAdvanced],
-  );
+      setZimbraAuthTokenLifetimeType(v);
+    }
+  };
+  const onZimbraAuthTokenLifetimeNumChange = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      zimbraAuthTokenLifetime: e.target.value
+        ? `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
+        : '',
+    }));
+    setZimbraAuthTokenLifetimeNum(e.target.value);
+  };
 
-  const onZimbraMailIdleSessionTimeoutTypeChange = useCallback<SingleSelectionOnChange>(
-    (v) => {
-      if (v) {
-        setCosAdvanced((prev: AccountType) => ({
-          ...prev,
-          zimbraMailIdleSessionTimeout: zimbraMailIdleSessionTimeoutNum
-            ? `${zimbraMailIdleSessionTimeoutNum}${v}`
-            : '',
-        }));
-        setZimbraMailIdleSessionTimeoutType(v);
-      }
-    },
-    [zimbraMailIdleSessionTimeoutNum, setCosAdvanced],
-  );
-  const onZimbraMailIdleSessionTimeoutNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const onZimbraMailIdleSessionTimeoutTypeChange = (v: Parameters<SingleSelectionOnChange>[0]) => {
+    if (v) {
       setCosAdvanced((prev: AccountType) => ({
         ...prev,
-        zimbraMailIdleSessionTimeout: e.target.value
-          ? `${e.target.value}${zimbraMailIdleSessionTimeoutType}`
+        zimbraMailIdleSessionTimeout: zimbraMailIdleSessionTimeoutNum
+          ? `${zimbraMailIdleSessionTimeoutNum}${v}`
           : '',
       }));
-      setZimbraMailIdleSessionTimeoutNum(e.target.value);
-    },
-    [zimbraMailIdleSessionTimeoutType, setCosAdvanced],
-  );
+      setZimbraMailIdleSessionTimeoutType(v);
+    }
+  };
+  const onZimbraMailIdleSessionTimeoutNumChange = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      zimbraMailIdleSessionTimeout: e.target.value
+        ? `${e.target.value}${zimbraMailIdleSessionTimeoutType}`
+        : '',
+    }));
+    setZimbraMailIdleSessionTimeoutNum(e.target.value);
+  };
 
-  const onZimbraMailTrashLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
-    (v) => {
-      if (v) {
-        setCosAdvanced((prev: AccountType) => ({
-          ...prev,
-          zimbraMailTrashLifetime: zimbraMailTrashLifetimeNum
-            ? `${zimbraMailTrashLifetimeNum}${v}`
-            : '',
-        }));
-        setZimbraMailMessageLifetimeType(v);
-      }
-    },
-    [zimbraMailTrashLifetimeNum, setCosAdvanced],
-  );
-  const onZimbraMailTrashLifetimeNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const onZimbraMailTrashLifetimeTypeChange = (v: Parameters<SingleSelectionOnChange>[0]) => {
+    if (v) {
       setCosAdvanced((prev: AccountType) => ({
         ...prev,
-        zimbraMailTrashLifetime: e.target.value
-          ? `${e.target.value}${zimbraMailTrashLifetimeType}`
+        zimbraMailTrashLifetime: zimbraMailTrashLifetimeNum
+          ? `${zimbraMailTrashLifetimeNum}${v}`
           : '',
       }));
-      setZimbraMailTrashLifetimeNum(e.target.value);
-    },
-    [zimbraMailTrashLifetimeType, setCosAdvanced],
-  );
+      setZimbraMailMessageLifetimeType(v);
+    }
+  };
+  const onZimbraMailTrashLifetimeNumChange = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      zimbraMailTrashLifetime: e.target.value
+        ? `${e.target.value}${zimbraMailTrashLifetimeType}`
+        : '',
+    }));
+    setZimbraMailTrashLifetimeNum(e.target.value);
+  };
 
-  const onZimbraMailSpamLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
-    (v) => {
-      if (v) {
-        setCosAdvanced((prev: AccountType) => ({
-          ...prev,
-          zimbraMailSpamLifetime: zimbraMailSpamLifetimeNum
-            ? `${zimbraMailSpamLifetimeNum}${v}`
-            : '',
-        }));
-        setZimbraMailSpamLifetimeType(v);
-      }
-    },
-    [zimbraMailSpamLifetimeNum, setCosAdvanced],
-  );
-  const onZimbraMailSpamLifetimeNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const onZimbraMailSpamLifetimeTypeChange = (v: Parameters<SingleSelectionOnChange>[0]) => {
+    if (v) {
       setCosAdvanced((prev: AccountType) => ({
         ...prev,
-        zimbraMailSpamLifetime: e.target.value
-          ? `${e.target.value}${zimbraMailSpamLifetimeType}`
+        zimbraMailSpamLifetime: zimbraMailSpamLifetimeNum
+          ? `${zimbraMailSpamLifetimeNum}${v}`
           : '',
       }));
-      setZimbraMailSpamLifetimeNum(e.target.value);
-    },
-    [zimbraMailSpamLifetimeType, setCosAdvanced],
-  );
+      setZimbraMailSpamLifetimeType(v);
+    }
+  };
+  const onZimbraMailSpamLifetimeNumChange = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      zimbraMailSpamLifetime: e.target.value
+        ? `${e.target.value}${zimbraMailSpamLifetimeType}`
+        : '',
+    }));
+    setZimbraMailSpamLifetimeNum(e.target.value);
+  };
 
-  const onFileQuotaChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+  const onFileQuotaChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!isValidDecimalInput(e.target.value)) return;
     const decimalPoints = e.target.value?.split('.')[1];
     if (!!decimalPoints && decimalPoints?.length > 3) {
@@ -1173,65 +1124,58 @@ const CosAdvanced: FC = () => {
     }
     setShowFileQuotaLimitMsg(false);
     setFileQuotaLimitGBValue(e.target.value);
-  }, []);
+  };
 
-  const onZimbraMailQuotaChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      if (!isValidDecimalInput(e.target.value)) return;
-      const decimalPoints = e.target.value?.split('.')[1];
-      if (!!decimalPoints && decimalPoints?.length > 3) {
-        setShowAccountQuotaLimitMsg(true);
-        return;
-      }
-      setShowAccountQuotaLimitMsg(false);
-      setAccountQuotaGBValue(e.target.value);
+  const onZimbraMailQuotaChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!isValidDecimalInput(e.target.value)) return;
+    const decimalPoints = e.target.value?.split('.')[1];
+    if (!!decimalPoints && decimalPoints?.length > 3) {
+      setShowAccountQuotaLimitMsg(true);
+      return;
+    }
+    setShowAccountQuotaLimitMsg(false);
+    setAccountQuotaGBValue(e.target.value);
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      zimbraMailQuota: e.target.value ? Math.round(GbToBytes(e.target.value)) : '',
+    }));
+  };
+
+  const onZimbraMailMessageLifetimeTypeChange = (v: Parameters<SingleSelectionOnChange>[0]) => {
+    if (v) {
       setCosAdvanced((prev: AccountType) => ({
         ...prev,
-        zimbraMailQuota: e.target.value ? Math.round(GbToBytes(e.target.value)) : '',
-      }));
-    },
-    [setCosAdvanced],
-  );
-
-  const onZimbraMailMessageLifetimeTypeChange = useCallback<SingleSelectionOnChange>(
-    (v) => {
-      if (v) {
-        setCosAdvanced((prev: AccountType) => ({
-          ...prev,
-          zimbraMailMessageLifetime: zimbraMailMessageLifetimeNum
-            ? `${zimbraMailMessageLifetimeNum}${v}`
-            : '',
-        }));
-        setZimbraMailMessageLifetimeType(v);
-      }
-    },
-    [zimbraMailMessageLifetimeNum, setCosAdvanced],
-  );
-  const onZimbraMailMessageLifetimeNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setCosAdvanced((prev: AccountType) => ({
-        ...prev,
-        zimbraMailMessageLifetime: e.target.value
-          ? `${e.target.value}${zimbraMailMessageLifetimeType}`
+        zimbraMailMessageLifetime: zimbraMailMessageLifetimeNum
+          ? `${zimbraMailMessageLifetimeNum}${v}`
           : '',
       }));
-      setZimbraMailMessageLifetimeNum(e.target.value);
-    },
-    [zimbraMailMessageLifetimeType, setCosAdvanced],
-  );
+      setZimbraMailMessageLifetimeType(v);
+    }
+  };
+  const onZimbraMailMessageLifetimeNumChange = (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCosAdvanced((prev: AccountType) => ({
+      ...prev,
+      zimbraMailMessageLifetime: e.target.value
+        ? `${e.target.value}${zimbraMailMessageLifetimeType}`
+        : '',
+    }));
+    setZimbraMailMessageLifetimeNum(e.target.value);
+  };
 
   const cosName = useCosStore((state) => state.cos?.name);
-  const setFileQuotaLimit = useCallback((cosId: string, limit: string) => {
+  const setFileQuotaLimit = (cosId: string, limit: string) => {
     setFileQuotaLimitById(cosId, limit, COS).then(() => {
       setShowFileQuotaLimitMsg(false);
     });
-  }, []);
+  };
 
-  const resetFileQuotaLimit = useCallback((cosId: string) => {
+  const resetFileQuotaLimit = (cosId: string) => {
     resetFileQuotaLimitById(cosId, COS).then(() => {
       setShowFileQuotaLimitMsg(false);
     });
-  }, []);
+  };
 
   const onSave = async (): Promise<void> => {
     const { zimbraId = '' } = cosData;
@@ -1336,21 +1280,18 @@ const CosAdvanced: FC = () => {
     cosName,
     createSnackbar,
     isAdvanced,
-    setCosAdvancedAttributeValues,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     t,
     labels.snackbar.errorMessage,
   ]);
 
-  const changeBackupAttribute = useCallback(
-    (key: AdvancedBackupAttributesKeys): void => {
-      setCosAdvancedBackupAttributes((prev: AdvancedBackupAttributes) => ({
-        ...prev,
-        [key]: !cosAdvancedBackupAttributes[key],
-      }));
-      setIsDirty(true);
-    },
-    [cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes, setIsDirty],
-  );
+  const changeBackupAttribute = (key: AdvancedBackupAttributesKeys): void => {
+    setCosAdvancedBackupAttributes((prev: AdvancedBackupAttributes) => ({
+      ...prev,
+      [key]: !cosAdvancedBackupAttributes[key],
+    }));
+    setIsDirty(true);
+  };
 
   return (
     <PageLayout

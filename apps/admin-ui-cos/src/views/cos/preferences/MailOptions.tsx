@@ -13,7 +13,7 @@ import {
 	SelectItem,
 	Switch
 } from '@zextras/ui-components';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
@@ -34,18 +34,17 @@ export const MailOptions = ({
 	onCosAttributeChanged
 }: MailOptionsProps): React.JSX.Element => {
 	const { t } = useTranslation();
-	const GROUP_BY: SelectItem[] = useMemo(() => conversationGroupBy(t), [t]);
-	const CHARACTOR_SET: SelectItem[] = useMemo(() => charactorSet(), []);
+	const GROUP_BY: SelectItem[] = conversationGroupBy(t);
+	const CHARACTOR_SET: SelectItem[] = charactorSet();
 
-	const bytesToHumanFriendlyFileUploadMaxSizePerFile = useCallback(
-		(bytes: string | number): string => {
-			const parsedBytes = Number(bytes);
-			return parsedBytes === 0
-				? t('cos.unlimited', 'Unlimited')
-				: `~${bytesToHumanReadable(parsedBytes)}`;
-		},
-		[t]
-	);
+	const bytesToHumanFriendlyFileUploadMaxSizePerFile = (
+		bytes: string | number
+	): string => {
+		const parsedBytes = Number(bytes);
+		return parsedBytes === 0
+			? t('cos.unlimited', 'Unlimited')
+			: `~${bytesToHumanReadable(parsedBytes)}`;
+	};
 
 	const [
 		humanFriendlyFileUploadMaxSizePerFileLabel,
@@ -58,8 +57,8 @@ export const MailOptions = ({
 		setHumanFriendlyFileUploadMaxSizePerFileLabel(
 			bytesToHumanFriendlyFileUploadMaxSizePerFile(cosPrefAttributes.zimbraFileUploadMaxSizePerFile)
 		);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
-		bytesToHumanFriendlyFileUploadMaxSizePerFile,
 		cosPrefAttributes.zimbraFileUploadMaxSizePerFile
 	]);
 

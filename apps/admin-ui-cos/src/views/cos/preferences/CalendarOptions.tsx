@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, ListRow, Row, Select, SelectItem, Switch } from '@zextras/ui-components';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
@@ -26,47 +26,35 @@ export const CalendarOptions = ({
 	onCosAttributeChanged
 }: CalendarOptionsProps): React.JSX.Element => {
 	const [t] = useTranslation();
-	const APPOINTMENT_REMINDER: SelectItem[] = useMemo(() => appointmentReminder(t), [t]);
-	const TIMEZONES: SelectItem[] = useMemo(() => timeZoneList(t), [t]);
+	const APPOINTMENT_REMINDER: SelectItem[] = appointmentReminder(t);
+	const TIMEZONES: SelectItem[] = timeZoneList(t);
 	const MINUTES_LABEL = t('label.minutes', 'minutes');
-	const DEFAULT_APPOINTMENT_DURATION: SelectItem[] = useMemo(
-		() => [
-			{ label: `30 ${MINUTES_LABEL}`, value: '30m' },
-			{ label: `60 ${MINUTES_LABEL}`, value: '60m' },
-			{ label: `90 ${MINUTES_LABEL}`, value: '90m' },
-			{ label: `120 ${MINUTES_LABEL}`, value: '120m' }
-		],
-		[MINUTES_LABEL]
-	);
-	const DEFAULT_VIEW_OPTIONS: SelectItem[] = useMemo(
-		() => [
-			{ label: t('cos.default_view.month', 'Month View'), value: 'month' },
-			{ label: t('cos.default_view.week', 'Week View'), value: 'week' },
-			{ label: t('cos.default_view.day', 'Day View'), value: 'day' },
-			{ label: t('cos.default_view.work_week', 'Work Week View'), value: 'workWeek' },
-			{ label: t('cos.default_view.list', 'List View'), value: 'list' }
-		],
-		[t]
-	);
-	const FIRST_DAY_OF_WEEK: SelectItem[] = useMemo(
-		() => [
-			{ label: t('label.week_day.sunday', 'Sunday'), value: '0' },
-			{ label: t('label.week_day.monday', 'Monday'), value: '1' },
-			{ label: t('label.week_day.tuesday', 'Tuesday'), value: '2' },
-			{ label: t('label.week_day.wednesday', 'Wednesday'), value: '3' },
-			{ label: t('label.week_day.thursday', 'Thursday'), value: '4' },
-			{ label: t('label.week_day.friday', 'Friday'), value: '5' },
-			{ label: t('label.week_day.saturday', 'Saturday'), value: '6' }
-		],
-		[t]
-	);
-	const APPOINTMENT_VISIBILITY: SelectItem[] = useMemo(
-		() => [
-			{ label: t('label.public', 'Public'), value: 'public' },
-			{ label: t('label.private', 'Private'), value: 'private' }
-		],
-		[t]
-	);
+	const DEFAULT_APPOINTMENT_DURATION: SelectItem[] = [
+		{ label: `30 ${MINUTES_LABEL}`, value: '30m' },
+		{ label: `60 ${MINUTES_LABEL}`, value: '60m' },
+		{ label: `90 ${MINUTES_LABEL}`, value: '90m' },
+		{ label: `120 ${MINUTES_LABEL}`, value: '120m' }
+	];
+	const DEFAULT_VIEW_OPTIONS: SelectItem[] = [
+		{ label: t('cos.default_view.month', 'Month View'), value: 'month' },
+		{ label: t('cos.default_view.week', 'Week View'), value: 'week' },
+		{ label: t('cos.default_view.day', 'Day View'), value: 'day' },
+		{ label: t('cos.default_view.work_week', 'Work Week View'), value: 'workWeek' },
+		{ label: t('cos.default_view.list', 'List View'), value: 'list' }
+	];
+	const FIRST_DAY_OF_WEEK: SelectItem[] = [
+		{ label: t('label.week_day.sunday', 'Sunday'), value: '0' },
+		{ label: t('label.week_day.monday', 'Monday'), value: '1' },
+		{ label: t('label.week_day.tuesday', 'Tuesday'), value: '2' },
+		{ label: t('label.week_day.wednesday', 'Wednesday'), value: '3' },
+		{ label: t('label.week_day.thursday', 'Thursday'), value: '4' },
+		{ label: t('label.week_day.friday', 'Friday'), value: '5' },
+		{ label: t('label.week_day.saturday', 'Saturday'), value: '6' }
+	];
+	const APPOINTMENT_VISIBILITY: SelectItem[] = [
+		{ label: t('label.public', 'Public'), value: 'public' },
+		{ label: t('label.private', 'Private'), value: 'private' }
+	];
 	return (
 		<Row
 			mainAlignment="flex-start"

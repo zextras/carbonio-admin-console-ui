@@ -9,10 +9,9 @@ import {
   Input,
   Padding,
   Switch,
-  SwitchProps,
   Tooltip,
 } from '@zextras/ui-components';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ComputedLimit, QuotaSource } from '../../../services/get-cos-quota';
@@ -48,20 +47,17 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
     }
   }, [totalComputedQuotaLimit]);
 
-  const inputOnChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const filteredStringValue = e.target.value.replaceAll(/\D/g, '');
-      const parsedValue =
-        filteredStringValue === '' ? undefined : Number.parseInt(filteredStringValue, 10);
-      const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
-      const valueInBytes = valueInGB === undefined ? undefined : (GbToBytes(valueInGB) as number);
-      onChange(valueInBytes ? { type: 'limited', value: valueInBytes } : undefined);
-      setQuotaValue(valueInGB);
-    },
-    [onChange],
-  );
+  const inputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filteredStringValue = e.target.value.replaceAll(/\D/g, '');
+    const parsedValue =
+      filteredStringValue === '' ? undefined : Number.parseInt(filteredStringValue, 10);
+    const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
+    const valueInBytes = valueInGB === undefined ? undefined : (GbToBytes(valueInGB) as number);
+    onChange(valueInBytes ? { type: 'limited', value: valueInBytes } : undefined);
+    setQuotaValue(valueInGB);
+  };
 
-  const switchOnChange = useCallback<NonNullable<SwitchProps['onClick']>>(() => {
+  const switchOnChange = () => {
     setQuotaValue((prevState) => {
       if (prevState === 'unlimited') {
         if (initialTotalComputedQuotaLimit && initialTotalComputedQuotaLimit.type === 'limited') {
@@ -76,15 +72,11 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
         return 'unlimited';
       }
     });
-  }, [initialTotalComputedQuotaLimit, onChange]);
+  };
 
-  const switchValue = useMemo(() => {
-    return quotaValue === 'unlimited';
-  }, [quotaValue]);
+  const switchValue = quotaValue === 'unlimited';
 
-  const inputValue = useMemo(() => {
-    return typeof quotaValue === 'number' ? String(quotaValue) : '';
-  }, [quotaValue]);
+  const inputValue = typeof quotaValue === 'number' ? String(quotaValue) : '';
 
   const icon = totalQuotaSource === 'global' ? 'GlobeOutline' : undefined;
 
@@ -95,10 +87,10 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
 
   const showQuotaSourceIcon = totalQuotaSource !== undefined && totalQuotaSource !== 'cos';
 
-  const onChangeReset = useCallback(() => {
+  const onChangeReset = () => {
     setQuotaValue(undefined);
     onChange(undefined);
-  }, [onChange]);
+  };
 
   const CustomElement = () => (
     <Tooltip

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSnackbar } from '@zextras/ui-components';
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -34,62 +34,54 @@ const CosDetailOperation: FC = () => {
   const setTotalAccount = useCosStore((state) => state.setTotalAccount);
   const setTotalDomain = useCosStore((state) => state.setTotalDomain);
 
-  const getTotalDomain = useCallback(
-    (id: string): void => {
-      const query = `(zimbraDomainDefaultCOSId=${id})`;
-      searchDirectory('', 'domains', '', query, 0, -1).then((data) => {
-        const totalDomain = data?.searchTotal || 0;
-        setTotalDomain(totalDomain);
-      });
-    },
-    [setTotalDomain],
-  );
+  const getTotalDomain = (id: string): void => {
+    const query = `(zimbraDomainDefaultCOSId=${id})`;
+    searchDirectory('', 'domains', '', query, 0, -1).then((data) => {
+      const totalDomain = data?.searchTotal || 0;
+      setTotalDomain(totalDomain);
+    });
+  };
 
-  const getTotalAccount = useCallback(
-    (id: string): void => {
-      const query = `(&(zimbraCOSId=${id})(!(zimbraIsSystemAccount=TRUE)))`;
-      searchDirectory('', 'accounts', '', query, 0, -1).then((data) => {
-        const totalAccount = data?.searchTotal || 0;
-        setTotalAccount(totalAccount);
-      });
-    },
-    [setTotalAccount],
-  );
+  const getTotalAccount = (id: string): void => {
+    const query = `(&(zimbraCOSId=${id})(!(zimbraIsSystemAccount=TRUE)))`;
+    searchDirectory('', 'accounts', '', query, 0, -1).then((data) => {
+      const totalAccount = data?.searchTotal || 0;
+      setTotalAccount(totalAccount);
+    });
+  };
 
-  const getSelectedCosInformation = useCallback(
-    (id: string): void => {
-      getCosGeneralInformation(id)
-        .then((data) => {
-          const cos = data?.cos[0];
-          if (cos) {
-            setCos(cos);
-            if (cos.id) {
-              getTotalAccount(cos.id);
-              getTotalDomain(cos.id);
-            }
+  const getSelectedCosInformation = (id: string): void => {
+    getCosGeneralInformation(id)
+      .then((data) => {
+        const cos = data?.cos[0];
+        if (cos) {
+          setCos(cos);
+          if (cos.id) {
+            getTotalAccount(cos.id);
+            getTotalDomain(cos.id);
           }
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error.message
-              ? error.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
+        }
+      })
+      .catch((error) => {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: error.message
+            ? error.message
+            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
         });
-    },
-    [getTotalAccount, getTotalDomain, setCos, t, createSnackbar],
-  );
+      });
+  };
 
   useEffect(() => {
     if (cosId) {
       getSelectedCosInformation(cosId);
     }
-  }, [cosId, getSelectedCosInformation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cosId]);
 
   return (
     <>

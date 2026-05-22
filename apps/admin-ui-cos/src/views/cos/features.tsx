@@ -12,7 +12,7 @@ import {
   Row,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { FC, useCallback, useMemo } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const Features: FC<{
@@ -35,17 +35,14 @@ export const Features: FC<{
     const [t] = useTranslation();
     const isAdvanced = useIsAdvanced();
 
-    const changeSwitchOption = useCallback(
-      (key: string): void => {
-        setFeaturesDetail((prev: Partial<Record<string, string>>) => ({
-          ...prev,
-          [key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
-        }));
-      },
-      [featuresDetail, setFeaturesDetail],
-    );
+    const changeSwitchOption = (key: string): void => {
+      setFeaturesDetail((prev: Partial<Record<string, string>>) => ({
+        ...prev,
+        [key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+      }));
+    };
 
-    const gracePeriodDefaultDate = useMemo(() => {
+    const gracePeriodDefaultDate = (() => {
       const gentimeValue =
         accSpecificDetail?.carbonioOtpGracePeriodEndingTime ??
         featuresDetail?.carbonioOtpGracePeriodEndingTime;
@@ -70,32 +67,25 @@ export const Features: FC<{
         return date;
       }
       return null;
-    }, [
-      accSpecificDetail?.carbonioOtpGracePeriodEndingTime,
-      featuresDetail?.carbonioOtpGracePeriodEndingTime,
-      featuresDetail?.carbonioOtpGracePeriodEnabled,
-    ]);
-    const handleFromDateChange = useCallback(
-      (d: Date | null) => {
-        if (!d) {
-          setFeaturesDetail((prev: Partial<Record<string, string>>) => ({
-            ...prev,
-            carbonioOtpGracePeriodEndingTime: '',
-          }));
-          return;
-        }
-        const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(
-          d.getUTCDate(),
-        ).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}${String(
-          d.getUTCMinutes(),
-        ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
+    })();
+    const handleFromDateChange = (d: Date | null) => {
+      if (!d) {
         setFeaturesDetail((prev: Partial<Record<string, string>>) => ({
           ...prev,
-          carbonioOtpGracePeriodEndingTime: gentime,
+          carbonioOtpGracePeriodEndingTime: '',
         }));
-      },
-      [setFeaturesDetail],
-    );
+        return;
+      }
+      const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(
+        d.getUTCDate(),
+      ).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}${String(
+        d.getUTCMinutes(),
+      ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
+      setFeaturesDetail((prev: Partial<Record<string, string>>) => ({
+        ...prev,
+        carbonioOtpGracePeriodEndingTime: gentime,
+      }));
+    };
 
     return (
       <Container mainAlignment="flex-start" width="100%" height="auto" orientation="vertical">

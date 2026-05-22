@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Input, ListRow, Row, Select, SelectItem } from '@zextras/ui-components';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
@@ -24,40 +24,34 @@ export const ReceivingMails = ({
 }: ReceivingMailsProps): React.JSX.Element => {
 	const { t } = useTranslation();
 
-	const TIME_TYPES: SelectItem[] = useMemo(
-		() => [
-			{ label: `${t('label.days', 'Days')}`, value: 'd' },
-			{ label: `${t('label.hours', 'Hours')}`, value: 'h' },
-			
-			{ label: `${t('label.minutes', 'Minutes')}`, value: 'm' },
-			{ label: `${t('label.seconds', 'Seconds')}`, value: 's' }
-		],
-		[t]
-	);
+	const TIME_TYPES: SelectItem[] = [
+		{ label: `${t('label.days', 'Days')}`, value: 'd' },
+		{ label: `${t('label.hours', 'Hours')}`, value: 'h' },
+		
+		{ label: `${t('label.minutes', 'Minutes')}`, value: 'm' },
+		{ label: `${t('label.seconds', 'Seconds')}`, value: 's' }
+	];
 
-	const POLLING_INTERVAL: SelectItem[] = useMemo(
-		() => [
-			{
-				label: t('cos.as_new_mail_arrives', 'As New Mail Arrives'),
-				value: '500'
-			},
-			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
-			{ label: `3 ${t('label.minutes', 'minutes')}`, value: '3m' },
-			{ label: `4 ${t('label.minutes', 'minutes')}`, value: '4m' },
-			{ label: `5 ${t('label.minutes', 'minutes')}`, value: '5m' },
-			{ label: `6 ${t('label.minutes', 'minutes')}`, value: '6m' },
-			{ label: `7 ${t('label.minutes', 'minutes')}`, value: '7m' },
-			{ label: `8 ${t('label.minutes', 'minutes')}`, value: '8m' },
-			{ label: `9 ${t('label.minutes', 'minutes')}`, value: '9m' },
-			{ label: `10 ${t('label.minutes', 'minutes')}`, value: '10m' },
-			{ label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' },
-			{
-				label: t('cos.manuallly', 'Manually'),
-				value: '31536000s'
-			}
-		],
-		[t]
-	);
+	const POLLING_INTERVAL: SelectItem[] = [
+		{
+			label: t('cos.as_new_mail_arrives', 'As New Mail Arrives'),
+			value: '500'
+		},
+		{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
+		{ label: `3 ${t('label.minutes', 'minutes')}`, value: '3m' },
+		{ label: `4 ${t('label.minutes', 'minutes')}`, value: '4m' },
+		{ label: `5 ${t('label.minutes', 'minutes')}`, value: '5m' },
+		{ label: `6 ${t('label.minutes', 'minutes')}`, value: '6m' },
+		{ label: `7 ${t('label.minutes', 'minutes')}`, value: '7m' },
+		{ label: `8 ${t('label.minutes', 'minutes')}`, value: '8m' },
+		{ label: `9 ${t('label.minutes', 'minutes')}`, value: '9m' },
+		{ label: `10 ${t('label.minutes', 'minutes')}`, value: '10m' },
+		{ label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' },
+		{
+			label: t('cos.manuallly', 'Manually'),
+			value: '31536000s'
+		}
+	];
 
 	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
 		cosPrefAttributes?.zimbraMailMinPollingInterval?.slice(0, -1) || ''
@@ -66,26 +60,24 @@ export const ReceivingMails = ({
 		cosPrefAttributes?.zimbraMailMinPollingInterval?.slice(-1) || ''
 	);
 
-	const onPrefMailPollingIntervalNumChange = useCallback(
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			onCosAttributeChanged(
-				'zimbraMailMinPollingInterval',
-				e.target.value ? `${e.target.value}${prefMailPollingIntervalType}` : ''
-			);
-			setZimbraPrefMailPollingIntervalNum(e.target.value);
-		},
-		[onCosAttributeChanged, prefMailPollingIntervalType]
-	);
+	const onPrefMailPollingIntervalNumChange = (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		onCosAttributeChanged(
+			'zimbraMailMinPollingInterval',
+			e.target.value ? `${e.target.value}${prefMailPollingIntervalType}` : ''
+		);
+		setZimbraPrefMailPollingIntervalNum(e.target.value);
+	};
 
-	const onPrefMailPollingIntervalTypeChange = useCallback(
-		(v: SelectItem[] | string | null) => {
-			onCosAttributeChanged(
-				'zimbraMailMinPollingInterval',
-				zimbraPrefMailPollingIntervalNum ? `${zimbraPrefMailPollingIntervalNum}${v}` : ''
-			);
-		},
-		[onCosAttributeChanged, zimbraPrefMailPollingIntervalNum]
-	);
+	const onPrefMailPollingIntervalTypeChange = (
+		v: SelectItem[] | string | null
+	) => {
+		onCosAttributeChanged(
+			'zimbraMailMinPollingInterval',
+			zimbraPrefMailPollingIntervalNum ? `${zimbraPrefMailPollingIntervalNum}${v}` : ''
+		);
+	};
 
 	useEffect(() => {
 		setZimbraPrefMailPollingIntervalNum(
@@ -94,14 +86,11 @@ export const ReceivingMails = ({
 		setPrefMailPollingIntervalType(cosPrefAttributes?.zimbraMailMinPollingInterval?.slice(-1));
 	}, [cosPrefAttributes?.zimbraMailMinPollingInterval]);
 
-	const SEND_READ_RECEIPTS: SelectItem[] = useMemo(
-		() => [
-			{ label: t('label.never_send_read_receipt', 'Never send a read receipt'), value: 'never' },
-			{ label: t('label.always_send_read_receipt', 'Always send a read receipt'), value: 'always' },
-			{ label: t('label.ask_me', 'Ask me'), value: 'prompt' }
-		],
-		[t]
-	);
+	const SEND_READ_RECEIPTS: SelectItem[] = [
+		{ label: t('label.never_send_read_receipt', 'Never send a read receipt'), value: 'never' },
+		{ label: t('label.always_send_read_receipt', 'Always send a read receipt'), value: 'always' },
+		{ label: t('label.ask_me', 'Ask me'), value: 'prompt' }
+	];
 
 	return (
 		<Row

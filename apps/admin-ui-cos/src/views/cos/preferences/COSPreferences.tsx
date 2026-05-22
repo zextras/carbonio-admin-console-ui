@@ -6,7 +6,7 @@
 import {  Container, useSnackbar  } from '@zextras/ui-components';
 import {  useCurrentUserRights  } from '@zextras/ui-shared';
 import {  find  } from 'lodash-es';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosAttributes, CosPrefAttributes } from '../../../../types/cos';
@@ -34,11 +34,11 @@ export const COSPreferences = (): React.JSX.Element => {
   const { data: rights = [] } = useCurrentUserRights();
   const setCos = useCosStore((state) => state.setCos);
 
-  const locales = useMemo(() => localeList(t), [t]);
-  const isReadOnlyCos = useMemo(() => {
+  const locales = localeList(t);
+  const isReadOnlyCos = (() => {
     const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
     return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  })();
 
   const [currentCosAttributes, setCurrentCosAttributes] = useState<Partial<CosAttributes>>();
   const [draftCosPrefAttributes, setDraftCosPrefAttributes] = useState<CosPrefAttributes>(
@@ -47,32 +47,32 @@ export const COSPreferences = (): React.JSX.Element => {
 
   const hasUnsavedChanges = useHasUnsavedChanges(currentCosAttributes, draftCosPrefAttributes);
 
-  const handleCosPrefAttributeChange = useCallback(
-    (key: keyof CosPrefAttributes, value: AttributeValue) => {
-      if (value === null) return;
-      const newValue = typeof value === 'object' && 'value' in value ? value.value : value;
-      setDraftCosPrefAttributes((prev) => ({
-        ...prev,
-        [key]: newValue,
-      }));
-    },
-    [],
-  );
+  const handleCosPrefAttributeChange = (
+    key: keyof CosPrefAttributes,
+    value: AttributeValue
+  ) => {
+    if (value === null) return;
+    const newValue = typeof value === 'object' && 'value' in value ? value.value : value;
+    setDraftCosPrefAttributes((prev) => ({
+      ...prev,
+      [key]: newValue,
+    }));
+  };
 
-  const handleSwitchOptionChange = useCallback((key: keyof CosPrefAttributes): void => {
+  const handleSwitchOptionChange = (key: keyof CosPrefAttributes): void => {
     setDraftCosPrefAttributes((prev: CosPrefAttributes) => ({
       ...prev,
       [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
     }));
-  }, []);
+  };
 
-  const setInitialValues = useCallback((initialCosPrefAttributes: Partial<CosAttributes>) => {
+  const setInitialValues = (initialCosPrefAttributes: Partial<CosAttributes>) => {
     setDraftCosPrefAttributes((prev) => ({
       ...DEFAULT_COS_PREF_ATTRIBUTES,
       ...prev,
       ...initialCosPrefAttributes,
     }));
-  }, []);
+  };
 
   const handleSave = (): void => {
     const zimbraID = currentCosAttributes?.zimbraId;
@@ -128,7 +128,8 @@ export const COSPreferences = (): React.JSX.Element => {
       setCurrentCosAttributes(initialCosPrefAttributes);
       setInitialValues(initialCosPrefAttributes);
     }
-  }, [cosInformation, setInitialValues]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cosInformation]);
 
   return (
     <PageLayout

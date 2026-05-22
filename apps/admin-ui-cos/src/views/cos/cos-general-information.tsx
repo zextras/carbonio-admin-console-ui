@@ -24,7 +24,7 @@ import {
 } from '@zextras/ui-components';
 import { replaceHistory, useCurrentUserRights } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
-import { ChangeEvent, FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Attribute } from '../../../types/attribute';
@@ -72,114 +72,105 @@ const CosGeneralInformation: FC = () => {
   const [isDomainRequestInProgress, setIsDomainRequestInProgress] = useState<boolean>(false);
   const [domainOffset, setDomainOffset] = useState<number>(0);
 
-  const accountHeaders = useMemo(
-    () => [
-      {
-        id: 'email',
-        label: t('label.email', 'Email'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'name',
-        label: t('label.person_name', 'Name'),
-        width: '15%',
-        bold: true,
-      },
-      {
-        id: 'aliases',
-        label: t('label.Aliases', 'Aliases'),
-        width: '10%',
-        bold: true,
-      },
-      {
-        id: 'type',
-        label: t('label.type', 'Type'),
-        width: '10%',
-        bold: true,
-      },
-      {
-        id: 'status',
-        label: t('label.status', 'Status'),
-        width: '10%',
-        bold: true,
-      },
-      {
-        id: 'description',
-        label: t('label.description', 'Description'),
-        width: '40%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
+  const accountHeaders = [
+    {
+      id: 'email',
+      label: t('label.email', 'Email'),
+      width: '25%',
+      bold: true,
+    },
+    {
+      id: 'name',
+      label: t('label.person_name', 'Name'),
+      width: '15%',
+      bold: true,
+    },
+    {
+      id: 'aliases',
+      label: t('label.Aliases', 'Aliases'),
+      width: '10%',
+      bold: true,
+    },
+    {
+      id: 'type',
+      label: t('label.type', 'Type'),
+      width: '10%',
+      bold: true,
+    },
+    {
+      id: 'status',
+      label: t('label.status', 'Status'),
+      width: '10%',
+      bold: true,
+    },
+    {
+      id: 'description',
+      label: t('label.description', 'Description'),
+      width: '40%',
+      bold: true,
+    },
+  ];
 
-  const STATUS_COLOR: Record<string, { color: string; label: string }> = useMemo(
-    () => ({
-      active: {
-        color: '#8BC34A',
-        label: t('label.active', 'Active'),
-      },
-      maintenance: {
-        color: '#2196D3',
-        label: t('label.in_maintenance', 'In maintenance'),
-      },
-      locked: {
-        color: '#D74942',
-        label: t('label.locked', 'Locked'),
-      },
-      closed: {
-        color: '#828282',
-        label: t('label.closed', 'Closed'),
-      },
-      pending: {
-        color: '#828282',
-        label: t('label.pending', 'Pending'),
-      },
-      lockout: {
-        color: '#D74942',
-        label: t('label.lockout', 'Lockout'),
-      },
-    }),
-    [t],
-  );
+  const STATUS_COLOR: Record<string, { color: string; label: string }> = {
+    active: {
+      color: '#8BC34A',
+      label: t('label.active', 'Active'),
+    },
+    maintenance: {
+      color: '#2196D3',
+      label: t('label.in_maintenance', 'In maintenance'),
+    },
+    locked: {
+      color: '#D74942',
+      label: t('label.locked', 'Locked'),
+    },
+    closed: {
+      color: '#828282',
+      label: t('label.closed', 'Closed'),
+    },
+    pending: {
+      color: '#828282',
+      label: t('label.pending', 'Pending'),
+    },
+    lockout: {
+      color: '#D74942',
+      label: t('label.lockout', 'Lockout'),
+    },
+  };
 
-  const accountUserType = useCallback((item: Record<string, string>): string => {
+  const accountUserType = (item: Record<string, string>): string => {
     if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
     if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
     if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
     if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
     return 'Normal';
-  }, []);
+  };
 
-  const domainHeaders = useMemo(
-    () => [
-      {
-        id: 'domains',
-        label: t('label.domains', 'Domains'),
-        width: '35%',
-        bold: true,
-      },
-      {
-        id: 'maximum_accounts',
-        label: t('label.maximum_handled_accounts', 'Maximum Handled Accounts'),
-        width: '45%',
-        bold: true,
-      },
-      {
-        id: 'description',
-        label: '',
-        width: '20%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
+  const domainHeaders = [
+    {
+      id: 'domains',
+      label: t('label.domains', 'Domains'),
+      width: '35%',
+      bold: true,
+    },
+    {
+      id: 'maximum_accounts',
+      label: t('label.maximum_handled_accounts', 'Maximum Handled Accounts'),
+      width: '45%',
+      bold: true,
+    },
+    {
+      id: 'description',
+      label: '',
+      width: '20%',
+      bold: true,
+    },
+  ];
 
-  const readonlyCOS = useMemo(() => {
+  const readonlyCOS = (() => {
     const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
     return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  })();
 
   useEffect(() => {
     if (!!cosInformation && cosInformation.length > 0) {
@@ -317,15 +308,12 @@ const CosGeneralInformation: FC = () => {
     setIsDirty(false);
   };
 
-  const cosCreationDate = useMemo(
-    () =>
-      !!cosData.zimbraCreateTimestamp && cosData.zimbraCreateTimestamp !== null
-        ? getFormatedDate(getDateFromStr(cosData.zimbraCreateTimestamp)) ?? ''
-        : '',
-    [cosData.zimbraCreateTimestamp],
-  );
+  const cosCreationDate =
+    !!cosData.zimbraCreateTimestamp && cosData.zimbraCreateTimestamp !== null
+      ? getFormatedDate(getDateFromStr(cosData.zimbraCreateTimestamp)) ?? ''
+      : '';
 
-  const canDeleteCOS = useMemo(() => !!(cosName === '' || cosName === DEFAULT), [cosName]);
+  const canDeleteCOS = !!(cosName === '' || cosName === DEFAULT);
 
   const onDeleteCOSConfirmation = (): void => {
     setOpenDeleteCOSConfirmDialog(true);
@@ -368,7 +356,7 @@ const CosGeneralInformation: FC = () => {
       });
   };
 
-  const getAccountList = useCallback((): void => {
+  const getAccountList = (): void => {
     if (!searchAccountQuery) {
       return;
     }
@@ -451,40 +439,39 @@ const CosGeneralInformation: FC = () => {
         createSnackbar(snackbarConfig);
         setIsAccountRequestInProgress(false);
       });
-  }, [searchAccountQuery, offset, accountLimit, accountUserType, STATUS_COLOR, t, createSnackbar]);
+  };
 
   useEffect(() => {
     if (cosDetail?.id) {
       getAccountList();
     }
-  }, [cosDetail?.id, getAccountList]);
-
-  const generateAccountSearchFilterQuery = useCallback(
-    (searchStr: string, cosId: string | undefined): string => {
-      let filterQuery = `(&(zimbraCOSId=${cosId})(!(zimbraIsSystemAccount=TRUE)))`;
-      if (searchStr) {
-        filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
-      }
-      if (searchStr) {
-        return `(&${filterQuery})`;
-      }
-      return filterQuery;
-    },
-    [],
-  );
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchAccountList = useCallback(
+  }, [cosDetail?.id, searchAccountQuery, offset, accountLimit]);
+
+  const generateAccountSearchFilterQuery = (
+    searchStr: string,
+    cosId: string | undefined,
+  ): string => {
+    let filterQuery = `(&(zimbraCOSId=${cosId})(!(zimbraIsSystemAccount=TRUE)))`;
+    if (searchStr) {
+      filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
+    }
+    if (searchStr) {
+      return `(&${filterQuery})`;
+    }
+    return filterQuery;
+  };
+
+  const searchAccountListRef = useRef(
     debounce((searchStr: string, cosId: string | undefined) => {
       setSearchAccountQuery(generateAccountSearchFilterQuery(searchStr, cosId));
     }, 700),
-    [debounce],
   );
   useEffect(() => {
-    searchAccountList(searchAccountString, cosDetail.id);
-  }, [cosDetail?.id, searchAccountList, searchAccountString]);
+    searchAccountListRef.current(searchAccountString, cosDetail.id);
+  }, [cosDetail?.id, searchAccountString]);
 
-  const getDomainList = useCallback((): void => {
+  const getDomainList = (): void => {
     if (!searchDomainQuery) {
       return;
     }
@@ -552,38 +539,37 @@ const CosGeneralInformation: FC = () => {
         createSnackbar(snackbarConfig);
         setIsDomainRequestInProgress(false);
       });
-  }, [searchDomainQuery, domainOffset, limit, cosDetail?.id, t, createSnackbar]);
+  };
 
   useEffect(() => {
     if (cosDetail?.id) {
       getDomainList();
     }
-  }, [cosDetail?.id, getDomainList]);
-
-  const generateDomainSearchFilterQuery = useCallback(
-    (searchStr: string, cosId: string | undefined): string => {
-      let filterQuery = `(|(zimbraDomainCOSMaxAccounts=${cosId}*)(zimbraDomainDefaultCOSId=${cosId}))`;
-      if (searchStr) {
-        filterQuery += `(|(zimbraDomainName=*${searchStr}*))`;
-      }
-      if (searchStr) {
-        return `(&${filterQuery})`;
-      }
-      return filterQuery;
-    },
-    [],
-  );
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchDomainList = useCallback(
+  }, [cosDetail?.id, searchDomainQuery, domainOffset, limit]);
+
+  const generateDomainSearchFilterQuery = (
+    searchStr: string,
+    cosId: string | undefined,
+  ): string => {
+    let filterQuery = `(|(zimbraDomainCOSMaxAccounts=${cosId}*)(zimbraDomainDefaultCOSId=${cosId}))`;
+    if (searchStr) {
+      filterQuery += `(|(zimbraDomainName=*${searchStr}*))`;
+    }
+    if (searchStr) {
+      return `(&${filterQuery})`;
+    }
+    return filterQuery;
+  };
+
+  const searchDomainListRef = useRef(
     debounce((searchStr: string, cosId: string | undefined) => {
       setSearchDomainQuery(generateDomainSearchFilterQuery(searchStr, cosId));
     }, 700),
-    [debounce],
   );
   useEffect(() => {
-    searchDomainList(searchDomainString, cosDetail.id);
-  }, [cosDetail?.id, searchDomainList, searchDomainString]);
+    searchDomainListRef.current(searchDomainString, cosDetail.id);
+  }, [cosDetail?.id, searchDomainString]);
 
   return (
     <PageLayout
