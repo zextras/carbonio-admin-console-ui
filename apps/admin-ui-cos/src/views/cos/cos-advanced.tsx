@@ -12,7 +12,7 @@ import {
   useTotalQuotaActive,
 } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -87,7 +87,7 @@ function saveBackupAttributes(
   }
 }
 
-const CosAdvanced: FC = () => {
+const CosAdvanced = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -522,13 +522,11 @@ const CosAdvanced: FC = () => {
       ...prev,
       [key]: cosAdvanced[key] === 'TRUE' ? 'FALSE' : 'TRUE',
     }));
-    setIsDirty(true);
   };
 
   const onTotalQuotaChange = (value?: ComputedLimit) => {
     setTotalComputedQuotaLimit(value);
     setTotalQuotaSource(value !== undefined ? 'cos' : 'global');
-    setIsDirty(true);
   };
 
   const onCancel = (): void => {
@@ -543,270 +541,25 @@ const CosAdvanced: FC = () => {
   };
 
   useEffect(() => {
-    if (
-      cosData.zimbraMailForwardingAddressMaxLength !== undefined &&
-      cosData.zimbraMailForwardingAddressMaxLength !==
-        cosAdvanced.zimbraMailForwardingAddressMaxLength
-    ) {
-      setIsDirty(true);
-    }
+    const hasFieldChanges = (Object.keys(cosAdvanced) as Array<keyof AccountType>).some(
+      (key) => cosData[key] !== undefined && cosData[key] !== cosAdvanced[key],
+    );
+    const hasFileQuotaChange =
+      fileQuotaLimitGBValue !== undefined && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue;
+    const hasTotalQuotaChange =
+      isTotalQuotaActive &&
+      totalComputedQuotaLimit !== undefined &&
+      totalComputedQuotaLimit !== initialTotalComputedQuotaLimit;
+    setIsDirty(hasFieldChanges || hasFileQuotaChange || hasTotalQuotaChange);
   }, [
-    cosAdvanced.zimbraMailForwardingAddressMaxLength,
-    cosData.zimbraMailForwardingAddressMaxLength,
+    cosAdvanced,
+    cosData,
+    initFileQuotaLimitGBValue,
+    fileQuotaLimitGBValue,
+    totalComputedQuotaLimit,
+    initialTotalComputedQuotaLimit,
+    isTotalQuotaActive,
   ]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraMailForwardingAddressMaxNumAddrs !== undefined &&
-      cosData.zimbraMailForwardingAddressMaxNumAddrs !==
-        cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs
-    ) {
-      setIsDirty(true);
-    }
-  }, [
-    cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs,
-    cosData.zimbraMailForwardingAddressMaxNumAddrs,
-  ]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraMailQuota !== undefined &&
-      cosData.zimbraMailQuota !== cosAdvanced.zimbraMailQuota
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraMailQuota, cosData.zimbraMailQuota]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraContactMaxNumEntries !== undefined &&
-      cosData.zimbraContactMaxNumEntries !== cosAdvanced.zimbraContactMaxNumEntries
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraContactMaxNumEntries, cosData.zimbraContactMaxNumEntries]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraQuotaWarnPercent !== undefined &&
-      cosData.zimbraQuotaWarnPercent !== cosAdvanced.zimbraQuotaWarnPercent
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraQuotaWarnPercent, cosData.zimbraQuotaWarnPercent]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraQuotaWarnInterval !== undefined &&
-      cosData.zimbraQuotaWarnInterval !== cosAdvanced.zimbraQuotaWarnInterval
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraQuotaWarnInterval, cosData.zimbraQuotaWarnInterval]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraQuotaWarnMessage !== undefined &&
-      cosData.zimbraQuotaWarnMessage !== cosAdvanced.zimbraQuotaWarnMessage
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraQuotaWarnMessage, cosData.zimbraQuotaWarnMessage]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordMinLength !== undefined &&
-      cosData.zimbraPasswordMinLength !== cosAdvanced.zimbraPasswordMinLength
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordMinLength, cosData.zimbraPasswordMinLength]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordMaxLength !== undefined &&
-      cosData.zimbraPasswordMaxLength !== cosAdvanced.zimbraPasswordMaxLength
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordMaxLength, cosData.zimbraPasswordMaxLength]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordMinUpperCaseChars !== undefined &&
-      cosData.zimbraPasswordMinUpperCaseChars !== cosAdvanced.zimbraPasswordMinUpperCaseChars
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordMinUpperCaseChars, cosData.zimbraPasswordMinUpperCaseChars]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordMinLowerCaseChars !== undefined &&
-      cosData.zimbraPasswordMinLowerCaseChars !== cosAdvanced.zimbraPasswordMinLowerCaseChars
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordMinLowerCaseChars, cosData.zimbraPasswordMinLowerCaseChars]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordMinPunctuationChars !== undefined &&
-      cosData.zimbraPasswordMinPunctuationChars !== cosAdvanced.zimbraPasswordMinPunctuationChars
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordMinPunctuationChars, cosData.zimbraPasswordMinPunctuationChars]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordMinNumericChars !== undefined &&
-      cosData.zimbraPasswordMinNumericChars !== cosAdvanced.zimbraPasswordMinNumericChars
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordMinNumericChars, cosData.zimbraPasswordMinNumericChars]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordMinDigitsOrPuncs !== undefined &&
-      cosData.zimbraPasswordMinDigitsOrPuncs !== cosAdvanced.zimbraPasswordMinDigitsOrPuncs
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordMinDigitsOrPuncs, cosData.zimbraPasswordMinDigitsOrPuncs]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordMinAge !== undefined &&
-      cosData.zimbraPasswordMinAge !== cosAdvanced.zimbraPasswordMinAge
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordMinAge, cosData.zimbraPasswordMinAge]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordMaxAge !== undefined &&
-      cosData.zimbraPasswordMaxAge !== cosAdvanced.zimbraPasswordMaxAge
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordMaxAge, cosData.zimbraPasswordMaxAge]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordEnforceHistory !== undefined &&
-      cosData.zimbraPasswordEnforceHistory !== cosAdvanced.zimbraPasswordEnforceHistory
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordEnforceHistory, cosData.zimbraPasswordEnforceHistory]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordLockoutMaxFailures !== undefined &&
-      cosData.zimbraPasswordLockoutMaxFailures !== cosAdvanced.zimbraPasswordLockoutMaxFailures
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordLockoutMaxFailures, cosData.zimbraPasswordLockoutMaxFailures]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordLockoutDuration !== undefined &&
-      cosData.zimbraPasswordLockoutDuration !== cosAdvanced.zimbraPasswordLockoutDuration
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraPasswordLockoutDuration, cosData.zimbraPasswordLockoutDuration]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraPasswordLockoutFailureLifetime !== undefined &&
-      cosData.zimbraPasswordLockoutFailureLifetime !==
-        cosAdvanced.zimbraPasswordLockoutFailureLifetime
-    ) {
-      setIsDirty(true);
-    }
-  }, [
-    cosAdvanced.zimbraPasswordLockoutFailureLifetime,
-    cosData.zimbraPasswordLockoutFailureLifetime,
-  ]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraAdminAuthTokenLifetime !== undefined &&
-      cosData.zimbraAdminAuthTokenLifetime !== cosAdvanced.zimbraAdminAuthTokenLifetime
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraAdminAuthTokenLifetime, cosData.zimbraAdminAuthTokenLifetime]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraAuthTokenLifetime !== undefined &&
-      cosData.zimbraAuthTokenLifetime !== cosAdvanced.zimbraAuthTokenLifetime
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraAuthTokenLifetime, cosData.zimbraAuthTokenLifetime]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraMailIdleSessionTimeout !== undefined &&
-      cosData.zimbraMailIdleSessionTimeout !== cosAdvanced.zimbraMailIdleSessionTimeout
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraMailIdleSessionTimeout, cosData.zimbraMailIdleSessionTimeout]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraMailMessageLifetime !== undefined &&
-      cosData.zimbraMailMessageLifetime !== cosAdvanced.zimbraMailMessageLifetime
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraMailMessageLifetime, cosData.zimbraMailMessageLifetime]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraMailTrashLifetime !== undefined &&
-      cosData.zimbraMailTrashLifetime !== cosAdvanced.zimbraMailTrashLifetime
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraMailTrashLifetime, cosData.zimbraMailTrashLifetime]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraMailSpamLifetime !== undefined &&
-      cosData.zimbraMailSpamLifetime !== cosAdvanced.zimbraMailSpamLifetime
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraMailSpamLifetime, cosData.zimbraMailSpamLifetime]);
-
-  useEffect(() => {
-    if (
-      cosData.zimbraFreebusyExchangeUserOrg !== undefined &&
-      cosData.zimbraFreebusyExchangeUserOrg !== cosAdvanced.zimbraFreebusyExchangeUserOrg
-    ) {
-      setIsDirty(true);
-    }
-  }, [cosAdvanced.zimbraFreebusyExchangeUserOrg, cosData.zimbraFreebusyExchangeUserOrg]);
-
-  useEffect(() => {
-    if (
-      fileQuotaLimitGBValue !== undefined &&
-      initFileQuotaLimitGBValue !== fileQuotaLimitGBValue
-    ) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [initFileQuotaLimitGBValue, fileQuotaLimitGBValue]);
 
   const onFileQuotaChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!isValidDecimalInput(e.target.value)) return;
