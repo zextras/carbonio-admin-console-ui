@@ -268,7 +268,7 @@ export const CosListPanel: FC = () => {
       background="gray5"
       style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
     >
-      <GeneralListPanel generalOptionItems={globalOptionItems} />
+      <GeneralListPanel generalOptionItems={globalOptionItems} selectedOperationItem={cosView} />
       <Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
       <Row mainAlignment="flex-start" width="100%">
         <DropDownInput
