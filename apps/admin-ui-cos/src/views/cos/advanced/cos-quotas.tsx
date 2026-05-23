@@ -43,6 +43,7 @@ type QuotaProps = {
   totalQuotaSource?: QuotaSource;
   initialTotalComputedQuotaLimit?: ComputedLimit;
   onTotalQuotaChange: (value?: ComputedLimit) => void;
+  showQuotaRevertButton: boolean;
 };
 
 const COSQuotas: FC<QuotaProps> = ({
@@ -67,6 +68,7 @@ const COSQuotas: FC<QuotaProps> = ({
   totalQuotaSource,
   initialTotalComputedQuotaLimit,
   onTotalQuotaChange,
+  showQuotaRevertButton,
 }) => {
   const [t] = useTranslation();
 
@@ -166,6 +168,7 @@ const COSQuotas: FC<QuotaProps> = ({
                 initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
                 onChange={onTotalQuotaChange}
                 readonlyCOS={readonlyCOS}
+                showRevertButton={showQuotaRevertButton}
               />
             )}
             <Container>

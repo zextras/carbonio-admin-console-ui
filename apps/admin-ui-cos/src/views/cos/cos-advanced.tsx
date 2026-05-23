@@ -12,7 +12,7 @@ import {
   useTotalQuotaActive,
 } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -65,6 +65,12 @@ type AdvancedBackupAttributesKeys = keyof AdvancedBackupAttributes;
 
 function isBackupAttribute(key: string): key is AdvancedBackupAttributesKeys {
   return key === BACKUP_ENABLED || key === BACKUP_SELF_UNDELETE_ALLOWED;
+}
+
+function computedLimitsEqual(a: ComputedLimit, b: ComputedLimit): boolean {
+  if (a.type !== b.type) return false;
+  if (a.type === 'limited' && b.type === 'limited') return a.value === b.value;
+  return true;
 }
 
 function saveBackupAttributes(
@@ -214,6 +220,13 @@ const CosAdvanced = () => {
   );
   const initTotalComputedQuotaLimit = cosQuotaData?.totalComputedLimit;
   const initTotalQuotaSource = cosQuotaData?.totalQuotaSource;
+  const initialQuotaRef = useRef<{ limit: ComputedLimit; source: QuotaSource } | null>(null);
+  if (cosQuotaData && initialQuotaRef.current === null) {
+    initialQuotaRef.current = {
+      limit: cosQuotaData.totalComputedLimit,
+      source: cosQuotaData.totalQuotaSource,
+    };
+  }
   const [totalQuotaOverride, setTotalQuotaOverride] = useState<ComputedLimit | null | undefined>(
     null,
   );
@@ -225,6 +238,15 @@ const CosAdvanced = () => {
         ? ('cos' as QuotaSource)
         : ('global' as QuotaSource)
       : initTotalQuotaSource;
+  const effectiveQuotaLimit =
+    totalQuotaOverride !== null ? totalQuotaOverride : initTotalComputedQuotaLimit;
+  const showQuotaRevertButton =
+    totalQuotaSource === 'cos' &&
+    initialQuotaRef.current !== null &&
+    !computedLimitsEqual(
+      effectiveQuotaLimit ?? initialQuotaRef.current.limit,
+      initialQuotaRef.current.limit,
+    );
 
   const setValue = (key: keyof AccountType, value: AccountType[keyof AccountType]): void => {
     setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
@@ -495,7 +517,15 @@ const CosAdvanced = () => {
   };
 
   const onTotalQuotaChange = (value?: ComputedLimit) => {
-    setTotalQuotaOverride(value);
+    if (
+      value &&
+      initialQuotaRef.current?.source === 'global' &&
+      computedLimitsEqual(value, initialQuotaRef.current.limit)
+    ) {
+      setTotalQuotaOverride(undefined);
+    } else {
+      setTotalQuotaOverride(value);
+    }
   };
 
   const onCancel = (): void => {
@@ -711,6 +741,7 @@ const CosAdvanced = () => {
           totalQuotaSource={totalQuotaSource}
           initialTotalComputedQuotaLimit={initTotalComputedQuotaLimit}
           onTotalQuotaChange={onTotalQuotaChange}
+          showQuotaRevertButton={showQuotaRevertButton}
         />
         <COSPassword
           cosAdvanced={cosAdvanced}

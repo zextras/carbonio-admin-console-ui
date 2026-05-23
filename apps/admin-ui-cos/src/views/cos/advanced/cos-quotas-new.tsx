@@ -23,6 +23,7 @@ type COSQuotasNewProps = {
   initialTotalComputedQuotaLimit: ComputedLimit | undefined;
   onChange: (value?: ComputedLimit) => void;
   readonlyCOS: boolean;
+  showRevertButton: boolean;
 };
 
 const COSQuotasNew: FC<COSQuotasNewProps> = ({
@@ -31,6 +32,7 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
   initialTotalComputedQuotaLimit,
   onChange,
   readonlyCOS,
+  showRevertButton,
 }) => {
   const [t] = useTranslation();
 
@@ -134,7 +136,7 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
           inputName="totalQuota"
           onChange={inputOnChange}
           disabled={readonlyCOS || switchValue}
-          CustomIcon={totalQuotaSource === 'cos' ? CustomElement : undefined}
+          CustomIcon={showRevertButton ? CustomElement : undefined}
         />
         {showQuotaSourceIcon && (
           <Tooltip placement={'top-end'} label={tooltipLabel}>
