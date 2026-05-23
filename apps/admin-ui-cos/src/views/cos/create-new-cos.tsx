@@ -17,17 +17,15 @@ import {
 import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
 import { CosResponse } from '../../../types/cos';
-import { COS_ROUTE_ID, MANAGE } from '../../constants';
+import { GENERAL_INFORMATION } from '../../constants';
 import { createCos } from '../../services/create-cos';
 
 const CreateCos: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const navigate = useNavigate();
   const [zimbraNotes, setZimbraNotes] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [cosName, setCosName] = useState<string>('');
@@ -50,7 +48,7 @@ const CreateCos: FC = () => {
   const routeToCos = (resp: CosResponse): void => {
     const cos = resp?.cos[0];
     if (cos) {
-      replaceHistory(`/${cos.id}/general_information`);
+      replaceHistory(`/${cos.id}/${GENERAL_INFORMATION}`);
     } else {
       replaceHistory(`/`);
     }
@@ -96,7 +94,7 @@ const CreateCos: FC = () => {
   };
 
   const onCancel = (): void => {
-    navigate(`/${MANAGE}/${COS_ROUTE_ID}`);
+    replaceHistory('/');
   };
 
   return (
