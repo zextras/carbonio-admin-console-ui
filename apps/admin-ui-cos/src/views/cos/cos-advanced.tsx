@@ -574,8 +574,8 @@ const CosAdvanced = () => {
       } else {
         await unsetCosQuota(zimbraId);
       }
-      setTotalQuotaOverride(null);
       await invalidateCosQuota(zimbraId);
+      setTotalQuotaOverride(null);
     }
 
     const cosAdvancedToSave = isTotalQuotaActive
