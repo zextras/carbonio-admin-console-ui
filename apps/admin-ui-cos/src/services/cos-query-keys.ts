@@ -13,4 +13,5 @@ export const cosQueryKeys = {
   totalDomains: (cosId: string) => [...cosQueryKeys.all, 'total-domains', cosId] as const,
   coreAttributes: (body: Array<CoreAttributeRequest>) =>
     [...cosQueryKeys.all, 'core-attributes', body] as const,
+  fileQuota: (cosId: string) => [...cosQueryKeys.all, 'file-quota', cosId] as const,
 };

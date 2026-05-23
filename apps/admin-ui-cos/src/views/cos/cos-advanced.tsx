@@ -26,7 +26,6 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
 import { ComputedLimit, getCosQuota, QuotaSource } from '../../services/get-cos-quota';
-import { getFileQuotaById } from '../../services/get-file-quota';
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
 import { setCoreAttributes } from '../../services/set-core-attributes';
@@ -35,6 +34,7 @@ import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { unsetCosQuota } from '../../services/unset-cos-quota';
 import { useCoreAttributes } from '../../services/use-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
+import { useFileQuota } from '../../services/use-file-quota';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
 import { BytesToGB, GbToBytes } from '../utility/utils';
@@ -193,13 +193,18 @@ const CosAdvanced = () => {
   const mailSpamLifetime = useTimeFieldState((v) =>
     setCosAdvanced((prev: AccountType) => ({ ...prev, zimbraMailSpamLifetime: v })),
   );
-  const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState<string | undefined>(
-    undefined,
-  );
-  const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState<string | undefined>(undefined);
+  const [fileQuotaOverride, setFileQuotaOverride] = useState<string | undefined>(undefined);
   const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
   const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
   const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
+  const { data: fileQuotaData } = useFileQuota(
+    cosData?.zimbraId,
+    !!cosData?.zimbraId && isAdvanced && !isTotalQuotaActive,
+  );
+  const initFileQuotaLimitGBValue = fileQuotaData?.limit
+    ? BytesToGB(fileQuotaData.limit).toFixed(2)
+    : undefined;
+  const fileQuotaLimitGBValue = fileQuotaOverride ?? initFileQuotaLimitGBValue;
   const [totalComputedQuotaLimit, setTotalComputedQuotaLimit] = useState<ComputedLimit | undefined>(
     undefined,
   );
@@ -468,15 +473,6 @@ const CosAdvanced = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cosInformation]);
 
-  const getFileQuota = (cosId: string): void => {
-    getFileQuotaById(cosId, COS).then((res: { limit: string }) => {
-      if (res?.limit) {
-        setInitFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
-        setFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(2));
-      }
-    });
-  };
-
   const getCOSQuota = (cosId: string): void => {
     getCosQuota(cosId).then((res) => {
       if (res.type === 'success') {
@@ -487,12 +483,6 @@ const CosAdvanced = () => {
       }
     });
   };
-
-  useEffect(() => {
-    if (cosData?.zimbraId && isAdvanced && !isTotalQuotaActive) {
-      getFileQuota(cosData.zimbraId);
-    }
-  }, [cosData.zimbraId, isAdvanced, isTotalQuotaActive]);
 
   useEffect(() => {
     if (cosData?.zimbraId && isAdvanced && isTotalQuotaActive) {
@@ -519,7 +509,7 @@ const CosAdvanced = () => {
   const onCancel = (): void => {
     setInitalValues(cosData);
     setStateAttrValues(cosData);
-    setFileQuotaLimitGBValue(initFileQuotaLimitGBValue);
+    setFileQuotaOverride(undefined);
     setBackupOverrides({});
     if (isTotalQuotaActive) {
       setTotalComputedQuotaLimit(initialTotalComputedQuotaLimit);
@@ -557,7 +547,7 @@ const CosAdvanced = () => {
       return;
     }
     setShowFileQuotaLimitMsg(false);
-    setFileQuotaLimitGBValue(e.target.value);
+    setFileQuotaOverride(e.target.value);
   };
 
   const onZimbraMailQuotaChange = (e: ChangeEvent<HTMLInputElement>) => {
