@@ -17,7 +17,7 @@
     "build:dev": "pnpm --filter @zextras/admin-ui-bootstrap build:dev",
     "postbuild:dev": "pnpm exec tsx scripts/generate-pkgbuild.ts",
     "postbuild": "pnpm exec tsx scripts/generate-pkgbuild.ts",
-    "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev",
+    "dev": "pnpm --filter @zextras/admin-ui-bootstrap dev --force",
     "bump-version": "semantic-release",
     "bump-version:dry": "semantic-release --dry-run",
     "deploy": "pnpm exec tsx scripts/deploy.ts",
