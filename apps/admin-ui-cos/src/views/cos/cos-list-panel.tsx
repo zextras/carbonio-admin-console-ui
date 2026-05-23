@@ -94,9 +94,6 @@ export const CosListPanel: FC = () => {
       setSearchCosName(cosInformation?.name);
       setIsCosSelect(true);
       setIsCosListExpand(false);
-      if (cosInformation?.id) {
-        replaceHistory(`/${cosInformation.id}/${GENERAL_INFORMATION}`);
-      }
     }
   }, [cosInformation?.id, cosInformation?.name]);
 
