@@ -25,6 +25,7 @@ import {
   ADVANCED,
   COS_LIST,
   COS_ROUTE_ID,
+  CREATE_NEW_COS_ROUTE_ID,
   FEATURES,
   GENERAL_INFORMATION,
   IS_COS_DETAIL_LIST_EXPANDED,
@@ -115,6 +116,19 @@ export const CosListPanel: FC = () => {
       setIsCosListExpand(false);
       setSelectedCosId(undefined);
       replaceHistory(`/${COS_LIST}`);
+    } else {
+      const segments = pathname.split('/').filter(Boolean);
+      const urlCosId =
+        segments.length >= 4 &&
+        segments[0] === MANAGE_APP_ID &&
+        segments[1] === COS_ROUTE_ID &&
+        segments[2] !== COS_LIST &&
+        segments[2] !== CREATE_NEW_COS_ROUTE_ID
+          ? segments[2]
+          : undefined;
+      if (urlCosId && urlCosId !== selectedCosId) {
+        setSelectedCosId(urlCosId);
+      }
     }
   }, [pathname]);
 
