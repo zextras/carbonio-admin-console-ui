@@ -53,7 +53,10 @@ export const CosListPanel: FC = () => {
   const cosName = cosInformation?.name;
   const [isShowError, setIsShowError] = useState(false);
   const prevCosRef = useRef<string | undefined>(undefined);
-  const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
+  const [isDetailListExpanded, setIsDetailListExpanded] = useState(() => {
+    const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
+    return storedValue !== 'false';
+  });
 
   const cosView = (() => {
     if (pathname === `/${COS_LIST}` || pathname === '/') return COS_LIST;
@@ -250,15 +253,6 @@ export const CosListPanel: FC = () => {
             </Row>
           ),
         }));
-
-  useEffect(() => {
-    const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
-    if (storedValue === 'false') {
-      setIsDetailListExpanded(false);
-    } else {
-      setIsDetailListExpanded(true);
-    }
-  }, []);
 
   return (
     <Container
