@@ -44,11 +44,11 @@ export const CosListPanel: FC = () => {
   const createSnackbar = useSnackbar();
   const { pathname } = useLocation();
   const [searchCosName, setSearchCosName] = useState('');
-  const [isCosSelect, setIsCosSelect] = useState(false);
   const [cosList, setCosList] = useState<Array<SearchDirectoryEntry>>([]);
   const [isCosListExpand, setIsCosListExpand] = useState(false);
   const cosDetailMatch = matchPath(`/${MANAGE_APP_ID}/${COS_ROUTE_ID}/:cosId/:operation`, pathname);
   const selectedCosId = cosDetailMatch?.params.cosId;
+  const isCosSelect = !!selectedCosId;
   const { data: cosDetailData } = useCosDetail(selectedCosId);
   const cosInformation = cosDetailData?.cos?.[0];
   const cosName = cosInformation?.name;
@@ -92,7 +92,6 @@ export const CosListPanel: FC = () => {
   useEffect(() => {
     if (cosInformation?.name) {
       setSearchCosName(cosInformation?.name);
-      setIsCosSelect(true);
       setIsCosListExpand(false);
     }
   }, [cosInformation?.id, cosInformation?.name]);
@@ -103,11 +102,11 @@ export const CosListPanel: FC = () => {
     }, 700),
   );
 
-  useEffect(() => {
-    if (!isCosSelect) {
-      searchCosCallRef.current(searchCosName);
-    }
-  }, [searchCosName, isCosSelect]);
+  const selectedCos = (cosData: SearchDirectoryEntry) => {
+    setSearchCosName(cosData?.name);
+    setIsCosListExpand(false);
+    replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
+  };
 
   const toggleDetailView = (): void => {
     const newValue = !isDetailListExpanded;
@@ -123,13 +122,6 @@ export const CosListPanel: FC = () => {
     if (isCosSelect && selectedCosId) {
       replaceHistory(`/${selectedCosId}/${view}`);
     }
-  };
-
-  const selectedCos = (cosData: SearchDirectoryEntry) => {
-    setIsCosSelect(true);
-    setSearchCosName(cosData?.name);
-    setIsCosListExpand(false);
-    replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
   };
 
   const detailOptions: Array<ListItemType> = [
@@ -250,9 +242,10 @@ export const CosListPanel: FC = () => {
               : t('cos.search_class_of_service', 'Select a Class of Service')
           }
           onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-            setIsCosSelect(false);
             setIsShowError(false);
-            setSearchCosName(ev.target.value);
+            const value = ev.target.value;
+            setSearchCosName(value);
+            searchCosCallRef.current(value);
           }}
           inputValue={searchCosName}
           hasError={isShowError}
