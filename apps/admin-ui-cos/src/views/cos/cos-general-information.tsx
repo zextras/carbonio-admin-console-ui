@@ -318,7 +318,7 @@ const CosGeneralInformation: FC = () => {
           });
 
           setOpenDeleteCOSConfirmDialog(false);
-          replaceHistory(`/`);
+          replaceHistory(`/cos_list`);
         }
       })
       .catch((error) => {
