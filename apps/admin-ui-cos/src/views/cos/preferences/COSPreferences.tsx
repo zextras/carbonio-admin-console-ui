@@ -31,7 +31,7 @@ import { SendingMails } from './SendingMails';
 export const COSPreferences = (): React.JSX.Element => {
   const [t] = useTranslation();
   const { cosId } = useParams();
-  const { data: cosDetailData } = useCosDetail(cosId);
+  const { data: cosDetailData, isPending } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
   const { data: rights = [] } = useCurrentUserRights();
   const modifyCosMutation = useModifyCos(cosId);
@@ -108,6 +108,14 @@ export const COSPreferences = (): React.JSX.Element => {
     }
      
   }, [cosInformation]);
+
+  if (isPending) {
+    return (
+      <Container crossAlignment="center" mainAlignment="center" height="fill">
+        <ds-spinner />
+      </Container>
+    );
+  }
 
   return (
     <PageLayout

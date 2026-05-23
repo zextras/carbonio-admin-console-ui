@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useSnackbar } from '@zextras/ui-components';
+import { Container, useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find, isEqual, reduce } from 'lodash-es';
 import { FC, useEffect, useState } from 'react';
@@ -29,7 +29,7 @@ const CosFeatures: FC = () => {
   const { cosId } = useParams();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
-  const { data: cosDetailData } = useCosDetail(cosId);
+  const { data: cosDetailData, isPending } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
   const cosName = cosDetailData?.cos?.[0]?.name;
   const [initCosData, setInitCosData] = useState<Partial<Record<string, string>>>({});
@@ -205,6 +205,14 @@ const CosFeatures: FC = () => {
     setCosFeatures(initCosData);
     setIsDirty(false);
   };
+
+  if (isPending) {
+    return (
+      <Container crossAlignment="center" mainAlignment="center" height="fill">
+        <ds-spinner />
+      </Container>
+    );
+  }
 
   return (
     <PageLayout

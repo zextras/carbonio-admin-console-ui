@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Container } from '@zextras/ui-components';
 import { useCurrentUserRights } from '@zextras/ui-shared'
 import { find, forEach, isEqual, size } from 'lodash-es';
 import { FC, useEffect, useState } from 'react';
@@ -28,7 +29,7 @@ const WscCosSettings: FC = () => {
 	const [cosFeatures, setCosFeatures] = useState<AccountType>({});
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 
-	const { data: cosDetailData } = useCosDetail(cosId);
+	const { data: cosDetailData, isPending } = useCosDetail(cosId);
 	const cosInformation = cosDetailData?.cos?.[0]?.a;
 	const { data: rights = [] } = useCurrentUserRights();
 	const modifyCosMutation = useModifyCos(cosId);
@@ -112,6 +113,14 @@ const WscCosSettings: FC = () => {
 		setCosFeatures(initCosData);
 		setIsDirty(false);
 	};
+
+	if (isPending) {
+		return (
+			<Container crossAlignment="center" mainAlignment="center" height="fill">
+				<ds-spinner />
+			</Container>
+		);
+	}
 
 	return (
 		<PageLayout

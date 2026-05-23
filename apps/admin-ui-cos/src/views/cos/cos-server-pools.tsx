@@ -45,7 +45,7 @@ function isPoolEnabled(poolList: Array<Attribute>, serverId?: string): boolean {
 export const CosServerPools: FC = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
-  const { data: cosDetailData } = useCosDetail(cosId);
+  const { data: cosDetailData, isPending } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
   const { data: allMailStoreList = [] } = useMailstoreServers();
   const { data: rights = [] } = useCurrentUserRights();
@@ -213,6 +213,14 @@ export const CosServerPools: FC = () => {
       searchDebounceRef.current(value);
     }
   };
+
+  if (isPending) {
+    return (
+      <Container crossAlignment="center" mainAlignment="center" height="fill">
+        <ds-spinner />
+      </Container>
+    );
+  }
 
   return (
     <PageLayout title={t('label.server_pools', 'Server Pools')}>

@@ -93,7 +93,7 @@ const CosAdvanced = () => {
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
   const isTotalQuotaActive = useTotalQuotaActive();
-  const { data: cosDetailData } = useCosDetail(cosId);
+  const { data: cosDetailData, isPending } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
   const [cosData, setCosData] = useState<AccountType>({});
   const { data: rights = [] } = useCurrentUserRights();
@@ -698,6 +698,14 @@ const CosAdvanced = () => {
     }));
     setIsDirty(true);
   };
+
+  if (isPending) {
+    return (
+      <Container crossAlignment="center" mainAlignment="center" height="fill">
+        <ds-spinner />
+      </Container>
+    );
+  }
 
   return (
     <PageLayout

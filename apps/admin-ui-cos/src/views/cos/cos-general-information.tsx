@@ -45,7 +45,7 @@ import { getDateFromStr, getFormatedDate } from '../utility/utils';
 const CosGeneralInformation: FC = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
-  const { data: cosDetailData } = useCosDetail(cosId);
+  const { data: cosDetailData, isPending } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
   const cosDetail = cosDetailData?.cos?.[0];
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -550,6 +550,14 @@ const CosGeneralInformation: FC = () => {
   useEffect(() => {
         searchDomainListRef.current(searchDomainString, cosDetail?.id);
   }, [cosDetail?.id, searchDomainString]);
+
+  if (isPending) {
+    return (
+      <Container crossAlignment="center" mainAlignment="center" height="fill">
+        <ds-spinner />
+      </Container>
+    );
+  }
 
   return (
     <PageLayout
