@@ -5,7 +5,7 @@
  */
 import { Container, useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
-import { find, isEqual, reduce } from 'lodash-es';
+import { find, isEqual } from 'lodash-es';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -16,9 +16,9 @@ import {
   MOBILE_CONTACT_FEATURE_SYNC,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
-import { getCoreAttributes } from '../../services/get-core-attributes';
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
+import { useCoreAttributes } from '../../services/use-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
@@ -55,40 +55,50 @@ const CosFeatures: FC = () => {
     }));
   };
 
-  const getMobileFeatureSync = () => {
-    const body = [
-      {
-        configType: COS,
-        configName: [cosName],
-        attrName: ['mobileContactFeatureSync', 'mobileCalendarFeatureSync'],
-      },
-    ];
-    getCoreAttributes(body)
-      .then((data) => {
-        if (data?.attributes) {
-          setSwitchOptionValue(
-            'mobileContactFeatureSync',
-            data?.attributes?.mobileContactFeatureSync[0]?.value === 'enabled' ? 'TRUE' : 'FALSE',
-          );
-          setSwitchOptionValue(
-            'mobileCalendarFeatureSync',
-            data?.attributes?.mobileCalendarFeatureSync[0]?.value === 'enabled' ? 'TRUE' : 'FALSE',
-          );
-        }
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+  const mobileFeatureBody = isAdvanced && cosName
+    ? [
+        {
+          configType: COS,
+          configName: [cosName],
+          attrName: ['mobileContactFeatureSync', 'mobileCalendarFeatureSync'],
+        },
+      ]
+    : [];
+
+  const { data: mobileAttributesData, error: mobileAttributesError } =
+    useCoreAttributes(mobileFeatureBody);
+
+  const [mobileSyncOverrides, setMobileSyncOverrides] = useState<Partial<Record<string, string>>>(
+    {},
+  );
+
+  const mobileSyncValues: Partial<Record<string, string>> = {
+    mobileContactFeatureSync:
+      mobileSyncOverrides.mobileContactFeatureSync
+      ?? (mobileAttributesData?.attributes?.mobileContactFeatureSync?.[0]?.value === 'enabled'
+        ? 'TRUE'
+        : 'FALSE'),
+    mobileCalendarFeatureSync:
+      mobileSyncOverrides.mobileCalendarFeatureSync
+      ?? (mobileAttributesData?.attributes?.mobileCalendarFeatureSync?.[0]?.value === 'enabled'
+        ? 'TRUE'
+        : 'FALSE'),
   };
+
+  useEffect(() => {
+    if (mobileAttributesError) {
+      createSnackbar({
+        key: 'error',
+        severity: 'error',
+        label: (mobileAttributesError as Error)?.message
+          ? (mobileAttributesError as Error).message
+          : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
+      });
+    }
+  }, [mobileAttributesError, createSnackbar, t]);
 
   const setInitialValues = (obj: Partial<Record<string, string>>) => {
     if (obj) {
@@ -129,25 +139,15 @@ const CosFeatures: FC = () => {
   }, [cosInformation]);
 
   useEffect(() => {
-    if (zimbraId && !isEqual(cosFeatures, initCosData)) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [cosFeatures, initCosData, zimbraId]);
-
-  useEffect(() => {
-    if (isAdvanced && cosName) {
-      getMobileFeatureSync();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cosName, isAdvanced]);
+    const hasCosChanges = zimbraId && !isEqual(cosFeatures, initCosData);
+    const hasMobileChanges = Object.keys(mobileSyncOverrides).length > 0;
+    setIsDirty(hasCosChanges || hasMobileChanges);
+  }, [cosFeatures, initCosData, zimbraId, mobileSyncOverrides]);
 
   const modifyCoreAttributes = (body: Record<string, unknown>): void => {
     setCoreAttributes(body)
       .then(() => {
-        setSwitchOptionValue('mobileContactFeatureSync', cosFeatures?.mobileContactFeatureSync ?? '');
-        setSwitchOptionValue('mobileCalendarFeatureSync', cosFeatures?.mobileCalendarFeatureSync ?? '');
+        setMobileSyncOverrides({});
       })
       .catch((error) => {
         createSnackbar({
@@ -174,24 +174,16 @@ const CosFeatures: FC = () => {
       .filter((ele) => ele !== MOBILE_CALENDAR_FEATURE_SYNC && ele !== MOBILE_CONTACT_FEATURE_SYNC)
       .map((ele) => ({ n: ele, _content: cosFeatures[ele] ?? '' }));
 
-    const modifiedKeys = reduce<Partial<Record<string, string>>, Array<string>>(
-      cosFeatures,
-      (result, value, key) => (isEqual(value, initCosData[key]) ? result : [...result, key]),
-      [],
-    );
-    if (
-      (modifiedKeys.includes(MOBILE_CALENDAR_FEATURE_SYNC) ||
-        modifiedKeys.includes(MOBILE_CONTACT_FEATURE_SYNC)) &&
-      isAdvanced
-    ) {
+    const hasMobileChanges = Object.keys(mobileSyncOverrides).length > 0;
+    if (hasMobileChanges && isAdvanced) {
       const coreAttrBody: Record<string, unknown> = {
         mobileCalendarFeatureSync: {
-          value: cosFeatures.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
+          value: mobileSyncValues.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
           objectName: cosName,
           configType: COS,
         },
         mobileContactFeatureSync: {
-          value: cosFeatures.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
+          value: mobileSyncValues.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
           objectName: cosName,
           configType: COS,
         },
@@ -203,6 +195,7 @@ const CosFeatures: FC = () => {
 
   const onCancel = (): void => {
     setCosFeatures(initCosData);
+    setMobileSyncOverrides({});
     setIsDirty(false);
   };
 
