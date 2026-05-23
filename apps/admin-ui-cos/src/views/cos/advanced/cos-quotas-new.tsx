@@ -11,7 +11,7 @@ import {
   Switch,
   Tooltip,
 } from '@zextras/ui-components';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ComputedLimit, QuotaSource } from '../../../services/get-cos-quota';
@@ -33,19 +33,18 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
   readonlyCOS,
 }) => {
   const [t] = useTranslation();
-  const [quotaValue, setQuotaValue] = useState<number | 'unlimited' | undefined>(undefined);
 
-  useEffect(() => {
-    if (totalComputedQuotaLimit === undefined) {
-      setQuotaValue(undefined);
-    } else if (totalComputedQuotaLimit.type === 'unlimited') {
-      setQuotaValue('unlimited');
-    } else {
-      setQuotaValue(
-        totalComputedQuotaLimit.value > 0 ? BytesToGB(totalComputedQuotaLimit.value) : undefined,
-      );
-    }
-  }, [totalComputedQuotaLimit]);
+  const derivedQuotaValue: number | 'unlimited' | undefined =
+    totalComputedQuotaLimit === undefined
+      ? undefined
+      : totalComputedQuotaLimit.type === 'unlimited'
+        ? 'unlimited'
+        : totalComputedQuotaLimit.value > 0
+          ? BytesToGB(totalComputedQuotaLimit.value)
+          : undefined;
+
+  const [quotaOverride, setQuotaOverride] = useState<number | 'unlimited' | undefined>(undefined);
+  const quotaValue = quotaOverride ?? derivedQuotaValue;
 
   const inputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const filteredStringValue = e.target.value.replaceAll(/\D/g, '');
@@ -54,24 +53,22 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
     const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
     const valueInBytes = valueInGB === undefined ? undefined : (GbToBytes(valueInGB) as number);
     onChange(valueInBytes ? { type: 'limited', value: valueInBytes } : undefined);
-    setQuotaValue(valueInGB);
+    setQuotaOverride(valueInGB);
   };
 
   const switchOnChange = () => {
-    setQuotaValue((prevState) => {
-      if (prevState === 'unlimited') {
-        if (initialTotalComputedQuotaLimit && initialTotalComputedQuotaLimit.type === 'limited') {
-          onChange({ type: 'limited', value: initialTotalComputedQuotaLimit.value });
-          return BytesToGB(initialTotalComputedQuotaLimit.value);
-        } else {
-          onChange({ type: 'limited', value: GbToBytes(1) });
-          return 1;
-        }
+    if (quotaValue === 'unlimited') {
+      if (initialTotalComputedQuotaLimit && initialTotalComputedQuotaLimit.type === 'limited') {
+        onChange({ type: 'limited', value: initialTotalComputedQuotaLimit.value });
+        setQuotaOverride(BytesToGB(initialTotalComputedQuotaLimit.value));
       } else {
-        onChange({ type: 'unlimited' });
-        return 'unlimited';
+        onChange({ type: 'limited', value: GbToBytes(1) });
+        setQuotaOverride(1);
       }
-    });
+    } else {
+      onChange({ type: 'unlimited' });
+      setQuotaOverride('unlimited');
+    }
   };
 
   const switchValue = quotaValue === 'unlimited';
@@ -88,7 +85,7 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
   const showQuotaSourceIcon = totalQuotaSource !== undefined && totalQuotaSource !== 'cos';
 
   const onChangeReset = () => {
-    setQuotaValue(undefined);
+    setQuotaOverride(undefined);
     onChange(undefined);
   };
 

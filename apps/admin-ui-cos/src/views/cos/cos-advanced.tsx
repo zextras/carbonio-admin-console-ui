@@ -25,7 +25,7 @@ import {
   COS,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
-import { ComputedLimit, getCosQuota, QuotaSource } from '../../services/get-cos-quota';
+import { ComputedLimit, QuotaSource } from '../../services/get-cos-quota';
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
 import { setCoreAttributes } from '../../services/set-core-attributes';
@@ -34,6 +34,7 @@ import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { unsetCosQuota } from '../../services/unset-cos-quota';
 import { useCoreAttributes } from '../../services/use-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
+import { useCosQuota } from '../../services/use-cos-quota';
 import { useFileQuota } from '../../services/use-file-quota';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
@@ -205,16 +206,17 @@ const CosAdvanced = () => {
     ? BytesToGB(fileQuotaData.limit).toFixed(2)
     : undefined;
   const fileQuotaLimitGBValue = fileQuotaOverride ?? initFileQuotaLimitGBValue;
-  const [totalComputedQuotaLimit, setTotalComputedQuotaLimit] = useState<ComputedLimit | undefined>(
-    undefined,
+  const { data: cosQuotaData } = useCosQuota(
+    cosData?.zimbraId,
+    !!cosData?.zimbraId && isAdvanced && isTotalQuotaActive,
   );
-  const [totalQuotaSource, setTotalQuotaSource] = useState<QuotaSource | undefined>(undefined);
-  const [initialTotalComputedQuotaLimit, setInitialTotalComputedQuotaLimit] = useState<
-    ComputedLimit | undefined
-  >(undefined);
-  const [initialTotalQuotaSource, setInitialTotalQuotaSource] = useState<QuotaSource | undefined>(
-    undefined,
-  );
+  const initTotalComputedQuotaLimit = cosQuotaData?.totalComputedLimit;
+  const initTotalQuotaSource = cosQuotaData?.totalQuotaSource;
+  const [totalQuotaOverride, setTotalQuotaOverride] = useState<ComputedLimit | undefined>(undefined);
+  const totalComputedQuotaLimit = totalQuotaOverride ?? initTotalComputedQuotaLimit;
+  const totalQuotaSource = totalQuotaOverride !== undefined
+    ? 'cos' as QuotaSource
+    : initTotalQuotaSource;
 
   const setValue = (key: keyof AccountType, value: AccountType[keyof AccountType]): void => {
     setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
@@ -473,23 +475,6 @@ const CosAdvanced = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cosInformation]);
 
-  const getCOSQuota = (cosId: string): void => {
-    getCosQuota(cosId).then((res) => {
-      if (res.type === 'success') {
-        setTotalComputedQuotaLimit(res.totalComputedLimit);
-        setTotalQuotaSource(res.totalQuotaSource);
-        setInitialTotalComputedQuotaLimit(res.totalComputedLimit);
-        setInitialTotalQuotaSource(res.totalQuotaSource);
-      }
-    });
-  };
-
-  useEffect(() => {
-    if (cosData?.zimbraId && isAdvanced && isTotalQuotaActive) {
-      getCOSQuota(cosData.zimbraId);
-    }
-  }, [cosData.zimbraId, isAdvanced, isTotalQuotaActive]);
-
   const changeValue = (e: ChangeEvent<HTMLInputElement>) => {
     setCosAdvanced((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -502,8 +487,7 @@ const CosAdvanced = () => {
   };
 
   const onTotalQuotaChange = (value?: ComputedLimit) => {
-    setTotalComputedQuotaLimit(value);
-    setTotalQuotaSource(value !== undefined ? 'cos' : 'global');
+    setTotalQuotaOverride(value);
   };
 
   const onCancel = (): void => {
@@ -511,10 +495,7 @@ const CosAdvanced = () => {
     setStateAttrValues(cosData);
     setFileQuotaOverride(undefined);
     setBackupOverrides({});
-    if (isTotalQuotaActive) {
-      setTotalComputedQuotaLimit(initialTotalComputedQuotaLimit);
-      setTotalQuotaSource(initialTotalQuotaSource);
-    }
+    setTotalQuotaOverride(undefined);
     setIsDirty(false);
   };
 
@@ -525,17 +506,14 @@ const CosAdvanced = () => {
     const hasFileQuotaChange =
       fileQuotaLimitGBValue !== undefined && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue;
     const hasTotalQuotaChange =
-      isTotalQuotaActive &&
-      totalComputedQuotaLimit !== undefined &&
-      totalComputedQuotaLimit !== initialTotalComputedQuotaLimit;
+      isTotalQuotaActive && totalQuotaOverride !== undefined;
     setIsDirty(hasFieldChanges || hasFileQuotaChange || hasTotalQuotaChange);
   }, [
     cosAdvanced,
     cosData,
     initFileQuotaLimitGBValue,
     fileQuotaLimitGBValue,
-    totalComputedQuotaLimit,
-    initialTotalComputedQuotaLimit,
+    totalQuotaOverride,
     isTotalQuotaActive,
   ]);
 
@@ -583,20 +561,13 @@ const CosAdvanced = () => {
 
     saveBackupAttributes(cosAdvancedBackupAttributes, cosName);
 
-    if (isTotalQuotaActive) {
-      if (totalComputedQuotaLimit !== initialTotalComputedQuotaLimit) {
-        if (totalComputedQuotaLimit) {
-          const res = await setCosQuota(zimbraId, totalComputedQuotaLimit);
-          if (res.type === 'success') {
-            setInitialTotalComputedQuotaLimit(totalComputedQuotaLimit);
-          }
-        } else {
-          const res = await unsetCosQuota(zimbraId);
-          if (res.type === 'success' && cosData.zimbraId) {
-            getCOSQuota(cosData.zimbraId);
-          }
-        }
+    if (isTotalQuotaActive && totalQuotaOverride !== undefined) {
+      if (totalQuotaOverride) {
+        await setCosQuota(zimbraId, totalQuotaOverride);
+      } else {
+        await unsetCosQuota(zimbraId);
       }
+      setTotalQuotaOverride(undefined);
     }
 
     const cosAdvancedToSave = isTotalQuotaActive
@@ -729,7 +700,7 @@ const CosAdvanced = () => {
           onZimbraQuotaWarnIntervalTypeChange={quotaWarnInterval.onTypeChange}
           totalComputedQuotaLimit={totalComputedQuotaLimit}
           totalQuotaSource={totalQuotaSource}
-          initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
+          initialTotalComputedQuotaLimit={initTotalComputedQuotaLimit}
           onTotalQuotaChange={onTotalQuotaChange}
         />
         <COSPassword
