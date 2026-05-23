@@ -47,7 +47,8 @@ export const CosListPanel: FC = () => {
   const [isCosSelect, setIsCosSelect] = useState(false);
   const [cosList, setCosList] = useState<Array<SearchDirectoryEntry>>([]);
   const [isCosListExpand, setIsCosListExpand] = useState(false);
-  const [selectedCosId, setSelectedCosId] = useState<string | undefined>(undefined);
+  const cosDetailMatch = matchPath(`/${MANAGE_APP_ID}/${COS_ROUTE_ID}/:cosId/:operation`, pathname);
+  const selectedCosId = cosDetailMatch?.params.cosId;
   const { data: cosDetailData } = useCosDetail(selectedCosId);
   const cosInformation = cosDetailData?.cos?.[0];
   const cosName = cosInformation?.name;
@@ -58,7 +59,6 @@ export const CosListPanel: FC = () => {
     return storedValue !== 'false';
   });
 
-  const cosDetailMatch = matchPath(`/${MANAGE_APP_ID}/${COS_ROUTE_ID}/:cosId/:operation`, pathname);
   const cosView = cosDetailMatch?.params.operation ?? COS_LIST;
 
   const getCosLists = (searchData: string): void => {
@@ -100,25 +100,6 @@ export const CosListPanel: FC = () => {
     }
   }, [cosInformation?.id, cosInformation?.name]);
 
-  useEffect(() => {
-    if (
-      (pathname && pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`) ||
-      pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}/`
-    ) {
-      setCosList([]);
-      setIsCosSelect(false);
-      setSearchCosName('');
-      setIsCosListExpand(false);
-      setSelectedCosId(undefined);
-      replaceHistory(`/${COS_LIST}`);
-    } else {
-      const urlCosId = cosDetailMatch?.params.cosId;
-      if (urlCosId && urlCosId !== selectedCosId) {
-        setSelectedCosId(urlCosId);
-      }
-    }
-  }, [pathname]);
-
   const searchCosCallRef = useRef(
     debounce((searchData: string) => {
       getCosLists(searchData);
@@ -152,7 +133,6 @@ export const CosListPanel: FC = () => {
     setIsCosSelect(true);
     setSearchCosName(cosData?.name);
     setIsCosListExpand(false);
-    setSelectedCosId(cosData?.id);
     replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
   };
 
