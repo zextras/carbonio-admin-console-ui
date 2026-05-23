@@ -65,8 +65,7 @@ const CosFeatures: FC = () => {
       ]
     : [];
 
-  const { data: mobileAttributesData, error: mobileAttributesError } =
-    useCoreAttributes(mobileFeatureBody);
+  const { data: mobileAttributesData } = useCoreAttributes(mobileFeatureBody);
 
   const [mobileSyncOverrides, setMobileSyncOverrides] = useState<Partial<Record<string, string>>>(
     {},
@@ -84,21 +83,6 @@ const CosFeatures: FC = () => {
         ? 'TRUE'
         : 'FALSE'),
   };
-
-  useEffect(() => {
-    if (mobileAttributesError) {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label: (mobileAttributesError as Error)?.message
-          ? (mobileAttributesError as Error).message
-          : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    }
-  }, [mobileAttributesError, createSnackbar, t]);
 
   const setInitialValues = (obj: Partial<Record<string, string>>) => {
     if (obj) {

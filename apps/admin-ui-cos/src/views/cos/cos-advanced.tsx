@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, useSnackbar } from '@zextras/ui-components';
+import { Container } from '@zextras/ui-components';
 import {
   isValidDecimalInput,
   useCurrentUserRights,
@@ -95,10 +95,9 @@ function saveBackupAttributes(
   }
 }
 
-const CosAdvanced = () => {
+export const CosAdvanced = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
-  const createSnackbar = useSnackbar();
   const invalidateCosQuota = useInvalidateCosQuota();
   const isTotalQuotaActive = useTotalQuotaActive();
   const { data: cosDetailData, isPending } = useCosDetail(cosId);
@@ -643,8 +642,7 @@ const CosAdvanced = () => {
         ]
       : [];
 
-  const { data: coreAttributesData, error: coreAttributesError } =
-    useCoreAttributes(coreAttributesBody);
+  const { data: coreAttributesData } = useCoreAttributes(coreAttributesBody);
 
   const cosAdvancedBackupAttributes: AdvancedBackupAttributes = {
     [BACKUP_ENABLED]:
@@ -654,21 +652,6 @@ const CosAdvanced = () => {
       backupOverrides[BACKUP_SELF_UNDELETE_ALLOWED] ??
       !!coreAttributesData?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value,
   };
-
-  useEffect(() => {
-    if (coreAttributesError) {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label: (coreAttributesError as Error)?.message
-          ? (coreAttributesError as Error).message
-          : labels.snackbar.errorMessage,
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    }
-  }, [coreAttributesError, createSnackbar, labels.snackbar.errorMessage]);
 
   const changeBackupAttribute = (key: AdvancedBackupAttributesKeys): void => {
     const newValue = !cosAdvancedBackupAttributes[key];
@@ -800,5 +783,3 @@ const CosAdvanced = () => {
     </PageLayout>
   );
 };
-
-export default CosAdvanced;
