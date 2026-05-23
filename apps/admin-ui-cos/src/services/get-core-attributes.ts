@@ -9,7 +9,7 @@ import { fetchExternalSoap } from '@zextras/ui-shared';
 
 import { GetCoreAttributesResponse } from '../../types/cos';
 
-type CoreAttributeRequest = {
+export type CoreAttributeRequest = {
 	configType: string;
 	configName: Array<string | undefined>;
 	attrName: Array<string>;

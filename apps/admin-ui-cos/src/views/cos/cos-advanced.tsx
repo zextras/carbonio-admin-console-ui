@@ -25,7 +25,6 @@ import {
   COS,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
-import { getCoreAttributes } from '../../services/get-core-attributes';
 import { ComputedLimit, getCosQuota, QuotaSource } from '../../services/get-cos-quota';
 import { getFileQuotaById } from '../../services/get-file-quota';
 import { ModifyCosBody } from '../../services/modify-cos-service';
@@ -34,6 +33,7 @@ import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setCosQuota } from '../../services/set-cos-quota';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { unsetCosQuota } from '../../services/unset-cos-quota';
+import { useCoreAttributes } from '../../services/use-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
@@ -132,11 +132,7 @@ const CosAdvanced = () => {
     cancelButton: t('label.cancel', 'Cancel'),
   };
 
-  const [cosAdvancedBackupAttributes, setCosAdvancedBackupAttributes] =
-    useState<AdvancedBackupAttributes>({
-      [BACKUP_ENABLED]: undefined,
-      [BACKUP_SELF_UNDELETE_ALLOWED]: undefined,
-    });
+  const [backupOverrides, setBackupOverrides] = useState<Partial<AdvancedBackupAttributes>>({});
 
   const [cosAdvanced, setCosAdvanced] = useState<AccountType>({
     zimbraMailForwardingAddressMaxLength: '',
@@ -217,15 +213,6 @@ const CosAdvanced = () => {
 
   const setValue = (key: keyof AccountType, value: AccountType[keyof AccountType]): void => {
     setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
-  };
-
-  const setCosAdvancedAttributeValues = (
-    entries: Array<[keyof AdvancedBackupAttributes, boolean | undefined]>,
-  ): void => {
-    setCosAdvancedBackupAttributes((prev) => ({
-      ...prev,
-      ...(Object.fromEntries(entries) as Partial<AdvancedBackupAttributes>),
-    }));
   };
 
   const setInitalValues = (obj: AccountType): void => {
@@ -533,6 +520,7 @@ const CosAdvanced = () => {
     setInitalValues(cosData);
     setStateAttrValues(cosData);
     setFileQuotaLimitGBValue(initFileQuotaLimitGBValue);
+    setBackupOverrides({});
     if (isTotalQuotaActive) {
       setTotalComputedQuotaLimit(initialTotalComputedQuotaLimit);
       setTotalQuotaSource(initialTotalQuotaSource);
@@ -658,41 +646,45 @@ const CosAdvanced = () => {
     });
   };
 
+  const coreAttributesBody = isAdvanced && cosName
+    ? [
+        {
+          configType: COS,
+          configName: [cosName],
+          attrName: [BACKUP_SELF_UNDELETE_ALLOWED, BACKUP_ENABLED],
+        },
+      ]
+    : [];
+
+  const { data: coreAttributesData, error: coreAttributesError } =
+    useCoreAttributes(coreAttributesBody);
+
+  const cosAdvancedBackupAttributes: AdvancedBackupAttributes = {
+    [BACKUP_ENABLED]:
+      backupOverrides[BACKUP_ENABLED]
+      ?? !!coreAttributesData?.attributes?.[BACKUP_ENABLED]?.[0]?.value,
+    [BACKUP_SELF_UNDELETE_ALLOWED]:
+      backupOverrides[BACKUP_SELF_UNDELETE_ALLOWED]
+      ?? !!coreAttributesData?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value,
+  };
+
   useEffect(() => {
-    if (!isAdvanced) return;
-    const body = [
-      {
-        configType: COS,
-        configName: [cosName],
-        attrName: [BACKUP_SELF_UNDELETE_ALLOWED, BACKUP_ENABLED],
-      },
-    ];
-    getCoreAttributes(body)
-      .then((data) => {
-        if (data?.attributes) {
-          setCosAdvancedAttributeValues([
-            [
-              BACKUP_SELF_UNDELETE_ALLOWED,
-              !!data?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value,
-            ],
-            [BACKUP_ENABLED, !!data?.attributes?.[BACKUP_ENABLED]?.[0]?.value],
-          ]);
-        }
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message ? error?.message : labels.snackbar.errorMessage,
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
+    if (coreAttributesError) {
+      createSnackbar({
+        key: 'error',
+        severity: 'error',
+        label: (coreAttributesError as Error)?.message
+          ? (coreAttributesError as Error).message
+          : labels.snackbar.errorMessage,
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
       });
-  }, [cosName, createSnackbar, isAdvanced, t, labels.snackbar.errorMessage]);
+    }
+  }, [coreAttributesError, createSnackbar, labels.snackbar.errorMessage]);
 
   const changeBackupAttribute = (key: AdvancedBackupAttributesKeys): void => {
-    setCosAdvancedBackupAttributes((prev: AdvancedBackupAttributes) => ({
+    setBackupOverrides((prev) => ({
       ...prev,
       [key]: !cosAdvancedBackupAttributes[key],
     }));
