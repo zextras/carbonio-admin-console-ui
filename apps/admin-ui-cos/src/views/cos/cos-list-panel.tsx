@@ -18,14 +18,13 @@ import { replaceHistory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { matchPath, useLocation } from 'react-router';
 
 import { type SearchDirectoryEntry } from '../../../types/cos';
 import {
   ADVANCED,
   COS_LIST,
   COS_ROUTE_ID,
-  CREATE_NEW_COS_ROUTE_ID,
   FEATURES,
   GENERAL_INFORMATION,
   IS_COS_DETAIL_LIST_EXPANDED,
@@ -59,11 +58,8 @@ export const CosListPanel: FC = () => {
     return storedValue !== 'false';
   });
 
-  const cosView = (() => {
-    if (pathname === `/${COS_LIST}` || pathname === '/') return COS_LIST;
-    const segments = pathname.split('/').filter(Boolean);
-    return segments.length >= 2 ? segments[segments.length - 1] : null;
-  })();
+  const cosDetailMatch = matchPath(`/${MANAGE_APP_ID}/${COS_ROUTE_ID}/:cosId/:operation`, pathname);
+  const cosView = cosDetailMatch?.params.operation ?? COS_LIST;
 
   const getCosLists = (searchData: string): void => {
     getCosList(searchData)
@@ -83,7 +79,6 @@ export const CosListPanel: FC = () => {
 
   useEffect(() => {
     getCosLists('');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -117,15 +112,7 @@ export const CosListPanel: FC = () => {
       setSelectedCosId(undefined);
       replaceHistory(`/${COS_LIST}`);
     } else {
-      const segments = pathname.split('/').filter(Boolean);
-      const urlCosId =
-        segments.length >= 4 &&
-        segments[0] === MANAGE_APP_ID &&
-        segments[1] === COS_ROUTE_ID &&
-        segments[2] !== COS_LIST &&
-        segments[2] !== CREATE_NEW_COS_ROUTE_ID
-          ? segments[2]
-          : undefined;
+      const urlCosId = cosDetailMatch?.params.cosId;
       if (urlCosId && urlCosId !== selectedCosId) {
         setSelectedCosId(urlCosId);
       }
