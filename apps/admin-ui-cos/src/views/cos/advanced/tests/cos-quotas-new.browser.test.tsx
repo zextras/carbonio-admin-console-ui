@@ -21,6 +21,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={vi.fn()}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
@@ -36,6 +37,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={onChangeMock}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
@@ -57,6 +59,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={onChangeMock}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
@@ -74,6 +77,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={onChangeMock}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
@@ -90,6 +94,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={unlimitedQuota}
         onChange={vi.fn()}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
@@ -105,6 +110,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={onChangeMock}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
@@ -124,6 +130,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={vi.fn()}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
@@ -141,6 +148,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={vi.fn()}
         readonlyCOS={true}
+        showRevertButton={false}
       />,
     );
 
@@ -148,7 +156,7 @@ describe('COSQuotasNew (browser)', () => {
     await expect.element(input).toBeDisabled();
   });
 
-  it('should render revert icon when quota source is cos', async () => {
+  it('should render revert icon when showRevertButton is true', async () => {
     await setupBrowserTest(
       <COSQuotasNew
         totalComputedQuotaLimit={limitedQuota}
@@ -156,6 +164,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={vi.fn()}
         readonlyCOS={false}
+        showRevertButton={true}
       />,
     );
 
@@ -175,6 +184,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={onChangeMock}
         readonlyCOS={false}
+        showRevertButton={true}
       />,
     );
 
@@ -190,6 +200,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={undefined}
         onChange={vi.fn()}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
