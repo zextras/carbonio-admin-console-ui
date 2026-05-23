@@ -98,7 +98,6 @@ function saveBackupAttributes(
 const CosAdvanced = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
-  const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
   const invalidateCosQuota = useInvalidateCosQuota();
   const isTotalQuotaActive = useTotalQuotaActive();
@@ -247,6 +246,14 @@ const CosAdvanced = () => {
       effectiveQuotaLimit ?? initialQuotaRef.current.limit,
       initialQuotaRef.current.limit,
     );
+
+  const isDirty =
+    (Object.keys(cosAdvanced) as Array<keyof AccountType>).some(
+      (key) => cosData[key] !== undefined && cosData[key] !== cosAdvanced[key],
+    ) ||
+    (fileQuotaLimitGBValue !== undefined && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue) ||
+    (isTotalQuotaActive && totalQuotaOverride !== null) ||
+    Object.keys(backupOverrides).length > 0;
 
   const setValue = (key: keyof AccountType, value: AccountType[keyof AccountType]): void => {
     setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
@@ -500,7 +507,6 @@ const CosAdvanced = () => {
       setCosData(obj);
       setInitalValues(obj);
       setStateAttrValues(obj);
-      setIsDirty(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cosInformation]);
@@ -534,25 +540,7 @@ const CosAdvanced = () => {
     setFileQuotaOverride(undefined);
     setBackupOverrides({});
     setTotalQuotaOverride(null);
-    setIsDirty(false);
   };
-
-  useEffect(() => {
-    const hasFieldChanges = (Object.keys(cosAdvanced) as Array<keyof AccountType>).some(
-      (key) => cosData[key] !== undefined && cosData[key] !== cosAdvanced[key],
-    );
-    const hasFileQuotaChange =
-      fileQuotaLimitGBValue !== undefined && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue;
-    const hasTotalQuotaChange = isTotalQuotaActive && totalQuotaOverride !== null;
-    setIsDirty(hasFieldChanges || hasFileQuotaChange || hasTotalQuotaChange);
-  }, [
-    cosAdvanced,
-    cosData,
-    initFileQuotaLimitGBValue,
-    fileQuotaLimitGBValue,
-    totalQuotaOverride,
-    isTotalQuotaActive,
-  ]);
 
   const onFileQuotaChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!isValidDecimalInput(e.target.value)) return;
@@ -640,7 +628,6 @@ const CosAdvanced = () => {
             resetFileQuotaLimit(zimbraId);
           }
         }
-        setIsDirty(false);
       },
     });
   };
@@ -684,11 +671,20 @@ const CosAdvanced = () => {
   }, [coreAttributesError, createSnackbar, labels.snackbar.errorMessage]);
 
   const changeBackupAttribute = (key: AdvancedBackupAttributesKeys): void => {
-    setBackupOverrides((prev) => ({
-      ...prev,
-      [key]: !cosAdvancedBackupAttributes[key],
-    }));
-    setIsDirty(true);
+    const newValue = !cosAdvancedBackupAttributes[key];
+    const serverValue = !!coreAttributesData?.attributes?.[key]?.[0]?.value;
+    if (newValue === serverValue) {
+      setBackupOverrides((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+    } else {
+      setBackupOverrides((prev) => ({
+        ...prev,
+        [key]: newValue,
+      }));
+    }
   };
 
   if (isPending || isCosQuotaPending) {
