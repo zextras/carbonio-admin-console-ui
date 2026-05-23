@@ -36,6 +36,7 @@ import { useCoreAttributes } from '../../services/use-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useCosQuota } from '../../services/use-cos-quota';
 import { useFileQuota } from '../../services/use-file-quota';
+import { useInvalidateCosQuota } from '../../services/use-invalidate-cos-quota';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
 import { BytesToGB, GbToBytes } from '../utility/utils';
@@ -93,6 +94,7 @@ const CosAdvanced = () => {
   const { cosId } = useParams();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
+  const invalidateCosQuota = useInvalidateCosQuota();
   const isTotalQuotaActive = useTotalQuotaActive();
   const { data: cosDetailData, isPending } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
@@ -206,17 +208,23 @@ const CosAdvanced = () => {
     ? BytesToGB(fileQuotaData.limit).toFixed(2)
     : undefined;
   const fileQuotaLimitGBValue = fileQuotaOverride ?? initFileQuotaLimitGBValue;
-  const { data: cosQuotaData } = useCosQuota(
+  const { data: cosQuotaData, isPending: isCosQuotaPending } = useCosQuota(
     cosData?.zimbraId,
     !!cosData?.zimbraId && isAdvanced && isTotalQuotaActive,
   );
   const initTotalComputedQuotaLimit = cosQuotaData?.totalComputedLimit;
   const initTotalQuotaSource = cosQuotaData?.totalQuotaSource;
-  const [totalQuotaOverride, setTotalQuotaOverride] = useState<ComputedLimit | undefined>(undefined);
-  const totalComputedQuotaLimit = totalQuotaOverride ?? initTotalComputedQuotaLimit;
-  const totalQuotaSource = totalQuotaOverride !== undefined
-    ? 'cos' as QuotaSource
-    : initTotalQuotaSource;
+  const [totalQuotaOverride, setTotalQuotaOverride] = useState<ComputedLimit | null | undefined>(
+    null,
+  );
+  const totalComputedQuotaLimit =
+    totalQuotaOverride !== null ? totalQuotaOverride : initTotalComputedQuotaLimit;
+  const totalQuotaSource =
+    totalQuotaOverride !== null
+      ? totalQuotaOverride !== undefined
+        ? ('cos' as QuotaSource)
+        : ('global' as QuotaSource)
+      : initTotalQuotaSource;
 
   const setValue = (key: keyof AccountType, value: AccountType[keyof AccountType]): void => {
     setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
@@ -495,7 +503,7 @@ const CosAdvanced = () => {
     setStateAttrValues(cosData);
     setFileQuotaOverride(undefined);
     setBackupOverrides({});
-    setTotalQuotaOverride(undefined);
+    setTotalQuotaOverride(null);
     setIsDirty(false);
   };
 
@@ -505,8 +513,7 @@ const CosAdvanced = () => {
     );
     const hasFileQuotaChange =
       fileQuotaLimitGBValue !== undefined && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue;
-    const hasTotalQuotaChange =
-      isTotalQuotaActive && totalQuotaOverride !== undefined;
+    const hasTotalQuotaChange = isTotalQuotaActive && totalQuotaOverride !== null;
     setIsDirty(hasFieldChanges || hasFileQuotaChange || hasTotalQuotaChange);
   }, [
     cosAdvanced,
@@ -561,13 +568,14 @@ const CosAdvanced = () => {
 
     saveBackupAttributes(cosAdvancedBackupAttributes, cosName);
 
-    if (isTotalQuotaActive && totalQuotaOverride !== undefined) {
+    if (isTotalQuotaActive && totalQuotaOverride !== null) {
       if (totalQuotaOverride) {
         await setCosQuota(zimbraId, totalQuotaOverride);
       } else {
         await unsetCosQuota(zimbraId);
       }
-      setTotalQuotaOverride(undefined);
+      setTotalQuotaOverride(null);
+      await invalidateCosQuota(zimbraId);
     }
 
     const cosAdvancedToSave = isTotalQuotaActive
@@ -607,26 +615,27 @@ const CosAdvanced = () => {
     });
   };
 
-  const coreAttributesBody = isAdvanced && cosName
-    ? [
-        {
-          configType: COS,
-          configName: [cosName],
-          attrName: [BACKUP_SELF_UNDELETE_ALLOWED, BACKUP_ENABLED],
-        },
-      ]
-    : [];
+  const coreAttributesBody =
+    isAdvanced && cosName
+      ? [
+          {
+            configType: COS,
+            configName: [cosName],
+            attrName: [BACKUP_SELF_UNDELETE_ALLOWED, BACKUP_ENABLED],
+          },
+        ]
+      : [];
 
   const { data: coreAttributesData, error: coreAttributesError } =
     useCoreAttributes(coreAttributesBody);
 
   const cosAdvancedBackupAttributes: AdvancedBackupAttributes = {
     [BACKUP_ENABLED]:
-      backupOverrides[BACKUP_ENABLED]
-      ?? !!coreAttributesData?.attributes?.[BACKUP_ENABLED]?.[0]?.value,
+      backupOverrides[BACKUP_ENABLED] ??
+      !!coreAttributesData?.attributes?.[BACKUP_ENABLED]?.[0]?.value,
     [BACKUP_SELF_UNDELETE_ALLOWED]:
-      backupOverrides[BACKUP_SELF_UNDELETE_ALLOWED]
-      ?? !!coreAttributesData?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value,
+      backupOverrides[BACKUP_SELF_UNDELETE_ALLOWED] ??
+      !!coreAttributesData?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value,
   };
 
   useEffect(() => {
@@ -652,7 +661,7 @@ const CosAdvanced = () => {
     setIsDirty(true);
   };
 
-  if (isPending) {
+  if (isPending || isCosQuotaPending) {
     return (
       <Container crossAlignment="center" mainAlignment="center" height="fill">
         <ds-spinner />
