@@ -55,15 +55,16 @@ const CosFeatures: FC = () => {
     }));
   };
 
-  const mobileFeatureBody = isAdvanced && cosName
-    ? [
-        {
-          configType: COS,
-          configName: [cosName],
-          attrName: ['mobileContactFeatureSync', 'mobileCalendarFeatureSync'],
-        },
-      ]
-    : [];
+  const mobileFeatureBody =
+    isAdvanced && cosName
+      ? [
+          {
+            configType: COS,
+            configName: [cosName],
+            attrName: ['mobileContactFeatureSync', 'mobileCalendarFeatureSync'],
+          },
+        ]
+      : [];
 
   const { data: mobileAttributesData } = useCoreAttributes(mobileFeatureBody);
 
@@ -73,13 +74,13 @@ const CosFeatures: FC = () => {
 
   const mobileSyncValues: Partial<Record<string, string>> = {
     mobileContactFeatureSync:
-      mobileSyncOverrides.mobileContactFeatureSync
-      ?? (mobileAttributesData?.attributes?.mobileContactFeatureSync?.[0]?.value === 'enabled'
+      mobileSyncOverrides.mobileContactFeatureSync ??
+      (mobileAttributesData?.attributes?.mobileContactFeatureSync?.[0]?.value === 'enabled'
         ? 'TRUE'
         : 'FALSE'),
     mobileCalendarFeatureSync:
-      mobileSyncOverrides.mobileCalendarFeatureSync
-      ?? (mobileAttributesData?.attributes?.mobileCalendarFeatureSync?.[0]?.value === 'enabled'
+      mobileSyncOverrides.mobileCalendarFeatureSync ??
+      (mobileAttributesData?.attributes?.mobileCalendarFeatureSync?.[0]?.value === 'enabled'
         ? 'TRUE'
         : 'FALSE'),
   };
@@ -119,7 +120,6 @@ const CosFeatures: FC = () => {
       setInitialValues(obj);
       setIsDirty(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cosInformation]);
 
   useEffect(() => {

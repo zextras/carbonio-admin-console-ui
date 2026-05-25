@@ -507,7 +507,6 @@ export const CosAdvanced = () => {
       setInitalValues(obj);
       setStateAttrValues(obj);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cosInformation]);
 
   const changeValue = (e: ChangeEvent<HTMLInputElement>) => {

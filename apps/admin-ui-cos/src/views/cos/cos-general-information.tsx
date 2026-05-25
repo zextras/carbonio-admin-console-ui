@@ -3,7 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button,
+import {
+  Button,
   Container,
   CustomHeaderFactory,
   CustomTextArea,
@@ -425,7 +426,6 @@ const CosGeneralInformation: FC = () => {
     if (cosDetail?.id) {
       getAccountList();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cosDetail?.id, searchAccountQuery, offset, accountLimit]);
 
   const generateAccountSearchFilterQuery = (
@@ -448,7 +448,7 @@ const CosGeneralInformation: FC = () => {
     }, 700),
   );
   useEffect(() => {
-        searchAccountListRef.current(searchAccountString, cosDetail?.id);
+    searchAccountListRef.current(searchAccountString, cosDetail?.id);
   }, [cosDetail?.id, searchAccountString]);
 
   const getDomainList = (): void => {
@@ -482,8 +482,8 @@ const CosGeneralInformation: FC = () => {
             const cosMaxAccounts = domainItem?.zimbraDomainCOSMaxAccounts;
             const maxAccountValue = Array.isArray(cosMaxAccounts)
               ? (cosMaxAccounts as Array<string>)
-                .filter((acc) => acc?.split(':')[0] === cosDetail?.id)[0]
-                ?.split(':')[1]
+                  .filter((acc) => acc?.split(':')[0] === cosDetail?.id)[0]
+                  ?.split(':')[1]
               : undefined;
             domainListArr.push({
               id: item?.id,
@@ -525,7 +525,6 @@ const CosGeneralInformation: FC = () => {
     if (cosDetail?.id) {
       getDomainList();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cosDetail?.id, searchDomainQuery, domainOffset, limit]);
 
   const generateDomainSearchFilterQuery = (
@@ -548,7 +547,7 @@ const CosGeneralInformation: FC = () => {
     }, 700),
   );
   useEffect(() => {
-        searchDomainListRef.current(searchDomainString, cosDetail?.id);
+    searchDomainListRef.current(searchDomainString, cosDetail?.id);
   }, [cosDetail?.id, searchDomainString]);
 
   if (isPending) {
@@ -572,7 +571,7 @@ const CosGeneralInformation: FC = () => {
         mainAlignment="flex-start"
         style={{ overflow: 'auto' }}
         width="100%"
-      // height="calc(100vh - 230px)"
+        // height="calc(100vh - 230px)"
       >
         <Row mainAlignment="flex-start" width="100%">
           <Container height="fit" crossAlignment="flex-start" background="gray6">

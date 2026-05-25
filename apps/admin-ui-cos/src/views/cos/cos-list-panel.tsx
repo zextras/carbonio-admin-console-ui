@@ -86,7 +86,6 @@ export const CosListPanel: FC = () => {
       getCosLists('');
     }
     prevCosRef.current = cosName;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cosName]);
 
   useEffect(() => {
