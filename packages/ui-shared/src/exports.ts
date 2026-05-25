@@ -113,6 +113,7 @@ import {
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
+import { setCoreAttributes } from './services/set-core-attributes';
 import { usePrimaryBarState } from './shell/hooks';
 import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
 import { useAppStore } from './store/app/store';
@@ -209,6 +210,7 @@ export {
   SCALING_LIMIT,
   SCALING_OPTIONS,
   SEND_FEEDBACK_URL,
+  setCoreAttributes,
   SHELL_APP_ID,
   SnackbarManagerContext,
   soapFetch,

@@ -15,6 +15,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import {
+  setCoreAttributes,
   useCurrentUserRights,
   useDomainStore,
   useIsAdvanced,
@@ -60,7 +61,6 @@ import { renameAccountRequest } from '../../../../../services/rename-account';
 import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { setAccountQuota } from '../../../../../services/set-account-quota';
-import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { unsetAccountQuota } from '../../../../../services/unset-account-quota';

@@ -7,6 +7,7 @@
 import { Container } from '@zextras/ui-components';
 import {
   isValidDecimalInput,
+  setCoreAttributes,
   useCurrentUserRights,
   useIsAdvanced,
   useTotalQuotaActive,
@@ -28,7 +29,6 @@ import {
 import { ComputedLimit, QuotaSource } from '../../services/get-cos-quota';
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
-import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setCosQuota } from '../../services/set-cos-quota';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { unsetCosQuota } from '../../services/unset-cos-quota';

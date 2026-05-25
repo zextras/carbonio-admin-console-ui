@@ -20,6 +20,7 @@ import {
   fetchExternalSoap,
   getSoapFetchRequest,
   postSoapFetchRequest,
+  setCoreAttributes,
   useAllServers,
   useCurrentUserRights,
   useModuleLicenseInfo,
@@ -55,7 +56,6 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
-import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
@@ -432,8 +432,8 @@ const BackupConfiguration: FC = () => {
       body = { ...body, ...scanner };
     }
     setIsSaveRequestInProgress(true);
-    setCoreAttributes(body)
-      .then((data: SetCoreAttributesResponse) => {
+    setCoreAttributes<SetCoreAttributesResponse>(body)
+      .then((data) => {
         setIsSaveRequestInProgress(false);
         if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
           let errorMessage = t(

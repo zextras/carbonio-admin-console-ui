@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, useSnackbar } from '@zextras/ui-components';
-import { useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
+import { setCoreAttributes, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find, isEqual } from 'lodash-es';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,14 +17,13 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
 import { ModifyCosBody } from '../../services/modify-cos-service';
-import { setCoreAttributes } from '../../services/set-core-attributes';
 import { useCoreAttributes } from '../../services/use-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
 import { Features } from './features';
 
-const CosFeatures: FC = () => {
+export const CosFeatures: FC = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -207,5 +206,3 @@ const CosFeatures: FC = () => {
     </PageLayout>
   );
 };
-
-export default CosFeatures;
