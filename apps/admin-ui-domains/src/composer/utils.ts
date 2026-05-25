@@ -22,7 +22,6 @@ import { sl } from 'date-fns/locale/sl';
 import { th } from 'date-fns/locale/th';
 import { tr } from 'date-fns/locale/tr';
 import { vi } from 'date-fns/locale/vi';
-import { zhCN } from 'date-fns/locale/zh-CN';
 
 type LocaleDescriptor = {
   name: string;
@@ -32,12 +31,6 @@ type LocaleDescriptor = {
 };
 
 export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
-  zh_CN: {
-    name: '中文 (中国)',
-    value: 'zh_CN',
-    dateFnsLocale: zhCN,
-    tinymceLocale: 'zh-Hans',
-  },
   nl: {
     name: 'Nederlands',
     value: 'nl',

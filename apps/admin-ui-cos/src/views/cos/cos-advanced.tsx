@@ -5,7 +5,7 @@
  */
 
 import { Container, SingleSelectionOnChange, useSnackbar } from '@zextras/ui-components';
-import { useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
+import { isValidDecimalInput, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import {
   ChangeEvent,
@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../../types/account';
 import { Attribute } from '../../../types/attribute';
+import { Cos } from '../../../types/cos';
 import { TimeItems } from '../../../types/general';
 import {
   BACKUP_ENABLED,
@@ -40,7 +41,7 @@ import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { unsetCosQuota } from '../../services/unset-cos-quota';
 import { useCosStore } from '../../store/cos/store';
 import { PageLayout } from '../page-layout';
-import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
+import { BytesToGB, GbToBytes } from '../utility/utils';
 import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
 import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
 import COSForwarding from './advanced/cos-forwarding';
@@ -88,7 +89,16 @@ function saveBackupAttributes(
     setCoreAttributes(updateBackupAttributes);
   }
 }
-function saveCosAdvanced(cosAdvanced: AccountType, zimbraId: string): Promise<any> {
+
+type SaveCosAdvancedResult = {
+  cosId: string;
+  cos: Cos | undefined;
+};
+
+function saveCosAdvanced(
+  cosAdvanced: AccountType,
+  zimbraId: string,
+): Promise<SaveCosAdvancedResult> {
   const attributes: Attribute[] = Object.keys(cosAdvanced).map((ele) => ({
     n: ele,
     _content: cosAdvanced[ele as keyof AccountType]?.toString() ?? '',
@@ -244,7 +254,7 @@ const CosAdvanced: FC = () => {
   const [zimbraMailSpamLifetimeType, setZimbraMailSpamLifetimeType] = useState(
     cosAdvanced?.zimbraMailSpamLifetime?.slice(-1) || '',
   );
-  const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState(undefined);
+  const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState<string | undefined>(undefined);
   const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState<string | undefined>(undefined);
   const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
   const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
@@ -676,7 +686,7 @@ const CosAdvanced: FC = () => {
     if (
       cosData.zimbraMailForwardingAddressMaxLength !== undefined &&
       cosData.zimbraMailForwardingAddressMaxLength !==
-        cosAdvanced.zimbraMailForwardingAddressMaxLength
+      cosAdvanced.zimbraMailForwardingAddressMaxLength
     ) {
       setIsDirty(true);
     }
@@ -689,7 +699,7 @@ const CosAdvanced: FC = () => {
     if (
       cosData.zimbraMailForwardingAddressMaxNumAddrs !== undefined &&
       cosData.zimbraMailForwardingAddressMaxNumAddrs !==
-        cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs
+      cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs
     ) {
       setIsDirty(true);
     }
@@ -855,7 +865,7 @@ const CosAdvanced: FC = () => {
     if (
       cosData.zimbraPasswordLockoutFailureLifetime !== undefined &&
       cosData.zimbraPasswordLockoutFailureLifetime !==
-        cosAdvanced.zimbraPasswordLockoutFailureLifetime
+      cosAdvanced.zimbraPasswordLockoutFailureLifetime
     ) {
       setIsDirty(true);
     }
@@ -1155,7 +1165,7 @@ const CosAdvanced: FC = () => {
   );
 
   const onFileQuotaChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    if (!isValidDecimalNumber(e.target.value)) return;
+    if (!isValidDecimalInput(e.target.value)) return;
     const decimalPoints = e.target.value?.split('.')[1];
     if (!!decimalPoints && decimalPoints?.length > 3) {
       setShowFileQuotaLimitMsg(true);
@@ -1167,7 +1177,7 @@ const CosAdvanced: FC = () => {
 
   const onZimbraMailQuotaChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      if (!isValidDecimalNumber(e.target.value)) return;
+      if (!isValidDecimalInput(e.target.value)) return;
       const decimalPoints = e.target.value?.split('.')[1];
       if (!!decimalPoints && decimalPoints?.length > 3) {
         setShowAccountQuotaLimitMsg(true);
@@ -1246,10 +1256,10 @@ const CosAdvanced: FC = () => {
 
     const cosAdvancedToSave = isTotalQuotaActive
       ? (Object.fromEntries(
-          Object.entries(cosAdvanced).filter(
-            ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
-          ),
-        ) as AccountType)
+        Object.entries(cosAdvanced).filter(
+          ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
+        ),
+      ) as AccountType)
       : cosAdvanced;
 
     saveCosAdvanced(cosAdvancedToSave, zimbraId)

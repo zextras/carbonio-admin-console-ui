@@ -15,6 +15,7 @@ import {
 	S3ConnectorMutationResponse,
 	S3Region,
 	UpdateS3ConnectorRequest,
+	ZextrasRawResponse
 } from '../../types';
 
 declare global {
@@ -22,7 +23,10 @@ declare global {
 		csrfToken: string;
 	}
 }
-export const fetchSoap = async (api: string, body: unknown): Promise<unknown> =>
+export const fetchSoap = async (
+	api: string,
+	body: unknown,
+): Promise<ZextrasRawResponse> =>
 	postSoapFetchRequest(`/service/admin/soap/${api}`, body, api);
 
 type SoapContentResponse = {

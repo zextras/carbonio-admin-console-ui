@@ -4,12 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
+import { useDomainStore, useLocalStorage } from '@zextras/ui-shared';
 import { cloneDeep, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-
-import { useLocalStorage } from '../utility/utils';
 
 type DomainDetailPanelProps = {
   children?: React.ReactNode;
@@ -20,7 +18,10 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
   const domain = useDomainStore((state) => state.domain);
   const closeDomainBanner = useDomainStore((state) => state.closeDomainBanner);
   const setCloseDomainBanner = useDomainStore((state) => state.setCloseDomainBanner);
-  const [domainLocalValue, setDomainLocalValue] = useLocalStorage('close_domain_never_show', {});
+  const [domainLocalValue, setDomainLocalValue] = useLocalStorage<Record<string, boolean>>(
+    'close_domain_never_show',
+    {},
+  );
 
   const [showDomainClose, setShowDomainClose] = useState<boolean>(
     domain.name ? !domainLocalValue[domain.name] : true,

@@ -14,18 +14,12 @@ import {
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { IndexerVolumeTableProps } from '../../../../../types';
 import { FLEX_START, LOCAL_VALUE, NO, YES } from '../../../../constants';
 
-const IndexerVolumeTable: FC<{
-  volumes: Array<any>;
-  selectedRows: any;
-  onSelectionChange: any;
-  headers: any;
-  onClick: any;
-  isAdvanced: boolean;
-}> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
+const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
   const [t] = useTranslation();
-  const tableRows: any = useMemo(
+  const tableRows = useMemo(
     () =>
       volumes.map((v, i) => {
         const columns = [
@@ -91,7 +85,7 @@ const IndexerVolumeTable: FC<{
         ];
 
         return {
-          id: v?.id,
+          id: String(v?.id ?? ''),
           columns: columns.filter((column) => column !== false),
           clickable: true,
         };
@@ -106,7 +100,7 @@ const IndexerVolumeTable: FC<{
         rows={tableRows}
         showCheckbox={false}
         multiSelect={false}
-        selectedRows={selectedRows}
+        selectedRows={selectedRows as [] | [string]}
         onSelectionChange={onSelectionChange}
         RowFactory={HoverableRowFactory}
         HeaderFactory={CustomHeaderFactory}

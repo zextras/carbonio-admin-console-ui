@@ -7,7 +7,7 @@ import { Container, Input, LabeledValue, Padding, Row, Select } from '@zextras/u
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType } from '../../../../../../../types';
+import type { objectType, VolumeAllocationItem } from '../../../../../../../types';
 import {
   EXTERNAL_TYPE_VALUE,
   LOCAL_TYPE_VALUE,
@@ -20,11 +20,13 @@ import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/ut
 import { VolumeContext } from '../volume-context';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
-const AdvancedMailstoresDefinition: FC<{
+interface AdvancedMailstoresDefinitionProps {
   externalData: string;
   setCompleteLoading: (newValue: boolean) => void;
   setToggleNextBtn: (newValue: boolean) => void;
-}> = ({ externalData, setToggleNextBtn, setCompleteLoading }) => {
+}
+
+const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({ externalData, setToggleNextBtn, setCompleteLoading }) => {
   const { t } = useTranslation();
   const context = useContext(VolumeContext);
   const advancedContext = useContext(AdvancedVolumeContext);
@@ -35,7 +37,7 @@ const AdvancedMailstoresDefinition: FC<{
   );
   const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
-  const [allocation, setAllocation] = useState<{ label: string; value: number } | undefined>();
+  const [allocation, setAllocation] = useState<VolumeAllocationItem>();
   const [unusedType, setUnusedType] = useState<{ label: string; value: string } | undefined>();
   const [errName, setErrName] = useState(true);
   const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<
@@ -46,10 +48,10 @@ const AdvancedMailstoresDefinition: FC<{
     (e: ChangeEvent<HTMLInputElement>) => {
       setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
       setAdvancedVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
-      if (e?.target?.value !== '') {
-        setErrName(true);
-      } else {
+      if (e?.target?.value === '') {
         setErrName(false);
+      } else {
+        setErrName(true);
       }
     },
     [setAdvancedVolumeDetail, setVolumeDetail],
@@ -62,7 +64,7 @@ const AdvancedMailstoresDefinition: FC<{
 
     setVolumeDetail((prev: objectType) => ({ ...prev, volumeAllocation: v }));
     const volumeTypeObject = volAllocationList?.find(
-      (item: { label: string; value?: number }) => item?.value === v,
+      (item: VolumeAllocationItem) => item?.value === v,
     )?.label;
     setAdvancedVolumeDetail((prev: objectType) => ({
       ...prev,
@@ -124,7 +126,7 @@ const AdvancedMailstoresDefinition: FC<{
 
   useEffect(() => {
     const volumeTypeObject = volAllocationList?.find(
-      (item: { label: string; value?: number }) => item?.value === volumeDetail?.volumeAllocation,
+      (item: VolumeAllocationItem) => item?.value === volumeDetail?.volumeAllocation,
     );
     setAllocation(volumeTypeObject);
   }, [volAllocationList, volumeDetail?.volumeAllocation]);

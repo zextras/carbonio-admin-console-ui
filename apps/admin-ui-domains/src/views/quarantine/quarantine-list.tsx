@@ -36,7 +36,7 @@ import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request
 import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
 import { msgActionRequest } from '../../services/message-action';
 import { modifyConfig } from '../../services/modify-config';
-import { MessageTableHeaders, RandomString } from '../utility/utils';
+import { generateRandomString, MessageTableHeaders } from '../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
 
@@ -866,7 +866,7 @@ const QuarantineList: FC = () => {
         zimbraMailQuota: 0,
         description: 'System account for Anti-virus quarantine.',
       },
-      `virus-quarantine.${RandomString()}@${quarantineDomaintName}`,
+      `virus-quarantine.${generateRandomString()}@${quarantineDomaintName}`,
       '',
     )
       .then((data) => {
@@ -1370,7 +1370,9 @@ const QuarantineList: FC = () => {
                 width="70%"
                 padding={{ all: 'large' }}
               >
-                <ds-text as="label" size="large">{t('label.score', 'Score')}</ds-text>
+                <ds-text as="label" size="large">
+                  {t('label.score', 'Score')}
+                </ds-text>
                 {' : '}
                 <ds-text
                   as="strong"
@@ -1458,13 +1460,18 @@ const QuarantineList: FC = () => {
                       <ds-text as="label" size="small" weight="bold">
                         {t('label.date', 'Date')} :{' '}
                       </ds-text>
-                      <ds-text as="span" size="small"> {format(message?.date, 'dd-MM-yyyy - HH:mm a')}</ds-text>
+                      <ds-text as="span" size="small">
+                        {' '}
+                        {format(message?.date, 'dd-MM-yyyy - HH:mm a')}
+                      </ds-text>
                     </Row>
                     <Row width="95%" mainAlignment="flex-end" orientation="horizontal">
                       <ds-text as="label" size="small" weight="bold">
                         {t('label.received', 'Received')} :{' '}
                       </ds-text>
-                      <ds-text as="span" size="small">{format(message?.date, 'dd-MM-yyyy - HH:mm a')}</ds-text>
+                      <ds-text as="span" size="small">
+                        {format(message?.date, 'dd-MM-yyyy - HH:mm a')}
+                      </ds-text>
                     </Row>
                   </Row>
                   <Row width="100%" padding={{ top: 'medium' }}>
@@ -1479,7 +1486,10 @@ const QuarantineList: FC = () => {
                     <ds-text as="label" size="small" weight="bold">
                       {t('label.from', 'From')} :{' '}
                     </ds-text>
-                    <ds-text as="span" size="small"> {message.envelopeFrom || ''}</ds-text>
+                    <ds-text as="span" size="small">
+                      {' '}
+                      {message.envelopeFrom || ''}
+                    </ds-text>
                   </Row>
                   <Row
                     width="100%"
@@ -1490,7 +1500,10 @@ const QuarantineList: FC = () => {
                     <ds-text as="label" size="small" weight="bold">
                       {t('label.to', 'To')} :{' '}
                     </ds-text>
-                    <ds-text as="span" size="small"> {message.envelopeTo || ''}</ds-text>
+                    <ds-text as="span" size="small">
+                      {' '}
+                      {message.envelopeTo || ''}
+                    </ds-text>
                   </Row>
                   <Row
                     width="100%"
@@ -1523,7 +1536,12 @@ const QuarantineList: FC = () => {
                 </Row>
                 <Collapse open={showTextMsgView}>
                   <Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
-                    <ds-text as="span" overflow="break-word" color="text" style={{ fontFamily: 'monospace' }}>
+                    <ds-text
+                      as="span"
+                      overflow="break-word"
+                      color="text"
+                      style={{ fontFamily: 'monospace' }}
+                    >
                       {message?.body?.content}
                     </ds-text>
                   </Row>

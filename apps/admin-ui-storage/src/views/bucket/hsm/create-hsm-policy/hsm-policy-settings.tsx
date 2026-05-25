@@ -24,9 +24,12 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
+import type { PolicyCriteriaItem } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 
-const HSMpolicySettings: FC<any> = () => {
+type SelectOption = { label: string; value: string };
+
+const HSMpolicySettings: FC = () => {
   const { server } = useParams();
   const [t] = useTranslation();
   const context = useContext(HSMContext);
@@ -36,11 +39,11 @@ const HSMpolicySettings: FC<any> = () => {
   const [isEventEnable, setIsEventEnable] = useState<boolean>(hsmDetail?.isEventEnabled);
   const [isContactEnable, setIsContactEnable] = useState<boolean>(hsmDetail?.isContactEnabled);
   const [isDocument, setIsDocument] = useState<boolean>(hsmDetail?.isDocumentEnabled);
-  const [policyCriteriaRows, setPolicyCriteriaRows] = useState<any>();
+  const [policyCriteriaRows, setPolicyCriteriaRows] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>();
   const [value, setValue] = useState<string>();
-  const [selectedPolicies, setSelectedPolicies] = useState<any>([]);
+  const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
 
-  const options: any[] = useMemo(
+  const options: Array<SelectOption> = useMemo(
     () => [
       {
         label: t('hsm.after_date', 'After (Date)'),
@@ -62,7 +65,7 @@ const HSMpolicySettings: FC<any> = () => {
     [t],
   );
 
-  const dateScaleOption: any[] = useMemo(
+  const dateScaleOption: Array<SelectOption> = useMemo(
     () => [
       {
         label: t('hsm.minutes', 'Minutes'),
@@ -88,7 +91,7 @@ const HSMpolicySettings: FC<any> = () => {
     [t],
   );
 
-  const scaleOptions: any[] = useMemo(
+  const scaleOptions: Array<SelectOption> = useMemo(
     () => [
       {
         label: t('hsm.bytes', 'Byte (B)'),
@@ -122,11 +125,11 @@ const HSMpolicySettings: FC<any> = () => {
     [t],
   );
 
-  const [selectedOption, setSelectedOption]: any = useState<any>(options[0]);
+  const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>(options[0]);
 
   const [isShowDateScale, setIsShowDateScale] = useState<boolean>(true);
 
-  const [selectedScale, setSelectedScale]: any = useState<any>(
+  const [selectedScale, setSelectedScale] = useState<SelectOption | undefined>(
     isShowDateScale ? dateScaleOption[2] : scaleOptions[0],
   );
   const [showSourceVolume, setShowSourceVolume] = useState<boolean>(
@@ -136,12 +139,12 @@ const HSMpolicySettings: FC<any> = () => {
     hsmDetail?.destinationVolume.length > 0,
   );
 
-  const [volumeRows, setVolumeRows] = useState<Array<any>>([]);
-  const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<any>(
-    hsmDetail?.destinationVolume.map((item: any) => item?.id),
+  const [volumeRows, setVolumeRows] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>([]);
+  const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<string>>(
+    hsmDetail?.destinationVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
   );
-  const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<any>>(
-    hsmDetail?.sourceVolume.map((item: any) => item?.id),
+  const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<string>>(
+    hsmDetail?.sourceVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
   );
   const createSnackbar = useSnackbar();
   const header = useMemo(
@@ -175,7 +178,7 @@ const HSMpolicySettings: FC<any> = () => {
   );
 
   const getVoumeType = useCallback(
-    (type: number): string => {
+    (type: number | undefined): string => {
       if (type === 1) {
         return t('hsm.primary', 'Primary');
       }
@@ -190,23 +193,23 @@ const HSMpolicySettings: FC<any> = () => {
   useEffect(() => {
     const volumeList = hsmDetail?.allVolumes;
     if (volumeList && volumeList.length > 0) {
-      const allRows = volumeList.map((item: any) => ({
-        id: item?.id,
+      const allRows = volumeList.map((item) => ({
+        id: String(item?.id ?? ''),
         columns: [
-          <ds-text as="span" size="small" weight="regular" key={item}>
+          <ds-text as="span" size="small" weight="regular" key={item?.id}>
             {item?.name}
           </ds-text>,
-          <ds-text as="span" size="small" weight="light" key={item}>
+          <ds-text as="span" size="small" weight="light" key={item?.id}>
             {''}
           </ds-text>,
-          <ds-text as="span" size="small" weight="light" key={item}>
+          <ds-text as="span" size="small" weight="light" key={item?.id}>
             {getVoumeType(item?.type)}
           </ds-text>,
           <ds-text
             as="span"
             size="small"
             weight="light"
-            key={item}
+            key={item?.id}
             color={item?.isCurrent ? 'gray0' : '#D74942'}
           >
             {item?.isCurrent ? t('hsm.yes', 'Yes') : t('hsm.no', 'No')}
@@ -221,11 +224,11 @@ const HSMpolicySettings: FC<any> = () => {
 
   useEffect(() => {
     if (Array.isArray(hsmDetail?.allVolumes)) {
-      const sourceVol = hsmDetail?.allVolumes?.filter((item: any) =>
-        selectedSourceVolume?.includes(item?.id),
+      const sourceVol = hsmDetail?.allVolumes?.filter((item) =>
+        item?.id != null && selectedSourceVolume?.includes(String(item.id)),
       );
       if (sourceVol) {
-        setHsmDetail((prev: any) => ({
+        setHsmDetail((prev) => ({
           ...prev,
           sourceVolume: sourceVol,
         }));
@@ -235,11 +238,11 @@ const HSMpolicySettings: FC<any> = () => {
 
   useEffect(() => {
     if (Array.isArray(hsmDetail?.allVolumes)) {
-      const destVol = hsmDetail?.allVolumes?.filter((item: any) =>
-        selectedDestinationVolume?.includes(item?.id),
+      const destVol = hsmDetail?.allVolumes?.filter((item) =>
+        item?.id != null && selectedDestinationVolume?.includes(String(item.id)),
       );
       if (destVol) {
-        setHsmDetail((prev: any) => ({
+        setHsmDetail((prev) => ({
           ...prev,
           destinationVolume: destVol,
         }));
@@ -247,8 +250,8 @@ const HSMpolicySettings: FC<any> = () => {
     }
   }, [hsmDetail?.allVolumes, selectedDestinationVolume, setHsmDetail]);
 
-  const onOptionChange = (v: any): any => {
-    const it = options.find((item: any) => item.value === v);
+  const onOptionChange = (v: string | null): void => {
+    const it = options.find((item) => item.value === v);
     setSelectedOption(it);
     if (it?.value === 'after' || it?.value === 'before') {
       setIsShowDateScale(true);
@@ -259,31 +262,31 @@ const HSMpolicySettings: FC<any> = () => {
     }
   };
 
-  const onScaleChange = (v: any): any => {
-    const it = scaleOptions.find((item: any) => item.value === v);
+  const onScaleChange = (v: string | null): void => {
+    const it = scaleOptions.find((item) => item.value === v);
     setSelectedScale(it);
   };
 
-  const onDateScaleChange = (v: any): any => {
-    const it = dateScaleOption.find((item: any) => item.value === v);
+  const onDateScaleChange = (v: string | null): void => {
+    const it = dateScaleOption.find((item) => item.value === v);
     setSelectedScale(it);
   };
 
-  const [policyCriteria, setPolicyCriteria] = useState<Array<any>>(hsmDetail?.policyCriteria);
+  const [policyCriteria, setPolicyCriteria] = useState<Array<PolicyCriteriaItem>>(hsmDetail?.policyCriteria);
 
   const onAdd = useCallback(() => {
     setPolicyCriteria((prev) => [
       ...prev,
       {
-        option: selectedOption?.value,
-        scale: selectedScale?.value,
-        dateScale: value,
+        option: selectedOption?.value ?? '',
+        scale: selectedScale?.value ?? '',
+        dateScale: value ?? '',
       },
     ]);
   }, [selectedOption?.value, selectedScale?.value, value]);
 
   useEffect(() => {
-    setHsmDetail((prev: any) => ({
+    setHsmDetail((prev) => ({
       ...prev,
       policyCriteria,
     }));
@@ -292,14 +295,14 @@ const HSMpolicySettings: FC<any> = () => {
   useEffect(() => {
     if (policyCriteria.length > 0) {
       let displayPolicy = '';
-      const allRows = policyCriteria.map((item: any, index: number) => {
+      const allRows = policyCriteria.map((item: PolicyCriteriaItem, index: number) => {
         if (item?.option === 'before' || item?.option === 'after') {
           displayPolicy = `${item?.option} ${item?.dateScale} ${item?.scale}`;
         } else if (item?.option === 'larger' || item?.option === 'smaller') {
           displayPolicy = `${item?.option}  ${item?.dateScale} ${item?.scale}`;
         }
         return {
-          id: index,
+          id: String(index),
           columns: [
             <ds-text
               as="span"
@@ -307,7 +310,7 @@ const HSMpolicySettings: FC<any> = () => {
               weight="regular"
               key={index}
               onClick={(): void => {
-                setSelectedPolicies([index]);
+                setSelectedPolicies([String(index)]);
               }}
             >
               {displayPolicy}
@@ -324,7 +327,7 @@ const HSMpolicySettings: FC<any> = () => {
   const onClickAll = useCallback(
     (check: boolean) => {
       setAll(check);
-      setHsmDetail((prev: any) => ({
+      setHsmDetail((prev) => ({
         ...prev,
         isAllEnabled: check,
         isMessageEnabled: check,
@@ -343,13 +346,13 @@ const HSMpolicySettings: FC<any> = () => {
   useEffect(() => {
     if (!isDocument || !isContactEnable || !isMessageEnable || !isEventEnable) {
       setAll(false);
-      setHsmDetail((prev: any) => ({
+      setHsmDetail((prev) => ({
         ...prev,
         isAllEnabled: false,
       }));
     } else if (isDocument && isContactEnable && isMessageEnable && isEventEnable) {
       setAll(true);
-      setHsmDetail((prev: any) => ({
+      setHsmDetail((prev) => ({
         ...prev,
         isAllEnabled: true,
       }));
@@ -358,7 +361,7 @@ const HSMpolicySettings: FC<any> = () => {
 
   const onDeletePolicy = useCallback(() => {
     const reducedArr = policyCriteria.filter(
-      (item, itemIndex) => itemIndex !== selectedPolicies[0],
+      (item, itemIndex) => itemIndex !== Number(selectedPolicies[0]),
     );
     setPolicyCriteria(reducedArr);
     setSelectedPolicies([]);
@@ -404,7 +407,7 @@ const HSMpolicySettings: FC<any> = () => {
             value={isMessageEnable}
             onClick={(): void => {
               setIsMessageEnable(!isMessageEnable);
-              setHsmDetail((prev: any) => ({
+              setHsmDetail((prev) => ({
                 ...prev,
                 isMessageEnabled: !isMessageEnable,
               }));
@@ -419,7 +422,7 @@ const HSMpolicySettings: FC<any> = () => {
             value={isDocument}
             onClick={(): void => {
               setIsDocument(!isDocument);
-              setHsmDetail((prev: any) => ({
+              setHsmDetail((prev) => ({
                 ...prev,
                 isDocumentEnabled: !isDocument,
               }));
@@ -434,7 +437,7 @@ const HSMpolicySettings: FC<any> = () => {
             value={isEventEnable}
             onClick={(): void => {
               setIsEventEnable(!isEventEnable);
-              setHsmDetail((prev: any) => ({
+              setHsmDetail((prev) => ({
                 ...prev,
                 isEventEnabled: !isEventEnable,
               }));
@@ -449,7 +452,7 @@ const HSMpolicySettings: FC<any> = () => {
             value={isContactEnable}
             onClick={(): void => {
               setIsContactEnable(!isContactEnable);
-              setHsmDetail((prev: any) => ({
+              setHsmDetail((prev) => ({
                 ...prev,
                 isContactEnabled: !isContactEnable,
               }));
@@ -475,7 +478,7 @@ const HSMpolicySettings: FC<any> = () => {
             background="gray5"
             label={t('hsm.option', 'Option')}
             showCheckbox={false}
-            selection={selectedOption}
+            defaultSelection={selectedOption}
             onChange={onOptionChange}
           />
         </Container>
@@ -491,7 +494,7 @@ const HSMpolicySettings: FC<any> = () => {
               background="gray5"
               label={t('hsm.value', 'Value')}
               showCheckbox={false}
-              selection={selectedScale}
+              defaultSelection={selectedScale}
               onChange={onDateScaleChange}
             />
           </Container>
@@ -507,7 +510,7 @@ const HSMpolicySettings: FC<any> = () => {
               background="gray5"
               label={t('hsm.value', 'Value')}
               showCheckbox={false}
-              selection={selectedScale}
+              defaultSelection={selectedScale}
               onChange={onScaleChange}
             />
           </Container>
@@ -522,7 +525,7 @@ const HSMpolicySettings: FC<any> = () => {
             label={t('hsm.value', 'Value')}
             backgroundColor="gray5"
             value={value}
-            onChange={(e: any): any => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setValue(e.target.value);
             }}
           />
@@ -562,7 +565,7 @@ const HSMpolicySettings: FC<any> = () => {
             headers={headers}
             showCheckbox={false}
             multiSelect={false}
-            selectedRows={selectedPolicies}
+            selectedRows={selectedPolicies as [] | [string]}
             RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
@@ -645,11 +648,12 @@ const HSMpolicySettings: FC<any> = () => {
           <Padding bottom="large">
             {showSourceVolume && (
               <Table
+                multiSelect
                 rows={volumeRows}
                 headers={header}
                 selectedRows={selectedSourceVolume}
-                onSelectionChange={(selected: any): void => {
-                  const available = selectedDestinationVolume.filter((item: any) =>
+                onSelectionChange={(selected: Array<string | number>): void => {
+                  const available = selectedDestinationVolume.filter((item) =>
                     selected?.includes(item),
                   );
                   if (available.length > 0) {
@@ -665,7 +669,7 @@ const HSMpolicySettings: FC<any> = () => {
                       replace: true,
                     });
                   } else {
-                    setSelectedSourceVolume(selected);
+                    setSelectedSourceVolume(selected.map(String));
                   }
                 }}
                 RowFactory={HoverableRowFactory}
@@ -714,10 +718,10 @@ const HSMpolicySettings: FC<any> = () => {
                 rows={volumeRows}
                 headers={header}
                 showCheckbox
-                multiSelect={false}
+                multiSelect
                 selectedRows={selectedDestinationVolume}
-                onSelectionChange={(selected: any): void => {
-                  const available = selectedSourceVolume.filter((item: any) =>
+                onSelectionChange={(selected: Array<string | number>): void => {
+                  const available = selectedSourceVolume.filter((item) =>
                     selected?.includes(item),
                   );
                   if (available.length > 0) {
@@ -733,7 +737,7 @@ const HSMpolicySettings: FC<any> = () => {
                       replace: true,
                     });
                   } else {
-                    setSelectedDestinationVolume(selected);
+                    setSelectedDestinationVolume(selected.map(String));
                   }
                 }}
                 RowFactory={HoverableRowFactory}

@@ -164,7 +164,7 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
           style={{ overflow: 'auto' }}
           mainAlignment="flex-start"
           crossAlignment="flex-start"
-          dangerouslySetInnerHTML={{ __html: notification?.text.replace(/(\r\n|\r|\n)/g, '<br>') }}
+          dangerouslySetInnerHTML={{ __html: notification?.text.replaceAll(/(\r\n|\r|\n)/g, '<br>') }}
         ></Container>
       </Row>
     </Container>

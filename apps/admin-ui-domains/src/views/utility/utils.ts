@@ -7,7 +7,6 @@ import { SelectItem } from '@zextras/ui-components';
 import { format, parse } from 'date-fns';
 import { TFunction } from 'i18next';
 import { divide, multiply } from 'lodash-es';
-import { useState } from 'react';
 
 import { TwoFactorPolicy } from '../../../types';
 import {
@@ -1087,7 +1086,7 @@ export const localeList = (t: TFunction): SelectItem[] => [
     value: 'vi',
   },
   {
-    label: t('locale.label_bosnian', { value: 'bosanski', defaultValue: 'Bosnian - {{value}}' }),
+    label: t('locale.label_bosnian', { value: 'Bosanski', defaultValue: 'Bosnian - {{value}}' }),
     value: 'bs',
   },
   {
@@ -1181,8 +1180,12 @@ export const isValidLdapQuery = (query: string): boolean => {
 };
 
 export const isValidHttpsUrl = (url: string): boolean => {
-  const reqex = /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
-  return reqex.test(url);
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
 };
 
 export const isValidPhoneNumber = (str: string): boolean => {
@@ -1530,24 +1533,6 @@ export const ServicesPassphraseServices = (): Array<{ value: string; label: stri
   },
 ];
 
-export function useLocalStorage<T>(key: string, initialValue: T): any {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch {
-      return initialValue;
-    }
-  });
-  const setValue = (value: T | ((val: T) => T)): any => {
-    const valueToStore =
-      typeof value === 'function' ? (value as (val: T) => T)(storedValue) : value;
-    setStoredValue(valueToStore);
-    localStorage.setItem(key, JSON.stringify(valueToStore));
-  };
-  return [storedValue, setValue] as const;
-}
-
 export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
   {
     label: t('domain.admin_api', 'Admin API'),
@@ -1587,7 +1572,10 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
   },
 ];
 
-export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);
+export const generateRandomString = (length = 10): string => {
+  const bytes = crypto.getRandomValues(new Uint8Array(Math.ceil(length / 2)));
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('').substring(0, length);
+};
 
 export const BytesToGB = (data: any): any => divide(data || 0, 1024 ** 3);
 
@@ -1598,16 +1586,11 @@ export const isValidHexColor = (value: string): boolean => {
   return regex.test(value);
 };
 
-export const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
+export const getModifiedName = (name: string): string => name?.replaceAll(' ', '')?.toLowerCase();
 export const checkValidUserName = (name: string): boolean => /^[a-zA-Z_][a-zA-Z0-9_.]*$/.test(name);
 export const convertToAscii = (inputString: string): string => {
   const normalizedString = inputString.normalize('NFKD');
-  return normalizedString.replace(/[^\p{ASCII}]/gu, '');
-};
-
-export const isValidDecimalNumber = (value: string): boolean => {
-  const regex = /^\d*\.?\d*$/;
-  return regex.test(value);
+  return normalizedString.replaceAll(/[^\p{ASCII}]/gu, '');
 };
 
 export const isValidVirtualHostname = (hostname: string): boolean => {

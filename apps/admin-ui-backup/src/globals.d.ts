@@ -6,12 +6,12 @@
 declare module '*.properties';
 
 declare module '*.svg' {
-  const content: any;
+  const content: string;
   export default content;
 }
 
 declare module '*.json' {
-  const content: any;
+  const content: Record<string, unknown>;
   export default content;
 }
 

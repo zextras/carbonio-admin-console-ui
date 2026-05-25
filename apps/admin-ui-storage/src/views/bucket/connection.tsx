@@ -11,6 +11,7 @@ import {
   PasswordInput,
   Row,
   Select,
+  type SelectItem as UISelectItem,
   Switch,
   Tooltip,
 } from '@zextras/ui-components';
@@ -68,7 +69,7 @@ const Connection: FC<{
   const [bucketLabel, setBucketLabel] = useState('');
   const [accessKeyData, setAccessKeyData] = useState('');
   const [secretKey, setSecretKey] = useState('');
-  const [regionsData, setRegionsData] = useState<{ value: string; label: string } | undefined>();
+  const [regionsData, setRegionsData] = useState<UISelectItem>();
   const [urlInput, setUrlInput] = useState('');
   const [prefix, setPrefix] = useState('');
   const [customRegion, setCustomRegion] = useState('');
@@ -82,9 +83,8 @@ const Connection: FC<{
   const [bucketNameConfirm, setBucketNameConfirm] = useState(true);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
-  const [regionSelection, setRegionSelection] = useState<{ value: string; label: string }>(
-    EMPTY_REGION,
-  );
+  const [regionSelection, setRegionSelection] = useState<UISelectItem | undefined>(EMPTY_REGION);
+
   const [showVerifyResult, setVerifyShowResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);

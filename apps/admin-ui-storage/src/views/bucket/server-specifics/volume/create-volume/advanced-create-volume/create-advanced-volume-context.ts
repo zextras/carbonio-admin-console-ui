@@ -5,8 +5,10 @@
  */
 import { createContext } from 'react';
 
-type VolumeContext = {
-	advancedVolumeDetail: any;
-	setAdvancedVolumeDetail: (arg: any) => void;
+import type { AdvancedVolumeWizardDetail } from '../../../../../../../types';
+
+type AdvancedVolumeContextType = {
+	advancedVolumeDetail: AdvancedVolumeWizardDetail;
+	setAdvancedVolumeDetail: (arg: AdvancedVolumeWizardDetail | ((prev: AdvancedVolumeWizardDetail) => AdvancedVolumeWizardDetail)) => void;
 };
-export const AdvancedVolumeContext = createContext({} as VolumeContext);
+export const AdvancedVolumeContext = createContext({} as AdvancedVolumeContextType);

@@ -138,7 +138,7 @@ const DomainDisclaimer: FC = () => {
       // Convert accented char
       const convertDiatrictTextSignature = domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText
         .normalize('NFD')
-        .replace(/\p{Diacritic}/gu, "'");
+        .replaceAll(/\p{Diacritic}/gu, "'");
       // add new line after 997 char
       const limitTextSignature = convertDiatrictTextSignature.replace(longLineRg, '$1\n');
       attributes.push({

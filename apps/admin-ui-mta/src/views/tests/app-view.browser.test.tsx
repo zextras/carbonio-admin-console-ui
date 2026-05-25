@@ -52,9 +52,9 @@ function setupInterceptors() {
 describe('AppView', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     queryClient = getQueryClient();
-    grantUserConfigRights();
+    await grantUserConfigRights(queryClient);
   });
 
   afterEach(() => {

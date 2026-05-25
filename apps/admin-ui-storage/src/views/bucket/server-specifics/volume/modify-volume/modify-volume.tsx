@@ -26,7 +26,7 @@ import { isEmpty } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Bucket, BucketVolume, objectType, Volume, VolumeType } from '../../../../../../types';
+import { BucketVolume, objectType, Volume, type VolumeAllocationItem, VolumeType } from '../../../../../../types';
 import {
   ALIBABA,
   AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
@@ -84,11 +84,19 @@ const ModifyVolume: FC<{
   const { t } = useTranslation();
 
   const isAdvanced = useIsAdvanced();
-  const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+  const volTypeList = useMemo(() => volumeTypeList(t, isAdvanced), [t, isAdvanced]);
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
   const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
   const [isDirty, setIsDirty] = useState(false);
-  const [volumeDetail, setVolumeDetail] = useState<any>({
+  const [volumeDetail, setVolumeDetail] = useState<{
+    name: string;
+    id: number;
+    type: number;
+    compressBlobs: boolean;
+    isCurrent: boolean;
+    rootpath: string;
+    compressionThreshold: string;
+  }>({
     name: '',
     id: 0,
     type: 0,
@@ -97,20 +105,20 @@ const ModifyVolume: FC<{
     rootpath: '',
     compressionThreshold: '',
   });
-  const [name, setName] = useState<string>(volumeDetail?.name);
-  const [type, setType] = useState<any>();
-  const [id, setId] = useState<string>(volumeDetail?.id);
-  const [rootpath, setRootpath] = useState<string>(volumeDetail?.rootpath);
-  const [compressBlobs, setCompressBlobs] = useState<boolean>(volumeDetail?.compressBlobs);
-  const [isCurrent, setIsCurrent] = useState<boolean>(volumeDetail?.isCurrent);
+  const [name, setName] = useState<string>(volumeDetail?.name ?? '');
+  const [type, setType] = useState<VolumeAllocationItem>();
+  const [id, setId] = useState<string>(String(volumeDetail?.id ?? ''));
+  const [rootpath, setRootpath] = useState<string>(volumeDetail?.rootpath ?? '');
+  const [compressBlobs, setCompressBlobs] = useState<boolean>(volumeDetail?.compressBlobs ?? false);
+  const [isCurrent, setIsCurrent] = useState<boolean>(volumeDetail?.isCurrent ?? false);
   const isCurrentRef = useRef<HTMLDivElement>(null);
   const [compressionThreshold, setCompressionThreshold] = useState<string>(
-    volumeDetail?.compressionThreshold,
+    String(volumeDetail?.compressionThreshold ?? ''),
   );
-  const [previousDetail, setPreviousDetail] = useState<any>({});
+  const [previousDetail, setPreviousDetail] = useState<Record<string, unknown>>({});
   const [externalVolDetail, setExternalVolDetail] = useState<Volume>({});
-  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
-  const [allocation, setAllocation] = useState<any>();
+  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<Array<{ label: string; value: string }>>([]);
+  const [allocation, setAllocation] = useState<VolumeAllocationItem>();
   const [bucketName, setBucketName] = useState('');
   const [storeType, setStoreType] = useState<string | undefined>('');
   const [bucketConfigurationId, setBucketConfigurationId] = useState<string | undefined>();
@@ -141,14 +149,14 @@ const ModifyVolume: FC<{
     2: SECONDARY,
     10: INDEX,
   };
-  const onUnusedBucketListChange = (e: any): void => {
+  const onUnusedBucketListChange = (e: string | null): void => {
     const selectedBucketDetail = isVolumeAllDetail?.filter(
       (item: BucketVolume) => item?.uuid === e,
     )[0];
 
-    setBucketName(selectedBucketDetail?.bucketName);
-    setStoreType(selectedBucketDetail?.storeType);
-    setBucketConfigurationId(selectedBucketDetail?.uuid);
+    setBucketName(selectedBucketDetail?.bucketName ?? '');
+    setStoreType(selectedBucketDetail?.storeType ?? '');
+    setBucketConfigurationId(selectedBucketDetail?.uuid ?? '');
   };
 
   const updatePreviousDetail = (): void => {
@@ -304,7 +312,9 @@ const ModifyVolume: FC<{
             isCurrent: isCurrent ? 1 : 0,
           },
         },
-        selectedServerId,
+        {
+          targetServer: selectedServerId,
+        },
       )
         .then(() => {
           if (isCurrent) {
@@ -318,7 +328,7 @@ const ModifyVolume: FC<{
                 type: type?.value,
               },
               {
-                otherAccount: selectedServerId,
+                targetServer: selectedServerId,
               },
             ).catch(() => {
               createSnackbar({
@@ -358,47 +368,47 @@ const ModifyVolume: FC<{
   };
 
   const onUndo = (): void => {
-    previousDetail?.name ? setName(previousDetail?.name) : setName(volumeDetail?.name);
+    previousDetail?.name ? setName(String(previousDetail?.name)) : setName(volumeDetail?.name ?? '');
     const volumeTypeObject = volTypeList?.find(
       (item: VolumeType) => item?.value === volumeDetail?.type,
     );
-    previousDetail?.type ? setType(previousDetail?.type) : setType(volumeTypeObject);
-    previousDetail?.id ? setId(previousDetail?.id) : setId(volumeDetail?.id);
+    previousDetail?.type ? setType(previousDetail?.type as VolumeAllocationItem) : setType(volumeTypeObject as VolumeAllocationItem);
+    previousDetail?.id ? setId(String(previousDetail?.id)) : setId(String(volumeDetail?.id ?? ''));
     previousDetail?.rootpath
-      ? setRootpath(previousDetail?.rootpath)
-      : setRootpath(volumeDetail?.rootpath);
+      ? setRootpath(String(previousDetail?.rootpath))
+      : setRootpath(volumeDetail?.rootpath ?? '');
     previousDetail?.compressBlobs
-      ? setCompressBlobs(previousDetail?.compressBlobs)
-      : setCompressBlobs(volumeDetail?.compressBlobs);
+      ? setCompressBlobs(Boolean(previousDetail?.compressBlobs))
+      : setCompressBlobs(volumeDetail?.compressBlobs ?? false);
     previousDetail?.isCurrent
-      ? setIsCurrent(previousDetail?.isCurrent)
-      : setIsCurrent(volumeDetail?.isCurrent);
+      ? setIsCurrent(Boolean(previousDetail?.isCurrent))
+      : setIsCurrent(volumeDetail?.isCurrent ?? false);
     previousDetail?.compressionThreshold
-      ? setCompressionThreshold(previousDetail?.compressionThreshold)
-      : setCompressionThreshold(volumeDetail?.compressionThreshold);
+      ? setCompressionThreshold(String(previousDetail?.compressionThreshold))
+      : setCompressionThreshold(String(volumeDetail?.compressionThreshold ?? ''));
     previousDetail?.bucketConfigurationId
-      ? setBucketConfigurationId(previousDetail?.bucketConfigurationId)
+      ? setBucketConfigurationId(String(previousDetail?.bucketConfigurationId))
       : setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
     previousDetail?.volumePrefix
-      ? setVolumePrefix(previousDetail?.volumePrefix)
+      ? setVolumePrefix(String(previousDetail?.volumePrefix))
       : setVolumePrefix(externalVolDetail?.volumePrefix);
     previousDetail?.infrequentAccessThreshold
-      ? setInfrequentAccessThreshold(previousDetail?.infrequentAccessThreshold)
+      ? setInfrequentAccessThreshold(String(previousDetail?.infrequentAccessThreshold))
       : setInfrequentAccessThreshold(externalVolDetail?.infrequentAccessThreshold);
     previousDetail?.useInfrequentAccess
-      ? setUseInfrequentAccess(previousDetail?.useInfrequentAccess)
+      ? setUseInfrequentAccess(Boolean(previousDetail?.useInfrequentAccess))
       : setUseInfrequentAccess(externalVolDetail?.useInfrequentAccess);
     previousDetail?.useIntelligentTiering
-      ? setUseIntelligentTiering(previousDetail?.useIntelligentTiering)
+      ? setUseIntelligentTiering(Boolean(previousDetail?.useIntelligentTiering))
       : setUseIntelligentTiering(externalVolDetail?.useIntelligentTiering);
     setIsDirty(false);
   };
 
   const onVolumeTypeChange = useCallback(
     (e: number | null): void => {
-      const volumeObject: VolumeType = volTypeList?.find(
+      const volumeObject: VolumeAllocationItem | undefined = volTypeList?.find(
         (item: VolumeType): boolean => item?.value === e,
-      );
+      ) as VolumeAllocationItem | undefined;
       setType(volumeObject);
     },
     [volTypeList],
@@ -491,7 +501,7 @@ const ModifyVolume: FC<{
   }, [type?.value, volumeDetail]);
 
   useEffect(() => {
-    if (volumeDetail !== undefined && volumeDetail?.id !== id) {
+    if (volumeDetail !== undefined && String(volumeDetail?.id) !== id) {
       setIsDirty(true);
     }
   }, [volumeDetail, id]);
@@ -567,16 +577,16 @@ const ModifyVolume: FC<{
   }, [externalVolDetail, infrequentAccessThreshold]);
 
   useEffect(() => {
-    setName(volumeDetail?.name);
+    setName(volumeDetail?.name ?? '');
     const volumeTypeObject = volTypeList?.find(
       (item: VolumeType) => item?.value === volumeDetail?.type,
     );
-    setType(volumeTypeObject);
-    setId(volumeDetail?.id);
-    setRootpath(volumeDetail?.rootpath);
-    setCompressBlobs(volumeDetail?.compressBlobs);
-    setIsCurrent(volumeDetail?.isCurrent);
-    setCompressionThreshold(volumeDetail?.compressionThreshold);
+    setType(volumeTypeObject as VolumeAllocationItem);
+    setId(String(volumeDetail?.id ?? ''));
+    setRootpath(volumeDetail?.rootpath ?? '');
+    setCompressBlobs(volumeDetail?.compressBlobs ?? false);
+    setIsCurrent(volumeDetail?.isCurrent ?? false);
+    setCompressionThreshold(String(volumeDetail?.compressionThreshold ?? ''));
     setIsDirty(false);
   }, [volTypeList, volumeDetail]);
 
@@ -666,6 +676,27 @@ const ModifyVolume: FC<{
 
   const getVolumeDetailData = useCallback(
     (volId: string): void => {
+      if (isAdvanced) {
+        const allVolumes = [
+          ...volumeList.primaries,
+          ...volumeList.secondaries,
+          ...volumeList.indexes,
+        ];
+        const volData = allVolumes.find((v: Volume) => v?.id === Number(volId));
+        if (volData) {
+          setVolumeDetail({
+            name: volData.name ?? '',
+            id: volData.id ?? 0,
+            type: volData.type ?? 0,
+            compressBlobs: volData.compressBlobs === 'true' || volData.compressBlobs === '1',
+            isCurrent: volData.isCurrent === true || volData.isCurrent === 1,
+            rootpath: volData.rootpath ?? '',
+            compressionThreshold: volData.compressionThreshold ?? '',
+          });
+          setmodifyVolumeToggle(true);
+        }
+        return;
+      }
       setIsLoading(true);
       soapFetch(
         'GetVolume',
@@ -675,13 +706,21 @@ const ModifyVolume: FC<{
           id: volId,
         },
         {
-          otherAccount: selectedServerId,
+          targetServer: selectedServerId,
         },
       )
         .then((response) => {
           const typedResponse = response as { volume: Volume[]; _jsns: string };
           const volData = typedResponse?.volume[0];
-          setVolumeDetail(volData);
+          setVolumeDetail({
+            name: volData?.name ?? '',
+            id: volData?.id ?? 0,
+            type: volData?.type ?? 0,
+            compressBlobs: Boolean(volData?.compressBlobs),
+            isCurrent: Boolean(volData?.isCurrent),
+            rootpath: volData?.rootpath ?? '',
+            compressionThreshold: String(volData?.compressionThreshold ?? ''),
+          });
           setmodifyVolumeToggle(true);
           setIsLoading(false);
         })
@@ -699,6 +738,8 @@ const ModifyVolume: FC<{
         });
     },
     [
+      isAdvanced,
+      volumeList,
       setVolumeDetail,
       setmodifyVolumeToggle,
       createSnackbar,
@@ -709,7 +750,7 @@ const ModifyVolume: FC<{
   );
 
   useEffect(() => {
-    if (volumeId) getVolumeDetailData(volumeId);
+    if (volumeId) getVolumeDetailData(String(volumeId));
   }, [volumeId, getVolumeDetailData]);
 
   return (
@@ -774,7 +815,7 @@ const ModifyVolume: FC<{
                 items={volTypeList}
                 background="gray5"
                 label={t('label.volume_main', 'Volume Main')}
-                selection={type}
+                defaultSelection={type}
                 showCheckbox={false}
                 onChange={onVolumeTypeChange}
                 disabled
@@ -819,10 +860,9 @@ const ModifyVolume: FC<{
                   label={t('label.primary_volume', 'This is a Primary Volume')}
                   value={PRIMARY_TYPE_VALUE}
                   checked={type?.value === 1}
-                  onClick={(): void => {
-                    onVolumeTypeChange(1);
-                  }}
+                  onClick={(): void => { }}
                   iconColor="primary"
+                  disabled
                 />
               </Row>
               {isAdvanced && (
@@ -831,10 +871,9 @@ const ModifyVolume: FC<{
                     label={t('label.secondary_volume', 'This is a Secondary Volume')}
                     value={SECONDARY_TYPE_VALUE}
                     checked={type?.value === 2}
-                    onClick={(): void => {
-                      onVolumeTypeChange(2);
-                    }}
+                    onClick={(): void => { }}
                     iconColor="primary"
+                    disabled
                   />
                 </Row>
               )}
@@ -926,7 +965,7 @@ const ModifyVolume: FC<{
                 background="gray5"
                 label={t('label.storage_type', 'Storage Type')}
                 showCheckbox={false}
-                selection={allocation}
+                defaultSelection={allocation}
                 disabled
                 onChange={(): void => {
                   // console.log('__');
@@ -954,8 +993,8 @@ const ModifyVolume: FC<{
                       'Available Buckets List (that are not in use in the backup)',
                     )}
                     showCheckbox={false}
-                    selection={backupUnusedBucketList?.find(
-                      (b: Bucket) => b.value === bucketConfigurationId,
+                    defaultSelection={backupUnusedBucketList?.find(
+                      (b) => b.value === bucketConfigurationId,
                     )}
                     onChange={onUnusedBucketListChange}
                   />
@@ -1014,10 +1053,9 @@ const ModifyVolume: FC<{
                   label={t('label.primary_volume', 'This is a Primary Volume')}
                   value={PRIMARY_TYPE_VALUE}
                   checked={type?.value === 1}
-                  onClick={(): void => {
-                    onVolumeTypeChange(1);
-                  }}
+                  onClick={(): void => { }}
                   iconColor="primary"
+                  disabled
                 />
               </Row>
               <Row width="48%">
@@ -1025,10 +1063,9 @@ const ModifyVolume: FC<{
                   label={t('label.secondary_volume', 'This is a Secondary Volume')}
                   value={SECONDARY_TYPE_VALUE}
                   checked={type?.value === 2}
-                  onClick={(): void => {
-                    onVolumeTypeChange(2);
-                  }}
+                  onClick={(): void => { }}
                   iconColor="primary"
+                  disabled
                 />
               </Row>
             </Row>

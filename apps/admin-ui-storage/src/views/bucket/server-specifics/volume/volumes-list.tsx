@@ -25,7 +25,7 @@ import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { objectType, Volume } from '../../../../../types';
+import { Volume } from '../../../../../types';
 import {
   ALIBABA,
   CENTRALIZED,
@@ -66,14 +66,14 @@ type SoapContentResponse = {
 
 const VolumeListTable: FC<{
   volumes: Array<Volume>;
-  selectedRows: any;
+  selectedRows: Array<string>;
   onSelectionChange: (selected: string[]) => void;
   headers: THeader[];
   onClick: (i: number) => void;
   isAdvanced: boolean;
 }> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
   const [t] = useTranslation();
-  const tableRows: any = useMemo(
+  const tableRows = useMemo(
     () =>
       volumes.map((v, i) => {
         const columns = [
@@ -150,7 +150,7 @@ const VolumeListTable: FC<{
         ];
 
         return {
-          id: v?.id,
+          id: String(v?.id ?? ''),
           columns: columns.filter((column) => column !== false), // Changed filter condition to remove false instead of null
           clickable: true,
         };
@@ -165,7 +165,7 @@ const VolumeListTable: FC<{
         rows={tableRows}
         showCheckbox={false}
         multiSelect={false}
-        selectedRows={selectedRows}
+        selectedRows={selectedRows as [] | [string]}
         onSelectionChange={onSelectionChange}
         RowFactory={HoverableRowFactory}
         HeaderFactory={CustomHeaderFactory}
@@ -195,7 +195,7 @@ const VolumesDetailPanel: FC = () => {
   const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
   const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
   const { data: serverList = [] } = useAllServers();
-  const [selectedServerId, setSelectedServerId] = useState<any>('');
+  const [selectedServerId, setSelectedServerId] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [volume, setVolume] = useState<Volume | undefined>({
     compressBlobs: '',
@@ -226,13 +226,31 @@ const VolumesDetailPanel: FC = () => {
     setOpen(false);
   };
 
+  const mapAdvancedVolume = useCallback((vol: any): Volume => {
+    const volumeTypeMap: Record<string, number> = {
+      primary: 1,
+      secondary: 2,
+      index: 10,
+    };
+    return {
+      ...vol,
+      rootpath: vol?.path ?? vol?.rootpath,
+      path: vol?.path,
+      type: volumeTypeMap[vol?.volumeType] ?? vol?.type,
+      compressBlobs: vol?.compressed ?? vol?.compressBlobs,
+      compressionThreshold: vol?.threshold ?? vol?.compressionThreshold,
+      compressed: vol?.compressed,
+      bucketConfigurationId: vol?.uuid ?? vol?.bucketConfigurationId,
+    };
+  }, []);
+
   const getAllVolumesRequest = useCallback((): void => {
     if (isAdvanced) {
       fetchSoap('zextras', {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
         action: 'getAllVolumes',
-        targetServers: selectedServerName,
+        targetServers: selectedServerName
       })
         .then((res) => {
           const typedRes = res as SoapContentResponse;
@@ -277,7 +295,7 @@ const VolumesDetailPanel: FC = () => {
           _jsns: ZIMBRA_ADMIN_URN,
         },
         {
-          otherAccount: selectedServerId,
+          targetServer: selectedServerId,
         },
       )
         .then((response) => {
@@ -302,9 +320,12 @@ const VolumesDetailPanel: FC = () => {
           });
         });
     }
-  }, [isAdvanced, selectedServerName, selectedServerId, createSnackbar, t]);
+  }, [isAdvanced, selectedServerId, createSnackbar, t, mapAdvancedVolume]);
 
-  const deleteHandler = async (data: { name: string; id: number }): Promise<void> => {
+  const deleteHandler = async (data: Volume | undefined): Promise<void> => {
+    if (!data) {
+      return;
+    }
     if (isAdvanced) {
       await fetchSoap('zextras', {
         _jsns: ZIMBRA_ADMIN_URN,
@@ -362,7 +383,7 @@ const VolumesDetailPanel: FC = () => {
           id,
         },
         {
-          otherAccount: selectedServerId,
+          targetServer: selectedServerId,
         },
       )
         .then((res) => {
@@ -408,13 +429,14 @@ const VolumesDetailPanel: FC = () => {
   };
 
   useEffect(() => {
-    getAllVolumesRequest();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (selectedServerId) {
+      getAllVolumesRequest();
+    }
+  }, [selectedServerId, getAllVolumesRequest]);
 
   const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
     const bucketDetails = isVolumeAllDetail?.filter(
-      (items: objectType) => items?.uuid === attr?.bucketConfigurationId,
+      (items) => items?.uuid === attr?.bucketConfigurationId,
     );
     const obj: { [key: string]: string | boolean | number | undefined } = {};
     obj._jsns = ZIMBRA_ADMIN_URN;
@@ -530,8 +552,8 @@ const VolumesDetailPanel: FC = () => {
           label: error?.message
             ? error?.message
             : t('label.volume_detail_error', '{{message}}', {
-                message: 'Something went wrong, please try again',
-              }),
+              message: 'Something went wrong, please try again',
+            }),
           autoHideTimeout: 5000,
         });
         return error;
@@ -670,8 +692,8 @@ const VolumesDetailPanel: FC = () => {
             label: error?.message
               ? error?.message
               : t('label.volume_detail_error', '{{message}}', {
-                  message: 'Something went wrong, please try again',
-                }),
+                message: 'Something went wrong, please try again',
+              }),
             autoHideTimeout: 5000,
           });
           setIsLoading(false);
@@ -689,12 +711,13 @@ const VolumesDetailPanel: FC = () => {
 
   useEffect(() => {
     if (serverList && serverList?.length > 0) {
-      const serverData = serverList?.find((s: { name?: string }) => s?.name === server);
+      const lookupName = server || selectedServerName;
+      const serverData = serverList?.find((s: { name?: string }) => s?.name === lookupName);
       if (serverData && serverData?.id) {
         setSelectedServerId(serverData?.id);
       }
     }
-  }, [serverList, server]);
+  }, [serverList, server, selectedServerName]);
 
   return (
     <>
@@ -722,7 +745,7 @@ const VolumesDetailPanel: FC = () => {
       {modifyVolumeToggle && volume && (
         <ModalOverlay open={modifyVolumeToggle}>
           <ModifyVolume
-            volumeId={volume?.id}
+            volumeId={volume?.id ?? 0}
             setOpen={setOpen}
             setmodifyVolumeToggle={setmodifyVolumeToggle}
             getAllVolumesRequest={getAllVolumesRequest}
@@ -787,9 +810,11 @@ const VolumesDetailPanel: FC = () => {
                     compressionThreshold: '',
                     volumeAllocation: 0,
                   });
-                  isAdvanced
-                    ? setToggleWizardExternal(!toggleWizardExternal)
-                    : setToggleWizardLocal(!toggleWizardLocal);
+                  if (isAdvanced) {
+                    setToggleWizardExternal(!toggleWizardExternal);
+                  } else {
+                    setToggleWizardLocal(!toggleWizardLocal);
+                  }
                 }}
               />
             </Row>

@@ -61,6 +61,7 @@ import {
 } from './constants';
 import { replaceHistory, useCurrentRoute } from './history/hooks';
 import { useBreakpoint } from './hooks/use-breakpoint';
+import { useLocalStorage } from './hooks/use-local-storage';
 import { useMediaQuery } from './hooks/use-media-query';
 import { useTotalQuotaActive } from './hooks/use-total-quota-active';
 import {
@@ -96,6 +97,14 @@ import {
 } from './react-query/use-rights';
 import { useAllServers, useMtaServers, useServerVersion } from './react-query/use-servers';
 import {
+  type Feature,
+  invalidateLicenseQuery,
+  type LicenseInfo,
+  type LicenseResponse,
+  type LicenseSubType,
+  type LicenseType,
+  type MaintenanceStatus,
+  type ModuleLicenseInfo,
   useActivateLicense,
   useLicenseInfo,
   useModuleLicenseInfo,
@@ -117,6 +126,7 @@ import { useLoginConfigStore } from './store/login/store';
 import { useDomainStore } from './store/shared/domains';
 import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
+import { isValidDecimalInput } from './utils/validators';
 
 // Default fallback pkg for when app context cannot be determined
 const defaultPkg: Pick<CarbonioModule, 'name' | 'priority' | 'icon'> = {
@@ -179,6 +189,8 @@ export {
   getRights,
   getShell,
   getSoapFetchRequest,
+  invalidateLicenseQuery,
+  isValidDecimalInput,
   LOCAL_STORAGE_LAST_PRIMARY_KEY,
   LOGIN_V3_CONFIG_PATH,
   loginConfig,
@@ -224,6 +236,7 @@ export {
   useIsAdvanced,
   useLastLoginTimestamp,
   useLicenseInfo,
+  useLocalStorage,
   useLoginConfigStore,
   useMailstoreServers,
   useMediaQuery,
@@ -243,3 +256,12 @@ export {
   ZIMBRA_ADMIN_URN,
 };
 export type { CloseSnackbarFn, CreateSnackbarFn, CreateSnackbarFnArgs };
+export type {
+  Feature,
+  LicenseInfo,
+  LicenseResponse,
+  LicenseSubType,
+  LicenseType,
+  MaintenanceStatus,
+  ModuleLicenseInfo,
+};

@@ -69,8 +69,8 @@ function getAllConfigResponse() {
 }
 
 describe('MTAInboundFlowSecurity', () => {
-  beforeEach(() => {
-    grantUserConfigRights();
+  beforeEach(async () => {
+    await grantUserConfigRights();
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse());
   });
 
@@ -85,7 +85,9 @@ describe('MTAInboundFlowSecurity', () => {
     await expect.element(page.getByText('Settings', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Rejection', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Protocol Checks', { exact: true })).toBeVisible();
-    await expect.element(page.getByRole('button', { name: 'Add commonly blocked extensions' })).toBeVisible();
+    await expect
+      .element(page.getByRole('button', { name: 'Add commonly blocked extensions' }))
+      .toBeVisible();
 
     expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
     expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);

@@ -6,8 +6,17 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const setCurrentVolumeRequest = async (id: unknown, type?: unknown): Promise<any> => {
-	const request: any = {
+type SetCurrentVolumeBody = {
+	_jsns: string;
+	id: number | string;
+	type?: number;
+};
+
+export const setCurrentVolumeRequest = async (
+	id: number | string,
+	type?: number
+): Promise<unknown> => {
+	const request: SetCurrentVolumeBody = {
 		_jsns: 'urn:zimbraAdmin',
 		id,
 		type

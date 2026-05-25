@@ -119,6 +119,7 @@ function browserProjectConfig() {
         screenshotFailures: !isCI,
         connectTimeout: 60_000,
         providerOptions: { launch: { timeout: 60_000 } },
+        assertionTimeout: 5_000,
       },
       exclude: ['dist/**', 'node_modules/**'],
       globals: true,

@@ -732,7 +732,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
   useEffect(() => {
     if (mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency) {
       const val = mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency.replace(
-        /[^0-9]/g,
+        /\D/g,
         '',
       );
       setUpdateFrequncy(val);

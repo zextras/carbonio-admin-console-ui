@@ -222,7 +222,7 @@ export const EditAccountGeneralSection: FC<{
     (e: ChangeEvent<HTMLInputElement>) => {
       setAccountDetail((prev: AccountType) => ({
         ...prev,
-        uid: e.target.value?.replace(/ /g, '')?.toLowerCase(),
+        uid: e.target.value?.replaceAll(' ', '')?.toLowerCase(),
       }));
     },
     [setAccountDetail],
