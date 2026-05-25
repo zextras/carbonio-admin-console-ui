@@ -92,7 +92,7 @@ async function expectContactOptionsSectionVisible() {
 async function expectCalendarOptionsVisible() {
   await expect.element(page.getByText('Calendar Options')).toBeVisible();
   await expect.element(page.getByText('Time Zone')).toBeVisible();
-  await expect.element(page.getByText("Appointment's Default Duration")).toBeVisible();
+  await expect.element(page.getByText(/Appointment’s Default Duration/)).toBeVisible();
   await expect.element(page.getByText('Appointment Reminder (minutes before)')).toBeVisible();
   await expect.element(page.getByText('Default Calendar View')).toBeVisible();
   await expect.element(page.getByText('The Week starts on')).toBeVisible();
@@ -167,4 +167,3 @@ describe('COSPreferences', () => {
     await expect.element(saveButton).toBeVisible();
   });
 });
-
