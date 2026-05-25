@@ -10,11 +10,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { useCosDetail } from '../use-cos-detail';
 
-vi.mock('../cos-general-information-service', () => ({
+vi.mock('@zextras/ui-shared', () => ({
 	getCosGeneralInformation: vi.fn(),
 }));
 
-import { getCosGeneralInformation } from '../cos-general-information-service';
+import { getCosGeneralInformation } from '@zextras/ui-shared';
 
 function createWrapper() {
 	const queryClient = new QueryClient({

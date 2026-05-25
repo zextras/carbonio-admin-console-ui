@@ -112,6 +112,12 @@ import {
   useVersion,
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
+import {
+	type CosAttribute,
+	type CosEntry,
+	getCosGeneralInformation,
+	type GetCosResponse,
+} from './services/cos-general-information-service';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { getCosList } from './services/search-cos-service';
 import {
@@ -194,6 +200,7 @@ export {
   getAllNotifications,
   getAllRights,
   getApp,
+  getCosGeneralInformation,
   getCosList,
   getLocale,
   getRights,
@@ -269,11 +276,14 @@ export {
 };
 export type {
   CloseSnackbarFn,
+  CosAttribute,
+  CosEntry,
   CreateSnackbarFn,
   CreateSnackbarFnArgs,
   DirectoryAttribute,
   DirectoryEntry,
   DomainDirectories,
+  GetCosResponse,
   SearchDomainDirectories,
 };
 export type {

@@ -7,11 +7,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { getCosGeneralInformation } from '../cos-general-information-service';
 
-vi.mock('@zextras/ui-shared', () => ({
+vi.mock('../../network/fetch', () => ({
 	soapFetch: vi.fn(),
 }));
 
-const { soapFetch } = await import('@zextras/ui-shared');
+const { soapFetch } = await import('../../network/fetch');
 
 describe('getCosGeneralInformation', () => {
 	it('should call soapFetch with GetCos and the cos id', async () => {

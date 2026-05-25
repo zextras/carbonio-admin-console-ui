@@ -18,6 +18,9 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import {
+  type CosAttribute,
+  getCosGeneralInformation,
+  type GetCosResponse,
   postSoapFetchRequest,
   searchDirectory,
   useDomainStore,
@@ -42,11 +45,6 @@ import {
 } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import { checkRightRequest } from '../../../../services/check-right';
-import {
-  CosA,
-  getCosGeneralInformation,
-  GetCosResponse,
-} from '../../../../services/cos-general-information-service';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getSessions } from '../../../../services/get-sessions';
@@ -227,7 +225,7 @@ const ManageDelegates: FC = () => {
   const getCosDetail = useCallback((id: string): void => {
     getCosGeneralInformation(id).then((data: GetCosResponse) => {
       const obj: any = {};
-      data?.cos?.[0]?.a?.forEach((ele: CosA) => {
+      data?.cos?.[0]?.a?.forEach((ele: CosAttribute) => {
         if (obj[ele.n]) {
           obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
         } else {

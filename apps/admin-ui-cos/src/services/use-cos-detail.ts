@@ -5,8 +5,8 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+import { getCosGeneralInformation } from '@zextras/ui-shared';
 
-import { getCosGeneralInformation } from './cos-general-information-service';
 import { cosQueryKeys } from './cos-query-keys';
 
 export const useCosDetail = (cosId: string | undefined) => {
