@@ -118,6 +118,7 @@ import {
   getCosGeneralInformation,
   type GetCosResponse,
 } from './services/cos-general-information-service';
+import { flushCache } from './services/flush-cache-service';
 import {
   CoreAttributeRequest,
   CoreAttributeValue,
@@ -201,6 +202,7 @@ export {
   CONTENT,
   fetchAccountSettings,
   fetchExternalSoap,
+  flushCache,
   FORUM_URL,
   getAccount,
   getAllNotifications,

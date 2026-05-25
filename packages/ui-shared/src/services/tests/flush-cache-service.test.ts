@@ -7,11 +7,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { flushCache } from '../flush-cache-service';
 
-vi.mock('@zextras/ui-shared', () => ({
+vi.mock('../../network/fetch', () => ({
 	soapFetch: vi.fn(),
 }));
 
-const { soapFetch } = await import('@zextras/ui-shared');
+const { soapFetch } = await import('../../network/fetch');
 
 describe('flushCache', () => {
 	it('should call soapFetch with FlushCache and cache type only', async () => {

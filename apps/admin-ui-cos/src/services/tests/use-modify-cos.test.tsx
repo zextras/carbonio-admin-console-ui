@@ -22,13 +22,14 @@ vi.mock('../modify-cos-service', () => ({
   modifyCos: vi.fn(),
 }));
 
-vi.mock('../flush-cache-service', () => ({
+vi.mock('@zextras/ui-shared', async (importOriginal) => ({
+  ...(await importOriginal()),
   flushCache: vi.fn(),
 }));
 
 import { useSnackbar } from '@zextras/ui-components';
+import { flushCache } from '@zextras/ui-shared';
 
-import { flushCache } from '../flush-cache-service';
 import { modifyCos } from '../modify-cos-service';
 
 const mockCreateSnackbar = vi.fn();

@@ -15,6 +15,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import {
+  flushCache,
   setCoreAttributes,
   useCurrentUserRights,
   useDomainStore,
@@ -52,7 +53,6 @@ import {
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
 import { deleteAccount } from '../../../../../services/delete-account-service';
-import { flushCache } from '../../../../../services/flush-cache-service';
 import { getAccountQuota } from '../../../../../services/get-account-quota';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';

@@ -20,7 +20,7 @@ import {
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
+import { flushCache, useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import { isEqual, reduce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -37,7 +37,6 @@ import {
   TRUE,
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
-import { flushCache } from '../../../services/flush-cache-service';
 import { getQuotaUsageAdvance } from '../../../services/get-file-quota-accounts-usage';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import { modifyDomain } from '../../../services/modify-domain-service';

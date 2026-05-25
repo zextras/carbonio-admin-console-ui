@@ -6,11 +6,11 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
+import { flushCache } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { CosResponse } from '../../types/cos';
 import { cosQueryKeys } from './cos-query-keys';
-import { flushCache } from './flush-cache-service';
 import { modifyCos, ModifyCosBody } from './modify-cos-service';
 
 export function useModifyCos(cosId?: string) {

@@ -22,6 +22,7 @@ import {
 import {
   type DirectoryEntry,
   type DomainDirectories,
+  flushCache,
   replaceHistory,
   searchDirectory,
   useDomainStore,
@@ -50,7 +51,6 @@ import {
 } from '../../../constants';
 import { batchService } from '../../../services/batch-service';
 import { deleteDomain } from '../../../services/delete-domain-service';
-import { flushCache } from '../../../services/flush-cache-service';
 import { getDomainQuota } from '../../../services/get-domain-quota';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { setDomainQuota } from '../../../services/set-domain-quota';
