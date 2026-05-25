@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
+import reactCompiler from 'eslint-plugin-react-compiler';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
 import noticeConfig from './notice.config.js';
@@ -82,6 +83,16 @@ export default tseslint.config(
     files: ['**/icons/**/*.[jt]sx'],
     rules: {
       'notice/notice': 'off',
+    },
+  },
+  {
+    files: ['apps/admin-ui-cos/**/*'],
+    plugins: {
+      'react-compiler': reactCompiler,
+    },
+    rules: {
+      'react-compiler/react-compiler': 'error',
+      'react-hooks/exhaustive-deps': 'off',
     },
   },
 );
