@@ -4,68 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, registerActions, removeRoute, useCurrentUserRights } from '@zextras/ui-shared';
-import { find } from 'lodash-es';
-import { FC, useEffect } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { APP_ID, COS, COS_ROUTE_ID, CREATE_COS, CREATE_NEW_COS_ROUTE_ID, GLOBAL, LIST_COS, MANAGE, MANAGE_APP_ID, PRIMARY_BAR_COS } from './constants';
+import {
+  APP_ID,
+  COS_ROUTE_ID,
+  CREATE_NEW_COS_ROUTE_ID,
+  MANAGE,
+  MANAGE_APP_ID,
+  PRIMARY_BAR_COS,
+} from './constants';
+import { checkCreateCosRight, checkShowCOS } from './utils/check-rights';
 import AppView from './views/app-view';
+import { CosTooltipView } from './views/cos-tooltip-view';
 
-type RightEntry = {
-  all?: Array<{
-    getAttrs?: Array<{ all?: boolean }>;
-    setAttrs?: Array<{ all?: boolean }>;
-    right?: Array<{ n: string }>;
-  }>;
-  type: string;
-};
-
-function checkShowCOS(rights: RightEntry[] | undefined): boolean {
-  const rightsConfig = find(rights, { type: COS }) ?? { all: [], type: COS };
-  return !!(
-    rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-    rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-    find(rightsConfig?.all?.[0]?.right, { n: LIST_COS })
-  );
-}
-
-function checkCreateCosRight(rights: RightEntry[] | undefined): boolean {
-  const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
-  return !!(
-    rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
-    rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
-    find(rightsConfig?.all?.[0]?.right, { n: CREATE_COS })
-  );
-}
-
-const CosTooltipView: FC = () => {
-  const [t] = useTranslation();
-  return (
-    <PrimaryBarTooltip>
-      <p>
-        <Trans
-          i18nKey="label.class_of_service_lbl"
-          defaults="<bold>Class of Service</bold>"
-          components={{ bold: <strong /> }}
-          t={t}
-        />
-      </p>
-      <p>
-        <Trans
-          i18nKey="label.cos_primarybar_tooltip"
-          defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
-          components={{ bold: <strong /> }}
-          t={t}
-        />
-      </p>
-    </PrimaryBarTooltip>
-  );
-};
-
-const App: FC = () => {
+const App = () => {
   const [t] = useTranslation();
   const navigate = useNavigate();
 
@@ -96,7 +52,7 @@ const App: FC = () => {
     } else {
       removeRoute(COS_ROUTE_ID);
     }
-  }, [showCOS, t]);
+  }, [managementSection, showCOS, t]);
 
   useEffect(() => {
     registerActions({
