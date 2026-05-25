@@ -19,6 +19,7 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
+import { searchDirectory } from '@zextras/ui-shared';
 import { sortedUniq, uniq } from 'lodash';
 import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -27,7 +28,6 @@ import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../../constants';
 import { addDistributionListMember } from '../../../../../services/add-distributionlist-member-service';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
-import { searchDirectory } from '../../../../../services/search-directory-service';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { getAllEmailFromString, isValidEmail } from '../../../../utility/utils';
 import { useSearchWithDebounce } from './hooks/use-search-with-debounce';

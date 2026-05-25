@@ -1,15 +1,12 @@
 /*
- * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/ui-shared';
+import { soapFetch } from '../network/fetch';
 
-import { SearchDirectoryResponse } from '../../types/cos';
-import { ASC } from '../constants';
-
-export const searchDirectory = async (
+export const searchDirectory = async <T = unknown>(
 	attr: string,
 	type: string,
 	domainName: string,
@@ -17,8 +14,8 @@ export const searchDirectory = async (
 	offset?: number,
 	limit?: number,
 	sortBy?: string,
-	sortAscending?: string
-): Promise<SearchDirectoryResponse> => {
+	sortAscending?: string,
+): Promise<T> => {
 	const request: Record<string, string | number | undefined> = {
 		_jsns: 'urn:zimbraAdmin',
 		limit: limit ?? 50,
@@ -27,7 +24,7 @@ export const searchDirectory = async (
 		applyCos: 'false',
 		applyConfig: 'false',
 		attrs: attr,
-		types: type
+		types: type,
 	};
 	if (domainName !== '') {
 		request.domain = domainName;
@@ -39,9 +36,9 @@ export const searchDirectory = async (
 		request.sortBy = sortBy;
 	}
 	if (sortAscending !== '') {
-		request.sortAscending = sortAscending === ASC ? 1 : 0;
+		request.sortAscending = sortAscending === 'asc' ? 1 : 0;
 	}
 	return soapFetch(`SearchDirectory`, {
-		...request
+		...request,
 	});
 };

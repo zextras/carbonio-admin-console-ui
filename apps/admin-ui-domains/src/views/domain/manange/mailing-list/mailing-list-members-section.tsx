@@ -15,13 +15,13 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
+import { searchDirectory } from '@zextras/ui-shared';
 import { debounce, sortedUniq, uniq } from 'lodash-es';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
-import { searchDirectory } from '../../../../services/search-directory-service';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 import { MailingListContext } from './mailinglist-context';

@@ -10,11 +10,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { useTotalAccounts } from '../use-total-accounts';
 
-vi.mock('../search-directory-service', () => ({
+vi.mock('@zextras/ui-shared', () => ({
 	searchDirectory: vi.fn(),
 }));
 
-import { searchDirectory } from '../search-directory-service';
+import { searchDirectory } from '@zextras/ui-shared';
 
 function createWrapper() {
 	const queryClient = new QueryClient({

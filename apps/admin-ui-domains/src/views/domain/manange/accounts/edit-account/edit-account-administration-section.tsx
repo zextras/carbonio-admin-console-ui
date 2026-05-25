@@ -18,7 +18,7 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
+import { searchDirectory, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,6 @@ import {
   GetInitializedDomainsResponse,
 } from '../../../../../services/get-initialized-domains';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
-import { searchDirectory } from '../../../../../services/search-directory-service';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';

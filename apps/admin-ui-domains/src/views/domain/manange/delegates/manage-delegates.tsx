@@ -19,6 +19,7 @@ import {
 } from '@zextras/ui-components';
 import {
   postSoapFetchRequest,
+  searchDirectory,
   useDomainStore,
   useIsAdvanced,
   useUserAccount,
@@ -53,7 +54,6 @@ import { getSingatures } from '../../../../services/get-signature-service';
 import { InitDomainForDelegation } from '../../../../services/init-domain-for-delegation';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
-import { searchDirectory } from '../../../../services/search-directory-service';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { AccountContext } from '../accounts/account-context';

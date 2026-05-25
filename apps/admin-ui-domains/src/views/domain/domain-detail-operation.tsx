@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSnackbar } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
+import { searchDirectory, useDomainStore } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -29,7 +29,6 @@ import {
   WHITELABEL_SETTINGS,
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
-import { searchDirectory } from '../../services/search-directory-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import DomainTwoFactorAuthentication from './details/domain-2fa';
 import DomainAuthentication from './details/domain-authentication';

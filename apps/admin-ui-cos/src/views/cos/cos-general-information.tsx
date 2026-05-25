@@ -22,19 +22,19 @@ import {
   type TRow,
   useSnackbar,
 } from '@zextras/ui-components';
-import { replaceHistory, useCurrentUserRights } from '@zextras/ui-shared';
+import { replaceHistory, searchDirectory, useCurrentUserRights } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
 import { ChangeEvent, FC, ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
+import type { SearchDirectoryResponse } from '../../../types/cos';
 import logo from '../../assets/gardian.svg';
 import { COS, DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
-import { searchDirectory } from '../../services/search-directory-service';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { useTotalAccounts } from '../../services/use-total-accounts';
@@ -345,7 +345,7 @@ const CosGeneralInformation: FC = () => {
     const type = 'accounts';
     const attrs =
       'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-    searchDirectory(attrs, type, '', searchAccountQuery, offset, accountLimit)
+    searchDirectory<SearchDirectoryResponse>(attrs, type, '', searchAccountQuery, offset, accountLimit)
       .then((data) => {
         const accountListResponse = data?.account || [];
         if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -459,7 +459,7 @@ const CosGeneralInformation: FC = () => {
     const type = 'domains';
     const attrs =
       'description,zimbraDomainName,zimbraDomainStatus,zimbraId,zimbraDomainType,zimbraDomainCOSMaxAccounts,zimbraDomainDefaultCOSId';
-    searchDirectory(attrs, type, '', searchDomainQuery, domainOffset, limit)
+    searchDirectory<SearchDirectoryResponse>(attrs, type, '', searchDomainQuery, domainOffset, limit)
       .then((data) => {
         const domainListResponse = data?.domain || [];
         if (domainListResponse && Array.isArray(domainListResponse)) {

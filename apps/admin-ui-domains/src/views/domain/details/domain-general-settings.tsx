@@ -21,6 +21,7 @@ import {
 } from '@zextras/ui-components';
 import {
   replaceHistory,
+  searchDirectory,
   useDomainStore,
   useIsAdvanced,
   useTotalQuotaActive,
@@ -50,7 +51,6 @@ import { deleteDomain } from '../../../services/delete-domain-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { getDomainQuota } from '../../../services/get-domain-quota';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { searchDirectory } from '../../../services/search-directory-service';
 import { setDomainQuota } from '../../../services/set-domain-quota';
 import { unsetDomainQuota } from '../../../services/unset-domain-quota';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';

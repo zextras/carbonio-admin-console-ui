@@ -7,11 +7,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { searchDirectory } from '../search-directory-service';
 
-vi.mock('@zextras/ui-shared', () => ({
+vi.mock('../../network/fetch', () => ({
 	soapFetch: vi.fn(),
 }));
 
-const { soapFetch } = await import('@zextras/ui-shared');
+const { soapFetch } = await import('../../network/fetch');
 
 describe('searchDirectory', () => {
 	it('should call soapFetch with required fields and defaults', async () => {

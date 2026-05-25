@@ -113,6 +113,7 @@ import {
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
+import { searchDirectory } from './services/search-directory-service';
 import { setCoreAttributes } from './services/set-core-attributes';
 import { usePrimaryBarState } from './shell/hooks';
 import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
@@ -209,6 +210,7 @@ export {
   replaceHistory,
   SCALING_LIMIT,
   SCALING_OPTIONS,
+  searchDirectory,
   SEND_FEEDBACK_URL,
   setCoreAttributes,
   SHELL_APP_ID,
