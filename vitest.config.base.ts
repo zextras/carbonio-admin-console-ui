@@ -16,7 +16,10 @@ function getPlugins() {
   return [
     react({
       babel: {
-        plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+        plugins: [
+          ['babel-plugin-react-compiler', { panicThreshold: 'none' }],
+          ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
+        ],
       },
     }),
     svgr({
