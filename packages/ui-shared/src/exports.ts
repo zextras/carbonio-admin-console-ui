@@ -114,7 +114,13 @@ import {
 import { fetchAccountSettings } from './services/account-api';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { getCosList } from './services/search-cos-service';
-import { searchDirectory } from './services/search-directory-service';
+import {
+	type DirectoryAttribute,
+	type DirectoryEntry,
+	type DomainDirectories,
+	searchDirectory,
+	type SearchDomainDirectories,
+} from './services/search-directory-service';
 import { setCoreAttributes } from './services/set-core-attributes';
 import { usePrimaryBarState } from './shell/hooks';
 import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
@@ -261,7 +267,15 @@ export {
   useVersion,
   ZIMBRA_ADMIN_URN,
 };
-export type { CloseSnackbarFn, CreateSnackbarFn, CreateSnackbarFnArgs };
+export type {
+  CloseSnackbarFn,
+  CreateSnackbarFn,
+  CreateSnackbarFnArgs,
+  DirectoryAttribute,
+  DirectoryEntry,
+  DomainDirectories,
+  SearchDomainDirectories,
+};
 export type {
   Feature,
   LicenseInfo,

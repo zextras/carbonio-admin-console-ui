@@ -6,6 +6,37 @@
 
 import { soapFetch } from '../network/fetch';
 
+export type DirectoryAttribute = {
+	n: string;
+	_content: string;
+};
+
+export type DirectoryEntry = {
+	name: string;
+	id: string;
+	isExternal?: boolean;
+	dynamic?: boolean;
+	targetName?: string;
+	a: Array<DirectoryAttribute>;
+	zimbraIsSystemAccount?: string;
+};
+
+export type SearchDomainDirectories = {
+	account: Array<DirectoryEntry>;
+	dl: Array<DirectoryEntry>;
+	alias: Array<DirectoryEntry>;
+	calresource: Array<DirectoryEntry>;
+	more: boolean;
+	searchTotal: number;
+};
+
+export type DomainDirectories = {
+	account: Array<DirectoryEntry>;
+	dl: Array<DirectoryEntry>;
+	alias: Array<DirectoryEntry>;
+	calresource: Array<DirectoryEntry>;
+};
+
 export const searchDirectory = async <T = unknown>(
 	attr: string,
 	type: string,
