@@ -275,7 +275,7 @@ const CosList: FC = () => {
               }}
             >
               <Table
-                rows={!isPending ? cosList : []}
+                rows={isPending ? [] : cosList}
                 headers={headers}
                 showCheckbox={false}
                 multiSelect={false}

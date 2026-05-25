@@ -700,7 +700,7 @@ export const CosGeneralInformation = () => {
         >
           <Container padding={{ all: 'small' }}>
             <Table
-              rows={!isDomainRequestInProgress ? domainList : []}
+              rows={isDomainRequestInProgress ? [] : domainList}
               headers={domainHeaders}
               showCheckbox={false}
               multiSelect={false}
@@ -813,7 +813,7 @@ export const CosGeneralInformation = () => {
         >
           <Container padding={{ all: 'small' }}>
             <Table
-              rows={!isAccountRequestInProgress ? accountList : []}
+              rows={isAccountRequestInProgress ? [] : accountList}
               headers={accountHeaders}
               showCheckbox={false}
               multiSelect={false}

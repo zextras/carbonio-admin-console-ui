@@ -109,10 +109,10 @@ export const CosListPanel: FC = () => {
   const toggleDetailView = (): void => {
     const newValue = !isDetailListExpanded;
     setIsDetailListExpanded(newValue);
-    if (!newValue) {
-      localStorage.setItem(IS_COS_DETAIL_LIST_EXPANDED, 'false');
-    } else {
+    if (newValue) {
       localStorage.removeItem(IS_COS_DETAIL_LIST_EXPANDED);
+    } else {
+      localStorage.setItem(IS_COS_DETAIL_LIST_EXPANDED, 'false');
     }
   };
 
