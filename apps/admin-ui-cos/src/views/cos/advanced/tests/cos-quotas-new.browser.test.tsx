@@ -42,8 +42,7 @@ describe('COSQuotasNew (browser)', () => {
     );
 
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
-    await userEvent.clear(input);
-    await userEvent.type(input, '5');
+    await userEvent.fill(input, '5');
 
     expect(onChangeMock).toHaveBeenLastCalledWith({
       type: 'limited',
@@ -126,8 +125,8 @@ describe('COSQuotasNew (browser)', () => {
   it('should strip non-numeric characters from input', async () => {
     await setupBrowserTest(
       <COSQuotasNew
-        totalComputedQuotaLimit={limitedQuota}
-        initialTotalComputedQuotaLimit={limitedQuota}
+        totalComputedQuotaLimit={undefined}
+        initialTotalComputedQuotaLimit={undefined}
         onChange={vi.fn()}
         readonlyCOS={false}
         showRevertButton={false}
@@ -135,8 +134,7 @@ describe('COSQuotasNew (browser)', () => {
     );
 
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
-    await userEvent.clear(input);
-    await userEvent.type(input, 'abc');
+    await userEvent.fill(input, 'abc');
 
     await expect.element(input).toHaveValue('');
   });
