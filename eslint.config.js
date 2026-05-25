@@ -92,7 +92,7 @@ export default tseslint.config(
     },
     rules: {
       'react-compiler/react-compiler': 'error',
-      'react-hooks/exhaustive-deps': 'off',
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
 );
