@@ -43,7 +43,7 @@ describe('flushCache', () => {
 		});
 	});
 
-	it('should omit entry when type is provided but value is undefined', async () => {
+	it('should include entry with undefined value when type is provided but value is undefined', async () => {
 		vi.mocked(soapFetch).mockResolvedValue(undefined);
 
 		await flushCache('account', 'name');
@@ -53,6 +53,7 @@ describe('flushCache', () => {
 			cache: {
 				type: 'account',
 				allServers: 1,
+				entry: { _content: undefined, by: 'name' },
 			},
 		});
 	});
