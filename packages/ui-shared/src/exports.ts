@@ -126,6 +126,7 @@ import {
   GetCoreAttributesResponse,
 } from './services/get-core-attributes';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
+import { resetFileQuotaLimitById } from './services/reset-file-quota-limit';
 import { getCosList } from './services/search-cos-service';
 import {
   type DirectoryAttribute,
@@ -233,6 +234,7 @@ export {
   registerApp,
   removeRoute,
   replaceHistory,
+  resetFileQuotaLimitById,
   SCALING_LIMIT,
   SCALING_OPTIONS,
   searchDirectory,

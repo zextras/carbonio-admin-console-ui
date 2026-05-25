@@ -16,6 +16,7 @@ import {
 } from '@zextras/ui-components';
 import {
   flushCache,
+  resetFileQuotaLimitById,
   setCoreAttributes,
   setFileQuotaLimitById,
   useCurrentUserRights,
@@ -59,7 +60,6 @@ import { getDelegateAuthRequest } from '../../../../../services/get-delegate-aut
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
-import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { setAccountQuota } from '../../../../../services/set-account-quota';
 import { setPasswordRequest } from '../../../../../services/set-password';

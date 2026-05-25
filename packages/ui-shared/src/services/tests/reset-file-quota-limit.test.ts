@@ -7,11 +7,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { resetFileQuotaLimitById } from '../reset-file-quota-limit';
 
-vi.mock('@zextras/ui-shared', () => ({
+vi.mock('../../network/fetch', () => ({
 	fetchExternalSoap: vi.fn(),
 }));
 
-const { fetchExternalSoap } = await import('@zextras/ui-shared');
+const { fetchExternalSoap } = await import('../../network/fetch');
 
 describe('resetFileQuotaLimitById', () => {
 	it('should use accounts path when type is not provided', async () => {
