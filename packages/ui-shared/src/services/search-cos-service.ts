@@ -1,21 +1,21 @@
 /*
- * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/ui-shared';
+import { soapFetch } from '../network/fetch';
 
-export const getCosList = async (
+export const getCosList = async <T = unknown>(
 	searchKeyWord: string,
 	limit?: number,
-	offset?: number
-): Promise<any> =>
+	offset?: number,
+): Promise<T> =>
 	soapFetch(`SearchDirectory`, {
 		method: 'POST',
 		credentials: 'include',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
 		},
 		_jsns: 'urn:zimbraAdmin',
 		limit: limit ?? 50,
@@ -27,6 +27,6 @@ export const getCosList = async (
 		attrs: 'cn,description',
 		types: 'coses',
 		query: {
-			_content: !!searchKeyWord && searchKeyWord !== '' ? `(|(cn=*${searchKeyWord}*))` : ''
-		}
+			_content: !!searchKeyWord && searchKeyWord !== '' ? `(|(cn=*${searchKeyWord}*))` : '',
+		},
 	});

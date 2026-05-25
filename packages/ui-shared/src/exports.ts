@@ -113,6 +113,7 @@ import {
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
+import { getCosList } from './services/search-cos-service';
 import { searchDirectory } from './services/search-directory-service';
 import { setCoreAttributes } from './services/set-core-attributes';
 import { usePrimaryBarState } from './shell/hooks';
@@ -187,6 +188,7 @@ export {
   getAllNotifications,
   getAllRights,
   getApp,
+  getCosList,
   getLocale,
   getRights,
   getShell,

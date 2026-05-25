@@ -14,13 +14,13 @@ import {
   Row,
   useSnackbar,
 } from '@zextras/ui-components';
-import { replaceHistory } from '@zextras/ui-shared';
+import { getCosList, replaceHistory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
 
-import { type SearchDirectoryEntry } from '../../../types/cos';
+import { type SearchDirectoryEntry, type SearchDirectoryResponse } from '../../../types/cos';
 import {
   ADVANCED,
   COS_LIST,
@@ -34,7 +34,6 @@ import {
   SERVER_POOLS,
   WSC,
 } from '../../constants';
-import { getCosList } from '../../services/search-cos-service';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import GeneralListPanel from './general-list-panel';
@@ -62,7 +61,7 @@ export const CosListPanel: FC = () => {
   const cosView = cosDetailMatch?.params.operation ?? COS_LIST;
 
   const getCosLists = (searchData: string): void => {
-    getCosList(searchData)
+    getCosList<SearchDirectoryResponse>(searchData)
       .then((data) => {
         if (data && data?.searchTotal && data.searchTotal > 0 && data.cos) {
           setCosList(data.cos);

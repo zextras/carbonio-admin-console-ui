@@ -5,8 +5,9 @@
  */
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { getCosList } from '@zextras/ui-shared';
 
-import { getCosList } from './search-cos-service';
+import type { SearchDirectoryResponse } from '../../types/cos';
 
 type UseCosListOptions = {
   searchQuery: string;
@@ -18,7 +19,7 @@ type UseCosListOptions = {
 export const useCosList = ({ searchQuery, limit, offset, enabled = true }: UseCosListOptions) => {
   return useQuery({
     queryKey: ['cos-list', searchQuery, limit, offset],
-    queryFn: () => getCosList(searchQuery, limit, offset),
+    queryFn: () => getCosList<SearchDirectoryResponse>(searchQuery, limit, offset),
     enabled,
     staleTime: 30_000,
     retry: 1,

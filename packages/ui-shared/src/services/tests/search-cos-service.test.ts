@@ -7,11 +7,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { getCosList } from '../search-cos-service';
 
-vi.mock('@zextras/ui-shared', () => ({
+vi.mock('../../network/fetch', () => ({
 	soapFetch: vi.fn(),
 }));
 
-const { soapFetch } = await import('@zextras/ui-shared');
+const { soapFetch } = await import('../../network/fetch');
 
 describe('getCosList', () => {
 	it('should call soapFetch with SearchDirectory and default pagination', async () => {

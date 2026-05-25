@@ -17,7 +17,7 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { postSoapFetchRequest, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { getCosList, postSoapFetchRequest, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, KeyboardEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,6 @@ import { HELPDESK_ADMINS, MAX_COS_DISPLAY, TRUE, ZIMBRA_ADMIN_URN } from '../../
 import { copyCos } from '../../../services/copy-cos-service';
 import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { getCosList } from '../../../services/search-cos-service';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 
 const DomainCosLink: FC<{
