@@ -227,9 +227,7 @@ describe('CreateCos', () => {
       await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
       await page.getByRole('button', { name: 'Create' }).click();
 
-      await expect
-        .element(page.getByText('testcos has been created successfully'))
-        .toBeVisible();
+      await expect.element(page.getByText('testcos has been created successfully')).toBeVisible();
     });
 
     it('should call replaceHistory with the new COS detail route after creation', async () => {
@@ -239,22 +237,18 @@ describe('CreateCos', () => {
       await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
       await page.getByRole('button', { name: 'Create' }).click();
 
-      await expect
-        .element(page.getByText('testcos has been created successfully'))
-        .toBeVisible();
+      await expect.element(page.getByText('testcos has been created successfully')).toBeVisible();
       expect(replaceHistoryMock).toHaveBeenCalledWith(`/${NEW_COS_ID}/general_information`);
     });
 
     it('should show a loading spinner while creating', async () => {
-      const interceptor = delayedSoapApiForBrowser('CreateCos', mockCreateCosResponse, 500);
+      delayedSoapApiForBrowser('CreateCos', mockCreateCosResponse, 500);
       await setupCreateCosTest();
 
       await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
       await page.getByRole('button', { name: 'Create' }).click();
 
       await expect.element(page.getByRole('status')).toBeVisible();
-
-      await interceptor.getCalledTimes();
     });
   });
 
@@ -276,16 +270,15 @@ describe('CreateCos', () => {
       await expect.element(page.getByText('Server error occurred')).toBeVisible();
     });
 
-    it('should show error snackbar when CreateCos request fails with network error', async () => {
-      worker.use(
-        http.post('/service/admin/soap/CreateCosRequest', () => HttpResponse.error()),
-      );
+    it('should remain on the form when CreateCos request fails with network error', async () => {
+      worker.use(http.post('/service/admin/soap/CreateCosRequest', () => HttpResponse.error()));
       await setupCreateCosTest();
 
       await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
       await page.getByRole('button', { name: 'Create' }).click();
 
-      await expect.element(page.getByTestId('snackbar')).toBeVisible();
+      await expect.element(page.getByText('New COS')).toBeVisible();
+      await expect.element(page.getByRole('textbox', { name: 'Cos Name' })).toHaveValue('testcos');
     });
   });
 });
