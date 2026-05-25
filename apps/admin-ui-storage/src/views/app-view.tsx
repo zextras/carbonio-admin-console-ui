@@ -13,7 +13,7 @@ import BucketRoutePanel from './bucket/bucket-route-panel';
 
 const BucketComponent = () => (
   <Container orientation="horizontal" mainAlignment="flex-start">
-    <Container style={{ maxWidth: '265px' }}>
+    <Container style={{ maxWidth: '265px' }} >
       <Suspense fallback={<ds-spinner />}>
         <BucketListPanel />
       </Suspense>
@@ -28,7 +28,7 @@ const BucketComponent = () => (
 
 const AppView: FC = () => {
   return (
-    <Container height={'fit'}>
+    <Container>
       <Breadcrumb />
       <Routes>
         <Route path={`/*`} element={<BucketComponent />} />
