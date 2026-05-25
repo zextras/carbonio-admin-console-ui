@@ -135,6 +135,7 @@ import {
   type SearchDomainDirectories,
 } from './services/search-directory-service';
 import { setCoreAttributes } from './services/set-core-attributes';
+import { setFileQuotaLimitById } from './services/set-file-quota-limit';
 import { usePrimaryBarState } from './shell/hooks';
 import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
 import { useAppStore } from './store/app/store';
@@ -237,6 +238,7 @@ export {
   searchDirectory,
   SEND_FEEDBACK_URL,
   setCoreAttributes,
+  setFileQuotaLimitById,
   SHELL_APP_ID,
   SnackbarManagerContext,
   soapFetch,

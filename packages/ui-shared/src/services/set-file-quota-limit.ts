@@ -1,25 +1,26 @@
 /*
- * SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { fetchExternalSoap } from '@zextras/ui-shared';
+import { fetchExternalSoap } from '../network/fetch';
 
-import { ACCOUNTS, COS } from '../constants';
+const ACCOUNTS = 'accounts';
+const COS = 'cos';
 
 export const setFileQuotaLimitById = async (
 	accId: string,
 	limit: string,
-	type?: string
+	type?: string,
 ): Promise<void> => {
 	const fetchType = type === COS ? COS : ACCOUNTS;
 	return fetchExternalSoap(
 		`/services/storages/admin/quota/config/${fetchType}/${accId}`,
 		{
-			limit
+			limit,
 		},
 		'',
-		'PUT'
+		'PUT',
 	);
 };
