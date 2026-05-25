@@ -87,7 +87,6 @@
       "./packages/test-utils/public",
       "./packages/ui-shared/public",
       "./apps/admin-ui-bootstrap/public",
-      "./apps/admin-ui-console/public",
       "./apps/admin-ui-dashboard/public",
       "./apps/admin-ui-subscription/public",
       "./apps/admin-ui-domains/public",
