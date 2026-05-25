@@ -16,6 +16,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import {
+  CosAttribute,
   getCosGeneralInformation,
   type GetCosResponse,
   postSoapFetchRequest,
@@ -775,7 +776,13 @@ const GlobalDelegates: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text
+                      as="p"
+                      weight="light"
+                      color="#828282"
+                      size="large"
+                      overflow="break-word"
+                    >
                       {t('label.this_list_is_empty', 'This list is empty.')}
                     </ds-text>
                   </Row>
@@ -786,7 +793,13 @@ const GlobalDelegates: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text
+                      as="p"
+                      weight="light"
+                      color="#828282"
+                      size="large"
+                      overflow="break-word"
+                    >
                       <Trans
                         i18nKey="label.create_account_list_msg"
                         defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
