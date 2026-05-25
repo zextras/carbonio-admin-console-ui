@@ -120,11 +120,15 @@ import {
 } from './services/cos-general-information-service';
 import { flushCache } from './services/flush-cache-service';
 import {
-  CoreAttributeRequest,
-  CoreAttributeValue,
+  type CoreAttributeRequest,
+  type CoreAttributeValue,
   getCoreAttributes,
-  GetCoreAttributesResponse,
+  type GetCoreAttributesResponse,
 } from './services/get-core-attributes';
+import {
+  type FileQuotaResponse,
+  getFileQuotaById,
+} from './services/get-file-quota';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { resetFileQuotaLimitById } from './services/reset-file-quota-limit';
 import { getCosList } from './services/search-cos-service';
@@ -213,6 +217,7 @@ export {
   getCoreAttributes,
   getCosGeneralInformation,
   getCosList,
+  getFileQuotaById,
   getLocale,
   getRights,
   getShell,
@@ -298,6 +303,7 @@ export type {
   DirectoryAttribute,
   DirectoryEntry,
   DomainDirectories,
+  FileQuotaResponse,
   GetCoreAttributesResponse,
   GetCosResponse,
   SearchDomainDirectories,

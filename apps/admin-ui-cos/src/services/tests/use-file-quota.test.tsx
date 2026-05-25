@@ -10,11 +10,12 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { useFileQuota } from '../use-file-quota';
 
-vi.mock('../get-file-quota', () => ({
-	getFileQuotaById: vi.fn(),
+vi.mock('@zextras/ui-shared', async (importOriginal) => ({
+  ...(await importOriginal()),
+  getFileQuotaById: vi.fn(),
 }));
 
-import { getFileQuotaById } from '../get-file-quota';
+import { getFileQuotaById } from '@zextras/ui-shared';
 
 function createWrapper() {
 	const queryClient = new QueryClient({

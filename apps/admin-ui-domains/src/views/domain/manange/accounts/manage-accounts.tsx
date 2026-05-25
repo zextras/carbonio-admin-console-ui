@@ -24,6 +24,7 @@ import {
   getCoreAttributes,
   getCosGeneralInformation,
   type GetCosResponse,
+  getFileQuotaById,
   postSoapFetchRequest,
   useDomainStore,
   useIsAdvanced,
@@ -66,7 +67,6 @@ import { getAccountMembershipRequest } from '../../../../services/get-account-me
 import { getAccountQuota } from '../../../../services/get-account-quota';
 import { getCosQuota } from '../../../../services/get-cos-quota';
 import { getDomainQuota } from '../../../../services/get-domain-quota';
-import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';

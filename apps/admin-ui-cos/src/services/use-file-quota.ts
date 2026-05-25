@@ -6,10 +6,10 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+import { getFileQuotaById } from '@zextras/ui-shared';
 
 import { COS } from '../constants';
 import { cosQueryKeys } from './cos-query-keys';
-import { getFileQuotaById } from './get-file-quota';
 
 export const useFileQuota = (cosId: string | undefined, enabled: boolean) => {
   return useQuery({

@@ -68,7 +68,3 @@ export type SearchDirectoryResponse = {
   more?: boolean;
   searchTotal?: number;
 };
-
-export type FileQuotaResponse = {
-  limit: string;
-};
