@@ -37,7 +37,7 @@ describe('useTotalDomains', () => {
 	});
 
 	it('should search domains with correct query', async () => {
-		vi.mocked(searchDirectory).mockResolvedValue({ searchTotal: 7 });
+		vi.mocked(searchDirectory).mockResolvedValue({ domain: [], searchTotal: 7 });
 
 		const wrapper = createWrapper();
 		const { result } = renderHook(() => useTotalDomains('cos-1'), { wrapper });
@@ -55,7 +55,7 @@ describe('useTotalDomains', () => {
 	});
 
 	it('should return 0 when searchTotal is undefined', async () => {
-		vi.mocked(searchDirectory).mockResolvedValue({});
+		vi.mocked(searchDirectory).mockResolvedValue({ domain: [] });
 
 		const wrapper = createWrapper();
 		const { result } = renderHook(() => useTotalDomains('cos-2'), { wrapper });

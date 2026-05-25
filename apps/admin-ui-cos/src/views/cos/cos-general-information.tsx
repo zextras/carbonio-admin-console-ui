@@ -29,7 +29,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
-import type { SearchDirectoryResponse } from '../../../types/cos';
 import logo from '../../assets/gardian.svg';
 import { COS, DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
@@ -345,7 +344,7 @@ const CosGeneralInformation: FC = () => {
     const type = 'accounts';
     const attrs =
       'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-    searchDirectory<SearchDirectoryResponse>(attrs, type, '', searchAccountQuery, offset, accountLimit)
+    searchDirectory(attrs, type, '', searchAccountQuery, offset, accountLimit)
       .then((data) => {
         const accountListResponse = data?.account || [];
         if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -459,7 +458,7 @@ const CosGeneralInformation: FC = () => {
     const type = 'domains';
     const attrs =
       'description,zimbraDomainName,zimbraDomainStatus,zimbraId,zimbraDomainType,zimbraDomainCOSMaxAccounts,zimbraDomainDefaultCOSId';
-    searchDirectory<SearchDirectoryResponse>(attrs, type, '', searchDomainQuery, domainOffset, limit)
+    searchDirectory(attrs, type, '', searchDomainQuery, domainOffset, limit)
       .then((data) => {
         const domainListResponse = data?.domain || [];
         if (domainListResponse && Array.isArray(domainListResponse)) {

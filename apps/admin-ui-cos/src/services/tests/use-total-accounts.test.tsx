@@ -37,7 +37,7 @@ describe('useTotalAccounts', () => {
 	});
 
 	it('should search accounts with correct query', async () => {
-		vi.mocked(searchDirectory).mockResolvedValue({ searchTotal: 42 });
+		vi.mocked(searchDirectory).mockResolvedValue({ account: [], searchTotal: 42 });
 
 		const wrapper = createWrapper();
 		const { result } = renderHook(() => useTotalAccounts('cos-1'), { wrapper });
@@ -55,7 +55,7 @@ describe('useTotalAccounts', () => {
 	});
 
 	it('should return 0 when searchTotal is undefined', async () => {
-		vi.mocked(searchDirectory).mockResolvedValue({});
+		vi.mocked(searchDirectory).mockResolvedValue({ account: [] });
 
 		const wrapper = createWrapper();
 		const { result } = renderHook(() => useTotalAccounts('cos-2'), { wrapper });

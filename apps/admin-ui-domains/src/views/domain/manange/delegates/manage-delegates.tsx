@@ -602,7 +602,10 @@ const ManageDelegates: FC = () => {
         .then((res) => {
           const data = res?.dl;
           if (data && type === SYSTEM_ACCOUNT_FLAG) {
-            setDistributionList((prevDistributionList) => [...prevDistributionList, ...data]);
+            setDistributionList((prevDistributionList) => [
+              ...prevDistributionList,
+              ...(data as unknown as objectType[]),
+            ]);
             if (res.more) {
               fetchDistributionList(
                 query,
@@ -613,7 +616,7 @@ const ManageDelegates: FC = () => {
               );
             }
           } else if (type === ADMIN_GROUP_FLAG) {
-            setIsInitDomain(data?.length > 0);
+            setIsInitDomain((data?.length ?? 0) > 0);
             setLoading(false);
           }
         })

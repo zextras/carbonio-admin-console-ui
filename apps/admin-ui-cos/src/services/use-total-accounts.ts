@@ -7,7 +7,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { searchDirectory } from '@zextras/ui-shared';
 
-import type { SearchDirectoryResponse } from '../../types/cos';
 import { cosQueryKeys } from './cos-query-keys';
 
 export const useTotalAccounts = (cosId: string | undefined) => {
@@ -15,7 +14,7 @@ export const useTotalAccounts = (cosId: string | undefined) => {
     queryKey: cosQueryKeys.totalAccounts(cosId ?? ''),
     queryFn: async () => {
       const query = `(&(zimbraCOSId=${cosId})(!(zimbraIsSystemAccount=TRUE)))`;
-      const data = await searchDirectory<SearchDirectoryResponse>('', 'accounts', '', query, 0, -1);
+      const data = await searchDirectory('', 'accounts', '', query, 0, -1);
       return data?.searchTotal ?? 0;
     },
     enabled: !!cosId,

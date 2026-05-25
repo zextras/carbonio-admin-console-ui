@@ -21,13 +21,20 @@ export type DirectoryEntry = {
 	zimbraIsSystemAccount?: string;
 };
 
+export type SoapFaultDetail = {
+	Reason?: { Text?: string };
+};
+
 export type SearchDomainDirectories = {
-	account: Array<DirectoryEntry>;
-	dl: Array<DirectoryEntry>;
-	alias: Array<DirectoryEntry>;
-	calresource: Array<DirectoryEntry>;
-	more: boolean;
-	searchTotal: number;
+	account?: Array<DirectoryEntry>;
+	dl?: Array<DirectoryEntry>;
+	alias?: Array<DirectoryEntry>;
+	calresource?: Array<DirectoryEntry>;
+	cos?: Array<DirectoryEntry>;
+	domain?: Array<DirectoryEntry>;
+	more?: boolean;
+	searchTotal?: number;
+	Body?: { Fault?: Array<SoapFaultDetail> };
 };
 
 export type DomainDirectories = {
@@ -37,7 +44,7 @@ export type DomainDirectories = {
 	calresource: Array<DirectoryEntry>;
 };
 
-export const searchDirectory = async <T = unknown>(
+export const searchDirectory = async (
 	attr: string,
 	type: string,
 	domainName: string,
@@ -46,7 +53,7 @@ export const searchDirectory = async <T = unknown>(
 	limit?: number,
 	sortBy?: string,
 	sortAscending?: string,
-): Promise<T> => {
+): Promise<SearchDomainDirectories> => {
 	const request: Record<string, string | number | undefined> = {
 		_jsns: 'urn:zimbraAdmin',
 		limit: limit ?? 50,
