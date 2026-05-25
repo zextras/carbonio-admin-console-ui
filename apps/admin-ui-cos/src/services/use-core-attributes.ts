@@ -1,4 +1,3 @@
-
 /*
  * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
@@ -31,8 +30,8 @@ export const useCoreAttributes = (body: Array<CoreAttributeRequest>) => {
       createSnackbar({
         key: 'error',
         severity: 'error',
-        label: (result.error as Error)?.message
-          ? (result.error as Error).message
+        label: result.error?.message
+          ? result.error.message
           : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
         autoHideTimeout: 3000,
         hideButton: true,
