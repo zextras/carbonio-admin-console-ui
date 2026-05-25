@@ -6,7 +6,6 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  grantUserCosRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -38,7 +37,7 @@ async function setupCosPreferencesTest() {
     <Routes>
       <Route path="/:cosId/:operation" element={<COSPreferences />} />
     </Routes>,
-    { initialRouterEntry: '/e00428a1-0c00-11d9-836a-000d93afea2a/preferences' },
+    { initialRouterEntry: '/e00428a1-0c00-11d9-836a-000d93afea2a/preferences', grantRights: 'cos' },
   );
   await expect.element(page.getByText('Preferences')).toBeVisible();
 }
@@ -118,7 +117,6 @@ async function expectCalendarOptionsVisible() {
 describe('COSPreferences', () => {
   beforeEach(async () => {
     vi.resetAllMocks();
-    grantUserCosRights();
   });
 
   afterEach(() => {

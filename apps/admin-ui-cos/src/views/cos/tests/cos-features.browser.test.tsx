@@ -8,7 +8,6 @@ import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
   getQueryClient,
-  grantUserCosRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -64,7 +63,7 @@ async function setupCosFeaturesTest(cosData = mockCosData) {
     <Routes>
       <Route path="/:cosId/:operation" element={<CosFeatures />} />
     </Routes>,
-    { initialRouterEntry: `/${COS_ID}/features` },
+    { initialRouterEntry: `/${COS_ID}/features`, grantRights: 'cos' },
   );
   await expect.element(page.getByText('Features')).toBeVisible();
 }
@@ -83,7 +82,6 @@ async function clickSwitchByInputName(inputName: string) {
 describe('CosFeatures', () => {
   beforeEach(async () => {
     vi.resetAllMocks();
-    await grantUserCosRights();
   });
 
   afterEach(() => {

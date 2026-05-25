@@ -6,7 +6,6 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  grantUserCosRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -74,7 +73,7 @@ async function setupServerPoolsTest(cosData = mockCosData, servers = mockServers
     <Routes>
       <Route path="/:cosId/:operation" element={<CosServerPools />} />
     </Routes>,
-    { initialRouterEntry: `/${COS_ID}/server-pools` },
+    { initialRouterEntry: `/${COS_ID}/server-pools`, grantRights: 'cos' },
   );
   await expect.element(page.getByText('Server Pools')).toBeVisible();
 }
@@ -87,7 +86,6 @@ async function selectServer(serverName: string) {
 describe('CosServerPools', () => {
   beforeEach(async () => {
     vi.resetAllMocks();
-    await grantUserCosRights();
   });
 
   afterEach(() => {
@@ -162,6 +160,7 @@ describe('CosServerPools', () => {
   describe('Enable action', () => {
     it('should send ModifyCos with correct body when enabling a server', async () => {
       const modifyCosPromise = createBrowserSoapAPIInterceptor('ModifyCos', {});
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       await setupServerPoolsTest();
 
       await selectServer('mail-server-3');
@@ -208,6 +207,7 @@ describe('CosServerPools', () => {
 
     it('should send ModifyCos with server removed when confirming disable', async () => {
       const modifyCosPromise = createBrowserSoapAPIInterceptor('ModifyCos', {});
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       await setupServerPoolsTest();
 
       await selectServer('mail-server-1');
@@ -230,6 +230,7 @@ describe('CosServerPools', () => {
 
     it('should send empty pool when disabling the last enabled server', async () => {
       const modifyCosPromise = createBrowserSoapAPIInterceptor('ModifyCos', {});
+      createBrowserSoapAPIInterceptor('FlushCache', {});
 
       const cosDataSingleEnabled = {
         cos: [

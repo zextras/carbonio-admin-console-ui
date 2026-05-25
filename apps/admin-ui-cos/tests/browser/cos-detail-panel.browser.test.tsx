@@ -6,11 +6,10 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  grantUserConfigRights,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { CosDetailPanel } from '../../src/views/cos/cos-detail-panel';
@@ -43,10 +42,6 @@ const mockApiResponse = {
 };
 
 describe('CosDetailPanel', () => {
-  beforeEach(async () => {
-    await grantUserConfigRights();
-  });
-
   afterEach(() => {
   });
 
@@ -57,7 +52,7 @@ describe('CosDetailPanel', () => {
       <Routes>
         <Route path="/cos/*" element={<CosDetailPanel />} />
       </Routes>,
-      { initialRouterEntry: '/cos/cos_list' },
+      { initialRouterEntry: '/cos/cos_list', grantRights: 'config' },
     );
 
     await expect.element(page.getByText('COS List')).toBeVisible();
@@ -69,7 +64,7 @@ describe('CosDetailPanel', () => {
       <Routes>
         <Route path="/cos/*" element={<CosDetailPanel />} />
       </Routes>,
-      { initialRouterEntry: '/cos/cos_list' },
+      { initialRouterEntry: '/cos/cos_list', grantRights: 'config' },
     );
 
     await expect.element(page.getByText('firstCOS')).toBeVisible();
@@ -82,7 +77,7 @@ describe('CosDetailPanel', () => {
       <Routes>
         <Route path="/cos/*" element={<CosDetailPanel />} />
       </Routes>,
-      { initialRouterEntry: '/cos/cos_list' },
+      { initialRouterEntry: '/cos/cos_list', grantRights: 'config' },
     );
     await expect.element(page.getByText('Showing')).toBeVisible();
     await expect.element(page.getByText('items per page')).toBeVisible();

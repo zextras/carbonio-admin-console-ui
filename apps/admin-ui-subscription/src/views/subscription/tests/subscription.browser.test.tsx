@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getQueryClient, grantUserConfigRights, setupBrowserTest } from 'admin-ui-test-utils';
+import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
@@ -60,13 +60,10 @@ const setupSubscriptionTest = (component: React.ReactElement, options?: SetupOpt
     queryClient.setQueryData(['subscription', 'version'], options.versionData);
   }
 
-  return setupBrowserTest(component, { queryClient });
+  return setupBrowserTest(component, { queryClient, grantRights: 'config' });
 };
 
 describe('Subscription - License Banner', () => {
-  beforeEach(async () => {
-    await grantUserConfigRights();
-  });
 
   it('should display license banner when maintenance status is expired and subType is PERPETUAL', async () => {
     setupSubscriptionTest(<Subscription />, {

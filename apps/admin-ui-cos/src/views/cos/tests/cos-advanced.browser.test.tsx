@@ -90,7 +90,6 @@ async function setupCosAdvancedTest(cosData = mockCosData): Promise<void> {
 describe('CosAdvanced', () => {
   beforeEach(async () => {
     vi.resetAllMocks();
-    await grantUserCosRights();
   });
 
   afterEach(() => {
