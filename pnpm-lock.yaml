@@ -134,7 +134,7 @@ importers:
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@vitest/browser-preview':
         specifier: ^4.1.0
         version: 4.1.7(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@4.1.7)
@@ -195,7 +195,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -273,7 +273,7 @@ importers:
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@zextras/admin-ui-backup':
         specifier: workspace:*
         version: link:../admin-ui-backup
@@ -315,7 +315,7 @@ importers:
         version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
-        version: 4.2.1
+        version: 4.3.0
       i18next:
         specifier: ^26.2.0
         version: 26.2.0(typescript@6.0.3)
@@ -367,7 +367,7 @@ importers:
         version: 4.3.0(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.3)(yaml@2.9.0))
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -575,7 +575,7 @@ importers:
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -590,7 +590,7 @@ importers:
         version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
-        version: 4.2.1
+        version: 4.3.0
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -645,7 +645,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -717,7 +717,7 @@ importers:
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@tinymce/tinymce-react':
         specifier: ^6.3.0
         version: 6.3.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(tinymce@8.5.1)
@@ -735,7 +735,7 @@ importers:
         version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
-        version: 4.2.1
+        version: 4.3.0
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -793,7 +793,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -865,7 +865,7 @@ importers:
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -880,7 +880,7 @@ importers:
         version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
-        version: 4.2.1
+        version: 4.3.0
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -935,7 +935,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1007,7 +1007,7 @@ importers:
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1022,7 +1022,7 @@ importers:
         version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
-        version: 4.2.1
+        version: 4.3.0
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -1077,7 +1077,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1149,7 +1149,7 @@ importers:
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@vitest/browser-preview':
         specifier: ^4.1.0
         version: 4.1.7(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@4.1.7)
@@ -1161,7 +1161,7 @@ importers:
         version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
-        version: 4.2.1
+        version: 4.3.0
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -1216,7 +1216,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1291,7 +1291,7 @@ importers:
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1358,7 +1358,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1433,7 +1433,7 @@ importers:
         version: 1.32.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1500,7 +1500,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1572,7 +1572,7 @@ importers:
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1639,7 +1639,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1711,7 +1711,7 @@ importers:
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
@@ -1726,7 +1726,7 @@ importers:
         version: link:../../packages/ui-shared
       date-fns:
         specifier: ^4.1.0
-        version: 4.2.1
+        version: 4.3.0
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -1781,7 +1781,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1996,10 +1996,10 @@ importers:
         version: 5.2.10
       '@tanstack/react-query':
         specifier: ^5.90.5
-        version: 5.100.13(react@19.2.6)
+        version: 5.100.14(react@19.2.6)
       date-fns:
         specifier: ^4.1.0
-        version: 4.2.1
+        version: 4.3.0
       i18next:
         specifier: ^26.2.0
         version: 26.2.0(typescript@6.0.3)
@@ -2051,7 +2051,7 @@ importers:
         version: 7.28.5(@babel/core@7.29.0)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
-        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)
+        version: 5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -4012,11 +4012,11 @@ packages:
     resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
     engines: {node: '>=18'}
 
-  '@tanstack/query-core@5.100.13':
-    resolution: {integrity: sha512-mlKVKMTzZWGTKAC1CKOgt7axAjJ921emkEvYIp27I/PdP1yEYL/BteLY8iK35gn8hoYeKB4mgJ/ve3lrDI6/Fw==}
+  '@tanstack/query-core@5.100.14':
+    resolution: {integrity: sha512-5X41dGpxgeaHISCRW2oYwcSycZeULZzAunaudXT9ov1KOTj9xwt0CH6hbwqP1/z74ZWF7rYFnDpyYH07XFcZew==}
 
-  '@tanstack/query-devtools@5.100.13':
-    resolution: {integrity: sha512-mxAw1auaysPQK6EoMHs9hMuyJ1IMAE/ZmGGs9i5YveGg2RUnOGdJfefQJwWYSf2KcIu/XiPXIjuFu9Yr/tSAwA==}
+  '@tanstack/query-devtools@5.100.14':
+    resolution: {integrity: sha512-g96SmSSQecYTYcyuAMRXr895GplJv01UGt7qttQWPOUyZ5EGz5tbRc589bMc2m5BsPFD6O0PCEAHdbDYNP6UBw==}
 
   '@tanstack/react-form@1.32.0':
     resolution: {integrity: sha512-6WP5SQTA6/H9crCpvpq3ZppYWqtrdE5NjOy6ebABi6uAQPqhfTzrdjS9t40mCZCFtGI5585OhJV6zBP/KN2zcw==}
@@ -4027,14 +4027,14 @@ packages:
       '@tanstack/react-start':
         optional: true
 
-  '@tanstack/react-query-devtools@5.100.13':
-    resolution: {integrity: sha512-+haoLtUQvQ40pWtY5NbQ+iVvoptGXb6F7j9NFPaSo1jqhpzZQIKuBuwkbFd6xWLCocyvVIvWkt3mkNvCGcd/og==}
+  '@tanstack/react-query-devtools@5.100.14':
+    resolution: {integrity: sha512-JkP5VDgKOw3t/QSA1OABRHEqx8BuNs5MfvZRooNqdvN57SzTuGq3fKR1a2IH5rqa5HDLUm+FOXUEnB9ueHiLzg==}
     peerDependencies:
-      '@tanstack/react-query': ^5.100.13
+      '@tanstack/react-query': ^5.100.14
       react: ^18 || ^19
 
-  '@tanstack/react-query@5.100.13':
-    resolution: {integrity: sha512-HSBr8CycQEAoXsJR7KNDawBnINJEJ96Eme8oE0hCXjyodE2I97vg3IDzDJBDu18LsbzpVVJcKo80eqLfVCykxw==}
+  '@tanstack/react-query@5.100.14':
+    resolution: {integrity: sha512-oOr6aRdSFEwWhzxEkD/9ZcItM3+LjBSkeVmadWKwUssAHTsqd/7bOjWrX4AbvEkoEhgAxzN0Xk6H/aYzXiYBAw==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -4892,8 +4892,8 @@ packages:
     resolution: {integrity: sha512-BS8PfmtDGnrgYdOonGZQdLZslWIeCGFP9tpan0hi1Co2Zr2NKADsvGYA8XxuG/4UWgJ6Cjtv+YJnB6MM69QGlQ==}
     engines: {node: '>= 0.4'}
 
-  date-fns@4.2.1:
-    resolution: {integrity: sha512-37RhSdxaG1suen6VDCza6rNrQfooyQh57HFVPwQGEq2QWliVLzPQZ8Oa017weOu+HZCnzI7N3Pf/wyoBKfEqrA==}
+  date-fns@4.3.0:
+    resolution: {integrity: sha512-OYcL+3N/jyWbYdFGqoMAhytDgxP9pbYPUUiRCOgn4Fewaadk9l/Wam4Avciiyp2BgkpfQyBV9B+ehnVJych+eQ==}
 
   debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
@@ -7272,8 +7272,8 @@ packages:
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
-  tinyexec@1.1.2:
-    resolution: {integrity: sha512-dAqSqE/RabpBKI8+h26GfLq6Vb3JVXs30XYQjdMjaj/c2tS8IYYMbIzP599KtRj7c57/wYApb3QjgRgXmrCukA==}
+  tinyexec@1.2.2:
+    resolution: {integrity: sha512-M/Q0B2cp4K7kynaT/vnED1j8TlLY+Pp7C6Wl2bl/7u/F0mUVwdyOpwomQb8JpYLitHUssAJRmLZdMCGsrx7i+g==}
     engines: {node: '>=18'}
 
   tinyglobby@0.2.16:
@@ -7287,11 +7287,11 @@ packages:
     resolution: {integrity: sha512-Bf+ILmBgretUrdJxzXM0SgXLZ3XfiaUuOj/IKQHuTXip+05Xn+uyEYdVg0kYDipTBcLrCVyUzAPz7QmArb0mmw==}
     engines: {node: '>=14.0.0'}
 
-  tldts-core@7.0.30:
-    resolution: {integrity: sha512-uiHN8PIB1VmWyS98eZYja4xzlYqeFZVjb4OuYlJQnZAuJhMw4PbKQOKgHKhBdJR3FE/t5mUQ1Kd80++B+qhD1Q==}
+  tldts-core@7.1.2:
+    resolution: {integrity: sha512-26EbERPLf5wkNFKW+7egxArSPN1Nqipe/PIe1nvhpNu8HqQeY2pYdOeQk4sAiADv/e03VzHkLY0PPohKv1JMAQ==}
 
-  tldts@7.0.30:
-    resolution: {integrity: sha512-ELrFxuqsDdHUwoh0XxDbxuLD3Wnz49Z57IFvTtvWy1hJdcMZjXLIuonjilCiWHlT2GbE4Wlv1wKVTzDFnXH1aw==}
+  tldts@7.1.2:
+    resolution: {integrity: sha512-RUX5sQm8bl03ycwQ6nSgJiKw9FZWhA8GBzxX6X1lsG3xKzFIW+lYLLpM30FQbDD6XjTWa/VkF15VxjnAMWYJAQ==}
     hasBin: true
 
   to-regex-range@5.0.1:
@@ -9662,9 +9662,9 @@ snapshots:
 
   '@tanstack/pacer-lite@0.1.1': {}
 
-  '@tanstack/query-core@5.100.13': {}
+  '@tanstack/query-core@5.100.14': {}
 
-  '@tanstack/query-devtools@5.100.13': {}
+  '@tanstack/query-devtools@5.100.14': {}
 
   '@tanstack/react-form@1.32.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
@@ -9674,15 +9674,15 @@ snapshots:
     transitivePeerDependencies:
       - react-dom
 
-  '@tanstack/react-query-devtools@5.100.13(@tanstack/react-query@5.100.13(react@19.2.6))(react@19.2.6)':
+  '@tanstack/react-query-devtools@5.100.14(@tanstack/react-query@5.100.14(react@19.2.6))(react@19.2.6)':
     dependencies:
-      '@tanstack/query-devtools': 5.100.13
-      '@tanstack/react-query': 5.100.13(react@19.2.6)
+      '@tanstack/query-devtools': 5.100.14
+      '@tanstack/react-query': 5.100.14(react@19.2.6)
       react: 19.2.6
 
-  '@tanstack/react-query@5.100.13(react@19.2.6)':
+  '@tanstack/react-query@5.100.14(react@19.2.6)':
     dependencies:
-      '@tanstack/query-core': 5.100.13
+      '@tanstack/query-core': 5.100.14
       react: 19.2.6
 
   '@tanstack/react-store@0.9.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
@@ -10652,7 +10652,7 @@ snapshots:
       es-errors: 1.3.0
       is-data-view: 1.0.2
 
-  date-fns@4.2.1: {}
+  date-fns@4.3.0: {}
 
   debug@4.4.3:
     dependencies:
@@ -12609,7 +12609,7 @@ snapshots:
     dependencies:
       '@floating-ui/react': 0.27.19(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       clsx: 2.1.1
-      date-fns: 4.2.1
+      date-fns: 4.3.0
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
 
@@ -13255,7 +13255,7 @@ snapshots:
 
   tinybench@2.9.0: {}
 
-  tinyexec@1.1.2: {}
+  tinyexec@1.2.2: {}
 
   tinyglobby@0.2.16:
     dependencies:
@@ -13266,11 +13266,11 @@ snapshots:
 
   tinyrainbow@3.1.0: {}
 
-  tldts-core@7.0.30: {}
+  tldts-core@7.1.2: {}
 
-  tldts@7.0.30:
+  tldts@7.1.2:
     dependencies:
-      tldts-core: 7.0.30
+      tldts-core: 7.1.2
 
   to-regex-range@5.0.1:
     dependencies:
@@ -13280,7 +13280,7 @@ snapshots:
 
   tough-cookie@6.0.1:
     dependencies:
-      tldts: 7.0.30
+      tldts: 7.1.2
 
   tr46@6.0.0:
     dependencies:
@@ -13554,7 +13554,7 @@ snapshots:
       picomatch: 4.0.4
       std-env: 4.1.0
       tinybench: 2.9.0
-      tinyexec: 1.1.2
+      tinyexec: 1.2.2
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.0
       vite: 8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.3)(yaml@2.9.0)
