@@ -1,3 +1,9 @@
+## [0.13.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.1...v0.13.2) (2026-05-25)
+
+### Other changes
+
+* enable react compiler ([#1208](https://github.com/zextras/carbonio-admin-console-ui/issues/1208)) ([80fc62a](https://github.com/zextras/carbonio-admin-console-ui/commit/80fc62a0dd98ed435fafe7bb182b28d990f0aa69))
+
 ## [0.13.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.0...v0.13.1) (2026-05-22)
 
 ### Bug Fixes
