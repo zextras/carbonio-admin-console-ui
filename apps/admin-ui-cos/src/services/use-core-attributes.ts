@@ -7,11 +7,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
+import { type CoreAttributeRequest, getCoreAttributes } from '@zextras/ui-shared';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { cosQueryKeys } from './cos-query-keys';
-import { type CoreAttributeRequest, getCoreAttributes } from './get-core-attributes';
 
 export const useCoreAttributes = (body: Array<CoreAttributeRequest>) => {
   const createSnackbar = useSnackbar();

@@ -69,14 +69,6 @@ export type SearchDirectoryResponse = {
   searchTotal?: number;
 };
 
-export type CoreAttributeValue = {
-  value: string;
-};
-
-export type GetCoreAttributesResponse = {
-  attributes: Record<string, Array<CoreAttributeValue>>;
-};
-
 export type FileQuotaResponse = {
   limit: string;
 };

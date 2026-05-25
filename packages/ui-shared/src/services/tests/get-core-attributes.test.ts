@@ -7,11 +7,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { getCoreAttributes } from '../get-core-attributes';
 
-vi.mock('@zextras/ui-shared', () => ({
+vi.mock('../../network/fetch', () => ({
 	fetchExternalSoap: vi.fn(),
 }));
 
-const { fetchExternalSoap } = await import('@zextras/ui-shared');
+const { fetchExternalSoap } = await import('../../network/fetch');
 
 describe('getCoreAttributes', () => {
 	it('should call fetchExternalSoap with the correct URL and body', async () => {

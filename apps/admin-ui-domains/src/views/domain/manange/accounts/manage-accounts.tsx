@@ -20,6 +20,8 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import {
+  type CosAttribute,
+  getCoreAttributes,
   getCosGeneralInformation,
   type GetCosResponse,
   postSoapFetchRequest,
@@ -62,7 +64,6 @@ import { countAccount } from '../../../../services/count-account-service';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getAccountQuota } from '../../../../services/get-account-quota';
-import { getCoreAttributes } from '../../../../services/get-core-attributes';
 import { getCosQuota } from '../../../../services/get-cos-quota';
 import { getDomainQuota } from '../../../../services/get-domain-quota';
 import { getFileQuotaById } from '../../../../services/get-file-quota';

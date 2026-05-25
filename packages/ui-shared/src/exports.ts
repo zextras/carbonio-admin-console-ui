@@ -113,19 +113,25 @@ import {
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
 import {
-	type CosAttribute,
-	type CosEntry,
-	getCosGeneralInformation,
-	type GetCosResponse,
+  type CosAttribute,
+  type CosEntry,
+  getCosGeneralInformation,
+  type GetCosResponse,
 } from './services/cos-general-information-service';
+import {
+  CoreAttributeRequest,
+  CoreAttributeValue,
+  getCoreAttributes,
+  GetCoreAttributesResponse,
+} from './services/get-core-attributes';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { getCosList } from './services/search-cos-service';
 import {
-	type DirectoryAttribute,
-	type DirectoryEntry,
-	type DomainDirectories,
-	searchDirectory,
-	type SearchDomainDirectories,
+  type DirectoryAttribute,
+  type DirectoryEntry,
+  type DomainDirectories,
+  searchDirectory,
+  type SearchDomainDirectories,
 } from './services/search-directory-service';
 import { setCoreAttributes } from './services/set-core-attributes';
 import { usePrimaryBarState } from './shell/hooks';
@@ -200,6 +206,7 @@ export {
   getAllNotifications,
   getAllRights,
   getApp,
+  getCoreAttributes,
   getCosGeneralInformation,
   getCosList,
   getLocale,
@@ -276,6 +283,8 @@ export {
 };
 export type {
   CloseSnackbarFn,
+  CoreAttributeRequest,
+  CoreAttributeValue,
   CosAttribute,
   CosEntry,
   CreateSnackbarFn,
@@ -283,6 +292,7 @@ export type {
   DirectoryAttribute,
   DirectoryEntry,
   DomainDirectories,
+  GetCoreAttributesResponse,
   GetCosResponse,
   SearchDomainDirectories,
 };

@@ -18,13 +18,13 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => [(key: string, fallback?: string) => fallback ?? key],
 }));
 
-vi.mock('../get-core-attributes', () => ({
+vi.mock('@zextras/ui-shared', async (importOriginal) => ({
+  ...(await importOriginal()),
   getCoreAttributes: vi.fn(),
 }));
 
 import { useSnackbar } from '@zextras/ui-components';
-
-import { getCoreAttributes } from '../get-core-attributes';
+import { getCoreAttributes } from '@zextras/ui-shared';
 
 const mockCreateSnackbar = vi.fn();
 
