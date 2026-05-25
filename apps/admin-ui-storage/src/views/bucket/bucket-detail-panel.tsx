@@ -24,7 +24,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  BucketDetail,
   DeleteS3ConnectorRequest,
   objectType,
   S3ConnectorMutationResponse
@@ -191,16 +190,16 @@ const BucketDetailPanel: FC = () => {
   const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
   const bucketType = '';
   const [bucketList, setBucketList] = useState<objectType[]>([]);
-  const [bucketDeleteName, setBucketDeleteName] = useState<BucketDetail | undefined>();
-  const [allBucketList, setAllBucketList] = useState([]);
-  const [connectionData, setConnectionData] = useState<BucketDetail | undefined>();
+  const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>();
+  const [allBucketList, setAllBucketList] = useState<Array<objectType>>([]);
+  const [connectionData, setConnectionData] = useState<objectType | undefined>();
   const [toggleWizardSection, setToggleWizardSection] = useState(false);
   const [open, setOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [searchBucket, setSearchBucket] = useState('');
   const [showEditDetailView, setShowEditDetailView] = useState(false);
   const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<BucketDetail>();
+  const [selectedRow, setSelectedRow] = useState<objectType>();
 
   const closeHandler = (): void => {
     setOpen(false);
@@ -282,7 +281,7 @@ const BucketDetailPanel: FC = () => {
     t,
   ]);
   const handleClick = (i: number): void => {
-    const volumeObject = bucketList.find((s, index) => index === i) as BucketDetail | undefined;
+    const volumeObject = bucketList.find((s, index) => index === i);
     setConnectionData(volumeObject);
     setShowEditDetailView(true);
     setShowDetails(true);
@@ -291,9 +290,7 @@ const BucketDetailPanel: FC = () => {
   useEffect(() => {
     if (selectedRow !== undefined) {
       const getIndex = bucketList.findIndex((data: objectType) => data.uuid === selectedRow.uuid);
-      const volumeObject = bucketList.find(
-        (s, index) => index === getIndex,
-      ) as BucketDetail | undefined;
+      const volumeObject = bucketList.find((s, index) => index === getIndex);
       setConnectionData(volumeObject);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -413,7 +410,7 @@ const BucketDetailPanel: FC = () => {
                 (s, index) => index === selectedIndex,
               );
               setShowDetails(false);
-              setBucketDeleteName(volumeObject as BucketDetail | undefined);
+              setBucketDeleteName(volumeObject);
             }}
             onDoubleClick={(i: number): void => {
               handleClick(i);

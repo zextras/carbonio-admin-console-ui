@@ -449,7 +449,7 @@ const ModifyVolume: FC<{
         setStoreType(externalVolDetail?.storeType);
         setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
 
-        const volUnusedBucketList: object[] = [];
+        const volUnusedBucketList: Array<{ label: string; value: string }> = [];
         const allData = connectors
           .filter(
             (items: objectType) =>

@@ -24,7 +24,6 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
 import { createS3Connector, listS3Regions } from '../../services/bucket-service';
-import { formatedErrorMessage } from './../utility/utils';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
@@ -33,7 +32,7 @@ const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 const bucketNameRegex = /^\S+$/;
 const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
 const NO_REGION_VALUE = '';
-const EMPTY_REGION = { value: '', label: '' };
+const EMPTY_REGION: UISelectItem<string> = { value: '', label: '' };
 
 type S3ConnectorError = {
   error?: string | { message: string; details?: CheckResult };
@@ -69,7 +68,7 @@ const Connection: FC<{
   const [bucketLabel, setBucketLabel] = useState('');
   const [accessKeyData, setAccessKeyData] = useState('');
   const [secretKey, setSecretKey] = useState('');
-  const [regionsData, setRegionsData] = useState<UISelectItem>();
+  const [regionsData, setRegionsData] = useState<UISelectItem<string> | undefined>();
   const [urlInput, setUrlInput] = useState('');
   const [prefix, setPrefix] = useState('');
   const [customRegion, setCustomRegion] = useState('');
@@ -83,7 +82,7 @@ const Connection: FC<{
   const [bucketNameConfirm, setBucketNameConfirm] = useState(true);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
-  const [regionSelection, setRegionSelection] = useState<UISelectItem | undefined>(EMPTY_REGION);
+  const [regionSelection, setRegionSelection] = useState<UISelectItem<string>>(EMPTY_REGION);
 
   const [showVerifyResult, setVerifyShowResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
@@ -144,7 +143,6 @@ const Connection: FC<{
                   'We do not support this specific connector. Try again with a different one',
                 );
           const errorDetails = typeof response?.error === 'string' ? undefined : response?.error?.details;
-          const formatedError = formatedErrorMessage(response?.error as S3ConnectorError);
           setVerifyFailError(errorMessage);
           setCheckDetails(errorDetails);
           setIsVerifyError(true);
@@ -217,7 +215,18 @@ const Connection: FC<{
   }, [bucketRegions, t]);
 
   const onSelectRegionChange = useCallback(
-    (e: unknown): void => {
+    (e: string | null): void => {
+      if (e === null) {
+        setIsCustomRegion(false);
+        setCustomRegion('');
+        setRegionsData(undefined);
+        setRegionSelection({
+          label: t('label.region_none', 'None'),
+          value: NO_REGION_VALUE,
+        });
+        return;
+      }
+
       if (e === CUSTOM_REGION_VALUE) {
         setIsCustomRegion(true);
         setRegionSelection({
@@ -238,13 +247,11 @@ const Connection: FC<{
         return;
       }
 
-      if (typeof e === 'string') {
-        const volumeObject = bucketRegions.find((s) => s.value === e);
-        if (volumeObject) {
-          setIsCustomRegion(false);
-          setRegionsData(volumeObject);
-          setRegionSelection(volumeObject);
-        }
+      const volumeObject = bucketRegions.find((s) => s.value === e);
+      if (volumeObject) {
+        setIsCustomRegion(false);
+        setRegionsData(volumeObject);
+        setRegionSelection(volumeObject);
       }
     },
     [bucketRegions, t],

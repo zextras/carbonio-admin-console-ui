@@ -7,7 +7,13 @@ import { Container, Input, LabeledValue, Padding, Row, Select } from '@zextras/u
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { objectType, VolumeAllocationItem } from '../../../../../../../types';
+import type {
+  AdvancedVolumeWizardDetail,
+  BucketVolume,
+  objectType,
+  VolumeAllocationItem,
+  VolumeWizardDetail,
+} from '../../../../../../../types';
 import {
   EXTERNAL_TYPE_VALUE,
   LOCAL_TYPE_VALUE,
@@ -46,8 +52,11 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({ e
 
   const changeVolName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
-      setAdvancedVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
+      setVolumeDetail((prev: VolumeWizardDetail) => ({ ...prev, volumeName: e?.target?.value }));
+      setAdvancedVolumeDetail((prev: AdvancedVolumeWizardDetail) => ({
+        ...prev,
+        volumeName: e?.target?.value,
+      }));
       if (e?.target?.value === '') {
         setErrName(false);
       } else {
@@ -62,11 +71,11 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({ e
       return;
     }
 
-    setVolumeDetail((prev: objectType) => ({ ...prev, volumeAllocation: v }));
+    setVolumeDetail((prev: VolumeWizardDetail) => ({ ...prev, volumeAllocation: v }));
     const volumeTypeObject = volAllocationList?.find(
       (item: VolumeAllocationItem) => item?.value === v,
     )?.label;
-    setAdvancedVolumeDetail((prev: objectType) => ({
+    setAdvancedVolumeDetail((prev: AdvancedVolumeWizardDetail) => ({
       ...prev,
       volumeAllocation: volumeTypeObject,
     }));
@@ -83,9 +92,9 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({ e
     }
 
     const selectedBucketDetail = isVolumeAllDetail?.filter(
-      (item: objectType) => item?.uuid === e,
+      (item: BucketVolume) => item?.uuid === e,
     )[0];
-    setAdvancedVolumeDetail((prev: objectType) => ({
+    setAdvancedVolumeDetail((prev: AdvancedVolumeWizardDetail) => ({
       ...prev,
       bucketName: selectedBucketDetail?.bucketName,
       unusedBucketType: selectedBucketDetail?.storeType,
