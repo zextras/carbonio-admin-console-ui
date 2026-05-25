@@ -20,7 +20,7 @@ import { useModifyCos } from '../services/use-modify-cos';
 import { PageLayout } from '../views/page-layout';
 import { WscSettings } from './wsc-settings';
 
-const WscCosSettings: FC = () => {
+export const WscCosSettings: FC = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
 
@@ -133,5 +133,3 @@ const WscCosSettings: FC = () => {
     </PageLayout>
   );
 };
-
-export default WscCosSettings;

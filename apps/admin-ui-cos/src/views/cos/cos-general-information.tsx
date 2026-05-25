@@ -24,7 +24,7 @@ import {
 } from '@zextras/ui-components';
 import { replaceHistory, searchDirectory, useCurrentUserRights } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
-import { ChangeEvent, FC, ReactElement, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -42,7 +42,7 @@ import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import { PageLayout } from '../page-layout';
 import { getDateFromStr, getFormatedDate } from '../utility/utils';
 
-const CosGeneralInformation: FC = () => {
+export const CosGeneralInformation = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
   const { data: cosDetailData, isPending } = useCosDetail(cosId);
@@ -968,5 +968,3 @@ const CosGeneralInformation: FC = () => {
     </PageLayout>
   );
 };
-
-export default CosGeneralInformation;
