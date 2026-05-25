@@ -44,12 +44,19 @@ const mockCosData = {
   ],
 };
 
-function seedCosQuotaData(queryClient: ReturnType<typeof getQueryClient>): void {
-  queryClient.setQueryData(['cos', 'cos-quota', COS_ID], {
-    type: 'success',
-    totalComputedLimit: { type: 'unlimited' },
-    totalQuotaSource: 'global',
-  });
+const QUOTA_SEED = {
+  type: 'success',
+  totalComputedLimit: { type: 'unlimited' },
+  totalQuotaSource: 'global',
+};
+
+function seedQueryClientData(
+  queryClient: ReturnType<typeof getQueryClient>,
+  cosData = mockCosData,
+): void {
+  queryClient.setQueryData(['cos', 'detail', COS_ID], cosData);
+  queryClient.setQueryData(['cos', 'cos-quota', ''], QUOTA_SEED);
+  queryClient.setQueryData(['cos', 'cos-quota', COS_ID], QUOTA_SEED);
 }
 
 function mockCoreAttributeSet(): void {
@@ -58,10 +65,17 @@ function mockCoreAttributeSet(): void {
   );
 }
 
+function mockCatalogServices(): void {
+  createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+    HttpResponse.json({ items: [] }),
+  );
+}
+
 async function setupCosAdvancedTest(cosData = mockCosData): Promise<void> {
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
-  seedCosQuotaData(queryClient);
+  seedQueryClientData(queryClient, cosData);
+  mockCatalogServices();
   createBrowserSoapAPIInterceptor('GetCos', cosData);
 
   await setupBrowserTest(
@@ -91,7 +105,7 @@ describe('CosAdvanced', () => {
 
     it('should render the Forwarding section', async () => {
       await setupCosAdvancedTest();
-      await expect.element(page.getByText('Forwarding')).toBeVisible();
+      await expect.element(page.getByText('Forwarding', { exact: true })).toBeVisible();
     });
 
     it('should render the Quotas section', async () => {
@@ -312,6 +326,19 @@ describe('CosAdvanced', () => {
       mockCoreAttributeSet();
       await setupCosAdvancedTest();
 
+      createBrowserSoapAPIInterceptor('GetCos', {
+        cos: [
+          {
+            ...mockCosData.cos[0],
+            a: mockCosData.cos[0].a.map((attr) =>
+              attr.n === 'zimbraMailForwardingAddressMaxLength'
+                ? { n: attr.n, _content: '512' }
+                : attr,
+            ),
+          },
+        ],
+      });
+
       const input = page.getByRole('textbox', {
         name: 'Limit user-specified forwarding addresses to (char)',
       });
@@ -327,7 +354,8 @@ describe('CosAdvanced', () => {
   describe('Read-only mode', () => {
     async function setupReadOnlyCosAdvancedTest(): Promise<void> {
       const queryClient = getQueryClient();
-      seedCosQuotaData(queryClient);
+      seedQueryClientData(queryClient);
+      mockCatalogServices();
       queryClient.setQueryData(['account', 'info'], {
         id: 'test-user-id',
         name: 'test@example.com',
@@ -377,7 +405,7 @@ describe('CosAdvanced', () => {
 
     it('should not show Save/Cancel when clicking in read-only mode', async () => {
       await setupReadOnlyCosAdvancedTest();
-      await page.getByText('Forwarding').click();
+      await page.getByText('Forwarding', { exact: true }).click();
       await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
     });
   });
