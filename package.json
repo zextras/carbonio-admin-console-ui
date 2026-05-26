@@ -30,6 +30,7 @@
     "lint:fix": "turbo run lint:fix",
     "type-lint": "turbo run type-check && turbo run lint",
     "sonar": "sonar-scanner",
+    "sonarlint": "tsx scripts/sonarlint.ts",
     "reset": "pnpm exec tsx scripts/reset.ts"
   },
   "dependencies": {
