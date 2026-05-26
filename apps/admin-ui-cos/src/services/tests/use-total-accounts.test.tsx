@@ -43,14 +43,14 @@ describe('useTotalAccounts', () => {
 		const { result } = renderHook(() => useTotalAccounts('cos-1'), { wrapper });
 
 		await waitFor(() => expect(result.current.isSuccess).toBe(true));
-		expect(searchDirectory).toHaveBeenCalledWith(
-			'',
-			'accounts',
-			'',
-			'(&(zimbraCOSId=cos-1)(!(zimbraIsSystemAccount=TRUE)))',
-			0,
-			-1,
-		);
+		expect(searchDirectory).toHaveBeenCalledWith({
+			attr: '',
+			type: 'accounts',
+			domainName: '',
+			query: '(&(zimbraCOSId=cos-1)(!(zimbraIsSystemAccount=TRUE)))',
+			offset: 0,
+			limit: -1,
+		});
 		expect(result.current.data).toBe(42);
 	});
 
