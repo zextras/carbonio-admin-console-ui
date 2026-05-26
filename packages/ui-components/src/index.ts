@@ -56,6 +56,7 @@ export * from './components/inputs/TextArea';
 export * from './components/navigation/TabBar';
 
 /** custom components */
+export * from './components/custom/box-layout';
 export * from './components/custom/breadcrumb';
 export * from './components/custom/custom-table-header-factory';
 export * from './components/custom/custom-text-area';
