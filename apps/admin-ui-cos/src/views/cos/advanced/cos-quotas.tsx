@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { AccountType } from '../../../../types/account';
 import { TimeItems } from '../../../../types/general';
 import { ComputedLimit, QuotaSource } from '../../../services/get-cos-quota';
-import COSQuotasNew from './cos-quotas-new';
+import { COSQuotasNew } from './cos-quotas-new';
 
 type QuotaProps = {
   isTotalQuotaActive: boolean;
@@ -105,7 +105,9 @@ const COSQuotas: FC<QuotaProps> = ({
       padding={{ all: 'large' }}
       width="100%"
     >
-      <ds-text as="strong" weight="bold">{labels.quotas}</ds-text>
+      <ds-text as="strong" weight="bold">
+        {labels.quotas}
+      </ds-text>
       <Row mainAlignment="flex-start" width="100%">
         <Container
           height="fit"

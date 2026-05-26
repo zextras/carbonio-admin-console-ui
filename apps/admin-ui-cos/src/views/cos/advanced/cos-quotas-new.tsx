@@ -3,19 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  IconCheckbox,
-  Input,
-  Padding,
-  Switch,
-  Tooltip,
-} from '@zextras/ui-components';
+import { Container, Input, Switch, Tooltip } from '@zextras/ui-components';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ComputedLimit, QuotaSource } from '../../../services/get-cos-quota';
 import { BytesToGB, GbToBytes } from '../../utility/utils';
+import { QuotaRevertIcon } from './quota-revert-icon';
 
 type COSQuotasNewProps = {
   totalComputedQuotaLimit: ComputedLimit | undefined;
@@ -26,7 +20,7 @@ type COSQuotasNewProps = {
   showRevertButton: boolean;
 };
 
-const COSQuotasNew: FC<COSQuotasNewProps> = ({
+export const COSQuotasNew: FC<COSQuotasNewProps> = ({
   totalComputedQuotaLimit,
   totalQuotaSource,
   initialTotalComputedQuotaLimit,
@@ -36,14 +30,12 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
 }) => {
   const [t] = useTranslation();
 
-  const derivedQuotaValue: number | 'unlimited' | undefined =
-    totalComputedQuotaLimit === undefined
-      ? undefined
-      : totalComputedQuotaLimit.type === 'unlimited'
-        ? 'unlimited'
-        : totalComputedQuotaLimit.value > 0
-          ? BytesToGB(totalComputedQuotaLimit.value)
-          : undefined;
+  const derivedQuotaValue: number | 'unlimited' | undefined = (() => {
+    if (totalComputedQuotaLimit === undefined) return undefined;
+    if (totalComputedQuotaLimit.type === 'unlimited') return 'unlimited';
+    if (totalComputedQuotaLimit.value > 0) return BytesToGB(totalComputedQuotaLimit.value);
+    return undefined;
+  })();
 
   const [quotaOverride, setQuotaOverride] = useState<number | 'unlimited' | undefined>(undefined);
   const quotaValue = quotaOverride ?? derivedQuotaValue;
@@ -53,14 +45,14 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
     const parsedValue =
       filteredStringValue === '' ? undefined : Number.parseInt(filteredStringValue, 10);
     const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
-    const valueInBytes = valueInGB === undefined ? undefined : (GbToBytes(valueInGB) as number);
+    const valueInBytes = valueInGB === undefined ? undefined : GbToBytes(valueInGB);
     onChange(valueInBytes ? { type: 'limited', value: valueInBytes } : undefined);
     setQuotaOverride(valueInGB);
   };
 
   const switchOnChange = () => {
     if (quotaValue === 'unlimited') {
-      if (initialTotalComputedQuotaLimit && initialTotalComputedQuotaLimit.type === 'limited') {
+      if (initialTotalComputedQuotaLimit?.type === 'limited') {
         onChange({ type: 'limited', value: initialTotalComputedQuotaLimit.value });
         setQuotaOverride(BytesToGB(initialTotalComputedQuotaLimit.value));
       } else {
@@ -91,26 +83,7 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
     onChange(undefined);
   };
 
-  const CustomElement = () => (
-    <Tooltip
-      label={
-        <>
-          <Padding top="small">
-            <ds-text as="strong" weight="bold">
-              {t('cos_quota.click_to_revert', 'Click to revert to the inherited value')}
-            </ds-text>
-          </Padding>
-        </>
-      }
-    >
-      <IconCheckbox
-        icon="RefreshOutline"
-        onClick={onChangeReset}
-        style={{ cursor: 'pointer' }}
-        onChange={(): null => null}
-      />
-    </Tooltip>
-  );
+  const revertLabel = t('cos_quota.click_to_revert', 'Click to revert to the inherited value');
 
   return (
     <Container padding={{ right: 'large' }} gap={'1rem'}>
@@ -121,7 +94,9 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
           value={switchValue}
           disabled={readonlyCOS}
         />
-        <ds-text as="span" size="medium">{t('label.unlimited_quota', 'Unlimited quota')}</ds-text>
+        <ds-text as="span" size="medium">
+          {t('label.unlimited_quota', 'Unlimited quota')}
+        </ds-text>
       </Container>
       <Container
         orientation={'horizontal'}
@@ -136,7 +111,11 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
           inputName="totalQuota"
           onChange={inputOnChange}
           disabled={readonlyCOS || switchValue}
-          CustomIcon={showRevertButton ? CustomElement : undefined}
+          CustomIcon={
+            showRevertButton
+              ? () => <QuotaRevertIcon label={revertLabel} onClick={onChangeReset} />
+              : undefined
+          }
         />
         {showQuotaSourceIcon && (
           <Tooltip placement={'top-end'} label={tooltipLabel}>
@@ -147,5 +126,3 @@ const COSQuotasNew: FC<COSQuotasNewProps> = ({
     </Container>
   );
 };
-
-export default COSQuotasNew;
