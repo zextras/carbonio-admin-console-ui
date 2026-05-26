@@ -25,7 +25,8 @@ export function useTimeFieldState(onChange: (combinedValue: string) => void) {
   const reset = (value: string | undefined, defaultType = '') => {
     const newNum = value?.slice(0, -1);
     const suffix = value?.slice(-1);
-    const newType = suffix ?? defaultType;
+    const hasSuffix = suffix !== undefined && suffix !== '';
+    const newType = hasSuffix ? suffix : defaultType;
     setNum(newNum);
     setType(newType);
   };
