@@ -104,6 +104,11 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
     }));
   };
 
+  function getBucketTypeLabel(storeType: string | undefined): string | undefined {
+    return bucketTypeItems?.find((item) => item?.value?.toLowerCase() === storeType?.toLowerCase())
+      ?.label;
+  }
+
   const getBucketListType = useCallback((): void => {
     listS3Connector().then((values) => {
       const connectors: Array<objectType> = values.map((items) => ({
@@ -114,26 +119,25 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
         notes: items.notes || '',
       }));
 
-      const volUnusedBucketList: Array<{ label: string; value: string }> = [];
-      const allData = connectors
-        .filter(
-          (items: objectType) =>
-            !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
-        )
-        .map((items: objectType) => {
-          const volumeObject: string | undefined = bucketTypeItems?.find(
-            (s) => s?.value?.toLowerCase() === items?.storeType?.toLowerCase(),
-          )?.label;
-          volUnusedBucketList.push({
+      const allData = connectors.filter(
+        (items: objectType) =>
+          !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
+      );
+
+      const volUnusedBucketList: Array<{ label: string; value: string }> = allData.map(
+        (items: objectType) => {
+          const volumeObject = getBucketTypeLabel(items?.storeType);
+          return {
             label: `${volumeObject} | ${items?.label}`,
             value: items?.uuid,
-          });
-          return items;
-        });
+          };
+        },
+      );
+
       setIsVolumeAllDetail(allData);
       setBackupUnusedBucketList(volUnusedBucketList);
     });
-  }, [bucketTypeItems, setIsVolumeAllDetail]);
+  }, [setIsVolumeAllDetail]);
 
   useEffect(() => {
     const volumeTypeObject = volAllocationList?.find(

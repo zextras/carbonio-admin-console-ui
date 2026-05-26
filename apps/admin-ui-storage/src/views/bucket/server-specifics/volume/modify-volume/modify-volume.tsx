@@ -149,6 +149,13 @@ const ModifyVolume: FC<{
     2: SECONDARY,
     10: INDEX,
   };
+
+  function getBucketTypeLabel(storeTypeValue: string | undefined): string | undefined {
+    return bucketTypeItems?.find(
+      (item) => item?.value?.toLowerCase() === storeTypeValue?.toLowerCase(),
+    )?.label;
+  }
+
   const onUnusedBucketListChange = (e: string | null): void => {
     const selectedBucketDetail = isVolumeAllDetail?.filter(
       (item: BucketVolume) => item?.uuid === e,
@@ -441,33 +448,32 @@ const ModifyVolume: FC<{
         storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
       }));
 
-      if (connectors.length > 0) {
-        const bucName = connectors.find(
-          (b: objectType) => b?.uuid === externalVolDetail?.bucketConfigurationId,
-        )?.bucketName;
-        setBucketName(bucName || '');
-        setStoreType(externalVolDetail?.storeType);
-        setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
-
-        const volUnusedBucketList: Array<{ label: string; value: string }> = [];
-        const allData = connectors
-          .filter(
-            (items: objectType) =>
-              !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
-          )
-          .map((items: objectType) => {
-            const volumeObject: string | undefined = bucketTypeItems?.find(
-              (s) => s?.value?.toLowerCase() === items?.storeType?.toLowerCase(),
-            )?.label;
-            volUnusedBucketList.push({
-              label: `${volumeObject} | ${items?.label}`,
-              value: items?.uuid,
-            });
-            return items;
-          });
-        setIsVolumeAllDetail(allData);
-        setBackupUnusedBucketList(volUnusedBucketList);
+      if (connectors.length === 0) {
+        return;
       }
+
+      const selectedConnector = connectors.find(
+        (bucket: objectType) => bucket?.uuid === externalVolDetail?.bucketConfigurationId,
+      );
+      setBucketName(selectedConnector?.bucketName || '');
+      setStoreType(externalVolDetail?.storeType);
+      setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
+
+      const allData = connectors.filter(
+        (items: objectType) =>
+          !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
+      );
+      const volUnusedBucketList: Array<{ label: string; value: string }> = allData.map(
+        (items: objectType) => {
+          const volumeObject = getBucketTypeLabel(items?.storeType);
+          return {
+            label: `${volumeObject} | ${items?.label}`,
+            value: items?.uuid,
+          };
+        },
+      );
+      setIsVolumeAllDetail(allData);
+      setBackupUnusedBucketList(volUnusedBucketList);
     });
   }, [
     bucketTypeItems,
