@@ -114,7 +114,16 @@ const COSQuotas: FC<QuotaProps> = ({
           padding={{ top: 'large' }}
         >
           <ListRow crossAlignment={'flex-end'}>
-            {!isTotalQuotaActive ? (
+            {isTotalQuotaActive ? (
+              <COSQuotasNew
+                totalComputedQuotaLimit={totalComputedQuotaLimit}
+                totalQuotaSource={totalQuotaSource}
+                initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
+                onChange={onTotalQuotaChange}
+                readonlyCOS={readonlyCOS}
+                showRevertButton={showQuotaRevertButton}
+              />
+            ) : (
               <>
                 {isAdvanced && initFileQuotaLimitGBValue && (
                   <Container padding={{ right: 'small' }}>
@@ -161,15 +170,6 @@ const COSQuotas: FC<QuotaProps> = ({
                   )}
                 </Container>
               </>
-            ) : (
-              <COSQuotasNew
-                totalComputedQuotaLimit={totalComputedQuotaLimit}
-                totalQuotaSource={totalQuotaSource}
-                initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
-                onChange={onTotalQuotaChange}
-                readonlyCOS={readonlyCOS}
-                showRevertButton={showQuotaRevertButton}
-              />
             )}
             <Container>
               <Input
