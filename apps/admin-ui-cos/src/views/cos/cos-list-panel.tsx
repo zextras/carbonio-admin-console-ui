@@ -63,7 +63,7 @@ export const CosListPanel: FC = () => {
   const getCosLists = (searchData: string): void => {
     getCosList<SearchDirectoryResponse>(searchData)
       .then((data) => {
-        if (data && data?.searchTotal && data.searchTotal > 0 && data.cos) {
+        if (data?.searchTotal && data.searchTotal > 0 && data.cos) {
           setCosList(data.cos);
         } else {
           setCosList([]);
