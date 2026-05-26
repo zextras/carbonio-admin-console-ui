@@ -21,7 +21,7 @@ import {
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useMailstoreServers } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
-import { ChangeEvent, FC, ReactElement, useRef, useState } from 'react';
+import { ChangeEvent, FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -37,6 +37,10 @@ type ServerItem = {
   name?: string;
   a?: Array<Attribute>;
 };
+
+const FunnelSearchIcon: FC = () => (
+  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
 
 function isPoolEnabled(poolList: Array<Attribute>, serverId?: string): boolean {
   return !!poolList.find((sp) => serverId === sp?._content)?.c;
@@ -275,9 +279,7 @@ export const CosServerPools: FC = () => {
                           readonlyCOS
                         }
                         label={t('cos.search_a_specific_server', 'Search for a specific server')}
-                        CustomIcon={(): ReactElement => (
-                          <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                        )}
+                        CustomIcon={FunnelSearchIcon}
                         onChange={handleSearchChange}
                       />
                     </Row>
