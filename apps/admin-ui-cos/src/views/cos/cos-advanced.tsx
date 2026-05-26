@@ -284,7 +284,7 @@ export const CosAdvanced = () => {
       setInitialValues(obj);
       setStateAttrValues(obj);
     }
-  }, [cosInformation]);
+  }, [cosInformation, setInitialValues, setStateAttrValues]);
 
   const changeValue = (e: ChangeEvent<HTMLInputElement>) => {
     setCosAdvanced((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
