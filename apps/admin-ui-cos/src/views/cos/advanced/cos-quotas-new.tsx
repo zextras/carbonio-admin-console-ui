@@ -97,6 +97,7 @@ export const COSQuotasNew: FC<COSQuotasNewProps> = ({
           onClick={switchOnChange}
           value={switchValue}
           disabled={readonlyCOS}
+          iconAriaLabel={t('label.unlimited_quota', 'Unlimited quota')}
         />
         <ds-text as="span" size="medium">
           {t('label.unlimited_quota', 'Unlimited quota')}

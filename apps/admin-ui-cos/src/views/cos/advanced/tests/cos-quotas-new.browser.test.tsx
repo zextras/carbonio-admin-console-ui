@@ -80,8 +80,7 @@ describe('COSQuotasNew (browser)', () => {
       />,
     );
 
-    const switchIcon = page.getByTestId('icon: ToggleLeftOutline');
-    await userEvent.click(switchIcon);
+    await userEvent.click(page.getByRole('img', { name: 'Unlimited quota' }));
 
     expect(onChangeMock).toHaveBeenLastCalledWith({ type: 'unlimited' });
   });
@@ -113,8 +112,7 @@ describe('COSQuotasNew (browser)', () => {
       />,
     );
 
-    const switchIcon = page.getByTestId('icon: ToggleRight');
-    await userEvent.click(switchIcon);
+    await userEvent.click(page.getByRole('img', { name: 'Unlimited quota' }));
 
     expect(onChangeMock).toHaveBeenLastCalledWith({
       type: 'limited',
@@ -166,7 +164,7 @@ describe('COSQuotasNew (browser)', () => {
       />,
     );
 
-    const revertIcon = page.getByTestId('icon: RefreshOutline');
+    const revertIcon = page.getByRole('img', { name: 'Click to revert to the inherited value' });
     await expect.element(revertIcon).toBeVisible();
 
     await userEvent.hover(revertIcon);
@@ -186,7 +184,7 @@ describe('COSQuotasNew (browser)', () => {
       />,
     );
 
-    await userEvent.click(page.getByTestId('icon: RefreshOutline'));
+    await userEvent.click(page.getByRole('img', { name: 'Click to revert to the inherited value' }));
 
     expect(onChangeMock).toHaveBeenLastCalledWith(undefined);
   });

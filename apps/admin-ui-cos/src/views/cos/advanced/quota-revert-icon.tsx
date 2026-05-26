@@ -26,6 +26,7 @@ export const QuotaRevertIcon = ({ label, onClick }: QuotaRevertIconProps) => (
       onClick={onClick}
       style={{ cursor: 'pointer' }}
       onChange={(): null => null}
+      iconAriaLabel={label}
     />
   </Tooltip>
 );
