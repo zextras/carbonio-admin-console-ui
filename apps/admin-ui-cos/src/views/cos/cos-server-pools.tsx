@@ -31,16 +31,13 @@ import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
+import { FunnelSearchIcon } from './funnel-search-icon';
 
 type ServerItem = {
   id?: string;
   name?: string;
   a?: Array<Attribute>;
 };
-
-const FunnelSearchIcon = () => (
-  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-);
 
 function isPoolEnabled(poolList: Array<Attribute>, serverId?: string): boolean {
   return !!poolList.find((sp) => serverId === sp?._content)?.c;

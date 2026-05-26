@@ -23,6 +23,7 @@ import logo from '../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { useCosList } from '../../services/use-cos-list';
 import ScrollContainer from '../components/scrollComponent';
+import { FunnelSearchIcon } from './funnel-search-icon';
 
 type ZimbraCosAttribute = {
   n: string;
@@ -259,9 +260,7 @@ const CosList: FC = () => {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     setSearchString(e.target.value);
                   }}
-                  CustomIcon={(): React.JSX.Element => (
-                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                  )}
+                  CustomIcon={FunnelSearchIcon}
                 />
               </Container>
             </Row>
