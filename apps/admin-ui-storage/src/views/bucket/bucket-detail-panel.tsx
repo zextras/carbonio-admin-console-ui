@@ -48,19 +48,19 @@ const headers = (t: TFunction): Array<TableHeader> => [
   {
     id: 'id',
     label: t('label.id', 'ID'),
-    width: '30%',
+    width: '35%',
     bold: true,
   },
   {
     id: 'label',
     label: t('label.descriptive_name', 'Descriptive Name'),
-    width: '20%',
+    width: '25%',
     bold: true,
   },
   {
     id: 'bucketName',
     label: t('label.bucket_name', 'Bucket name'),
-    width: '20%',
+    width: '25%',
     bold: true,
   },
   {

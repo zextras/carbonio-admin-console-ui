@@ -19,10 +19,7 @@ import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 
 import { CreateS3ConnectorRequest } from '../../../types';
-import {
-  AMAZON_WEB_SERVICE_S3,
-  ZIMBRA_ADMIN_URN,
-} from '../../constants';
+import { AMAZON_WEB_SERVICE_S3, ZIMBRA_ADMIN_URN } from '../../constants';
 import { createS3Connector, listS3Regions } from '../../services/bucket-service';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
@@ -52,11 +49,11 @@ const Connection: FC<{
         label: t('label.region_none', 'None'),
         value: NO_REGION_VALUE,
       },
-      ...bucketRegions,
       {
         label: t('label.region_set_custom', 'Set custom'),
         value: CUSTOM_REGION_VALUE,
       },
+      ...bucketRegions,
     ],
     [bucketRegions, t],
   );
@@ -73,10 +70,12 @@ const Connection: FC<{
   const [prefix, setPrefix] = useState('');
   const [customRegion, setCustomRegion] = useState('');
   const [isCustomRegion, setIsCustomRegion] = useState(false);
-  const [verifyFailError, setVerifyFailError] = useState(t(
-            'storages.s3Connectors.verifyError.doNotSupport',
-            'We do not support this specific connector. Try again with a different one',
-          ));
+  const [verifyFailError, setVerifyFailError] = useState(
+    t(
+      'storages.s3Connectors.verifyError.doNotSupport',
+      'We do not support this specific connector. Try again with a different one',
+    ),
+  );
   const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [prefixConfirm, setprefixConfirm] = useState(true);
   const [bucketNameConfirm, setBucketNameConfirm] = useState(true);
@@ -91,15 +90,33 @@ const Connection: FC<{
 
   const storeType = externalData || AMAZON_WEB_SERVICE_S3;
 
+  function getSelectedRegion(): string {
+    return isCustomRegion ? customRegion.trim() : regionsData?.value ?? '';
+  }
+
+  const isAccessKeyInvalid =
+    hasSubmitted && (accessKeyData === '' || !bucketNameRegex.test(accessKeyData));
+  const isSecretKeyInvalid = hasSubmitted && (secretKey === '' || !bucketNameRegex.test(secretKey));
+  const isRegionInvalid =
+    hasSubmitted &&
+    !isCustomRegion &&
+    (getSelectedRegion() === '' || !bucketNameRegex.test(getSelectedRegion()));
+  const isCustomRegionInvalid =
+    hasSubmitted && isCustomRegion && !bucketNameRegex.test(customRegion);
+
   const handleVerifyConnector = (): void => {
     setHasSubmitted(true);
-    const selectedRegion = isCustomRegion ? customRegion.trim() : regionsData?.value ?? '';
+    const selectedRegion = getSelectedRegion();
     if (
       bucketLabel &&
       bucketName &&
       bucketNameRegex.test(bucketName) &&
       accessKeyData &&
-      secretKey
+      bucketNameRegex.test(accessKeyData) &&
+      secretKey &&
+      bucketNameRegex.test(secretKey) &&
+      selectedRegion &&
+      bucketNameRegex.test(selectedRegion)
     ) {
       setVerifyShowResult(false);
       setIsVerifySuccess(false);
@@ -135,14 +152,16 @@ const Connection: FC<{
             return;
           }
 
-          const errorMessage = typeof response?.error === 'string'
-            ? response.error
-            : response?.error?.message ||
+          const errorMessage =
+            typeof response?.error === 'string'
+              ? response.error
+              : response?.error?.message ||
                 t(
                   'storages.s3Connectors.verifyError.doNotSupport',
                   'We do not support this specific connector. Try again with a different one',
                 );
-          const errorDetails = typeof response?.error === 'string' ? undefined : response?.error?.details;
+          const errorDetails =
+            typeof response?.error === 'string' ? undefined : response?.error?.details;
           setVerifyFailError(errorMessage);
           setCheckDetails(errorDetails);
           setIsVerifyError(true);
@@ -268,110 +287,147 @@ const Connection: FC<{
         mainAlignment="flex-start"
         padding={{ horizontal: 'large' }}
         style={{ paddingBottom: '1rem' }}
-        height={"100%"}
+        height={'100%'}
       >
         <Row padding={{ top: 'extralarge' }} width="100%" mainAlignment="flex-start">
-        <ds-text as="h5" weight="bold" color="gray1">
-          {t('storages.s3Connectors.sectionTitle', 'S3 connection')}
-        </ds-text>
+          <ds-text as="h5" weight="bold">
+            {t('storages.s3Connectors.sectionTitle', 'S3 connection')}
+          </ds-text>
         </Row>
         <Row padding={{ top: 'extrasmall' }} width="100%" mainAlignment="flex-start">
-        <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-          {t(
-            'storages.s3Connectors.newconnectDescription',
-            'Before starting the connection, an S3 bucket must be previously created in your system',
-          )}
-        </ds-text>
+          <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+            {t(
+              'storages.s3Connectors.newconnectDescription',
+              'Before starting the connection, an S3 bucket must be previously created in your system',
+            )}
+          </ds-text>
         </Row>
         <Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
-        <Input
-          backgroundColor="gray5"
-          label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
-          value={bucketLabel}
-          onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-            setBucketLabel(ev.target.value);
-          }}
-          hasError={hasSubmitted && bucketLabel === ''}
-        />
-        {hasSubmitted && bucketLabel === '' && (
-          <Padding top="extrasmall">
-            <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-              {t('storages.s3Connectors.descriptiveNameRequired', 'This field is mandatory')}
-            </ds-text>
-          </Padding>
-        )}
-        </Row>
-        <Row width="100%" padding={{ top: 'large' }}>
-        <Row width="100%" mainAlignment="flex-start">
           <Input
             backgroundColor="gray5"
-            label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
-            value={bucketName}
+            label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
+            value={bucketLabel}
             onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-              setBucketName(ev.target.value);
-              setBucketNameConfirm(ev.target.value === '' || bucketNameRegex.test(ev.target.value));
+              setBucketLabel(ev.target.value);
             }}
-            hasError={hasSubmitted && (bucketName === '' || !bucketNameConfirm)}
+            hasError={hasSubmitted && bucketLabel === ''}
           />
-          {hasSubmitted && (bucketName === '' || !bucketNameConfirm) && (
+          {hasSubmitted && bucketLabel === '' && (
             <Padding top="extrasmall">
               <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-                {t('storages.s3Connectors.invalidBucketName', "This field can't be blank or have white space")}
+                {t('storages.s3Connectors.descriptiveNameRequired', 'This field is mandatory')}
               </ds-text>
             </Padding>
           )}
         </Row>
+        <Row width="100%" padding={{ top: 'large' }}>
+          <Row width="100%" mainAlignment="flex-start">
+            <Input
+              backgroundColor="gray5"
+              label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
+              value={bucketName}
+              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                setBucketName(ev.target.value);
+                setBucketNameConfirm(
+                  ev.target.value === '' || bucketNameRegex.test(ev.target.value),
+                );
+              }}
+              hasError={hasSubmitted && (bucketName === '' || !bucketNameConfirm)}
+            />
+            {hasSubmitted && (bucketName === '' || !bucketNameConfirm) && (
+              <Padding top="extrasmall">
+                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                  {t(
+                    'storages.s3Connectors.invalidBucketName',
+                    "This field can't be blank or have white space",
+                  )}
+                </ds-text>
+              </Padding>
+            )}
+          </Row>
         </Row>
         <Row width="100%" padding={{ top: 'large' }}>
-        <Row width="48%" mainAlignment="flex-start">
-          <Input
-            backgroundColor="gray5"
-            label={t('storages.s3Connectors.accessKey', 'Access Key ID*')}
-            value={accessKeyData}
-            onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-              setAccessKeyData(ev.target.value);
-            }}
-          />
-        </Row>
-        <Padding horizontal={'small'} />
-        <Row width="48%" mainAlignment="flex-end">
-          <PasswordInput
-            backgroundColor="gray5"
-            label={t('label.secret_key', 'Secret Access Key*')}
-            value={secretKey}
-            onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-              setSecretKey(ev.target.value);
-            }}
-          />
-        </Row>
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-        <Input
-          label={t('label.endpoint_url', 'Endpoint URL')}
-          backgroundColor="gray5"
-          value={urlInput}
-          onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-            setUrlInput(ev.target.value);
-          }}
-        />
-        <Padding top="extrasmall">
-          <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall" >
-            {t(
-              'storages.s3Connectors.endpointUrlHelp',
-              'The endpoint URL of your storage provider. Not needed if your connector are AWS',
+          <Row width="48%" mainAlignment="flex-start">
+            <Input
+              backgroundColor="gray5"
+              label={t('storages.s3Connectors.accessKey', 'Access Key ID*')}
+              value={accessKeyData}
+              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                setAccessKeyData(ev.target.value);
+              }}
+              hasError={isAccessKeyInvalid}
+            />
+            {isAccessKeyInvalid && (
+              <Padding top="extrasmall">
+                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                  {t(
+                    'storages.s3Connectors.invalidAccessKey',
+                    "This field can't be blank or have white space",
+                  )}
+                </ds-text>
+              </Padding>
             )}
-          </ds-text>
-        </Padding>
+          </Row>
+          <Padding horizontal={'small'} />
+          <Row width="48%" mainAlignment="flex-end">
+            <PasswordInput
+              backgroundColor="gray5"
+              label={t('label.secret_key', 'Secret Access Key*')}
+              value={secretKey}
+              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                setSecretKey(ev.target.value);
+              }}
+              hasError={isSecretKeyInvalid}
+            />
+            {isSecretKeyInvalid && (
+              <Padding top="extrasmall" width='100%'>
+                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                  {t(
+                    'storages.s3Connectors.invalidSecretKey',
+                    "This field can't be blank or have white space",
+                  )}
+                </ds-text>
+              </Padding>
+            )}
+          </Row>
         </Row>
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-        <Select
-          items={regionItems}
-          background="gray5"
-          label={t('label.region', 'Region')}
-          selection={regionSelection}
-          onChange={onSelectRegionChange}
-          showCheckbox={false}
-        />
+          <Input
+            label={t('label.endpoint_url', 'Endpoint URL')}
+            backgroundColor="gray5"
+            value={urlInput}
+            onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+              setUrlInput(ev.target.value);
+            }}
+          />
+          <Padding top="extrasmall">
+            <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+              {t(
+                'storages.s3Connectors.endpointUrlHelp',
+                'The endpoint URL of your storage provider. Not needed if your connector are AWS',
+              )}
+            </ds-text>
+          </Padding>
+        </Row>
+        <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+          <Select
+            items={regionItems}
+            background="gray5"
+            label={t('label.region', 'Region')}
+            selection={regionSelection}
+            onChange={onSelectRegionChange}
+            showCheckbox={false}
+          />
+          {isRegionInvalid && (
+            <Padding top="extrasmall">
+              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                {t(
+                  'storages.s3Connectors.invalidRegion',
+                  "This field can't be blank or have white space",
+                )}
+              </ds-text>
+            </Padding>
+          )}
         </Row>
         {isCustomRegion && (
           <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
@@ -382,7 +438,18 @@ const Connection: FC<{
               onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
                 setCustomRegion(ev.target.value);
               }}
+              hasError={isCustomRegionInvalid}
             />
+            {isCustomRegionInvalid && (
+              <Padding top="extrasmall">
+                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                  {t(
+                    'storages.s3Connectors.invalidCustomRegion',
+                    "This field can't be blank or have white space",
+                  )}
+                </ds-text>
+              </Padding>
+            )}
           </Row>
         )}
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
@@ -424,14 +491,17 @@ const Connection: FC<{
           )}
         </Row>
         <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-          <ds-text as="h6" weight="bold" color="gray1">
-            {t('label.security', 'Security')}
+          <ds-text as="h6" weight="bold">
+            {t('storages.s3Connectors.security', 'Security')}
           </ds-text>
         </Row>
         <Row width="100%" padding={{ top: 'small' }} mainAlignment="space-between">
           <Row width="90%" mainAlignment="flex-start">
             <Switch
-              label={t('storages.s3Connectors.acceptUntrustedSSL', 'Accept untrusted SSL certificates')}
+              label={t(
+                'storages.s3Connectors.acceptUntrustedSSL',
+                'Accept untrusted SSL certificates',
+              )}
               value={acceptUntrustedSSL}
               onClick={(): void => {
                 setAcceptUntrustedSSL(!acceptUntrustedSSL);
@@ -441,16 +511,19 @@ const Connection: FC<{
           </Row>
           <Row width="10%" mainAlignment="flex-end">
             <Tooltip
-                placement="top"
-                label={t('storages.s3Connectors.untrustedSSLTooltip', 'Use this only for testing environments or internal infrastructure with custom certificates. Not recommended for production.')}
-              >
-                <ds-text as="span">
-                  <ds-icon icon="InfoOutline" size="large" color="gray0"></ds-icon>
-                </ds-text>
+              placement="top"
+              label={t(
+                'storages.s3Connectors.untrustedSSLTooltip',
+                'Use this only for testing environments or internal infrastructure with custom certificates. Not recommended for production.',
+              )}
+            >
+              <ds-text as="span">
+                <ds-icon icon="InfoOutline" size="large" color="gray0"></ds-icon>
+              </ds-text>
             </Tooltip>
           </Row>
         </Row>
-        <Row width="100%" padding={{ top: 'extrasmall' }} mainAlignment="flex-start">
+        <Row width="100%" padding={{ top: 'extrasmall', left: '2rem' }} mainAlignment="flex-start">
           <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
             {t(
               'storages.s3Connectors.untrustedSSLHint',
@@ -490,10 +563,7 @@ const Connection: FC<{
           </Row>
         </Row>
       </Container>
-      <VerifyProgress
-        isPending={isVerifyPending}
-        onComplete={handleProgressComplete}
-      />
+      <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
       <VerifySuccess
         isSuccess={showVerifyResult && isVerifySuccess}
         onComplete={handleSuccessComplete}
