@@ -83,7 +83,6 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 						</Container>
 						<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 							<Select
-								data-testid="zimbraAdminAuthTokenLifetimeType"
 								items={timeItems}
 								background={'gray5'}
 								label={labels.timeRange}
