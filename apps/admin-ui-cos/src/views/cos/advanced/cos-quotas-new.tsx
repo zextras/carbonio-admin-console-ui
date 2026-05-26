@@ -85,6 +85,10 @@ export const COSQuotasNew: FC<COSQuotasNewProps> = ({
 
   const revertLabel = t('cos_quota.click_to_revert', 'Click to revert to the inherited value');
 
+  const RevertIcon = showRevertButton
+    ? () => <QuotaRevertIcon label={revertLabel} onClick={onChangeReset} />
+    : undefined;
+
   return (
     <Container padding={{ right: 'large' }} gap={'1rem'}>
       <Container mainAlignment={'flex-start'} orientation={'horizontal'} gap={'0.5rem'}>
@@ -111,11 +115,7 @@ export const COSQuotasNew: FC<COSQuotasNewProps> = ({
           inputName="totalQuota"
           onChange={inputOnChange}
           disabled={readonlyCOS || switchValue}
-          CustomIcon={
-            showRevertButton
-              ? () => <QuotaRevertIcon label={revertLabel} onClick={onChangeReset} />
-              : undefined
-          }
+          CustomIcon={RevertIcon}
         />
         {showQuotaSourceIcon && (
           <Tooltip placement={'top-end'} label={tooltipLabel}>
