@@ -79,6 +79,7 @@ export * from './components/custom/notification-detail';
 export * from './components/custom/notification-view';
 export * from './components/custom/paging';
 export * from './components/custom/primary-bar-tooltip';
+export * from './components/custom/setting-layout';
 export * from './components/custom/track-number-per-page';
 
 /** display components */

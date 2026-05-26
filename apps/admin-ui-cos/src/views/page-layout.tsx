@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Padding, Row } from '@zextras/ui-components';
+import { Button, Container, Row } from '@zextras/ui-components';
 import { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -63,19 +63,3 @@ export const PageLayout: FC<{
     </Container>
   );
 };
-
-export const SettingLayout: FC<{
-  description: string;
-  children: ReactNode;
-  descriptionGap?: boolean;
-}> = ({ description, children, descriptionGap }) => (
-  <Container crossAlignment="flex-start">
-    {children}
-    {descriptionGap && <Padding top="small" />}
-    <Container height="fit" crossAlignment="flex-start">
-      <ds-text as="span" weight="light" color="gray1" size="small" overflow="break-word">
-        {description}
-      </ds-text>
-    </Container>
-  </Container>
-);

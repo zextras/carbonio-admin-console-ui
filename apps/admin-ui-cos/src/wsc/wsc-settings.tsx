@@ -11,6 +11,7 @@ import {
   InheritedSelect,
   InheritedSwitch,
   Padding,
+  SettingLayout,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
 import { ChangeEvent, Dispatch, FC, SetStateAction } from 'react';
@@ -18,7 +19,6 @@ import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../types/account';
 import { TRUE } from '../constants';
-import { SettingLayout } from '../views/page-layout';
 
 export const WscSettings: FC<{
   featuresDetail: AccountType;

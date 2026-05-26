@@ -12,6 +12,7 @@ import {
   InheritedSelect,
   InheritedSwitch,
   Padding,
+  SettingLayout,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
 import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
@@ -19,7 +20,6 @@ import { useTranslation } from 'react-i18next';
 
 import { TRUE } from '../constants';
 import { AccountDetail } from '../views/domain/manange/accounts/account-context';
-import { SettingLayout } from '../views/page-layout';
 
 export const WscSettings: FC<{
   featuresDetail: AccountDetail;
