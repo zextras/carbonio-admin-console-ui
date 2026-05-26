@@ -38,6 +38,7 @@ type S3ConnectorError = {
 };
 
 const Connection: FC<{
+  externalData?: string;
   onCancel?: () => void;
 }> = ({ onCancel }) => {
   const [t] = useTranslation();
