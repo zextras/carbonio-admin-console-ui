@@ -95,6 +95,45 @@ function saveBackupAttributes(
   }
 }
 
+const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
+  ['zimbraMailForwardingAddressMaxLength', ''],
+  ['zimbraMailForwardingAddressMaxNumAddrs', ''],
+  ['zimbraMailQuota', ''],
+  ['zimbraContactMaxNumEntries', ''],
+  ['zimbraQuotaWarnPercent', ''],
+  ['zimbraQuotaWarnInterval', ''],
+  ['zimbraQuotaWarnMessage', ''],
+  ['zimbraPasswordLocked', 'FALSE'],
+  ['zimbraPasswordMinLength', ''],
+  ['zimbraPasswordMaxLength', ''],
+  ['zimbraPasswordMinUpperCaseChars', ''],
+  ['zimbraPasswordMinLowerCaseChars', ''],
+  ['zimbraPasswordMinPunctuationChars', ''],
+  ['zimbraPasswordMinNumericChars', ''],
+  ['zimbraPasswordMinDigitsOrPuncs', ''],
+  ['zimbraPasswordMinAge', ''],
+  ['zimbraPasswordMaxAge', ''],
+  ['zimbraPasswordEnforceHistory', ''],
+  ['zimbraPasswordBlockCommonEnabled', 'FALSE'],
+  ['zimbraPasswordLockoutEnabled', 'FALSE'],
+  ['zimbraPasswordLockoutMaxFailures', ''],
+  ['zimbraPasswordLockoutDuration', ''],
+  ['zimbraPasswordLockoutFailureLifetime', ''],
+  ['zimbraAdminAuthTokenLifetime', ''],
+  ['zimbraAuthTokenLifetime', ''],
+  ['zimbraMailIdleSessionTimeout', ''],
+  ['zimbraMailMessageLifetime', ''],
+  ['zimbraMailTrashLifetime', ''],
+  ['zimbraMailSpamLifetime', ''],
+  ['zimbraFreebusyExchangeUserOrg', ''],
+];
+
+const COS_INITIAL_VALUES_EXTRA: Array<[keyof AccountType, string]> = [
+  ['zimbraDataSourceMinPollingInterval', ''],
+  ['zimbraDataSourceCalendarPollingInterval', ''],
+  ['zimbraDataSourceRssPollingInterval', ''],
+];
+
 export const CosAdvanced = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
@@ -229,15 +268,15 @@ export const CosAdvanced = () => {
     null,
   );
   const totalComputedQuotaLimit =
-    totalQuotaOverride !== null ? totalQuotaOverride : initTotalComputedQuotaLimit;
+    totalQuotaOverride === null ? initTotalComputedQuotaLimit : totalQuotaOverride;
   const totalQuotaSource =
-    totalQuotaOverride !== null
-      ? totalQuotaOverride !== undefined
-        ? ('cos' as QuotaSource)
-        : ('global' as QuotaSource)
-      : initTotalQuotaSource;
+    totalQuotaOverride === null
+      ? initTotalQuotaSource
+      : totalQuotaOverride === undefined
+        ? ('global' as QuotaSource)
+        : ('cos' as QuotaSource);
   const effectiveQuotaLimit =
-    totalQuotaOverride !== null ? totalQuotaOverride : initTotalComputedQuotaLimit;
+    totalQuotaOverride === null ? initTotalComputedQuotaLimit : totalQuotaOverride;
   const showQuotaRevertButton =
     totalQuotaSource === 'cos' &&
     initialQuotaRef.current !== null &&
@@ -259,136 +298,10 @@ export const CosAdvanced = () => {
   };
 
   const setInitalValues = (obj: AccountType): void => {
-    if (obj) {
-      setValue(
-        'zimbraMailForwardingAddressMaxLength',
-        obj?.zimbraMailForwardingAddressMaxLength ? obj?.zimbraMailForwardingAddressMaxLength : '',
-      );
-      setValue(
-        'zimbraMailForwardingAddressMaxNumAddrs',
-        obj?.zimbraMailForwardingAddressMaxNumAddrs
-          ? obj?.zimbraMailForwardingAddressMaxNumAddrs
-          : '',
-      );
-      setValue('zimbraMailQuota', obj?.zimbraMailQuota ? obj?.zimbraMailQuota : '');
-      setValue(
-        'zimbraContactMaxNumEntries',
-        obj?.zimbraContactMaxNumEntries ? obj?.zimbraContactMaxNumEntries : '',
-      );
-      setValue(
-        'zimbraQuotaWarnPercent',
-        obj?.zimbraQuotaWarnPercent ? obj?.zimbraQuotaWarnPercent : '',
-      );
-      setValue(
-        'zimbraQuotaWarnInterval',
-        obj?.zimbraQuotaWarnInterval ? obj?.zimbraQuotaWarnInterval : '',
-      );
-      setValue(
-        'zimbraQuotaWarnMessage',
-        obj?.zimbraQuotaWarnMessage ? obj?.zimbraQuotaWarnMessage : '',
-      );
-      setValue(
-        'zimbraDataSourceMinPollingInterval',
-        obj?.zimbraDataSourceMinPollingInterval ? obj?.zimbraDataSourceMinPollingInterval : '',
-      );
-      setValue(
-        'zimbraDataSourceCalendarPollingInterval',
-        obj?.zimbraDataSourceCalendarPollingInterval
-          ? obj?.zimbraDataSourceCalendarPollingInterval
-          : '',
-      );
-      setValue(
-        'zimbraDataSourceRssPollingInterval',
-        obj?.zimbraDataSourceRssPollingInterval ? obj?.zimbraDataSourceRssPollingInterval : '',
-      );
-      setValue(
-        'zimbraPasswordLocked',
-        obj?.zimbraPasswordLocked ? obj?.zimbraPasswordLocked : 'FALSE',
-      );
-      setValue(
-        'zimbraPasswordMinLength',
-        obj?.zimbraPasswordMinLength ? obj?.zimbraPasswordMinLength : '',
-      );
-      setValue(
-        'zimbraPasswordMaxLength',
-        obj?.zimbraPasswordMaxLength ? obj?.zimbraPasswordMaxLength : '',
-      );
-      setValue(
-        'zimbraPasswordMinUpperCaseChars',
-        obj?.zimbraPasswordMinUpperCaseChars ? obj?.zimbraPasswordMinUpperCaseChars : '',
-      );
-      setValue(
-        'zimbraPasswordMinLowerCaseChars',
-        obj?.zimbraPasswordMinLowerCaseChars ? obj?.zimbraPasswordMinLowerCaseChars : '',
-      );
-      setValue(
-        'zimbraPasswordMinPunctuationChars',
-        obj?.zimbraPasswordMinPunctuationChars ? obj?.zimbraPasswordMinPunctuationChars : '',
-      );
-      setValue(
-        'zimbraPasswordMinNumericChars',
-        obj?.zimbraPasswordMinNumericChars ? obj?.zimbraPasswordMinNumericChars : '',
-      );
-      setValue(
-        'zimbraPasswordMinDigitsOrPuncs',
-        obj?.zimbraPasswordMinDigitsOrPuncs ? obj?.zimbraPasswordMinDigitsOrPuncs : '',
-      );
-      setValue('zimbraPasswordMinAge', obj?.zimbraPasswordMinAge ? obj?.zimbraPasswordMinAge : '');
-      setValue('zimbraPasswordMaxAge', obj?.zimbraPasswordMaxAge ? obj?.zimbraPasswordMaxAge : '');
-      setValue(
-        'zimbraPasswordEnforceHistory',
-        obj?.zimbraPasswordEnforceHistory ? obj?.zimbraPasswordEnforceHistory : '',
-      );
-      setValue(
-        'zimbraPasswordBlockCommonEnabled',
-        obj?.zimbraPasswordBlockCommonEnabled ? obj?.zimbraPasswordBlockCommonEnabled : 'FALSE',
-      );
-      setValue(
-        'zimbraPasswordLockoutEnabled',
-        obj?.zimbraPasswordLockoutEnabled ? obj?.zimbraPasswordLockoutEnabled : 'FALSE',
-      );
-      setValue(
-        'zimbraPasswordLockoutMaxFailures',
-        obj?.zimbraPasswordLockoutMaxFailures ? obj?.zimbraPasswordLockoutMaxFailures : '',
-      );
-      setValue(
-        'zimbraPasswordLockoutDuration',
-        obj?.zimbraPasswordLockoutDuration ? obj?.zimbraPasswordLockoutDuration : '',
-      );
-
-      setValue(
-        'zimbraPasswordLockoutFailureLifetime',
-        obj?.zimbraPasswordLockoutFailureLifetime ? obj?.zimbraPasswordLockoutFailureLifetime : '',
-      );
-      setValue(
-        'zimbraAdminAuthTokenLifetime',
-        obj?.zimbraAdminAuthTokenLifetime ? obj?.zimbraAdminAuthTokenLifetime : '',
-      );
-      setValue(
-        'zimbraAuthTokenLifetime',
-        obj?.zimbraAuthTokenLifetime ? obj?.zimbraAuthTokenLifetime : '',
-      );
-      setValue(
-        'zimbraMailIdleSessionTimeout',
-        obj?.zimbraMailIdleSessionTimeout ? obj?.zimbraMailIdleSessionTimeout : '',
-      );
-      setValue(
-        'zimbraMailMessageLifetime',
-        obj?.zimbraMailMessageLifetime ? obj?.zimbraMailMessageLifetime : '',
-      );
-      setValue(
-        'zimbraMailTrashLifetime',
-        obj?.zimbraMailTrashLifetime ? obj?.zimbraMailTrashLifetime : '',
-      );
-      setValue(
-        'zimbraMailSpamLifetime',
-        obj?.zimbraMailSpamLifetime ? obj?.zimbraMailSpamLifetime : '',
-      );
-      setValue(
-        'zimbraFreebusyExchangeUserOrg',
-        obj?.zimbraFreebusyExchangeUserOrg ? obj?.zimbraFreebusyExchangeUserOrg : '',
-      );
-    }
+    if (!obj) return;
+    [...COS_ADVANCED_FIELD_DEFAULTS, ...COS_INITIAL_VALUES_EXTRA].forEach(([key, defaultVal]) => {
+      setValue(key, (obj?.[key] ? obj?.[key] : defaultVal) as AccountType[keyof AccountType]);
+    });
   };
 
   const setStateAttrValues = (obj: AccountType): void => {
@@ -413,96 +326,10 @@ export const CosAdvanced = () => {
       cosInformation.forEach((item: Attribute) => {
         obj[item?.n as keyof AccountType] = item._content;
       });
-      if (!obj.zimbraMailForwardingAddressMaxLength) {
-        obj.zimbraMailForwardingAddressMaxLength = '';
-      }
-      if (!obj.zimbraMailForwardingAddressMaxNumAddrs) {
-        obj.zimbraMailForwardingAddressMaxNumAddrs = '';
-      }
-      if (!obj.zimbraMailQuota) {
-        obj.zimbraMailQuota = '';
-      }
-      if (!obj.zimbraContactMaxNumEntries) {
-        obj.zimbraContactMaxNumEntries = '';
-      }
-      if (!obj.zimbraQuotaWarnPercent) {
-        obj.zimbraQuotaWarnPercent = '';
-      }
-      if (!obj.zimbraQuotaWarnInterval) {
-        obj.zimbraQuotaWarnInterval = '';
-      }
-      if (!obj.zimbraQuotaWarnMessage) {
-        obj.zimbraQuotaWarnMessage = '';
-      }
-      if (!obj.zimbraPasswordLocked) {
-        obj.zimbraPasswordLocked = 'FALSE';
-      }
-      if (!obj.zimbraPasswordMinLength) {
-        obj.zimbraPasswordMinLength = '';
-      }
-      if (!obj.zimbraPasswordMaxLength) {
-        obj.zimbraPasswordMaxLength = '';
-      }
-      if (!obj.zimbraPasswordMinUpperCaseChars) {
-        obj.zimbraPasswordMinUpperCaseChars = '';
-      }
-      if (!obj.zimbraPasswordMinLowerCaseChars) {
-        obj.zimbraPasswordMinLowerCaseChars = '';
-      }
-      if (!obj.zimbraPasswordMinPunctuationChars) {
-        obj.zimbraPasswordMinPunctuationChars = '';
-      }
-      if (!obj.zimbraPasswordMinNumericChars) {
-        obj.zimbraPasswordMinNumericChars = '';
-      }
-      if (!obj.zimbraPasswordMinDigitsOrPuncs) {
-        obj.zimbraPasswordMinDigitsOrPuncs = '';
-      }
-      if (!obj.zimbraPasswordMinAge) {
-        obj.zimbraPasswordMinAge = '';
-      }
-      if (!obj.zimbraPasswordMaxAge) {
-        obj.zimbraPasswordMaxAge = '';
-      }
-      if (!obj.zimbraPasswordEnforceHistory) {
-        obj.zimbraPasswordEnforceHistory = '';
-      }
-      if (!obj.zimbraPasswordBlockCommonEnabled) {
-        obj.zimbraPasswordBlockCommonEnabled = 'FALSE';
-      }
-      if (!obj.zimbraPasswordLockoutEnabled) {
-        obj.zimbraPasswordLockoutEnabled = 'FALSE';
-      }
-      if (!obj.zimbraPasswordLockoutMaxFailures) {
-        obj.zimbraPasswordLockoutMaxFailures = '';
-      }
-      if (!obj.zimbraPasswordLockoutDuration) {
-        obj.zimbraPasswordLockoutDuration = '';
-      }
-      if (!obj.zimbraPasswordLockoutFailureLifetime) {
-        obj.zimbraPasswordLockoutFailureLifetime = '';
-      }
-      if (!obj.zimbraAdminAuthTokenLifetime) {
-        obj.zimbraAdminAuthTokenLifetime = '';
-      }
-      if (!obj.zimbraAuthTokenLifetime) {
-        obj.zimbraAuthTokenLifetime = '';
-      }
-      if (!obj.zimbraMailIdleSessionTimeout) {
-        obj.zimbraMailIdleSessionTimeout = '';
-      }
-      if (!obj.zimbraMailMessageLifetime) {
-        obj.zimbraMailMessageLifetime = '';
-      }
-      if (!obj.zimbraMailTrashLifetime) {
-        obj.zimbraMailTrashLifetime = '';
-      }
-      if (!obj.zimbraMailSpamLifetime) {
-        obj.zimbraMailSpamLifetime = '';
-      }
-      if (!obj.zimbraFreebusyExchangeUserOrg) {
-        obj.zimbraFreebusyExchangeUserOrg = '';
-      }
+      COS_ADVANCED_FIELD_DEFAULTS.forEach(([key, defaultVal]) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (!obj[key]) (obj as any)[key] = defaultVal;
+      });
       setCosData(obj);
       setInitalValues(obj);
       setStateAttrValues(obj);
