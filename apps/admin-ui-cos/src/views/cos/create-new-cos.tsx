@@ -57,18 +57,20 @@ const CreateCos: FC = () => {
   const onCreate = (): void => {
     const attributes: Array<Attribute> = [];
     setIsLoading(true);
-    attributes.push({
-      n: 'zimbraNotes',
-      _content: zimbraNotes,
-    });
-    attributes.push({
-      n: 'description',
-      _content: description,
-    });
-    attributes.push({
-      n: 'cn',
-      _content: cosName,
-    });
+    attributes.push(
+      {
+        n: 'zimbraNotes',
+        _content: zimbraNotes,
+      },
+      {
+        n: 'description',
+        _content: description,
+      },
+      {
+        n: 'cn',
+        _content: cosName,
+      },
+    );
     createCos(cosName, attributes)
       .then((data) => {
         const cos = data?.cos[0];
