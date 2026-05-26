@@ -6,7 +6,7 @@
 
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { useEffect, useRef } from 'react';
-import { describe, expect, beforeEach, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import EditBucketDetailPanel from '../edit-bucket-details-panel';
