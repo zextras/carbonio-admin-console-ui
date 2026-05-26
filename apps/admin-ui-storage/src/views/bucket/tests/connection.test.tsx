@@ -12,9 +12,10 @@ import Connection from '../connection';
 
 const mockCreateS3Connector = vi.hoisted(() => vi.fn());
 const mockListS3Regions = vi.hoisted(() => vi.fn());
+const mockT = vi.hoisted(() => (key: string, fallback?: string) => fallback ?? key);
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => [(key: string, fallback?: string) => fallback ?? key],
+  useTranslation: () => [mockT],
 }));
 
 vi.mock('@zextras/ui-components', () => ({
@@ -153,7 +154,11 @@ vi.mock('../parts/verify/verify-error', () => ({
     ) : null,
 }));
 
-function fillRequiredFields(): void {
+async function fillRequiredFields(): Promise<void> {
+  await waitFor(() => {
+    expect(screen.getByRole('option', { name: 'US East 1' })).toBeTruthy();
+  });
+
   fireEvent.change(screen.getByLabelText('Descriptive name*'), {
     target: { value: 'Main bucket' },
   });
@@ -186,13 +191,13 @@ describe('Connection', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
-    expect(screen.getByText('This field is mandatory')).toBeInTheDocument();
+    expect(screen.getByText('This field is mandatory')).toBeTruthy();
     expect(mockCreateS3Connector).not.toHaveBeenCalled();
   });
 
   it('should call createS3Connector and show success on successful verify', async () => {
     render(<Connection onCancel={vi.fn()} />);
-    fillRequiredFields();
+    await fillRequiredFields();
 
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
@@ -213,7 +218,7 @@ describe('Connection', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('verify-success')).toBeInTheDocument();
+      expect(screen.getByText('verify-success')).toBeTruthy();
     });
   });
 
@@ -224,11 +229,11 @@ describe('Connection', () => {
     });
 
     render(<Connection onCancel={vi.fn()} />);
-    fillRequiredFields();
+    await fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('Connector verification failed')).toBeInTheDocument();
+      expect(screen.getByText('Connector verification failed')).toBeTruthy();
     });
   });
 
@@ -236,7 +241,7 @@ describe('Connection', () => {
     mockCreateS3Connector.mockRejectedValue(new Error('network down'));
 
     render(<Connection onCancel={vi.fn()} />);
-    fillRequiredFields();
+    await fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
     await waitFor(() => {
@@ -244,7 +249,7 @@ describe('Connection', () => {
         screen.getByText(
           'We do not support this specific connector. Try again with a different one',
         ),
-      ).toBeInTheDocument();
+      ).toBeTruthy();
     });
   });
 
@@ -255,17 +260,17 @@ describe('Connection', () => {
     });
 
     render(<Connection onCancel={vi.fn()} />);
-    fillRequiredFields();
+    await fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('Connector verification failed')).toBeInTheDocument();
+      expect(screen.getByText('Connector verification failed')).toBeTruthy();
     });
 
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
 
     await waitFor(() => {
-      expect(screen.queryByText('Connector verification failed')).not.toBeInTheDocument();
+      expect(screen.queryByText('Connector verification failed')).toBeNull();
     });
   });
 });
