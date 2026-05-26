@@ -38,9 +38,8 @@ type S3ConnectorError = {
 };
 
 const Connection: FC<{
-  externalData?: string;
   onCancel?: () => void;
-}> = ({ externalData, onCancel }) => {
+}> = ({ onCancel }) => {
   const [t] = useTranslation();
   const [bucketRegions, setBucketRegions] = useState<Array<{ value: string; label: string }>>([]);
   const regionItems = useMemo(

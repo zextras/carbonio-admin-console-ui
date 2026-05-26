@@ -148,12 +148,14 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     }
 
     if (currentRegionValue !== initialRegionValue) {
-      const regionLabel =
-        regionSelection?.value === NO_REGION_VALUE
-          ? t('label.region_none', 'None')
-          : isCustomRegion
-            ? customRegion.trim() || '-'
-            : String(regionSelection?.label ?? regionSelection?.value ?? '-');
+      let regionLabel: string;
+      if (regionSelection?.value === NO_REGION_VALUE) {
+        regionLabel = t('label.region_none', 'None');
+      } else if (isCustomRegion) {
+        regionLabel = customRegion.trim() || '-';
+      } else {
+        regionLabel = String(regionSelection?.label ?? regionSelection?.value ?? '-');
+      }
       fields.push({
         label: t('label.region', 'Region'),
         value: regionLabel,

@@ -233,7 +233,7 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
                 'Available Buckets List (that are not in use in the backup)',
               )}
               showCheckbox={false}
-              selection={unusedType || backupUnusedBucketList[0]!}
+              selection={unusedType || backupUnusedBucketList[0]}
               onChange={onUnusedBucketListChange}
             />
           </Row>
