@@ -76,7 +76,7 @@ const DomainOperations: FC = (): React.JSX.Element => {
     const attrs = 'cn,description';
     const types = 'coses';
 
-    searchDirectory(attrs, types, '', '', 0, 0)
+    searchDirectory({ attr: attrs, type: types, domainName: '', query: '', offset: 0, limit: 0 })
       .then((data) => {
         const cosLists = data?.cos;
         if (cosLists) {

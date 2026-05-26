@@ -168,7 +168,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
       'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
     const types = 'distributionlists,dynamicgroups';
     const query = `zimbraIsAdminGroup=TRUE`;
-    searchDirectory(attrs, types, name || '', query, 0, FETCH_DATA_LIMIT, 'name')
+    searchDirectory({ attr: attrs, type: types, domainName: name || '', query, offset: 0, limit: FETCH_DATA_LIMIT, sortBy: 'name' })
       .then((res) => {
         setDistributionList(res?.dl);
       })

@@ -181,7 +181,7 @@ const DomainMailingList: FC = () => {
     const types = 'distributionlists,dynamicgroups';
     const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
     setIsRequestInProgress(true);
-    searchDirectory(attrs, types, domainName || '', query, offset, limit, sortedColumn, sortOrder)
+    searchDirectory({ attr: attrs, type: types, domainName: domainName || '', query, offset, limit, sortBy: sortedColumn, sortAscending: sortOrder })
       .then((data) => {
         const dlList = data?.dl;
         if (dlList) {

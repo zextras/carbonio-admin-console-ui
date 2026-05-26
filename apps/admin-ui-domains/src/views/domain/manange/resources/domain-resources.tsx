@@ -181,7 +181,7 @@ const DomainResources: FC = () => {
       const types = 'resources';
       const query = `${queryString}(&(!(zimbraIsSystemAccount=TRUE)))`;
       setIsRequestInProgress(true);
-      searchDirectory(attrs, types, zimbraDomainName, query, offset, limit, sortBy, sortAsceding)
+      searchDirectory({ attr: attrs, type: types, domainName: zimbraDomainName, query, offset, limit, sortBy, sortAscending: sortAsceding })
         .then((data) => {
           const resourceListResponse = data?.calresource || [];
           if (resourceListResponse && Array.isArray(resourceListResponse)) {

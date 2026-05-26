@@ -462,7 +462,7 @@ export const CosGeneralInformation = () => {
     const type = 'accounts';
     const attrs =
       'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-    searchDirectory(attrs, type, '', searchAccountQuery, offset, accountLimit)
+    searchDirectory({ attr: attrs, type, domainName: '', query: searchAccountQuery, offset, limit: accountLimit })
       .then((data) => {
         const accountListResponse = data?.account || [];
         if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -518,7 +518,7 @@ export const CosGeneralInformation = () => {
     const type = 'domains';
     const attrs =
       'description,zimbraDomainName,zimbraDomainStatus,zimbraId,zimbraDomainType,zimbraDomainCOSMaxAccounts,zimbraDomainDefaultCOSId';
-    searchDirectory(attrs, type, '', searchDomainQuery, domainOffset, limit)
+    searchDirectory({ attr: attrs, type, domainName: '', query: searchDomainQuery, offset: domainOffset, limit })
       .then((data) => {
         const domainListResponse = data?.domain || [];
         if (domainListResponse && Array.isArray(domainListResponse)) {

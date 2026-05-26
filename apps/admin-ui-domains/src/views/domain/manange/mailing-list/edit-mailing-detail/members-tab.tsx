@@ -206,7 +206,7 @@ export const MembersTab: FC<MembersTabProps> = ({
       const types = 'accounts,distributionlists,aliases';
       const query = `(&(!(zimbraAccountStatus=closed))(!(zimbraIsAdminGroup=TRUE))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)))`;
 
-      searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name')
+      searchDirectory({ attr: attrs, type: types, domainName: '', query, offset: 0, limit: RECORD_DISPLAY_LIMIT, sortBy: 'name' })
         .then((data) => {
           const result: Array<any> = [];
           const dl = data?.dl;

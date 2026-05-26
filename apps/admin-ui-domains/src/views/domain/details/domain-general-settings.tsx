@@ -711,7 +711,7 @@ const DomainGeneralSettings: FC = () => {
       const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
       const attrs =
         'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus, zimbraIsSystemAccount';
-      searchDirectory(attrs, type, domainName, '', offset, limit)
+      searchDirectory({ attr: attrs, type, domainName, query: '', offset, limit })
         .then((data) => {
           if (data?.account?.length) {
             data.account.forEach((item: DirectoryEntry) => {

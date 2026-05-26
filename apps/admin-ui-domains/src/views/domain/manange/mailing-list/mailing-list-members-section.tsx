@@ -137,7 +137,7 @@ const MailingListMembersSection: FC<any> = () => {
       const types = 'accounts,distributionlists,aliases';
       const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
 
-      searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name')
+      searchDirectory({ attr: attrs, type: types, domainName: '', query, offset: 0, limit: RECORD_DISPLAY_LIMIT, sortBy: 'name' })
         .then((data) => {
           const result: any[] = [];
 

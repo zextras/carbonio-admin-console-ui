@@ -18,7 +18,7 @@ describe('searchDirectory', () => {
 		const mockResponse = { cos: [], more: false, searchTotal: 0 };
 		vi.mocked(soapFetch).mockResolvedValue(mockResponse);
 
-		const result = await searchDirectory('zimbraId,name', 'cos', '', '');
+		const result = await searchDirectory({ attr: 'zimbraId,name', type: 'cos', domainName: '', query: '' });
 
 		expect(soapFetch).toHaveBeenCalledWith('SearchDirectory', {
 			_jsns: 'urn:zimbraAdmin',
@@ -37,7 +37,7 @@ describe('searchDirectory', () => {
 	it('should include domain when domainName is provided', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', 'example.com', '');
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: 'example.com', query: '' });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).toHaveProperty('domain', 'example.com');
 	});
@@ -45,7 +45,7 @@ describe('searchDirectory', () => {
 	it('should omit domain when domainName is empty', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '');
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '' });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).not.toHaveProperty('domain');
 	});
@@ -53,7 +53,7 @@ describe('searchDirectory', () => {
 	it('should include query when query is provided', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '(zimbraCOSId=123)');
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '(zimbraCOSId=123)' });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).toHaveProperty('query', '(zimbraCOSId=123)');
 	});
@@ -61,7 +61,7 @@ describe('searchDirectory', () => {
 	it('should omit query when query is empty', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '');
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '' });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).not.toHaveProperty('query');
 	});
@@ -69,7 +69,7 @@ describe('searchDirectory', () => {
 	it('should include sortBy when sortBy is provided', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '', undefined, undefined, 'name');
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '', sortBy: 'name' });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).toHaveProperty('sortBy', 'name');
 	});
@@ -77,7 +77,7 @@ describe('searchDirectory', () => {
 	it('should omit sortBy when sortBy is empty', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '', undefined, undefined, '');
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '', sortBy: '' });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).not.toHaveProperty('sortBy');
 	});
@@ -85,7 +85,7 @@ describe('searchDirectory', () => {
 	it('should set sortAscending to 1 when sortAscending is asc', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '', undefined, undefined, undefined, 'asc');
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '', sortAscending: 'asc' });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).toHaveProperty('sortAscending', 1);
 	});
@@ -93,7 +93,7 @@ describe('searchDirectory', () => {
 	it('should set sortAscending to 0 when sortAscending is not asc', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '', undefined, undefined, undefined, 'desc');
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '', sortAscending: 'desc' });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).toHaveProperty('sortAscending', 0);
 	});
@@ -101,7 +101,7 @@ describe('searchDirectory', () => {
 	it('should keep default sortAscending as string "1" when sortAscending is empty', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '', undefined, undefined, undefined, '');
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '', sortAscending: '' });
 
 		const callArgs = vi.mocked(soapFetch).mock.calls[0][1] as Record<string, unknown>;
 		expect(callArgs.sortAscending).toBe('1');
@@ -110,7 +110,7 @@ describe('searchDirectory', () => {
 	it('should use provided limit when limit is specified', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '', undefined, 25);
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '', limit: 25 });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).toHaveProperty('limit', 25);
 	});
@@ -118,7 +118,7 @@ describe('searchDirectory', () => {
 	it('should use provided offset when offset is specified', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '', 10);
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '', offset: 10 });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).toHaveProperty('offset', 10);
 	});
@@ -126,16 +126,16 @@ describe('searchDirectory', () => {
 	it('should handle all parameters provided together', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [{ id: 'cos-1' }] });
 
-		const result = await searchDirectory(
-			'zimbraId,name',
-			'accounts',
-			'test.com',
-			'(objectClass=*)',
-			20,
-			100,
-			'createdAt',
-			'asc',
-		);
+		const result = await searchDirectory({
+			attr: 'zimbraId,name',
+			type: 'accounts',
+			domainName: 'test.com',
+			query: '(objectClass=*)',
+			offset: 20,
+			limit: 100,
+			sortBy: 'createdAt',
+			sortAscending: 'asc',
+		});
 
 		expect(soapFetch).toHaveBeenCalledWith('SearchDirectory', {
 			_jsns: 'urn:zimbraAdmin',
@@ -156,7 +156,7 @@ describe('searchDirectory', () => {
 	it('should use default offset of 0 when offset is 0 (falsy)', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '', 0);
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '', offset: 0 });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).toHaveProperty('offset', 0);
 	});
@@ -164,7 +164,7 @@ describe('searchDirectory', () => {
 	it('should use default limit of 50 when limit is undefined', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '', undefined, undefined);
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '' });
 
 		expect(vi.mocked(soapFetch).mock.calls[0][1]).toHaveProperty('limit', 50);
 	});
@@ -172,7 +172,7 @@ describe('searchDirectory', () => {
 	it('should call soapFetch exactly once per invocation', async () => {
 		vi.mocked(soapFetch).mockResolvedValue({ cos: [] });
 
-		await searchDirectory('zimbraId', 'cos', '', '');
+		await searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '' });
 
 		expect(soapFetch).toHaveBeenCalledTimes(1);
 	});
@@ -180,6 +180,6 @@ describe('searchDirectory', () => {
 	it('should propagate errors from soapFetch', async () => {
 		vi.mocked(soapFetch).mockRejectedValue(new Error('SOAP fault'));
 
-		await expect(searchDirectory('zimbraId', 'cos', '', '')).rejects.toThrow('SOAP fault');
+		await expect(searchDirectory({ attr: 'zimbraId', type: 'cos', domainName: '', query: '' })).rejects.toThrow('SOAP fault');
 	});
 });

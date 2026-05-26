@@ -14,7 +14,7 @@ export const useTotalDomains = (cosId: string | undefined) => {
     queryKey: cosQueryKeys.totalDomains(cosId ?? ''),
     queryFn: async () => {
       const query = `(zimbraDomainDefaultCOSId=${cosId})`;
-      const data = await searchDirectory('', 'domains', '', query, 0, -1);
+      const data = await searchDirectory({ attr: '', type: 'domains', domainName: '', query, offset: 0, limit: -1 });
       return data?.searchTotal ?? 0;
     },
     enabled: !!cosId,

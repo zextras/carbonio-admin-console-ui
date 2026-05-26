@@ -14,7 +14,7 @@ export const useTotalAccounts = (cosId: string | undefined) => {
     queryKey: cosQueryKeys.totalAccounts(cosId ?? ''),
     queryFn: async () => {
       const query = `(&(zimbraCOSId=${cosId})(!(zimbraIsSystemAccount=TRUE)))`;
-      const data = await searchDirectory('', 'accounts', '', query, 0, -1);
+      const data = await searchDirectory({ attr: '', type: 'accounts', domainName: '', query, offset: 0, limit: -1 });
       return data?.searchTotal ?? 0;
     },
     enabled: !!cosId,

@@ -596,7 +596,7 @@ const ManageDelegates: FC = () => {
       const attrs =
         'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
       const types = 'distributionlists,dynamicgroups';
-      searchDirectory(attrs, types, name ?? '', query, offsetData, limitData, 'name')
+      searchDirectory({ attr: attrs, type: types, domainName: name ?? '', query, offset: offsetData, limit: limitData, sortBy: 'name' })
         .then((res) => {
           const data = res?.dl;
           if (data && type === SYSTEM_ACCOUNT_FLAG) {

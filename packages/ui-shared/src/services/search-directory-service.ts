@@ -44,16 +44,27 @@ export type DomainDirectories = {
 	calresource: Array<DirectoryEntry>;
 };
 
-export const searchDirectory = async (
-	attr: string,
-	type: string,
-	domainName: string,
-	query: string,
-	offset?: number,
-	limit?: number,
-	sortBy?: string,
-	sortAscending?: string,
-): Promise<SearchDomainDirectories> => {
+export type SearchDirectoryOptions = {
+  attr: string;
+  type: string;
+  domainName: string;
+  query: string;
+  offset?: number;
+  limit?: number;
+  sortBy?: string;
+  sortAscending?: string;
+};
+
+export const searchDirectory = async ({
+  attr,
+  type,
+  domainName,
+  query,
+  offset,
+  limit,
+  sortBy,
+  sortAscending,
+}: SearchDirectoryOptions): Promise<SearchDomainDirectories> => {
 	const request: Record<string, string | number | undefined> = {
 		_jsns: 'urn:zimbraAdmin',
 		limit: limit ?? 50,

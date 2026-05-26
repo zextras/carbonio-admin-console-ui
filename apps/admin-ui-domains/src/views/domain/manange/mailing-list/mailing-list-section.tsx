@@ -105,12 +105,12 @@ const MailingListSection: FC<any> = () => {
 
   const getMemberFromLdapQuery = useCallback(() => {
     const query = mailingListDetail?.memberURL.replace('ldap:///??sub?', '');
-    searchDirectory(
-      'cn,description,name,zimbraId',
-      'accounts,distributionlists,dynamicgroups,accounts,aliases,dynamicgroups,resources',
-      '',
+    searchDirectory({
+      attr: 'cn,description,name,zimbraId',
+      type: 'accounts,distributionlists,dynamicgroups,accounts,aliases,dynamicgroups,resources',
+      domainName: '',
       query,
-    )
+    })
       .then((data) => {
         const allList: any[] = [];
         const account = data?.account;
