@@ -4,29 +4,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
-function getMatches(query: string): boolean {
-	if (typeof window === 'undefined') return false;
+function getSnapshot(query: string): boolean {
 	return window.matchMedia(query).matches;
 }
 
+function getServerSnapshot(): boolean {
+	return false;
+}
+
 function useMediaQuery(query: string): boolean {
-	const [matches, setMatches] = useState<boolean>(() => getMatches(query));
+	const subscribe = useCallback(
+		(onStoreChange: () => void) => {
+			const mediaQuery = window.matchMedia(query);
+			mediaQuery.addEventListener('change', onStoreChange);
+			return () => mediaQuery.removeEventListener('change', onStoreChange);
+		},
+		[query],
+	);
 
-	useEffect(() => {
-		const mediaQuery = window.matchMedia(query);
-		setMatches(mediaQuery.matches);
-
-		function handleChange(event: MediaQueryListEvent): void {
-			setMatches(event.matches);
-		}
-
-		mediaQuery.addEventListener('change', handleChange);
-		return () => mediaQuery.removeEventListener('change', handleChange);
-	}, [query]);
-
-	return matches;
+	return useSyncExternalStore(subscribe, () => getSnapshot(query), getServerSnapshot);
 }
 
 export { useMediaQuery };

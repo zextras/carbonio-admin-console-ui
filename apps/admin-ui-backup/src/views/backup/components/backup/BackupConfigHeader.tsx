@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
+import { TFunction } from 'i18next';
 import { FC } from 'react';
 
 interface BackupConfigHeaderProps {
@@ -11,7 +12,7 @@ interface BackupConfigHeaderProps {
 	isDirty: boolean;
 	onCancel: () => void;
 	onSave: () => void;
-	t: (key: string, fallback?: string) => string;
+	t: TFunction;
 }
 
 const BackupConfigHeader: FC<BackupConfigHeaderProps> = ({

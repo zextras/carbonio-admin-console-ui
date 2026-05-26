@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import i18next from 'i18next';
+import i18next, { type i18n } from 'i18next';
 
 export default class I18nTestFactory {
-	getAppI18n() {
+	getAppI18n(): i18n {
 		const newI18n = i18next.createInstance();
 		newI18n.init({
 			lng: 'en',

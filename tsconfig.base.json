@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/vite-react",
   "compilerOptions": {
+    "strict": true,
     "composite": true,
     "allowImportingTsExtensions": false,
     "verbatimModuleSyntax": false,
