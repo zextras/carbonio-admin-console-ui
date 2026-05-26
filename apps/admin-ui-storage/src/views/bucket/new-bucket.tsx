@@ -14,14 +14,12 @@ import Connection from './connection';
 type NewBucketProps = {
   setToggleWizardSection: (value: boolean) => void;
   setDetailsBucket: (value: boolean) => void;
-  bucketType?: string;
   setConnectionData: (value: objectType | undefined) => void;
 };
 
 const NewBucket: FC<NewBucketProps> = ({
   setToggleWizardSection,
   setDetailsBucket,
-  bucketType,
   setConnectionData,
 }) => {
   const { t } = useTranslation();
@@ -56,7 +54,6 @@ const NewBucket: FC<NewBucketProps> = ({
       </Row>
       <ds-divider></ds-divider>
       <Connection
-        externalData={bucketType}
         onCancel={(): void => {
           setToggleWizardSection(false);
           setDetailsBucket(false);

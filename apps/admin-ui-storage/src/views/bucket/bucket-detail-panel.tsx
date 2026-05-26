@@ -187,7 +187,6 @@ const BucketDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
-  const bucketType = '';
   const [bucketList, setBucketList] = useState<objectType[]>([]);
   const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>();
   const [allBucketList, setAllBucketList] = useState<Array<objectType>>([]);
@@ -323,7 +322,6 @@ const BucketDetailPanel: FC = () => {
             setToggleWizardSection={setToggleWizardSection}
             setDetailsBucket={setShowEditDetailView}
             setConnectionData={setConnectionData as (data: unknown) => void}
-            bucketType={bucketType}
           />
         </ModalOverlay>
       )}
