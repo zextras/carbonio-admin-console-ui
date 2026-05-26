@@ -154,7 +154,6 @@ export const COSPreferences = (): React.JSX.Element => {
         <SendingMails
           cosPrefAttributes={draftCosPrefAttributes}
           isReadOnlyCosEntry={isReadOnlyCos}
-          onCosAttributeChanged={handleCosPrefAttributeChange}
           changeSwitchOption={handleSwitchOptionChange}
         />
         <ds-divider></ds-divider>

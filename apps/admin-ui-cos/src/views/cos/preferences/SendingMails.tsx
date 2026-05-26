@@ -8,12 +8,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosPrefAttributes } from '../../../../types/cos';
-import { AttributeValue } from '../constants/types';
 
 interface SendingMailsProps {
 	cosPrefAttributes: CosPrefAttributes;
 	isReadOnlyCosEntry: boolean;
-	onCosAttributeChanged: (attribute: keyof CosPrefAttributes, value: AttributeValue) => void;
 	changeSwitchOption: (value: keyof CosPrefAttributes) => void;
 }
 
