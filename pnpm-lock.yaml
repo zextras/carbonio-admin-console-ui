@@ -134,7 +134,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
@@ -152,13 +152,13 @@ importers:
         version: 2.6.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -170,7 +170,7 @@ importers:
         version: 2.2.2
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -273,7 +273,7 @@ importers:
         version: 5.2.10
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
@@ -321,7 +321,7 @@ importers:
         version: 4.3.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       i18next-http-backend:
         specifier: ^4.0.0
         version: 4.0.0
@@ -339,7 +339,7 @@ importers:
         version: 19.2.6(react@19.2.6)
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -457,7 +457,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@vitest/browser-preview':
         specifier: ^4.1.0
         version: 4.1.7(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@4.1.7)
@@ -469,19 +469,19 @@ importers:
         version: link:../../packages/ui-shared
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       react:
         specifier: ^19.2.3
         version: 19.2.6
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -575,7 +575,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
@@ -599,7 +599,7 @@ importers:
         version: 2.6.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
@@ -608,7 +608,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -620,7 +620,7 @@ importers:
         version: 2.2.2
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -717,7 +717,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
@@ -744,7 +744,7 @@ importers:
         version: 2.6.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
@@ -753,7 +753,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -765,7 +765,7 @@ importers:
         version: 2.2.2
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -865,7 +865,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
@@ -889,7 +889,7 @@ importers:
         version: 2.6.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
@@ -898,7 +898,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -910,7 +910,7 @@ importers:
         version: 2.2.2
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1007,7 +1007,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
@@ -1031,7 +1031,7 @@ importers:
         version: 2.6.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
@@ -1040,7 +1040,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1052,7 +1052,7 @@ importers:
         version: 2.2.2
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1149,7 +1149,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
@@ -1170,7 +1170,7 @@ importers:
         version: 2.6.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
@@ -1179,7 +1179,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1191,7 +1191,7 @@ importers:
         version: 2.2.2
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1291,7 +1291,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
@@ -1312,7 +1312,7 @@ importers:
         version: 2.6.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
@@ -1321,7 +1321,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1333,7 +1333,7 @@ importers:
         version: 2.2.2
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1430,7 +1430,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-form':
         specifier: ^1.27.0
         version: 1.32.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1454,7 +1454,7 @@ importers:
         version: 2.6.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
@@ -1463,7 +1463,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1475,7 +1475,7 @@ importers:
         version: 2.2.2
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1572,7 +1572,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
@@ -1593,7 +1593,7 @@ importers:
         version: 2.6.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
@@ -1602,7 +1602,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1614,7 +1614,7 @@ importers:
         version: 2.2.2
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1711,7 +1711,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
@@ -1735,7 +1735,7 @@ importers:
         version: 2.6.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       immer:
         specifier: ^11.1.8
         version: 11.1.8
@@ -1744,7 +1744,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.376.0
+        version: 1.376.1
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.6)
@@ -1756,7 +1756,7 @@ importers:
         version: 2.2.2
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1853,7 +1853,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -1862,7 +1862,7 @@ importers:
         version: link:../ui-shared
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       react:
         specifier: ^19.2.3
         version: 19.2.6
@@ -1914,7 +1914,7 @@ importers:
         version: 1.7.6
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)
+        version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
       '@zextras/ui-shared':
         specifier: workspace:*
         version: link:../ui-shared
@@ -2005,7 +2005,7 @@ importers:
         version: 4.3.0
       i18next:
         specifier: ^26.2.0
-        version: 26.2.0(typescript@6.0.3)
+        version: 26.3.0(typescript@6.0.3)
       i18next-http-backend:
         specifier: ^4.0.0
         version: 4.0.0
@@ -2023,7 +2023,7 @@ importers:
         version: 19.2.6(react@19.2.6)
       react-i18next:
         specifier: ^17.0.8
-        version: 17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+        version: 17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
       react-router:
         specifier: ^7.13.0
         version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -3178,8 +3178,8 @@ packages:
     resolution: {integrity: sha512-KMQIfq5sOPpkQYajXHwnhjCC0slzCNScLHs9JafXc4RAJI+9f+jNDlBNaIMTvazOPLgb4BnlhGJOTbnN0wIjPw==}
     engines: {node: '>= 20'}
 
-  '@octokit/request@10.0.9':
-    resolution: {integrity: sha512-o8Bi3f608eyM+7BmBiUWxFsdjLb3/ym1cQek5LZOv9KkZcxRrHCPhhRzm6xjO6HVZ85ItD6+sTsjxo821SVa/A==}
+  '@octokit/request@10.0.10':
+    resolution: {integrity: sha512-KxNC2pTqqhszMNrf12ZRd4PonRgyJdsM4F/jySiddQK+DsRcfBtUvqn8t7UsyZhnRJHvX46OohDt5N3VqIWC2w==}
     engines: {node: '>= 20'}
 
   '@octokit/types@16.0.0':
@@ -3613,8 +3613,8 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@posthog/core@1.29.9':
-    resolution: {integrity: sha512-DjvuIyBZ2Z/gBhtZlITlM2D8PlnMsHSQ1D78dbUYoVsgGguvanpJTobZObjLlFkybyvfZFYkpoJkFNI/2Pw4IQ==}
+  '@posthog/core@1.29.10':
+    resolution: {integrity: sha512-j4wa+E8z3dNM7tEb/tvUjEw7hHQQzHy4K/WRwwBwWdsOfOYRsLmnz15r4Men6ZQNIKyMUkK2RanWwptdGT4oIg==}
 
   '@posthog/react@1.9.1':
     resolution: {integrity: sha512-tIGjs8WzKPrHQmSyM/2a3GoedQkttkxgmCsdn0kgy+6mIiSNk36FAFGKbWFJ7/Kln5bHwcM/MQhiGYbwQG8bQQ==}
@@ -3626,8 +3626,8 @@ packages:
       '@types/react':
         optional: true
 
-  '@posthog/types@1.376.0':
-    resolution: {integrity: sha512-gbFfxCuZDs/D4QZMwdE+smD1jsuqgGpS6yKGHZZ19foxMy8RYHsU1E47iG1b88n/uN02fAabLibVwuxLtq8juw==}
+  '@posthog/types@1.376.1':
+    resolution: {integrity: sha512-aat3Fvb7sbBpA6DSaNp7Vy3IAL2j28wkg/AVgYSwxX9Fae0K2W42DWQpNpUS4HSFcJb7RpC5XJboKddpVDXfQw==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -4607,8 +4607,8 @@ packages:
   bottleneck@2.19.5:
     resolution: {integrity: sha512-VHiNCbI1lKdl44tGrhNfU3lup0Tj/ZBMJB5/2ZbNXRCPuRCO7ed2mgcK4r17y+KB2EfuYuRaVlwNbAeaWGSpbw==}
 
-  brace-expansion@1.1.14:
-    resolution: {integrity: sha512-MWPGfDxnyzKU7rNOW9SP/c50vi3xrmrua/+6hfPbCS2ABNWfx24vPidzvC7krjU/RTo235sV776ymlsMtGKj8g==}
+  brace-expansion@1.1.15:
+    resolution: {integrity: sha512-EwOCDEex4quD37XhqM3omwtMoJjr//isUZz1JopUNWms+4Z2ViyM/k1YIRePpoVNnQhENnxtFjLaxNHrT7xIUg==}
 
   brace-expansion@2.1.1:
     resolution: {integrity: sha512-WR1cURNjuvBLMZBMbqM0UoE+WAfdUcEV1ccD8PVBVOI+Z3ND4+SZbN8RsfT2bMuG1qwz5RFvPukSZm5fF2D5eA==}
@@ -5000,8 +5000,8 @@ packages:
     resolution: {integrity: sha512-gYzvtM72ZtxQO0T048kd6HWSbbGCNOUwcnfQ01cqIJ4X2IYKFFHZ5mKvrQETcFXxsRObZulDaKmy//R7TPtsBg==}
     engines: {node: '>=20.19.0'}
 
-  dompurify@3.4.5:
-    resolution: {integrity: sha512-OrwIBKsdNSVEeubdJ1HBv/wNENRM9ytAVCv7YXt//A3vPdVMNuACRqK9mXCGCBW2ln7BT/A4X0jXHo2Gu89miA==}
+  dompurify@3.4.6:
+    resolution: {integrity: sha512-+7gzEI8trIIQkVCvQ3ucGtNfH3nOmDgVTzc62rAAOlMxLth78pwpPoZCPc7CyRzAQF89MqcfPdEWkDwnjgqktg==}
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
@@ -5270,9 +5270,6 @@ packages:
   expect-type@1.3.0:
     resolution: {integrity: sha512-knvyeauYhqjOYvQ66MznSMs83wmHrCycNEN6Ao+2AeYEfxUIkuiVxdEa1qlGEPK+We3n0THiDciYSsCcgW/DoA==}
     engines: {node: '>=12.0.0'}
-
-  fast-content-type-parse@3.0.0:
-    resolution: {integrity: sha512-ZvLdcY8P+N8mGQJahJV5G4U88CSvT1rP8ApL6uETe88MBXrBHAkZlSEySdUlyztF7ccb+Znos3TFqaepHxdhBg==}
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
@@ -5623,8 +5620,8 @@ packages:
       typescript:
         optional: true
 
-  i18next@26.2.0:
-    resolution: {integrity: sha512-zwBHldHdTmwN7r6UNc7lC6GWNN+YYg3DrRSeHR5PRRBf5QnJZcYHrQc0uaU26qZeYxR7iFZD+Y315dPnKP47wA==}
+  i18next@26.3.0:
+    resolution: {integrity: sha512-gHSgGpUXVmuqE2El1W61DmxeyeTlFfZgdJRWMo9jScAn5pu7TuTuiccb1zh3E2J9hEBVGJ23+96x0ieBhfuIHA==}
     peerDependencies:
       typescript: ^5 || ^6
     peerDependenciesMeta:
@@ -6690,8 +6687,8 @@ packages:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.376.0:
-    resolution: {integrity: sha512-YGfQ6gSmqmEh287PHjXRDJ9zML3Su1UIt1+xjRy7Yk6yW43Sc7sFK3CpCkLchCGhIA4x6VaqK+LaqB+7+MCo7A==}
+  posthog-js@1.376.1:
+    resolution: {integrity: sha512-JKVcC9ql2YzyfLLjqwxoxl5aDiUZkU2FG5ZToagMPFZrCIok+38GunWTIdXqkwN8fv59NDZsoJEvaY6OzetQ+A==}
 
   preact@10.29.2:
     resolution: {integrity: sha512-7tNmwg/7mzzAoB/8kSg6Hl37JraAZw3Z3A0JSY7VXlZwo82Xn0G7wKbNNs2qoF4ZEEsQGTwDAroNdqKs1ofJxQ==}
@@ -8966,7 +8963,7 @@ snapshots:
     dependencies:
       '@octokit/auth-token': 6.0.0
       '@octokit/graphql': 9.0.3
-      '@octokit/request': 10.0.9
+      '@octokit/request': 10.0.10
       '@octokit/request-error': 7.1.0
       '@octokit/types': 16.0.0
       before-after-hook: 4.0.0
@@ -8979,7 +8976,7 @@ snapshots:
 
   '@octokit/graphql@9.0.3':
     dependencies:
-      '@octokit/request': 10.0.9
+      '@octokit/request': 10.0.10
       '@octokit/types': 16.0.0
       universal-user-agent: 7.0.3
 
@@ -9007,13 +9004,12 @@ snapshots:
     dependencies:
       '@octokit/types': 16.0.0
 
-  '@octokit/request@10.0.9':
+  '@octokit/request@10.0.10':
     dependencies:
       '@octokit/endpoint': 11.0.3
       '@octokit/request-error': 7.1.0
       '@octokit/types': 16.0.0
       content-type: 2.0.0
-      fast-content-type-parse: 3.0.0
       json-with-bigint: 3.5.8
       universal-user-agent: 7.0.3
 
@@ -9316,18 +9312,18 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@posthog/core@1.29.9':
+  '@posthog/core@1.29.10':
     dependencies:
-      '@posthog/types': 1.376.0
+      '@posthog/types': 1.376.1
 
-  '@posthog/react@1.9.1(@types/react@19.2.15)(posthog-js@1.376.0)(react@19.2.6)':
+  '@posthog/react@1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)':
     dependencies:
-      posthog-js: 1.376.0
+      posthog-js: 1.376.1
       react: 19.2.6
     optionalDependencies:
       '@types/react': 19.2.15
 
-  '@posthog/types@1.376.0': {}
+  '@posthog/types@1.376.1': {}
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -10376,7 +10372,7 @@ snapshots:
 
   bottleneck@2.19.5: {}
 
-  brace-expansion@1.1.14:
+  brace-expansion@1.1.15:
     dependencies:
       balanced-match: 1.0.2
       concat-map: 0.0.1
@@ -10783,7 +10779,7 @@ snapshots:
     dependencies:
       domelementtype: 3.0.0
 
-  dompurify@3.4.5:
+  dompurify@3.4.6:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -11224,8 +11220,6 @@ snapshots:
 
   expect-type@1.3.0: {}
 
-  fast-content-type-parse@3.0.0: {}
-
   fast-deep-equal@3.1.3: {}
 
   fast-fifo@1.3.2: {}
@@ -11568,7 +11562,7 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
-  i18next@26.2.0(typescript@6.0.3):
+  i18next@26.3.0(typescript@6.0.3):
     optionalDependencies:
       typescript: 6.0.3
 
@@ -12137,7 +12131,7 @@ snapshots:
 
   minimatch@3.1.5:
     dependencies:
-      brace-expansion: 1.1.14
+      brace-expansion: 1.1.15
 
   minimatch@5.1.9:
     dependencies:
@@ -12569,17 +12563,17 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.376.0:
+  posthog-js@1.376.1:
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/api-logs': 0.208.0
       '@opentelemetry/exporter-logs-otlp-http': 0.208.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/resources': 2.7.1(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-logs': 0.208.0(@opentelemetry/api@1.9.1)
-      '@posthog/core': 1.29.9
-      '@posthog/types': 1.376.0
+      '@posthog/core': 1.29.10
+      '@posthog/types': 1.376.1
       core-js: 3.49.0
-      dompurify: 3.4.5
+      dompurify: 3.4.6
       fflate: 0.4.8
       preact: 10.29.2
       query-selector-shadow-dom: 1.0.1
@@ -12667,11 +12661,11 @@ snapshots:
       react: 19.2.6
       scheduler: 0.27.0
 
-  react-i18next@17.0.8(i18next@26.2.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3):
+  react-i18next@17.0.8(i18next@26.3.0(typescript@6.0.3))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3):
     dependencies:
       '@babel/runtime': 7.29.7
       html-parse-stringify: 3.0.1
-      i18next: 26.2.0(typescript@6.0.3)
+      i18next: 26.3.0(typescript@6.0.3)
       react: 19.2.6
       use-sync-external-store: 1.6.0(react@19.2.6)
     optionalDependencies:
