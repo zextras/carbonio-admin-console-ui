@@ -26,6 +26,7 @@ type SwitchProps = Omit<ContainerProps, 'onChange' | 'onClick'> & {
   onChange?: (checked: boolean) => void;
   size?: SwitchSize;
   iconColor?: string;
+  iconAriaLabel?: string;
   ref?: React.Ref<HTMLDivElement>;
 };
 
@@ -39,6 +40,7 @@ const Switch = ({
   onChange,
   size = 'medium',
   iconColor = 'gray0',
+  iconAriaLabel,
   ref,
   ...rest
 }: SwitchProps) => {
@@ -85,6 +87,7 @@ const Switch = ({
           size={size === 'medium' ? 'large' : 'medium'}
           color={String(iconColor)}
           disabled={disabled || undefined}
+          aria-label={iconAriaLabel}
         />
       </div>
       {label && (
