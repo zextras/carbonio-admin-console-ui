@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -13,17 +13,23 @@ import ModifyVolume from '../modify-volume';
 
 const mockSoapFetch = vi.hoisted(() => vi.fn());
 const mockCreateSnackbar = vi.hoisted(() => vi.fn());
+const mockListS3Connector = vi.hoisted(() => vi.fn());
+const mockSetIsVolumeAllDetail = vi.hoisted(() => vi.fn());
+const mockAdvancedMode = vi.hoisted(() => ({ value: false }));
+const mockT = vi.hoisted(
+  () => (_key: string, fallback?: string, options?: { message?: string }) =>
+    options?.message ?? fallback ?? _key,
+);
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (_key: string, fallback?: string, options?: { message?: string }) =>
-      options?.message ?? fallback ?? _key,
+    t: mockT,
   }),
   Trans: ({ defaults }: { defaults?: string }) => <span>{defaults}</span>,
 }));
 
 vi.mock('@zextras/ui-shared', () => ({
-  useIsAdvanced: () => false,
+  useIsAdvanced: () => mockAdvancedMode.value,
   soapFetch: mockSoapFetch,
   useStickyBarStore: () => ({
     isSticky: false,
@@ -71,12 +77,12 @@ vi.mock('@zextras/ui-components', () => ({
   useSnackbar: () => mockCreateSnackbar,
 }));
 
-vi.mock('../../../../../../../services/bucket-service', () => ({
-  listS3Connector: vi.fn(),
+vi.mock('../../../../../../services/bucket-service', () => ({
+  listS3Connector: mockListS3Connector,
   fetchSoap: vi.fn(),
 }));
 
-vi.mock('../../../../../../../store/bucket-volume/store', () => ({
+vi.mock('../../../../../../store/bucket-volume/store', () => ({
   useBucketVolumeStore: (
     selector: (state: {
       selectedServerName: string;
@@ -87,13 +93,14 @@ vi.mock('../../../../../../../store/bucket-volume/store', () => ({
     selector({
       selectedServerName: 'mailstore1.example.com',
       isVolumeAllDetail: [],
-      setIsVolumeAllDetail: vi.fn(),
+      setIsVolumeAllDetail: mockSetIsVolumeAllDetail,
     }),
 }));
 
 describe('ModifyVolume', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockAdvancedMode.value = false;
   });
 
   it('should show error snackbar and refresh volume list when GetVolume fails in non-advanced mode', async () => {
@@ -143,5 +150,71 @@ describe('ModifyVolume', () => {
     });
 
     expect(setmodifyVolumeToggle).not.toHaveBeenCalledWith(true);
+  });
+
+  it('should set unused bucket data when external advanced volume loads connectors', async () => {
+    mockAdvancedMode.value = true;
+    mockListS3Connector.mockResolvedValue([
+      {
+        uuid: 'bucket-1',
+        label: 'Primary connector',
+        bucketName: 'primary-bucket',
+        storeType: 'S3',
+      },
+      {
+        uuid: 'bucket-2',
+        label: 'Secondary connector',
+        bucketName: 'secondary-bucket',
+        storeType: 'Ceph',
+      },
+    ]);
+
+    const setmodifyVolumeToggle = vi.fn();
+
+    const volumeList: { primaries: Volume[]; secondaries: Volume[]; indexes: Volume[] } = {
+      primaries: [
+        {
+          id: 100,
+          name: 'external-primary-volume',
+          type: 1,
+          rootpath: '/opt/store',
+          compressBlobs: 'false',
+          compressionThreshold: '4096',
+          isCurrent: false,
+          bucketConfigurationId: 'bucket-1',
+          volumePrefix: 'mail',
+          storeType: 'S3',
+        },
+      ],
+      secondaries: [],
+      indexes: [],
+    };
+
+    render(
+      <ModifyVolume
+        volumeId={100}
+        setmodifyVolumeToggle={setmodifyVolumeToggle}
+        getAllVolumesRequest={vi.fn()}
+        selectedServerId="server-1"
+        volumeList={volumeList}
+        setOpen={vi.fn()}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(mockListS3Connector).toHaveBeenCalled();
+      expect(mockSetIsVolumeAllDetail).toHaveBeenCalledWith([
+        expect.objectContaining({ uuid: 'bucket-1', label: 'Primary connector' }),
+        expect.objectContaining({ uuid: 'bucket-2', label: 'Secondary connector' }),
+      ]);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Available Buckets List (that are not in use in the backup)'),
+      ).toBeTruthy();
+    });
+
+    expect(setmodifyVolumeToggle).toHaveBeenCalledWith(true);
   });
 });
