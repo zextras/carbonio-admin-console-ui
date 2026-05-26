@@ -38,7 +38,7 @@ type ServerItem = {
   a?: Array<Attribute>;
 };
 
-const FunnelSearchIcon: FC = () => (
+const FunnelSearchIcon = () => (
   <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
 );
 
