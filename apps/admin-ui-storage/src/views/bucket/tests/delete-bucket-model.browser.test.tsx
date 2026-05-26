@@ -1,0 +1,69 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { setupBrowserTest } from 'admin-ui-test-utils';
+import { describe, expect, it, vi } from 'vitest';
+import { page } from 'vitest/browser';
+
+import DeleteBucketModel from '../delete-bucket-model';
+
+describe('DeleteBucketModel (browser)', () => {
+	it('should call showPopover when opened', async () => {
+		const showPopoverSpy = vi.spyOn(HTMLElement.prototype, 'showPopover');
+
+		await setupBrowserTest(
+			<DeleteBucketModel open closeHandler={vi.fn()} saveHandler={vi.fn()} />,
+		);
+
+		expect(showPopoverSpy).toHaveBeenCalledTimes(1);
+	});
+
+	it('should call hidePopover when closed', async () => {
+		const hidePopoverSpy = vi.spyOn(HTMLElement.prototype, 'hidePopover');
+
+		await setupBrowserTest(
+			<DeleteBucketModel open={false} closeHandler={vi.fn()} saveHandler={vi.fn()} />,
+		);
+
+		expect(hidePopoverSpy).toHaveBeenCalledTimes(1);
+	});
+
+	it('should call closeHandler when clicking close button', async () => {
+		const closeHandler = vi.fn();
+
+		await setupBrowserTest(
+			<DeleteBucketModel open closeHandler={closeHandler} saveHandler={vi.fn()} />,
+		);
+
+		await page.getByRole('button', { name: /close/i }).click();
+
+		expect(closeHandler).toHaveBeenCalledTimes(1);
+	});
+
+	it('should call closeHandler when clicking cancel button', async () => {
+		const closeHandler = vi.fn();
+
+		await setupBrowserTest(
+			<DeleteBucketModel open closeHandler={closeHandler} saveHandler={vi.fn()} />,
+		);
+
+		await page.getByRole('button', { name: /no, cancel/i }).click();
+
+		expect(closeHandler).toHaveBeenCalledTimes(1);
+	});
+
+	it('should call saveHandler when clicking delete button', async () => {
+		const saveHandler = vi.fn();
+
+		await setupBrowserTest(
+			<DeleteBucketModel open closeHandler={vi.fn()} saveHandler={saveHandler} />,
+		);
+
+		await page.getByRole('button', { name: /yes, delete/i }).click();
+
+		expect(saveHandler).toHaveBeenCalledTimes(1);
+	});
+});
