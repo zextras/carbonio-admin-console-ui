@@ -255,13 +255,12 @@ const VolumesDetailPanel: FC = () => {
         .then((res) => {
           const typedRes = res as SoapContentResponse;
           const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
-          const getAllVolResponse = Object.keys(result?.response).map(
-            (key) => result?.response[key],
-          )[0];
-          if (getAllVolResponse?.ok) {
-            const primaries = getAllVolResponse?.response?.primaries;
-            const secondaries = getAllVolResponse?.response?.secondaries;
-            const indexes = getAllVolResponse?.response?.indexes;
+          const advancedResponse = result?.response ?? result;
+          const getAllVolResponse = advancedResponse?.response ?? advancedResponse;
+          if (result?.ok ?? advancedResponse?.ok) {
+            const primaries = getAllVolResponse?.primaries?.map(mapAdvancedVolume) ?? [];
+            const secondaries = getAllVolResponse?.secondaries?.map(mapAdvancedVolume) ?? [];
+            const indexes = getAllVolResponse?.indexes?.map(mapAdvancedVolume) ?? [];
             setVolumeList({
               primaries,
               indexes,

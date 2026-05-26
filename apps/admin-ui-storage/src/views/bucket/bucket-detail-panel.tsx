@@ -87,9 +87,9 @@ const BucketListTable: FC<{
     useMemo(
     () =>
       volumes.map((v, i) => ({
-        id: String(i),
+        id: v.uuid,
         columns: [
-          <Tooltip placement="bottom" label={v.uuid} key={`id-${i}`}>
+          <Tooltip placement="bottom" label={v.uuid} key={`${v.uuid}-id`}>
             <Row
               onDoubleClick={(): void => { onDoubleClick(i); }}
               onClick={(): void => { onClick(i); }}
@@ -101,7 +101,7 @@ const BucketListTable: FC<{
             </Row>
           </Tooltip>,
           <Row
-            key={`label-${i}`}
+            key={`${v.uuid}-label`}
             onDoubleClick={(): void => { onDoubleClick(i); }}
             onClick={(): void => { onClick(i); }}
             style={{ textAlign: 'left', justifyContent: 'flex-start' }}
@@ -111,7 +111,7 @@ const BucketListTable: FC<{
             </ds-text>
           </Row>,
           <Row
-            key={`bucket-${i}`}
+            key={`${v.uuid}-bucket`}
             onDoubleClick={(): void => { onDoubleClick(i); }}
             onClick={(): void => { onClick(i); }}
             style={{ textAlign: 'left', justifyContent: 'flex-start' }}
@@ -120,7 +120,7 @@ const BucketListTable: FC<{
               {v.bucketName}
             </ds-text>
           </Row>,
-          <Row key={`actions-${i}`} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+          <Row key={`${v.uuid}-actions`} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
             <button
               type="button"
               onClick={(): void => { onClick(i); }}
