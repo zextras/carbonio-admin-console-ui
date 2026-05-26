@@ -3,43 +3,32 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Row, Select, SingleSelectionOnChange, Switch } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../../../types/account';
 import { TimeItems } from '../../../../types/general';
+import { TimeFieldState } from './hooks/use-time-field-state';
 
 type FailedLoginPolicyProps = {
 	cosAdvanced: AccountType;
 	readonlyCOS: boolean;
 	timeItems: TimeItems;
-	zimbraPasswordLockoutDurationNum: string | undefined;
-	zimbraPasswordLockoutDurationType: string | undefined;
-	zimbraPasswordLockoutFailureLifetimeNum: string | undefined;
-	zimbraPasswordLockoutFailureLifetimeType: string | undefined;
+	passwordLockoutDuration: TimeFieldState;
+	passwordLockoutFailureLifetime: TimeFieldState;
 	changeSwitchOption: (key: keyof AccountType) => void;
 	changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraPasswordLockoutDurationNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraPasswordLockoutDurationTypeChange: SingleSelectionOnChange;
-	onZimbraPasswordLockoutFailureLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraPasswordLockoutFailureLifetimeTypeChange: SingleSelectionOnChange;
 };
 
 const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 	cosAdvanced,
 	readonlyCOS,
 	timeItems,
+	passwordLockoutDuration,
+	passwordLockoutFailureLifetime,
 	changeSwitchOption,
-	zimbraPasswordLockoutDurationNum,
-	zimbraPasswordLockoutDurationType,
-	zimbraPasswordLockoutFailureLifetimeNum,
-	zimbraPasswordLockoutFailureLifetimeType,
 	changeValue,
-	onZimbraPasswordLockoutDurationNumChange,
-	onZimbraPasswordLockoutDurationTypeChange,
-	onZimbraPasswordLockoutFailureLifetimeNumChange,
-	onZimbraPasswordLockoutFailureLifetimeTypeChange
 }) => {
 	const [t] = useTranslation();
 	const labels = {
@@ -122,10 +111,10 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 						<Container width="72%" padding={{ right: 'small' }}>
 							<Input
 								label={labels.passwordLockout.duration}
-								value={zimbraPasswordLockoutDurationNum}
+								value={passwordLockoutDuration.num}
 								backgroundColor={'gray5'}
 								inputName="zimbraPasswordLockoutDuration"
-								onChange={onZimbraPasswordLockoutDurationNumChange}
+								onChange={passwordLockoutDuration.onNumChange}
 								disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 							/>
 						</Container>
@@ -135,21 +124,21 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									timeItems.find((item) => item.value === zimbraPasswordLockoutDurationType) ??
+									timeItems.find((item) => item.value === passwordLockoutDuration.type) ??
 									timeItems[-1]
 								}
 								showCheckbox={false}
-								onChange={onZimbraPasswordLockoutDurationTypeChange}
+								onChange={passwordLockoutDuration.onTypeChange}
 								disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 							/>
 						</Container>
 						<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 							<Input
 								label={labels.passwordLockout.failureLifetime}
-								value={zimbraPasswordLockoutFailureLifetimeNum}
+								value={passwordLockoutFailureLifetime.num}
 								backgroundColor={'gray5'}
 								inputName="zimbraPasswordLockoutFailureLifetime"
-								onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
+								onChange={passwordLockoutFailureLifetime.onNumChange}
 								disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 							/>
 						</Container>
@@ -160,11 +149,11 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({
 								label={labels.timeRange}
 								selection={
 									timeItems.find(
-										(item) => item.value === zimbraPasswordLockoutFailureLifetimeType
+										(item) => item.value === passwordLockoutFailureLifetime.type
 									) ?? timeItems[-1]
 								}
 								showCheckbox={false}
-								onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
+								onChange={passwordLockoutFailureLifetime.onTypeChange}
 								disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 							/>
 						</Container>

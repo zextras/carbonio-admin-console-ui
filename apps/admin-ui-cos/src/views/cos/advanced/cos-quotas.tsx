@@ -11,7 +11,6 @@ import {
   Padding,
   Row,
   Select,
-  SingleSelectionOnChange,
 } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +19,7 @@ import { AccountType } from '../../../../types/account';
 import { TimeItems } from '../../../../types/general';
 import { ComputedLimit, QuotaSource } from '../../../services/get-cos-quota';
 import { COSQuotasNew } from './cos-quotas-new';
+import { TimeFieldState } from './hooks/use-time-field-state';
 
 type QuotaProps = {
   isTotalQuotaActive: boolean;
@@ -31,14 +31,11 @@ type QuotaProps = {
   initFileQuotaLimitGBValue: string | undefined;
   fileQuotaLimitGBValue: string | undefined;
   accountQuotaGBValue: string;
-  zimbraQuotaWarnIntervalNum: string | undefined;
+  quotaWarnInterval: TimeFieldState;
   timeItems: TimeItems;
-  zimbraQuotaWarnIntervalType: string;
   onFileQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onZimbraMailQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
   changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
-  onZimbraQuotaWarnIntervalNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onZimbraQuotaWarnIntervalTypeChange: SingleSelectionOnChange;
   totalComputedQuotaLimit?: ComputedLimit;
   totalQuotaSource?: QuotaSource;
   initialTotalComputedQuotaLimit?: ComputedLimit;
@@ -56,14 +53,11 @@ const COSQuotas: FC<QuotaProps> = ({
   initFileQuotaLimitGBValue,
   fileQuotaLimitGBValue,
   accountQuotaGBValue,
-  zimbraQuotaWarnIntervalNum,
+  quotaWarnInterval,
   timeItems,
-  zimbraQuotaWarnIntervalType,
   onFileQuotaChange,
   onZimbraMailQuotaChange,
   changeValue,
-  onZimbraQuotaWarnIntervalNumChange,
-  onZimbraQuotaWarnIntervalTypeChange,
   totalComputedQuotaLimit,
   totalQuotaSource,
   initialTotalComputedQuotaLimit,
@@ -208,10 +202,10 @@ const COSQuotas: FC<QuotaProps> = ({
               <Container width="72%" padding={{ left: 'small', right: 'small' }}>
                 <Input
                   label={labels.minimumDurationOfTimeBetweenQuotaWarnings}
-                  value={zimbraQuotaWarnIntervalNum}
+                  value={quotaWarnInterval.num}
                   backgroundColor="gray5"
                   inputName="zimbraQuotaWarnInterval"
-                  onChange={onZimbraQuotaWarnIntervalNumChange}
+                  onChange={quotaWarnInterval.onNumChange}
                   disabled={readonlyCOS}
                 />
               </Container>
@@ -221,11 +215,11 @@ const COSQuotas: FC<QuotaProps> = ({
                   background={'gray5'}
                   label={labels.timeRange}
                   selection={
-                    timeItems.find((item) => item.value === zimbraQuotaWarnIntervalType) ??
+                    timeItems.find((item) => item.value === quotaWarnInterval.type) ??
                     timeItems[0]
                   }
                   showCheckbox={false}
-                  onChange={onZimbraQuotaWarnIntervalTypeChange}
+                  onChange={quotaWarnInterval.onTypeChange}
                   disabled={readonlyCOS}
                 />
               </Container>

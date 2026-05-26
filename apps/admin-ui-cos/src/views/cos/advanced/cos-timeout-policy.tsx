@@ -3,44 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Row, Select, SingleSelectionOnChange } from '@zextras/ui-components';
-import { ChangeEvent, FC } from 'react';
+import { Container, Input, ListRow, Row, Select } from '@zextras/ui-components';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TimeItems } from '../../../../types/general';
+import { TimeFieldState } from './hooks/use-time-field-state';
 
 type TimeoutPolicyProps = {
-	zimbraAdminAuthTokenLifetimeNum: string | undefined;
-	zimbraAdminAuthTokenLifetimeType: string | undefined;
-	zimbraAuthTokenLifetimeNum: string | undefined;
-	zimbraAuthTokenLifetimeType: string | undefined;
-	zimbraMailIdleSessionTimeoutNum: string | undefined;
-	zimbraMailIdleSessionTimeoutType: string | undefined;
+	adminAuthTokenLifetime: TimeFieldState;
+	authTokenLifetime: TimeFieldState;
+	mailIdleSessionTimeout: TimeFieldState;
 	readonlyCOS: boolean;
 	timeItems: TimeItems;
-	onZimbraAdminAuthTokenLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraAdminAuthTokenLifetimeTypeChange: SingleSelectionOnChange;
-	onZimbraAuthTokenLifetimeNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraAuthTokenLifetimeTypeChange: SingleSelectionOnChange;
-	onZimbraMailIdleSessionTimeoutNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	onZimbraMailIdleSessionTimeoutTypeChange: SingleSelectionOnChange;
 };
 
 const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
-	zimbraAdminAuthTokenLifetimeNum,
-	zimbraAdminAuthTokenLifetimeType,
-	zimbraAuthTokenLifetimeNum,
-	zimbraAuthTokenLifetimeType,
-	zimbraMailIdleSessionTimeoutNum,
-	zimbraMailIdleSessionTimeoutType,
+	adminAuthTokenLifetime,
+	authTokenLifetime,
+	mailIdleSessionTimeout,
 	readonlyCOS,
 	timeItems,
-	onZimbraAdminAuthTokenLifetimeNumChange,
-	onZimbraAdminAuthTokenLifetimeTypeChange,
-	onZimbraAuthTokenLifetimeNumChange,
-	onZimbraAuthTokenLifetimeTypeChange,
-	onZimbraMailIdleSessionTimeoutNumChange,
-	onZimbraMailIdleSessionTimeoutTypeChange
 }) => {
 	const [t] = useTranslation();
 	const labels = {
@@ -74,10 +57,10 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 						<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 							<Input
 								label={labels.adminAuthTokenLifetime}
-								value={zimbraAdminAuthTokenLifetimeNum}
+								value={adminAuthTokenLifetime.num}
 								backgroundColor={'gray5'}
 								inputName="zimbraAdminAuthTokenLifetime"
-								onChange={onZimbraAdminAuthTokenLifetimeNumChange}
+								onChange={adminAuthTokenLifetime.onNumChange}
 								disabled={readonlyCOS}
 							/>
 						</Container>
@@ -87,11 +70,11 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									timeItems.find((item) => item.value === zimbraAdminAuthTokenLifetimeType) ??
+									timeItems.find((item) => item.value === adminAuthTokenLifetime.type) ??
 									timeItems[-1]
 								}
 								showCheckbox={false}
-								onChange={onZimbraAdminAuthTokenLifetimeTypeChange}
+								onChange={adminAuthTokenLifetime.onTypeChange}
 								disabled={readonlyCOS}
 							/>
 						</Container>
@@ -109,10 +92,10 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 						<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 							<Input
 								label={labels.authTokenLifetime}
-								value={zimbraAuthTokenLifetimeNum}
+								value={authTokenLifetime.num}
 								backgroundColor={'gray5'}
 								inputName="zimbraAuthTokenLifetime"
-								onChange={onZimbraAuthTokenLifetimeNumChange}
+								onChange={authTokenLifetime.onNumChange}
 								disabled={readonlyCOS}
 							/>
 						</Container>
@@ -122,11 +105,11 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									timeItems.find((item) => item.value === zimbraAuthTokenLifetimeType) ??
+									timeItems.find((item) => item.value === authTokenLifetime.type) ??
 									timeItems[-1]
 								}
 								showCheckbox={false}
-								onChange={onZimbraAuthTokenLifetimeTypeChange}
+								onChange={authTokenLifetime.onTypeChange}
 								disabled={readonlyCOS}
 							/>
 						</Container>
@@ -144,10 +127,10 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 						<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 							<Input
 								label={labels.mailIdleSessionTimeout}
-								value={zimbraMailIdleSessionTimeoutNum}
+								value={mailIdleSessionTimeout.num}
 								backgroundColor={'gray5'}
 								inputName="zimbraMailIdleSessionTimeout"
-								onChange={onZimbraMailIdleSessionTimeoutNumChange}
+								onChange={mailIdleSessionTimeout.onNumChange}
 								disabled={readonlyCOS}
 							/>
 						</Container>
@@ -157,11 +140,11 @@ const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({
 								background={'gray5'}
 								label={labels.timeRange}
 								selection={
-									timeItems.find((item) => item.value === zimbraMailIdleSessionTimeoutType) ??
+									timeItems.find((item) => item.value === mailIdleSessionTimeout.type) ??
 									timeItems[-1]
 								}
 								showCheckbox={false}
-								onChange={onZimbraMailIdleSessionTimeoutTypeChange}
+								onChange={mailIdleSessionTimeout.onTypeChange}
 								disabled={readonlyCOS}
 							/>
 						</Container>

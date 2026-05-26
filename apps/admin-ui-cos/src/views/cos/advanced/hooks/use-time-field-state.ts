@@ -6,7 +6,15 @@
 import { SingleSelectionOnChange } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 
-export function useTimeFieldState(onChange: (combinedValue: string) => void) {
+export type TimeFieldState = {
+  num: string | undefined;
+  type: string | undefined;
+  onNumChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onTypeChange: SingleSelectionOnChange;
+  reset: (value: string | undefined, defaultType?: string) => void;
+};
+
+export function useTimeFieldState(onChange: (combinedValue: string) => void): TimeFieldState {
   const [num, setNum] = useState<string | undefined>(undefined);
   const [type, setType] = useState<string | undefined>(undefined);
 
