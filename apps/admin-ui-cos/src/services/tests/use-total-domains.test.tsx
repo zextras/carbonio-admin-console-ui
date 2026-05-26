@@ -43,14 +43,14 @@ describe('useTotalDomains', () => {
 		const { result } = renderHook(() => useTotalDomains('cos-1'), { wrapper });
 
 		await waitFor(() => expect(result.current.isSuccess).toBe(true));
-		expect(searchDirectory).toHaveBeenCalledWith(
-			'',
-			'domains',
-			'',
-			'(zimbraDomainDefaultCOSId=cos-1)',
-			0,
-			-1,
-		);
+		expect(searchDirectory).toHaveBeenCalledWith({
+			attr: '',
+			type: 'domains',
+			domainName: '',
+			query: '(zimbraDomainDefaultCOSId=cos-1)',
+			offset: 0,
+			limit: -1,
+		});
 		expect(result.current.data).toBe(7);
 	});
 
