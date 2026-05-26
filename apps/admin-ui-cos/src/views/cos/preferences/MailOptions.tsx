@@ -60,7 +60,7 @@ export const MailOptions = ({
   }, [cosPrefAttributes.zimbraFileUploadMaxSizePerFile]);
 
   const updateHumanFriendlyFileUploadMaxSizePerFileLabel = (value: number): void => {
-    const humanFriendlyLabel = bytesToHumanFriendlyFileUploadMaxSizePerFile(value <= 0 ? 0 : value);
+    const humanFriendlyLabel = bytesToHumanFriendlyFileUploadMaxSizePerFile(Math.max(0, value));
     setHumanFriendlyFileUploadMaxSizePerFileLabel(humanFriendlyLabel);
 
     const newValue = value <= 0 ? '0' : value.toString();
