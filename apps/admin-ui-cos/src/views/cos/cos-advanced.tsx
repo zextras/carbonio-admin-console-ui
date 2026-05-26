@@ -134,6 +134,15 @@ const COS_INITIAL_VALUES_EXTRA: Array<[keyof AccountType, string]> = [
   ['zimbraDataSourceRssPollingInterval', ''],
 ];
 
+function getQuotaSource(
+  override: ComputedLimit | null | undefined,
+  initialSource: QuotaSource | undefined,
+): QuotaSource | undefined {
+  if (override === null) return initialSource;
+  if (override === undefined) return 'global' as QuotaSource;
+  return 'cos' as QuotaSource;
+}
+
 export const CosAdvanced = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
@@ -269,12 +278,7 @@ export const CosAdvanced = () => {
   );
   const totalComputedQuotaLimit =
     totalQuotaOverride === null ? initTotalComputedQuotaLimit : totalQuotaOverride;
-  const totalQuotaSource =
-    totalQuotaOverride === null
-      ? initTotalQuotaSource
-      : totalQuotaOverride === undefined
-        ? ('global' as QuotaSource)
-        : ('cos' as QuotaSource);
+  const totalQuotaSource = getQuotaSource(totalQuotaOverride, initTotalQuotaSource);
   const effectiveQuotaLimit =
     totalQuotaOverride === null ? initTotalComputedQuotaLimit : totalQuotaOverride;
   const showQuotaRevertButton =
@@ -406,28 +410,34 @@ export const CosAdvanced = () => {
     });
   };
 
+  const handleQuotaSave = async (zimbraId: string) => {
+    if (!isTotalQuotaActive || totalQuotaOverride === null) return;
+    if (totalQuotaOverride) {
+      await setCosQuota(zimbraId, totalQuotaOverride);
+    } else {
+      await unsetCosQuota(zimbraId);
+    }
+    await invalidateCosQuota(zimbraId);
+    setTotalQuotaOverride(null);
+  };
+
+  const getAttributesToSave = (): AccountType => {
+    if (!isTotalQuotaActive) return cosAdvanced;
+    return Object.fromEntries(
+      Object.entries(cosAdvanced).filter(
+        ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
+      ),
+    ) as AccountType;
+  };
+
   const onSave = async (): Promise<void> => {
     const { zimbraId = '' } = cosData;
 
     saveBackupAttributes(cosAdvancedBackupAttributes, cosName);
 
-    if (isTotalQuotaActive && totalQuotaOverride !== null) {
-      if (totalQuotaOverride) {
-        await setCosQuota(zimbraId, totalQuotaOverride);
-      } else {
-        await unsetCosQuota(zimbraId);
-      }
-      await invalidateCosQuota(zimbraId);
-      setTotalQuotaOverride(null);
-    }
+    await handleQuotaSave(zimbraId);
 
-    const cosAdvancedToSave = isTotalQuotaActive
-      ? (Object.fromEntries(
-          Object.entries(cosAdvanced).filter(
-            ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
-          ),
-        ) as AccountType)
-      : cosAdvanced;
+    const cosAdvancedToSave = getAttributesToSave();
 
     const attributes: Attribute[] = Object.keys(cosAdvancedToSave).map((ele) => ({
       n: ele,
