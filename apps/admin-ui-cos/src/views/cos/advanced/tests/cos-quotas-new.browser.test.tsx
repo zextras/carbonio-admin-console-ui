@@ -8,7 +8,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { ComputedLimit } from '../../../../services/get-cos-quota';
-import COSQuotasNew from '../cos-quotas-new';
+import { COSQuotasNew } from '../cos-quotas-new';
 
 const limitedQuota: ComputedLimit = { type: 'limited', value: 10737418240 }; // 10 GB
 const unlimitedQuota: ComputedLimit = { type: 'unlimited' };
