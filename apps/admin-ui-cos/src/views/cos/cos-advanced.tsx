@@ -189,38 +189,9 @@ export const CosAdvanced = () => {
 
   const [backupOverrides, setBackupOverrides] = useState<Partial<AdvancedBackupAttributes>>({});
 
-  const [cosAdvanced, setCosAdvanced] = useState<AccountType>({
-    zimbraMailForwardingAddressMaxLength: '',
-    zimbraMailForwardingAddressMaxNumAddrs: '',
-    zimbraMailQuota: '',
-    zimbraContactMaxNumEntries: '',
-    zimbraQuotaWarnPercent: '',
-    zimbraQuotaWarnInterval: '',
-    zimbraQuotaWarnMessage: '',
-    zimbraPasswordLocked: 'FALSE',
-    zimbraPasswordMinLength: '',
-    zimbraPasswordMaxLength: '',
-    zimbraPasswordMinUpperCaseChars: '',
-    zimbraPasswordMinLowerCaseChars: '',
-    zimbraPasswordMinPunctuationChars: '',
-    zimbraPasswordMinNumericChars: '',
-    zimbraPasswordMinDigitsOrPuncs: '',
-    zimbraPasswordMinAge: '',
-    zimbraPasswordMaxAge: '',
-    zimbraPasswordEnforceHistory: '',
-    zimbraPasswordBlockCommonEnabled: 'FALSE',
-    zimbraPasswordLockoutEnabled: 'FALSE',
-    zimbraPasswordLockoutMaxFailures: '',
-    zimbraPasswordLockoutDuration: '',
-    zimbraPasswordLockoutFailureLifetime: '',
-    zimbraAdminAuthTokenLifetime: '',
-    zimbraAuthTokenLifetime: '',
-    zimbraMailIdleSessionTimeout: '',
-    zimbraMailMessageLifetime: '',
-    zimbraMailTrashLifetime: '',
-    zimbraMailSpamLifetime: '',
-    zimbraFreebusyExchangeUserOrg: '',
-  });
+  const [cosAdvanced, setCosAdvanced] = useState<AccountType>(
+    () => Object.fromEntries(COS_ADVANCED_FIELD_DEFAULTS) as AccountType,
+  );
   const mailMessageLifetime = useTimeFieldState((v) =>
     setCosAdvanced((prev: AccountType) => ({ ...prev, zimbraMailMessageLifetime: v })),
   );
@@ -279,13 +250,11 @@ export const CosAdvanced = () => {
   const totalComputedQuotaLimit =
     totalQuotaOverride === null ? initTotalComputedQuotaLimit : totalQuotaOverride;
   const totalQuotaSource = getQuotaSource(totalQuotaOverride, initTotalQuotaSource);
-  const effectiveQuotaLimit =
-    totalQuotaOverride === null ? initTotalComputedQuotaLimit : totalQuotaOverride;
   const showQuotaRevertButton =
     totalQuotaSource === 'cos' &&
     initialQuotaRef.current !== null &&
     !computedLimitsEqual(
-      effectiveQuotaLimit ?? initialQuotaRef.current.limit,
+      totalComputedQuotaLimit ?? initialQuotaRef.current.limit,
       initialQuotaRef.current.limit,
     );
 
@@ -301,7 +270,7 @@ export const CosAdvanced = () => {
     setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
   };
 
-  const setInitalValues = (obj: AccountType): void => {
+  const setInitialValues = (obj: AccountType): void => {
     if (!obj) return;
     [...COS_ADVANCED_FIELD_DEFAULTS, ...COS_INITIAL_VALUES_EXTRA].forEach(([key, defaultVal]) => {
       setValue(key, (obj?.[key] ? obj?.[key] : defaultVal) as AccountType[keyof AccountType]);
@@ -335,7 +304,7 @@ export const CosAdvanced = () => {
         if (!obj[key]) (obj as any)[key] = defaultVal;
       });
       setCosData(obj);
-      setInitalValues(obj);
+      setInitialValues(obj);
       setStateAttrValues(obj);
     }
   }, [cosInformation]);
@@ -364,7 +333,7 @@ export const CosAdvanced = () => {
   };
 
   const onCancel = (): void => {
-    setInitalValues(cosData);
+    setInitialValues(cosData);
     setStateAttrValues(cosData);
     setFileQuotaOverride(undefined);
     setBackupOverrides({});
