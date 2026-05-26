@@ -19,19 +19,6 @@ export const VerifySuccess = ({
   onComplete,
 }: VerifySuccessProps): React.JSX.Element => {
   const { t } = useTranslation();
-  const checkItems = [
-    t('storages.s3Connectors.verifyProgress.connectionOk', 'Connection'),
-    t('storages.s3Connectors.verifyProgress.secureHttpsOk', 'Secure HTTPS'),
-    t('storages.s3Connectors.verifyProgress.bucketExists', 'Bucket Exists'),
-    t('storages.s3Connectors.verifyProgress.createDirectoryOk', 'Create Directory'),
-    t('storages.s3Connectors.verifyProgress.uploadFileOk', 'Upload File'),
-    t('storages.s3Connectors.verifyProgress.uploadBigFileOk', 'Upload Big File'),
-    t('storages.s3Connectors.verifyProgress.downloadFileOk', 'Download File'),
-    t('storages.s3Connectors.verifyProgress.listObjectsOk', 'List Objects'),
-    t('storages.s3Connectors.verifyProgress.copyFileOk', 'Copy File'),
-    t('storages.s3Connectors.verifyProgress.deleteFileOk', 'Delete File'),
-    t('storages.s3Connectors.verifyProgress.deleteDirectoryOk', 'Delete Directory'),
-  ];
   const popoverRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onCompleteRef = useRef(onComplete);
@@ -98,16 +85,6 @@ export const VerifySuccess = ({
           )}
         </ds-text>
       </div>
-      <ul className={styles.stepList}>
-        {checkItems.map((item) => (
-          <li key={item} className={styles.stepItem}>
-            <ds-icon icon="Checkmark" color="success" size="24px" />
-            <ds-text as="span" size="medium">
-              {item}
-            </ds-text>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };

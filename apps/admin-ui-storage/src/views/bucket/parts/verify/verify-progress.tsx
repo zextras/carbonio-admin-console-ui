@@ -71,21 +71,6 @@ export const VerifyProgress = ({
     };
   }, [isPending]);
 
-
-  const checkItems = [
-    t('storages.s3Connectors.verifyProgress.connectionOk', 'Connection'),
-    t('storages.s3Connectors.verifyProgress.secureHttpsOk', 'Secure HTTPS'),
-    t('storages.s3Connectors.verifyProgress.bucketExists', 'Bucket Exists'),
-    t('storages.s3Connectors.verifyProgress.createDirectoryOk', 'Create Directory'),
-    t('storages.s3Connectors.verifyProgress.uploadFileOk', 'Upload File'),
-    t('storages.s3Connectors.verifyProgress.uploadBigFileOk', 'Upload Big File'),
-    t('storages.s3Connectors.verifyProgress.downloadFileOk', 'Download File'),
-    t('storages.s3Connectors.verifyProgress.listObjectsOk', 'List Objects'),
-    t('storages.s3Connectors.verifyProgress.copyFileOk', 'Copy File'),
-    t('storages.s3Connectors.verifyProgress.deleteFileOk', 'Delete File'),
-    t('storages.s3Connectors.verifyProgress.deleteDirectoryOk', 'Delete Directory'),
-  ];
-
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
       <div className={styles.header}>
@@ -104,14 +89,6 @@ export const VerifyProgress = ({
           )}
         </ds-text>
       </div>
-      <ul className={styles.stepList}>
-        {checkItems.map((item) => (
-          <li key={item} className={styles.stepItem}>
-            <div className={styles.stepSpinner} />
-            <ds-text as="span">{item}</ds-text>
-          </li>
-        ))}
-      </ul>
       <div className={styles.progressBarTrack}>
         <div className={styles.progressBarFill} style={{ width: `${progress}%` }} />
       </div>
