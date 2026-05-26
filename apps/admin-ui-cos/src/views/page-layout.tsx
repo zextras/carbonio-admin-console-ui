@@ -64,27 +64,6 @@ export const PageLayout: FC<{
   );
 };
 
-export const BoxLayout: FC<{
-  title: string;
-  description: string;
-  disabled?: boolean;
-  children: ReactNode | ReactNode[];
-}> = ({ title, description, disabled = false, children }) => (
-  <Container orientation="vertical" height="fit" gap="1rem">
-    <Container orientation="vertical" height="fit" crossAlignment="flex-start" gap="0.5rem">
-      <ds-text as="strong" weight="bold" overflow="break-word" disabled={disabled}>
-        {title}
-      </ds-text>
-      <ds-text as="span" size="small" overflow="break-word" disabled={disabled}>
-        {description}
-      </ds-text>
-    </Container>
-    <Container mainAlignment="flex-start" crossAlignment="flex-start" height="fit" gap="1rem">
-      {children}
-    </Container>
-  </Container>
-);
-
 export const SettingLayout: FC<{
   description: string;
   children: ReactNode;

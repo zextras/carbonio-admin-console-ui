@@ -6,6 +6,7 @@
 
 import {
   Banner,
+  BoxLayout,
   Container,
   InheritedInput,
   InheritedSelect,
@@ -18,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 
 import { TRUE } from '../constants';
 import { AccountDetail } from '../views/domain/manange/accounts/account-context';
-import { BoxLayout, SettingLayout } from '../views/page-layout';
+import { SettingLayout } from '../views/page-layout';
 
 export const WscSettings: FC<{
   featuresDetail: AccountDetail;

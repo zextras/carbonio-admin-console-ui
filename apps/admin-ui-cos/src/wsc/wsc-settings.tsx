@@ -5,6 +5,7 @@
  */
 import {
   Banner,
+  BoxLayout,
   Container,
   InheritedInput,
   InheritedSelect,
@@ -17,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../types/account';
 import { TRUE } from '../constants';
-import { BoxLayout, SettingLayout } from '../views/page-layout';
+import { SettingLayout } from '../views/page-layout';
 
 export const WscSettings: FC<{
   featuresDetail: AccountType;
