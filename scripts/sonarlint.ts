@@ -44,6 +44,7 @@ type ParsedArgs = {
 	severity?: string;
 	rule?: string;
 	branch?: string;
+	pr?: string;
 	help: boolean;
 };
 
@@ -66,6 +67,9 @@ function parseArgs(args: string[]): ParsedArgs {
 			case '--branch':
 				parsed.branch = args[++i];
 				break;
+			case '--pr':
+				parsed.pr = args[++i];
+				break;
 			case '--help':
 			case '-h':
 				parsed.help = true;
@@ -79,7 +83,7 @@ function printHelp(): void {
 	console.log(`
 Usage: pnpm sonarlint [options]
 
-Fetch unresolved SonarQube issues from the current git branch.
+Fetch unresolved SonarQube issues from the current git branch or pull request.
 
 Options:
   --app <module>       Filter by module (e.g. admin-ui-cos, admin-ui-domains)
@@ -88,6 +92,7 @@ Options:
                        Comma-separated for multiple: --severity BLOCKER,CRITICAL
   --rule <S-number>    Filter by rule (e.g. S7735)
   --branch <name>      Override auto-detected git branch
+  --pr <number>        Query by pull request number (auto-detected from current branch)
   --help, -h           Show this help
 
 Environment:
@@ -95,6 +100,8 @@ Environment:
 
 Examples:
   pnpm sonarlint
+  pnpm sonarlint --pr
+  pnpm sonarlint --pr 1211
   pnpm sonarlint --app admin-ui-cos
   pnpm sonarlint --file cos-list-panel.tsx
   pnpm sonarlint --severity BLOCKER,CRITICAL
@@ -112,13 +119,26 @@ function getGitBranch(): string {
 	}
 }
 
+function getPullRequestNumber(): string | undefined {
+	try {
+		const branch = execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
+		const output = execSync(`gh pr list --head "${branch}" --json number --jq ".[0].number"`, {
+			encoding: 'utf-8',
+		}).trim();
+		return output || undefined;
+	} catch {
+		return undefined;
+	}
+}
+
 function stripProjectKey(component: string): string {
 	return component.replace(new RegExp(`^${PROJECT_KEY}:`), '');
 }
 
 async function fetchIssues(
 	token: string,
-	branch: string,
+	branch?: string,
+	pullRequest?: string,
 	severities?: string,
 	rule?: string,
 ): Promise<Array<SonarIssue>> {
@@ -132,9 +152,14 @@ async function fetchIssues(
 			resolved: 'false',
 			ps: String(PAGE_SIZE),
 			p: String(page),
-			branch,
 			additionalFields: '_all',
 		});
+
+		if (pullRequest) {
+			params.set('pullRequest', pullRequest);
+		} else if (branch) {
+			params.set('branch', branch);
+		}
 
 		if (severities) {
 			params.set('severities', severities);
@@ -263,10 +288,31 @@ async function main(): Promise<void> {
 		process.exit(1);
 	}
 
-	const branch = args.branch ?? getGitBranch();
+	let prNumber: string | undefined;
+	let branch: string | undefined;
+
+	if (args.pr !== undefined) {
+		prNumber = args.pr || getPullRequestNumber();
+		if (!prNumber) {
+			colorLog('Error: Could not auto-detect PR number. Use --pr <number>', 'red');
+			process.exit(1);
+		}
+	} else if (args.branch) {
+		branch = args.branch;
+	} else {
+		prNumber = getPullRequestNumber();
+		if (!prNumber) {
+			branch = getGitBranch();
+		}
+	}
+
 	colorLog(`\nSonarQube: ${SONAR_URL}`, 'gray');
 	colorLog(`Project:   ${PROJECT_KEY}`, 'gray');
-	colorLog(`Branch:    ${branch}`, 'gray');
+	if (prNumber) {
+		colorLog(`PR:        #${prNumber}`, 'gray');
+	} else {
+		colorLog(`Branch:    ${branch}`, 'gray');
+	}
 	if (args.app) colorLog(`Module:    ${args.app}`, 'gray');
 	if (args.severity) colorLog(`Severity:  ${args.severity}`, 'gray');
 	if (args.rule) colorLog(`Rule:      ${args.rule}`, 'gray');
@@ -274,7 +320,7 @@ async function main(): Promise<void> {
 	console.log('');
 
 	colorLog('Fetching issues...', 'blue');
-	let issues = await fetchIssues(token, branch, args.severity, args.rule);
+	let issues = await fetchIssues(token, branch, prNumber, args.severity, args.rule);
 
 	if (args.app) {
 		issues = filterByApp(issues, args.app);
@@ -290,10 +336,11 @@ async function main(): Promise<void> {
 	if (args.rule) summaryParts.push(`rule=${args.rule}`);
 	const summarySuffix = summaryParts.length > 0 ? ` (${summaryParts.join(', ')})` : '';
 
+	const ref = prNumber ? `PR #${prNumber}` : `branch "${branch}"`;
 	if (total > 0) {
-		colorLog(`Found ${total} issue${total !== 1 ? 's' : ''}${summarySuffix} on branch "${branch}"`, 'orange');
+		colorLog(`Found ${total} issue${total !== 1 ? 's' : ''}${summarySuffix} on ${ref}`, 'orange');
 	} else {
-		colorLog(`No issues found${summarySuffix} on branch "${branch}"`, 'green');
+		colorLog(`No issues found${summarySuffix} on ${ref}`, 'green');
 	}
 }
 
