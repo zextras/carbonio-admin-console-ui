@@ -11,6 +11,7 @@ import '../theme/theme.css';
 export { DsBadge } from './ds-badge';
 export { DividerElement } from './ds-divider';
 export { DsIcon } from './ds-icon';
+export { DsPageShimmer } from './ds-page-shimmer';
 export { DsSpinner } from './ds-spinner';
 export { DsTagIcon } from './ds-tag-icon';
 export { DsText, type DsTextProps as TextProps } from './ds-text';
