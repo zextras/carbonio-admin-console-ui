@@ -24,7 +24,7 @@ import {
 } from '@zextras/ui-components';
 import { replaceHistory, searchDirectory, useCurrentUserRights } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
-import { ChangeEvent, ReactElement, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -41,6 +41,132 @@ import { useTotalDomains } from '../../services/use-total-domains';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import { PageLayout } from '../page-layout';
 import { getDateFromStr, getFormatedDate } from '../utility/utils';
+import { FunnelSearchIcon } from './funnel-search-icon';
+
+type DirectoryItem = {
+  a?: Array<Attribute>;
+  id?: string;
+  name?: string;
+};
+
+function processAttributes(
+  attributes: Array<Attribute> | undefined,
+  record: Record<string, unknown>,
+  arrayFieldName: string,
+): void {
+  attributes?.forEach((ele) => {
+    const attrName = ele?.n;
+    if (!attrName) return;
+    if (attrName === arrayFieldName) {
+      const existing = record[attrName];
+      if (Array.isArray(existing)) {
+        existing.push(ele._content);
+      } else {
+        record[attrName] = [ele._content];
+      }
+    } else {
+      record[attrName] = ele._content;
+    }
+  });
+}
+
+function getUserType(item: Record<string, string>): string {
+  if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
+  if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
+  if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
+  if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
+  return 'Normal';
+}
+
+function processAccountItem(
+  item: DirectoryItem,
+  statusColor: Record<string, { color: string; label: string }>,
+): TRow {
+  const acc = item as Record<string, unknown>;
+  processAttributes(item.a, acc, 'mail');
+  return {
+    id: item.id ?? '',
+    columns: [
+      <ds-text as="span" size="small" key={item.id} color="gray0" weight="regular">
+        {item.name || ' '}
+      </ds-text>,
+      <ds-text as="span" size="small" key={item.id} color="gray0" weight="light">
+        {(acc.displayName as string) || <>&nbsp;</>}
+      </ds-text>,
+      <>
+        {Array.isArray(acc.mail) && (acc.mail as Array<string>).length - 1 > 0 ? (
+          <Tooltip
+            key={item.id}
+            placement="bottom"
+            label={(acc.mail as Array<string>).slice(1).join(', ')}
+            maxWidth="auto"
+          >
+            <ds-text as="span" size="small" weight="light" key={item.id} color="#828282">
+              {(acc.mail as Array<string>).length - 1}
+            </ds-text>
+          </Tooltip>
+        ) : (
+          <ds-text as="span" size="small" key={item.id} color="#828282" weight="light">
+            0
+          </ds-text>
+        )}
+      </>,
+      <ds-text as="span" size="small" key={item.id} color="gray0" weight="light">
+        {getUserType(acc as Record<string, string>)}
+      </ds-text>,
+      <ds-text
+        as="span"
+        size="small"
+        weight="light"
+        key={item.id}
+        color={statusColor[acc.zimbraAccountStatus as string]?.color}
+      >
+        {statusColor[acc.zimbraAccountStatus as string]?.label}
+      </ds-text>,
+      <ds-text as="span" size="small" weight="light" key={item.id} color="gray0">
+        {(acc.description as string) || <>&nbsp;</>}
+      </ds-text>,
+    ],
+    clickable: true,
+  };
+}
+
+function processDomainItem(
+  item: DirectoryItem,
+  cosId: string | undefined,
+  defaultCosLabel: string,
+): TRow {
+  const domainItem = item as Record<string, unknown>;
+  processAttributes(item.a, domainItem, 'zimbraDomainCOSMaxAccounts');
+  const cosMaxAccounts = domainItem.zimbraDomainCOSMaxAccounts;
+  const maxAccountValue = Array.isArray(cosMaxAccounts)
+    ? (cosMaxAccounts as Array<string>).find((acc) => acc?.split(':')[0] === cosId)?.split(':')[1]
+    : undefined;
+  return {
+    id: item.id ?? '',
+    columns: [
+      <ds-text as="span" size="small" key={item.id} color="gray0" weight="regular">
+        {item.name || ' '}
+      </ds-text>,
+      <ds-text as="span" size="small" key={item.id} color="gray0" weight="light">
+        {maxAccountValue || ' '}
+      </ds-text>,
+      <Container key={item.id}>
+        {cosId === (domainItem.zimbraDomainDefaultCOSId as string) && (
+          <Row>
+            <Padding right="small">
+              <ds-text as="span" size="small" weight="light" color="gray0">
+                {defaultCosLabel}
+              </ds-text>
+            </Padding>
+            <ds-icon icon="Star" color="primary"></ds-icon>
+          </Row>
+        )}
+      </Container>,
+    ],
+    clickable: true,
+  };
+}
 
 export const CosGeneralInformation = () => {
   const [t] = useTranslation();
@@ -140,14 +266,6 @@ export const CosGeneralInformation = () => {
       color: '#D74942',
       label: t('label.lockout', 'Lockout'),
     },
-  };
-
-  const accountUserType = (item: Record<string, string>): string => {
-    if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
-    if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
-    if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
-    if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
-    return 'Normal';
   };
 
   const domainHeaders = [
@@ -348,68 +466,10 @@ export const CosGeneralInformation = () => {
       .then((data) => {
         const accountListResponse = data?.account || [];
         if (accountListResponse && Array.isArray(accountListResponse)) {
-          const accountListArr: Array<TRow> = [];
           setTotalAccounts(data.searchTotal || 0);
-          accountListResponse.forEach((item) => {
-            const acc = item as Record<string, unknown>;
-            item?.a?.forEach((ele) => {
-              if (ele?.n === 'mail') {
-                const existing = acc[ele?.n];
-                if (Array.isArray(existing)) {
-                  existing.push(ele._content);
-                } else {
-                  acc[ele?.n] = [ele._content];
-                }
-              } else {
-                acc[ele?.n] = ele._content;
-              }
-            });
-            accountListArr.push({
-              id: item?.id,
-              columns: [
-                <ds-text as="span" size="small" key={item?.id} color="gray0" weight="regular">
-                  {item?.name || ' '}
-                </ds-text>,
-                <ds-text as="span" size="small" key={item?.id} color="gray0" weight="light">
-                  {(acc?.displayName as string) || <>&nbsp;</>}
-                </ds-text>,
-                <>
-                  {Array.isArray(acc?.mail) && (acc.mail as Array<string>).length - 1 > 0 ? (
-                    <Tooltip
-                      key={item?.id}
-                      placement="bottom"
-                      label={(acc.mail as Array<string>).slice(1).join(', ')}
-                      maxWidth="auto"
-                    >
-                      <ds-text as="span" size="small" weight="light" key={item?.id} color="#828282">
-                        {(acc.mail as Array<string>).length - 1}
-                      </ds-text>
-                    </Tooltip>
-                  ) : (
-                    <ds-text as="span" size="small" key={item?.id} color="#828282" weight="light">
-                      0
-                    </ds-text>
-                  )}
-                </>,
-                <ds-text as="span" size="small" key={item?.id} color="gray0" weight="light">
-                  {accountUserType(acc as Record<string, string>)}
-                </ds-text>,
-                <ds-text
-                  as="span"
-                  size="small"
-                  weight="light"
-                  key={item?.id}
-                  color={STATUS_COLOR[acc?.zimbraAccountStatus as string]?.color}
-                >
-                  {STATUS_COLOR[acc?.zimbraAccountStatus as string]?.label}
-                </ds-text>,
-                <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
-                  {(acc?.description as string) || <>&nbsp;</>}
-                </ds-text>,
-              ],
-              clickable: true,
-            });
-          });
+          const accountListArr = accountListResponse.map((item) =>
+            processAccountItem(item as DirectoryItem, STATUS_COLOR),
+          );
           setAccountList(accountListArr);
         }
         setIsAccountRequestInProgress(false);
@@ -462,53 +522,14 @@ export const CosGeneralInformation = () => {
       .then((data) => {
         const domainListResponse = data?.domain || [];
         if (domainListResponse && Array.isArray(domainListResponse)) {
-          const domainListArr: Array<TRow> = [];
           setTotalDomains(data.searchTotal || 0);
-          domainListResponse.forEach((item) => {
-            const domainItem = item as Record<string, unknown>;
-            item?.a?.forEach((ele) => {
-              if (ele?.n === 'zimbraDomainCOSMaxAccounts') {
-                const existing = domainItem[ele?.n];
-                if (Array.isArray(existing)) {
-                  existing.push(ele._content);
-                } else {
-                  domainItem[ele?.n] = [ele._content];
-                }
-              } else {
-                domainItem[ele?.n] = ele._content;
-              }
-            });
-            const cosMaxAccounts = domainItem?.zimbraDomainCOSMaxAccounts;
-            const maxAccountValue = Array.isArray(cosMaxAccounts)
-              ? (cosMaxAccounts as Array<string>)
-                  .filter((acc) => acc?.split(':')[0] === cosDetail?.id)[0]
-                  ?.split(':')[1]
-              : undefined;
-            domainListArr.push({
-              id: item?.id,
-              columns: [
-                <ds-text as="span" size="small" key={item?.id} color="gray0" weight="regular">
-                  {item?.name || ' '}
-                </ds-text>,
-                <ds-text as="span" size="small" key={item?.id} color="gray0" weight="light">
-                  {maxAccountValue || ' '}
-                </ds-text>,
-                <Container key={item?.id}>
-                  {cosDetail?.id === domainItem?.zimbraDomainDefaultCOSId && (
-                    <Row>
-                      <Padding right="small">
-                        <ds-text as="span" size="small" weight="light" color="gray0">
-                          {t('label.default_cos', 'Default COS')}
-                        </ds-text>
-                      </Padding>
-                      <ds-icon icon="Star" color="primary"></ds-icon>
-                    </Row>
-                  )}
-                </Container>,
-              ],
-              clickable: true,
-            });
-          });
+          const domainListArr = domainListResponse.map((item) =>
+            processDomainItem(
+              item as DirectoryItem,
+              cosDetail?.id,
+              t('label.default_cos', 'Default COS'),
+            ),
+          );
           setDomainList(domainListArr);
         }
         setIsDomainRequestInProgress(false);
@@ -681,9 +702,7 @@ export const CosGeneralInformation = () => {
               onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                 setSearchDomainString(e.target.value);
               }}
-              CustomIcon={(): ReactElement => (
-                <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-              )}
+              CustomIcon={FunnelSearchIcon}
             />
           </Container>
         </Row>
@@ -793,9 +812,7 @@ export const CosGeneralInformation = () => {
               onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                 setSearchAccountString(e.target.value);
               }}
-              CustomIcon={(): ReactElement => (
-                <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-              )}
+              CustomIcon={FunnelSearchIcon}
             />
           </Container>
         </Row>
