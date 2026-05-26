@@ -73,7 +73,12 @@ export const ReceivingMails = ({
 	const onPrefMailPollingIntervalTypeChange = (
 		v: SelectItem[] | string | null
 	) => {
-		const typeValue = typeof v === 'string' ? v : (Array.isArray(v) ? v[0]?.value : '') ?? '';
+		let typeValue = '';
+		if (typeof v === 'string') {
+			typeValue = v;
+		} else if (Array.isArray(v)) {
+			typeValue = v[0]?.value ?? '';
+		}
 		onCosAttributeChanged(
 			'zimbraMailMinPollingInterval',
 			zimbraPrefMailPollingIntervalNum ? `${zimbraPrefMailPollingIntervalNum}${typeValue}` : ''
