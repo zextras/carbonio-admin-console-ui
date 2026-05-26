@@ -76,7 +76,7 @@ const SWITCH_LABELS: Record<string, string> = {
 };
 
 async function clickSwitchByInputName(inputName: string) {
-  await page.getByTestId(`inherited-${inputName}`).getByText(SWITCH_LABELS[inputName]).click();
+  await page.getByText(SWITCH_LABELS[inputName]).click();
 }
 
 describe('CosFeatures', () => {
