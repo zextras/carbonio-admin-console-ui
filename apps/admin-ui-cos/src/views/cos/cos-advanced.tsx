@@ -15,7 +15,7 @@ import {
   useTotalQuotaActive,
 } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -150,7 +150,18 @@ export const CosAdvanced = () => {
   const isTotalQuotaActive = useTotalQuotaActive();
   const { data: cosDetailData, isPending } = useCosDetail(cosId);
   const cosInformation = cosDetailData?.cos?.[0]?.a;
-  const [cosData, setCosData] = useState<AccountType>({});
+  const cosData = useMemo<AccountType>(() => {
+    if (!cosInformation || !cosInformation.length) return {};
+    const obj: AccountType = {};
+    cosInformation.forEach((item: Attribute) => {
+      obj[item?.n as keyof AccountType] = item._content;
+    });
+    COS_ADVANCED_FIELD_DEFAULTS.forEach(([key, defaultVal]) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (!obj[key]) (obj as any)[key] = defaultVal;
+    });
+    return obj;
+  }, [cosInformation]);
   const { data: rights = [] } = useCurrentUserRights();
   const modifyCosMutation = useModifyCos(cosId);
   const isAdvanced = useIsAdvanced();
@@ -240,20 +251,19 @@ export const CosAdvanced = () => {
     (isTotalQuotaActive && totalQuotaOverride !== null) ||
     Object.keys(backupOverrides).length > 0;
 
-  const setValue = (key: keyof AccountType, value: AccountType[keyof AccountType]): void => {
-    setCosAdvanced((prev: AccountType) => ({ ...prev, [key]: value }));
-  };
-
-  const setInitialValues = (obj: AccountType): void => {
-    if (!obj) return;
-    [...COS_ADVANCED_FIELD_DEFAULTS, ...COS_INITIAL_VALUES_EXTRA].forEach(([key, defaultVal]) => {
-      setValue(key, (obj?.[key] ? obj?.[key] : defaultVal) as AccountType[keyof AccountType]);
+  useEffect(() => {
+    if (!cosInformation || !cosInformation.length) return;
+    const obj: AccountType = {};
+    cosInformation.forEach((item: Attribute) => {
+      obj[item?.n as keyof AccountType] = item._content;
     });
-  };
-
-  const setStateAttrValues = (obj: AccountType): void => {
-    if (!obj) return;
-    const defaultType = timeItems[0]?.value;
+    COS_ADVANCED_FIELD_DEFAULTS.forEach(([key, defaultVal]) => {
+      if (!obj[key]) (obj as any)[key] = defaultVal;
+    });
+    [...COS_ADVANCED_FIELD_DEFAULTS, ...COS_INITIAL_VALUES_EXTRA].forEach(([key, defaultVal]) => {
+      setCosAdvanced((prev) => ({ ...prev, [key]: (obj[key] ?? defaultVal) as string }));
+    });
+    const defaultType = 's';
     timeFields.quotaWarnInterval.reset(obj?.zimbraQuotaWarnInterval, defaultType);
     timeFields.passwordLockoutDuration.reset(obj?.zimbraPasswordLockoutDuration, defaultType);
     timeFields.passwordLockoutFailureLifetime.reset(
@@ -266,25 +276,8 @@ export const CosAdvanced = () => {
     timeFields.mailTrashLifetime.reset(obj?.zimbraMailTrashLifetime, defaultType);
     timeFields.mailSpamLifetime.reset(obj?.zimbraMailSpamLifetime, defaultType);
     timeFields.mailMessageLifetime.reset(obj?.zimbraMailMessageLifetime, defaultType);
-
     setAccountQuotaGBValue(obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(2) : '');
-  };
-
-  useEffect(() => {
-    if (!!cosInformation && cosInformation.length > 0) {
-      const obj: AccountType = {};
-      cosInformation.forEach((item: Attribute) => {
-        obj[item?.n as keyof AccountType] = item._content;
-      });
-      COS_ADVANCED_FIELD_DEFAULTS.forEach(([key, defaultVal]) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (!obj[key]) (obj as any)[key] = defaultVal;
-      });
-      setCosData(obj);
-      setInitialValues(obj);
-      setStateAttrValues(obj);
-    }
-  }, [cosInformation, setInitialValues, setStateAttrValues]);
+  }, [cosInformation]);
 
   const changeValue = (e: ChangeEvent<HTMLInputElement>) => {
     setCosAdvanced((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -310,8 +303,26 @@ export const CosAdvanced = () => {
   };
 
   const onCancel = (): void => {
-    setInitialValues(cosData);
-    setStateAttrValues(cosData);
+    if (!cosData) return;
+    [...COS_ADVANCED_FIELD_DEFAULTS, ...COS_INITIAL_VALUES_EXTRA].forEach(([key, defaultVal]) => {
+      setCosAdvanced((prev) => ({ ...prev, [key]: (cosData[key] ?? defaultVal) as string }));
+    });
+    const defaultType = 's';
+    timeFields.quotaWarnInterval.reset(cosData?.zimbraQuotaWarnInterval, defaultType);
+    timeFields.passwordLockoutDuration.reset(cosData?.zimbraPasswordLockoutDuration, defaultType);
+    timeFields.passwordLockoutFailureLifetime.reset(
+      cosData?.zimbraPasswordLockoutFailureLifetime,
+      defaultType,
+    );
+    timeFields.adminAuthTokenLifetime.reset(cosData?.zimbraAdminAuthTokenLifetime, defaultType);
+    timeFields.authTokenLifetime.reset(cosData?.zimbraAuthTokenLifetime, defaultType);
+    timeFields.mailIdleSessionTimeout.reset(cosData?.zimbraMailIdleSessionTimeout, defaultType);
+    timeFields.mailTrashLifetime.reset(cosData?.zimbraMailTrashLifetime, defaultType);
+    timeFields.mailSpamLifetime.reset(cosData?.zimbraMailSpamLifetime, defaultType);
+    timeFields.mailMessageLifetime.reset(cosData?.zimbraMailMessageLifetime, defaultType);
+    setAccountQuotaGBValue(
+      cosData?.zimbraMailQuota ? BytesToGB(cosData?.zimbraMailQuota).toFixed(2) : '',
+    );
     setFileQuotaOverride(undefined);
     setBackupOverrides({});
     setTotalQuotaOverride(null);
