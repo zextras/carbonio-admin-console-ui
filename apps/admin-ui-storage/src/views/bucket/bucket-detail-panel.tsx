@@ -25,8 +25,7 @@ import { useTranslation } from 'react-i18next';
 
 import {
   DeleteS3ConnectorRequest,
-  objectType,
-  S3ConnectorMutationResponse
+  objectType
 } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
@@ -242,8 +241,7 @@ const BucketDetailPanel: FC = () => {
       iAmSure: true,
     };
 
-    deleteS3Connector(objectToSendDeleteBucket).then((rawResponse) => {
-      const response = rawResponse as S3ConnectorMutationResponse;
+    deleteS3Connector(objectToSendDeleteBucket).then((response) => {
       if (response.ok) {
         getBucketListType();
         createSnackbar({
@@ -399,10 +397,11 @@ const BucketDetailPanel: FC = () => {
             volumes={bucketList}
             selectedRows={bucketselection}
             onSelectionChange={(selected: string[]): void => {
+              const [firstSelected] = selected;
               const nextSelection: SingleSelection =
-                selected.length > 0 ? [selected[0] as string] : [];
+                firstSelected === undefined ? [] : [firstSelected];
               setBucketselection(nextSelection);
-              const selectedIndex = Number(selected[0]);
+              const selectedIndex = Number(firstSelected);
               if (Number.isNaN(selectedIndex)) {
                 return;
               }

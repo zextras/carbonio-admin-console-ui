@@ -19,7 +19,7 @@ import {
 import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType, S3ConnectorMutationResponse, UpdateS3ConnectorRequest } from '../../../types';
+import { objectType, UpdateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { listS3Regions, updateS3Connector } from '../../services/bucket-service';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
@@ -120,7 +120,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     ),
   );
   const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
-  const [showVerifyResult, setVerifyShowResult] = useState(false);
+  const [showVerifyResult, setShowVerifyResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);
   const [isVerifyError, setIsVerifyError] = useState(false);
@@ -148,14 +148,12 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     }
 
     if (currentRegionValue !== initialRegionValue) {
-      let regionLabel = '-';
-      if (regionSelection?.value === NO_REGION_VALUE) {
-        regionLabel = t('label.region_none', 'None');
-      } else if (isCustomRegion) {
-        regionLabel = customRegion.trim() || '-';
-      } else {
-        regionLabel = String(regionSelection?.label ?? regionSelection?.value ?? '-');
-      }
+      const regionLabel =
+        regionSelection?.value === NO_REGION_VALUE
+          ? t('label.region_none', 'None')
+          : isCustomRegion
+            ? customRegion.trim() || '-'
+            : String(regionSelection?.label ?? regionSelection?.value ?? '-');
       fields.push({
         label: t('label.region', 'Region'),
         value: regionLabel,
@@ -305,7 +303,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       payload.region = currentRegionValue;
     }
 
-    const updateResData = (await updateS3Connector(payload)) as S3ConnectorMutationResponse;
+    const updateResData = await updateS3Connector(payload);
 
     if (updateResData?.ok) {
       getBucketListType();
@@ -355,7 +353,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
 
   async function onApplyChanges(): Promise<void> {
     setIsVerifyModalOpen(false);
-    setVerifyShowResult(false);
+    setShowVerifyResult(false);
     setIsVerifySuccess(false);
     setIsVerifyError(false);
     setIsVerifyPending(true);
@@ -380,11 +378,11 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   }
 
   function handleProgressComplete(): void {
-    setVerifyShowResult(true);
+    setShowVerifyResult(true);
   }
 
   function handleSuccessComplete(): void {
-    setVerifyShowResult(false);
+    setShowVerifyResult(false);
     setIsVerifySuccess(false);
   }
 
@@ -722,7 +720,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         verifyFailError={verifyFailError}
         isError={showVerifyResult && isVerifyError}
         checkDetails={checkDetails}
-        onRetry={() => setVerifyShowResult(false)}
+        onRetry={() => setShowVerifyResult(false)}
       />
     </>
   );

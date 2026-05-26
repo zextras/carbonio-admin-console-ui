@@ -19,7 +19,7 @@ import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 
 import { CreateS3ConnectorRequest } from '../../../types';
-import { AMAZON_WEB_SERVICE_S3, ZIMBRA_ADMIN_URN } from '../../constants';
+import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { createS3Connector, listS3Regions } from '../../services/bucket-service';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
@@ -83,12 +83,10 @@ const Connection: FC<{
   const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
   const [regionSelection, setRegionSelection] = useState<UISelectItem<string>>(EMPTY_REGION);
 
-  const [showVerifyResult, setVerifyShowResult] = useState(false);
+  const [showVerifyResult, setShowVerifyResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);
   const [isVerifyError, setIsVerifyError] = useState(false);
-
-  const storeType = externalData || AMAZON_WEB_SERVICE_S3;
 
   function getSelectedRegion(): string {
     return isCustomRegion ? customRegion.trim() : regionsData?.value ?? '';
@@ -118,7 +116,7 @@ const Connection: FC<{
       selectedRegion &&
       bucketNameRegex.test(selectedRegion)
     ) {
-      setVerifyShowResult(false);
+      setShowVerifyResult(false);
       setIsVerifySuccess(false);
       setIsVerifyError(false);
       setIsVerifyPending(true);
@@ -134,7 +132,7 @@ const Connection: FC<{
         secret: secretKey,
         region: selectedRegion,
         insecureHttps: acceptUntrustedSSL,
-        notes: storeType === AMAZON_WEB_SERVICE_S3 ? '' : '',
+        notes: '',
       };
 
       if (urlInput.trim() !== '') {
@@ -183,11 +181,11 @@ const Connection: FC<{
   };
 
   const handleProgressComplete = useCallback((): void => {
-    setVerifyShowResult(true);
+    setShowVerifyResult(true);
   }, []);
 
   const handleSuccessComplete = useCallback((): void => {
-    setVerifyShowResult(false);
+    setShowVerifyResult(false);
     onCancel?.();
   }, [onCancel]);
 
@@ -572,7 +570,7 @@ const Connection: FC<{
         verifyFailError={verifyFailError}
         isError={showVerifyResult && isVerifyError}
         checkDetails={checkDetails}
-        onRetry={() => setVerifyShowResult(false)}
+        onRetry={() => setShowVerifyResult(false)}
       />
     </Container>
   );
