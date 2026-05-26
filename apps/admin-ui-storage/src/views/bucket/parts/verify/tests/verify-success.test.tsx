@@ -5,7 +5,7 @@
  */
 
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { type MockInstance, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type MockInstance,vi } from 'vitest';
 
 import { VERIFY_SUCCESS_AUTO_CLOSE_MS } from '../../../../../constants';
 import { VerifySuccess } from '../verify-success';
