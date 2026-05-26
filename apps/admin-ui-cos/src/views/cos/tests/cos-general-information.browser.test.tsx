@@ -1,0 +1,385 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import {
+  createBrowserAPIInterceptor,
+  createBrowserSoapAPIInterceptor,
+  getQueryClient,
+  grantUserCosRights,
+  resetMockWorker,
+  setupBrowserTest,
+} from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
+import { Route, Routes } from 'react-router';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { page, userEvent } from 'vitest/browser';
+
+import { type ModifyCosBody } from '../../../services/modify-cos-service';
+import { CosGeneralInformation } from '../cos-general-information';
+
+const COS_ID = 'e00428a1-0c00-11d9-836a-000d93afea2a';
+
+const mockCosData = {
+  cos: [
+    {
+      id: COS_ID,
+      name: 'testcos',
+      a: [
+        { n: 'zimbraId', _content: COS_ID },
+        { n: 'cn', _content: 'testcos' },
+        { n: 'zimbraNotes', _content: 'Some notes here' },
+        { n: 'description', _content: 'A test COS' },
+        { n: 'zimbraCreateTimestamp', _content: '20240115123045Z' },
+      ],
+    },
+  ],
+};
+
+const mockDefaultCosData = {
+  cos: [
+    {
+      id: COS_ID,
+      name: 'default',
+      a: [
+        { n: 'zimbraId', _content: COS_ID },
+        { n: 'cn', _content: 'default' },
+        { n: 'zimbraNotes', _content: '' },
+        { n: 'description', _content: '' },
+      ],
+    },
+  ],
+};
+
+function mockCatalogServices(): void {
+  createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+    HttpResponse.json({ items: [] }),
+  );
+}
+
+function mockSearchDirectoryResponses(): void {
+  createBrowserSoapAPIInterceptor('SearchDirectory', (body: Record<string, unknown>) => {
+    const types = body?.types as string;
+    if (types === 'accounts') {
+      return {
+        account: [
+          {
+            id: 'acc-001',
+            name: 'user1@example.com',
+            a: [
+              { n: 'displayName', _content: 'User One' },
+              { n: 'mail', _content: 'user1@example.com' },
+              { n: 'zimbraAccountStatus', _content: 'active' },
+              { n: 'zimbraIsSystemAccount', _content: 'FALSE' },
+            ],
+          },
+        ],
+        searchTotal: 1,
+      };
+    }
+    return {
+      domain: [
+        {
+          id: 'dom-001',
+          name: 'example.com',
+          a: [
+            { n: 'zimbraDomainName', _content: 'example.com' },
+            { n: 'zimbraDomainDefaultCOSId', _content: COS_ID },
+          ],
+        },
+      ],
+      searchTotal: 1,
+    };
+  });
+}
+
+function mockEmptySearchDirectoryResponses(): void {
+  createBrowserSoapAPIInterceptor('SearchDirectory', () => ({
+    account: [],
+    domain: [],
+    searchTotal: 0,
+  }));
+}
+
+async function setupGeneralInfoTest(cosData = mockCosData): Promise<void> {
+  const queryClient = getQueryClient();
+  await grantUserCosRights(queryClient);
+  mockCatalogServices();
+  mockSearchDirectoryResponses();
+
+  createBrowserSoapAPIInterceptor('GetCos', cosData);
+  createBrowserSoapAPIInterceptor('FlushCache', {});
+  createBrowserSoapAPIInterceptor('ModifyCos', {});
+  createBrowserSoapAPIInterceptor('RenameCos', {});
+  createBrowserSoapAPIInterceptor('DeleteCos', {});
+
+  await setupBrowserTest(
+    <Routes>
+      <Route path="/:cosId/:operation" element={<CosGeneralInformation />} />
+    </Routes>,
+    { initialRouterEntry: `/${COS_ID}/general_information`, queryClient },
+  );
+  await expect.element(page.getByText('General Information')).toBeVisible();
+}
+
+async function setupSaveTest(cosData = mockCosData): Promise<void> {
+  const queryClient = getQueryClient();
+  await grantUserCosRights(queryClient);
+  mockCatalogServices();
+  mockSearchDirectoryResponses();
+
+  createBrowserSoapAPIInterceptor('GetCos', cosData);
+  createBrowserSoapAPIInterceptor('FlushCache', {});
+
+  await setupBrowserTest(
+    <Routes>
+      <Route path="/:cosId/:operation" element={<CosGeneralInformation />} />
+    </Routes>,
+    { initialRouterEntry: `/${COS_ID}/general_information`, queryClient },
+  );
+  await expect.element(page.getByText('General Information')).toBeVisible();
+}
+
+async function setupDeleteTest(cosData = mockCosData): Promise<void> {
+  const queryClient = getQueryClient();
+  await grantUserCosRights(queryClient);
+  mockCatalogServices();
+  mockSearchDirectoryResponses();
+
+  createBrowserSoapAPIInterceptor('GetCos', cosData);
+  createBrowserSoapAPIInterceptor('FlushCache', {});
+  createBrowserSoapAPIInterceptor('ModifyCos', {});
+  createBrowserSoapAPIInterceptor('RenameCos', {});
+
+  await setupBrowserTest(
+    <Routes>
+      <Route path="/:cosId/:operation" element={<CosGeneralInformation />} />
+    </Routes>,
+    { initialRouterEntry: `/${COS_ID}/general_information`, queryClient },
+  );
+  await expect.element(page.getByText('General Information')).toBeVisible();
+}
+
+describe('CosGeneralInformation', () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  afterEach(() => {
+    resetMockWorker();
+  });
+
+  describe('Rendering', () => {
+    it('should render the page title', async () => {
+      await setupGeneralInfoTest();
+
+      await expect.element(page.getByText('General Information')).toBeVisible();
+    });
+
+    it('should render the Name field with COS name', async () => {
+      await setupGeneralInfoTest();
+
+      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      await expect.element(nameInput).toBeVisible();
+      await expect.element(nameInput).toHaveValue('testcos');
+    });
+
+    it('should render the ID field', async () => {
+      await setupGeneralInfoTest();
+
+      const idInput = page.getByRole('textbox', { name: 'ID' });
+      await expect.element(idInput).toBeVisible();
+      await expect.element(idInput).toHaveValue(COS_ID);
+    });
+
+    it('should render the Description field', async () => {
+      await setupGeneralInfoTest();
+
+      const descInput = page.getByRole('textbox', { name: 'Description' });
+      await expect.element(descInput).toBeVisible();
+      await expect.element(descInput).toHaveValue('A test COS');
+    });
+
+    it('should render the DELETE button', async () => {
+      await setupGeneralInfoTest();
+
+      await expect.element(page.getByRole('button', { name: 'DELETE' })).toBeVisible();
+    });
+
+    it('should render Domains that use this COS section header', async () => {
+      await setupGeneralInfoTest();
+
+      await expect
+        .element(page.getByText('Domains that use this COS', { exact: true }))
+        .toBeVisible();
+    });
+
+    it('should render Accounts that use this COS section header', async () => {
+      await setupGeneralInfoTest();
+
+      await expect
+        .element(page.getByText('Accounts that use this COS', { exact: true }))
+        .toBeVisible();
+    });
+  });
+
+  describe('Default COS', () => {
+    it('should disable Name field for default COS', async () => {
+      await setupGeneralInfoTest(mockDefaultCosData);
+
+      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      await expect.element(nameInput).toBeDisabled();
+    });
+
+    it('should disable DELETE button for default COS', async () => {
+      await setupGeneralInfoTest(mockDefaultCosData);
+
+      const deleteButton = page.getByRole('button', { name: 'DELETE' });
+      await expect.element(deleteButton).toBeDisabled();
+    });
+  });
+
+  describe('Dirty state', () => {
+    it('should not show Save and Cancel buttons initially', async () => {
+      await setupGeneralInfoTest();
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    });
+
+    it('should show Save and Cancel when Name is changed', async () => {
+      await setupGeneralInfoTest();
+
+      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      await userEvent.fill(nameInput, 'renamed-cos');
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+    });
+
+    it('should show Save and Cancel when Description is changed', async () => {
+      await setupGeneralInfoTest();
+
+      const descInput = page.getByRole('textbox', { name: 'Description' });
+      await userEvent.fill(descInput, 'new description');
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+
+    it('should revert changes when Cancel is clicked', async () => {
+      await setupGeneralInfoTest();
+
+      const descInput = page.getByRole('textbox', { name: 'Description' });
+      await userEvent.fill(descInput, 'changed description');
+
+      await page.getByRole('button', { name: 'Cancel' }).click();
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Save', () => {
+    it('should send ModifyCos when saving without rename', async () => {
+      const modifyCosPromise = createBrowserSoapAPIInterceptor('ModifyCos', {});
+      await setupSaveTest();
+
+      const descInput = page.getByRole('textbox', { name: 'Description' });
+      await userEvent.fill(descInput, 'updated description');
+
+      await page.getByRole('button', { name: 'Save' }).click();
+
+      const requestBody = (await modifyCosPromise) as ModifyCosBody;
+      expect(requestBody._jsns).toBe('urn:zimbraAdmin');
+      expect(requestBody.id._content).toBe(COS_ID);
+      const descAttr = requestBody.a.find((a: { n: string }) => a.n === 'description');
+      expect(descAttr).toBeDefined();
+      expect(descAttr!._content).toBe('updated description');
+    });
+
+    it('should send RenameCos then ModifyCos when name is changed', async () => {
+      const renameCosPromise = createBrowserSoapAPIInterceptor('RenameCos', {});
+      createBrowserSoapAPIInterceptor('ModifyCos', {});
+      await setupSaveTest();
+
+      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      await userEvent.fill(nameInput, 'renamed-cos');
+
+      await page.getByRole('button', { name: 'Save' }).click();
+
+      const renameBody = (await renameCosPromise) as {
+        _jsns: string;
+        newName: { _content: string };
+      };
+      expect(renameBody._jsns).toBe('urn:zimbraAdmin');
+      expect(renameBody.newName._content).toBe('renamed-cos');
+    });
+  });
+
+  describe('Delete COS', () => {
+    it('should open delete confirmation modal when DELETE is clicked', async () => {
+      await setupGeneralInfoTest();
+
+      await page.getByRole('button', { name: 'DELETE' }).click();
+
+      await expect
+        .element(page.getByText('Are you sure you want to delete this Class of Service?'))
+        .toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Yes, Delete' })).toBeVisible();
+    });
+
+    it('should close modal when No, Go Back is clicked', async () => {
+      await setupGeneralInfoTest();
+
+      await page.getByRole('button', { name: 'DELETE' }).click();
+      await expect
+        .element(page.getByText('Are you sure you want to delete this Class of Service?'))
+        .toBeVisible();
+
+      await page.getByRole('button', { name: 'No, Go Back' }).click();
+
+      await expect
+        .element(page.getByText('Are you sure you want to delete this Class of Service?'))
+        .not.toBeInTheDocument();
+    });
+
+    it('should send DeleteCos when Yes, Delete is clicked', async () => {
+      const deleteCosPromise = createBrowserSoapAPIInterceptor('DeleteCos', {});
+      await setupDeleteTest();
+
+      await page.getByRole('button', { name: 'DELETE' }).click();
+      await page.getByRole('button', { name: 'Yes, Delete' }).click();
+
+      const deleteBody = (await deleteCosPromise) as {
+        _jsns: string;
+        id: { _content: string };
+      };
+      expect(deleteBody._jsns).toBe('urn:zimbraAdmin');
+      expect(deleteBody.id._content).toBe(COS_ID);
+    });
+  });
+
+  describe('Empty lists', () => {
+    it('should show empty list messages when no results', async () => {
+      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+      mockEmptySearchDirectoryResponses();
+      mockCatalogServices();
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserSoapAPIInterceptor('ModifyCos', {});
+      createBrowserSoapAPIInterceptor('RenameCos', {});
+      createBrowserSoapAPIInterceptor('DeleteCos', {});
+
+      const queryClient = getQueryClient();
+      await grantUserCosRights(queryClient);
+
+      await setupBrowserTest(
+        <Routes>
+          <Route path="/:cosId/:operation" element={<CosGeneralInformation />} />
+        </Routes>,
+        { initialRouterEntry: `/${COS_ID}/general_information`, queryClient },
+      );
+      await expect.element(page.getByText('General Information')).toBeVisible();
+
+      await expect.element(page.getByText('This list is empty.').first()).toBeVisible();
+    });
+  });
+});
