@@ -91,6 +91,41 @@ async function setupWscSettingsTest(): Promise<void> {
   await setupBrowserTest(<WscSettings {...defaultProps} />, { queryClient });
 }
 
+async function setupWscSettingsTestWithFeatures(
+  featuresOverride: Partial<AccountType> = {},
+  options?: { useAdvanced?: boolean },
+): Promise<void> {
+  if (options?.useAdvanced) {
+    await advancedSupportedApiForBrowser.withAdvancedSupported();
+  } else {
+    await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+  }
+  const queryClient = seedQueryClient();
+
+  createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+  createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+    HttpResponse.json({
+      Body: {
+        response: {
+          content: JSON.stringify({
+            ok: true,
+            response: {
+              type: 'Purchased',
+              features: [{ name: 'wsc_basic', enabled: true }],
+            },
+          }),
+        },
+      },
+    }),
+  );
+
+  const props = {
+    ...defaultProps,
+    featuresDetail: { ...defaultFeatures, ...featuresOverride },
+  };
+  await setupBrowserTest(<WscSettings {...props} />, { queryClient });
+}
+
 describe('WscSettings (browser)', () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -263,6 +298,64 @@ describe('WscSettings (browser)', () => {
       });
 
       await expect.element(page.getByText('Show read receipts')).toBeDisabled();
+    });
+  });
+
+  describe('Interactions', () => {
+    it('should call setFeaturesDetail with correct key when Enable Chat is clicked', async () => {
+      await setupWscSettingsTest();
+
+      await page.getByText('Enable Chat').click();
+
+      expect(defaultProps.setFeaturesDetail).toHaveBeenCalledTimes(1);
+      const updater = defaultProps.setFeaturesDetail.mock.calls[0][0];
+      const newState = updater(defaultFeatures);
+      expect(newState.carbonioFeatureWscEnabled).toBe('FALSE');
+      expect(newState.carbonioWscShowMessageReads).toBe('TRUE');
+    });
+
+    it('should call setFeaturesDetail with toggled value when a switch is clicked', async () => {
+      await setupWscSettingsTest();
+
+      await page.getByText('Show read receipts').click();
+
+      expect(defaultProps.setFeaturesDetail).toHaveBeenCalledTimes(1);
+      const updater = defaultProps.setFeaturesDetail.mock.calls[0][0];
+      const newState = updater(defaultFeatures);
+      expect(newState.carbonioWscShowMessageReads).toBe('FALSE');
+      expect(newState.carbonioFeatureWscEnabled).toBe('TRUE');
+    });
+  });
+
+  describe('Cascade disable', () => {
+    it('should disable all dependent settings when Enable Chat is FALSE', async () => {
+      await setupWscSettingsTestWithFeatures({ carbonioFeatureWscEnabled: 'FALSE' });
+
+      await expect.element(page.getByText("Show users' online status")).toBeDisabled();
+      await expect.element(page.getByText('Enable video calls')).toBeDisabled();
+      await expect.element(page.getByText('Users can upload attachments')).toBeDisabled();
+    });
+
+    it('should disable Enable virtual background when Enable video calls is FALSE', async () => {
+      await setupWscSettingsTestWithFeatures({ carbonioWscVideoCallEnabled: 'FALSE' });
+
+      await expect.element(page.getByText('Enable virtual background')).toBeDisabled();
+    });
+
+    it('should disable Maximum attachment size when Users can upload attachments is FALSE', async () => {
+      await setupWscSettingsTestWithFeatures({ carbonioWscAttachmentUpload: 'FALSE' });
+
+      await expect
+        .element(page.getByPlaceholder('Maximum attachment size in MB'))
+        .toBeDisabled();
+    });
+  });
+
+  describe('Advanced features', () => {
+    it('should render Allow call recording toggle when advanced is supported', async () => {
+      await setupWscSettingsTestWithFeatures({}, { useAdvanced: true });
+
+      await expect.element(page.getByText('Allow call recording')).toBeVisible();
     });
   });
 });
