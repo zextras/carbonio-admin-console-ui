@@ -45,6 +45,7 @@ describe('DeleteBucketModel (browser)', () => {
 
 	it('should call closeHandler when clicking cancel button', async () => {
 		const closeHandler = vi.fn();
+		const hidePopoverSpy = vi.spyOn(HTMLElement.prototype, 'hidePopover');
 
 		await setupBrowserTest(
 			<DeleteBucketModel open closeHandler={closeHandler} saveHandler={vi.fn()} />,
@@ -53,10 +54,12 @@ describe('DeleteBucketModel (browser)', () => {
 		await page.getByRole('button', { name: /no, cancel/i }).click();
 
 		expect(closeHandler).toHaveBeenCalledTimes(1);
+		expect(hidePopoverSpy).toHaveBeenCalled();
 	});
 
 	it('should call saveHandler when clicking delete button', async () => {
 		const saveHandler = vi.fn();
+		const hidePopoverSpy = vi.spyOn(HTMLElement.prototype, 'hidePopover');
 
 		await setupBrowserTest(
 			<DeleteBucketModel open closeHandler={vi.fn()} saveHandler={saveHandler} />,
@@ -65,5 +68,6 @@ describe('DeleteBucketModel (browser)', () => {
 		await page.getByRole('button', { name: /yes, delete/i }).click();
 
 		expect(saveHandler).toHaveBeenCalledTimes(1);
+		expect(hidePopoverSpy).toHaveBeenCalled();
 	});
 });

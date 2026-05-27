@@ -138,15 +138,18 @@ vi.mock('../parts/verify/verify-error', () => ({
   VerifyError: ({
     isError,
     verifyFailError,
+    checkDetails,
     onRetry,
   }: {
     isError: boolean;
     verifyFailError?: string;
+    checkDetails?: { connectionOk?: string };
     onRetry?: () => void;
   }) =>
     isError ? (
       <div>
         <span>{verifyFailError ?? 'verify-error'}</span>
+        {checkDetails?.connectionOk && <span>connectionOk:{checkDetails.connectionOk}</span>}
         <button type="button" onClick={onRetry}>
           Retry
         </button>
@@ -272,5 +275,82 @@ describe('Connection', () => {
     await waitFor(() => {
       expect(screen.queryByText('Connector verification failed')).toBeNull();
     });
+  });
+
+  it('should include trimmed endpoint URL and prefix in payload when provided', async () => {
+    render(<Connection onCancel={vi.fn()} />);
+    await fillRequiredFields();
+
+    fireEvent.change(screen.getByLabelText('Endpoint URL'), {
+      target: { value: '  https://s3.example.test  ' },
+    });
+    fireEvent.change(screen.getByLabelText('Prefix'), {
+      target: { value: '  team/folder  ' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
+
+    await waitFor(() => {
+      expect(mockCreateS3Connector).toHaveBeenCalledTimes(1);
+    });
+
+    expect(mockCreateS3Connector).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: 'https://s3.example.test',
+        prefix: 'team/folder',
+      }),
+    );
+  });
+
+  it('should require custom region and submit selected custom value', async () => {
+    render(<Connection onCancel={vi.fn()} />);
+    await fillRequiredFields();
+
+    fireEvent.change(screen.getByLabelText('Region'), {
+      target: { value: 'SET_CUSTOM_REGION' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
+
+    expect(mockCreateS3Connector).not.toHaveBeenCalled();
+    expect(
+      screen.getByText("This field can't be blank or have white space"),
+    ).toBeTruthy();
+
+    fireEvent.change(screen.getByLabelText('Custom region'), {
+      target: { value: 'custom-region-1' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
+
+    await waitFor(() => {
+      expect(mockCreateS3Connector).toHaveBeenCalledTimes(1);
+    });
+
+    expect(mockCreateS3Connector).toHaveBeenCalledWith(
+      expect.objectContaining({ region: 'custom-region-1' }),
+    );
+  });
+
+  it('should show message and details when verify returns error object', async () => {
+    mockCreateS3Connector.mockResolvedValue({
+      ok: false,
+      error: {
+        message: 'Detailed verification failed',
+        details: {
+          connectionOk: 'false',
+        },
+      },
+    });
+
+    render(<Connection onCancel={vi.fn()} />);
+    await fillRequiredFields();
+    fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Detailed verification failed')).toBeTruthy();
+    });
+
+    expect(screen.getByText('connectionOk:false')).toBeTruthy();
   });
 });

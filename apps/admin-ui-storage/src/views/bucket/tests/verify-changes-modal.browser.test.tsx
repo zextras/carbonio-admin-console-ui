@@ -91,6 +91,7 @@ describe('VerifyChangesModal (browser)', () => {
 
 	it('should call closeHandler when clicking cancel button', async () => {
 		const closeHandler = vi.fn();
+		const hidePopoverSpy = vi.spyOn(HTMLElement.prototype, 'hidePopover');
 
 		await setupBrowserTest(
 			<VerifyChangesModal
@@ -104,6 +105,7 @@ describe('VerifyChangesModal (browser)', () => {
 		await page.getByRole('button', { name: /cancel/i }).click();
 
 		expect(closeHandler).toHaveBeenCalledTimes(1);
+		expect(hidePopoverSpy).toHaveBeenCalled();
 	});
 
 	it('should apply changes only after confirmation', async () => {
