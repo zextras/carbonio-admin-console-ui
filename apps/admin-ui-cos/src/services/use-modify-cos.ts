@@ -20,8 +20,8 @@ export function useModifyCos(cosId?: string) {
 
   return useMutation<CosResponse, Error, ModifyCosBody>({
     mutationFn: (body: ModifyCosBody) => modifyCos(body),
-    onSuccess: (_data, body) => {
-      flushCache('cos', 'id', body.id._content);
+    onSuccess: async (_data, body) => {
+      await flushCache('cos', 'id', body.id._content);
       if (cosId) {
         queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
       }

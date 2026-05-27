@@ -46,7 +46,7 @@ function getQuotaSource(
   return 'cos' as QuotaSource;
 }
 
-type Return = {
+type UseCosQuotaState = {
   fileQuotaLimitGBValue: string | undefined;
   initFileQuotaLimitGBValue: string | undefined;
   showFileQuotaLimitMsg: boolean;
@@ -67,7 +67,7 @@ export function useCosQuotaState({
   cosQuotaData,
   isTotalQuotaActive,
   isAdvanced,
-}: Params): Return {
+}: Params): UseCosQuotaState {
   const invalidateCosQuota = useInvalidateCosQuota();
 
   const [fileQuotaOverride, setFileQuotaOverride] = useState<string | undefined>(undefined);
@@ -95,9 +95,9 @@ export function useCosQuotaState({
       : null,
   );
 
-  const [totalQuotaOverride, setTotalQuotaOverride] = useState<
-    ComputedLimit | null | undefined
-  >(null);
+  const [totalQuotaOverride, setTotalQuotaOverride] = useState<ComputedLimit | null | undefined>(
+    null,
+  );
 
   const totalComputedQuotaLimit =
     totalQuotaOverride === null ? initTotalComputedQuotaLimit : totalQuotaOverride;
@@ -106,10 +106,7 @@ export function useCosQuotaState({
   const showQuotaRevertButton =
     totalQuotaSource === 'cos' &&
     initialQuota !== null &&
-    !computedLimitsEqual(
-      totalComputedQuotaLimit ?? initialQuota.limit,
-      initialQuota.limit,
-    );
+    !computedLimitsEqual(totalComputedQuotaLimit ?? initialQuota.limit, initialQuota.limit);
 
   function onFileQuotaChange(e: ChangeEvent<HTMLInputElement>): void {
     if (!isValidDecimalInput(e.target.value)) return;
@@ -135,8 +132,7 @@ export function useCosQuotaState({
   }
 
   const isDirty =
-    (fileQuotaLimitGBValue !== undefined &&
-      initFileQuotaLimitGBValue !== fileQuotaLimitGBValue) ||
+    (fileQuotaLimitGBValue !== undefined && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue) ||
     (isTotalQuotaActive &&
       totalQuotaOverride !== null &&
       initialQuota !== null &&
@@ -156,9 +152,11 @@ export function useCosQuotaState({
   function handleSuccess(zimbraId: string): void {
     if (!isTotalQuotaActive && isAdvanced && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue) {
       if (fileQuotaLimitGBValue) {
-        setFileQuotaLimitById(zimbraId, Math.round(GbToBytes(fileQuotaLimitGBValue)).toString(), COS).then(
-          () => setShowFileQuotaLimitMsg(false),
-        );
+        setFileQuotaLimitById(
+          zimbraId,
+          Math.round(GbToBytes(fileQuotaLimitGBValue)).toString(),
+          COS,
+        ).then(() => setShowFileQuotaLimitMsg(false));
       } else {
         resetFileQuotaLimitById(zimbraId, COS).then(() => setShowFileQuotaLimitMsg(false));
       }

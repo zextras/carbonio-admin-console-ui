@@ -5,6 +5,7 @@
  */
 
 import { useForm, useStore } from '@tanstack/react-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { Container, useSnackbar } from '@zextras/ui-components';
 import { type GetCoreAttributesResponse, setCoreAttributes } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +19,7 @@ import {
   COS,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
+import { cosQueryKeys } from '../../services/cos-query-keys';
 import { type ComputedLimit, type QuotaSource } from '../../services/get-cos-quota';
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useModifyCos } from '../../services/use-modify-cos';
@@ -126,6 +128,7 @@ export const CosAdvancedForm = ({
   const { cosId } = useParams();
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
   const modifyCosMutation = useModifyCos(cosId);
 
   const quotaState = useCosQuotaState({ cosData, cosQuotaData, isTotalQuotaActive, isAdvanced });
@@ -162,6 +165,17 @@ export const CosAdvancedForm = ({
 
       try {
         await saveBackupAttributes(value, cosName);
+        if (isAdvanced && cosName) {
+          queryClient.invalidateQueries({
+            queryKey: cosQueryKeys.coreAttributes([
+              {
+                configType: COS,
+                configName: [cosName],
+                attrName: [BACKUP_SELF_UNDELETE_ALLOWED, BACKUP_ENABLED],
+              },
+            ]),
+          });
+        }
       } catch {
         createSnackbar({
           key: 'error',

@@ -52,6 +52,7 @@ const COSGeneralOptions: FC<{
                   {(field) => (
                     <Switch
                       label={labels.backup.enableDisable}
+                      iconAriaLabel={labels.backup.enableDisable}
                       value={field.state.value}
                       onClick={() => field.handleChange(!field.state.value)}
                       iconColor="primary"
@@ -70,6 +71,7 @@ const COSGeneralOptions: FC<{
                   {(field) => (
                     <Switch
                       label={labels.backup.selfUndelete}
+                      iconAriaLabel={labels.backup.selfUndelete}
                       value={field.state.value}
                       onClick={() => field.handleChange(!field.state.value)}
                       iconColor="primary"
