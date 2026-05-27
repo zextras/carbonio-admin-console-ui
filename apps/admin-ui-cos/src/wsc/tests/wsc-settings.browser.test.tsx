@@ -6,9 +6,13 @@
 import { QueryClient } from '@tanstack/react-query';
 import {
   advancedSupportedApiForBrowser,
+  createBrowserSoapAPIInterceptor,
+  createBrowserZextrasActionInterceptor,
+  getGetInfoResponseMock,
   getQueryClient,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -66,6 +70,24 @@ function seedQueryClient(): QueryClient {
 async function setupWscSettingsTest(): Promise<void> {
   await advancedSupportedApiForBrowser.withAdvancedNotSupported();
   const queryClient = seedQueryClient();
+
+  createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+  createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+    HttpResponse.json({
+      Body: {
+        response: {
+          content: JSON.stringify({
+            ok: true,
+            response: {
+              type: 'Purchased',
+              features: [{ name: 'wsc_basic', enabled: true }],
+            },
+          }),
+        },
+      },
+    }),
+  );
+
   await setupBrowserTest(<WscSettings {...defaultProps} />, { queryClient });
 }
 
@@ -189,6 +211,23 @@ describe('WscSettings (browser)', () => {
       await advancedSupportedApiForBrowser.withAdvancedNotSupported();
       const queryClient = seedQueryClient();
 
+      createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+      createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                response: {
+                  type: 'Purchased',
+                  features: [{ name: 'wsc_basic', enabled: true }],
+                },
+              }),
+            },
+          },
+        }),
+      );
+
       const props = {
         ...defaultProps,
         featuresDetail: { ...defaultFeatures, carbonioFeatureWscEnabled: 'FALSE' },
@@ -201,6 +240,23 @@ describe('WscSettings (browser)', () => {
     it('should disable settings when readonlyFeatures is true', async () => {
       await advancedSupportedApiForBrowser.withAdvancedNotSupported();
       const queryClient = seedQueryClient();
+
+      createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+      createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                response: {
+                  type: 'Purchased',
+                  features: [{ name: 'wsc_basic', enabled: true }],
+                },
+              }),
+            },
+          },
+        }),
+      );
 
       await setupBrowserTest(<WscSettings {...defaultProps} readonlyFeatures />, {
         queryClient,
