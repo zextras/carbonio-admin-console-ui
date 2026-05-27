@@ -85,7 +85,10 @@ const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
 
 const ADVANCED_FIELD_KEYS = new Set(COS_ADVANCED_FIELD_DEFAULTS.map(([key]) => key));
 
-const BACKUP_FIELD_KEYS: ReadonlySet<string> = new Set([BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED]);
+const BACKUP_FIELD_KEYS: ReadonlySet<string> = new Set([
+  BACKUP_ENABLED,
+  BACKUP_SELF_UNDELETE_ALLOWED,
+]);
 
 function buildCosData(cosInformation: Array<Attribute> | undefined): AccountType {
   if (!cosInformation || !cosInformation.length) return {} as AccountType;
@@ -94,8 +97,7 @@ function buildCosData(cosInformation: Array<Attribute> | undefined): AccountType
     obj[item?.n as keyof AccountType] = item._content;
   });
   COS_ADVANCED_FIELD_DEFAULTS.forEach(([key, defaultVal]) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (!obj[key]) (obj as any)[key] = defaultVal;
+    if (!obj[key]) obj[key] = defaultVal;
   });
   return obj;
 }
@@ -204,9 +206,7 @@ const CosAdvancedForm = ({
 
       const attributes = Object.keys(cosAdvancedToSave)
         .filter(
-          (key) =>
-            ADVANCED_FIELD_KEYS.has(key as keyof AccountType) &&
-            !BACKUP_FIELD_KEYS.has(key),
+          (key) => ADVANCED_FIELD_KEYS.has(key as keyof AccountType) && !BACKUP_FIELD_KEYS.has(key),
         )
         .map((ele) => ({
           n: ele,
