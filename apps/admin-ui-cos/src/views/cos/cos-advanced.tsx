@@ -160,15 +160,12 @@ const CosAdvancedForm = ({
     { label: t('label.days', 'Days'), value: 'd' },
   ];
 
-  const labels = {
-    snackbar: {
-      successMessage: t('label.change_save_success_msg', 'The change has been saved successfully'),
-      errorMessage: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-    },
-    advanced: t('cos.advanced', 'Advanced'),
-    saveButton: t('label.save', 'Save'),
-    cancelButton: t('label.cancel', 'Cancel'),
-  };
+  const errorMessage = t(
+    'label.something_wrong_error_msg',
+    'Something went wrong. Please try again.',
+  );
+
+  const pageTitle = t('cos.advanced', 'Advanced');
 
   const formDefaultValues = {
     ...cosData,
@@ -192,7 +189,7 @@ const CosAdvancedForm = ({
         createSnackbar({
           key: 'error',
           severity: 'error',
-          label: labels.snackbar.errorMessage,
+          label: errorMessage,
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -202,11 +199,11 @@ const CosAdvancedForm = ({
       await quotaState.save(zimbraId);
 
       const cosAdvancedToSave = isTotalQuotaActive
-        ? (Object.fromEntries(
+        ? Object.fromEntries(
             Object.entries(value).filter(
               ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
             ),
-          ) as typeof value)
+          )
         : value;
 
       const attributes = Object.keys(cosAdvancedToSave)
@@ -239,7 +236,7 @@ const CosAdvancedForm = ({
 
   return (
     <PageLayout
-      title={labels.advanced}
+      title={pageTitle}
       onSave={() => form.handleSubmit()}
       onCancel={() => {
         form.reset();
