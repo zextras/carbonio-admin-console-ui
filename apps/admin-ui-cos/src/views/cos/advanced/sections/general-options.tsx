@@ -7,8 +7,8 @@ import { Container, ListRow, Row, Switch } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED } from '../../../constants';
-import { CosFormApi } from './cos-form-api';
+import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED } from '../../../../constants';
+import { CosFormApi } from '../types';
 
 const COSGeneralOptions: FC<{
   form: CosFormApi;

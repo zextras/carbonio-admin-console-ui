@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -7,26 +7,29 @@ import { Container, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TimeItems } from '../../../../types/general';
-import { CosFormApi } from './cos-form-api';
-import { TimeFieldGroup } from './time-field-group';
+import { TimeItems } from '../../../../../types/general';
+import { TimeFieldGroup } from '../fields/time-field-group';
+import { CosFormApi } from '../types';
 
-type TimeoutPolicyProps = {
+type EmailRetentionPolicyProps = {
   form: CosFormApi;
   readonlyCOS: boolean;
   timeItems: TimeItems;
 };
 
-export const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({ form, readonlyCOS, timeItems }) => {
+const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
+  form,
+  readonlyCOS,
+  timeItems,
+}) => {
   const [t] = useTranslation();
   const labels = {
-    timeoutPolicy: t('cos.timeout_policy', 'Timeout Policy'),
-    adminAuthTokenLifetime: t(
-      'cos.admin_console_auth_token_lifetime',
-      'Admin console auth token lifetime',
-    ),
-    authTokenLifetime: t('cos.auth_token_lifetime', 'Auth token lifetime'),
-    mailIdleSessionTimeout: t('cos.session_idle_timeout', 'Session idle timeout'),
+    email: {
+      retentionPolicy: t('cos.email_retention_policy', 'Email Retention Policy'),
+      messageLifetime: t('cos.email_message_lifetime', 'E-mail message lifetime'),
+    },
+    trashedMessageLifetime: t('cos.trashed_message_lifetime', 'Trashed message lifetime'),
+    spamMessageLifetime: t('cos.spam_message_lifetime', 'Spam message lifetime'),
   };
   return (
     <Row
@@ -36,7 +39,7 @@ export const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({ form, readonlyCOS, ti
       width="100%"
     >
       <ds-text as="strong" weight="bold">
-        {labels.timeoutPolicy}
+        {labels.email.retentionPolicy}
       </ds-text>
       <Row mainAlignment="flex-start" width="100%">
         <Container
@@ -47,8 +50,8 @@ export const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({ form, readonlyCOS, ti
         >
           <TimeFieldGroup
             form={form}
-            name="zimbraAdminAuthTokenLifetime"
-            label={labels.adminAuthTokenLifetime}
+            name="zimbraMailMessageLifetime"
+            label={labels.email.messageLifetime}
             readonlyCOS={readonlyCOS}
             timeItems={timeItems}
           />
@@ -63,8 +66,8 @@ export const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({ form, readonlyCOS, ti
         >
           <TimeFieldGroup
             form={form}
-            name="zimbraAuthTokenLifetime"
-            label={labels.authTokenLifetime}
+            name="zimbraMailTrashLifetime"
+            label={labels.trashedMessageLifetime}
             readonlyCOS={readonlyCOS}
             timeItems={timeItems}
           />
@@ -79,8 +82,8 @@ export const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({ form, readonlyCOS, ti
         >
           <TimeFieldGroup
             form={form}
-            name="zimbraMailIdleSessionTimeout"
-            label={labels.mailIdleSessionTimeout}
+            name="zimbraMailSpamLifetime"
+            label={labels.spamMessageLifetime}
             readonlyCOS={readonlyCOS}
             timeItems={timeItems}
           />
@@ -90,3 +93,5 @@ export const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({ form, readonlyCOS, ti
     </Row>
   );
 };
+
+export default COSEmailRetentionPolicy;

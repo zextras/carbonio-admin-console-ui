@@ -18,7 +18,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { type ModifyCosBody } from '../../../services/modify-cos-service';
-import { CosAdvanced } from '../cos-advanced';
+import { CosAdvanced } from '../advanced/cos-advanced';
 
 const COS_ID = 'e00428a1-0c00-11d9-836a-000d93afea2a';
 

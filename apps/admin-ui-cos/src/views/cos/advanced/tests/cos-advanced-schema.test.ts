@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { cosAdvancedSchema } from '../cos-advanced-schema';
+import { cosAdvancedSchema } from '../schema';
 
 const base = { backupEnabled: false, backupSelfUndeleteAllowed: false };
 

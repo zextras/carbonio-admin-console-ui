@@ -16,13 +16,13 @@ import {
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TimeItems } from '../../../../types/general';
-import { getFieldErrorProps } from './cos-field-error';
-import { CosFormApi } from './cos-form-api';
-import { COSQuotasNew } from './cos-quotas-new';
-import { CosValidatedInput } from './cos-validated-input';
-import { useCosQuotaState } from './hooks/use-cos-quota-state';
-import { QuotaGBField } from './quota-gb-field';
+import { TimeItems } from '../../../../../types/general';
+import { getFieldErrorProps } from '../fields/field-error';
+import { QuotaGBField } from '../fields/quota-gb-field';
+import { CosValidatedInput } from '../fields/validated-input';
+import { useCosQuotaState } from '../hooks/use-cos-quota-state';
+import { CosFormApi } from '../types';
+import { COSQuotasNew } from './quotas-new';
 
 type QuotaProps = {
   form: CosFormApi;

@@ -19,7 +19,7 @@ vi.mock('../cos-features', () => ({
   CosFeatures: vi.fn(),
 }));
 
-vi.mock('../cos-advanced', () => ({
+vi.mock('../advanced/cos-advanced', () => ({
   CosAdvanced: vi.fn(),
 }));
 
@@ -38,7 +38,7 @@ vi.mock('../../../wsc/wsc-cos-settings', () => ({
 import { useParams } from 'react-router';
 
 import { WscCosSettings } from '../../../wsc/wsc-cos-settings';
-import { CosAdvanced } from '../cos-advanced';
+import { CosAdvanced } from '../advanced/cos-advanced';
 import { CosDetailOperation } from '../cos-detail-operation';
 import { CosFeatures } from '../cos-features';
 import { CosGeneralInformation } from '../cos-general-information';

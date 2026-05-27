@@ -8,13 +8,13 @@ import { useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextr
 import { find } from 'lodash-es';
 import { useParams } from 'react-router';
 
-import { AccountType } from '../../../types/account';
-import { Attribute } from '../../../types/attribute';
-import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
-import { useCoreAttributes } from '../../services/use-core-attributes';
-import { useCosDetail } from '../../services/use-cos-detail';
-import { useCosQuota } from '../../services/use-cos-quota';
-import { CosAdvancedForm } from './cos-advanced-form';
+import { AccountType } from '../../../../types/account';
+import { Attribute } from '../../../../types/attribute';
+import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../../constants';
+import { useCoreAttributes } from '../../../services/use-core-attributes';
+import { useCosDetail } from '../../../services/use-cos-detail';
+import { useCosQuota } from '../../../services/use-cos-quota';
+import { CosAdvancedForm } from './advanced-form';
 
 const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
   ['zimbraMailForwardingAddressMaxLength', ''],

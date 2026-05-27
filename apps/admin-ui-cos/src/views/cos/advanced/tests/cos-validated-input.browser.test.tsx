@@ -9,9 +9,9 @@ import { FC } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { COS_VALIDATION_MESSAGES, cosAdvancedSchema } from '../cos-advanced-schema';
-import { CosAdvancedFormValues, CosFormApi } from '../cos-form-api';
-import { CosValidatedInput } from '../cos-validated-input';
+import { CosValidatedInput } from '../fields/validated-input';
+import { COS_VALIDATION_MESSAGES, cosAdvancedSchema } from '../schema';
+import { CosAdvancedFormValues, CosFormApi } from '../types';
 
 const NON_NEGATIVE_INTEGER = COS_VALIDATION_MESSAGES['cos.validation.non_negative_integer'];
 const MAX_LESS_THAN_MIN = COS_VALIDATION_MESSAGES['cos.validation.max_less_than_min_length'];
@@ -35,8 +35,16 @@ const Wrapper: FC<{ onSubmit?: (value: CosAdvancedFormValues) => void }> = ({
 
   return (
     <>
-      <CosValidatedInput form={form as CosFormApi} name="zimbraPasswordMinLength" label="Min length" />
-      <CosValidatedInput form={form as CosFormApi} name="zimbraPasswordMaxLength" label="Max length" />
+      <CosValidatedInput
+        form={form as CosFormApi}
+        name="zimbraPasswordMinLength"
+        label="Min length"
+      />
+      <CosValidatedInput
+        form={form as CosFormApi}
+        name="zimbraPasswordMaxLength"
+        label="Max length"
+      />
       <button type="button" onClick={() => form.handleSubmit()}>
         Save
       </button>
@@ -75,7 +83,7 @@ describe('CosValidatedInput (browser)', () => {
     await userEvent.fill(page.getByRole('textbox', { name: 'Min length' }), '8');
     await userEvent.click(page.getByRole('button', { name: 'Save' }));
 
-    await vi.waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    expect(onSubmit).toHaveBeenCalledTimes(1);
     expect(onSubmit.mock.calls[0][0].zimbraPasswordMinLength).toBe('8');
   });
 

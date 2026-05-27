@@ -5,7 +5,7 @@
  */
 import type { AnyFieldApi } from '@tanstack/react-form';
 
-import { COS_VALIDATION_MESSAGES } from './cos-advanced-schema';
+import { COS_VALIDATION_MESSAGES } from '../schema';
 
 type FieldErrorProps = {
   hasError: boolean;

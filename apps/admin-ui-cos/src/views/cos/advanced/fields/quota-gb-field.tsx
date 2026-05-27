@@ -9,9 +9,9 @@ import { isValidDecimalInput } from '@zextras/ui-shared';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BytesToGB, GbToBytes } from '../../utility/utils';
-import { getFieldErrorProps } from './cos-field-error';
-import { CosAdvancedFormValues, CosFormApi } from './cos-form-api';
+import { BytesToGB, GbToBytes } from '../../../utility/utils';
+import { CosAdvancedFormValues, CosFormApi } from '../types';
+import { getFieldErrorProps } from './field-error';
 import { QuotaRevertIcon } from './quota-revert-icon';
 
 type QuotaGBFieldInnerProps = {

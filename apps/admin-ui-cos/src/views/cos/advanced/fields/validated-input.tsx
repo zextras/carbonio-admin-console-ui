@@ -8,9 +8,9 @@ import { Input } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../../../../types/account';
-import { getFieldErrorProps } from './cos-field-error';
-import { CosFormApi } from './cos-form-api';
+import { AccountType } from '../../../../../types/account';
+import { CosFormApi } from '../types';
+import { getFieldErrorProps } from './field-error';
 
 type CosValidatedInputProps = {
   form: CosFormApi;

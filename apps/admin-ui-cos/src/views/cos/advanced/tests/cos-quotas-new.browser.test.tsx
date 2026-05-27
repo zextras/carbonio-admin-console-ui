@@ -9,8 +9,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { ComputedLimit } from '../../../../services/get-cos-quota';
-import { COSQuotasNew } from '../cos-quotas-new';
 import { useCosQuotaState } from '../hooks/use-cos-quota-state';
+import { COSQuotasNew } from '../sections/quotas-new';
 
 vi.mock('../../../../services/use-file-quota', () => ({
   useFileQuota: () => ({ data: undefined }),

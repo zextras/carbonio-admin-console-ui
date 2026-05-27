@@ -9,8 +9,8 @@ import { FC } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { CosAdvancedFormValues, CosFormApi } from '../cos-form-api';
-import { TimeFieldGroup } from '../time-field-group';
+import { TimeFieldGroup } from '../fields/time-field-group';
+import { CosAdvancedFormValues, CosFormApi } from '../types';
 
 const timeItems = [
   { label: 'Seconds', value: 's' },

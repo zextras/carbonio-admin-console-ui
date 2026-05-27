@@ -8,10 +8,10 @@ import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-comp
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TimeItems } from '../../../../types/general';
-import { getFieldErrorProps } from './cos-field-error';
-import { CosFormApi } from './cos-form-api';
-import { CosValidatedInput } from './cos-validated-input';
+import { TimeItems } from '../../../../../types/general';
+import { getFieldErrorProps } from '../fields/field-error';
+import { CosValidatedInput } from '../fields/validated-input';
+import { CosFormApi } from '../types';
 
 type FailedLoginPolicyProps = {
 	form: CosFormApi;

@@ -7,8 +7,8 @@ import { Container, ListRow, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CosFormApi } from './cos-form-api';
-import { CosValidatedInput } from './cos-validated-input';
+import { CosValidatedInput } from '../fields/validated-input';
+import { CosFormApi } from '../types';
 
 type ForwardingProps = {
   form: CosFormApi;

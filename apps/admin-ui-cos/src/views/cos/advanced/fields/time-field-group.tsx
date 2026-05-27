@@ -8,10 +8,10 @@ import { Container, Input, ListRow, Select } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../../../../types/account';
-import { TimeItems } from '../../../../types/general';
-import { getFieldErrorProps } from './cos-field-error';
-import { CosFormApi } from './cos-form-api';
+import { AccountType } from '../../../../../types/account';
+import { TimeItems } from '../../../../../types/general';
+import { CosFormApi } from '../types';
+import { getFieldErrorProps } from './field-error';
 
 type TimeFieldGroupProps = {
   form: CosFormApi;

@@ -7,9 +7,9 @@ import { Container, Input, Switch, Tooltip } from '@zextras/ui-components';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ComputedLimit, QuotaSource } from '../../../services/get-cos-quota';
-import { BytesToGB, GbToBytes } from '../../utility/utils';
-import { QuotaRevertIcon } from './quota-revert-icon';
+import { ComputedLimit, QuotaSource } from '../../../../services/get-cos-quota';
+import { BytesToGB, GbToBytes } from '../../../utility/utils';
+import { QuotaRevertIcon } from '../fields/quota-revert-icon';
 
 type COSQuotasNewProps = {
   totalComputedQuotaLimit: ComputedLimit | undefined;

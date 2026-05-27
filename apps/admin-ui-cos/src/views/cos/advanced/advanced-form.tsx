@@ -11,29 +11,29 @@ import { type GetCoreAttributesResponse, setCoreAttributes } from '@zextras/ui-s
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { AccountType } from '../../../types/account';
-import { TimeItems } from '../../../types/general';
+import { AccountType } from '../../../../types/account';
+import { TimeItems } from '../../../../types/general';
 import {
   BACKUP_ENABLED,
   BACKUP_SELF_UNDELETE_ALLOWED,
   COS,
   ZIMBRA_ADMIN_URN,
-} from '../../constants';
-import { cosQueryKeys } from '../../services/cos-query-keys';
-import { type ComputedLimit, type QuotaSource } from '../../services/get-cos-quota';
-import { ModifyCosBody } from '../../services/modify-cos-service';
-import { useModifyCos } from '../../services/use-modify-cos';
-import { PageLayout } from '../page-layout';
-import { cosAdvancedSchema } from './advanced/cos-advanced-schema';
-import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
-import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
-import { CosAdvancedFormValues } from './advanced/cos-form-api';
-import COSForwarding from './advanced/cos-forwarding';
-import COSGeneralOptions from './advanced/cos-general-options';
-import COSPassword from './advanced/cos-password';
-import { COSQuotas } from './advanced/cos-quotas';
-import { COSTimeoutPolicy } from './advanced/cos-timeout-policy';
-import { useCosQuotaState } from './advanced/hooks/use-cos-quota-state';
+} from '../../../constants';
+import { cosQueryKeys } from '../../../services/cos-query-keys';
+import { type ComputedLimit, type QuotaSource } from '../../../services/get-cos-quota';
+import { ModifyCosBody } from '../../../services/modify-cos-service';
+import { useModifyCos } from '../../../services/use-modify-cos';
+import { PageLayout } from '../../page-layout';
+import { useCosQuotaState } from './hooks/use-cos-quota-state';
+import { cosAdvancedSchema } from './schema';
+import COSEmailRetentionPolicy from './sections/email-retention-policy';
+import COSFailedLoginPolicy from './sections/failed-login-policy';
+import COSForwarding from './sections/forwarding';
+import COSGeneralOptions from './sections/general-options';
+import COSPassword from './sections/password';
+import { COSQuotas } from './sections/quotas';
+import { COSTimeoutPolicy } from './sections/timeout-policy';
+import { CosAdvancedFormValues } from './types';
 
 const EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE: Array<string> = [
   'zimbraMailQuota',
