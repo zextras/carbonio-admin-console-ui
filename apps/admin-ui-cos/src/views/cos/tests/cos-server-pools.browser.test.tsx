@@ -6,6 +6,7 @@
 
 import {
   createBrowserSoapAPIInterceptor,
+  getGetInfoResponseMock,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -65,6 +66,11 @@ const mockCosDataNoPools = {
 };
 
 async function setupServerPoolsTest(cosData = mockCosData, servers = mockServers) {
+  createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+  createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
+    grantee: { id: 'test-id', name: 'test@example.com' },
+    target: [],
+  });
   createBrowserSoapAPIInterceptor('GetCos', cosData);
   createBrowserSoapAPIInterceptor('GetAllServers', servers);
   createBrowserSoapAPIInterceptor('GetAccount', {});
