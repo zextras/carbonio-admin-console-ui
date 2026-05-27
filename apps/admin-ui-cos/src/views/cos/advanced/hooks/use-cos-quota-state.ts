@@ -137,7 +137,10 @@ export function useCosQuotaState({
   const isDirty =
     (fileQuotaLimitGBValue !== undefined &&
       initFileQuotaLimitGBValue !== fileQuotaLimitGBValue) ||
-    (isTotalQuotaActive && totalQuotaOverride !== null);
+    (isTotalQuotaActive &&
+      totalQuotaOverride !== null &&
+      initialQuota !== null &&
+      !computedLimitsEqual(totalComputedQuotaLimit ?? initialQuota.limit, initialQuota.limit));
 
   async function save(zimbraId: string): Promise<void> {
     if (!isTotalQuotaActive || totalQuotaOverride === null) return;
