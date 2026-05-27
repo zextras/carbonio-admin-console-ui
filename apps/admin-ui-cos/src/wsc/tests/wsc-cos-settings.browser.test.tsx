@@ -6,12 +6,15 @@
 import {
   advancedSupportedApiForBrowser,
   createBrowserSoapAPIInterceptor,
+  createBrowserZextrasActionInterceptor,
   delayedSoapApiForBrowser,
+  getGetInfoResponseMock,
   getQueryClient,
   grantUserCosRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
@@ -77,12 +80,34 @@ function seedLicenseAndAdminSettings(): void {
   });
 }
 
+const LICENSE_MOCK = {
+  ok: true,
+  response: {
+    type: 'Purchased',
+    features: [{ name: 'wsc_basic', enabled: true }],
+  },
+};
+
+function setupUnhandledApiInterceptors(): void {
+  createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+  createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+    HttpResponse.json({
+      Body: {
+        response: {
+          content: JSON.stringify(LICENSE_MOCK),
+        },
+      },
+    }),
+  );
+}
+
 async function setupWscCosSettingsTest(cosData = mockCosData): Promise<void> {
   await advancedSupportedApiForBrowser.withAdvancedNotSupported();
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
   seedLicenseAndAdminSettings();
 
+  setupUnhandledApiInterceptors();
   createBrowserSoapAPIInterceptor('GetCos', cosData);
   createBrowserSoapAPIInterceptor('ModifyCos', {});
   createBrowserSoapAPIInterceptor('FlushCache', {});
@@ -111,6 +136,7 @@ describe('WscCosSettings', () => {
       await grantUserCosRights(queryClient);
       seedLicenseAndAdminSettings();
 
+      setupUnhandledApiInterceptors();
       delayedSoapApiForBrowser('GetCos', mockCosData, 5000);
       createBrowserSoapAPIInterceptor('ModifyCos', {});
       createBrowserSoapAPIInterceptor('FlushCache', {});
@@ -194,6 +220,7 @@ describe('WscCosSettings', () => {
       await grantUserCosRights(queryClient);
       seedLicenseAndAdminSettings();
 
+      setupUnhandledApiInterceptors();
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
 
       await setupBrowserTest(
