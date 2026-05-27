@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 

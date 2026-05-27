@@ -9,8 +9,7 @@ import { FC } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { AccountType } from '../../../../../types/account';
-import { CosFormApi } from '../cos-form-api';
+import { CosAdvancedFormValues, CosFormApi } from '../cos-form-api';
 import { TimeFieldGroup } from '../time-field-group';
 
 const timeItems = [
@@ -25,7 +24,11 @@ const TestWrapper: FC<{ initialValue?: string; onSubmit?: (v: string) => void }>
   onSubmit = vi.fn(),
 }) => {
   const form = useForm({
-    defaultValues: { zimbraPasswordLockoutDuration: initialValue } as AccountType,
+    defaultValues: {
+      zimbraPasswordLockoutDuration: initialValue,
+      backupEnabled: false,
+      backupSelfUndeleteAllowed: false,
+    } as CosAdvancedFormValues,
     onSubmit: ({ value }) => onSubmit(value.zimbraPasswordLockoutDuration ?? ''),
   });
   return (
@@ -60,7 +63,12 @@ describe('TimeFieldGroup (browser)', () => {
 
   it('disables inputs when readonlyCOS is true', async () => {
     const W: FC = () => {
-      const f = useForm({ defaultValues: {} as AccountType });
+      const f = useForm({
+        defaultValues: {
+          backupEnabled: false,
+          backupSelfUndeleteAllowed: false,
+        } as CosAdvancedFormValues,
+      });
       return (
         <TimeFieldGroup
           form={f as CosFormApi}

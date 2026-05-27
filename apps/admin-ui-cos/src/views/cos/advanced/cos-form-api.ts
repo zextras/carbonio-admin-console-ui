@@ -7,9 +7,14 @@ import type { ReactFormExtendedApi } from '@tanstack/react-form';
 
 import type { AccountType } from '../../../../types/account';
 
+export type CosAdvancedFormValues = AccountType & {
+  backupEnabled: boolean;
+  backupSelfUndeleteAllowed: boolean;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CosFormApi = ReactFormExtendedApi<
-  AccountType,
+  CosAdvancedFormValues,
   any,
   any,
   any,

@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
 import { useStore } from '@tanstack/react-form';
+import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
