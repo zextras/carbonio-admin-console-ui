@@ -49,22 +49,4 @@ describe('useCosQuotaState', () => {
     act(() => result.current.reset());
     expect(result.current.isDirty).toBe(false);
   });
-
-  it('accountQuotaGBValue initializes from zimbraMailQuota', () => {
-    const data = { zimbraId: 'cos-1', zimbraMailQuota: '10737418240' } as AccountType; // 10 GB
-    const { result } = renderHook(() =>
-      useCosQuotaState({ cosData: data, cosQuotaData: undefined, isTotalQuotaActive: false, isAdvanced: false }),
-    );
-    expect(result.current.accountQuotaGBValue).toBe('10.00');
-  });
-
-  it('onZimbraMailQuotaChange returns null for invalid input', () => {
-    const { result } = renderHook(() =>
-      useCosQuotaState({ cosData, cosQuotaData: undefined, isTotalQuotaActive: false, isAdvanced: false }),
-    );
-    const ret = result.current.onZimbraMailQuotaChange({
-      target: { value: 'abc' },
-    } as React.ChangeEvent<HTMLInputElement>);
-    expect(ret).toBeNull();
-  });
 });

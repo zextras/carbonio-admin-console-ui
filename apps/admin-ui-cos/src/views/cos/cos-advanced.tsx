@@ -7,6 +7,7 @@
 import { useForm, useStore } from '@tanstack/react-form';
 import { Container } from '@zextras/ui-components';
 import {
+  type GetCoreAttributesResponse,
   setCoreAttributes,
   useCurrentUserRights,
   useIsAdvanced,
@@ -25,6 +26,7 @@ import {
   COS,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
+import { type ComputedLimit, type QuotaSource } from '../../services/get-cos-quota';
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useCoreAttributes } from '../../services/use-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
@@ -117,42 +119,35 @@ function saveBackupAttributes(
   setCoreAttributes(backupAttributes);
 }
 
-export const CosAdvanced = () => {
+type CosQuotaData = {
+  totalComputedLimit: ComputedLimit;
+  totalQuotaSource: QuotaSource;
+};
+
+type CosAdvancedFormProps = {
+  cosData: AccountType;
+  cosName: string | undefined;
+  cosQuotaData: CosQuotaData | undefined;
+  coreAttributesData: GetCoreAttributesResponse | undefined;
+  readonlyCOS: boolean;
+  isAdvanced: boolean;
+  isTotalQuotaActive: boolean;
+};
+
+const CosAdvancedForm = ({
+  cosData,
+  cosName,
+  cosQuotaData,
+  coreAttributesData,
+  readonlyCOS,
+  isAdvanced,
+  isTotalQuotaActive,
+}: CosAdvancedFormProps) => {
   const { cosId } = useParams();
-  const { data: cosDetailData, isPending } = useCosDetail(cosId);
-  const cosInformation = cosDetailData?.cos?.[0]?.a;
-  const cosName = cosDetailData?.cos?.[0]?.name;
-  const { data: rights = [] } = useCurrentUserRights();
-  const isAdvanced = useIsAdvanced();
-  const isTotalQuotaActive = useTotalQuotaActive();
-  const cosData = buildCosData(cosInformation);
   const [t] = useTranslation();
   const modifyCosMutation = useModifyCos(cosId);
 
-  const { data: cosQuotaData, isPending: isCosQuotaPending } = useCosQuota(
-    cosData?.zimbraId,
-    !!cosData?.zimbraId && isAdvanced && isTotalQuotaActive,
-  );
-
-  const coreAttributesBody =
-    isAdvanced && cosName
-      ? [
-          {
-            configType: COS,
-            configName: [cosName],
-            attrName: [BACKUP_SELF_UNDELETE_ALLOWED, BACKUP_ENABLED],
-          },
-        ]
-      : [];
-
-  const { data: coreAttributesData, isPending: isCoreAttributesPending } =
-    useCoreAttributes(coreAttributesBody);
-
-  const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
-  const readonlyCOS = !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-
-  const isQuotaLoading = isTotalQuotaActive && isCosQuotaPending;
-  const isBackupLoading = isAdvanced && isCoreAttributesPending;
+  const quotaState = useCosQuotaState({ cosData, cosQuotaData, isTotalQuotaActive, isAdvanced });
 
   const timeItems: TimeItems = [
     { label: t('label.seconds', 'Seconds'), value: 's' },
@@ -170,8 +165,6 @@ export const CosAdvanced = () => {
     saveButton: t('label.save', 'Save'),
     cancelButton: t('label.cancel', 'Cancel'),
   };
-
-  const quotaState = useCosQuotaState({ cosData, cosQuotaData, isTotalQuotaActive, isAdvanced });
 
   const formDefaultValues = {
     ...cosData,
@@ -226,10 +219,6 @@ export const CosAdvanced = () => {
   const isFormDirty = useStore(form.store, (state) => !state.isDefaultValue);
   const isDirty = isFormDirty || quotaState.isDirty;
 
-  if (isPending || isQuotaLoading || isBackupLoading) {
-    return <ds-page-shimmer></ds-page-shimmer>;
-  }
-
   return (
     <PageLayout
       title={labels.advanced}
@@ -257,5 +246,57 @@ export const CosAdvanced = () => {
         <COSEmailRetentionPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
       </Container>
     </PageLayout>
+  );
+};
+
+export const CosAdvanced = () => {
+  const { cosId } = useParams();
+  const { data: cosDetailData, isPending } = useCosDetail(cosId);
+  const cosInformation = cosDetailData?.cos?.[0]?.a;
+  const cosName = cosDetailData?.cos?.[0]?.name;
+  const { data: rights = [] } = useCurrentUserRights();
+  const isAdvanced = useIsAdvanced();
+  const isTotalQuotaActive = useTotalQuotaActive();
+  const cosData = buildCosData(cosInformation);
+
+  const { data: cosQuotaData, isPending: isCosQuotaPending } = useCosQuota(
+    cosData?.zimbraId,
+    !!cosData?.zimbraId && isAdvanced && isTotalQuotaActive,
+  );
+
+  const coreAttributesBody =
+    isAdvanced && cosName
+      ? [
+          {
+            configType: COS,
+            configName: [cosName],
+            attrName: [BACKUP_SELF_UNDELETE_ALLOWED, BACKUP_ENABLED],
+          },
+        ]
+      : [];
+
+  const { data: coreAttributesData, isPending: isCoreAttributesPending } =
+    useCoreAttributes(coreAttributesBody);
+
+  const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
+  const readonlyCOS = !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+
+  const isQuotaLoading = isTotalQuotaActive && isCosQuotaPending;
+  const isBackupLoading = isAdvanced && isCoreAttributesPending;
+
+  if (isPending || isQuotaLoading || isBackupLoading) {
+    return <ds-page-shimmer></ds-page-shimmer>;
+  }
+
+  return (
+    <CosAdvancedForm
+      cosData={cosData}
+      cosName={cosName}
+      cosQuotaData={cosQuotaData}
+      coreAttributesData={coreAttributesData}
+      readonlyCOS={readonlyCOS}
+      isAdvanced={isAdvanced}
+      isTotalQuotaActive={isTotalQuotaActive}
+    />
   );
 };

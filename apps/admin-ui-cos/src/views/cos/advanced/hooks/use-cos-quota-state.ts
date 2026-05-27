@@ -50,14 +50,11 @@ type Return = {
   fileQuotaLimitGBValue: string | undefined;
   initFileQuotaLimitGBValue: string | undefined;
   showFileQuotaLimitMsg: boolean;
-  accountQuotaGBValue: string;
-  showAccountQuotaLimitMsg: boolean;
   totalComputedQuotaLimit: ComputedLimit | undefined;
   totalQuotaSource: QuotaSource | undefined;
   initialTotalComputedQuotaLimit: ComputedLimit | undefined;
   showQuotaRevertButton: boolean;
   onFileQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onZimbraMailQuotaChange: (e: ChangeEvent<HTMLInputElement>) => string | null;
   onTotalQuotaChange: (value?: ComputedLimit) => void;
   isDirty: boolean;
   save: (zimbraId: string) => Promise<void>;
@@ -75,10 +72,6 @@ export function useCosQuotaState({
 
   const [fileQuotaOverride, setFileQuotaOverride] = useState<string | undefined>(undefined);
   const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState(false);
-  const [accountQuotaGBValue, setAccountQuotaGBValue] = useState(
-    cosData?.zimbraMailQuota ? BytesToGB(cosData.zimbraMailQuota).toFixed(2) : '',
-  );
-  const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState(false);
 
   const { data: fileQuotaData } = useFileQuota(
     cosData?.zimbraId,
@@ -129,18 +122,6 @@ export function useCosQuotaState({
     setFileQuotaOverride(e.target.value);
   }
 
-  function onZimbraMailQuotaChange(e: ChangeEvent<HTMLInputElement>): string | null {
-    if (!isValidDecimalInput(e.target.value)) return null;
-    const dp = e.target.value?.split('.')[1];
-    if (dp && dp.length > 3) {
-      setShowAccountQuotaLimitMsg(true);
-      return null;
-    }
-    setShowAccountQuotaLimitMsg(false);
-    setAccountQuotaGBValue(e.target.value);
-    return e.target.value ? Math.round(GbToBytes(e.target.value)).toString() : '';
-  }
-
   function onTotalQuotaChange(value?: ComputedLimit): void {
     if (
       value &&
@@ -184,10 +165,6 @@ export function useCosQuotaState({
   function reset(): void {
     setFileQuotaOverride(undefined);
     setShowFileQuotaLimitMsg(false);
-    setAccountQuotaGBValue(
-      cosData?.zimbraMailQuota ? BytesToGB(cosData.zimbraMailQuota).toFixed(2) : '',
-    );
-    setShowAccountQuotaLimitMsg(false);
     setTotalQuotaOverride(null);
   }
 
@@ -195,14 +172,11 @@ export function useCosQuotaState({
     fileQuotaLimitGBValue,
     initFileQuotaLimitGBValue,
     showFileQuotaLimitMsg,
-    accountQuotaGBValue,
-    showAccountQuotaLimitMsg,
     totalComputedQuotaLimit,
     totalQuotaSource,
     initialTotalComputedQuotaLimit: initTotalComputedQuotaLimit,
     showQuotaRevertButton,
     onFileQuotaChange,
-    onZimbraMailQuotaChange,
     onTotalQuotaChange,
     isDirty,
     save,

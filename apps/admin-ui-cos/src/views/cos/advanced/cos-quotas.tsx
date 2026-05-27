@@ -19,6 +19,7 @@ import { TimeItems } from '../../../../types/general';
 import { CosFormApi } from './cos-form-api';
 import { COSQuotasNew } from './cos-quotas-new';
 import { useCosQuotaState } from './hooks/use-cos-quota-state';
+import { QuotaGBField } from './quota-gb-field';
 
 type QuotaProps = {
   form: CosFormApi;
@@ -121,36 +122,13 @@ export const COSQuotas = ({
                   </Container>
                 )}
                 <Container padding={{ right: 'small' }}>
-                  <form.Field name="zimbraMailQuota">
-                    {(field) => (
-                      <>
-                        <Input
-                          label={labels.mailsAccountQuotaGB}
-                          value={quotaState.accountQuotaGBValue}
-                          backgroundColor="gray5"
-                          inputName="zimbraMailQuota"
-                          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            const bytes = quotaState.onZimbraMailQuotaChange(e);
-                            if (bytes !== null) field.handleChange(bytes);
-                          }}
-                          disabled={readonlyCOS}
-                        />
-                        {quotaState.showAccountQuotaLimitMsg && (
-                          <Container
-                            mainAlignment="flex-start"
-                            crossAlignment="flex-start"
-                            width="fill"
-                          >
-                            <Padding top="small">
-                              <ds-text as="span" size="extrasmall" weight="regular" color="primary">
-                                {labels.maximumDigitsAllowed}
-                              </ds-text>
-                            </Padding>
-                          </Container>
-                        )}
-                      </>
-                    )}
-                  </form.Field>
+                  <QuotaGBField
+                    form={form}
+                    name="zimbraMailQuota"
+                    label={labels.mailsAccountQuotaGB}
+                    maximumDigitsLabel={labels.maximumDigitsAllowed}
+                    disabled={readonlyCOS}
+                  />
                 </Container>
               </>
             )}
