@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@posthog/react": "^1.8.1",
+    "@tanstack/react-form": "^1.32.0",
     "@vitest/browser-preview": "^4.1.0",
     "@zextras/ui-components": "workspace:*",
     "@zextras/ui-shared": "workspace:*",

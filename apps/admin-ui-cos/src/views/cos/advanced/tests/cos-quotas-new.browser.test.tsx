@@ -4,14 +4,63 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { setupBrowserTest } from 'admin-ui-test-utils';
+import { FC, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { ComputedLimit } from '../../../../services/get-cos-quota';
 import { COSQuotasNew } from '../cos-quotas-new';
+import { useCosQuotaState } from '../hooks/use-cos-quota-state';
+
+vi.mock('../../../../services/use-file-quota', () => ({
+  useFileQuota: () => ({ data: undefined }),
+}));
+vi.mock('../../../../services/use-invalidate-cos-quota', () => ({
+  useInvalidateCosQuota: () => vi.fn(),
+}));
+vi.mock('../../../../services/set-cos-quota', () => ({ setCosQuota: vi.fn() }));
+vi.mock('../../../../services/unset-cos-quota', () => ({ unsetCosQuota: vi.fn() }));
+vi.mock('@zextras/ui-shared', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
+  return {
+    ...actual,
+    isValidDecimalInput: (v: string) => /^\d*\.?\d*$/.test(v),
+    setFileQuotaLimitById: vi.fn().mockResolvedValue(undefined),
+    resetFileQuotaLimitById: vi.fn().mockResolvedValue(undefined),
+  };
+});
 
 const limitedQuota: ComputedLimit = { type: 'limited', value: 10737418240 }; // 10 GB
 const unlimitedQuota: ComputedLimit = { type: 'unlimited' };
+
+const QuotaWrapper: FC<{
+  initialQuota: ComputedLimit;
+  initialSource?: 'global' | 'cos';
+}> = ({ initialQuota, initialSource = 'global' }) => {
+  const quotaState = useCosQuotaState({
+    cosData: { zimbraId: 'cos-1', zimbraMailQuota: '' } as never,
+    cosQuotaData: {
+      totalComputedLimit: initialQuota,
+      totalQuotaSource: initialSource,
+    },
+    isTotalQuotaActive: true,
+    isAdvanced: true,
+  });
+
+  return (
+    <>
+      <COSQuotasNew
+        totalComputedQuotaLimit={quotaState.totalComputedQuotaLimit}
+        totalQuotaSource={quotaState.totalQuotaSource}
+        initialTotalComputedQuotaLimit={quotaState.initialTotalComputedQuotaLimit}
+        onChange={quotaState.onTotalQuotaChange}
+        readonlyCOS={false}
+        showRevertButton={quotaState.showQuotaRevertButton}
+      />
+      <span data-testid="is-dirty">{String(quotaState.isDirty)}</span>
+    </>
+  );
+};
 
 describe('COSQuotasNew (browser)', () => {
   it('should render the unlimited quota switch and total quota input', async () => {
@@ -202,5 +251,18 @@ describe('COSQuotasNew (browser)', () => {
 
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
     await expect.element(input).toHaveValue('');
+  });
+
+  it('should not stay dirty when unlimited quota is toggled off and back on', async () => {
+    await setupBrowserTest(<QuotaWrapper initialQuota={unlimitedQuota} initialSource="global" />);
+
+    await expect.element(page.getByTestId('is-dirty')).toHaveTextContent('false');
+
+    await userEvent.click(page.getByRole('img', { name: 'Unlimited quota' }));
+    await expect.element(page.getByTestId('is-dirty')).toHaveTextContent('true');
+
+    await userEvent.click(page.getByRole('img', { name: 'Unlimited quota' }));
+
+    await expect.element(page.getByTestId('is-dirty')).toHaveTextContent('false');
   });
 });

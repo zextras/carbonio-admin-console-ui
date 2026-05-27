@@ -458,6 +458,9 @@ importers:
       '@posthog/react':
         specifier: ^1.8.1
         version: 1.9.1(@types/react@19.2.15)(posthog-js@1.376.1)(react@19.2.6)
+      '@tanstack/react-form':
+        specifier: ^1.32.0
+        version: 1.32.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@vitest/browser-preview':
         specifier: ^4.1.0
         version: 4.1.7(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.14(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.3)(yaml@2.9.0))(vitest@4.1.7)

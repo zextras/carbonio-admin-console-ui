@@ -12,58 +12,31 @@ import {
   Row,
   Select,
 } from '@zextras/ui-components';
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../../../../types/account';
 import { TimeItems } from '../../../../types/general';
-import { ComputedLimit, QuotaSource } from '../../../services/get-cos-quota';
+import { CosFormApi } from './cos-form-api';
 import { COSQuotasNew } from './cos-quotas-new';
-import { TimeFieldState } from './hooks/use-time-field-state';
+import { useCosQuotaState } from './hooks/use-cos-quota-state';
 
 type QuotaProps = {
+  form: CosFormApi;
+  quotaState: ReturnType<typeof useCosQuotaState>;
   isTotalQuotaActive: boolean;
   isAdvanced: boolean;
-  showFileQuotaLimitMsg: boolean;
-  showAccountQuotaLimitMsg: boolean;
   readonlyCOS: boolean;
-  cosAdvanced: AccountType;
-  initFileQuotaLimitGBValue: string | undefined;
-  fileQuotaLimitGBValue: string | undefined;
-  accountQuotaGBValue: string;
-  quotaWarnInterval: TimeFieldState;
   timeItems: TimeItems;
-  onFileQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onZimbraMailQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
-  totalComputedQuotaLimit?: ComputedLimit;
-  totalQuotaSource?: QuotaSource;
-  initialTotalComputedQuotaLimit?: ComputedLimit;
-  onTotalQuotaChange: (value?: ComputedLimit) => void;
-  showQuotaRevertButton: boolean;
 };
 
-const COSQuotas: FC<QuotaProps> = ({
+export const COSQuotas = ({
+  form,
+  quotaState,
   isTotalQuotaActive,
   isAdvanced,
-  showFileQuotaLimitMsg,
-  showAccountQuotaLimitMsg,
   readonlyCOS,
-  cosAdvanced,
-  initFileQuotaLimitGBValue,
-  fileQuotaLimitGBValue,
-  accountQuotaGBValue,
-  quotaWarnInterval,
   timeItems,
-  onFileQuotaChange,
-  onZimbraMailQuotaChange,
-  changeValue,
-  totalComputedQuotaLimit,
-  totalQuotaSource,
-  initialTotalComputedQuotaLimit,
-  onTotalQuotaChange,
-  showQuotaRevertButton,
-}) => {
+}: QuotaProps) => {
   const [t] = useTranslation();
 
   const labels = {
@@ -92,6 +65,7 @@ const COSQuotas: FC<QuotaProps> = ({
       'Quota warning message template',
     ),
   };
+
   return (
     <Row
       mainAlignment="flex-start"
@@ -112,26 +86,26 @@ const COSQuotas: FC<QuotaProps> = ({
           <ListRow crossAlignment={'flex-end'}>
             {isTotalQuotaActive ? (
               <COSQuotasNew
-                totalComputedQuotaLimit={totalComputedQuotaLimit}
-                totalQuotaSource={totalQuotaSource}
-                initialTotalComputedQuotaLimit={initialTotalComputedQuotaLimit}
-                onChange={onTotalQuotaChange}
+                totalComputedQuotaLimit={quotaState.totalComputedQuotaLimit}
+                totalQuotaSource={quotaState.totalQuotaSource}
+                initialTotalComputedQuotaLimit={quotaState.initialTotalComputedQuotaLimit}
+                onChange={quotaState.onTotalQuotaChange}
                 readonlyCOS={readonlyCOS}
-                showRevertButton={showQuotaRevertButton}
+                showRevertButton={quotaState.showQuotaRevertButton}
               />
             ) : (
               <>
-                {isAdvanced && initFileQuotaLimitGBValue && (
+                {isAdvanced && quotaState.initFileQuotaLimitGBValue && (
                   <Container padding={{ right: 'small' }}>
                     <Input
                       label={labels.filesAccountQuotaGB}
-                      value={fileQuotaLimitGBValue}
+                      value={quotaState.fileQuotaLimitGBValue}
                       backgroundColor="gray5"
                       inputName="fileQuotaLimit"
-                      onChange={onFileQuotaChange}
+                      onChange={quotaState.onFileQuotaChange}
                       disabled={readonlyCOS}
                     />
-                    {showFileQuotaLimitMsg && (
+                    {quotaState.showFileQuotaLimitMsg && (
                       <Container
                         mainAlignment="flex-start"
                         crossAlignment="flex-start"
@@ -147,35 +121,54 @@ const COSQuotas: FC<QuotaProps> = ({
                   </Container>
                 )}
                 <Container padding={{ right: 'small' }}>
-                  <Input
-                    label={labels.mailsAccountQuotaGB}
-                    value={accountQuotaGBValue}
-                    backgroundColor="gray5"
-                    inputName="zimbraMailQuota"
-                    onChange={onZimbraMailQuotaChange}
-                    disabled={readonlyCOS}
-                  />
-                  {showAccountQuotaLimitMsg && (
-                    <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                      <Padding top="small">
-                        <ds-text as="span" size="extrasmall" weight="regular" color="primary">
-                          {labels.maximumDigitsAllowed}
-                        </ds-text>
-                      </Padding>
-                    </Container>
-                  )}
+                  <form.Field name="zimbraMailQuota">
+                    {(field) => (
+                      <>
+                        <Input
+                          label={labels.mailsAccountQuotaGB}
+                          value={quotaState.accountQuotaGBValue}
+                          backgroundColor="gray5"
+                          inputName="zimbraMailQuota"
+                          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            const bytes = quotaState.onZimbraMailQuotaChange(e);
+                            if (bytes !== null) field.handleChange(bytes);
+                          }}
+                          disabled={readonlyCOS}
+                        />
+                        {quotaState.showAccountQuotaLimitMsg && (
+                          <Container
+                            mainAlignment="flex-start"
+                            crossAlignment="flex-start"
+                            width="fill"
+                          >
+                            <Padding top="small">
+                              <ds-text as="span" size="extrasmall" weight="regular" color="primary">
+                                {labels.maximumDigitsAllowed}
+                              </ds-text>
+                            </Padding>
+                          </Container>
+                        )}
+                      </>
+                    )}
+                  </form.Field>
                 </Container>
               </>
             )}
             <Container>
-              <Input
-                label={labels.maxContactsAllowedInTheFolder}
-                value={cosAdvanced.zimbraContactMaxNumEntries}
-                backgroundColor="gray5"
-                inputName="zimbraContactMaxNumEntries"
-                onChange={changeValue}
-                disabled={readonlyCOS}
-              />
+              <form.Field name="zimbraContactMaxNumEntries">
+                {(field) => (
+                  <Input
+                    label={labels.maxContactsAllowedInTheFolder}
+                    value={field.state.value ?? ''}
+                    backgroundColor="gray5"
+                    inputName="zimbraContactMaxNumEntries"
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      field.handleChange(e.target.value)
+                    }
+                    disabled={readonlyCOS}
+                  />
+                )}
+              </form.Field>
             </Container>
           </ListRow>
         </Container>
@@ -190,39 +183,58 @@ const COSQuotas: FC<QuotaProps> = ({
           >
             <ListRow>
               <Container width="100%" padding={{ right: 'small' }}>
-                <Input
-                  label={labels.percentageThresholdForQuotaWarningMessages}
-                  value={cosAdvanced.zimbraQuotaWarnPercent}
-                  backgroundColor="gray5"
-                  inputName="zimbraQuotaWarnPercent"
-                  onChange={changeValue}
-                  disabled={readonlyCOS}
-                />
+                <form.Field name="zimbraQuotaWarnPercent">
+                  {(field) => (
+                    <Input
+                      label={labels.percentageThresholdForQuotaWarningMessages}
+                      value={field.state.value ?? ''}
+                      backgroundColor="gray5"
+                      inputName="zimbraQuotaWarnPercent"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        field.handleChange(e.target.value)
+                      }
+                      disabled={readonlyCOS}
+                    />
+                  )}
+                </form.Field>
               </Container>
-              <Container width="72%" padding={{ left: 'small', right: 'small' }}>
-                <Input
-                  label={labels.minimumDurationOfTimeBetweenQuotaWarnings}
-                  value={quotaWarnInterval.num}
-                  backgroundColor="gray5"
-                  inputName="zimbraQuotaWarnInterval"
-                  onChange={quotaWarnInterval.onNumChange}
-                  disabled={readonlyCOS}
-                />
-              </Container>
-              <Container width="26%" padding={{ left: 'small' }}>
-                <Select
-                  items={timeItems}
-                  background={'gray5'}
-                  label={labels.timeRange}
-                  selection={
-                    timeItems.find((item) => item.value === quotaWarnInterval.type) ??
-                    timeItems[0]
-                  }
-                  showCheckbox={false}
-                  onChange={quotaWarnInterval.onTypeChange}
-                  disabled={readonlyCOS}
-                />
-              </Container>
+              <form.Field name="zimbraQuotaWarnInterval">
+                {(field) => {
+                  const raw = String(field.state.value ?? '');
+                  const hasUnit = raw.length >= 2;
+                  const num = hasUnit ? raw.slice(0, -1) : '';
+                  const unit = hasUnit ? raw.slice(-1) : '';
+                  return (
+                    <>
+                      <Container width="72%" padding={{ left: 'small', right: 'small' }}>
+                        <Input
+                          label={labels.minimumDurationOfTimeBetweenQuotaWarnings}
+                          value={num}
+                          backgroundColor="gray5"
+                          inputName="zimbraQuotaWarnInterval"
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            field.handleChange(e.target.value ? `${e.target.value}${unit}` : '')
+                          }
+                          disabled={readonlyCOS}
+                        />
+                      </Container>
+                      <Container width="26%" padding={{ left: 'small' }}>
+                        <Select
+                          items={timeItems}
+                          background={'gray5'}
+                          label={labels.timeRange}
+                          selection={timeItems.find((item) => item.value === unit) ?? timeItems[0]}
+                          showCheckbox={false}
+                          onChange={(newType) => {
+                            if (newType) field.handleChange(num ? `${num}${newType}` : '');
+                          }}
+                          disabled={readonlyCOS}
+                        />
+                      </Container>
+                    </>
+                  );
+                }}
+              </form.Field>
             </ListRow>
           </Container>
         </Row>
@@ -237,14 +249,20 @@ const COSQuotas: FC<QuotaProps> = ({
           >
             <ListRow>
               <Container>
-                <CustomTextArea
-                  label={labels.quotaWarningMessageTemplate}
-                  value={cosAdvanced.zimbraQuotaWarnMessage}
-                  backgroundColor="gray5"
-                  inputName="zimbraQuotaWarnMessage"
-                  onChange={changeValue}
-                  disabled={readonlyCOS}
-                />
+                <form.Field name="zimbraQuotaWarnMessage">
+                  {(field) => (
+                    <CustomTextArea
+                      label={labels.quotaWarningMessageTemplate}
+                      value={field.state.value ?? ''}
+                      backgroundColor="gray5"
+                      inputName="zimbraQuotaWarnMessage"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        field.handleChange(e.target.value)
+                      }
+                      disabled={readonlyCOS}
+                    />
+                  )}
+                </form.Field>
               </Container>
             </ListRow>
           </Container>
@@ -254,5 +272,3 @@ const COSQuotas: FC<QuotaProps> = ({
     </Row>
   );
 };
-
-export default COSQuotas;
