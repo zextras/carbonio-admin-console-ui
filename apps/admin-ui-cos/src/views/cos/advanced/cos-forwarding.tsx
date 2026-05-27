@@ -3,11 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Row } from '@zextras/ui-components';
-import { ChangeEvent, FC } from 'react';
+import { Container, ListRow, Row } from '@zextras/ui-components';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosFormApi } from './cos-form-api';
+import { CosValidatedInput } from './cos-validated-input';
 
 type ForwardingProps = {
   form: CosFormApi;
@@ -49,32 +50,20 @@ const COSForwarding: FC<ForwardingProps> = ({ form, readonlyCOS }) => {
         >
           <ListRow>
             <Container padding={{ right: 'small' }}>
-              <form.Field name="zimbraMailForwardingAddressMaxLength">
-                {(field) => (
-                  <Input
-                    label={labels.address.maxLength}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraMailForwardingAddressMaxLength"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraMailForwardingAddressMaxLength"
+                label={labels.address.maxLength}
+                disabled={readonlyCOS}
+              />
             </Container>
             <Container padding={{ left: 'small' }}>
-              <form.Field name="zimbraMailForwardingAddressMaxNumAddrs">
-                {(field) => (
-                  <Input
-                    label={labels.address.maxNumAddress}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraMailForwardingAddressMaxNumAddrs"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraMailForwardingAddressMaxNumAddrs"
+                label={labels.address.maxNumAddress}
+                disabled={readonlyCOS}
+              />
             </Container>
           </ListRow>
         </Container>

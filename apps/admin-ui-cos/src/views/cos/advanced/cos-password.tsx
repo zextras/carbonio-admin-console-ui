@@ -3,11 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Padding, Row, Switch } from '@zextras/ui-components';
-import { ChangeEvent, FC } from 'react';
+import { Container, ListRow, Padding, Row, Switch } from '@zextras/ui-components';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosFormApi } from './cos-form-api';
+import { CosValidatedInput } from './cos-validated-input';
 
 type COSPasswordProps = {
   form: CosFormApi;
@@ -122,60 +123,36 @@ const COSPassword: FC<COSPasswordProps> = ({ form, readonlyCOS }) => {
         >
           <ListRow>
             <Container padding={{ right: 'small' }}>
-              <form.Field name="zimbraPasswordMinLength">
-                {(field) => (
-                  <Input
-                    label={labels.length.minimum}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraPasswordMinLength"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraPasswordMinLength"
+                label={labels.length.minimum}
+                disabled={readonlyCOS}
+              />
             </Container>
             <Container padding={{ left: 'small', right: 'small' }}>
-              <form.Field name="zimbraPasswordMaxLength">
-                {(field) => (
-                  <Input
-                    label={labels.length.maximum}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraPasswordMaxLength"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraPasswordMaxLength"
+                label={labels.length.maximum}
+                disabled={readonlyCOS}
+              />
             </Container>
             <Container padding={{ left: 'small', right: 'small' }}>
-              <form.Field name="zimbraPasswordMinUpperCaseChars">
-                {(field) => (
-                  <Input
-                    label={labels.characters.minimumUppercase}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraPasswordMinUpperCaseChars"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraPasswordMinUpperCaseChars"
+                label={labels.characters.minimumUppercase}
+                disabled={readonlyCOS}
+              />
             </Container>
             <Container padding={{ left: 'small' }}>
-              <form.Field name="zimbraPasswordMinLowerCaseChars">
-                {(field) => (
-                  <Input
-                    label={labels.characters.minimumLowercase}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraPasswordMinLowerCaseChars"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraPasswordMinLowerCaseChars"
+                label={labels.characters.minimumLowercase}
+                disabled={readonlyCOS}
+              />
             </Container>
           </ListRow>
         </Container>
@@ -189,60 +166,36 @@ const COSPassword: FC<COSPasswordProps> = ({ form, readonlyCOS }) => {
         >
           <ListRow>
             <Container padding={{ right: 'small' }}>
-              <form.Field name="zimbraPasswordMinPunctuationChars">
-                {(field) => (
-                  <Input
-                    label={labels.minimumPunctuationSymbol}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraPasswordMinPunctuationChars"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraPasswordMinPunctuationChars"
+                label={labels.minimumPunctuationSymbol}
+                disabled={readonlyCOS}
+              />
             </Container>
             <Container padding={{ left: 'small', right: 'small' }}>
-              <form.Field name="zimbraPasswordMinNumericChars">
-                {(field) => (
-                  <Input
-                    label={labels.characters.minimumNumeric}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraPasswordMinNumericChars"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraPasswordMinNumericChars"
+                label={labels.characters.minimumNumeric}
+                disabled={readonlyCOS}
+              />
             </Container>
             <Container padding={{ left: 'small', right: 'small' }}>
-              <form.Field name="zimbraPasswordMinAge">
-                {(field) => (
-                  <Input
-                    label={labels.age.minimum}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraPasswordMinAge"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraPasswordMinAge"
+                label={labels.age.minimum}
+                disabled={readonlyCOS}
+              />
             </Container>
             <Container padding={{ left: 'small' }}>
-              <form.Field name="zimbraPasswordMaxAge">
-                {(field) => (
-                  <Input
-                    label={labels.age.maximum}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraPasswordMaxAge"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraPasswordMaxAge"
+                label={labels.age.maximum}
+                disabled={readonlyCOS}
+              />
             </Container>
           </ListRow>
         </Container>
@@ -256,32 +209,20 @@ const COSPassword: FC<COSPasswordProps> = ({ form, readonlyCOS }) => {
         >
           <ListRow>
             <Container padding={{ right: 'small' }}>
-              <form.Field name="zimbraPasswordMinDigitsOrPuncs">
-                {(field) => (
-                  <Input
-                    label={labels.minDigitsOrPuncs}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraPasswordMinDigitsOrPuncs"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraPasswordMinDigitsOrPuncs"
+                label={labels.minDigitsOrPuncs}
+                disabled={readonlyCOS}
+              />
             </Container>
             <Container padding={{ left: 'small' }}>
-              <form.Field name="zimbraPasswordEnforceHistory">
-                {(field) => (
-                  <Input
-                    label={labels.enforceHistory}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraPasswordEnforceHistory"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraPasswordEnforceHistory"
+                label={labels.enforceHistory}
+                disabled={readonlyCOS}
+              />
             </Container>
           </ListRow>
         </Container>

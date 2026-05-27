@@ -33,6 +33,7 @@ import { useCosDetail } from '../../services/use-cos-detail';
 import { useCosQuota } from '../../services/use-cos-quota';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { PageLayout } from '../page-layout';
+import { cosAdvancedSchema } from './advanced/cos-advanced-schema';
 import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
 import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
 import { CosAdvancedFormValues } from './advanced/cos-form-api';
@@ -178,6 +179,10 @@ const CosAdvancedForm = ({
 
   const form = useForm({
     defaultValues: formDefaultValues,
+    validators: {
+      onChange: cosAdvancedSchema,
+      onSubmit: cosAdvancedSchema,
+    },
     onSubmit: async ({ value }) => {
       const { zimbraId = '' } = cosData;
 

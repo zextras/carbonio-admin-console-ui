@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useStore } from '@tanstack/react-form';
 import {
   Container,
   CustomTextArea,
@@ -16,8 +17,10 @@ import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TimeItems } from '../../../../types/general';
+import { getFieldErrorProps } from './cos-field-error';
 import { CosFormApi } from './cos-form-api';
 import { COSQuotasNew } from './cos-quotas-new';
+import { CosValidatedInput } from './cos-validated-input';
 import { useCosQuotaState } from './hooks/use-cos-quota-state';
 import { QuotaGBField } from './quota-gb-field';
 
@@ -39,6 +42,7 @@ export const COSQuotas = ({
   timeItems,
 }: QuotaProps) => {
   const [t] = useTranslation();
+  const isSubmitted = useStore(form.store, (s) => s.submissionAttempts > 0);
 
   const labels = {
     quotas: t('cos.quotas', 'Quotas'),
@@ -133,20 +137,12 @@ export const COSQuotas = ({
               </>
             )}
             <Container>
-              <form.Field name="zimbraContactMaxNumEntries">
-                {(field) => (
-                  <Input
-                    label={labels.maxContactsAllowedInTheFolder}
-                    value={field.state.value ?? ''}
-                    backgroundColor="gray5"
-                    inputName="zimbraContactMaxNumEntries"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      field.handleChange(e.target.value)
-                    }
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <CosValidatedInput
+                form={form}
+                name="zimbraContactMaxNumEntries"
+                label={labels.maxContactsAllowedInTheFolder}
+                disabled={readonlyCOS}
+              />
             </Container>
           </ListRow>
         </Container>
@@ -161,20 +157,12 @@ export const COSQuotas = ({
           >
             <ListRow>
               <Container width="100%" padding={{ right: 'small' }}>
-                <form.Field name="zimbraQuotaWarnPercent">
-                  {(field) => (
-                    <Input
-                      label={labels.percentageThresholdForQuotaWarningMessages}
-                      value={field.state.value ?? ''}
-                      backgroundColor="gray5"
-                      inputName="zimbraQuotaWarnPercent"
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        field.handleChange(e.target.value)
-                      }
-                      disabled={readonlyCOS}
-                    />
-                  )}
-                </form.Field>
+                <CosValidatedInput
+                  form={form}
+                  name="zimbraQuotaWarnPercent"
+                  label={labels.percentageThresholdForQuotaWarningMessages}
+                  disabled={readonlyCOS}
+                />
               </Container>
               <form.Field name="zimbraQuotaWarnInterval">
                 {(field) => {
@@ -182,6 +170,7 @@ export const COSQuotas = ({
                   const hasUnit = raw.length >= 2;
                   const num = hasUnit ? raw.slice(0, -1) : '';
                   const unit = hasUnit ? raw.slice(-1) : '';
+                  const error = getFieldErrorProps(field, isSubmitted, t);
                   return (
                     <>
                       <Container width="72%" padding={{ left: 'small', right: 'small' }}>
@@ -193,6 +182,9 @@ export const COSQuotas = ({
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value ? `${e.target.value}${unit}` : '')
                           }
+                          onBlur={() => field.handleBlur()}
+                          hasError={error.hasError}
+                          description={error.description}
                           disabled={readonlyCOS}
                         />
                       </Container>

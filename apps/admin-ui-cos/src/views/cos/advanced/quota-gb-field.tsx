@@ -3,12 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useStore } from '@tanstack/react-form';
 import { Container, Input, Padding } from '@zextras/ui-components';
 import { isValidDecimalInput } from '@zextras/ui-shared';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BytesToGB, GbToBytes } from '../../utility/utils';
+import { getFieldErrorProps } from './cos-field-error';
 import { CosAdvancedFormValues, CosFormApi } from './cos-form-api';
 import { QuotaRevertIcon } from './quota-revert-icon';
 
@@ -20,6 +22,9 @@ type QuotaGBFieldInnerProps = {
   label: string;
   maximumDigitsLabel: string;
   disabled: boolean;
+  hasError: boolean;
+  description?: string;
+  onBlur: () => void;
 };
 
 const QuotaGBFieldInner = ({
@@ -27,6 +32,9 @@ const QuotaGBFieldInner = ({
   label,
   maximumDigitsLabel,
   disabled,
+  hasError,
+  description,
+  onBlur,
 }: QuotaGBFieldInnerProps) => {
   const [rawGB, setRawGB] = useState(
     () => (fieldState.value ? BytesToGB(fieldState.value).toFixed(2) : ''),
@@ -80,6 +88,9 @@ const QuotaGBFieldInner = ({
             e.target.value ? String(Math.round(GbToBytes(e.target.value))) : '',
           );
         }}
+        onBlur={onBlur}
+        hasError={hasError}
+        description={description}
         disabled={disabled}
         CustomIcon={RevertIcon}
       />
@@ -110,18 +121,28 @@ export const QuotaGBField = ({
   label,
   maximumDigitsLabel,
   disabled,
-}: QuotaGBFieldProps) => (
-  <form.Field name={name}>
-    {(field) => (
-      <QuotaGBFieldInner
-        fieldState={{
-          value: field.state.value as string | undefined,
-          handleChange: field.handleChange,
-        }}
-        label={label}
-        maximumDigitsLabel={maximumDigitsLabel}
-        disabled={disabled}
-      />
-    )}
-  </form.Field>
-);
+}: QuotaGBFieldProps) => {
+  const [t] = useTranslation();
+  const isSubmitted = useStore(form.store, (s) => s.submissionAttempts > 0);
+  return (
+    <form.Field name={name}>
+      {(field) => {
+        const error = getFieldErrorProps(field, isSubmitted, t);
+        return (
+          <QuotaGBFieldInner
+            fieldState={{
+              value: field.state.value as string | undefined,
+              handleChange: field.handleChange,
+            }}
+            label={label}
+            maximumDigitsLabel={maximumDigitsLabel}
+            disabled={disabled}
+            hasError={error.hasError}
+            description={error.description}
+            onBlur={() => field.handleBlur()}
+          />
+        );
+      }}
+    </form.Field>
+  );
+};

@@ -9,7 +9,9 @@ import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TimeItems } from '../../../../types/general';
+import { getFieldErrorProps } from './cos-field-error';
 import { CosFormApi } from './cos-form-api';
+import { CosValidatedInput } from './cos-validated-input';
 
 type FailedLoginPolicyProps = {
 	form: CosFormApi;
@@ -23,6 +25,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({ form, readonlyCOS, t
 		form.store,
 		(s) => s.values.zimbraPasswordLockoutEnabled === 'TRUE',
 	);
+	const isSubmitted = useStore(form.store, (s) => s.submissionAttempts > 0);
 	const labels = {
 		failedLoginPolicy: t('cos.failed_login_policy', 'Failed Login Policy'),
 		timeRange: t('cos.time_range', 'Time Range'),
@@ -85,18 +88,12 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({ form, readonlyCOS, t
 				>
 					<ListRow>
 						<Container crossAlignment="flex-start">
-							<form.Field name="zimbraPasswordLockoutMaxFailures">
-								{(field) => (
-									<Input
-										label={labels.passwordLockout.maxFailures}
-										value={field.state.value ?? ''}
-										backgroundColor={'gray5'}
-										inputName="zimbraPasswordLockoutMaxFailures"
-										onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-										disabled={!isLockoutEnabled || readonlyCOS}
-									/>
-								)}
-							</form.Field>
+							<CosValidatedInput
+								form={form}
+								name="zimbraPasswordLockoutMaxFailures"
+								label={labels.passwordLockout.maxFailures}
+								disabled={!isLockoutEnabled || readonlyCOS}
+							/>
 						</Container>
 					</ListRow>
 				</Container>
@@ -115,6 +112,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({ form, readonlyCOS, t
 								const hasUnit = raw.length >= 2;
 								const num = hasUnit ? raw.slice(0, -1) : '';
 								const unit = hasUnit ? raw.slice(-1) : '';
+								const error = getFieldErrorProps(field, isSubmitted, t);
 								return (
 									<>
 										<Container width="72%" padding={{ right: 'small' }}>
@@ -126,6 +124,9 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({ form, readonlyCOS, t
 												onChange={(e: ChangeEvent<HTMLInputElement>) =>
 													field.handleChange(e.target.value ? `${e.target.value}${unit}` : '')
 												}
+												onBlur={() => field.handleBlur()}
+												hasError={error.hasError}
+												description={error.description}
 												disabled={!isLockoutEnabled || readonlyCOS}
 											/>
 										</Container>
@@ -152,6 +153,7 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({ form, readonlyCOS, t
 								const hasUnit = raw.length >= 2;
 								const num = hasUnit ? raw.slice(0, -1) : '';
 								const unit = hasUnit ? raw.slice(-1) : '';
+								const error = getFieldErrorProps(field, isSubmitted, t);
 								return (
 									<>
 										<Container width="72%" padding={{ left: 'small', right: 'small' }}>
@@ -163,6 +165,9 @@ const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({ form, readonlyCOS, t
 												onChange={(e: ChangeEvent<HTMLInputElement>) =>
 													field.handleChange(e.target.value ? `${e.target.value}${unit}` : '')
 												}
+												onBlur={() => field.handleBlur()}
+												hasError={error.hasError}
+												description={error.description}
 												disabled={!isLockoutEnabled || readonlyCOS}
 											/>
 										</Container>

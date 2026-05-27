@@ -3,12 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useStore } from '@tanstack/react-form';
 import { Container, Input, ListRow, Select } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../../../types/account';
 import { TimeItems } from '../../../../types/general';
+import { getFieldErrorProps } from './cos-field-error';
 import { CosFormApi } from './cos-form-api';
 
 type TimeFieldGroupProps = {
@@ -29,6 +31,7 @@ export const TimeFieldGroup: FC<TimeFieldGroupProps> = ({
   disabled,
 }) => {
   const [t] = useTranslation();
+  const isSubmitted = useStore(form.store, (s) => s.submissionAttempts > 0);
   return (
     <form.Field name={name}>
       {(field) => {
@@ -37,6 +40,7 @@ export const TimeFieldGroup: FC<TimeFieldGroupProps> = ({
         const num = hasUnit ? raw.slice(0, -1) : '';
         const unit = hasUnit ? raw.slice(-1) : '';
         const isDisabled = disabled || readonlyCOS;
+        const error = getFieldErrorProps(field, isSubmitted, t);
         return (
           <ListRow>
             <Container width="83%" crossAlignment="flex-start" padding={{ right: 'small' }}>
@@ -49,6 +53,9 @@ export const TimeFieldGroup: FC<TimeFieldGroupProps> = ({
                   const v = e.target.value;
                   field.handleChange(v ? `${v}${unit}` : '');
                 }}
+                onBlur={() => field.handleBlur()}
+                hasError={error.hasError}
+                description={error.description}
                 disabled={isDisabled}
               />
             </Container>
