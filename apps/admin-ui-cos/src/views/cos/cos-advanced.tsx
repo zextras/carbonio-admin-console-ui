@@ -4,52 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useForm, useStore } from '@tanstack/react-form';
-import { Container, useSnackbar } from '@zextras/ui-components';
-import {
-  type GetCoreAttributesResponse,
-  setCoreAttributes,
-  useCurrentUserRights,
-  useIsAdvanced,
-  useTotalQuotaActive,
-} from '@zextras/ui-shared';
+import { useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { AccountType } from '../../../types/account';
 import { Attribute } from '../../../types/attribute';
-import { TimeItems } from '../../../types/general';
-import {
-  BACKUP_ENABLED,
-  BACKUP_SELF_UNDELETE_ALLOWED,
-  COS,
-  ZIMBRA_ADMIN_URN,
-} from '../../constants';
-import { type ComputedLimit, type QuotaSource } from '../../services/get-cos-quota';
-import { ModifyCosBody } from '../../services/modify-cos-service';
+import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
 import { useCoreAttributes } from '../../services/use-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useCosQuota } from '../../services/use-cos-quota';
-import { useModifyCos } from '../../services/use-modify-cos';
-import { PageLayout } from '../page-layout';
-import { cosAdvancedSchema } from './advanced/cos-advanced-schema';
-import COSEmailRetentionPolicy from './advanced/cos-email-retention-policy';
-import COSFailedLoginPolicy from './advanced/cos-failed-login-policy';
-import { CosAdvancedFormValues } from './advanced/cos-form-api';
-import COSForwarding from './advanced/cos-forwarding';
-import COSGeneralOptions from './advanced/cos-general-options';
-import COSPassword from './advanced/cos-password';
-import { COSQuotas } from './advanced/cos-quotas';
-import { COSTimeoutPolicy } from './advanced/cos-timeout-policy';
-import { useCosQuotaState } from './advanced/hooks/use-cos-quota-state';
-
-const EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE: Array<string> = [
-  'zimbraMailQuota',
-  'zimbraQuotaWarnPercent',
-  'zimbraQuotaWarnInterval',
-  'zimbraQuotaWarnMessage',
-] satisfies Array<keyof AccountType>;
+import { CosAdvancedForm } from './cos-advanced-form';
 
 const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
   ['zimbraMailForwardingAddressMaxLength', ''],
@@ -84,13 +49,6 @@ const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
   ['zimbraFreebusyExchangeUserOrg', ''],
 ];
 
-const ADVANCED_FIELD_KEYS = new Set(COS_ADVANCED_FIELD_DEFAULTS.map(([key]) => key));
-
-const BACKUP_FIELD_KEYS: ReadonlySet<string> = new Set([
-  BACKUP_ENABLED,
-  BACKUP_SELF_UNDELETE_ALLOWED,
-]);
-
 function buildCosData(cosInformation: Array<Attribute> | undefined): AccountType {
   if (!cosInformation || !cosInformation.length) return {} as AccountType;
   const obj: AccountType = {};
@@ -102,167 +60,6 @@ function buildCosData(cosInformation: Array<Attribute> | undefined): AccountType
   });
   return obj;
 }
-
-function saveBackupAttributes(
-  value: CosAdvancedFormValues,
-  cosName: string | undefined,
-): Promise<unknown> {
-  const backupAttributes: Record<string, unknown> = {
-    [BACKUP_ENABLED]: {
-      value: value.backupEnabled,
-      objectName: cosName,
-      configType: COS,
-    },
-    [BACKUP_SELF_UNDELETE_ALLOWED]: {
-      value: value.backupSelfUndeleteAllowed,
-      objectName: cosName,
-      configType: COS,
-    },
-  };
-  return setCoreAttributes(backupAttributes);
-}
-
-type CosQuotaData = {
-  totalComputedLimit: ComputedLimit;
-  totalQuotaSource: QuotaSource;
-};
-
-type CosAdvancedFormProps = {
-  cosData: AccountType;
-  cosName: string | undefined;
-  cosQuotaData: CosQuotaData | undefined;
-  coreAttributesData: GetCoreAttributesResponse | undefined;
-  readonlyCOS: boolean;
-  isAdvanced: boolean;
-  isTotalQuotaActive: boolean;
-};
-
-const CosAdvancedForm = ({
-  cosData,
-  cosName,
-  cosQuotaData,
-  coreAttributesData,
-  readonlyCOS,
-  isAdvanced,
-  isTotalQuotaActive,
-}: CosAdvancedFormProps) => {
-  const { cosId } = useParams();
-  const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-  const modifyCosMutation = useModifyCos(cosId);
-
-  const quotaState = useCosQuotaState({ cosData, cosQuotaData, isTotalQuotaActive, isAdvanced });
-
-  const timeItems: TimeItems = [
-    { label: t('label.seconds', 'Seconds'), value: 's' },
-    { label: t('label.minutes', 'Minutes'), value: 'm' },
-    { label: t('label.hours', 'Hours'), value: 'h' },
-    { label: t('label.days', 'Days'), value: 'd' },
-  ];
-
-  const errorMessage = t(
-    'label.something_wrong_error_msg',
-    'Something went wrong. Please try again.',
-  );
-
-  const pageTitle = t('cos.advanced', 'Advanced');
-
-  const formDefaultValues = {
-    ...cosData,
-    backupEnabled: !!coreAttributesData?.attributes?.[BACKUP_ENABLED]?.[0]?.value,
-    backupSelfUndeleteAllowed:
-      !!coreAttributesData?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value,
-  } satisfies CosAdvancedFormValues;
-
-  const form = useForm({
-    defaultValues: formDefaultValues,
-    validators: {
-      onChange: cosAdvancedSchema,
-      onSubmit: cosAdvancedSchema,
-    },
-    onSubmit: async ({ value }) => {
-      const { zimbraId = '' } = cosData;
-
-      try {
-        await saveBackupAttributes(value, cosName);
-      } catch {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: errorMessage,
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        return;
-      }
-      await quotaState.save(zimbraId);
-
-      const cosAdvancedToSave = isTotalQuotaActive
-        ? Object.fromEntries(
-            Object.entries(value).filter(
-              ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
-            ),
-          )
-        : value;
-
-      const attributes = Object.keys(cosAdvancedToSave)
-        .filter(
-          (key) => ADVANCED_FIELD_KEYS.has(key as keyof AccountType) && !BACKUP_FIELD_KEYS.has(key),
-        )
-        .map((ele) => ({
-          n: ele,
-          _content: cosAdvancedToSave[ele as keyof AccountType]?.toString() ?? '',
-        }));
-
-      const body: ModifyCosBody = {
-        _jsns: ZIMBRA_ADMIN_URN,
-        id: { _content: zimbraId },
-        a: attributes,
-      };
-
-      modifyCosMutation.mutate(body, {
-        onSuccess: () => {
-          quotaState.handleSuccess(zimbraId);
-          form.reset(value);
-          quotaState.reset();
-        },
-      });
-    },
-  });
-
-  const isFormDirty = useStore(form.store, (state) => !state.isDefaultValue);
-  const isDirty = isFormDirty || quotaState.isDirty;
-
-  return (
-    <PageLayout
-      title={pageTitle}
-      onSave={() => form.handleSubmit()}
-      onCancel={() => {
-        form.reset();
-        quotaState.reset();
-      }}
-      unSavedChanges={isDirty}
-    >
-      <Container mainAlignment="flex-start" width="100%" orientation="vertical">
-        {isAdvanced && <COSGeneralOptions form={form} readonlyCOS={readonlyCOS} />}
-        <COSForwarding form={form} readonlyCOS={readonlyCOS} />
-        <COSQuotas
-          form={form}
-          quotaState={quotaState}
-          isTotalQuotaActive={isTotalQuotaActive}
-          isAdvanced={isAdvanced}
-          readonlyCOS={readonlyCOS}
-          timeItems={timeItems}
-        />
-        <COSPassword form={form} readonlyCOS={readonlyCOS} />
-        <COSFailedLoginPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
-        <COSTimeoutPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
-        <COSEmailRetentionPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
-      </Container>
-    </PageLayout>
-  );
-};
 
 export const CosAdvanced = () => {
   const { cosId } = useParams();
