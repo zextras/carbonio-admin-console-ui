@@ -6,6 +6,7 @@
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
+  delayedSoapApiForBrowser,
   getQueryClient,
   grantUserCosRights,
   resetMockWorker,
@@ -222,6 +223,34 @@ describe('CosGeneralInformation', () => {
         .element(page.getByText('Accounts that use this COS', { exact: true }))
         .toBeVisible();
     });
+
+    it('should render Creation Date field with a value when timestamp is present', async () => {
+      await setupGeneralInfoTest();
+
+      const creationDateInput = page.getByRole('textbox', { name: 'Creation Date' });
+      await expect.element(creationDateInput).toBeVisible();
+      await expect.element(creationDateInput).not.toHaveValue('');
+    });
+
+    it('should render Notes textarea with initial value', async () => {
+      await setupGeneralInfoTest();
+
+      const notesTextarea = page.getByRole('textbox', { name: 'Notes' });
+      await expect.element(notesTextarea).toBeVisible();
+      await expect.element(notesTextarea).toHaveValue('Some notes here');
+    });
+
+    it('should render Accounts section table with email column header', async () => {
+      await setupGeneralInfoTest();
+
+      await expect.element(page.getByText('Email', { exact: true })).toBeVisible();
+    });
+
+    it('should render Domains section table with Domains column header', async () => {
+      await setupGeneralInfoTest();
+
+      await expect.element(page.getByText('Domains', { exact: true })).toBeVisible();
+    });
   });
 
   describe('Default COS', () => {
@@ -274,6 +303,28 @@ describe('CosGeneralInformation', () => {
 
       await page.getByRole('button', { name: 'Cancel' }).click();
 
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    });
+
+    it('should show Save and Cancel when Notes is changed', async () => {
+      await setupGeneralInfoTest();
+
+      const notesTextarea = page.getByRole('textbox', { name: 'Notes' });
+      await userEvent.fill(notesTextarea, 'new notes content');
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+    });
+
+    it('should revert Notes to original value when Cancel is clicked', async () => {
+      await setupGeneralInfoTest();
+
+      const notesTextarea = page.getByRole('textbox', { name: 'Notes' });
+      await userEvent.fill(notesTextarea, 'changed notes');
+
+      await page.getByRole('button', { name: 'Cancel' }).click();
+
+      await expect.element(notesTextarea).toHaveValue('Some notes here');
       await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
     });
   });
@@ -380,6 +431,71 @@ describe('CosGeneralInformation', () => {
       await expect.element(page.getByText('General Information')).toBeVisible();
 
       await expect.element(page.getByText('This list is empty.').first()).toBeVisible();
+    });
+  });
+
+  describe('Loading', () => {
+    it('should show loading spinner when data is pending', async () => {
+      const queryClient = getQueryClient();
+      await grantUserCosRights(queryClient);
+      mockCatalogServices();
+      delayedSoapApiForBrowser('GetCos', mockCosData, 5000);
+
+      await setupBrowserTest(
+        <Routes>
+          <Route path="/:cosId/:operation" element={<CosGeneralInformation />} />
+        </Routes>,
+        { initialRouterEntry: `/${COS_ID}/general_information`, queryClient },
+      );
+
+      await expect.element(page.getByRole('status')).toBeVisible();
+    });
+  });
+
+  describe('Read-only mode', () => {
+    it('should disable Name field when user has no COS setAttrs rights', async () => {
+      const queryClient = getQueryClient();
+      queryClient.setQueryData(['account', 'info'], {
+        id: 'test-user-id',
+        name: 'test@example.com',
+        displayName: '',
+        signatures: { signature: [] },
+        identities: undefined,
+        rights: { targets: [] },
+      });
+      queryClient.setQueryData(
+        ['effective-rights', 'test@example.com'],
+        [
+          {
+            type: 'cos',
+            all: [
+              {
+                right: [{ n: 'listCos' }],
+                getAttrs: [{ all: true }],
+              },
+            ],
+          },
+        ],
+      );
+
+      mockCatalogServices();
+      mockSearchDirectoryResponses();
+      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserSoapAPIInterceptor('ModifyCos', {});
+      createBrowserSoapAPIInterceptor('RenameCos', {});
+      createBrowserSoapAPIInterceptor('DeleteCos', {});
+
+      await setupBrowserTest(
+        <Routes>
+          <Route path="/:cosId/:operation" element={<CosGeneralInformation />} />
+        </Routes>,
+        { initialRouterEntry: `/${COS_ID}/general_information`, queryClient },
+      );
+      await expect.element(page.getByText('General Information')).toBeVisible();
+
+      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      await expect.element(nameInput).toBeDisabled();
     });
   });
 });
