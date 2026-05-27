@@ -5,7 +5,7 @@
  */
 
 import { useForm, useStore } from '@tanstack/react-form';
-import { Container } from '@zextras/ui-components';
+import { Container, useSnackbar } from '@zextras/ui-components';
 import {
   type GetCoreAttributesResponse,
   setCoreAttributes,
@@ -103,7 +103,7 @@ function buildCosData(cosInformation: Array<Attribute> | undefined): AccountType
 function saveBackupAttributes(
   value: CosAdvancedFormValues,
   cosName: string | undefined,
-): void {
+): Promise<unknown> {
   const backupAttributes: Record<string, unknown> = {
     [BACKUP_ENABLED]: {
       value: value.backupEnabled,
@@ -116,7 +116,7 @@ function saveBackupAttributes(
       configType: COS,
     },
   };
-  setCoreAttributes(backupAttributes);
+  return setCoreAttributes(backupAttributes);
 }
 
 type CosQuotaData = {
@@ -145,6 +145,7 @@ const CosAdvancedForm = ({
 }: CosAdvancedFormProps) => {
   const { cosId } = useParams();
   const [t] = useTranslation();
+  const createSnackbar = useSnackbar();
   const modifyCosMutation = useModifyCos(cosId);
 
   const quotaState = useCosQuotaState({ cosData, cosQuotaData, isTotalQuotaActive, isAdvanced });
@@ -178,7 +179,19 @@ const CosAdvancedForm = ({
     onSubmit: async ({ value }) => {
       const { zimbraId = '' } = cosData;
 
-      saveBackupAttributes(value, cosName);
+      try {
+        await saveBackupAttributes(value, cosName);
+      } catch {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: labels.snackbar.errorMessage,
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+        return;
+      }
       await quotaState.save(zimbraId);
 
       const cosAdvancedToSave = isTotalQuotaActive
