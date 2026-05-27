@@ -408,4 +408,65 @@ describe('CosAdvanced', () => {
       await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
     });
   });
+
+  describe('Backup options', () => {
+    function mockGetCoreAttributes(selfUndelete: boolean, enabled = false): void {
+      createBrowserAPIInterceptor(
+        'post',
+        '/service/extension/zextras_admin/core/attributes/get',
+        () =>
+          HttpResponse.json({
+            attributes: {
+              backupSelfUndeleteAllowed: [{ value: selfUndelete ? 'TRUE' : '' }],
+              backupEnabled: [{ value: enabled ? 'TRUE' : '' }],
+            },
+          }),
+      );
+    }
+
+    function restoreToggleIcon(): string | null {
+      return (
+        document
+          .querySelector('ds-icon[aria-label="Allow user to restore messages"]')
+          ?.getAttribute('icon') ?? null
+      );
+    }
+
+    async function setupAdvancedBackupTest(): Promise<void> {
+      const queryClient = getQueryClient();
+      await grantUserCosRights(queryClient);
+      seedQueryClientData(queryClient);
+      queryClient.setQueryData(['advanced-supported'], { supported: true });
+      queryClient.setQueryData(['cos', 'file-quota', COS_ID], { limit: undefined });
+      mockCatalogServices();
+      mockGetCoreAttributes(true);
+      mockCoreAttributeSet();
+      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+      createBrowserSoapAPIInterceptor('ModifyCos', {});
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+
+      await setupBrowserTest(
+        <Routes>
+          <Route path="/:cosId/:operation" element={<CosAdvanced />} />
+        </Routes>,
+        { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
+      );
+      await expect.element(page.getByText('General Options')).toBeVisible();
+    }
+
+    it('keeps "Allow user to restore messages" off after saving it off', async () => {
+      await setupAdvancedBackupTest();
+
+      const toggle = page.getByRole('img', { name: 'Allow user to restore messages' });
+      await expect.element(toggle).toBeVisible();
+      expect(restoreToggleIcon()).toBe('ToggleRight');
+
+      await userEvent.click(toggle);
+      expect(restoreToggleIcon()).toBe('ToggleLeftOutline');
+
+      await page.getByRole('button', { name: 'Save' }).click();
+
+      expect(restoreToggleIcon()).toBe('ToggleLeftOutline');
+    });
+  });
 });
