@@ -50,7 +50,7 @@ const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
 ];
 
 function buildCosData(cosInformation: Array<Attribute> | undefined): AccountType {
-  if (!cosInformation || !cosInformation.length) return {} as AccountType;
+  if (!cosInformation?.length) return {} as AccountType;
   const obj: AccountType = {};
   cosInformation.forEach((item) => {
     obj[item?.n as keyof AccountType] = item._content;
