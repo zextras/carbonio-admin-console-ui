@@ -36,11 +36,9 @@ export const FormPageLayout: FC<FormPageLayoutProps> = ({
       }}
     >
       <div className={styles.header}>
-        <div className={styles.title}>
-          <ds-text as="strong" weight="bold" color="gray0">
-            {title}
-          </ds-text>
-        </div>
+        <ds-text as="strong" weight="bold" color="gray0" className={styles.title}>
+          {title}
+        </ds-text>
         {unsavedChanges && (
           <div className={styles.buttons}>
             {onCancel && (
