@@ -30,7 +30,6 @@ import { COS, ZIMBRA_ADMIN_URN } from '../../constants';
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
-import { PageLayout } from '../page-layout';
 import { FunnelSearchIcon } from './funnel-search-icon';
 
 type ServerItem = {
@@ -224,7 +223,31 @@ export const CosServerPools: FC = () => {
   }
 
   return (
-    <PageLayout title={t('label.server_pools', 'Server Pools')}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        justifyContent: 'flex-start',
+        flex: '1 1 0%',
+        height: '100%',
+        padding: '1.5rem',
+      }}
+    >
+      <Container orientation="horizontal" height="fit" padding={{ all: 'medium' }}>
+        <Row takeAvailableSpace mainAlignment="flex-start" minHeight="35px">
+          <ds-text as="strong" weight="bold" color="gray0">
+            {t('label.server_pools', 'Server Pools')}
+          </ds-text>
+        </Row>
+      </Container>
+      <ds-divider></ds-divider>
+      <Container
+        mainAlignment="flex-start"
+        crossAlignment="flex-start"
+        padding={{ horizontal: 'medium', vertical: 'large' }}
+        style={{ overflowY: 'auto' }}
+      >
       <Container
         orientation="column"
         crossAlignment="flex-start"
@@ -333,6 +356,7 @@ export const CosServerPools: FC = () => {
           )}
         </Container>
       </Container>
+      </Container>
 
       <Modal
         title={t('cos.disabling_pool', 'Disabling pool')}
@@ -379,6 +403,6 @@ export const CosServerPools: FC = () => {
           </ds-text>
         </Padding>
       </Modal>
-    </PageLayout>
+    </div>
   );
 };

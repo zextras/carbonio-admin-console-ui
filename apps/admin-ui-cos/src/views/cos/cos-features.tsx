@@ -20,7 +20,7 @@ import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useCoreAttributes } from '../../services/use-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
-import { PageLayout } from '../page-layout';
+import { FormPageLayout } from '../page-layout';
 import { Features } from './features';
 
 export const CosFeatures: FC = () => {
@@ -191,11 +191,11 @@ export const CosFeatures: FC = () => {
   }
 
   return (
-    <PageLayout
+    <FormPageLayout
       title={t('label.features', 'Features')}
       onSave={onSave}
       onCancel={onCancel}
-      unSavedChanges={isDirty}
+      unsavedChanges={isDirty}
     >
       <Features
         featuresDetail={cosFeatures}
@@ -203,6 +203,6 @@ export const CosFeatures: FC = () => {
         readonlyFeatures={readonlyCOS}
         cosLevelFeatures
       />
-    </PageLayout>
+    </FormPageLayout>
   );
 };

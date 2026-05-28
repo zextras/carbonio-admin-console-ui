@@ -17,7 +17,7 @@ import { COS, ZIMBRA_ADMIN_URN } from '../constants';
 import { ModifyCosBody } from '../services/modify-cos-service';
 import { useCosDetail } from '../services/use-cos-detail';
 import { useModifyCos } from '../services/use-modify-cos';
-import { PageLayout } from '../views/page-layout';
+import { FormPageLayout } from '../views/page-layout';
 import { WscSettings } from './wsc-settings';
 
 export const WscCosSettings: FC = () => {
@@ -119,17 +119,17 @@ export const WscCosSettings: FC = () => {
   }
 
   return (
-    <PageLayout
+    <FormPageLayout
       title={t('label.wsc', 'Chats')}
       onSave={onSave}
       onCancel={onCancel}
-      unSavedChanges={isDirty}
+      unsavedChanges={isDirty}
     >
       <WscSettings
         featuresDetail={cosFeatures}
         setFeaturesDetail={setCosFeatures}
         readonlyFeatures={readonlyCOS}
       />
-    </PageLayout>
+    </FormPageLayout>
   );
 };

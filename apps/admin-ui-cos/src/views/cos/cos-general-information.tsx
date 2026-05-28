@@ -39,7 +39,7 @@ import { useModifyCos } from '../../services/use-modify-cos';
 import { useTotalAccounts } from '../../services/use-total-accounts';
 import { useTotalDomains } from '../../services/use-total-domains';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import { PageLayout } from '../page-layout';
+import { FormPageLayout } from '../page-layout';
 import { getDateFromStr, getFormatedDate } from '../utility/utils';
 import { FunnelSearchIcon } from './funnel-search-icon';
 
@@ -579,11 +579,11 @@ export const CosGeneralInformation = () => {
   }
 
   return (
-    <PageLayout
+    <FormPageLayout
       title={t('cos.general_information', 'General Information')}
       onSave={onSave}
       onCancel={onCancel}
-      unSavedChanges={isDirty}
+      unsavedChanges={isDirty}
     >
       <Container
         orientation="column"
@@ -982,6 +982,6 @@ export const CosGeneralInformation = () => {
           </Padding>
         </Container>
       </Modal>
-    </PageLayout>
+    </FormPageLayout>
   );
 };

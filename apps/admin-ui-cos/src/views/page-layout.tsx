@@ -3,63 +3,76 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Row } from '@zextras/ui-components';
-import { FC, ReactNode } from 'react';
+import { Button } from '@zextras/ui-components';
+import { type FC, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import styles from './page-layout.module.css';
 import { RouteLeavingGuard } from './ui-extras/nav-guard';
 
-export const PageLayout: FC<{
+type FormPageLayoutProps = {
   title: string;
-  children: ReactNode | ReactNode[];
+  children: ReactNode;
   onSave?: () => void;
   onCancel?: () => void;
-  unSavedChanges?: boolean;
-}> = ({ title, onSave, onCancel, unSavedChanges, children }) => {
+  unsavedChanges?: boolean;
+};
+
+export const FormPageLayout: FC<FormPageLayoutProps> = ({
+  title,
+  onSave,
+  onCancel,
+  unsavedChanges,
+  children,
+}) => {
   const [t] = useTranslation();
 
-  const headerButtons = (() => {
-    if (!unSavedChanges) return null;
-    return (
-      <Container orientation="horizontal" width="fit" gap="1rem">
-        {onCancel && (
-          <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
-        )}
-        {onSave && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
-      </Container>
-    );
-  })();
-
   return (
-    <Container mainAlignment="flex-start" padding={{ all: 'large' }}>
-      <Container orientation="horizontal" height="fit" padding={{ all: 'medium' }}>
-        <Row takeAvailableSpace mainAlignment="flex-start" minHeight="35px">
+    <form
+      className={styles.form}
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSave?.();
+      }}
+    >
+      <div className={styles.header}>
+        <div className={styles.title}>
           <ds-text as="strong" weight="bold" color="gray0">
             {title}
           </ds-text>
-        </Row>
-        <Row>{headerButtons}</Row>
-      </Container>
+        </div>
+        {unsavedChanges && (
+          <div className={styles.buttons}>
+            {onCancel && (
+              <Button
+                label={t('label.cancel', 'Cancel')}
+                color="secondary"
+                onClick={onCancel}
+              />
+            )}
+            {onSave && (
+              <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+            )}
+          </div>
+        )}
+      </div>
       <ds-divider></ds-divider>
-      <Container
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        padding={{ horizontal: 'medium', vertical: 'large' }}
-        style={{ overflowY: 'auto' }}
-      >
+      <div className={styles.content}>
         {children}
-      </Container>
+      </div>
       {onSave && (
-        <RouteLeavingGuard when={unSavedChanges} onSave={onSave}>
+        <RouteLeavingGuard when={unsavedChanges} onSave={onSave}>
           <ds-text as="p">
             {t(
               'label.unsaved_changes_line1',
               'Are you sure you want to leave this page without saving?',
             )}
           </ds-text>
-          <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
+          <ds-text as="p">
+            {t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}
+          </ds-text>
         </RouteLeavingGuard>
       )}
-    </Container>
+    </form>
   );
 };

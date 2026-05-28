@@ -13,7 +13,7 @@ import { CosAttributes, CosPrefAttributes } from '../../../../types/cos';
 import { ZIMBRA_ADMIN_URN } from '../../../constants';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
-import { PageLayout } from '../../page-layout';
+import { FormPageLayout } from '../../page-layout';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
 import { CalendarOptions } from './sections/calendar-options';
@@ -76,11 +76,11 @@ export const PreferencesForm = ({ cosInformation, readonlyCOS }: PreferencesForm
   const isDirty = useStore(form.store, (state) => !state.isDefaultValue);
 
   return (
-    <PageLayout
+    <FormPageLayout
       title={t('label.preferences', 'Preferences')}
       onSave={() => form.handleSubmit()}
       onCancel={() => form.reset()}
-      unSavedChanges={isDirty}
+      unsavedChanges={isDirty}
     >
       <Container mainAlignment="flex-start" width="100%" orientation="vertical">
         <GeneralOptions form={form} readonlyCOS={readonlyCOS} locales={locales} />
@@ -97,6 +97,6 @@ export const PreferencesForm = ({ cosInformation, readonlyCOS }: PreferencesForm
         <ds-divider></ds-divider>
         <CalendarOptions form={form} readonlyCOS={readonlyCOS} />
       </Container>
-    </PageLayout>
+    </FormPageLayout>
   );
 };
