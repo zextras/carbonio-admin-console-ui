@@ -1,3 +1,9 @@
+## [0.13.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.2...v0.13.3) (2026-05-26)
+
+### Other changes
+
+* update sonarlint settings ([1bc394b](https://github.com/zextras/carbonio-admin-console-ui/commit/1bc394b9b16651c43df1d44a404c4e84ea85952b))
+
 ## [0.13.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.1...v0.13.2) (2026-05-25)
 
 ### Other changes
