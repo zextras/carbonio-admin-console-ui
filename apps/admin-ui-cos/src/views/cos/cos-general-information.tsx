@@ -39,7 +39,7 @@ import { useModifyCos } from '../../services/use-modify-cos';
 import { useTotalAccounts } from '../../services/use-total-accounts';
 import { useTotalDomains } from '../../services/use-total-domains';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import { FormPageLayout } from '../page-layout';
+import { FormPageLayout } from '../form-page-layout';
 import { getDateFromStr, getFormatedDate } from '../utility/utils';
 import { FunnelSearchIcon } from './funnel-search-icon';
 

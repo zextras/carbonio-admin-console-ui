@@ -23,7 +23,7 @@ import { cosQueryKeys } from '../../../services/cos-query-keys';
 import { type ComputedLimit, type QuotaSource } from '../../../services/get-cos-quota';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
-import { FormPageLayout } from '../../page-layout';
+import { FormPageLayout } from '../../form-page-layout';
 import { useCosQuotaState } from './hooks/use-cos-quota-state';
 import { cosAdvancedSchema } from './schema';
 import COSEmailRetentionPolicy from './sections/email-retention-policy';

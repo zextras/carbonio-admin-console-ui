@@ -20,7 +20,7 @@ import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useCoreAttributes } from '../../services/use-core-attributes';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
-import { FormPageLayout } from '../page-layout';
+import { FormPageLayout } from '../form-page-layout';
 import { Features } from './features';
 
 export const CosFeatures: FC = () => {

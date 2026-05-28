@@ -13,7 +13,7 @@ import { CosAttributes, CosPrefAttributes } from '../../../../types/cos';
 import { ZIMBRA_ADMIN_URN } from '../../../constants';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
-import { FormPageLayout } from '../../page-layout';
+import { FormPageLayout } from '../../form-page-layout';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
 import { CalendarOptions } from './sections/calendar-options';
