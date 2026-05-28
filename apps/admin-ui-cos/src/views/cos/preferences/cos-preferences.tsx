@@ -26,7 +26,7 @@ export const COSPreferences = (): React.JSX.Element => {
   if (isPending) {
     return (
       <Container crossAlignment="center" mainAlignment="center" height="fill">
-        <ds-spinner />
+        <ds-page-shimmer></ds-page-shimmer>
       </Container>
     );
   }
