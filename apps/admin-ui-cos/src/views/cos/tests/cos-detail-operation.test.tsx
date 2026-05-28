@@ -27,7 +27,7 @@ vi.mock('../cos-server-pools', () => ({
   CosServerPools: vi.fn(),
 }));
 
-vi.mock('../preferences/COSPreferences', () => ({
+vi.mock('../preferences/cos-preferences', () => ({
   COSPreferences: vi.fn(),
 }));
 
@@ -43,7 +43,7 @@ import { CosDetailOperation } from '../cos-detail-operation';
 import { CosFeatures } from '../cos-features';
 import { CosGeneralInformation } from '../cos-general-information';
 import { CosServerPools } from '../cos-server-pools';
-import { COSPreferences } from '../preferences/COSPreferences';
+import { COSPreferences } from '../preferences/cos-preferences';
 
 const mocks = {
   CosGeneralInformation: CosGeneralInformation as unknown as Mock,

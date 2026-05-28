@@ -13,7 +13,7 @@ import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { COSPreferences } from '../COSPreferences';
+import { COSPreferences } from '../cos-preferences';
 
 const mockCosData = {
   cos: [
