@@ -15,8 +15,8 @@ export const cosQueryKeys = {
     [...cosQueryKeys.all, 'core-attributes', body] as const,
   fileQuota: (cosId: string) => [...cosQueryKeys.all, 'file-quota', cosId] as const,
   cosQuota: (cosId: string) => [...cosQueryKeys.all, 'cos-quota', cosId] as const,
-  accounts: (cosId: string, query: string, offset: number, limit: number) =>
-    [...cosQueryKeys.all, 'accounts', cosId, query, offset, limit] as const,
-  domains: (cosId: string, query: string, offset: number, limit: number) =>
-    [...cosQueryKeys.all, 'domains', cosId, query, offset, limit] as const,
+  accounts: (cosId: string, searchStr: string, offset: number, limit: number) =>
+    [...cosQueryKeys.all, 'accounts', cosId, searchStr, offset, limit] as const,
+  domains: (cosId: string, searchStr: string, offset: number, limit: number) =>
+    [...cosQueryKeys.all, 'domains', cosId, searchStr, offset, limit] as const,
 };

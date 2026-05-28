@@ -24,14 +24,14 @@ import {
 	useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { debounce } from 'lodash-es';
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { Attribute } from '../../../../types/attribute';
 import logo from '../../../assets/gardian.svg';
 import { DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../../constants';
+import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { deleteCOS } from '../../../services/delete-cos-service';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { renameCos } from '../../../services/rename-cos-service';
@@ -204,34 +204,6 @@ function buildCosDataMap(
 	return obj;
 }
 
-function generateAccountSearchFilterQuery(
-	searchStr: string,
-	cosIdVal: string | undefined,
-): string {
-	let filterQuery = `(&(zimbraCOSId=${cosIdVal})(!(zimbraIsSystemAccount=TRUE)))`;
-	if (searchStr) {
-		filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
-	}
-	if (searchStr) {
-		return `(&${filterQuery})`;
-	}
-	return filterQuery;
-}
-
-function generateDomainSearchFilterQuery(
-	searchStr: string,
-	cosIdVal: string | undefined,
-): string {
-	let filterQuery = `(|(zimbraDomainCOSMaxAccounts=${cosIdVal}*)(zimbraDomainDefaultCOSId=${cosIdVal}))`;
-	if (searchStr) {
-		filterQuery += `(|(zimbraDomainName=*${searchStr}*))`;
-	}
-	if (searchStr) {
-		return `(&${filterQuery})`;
-	}
-	return filterQuery;
-}
-
 export const GeneralInformationForm = ({
 	cosInformation,
 	readonlyCOS,
@@ -249,30 +221,12 @@ export const GeneralInformationForm = ({
 	const [offset, setOffset] = useState<number>(0);
 	const [accountLimit, setAccountLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [searchAccountString, setSearchAccountString] = useState<string>('');
-	const [searchAccountQuery, setSearchAccountQuery] = useState<string>('');
+	const debouncedAccountSearch = useDebouncedValue(searchAccountString, 700);
 
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [searchDomainString, setSearchDomainString] = useState<string>('');
-	const [searchDomainQuery, setSearchDomainQuery] = useState<string>('');
 	const [domainOffset, setDomainOffset] = useState<number>(0);
-
-	const searchAccountListRef = useRef(
-		debounce((searchStr: string, cosIdVal: string | undefined) => {
-			setSearchAccountQuery(generateAccountSearchFilterQuery(searchStr, cosIdVal));
-		}, 700),
-	);
-	useEffect(() => {
-		searchAccountListRef.current(searchAccountString, cosId);
-	}, [cosId, searchAccountString]);
-
-	const searchDomainListRef = useRef(
-		debounce((searchStr: string, cosIdVal: string | undefined) => {
-			setSearchDomainQuery(generateDomainSearchFilterQuery(searchStr, cosIdVal));
-		}, 700),
-	);
-	useEffect(() => {
-		searchDomainListRef.current(searchDomainString, cosId);
-	}, [cosId, searchDomainString]);
+	const debouncedDomainSearch = useDebouncedValue(searchDomainString, 700);
 
 	const STATUS_COLOR: Record<string, { color: string; label: string }> = {
 		active: { color: '#8BC34A', label: t('label.active', 'Active') },
@@ -286,7 +240,9 @@ export const GeneralInformationForm = ({
 	const {
 		data: accountsData,
 		isPending: isAccountRequestInProgress,
-	} = useCosAccounts(cosId, searchAccountQuery, offset, accountLimit);
+		isFetching: isAccountFetching,
+		isPlaceholderData: isAccountPlaceholderData,
+	} = useCosAccounts(cosId, debouncedAccountSearch, offset, accountLimit);
 
 	const accountList = useMemo(() => {
 		if (!accountsData?.accounts.length) return [];
@@ -300,7 +256,9 @@ export const GeneralInformationForm = ({
 	const {
 		data: domainsData,
 		isPending: isDomainRequestInProgress,
-	} = useCosDomains(cosId, searchDomainQuery, domainOffset, limit);
+		isFetching: isDomainFetching,
+		isPlaceholderData: isDomainPlaceholderData,
+	} = useCosDomains(cosId, debouncedDomainSearch, domainOffset, limit);
 
 	const domainList = useMemo(() => {
 		if (!domainsData?.domains.length) return [];
@@ -578,7 +536,7 @@ export const GeneralInformationForm = ({
 				>
 					<Container padding={{ all: 'small' }}>
 						<Table
-							rows={isDomainRequestInProgress ? [] : domainList}
+							rows={isDomainRequestInProgress && !isDomainPlaceholderData ? [] : domainList}
 							headers={domainHeaders}
 							showCheckbox={false}
 							multiSelect={false}
@@ -589,7 +547,7 @@ export const GeneralInformationForm = ({
 							RowFactory={HoverableRowFactory}
 							HeaderFactory={CustomHeaderFactory}
 						/>
-						{isDomainRequestInProgress && (
+						{isDomainFetching && !isDomainPlaceholderData && (
 							<Container
 								crossAlignment="center"
 								mainAlignment="center"
@@ -599,7 +557,7 @@ export const GeneralInformationForm = ({
 								<ds-spinner></ds-spinner>
 							</Container>
 						)}
-						{domainList.length === 0 && !isDomainRequestInProgress && (
+						{domainList.length === 0 && !isDomainFetching && (
 							<Container
 								orientation="column"
 								crossAlignment="center"
@@ -688,7 +646,7 @@ export const GeneralInformationForm = ({
 				>
 					<Container padding={{ all: 'small' }}>
 						<Table
-							rows={isAccountRequestInProgress ? [] : accountList}
+							rows={isAccountRequestInProgress && !isAccountPlaceholderData ? [] : accountList}
 							headers={accountHeaders}
 							showCheckbox={false}
 							multiSelect={false}
@@ -699,7 +657,7 @@ export const GeneralInformationForm = ({
 							RowFactory={HoverableRowFactory}
 							HeaderFactory={CustomHeaderFactory}
 						/>
-						{isAccountRequestInProgress && (
+						{isAccountFetching && !isAccountPlaceholderData && (
 							<Container
 								crossAlignment="center"
 								mainAlignment="center"
@@ -709,7 +667,7 @@ export const GeneralInformationForm = ({
 								<ds-spinner></ds-spinner>
 							</Container>
 						)}
-						{accountList.length === 0 && !isAccountRequestInProgress && (
+						{accountList.length === 0 && !isAccountFetching && (
 							<Container
 								orientation="column"
 								crossAlignment="center"
