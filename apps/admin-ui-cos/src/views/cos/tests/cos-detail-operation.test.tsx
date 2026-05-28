@@ -11,7 +11,7 @@ vi.mock('react-router', () => ({
   useParams: vi.fn(),
 }));
 
-vi.mock('../cos-general-information', () => ({
+vi.mock('../general-information/cos-general-information', () => ({
   CosGeneralInformation: vi.fn(),
 }));
 
@@ -41,8 +41,8 @@ import { WscCosSettings } from '../../../wsc/wsc-cos-settings';
 import { CosAdvanced } from '../advanced/cos-advanced';
 import { CosDetailOperation } from '../cos-detail-operation';
 import { CosFeatures } from '../cos-features';
-import { CosGeneralInformation } from '../cos-general-information';
 import { CosServerPools } from '../cos-server-pools';
+import { CosGeneralInformation } from '../general-information/cos-general-information';
 import { COSPreferences } from '../preferences/cos-preferences';
 
 const mocks = {

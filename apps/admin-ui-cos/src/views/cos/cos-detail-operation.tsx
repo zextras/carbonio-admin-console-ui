@@ -16,8 +16,8 @@ import {
 import { WscCosSettings } from '../../wsc/wsc-cos-settings';
 import { CosAdvanced } from './advanced/cos-advanced';
 import { CosFeatures } from './cos-features';
-import { CosGeneralInformation } from './cos-general-information';
 import { CosServerPools } from './cos-server-pools';
+import { CosGeneralInformation } from './general-information/cos-general-information';
 import { COSPreferences } from './preferences/cos-preferences';
 
 export const CosDetailOperation = () => {
