@@ -120,7 +120,7 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
                         showCheckbox={false}
                         selection={
                           pollingIntervalType === ''
-                            ? TIME_TYPES[TIME_TYPES.length - 1]
+                            ? TIME_TYPES.at(-1)
                             : TIME_TYPES.find((item) => item.value === pollingIntervalType) ||
                               TIME_TYPES[0]
                         }
@@ -160,7 +160,7 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
                     showCheckbox={false}
                     selection={
                       field.state.value === ''
-                        ? POLLING_INTERVAL[POLLING_INTERVAL.length - 1]
+                        ? POLLING_INTERVAL.at(-1)
                         : POLLING_INTERVAL.find((item) => item.value === field.state.value) ||
                           POLLING_INTERVAL[0]
                     }
