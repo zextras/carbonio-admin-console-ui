@@ -24,7 +24,7 @@ import {
 	useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { ChangeEvent, useMemo, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -193,6 +193,23 @@ function buildDefaultValues(cosInformation: Array<Attribute> | undefined): Gener
 	};
 }
 
+function buildAccountList(
+	accounts: Array<DirectoryItem> | undefined,
+	statusColor: Record<string, { color: string; label: string }>,
+): Array<TRow> {
+	if (!accounts?.length) return [];
+	return accounts.map((item) => processAccountItem(item, statusColor));
+}
+
+function buildDomainList(
+	domains: Array<DirectoryItem> | undefined,
+	cosId: string | undefined,
+	defaultCosLabel: string,
+): Array<TRow> {
+	if (!domains?.length) return [];
+	return domains.map((item) => processDomainItem(item, cosId, defaultCosLabel));
+}
+
 function buildCosDataMap(
 	cosInformation: Array<Attribute> | undefined,
 ): Partial<Record<string, string>> {
@@ -244,12 +261,7 @@ export const GeneralInformationForm = ({
 		isPlaceholderData: isAccountPlaceholderData,
 	} = useCosAccounts(cosId, debouncedAccountSearch, offset, accountLimit);
 
-	const accountList = useMemo(() => {
-		if (!accountsData?.accounts.length) return [];
-		return accountsData.accounts.map((item) =>
-			processAccountItem(item as DirectoryItem, STATUS_COLOR),
-		);
-	}, [accountsData?.accounts]);
+	const accountList = buildAccountList(accountsData?.accounts as Array<DirectoryItem>, STATUS_COLOR);
 
 	const totalAccounts = accountsData?.total ?? 0;
 
@@ -260,12 +272,11 @@ export const GeneralInformationForm = ({
 		isPlaceholderData: isDomainPlaceholderData,
 	} = useCosDomains(cosId, debouncedDomainSearch, domainOffset, limit);
 
-	const domainList = useMemo(() => {
-		if (!domainsData?.domains.length) return [];
-		return domainsData.domains.map((item) =>
-			processDomainItem(item as DirectoryItem, cosId, t('label.default_cos', 'Default COS')),
-		);
-	}, [domainsData?.domains]);
+	const domainList = buildDomainList(
+		domainsData?.domains as Array<DirectoryItem>,
+		cosId,
+		t('label.default_cos', 'Default COS'),
+	);
 
 	const totalDomains = domainsData?.total ?? 0;
 
