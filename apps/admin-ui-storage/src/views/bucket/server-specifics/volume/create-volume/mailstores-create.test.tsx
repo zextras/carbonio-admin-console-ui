@@ -8,6 +8,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React, { SetStateAction, useState } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { VolumeWizardDetail } from '../../../../../../types';
 import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
 
@@ -92,16 +93,6 @@ vi.mock('@zextras/ui-components', () => ({
   ),
 }));
 
-type VolumeWizardDetailValue = {
-  volumeMain?: number;
-  volumeAllocation?: string;
-  volumeName?: string;
-  path?: string;
-  isCompression?: boolean;
-  compressionThreshold?: string;
-  isCurrent?: boolean;
-};
-
 function applyUpdate<T>(
   update: SetStateAction<T>,
   setState: React.Dispatch<SetStateAction<T>>,
@@ -118,13 +109,13 @@ function TestHarness({
 }: {
   onSelection: ReturnType<typeof vi.fn>;
   setCompleteLoading: ReturnType<typeof vi.fn>;
-  initialVolumeDetail?: VolumeWizardDetailValue;
+  initialVolumeDetail?: VolumeWizardDetail;
 }): React.JSX.Element {
-  const [volumeDetail, setVolumeDetailState] = useState<VolumeWizardDetailValue>(
+  const [volumeDetail, setVolumeDetailState] = useState<VolumeWizardDetail>(
     initialVolumeDetail ?? {},
   );
 
-  function setVolumeDetail(update: SetStateAction<VolumeWizardDetailValue>): void {
+  function setVolumeDetail(update: SetStateAction<VolumeWizardDetail>): void {
     applyUpdate(update, setVolumeDetailState);
   }
 
