@@ -32,6 +32,10 @@
   overflow: hidden;
 }
 
+.popover:not([data-open]) {
+  display: none;
+}
+
 .popover :global(.rdp-root) {
   --rdp-accent-color: var(--color-primary-regular);
   --rdp-accent-background-color: var(--color-primary-highlight);

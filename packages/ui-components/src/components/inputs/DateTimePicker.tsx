@@ -57,6 +57,7 @@ const buildInputIcons = ({
             backgroundColor="transparent"
             disabled={disabled}
             className={styles.customButton}
+            aria-label="Clear"
           />
         )}
         <Button
@@ -67,6 +68,7 @@ const buildInputIcons = ({
           labelColor={'text'}
           disabled={disabled}
           className={styles.customButton}
+          aria-label="Calendar"
         />
       </div>
     );
@@ -138,15 +140,11 @@ export const DateTimePicker = ({
     if (!anchor || !popover) return;
 
     if (!isOpen) {
-      if (popover.matches(':popover-open')) {
-        popover.hidePopover();
-      }
+      popover.hidePopover();
       return;
     }
 
-    if (!popover.matches(':popover-open')) {
-      popover.showPopover();
-    }
+    popover.showPopover();
 
     return autoUpdate(anchor, popover, () => {
       computePosition(anchor, popover, {
@@ -229,7 +227,7 @@ export const DateTimePicker = ({
           />
         </Container>
       </div>
-      <div popover="manual" ref={popoverRef} className={styles.popover}>
+      <div popover="manual" ref={popoverRef} className={styles.popover} data-open={isOpen || undefined}>
         <DayPicker
           mode="single"
           captionLayout="dropdown"
