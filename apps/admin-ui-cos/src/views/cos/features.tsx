@@ -12,7 +12,7 @@ import {
   Row,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const Features: FC<{
@@ -76,6 +76,15 @@ export const Features: FC<{
     featuresDetail?.carbonioOtpGracePeriodEnabled,
   ]);
   const [fromDate, setFromDate] = useState<Date | null>(gracePeriodDefaultDate);
+
+  useEffect(() => {
+    setFromDate(gracePeriodDefaultDate);
+  }, [gracePeriodDefaultDate]);
+
+  const isGracePeriodEnabled =
+    featuresDetail?.carbonioOtpGracePeriodEnabled === 'TRUE' &&
+    featuresDetail?.carbonioOtpWizardFromUntrusted === 'TRUE' &&
+    featuresDetail?.carbonioFeatureOTPMgmtEnabled === 'TRUE';
 
   const handleFromDateChange = useCallback(
     (d: Date | null) => {
@@ -275,7 +284,7 @@ export const Features: FC<{
                     <Padding left={'extralarge'} width="100%">
                       <Row width="100%">
                         <DateTimePicker
-                          disabled={featuresDetail?.carbonioOtpGracePeriodEnabled === 'FALSE'}
+                          disabled={!isGracePeriodEnabled}
                           width={'21.625rem'}
                           className="fffff"
                           label={t(

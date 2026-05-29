@@ -30,7 +30,16 @@ import {
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
-import { ChangeEvent, FC, ReactElement, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  ReactElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../../assets/gardian.svg';
@@ -704,6 +713,15 @@ const EditAccountSecuritySection: FC = () => {
 
   const [fromDate, setFromDate] = useState<Date | null>(gracePeriodDefaultDate);
 
+  useEffect(() => {
+    setFromDate(gracePeriodDefaultDate);
+  }, [gracePeriodDefaultDate]);
+
+  const isGracePeriodEnabled =
+    accountDetail?.carbonioOtpGracePeriodEnabled === 'TRUE' &&
+    accountDetail?.carbonioOtpWizardFromUntrusted === 'TRUE' &&
+    accountDetail?.carbonioFeatureOTPMgmtEnabled === 'TRUE';
+
   const handleFromDateChange = useCallback(
     (d: Date | null) => {
       setFromDate(d);
@@ -1025,11 +1043,7 @@ const EditAccountSecuritySection: FC = () => {
                 <Padding left={'extralarge'} width="100%">
                   <Row width="100%">
                     <DateTimePicker
-                      disabled={
-                        accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
-                        accountDetail?.carbonioOtpWizardFromUntrusted === FALSE ||
-                        accountDetail?.carbonioOtpGracePeriodEnabled === FALSE
-                      }
+                      disabled={!isGracePeriodEnabled}
                       width={'21.625rem'}
                       className="fffff"
                       label={t(
