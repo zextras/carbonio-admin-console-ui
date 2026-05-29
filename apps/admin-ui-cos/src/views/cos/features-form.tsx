@@ -27,6 +27,7 @@ import {
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { FormPageLayout } from '../form-page-layout';
+import { FeatureSwitchField } from './fields/feature-switch-field';
 
 const COS_FEATURE_DEFAULTS: Record<string, string> = {
   carbonioFeatureMailsAppEnabled: 'FALSE',
@@ -180,21 +181,12 @@ export const FeaturesForm = ({
               {t('label.general_lbl', 'General')}
             </ds-text>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-              <form.Field name="zimbraFeatureOptionsEnabled">
-                {(field) => (
-                  <InheritedSwitch
-                    subValue={field.state.value}
-                    onChange={() =>
-                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                    }
-                    onChangeReset={() => {}}
-                    label={t('label.can_access_settings', 'Can access Settings')}
-                    iconColor="primary"
-                    inputName={'zimbraFeatureOptionsEnabled'}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <FeatureSwitchField
+                form={form}
+                name="zimbraFeatureOptionsEnabled"
+                label={t('label.can_access_settings', 'Can access Settings')}
+                disabled={readonlyCOS}
+              />
             </Row>
           </Container>
           <ds-divider></ds-divider>
@@ -215,24 +207,15 @@ export const FeaturesForm = ({
               {t('cos.features.twoFactorAuthenticator', 'Two-Factor authenticator')}
             </ds-text>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-              <form.Field name="carbonioFeatureOTPMgmtEnabled">
-                {(field) => (
-                  <InheritedSwitch
-                    subValue={field.state.value}
-                    onChange={() =>
-                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                    }
-                    onChangeReset={() => {}}
-                    label={t(
-                      'cos.features.allowUsersToConfigure2FA',
-                      'Allow users to configure 2FA',
-                    )}
-                    iconColor="primary"
-                    inputName={'carbonioFeatureOTPMgmtEnabled'}
-                    disabled={readonlyCOS}
-                  />
+              <FeatureSwitchField
+                form={form}
+                name="carbonioFeatureOTPMgmtEnabled"
+                label={t(
+                  'cos.features.allowUsersToConfigure2FA',
+                  'Allow users to configure 2FA',
                 )}
-              </form.Field>
+                disabled={readonlyCOS}
+              />
             </Row>
             <Padding left={'extralarge'} bottom={'large'}>
               <Row padding={{ left: 'small' }}>
@@ -458,55 +441,28 @@ export const FeaturesForm = ({
               {t('label.mail', 'Mail')}
             </ds-text>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-              <form.Field name="carbonioFeatureMailsAppEnabled">
-                {(field) => (
-                  <InheritedSwitch
-                    subValue={field.state.value}
-                    onChange={() =>
-                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                    }
-                    onChangeReset={() => {}}
-                    label={t('label.mobile_app', 'Mobile App')}
-                    iconColor="primary"
-                    inputName={'carbonioFeatureMailsAppEnabled'}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <FeatureSwitchField
+                form={form}
+                name="carbonioFeatureMailsAppEnabled"
+                label={t('label.mobile_app', 'Mobile App')}
+                disabled={readonlyCOS}
+              />
             </Row>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-              <form.Field name="zimbraFeatureSignaturesEnabled">
-                {(field) => (
-                  <InheritedSwitch
-                    subValue={field.state.value}
-                    onChange={() =>
-                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                    }
-                    onChangeReset={() => {}}
-                    label={t('label.mail_signatures', 'Mail Signatures')}
-                    iconColor="primary"
-                    inputName={'zimbraFeatureSignaturesEnabled'}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <FeatureSwitchField
+                form={form}
+                name="zimbraFeatureSignaturesEnabled"
+                label={t('label.mail_signatures', 'Mail Signatures')}
+                disabled={readonlyCOS}
+              />
             </Row>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-              <form.Field name="zimbraFeatureOutOfOfficeReplyEnabled">
-                {(field) => (
-                  <InheritedSwitch
-                    subValue={field.state.value}
-                    onChange={() =>
-                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                    }
-                    onChangeReset={() => {}}
-                    label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
-                    iconColor="primary"
-                    inputName={'zimbraFeatureOutOfOfficeReplyEnabled'}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <FeatureSwitchField
+                form={form}
+                name="zimbraFeatureOutOfOfficeReplyEnabled"
+                label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
+                disabled={readonlyCOS}
+              />
             </Row>
           </Container>
           <ds-divider></ds-divider>
@@ -528,21 +484,12 @@ export const FeaturesForm = ({
               {t('label.contacts', 'Contacts')}
             </ds-text>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-              <form.Field name="zimbraFeatureContactsEnabled">
-                {(field) => (
-                  <InheritedSwitch
-                    subValue={field.state.value}
-                    onChange={() =>
-                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                    }
-                    onChangeReset={() => {}}
-                    label={t('label.web_feature', 'Web Feature')}
-                    iconColor="primary"
-                    inputName={'zimbraFeatureContactsEnabled'}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <FeatureSwitchField
+                form={form}
+                name="zimbraFeatureContactsEnabled"
+                label={t('label.web_feature', 'Web Feature')}
+                disabled={readonlyCOS}
+              />
             </Row>
           </Container>
           <Container
@@ -556,21 +503,12 @@ export const FeaturesForm = ({
               {t('label.calendar', 'Calendar')}
             </ds-text>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-              <form.Field name="zimbraFeatureCalendarEnabled">
-                {(field) => (
-                  <InheritedSwitch
-                    subValue={field.state.value}
-                    onChange={() =>
-                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                    }
-                    onChangeReset={() => {}}
-                    label={t('label.web_feature', 'Web Feature')}
-                    iconColor="primary"
-                    inputName={'zimbraFeatureCalendarEnabled'}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <FeatureSwitchField
+                form={form}
+                name="zimbraFeatureCalendarEnabled"
+                label={t('label.web_feature', 'Web Feature')}
+                disabled={readonlyCOS}
+              />
             </Row>
           </Container>
           <ds-divider></ds-divider>
@@ -592,21 +530,12 @@ export const FeaturesForm = ({
               {t('label.files', 'Files')}
             </ds-text>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-              <form.Field name="carbonioFeatureFilesEnabled">
-                {(field) => (
-                  <InheritedSwitch
-                    subValue={field.state.value}
-                    onChange={() =>
-                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                    }
-                    onChangeReset={() => {}}
-                    label={t('label.web_feature', 'Web Feature')}
-                    iconColor="primary"
-                    inputName={'carbonioFeatureFilesEnabled'}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <FeatureSwitchField
+                form={form}
+                name="carbonioFeatureFilesEnabled"
+                label={t('label.web_feature', 'Web Feature')}
+                disabled={readonlyCOS}
+              />
             </Row>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
               <form.Field name="carbonioFeatureFilesAppEnabled">
@@ -641,21 +570,12 @@ export const FeaturesForm = ({
               {t('label.tasks', 'Tasks')}
             </ds-text>
             <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-              <form.Field name="carbonioFeatureTasksEnabled">
-                {(field) => (
-                  <InheritedSwitch
-                    subValue={field.state.value}
-                    onChange={() =>
-                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                    }
-                    onChangeReset={() => {}}
-                    label={t('label.web_feature', 'Web Feature')}
-                    iconColor="primary"
-                    inputName={'carbonioFeatureTasksEnabled'}
-                    disabled={readonlyCOS}
-                  />
-                )}
-              </form.Field>
+              <FeatureSwitchField
+                form={form}
+                name="carbonioFeatureTasksEnabled"
+                label={t('label.web_feature', 'Web Feature')}
+                disabled={readonlyCOS}
+              />
             </Row>
           </Container>
         </Row>
