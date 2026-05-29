@@ -554,17 +554,17 @@ const ManageDelegates: FC = () => {
 
           const tableList = data
             ? data.map((item) => {
-                const selectedItem: any = distributionList.filter(
-                  (i) => i.name === item.name,
-                );
-                const des = selectedItem[0].a?.filter((i: Attribute) => i.n === 'description')[0]
-                  ._content;
-                return {
-                  ...item,
-                  accname: accountName.split('@')[0],
-                  description: des,
-                };
-              })
+              const selectedItem: any = distributionList.filter(
+                (i) => i.name === item.name,
+              );
+              const des = selectedItem[0].a?.filter((i: Attribute) => i.n === 'description')[0]
+                ._content;
+              return {
+                ...item,
+                accname: accountName.split('@')[0],
+                description: des,
+              };
+            })
             : [];
           setAccountDistributionList(tableList || []);
         })
@@ -707,9 +707,9 @@ const ManageDelegates: FC = () => {
           label: res?.message
             ? res?.message
             : t(
-                'label.the_last_changes_has_been_saved_successfully',
-                'Changes have been saved successfully',
-              ),
+              'label.the_last_changes_has_been_saved_successfully',
+              'Changes have been saved successfully',
+            ),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,

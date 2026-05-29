@@ -391,12 +391,12 @@ const DomainListPanel: FC = () => {
     () =>
       !isAdvanced
         ? allListItemType.filter(
-            (item: ListItemType) =>
-              item?.id !== RESTORE_ACCOUNT &&
-              item?.id !== ACTIVE_SYNC &&
-              item?.id !== DELEGATES_DOMAIN_ADMINS &&
-              item?.id !== SECURITY_GROUP,
-          )
+          (item: ListItemType) =>
+            item?.id !== RESTORE_ACCOUNT &&
+            item?.id !== ACTIVE_SYNC &&
+            item?.id !== DELEGATES_DOMAIN_ADMINS &&
+            item?.id !== SECURITY_GROUP,
+        )
         : allListItemType,
     [allListItemType, isAdvanced],
   );
@@ -426,11 +426,11 @@ const DomainListPanel: FC = () => {
     () =>
       !isAdvanced
         ? globalOptionItems.filter(
-            (item: ListItemType) =>
-              item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
-              item?.id !== GLOBAL_2FA_ROUTE &&
-              item.id !== GLOBAL_ACTIVE_SYNC_ROUTE,
-          )
+          (item: ListItemType) =>
+            item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
+            item?.id !== GLOBAL_2FA_ROUTE &&
+            item.id !== GLOBAL_ACTIVE_SYNC_ROUTE,
+        )
         : globalOptionItems,
     [globalOptionItems, isAdvanced],
   );
@@ -489,59 +489,59 @@ const DomainListPanel: FC = () => {
   const items =
     domainList.length > MAX_DOMAIN_DISPLAY
       ? [
-          {
-            customComponent: (
-              <>
-                <Row mainAlignment="flex-start">
-                  <Padding horizontal="small">
-                    <ds-icon
-                      style={{ width: '1.25rem', height: '1.25rem' }}
-                      icon="InfoOutline"
-                    ></ds-icon>
-                  </Padding>
-                </Row>
-                <Row
-                  mainAlignment="flex-start"
-                  width="100%"
-                  padding={{
-                    all: 'small',
-                  }}
-                >
-                  <ds-text as="p" overflow="break-word">
-                    {t(
-                      'many_domain_info_msg',
-                      'So many domains! Which one would you like to see? Start typing to filter.',
-                    )}
-                  </ds-text>
-                </Row>
-              </>
-            ),
-          },
-        ]
-      : domainList.map((domain) => ({
-            id: domain.id,
-            label: domain.name,
-            customComponent: (
+        {
+          customComponent: (
+            <>
+              <Row mainAlignment="flex-start">
+                <Padding horizontal="small">
+                  <ds-icon
+                    style={{ width: '1.25rem', height: '1.25rem' }}
+                    icon="InfoOutline"
+                  ></ds-icon>
+                </Padding>
+              </Row>
               <Row
-                style={{
-                  display: 'block',
-                  textAlign: 'left',
-                  height: 'inherit',
-                  padding: '0.188rem',
-                  width: 'inherit',
-                }}
-                onClick={(): void => {
-                  setIsShowError(false);
-                  if (domain.a && domain.a.every((item) => item._content)) {
-                    selectedDomain(domain as Parameters<typeof selectedDomain>[0]);
-                  }
+                mainAlignment="flex-start"
+                width="100%"
+                padding={{
+                  all: 'small',
                 }}
               >
-                {domain?.name}
+                <ds-text as="p" overflow="break-word">
+                  {t(
+                    'many_domain_info_msg',
+                    'So many domains! Which one would you like to see? Start typing to filter.',
+                  )}
+                </ds-text>
               </Row>
-            ),
-          }),
-        );
+            </>
+          ),
+        },
+      ]
+      : domainList.map((domain) => ({
+        id: domain.id,
+        label: domain.name,
+        customComponent: (
+          <Row
+            style={{
+              display: 'block',
+              textAlign: 'left',
+              height: 'inherit',
+              padding: '0.188rem',
+              width: 'inherit',
+            }}
+            onClick={(): void => {
+              setIsShowError(false);
+              if (domain.a && domain.a.every((item) => item._content)) {
+                selectedDomain(domain as Parameters<typeof selectedDomain>[0]);
+              }
+            }}
+          >
+            {domain?.name}
+          </Row>
+        ),
+      }),
+      );
 
   useEffect(() => {
     const storedDetailListViewValue = localStorage.getItem(IS_DETAIL_LIST_EXPANDED);

@@ -177,134 +177,134 @@ const MessageListTable: FC<{
   setMessage,
   setShowMessageView,
 }) => {
-  const [t] = useTranslation();
-  const tableRows: any = useMemo(
-    () =>
-      messages.map((v: any, i: number) => ({
-        id: i,
-        columns: [
-          <Row
-            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-            key={v.id}
-            onClick={(): void => {
-              setShowMessageView(true);
-              setMessage(v);
-            }}
-          >
-            <ds-text as="span" size="small" weight="regular">
-              {getDateTime(v?.date)}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-            onClick={(): void => {
-              setShowMessageView(true);
-              setMessage(v);
-            }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v.envelopeFrom || ''}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-            onClick={(): void => {
-              setShowMessageView(true);
-              setMessage(v);
-            }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v.subject}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-            onClick={(): void => {
-              setShowMessageView(true);
-              setMessage(v);
-            }}
-          >
-            <ds-text
-              as="span"
-              size="small"
-              weight="bold"
-              color={v.score > 50 ? 'secondry' : v.score > 35 ? 'warning' : 'error'}
+    const [t] = useTranslation();
+    const tableRows: any = useMemo(
+      () =>
+        messages.map((v: any, i: number) => ({
+          id: i,
+          columns: [
+            <Row
+              style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+              key={v.id}
+              onClick={(): void => {
+                setShowMessageView(true);
+                setMessage(v);
+              }}
             >
-              {v.score}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-            onClick={(): void => {
-              setShowMessageView(true);
-              setMessage(v);
-            }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v.reason}
-            </ds-text>
-          </Row>,
-        ],
-        clickable: true,
-      })),
-    [messages, setShowMessageView, setMessage],
-  );
-  return (
-    <Container mainAlignment="flex-start" crossAlignment="flex-start">
-      <ListRow>
-        <Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
-          <Table
-            // @ts-expect-error - needs a fix // Need to fix it with custom soultion
-            headers={MessageTableHeaders(t)}
-            rows={tableRows}
-            showCheckbox={false}
-            multiSelect={false}
-            selectedRows={selectedRows}
-            onSelectionChange={onSelectionChange}
-            HeaderFactory={CustomHeaderFactory}
-            RowFactory={HoverableRowFactory}
-          />
-          {requestInprogress && (
-            <Container
-              crossAlignment="center"
-              mainAlignment="center"
-              height="auto"
-              padding={{ top: 'large' }}
+              <ds-text as="span" size="small" weight="regular">
+                {getDateTime(v?.date)}
+              </ds-text>
+            </Row>,
+            <Row
+              key={i}
+              style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+              onClick={(): void => {
+                setShowMessageView(true);
+                setMessage(v);
+              }}
             >
-              <ds-spinner></ds-spinner>
-            </Container>
-          )}
-          {tableRows.length === 0 && !requestInprogress && (
-            <Container
-              orientation="column"
-              crossAlignment="center"
-              mainAlignment="center"
-              padding={{ top: 'large' }}
+              <ds-text as="span" size="small" weight="light">
+                {v.envelopeFrom || ''}
+              </ds-text>
+            </Row>,
+            <Row
+              key={i}
+              style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+              onClick={(): void => {
+                setShowMessageView(true);
+                setMessage(v);
+              }}
             >
-              <Row>
-                <img src={logo} alt="logo" />
-              </Row>
-              <Row
-                padding={{ top: 'extralarge' }}
-                orientation="vertical"
-                crossAlignment="center"
-                style={{ textAlign: 'center' }}
+              <ds-text as="span" size="small" weight="light">
+                {v.subject}
+              </ds-text>
+            </Row>,
+            <Row
+              key={i}
+              style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+              onClick={(): void => {
+                setShowMessageView(true);
+                setMessage(v);
+              }}
+            >
+              <ds-text
+                as="span"
+                size="small"
+                weight="bold"
+                color={v.score > 50 ? 'secondry' : v.score > 35 ? 'warning' : 'error'}
               >
-                <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
-                  {t('label.this_list_is_empty', 'This list is empty.')}
-                </ds-text>
-              </Row>
-            </Container>
-          )}
-        </Container>
-      </ListRow>
-    </Container>
-  );
-};
+                {v.score}
+              </ds-text>
+            </Row>,
+            <Row
+              key={i}
+              style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+              onClick={(): void => {
+                setShowMessageView(true);
+                setMessage(v);
+              }}
+            >
+              <ds-text as="span" size="small" weight="light">
+                {v.reason}
+              </ds-text>
+            </Row>,
+          ],
+          clickable: true,
+        })),
+      [messages, setShowMessageView, setMessage],
+    );
+    return (
+      <Container mainAlignment="flex-start" crossAlignment="flex-start">
+        <ListRow>
+          <Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
+            <Table
+              // @ts-expect-error - needs a fix // Need to fix it with custom soultion
+              headers={MessageTableHeaders(t)}
+              rows={tableRows}
+              showCheckbox={false}
+              multiSelect={false}
+              selectedRows={selectedRows}
+              onSelectionChange={onSelectionChange}
+              HeaderFactory={CustomHeaderFactory}
+              RowFactory={HoverableRowFactory}
+            />
+            {requestInprogress && (
+              <Container
+                crossAlignment="center"
+                mainAlignment="center"
+                height="auto"
+                padding={{ top: 'large' }}
+              >
+                <ds-spinner></ds-spinner>
+              </Container>
+            )}
+            {tableRows.length === 0 && !requestInprogress && (
+              <Container
+                orientation="column"
+                crossAlignment="center"
+                mainAlignment="center"
+                padding={{ top: 'large' }}
+              >
+                <Row>
+                  <img src={logo} alt="logo" />
+                </Row>
+                <Row
+                  padding={{ top: 'extralarge' }}
+                  orientation="vertical"
+                  crossAlignment="center"
+                  style={{ textAlign: 'center' }}
+                >
+                  <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    {t('label.this_list_is_empty', 'This list is empty.')}
+                  </ds-text>
+                </Row>
+              </Container>
+            )}
+          </Container>
+        </ListRow>
+      </Container>
+    );
+  };
 
 const QuarantineList: FC = () => {
   const [t] = useTranslation();
@@ -1019,8 +1019,7 @@ const QuarantineList: FC = () => {
       .then((data: any) => {
         if (data?.authToken?.[0]) {
           window.open(
-            `https://${window.location.hostname}/service/preauth?authtoken=${
-              data?.authToken?.[0]._content
+            `https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content
             }&isredirect=1&adminPreAuth=1&redirectURL=${encodeURIComponent(
               '/service/home/~/?auth=co&view=text&id=',
             )}${message.id.split(':')[1]}`,
@@ -1184,8 +1183,8 @@ const QuarantineList: FC = () => {
                             zimbraMailMessageLifetimeType === ''
                               ? ''
                               : timeItems.find(
-                                  (item: any) => item.value === zimbraMailMessageLifetimeType,
-                                ).label
+                                (item: any) => item.value === zimbraMailMessageLifetimeType,
+                              ).label
                           }
                         />
                       </Container>
