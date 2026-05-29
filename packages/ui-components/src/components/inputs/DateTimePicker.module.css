@@ -20,31 +20,80 @@
   padding: 0.125rem;
 }
 
-/* Native popover surface */
+/* Native popover surface: white body with a thin border (header band is drawn
+   on the caption row below, so padding stays at 0 and `overflow:hidden` clips
+   the band to the rounded corners). */
 .popover {
   position: fixed;
   inset: unset;
   margin: 0;
-  background-color: var(--color-gray5-regular);
+  background-color: var(--color-gray6-regular);
   box-shadow: var(--shadow-regular);
+  border: 1px solid var(--color-gray3-regular);
   border-radius: 0.25rem;
-  padding: 0.5rem;
-  border: none;
+  padding: 0;
+  overflow: hidden;
 }
 
 /* Theme react-day-picker to match the design system */
 .popover :global(.rdp-root) {
   --rdp-accent-color: var(--color-primary-regular);
   --rdp-accent-background-color: var(--color-primary-highlight);
-  --rdp-day-width: 2.25rem;
+  --rdp-day-width: 2.5rem;
   --rdp-day-height: 2.25rem;
+  --rdp-day_button-width: 2.25rem;
+  --rdp-day_button-height: 2rem;
+  --rdp-day_button-border-radius: 0.375rem;
+  --rdp-nav-height: 2.75rem;
   font-family: var(--font-family);
-  font-size: var(--font-size-medium);
+  font-size: var(--font-size-small);
   color: var(--color-text-regular);
   margin: 0;
 }
 
-/* Solid filled selected day instead of the default outlined ring */
+/* Full-width grey header band with a divider; nav buttons are absolutely
+   positioned over its left/right edges by the `nav-layout="around"` styles.
+   The qualifying `.rdp-root[data-nav-layout='around']` matches the library's
+   own selector so our `margin: 0` wins on specificity (otherwise the band is
+   inset by the reserved nav-button width). */
+.popover :global(.rdp-root[data-nav-layout='around'] .rdp-month_caption) {
+  width: 100%;
+  height: var(--rdp-nav-height);
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-gray5-regular);
+  border-bottom: 1px solid var(--color-gray3-regular);
+  box-sizing: border-box;
+}
+
+/* Keep the nav buttons above the header band: the band (.rdp-month_caption)
+   is `position: relative` and sits after the prev button in the DOM, so its
+   background would otherwise paint over the prev arrow. */
+.popover :global(.rdp-button_previous),
+.popover :global(.rdp-button_next) {
+  z-index: 1;
+}
+
+/* Inset the grid from the card edges (the card itself has no padding) */
+.popover :global(.rdp-month_grid) {
+  margin: 0.5rem;
+}
+
+/* Solid, readable weekday headers */
+.popover :global(.rdp-weekday) {
+  color: var(--color-text-regular);
+  font-weight: var(--font-weight-medium);
+  opacity: 1;
+}
+
+/* Solid filled selected day: rounded square, not the default ring, and not
+   enlarged (the library bumps selected days to `font-size: large`). */
+.popover :global(.rdp-selected) {
+  font-size: inherit;
+  font-weight: var(--font-weight-medium);
+}
+
 .popover :global(.rdp-selected .rdp-day_button) {
   background-color: var(--color-primary-regular);
   color: var(--color-gray6-regular);
