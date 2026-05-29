@@ -7,7 +7,7 @@
 import '@daypicker/react/style.css';
 
 import { DayPicker,type Styles } from '@daypicker/react';
-import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { format } from 'date-fns';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
@@ -137,12 +137,14 @@ export const DateTimePicker = ({
       popover.showPopover();
     }
 
-    computePosition(anchor, popover, {
-      placement: 'bottom-start',
-      middleware: [offset(8), flip({ fallbackPlacements: ['bottom', 'top'] }), shift()],
-    }).then(({ x, y }) => {
-      popover.style.left = `${x}px`;
-      popover.style.top = `${y}px`;
+    return autoUpdate(anchor, popover, () => {
+      computePosition(anchor, popover, {
+        placement: 'bottom-start',
+        middleware: [offset(8), flip({ fallbackPlacements: ['bottom', 'top'] }), shift()],
+      }).then(({ x, y }) => {
+        popover.style.left = `${x}px`;
+        popover.style.top = `${y}px`;
+      });
     });
   }, [isOpen]);
 
