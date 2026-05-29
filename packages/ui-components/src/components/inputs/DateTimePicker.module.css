@@ -52,3 +52,13 @@
   color: var(--color-gray6-regular);
   border: none;
 }
+
+.popover :global(.rdp-dropdown_root) {
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease;
+}
+
+.popover :global(.rdp-dropdown_root:hover) {
+  background-color: var(--color-gray4-regular);
+}

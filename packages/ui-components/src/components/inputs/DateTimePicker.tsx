@@ -85,6 +85,17 @@ const dayPickerStyles: Partial<Styles> = {
     borderBottom: '1px solid var(--color-gray3-regular)',
     boxSizing: 'border-box',
   },
+  dropdowns: {
+    gap: '0.25rem',
+  },
+  dropdown_root: {
+    cursor: 'pointer',
+  },
+  caption_label: {
+    color: 'var(--color-text-regular)',
+    fontWeight: 'var(--font-weight-medium)',
+    fontSize: 'var(--font-size-small)',
+  },
   button_previous: { zIndex: 1 },
   button_next: { zIndex: 1 },
   month_grid: { margin: '0.5rem' },
