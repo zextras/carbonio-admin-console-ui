@@ -7,10 +7,10 @@ import { useForm, useStore } from '@tanstack/react-form';
 import {
   Container,
   DateTimePicker,
-  InheritedSwitch,
   ListRow,
   Padding,
   Row,
+  Switch,
   useSnackbar,
 } from '@zextras/ui-components';
 import { type GetCoreAttributesResponse, setCoreAttributes } from '@zextras/ui-shared';
@@ -247,20 +247,18 @@ export const FeaturesForm = ({
                         {(field) => (
                           <form.Field name="carbonioFeatureOTPMgmtEnabled">
                             {(otpMgmtField) => (
-                              <InheritedSwitch
-                                subValue={field.state.value}
-                                onChange={() =>
+                              <Switch
+                                value={field.state.value === 'TRUE'}
+                                onClick={() =>
                                   field.handleChange(
                                     field.state.value === 'TRUE' ? 'FALSE' : 'TRUE',
                                   )
                                 }
-                                onChangeReset={() => {}}
                                 label={t(
                                   'cos.features.enforceOnUntrustedNetworks',
                                   'Enforce on Untrusted Networks',
                                 )}
                                 iconColor="primary"
-                                inputName={'carbonioOtpWizardFromUntrusted'}
                                 disabled={readonlyCOS || otpMgmtField.state.value === 'FALSE'}
                               />
                             )}
@@ -297,20 +295,18 @@ export const FeaturesForm = ({
                             {(otpMgmtField) => (
                               <form.Field name="carbonioOtpWizardFromUntrusted">
                                 {(otpWizardField) => (
-                                  <InheritedSwitch
-                                    subValue={field.state.value}
-                                    onChange={() =>
+                                  <Switch
+                                    value={field.state.value === 'TRUE'}
+                                    onClick={() =>
                                       field.handleChange(
                                         field.state.value === 'TRUE' ? 'FALSE' : 'TRUE',
                                       )
                                     }
-                                    onChangeReset={() => {}}
                                     label={t(
                                       'cos.features.allowSetupDeferralDuringGracePeriod',
                                       'Allow setup deferral during grace period',
                                     )}
                                     iconColor="primary"
-                                    inputName={'carbonioOtpGracePeriodEnabled'}
                                     disabled={
                                       readonlyCOS ||
                                       otpMgmtField.state.value === 'FALSE' ||
@@ -542,15 +538,13 @@ export const FeaturesForm = ({
                 {(field) => (
                   <form.Field name="carbonioFeatureFilesEnabled">
                     {(filesEnabledField) => (
-                      <InheritedSwitch
-                        subValue={field.state.value}
-                        onChange={() =>
+                      <Switch
+                        value={field.state.value === 'TRUE'}
+                        onClick={() =>
                           field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
                         }
-                        onChangeReset={() => {}}
                         label={t('label.mobile_app', 'Mobile App')}
                         iconColor="primary"
-                        inputName={'carbonioFeatureFilesAppEnabled'}
                         disabled={filesEnabledField.state.value !== 'TRUE' || readonlyCOS}
                       />
                     )}

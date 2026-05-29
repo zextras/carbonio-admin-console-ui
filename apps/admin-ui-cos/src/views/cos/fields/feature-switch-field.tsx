@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
-import { InheritedSwitch } from '@zextras/ui-components';
+import { Switch } from '@zextras/ui-components';
 import type { FC } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,13 +33,11 @@ type FeatureSwitchFieldProps = {
 const FeatureSwitchField: FC<FeatureSwitchFieldProps> = ({ form, name, label, disabled }) => (
   <form.Field name={name}>
     {(field) => (
-      <InheritedSwitch
-        subValue={field.state.value}
-        onChange={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
-        onChangeReset={() => {}}
+      <Switch
+        value={field.state.value === 'TRUE'}
+        onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
         label={label}
         iconColor="primary"
-        inputName={name}
         disabled={disabled}
       />
     )}
