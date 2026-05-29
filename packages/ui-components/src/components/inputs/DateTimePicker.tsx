@@ -158,13 +158,15 @@ export const DateTimePicker = ({
         </Container>
       </div>
       <Popper open={isOpen} anchorEl={anchorRef} placement="bottom-start" onClose={closePopper}>
-        <DayPicker
-          mode="single"
-          selected={selected ?? undefined}
-          onSelect={handleSelect}
-          disabled={disabledMatcher}
-          autoFocus
-        />
+        <div className={styles.calendar}>
+          <DayPicker
+            mode="single"
+            selected={selected ?? undefined}
+            onSelect={handleSelect}
+            disabled={disabledMatcher}
+            autoFocus
+          />
+        </div>
       </Popper>
     </Container>
   );
