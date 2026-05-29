@@ -195,7 +195,11 @@ export const DateTimePicker = ({
       <div popover="manual" ref={popoverRef} className={styles.popover}>
         <DayPicker
           mode="single"
+          captionLayout="dropdown"
           navLayout="around"
+          reverseYears
+          startMonth={minDate ?? new Date(2020, 0)}
+          endMonth={maxDate ?? new Date(2050, 11)}
           selected={selected ?? undefined}
           onSelect={handleSelect}
           disabled={disabledMatcher}
