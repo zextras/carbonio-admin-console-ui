@@ -28,8 +28,9 @@ import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { FormPageLayout } from '../form-page-layout';
 import { FeatureSwitchField } from './fields/feature-switch-field';
+import type { CosFeaturesFormValues } from './types';
 
-const COS_FEATURE_DEFAULTS: Record<string, string> = {
+const COS_FEATURE_DEFAULTS: CosFeaturesFormValues = {
   carbonioFeatureMailsAppEnabled: 'FALSE',
   zimbraFeatureOutOfOfficeReplyEnabled: 'FALSE',
   zimbraFeatureSignaturesEnabled: 'FALSE',
@@ -47,6 +48,35 @@ const COS_FEATURE_DEFAULTS: Record<string, string> = {
   mobileContactFeatureSync: 'FALSE',
   mobileCalendarFeatureSync: 'FALSE',
 };
+
+function enabledToBool(value: string | undefined): string {
+  return value === 'enabled' ? 'TRUE' : 'FALSE';
+}
+
+function buildDefaultValues(
+  cosInformation: Array<Attribute> | undefined,
+  mobileAttributesData: GetCoreAttributesResponse | undefined,
+): CosFeaturesFormValues {
+  const fromServer: Partial<CosFeaturesFormValues> = {};
+  if (cosInformation?.length) {
+    const allowed = new Set<string>(Object.keys(COS_FEATURE_DEFAULTS));
+    cosInformation.forEach((item) => {
+      if (item?.n && allowed.has(item.n)) {
+        (fromServer as Record<string, string>)[item.n] = item._content;
+      }
+    });
+  }
+  return {
+    ...COS_FEATURE_DEFAULTS,
+    ...fromServer,
+    mobileContactFeatureSync: enabledToBool(
+      mobileAttributesData?.attributes?.mobileContactFeatureSync?.[0]?.value,
+    ),
+    mobileCalendarFeatureSync: enabledToBool(
+      mobileAttributesData?.attributes?.mobileCalendarFeatureSync?.[0]?.value,
+    ),
+  };
+}
 
 type CosFeaturesFormProps = {
   cosInformation: Array<Attribute> | undefined;
@@ -68,41 +98,17 @@ export const FeaturesForm = ({
   const createSnackbar = useSnackbar();
   const modifyCosMutation = useModifyCos(cosId);
 
-  const cosDataMap: Record<string, string> = {};
-  if (cosInformation?.length) {
-    cosInformation.forEach((item) => {
-      if (item?.n in COS_FEATURE_DEFAULTS) {
-        cosDataMap[item.n] = item._content;
-      }
-    });
-  }
-
-  const defaultValues: Record<string, string> = {
-    ...COS_FEATURE_DEFAULTS,
-    ...cosDataMap,
-    mobileContactFeatureSync:
-      mobileAttributesData?.attributes?.mobileContactFeatureSync?.[0]?.value === 'enabled'
-        ? 'TRUE'
-        : 'FALSE',
-    mobileCalendarFeatureSync:
-      mobileAttributesData?.attributes?.mobileCalendarFeatureSync?.[0]?.value === 'enabled'
-        ? 'TRUE'
-        : 'FALSE',
-  };
-
   const form = useForm({
-    defaultValues,
+    defaultValues: buildDefaultValues(cosInformation, mobileAttributesData),
     onSubmit: async ({ value }) => {
       const zimbraId = cosInformation?.find((a) => a.n === 'zimbraId')?._content ?? '';
 
-      const originalMobileContactSync =
-        mobileAttributesData?.attributes?.mobileContactFeatureSync?.[0]?.value === 'enabled'
-          ? 'TRUE'
-          : 'FALSE';
-      const originalMobileCalendarSync =
-        mobileAttributesData?.attributes?.mobileCalendarFeatureSync?.[0]?.value === 'enabled'
-          ? 'TRUE'
-          : 'FALSE';
+      const originalMobileContactSync = enabledToBool(
+        mobileAttributesData?.attributes?.mobileContactFeatureSync?.[0]?.value,
+      );
+      const originalMobileCalendarSync = enabledToBool(
+        mobileAttributesData?.attributes?.mobileCalendarFeatureSync?.[0]?.value,
+      );
       const hasMobileChanges =
         value.mobileContactFeatureSync !== originalMobileContactSync ||
         value.mobileCalendarFeatureSync !== originalMobileCalendarSync;
@@ -130,18 +136,17 @@ export const FeaturesForm = ({
             hideButton: true,
             replace: true,
           });
+          return;
         }
       }
 
       const body: ModifyCosBody = {
         _jsns: ZIMBRA_ADMIN_URN,
         id: { _content: zimbraId },
-        a: Object.keys(value)
+        a: (Object.keys(value) as Array<keyof CosFeaturesFormValues>)
           .filter(
             (key) =>
-              key !== MOBILE_CALENDAR_FEATURE_SYNC &&
-              key !== MOBILE_CONTACT_FEATURE_SYNC &&
-              key !== 'zimbraId',
+              key !== MOBILE_CALENDAR_FEATURE_SYNC && key !== MOBILE_CONTACT_FEATURE_SYNC,
           )
           .map((key) => ({ n: key, _content: value[key] ?? '' })),
       };

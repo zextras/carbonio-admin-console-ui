@@ -7,9 +7,11 @@ import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import { Switch } from '@zextras/ui-components';
 import type { FC } from 'react';
 
+import type { CosFeaturesFormValues } from '../types';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CosFeaturesFormApi = ReactFormExtendedApi<
-  Record<string, string>,
+  CosFeaturesFormValues,
   any,
   any,
   any,
@@ -25,7 +27,7 @@ type CosFeaturesFormApi = ReactFormExtendedApi<
 
 type FeatureSwitchFieldProps = {
   form: CosFeaturesFormApi;
-  name: string;
+  name: keyof CosFeaturesFormValues;
   label: string;
   disabled?: boolean;
 };
