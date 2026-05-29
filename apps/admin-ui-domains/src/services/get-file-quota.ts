@@ -5,9 +5,10 @@
  */
 import { getSoapFetchRequest } from '@zextras/ui-shared';
 
+import type { FileQuotaResponse } from '../../types';
 import { ACCOUNTS, COS } from '../constants';
 
-export const getFileQuotaById = async (accId: string, type?: string): Promise<any> => {
+export const getFileQuotaById = async (accId: string, type?: string): Promise<FileQuotaResponse> => {
 	const fetchType = type === COS ? COS : ACCOUNTS;
 	const url = `/services/storages/admin/quota/${fetchType}/${accId}`;
 	return getSoapFetchRequest(url);

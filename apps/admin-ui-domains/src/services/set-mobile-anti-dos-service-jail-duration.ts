@@ -6,9 +6,10 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
+import type { ZextrasRawResponse } from '../../types';
 import { SET, SET_GLOBAL_CONFIG, ZX_CONFIG } from '../constants';
 
-export const setAntiDosServiceJailDuration = async (value: number): Promise<any> =>
+export const setAntiDosServiceJailDuration = async (value: number): Promise<ZextrasRawResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap`,
 		{

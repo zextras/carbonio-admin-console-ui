@@ -6,8 +6,10 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const destroyAccount = async (accountId: string): Promise<any> =>
-	soapFetch(`DeleteGalSyncAccount`, {
+import type { DeleteGalSyncAccountRequest, SoapEmptyResponse } from '../../types';
+
+export const destroyAccount = async (accountId: string): Promise<SoapEmptyResponse> =>
+	soapFetch<DeleteGalSyncAccountRequest, SoapEmptyResponse>(`DeleteGalSyncAccount`, {
 		_jsns: 'urn:zimbraAdmin',
 		account: {
 			by: 'id',

@@ -6,8 +6,10 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const deleteCalendarResource = async (resourceId: string): Promise<any> =>
-	soapFetch(`DeleteCalendarResource`, {
+import type { DeleteCalendarResourceRequest, SoapEmptyResponse } from '../../types';
+
+export const deleteCalendarResource = async (resourceId: string): Promise<SoapEmptyResponse> =>
+	soapFetch<DeleteCalendarResourceRequest, SoapEmptyResponse>(`DeleteCalendarResource`, {
 		_jsns: 'urn:zimbraAdmin',
 		id: resourceId
 	});

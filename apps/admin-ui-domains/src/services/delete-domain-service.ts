@@ -6,8 +6,10 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const deleteDomain = async (domainId: string): Promise<any> =>
-	soapFetch(`DeleteDomain`, {
+import type { DeleteDomainRequest, SoapEmptyResponse } from '../../types';
+
+export const deleteDomain = async (domainId: string): Promise<SoapEmptyResponse> =>
+	soapFetch<DeleteDomainRequest, SoapEmptyResponse>(`DeleteDomain`, {
 		_jsns: 'urn:zimbraAdmin',
 		id: domainId
 	});

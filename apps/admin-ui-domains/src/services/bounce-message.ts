@@ -6,7 +6,9 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-export const bounceMsgRequest = async (message: any): Promise<any> =>
+import type { BounceMessageInfo } from '../../types';
+
+export const bounceMsgRequest = async (message: BounceMessageInfo): Promise<unknown> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/BounceMsgRequest`,
 		{

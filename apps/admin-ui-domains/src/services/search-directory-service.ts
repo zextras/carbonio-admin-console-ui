@@ -6,6 +6,7 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { SearchDirectoryRequest, SearchDirectoryResponse, SoapEntity } from '../../types';
 import { ASC } from '../constants';
 
 export const searchDirectory = async (
@@ -17,8 +18,8 @@ export const searchDirectory = async (
 	limit?: number,
 	sortBy?: string,
 	sortAscending?: string
-): Promise<any> => {
-	const request: any = {
+): Promise<SearchDirectoryResponse<string, SoapEntity>> => {
+	const request: SearchDirectoryRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		limit: limit ?? 50,
 		offset: offset || 0,
@@ -40,7 +41,7 @@ export const searchDirectory = async (
 	if (sortAscending !== '') {
 		request.sortAscending = sortAscending === ASC ? 1 : 0;
 	}
-	return soapFetch(`SearchDirectory`, {
+	return soapFetch<SearchDirectoryRequest, SearchDirectoryResponse<string, SoapEntity>>(`SearchDirectory`, {
 		...request
 	});
 };

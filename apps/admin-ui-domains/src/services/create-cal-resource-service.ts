@@ -6,20 +6,22 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { CreateCalendarResourceRequest, CreateCalendarResourceResponse, SoapAttribute } from '../../types';
+
 export const createResource = async (
 	name: string,
 	passowrd: string,
-	a?: Array<any>
-): Promise<any> => {
-	const request: any = {
+	a?: Array<SoapAttribute>
+): Promise<CreateCalendarResourceResponse> => {
+	const request: CreateCalendarResourceRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		name,
-		passowrd
+		password: passowrd
 	};
 	if (a) {
 		request.a = a;
 	}
-	return soapFetch(`CreateCalendarResource`, {
+	return soapFetch<CreateCalendarResourceRequest, CreateCalendarResourceResponse>(`CreateCalendarResource`, {
 		...request
 	});
 };

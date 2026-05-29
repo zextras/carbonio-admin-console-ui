@@ -24,7 +24,8 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { Attribute, DomainResponse, objectType, SelectItem } from '../../../types';
+import type { Attribute, objectType, SelectItem } from '../../../types';
+import type { CreateDomainResponse } from '../../../types/service';
 import {
   ACTIVE,
   DOMAINS_ROUTE_ID,
@@ -110,7 +111,7 @@ const CreateDomain: FC = () => {
       const obj: {
         [key: string]: string | string[];
       } = {};
-      const allData = data?.setAttrs[0]?.a;
+      const allData = data?.setAttrs?.[0]?.a;
       if (allData && allData.length > 0) {
         allData.forEach((item: { [key: string]: string }) => {
           if (item?.default) {
@@ -173,7 +174,7 @@ const CreateDomain: FC = () => {
     });
   };
 
-  const routeToDomain = (resp: DomainResponse): void => {
+  const routeToDomain = (resp: CreateDomainResponse): void => {
     const domainId = resp?.domain[0]?.id;
     if (domainId) {
       setDomain({
@@ -192,7 +193,8 @@ const CreateDomain: FC = () => {
       _jsns: ZIMBRA_ADMIN_URN,
       domain: domainName,
     })
-      .then((res: objectType) => {
+      .then((result) => {
+        const res = result as objectType;
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -315,7 +317,7 @@ const CreateDomain: FC = () => {
               routeToDomain(data);
             });
           } else {
-            const domain: Attribute = data?.domain[0];
+            const domain = data?.domain[0];
             if (domain) {
               showSuccessSnackBar();
               routeToDomain(data);
@@ -323,7 +325,7 @@ const CreateDomain: FC = () => {
               createSnackbar({
                 key: 'error',
                 severity: 'error',
-                label: data?.Body?.Fault?.Reason?.Text,
+                label: data?.Body?.Fault?.Reason?.Text ?? '',
                 autoHideTimeout: 3000,
                 hideButton: true,
                 replace: true,

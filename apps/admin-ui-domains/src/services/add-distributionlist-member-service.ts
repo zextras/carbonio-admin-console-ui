@@ -6,10 +6,10 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-import { objectType } from '../../types';
+import type { AddDistributionListMemberRequest, objectType, SoapEmptyResponse } from '../../types';
 
-export const addDistributionListMember = async (id: objectType, dlm?: objectType): Promise<any> => {
-	const request: any = {
+export const addDistributionListMember = async (id: objectType, dlm?: objectType): Promise<SoapEmptyResponse> => {
+	const request: AddDistributionListMemberRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		id
 	};
@@ -17,7 +17,7 @@ export const addDistributionListMember = async (id: objectType, dlm?: objectType
 		request.dlm = dlm;
 	}
 
-	return soapFetch(`AddDistributionListMember`, {
+	return soapFetch<AddDistributionListMemberRequest, SoapEmptyResponse>(`AddDistributionListMember`, {
 		...request
 	});
 };

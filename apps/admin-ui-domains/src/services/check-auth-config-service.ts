@@ -6,12 +6,9 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const CheckAuthConfig = async (body: {
-	name?: string;
-	password?: string;
-	_jsns?: string;
-	a?: { n: string; _content?: string }[];
-}): Promise<any> =>
-	soapFetch(`CheckAuthConfig`, {
+import type { CheckAuthConfigRequest, CheckAuthConfigResponse } from '../../types';
+
+export const CheckAuthConfig = async (body: CheckAuthConfigRequest): Promise<CheckAuthConfigResponse> =>
+	soapFetch<CheckAuthConfigRequest, CheckAuthConfigResponse>(`CheckAuthConfig`, {
 		...body
 	});

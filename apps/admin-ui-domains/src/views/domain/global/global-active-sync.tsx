@@ -171,12 +171,12 @@ const GlobalActiveSync: FC = () => {
 
   useEffect(() => {
     getMobileAntiDosService().then((data): any => {
-      const parseData = JSON.parse(data?.Body?.response?.content);
+      const parseData = JSON.parse(data?.Body?.response?.content ?? '{}');
       setIntMobileAntiDosServiceEnbled(parseData.response?.values[0]?.value);
       setMobileAntiDosServiceEnbled(parseData?.response?.values[0]?.value);
     });
     getMobileAntiDosServiceJailDuration().then((data): any => {
-      const parseData = JSON.parse(data?.Body?.response?.content);
+      const parseData = JSON.parse(data?.Body?.response?.content ?? '{}');
       const JailDurationData = parseData.response?.values[0]?.value
         ? parseData.response?.values[0]?.value
         : parseData.response?.values[0]?.inheritedValue;
@@ -184,7 +184,7 @@ const GlobalActiveSync: FC = () => {
       setMobileAntiDosServiceJailDuration(JailDurationData);
     });
     getMobileAntiDosServiceMaxRequests().then((data): any => {
-      const parseData = JSON.parse(data?.Body?.response?.content);
+      const parseData = JSON.parse(data?.Body?.response?.content ?? '{}');
       const MaxRequestsData = parseData.response?.values[0]?.value
         ? parseData.response?.values[0]?.value
         : parseData.response?.values[0]?.inheritedValue;
@@ -192,7 +192,7 @@ const GlobalActiveSync: FC = () => {
       setIntMobileAntiDosServiceMaxRequests(MaxRequestsData);
     });
     getMobileAntiDosServiceTimeWindow().then((data): any => {
-      const parseData = JSON.parse(data?.Body?.response?.content);
+      const parseData = JSON.parse(data?.Body?.response?.content ?? '{}');
       const TimeWindowData = parseData.response?.values[0]?.value
         ? parseData.response?.values[0]?.value
         : parseData.response?.values[0]?.inheritedValue;

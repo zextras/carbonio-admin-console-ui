@@ -6,14 +6,16 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const setPasswordRequest = async (id: string, newPassword: string): Promise<any> => {
-	const request: any = {
+import type { SetPasswordRequest, SoapEmptyResponse } from '../../types';
+
+export const setPasswordRequest = async (id: string, newPassword: string): Promise<SoapEmptyResponse> => {
+	const request: SetPasswordRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		id,
 		newPassword
 	};
 
-	return soapFetch(`SetPassword`, {
+	return soapFetch<SetPasswordRequest, SoapEmptyResponse>(`SetPassword`, {
 		...request
 	});
 };

@@ -6,9 +6,10 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
+import type { ZextrasRawResponse } from '../../types';
 import { ZX_MOBILE } from '../constants';
 
-export const doPurgeActiveSync = async (): Promise<any> =>
+export const doPurgeActiveSync = async (): Promise<ZextrasRawResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap`,
 		{

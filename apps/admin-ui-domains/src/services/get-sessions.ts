@@ -6,12 +6,14 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { GetSessionsRequest, GetSessionsResponse } from '../../types';
+
 export const getSessions = async (
   type: string,
   accountName: string,
   offset?: number,
-): Promise<any> =>
-  soapFetch(
+): Promise<GetSessionsResponse> =>
+  soapFetch<GetSessionsRequest, GetSessionsResponse>(
     `GetSessions`,
     {
       _jsns: 'urn:zimbraAdmin',

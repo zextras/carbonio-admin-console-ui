@@ -6,16 +6,18 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { CreateGalSyncAccountRequest, CreateGalSyncAccountResponse, SoapAttribute, SoapEntitySelector } from '../../types';
+
 export const createGalSyncAccount = async (
 	name: string,
 	domainName: string | undefined,
 	server: string,
-	account: Array<any>,
+	account: Array<SoapEntitySelector>,
 	type: string,
-	a?: { n: string; _content: string }[],
+	a?: Array<SoapAttribute>,
 	folder?: string
-): Promise<any> => {
-	const request: any = {
+): Promise<CreateGalSyncAccountResponse> => {
+	const request: CreateGalSyncAccountRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		name,
 		domain: domainName,
@@ -29,7 +31,7 @@ export const createGalSyncAccount = async (
 	if (a) {
 		request.a = a;
 	}
-	return soapFetch(`CreateGalSyncAccount`, {
+	return soapFetch<CreateGalSyncAccountRequest, CreateGalSyncAccountResponse>(`CreateGalSyncAccount`, {
 		...request
 	});
 };

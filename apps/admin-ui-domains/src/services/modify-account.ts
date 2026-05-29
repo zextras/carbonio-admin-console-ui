@@ -6,10 +6,12 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
- 
-export const modifyAccountRequest = async (id: string, modifiedData: any): Promise<any> => {
-	const attrList: { n: string; _content: string }[] = [];
-	Object.keys(modifiedData).forEach((ele: any): void => {
+import type { ModifyAccountRequest, ModifyAccountResponse, SoapAttribute } from '../../types';
+
+
+export const modifyAccountRequest = async (id: string, modifiedData: Record<string, string>): Promise<ModifyAccountResponse> => {
+	const attrList: Array<SoapAttribute> = [];
+	Object.keys(modifiedData).forEach((ele: string): void => {
 		if (
 			[
 				'zimbraMailForwardingAddress',
@@ -18,7 +20,7 @@ export const modifyAccountRequest = async (id: string, modifiedData: any): Promi
 			].includes(ele)
 		) {
 			if (modifiedData[ele]?.trim()) {
-				modifiedData[ele]?.split(', ')?.map((el: any) => attrList.push({ n: ele, _content: el }));
+				modifiedData[ele]?.split(', ')?.map((el: string) => attrList.push({ n: ele, _content: el }));
 			} else {
 				attrList.push({ n: ele, _content: modifiedData[ele] });
 			}
@@ -26,13 +28,13 @@ export const modifyAccountRequest = async (id: string, modifiedData: any): Promi
 			attrList.push({ n: ele, _content: modifiedData[ele] });
 		}
 	});
-	const request: any = {
+	const request: ModifyAccountRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		id,
 		a: attrList
 	};
 
-	return soapFetch(`ModifyAccount`, {
+	return soapFetch<ModifyAccountRequest, ModifyAccountResponse>(`ModifyAccount`, {
 		...request
 	});
 };

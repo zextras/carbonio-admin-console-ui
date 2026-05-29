@@ -153,24 +153,13 @@ const EditMailingListView: FC<any> = ({
     }
   }, [userSetting?.attrs]);
 
-  type DomainResponse = {
-    domain: [
-      {
-        name: string;
-        id: string;
-        a: { n: string; _content: string }[];
-      },
-    ];
-    more: boolean;
-    searchTotal: number;
-    _jsns: string;
-  };
+
 
   const getDomainLists = useCallback(
     (offset: number): void => {
       getDomainList('', offset)
         .then((data) => {
-          const searchResponse: DomainResponse = data;
+          const searchResponse = data;
           if (!!searchResponse && searchResponse?.searchTotal > 0) {
             if (searchResponse?.domain?.length) {
               setDomainListStore([...domainList, ...searchResponse.domain]);

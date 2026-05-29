@@ -6,7 +6,9 @@
 
 import { getSoapFetchRequest } from '@zextras/ui-shared';
 
-export const getSamlConfig = async (domain: string, raw?: boolean): Promise<any> => {
+import type { GetSamlConfigResponse } from '../../types';
+
+export const getSamlConfig = async (domain: string, raw?: boolean): Promise<GetSamlConfigResponse> => {
 	let url = `/service/extension/zextras_admin/auth/saml/${domain}`;
 	if (raw) {
 		url += `?raw=${raw}`;

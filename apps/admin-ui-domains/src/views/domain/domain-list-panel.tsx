@@ -30,7 +30,6 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
-import { DomainResponse } from '../../../types';
 import {
   ACCOUNTS,
   ACTIVE_SYNC,
@@ -79,11 +78,11 @@ const DomainListPanel: FC = () => {
   const [searchDomainName, setSearchDomainName] = useState('');
   const [domainId, setDomainId] = useState('');
   const [domainList, setDomainList] = useState<
-    {
+    Array<{
       name: string;
       id: string;
-      a: { n: string; _content: string }[];
-    }[]
+      a?: Array<{ n: string; _content?: string }>;
+    }>
   >([]);
   const [isDomainSelect, setIsDomainSelect] = useState(false);
   const domainInformation = useDomainStore((state) => state.domain);
@@ -154,9 +153,9 @@ const DomainListPanel: FC = () => {
       setIsLoading(true);
       getDomainList(domainName, 0)
         .then((data) => {
-          const searchResponse: DomainResponse = data;
+          const searchResponse = data;
           if (!!searchResponse && searchResponse?.searchTotal > 0) {
-            setDomainList(searchResponse?.domain);
+            setDomainList(searchResponse?.domain ?? []);
             setIsLoading(false);
           } else if (domainName !== '' && searchResponse?.searchTotal === 0) {
             setIsShowError(true);
@@ -519,8 +518,7 @@ const DomainListPanel: FC = () => {
             ),
           },
         ]
-      : domainList.map(
-          (domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
+      : domainList.map((domain) => ({
             id: domain.id,
             label: domain.name,
             customComponent: (
@@ -534,7 +532,9 @@ const DomainListPanel: FC = () => {
                 }}
                 onClick={(): void => {
                   setIsShowError(false);
-                  selectedDomain(domain);
+                  if (domain.a && domain.a.every((item) => item._content)) {
+                    selectedDomain(domain as Parameters<typeof selectedDomain>[0]);
+                  }
                 }}
               >
                 {domain?.name}

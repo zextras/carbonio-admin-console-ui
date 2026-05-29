@@ -75,7 +75,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 					: 'empty'
 			)
 				.then((res) => {
-					const response = JSON.parse(res?.Body?.response?.content);
+					const response = JSON.parse(res?.Body?.response?.content ?? '{}');
 					if (response?.ok) {
 						createSnackbar({
 							key: 'policy-success',

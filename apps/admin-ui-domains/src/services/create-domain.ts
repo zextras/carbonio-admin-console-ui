@@ -6,15 +6,17 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const createDomain = async (name: string, a?: Array<any>): Promise<any> => {
-	const request: any = {
+import type { CreateDomainRequest, CreateDomainResponse, SoapAttribute } from '../../types';
+
+export const createDomain = async (name: string, a?: Array<SoapAttribute>): Promise<CreateDomainResponse> => {
+	const request: CreateDomainRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		name
 	};
 	if (a) {
 		request.a = a;
 	}
-	return soapFetch(`CreateDomain`, {
+	return soapFetch<CreateDomainRequest, CreateDomainResponse>(`CreateDomain`, {
 		...request
 	});
 };

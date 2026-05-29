@@ -6,7 +6,7 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-export const removeAttachmentsRequest = async (id: string, part: string): Promise<any> =>
+export const removeAttachmentsRequest = async (id: string, part: string): Promise<unknown> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/RemoveAttachmentsRequest`,
 		{

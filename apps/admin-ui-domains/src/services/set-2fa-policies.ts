@@ -6,12 +6,14 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
+import type { ZextrasRawResponse } from '../../types';
+
 export const set2faPolicies = async (
 	domain: string | undefined,
 	service: string,
 	trustedDevice: number | undefined,
 	trustedIpRange: string | undefined
-): Promise<any> =>
+): Promise<ZextrasRawResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/zextras`,
 		{

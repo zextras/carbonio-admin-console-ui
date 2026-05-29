@@ -5,9 +5,11 @@
  */
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-export const getSingatures = async (accountId: string): Promise<any> => {
-	const request: any = {
-		_jsns: 'urn:zimbraAccount'
+import type { GetSignaturesResponse } from '../../types';
+
+export const getSingatures = async (accountId: string): Promise<GetSignaturesResponse> => {
+	const request = {
+		_jsns: 'urn:zimbraAccount' as const
 	};
 	return postSoapFetchRequest(
 		`/service/admin/soap/GetSignaturesRequest`,

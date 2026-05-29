@@ -5,8 +5,8 @@
  */
 export const InitDomainForDelegation = async (
 	api: string,
-	body: { [key: string]: any }
-): Promise<any> =>
+	body: Record<string, unknown>
+): Promise<unknown> =>
 	fetch(`/service/extension/zextras_admin${api}`, {
 		method: 'POST',
 		headers: {

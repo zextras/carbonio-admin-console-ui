@@ -6,11 +6,13 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
+import type { ZextrasRawResponse } from '../../types';
+
 export const importSamlConfig = async (
 	domain: string,
 	url: string,
 	allowUnsecure: boolean
-): Promise<any> =>
+): Promise<ZextrasRawResponse> =>
 	fetchExternalSoap(
 		`/service/extension/zextras_admin/auth/saml/${domain}?url=${url}&allowUnsecure=${allowUnsecure}`,
 		{}

@@ -6,12 +6,14 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { CreateDistributionListRequest, CreateDistributionListResponse, SoapAttribute } from '../../types';
+
 export const createMailingList = async (
 	dynamic: boolean,
 	name: string,
-	attribute: Array<any>
-): Promise<any> => {
-	const request: any = {
+	attribute: Array<SoapAttribute>
+): Promise<CreateDistributionListResponse> => {
+	const request: CreateDistributionListRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		dynamic: !!dynamic,
 		name
@@ -20,7 +22,7 @@ export const createMailingList = async (
 	if (attribute) {
 		request.a = attribute;
 	}
-	return soapFetch(`CreateDistributionList`, {
+	return soapFetch<CreateDistributionListRequest, CreateDistributionListResponse>(`CreateDistributionList`, {
 		...request
 	});
 };

@@ -6,8 +6,10 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const searchGal = async (searchKeyWord: string): Promise<any> =>
-	soapFetch(`SearchGal`, {
+import type { SearchGalRequest, SearchGalResponse } from '../../types';
+
+export const searchGal = async (searchKeyWord: string): Promise<SearchGalResponse> =>
+	soapFetch<SearchGalRequest, SearchGalResponse>(`SearchGal`, {
 		_jsns: 'urn:zimbraAccount',
 		limit: '50',
 		offset: 0,

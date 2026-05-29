@@ -6,12 +6,14 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
+import type { ZextrasRawResponse } from '../../types';
+
 export const modifySignature = async (
 	id: string,
 	signatureId: string,
 	signaturName: string,
 	content: string
-): Promise<any> =>
+): Promise<ZextrasRawResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/ModifySignatureRequest`,
 		{

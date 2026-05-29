@@ -6,6 +6,7 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
- 
-export const batchService = async (reqObject: any, otherAccount?: any): Promise<any> =>
-	soapFetch('Batch', reqObject, {otherAccount});
+import type { BatchRequest, BatchResponse } from '../../types';
+
+export const batchService = async (reqObject: BatchRequest, otherAccount?: string): Promise<BatchResponse> =>
+	soapFetch<BatchRequest, BatchResponse>('Batch', reqObject, { otherAccount });

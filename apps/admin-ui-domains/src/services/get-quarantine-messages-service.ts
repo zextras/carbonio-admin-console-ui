@@ -6,7 +6,9 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-export const getQuarantineMessages = async (id: string): Promise<any> =>
+import type { SearchMailResponse } from '../../types';
+
+export const getQuarantineMessages = async (id: string): Promise<SearchMailResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/SearchRequest`,
 		{

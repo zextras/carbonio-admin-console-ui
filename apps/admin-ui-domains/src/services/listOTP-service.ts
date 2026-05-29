@@ -5,7 +5,10 @@
  */
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-export const fetchSoap = async (api: string, body: any): Promise<any> =>
-	postSoapFetchRequest(`/service/admin/soap/zextras`, body, `${api}`).then((res: any) =>
-		res.Body?.response?.content ? JSON.parse(res.Body.response.content) : res.Body
-	);
+import type { ZextrasRawResponse } from '../../types';
+
+export const fetchSoap = async (api: string, body: unknown): Promise<Record<string, unknown>> =>
+	postSoapFetchRequest(`/service/admin/soap/zextras`, body, `${api}`).then((res) => {
+		const response = res as ZextrasRawResponse;
+		return response.Body?.response?.content ? JSON.parse(response.Body.response.content) : response.Body;
+	});

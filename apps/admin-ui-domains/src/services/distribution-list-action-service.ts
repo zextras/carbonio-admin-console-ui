@@ -6,8 +6,10 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const distributionListAction = async (dl: JSON, action?: JSON): Promise<any> => {
-	const request: any = {
+import type { DistributionListActionRequest, SoapEmptyResponse } from '../../types';
+
+export const distributionListAction = async (dl: unknown, action?: unknown): Promise<SoapEmptyResponse> => {
+	const request: DistributionListActionRequest = {
 		_jsns: 'urn:zimbraAccount',
 		dl
 	};
@@ -15,7 +17,7 @@ export const distributionListAction = async (dl: JSON, action?: JSON): Promise<a
 		request.action = action;
 	}
 
-	return soapFetch(`DistributionListAction`, {
+	return soapFetch<DistributionListActionRequest, SoapEmptyResponse>(`DistributionListAction`, {
 		...request
 	});
 };

@@ -6,12 +6,14 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { CheckRightRequest, CheckRightResponse } from '../../types';
+
 export const checkRightRequest = async (
 	target: string,
 	grantee: string,
 	right: string
-): Promise<any> => {
-	const request: any = {
+): Promise<CheckRightResponse> => {
+	const request: CheckRightRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		target: {
 			_content: target,
@@ -27,7 +29,7 @@ export const checkRightRequest = async (
 		}
 	};
 
-	return soapFetch(`CheckRight`, {
+	return soapFetch<CheckRightRequest, CheckRightResponse>(`CheckRight`, {
 		...request
 	});
 };

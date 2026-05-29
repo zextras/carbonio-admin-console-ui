@@ -6,17 +6,14 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { SearchCosesResponse, SearchDirectoryRequest } from '../../types';
+
 export const getCosList = async (
 	searchKeyWord: string,
 	limit?: number,
 	offset?: number
-): Promise<any> =>
-	soapFetch(`SearchDirectory`, {
-		method: 'POST',
-		credentials: 'include',
-		headers: {
-			'Content-Type': 'application/json'
-		},
+): Promise<SearchCosesResponse> =>
+	soapFetch<SearchDirectoryRequest, SearchCosesResponse>(`SearchDirectory`, {
 		_jsns: 'urn:zimbraAdmin',
 		limit: limit ?? 50,
 		offset: offset ?? 0,

@@ -36,9 +36,9 @@ export type Volume = {
 
 export type VolumeType =
 	| {
-			label?: string;
-			value?: number | undefined;
-	  }
+		label?: string;
+		value?: number | undefined;
+	}
 	| undefined;
 
 export type BucketVolume = {
@@ -51,8 +51,8 @@ export type BucketVolume = {
 	uuid?: string;
 	signatureVersion?: string;
 	url?: string;
-	'usage in powerstore volumes'?: string | Array<any>;
-	'usage in external backup'?: string | Array<any>;
+	'usage in powerstore volumes'?: string | Array<string>;
+	'usage in external backup'?: string | Array<string>;
 	notes?: string;
 	region?: string;
 };

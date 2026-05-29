@@ -6,7 +6,9 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
-export const deleteSamlAttributes = async (domain: string, keys?: string): Promise<any> => {
+import type { ZextrasRawResponse } from '../../types';
+
+export const deleteSamlAttributes = async (domain: string, keys?: string): Promise<ZextrasRawResponse> => {
 	let url = `/service/extension/zextras_admin/auth/saml/${domain}`;
 	if (keys) {
 		url += `?keys=${keys}`;

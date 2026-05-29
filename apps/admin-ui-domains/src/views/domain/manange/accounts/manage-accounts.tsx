@@ -87,8 +87,8 @@ type UserSession = {
 };
 
 type CheckRightResponse = {
-  allow: true;
-  _jsns: string;
+  allow: boolean;
+  _jsns?: string;
 };
 
 type Timer = ReturnType<typeof setTimeout>;
@@ -481,18 +481,19 @@ const ManageAccounts: FC = () => {
       },
     ];
     getCoreAttributes(body).then((data) => {
-      if (data?.attributes) {
+      const attributes = data?.attributes as Record<string, Array<{ value: string }>> | undefined;
+      if (attributes) {
         setAccountDetail((prev) => ({
           ...prev,
-          abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-          backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
-          backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value,
+          abqMode: attributes?.abqMode?.[0]?.value || '',
+          backupEnabled: attributes?.backupEnabled?.[0]?.value,
+          backupSelfUndeleteAllowed: !!attributes?.backupSelfUndeleteAllowed?.[0]?.value,
         }));
         setInitAccountDetail((prev) => ({
           ...prev,
-          abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-          backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
-          backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value,
+          abqMode: attributes?.abqMode?.[0]?.value || '',
+          backupEnabled: attributes?.backupEnabled?.[0]?.value,
+          backupSelfUndeleteAllowed: !!attributes?.backupSelfUndeleteAllowed?.[0]?.value,
         }));
       }
     });

@@ -6,8 +6,10 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const copyCos = async (newName: string, cosId: string): Promise<any> =>
-	soapFetch(`CopyCos`, {
+import type { CopyCosRequest, CopyCosResponse } from '../../types';
+
+export const copyCos = async (newName: string, cosId: string): Promise<CopyCosResponse> =>
+	soapFetch<CopyCosRequest, CopyCosResponse>(`CopyCos`, {
 		_jsns: 'urn:zimbraAdmin',
 		name: {
 			_content: newName

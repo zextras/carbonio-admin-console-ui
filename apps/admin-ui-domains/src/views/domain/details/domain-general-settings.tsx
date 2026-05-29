@@ -699,13 +699,14 @@ const DomainGeneralSettings: FC = () => {
       DeleteCalendarResourceRequest: resourceDeleteBatch,
       DeleteAccountRequest: accountDeleteBatch,
       _jsns: 'urn:zimbra',
-    }).then((res) => {
+    }).then((result) => {
+      const res = result as Record<string, unknown>;
       if (res?.Fault) {
-        res?.Fault?.forEach((item: any) =>
+        (res?.Fault as Array<{ Reason?: { Text?: string } }>)?.forEach((item) =>
           createSnackbar({
             key: 'error',
             severity: 'error',
-            label: item?.Reason?.Text,
+            label: item?.Reason?.Text ?? '',
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
@@ -738,7 +739,8 @@ const DomainGeneralSettings: FC = () => {
       const attrs =
         'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus, zimbraIsSystemAccount';
       searchDirectory(attrs, type, domainName, '', offset, limit)
-        .then((data: SearchDomainDirectoies) => {
+        .then((rawData) => {
+          const data = rawData as unknown as SearchDomainDirectoies;
           if (data?.account?.length) {
             data.account.forEach((item: AccountDlAlias) => {
               const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });

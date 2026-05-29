@@ -151,17 +151,17 @@ export const SignatureDetail: FC<any> = ({
     if (accountId) {
       createSignature(accountId, signatureName, signatureContent)
         .then((data) => {
-          if (data?.Body?.Reason?.Text) {
+          if (data?.Body?.Fault?.Reason?.Text) {
             createSnackbar({
               key: 'error',
               severity: 'error',
-              label: data?.Body?.Fault?.Reason?.Text,
+              label: data?.Body?.Fault?.Reason?.Text ?? '',
               autoHideTimeout: 3000,
               hideButton: true,
               replace: true,
             });
           } else {
-            const signatureItem = data?.Body?.CreateSignatureResponse?.signature[0];
+            const signatureItem = data?.Body?.CreateSignatureResponse?.signature?.[0];
             addSignatureIntoList(signatureItem);
             setIsOpenCreateEditSignatureDialog(false);
           }

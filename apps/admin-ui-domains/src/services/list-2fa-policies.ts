@@ -6,7 +6,9 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-export const list2faPolicies = async (domain = ''): Promise<any> =>
+import type { ZextrasRawResponse } from '../../types';
+
+export const list2faPolicies = async (domain = ''): Promise<ZextrasRawResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/zextras`,
 		{

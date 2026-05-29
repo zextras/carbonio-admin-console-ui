@@ -12,7 +12,7 @@ export const setFileQuotaLimitById = async (
 	accId: string,
 	limit: string,
 	type?: string
-): Promise<any> => {
+): Promise<void> => {
 	const fetchType = type === COS ? COS : ACCOUNTS;
 	fetchExternalSoap(
 		`/services/storages/admin/quota/config/${fetchType}/${accId}`,

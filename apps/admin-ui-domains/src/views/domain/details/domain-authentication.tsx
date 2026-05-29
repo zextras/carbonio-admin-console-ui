@@ -451,9 +451,9 @@ const DomainAuthentication: FC = () => {
             // no operation
           });
         }
-        const domain: objectType = data?.domain[0];
+        const domain = data?.domain[0];
         if (domain) {
-          setDomain(domain);
+          setDomain(domain as unknown as objectType);
         }
       })
       .catch((error) => {

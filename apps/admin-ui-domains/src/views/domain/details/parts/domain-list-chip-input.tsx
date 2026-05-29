@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 import { DomainsByFeature } from '../../../../../types';
 import { CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, TRUE } from '../../../../constants';
 import { getDomainList } from '../../../../services/search-domain-service';
-import { ZimbraDomainResponse } from '../../domain-list/domain-list';
 
 const DomainListChipInput: FC<{
   domainName: string;
@@ -25,7 +24,7 @@ const DomainListChipInput: FC<{
   const getAllDomainList = useCallback(
     (searchQuery: string): void => {
       getDomainList(searchQuery, 0, 10).then((data) => {
-        const domainListResponse: ZimbraDomainResponse = data?.domain || [];
+        const domainListResponse = data?.domain || [];
         if (domainListResponse && Array.isArray(domainListResponse)) {
           const domainListArr = domainListResponse.map((domain) => ({
             label: domain.name,

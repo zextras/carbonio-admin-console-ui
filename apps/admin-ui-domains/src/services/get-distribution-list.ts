@@ -6,13 +6,15 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { GetDistributionListRequest, GetDistributionListResponse } from '../../types';
+
 export const getDistributionList = async (
 	dlId: string,
 	dlName: string,
 	offset?: number,
 	limit?: number
-): Promise<any> => {
-	const request: any = {
+): Promise<GetDistributionListResponse> => {
+	const request: GetDistributionListRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		offset: offset || 0,
 		limit: limit || 0
@@ -26,7 +28,7 @@ export const getDistributionList = async (
 	if (dlName) {
 		request.name = dlName;
 	}
-	return soapFetch(`GetDistributionList`, {
+	return soapFetch<GetDistributionListRequest, GetDistributionListResponse>(`GetDistributionList`, {
 		...request
 	});
 };

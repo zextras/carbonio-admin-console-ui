@@ -318,7 +318,7 @@ const QuarantineList: FC = () => {
   const [showMessageView, setShowMessageView] = useState<boolean>(false);
   const [messageViewLoading, setMessageViewLoading] = useState<boolean>(false);
   const [openDeliverDialog, setOpenDeliverDialog] = useState<boolean>(false);
-  const [messageListData, setMessageListData] = useState([]);
+  const [messageListData, setMessageListData] = useState<Array<Record<string, any>>>([]);
   const { data: config = [], invalidate } = useAllConfig();
   const [messageSelection, setMessageSelection] = useState<string[]>([]);
   const [requestInprogress, setRequestInprogress] = useState<boolean>(false);
@@ -791,10 +791,11 @@ const QuarantineList: FC = () => {
         GetMsgRequest: messageListArr,
         _jsns: 'urn:zimbra',
       })
-        .then((msgBatchData) => {
+        .then((rawData) => {
+          const msgBatchData = rawData as Record<string, unknown>;
           const normalizedMessageList =
-            msgBatchData?.GetMsgResponse?.map((item: any) => {
-              const m = item.m?.[0];
+            (msgBatchData?.GetMsgResponse as Array<Record<string, unknown>>)?.map((item: Record<string, unknown>) => {
+              const m = (item.m as Array<Record<string, unknown>>)?.[0];
               return normalizeMessage(m);
             }) || [];
 
@@ -824,8 +825,8 @@ const QuarantineList: FC = () => {
           n: 'zimbraMailMessageLifetime',
         });
         const zimbraMailMessageLifetime = zimbraMailMessageLifetimeObject?._content;
-        setZimbraMailMessageLifetimeNum(zimbraMailMessageLifetime?.slice(0, -1));
-        setZimbraMailMessageLifetimeType(zimbraMailMessageLifetime?.slice(-1));
+        setZimbraMailMessageLifetimeNum(zimbraMailMessageLifetime?.slice(0, -1) ?? '');
+        setZimbraMailMessageLifetimeType(zimbraMailMessageLifetime?.slice(-1) ?? '');
         if (res?.account?.[0]?.id) {
           setQuarantineAccountId(res.account[0].id);
           getQuarantineMessages(res?.account?.[0]?.id).then((response: any): void => {
@@ -974,7 +975,11 @@ const QuarantineList: FC = () => {
   const onDeliverMessage = useCallback(
     (msg: IncompleteMessage) => {
       setMessageViewLoading(true);
-      bounceMsgRequest(msg)
+      bounceMsgRequest({
+        id: msg.id,
+        envelopeTo: msg.envelopeTo ?? '',
+        envelopeFrom: msg.envelopeFrom ?? '',
+      })
         .then(() => {
           setMessageListData([]);
           getQuarantineMsgData();

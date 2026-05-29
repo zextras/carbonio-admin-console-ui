@@ -5,7 +5,7 @@
  */
 
 export type TRow = {
-	id: string | unknown;
+	id: string;
 	columns: Array<string | React.ReactElement>;
 	highlight?: boolean;
 	clickable?: boolean;

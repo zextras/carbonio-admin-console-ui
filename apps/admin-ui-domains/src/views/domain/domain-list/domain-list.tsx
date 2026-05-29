@@ -151,7 +151,7 @@ const DomainList: FC = () => {
     setIsRequestInProgress(true);
     getDomainList(searchQuery, offset, limit)
       .then((data) => {
-        const domainListResponse: ZimbraDomainResponse = data?.domain || [];
+        const domainListResponse = data?.domain || [];
         if (domainListResponse && Array.isArray(domainListResponse)) {
           const domainListArr: {
             id: string;
@@ -160,7 +160,7 @@ const DomainList: FC = () => {
             clickable: boolean;
           }[] = [];
           setTotalDomain(data.searchTotal || 0);
-          domainListResponse.forEach((item: ZimbraDomainEntry) => {
+          domainListResponse.forEach((item) => {
             const domainIteam: ZimbraDomainEntry = {
               name: item.name,
               id: item.id,
@@ -168,7 +168,7 @@ const DomainList: FC = () => {
               zimbraDomainStatus: 'active',
               zimbraDomainName: '',
               zimbraId: '',
-              a: item.a,
+              a: item.a || [],
             };
             item?.a?.forEach((ele: ZimbraDomainAttribute) => {
               if (ele.n === 'zimbraDomainType') {

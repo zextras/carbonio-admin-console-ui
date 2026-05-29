@@ -6,5 +6,7 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
-export const generateSignedCertificate = async (domain: string): Promise<any> =>
+import type { ZextrasRawResponse } from '../../types';
+
+export const generateSignedCertificate = async (domain: string): Promise<ZextrasRawResponse> =>
 	fetchExternalSoap(`/service/extension/zextras_admin/auth/saml-generate/${domain}`, {});

@@ -1,4 +1,4 @@
- 
+
 /*
  * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
  *
@@ -7,5 +7,6 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
-export const getCoreAttributes = async (body: any): Promise<any> =>
+export const getCoreAttributes = async (body: Array<unknown>): Promise<Record<string, unknown>> =>
 	fetchExternalSoap(`/service/extension/zextras_admin/core/attributes/get`, [...body]);
+

@@ -10,6 +10,6 @@ export type Attribute = {
 	c?: boolean;
 };
 
-export type objectType = { [key: string]: string };
+export type objectType = Record<string, string>;
 
-export type objAll = { [key: string]: string | boolean | number };
+export type objAll = Record<string, string | boolean | number>;

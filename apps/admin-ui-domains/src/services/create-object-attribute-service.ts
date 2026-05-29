@@ -6,11 +6,13 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { GetCreateObjectAttrsRequest, GetCreateObjectAttrsResponse, SoapEntitySelector } from '../../types';
+
 export const createObjectAttribute = async (
-	target?: Array<any>,
-	domain?: Array<any>
-): Promise<any> => {
-	const request: any = {
+	target?: Array<{ type: string; by?: string; _content?: string }>,
+	domain?: Array<SoapEntitySelector>
+): Promise<GetCreateObjectAttrsResponse> => {
+	const request: GetCreateObjectAttrsRequest = {
 		_jsns: 'urn:zimbraAdmin'
 	};
 	if (target) {
@@ -19,7 +21,7 @@ export const createObjectAttribute = async (
 	if (domain) {
 		request.domain = domain;
 	}
-	return soapFetch(`GetCreateObjectAttrs`, {
+	return soapFetch<GetCreateObjectAttrsRequest, GetCreateObjectAttrsResponse>(`GetCreateObjectAttrs`, {
 		...request
 	});
 };

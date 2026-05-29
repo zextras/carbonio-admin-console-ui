@@ -6,11 +6,9 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const modifyDataSource = async (body: {
-	id?: string;
-	_jsns?: string;
-	dataSource?: { id?: string; a?: { n: string; _content?: string }[] };
-}): Promise<any> =>
-	soapFetch(`ModifyDataSource`, {
+import type { ModifyDataSourceRequest, SoapEmptyResponse } from '../../types';
+
+export const modifyDataSource = async (body: ModifyDataSourceRequest): Promise<SoapEmptyResponse> =>
+	soapFetch<ModifyDataSourceRequest, SoapEmptyResponse>(`ModifyDataSource`, {
 		...body
 	});

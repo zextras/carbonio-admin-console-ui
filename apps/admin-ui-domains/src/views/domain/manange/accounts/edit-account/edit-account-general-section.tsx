@@ -37,7 +37,8 @@ import React, {
 } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Attribute, objectType } from '../../../../../../types';
+import type { Attribute, objectType } from '../../../../../../types';
+import type { SoapEntity } from '../../../../../../types/service';
 import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE } from '../../../../../constants';
 import { endSession } from '../../../../../services/end-session';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
@@ -109,7 +110,7 @@ export const EditAccountGeneralSection: FC<{
   const [cosItems, setCosItems] = useState<any[]>([]);
   const [accountAliases, setAccountAliases] = useState<any[]>([]);
   const [showDeletePasswordModal, setShowDeletePasswordModal] = useState<boolean>(false);
-  const [domainList, setDomainList] = useState([]);
+  const [domainList, setDomainList] = useState<Array<SoapEntity>>([]);
   const [isDomainSelect, setIsDomainSelect] = useState(false);
   const [searchDomainName, setSearchDomainName] = useState(domainName);
   const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
@@ -167,7 +168,7 @@ export const EditAccountGeneralSection: FC<{
         .then((data) => {
           const searchResponse = data;
           if (!!searchResponse && searchResponse?.searchTotal > 0) {
-            setDomainList(searchResponse?.domain);
+            setDomainList(searchResponse?.domain ?? []);
           } else {
             setDomainList([]);
           }
@@ -363,7 +364,7 @@ export const EditAccountGeneralSection: FC<{
       ];
     }
 
-    return domainList.map((domain: objectType) => ({
+    return domainList.map((domain) => ({
       id: domain.id,
       label: domain.name,
       customComponent: (

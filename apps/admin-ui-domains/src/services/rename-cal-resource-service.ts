@@ -6,17 +6,19 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { RenameCalendarResourceRequest, RenameCalendarResourceResponse } from '../../types';
+
 export const renameCalendarResource = async (
 	resourceId: string,
 	newName?: string
-): Promise<any> => {
-	const request: any = {
+): Promise<RenameCalendarResourceResponse> => {
+	const request: RenameCalendarResourceRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		id: resourceId,
 		newName
 	};
 
-	return soapFetch(`RenameCalendarResource`, {
+	return soapFetch<RenameCalendarResourceRequest, RenameCalendarResourceResponse>(`RenameCalendarResource`, {
 		...request
 	});
 };

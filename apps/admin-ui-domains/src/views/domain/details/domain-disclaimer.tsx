@@ -221,9 +221,9 @@ const DomainDisclaimer: FC = () => {
             });
           }, 2000);
         }
-        const domain: objectType = responseData?.domain[0];
+        const domain = responseData?.domain[0];
         if (domain) {
-          setDomain(domain);
+          setDomain(domain as unknown as objectType);
         }
       })
       .catch((error) => {

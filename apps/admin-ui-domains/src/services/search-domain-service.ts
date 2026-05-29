@@ -6,12 +6,14 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { SearchDirectoryRequest, SearchDomainsResponse } from '../../types';
+
 export const getDomainList = async (
 	searchKeyWord: string | undefined,
 	offset: number,
 	limit?: number
-): Promise<any> =>
-	soapFetch(`SearchDirectory`, {
+): Promise<SearchDomainsResponse> =>
+	soapFetch<SearchDirectoryRequest, SearchDomainsResponse>(`SearchDirectory`, {
 		_jsns: 'urn:zimbraAdmin',
 		limit: limit ?? 50,
 		offset: offset || 0,

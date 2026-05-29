@@ -6,11 +6,13 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
+import type { ZextrasRawResponse } from '../../types';
+
 export const resetDevice = async (
 	module: string,
 	accountName: string,
 	deviceId: string
-): Promise<any> =>
+): Promise<ZextrasRawResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/zextras`,
 		{

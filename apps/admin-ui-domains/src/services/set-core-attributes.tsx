@@ -6,7 +6,7 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
-export const setCoreAttributes = async (body: { [key: string]: unknown }): Promise<any> =>
+export const setCoreAttributes = async (body: Record<string, unknown>): Promise<unknown> =>
 	fetchExternalSoap(`/service/extension/zextras_admin/core/attribute/set`, {
 		...body
 	});

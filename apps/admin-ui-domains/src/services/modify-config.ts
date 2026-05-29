@@ -6,8 +6,10 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const modifyConfig = async (a: Array<any>): Promise<any> =>
-	soapFetch(`ModifyConfig`, {
+import type { ModifyConfigRequest, SoapAttribute, SoapEmptyResponse } from '../../types';
+
+export const modifyConfig = async (a: Array<SoapAttribute>): Promise<SoapEmptyResponse> =>
+	soapFetch<ModifyConfigRequest, SoapEmptyResponse>(`ModifyConfig`, {
 		_jsns: 'urn:zimbraAdmin',
 		a
 	});

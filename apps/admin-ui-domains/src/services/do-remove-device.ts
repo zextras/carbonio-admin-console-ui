@@ -6,9 +6,10 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
+import type { ZextrasRawResponse } from '../../types';
 import { ZX_MOBILE } from '../constants';
 
-export const doRemoveDevice = async (account: string, deviceId: string): Promise<any> =>
+export const doRemoveDevice = async (account: string, deviceId: string): Promise<ZextrasRawResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/zextras`,
 		{

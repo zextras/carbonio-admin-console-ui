@@ -313,11 +313,7 @@ const DomainGalSettings: FC = () => {
 
   const getGalAccount = (accountId: string): void => {
     getAccount(accountId).then((data) => {
-      const galAccount: {
-        a: Attribute[];
-        id: string;
-        name: string;
-      } = data?.account[0];
+      const galAccount = data?.account[0];
       if (galAccount) {
         if (galAccount?.a) {
           const obj: objectType = {};
@@ -334,13 +330,8 @@ const DomainGalSettings: FC = () => {
 
   const getDomainDataSource = (accountId: string): void => {
     getDatasource(accountId).then((data) => {
-      const dataSource: {
-        id: string;
-        name: string;
-        type: string;
-        _attrs: objectType;
-      } = data?.dataSource[0];
-      if (dataSource && dataSource?.id) {
+      const dataSource = data?.dataSource?.[0];
+      if (dataSource?.id) {
         zimbraGalAccountIdArray.forEach((item) => {
           if (item._content === accountId) {
             zimbraAccountDataSourceId.push({
@@ -629,11 +620,7 @@ const DomainGalSettings: FC = () => {
     Promise.all(requests)
       .then((results) => Promise.all(results))
       .then((results) => {
-        const response: {
-          a: Attribute[];
-          id: string;
-          name: string;
-        } = results[0]?.domain[0];
+        const response = results[0]?.domain[0];
         if (response) {
           setDomain(response);
           updateDomainInformation(response?.a);
@@ -875,12 +862,8 @@ const DomainGalSettings: FC = () => {
       const result: readonly unknown[] | [] = allDomains?.map((item: Attribute) =>
         getAccount(item?._content)
           .then((data) => {
-            const galAccount: {
-              a: Attribute[];
-              id: string;
-              name: string;
-            } = data?.account[0];
-            const accountData: Attribute[] = galAccount?.a?.filter(
+            const galAccount = data?.account[0];
+            const accountData = galAccount?.a?.filter(
               (account) => account?.n === 'zimbraMailHost',
             );
 

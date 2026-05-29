@@ -345,7 +345,7 @@ const ActiveSync: FC = () => {
       doRemoveDevice(mobileDevice?.accountEmail, mobileDevice?.deviceId)
         .then((data) => {
           setIsRequestInProgress(false);
-          const info = JSON.parse(data?.Body?.response?.content);
+          const info = JSON.parse(data?.Body?.response?.content ?? '{}');
           parseResponse(info);
         })
         .catch((error) => {

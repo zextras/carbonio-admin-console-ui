@@ -69,8 +69,8 @@ type UserSession = {
 };
 
 type CheckRightResponse = {
-  allow: true;
-  _jsns: string;
+  allow: boolean;
+  _jsns?: string;
 };
 
 const ManageDelegates: FC = () => {
@@ -79,8 +79,8 @@ const ManageDelegates: FC = () => {
   const domain = useDomainStore((state) => state.domain);
   const [open, setOpen] = useState(false);
   const [accountName, setAccountName] = useState('');
-  const [distributionList, setDistributionList] = useState<objectType[]>([]);
-  const [accountDistributionList, setAccountDistributionList] = useState([]);
+  const [distributionList, setDistributionList] = useState<Array<Record<string, unknown>>>([]);
+  const [accountDistributionList, setAccountDistributionList] = useState<Array<Record<string, unknown>>>([]);
   const [allAccount, setAllAccount] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
@@ -550,12 +550,12 @@ const ManageDelegates: FC = () => {
     (id: string) => {
       getAccountMembershipRequest(id)
         .then((res) => {
-          const data = res?.dl?.filter((item: objectType) => item?.via === undefined);
+          const data = res?.dl?.filter((item) => item?.via === undefined);
 
           const tableList = data
-            ? data.map((item: objectType) => {
+            ? data.map((item) => {
                 const selectedItem: any = distributionList.filter(
-                  (i: objectType) => i.name === item.name,
+                  (i) => i.name === item.name,
                 );
                 const des = selectedItem[0].a?.filter((i: Attribute) => i.n === 'description')[0]
                   ._content;
@@ -613,7 +613,7 @@ const ManageDelegates: FC = () => {
               );
             }
           } else if (type === ADMIN_GROUP_FLAG) {
-            setIsInitDomain(data?.length > 0);
+            setIsInitDomain((data?.length ?? 0) > 0);
             setLoading(false);
           }
         })
@@ -631,7 +631,8 @@ const ManageDelegates: FC = () => {
       _jsns: ZIMBRA_ADMIN_URN,
       domain: domain?.name,
     })
-      .then((res: objectType) => {
+      .then((result) => {
+        const res = result as objectType;
         if (cosMaxAccountList.length > 0) {
           const request: unknown[] = [];
           cosMaxAccountList.forEach((item: CosMaxAccountValues) => {
@@ -730,9 +731,9 @@ const ManageDelegates: FC = () => {
   }, [domain?.name, cosMaxAccountList, fetchDistributionList, createSnackbar, t]);
 
   const onDeleteFromList = useCallback(
-    (lists: objectType[], type: string) => {
+    (lists: Array<Record<string, unknown>>, type: string) => {
       if (lists?.length > 0) {
-        lists.forEach((item: objectType) => {
+        lists.forEach((item: Record<string, unknown>) => {
           const id: any = {
             n: 'id',
             _content: type === 'all' ? item.id : item,

@@ -6,6 +6,7 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
+import type { ZextrasRawResponse } from '../../types';
 import { ZIMBRA_ADMIN_URN } from '../constants';
 
 export const getMobileDeviceDetail = async (
@@ -13,7 +14,7 @@ export const getMobileDeviceDetail = async (
 	accountName: string,
 	deviceId: string,
 	targetServers: string
-): Promise<any> =>
+): Promise<ZextrasRawResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/zextras`,
 		{

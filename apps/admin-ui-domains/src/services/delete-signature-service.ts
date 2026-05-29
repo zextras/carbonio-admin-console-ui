@@ -5,7 +5,9 @@
  */
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-export const deleteSignature = async (id: string, signatureId: string): Promise<any> =>
+import type { SoapEmptyResponse } from '../../types';
+
+export const deleteSignature = async (id: string, signatureId: string): Promise<SoapEmptyResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/DeleteSignatureRequest`,
 		{
