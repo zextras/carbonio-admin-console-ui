@@ -172,6 +172,17 @@ describe('BucketDetailPanel (browser)', () => {
 				.toBeInTheDocument();
 		});
 
+		it('should open the edit panel when a bucket row is clicked', async () => {
+			setupListS3ConnectorInterceptor();
+			await setupBrowserTest(<BucketDetailPanel />);
+
+			await page.getByText('Production S3', { exact: true }).click();
+
+			await expect
+				.element(page.getByText('S3 details', { exact: true }))
+				.toBeVisible();
+		});
+
 		it('should display bucket IDs', async () => {
 			setupListS3ConnectorInterceptor();
 			await setupBrowserTest(<BucketDetailPanel />);
@@ -184,6 +195,30 @@ describe('BucketDetailPanel (browser)', () => {
 			await expect
 				.element(page.getByText('bucket-3', { exact: true }))
 				.toBeInTheDocument();
+		});
+
+		it('should filter the bucket list and restore it when the filter is cleared', async () => {
+			setupListS3ConnectorInterceptor();
+			await setupBrowserTest(<BucketDetailPanel />);
+
+			const filterInput = page.getByLabelText('Filter S3 List');
+
+			await filterInput.fill('prod');
+
+			await expect
+				.element(page.getByText('Production S3', { exact: true }))
+				.toBeVisible();
+			expect(page.getByText('Backup Ceph', { exact: true }).elements()).toHaveLength(0);
+			expect(page.getByText('Archive Custom', { exact: true }).elements()).toHaveLength(0);
+
+			await filterInput.fill('');
+
+			await expect
+				.element(page.getByText('Backup Ceph', { exact: true }))
+				.toBeVisible();
+			await expect
+				.element(page.getByText('Archive Custom', { exact: true }))
+				.toBeVisible();
 		});
 	});
 
