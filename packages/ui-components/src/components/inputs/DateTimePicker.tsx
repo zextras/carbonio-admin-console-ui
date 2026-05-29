@@ -6,7 +6,7 @@
 
 import '@daypicker/react/style.css';
 
-import { DayPicker } from '@daypicker/react';
+import { DayPicker,type Styles } from '@daypicker/react';
 import { computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { format } from 'date-fns';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -74,6 +74,32 @@ const buildInputIcons = ({
 
 const noopOnChange = (): void => undefined;
 
+const dayPickerStyles: Partial<Styles> = {
+  month_caption: {
+    width: '100%',
+    height: 'var(--rdp-nav-height)',
+    margin: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'var(--color-gray5-regular)',
+    borderBottom: '1px solid var(--color-gray3-regular)',
+    boxSizing: 'border-box',
+  },
+  button_previous: { zIndex: 1 },
+  button_next: { zIndex: 1 },
+  month_grid: { margin: '0.5rem' },
+  weekday: {
+    color: 'var(--color-text-regular)',
+    fontWeight: 'var(--font-weight-medium)',
+    opacity: 1,
+  },
+  selected: {
+    fontSize: 'inherit',
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  chevron: { fill: 'var(--color-text-regular)' },
+};
+
 export const DateTimePicker = ({
   label,
   dateFormat = 'MMMM d, yyyy h:mm aa',
@@ -107,8 +133,6 @@ export const DateTimePicker = ({
       return;
     }
 
-    // Show before measuring: a closed popover is `display: none`, so
-    // computePosition would otherwise measure a zero-size element.
     if (!popover.matches(':popover-open')) {
       popover.showPopover();
     }
@@ -203,6 +227,7 @@ export const DateTimePicker = ({
           selected={selected ?? undefined}
           onSelect={handleSelect}
           disabled={disabledMatcher}
+          styles={dayPickerStyles}
           autoFocus
         />
       </div>
