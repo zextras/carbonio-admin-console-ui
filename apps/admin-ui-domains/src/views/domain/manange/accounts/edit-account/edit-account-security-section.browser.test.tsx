@@ -1182,4 +1182,90 @@ describe('EditAccountSecuritySection (browser)', () => {
       await expect.element(page.getByText('Something went wrong. Please try again.')).toBeVisible();
     });
   });
+
+  describe('DateTimePicker', () => {
+    const enabledOtpContext = {
+      ...mockContextValue,
+      accountDetail: {
+        ...mockContextValue.accountDetail,
+        carbonioFeatureOTPMgmtEnabled: 'TRUE',
+        carbonioOtpWizardFromUntrusted: 'TRUE',
+        carbonioOtpGracePeriodEnabled: 'TRUE',
+      },
+      cosDetail: {
+        ...mockContextValue.cosDetail,
+        carbonioFeatureOTPMgmtEnabled: 'TRUE',
+        carbonioOtpWizardFromUntrusted: 'TRUE',
+        carbonioOtpGracePeriodEnabled: 'TRUE',
+      },
+      accSpecificDetail: {
+        ...mockContextValue.accSpecificDetail,
+        carbonioFeatureOTPMgmtEnabled: 'TRUE',
+        carbonioOtpWizardFromUntrusted: 'TRUE',
+        carbonioOtpGracePeriodEnabled: 'TRUE',
+      },
+    };
+
+    const disabledOtpContext = {
+      ...mockContextValue,
+      accountDetail: {
+        ...mockContextValue.accountDetail,
+        carbonioFeatureOTPMgmtEnabled: 'TRUE',
+        carbonioOtpWizardFromUntrusted: 'TRUE',
+        carbonioOtpGracePeriodEnabled: 'FALSE',
+      },
+    };
+
+    function setupAdvancedSecurityTest(component: React.ReactElement) {
+      return setupEditAccountSecurityTest(component);
+    }
+
+    it('should render grace period expiration date picker when grace period is enabled', async () => {
+      setupAdvancedSecurityTest(
+        <AccountContext.Provider value={enabledOtpContext}>
+          <EditAccountSecuritySection />
+        </AccountContext.Provider>,
+      );
+
+      await expect
+        .element(page.getByPlaceholder('Set grace period expiration date'))
+        .toBeVisible();
+    });
+
+    it('should disable the date picker when grace period is disabled', async () => {
+      setupAdvancedSecurityTest(
+        <AccountContext.Provider value={disabledOtpContext}>
+          <EditAccountSecuritySection />
+        </AccountContext.Provider>,
+      );
+
+      await expect
+        .element(page.getByPlaceholder('Set grace period expiration date'))
+        .toBeDisabled();
+    });
+
+    it('should enable the date picker when all OTP features are enabled', async () => {
+      setupAdvancedSecurityTest(
+        <AccountContext.Provider value={enabledOtpContext}>
+          <EditAccountSecuritySection />
+        </AccountContext.Provider>,
+      );
+
+      await expect
+        .element(page.getByPlaceholder('Set grace period expiration date'))
+        .toBeEnabled();
+    });
+
+    it('should open the calendar popover when the calendar icon is clicked', async () => {
+      setupAdvancedSecurityTest(
+        <AccountContext.Provider value={enabledOtpContext}>
+          <EditAccountSecuritySection />
+        </AccountContext.Provider>,
+      );
+
+      await page.getByRole('button', { name: 'Calendar' }).click();
+
+      await expect.element(page.getByRole('grid')).toBeVisible();
+    });
+  });
 });
