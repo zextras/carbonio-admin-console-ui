@@ -20,16 +20,20 @@
   padding: 0.125rem;
 }
 
-/* Floating surface around the calendar (Popper only handles positioning) */
-.calendar {
+/* Native popover surface */
+.popover {
+  position: fixed;
+  inset: unset;
+  margin: 0;
   background-color: var(--color-gray5-regular);
   box-shadow: var(--shadow-regular);
   border-radius: 0.25rem;
   padding: 0.5rem;
+  border: none;
 }
 
 /* Theme react-day-picker to match the design system */
-.calendar :global(.rdp-root) {
+.popover :global(.rdp-root) {
   --rdp-accent-color: var(--color-primary-regular);
   --rdp-accent-background-color: var(--color-primary-highlight);
   --rdp-day-width: 2.25rem;
@@ -41,8 +45,13 @@
 }
 
 /* Solid filled selected day instead of the default outlined ring */
-.calendar :global(.rdp-selected .rdp-day_button) {
+.popover :global(.rdp-selected .rdp-day_button) {
   background-color: var(--color-primary-regular);
   color: var(--color-gray6-regular);
   border: none;
+}
+
+/* Dark navigation chevrons (the accent color is reserved for selection/today) */
+.popover :global(.rdp-chevron) {
+  fill: var(--color-text-regular);
 }

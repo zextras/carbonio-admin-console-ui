@@ -7,12 +7,12 @@
 import '@daypicker/react/style.css';
 
 import { DayPicker } from '@daypicker/react';
+import { computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { format } from 'date-fns';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import { Button, ButtonProps } from '../basic/button/Button';
 import { INPUT_BACKGROUND_COLOR } from '../constants';
-import { Popper } from '../display/Popper';
 import { Container, ContainerProps } from '../layout/Container';
 import styles from './DateTimePicker.module.css';
 import { Input, InputProps } from './Input';
@@ -87,12 +87,40 @@ export const DateTimePicker = ({
   className,
 }: DateTimePickerProps) => {
   const anchorRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   const inputValue = useMemo(
     () => (selected ? format(selected, dateFormat) : ''),
     [selected, dateFormat],
   );
+
+  useLayoutEffect(() => {
+    const anchor = anchorRef.current;
+    const popover = popoverRef.current;
+    if (!anchor || !popover) return;
+
+    if (!isOpen) {
+      if (popover.matches(':popover-open')) {
+        popover.hidePopover();
+      }
+      return;
+    }
+
+    // Show before measuring: a closed popover is `display: none`, so
+    // computePosition would otherwise measure a zero-size element.
+    if (!popover.matches(':popover-open')) {
+      popover.showPopover();
+    }
+
+    computePosition(anchor, popover, {
+      placement: 'bottom-start',
+      middleware: [offset(8), flip({ fallbackPlacements: ['bottom', 'top'] }), shift()],
+    }).then(({ x, y }) => {
+      popover.style.left = `${x}px`;
+      popover.style.top = `${y}px`;
+    });
+  }, [isOpen]);
 
   const handleSelect = useCallback(
     (date: Date | undefined) => {
@@ -115,10 +143,6 @@ export const DateTimePicker = ({
       setIsOpen((prev) => !prev);
     }
   }, [disabled]);
-
-  const closePopper = useCallback(() => {
-    setIsOpen(false);
-  }, []);
 
   const InputIconsComponent = useMemo<InputProps['CustomIcon']>(
     () =>
@@ -157,17 +181,16 @@ export const DateTimePicker = ({
           />
         </Container>
       </div>
-      <Popper open={isOpen} anchorEl={anchorRef} placement="bottom-start" onClose={closePopper}>
-        <div className={styles.calendar}>
-          <DayPicker
-            mode="single"
-            selected={selected ?? undefined}
-            onSelect={handleSelect}
-            disabled={disabledMatcher}
-            autoFocus
-          />
-        </div>
-      </Popper>
+      <div popover="manual" ref={popoverRef} className={styles.popover}>
+        <DayPicker
+          mode="single"
+          navLayout="around"
+          selected={selected ?? undefined}
+          onSelect={handleSelect}
+          disabled={disabledMatcher}
+          autoFocus
+        />
+      </div>
     </Container>
   );
 };
