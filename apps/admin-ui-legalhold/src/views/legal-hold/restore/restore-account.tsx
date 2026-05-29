@@ -67,7 +67,8 @@ const RestoreAccountView: FC<{
   );
   const [isEnableLeagalAccess, setIsEnableLeagalAccess] = useState<boolean>(false);
   const [isRestoreOprationComplete, setIsRestoreOprationComplete] = useState<boolean>(false);
-  const [legalHoldAccountInformation, setLegalHoldAccountInformation] = useState<DirectoryAccount | null>(null);
+  const [legalHoldAccountInformation, setLegalHoldAccountInformation] =
+    useState<DirectoryAccount | null>(null);
 
   const header = useMemo(
     () => [
@@ -103,9 +104,7 @@ const RestoreAccountView: FC<{
 
   const items = searchAccountResult.map((item) => ({
     id: item.id,
-    label:
-      item?.a.find((rec: ZimbraAttribute) => rec?.n === 'displayName')?._content ??
-      item?.name,
+    label: item?.a.find((rec: ZimbraAttribute) => rec?.n === 'displayName')?._content ?? item?.name,
     customComponent: [
       <ds-text
         as="span"
@@ -138,8 +137,8 @@ const RestoreAccountView: FC<{
         .then((data) => {
           const accountListResponse =
             data?.account
-              ?.filter((filteredAccount: DirectoryAccount) =>
-                filteredAccount?.id !== legalHoldAccount?.id,
+              ?.filter(
+                (filteredAccount: DirectoryAccount) => filteredAccount?.id !== legalHoldAccount?.id,
               )
               ?.map((item: DirectoryAccount) => {
                 const holdItem = { ...item, type: 'usr' };
@@ -605,7 +604,6 @@ const RestoreAccountView: FC<{
                 label={t('label.account_status_on ', 'Account status on')}
                 onChange={handleFromDateChange}
                 dateFormat="dd/MM/yyyy"
-                includeTime={false}
                 minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
                 maxDate={
                   legalHoldAccount?.deletedTimestamp
@@ -650,7 +648,6 @@ const RestoreAccountView: FC<{
                   label={t('label.include_items_deleted_after', 'Include items deleted after')}
                   onChange={handleUndeleteFromDateChange}
                   dateFormat="dd/MM/yyyy"
-                  includeTime={false}
                   selected={undeleteFromDate}
                   minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
                   maxDate={fromDate as Date}

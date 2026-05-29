@@ -3,15 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  DateTimePicker,
-  Input,
-  Padding,
-  Row,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { noop } from 'lodash-es';
+import { Container, Input, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -81,9 +73,6 @@ const RestoreDeleteAccountConfigSection: FC = () => {
             />
           </Padding>
         </Row>
-        <Container>
-          <DateTimePicker label="Date" onChange={noop} />
-        </Container>
       </Container>
     </Container>
   );

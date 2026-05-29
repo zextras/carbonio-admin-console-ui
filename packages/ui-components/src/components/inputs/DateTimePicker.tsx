@@ -4,36 +4,35 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import DatePicker, { type DatePickerProps } from 'react-datepicker';
+import '@daypicker/react/style.css';
+
+import { DayPicker } from '@daypicker/react';
+import { format } from 'date-fns';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { Button, ButtonProps } from '../basic/button/Button';
 import { INPUT_BACKGROUND_COLOR } from '../constants';
+import { Popper } from '../display/Popper';
 import { Container, ContainerProps } from '../layout/Container';
 import styles from './DateTimePicker.module.css';
 import { Input, InputProps } from './Input';
 
-type DateTimePickerProps = Omit<DatePickerProps, 'onChange' | 'placeholderText'> & {
+type DateTimePickerProps = {
   /** Close icon to clear Input */
   isClearable?: boolean;
   /** Label for input */
   label: string;
   /** input change callback */
   onChange?: (newValue: Date | null) => void;
-  /** default value of the input */
-  defaultValue?: Date | null;
-
-  includeTime?: boolean;
-  /** Date format  */
+  /** Date format using date-fns tokens */
   dateFormat?: string;
   disabled?: boolean;
   width?: ContainerProps['width'];
-};
-
-type DateTimePickerInputProps = Omit<InputProps, 'onChange'> & {
-  width: ContainerProps['width'];
-  isClearable: boolean;
-  onClear: ButtonProps['onClick'];
+  minDate?: Date;
+  maxDate?: Date;
+  /** Controlled selected date */
+  selected?: Date | null;
+  className?: string;
 };
 
 type InputIconsProps = Pick<ButtonProps, 'onClick' | 'disabled'> & {
@@ -73,102 +72,71 @@ const buildInputIcons = ({
     );
   };
 
-const DateTimePickerInput = ({
-  width,
-  onClear,
-  isClearable,
-  ...rest
-}: DateTimePickerInputProps & any) => {
-  const { value, onClick = (): void => undefined, disabled } = rest;
-
-  const InputIconsComponent = useMemo<InputProps['CustomIcon']>(
-    () => buildInputIcons({ showClear: isClearable && !!value, onClear, onClick, disabled }),
-    [disabled, isClearable, onClear, onClick, value],
-  );
-
-  return (
-    <Container width={width}>
-      <Input CustomIcon={InputIconsComponent} {...rest} />
-    </Container>
-  );
-};
+const noopOnChange = (): void => undefined;
 
 export const DateTimePicker = ({
   label,
-  includeTime = true,
   dateFormat = 'MMMM d, yyyy h:mm aa',
-  timeIntervals = 15,
   isClearable = false,
   onChange,
-  defaultValue = null,
+  selected,
   disabled,
   width,
-  ...datePickerProps
+  minDate,
+  maxDate,
+  className,
 }: DateTimePickerProps) => {
-  const dateTimeRef = useRef<Date | null>(defaultValue);
-  const [dateTime, _setDateTime] = useState(defaultValue);
-  const setDateTime = useCallback<
-    (
-      action:
-        | { type: 'SAVE' | 'SAVE_AND_UPDATE'; value: Date | null }
-        | { type: 'UPDATE'; value?: never },
-    ) => void
-  >(
-    ({ type, value: newValue }) => {
-      const currentValue = dateTimeRef.current;
-      switch (type) {
-        case 'SAVE':
-          dateTimeRef.current = newValue;
-          break;
-        case 'UPDATE':
-          _setDateTime(currentValue);
-          onChange?.(currentValue);
-          break;
-        case 'SAVE_AND_UPDATE':
-          dateTimeRef.current = newValue;
-          _setDateTime(newValue);
-          onChange?.(newValue);
-          break;
-        default:
-          break;
-      }
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const inputValue = useMemo(
+    () => (selected ? format(selected, dateFormat) : ''),
+    [selected, dateFormat],
+  );
+
+  const handleSelect = useCallback(
+    (date: Date | undefined) => {
+      onChange?.(date ?? null);
+      setIsOpen(false);
     },
     [onChange],
   );
 
-  useEffect(() => {
-    setDateTime({ type: 'SAVE_AND_UPDATE', value: defaultValue });
-  }, [defaultValue, setDateTime]);
-
-  const onClear = useCallback(() => {
-    setDateTime({ type: 'SAVE_AND_UPDATE', value: null });
-  }, [setDateTime]);
-
-  const onValueChange = useCallback(
-    (date: any) => {
-      // React-datepicker v9 returns Date[] | null, extract first date
-      const singleDate = Array.isArray(date) ? date[0] : date;
-      setDateTime({ type: 'SAVE', value: singleDate as Date | null });
+  const handleClear = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => {
+      e.stopPropagation();
+      onChange?.(null);
     },
-    [setDateTime],
+    [onChange],
   );
 
-  const defaultInputComponent = useMemo(() => {
-    return (
-      <DateTimePickerInput
-        backgroundColor={INPUT_BACKGROUND_COLOR}
-        description={undefined}
-        width={width ?? '15.625rem'}
-        label={label}
-        onClear={onClear}
-        isClearable={isClearable}
-      />
-    );
-  }, [isClearable, label, onClear, width]);
+  const toggleOpen = useCallback(() => {
+    if (!disabled) {
+      setIsOpen((prev) => !prev);
+    }
+  }, [disabled]);
 
-  const updateDateTime = useCallback<NonNullable<DatePickerProps['onCalendarClose']>>(() => {
-    setDateTime({ type: 'UPDATE' });
-  }, [setDateTime]);
+  const closePopper = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  const InputIconsComponent = useMemo<InputProps['CustomIcon']>(
+    () =>
+      buildInputIcons({
+        showClear: isClearable && !!selected,
+        onClear: handleClear,
+        onClick: toggleOpen,
+        disabled,
+      }),
+    [isClearable, selected, handleClear, toggleOpen, disabled],
+  );
+
+  const disabledMatcher = useMemo(() => {
+    const matchers: Array<{ before: Date } | { after: Date }> = [];
+    if (minDate) matchers.push({ before: minDate });
+    if (maxDate) matchers.push({ after: maxDate });
+    return matchers.length > 0 ? matchers : undefined;
+  }, [minDate, maxDate]);
 
   return (
     <Container
@@ -177,22 +145,27 @@ export const DateTimePicker = ({
       mainAlignment="flex-start"
       className={styles.styler}
     >
-      {/* @ts-expect-error - datePickerProps spread may include selectsMultiple as boolean */}
-      <DatePicker
-        showPopperArrow={false}
-        selected={dateTime}
-        onChange={onValueChange}
-        showTimeSelect={includeTime}
-        timeIntervals={timeIntervals}
-        dateFormat={dateFormat}
-        disabled={disabled}
-        customInput={defaultInputComponent}
-        placeholderText={label}
-        onCalendarClose={updateDateTime}
-        onSelect={updateDateTime}
-        onBlur={updateDateTime}
-        {...datePickerProps}
-      />
+      <div ref={anchorRef} className={className}>
+        <Container width={width ?? '15.625rem'}>
+          <Input
+            backgroundColor={INPUT_BACKGROUND_COLOR}
+            label={label}
+            value={inputValue}
+            onChange={noopOnChange}
+            CustomIcon={InputIconsComponent}
+            disabled={disabled}
+          />
+        </Container>
+      </div>
+      <Popper open={isOpen} anchorEl={anchorRef} placement="bottom-start" onClose={closePopper}>
+        <DayPicker
+          mode="single"
+          selected={selected ?? undefined}
+          onSelect={handleSelect}
+          disabled={disabledMatcher}
+          autoFocus
+        />
+      </Popper>
     </Container>
   );
 };
