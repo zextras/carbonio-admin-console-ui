@@ -6,7 +6,7 @@
 
 import '@daypicker/react/style.css';
 
-import { DayPicker,type Styles } from '@daypicker/react';
+import { DayPicker, type Styles } from '@daypicker/react';
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { format } from 'date-fns';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -32,7 +32,6 @@ type DatePickerProps = {
   maxDate?: Date;
   /** Controlled selected date */
   selected?: Date | null;
-  className?: string;
 };
 
 type InputIconsProps = Pick<ButtonProps, 'onClick' | 'disabled'> & {
@@ -123,7 +122,6 @@ export const DatePicker = ({
   width,
   minDate,
   maxDate,
-  className,
 }: DatePickerProps) => {
   const anchorRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -215,7 +213,7 @@ export const DatePicker = ({
       mainAlignment="flex-start"
       className={styles.styler}
     >
-      <div ref={anchorRef} className={className}>
+      <div ref={anchorRef}>
         <Container width={width ?? '15.625rem'}>
           <Input
             backgroundColor={INPUT_BACKGROUND_COLOR}
@@ -227,7 +225,12 @@ export const DatePicker = ({
           />
         </Container>
       </div>
-      <div popover="manual" ref={popoverRef} className={styles.popover} data-open={isOpen || undefined}>
+      <div
+        popover="manual"
+        ref={popoverRef}
+        className={styles.popover}
+        data-open={isOpen || undefined}
+      >
         <DayPicker
           mode="single"
           captionLayout="dropdown"

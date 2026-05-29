@@ -286,7 +286,6 @@ export const Features: FC<{
                         <DatePicker
                           disabled={!isGracePeriodEnabled}
                           width={'21.625rem'}
-                          className="fffff"
                           label={t(
                             'cos.features.gracePeriodExpirationDate',
                             'Set grace period expiration date',

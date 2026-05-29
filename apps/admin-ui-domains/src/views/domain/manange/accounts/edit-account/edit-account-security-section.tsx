@@ -1045,7 +1045,6 @@ const EditAccountSecuritySection: FC = () => {
                     <DatePicker
                       disabled={!isGracePeriodEnabled}
                       width={'21.625rem'}
-                      className="fffff"
                       label={t(
                         'domain.accounts.gracePeriodExpirationDate',
                         'Set grace period expiration date',

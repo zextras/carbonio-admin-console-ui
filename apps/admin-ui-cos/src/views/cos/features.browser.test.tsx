@@ -28,6 +28,7 @@ const mockProps = {
 
 const enabledProps = {
   ...mockProps,
+  cosLevelFeatures: true,
   featuresDetail: {
     carbonioFeatureOTPMgmtEnabled: 'TRUE',
     carbonioOtpWizardFromUntrusted: 'TRUE',
@@ -47,6 +48,7 @@ const enabledProps = {
 
 const disabledProps = {
   ...mockProps,
+  cosLevelFeatures: true,
   featuresDetail: {
     carbonioFeatureOTPMgmtEnabled: 'TRUE',
     carbonioOtpWizardFromUntrusted: 'TRUE',

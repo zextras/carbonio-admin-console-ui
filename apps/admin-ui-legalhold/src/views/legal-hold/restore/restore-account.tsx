@@ -600,7 +600,6 @@ const RestoreAccountView: FC<{
           >
             <Container crossAlignment="flex-start">
               <DatePicker
-                className="fffff"
                 label={t('label.account_status_on ', 'Account status on')}
                 onChange={handleFromDateChange}
                 dateFormat="dd/MM/yyyy"
@@ -643,7 +642,6 @@ const RestoreAccountView: FC<{
             >
               <Container crossAlignment="flex-start">
                 <DatePicker
-                  className="fffff"
                   isClearable
                   label={t('label.include_items_deleted_after', 'Include items deleted after')}
                   onChange={handleUndeleteFromDateChange}
