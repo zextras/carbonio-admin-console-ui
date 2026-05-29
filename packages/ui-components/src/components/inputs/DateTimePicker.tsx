@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import DatePicker, { type DatePickerProps } from 'react-datepicker';
 
 import { Button, ButtonProps } from '../basic/button/Button';
@@ -103,10 +103,15 @@ export const DateTimePicker = ({
   defaultValue = null,
   disabled,
   width,
+  selected: selectedProp,
   ...datePickerProps
 }: DateTimePickerProps) => {
+  const isControlled = selectedProp !== undefined;
   const dateTimeRef = useRef<Date | null>(defaultValue);
   const [dateTime, _setDateTime] = useState(defaultValue);
+
+  const currentValue = selectedProp ?? dateTime;
+
   const setDateTime = useCallback<
     (
       action:
@@ -115,30 +120,28 @@ export const DateTimePicker = ({
     ) => void
   >(
     ({ type, value: newValue }) => {
-      const currentValue = dateTimeRef.current;
       switch (type) {
         case 'SAVE':
           dateTimeRef.current = newValue;
+          if (!isControlled) _setDateTime(newValue);
           break;
-        case 'UPDATE':
-          _setDateTime(currentValue);
-          onChange?.(currentValue);
+        case 'UPDATE': {
+          const val = dateTimeRef.current;
+          if (!isControlled) _setDateTime(val);
+          onChange?.(val);
           break;
+        }
         case 'SAVE_AND_UPDATE':
           dateTimeRef.current = newValue;
-          _setDateTime(newValue);
+          if (!isControlled) _setDateTime(newValue);
           onChange?.(newValue);
           break;
         default:
           break;
       }
     },
-    [onChange],
+    [onChange, isControlled],
   );
-
-  useEffect(() => {
-    setDateTime({ type: 'SAVE_AND_UPDATE', value: defaultValue });
-  }, [defaultValue, setDateTime]);
 
   const onClear = useCallback(() => {
     setDateTime({ type: 'SAVE_AND_UPDATE', value: null });
@@ -146,7 +149,6 @@ export const DateTimePicker = ({
 
   const onValueChange = useCallback(
     (date: any) => {
-      // React-datepicker v9 returns Date[] | null, extract first date
       const singleDate = Array.isArray(date) ? date[0] : date;
       setDateTime({ type: 'SAVE', value: singleDate as Date | null });
     },
@@ -180,7 +182,7 @@ export const DateTimePicker = ({
       {/* @ts-expect-error - datePickerProps spread may include selectsMultiple as boolean */}
       <DatePicker
         showPopperArrow={false}
-        selected={dateTime}
+        selected={currentValue}
         onChange={onValueChange}
         showTimeSelect={includeTime}
         timeIntervals={timeIntervals}

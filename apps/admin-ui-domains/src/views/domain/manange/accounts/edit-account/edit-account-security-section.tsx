@@ -1038,7 +1038,7 @@ const EditAccountSecuritySection: FC = () => {
                       dateFormat="dd/MM/yyyy"
                       includeTime={false}
                       minDate={new Date()}
-                      defaultValue={gracePeriodDefaultDate}
+                      selected={gracePeriodDefaultDate}
                     />
                   </Row>
                 </Padding>
