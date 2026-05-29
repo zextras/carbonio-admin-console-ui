@@ -3,27 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import { Switch } from '@zextras/ui-components';
 import type { FC } from 'react';
 
-import type { CosFeaturesFormValues } from '../types';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type CosFeaturesFormApi = ReactFormExtendedApi<
-  CosFeaturesFormValues,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
->;
+import type { CosFeaturesFormApi, CosFeaturesFormValues } from '../types';
 
 type FeatureSwitchFieldProps = {
   form: CosFeaturesFormApi;
