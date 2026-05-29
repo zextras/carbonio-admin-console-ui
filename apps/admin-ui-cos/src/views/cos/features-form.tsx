@@ -135,17 +135,17 @@ export const FeaturesForm = ({
         id: { _content: zimbraId },
         a: (Object.keys(value) as Array<keyof CosFeaturesFormValues>)
           .filter(
-            (key) =>
-              key !== MOBILE_CALENDAR_FEATURE_SYNC && key !== MOBILE_CONTACT_FEATURE_SYNC,
+            (key) => key !== MOBILE_CALENDAR_FEATURE_SYNC && key !== MOBILE_CONTACT_FEATURE_SYNC,
           )
           .map((key) => ({ n: key, _content: value[key] ?? '' })),
       };
 
-      modifyCosMutation.mutate(body, {
-        onSuccess: () => {
-          form.reset(value, { keepDefaultValues: true });
-        },
-      });
+      try {
+        await modifyCosMutation.mutateAsync(body);
+        form.reset(value, { keepDefaultValues: true });
+      } catch {
+        // useModifyCos.onError already shows the error snackbar
+      }
     },
   });
 
