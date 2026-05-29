@@ -9,7 +9,7 @@ import {
   ChipInput,
   Container,
   CustomHeaderFactory,
-  DateTimePicker,
+  DatePicker,
   HorizontalWizard,
   HoverableRowFactory,
   InheritedInput,
@@ -1042,7 +1042,7 @@ const EditAccountSecuritySection: FC = () => {
               <ListRow padding={{ top: 'large' }}>
                 <Padding left={'extralarge'} width="100%">
                   <Row width="100%">
-                    <DateTimePicker
+                    <DatePicker
                       disabled={!isGracePeriodEnabled}
                       width={'21.625rem'}
                       className="fffff"

@@ -5,7 +5,7 @@
  */
 import {
   Container,
-  DateTimePicker,
+  DatePicker,
   InheritedSwitch,
   ListRow,
   Padding,
@@ -283,7 +283,7 @@ export const Features: FC<{
                   <ListRow padding={{ top: 'large' }}>
                     <Padding left={'extralarge'} width="100%">
                       <Row width="100%">
-                        <DateTimePicker
+                        <DatePicker
                           disabled={!isGracePeriodEnabled}
                           width={'21.625rem'}
                           className="fffff"

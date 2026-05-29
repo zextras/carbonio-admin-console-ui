@@ -24,7 +24,7 @@ const mockLegalHoldAccount: BackupAccountItem = {
 const mockSetIsShowRestoreView = () => {};
 
 describe('RestoreAccountView (browser)', () => {
-  describe('DateTimePicker', () => {
+  describe('DatePicker', () => {
     it('should render the Account status on date picker', async () => {
       setupBrowserTest(
         <RestoreAccountView

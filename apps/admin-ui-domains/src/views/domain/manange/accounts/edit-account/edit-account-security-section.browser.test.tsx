@@ -1187,7 +1187,7 @@ describe('EditAccountSecuritySection (browser)', () => {
     });
   });
 
-  describe('DateTimePicker', () => {
+  describe('DatePicker', () => {
     const enabledOtpContext = {
       ...mockContextValue,
       accountDetail: {

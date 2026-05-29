@@ -14,10 +14,10 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import { Button, ButtonProps } from '../basic/button/Button';
 import { INPUT_BACKGROUND_COLOR } from '../constants';
 import { Container, ContainerProps } from '../layout/Container';
-import styles from './DateTimePicker.module.css';
+import styles from './DatePicker.module.css';
 import { Input, InputProps } from './Input';
 
-type DateTimePickerProps = {
+type DatePickerProps = {
   /** Close icon to clear Input */
   isClearable?: boolean;
   /** Label for input */
@@ -113,7 +113,7 @@ const dayPickerStyles: Partial<Styles> = {
   chevron: { fill: 'var(--color-text-regular)' },
 };
 
-export const DateTimePicker = ({
+export const DatePicker = ({
   label,
   dateFormat = 'MMMM d, yyyy h:mm aa',
   isClearable = false,
@@ -124,7 +124,7 @@ export const DateTimePicker = ({
   minDate,
   maxDate,
   className,
-}: DateTimePickerProps) => {
+}: DatePickerProps) => {
   const anchorRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);

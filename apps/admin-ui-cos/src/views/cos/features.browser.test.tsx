@@ -90,7 +90,7 @@ describe('Features (browser)', () => {
     expect(setFeaturesDetail).toHaveBeenCalled();
   });
 
-  describe('DateTimePicker', () => {
+  describe('DatePicker', () => {
     it('should render grace period expiration date picker when grace period is enabled', async () => {
       setupAdvancedTest(<Features {...enabledProps} />);
 

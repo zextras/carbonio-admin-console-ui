@@ -8,7 +8,7 @@ import {
   Button,
   Container,
   CustomHeaderFactory,
-  DateTimePicker,
+  DatePicker,
   DropDownInput,
   HoverableRowFactory,
   Input,
@@ -599,7 +599,7 @@ const RestoreAccountView: FC<{
             height="auto"
           >
             <Container crossAlignment="flex-start">
-              <DateTimePicker
+              <DatePicker
                 className="fffff"
                 label={t('label.account_status_on ', 'Account status on')}
                 onChange={handleFromDateChange}
@@ -642,7 +642,7 @@ const RestoreAccountView: FC<{
               height="auto"
             >
               <Container crossAlignment="flex-start">
-                <DateTimePicker
+                <DatePicker
                   className="fffff"
                   isClearable
                   label={t('label.include_items_deleted_after', 'Include items deleted after')}

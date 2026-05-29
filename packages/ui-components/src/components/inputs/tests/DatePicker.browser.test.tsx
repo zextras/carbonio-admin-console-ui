@@ -9,7 +9,7 @@ import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
-import { DateTimePicker } from '../DateTimePicker';
+import { DatePicker } from '../DatePicker';
 
 const ControlledDatePicker = ({
   initialDate = null,
@@ -28,7 +28,7 @@ const ControlledDatePicker = ({
 }): React.JSX.Element => {
   const [selected, setSelected] = useState<Date | null>(initialDate);
   return (
-    <DateTimePicker
+    <DatePicker
       label="Pick a date"
       selected={selected}
       onChange={setSelected}
@@ -41,7 +41,7 @@ const ControlledDatePicker = ({
   );
 };
 
-describe('DateTimePicker', () => {
+describe('DatePicker', () => {
   describe('Rendering', () => {
     it('renders the input with the provided label as placeholder', async () => {
       await render(<ControlledDatePicker />);
