@@ -25,6 +25,7 @@ import { GeneralSection } from './features/sections/general-section';
 import { MailSection } from './features/sections/mail-section';
 import { TwoFactorSection } from './features/sections/two-factor-section';
 import type { CosFeaturesFormValues } from './types';
+import { buildCosDataMap } from './utils';
 
 const COS_FEATURE_DEFAULTS: CosFeaturesFormValues = {
   carbonioFeatureMailsAppEnabled: 'FALSE',
@@ -45,6 +46,8 @@ const COS_FEATURE_DEFAULTS: CosFeaturesFormValues = {
   mobileCalendarFeatureSync: 'FALSE',
 };
 
+const COS_FEATURE_ALLOWED_KEYS = new Set<string>(Object.keys(COS_FEATURE_DEFAULTS));
+
 function enabledToBool(value: string | undefined): string {
   return value === 'enabled' ? 'TRUE' : 'FALSE';
 }
@@ -53,18 +56,9 @@ function buildDefaultValues(
   cosInformation: Array<Attribute> | undefined,
   mobileAttributesData: GetCoreAttributesResponse | undefined,
 ): CosFeaturesFormValues {
-  const fromServer: Partial<CosFeaturesFormValues> = {};
-  if (cosInformation?.length) {
-    const allowed = new Set<string>(Object.keys(COS_FEATURE_DEFAULTS));
-    cosInformation.forEach((item) => {
-      if (item?.n && allowed.has(item.n)) {
-        (fromServer as Record<string, string>)[item.n] = item._content;
-      }
-    });
-  }
   return {
     ...COS_FEATURE_DEFAULTS,
-    ...fromServer,
+    ...buildCosDataMap(cosInformation, COS_FEATURE_ALLOWED_KEYS),
     mobileContactFeatureSync: enabledToBool(
       mobileAttributesData?.attributes?.mobileContactFeatureSync?.[0]?.value,
     ),
