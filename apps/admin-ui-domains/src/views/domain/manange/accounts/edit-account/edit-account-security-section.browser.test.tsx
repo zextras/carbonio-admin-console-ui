@@ -582,7 +582,9 @@ describe('EditAccountSecuritySection (browser)', () => {
           <EditAccountSecuritySection />
         </AccountContext.Provider>,
       );
-      await expect.element(page.getByText('Two-Factor authenticator', { exact: true })).toBeVisible();
+      await expect
+        .element(page.getByText('Two-Factor authenticator', { exact: true }))
+        .toBeVisible();
       await expect.element(page.getByText('This list is empty.')).toBeVisible();
     });
 
@@ -605,7 +607,9 @@ describe('EditAccountSecuritySection (browser)', () => {
           <EditAccountSecuritySection />
         </AccountContext.Provider>,
       );
-      await expect.element(page.getByText('Two-Factor authenticator', { exact: true })).toBeVisible();
+      await expect
+        .element(page.getByText('Two-Factor authenticator', { exact: true }))
+        .toBeVisible();
     });
 
     it('should render NEW OTP and DELETE buttons', async () => {
@@ -1227,9 +1231,7 @@ describe('EditAccountSecuritySection (browser)', () => {
         </AccountContext.Provider>,
       );
 
-      await expect
-        .element(page.getByPlaceholder('Set grace period expiration date'))
-        .toBeVisible();
+      await expect.element(page.getByPlaceholder('Set grace period expiration date')).toBeVisible();
     });
 
     it('should disable the date picker when grace period is disabled', async () => {
@@ -1251,9 +1253,7 @@ describe('EditAccountSecuritySection (browser)', () => {
         </AccountContext.Provider>,
       );
 
-      await expect
-        .element(page.getByPlaceholder('Set grace period expiration date'))
-        .toBeEnabled();
+      await expect.element(page.getByPlaceholder('Set grace period expiration date')).toBeEnabled();
     });
 
     it('should open the calendar popover when the calendar icon is clicked', async () => {
