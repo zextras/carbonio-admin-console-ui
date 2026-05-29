@@ -9,7 +9,7 @@ import '@daypicker/react/style.css';
 import { DayPicker } from '@daypicker/react';
 import { computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { format } from 'date-fns';
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import { Button, ButtonProps } from '../basic/button/Button';
 import { INPUT_BACKGROUND_COLOR } from '../constants';
@@ -120,6 +120,17 @@ export const DateTimePicker = ({
       popover.style.left = `${x}px`;
       popover.style.top = `${y}px`;
     });
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e: MouseEvent): void => {
+      const target = e.target as Node;
+      if (popoverRef.current?.contains(target) || anchorRef.current?.contains(target)) return;
+      setIsOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
   const handleSelect = useCallback(
