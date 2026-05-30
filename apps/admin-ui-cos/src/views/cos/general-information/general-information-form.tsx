@@ -54,6 +54,19 @@ type GeneralInformationFormProps = {
   readonlyCOS: boolean;
 };
 
+type StatusColorMap = Record<string, { color: string; label: string }>;
+
+function buildStatusColorMap(t: (key: string, defaultValue: string) => string): StatusColorMap {
+  return {
+    active: { color: '#8BC34A', label: t('label.active', 'Active') },
+    maintenance: { color: '#2196D3', label: t('label.in_maintenance', 'In maintenance') },
+    locked: { color: '#D74942', label: t('label.locked', 'Locked') },
+    closed: { color: '#828282', label: t('label.closed', 'Closed') },
+    pending: { color: '#828282', label: t('label.pending', 'Pending') },
+    lockout: { color: '#D74942', label: t('label.lockout', 'Lockout') },
+  };
+}
+
 function processAttributes(
   attributes: Array<Attribute> | undefined,
   record: Record<string, unknown>,
@@ -234,14 +247,7 @@ export const GeneralInformationForm = ({
   const [domainOffset, setDomainOffset] = useState<number>(0);
   const debouncedDomainSearch = useDebouncedValue(searchDomainString, 700);
 
-  const STATUS_COLOR: Record<string, { color: string; label: string }> = {
-    active: { color: '#8BC34A', label: t('label.active', 'Active') },
-    maintenance: { color: '#2196D3', label: t('label.in_maintenance', 'In maintenance') },
-    locked: { color: '#D74942', label: t('label.locked', 'Locked') },
-    closed: { color: '#828282', label: t('label.closed', 'Closed') },
-    pending: { color: '#828282', label: t('label.pending', 'Pending') },
-    lockout: { color: '#D74942', label: t('label.lockout', 'Lockout') },
-  };
+  const STATUS_COLOR = buildStatusColorMap(t);
 
   const {
     data: accountsData,
