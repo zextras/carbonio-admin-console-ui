@@ -5,7 +5,7 @@
  */
 import { ListItems, ListItemType, ListPanelItem } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { COS_LIST, IS_GENERAL_LIST_EXPANDED } from '../../constants';
@@ -15,7 +15,10 @@ type GeneralListPanelProps = {
   selectedOperationItem?: string | null;
 };
 
-const GeneralListPanel: FC<GeneralListPanelProps> = ({ generalOptionItems, selectedOperationItem }) => {
+export const GeneralListPanel = ({
+  generalOptionItems,
+  selectedOperationItem,
+}: GeneralListPanelProps) => {
   const [t] = useTranslation();
   const [isGeneralListExpanded, setIsGeneralListExpanded] = useState(true);
 
@@ -61,5 +64,3 @@ const GeneralListPanel: FC<GeneralListPanelProps> = ({ generalOptionItems, selec
     </>
   );
 };
-
-export default GeneralListPanel;

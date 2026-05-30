@@ -15,7 +15,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { ChangeEvent, FC, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute } from '../../../types/attribute';
@@ -23,7 +23,7 @@ import { CosResponse } from '../../../types/cos';
 import { GENERAL_INFORMATION } from '../../constants';
 import { createCos } from '../../services/create-cos';
 
-export const CreateCos: FC = () => {
+export const CreateCos = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [zimbraNotes, setZimbraNotes] = useState<string>('');
@@ -215,4 +215,3 @@ export const CreateCos: FC = () => {
     </>
   );
 };
-export default CreateCos;

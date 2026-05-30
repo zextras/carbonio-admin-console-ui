@@ -16,7 +16,7 @@ import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import CreateCos from '../create-new-cos';
+import { CreateCos } from '../create-new-cos';
 
 vi.mock('@zextras/ui-shared', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
