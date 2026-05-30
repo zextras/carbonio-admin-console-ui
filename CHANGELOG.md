@@ -1,3 +1,9 @@
+## [0.13.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.3...v0.13.4) (2026-05-29)
+
+### Other changes
+
+* migrate DateTimePicker to DayPicker ([9478a7a](https://github.com/zextras/carbonio-admin-console-ui/commit/9478a7a98f4025bdf24c4cdc0661fcff693515ab))
+
 ## [0.13.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.2...v0.13.3) (2026-05-26)
 
 ### Other changes
