@@ -304,7 +304,13 @@ export const GeneralInformationForm = ({
         id: { _content: zimbraId },
       };
 
-      if (originalCn !== value.cn) {
+      if (originalCn === value.cn) {
+        modifyCosMutation.mutate(body, {
+          onSuccess: () => {
+            form.reset(value, { keepDefaultValues: true });
+          },
+        });
+      } else {
         const renameBody = {
           _jsns: ZIMBRA_ADMIN_URN,
           id: { _content: zimbraId },
@@ -329,12 +335,6 @@ export const GeneralInformationForm = ({
             replace: true,
           });
         }
-      } else {
-        modifyCosMutation.mutate(body, {
-          onSuccess: () => {
-            form.reset(value, { keepDefaultValues: true });
-          },
-        });
       }
     },
   });
