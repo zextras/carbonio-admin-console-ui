@@ -15,7 +15,12 @@ type FeatureSwitchFieldProps = {
   disabled?: boolean;
 };
 
-const FeatureSwitchField: FC<FeatureSwitchFieldProps> = ({ form, name, label, disabled }) => (
+export const FeatureSwitchField: FC<FeatureSwitchFieldProps> = ({
+  form,
+  name,
+  label,
+  disabled,
+}) => (
   <form.Field name={name}>
     {(field) => (
       <Switch
@@ -28,5 +33,3 @@ const FeatureSwitchField: FC<FeatureSwitchFieldProps> = ({ form, name, label, di
     )}
   </form.Field>
 );
-
-export { FeatureSwitchField, type FeatureSwitchFieldProps };
