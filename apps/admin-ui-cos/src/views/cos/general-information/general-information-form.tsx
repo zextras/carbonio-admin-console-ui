@@ -8,19 +8,14 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
-  CustomHeaderFactory,
   CustomTextArea,
-  HoverableRowFactory,
   Input,
   LabeledValue,
   ListRow,
   Modal,
   Padding,
-  Paging,
   Row,
-  Table,
   Tooltip,
-  TrackNumberPerPage,
   type TRow,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -30,7 +25,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { Attribute } from '../../../../types/attribute';
-import logo from '../../../assets/gardian.svg';
 import { DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { deleteCOS } from '../../../services/delete-cos-service';
@@ -43,7 +37,7 @@ import { useTotalAccounts } from '../../../services/use-total-accounts';
 import { useTotalDomains } from '../../../services/use-total-domains';
 import { FormPageLayout } from '../../form-page-layout';
 import { getDateFromStr, getFormatedDate } from '../../utility/utils';
-import { FunnelSearchIcon } from '../funnel-search-icon';
+import { SearchableTable } from './searchable-table';
 
 type DirectoryItem = {
   a?: Array<Attribute>;
@@ -513,221 +507,38 @@ export const GeneralInformationForm = ({
             </ListRow>
           </Container>
         </Row>
-        <Row width="100%" padding={{ vertical: 'large' }}>
-          <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-            <ds-text as="strong" size="medium" weight="bold" color="gray0">
-              {t('cos.domains_that_use_this_cos', 'Domains that use this COS')}
-            </ds-text>
-          </Row>
-        </Row>
-        <Row
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          width="fill"
-        >
-          <Container padding={{ all: 'small' }}>
-            <Input
-              label={t('label.search_for_a_domain', `Search for a domain`)}
-              disabled={domainList.length === 0 && searchDomainString.length === 0}
-              value={searchDomainString}
-              backgroundColor="gray5"
-              onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                setSearchDomainString(e.target.value);
-              }}
-              CustomIcon={FunnelSearchIcon}
-            />
-          </Container>
-        </Row>
-        <Row
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          width="fill"
-          style={{
-            height: 'calc(100vh - 21.25rem)',
-            position: 'relative',
-          }}
-        >
-          <Container padding={{ all: 'small' }}>
-            <Table
-              rows={isDomainRequestInProgress && !isDomainPlaceholderData ? [] : domainList}
-              headers={domainHeaders}
-              showCheckbox={false}
-              multiSelect={false}
-              style={{
-                overflow: 'auto',
-                height: '100%',
-              }}
-              RowFactory={HoverableRowFactory}
-              HeaderFactory={CustomHeaderFactory}
-            />
-            {isDomainFetching && !isDomainPlaceholderData && (
-              <Container
-                crossAlignment="center"
-                mainAlignment="center"
-                height="auto"
-                padding={{ top: 'medium' }}
-              >
-                <ds-spinner></ds-spinner>
-              </Container>
-            )}
-            {domainList.length === 0 && !isDomainFetching && (
-              <Container
-                orientation="column"
-                crossAlignment="center"
-                mainAlignment="center"
-                style={{ marginTop: '1rem' }}
-              >
-                <Row>
-                  <img src={logo} alt="logo" />
-                </Row>
-                <Row
-                  padding={{ top: 'extralarge' }}
-                  orientation="vertical"
-                  crossAlignment="center"
-                  style={{ textAlign: 'center' }}
-                >
-                  <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
-                    {t('label.this_list_is_empty', 'This list is empty.')}
-                  </ds-text>
-                </Row>
-              </Container>
-            )}
-            {domainList.length !== 0 && (
-              <Container
-                orientation="horizontal"
-                mainAlignment="space-between"
-                width="100%"
-                style={{ position: 'absolute', bottom: '-4rem' }}
-                height="auto"
-                padding={{ all: 'large' }}
-              >
-                <Container crossAlignment="flex-start" padding={{ all: 'small' }}>
-                  <Paging totalItem={totalDomains} setOffset={setDomainOffset} pageSize={limit} />
-                </Container>
-                <Container
-                  crossAlignment="flex-end"
-                  orientation="horizontal"
-                  mainAlignment="flex-end"
-                  padding={{ all: 'small' }}
-                >
-                  <TrackNumberPerPage setPageSize={setLimit} />
-                </Container>
-              </Container>
-            )}
-          </Container>
-        </Row>
-        <Row
-          width="100%"
-          padding={{ vertical: 'large' }}
-          style={{ marginTop: domainList.length > 0 ? '3rem' : '0rem' }}
-        >
-          <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
-            <ds-text as="strong" size="medium" weight="bold" color="gray0">
-              {t('cos.accounts_that_use_this_cos', 'Accounts that use this COS')}
-            </ds-text>
-          </Row>
-        </Row>
-        <Row
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          width="fill"
-        >
-          <Container padding={{ all: 'small' }}>
-            <Input
-              label={t('label.search_for_an_account', `Search for an account`)}
-              disabled={accountList.length === 0 && searchAccountString.length === 0}
-              value={searchAccountString}
-              backgroundColor="gray5"
-              onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                setSearchAccountString(e.target.value);
-              }}
-              CustomIcon={FunnelSearchIcon}
-            />
-          </Container>
-        </Row>
-        <Row
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          width="fill"
-          style={{
-            height: 'calc(100vh - 21.25rem)',
-            position: 'relative',
-          }}
-          padding={{ bottom: 'large' }}
-        >
-          <Container padding={{ all: 'small' }}>
-            <Table
-              rows={isAccountRequestInProgress && !isAccountPlaceholderData ? [] : accountList}
-              headers={accountHeaders}
-              showCheckbox={false}
-              multiSelect={false}
-              style={{
-                overflow: 'auto',
-                height: '100%',
-              }}
-              RowFactory={HoverableRowFactory}
-              HeaderFactory={CustomHeaderFactory}
-            />
-            {isAccountFetching && !isAccountPlaceholderData && (
-              <Container
-                crossAlignment="center"
-                mainAlignment="center"
-                height="auto"
-                padding={{ top: 'medium' }}
-              >
-                <ds-spinner></ds-spinner>
-              </Container>
-            )}
-            {accountList.length === 0 && !isAccountFetching && (
-              <Container
-                orientation="column"
-                crossAlignment="center"
-                mainAlignment="center"
-                style={{ marginTop: '1rem' }}
-              >
-                <Row>
-                  <img src={logo} alt="logo" />
-                </Row>
-                <Row
-                  padding={{ top: 'extralarge' }}
-                  orientation="vertical"
-                  crossAlignment="center"
-                  style={{ textAlign: 'center' }}
-                >
-                  <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
-                    {t('label.this_list_is_empty', 'This list is empty.')}
-                  </ds-text>
-                </Row>
-              </Container>
-            )}
-            {accountList.length !== 0 && (
-              <Container
-                orientation="horizontal"
-                mainAlignment="space-between"
-                width="100%"
-                style={{ position: 'absolute', bottom: '-4rem' }}
-                height="auto"
-                padding={{ all: 'large' }}
-              >
-                <Container crossAlignment="flex-start" padding={{ all: 'small' }}>
-                  <Paging totalItem={totalAccounts} setOffset={setOffset} pageSize={accountLimit} />
-                </Container>
-                <Container
-                  crossAlignment="flex-end"
-                  orientation="horizontal"
-                  mainAlignment="flex-end"
-                  padding={{ all: 'small' }}
-                >
-                  <TrackNumberPerPage setPageSize={setAccountLimit} />
-                </Container>
-              </Container>
-            )}
-          </Container>
-        </Row>
+        <SearchableTable
+          title={t('cos.domains_that_use_this_cos', 'Domains that use this COS')}
+          searchLabel={t('label.search_for_a_domain', 'Search for a domain')}
+          searchValue={searchDomainString}
+          onSearchChange={setSearchDomainString}
+          rows={domainList}
+          headers={domainHeaders}
+          totalItems={totalDomains}
+          pageSize={limit}
+          onOffsetChange={setDomainOffset}
+          onPageSizeChange={setLimit}
+          isPending={isDomainRequestInProgress}
+          isFetching={isDomainFetching}
+          isPlaceholderData={isDomainPlaceholderData}
+        />
+        <SearchableTable
+          title={t('cos.accounts_that_use_this_cos', 'Accounts that use this COS')}
+          searchLabel={t('label.search_for_an_account', 'Search for an account')}
+          searchValue={searchAccountString}
+          onSearchChange={setSearchAccountString}
+          rows={accountList}
+          headers={accountHeaders}
+          totalItems={totalAccounts}
+          pageSize={accountLimit}
+          onOffsetChange={setOffset}
+          onPageSizeChange={setAccountLimit}
+          isPending={isAccountRequestInProgress}
+          isFetching={isAccountFetching}
+          isPlaceholderData={isAccountPlaceholderData}
+          hasBottomPadding
+          marginTopStyle={{ marginTop: domainList.length > 0 ? '3rem' : '0rem' }}
+        />
       </Container>
       <Row
         width="100%"
