@@ -16,7 +16,7 @@ import {
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
@@ -33,41 +33,54 @@ type ZimbraCosAttribute = {
 type ZimbraCosEntry = {
   name: string;
   id: string;
-  a: ZimbraCosAttribute[];
+  a: Array<ZimbraCosAttribute>;
   zimbraCosType: string;
   zimbraCosStatus: string;
   zimbraCosName: string;
   zimbraId: string;
 };
 
-const STATUS_COLOR = {
-  active: 'success',
-  maintenance: 'info',
-  locked: 'error',
-  closed: 'gray1',
-  pending: 'gray1',
-  lockout: 'error',
+const STATUS_CONFIG = {
+  active: { color: 'success', labelKey: 'label.active', labelDefault: 'Active' },
+  maintenance: { color: 'info', labelKey: 'label.in_maintenance', labelDefault: 'In maintenance' },
+  locked: { color: 'error', labelKey: 'label.locked', labelDefault: 'Locked' },
+  closed: { color: 'gray1', labelKey: 'label.closed', labelDefault: 'Closed' },
+  pending: { color: 'gray1', labelKey: 'label.pending', labelDefault: 'Pending' },
+  lockout: { color: 'error', labelKey: 'label.lockout', labelDefault: 'Lockout' },
 } as const;
 
-const STATUS_LABEL_KEYS: Record<string, string> = {
-  active: 'label.active',
-  maintenance: 'label.in_maintenance',
-  locked: 'label.locked',
-  closed: 'label.closed',
-  pending: 'label.pending',
-  lockout: 'label.lockout',
-};
+const DEBOUNCE_SEARCH_DELAY = 700;
+const DEBOUNCE_RESIZE_DELAY = 100;
+const TABLE_VIEWPORT_OFFSET = 375;
+const HEADER_HEIGHT = '3.625rem';
 
-const STATUS_LABEL_DEFAULTS: Record<string, string> = {
-  active: 'Active',
-  maintenance: 'In maintenance',
-  locked: 'Locked',
-  closed: 'Closed',
-  pending: 'Pending',
-  lockout: 'Lockout',
-};
+function parseCosAttributes(attributes: Array<ZimbraCosAttribute>): {
+  zimbraCosType: string;
+  zimbraCosStatus: string;
+  zimbraCosName: string;
+  zimbraId: string;
+} {
+  const map: Record<string, string> = {};
+  attributes.forEach((attr) => {
+    map[attr.n] = attr._content;
+  });
+  return {
+    zimbraCosType: map.zimbraCosType ?? '',
+    zimbraCosStatus: map.zimbraCosStatus ?? 'active',
+    zimbraCosName: map.zimbraCosName ?? '',
+    zimbraId: map.zimbraId ?? '',
+  };
+}
 
-export const CosList: FC = () => {
+function getStatusDisplay(status: string, t: (key: string, defaultValue: string) => string) {
+  const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG];
+  return {
+    color: config?.color ?? 'gray1',
+    label: t(config?.labelKey ?? 'label.active', config?.labelDefault ?? 'Active'),
+  };
+}
+
+export const CosList = () => {
   const [t] = useTranslation();
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [isTableTooTall, setIsTableTooTall] = useState(false);
@@ -102,108 +115,89 @@ export const CosList: FC = () => {
   const cosListResponse = data?.cos || [];
   const totalCos = data?.searchTotal || 0;
 
-  const onCosSelect = (Cos: ZimbraCosEntry) => {
-    replaceHistory(`/${Cos.id}/${GENERAL_INFORMATION}`);
+  const onCosSelect = (cosEntry: ZimbraCosEntry) => {
+    replaceHistory(`/${cosEntry.id}/${GENERAL_INFORMATION}`);
   };
 
-  const cosList = (() => {
-    if (!cosListResponse || !Array.isArray(cosListResponse)) return [];
+  const cosList = Array.isArray(cosListResponse)
+    ? cosListResponse.map((item) => {
+        const parsed = parseCosAttributes(item.a ?? []);
+        const cosItem: ZimbraCosEntry = {
+          name: item.name,
+          id: item.id,
+          a: item.a,
+          ...parsed,
+        };
+        const { color: statusColor, label: statusLabel } = getStatusDisplay(
+          cosItem.zimbraCosStatus,
+          t,
+        );
+        return {
+          id: item.id,
+          columns: [
+            <ds-text as="span" size="small" key="name" color="gray0" weight="regular">
+              {item.name || ' '}
+            </ds-text>,
 
-    return cosListResponse.map((item) => {
-      const CosIteam: ZimbraCosEntry = {
-        name: item.name,
-        id: item.id,
-        zimbraCosType: '',
-        zimbraCosStatus: 'active',
-        zimbraCosName: '',
-        zimbraId: '',
-        a: item.a,
-      };
-      item?.a?.forEach((ele: ZimbraCosAttribute) => {
-        if (ele.n === 'zimbraCosType') {
-          CosIteam.zimbraCosType = ele._content;
-        } else if (ele.n === 'zimbraCosStatus') {
-          CosIteam.zimbraCosStatus = ele._content;
-        } else if (ele.n === 'zimbraCosName') {
-          CosIteam.zimbraCosName = ele._content;
-        } else if (ele.n === 'zimbraId') {
-          CosIteam.zimbraId = ele._content;
-        }
-      });
-      const status = CosIteam.zimbraCosStatus;
-      const statusColor = STATUS_COLOR[status as keyof typeof STATUS_COLOR] ?? 'gray1';
-      const statusLabel = t(
-        STATUS_LABEL_KEYS[status] ?? 'label.active',
-        STATUS_LABEL_DEFAULTS[status] ?? 'Active',
-      );
-      return {
-        id: item?.id,
-        columns: [
-          <ds-text
-            as="span"
-            size="small"
-            key={item?.id}
-            color="gray0"
-            weight="regular"
-            onClick={(): void => {
-              onCosSelect(CosIteam);
-            }}
-          >
-            {item?.name || ' '}
-          </ds-text>,
+            <ds-text as="span" size="small" weight="light" key="status" color={statusColor}>
+              {statusLabel}
+            </ds-text>,
+          ],
+          item: cosItem,
+          clickable: true,
+          onClick: (): void => {
+            onCosSelect(cosItem);
+          },
+        };
+      })
+    : [];
 
-          <ds-text
-            as="span"
-            size="small"
-            weight="light"
-            key={item?.id}
-            color={statusColor}
-            onClick={(): void => {
-              onCosSelect(CosIteam);
-            }}
-          >
-            {statusLabel}
-          </ds-text>,
-        ],
-        iteam: CosIteam,
-        clickable: true,
-      };
-    });
-  })();
-
-  const searchcosListRef = useRef(
+  const searchCosListRef = useRef(
     debounce((searchText: string) => {
       setSearchQuery(searchText);
-    }, 700),
+    }, DEBOUNCE_SEARCH_DELAY),
   );
   useEffect(() => {
-    searchcosListRef.current(searchString);
-  }, [offset, searchString]);
+    if (searchString || offset === 0) {
+      setOffset(0);
+    }
+    searchCosListRef.current(searchString);
+  }, [searchString]);
+
+  useEffect(() => {
+    searchCosListRef.current(searchString);
+  }, [offset]);
 
   useEffect(() => {
     const table = tableRef.current;
+    if (!table) return;
 
     const handleResize = debounce((): void => {
-      if (table) {
-        const tableHeight = table.clientHeight + 375;
-        const viewportHeight = window.innerHeight;
-        setIsTableTooTall(tableHeight > viewportHeight);
-      }
-    }, 100);
+      const tableHeight = table.clientHeight + TABLE_VIEWPORT_OFFSET;
+      const viewportHeight = window.innerHeight;
+      setIsTableTooTall(tableHeight > viewportHeight);
+    }, DEBOUNCE_RESIZE_DELAY);
 
-    if (table && !resizeObserverRef.current) {
+    if (!resizeObserverRef.current) {
       const observer = new ResizeObserver(handleResize);
       resizeObserverRef.current = observer;
       observer.observe(table);
     }
 
     return () => {
+      handleResize.cancel();
       if (resizeObserverRef.current) {
         resizeObserverRef.current.disconnect();
         resizeObserverRef.current = null;
       }
     };
   }, []);
+
+  if (isPending) {
+    return <ds-page-shimmer></ds-page-shimmer>;
+  }
+
+  const showEmptyState = cosList.length === 0;
 
   return (
     <Container
@@ -216,7 +210,7 @@ export const CosList: FC = () => {
           orientation="vertical"
           mainAlignment="space-around"
           background="gray6"
-          height="3.625rem"
+          height={HEADER_HEIGHT}
         >
           <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
             <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
@@ -254,7 +248,7 @@ export const CosList: FC = () => {
               <Container>
                 <Input
                   label={t('label.i_am_looking_for_this_Cos', `I'm looking for this Cos…`)}
-                  disabled={cosList.length === 0 && searchString.length === 0 && isError}
+                  disabled={showEmptyState && searchString.length === 0 && isError}
                   value={searchString}
                   backgroundColor="gray5"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -274,29 +268,34 @@ export const CosList: FC = () => {
               }}
             >
               <Table
-                rows={isPending ? [] : cosList}
+                rows={cosList}
                 headers={headers}
                 showCheckbox={false}
                 multiSelect={false}
                 ref={tableRef}
                 style={{
                   overflow: 'auto',
-                  height: isPending || cosList.length === 0 ? '50%' : '100%',
+                  height: cosList.length === 0 ? '50%' : '100%',
                 }}
                 RowFactory={HoverableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
-              {isPending && (
+              {isError && (
                 <Container
+                  orientation="column"
                   crossAlignment="center"
                   mainAlignment="center"
-                  height="auto"
-                  padding={{ top: 'medium' }}
+                  padding={{ top: 'extralarge' }}
                 >
-                  <ds-spinner></ds-spinner>
+                  <ds-text as="p" weight="light" color="error" size="large">
+                    {t(
+                      'label.error_loading_cos_list',
+                      'Failed to load COS list. Please try again.',
+                    )}
+                  </ds-text>
                 </Container>
               )}
-              {cosList.length === 0 && !isPending && (
+              {showEmptyState && !isError && (
                 <Container orientation="column" crossAlignment="center" mainAlignment="center">
                   <Row>
                     <img src={logo} alt="logo" />
@@ -307,13 +306,7 @@ export const CosList: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <ds-text
-                      as="p"
-                      weight="light"
-                      color="gray1"
-                      size="large"
-                      overflow="break-word"
-                    >
+                    <ds-text as="p" weight="light" color="gray1" size="large" overflow="break-word">
                       {t('label.this_list_is_empty', 'This list is empty.')}
                     </ds-text>
                   </Row>
@@ -324,13 +317,7 @@ export const CosList: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <ds-text
-                      as="p"
-                      weight="light"
-                      color="gray1"
-                      size="large"
-                      overflow="break-word"
-                    >
+                    <ds-text as="p" weight="light" color="gray1" size="large" overflow="break-word">
                       <Trans
                         i18nKey="label.create_Cos_list_msg"
                         defaults="You can create a new Cos by clicking on <bold>Create</bold> button on header menu"

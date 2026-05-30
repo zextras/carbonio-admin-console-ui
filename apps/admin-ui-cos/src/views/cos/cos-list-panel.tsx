@@ -36,7 +36,7 @@ import {
 } from '../../constants';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import GeneralListPanel from './general-list-panel';
+import { GeneralListPanel } from './general-list-panel';
 
 export const CosListPanel: FC = () => {
   const [t] = useTranslation();
