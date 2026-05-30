@@ -84,41 +84,23 @@ export const CosServerPools = () => {
 
   const serverTableRows: Array<TRow> = filteredServers.map((item) => ({
     id: item?.id ?? '',
+    clickable: true,
+    onClick: (): void => handleSelect(item),
     columns: [
-      <Container
-        crossAlignment="flex-start"
-        key={`name-${item?.id}`}
-        style={{ cursor: 'pointer' }}
-        onClick={(e: React.MouseEvent): void => {
-          e.stopPropagation();
-          handleSelect(item);
-        }}
-      >
-        <ds-text as="span" size="small" weight="regular" color="gray0">
-          {item?.name}
-        </ds-text>
-      </Container>,
-      <Container
-        crossAlignment="flex-start"
-        key={`status-${item?.id}`}
-        style={{ cursor: 'pointer' }}
-        onClick={(e: React.MouseEvent): void => {
-          e.stopPropagation();
-          handleSelect(item);
-        }}
-      >
-        <ds-text as="span">
-          {isPoolEnabled(poolList, item.id) ? (
-            <ds-text as="span" size="small" weight="light">
-              {t('cos.enabled', 'Enabled')}
-            </ds-text>
-          ) : (
-            <ds-text as="span" size="small" weight="light" color="error">
-              {t('cos.disabled', 'Disabled')}
-            </ds-text>
-          )}
-        </ds-text>
-      </Container>,
+      <ds-text key={`name-${item?.id}`} as="span" size="small" weight="regular" color="gray0">
+        {item?.name}
+      </ds-text>,
+      <ds-text key={`status-${item?.id}`} as="span">
+        {isPoolEnabled(poolList, item.id) ? (
+          <ds-text as="span" size="small" weight="light">
+            {t('cos.enabled', 'Enabled')}
+          </ds-text>
+        ) : (
+          <ds-text as="span" size="small" weight="light" color="error">
+            {t('cos.disabled', 'Disabled')}
+          </ds-text>
+        )}
+      </ds-text>,
     ],
   }));
 
@@ -145,7 +127,7 @@ export const CosServerPools = () => {
     },
   ];
 
-  function onModifyCOS(body: ModifyCosBody) {
+  function onModifyCos(body: ModifyCosBody) {
     modifyCosMutation.mutate(body, {
       onSuccess: () => {
         setOpenConfirmDialog(false);
@@ -172,7 +154,7 @@ export const CosServerPools = () => {
         _content: cosId as string,
       },
     };
-    onModifyCOS(body);
+    onModifyCos(body);
   }
 
   function onDisableServer() {
@@ -187,12 +169,12 @@ export const CosServerPools = () => {
     const body: ModifyCosBody = {
       _jsns: ZIMBRA_ADMIN_URN,
       id: {
-        _content: cosId ?? '',
+        _content: cosId as string,
       },
       a: attributes,
     } as ModifyCosBody;
 
-    onModifyCOS(body);
+    onModifyCos(body);
   }
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -259,9 +241,7 @@ export const CosServerPools = () => {
                     'cos.limt_serverpool_avaiable_create_user',
                     'Limit server pool available for creating new users in this COS',
                   )}
-                  onClick={(): void => {
-                    // Toggle is read-only display based on pool data — actual changes go through onEnable/onDisableServer
-                  }}
+                  disabled
                   iconColor="primary"
                 />
               </Padding>
