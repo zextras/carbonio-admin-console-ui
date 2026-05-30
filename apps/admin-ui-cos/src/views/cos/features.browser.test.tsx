@@ -79,9 +79,6 @@ async function setupTest(wrapper: React.ReactElement = <TestWrapper />) {
   );
 }
 
-// NOTE: These tests are very poor because of a div soup situation.
-// The Switch.tsx component renders a <div> with a ds-icon that toggles between ToggleRight and ToggleLeftOutline.
-// There's no native <input type="checkbox"> or role="switch", so .toBeChecked() won't work.
 describe('FeaturesForm (browser)', () => {
   beforeEach(() => {
     vi.resetAllMocks();
@@ -94,7 +91,9 @@ describe('FeaturesForm (browser)', () => {
   it('should render 2FA section', async () => {
     await setupTest();
     await expect.element(page.getByText('Two-Factor authenticator')).toBeVisible();
-    await expect.element(page.getByText('Allow users to configure 2FA')).toBeVisible();
+    await expect
+      .element(page.getByRole('switch', { name: 'Allow users to configure 2FA' }))
+      .toBeVisible();
     await expect
       .element(
         page.getByText(
@@ -106,44 +105,51 @@ describe('FeaturesForm (browser)', () => {
 
   it('should toggle 2FA switch', async () => {
     await setupTest();
-    const switchLabel = page.getByText('Allow users to configure 2FA');
-    await userEvent.click(switchLabel);
-    await expect.element(switchLabel).toBeVisible();
+    const switchEl = page.getByRole('switch', { name: 'Allow users to configure 2FA' });
+    await expect.element(switchEl).toBeChecked();
+    await userEvent.click(switchEl);
+    await expect.element(switchEl).not.toBeChecked();
   });
 
   it('should render Mobile App switch in Mail section and be clickable', async () => {
     await setupTest();
     await expect.element(page.getByText('Mail', { exact: true })).toBeVisible();
-    const mobileAppSwitch = page.getByText('Mobile App').first();
+    const mobileAppSwitch = page.getByRole('switch', { name: 'Mobile App' }).first();
+    await expect.element(mobileAppSwitch).toBeChecked();
     await userEvent.click(mobileAppSwitch);
+    await expect.element(mobileAppSwitch).not.toBeChecked();
   });
 
   it('should render Contacts Web Feature switch and be clickable', async () => {
     await setupTest();
-    const webFeatureSwitch = page.getByText('Web Feature').nth(0);
-    await expect.element(webFeatureSwitch).toBeVisible();
+    const webFeatureSwitch = page.getByRole('switch', { name: 'Web Feature' }).nth(0);
+    await expect.element(webFeatureSwitch).toBeChecked();
     await userEvent.click(webFeatureSwitch);
+    await expect.element(webFeatureSwitch).not.toBeChecked();
   });
 
   it('should render Calendar Web Feature switch and be clickable', async () => {
     await setupTest();
-    const webFeatureSwitch = page.getByText('Web Feature').nth(1);
-    await expect.element(webFeatureSwitch).toBeVisible();
+    const webFeatureSwitch = page.getByRole('switch', { name: 'Web Feature' }).nth(1);
+    await expect.element(webFeatureSwitch).toBeChecked();
     await userEvent.click(webFeatureSwitch);
+    await expect.element(webFeatureSwitch).not.toBeChecked();
   });
 
   it('should render Files Web Feature switch and be clickable', async () => {
     await setupTest();
-    const webFeatureSwitch = page.getByText('Web Feature').nth(2);
-    await expect.element(webFeatureSwitch).toBeVisible();
+    const webFeatureSwitch = page.getByRole('switch', { name: 'Web Feature' }).nth(2);
+    await expect.element(webFeatureSwitch).toBeChecked();
     await userEvent.click(webFeatureSwitch);
+    await expect.element(webFeatureSwitch).not.toBeChecked();
   });
 
   it('should render Tasks Web Feature switch and be clickable', async () => {
     await setupTest();
-    const webFeatureSwitch = page.getByText('Web Feature').nth(3);
-    await expect.element(webFeatureSwitch).toBeVisible();
+    const webFeatureSwitch = page.getByRole('switch', { name: 'Web Feature' }).nth(3);
+    await expect.element(webFeatureSwitch).toBeChecked();
     await userEvent.click(webFeatureSwitch);
+    await expect.element(webFeatureSwitch).not.toBeChecked();
   });
 
   it('should disable Files Mobile App when Files Web Feature is FALSE', async () => {
@@ -154,15 +160,16 @@ describe('FeaturesForm (browser)', () => {
         )}
       />,
     );
-    const filesMobileApp = page.getByText('Mobile App').nth(1);
-    await expect.element(filesMobileApp).toBeVisible();
-    await userEvent.click(filesMobileApp);
+    const filesMobileApp = page.getByRole('switch', { name: 'Mobile App' }).nth(1);
+    await expect.element(filesMobileApp).toBeDisabled();
   });
 
   it('should render General section with Can access Settings', async () => {
     await setupTest();
     await expect.element(page.getByText('General')).toBeVisible();
-    await expect.element(page.getByText('Can access Settings')).toBeVisible();
+    await expect
+      .element(page.getByRole('switch', { name: 'Can access Settings' }))
+      .toBeVisible();
   });
 
   it('should render all feature sections', async () => {

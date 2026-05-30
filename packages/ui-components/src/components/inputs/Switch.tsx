@@ -69,6 +69,11 @@ const Switch = ({
   return (
     <Container
       ref={ckbRef}
+      role="switch"
+      aria-checked={checked}
+      aria-label={label || iconAriaLabel}
+      aria-disabled={disabled || undefined}
+      tabIndex={disabled ? -1 : 0}
       orientation="horizontal"
       width="fit"
       height="fit"
@@ -80,14 +85,13 @@ const Switch = ({
       <div
         className={clsx(styles.iconWrapper, disabled && styles.disabled)}
         style={iconWrapperStyle}
-        tabIndex={disabled ? -1 : 0}
       >
         <ds-icon
           icon={checked ? 'ToggleRight' : 'ToggleLeftOutline'}
           size={size === 'medium' ? 'large' : 'medium'}
           color={String(iconColor)}
           disabled={disabled || undefined}
-          aria-label={iconAriaLabel}
+          aria-hidden="true"
         />
       </div>
       {label && (
