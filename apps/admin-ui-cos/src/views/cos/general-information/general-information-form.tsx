@@ -173,12 +173,19 @@ function processDomainItem(
   };
 }
 
-function buildDefaultValues(cosInformation: Array<Attribute> | undefined): GeneralInfoFormValues {
-  if (!cosInformation?.length) return { cn: '', description: '', zimbraNotes: '' };
-  const fromServer: Partial<Record<string, string>> = {};
+function attributesToMap(
+  cosInformation: Array<Attribute> | undefined,
+): Partial<Record<string, string>> {
+  if (!cosInformation?.length) return {};
+  const map: Partial<Record<string, string>> = {};
   cosInformation.forEach((item) => {
-    if (item?.n) fromServer[item.n] = item._content;
+    if (item?.n) map[item.n] = item._content;
   });
+  return map;
+}
+
+function buildDefaultValues(cosInformation: Array<Attribute> | undefined): GeneralInfoFormValues {
+  const fromServer = attributesToMap(cosInformation);
   return {
     cn: fromServer.cn ?? '',
     description: fromServer.description ?? '',
@@ -203,16 +210,6 @@ function buildDomainList(
   return domains.map((item) => processDomainItem(item, cosId, defaultCosLabel));
 }
 
-function buildCosDataMap(
-  cosInformation: Array<Attribute> | undefined,
-): Partial<Record<string, string>> {
-  if (!cosInformation?.length) return {};
-  const obj: Partial<Record<string, string>> = {};
-  cosInformation.forEach((item) => {
-    if (item?.n) obj[item.n] = item._content;
-  });
-  return obj;
-}
 
 export const GeneralInformationForm = ({
   cosInformation,
@@ -275,7 +272,7 @@ export const GeneralInformationForm = ({
 
   const totalDomains = domainsData?.total ?? 0;
 
-  const cosData = buildCosDataMap(cosInformation);
+  const cosData = attributesToMap(cosInformation);
 
   const form = useForm({
     defaultValues: buildDefaultValues(cosInformation),
