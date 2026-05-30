@@ -18,7 +18,7 @@ import {
 import { type ChangeEvent, type ReactNode } from 'react';
 
 import logo from '../../../assets/gardian.svg';
-import { FunnelSearchIcon } from '../funnel-search-icon';
+import { FunnelSearchIcon } from '../cos-server-pools/funnel-search-icon';
 
 const TABLE_CONTAINER_HEIGHT = 'calc(100vh - 21.25rem)';
 

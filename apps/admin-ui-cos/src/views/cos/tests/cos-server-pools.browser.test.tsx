@@ -15,7 +15,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { type ModifyCosBody } from '../../../services/modify-cos-service';
-import { CosServerPools } from '../cos-server-pools';
+import { CosServerPools } from '../cos-server-pools/cos-server-pools';
 
 const COS_ID = 'e00428a1-0c00-11d9-836a-000d93afea2a';
 

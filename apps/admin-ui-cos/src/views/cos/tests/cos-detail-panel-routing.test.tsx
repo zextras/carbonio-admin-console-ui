@@ -35,7 +35,7 @@ vi.mock('../../../wsc/wsc-cos-settings', () => ({
 import { WscCosSettings } from '../../../wsc/wsc-cos-settings';
 import { CosAdvanced } from '../advanced/cos-advanced';
 import { CosFeatures } from '../cos-features';
-import { CosServerPools } from '../cos-server-pools';
+import { CosServerPools } from '../cos-server-pools/cos-server-pools';
 import { CosGeneralInformation } from '../general-information/cos-general-information';
 import { COSPreferences } from '../preferences/cos-preferences';
 

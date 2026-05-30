@@ -19,12 +19,12 @@ import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { Attribute } from '../../../types/attribute';
-import { COS, ZIMBRA_ADMIN_URN } from '../../constants';
-import { useDebouncedValue } from '../../hooks/use-debounced-value';
-import { ModifyCosBody } from '../../services/modify-cos-service';
-import { useCosDetail } from '../../services/use-cos-detail';
-import { useModifyCos } from '../../services/use-modify-cos';
+import { Attribute } from '../../../../types/attribute';
+import { COS, ZIMBRA_ADMIN_URN } from '../../../constants';
+import { useDebouncedValue } from '../../../hooks/use-debounced-value';
+import { ModifyCosBody } from '../../../services/modify-cos-service';
+import { useCosDetail } from '../../../services/use-cos-detail';
+import { useModifyCos } from '../../../services/use-modify-cos';
 import { DisablePoolModal } from './disable-pool-modal';
 import { ServerPoolTable } from './server-pool-table';
 

@@ -23,7 +23,7 @@ import logo from '../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { useCosList } from '../../services/use-cos-list';
 import ScrollContainer from '../components/scrollComponent';
-import { FunnelSearchIcon } from './funnel-search-icon';
+import { FunnelSearchIcon } from './cos-server-pools/funnel-search-icon';
 
 type ZimbraCosAttribute = {
   n: string;
