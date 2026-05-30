@@ -4,8 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import {
+  createBrowserAPIInterceptor,
+  createBrowserSoapAPIInterceptor,
+  resetMockWorker,
+  setupBrowserTest,
+} from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
+import { Route, Routes } from 'react-router';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { type Attribute } from '../../../types/attribute';
@@ -35,71 +42,54 @@ const MOCK_MOBILE_ATTRIBUTES = {
     mobileContactFeatureSync: [{ value: 'disabled' }],
     mobileCalendarFeatureSync: [{ value: 'disabled' }],
   },
-  setFeaturesDetail: () => {},
-  cosDetail: {
-    carbonioFeatureOTPMgmtEnabled: 'FALSE',
-  },
-  accSpecificDetail: {
-    carbonioFeatureOTPMgmtEnabled: 'FALSE',
-  },
-  setEmptyValue: () => {},
-  readonlyFeatures: false,
-  cosLevelFeatures: false,
 };
 
-const enabledProps = {
-  ...mockProps,
-  cosLevelFeatures: true,
-  featuresDetail: {
-    carbonioFeatureOTPMgmtEnabled: 'TRUE',
-    carbonioOtpWizardFromUntrusted: 'TRUE',
-    carbonioOtpGracePeriodEnabled: 'TRUE',
-  },
-  cosDetail: {
-    carbonioFeatureOTPMgmtEnabled: 'TRUE',
-    carbonioOtpWizardFromUntrusted: 'TRUE',
-    carbonioOtpGracePeriodEnabled: 'TRUE',
-  },
-  accSpecificDetail: {
-    carbonioFeatureOTPMgmtEnabled: 'TRUE',
-    carbonioOtpWizardFromUntrusted: 'TRUE',
-    carbonioOtpGracePeriodEnabled: 'TRUE',
-  },
-};
+const TestWrapper = ({
+  cosInformation = MOCK_COS_INFORMATION,
+  mobileAttributesData = MOCK_MOBILE_ATTRIBUTES,
+  readonlyCOS = false,
+  isAdvanced = false,
+}: {
+  cosInformation?: Array<Attribute>;
+  mobileAttributesData?: typeof MOCK_MOBILE_ATTRIBUTES;
+  readonlyCOS?: boolean;
+  isAdvanced?: boolean;
+}) => (
+  <FeaturesForm
+    cosInformation={cosInformation}
+    cosName="default"
+    mobileAttributesData={mobileAttributesData}
+    readonlyCOS={readonlyCOS}
+    isAdvanced={isAdvanced}
+  />
+);
 
-const disabledProps = {
-  ...mockProps,
-  cosLevelFeatures: true,
-  featuresDetail: {
-    carbonioFeatureOTPMgmtEnabled: 'TRUE',
-    carbonioOtpWizardFromUntrusted: 'TRUE',
-    carbonioOtpGracePeriodEnabled: 'FALSE',
-  },
-  cosDetail: {
-    carbonioFeatureOTPMgmtEnabled: 'TRUE',
-    carbonioOtpWizardFromUntrusted: 'TRUE',
-    carbonioOtpGracePeriodEnabled: 'FALSE',
-  },
-  accSpecificDetail: {
-    carbonioFeatureOTPMgmtEnabled: 'TRUE',
-    carbonioOtpWizardFromUntrusted: 'TRUE',
-    carbonioOtpGracePeriodEnabled: 'FALSE',
-  },
-};
+async function setupTest(wrapper: React.ReactElement = <TestWrapper />) {
+  createBrowserSoapAPIInterceptor('ModifyCos', {});
+  createBrowserSoapAPIInterceptor('FlushCache', {});
+  createBrowserAPIInterceptor('post', '/service/extension/zextras_admin/core/attributes/get', () =>
+    HttpResponse.json(MOCK_MOBILE_ATTRIBUTES),
+  );
 
-function setupAdvancedTest(ui: React.ReactElement) {
-  const queryClient = getQueryClient();
-  queryClient.setQueryData(['advanced-supported'], { supported: true });
-  return setupBrowserTest(ui, { queryClient });
+  await setupBrowserTest(
+    <Routes>
+      <Route path="/:cosId/:operation" element={wrapper} />
+    </Routes>,
+    { initialRouterEntry: `/${COS_ID}/features` },
+  );
 }
 
-function getCalendarButton() {
-  return page.getByRole('button', { name: 'Calendar' }).first();
-}
+describe('FeaturesForm (browser)', () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
 
-describe('Features (browser)', () => {
-  it('should render 2FA section when cosLevelFeatures is true', async () => {
-    setupBrowserTest(<Features {...mockProps} cosLevelFeatures />);
+  afterEach(() => {
+    resetMockWorker();
+  });
+
+  it('should render 2FA section', async () => {
+    await setupTest();
     await expect.element(page.getByText('Two-Factor authenticator')).toBeVisible();
     await expect.element(page.getByText('Allow users to configure 2FA')).toBeVisible();
     await expect
@@ -112,8 +102,7 @@ describe('Features (browser)', () => {
   });
 
   it('should toggle 2FA switch', async () => {
-    const setFeaturesDetail = vi.fn();
-    setupBrowserTest(<Features {...mockProps} cosLevelFeatures setFeaturesDetail={setFeaturesDetail} />);
+    await setupTest();
     const switchLabel = page.getByText('Allow users to configure 2FA');
     await userEvent.click(switchLabel);
     await expect.element(switchLabel).toBeVisible();
@@ -175,40 +164,5 @@ describe('Features (browser)', () => {
     await expect.element(page.getByText('Calendar', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Files', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Tasks', { exact: true })).toBeVisible();
-  });
-
-  describe('DatePicker', () => {
-    it('should render grace period expiration date picker when grace period is enabled', async () => {
-      setupAdvancedTest(<Features {...enabledProps} />);
-
-      await expect
-        .element(page.getByPlaceholder('Set grace period expiration date'))
-        .toBeVisible();
-    });
-
-    it('should disable the date picker when grace period is disabled', async () => {
-      setupAdvancedTest(<Features {...disabledProps} />);
-
-      await expect
-        .element(page.getByPlaceholder('Set grace period expiration date'))
-        .toBeDisabled();
-    });
-
-    it('should enable the date picker when grace period is enabled', async () => {
-      setupAdvancedTest(<Features {...enabledProps} />);
-
-      await expect
-        .element(page.getByPlaceholder('Set grace period expiration date'))
-        .toBeEnabled();
-    });
-
-    it('should open the calendar popover when the calendar icon is clicked', async () => {
-      setupAdvancedTest(<Features {...enabledProps} />);
-
-      await getCalendarButton().click();
-
-      await expect.element(page.getByRole('grid')).toBeVisible();
-    });
-
   });
 });

@@ -6,7 +6,6 @@
 import { Container } from '@zextras/ui-components';
 import { Route, Routes } from 'react-router';
 
-import { WscCosSettings } from '../../wsc/wsc-cos-settings';
 import {
   ADVANCED,
   CREATE_NEW_COS_ROUTE_ID,
@@ -16,12 +15,13 @@ import {
   SERVER_POOLS,
   WSC,
 } from '../../constants';
+import { WscCosSettings } from '../../wsc/wsc-cos-settings';
 import { CosAdvanced } from './advanced/cos-advanced';
 import { CosFeatures } from './cos-features';
+import { CosList } from './cos-list';
 import { CosServerPools } from './cos-server-pools';
-import CosList from './cos-list';
+import { CreateCos } from './create-new-cos';
 import { CosGeneralInformation } from './general-information/cos-general-information';
-import CreateCos from './create-new-cos';
 import { COSPreferences } from './preferences/cos-preferences';
 
 export const CosDetailPanel = () => (

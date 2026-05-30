@@ -67,7 +67,7 @@ const STATUS_LABEL_DEFAULTS: Record<string, string> = {
   lockout: 'Lockout',
 };
 
-const CosList: FC = () => {
+export const CosList: FC = () => {
   const [t] = useTranslation();
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [isTableTooTall, setIsTableTooTall] = useState(false);
@@ -377,5 +377,3 @@ const CosList: FC = () => {
     </Container>
   );
 };
-
-export default CosList;

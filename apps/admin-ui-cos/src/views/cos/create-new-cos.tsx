@@ -23,7 +23,7 @@ import { CosResponse } from '../../../types/cos';
 import { GENERAL_INFORMATION } from '../../constants';
 import { createCos } from '../../services/create-cos';
 
-const CreateCos: FC = () => {
+export const CreateCos: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [zimbraNotes, setZimbraNotes] = useState<string>('');

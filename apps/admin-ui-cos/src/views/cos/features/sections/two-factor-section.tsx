@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, DateTimePicker, ListRow, Padding, Row, Switch } from '@zextras/ui-components';
+import { Container, DatePicker, ListRow, Padding, Row, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { FeatureSwitchField } from '../../fields/feature-switch-field';
@@ -199,7 +199,7 @@ export const TwoFactorSection = ({ form, readonlyCOS, isAdvanced }: TwoFactorSec
                         return (
                           <form.Field name="carbonioOtpGracePeriodEnabled">
                             {(gracePeriodField) => (
-                              <DateTimePicker
+                              <DatePicker
                                 disabled={gracePeriodField.state.value === 'FALSE'}
                                 width={'21.625rem'}
                                 label={t(
@@ -225,7 +225,6 @@ export const TwoFactorSection = ({ form, readonlyCOS, isAdvanced }: TwoFactorSec
                                   field.handleChange(gentime);
                                 }}
                                 dateFormat="dd/MM/yyyy"
-                                includeTime={false}
                                 minDate={new Date()}
                                 selected={defaultDate}
                               />
