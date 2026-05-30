@@ -76,11 +76,7 @@ export const TwoFactorSection = ({ form, readonlyCOS, isAdvanced }: TwoFactorSec
                 <GracePeriodSection form={form} readonlyCOS={readonlyCOS} />
               </ListRow>
               <ListRow padding={{ top: 'large' }}>
-                <Padding left={'extralarge'} width="100%">
-                  <Row width="100%">
-                    <GracePeriodEndDatePicker form={form} />
-                  </Row>
-                </Padding>
+                <GracePeriodEndDatePicker form={form} />
               </ListRow>
             </Container>
           </Row>

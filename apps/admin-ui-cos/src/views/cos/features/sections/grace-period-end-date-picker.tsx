@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useField } from '@tanstack/react-form';
-import { DatePicker } from '@zextras/ui-components';
+import { DatePicker, Padding, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { CosFeaturesFormApi } from '../../types';
@@ -37,30 +37,34 @@ export const GracePeriodEndDatePicker = ({ form }: GracePeriodEndDatePickerProps
   }
 
   return (
-    <DatePicker
-      disabled={gracePeriodField.state.value === 'FALSE'}
-      width={'21.625rem'}
-      label={t('cos.features.gracePeriodExpirationDate', 'Set grace period expiration date')}
-      onChange={(d) => {
-        if (!d) {
-          field.handleChange('');
-          return;
-        }
-        const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(
-          2,
-          '0',
-        )}${String(d.getUTCDate()).padStart(2, '0')}${String(d.getUTCHours()).padStart(
-          2,
-          '0',
-        )}${String(d.getUTCMinutes()).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(
-          2,
-          '0',
-        )}Z`;
-        field.handleChange(gentime);
-      }}
-      dateFormat="dd/MM/yyyy"
-      minDate={new Date()}
-      selected={defaultDate}
-    />
+    <Padding left={'extralarge'} width="100%">
+      <Row width="100%">
+        <DatePicker
+          disabled={gracePeriodField.state.value === 'FALSE'}
+          width={'21.625rem'}
+          label={t('cos.features.gracePeriodExpirationDate', 'Set grace period expiration date')}
+          onChange={(d) => {
+            if (!d) {
+              field.handleChange('');
+              return;
+            }
+            const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(
+              2,
+              '0',
+            )}${String(d.getUTCDate()).padStart(2, '0')}${String(d.getUTCHours()).padStart(
+              2,
+              '0',
+            )}${String(d.getUTCMinutes()).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(
+              2,
+              '0',
+            )}Z`;
+            field.handleChange(gentime);
+          }}
+          dateFormat="dd/MM/yyyy"
+          minDate={new Date()}
+          selected={defaultDate}
+        />
+      </Row>
+    </Padding>
   );
 };
