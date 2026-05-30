@@ -5,16 +5,11 @@
  */
 
 import {
-  Button,
   Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  Input,
   ListRow,
   Padding,
   Row,
   Switch,
-  Table,
   type THeader,
   type TRow,
 } from '@zextras/ui-components';
@@ -30,7 +25,7 @@ import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
 import { DisablePoolModal } from './disable-pool-modal';
-import { FunnelSearchIcon } from './funnel-search-icon';
+import { ServerPoolTable } from './server-pool-table';
 
 type ServerItem = {
   id?: string;
@@ -279,77 +274,20 @@ export const CosServerPools = () => {
               </Padding>
             </ListRow>
             {!allDisabled && (
-              <>
-                <Row mainAlignment="flex-start" width="100%">
-                  <Container orientation="vertical" mainAlignment="space-around" height="fit">
-                    <Row orientation="horizontal" width="100%">
-                      <Row
-                        padding={{ right: 'small' }}
-                        mainAlignment="flex-start"
-                        width="65%"
-                        crossAlignment="flex-start"
-                      >
-                        <Input
-                          value={searchServer}
-                          disabled={
-                            (allMailStoreList.length === 0 && searchServer.length === 0) ||
-                            readonlyCOS
-                          }
-                          label={t('cos.search_a_specific_server', 'Search for a specific server')}
-                          CustomIcon={FunnelSearchIcon}
-                          onChange={handleSearchChange}
-                        />
-                      </Row>
-                      <Row padding={{ all: 'small' }} width="35%">
-                        <Padding left="small" right="large">
-                          <Button
-                            type="outlined"
-                            key="enable-button"
-                            label={t('label.enable', 'enable')}
-                            color="primary"
-                            icon="CheckmarkCircleOutline"
-                            iconPlacement="right"
-                            disabled={!enable || readonlyCOS}
-                            onClick={onEnable}
-                            size="extralarge"
-                          />
-                        </Padding>
-
-                        <Button
-                          type="outlined"
-                          key="disable-button"
-                          label={t('label.disable', 'disable')}
-                          color="error"
-                          icon="CloseCircleOutline"
-                          iconPlacement="right"
-                          size="extralarge"
-                          disabled={!disable || readonlyCOS}
-                          onClick={() => setOpenConfirmDialog(true)}
-                        />
-                      </Row>
-                    </Row>
-                  </Container>
-                </Row>
-
-                <Row
-                  orientation="horizontal"
-                  mainAlignment="space-between"
-                  crossAlignment="flex-start"
-                  width="fill"
-                  height="calc(100vh - 340px)"
-                  padding={{ top: 'large' }}
-                >
-                  <Table
-                    style={{ overflow: 'auto', height: '100%' }}
-                    rows={serverTableRows}
-                    headers={tableHeader}
-                    showCheckbox={false}
-                    selectedRows={selectedTableRowsId}
-                    HeaderFactory={CustomHeaderFactory}
-                    RowFactory={HoverableRowFactory}
-                  />
-                </Row>
-              </>
+              <ServerPoolTable
+                searchValue={searchServer}
+                onSearchChange={handleSearchChange}
+                isSearchDisabled={
+                  (allMailStoreList.length === 0 && searchServer.length === 0) || readonlyCOS
+                }
+                enableDisabled={!enable || readonlyCOS}
+                disableDisabled={!disable || readonlyCOS}
+                onEnable={onEnable}
+                onDisableClick={() => setOpenConfirmDialog(true)}
+                tableRows={serverTableRows}
+                tableHeaders={tableHeader}
+                selectedRows={selectedTableRowsId}
+              />
             )}
           </Container>
         </Container>
