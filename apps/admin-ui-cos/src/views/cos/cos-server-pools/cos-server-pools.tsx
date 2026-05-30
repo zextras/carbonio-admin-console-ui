@@ -80,14 +80,14 @@ export const CosServerPools = () => {
     }
   }
 
+  function matchesStatusFilter(item: { id?: string }): boolean {
+    if (statusFilter === 'enabled') return isPoolEnabled(poolList, item.id);
+    if (statusFilter === 'disabled') return !isPoolEnabled(poolList, item.id);
+    return true;
+  }
+
   const filteredServers = allMailStoreList
-    .filter((item) =>
-      statusFilter === 'enabled'
-        ? isPoolEnabled(poolList, item.id)
-        : statusFilter === 'disabled'
-          ? !isPoolEnabled(poolList, item.id)
-          : true,
-    )
+    .filter(matchesStatusFilter)
     .filter((item) => debouncedSearch === '' || !!item?.name?.includes(debouncedSearch));
 
   const serverTableRows: Array<TRow> = filteredServers.map((item) => ({
