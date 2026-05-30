@@ -30,6 +30,7 @@ type ServerPoolTableProps = {
   disableDisabled: boolean;
   onEnable: () => void;
   onDisableClick: () => void;
+  onSelectionChange: (ids: Array<string>) => void;
   tableRows: Array<TRow>;
   tableHeaders: Array<THeader>;
   selectedRows: Array<string>;
@@ -43,6 +44,7 @@ export const ServerPoolTable = ({
   disableDisabled,
   onEnable,
   onDisableClick,
+  onSelectionChange,
   tableRows,
   tableHeaders,
   selectedRows,
@@ -112,6 +114,8 @@ export const ServerPoolTable = ({
           headers={tableHeaders}
           showCheckbox={false}
           selectedRows={selectedRows}
+          multiSelect={false}
+          onSelectionChange={onSelectionChange}
           HeaderFactory={CustomHeaderFactory}
           RowFactory={HoverableRowFactory}
         />

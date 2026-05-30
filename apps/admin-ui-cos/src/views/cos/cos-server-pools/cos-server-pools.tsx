@@ -67,10 +67,18 @@ export const CosServerPools = () => {
   const enable = !!selectedServer && !isPoolEnabled(poolList, selectedServer.id);
   const disable = !!selectedServer && isPoolEnabled(poolList, selectedServer.id);
 
-  const handleSelect = (item: ServerItem) => {
-    setSelectedTableRows([item]);
-    setSelectedTableRowsId([item?.id ?? '']);
-  };
+  function handleSelectionChange(ids: Array<string>) {
+    if (ids.length > 0) {
+      const item = allMailStoreList.find((s) => s.id === ids[0]);
+      if (item) {
+        setSelectedTableRows([item]);
+        setSelectedTableRowsId([item.id ?? '']);
+      }
+    } else {
+      setSelectedTableRows([]);
+      setSelectedTableRowsId([]);
+    }
+  }
 
   const filteredServers = allMailStoreList
     .filter((item) =>
@@ -84,8 +92,6 @@ export const CosServerPools = () => {
 
   const serverTableRows: Array<TRow> = filteredServers.map((item) => ({
     id: item?.id ?? '',
-    clickable: true,
-    onClick: (): void => handleSelect(item),
     columns: [
       <ds-text key={`name-${item?.id}`} as="span" size="small" weight="regular" color="gray0">
         {item?.name}
@@ -257,6 +263,7 @@ export const CosServerPools = () => {
                 disableDisabled={!disable || readonlyCOS}
                 onEnable={onEnable}
                 onDisableClick={() => setOpenConfirmDialog(true)}
+                onSelectionChange={handleSelectionChange}
                 tableRows={serverTableRows}
                 tableHeaders={tableHeader}
                 selectedRows={selectedTableRowsId}
