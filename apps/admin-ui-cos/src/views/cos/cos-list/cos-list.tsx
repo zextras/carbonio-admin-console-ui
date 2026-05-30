@@ -19,11 +19,11 @@ import { debounce } from 'lodash-es';
 import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import logo from '../../assets/gardian.svg';
-import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../constants';
-import { useCosList } from '../../services/use-cos-list';
-import ScrollContainer from '../components/scrollComponent';
-import { FunnelSearchIcon } from './cos-server-pools/funnel-search-icon';
+import logo from '../../../assets/gardian.svg';
+import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { useCosList } from '../../../services/use-cos-list';
+import ScrollContainer from '../../components/scrollComponent';
+import { FunnelSearchIcon } from '../cos-server-pools/funnel-search-icon';
 
 type ZimbraCosAttribute = {
   n: string;
