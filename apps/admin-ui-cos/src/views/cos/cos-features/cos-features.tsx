@@ -11,9 +11,9 @@ import {
 	COS,
 	MOBILE_CALENDAR_FEATURE_SYNC,
 	MOBILE_CONTACT_FEATURE_SYNC,
-} from '../../constants';
-import { useCoreAttributes } from '../../services/use-core-attributes';
-import { useCosDetail } from '../../services/use-cos-detail';
+} from '../../../constants';
+import { useCoreAttributes } from '../../../services/use-core-attributes';
+import { useCosDetail } from '../../../services/use-cos-detail';
 import { FeaturesForm } from './features-form';
 
 export function CosFeatures() {

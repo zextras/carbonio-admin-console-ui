@@ -17,7 +17,7 @@ import {
 } from '../../constants';
 import { WscCosSettings } from '../../wsc/wsc-cos-settings';
 import { CosAdvanced } from './advanced/cos-advanced';
-import { CosFeatures } from './cos-features';
+import { CosFeatures } from './cos-features/cos-features';
 import { CosList } from './cos-list';
 import { CosServerPools } from './cos-server-pools/cos-server-pools';
 import { CreateCos } from './create-new-cos';

@@ -10,23 +10,23 @@ import { type GetCoreAttributesResponse, setCoreAttributes } from '@zextras/ui-s
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { Attribute } from '../../../types/attribute';
+import { Attribute } from '../../../../types/attribute';
 import {
   COS,
   MOBILE_CALENDAR_FEATURE_SYNC,
   MOBILE_CONTACT_FEATURE_SYNC,
   ZIMBRA_ADMIN_URN,
-} from '../../constants';
-import { ModifyCosBody } from '../../services/modify-cos-service';
-import { useModifyCos } from '../../services/use-modify-cos';
-import { FormPageLayout } from '../form-page-layout';
-import { ContactsCalendarSection } from './features/sections/contacts-calendar-section';
-import { FilesTasksSection } from './features/sections/files-tasks-section';
-import { GeneralSection } from './features/sections/general-section';
-import { MailSection } from './features/sections/mail-section';
-import { TwoFactorSection } from './features/sections/two-factor-section';
-import type { CosFeaturesFormValues } from './types';
-import { buildCosDataMap } from './utils';
+} from '../../../constants';
+import { ModifyCosBody } from '../../../services/modify-cos-service';
+import { useModifyCos } from '../../../services/use-modify-cos';
+import { FormPageLayout } from '../../form-page-layout';
+import { ContactsCalendarSection } from '../features/sections/contacts-calendar-section';
+import { FilesTasksSection } from '../features/sections/files-tasks-section';
+import { GeneralSection } from '../features/sections/general-section';
+import { MailSection } from '../features/sections/mail-section';
+import { TwoFactorSection } from '../features/sections/two-factor-section';
+import type { CosFeaturesFormValues } from '../types';
+import { buildCosDataMap } from '../utils';
 
 const COS_FEATURE_DEFAULTS: CosFeaturesFormValues = {
   carbonioFeatureMailsAppEnabled: 'FALSE',
