@@ -214,7 +214,8 @@ describe('CosAdvanced', () => {
       await userEvent.fill(input, '512');
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
 
-      await userEvent.fill(input, '256');
+      await userEvent.clear(input);
+      await userEvent.type(input, '256');
       await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
     });
 
@@ -228,7 +229,8 @@ describe('CosAdvanced', () => {
       });
 
       await userEvent.fill(maxLengthInput, '512');
-      await userEvent.fill(maxNumInput, '20');
+      await userEvent.clear(maxNumInput);
+      await userEvent.type(maxNumInput, '20');
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
 
       await userEvent.fill(maxLengthInput, '256');
@@ -302,10 +304,11 @@ describe('CosAdvanced', () => {
         }),
         '512',
       );
-      await userEvent.fill(
-        page.getByRole('textbox', { name: 'Max user-specific forwarding address' }),
-        '20',
-      );
+      const maxNumInput = page.getByRole('textbox', {
+        name: 'Max user-specific forwarding address',
+      });
+      await userEvent.clear(maxNumInput);
+      await userEvent.type(maxNumInput, '20');
       await page.getByRole('button', { name: 'Save' }).click();
 
       const requestBody = (await modifyCosPromise) as ModifyCosBody;
@@ -427,7 +430,7 @@ describe('CosAdvanced', () => {
     function restoreToggleIcon(): string | null {
       return (
         document
-          .querySelector('ds-icon[aria-label="Allow user to restore messages"]')
+          .querySelector('[role="switch"][aria-label="Allow user to restore messages"] ds-icon')
           ?.getAttribute('icon') ?? null
       );
     }
@@ -460,7 +463,7 @@ describe('CosAdvanced', () => {
     it('keeps "Allow user to restore messages" off after saving it off', async () => {
       await setupAdvancedBackupTest();
 
-      const toggle = page.getByRole('img', { name: 'Allow user to restore messages' });
+      const toggle = page.getByRole('switch', { name: 'Allow user to restore messages' });
       await expect.element(toggle).toBeVisible();
       expect(restoreToggleIcon()).toBe('ToggleRight');
 

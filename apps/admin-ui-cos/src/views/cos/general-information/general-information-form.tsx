@@ -339,7 +339,7 @@ export const GeneralInformationForm = ({
     },
   });
 
-  const isDirty = useSelector(form.store, (state) => state.isDirty);
+  const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
 
   const accountHeaders = [
     { id: 'email', label: t('label.email', 'Email'), width: '25%', bold: true },

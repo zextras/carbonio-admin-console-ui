@@ -223,7 +223,7 @@ export const CosAdvancedForm = ({
     },
   });
 
-  const isFormDirty = useSelector(form.store, (state) => state.isDirty);
+  const isFormDirty = useSelector(form.store, (state) => !state.isDefaultValue);
   const isDirty = isFormDirty || quotaState.isDirty;
 
   return (

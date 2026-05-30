@@ -129,7 +129,7 @@ describe('COSQuotasNew (browser)', () => {
       />,
     );
 
-    await userEvent.click(page.getByRole('img', { name: 'Unlimited quota' }));
+    await userEvent.click(page.getByRole('switch', { name: 'Unlimited quota' }));
 
     expect(onChangeMock).toHaveBeenLastCalledWith({ type: 'unlimited' });
   });
@@ -161,7 +161,7 @@ describe('COSQuotasNew (browser)', () => {
       />,
     );
 
-    await userEvent.click(page.getByRole('img', { name: 'Unlimited quota' }));
+    await userEvent.click(page.getByRole('switch', { name: 'Unlimited quota' }));
 
     expect(onChangeMock).toHaveBeenLastCalledWith({
       type: 'limited',
@@ -258,10 +258,10 @@ describe('COSQuotasNew (browser)', () => {
 
     await expect.element(page.getByTestId('is-dirty')).toHaveTextContent('false');
 
-    await userEvent.click(page.getByRole('img', { name: 'Unlimited quota' }));
+    await userEvent.click(page.getByRole('switch', { name: 'Unlimited quota' }));
     await expect.element(page.getByTestId('is-dirty')).toHaveTextContent('true');
 
-    await userEvent.click(page.getByRole('img', { name: 'Unlimited quota' }));
+    await userEvent.click(page.getByRole('switch', { name: 'Unlimited quota' }));
 
     await expect.element(page.getByTestId('is-dirty')).toHaveTextContent('false');
   });

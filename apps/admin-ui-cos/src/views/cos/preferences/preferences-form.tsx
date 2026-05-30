@@ -72,7 +72,7 @@ export const PreferencesForm = ({ cosInformation, readonlyCOS }: PreferencesForm
     },
   });
 
-  const isDirty = useSelector(form.store, (state) => state.isDirty);
+  const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
 
   return (
     <FormPageLayout
