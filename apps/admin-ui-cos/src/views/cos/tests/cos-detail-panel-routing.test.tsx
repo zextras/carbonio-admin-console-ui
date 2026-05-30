@@ -12,7 +12,7 @@ vi.mock('../general-information/cos-general-information', () => ({
   CosGeneralInformation: vi.fn(),
 }));
 
-vi.mock('../cos-features', () => ({
+vi.mock('../cos-features/cos-features', () => ({
   CosFeatures: vi.fn(),
 }));
 
@@ -20,7 +20,7 @@ vi.mock('../advanced/cos-advanced', () => ({
   CosAdvanced: vi.fn(),
 }));
 
-vi.mock('../cos-server-pools', () => ({
+vi.mock('../cos-server-pools/cos-server-pools', () => ({
   CosServerPools: vi.fn(),
 }));
 
