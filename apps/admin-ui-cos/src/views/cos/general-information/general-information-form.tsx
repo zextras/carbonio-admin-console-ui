@@ -12,22 +12,19 @@ import {
   Input,
   LabeledValue,
   ListRow,
-  Modal,
   Padding,
   Row,
   Tooltip,
   type TRow,
   useSnackbar,
 } from '@zextras/ui-components';
-import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { Attribute } from '../../../../types/attribute';
 import { DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
-import { deleteCOS } from '../../../services/delete-cos-service';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { renameCos } from '../../../services/rename-cos-service';
 import { useCosAccounts } from '../../../services/use-cos-accounts';
@@ -37,6 +34,7 @@ import { useTotalAccounts } from '../../../services/use-total-accounts';
 import { useTotalDomains } from '../../../services/use-total-domains';
 import { FormPageLayout } from '../../form-page-layout';
 import { getDateFromStr, getFormatedDate } from '../../utility/utils';
+import { DeleteCosModal } from './delete-cos-modal';
 import { SearchableTable } from './searchable-table';
 
 type DirectoryItem = {
@@ -228,7 +226,6 @@ export const GeneralInformationForm = ({
   const { data: totalDomain = 0 } = useTotalDomains(cosId);
 
   const [openDeleteCOSConfirmDialog, setOpenDeleteCOSConfirmDialog] = useState<boolean>(false);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
   const [offset, setOffset] = useState<number>(0);
   const [accountLimit, setAccountLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
@@ -360,43 +357,7 @@ export const GeneralInformationForm = ({
       ? getFormatedDate(getDateFromStr(cosData.zimbraCreateTimestamp)) ?? ''
       : '';
 
-  const canDeleteCOS = !!(form.state.values.cn === '' || form.state.values.cn === DEFAULT);
-
-  const onDeleteCOS = (): void => {
-    setIsRequestInProgress(true);
-    deleteCOS(cosData.zimbraId ?? '')
-      .then((data: unknown) => {
-        setIsRequestInProgress(false);
-        if (data) {
-          createSnackbar({
-            key: 'info',
-            severity: 'info',
-            label: t('label.delete_cos_succeess', {
-              cosname: form.state.values.cn,
-              defaultValue: 'The {{cosname}} has been deleted successfully',
-            }),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          setOpenDeleteCOSConfirmDialog(false);
-          replaceHistory(`/cos_list`);
-        }
-      })
-      .catch((error: unknown) => {
-        setIsRequestInProgress(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label:
-            (error as Error)?.message ||
-            t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  };
+  const canDeleteCOS = form.state.values.cn === '' || form.state.values.cn === DEFAULT;
 
   return (
     <FormPageLayout
@@ -557,71 +518,12 @@ export const GeneralInformationForm = ({
           onClick={() => setOpenDeleteCOSConfirmDialog(true)}
         />
       </Row>
-      <Modal
-        title={
-          <Trans
-            i18nKey="label.deleting_cos_msg"
-            defaults="Deleting <bold>{{cosname}}</bold>"
-            components={{ bold: <strong /> }}
-            values={{ cosname: form.state.values.cn }}
-          />
-        }
+      <DeleteCosModal
         open={openDeleteCOSConfirmDialog}
-        showCloseIcon
-        onClose={(): void => {
-          setOpenDeleteCOSConfirmDialog(false);
-        }}
-        size="medium"
-        customFooter={
-          <Container orientation="horizontal" mainAlignment="space-between">
-            <Container orientation="horizontal" mainAlignment="flex-end" width="fit">
-              <Padding all="small">
-                <Button
-                  label={t('label.no_go_back', 'No, Go Back')}
-                  color="secondary"
-                  size="medium"
-                  onClick={(): void => {
-                    setOpenDeleteCOSConfirmDialog(false);
-                  }}
-                />
-              </Padding>
-              <Button
-                label={t('label.yes_delete', 'Yes, Delete')}
-                color="error"
-                onClick={onDeleteCOS}
-                disabled={isRequestInProgress}
-              />
-            </Container>
-          </Container>
-        }
-      >
-        <Container>
-          <Padding bottom="small" top="extralarge">
-            <ds-text as="p" overflow="break-word" weight="regular">
-              {t('label.you_are_deleting', {
-                cosname: form.state.values.cn,
-                defaultValue: 'You are deleting {{cosname}}',
-              })}
-            </ds-text>
-          </Padding>
-          <Padding bottom="small">
-            <ds-text as="p" overflow="break-word" weight="regular">
-              {t(
-                'label.are_you_sure_deleting_cos',
-                'Are you sure you want to delete this Class of Service?',
-              )}
-            </ds-text>
-          </Padding>
-          <Padding bottom="extralarge">
-            <ds-text as="p" overflow="break-word" weight="regular">
-              {t(
-                'label.delete_cos_instruction_msg',
-                'If you click YES, DELETE the DefaultCOS will be replace the deleted COS.',
-              )}
-            </ds-text>
-          </Padding>
-        </Container>
-      </Modal>
+        onClose={(): void => setOpenDeleteCOSConfirmDialog(false)}
+        cosName={form.state.values.cn}
+        cosId={cosData.zimbraId ?? ''}
+      />
     </FormPageLayout>
   );
 };
