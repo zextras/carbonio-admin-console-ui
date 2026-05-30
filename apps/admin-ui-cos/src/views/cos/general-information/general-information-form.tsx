@@ -8,17 +8,13 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
-  CustomTextArea,
-  Input,
-  LabeledValue,
-  ListRow,
   Padding,
   Row,
   Tooltip,
   type TRow,
   useSnackbar,
 } from '@zextras/ui-components';
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -34,6 +30,7 @@ import { useTotalAccounts } from '../../../services/use-total-accounts';
 import { useTotalDomains } from '../../../services/use-total-domains';
 import { FormPageLayout } from '../../form-page-layout';
 import { getDateFromStr, getFormatedDate } from '../../utility/utils';
+import { CosInfoFields, type GeneralInfoFormValues } from './cos-info-fields';
 import { DeleteCosModal } from './delete-cos-modal';
 import { SearchableTable } from './searchable-table';
 
@@ -41,12 +38,6 @@ type DirectoryItem = {
   a?: Array<Attribute>;
   id?: string;
   name?: string;
-};
-
-type GeneralInfoFormValues = {
-  cn: string;
-  description: string;
-  zimbraNotes: string;
 };
 
 type GeneralInformationFormProps = {
@@ -376,101 +367,15 @@ export const GeneralInformationForm = ({
         style={{ overflow: 'auto' }}
         width="100%"
       >
-        <Row mainAlignment="flex-start" width="100%">
-          <Container height="fit" crossAlignment="flex-start" background="gray6">
-            <ListRow>
-              <Container padding={{ all: 'small' }}>
-                <form.Field name="cn">
-                  {(field) => (
-                    <Input
-                      isRequired
-                      label={t('label.name', 'Name')}
-                      backgroundColor={canDeleteCOS ? 'gray6' : 'gray5'}
-                      value={field.state.value}
-                      onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                        field.handleChange(e.target.value);
-                      }}
-                      disabled={canDeleteCOS || readonlyCOS}
-                    />
-                  )}
-                </form.Field>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ all: 'small' }}>
-                <Input
-                  label={t('label.id_lbl', 'ID')}
-                  backgroundColor="gray6"
-                  value={cosData.zimbraId}
-                  disabled
-                  onChange={(): void => {}}
-                />
-              </Container>
-              <Container padding={{ all: 'small' }}>
-                <Input
-                  label={t('label.creation_date', 'Creation Date')}
-                  value={cosCreationDate}
-                  backgroundColor="gray6"
-                  disabled
-                  onChange={(): void => {}}
-                />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ all: 'small' }}>
-                <LabeledValue
-                  label={t('label.accounts_that_use_this_cos', 'Accounts that use this CoS')}
-                  backgroundColor="gray6"
-                  value={totalAccount}
-                />
-              </Container>
-              <Container padding={{ all: 'small' }}>
-                <LabeledValue
-                  label={t(
-                    'label.domains_that_use_this_cos_as_default',
-                    'Domains that use this CoS as default',
-                  )}
-                  value={totalDomain}
-                  backgroundColor="gray6"
-                />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ all: 'small' }}>
-                <form.Field name="description">
-                  {(field) => (
-                    <Input
-                      label={t('label.description', 'Description')}
-                      backgroundColor="gray5"
-                      value={field.state.value}
-                      onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                        field.handleChange(e.target.value);
-                      }}
-                      disabled={readonlyCOS}
-                    />
-                  )}
-                </form.Field>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ all: 'small' }}>
-                <form.Field name="zimbraNotes">
-                  {(field) => (
-                    <CustomTextArea
-                      label={t('label.notes', 'Notes')}
-                      backgroundColor="gray5"
-                      value={field.state.value}
-                      onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
-                        field.handleChange(e.target.value);
-                      }}
-                      disabled={readonlyCOS}
-                    />
-                  )}
-                </form.Field>
-              </Container>
-            </ListRow>
-          </Container>
-        </Row>
+        <CosInfoFields
+          form={form}
+          cosId={cosData.zimbraId}
+          cosCreationDate={cosCreationDate}
+          totalAccount={totalAccount}
+          totalDomain={totalDomain}
+          canDeleteCOS={canDeleteCOS}
+          readonlyCOS={readonlyCOS}
+        />
         <SearchableTable
           title={t('cos.domains_that_use_this_cos', 'Domains that use this COS')}
           searchLabel={t('label.search_for_a_domain', 'Search for a domain')}
