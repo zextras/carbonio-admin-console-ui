@@ -79,6 +79,9 @@ async function setupTest(wrapper: React.ReactElement = <TestWrapper />) {
   );
 }
 
+// NOTE: These tests are very poor because of a div soup situation.
+// The Switch.tsx component renders a <div> with a ds-icon that toggles between ToggleRight and ToggleLeftOutline.
+// There's no native <input type="checkbox"> or role="switch", so .toBeChecked() won't work.
 describe('FeaturesForm (browser)', () => {
   beforeEach(() => {
     vi.resetAllMocks();
@@ -118,24 +121,28 @@ describe('FeaturesForm (browser)', () => {
   it('should render Contacts Web Feature switch and be clickable', async () => {
     await setupTest();
     const webFeatureSwitch = page.getByText('Web Feature').nth(0);
+    await expect.element(webFeatureSwitch).toBeVisible();
     await userEvent.click(webFeatureSwitch);
   });
 
   it('should render Calendar Web Feature switch and be clickable', async () => {
     await setupTest();
     const webFeatureSwitch = page.getByText('Web Feature').nth(1);
+    await expect.element(webFeatureSwitch).toBeVisible();
     await userEvent.click(webFeatureSwitch);
   });
 
   it('should render Files Web Feature switch and be clickable', async () => {
     await setupTest();
     const webFeatureSwitch = page.getByText('Web Feature').nth(2);
+    await expect.element(webFeatureSwitch).toBeVisible();
     await userEvent.click(webFeatureSwitch);
   });
 
   it('should render Tasks Web Feature switch and be clickable', async () => {
     await setupTest();
     const webFeatureSwitch = page.getByText('Web Feature').nth(3);
+    await expect.element(webFeatureSwitch).toBeVisible();
     await userEvent.click(webFeatureSwitch);
   });
 
@@ -148,6 +155,7 @@ describe('FeaturesForm (browser)', () => {
       />,
     );
     const filesMobileApp = page.getByText('Mobile App').nth(1);
+    await expect.element(filesMobileApp).toBeVisible();
     await userEvent.click(filesMobileApp);
   });
 
