@@ -441,6 +441,9 @@ describe('CosAdvanced', () => {
       mockCatalogServices();
       mockGetCoreAttributes(true);
       mockCoreAttributeSet();
+      createBrowserAPIInterceptor('get', `/services/storages/admin/quota/cos/${COS_ID}`, () =>
+        HttpResponse.json({}),
+      );
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
       createBrowserSoapAPIInterceptor('ModifyCos', {});
       createBrowserSoapAPIInterceptor('FlushCache', {});

@@ -316,6 +316,7 @@ describe('COSPreferences', () => {
       ]);
 
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       await setupBrowserTest(
         <Routes>
           <Route path="/:cosId/:operation" element={<COSPreferences />} />
@@ -356,6 +357,7 @@ describe('COSPreferences', () => {
     }, 20_000);
 
     it('should mark as dirty when changing Default Charset select', async () => {
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       await setupCosPreferencesTest();
       await page.getByText('Default Charset').click();
       await page.getByText('KOI8-R').click();
@@ -470,6 +472,7 @@ describe('COSPreferences', () => {
     }, 20_000);
 
     it('should mark as dirty when changing Appointment Duration select', async () => {
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       await setupCosPreferencesTest();
       const apptDurationLabel = page
         .getByText(/Appointment/)
@@ -589,6 +592,7 @@ describe('COSPreferences', () => {
     }, 20_000);
 
     it('should cancel and allow re-editing after cancel', async () => {
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       await setupCosPreferencesTest();
       await page.getByText('View mail as HTML (when possible)').click();
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();

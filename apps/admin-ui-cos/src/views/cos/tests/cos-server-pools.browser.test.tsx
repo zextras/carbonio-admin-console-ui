@@ -189,6 +189,7 @@ describe('CosServerPools', () => {
 
   describe('Disable action', () => {
     it('should open confirmation modal when clicking disable on an enabled server', async () => {
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       await setupServerPoolsTest();
       await selectServer('mail-server-1');
 
@@ -270,6 +271,7 @@ describe('CosServerPools', () => {
     });
 
     it('should close modal without sending request when clicking No, Go Back', async () => {
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       await setupServerPoolsTest();
       await selectServer('mail-server-1');
 
@@ -290,6 +292,7 @@ describe('CosServerPools', () => {
 
   describe('Search', () => {
     it('should filter server list when typing in search input', async () => {
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       await setupServerPoolsTest();
 
       const searchInput = page.getByPlaceholder('Search for a specific server');

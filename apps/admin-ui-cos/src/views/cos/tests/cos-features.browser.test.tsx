@@ -47,7 +47,14 @@ const mockCosData = {
   ],
 };
 
+function mockCatalogServices(): void {
+  createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+    HttpResponse.json({ items: [] }),
+  );
+}
+
 async function setupCosFeaturesTest(cosData = mockCosData) {
+  mockCatalogServices();
   createBrowserSoapAPIInterceptor('GetCos', cosData);
   createBrowserSoapAPIInterceptor('GetAccount', {});
   createBrowserAPIInterceptor('post', '/service/extension/zextras_admin/core/attributes/get', () =>
@@ -283,6 +290,7 @@ describe('CosFeatures', () => {
 
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
       createBrowserSoapAPIInterceptor('GetAccount', {});
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       createBrowserAPIInterceptor(
         'post',
         '/service/extension/zextras_admin/core/attributes/get',

@@ -6,6 +6,7 @@
 import { QueryClient } from '@tanstack/react-query';
 import {
   advancedSupportedApiForBrowser,
+  createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
   createBrowserZextrasActionInterceptor,
   getGetInfoResponseMock,
@@ -67,10 +68,17 @@ function seedQueryClient(): QueryClient {
   return queryClient;
 }
 
+function mockCatalogServices(): void {
+  createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+    HttpResponse.json({ items: [] }),
+  );
+}
+
 async function setupWscSettingsTest(): Promise<void> {
   await advancedSupportedApiForBrowser.withAdvancedNotSupported();
   const queryClient = seedQueryClient();
 
+  mockCatalogServices();
   createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
   createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
     HttpResponse.json({
@@ -95,6 +103,7 @@ async function setupWscSettingsTestWithFeatures(
   featuresOverride: Partial<AccountType> = {},
   options?: { useAdvanced?: boolean },
 ): Promise<void> {
+  mockCatalogServices();
   if (options?.useAdvanced) {
     await advancedSupportedApiForBrowser.withAdvancedSupported();
   } else {
@@ -246,6 +255,7 @@ describe('WscSettings (browser)', () => {
       await advancedSupportedApiForBrowser.withAdvancedNotSupported();
       const queryClient = seedQueryClient();
 
+      mockCatalogServices();
       createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
       createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
         HttpResponse.json({
@@ -276,6 +286,7 @@ describe('WscSettings (browser)', () => {
       await advancedSupportedApiForBrowser.withAdvancedNotSupported();
       const queryClient = seedQueryClient();
 
+      mockCatalogServices();
       createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
       createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
         HttpResponse.json({

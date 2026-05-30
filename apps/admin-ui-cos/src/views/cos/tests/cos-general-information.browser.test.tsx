@@ -11,8 +11,9 @@ import {
   grantUserCosRights,
   resetMockWorker,
   setupBrowserTest,
+  worker,
 } from 'admin-ui-test-utils';
-import { HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
@@ -56,6 +57,12 @@ const mockDefaultCosData = {
 function mockCatalogServices(): void {
   createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
     HttpResponse.json({ items: [] }),
+  );
+}
+
+function mockSvgrImageImport(): void {
+  worker.use(
+    http.get(/\[object%20Object\]/, () => HttpResponse.json({})),
   );
 }
 
@@ -107,6 +114,7 @@ async function setupGeneralInfoTest(cosData = mockCosData): Promise<void> {
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
   mockCatalogServices();
+  mockSvgrImageImport();
   mockSearchDirectoryResponses();
 
   createBrowserSoapAPIInterceptor('GetCos', cosData);
@@ -128,6 +136,7 @@ async function setupSaveTest(cosData = mockCosData): Promise<void> {
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
   mockCatalogServices();
+  mockSvgrImageImport();
   mockSearchDirectoryResponses();
 
   createBrowserSoapAPIInterceptor('GetCos', cosData);
@@ -146,6 +155,7 @@ async function setupDeleteTest(cosData = mockCosData): Promise<void> {
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
   mockCatalogServices();
+  mockSvgrImageImport();
   mockSearchDirectoryResponses();
 
   createBrowserSoapAPIInterceptor('GetCos', cosData);
@@ -414,6 +424,7 @@ describe('CosGeneralInformation', () => {
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
       mockEmptySearchDirectoryResponses();
       mockCatalogServices();
+      mockSvgrImageImport();
       createBrowserSoapAPIInterceptor('FlushCache', {});
       createBrowserSoapAPIInterceptor('ModifyCos', {});
       createBrowserSoapAPIInterceptor('RenameCos', {});
@@ -479,6 +490,7 @@ describe('CosGeneralInformation', () => {
       );
 
       mockCatalogServices();
+      mockSvgrImageImport();
       mockSearchDirectoryResponses();
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
       createBrowserSoapAPIInterceptor('FlushCache', {});

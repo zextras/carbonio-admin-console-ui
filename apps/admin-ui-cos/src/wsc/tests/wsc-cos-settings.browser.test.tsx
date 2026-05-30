@@ -5,6 +5,7 @@
  */
 import {
   advancedSupportedApiForBrowser,
+  createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
   createBrowserZextrasActionInterceptor,
   delayedSoapApiForBrowser,
@@ -88,7 +89,14 @@ const LICENSE_MOCK = {
   },
 };
 
+function mockCatalogServices(): void {
+  createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+    HttpResponse.json({ items: [] }),
+  );
+}
+
 function setupUnhandledApiInterceptors(): void {
+  mockCatalogServices();
   createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
   createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
     HttpResponse.json({

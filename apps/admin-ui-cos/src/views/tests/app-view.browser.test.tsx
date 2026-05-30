@@ -5,16 +5,32 @@
  */
 
 import {
+  createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
   getGetInfoResponseMock,
   getQueryClient,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { AppView } from '../app-view';
+
+function mockCatalogServices(): void {
+  createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+    HttpResponse.json({ items: [] }),
+  );
+}
+
+function mockSvgrImageImport(): void {
+  createBrowserAPIInterceptor(
+    'get',
+    /\[object%20Object\]/,
+    () => new HttpResponse(null, { status: 200 }),
+  );
+}
 
 afterEach(() => {
   resetMockWorker();
@@ -85,21 +101,22 @@ describe('AppView', () => {
       more: false,
     };
 
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const searchDirectoryInterceptor = createBrowserSoapAPIInterceptor(
+    const getInfoPromise = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    const searchDirPromise = createBrowserSoapAPIInterceptor(
       'SearchDirectory',
       mockCosListResponse,
     );
-
-    const getAccountInterceptor = createBrowserSoapAPIInterceptor('GetAccount', {});
+    const getAccountPromise = createBrowserSoapAPIInterceptor('GetAccount', {});
+    mockCatalogServices();
+    mockSvgrImageImport();
 
     await setupBrowserTest(<AppView />, {
       initialRouterEntry: `/cos_list`,
       queryClient,
     });
-    await getInfoInterceptor;
-    await searchDirectoryInterceptor;
-    await getAccountInterceptor;
+    await getInfoPromise;
+    await searchDirPromise;
+    await getAccountPromise;
 
     // Verify CosListPanel renders with action buttons
     await expect.element(page.getByText('General', { exact: true })).toBeVisible();
