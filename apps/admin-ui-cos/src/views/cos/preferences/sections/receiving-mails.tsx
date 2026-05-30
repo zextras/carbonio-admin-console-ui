@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { Container, Input, ListRow, Row, Select, SelectItem } from '@zextras/ui-components';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -62,7 +62,7 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
   const [pollingIntervalNum, setPollingIntervalNum] = useState('');
   const [pollingIntervalType, setPollingIntervalType] = useState('');
 
-  const minPollingInterval = useStore(form.store, (s) => s.values.zimbraMailMinPollingInterval);
+  const minPollingInterval = useSelector(form.store, (s) => s.values.zimbraMailMinPollingInterval);
 
   useEffect(() => {
     const val = minPollingInterval ?? '';

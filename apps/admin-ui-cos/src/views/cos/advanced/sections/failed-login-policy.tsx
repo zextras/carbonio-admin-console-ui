@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,11 +21,11 @@ type FailedLoginPolicyProps = {
 
 const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({ form, readonlyCOS, timeItems }) => {
 	const [t] = useTranslation();
-	const isLockoutEnabled = useStore(
+	const isLockoutEnabled = useSelector(
 		form.store,
 		(s) => s.values.zimbraPasswordLockoutEnabled === 'TRUE',
 	);
-	const isSubmitted = useStore(form.store, (s) => s.submissionAttempts > 0);
+	const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
 	const labels = {
 		failedLoginPolicy: t('cos.failed_login_policy', 'Failed Login Policy'),
 		timeRange: t('cos.time_range', 'Time Range'),

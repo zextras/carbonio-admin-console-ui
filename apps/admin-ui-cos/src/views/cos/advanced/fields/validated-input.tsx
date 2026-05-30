@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { Input } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ export const CosValidatedInput = ({
   disabled = false,
 }: CosValidatedInputProps) => {
   const [t] = useTranslation();
-  const isSubmitted = useStore(form.store, (s) => s.submissionAttempts > 0);
+  const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
 
   return (
     <form.Field name={name}>

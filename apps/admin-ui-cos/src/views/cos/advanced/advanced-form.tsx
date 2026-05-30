@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useForm, useStore } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import { Container, useSnackbar } from '@zextras/ui-components';
 import { type GetCoreAttributesResponse, setCoreAttributes } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
@@ -222,7 +223,7 @@ export const CosAdvancedForm = ({
     },
   });
 
-  const isFormDirty = useStore(form.store, (state) => !state.isDefaultValue);
+  const isFormDirty = useSelector(form.store, (state) => state.isDirty);
   const isDirty = isFormDirty || quotaState.isDirty;
 
   return (

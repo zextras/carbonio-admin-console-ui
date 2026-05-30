@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
   Container,
   Input,
@@ -39,7 +39,7 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
   const GROUP_BY: SelectItem[] = conversationGroupBy(t);
   const CHARACTOR_SET: SelectItem[] = charactorSet();
 
-  const fileUploadMaxSizePerFile = useStore(
+  const fileUploadMaxSizePerFile = useSelector(
     form.store,
     (s) => s.values.zimbraFileUploadMaxSizePerFile,
   );

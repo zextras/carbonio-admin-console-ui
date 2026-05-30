@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { Container, Input, Padding } from '@zextras/ui-components';
 import { isValidDecimalInput } from '@zextras/ui-shared';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
@@ -123,7 +123,7 @@ export const QuotaGBField = ({
   disabled,
 }: QuotaGBFieldProps) => {
   const [t] = useTranslation();
-  const isSubmitted = useStore(form.store, (s) => s.submissionAttempts > 0);
+  const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
   return (
     <form.Field name={name}>
       {(field) => {

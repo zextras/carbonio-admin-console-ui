@@ -3,7 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useForm, useStore } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { Container } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -29,9 +30,7 @@ type PreferencesFormProps = {
   readonlyCOS: boolean;
 };
 
-function buildDefaultValues(
-  cosInformation: Array<Attribute> | undefined,
-): CosPrefAttributes {
+function buildDefaultValues(cosInformation: Array<Attribute> | undefined): CosPrefAttributes {
   if (!cosInformation?.length) return DEFAULT_COS_PREF_ATTRIBUTES;
   const fromServer: Partial<CosAttributes> = {};
   cosInformation.forEach((item) => {
@@ -73,7 +72,7 @@ export const PreferencesForm = ({ cosInformation, readonlyCOS }: PreferencesForm
     },
   });
 
-  const isDirty = useStore(form.store, (state) => !state.isDefaultValue);
+  const isDirty = useSelector(form.store, (state) => state.isDirty);
 
   return (
     <FormPageLayout

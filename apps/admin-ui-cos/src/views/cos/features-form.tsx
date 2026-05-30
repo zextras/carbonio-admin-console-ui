@@ -3,7 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useForm, useStore } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { Container, useSnackbar } from '@zextras/ui-components';
 import { type GetCoreAttributesResponse, setCoreAttributes } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
@@ -149,7 +150,7 @@ export const FeaturesForm = ({
     },
   });
 
-  const isDirty = useStore(form.store, (state) => !state.isDefaultValue);
+  const isDirty = useSelector(form.store, (state) => state.isDirty);
 
   return (
     <FormPageLayout

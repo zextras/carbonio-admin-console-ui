@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
   Container,
   CustomTextArea,
@@ -42,7 +42,7 @@ export const COSQuotas = ({
   timeItems,
 }: QuotaProps) => {
   const [t] = useTranslation();
-  const isSubmitted = useStore(form.store, (s) => s.submissionAttempts > 0);
+  const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
 
   const labels = {
     quotas: t('cos.quotas', 'Quotas'),
