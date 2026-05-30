@@ -15,7 +15,7 @@ import {
   TrackNumberPerPage,
   type TRow,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, type ReactNode } from 'react';
+import { type ChangeEvent, type ReactNode } from 'react';
 
 import logo from '../../../assets/gardian.svg';
 import { FunnelSearchIcon } from '../funnel-search-icon';
@@ -40,7 +40,7 @@ type SearchableTableProps = {
   marginTopStyle?: React.CSSProperties;
 };
 
-export const SearchableTable: FC<SearchableTableProps> = ({
+export const SearchableTable = ({
   title,
   searchLabel,
   searchValue,
@@ -56,17 +56,13 @@ export const SearchableTable: FC<SearchableTableProps> = ({
   isPlaceholderData,
   hasBottomPadding = false,
   marginTopStyle,
-}) => {
+}: SearchableTableProps) => {
   const showEmptyState = rows.length === 0 && !isFetching;
   const showPagination = rows.length !== 0;
 
   return (
     <>
-      <Row
-        width="100%"
-        padding={{ vertical: 'large' }}
-        style={marginTopStyle}
-      >
+      <Row width="100%" padding={{ vertical: 'large' }} style={marginTopStyle}>
         <Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
           <ds-text as="strong" size="medium" weight="bold" color="gray0">
             {title}
