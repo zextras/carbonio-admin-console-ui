@@ -14,13 +14,14 @@ import {
   type TRow,
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useMailstoreServers } from '@zextras/ui-shared';
-import { debounce, find } from 'lodash-es';
-import { ChangeEvent, useRef, useState } from 'react';
+import { find } from 'lodash-es';
+import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
 import { COS, ZIMBRA_ADMIN_URN } from '../../constants';
+import { useDebouncedValue } from '../../hooks/use-debounced-value';
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
@@ -50,10 +51,8 @@ export const CosServerPools = () => {
   const [selectedTableRowsId, setSelectedTableRowsId] = useState<Array<string>>([]);
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [searchServer, setSearchServer] = useState<string>('');
-  const [debouncedSearch, setDebouncedSearch] = useState<string>('');
+  const debouncedSearch = useDebouncedValue(searchServer, 700);
   const [statusFilter, setStatusFilter] = useState<string>('');
-
-  const searchDebounceRef = useRef(debounce((text: string) => setDebouncedSearch(text), 700));
 
   const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
   const readonlyCOS = !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
@@ -197,13 +196,7 @@ export const CosServerPools = () => {
   }
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchServer(value);
-    if (value === '') {
-      setDebouncedSearch('');
-    } else {
-      searchDebounceRef.current(value);
-    }
+    setSearchServer(e.target.value);
   };
 
   if (isPending) {
