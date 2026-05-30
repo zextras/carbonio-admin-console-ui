@@ -21,7 +21,7 @@ import {
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useMailstoreServers } from '@zextras/ui-shared';
 import { debounce, find } from 'lodash-es';
-import { ChangeEvent, FC, useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -42,7 +42,7 @@ function isPoolEnabled(poolList: Array<Attribute>, serverId?: string): boolean {
   return !!poolList.find((sp) => serverId === sp?._content)?.c;
 }
 
-export const CosServerPools: FC = () => {
+export const CosServerPools = () => {
   const [t] = useTranslation();
   const { cosId } = useParams();
   const { data: cosDetailData, isPending } = useCosDetail(cosId);
@@ -78,18 +78,15 @@ export const CosServerPools: FC = () => {
     setSelectedTableRowsId([item?.id ?? '']);
   };
 
-  const filteredServers = (() => {
-    let items: Array<ServerItem> = allMailStoreList;
-    if (statusFilter === 'enabled') {
-      items = items.filter((item) => isPoolEnabled(poolList, item.id));
-    } else if (statusFilter === 'disabled') {
-      items = items.filter((item) => !isPoolEnabled(poolList, item.id));
-    }
-    if (debouncedSearch !== '') {
-      items = items.filter((item) => item?.name?.includes(debouncedSearch));
-    }
-    return items;
-  })();
+  const filteredServers = allMailStoreList
+    .filter((item) =>
+      statusFilter === 'enabled'
+        ? isPoolEnabled(poolList, item.id)
+        : statusFilter === 'disabled'
+          ? !isPoolEnabled(poolList, item.id)
+          : true,
+    )
+    .filter((item) => debouncedSearch === '' || !!item?.name?.includes(debouncedSearch));
 
   const serverTableRows: Array<TRow> = filteredServers.map((item) => ({
     id: item?.id ?? '',
@@ -248,114 +245,114 @@ export const CosServerPools: FC = () => {
         padding={{ horizontal: 'medium', vertical: 'large' }}
         style={{ overflowY: 'auto' }}
       >
-      <Container
-        orientation="column"
-        crossAlignment="flex-start"
-        mainAlignment="flex-start"
-        style={{ overflow: 'auto' }}
-        width="100%"
-      >
         <Container
-          mainAlignment="flex-start"
+          orientation="column"
           crossAlignment="flex-start"
-          padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+          mainAlignment="flex-start"
+          style={{ overflow: 'auto' }}
           width="100%"
         >
-          <ListRow>
-            <ds-text as="strong" weight="bold">
-              {t('cos.general_options', 'General Options')}
-            </ds-text>
-          </ListRow>
-          <ListRow>
-            <Padding bottom="large" top="large">
-              <Switch
-                value={!allDisabled}
-                label={t(
-                  'cos.limt_serverpool_avaiable_create_user',
-                  'Limit server pool available for creating new users in this COS',
-                )}
-                onClick={(): void => {
-                  // Toggle is read-only display based on pool data — actual changes go through onEnable/onDisableServer
-                }}
-                iconColor="primary"
-              />
-            </Padding>
-          </ListRow>
-          {!allDisabled && (
-            <>
-              <Row mainAlignment="flex-start" width="100%">
-                <Container orientation="vertical" mainAlignment="space-around" height="fit">
-                  <Row orientation="horizontal" width="100%">
-                    <Row
-                      padding={{ right: 'small' }}
-                      mainAlignment="flex-start"
-                      width="65%"
-                      crossAlignment="flex-start"
-                    >
-                      <Input
-                        value={searchServer}
-                        disabled={
-                          (allMailStoreList.length === 0 && searchServer.length === 0) ||
-                          readonlyCOS
-                        }
-                        label={t('cos.search_a_specific_server', 'Search for a specific server')}
-                        CustomIcon={FunnelSearchIcon}
-                        onChange={handleSearchChange}
-                      />
-                    </Row>
-                    <Row padding={{ all: 'small' }} width="35%">
-                      <Padding left="small" right="large">
+          <Container
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+            width="100%"
+          >
+            <ListRow>
+              <ds-text as="strong" weight="bold">
+                {t('cos.general_options', 'General Options')}
+              </ds-text>
+            </ListRow>
+            <ListRow>
+              <Padding bottom="large" top="large">
+                <Switch
+                  value={!allDisabled}
+                  label={t(
+                    'cos.limt_serverpool_avaiable_create_user',
+                    'Limit server pool available for creating new users in this COS',
+                  )}
+                  onClick={(): void => {
+                    // Toggle is read-only display based on pool data — actual changes go through onEnable/onDisableServer
+                  }}
+                  iconColor="primary"
+                />
+              </Padding>
+            </ListRow>
+            {!allDisabled && (
+              <>
+                <Row mainAlignment="flex-start" width="100%">
+                  <Container orientation="vertical" mainAlignment="space-around" height="fit">
+                    <Row orientation="horizontal" width="100%">
+                      <Row
+                        padding={{ right: 'small' }}
+                        mainAlignment="flex-start"
+                        width="65%"
+                        crossAlignment="flex-start"
+                      >
+                        <Input
+                          value={searchServer}
+                          disabled={
+                            (allMailStoreList.length === 0 && searchServer.length === 0) ||
+                            readonlyCOS
+                          }
+                          label={t('cos.search_a_specific_server', 'Search for a specific server')}
+                          CustomIcon={FunnelSearchIcon}
+                          onChange={handleSearchChange}
+                        />
+                      </Row>
+                      <Row padding={{ all: 'small' }} width="35%">
+                        <Padding left="small" right="large">
+                          <Button
+                            type="outlined"
+                            key="enable-button"
+                            label={t('label.enable', 'enable')}
+                            color="primary"
+                            icon="CheckmarkCircleOutline"
+                            iconPlacement="right"
+                            disabled={!enable || readonlyCOS}
+                            onClick={onEnable}
+                            size="extralarge"
+                          />
+                        </Padding>
+
                         <Button
                           type="outlined"
-                          key="enable-button"
-                          label={t('label.enable', 'enable')}
-                          color="primary"
-                          icon="CheckmarkCircleOutline"
+                          key="disable-button"
+                          label={t('label.disable', 'disable')}
+                          color="error"
+                          icon="CloseCircleOutline"
                           iconPlacement="right"
-                          disabled={!enable || readonlyCOS}
-                          onClick={onEnable}
                           size="extralarge"
+                          disabled={!disable || readonlyCOS}
+                          onClick={() => setOpenConfirmDialog(true)}
                         />
-                      </Padding>
-
-                      <Button
-                        type="outlined"
-                        key="disable-button"
-                        label={t('label.disable', 'disable')}
-                        color="error"
-                        icon="CloseCircleOutline"
-                        iconPlacement="right"
-                        size="extralarge"
-                        disabled={!disable || readonlyCOS}
-                        onClick={() => setOpenConfirmDialog(true)}
-                      />
+                      </Row>
                     </Row>
-                  </Row>
-                </Container>
-              </Row>
+                  </Container>
+                </Row>
 
-              <Row
-                orientation="horizontal"
-                mainAlignment="space-between"
-                crossAlignment="flex-start"
-                width="fill"
-                height="calc(100vh - 340px)"
-                padding={{ top: 'large' }}
-              >
-                <Table
-                  style={{ overflow: 'auto', height: '100%' }}
-                  rows={serverTableRows}
-                  headers={tableHeader}
-                  showCheckbox={false}
-                  selectedRows={selectedTableRowsId}
-                  HeaderFactory={CustomHeaderFactory}
-                  RowFactory={HoverableRowFactory}
-                />
-              </Row>
-            </>
-          )}
+                <Row
+                  orientation="horizontal"
+                  mainAlignment="space-between"
+                  crossAlignment="flex-start"
+                  width="fill"
+                  height="calc(100vh - 340px)"
+                  padding={{ top: 'large' }}
+                >
+                  <Table
+                    style={{ overflow: 'auto', height: '100%' }}
+                    rows={serverTableRows}
+                    headers={tableHeader}
+                    showCheckbox={false}
+                    selectedRows={selectedTableRowsId}
+                    HeaderFactory={CustomHeaderFactory}
+                    RowFactory={HoverableRowFactory}
+                  />
+                </Row>
+              </>
+            )}
+          </Container>
         </Container>
-      </Container>
       </Container>
 
       <Modal
