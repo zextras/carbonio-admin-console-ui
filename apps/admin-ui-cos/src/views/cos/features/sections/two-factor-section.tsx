@@ -3,11 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, DatePicker, ListRow, Padding, Row, Switch } from '@zextras/ui-components';
+import { Container, ListRow, Padding, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { FeatureSwitchField } from '../../fields/feature-switch-field';
 import type { CosFeaturesFormApi } from '../../types';
+import { GracePeriodEndDatePicker } from './grace-period-end-date-picker';
+import { GracePeriodSection } from './grace-period-section';
+import { UntrustedNetworkSection } from './untrusted-network-section';
 
 type TwoFactorSectionProps = {
   form: CosFeaturesFormApi;
@@ -67,172 +70,15 @@ export const TwoFactorSection = ({ form, readonlyCOS, isAdvanced }: TwoFactorSec
               padding={{ top: 'large' }}
             >
               <ListRow>
-                <Container crossAlignment="flex-start">
-                  <form.Field name="carbonioOtpWizardFromUntrusted">
-                    {(field) => (
-                      <form.Field name="carbonioFeatureOTPMgmtEnabled">
-                        {(otpMgmtField) => (
-                          <Switch
-                            value={field.state.value === 'TRUE'}
-                            onClick={() =>
-                              field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                            }
-                            label={t(
-                              'cos.features.allowSetupFromUntrustedNetworks',
-                              'Allow 2FA setup from untrusted networks',
-                            )}
-                            iconColor="primary"
-                            disabled={readonlyCOS || otpMgmtField.state.value === 'FALSE'}
-                          />
-                        )}
-                      </form.Field>
-                    )}
-                  </form.Field>
-                  <Padding left={'extralarge'}>
-                    <Row padding={{ left: 'small' }}>
-                      <form.Field name="carbonioFeatureOTPMgmtEnabled">
-                        {(otpMgmtField) => (
-                          <ds-text
-                            as="span"
-                            color="gray1"
-                            size="small"
-                            overflow="break-word"
-                            disabled={readonlyCOS || otpMgmtField.state.value === 'FALSE'}
-                          >
-                            {t(
-                              'cos.features.allowSetupFromUntrustedNetworksInfo',
-                              'Lets users without an OTP complete the 2FA setup wizard at sign-in from untrusted networks. Disable this option to block access from untrusted networks until 2FA is already configured.',
-                            )}{' '}
-                          </ds-text>
-                        )}
-                      </form.Field>
-                    </Row>
-                  </Padding>
-                </Container>
+                <UntrustedNetworkSection form={form} readonlyCOS={readonlyCOS} />
               </ListRow>
               <ListRow padding={{ top: 'large' }}>
-                <Container crossAlignment="flex-start">
-                  <form.Field name="carbonioOtpGracePeriodEnabled">
-                    {(field) => (
-                      <form.Field name="carbonioFeatureOTPMgmtEnabled">
-                        {(otpMgmtField) => (
-                          <form.Field name="carbonioOtpWizardFromUntrusted">
-                            {(otpWizardField) => (
-                              <Switch
-                                value={field.state.value === 'TRUE'}
-                                onClick={() =>
-                                  field.handleChange(
-                                    field.state.value === 'TRUE' ? 'FALSE' : 'TRUE',
-                                  )
-                                }
-                                label={t(
-                                  'cos.features.allowSetupDeferralDuringGracePeriod',
-                                  'Allow setup deferral during grace period',
-                                )}
-                                iconColor="primary"
-                                disabled={
-                                  readonlyCOS ||
-                                  otpMgmtField.state.value === 'FALSE' ||
-                                  otpWizardField.state.value === 'FALSE'
-                                }
-                              />
-                            )}
-                          </form.Field>
-                        )}
-                      </form.Field>
-                    )}
-                  </form.Field>
-                  <Padding left={'extralarge'}>
-                    <Row padding={{ left: 'small' }}>
-                      <form.Field name="carbonioFeatureOTPMgmtEnabled">
-                        {(otpMgmtField) => (
-                          <form.Field name="carbonioOtpWizardFromUntrusted">
-                            {(otpWizardField) => (
-                              <ds-text
-                                as="span"
-                                color="gray1"
-                                size="small"
-                                overflow="break-word"
-                                disabled={
-                                  readonlyCOS ||
-                                  otpMgmtField.state.value === 'FALSE' ||
-                                  otpWizardField.state.value === 'FALSE'
-                                }
-                              >
-                                {t(
-                                  'cos.features.allowSetupDeferralDuringGracePeriodInfo',
-                                  'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
-                                )}
-                              </ds-text>
-                            )}
-                          </form.Field>
-                        )}
-                      </form.Field>
-                    </Row>
-                  </Padding>
-                </Container>
+                <GracePeriodSection form={form} readonlyCOS={readonlyCOS} />
               </ListRow>
               <ListRow padding={{ top: 'large' }}>
                 <Padding left={'extralarge'} width="100%">
                   <Row width="100%">
-                    <form.Field name="carbonioOtpGracePeriodEndingTime">
-                      {(field) => {
-                        const gentimeValue = field.state.value;
-                        let defaultDate = null;
-                        if (gentimeValue) {
-                          const match = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})Z$/.exec(
-                            gentimeValue,
-                          );
-                          if (match) {
-                            defaultDate = new Date(
-                              Date.UTC(
-                                Number(match[1]),
-                                Number(match[2]) - 1,
-                                Number(match[3]),
-                                Number(match[4]),
-                                Number(match[5]),
-                                Number(match[6]),
-                              ),
-                            );
-                          }
-                        }
-                        return (
-                          <form.Field name="carbonioOtpGracePeriodEnabled">
-                            {(gracePeriodField) => (
-                              <DatePicker
-                                disabled={gracePeriodField.state.value === 'FALSE'}
-                                width={'21.625rem'}
-                                label={t(
-                                  'cos.features.gracePeriodExpirationDate',
-                                  'Set grace period expiration date',
-                                )}
-                                onChange={(d) => {
-                                  if (!d) {
-                                    field.handleChange('');
-                                    return;
-                                  }
-                                  const gentime = `${d.getUTCFullYear()}${String(
-                                    d.getUTCMonth() + 1,
-                                  ).padStart(2, '0')}${String(d.getUTCDate()).padStart(
-                                    2,
-                                    '0',
-                                  )}${String(d.getUTCHours()).padStart(2, '0')}${String(
-                                    d.getUTCMinutes(),
-                                  ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(
-                                    2,
-                                    '0',
-                                  )}Z`;
-                                  field.handleChange(gentime);
-                                }}
-                                dateFormat="dd/MM/yyyy"
-                                minDate={new Date()}
-                                selected={defaultDate}
-                              />
-                            )}
-                          </form.Field>
-                        );
-                      }}
-                    </form.Field>
+                    <GracePeriodEndDatePicker form={form} />
                   </Row>
                 </Padding>
               </ListRow>
