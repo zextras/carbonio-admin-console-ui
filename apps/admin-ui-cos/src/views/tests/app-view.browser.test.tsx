@@ -24,14 +24,6 @@ function mockCatalogServices(): void {
   );
 }
 
-function mockSvgrImageImport(): void {
-  createBrowserAPIInterceptor(
-    'get',
-    /\[object%20Object\]/,
-    () => new HttpResponse(null, { status: 200 }),
-  );
-}
-
 afterEach(() => {
   resetMockWorker();
 });
@@ -108,7 +100,6 @@ describe('AppView', () => {
     );
     const getAccountPromise = createBrowserSoapAPIInterceptor('GetAccount', {});
     mockCatalogServices();
-    mockSvgrImageImport();
 
     await setupBrowserTest(<AppView />, {
       initialRouterEntry: `/cos_list`,
