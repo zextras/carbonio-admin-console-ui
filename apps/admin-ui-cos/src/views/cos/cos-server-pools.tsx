@@ -11,7 +11,6 @@ import {
   HoverableRowFactory,
   Input,
   ListRow,
-  Modal,
   Padding,
   Row,
   Switch,
@@ -30,6 +29,7 @@ import { COS, ZIMBRA_ADMIN_URN } from '../../constants';
 import { ModifyCosBody } from '../../services/modify-cos-service';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useModifyCos } from '../../services/use-modify-cos';
+import { DisablePoolModal } from './disable-pool-modal';
 import { FunnelSearchIcon } from './funnel-search-icon';
 
 type ServerItem = {
@@ -355,51 +355,12 @@ export const CosServerPools = () => {
         </Container>
       </Container>
 
-      <Modal
-        title={t('cos.disabling_pool', 'Disabling pool')}
+      <DisablePoolModal
         open={openConfirmDialog}
-        showCloseIcon
-        onClose={(): void => {
-          setOpenConfirmDialog(false);
-        }}
-        customFooter={
-          <Container orientation="horizontal" mainAlignment="space-between" width="100%">
-            <Container orientation="horizontal" mainAlignment="flex-start" width="25%">
-              <Button
-                label={t('label.helo', 'Help')}
-                type="outlined"
-                color="primary"
-                onClick={() => setOpenConfirmDialog(false)}
-              />
-            </Container>
-
-            <Container orientation="horizontal" mainAlignment="flex-end" width="75%">
-              <Padding all="small">
-                <Button
-                  label={t('label.no_go_back', 'No, Go Back')}
-                  color="secondary"
-                  onClick={() => setOpenConfirmDialog(false)}
-                />
-              </Padding>
-              <Button
-                label={t('cos.yes_disable', 'Yes, Disable')}
-                color="error"
-                onClick={onDisableServer}
-              />
-            </Container>
-          </Container>
-        }
-      >
-        <Padding all="medium">
-          <ds-text as="p" overflow="break-word" weight="regular">
-            {t('cos.create_cos_success_msg', {
-              serverName: allMailStoreList.find((sp) => sp?.id === selectedServer?.id)?.name,
-              defaultValue:
-                'You are disabling pool on {{serverName}}. All mailboxes will be not moved. Are you sure you want to delete it?',
-            })}
-          </ds-text>
-        </Padding>
-      </Modal>
+        onClose={(): void => setOpenConfirmDialog(false)}
+        serverName={allMailStoreList.find((sp) => sp?.id === selectedServer?.id)?.name}
+        onDisable={onDisableServer}
+      />
     </div>
   );
 };
