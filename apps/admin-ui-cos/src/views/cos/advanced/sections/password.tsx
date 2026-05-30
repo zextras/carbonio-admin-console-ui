@@ -68,7 +68,7 @@ const COSPassword: FC<COSPasswordProps> = ({ form, readonlyCOS }) => {
           width="99%"
           crossAlignment="center"
           mainAlignment="space-between"
-          background={'#D3EBF8'}
+          background={'var(--color-info-banner)'}
           padding={{ top: 'large', bottom: 'large' }}
           style={{ borderRadius: '2px 2px 0px 0px' }}
         >

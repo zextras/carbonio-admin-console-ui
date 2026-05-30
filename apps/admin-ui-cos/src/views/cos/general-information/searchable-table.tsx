@@ -20,6 +20,8 @@ import { type ChangeEvent, type FC, type ReactNode } from 'react';
 import logo from '../../../assets/gardian.svg';
 import { FunnelSearchIcon } from '../funnel-search-icon';
 
+const TABLE_CONTAINER_HEIGHT = 'calc(100vh - 21.25rem)';
+
 type SearchableTableProps = {
   title: ReactNode;
   searchLabel: string;
@@ -96,7 +98,7 @@ export const SearchableTable: FC<SearchableTableProps> = ({
         crossAlignment="flex-start"
         width="fill"
         style={{
-          height: 'calc(100vh - 21.25rem)',
+          height: TABLE_CONTAINER_HEIGHT,
           position: 'relative',
         }}
         padding={hasBottomPadding ? { bottom: 'large' } : undefined}
@@ -140,7 +142,7 @@ export const SearchableTable: FC<SearchableTableProps> = ({
                 crossAlignment="center"
                 style={{ textAlign: 'center' }}
               >
-                <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                <ds-text as="p" weight="light" color="gray1" size="large" overflow="break-word">
                   {'This list is empty.'}
                 </ds-text>
               </Row>

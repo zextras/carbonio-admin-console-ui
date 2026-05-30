@@ -41,12 +41,12 @@ type ZimbraCosEntry = {
 };
 
 const STATUS_COLOR = {
-  active: '#8BC34A',
-  maintenance: '#2196D3',
-  locked: '#D74942',
-  closed: '#828282',
-  pending: '#828282',
-  lockout: '#D74942',
+  active: 'success',
+  maintenance: 'info',
+  locked: 'error',
+  closed: 'gray1',
+  pending: 'gray1',
+  lockout: 'error',
 } as const;
 
 const STATUS_LABEL_KEYS: Record<string, string> = {
@@ -131,7 +131,7 @@ export const CosList: FC = () => {
         }
       });
       const status = CosIteam.zimbraCosStatus;
-      const statusColor = STATUS_COLOR[status as keyof typeof STATUS_COLOR] ?? '#828282';
+      const statusColor = STATUS_COLOR[status as keyof typeof STATUS_COLOR] ?? 'gray1';
       const statusLabel = t(
         STATUS_LABEL_KEYS[status] ?? 'label.active',
         STATUS_LABEL_DEFAULTS[status] ?? 'Active',
@@ -310,7 +310,7 @@ export const CosList: FC = () => {
                     <ds-text
                       as="p"
                       weight="light"
-                      color="#828282"
+                      color="gray1"
                       size="large"
                       overflow="break-word"
                     >
@@ -327,7 +327,7 @@ export const CosList: FC = () => {
                     <ds-text
                       as="p"
                       weight="light"
-                      color="#828282"
+                      color="gray1"
                       size="large"
                       overflow="break-word"
                     >

@@ -227,7 +227,7 @@ export const CosListPanel: FC = () => {
       crossAlignment="flex-start"
       mainAlignment="flex-start"
       background="gray5"
-      style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
+      style={{ overflow: 'auto', borderTop: '1px solid var(--color-white)' }}
     >
       <GeneralListPanel generalOptionItems={globalOptionItems} selectedOperationItem={cosView} />
       <Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>

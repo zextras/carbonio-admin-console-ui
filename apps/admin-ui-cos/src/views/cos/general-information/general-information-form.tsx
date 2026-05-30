@@ -45,16 +45,25 @@ type GeneralInformationFormProps = {
   readonlyCOS: boolean;
 };
 
+const ACCOUNT_STATUS_COLORS = {
+  active: 'success',
+  maintenance: 'info',
+  locked: 'error',
+  closed: 'gray1',
+  pending: 'gray1',
+  lockout: 'error',
+} as const;
+
 type StatusColorMap = Record<string, { color: string; label: string }>;
 
 function buildStatusColorMap(t: (key: string, defaultValue: string) => string): StatusColorMap {
   return {
-    active: { color: '#8BC34A', label: t('label.active', 'Active') },
-    maintenance: { color: '#2196D3', label: t('label.in_maintenance', 'In maintenance') },
-    locked: { color: '#D74942', label: t('label.locked', 'Locked') },
-    closed: { color: '#828282', label: t('label.closed', 'Closed') },
-    pending: { color: '#828282', label: t('label.pending', 'Pending') },
-    lockout: { color: '#D74942', label: t('label.lockout', 'Lockout') },
+    active: { color: ACCOUNT_STATUS_COLORS.active, label: t('label.active', 'Active') },
+    maintenance: { color: ACCOUNT_STATUS_COLORS.maintenance, label: t('label.in_maintenance', 'In maintenance') },
+    locked: { color: ACCOUNT_STATUS_COLORS.locked, label: t('label.locked', 'Locked') },
+    closed: { color: ACCOUNT_STATUS_COLORS.closed, label: t('label.closed', 'Closed') },
+    pending: { color: ACCOUNT_STATUS_COLORS.pending, label: t('label.pending', 'Pending') },
+    lockout: { color: ACCOUNT_STATUS_COLORS.lockout, label: t('label.lockout', 'Lockout') },
   };
 }
 
@@ -110,12 +119,12 @@ function processAccountItem(
             label={(acc.mail as Array<string>).slice(1).join(', ')}
             maxWidth="auto"
           >
-            <ds-text as="span" size="small" weight="light" key={item.id} color="#828282">
+            <ds-text as="span" size="small" weight="light" key={item.id} color="gray1">
               {(acc.mail as Array<string>).length - 1}
             </ds-text>
           </Tooltip>
         ) : (
-          <ds-text as="span" size="small" key={item.id} color="#828282" weight="light">
+          <ds-text as="span" size="small" key={item.id} color="gray1" weight="light">
             0
           </ds-text>
         )}
@@ -229,11 +238,11 @@ export const GeneralInformationForm = ({
   const [openDeleteCOSConfirmDialog, setOpenDeleteCOSConfirmDialog] = useState<boolean>(false);
 
   const [offset, setOffset] = useState<number>(0);
-  const [accountLimit, setAccountLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
+  const [accountPageSize, setAccountPageSize] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [searchAccountString, setSearchAccountString] = useState<string>('');
   const debouncedAccountSearch = useDebouncedValue(searchAccountString, 700);
 
-  const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
+  const [domainPageSize, setDomainPageSize] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [searchDomainString, setSearchDomainString] = useState<string>('');
   const [domainOffset, setDomainOffset] = useState<number>(0);
   const debouncedDomainSearch = useDebouncedValue(searchDomainString, 700);
@@ -245,7 +254,7 @@ export const GeneralInformationForm = ({
     isPending: isAccountRequestInProgress,
     isFetching: isAccountFetching,
     isPlaceholderData: isAccountPlaceholderData,
-  } = useCosAccounts(cosId, debouncedAccountSearch, offset, accountLimit);
+  } = useCosAccounts(cosId, debouncedAccountSearch, offset, accountPageSize);
 
   const accountList = buildAccountList(
     accountsData?.accounts as Array<DirectoryItem>,
@@ -259,7 +268,7 @@ export const GeneralInformationForm = ({
     isPending: isDomainRequestInProgress,
     isFetching: isDomainFetching,
     isPlaceholderData: isDomainPlaceholderData,
-  } = useCosDomains(cosId, debouncedDomainSearch, domainOffset, limit);
+  } = useCosDomains(cosId, debouncedDomainSearch, domainOffset, domainPageSize);
 
   const domainList = buildDomainList(
     domainsData?.domains as Array<DirectoryItem>,
@@ -384,9 +393,9 @@ export const GeneralInformationForm = ({
           rows={domainList}
           headers={domainHeaders}
           totalItems={totalDomains}
-          pageSize={limit}
+          pageSize={domainPageSize}
           onOffsetChange={setDomainOffset}
-          onPageSizeChange={setLimit}
+          onPageSizeChange={setDomainPageSize}
           isPending={isDomainRequestInProgress}
           isFetching={isDomainFetching}
           isPlaceholderData={isDomainPlaceholderData}
@@ -399,9 +408,9 @@ export const GeneralInformationForm = ({
           rows={accountList}
           headers={accountHeaders}
           totalItems={totalAccounts}
-          pageSize={accountLimit}
+          pageSize={accountPageSize}
           onOffsetChange={setOffset}
-          onPageSizeChange={setAccountLimit}
+          onPageSizeChange={setAccountPageSize}
           isPending={isAccountRequestInProgress}
           isFetching={isAccountFetching}
           isPlaceholderData={isAccountPlaceholderData}
