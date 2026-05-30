@@ -19,7 +19,7 @@ function getContainerStyle(isPrimaryBarExpanded: boolean) {
   };
 }
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container>
@@ -52,5 +52,3 @@ const AppView: FC = () => {
     </Container>
   );
 };
-
-export default AppView;

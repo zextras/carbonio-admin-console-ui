@@ -23,8 +23,7 @@ vi.mock('react-router', () => ({
 }));
 
 vi.mock('../views/app-view', () => ({
-  __esModule: true,
-  default: () => <div data-testid="app-view" />,
+  AppView: () => <div data-testid="app-view" />,
 }));
 
 import { addRoute, registerActions, removeRoute, useCurrentUserRights } from '@zextras/ui-shared';

@@ -193,7 +193,7 @@ describe('COSPreferences', () => {
   });
 
   describe('Loading', () => {
-    it('should show loading spinner when data is pending', async () => {
+    it('should show loading shimmer when data is pending', async () => {
       const queryClient = getQueryClient();
       await grantUserCosRights(queryClient);
       delayedSoapApiForBrowser('GetCos', mockCosData, 5000);

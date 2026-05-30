@@ -64,7 +64,7 @@ export class DsPageShimmer extends LitElement {
 
   override render(): TemplateResult {
     return html`
-      <div class="page-shimmer" role="presentation" aria-hidden="true">
+      <div class="page-shimmer" role="status" aria-label="Loading">
         ${repeat(
           Array.from({ length: this.rows ?? 8 }),
           (_, idx) => idx,

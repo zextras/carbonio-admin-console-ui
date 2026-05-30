@@ -18,7 +18,7 @@ import {
   PRIMARY_BAR_COS,
 } from './constants';
 import { checkCreateCosRight, checkShowCOS } from './utils/check-rights';
-import AppView from './views/app-view';
+import { AppView } from './views/app-view';
 import { CosTooltipView } from './views/cos-tooltip-view';
 
 const App = () => {

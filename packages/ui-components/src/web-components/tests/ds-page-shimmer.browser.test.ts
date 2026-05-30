@@ -80,16 +80,16 @@ describe('ds-page-shimmer', () => {
 	});
 
 	describe('accessibility', () => {
-		it('should have aria-hidden="true" on the container', async () => {
+		it('should have role="status" on the container', async () => {
 			const el = await createDsPageShimmer();
 			const container = el.shadowRoot!.querySelector('.page-shimmer');
-			expect(container?.getAttribute('aria-hidden')).toBe('true');
+			expect(container?.getAttribute('role')).toBe('status');
 		});
 
-		it('should have role="presentation" on the container', async () => {
+		it('should have aria-label="Loading" on the container', async () => {
 			const el = await createDsPageShimmer();
 			const container = el.shadowRoot!.querySelector('.page-shimmer');
-			expect(container?.getAttribute('role')).toBe('presentation');
+			expect(container?.getAttribute('aria-label')).toBe('Loading');
 		});
 	});
 
