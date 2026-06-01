@@ -21,7 +21,6 @@ import { useTranslation } from 'react-i18next';
 import { CreateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { createS3Connector, listS3Regions } from '../../services/bucket-service';
-import { formatedErrorMessage } from '../utility/utils';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
@@ -70,12 +69,7 @@ const Connection: FC<{
   const [prefix, setPrefix] = useState('');
   const [customRegion, setCustomRegion] = useState('');
   const [isCustomRegion, setIsCustomRegion] = useState(false);
-  const [verifyFailError, setVerifyFailError] = useState(
-    t(
-      'storages.s3Connectors.verifyError.doNotSupport',
-      'We do not support this specific connector. Try again with a different one',
-    ),
-  );
+
   const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [prefixConfirm, setprefixConfirm] = useState(true);
   const [bucketNameConfirm, setBucketNameConfirm] = useState(true);
@@ -153,28 +147,12 @@ const Connection: FC<{
             return;
           }
 
-          const errorMessage =
-            typeof response?.error === 'string'
-              ? response.error
-              : response?.error?.message ||
-                t(
-                  'storages.s3Connectors.verifyError.doNotSupport',
-                  'We do not support this specific connector. Try again with a different one',
-                );
           const errorDetails =
             typeof response?.error === 'string' ? undefined : response?.error?.details;
-          const formattedErrorDetails = typeof response?.error === 'string' || !response?.error ? undefined : formatedErrorMessage(response.error);
-          setVerifyFailError(formattedErrorDetails?.message || errorMessage);
           setCheckDetails(errorDetails);
           setIsVerifyError(true);
         })
         .catch(() => {
-          setVerifyFailError(
-            t(
-              'storages.s3Connectors.verifyError.doNotSupport',
-              'We do not support this specific connector. Try again with a different one',
-            ),
-          );
           setCheckDetails(undefined);
           setIsVerifyError(true);
         })
@@ -573,7 +551,6 @@ const Connection: FC<{
         onComplete={handleSuccessComplete}
       />
       <VerifyError
-        verifyFailError={verifyFailError}
         isError={showVerifyResult && isVerifyError}
         checkDetails={checkDetails}
         onRetry={() => setShowVerifyResult(false)}
