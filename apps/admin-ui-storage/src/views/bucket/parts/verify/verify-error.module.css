@@ -12,8 +12,9 @@
   border-radius: 1.5rem;
   background: var(--color-gray6-regular, white);
   padding: 2rem 2rem 2rem;
-  width: calc(500px - 4rem);
-  height: calc(338px - 4rem);
+  width: min(31.25rem, calc(100vw - 2rem));
+  min-height: 17rem;
+  max-height: min(calc(100vh - 2rem), 28rem);
   box-shadow: 0 0.25rem 1.5rem rgba(0, 0, 0, 0.08);
   color: var(--color-gray0-regular);
 }
@@ -71,35 +72,57 @@
   margin-bottom: 0.5rem;
 }
 
+.content {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 0.125rem;
+}
+
 .description {
-  line-height: 21px;
-  height: 3rem;
+  line-height: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.detailsToggle {
+  border: none;
+  background: transparent;
+  color: var(--color-primary-regular);
+  padding: 0;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  text-align: left;
+  align-self: flex-start;
 }
 
 .checksContainer {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  max-height: 10rem;
-  overflow-y: auto;
+  gap: 0.875rem;
+  margin-bottom: 0.75rem;
 }
 
 .checkItem {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem;
 }
 
 .divider {
   width: 100%;
   height: 1px;
   background: var(--color-gray4-regular, #e0e0e0);
-  margin: 2rem 0;
+  margin: 1.5rem 0;
 }
 
 .actions {
   display: flex;
   justify-content: end;
   gap: 1rem;
+  flex-shrink: 0;
 }

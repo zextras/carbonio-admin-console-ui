@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button } from '@zextras/ui-components';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './verify-error.module.css';
@@ -26,31 +26,71 @@ export type CheckResult = {
 
 type VerifyErrorProps = {
   isError: boolean;
-  verifyFailError?: string;
   checkDetails?: CheckResult;
   onRetry?: () => void;
 };
 
-export const VerifyError = ({ isError, verifyFailError, checkDetails, onRetry }: VerifyErrorProps): React.JSX.Element => {
+type CheckKey = Exclude<keyof CheckResult, 'error'>;
+
+const CHECK_KEYS: Array<CheckKey> = [
+  'connectionOk',
+  'secureHttpsOk',
+  'bucketExists',
+  'createDirectoryOk',
+  'uploadFileOk',
+  'uploadBigFileOk',
+  'downloadFileOk',
+  'listObjectsOk',
+  'copyFileOk',
+  'deleteFileOk',
+  'deleteDirectoryOk',
+];
+
+function isSuccessfulCheck(value: CheckResult[CheckKey]): boolean {
+  return value === 'true';
+}
+
+function buildDisplayedChecks(
+  checkDetails: CheckResult | undefined,
+  checkLabels: Record<CheckKey, string>,
+): Array<{ key: CheckKey; label: string; status: boolean }> {
+  return CHECK_KEYS.filter((key) => checkDetails?.[key] !== undefined).map((key) => ({
+    key,
+    label: checkLabels[key],
+    status: isSuccessfulCheck(checkDetails?.[key]),
+  }));
+}
+
+export const VerifyError = ({ isError, checkDetails, onRetry }: VerifyErrorProps): React.JSX.Element => {
   const { t } = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
+  const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
   useEffect(() => {
     if (isError) {
       popoverRef.current?.showPopover();
+      return;
     }
+
+    popoverRef.current?.hidePopover();
   }, [isError]);
 
   function handleClose(): void {
+    setIsDetailsVisible(false);
     popoverRef.current?.hidePopover();
   }
 
   function handleRetry(): void {
+    setIsDetailsVisible(false);
     popoverRef.current?.hidePopover();
     onRetry?.();
   }
 
-  const checkLabels: Record<string, string> = {
+  function handleToggleDetails(): void {
+    setIsDetailsVisible((previousValue) => !previousValue);
+  }
+
+  const checkLabels: Record<CheckKey, string> = {
     connectionOk: t('storages.s3Connectors.verifyProgress.connectionOk', 'Connection'),
     secureHttpsOk: t('storages.s3Connectors.verifyProgress.secureHttpsOk', 'Secure HTTPS'),
     bucketExists: t('storages.s3Connectors.verifyProgress.bucketExists', 'Bucket Exists'),
@@ -64,14 +104,7 @@ export const VerifyError = ({ isError, verifyFailError, checkDetails, onRetry }:
     deleteDirectoryOk: t('storages.s3Connectors.verifyProgress.deleteDirectoryOk', 'Delete Directory'),
   };
 
-  const displayedChecks = checkDetails
-    ? Object.entries(checkDetails)
-        .filter(([key]) => key in checkLabels)
-        .map(([key, value]) => ({
-          label: checkLabels[key],
-          status: value === 'true',
-        }))
-    : [];
+  const displayedChecks = buildDisplayedChecks(checkDetails, checkLabels);
 
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
@@ -108,36 +141,47 @@ export const VerifyError = ({ isError, verifyFailError, checkDetails, onRetry }:
           <ds-icon icon="CloseOutline" size="24px" />
         </button>
       </div>
-      <ds-text as="h2" weight="bold" size="large" className={styles.title}>
-        {t('storages.s3Connectors.verifyError.somethingWentWrong', 'Something went wrong')}
-      </ds-text>
-      <div className={styles.description}>
-        <ds-text as="p" color="gray1" weight="light" size="small" overflow="break-word">
-          {verifyFailError}
+      <div className={styles.content}>
+        <ds-text as="h2" weight="bold" size="large" className={styles.title}>
+          {t('storages.s3Connectors.verifyError.somethingWentWrong', 'Something went wrong with the information you provide')}
         </ds-text>
-      </div>
-      {displayedChecks.length > 0 && (
-        <>
-          <div className={styles.divider} />
-          <div className={styles.checksContainer}>
-            <ds-text as="span" weight="bold" size="small">
-              {t('storages.s3Connectors.verifyError.checkResults', 'Check Results')}
-            </ds-text>
-            {displayedChecks.map((check) => (
-              <div key={check.label} className={styles.checkItem}>
-                <ds-icon
-                  icon={check.status ? 'CheckmarkOutline' : 'CloseOutline'}
-                  color={check.status ? 'success' : 'error'}
-                  size="20px"
-                />
-                <ds-text as="span" size="small">
-                  {check.label}
-                </ds-text>
+        <div className={styles.description}>
+          <ds-text as="p" color="gray1" weight="light" size="small" overflow="break-word">
+            {t('storages.s3Connectors.verifyError.checkDetailsBelow', 'Check the details below')}
+          </ds-text>
+        </div>
+        {displayedChecks.length > 0 && (
+          <>
+            <button
+              type="button"
+              className={styles.detailsToggle}
+              onClick={handleToggleDetails}
+              aria-expanded={isDetailsVisible}
+              aria-controls="verify-error-checks"
+            >
+              {isDetailsVisible
+                ? t('storages.s3Connectors.verifyError.hideDetails', 'HIDE DETAILS')
+                : t('storages.s3Connectors.verifyError.showDetails', 'SHOW DETAILS')}
+            </button>
+            {isDetailsVisible && (
+              <div id="verify-error-checks" className={styles.checksContainer}>
+                {displayedChecks.map((check) => (
+                  <div key={check.key} className={styles.checkItem}>
+                    <ds-icon
+                      icon={check.status ? 'CheckmarkOutline' : 'CloseOutline'}
+                      color={check.status ? 'success' : 'error'}
+                      size="24px"
+                    />
+                    <ds-text as="span" size="medium">
+                      {check.label}
+                    </ds-text>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </>
-      )}
+            )}
+          </>
+        )}
+      </div>
       <div className={styles.divider} />
       <div className={styles.actions}>
         <Button

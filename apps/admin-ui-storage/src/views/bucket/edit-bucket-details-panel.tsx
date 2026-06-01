@@ -113,12 +113,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   );
   const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
-  const [verifyFailError, setVerifyFailError] = useState(
-    t(
-      'storages.s3Connectors.verifyError.doNotSupport',
-      'We do not support this specific connector. Try again with a different one',
-    ),
-  );
+
   const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [showVerifyResult, setShowVerifyResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
@@ -360,18 +355,11 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     setIsVerifyError(false);
     setIsVerifyPending(true);
 
-    const { ok, errorMessage, errorDetails } = await saveChanges();
+    const { ok, errorDetails } = await saveChanges();
 
     if (ok) {
       setIsVerifySuccess(true);
     } else {
-      setVerifyFailError(
-        errorMessage ||
-          t(
-            'storages.s3Connectors.verifyError.doNotSupport',
-            'We do not support this specific connector. Try again with a different one',
-          ),
-      );
       setCheckDetails(errorDetails);
       setIsVerifyError(true);
     }
@@ -719,7 +707,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         onComplete={handleSuccessComplete}
       />
       <VerifyError
-        verifyFailError={verifyFailError}
         isError={showVerifyResult && isVerifyError}
         checkDetails={checkDetails}
         onRetry={() => setShowVerifyResult(false)}

@@ -77,11 +77,9 @@ vi.mock('../parts/verify/verify-success', () => ({
 vi.mock('../parts/verify/verify-error', () => ({
 	VerifyError: ({
 		isError,
-		verifyFailError,
 	}: {
 		isError: boolean;
-		verifyFailError?: string;
-	}) => (isError ? <div>{verifyFailError ?? 'verify-error'}</div> : null),
+	}) => (isError ? <div>verify-error</div> : null),
 }));
 
 type BucketDetail = {

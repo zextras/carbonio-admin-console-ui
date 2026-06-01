@@ -137,18 +137,16 @@ vi.mock('../parts/verify/verify-success', () => ({
 vi.mock('../parts/verify/verify-error', () => ({
   VerifyError: ({
     isError,
-    verifyFailError,
     checkDetails,
     onRetry,
   }: {
     isError: boolean;
-    verifyFailError?: string;
     checkDetails?: { connectionOk?: string };
     onRetry?: () => void;
   }) =>
     isError ? (
       <div>
-        <span>{verifyFailError ?? 'verify-error'}</span>
+        <span>verify-error</span>
         {checkDetails?.connectionOk && <span>connectionOk:{checkDetails.connectionOk}</span>}
         <button type="button" onClick={onRetry}>
           Retry
