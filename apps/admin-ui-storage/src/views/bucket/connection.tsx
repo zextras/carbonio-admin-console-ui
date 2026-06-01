@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { CreateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { createS3Connector, listS3Regions } from '../../services/bucket-service';
+import { formatedErrorMessage } from '../utility/utils';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
@@ -159,7 +160,8 @@ const Connection: FC<{
                 );
           const errorDetails =
             typeof response?.error === 'string' ? undefined : response?.error?.details;
-          setVerifyFailError(errorMessage);
+          const formattedErrorDetails = typeof response?.error === 'string' || !response?.error ? undefined : formatedErrorMessage(response.error);
+          setVerifyFailError(formattedErrorDetails?.message || errorMessage);
           setCheckDetails(errorDetails);
           setIsVerifyError(true);
         })
