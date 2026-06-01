@@ -14,6 +14,7 @@ import {
   Select,
   SelectItem,
   Switch,
+  Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
 import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
@@ -129,6 +130,9 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const initialRegionValue = bucketDetail?.region ?? '';
   const isCustomRegionInvalid =
     hasSubmitted && isCustomRegion && !bucketNameRegex.test(customRegion);
+  const isEndpointUrlRequired = isCustomRegion || currentRegionValue === '';
+  const isEndpointUrlInvalid =
+    hasSubmitted && isEndpointUrlRequired && (urlData.trim() === '' || !bucketNameRegex.test(urlData.trim()));
 
   const changedFields = useMemo(() => {
     const fields: Array<{ label: string; value: string }> = [];
@@ -334,6 +338,10 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       return;
     }
 
+    if (isEndpointUrlRequired && (urlData.trim() === '' || !bucketNameRegex.test(urlData.trim()))) {
+      return;
+    }
+
     if (!prefixConfirm) {
       return;
     }
@@ -496,25 +504,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           </Row>
 
           <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-            <Input
-              backgroundColor="gray5"
-              label={t('label.endpoint_url', 'Endpoint URL')}
-              value={urlData}
-              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                setUrlData(ev.target.value);
-              }}
-            />
-            <Padding top="extrasmall">
-              <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-                {t(
-                  'buckets.endpoint_url_help',
-                  'The endpoint URL of your storage provider. Not needed if your connector are AWS',
-                )}
-              </ds-text>
-            </Padding>
-          </Row>
-
-          <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
             <Select
               items={[
                 {
@@ -602,6 +591,36 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
             <Input
               backgroundColor="gray5"
+              label={isEndpointUrlRequired ? t('label.endpoint_url_required', 'Endpoint URL*') : t('label.endpoint_url', 'Endpoint URL')}
+              value={urlData}
+              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                setUrlData(ev.target.value);
+              }}
+              hasError={isEndpointUrlInvalid}
+            />
+            {isEndpointUrlInvalid && (
+              <Padding top="extrasmall">
+                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                  {t(
+                    'storages.s3Connectors.invalidEndpointUrl',
+                    "This field is required when Region is 'None' or 'Custom'",
+                  )}
+                </ds-text>
+              </Padding>
+            )}
+            <Padding top="extrasmall">
+              <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+                {t(
+                  'buckets.endpoint_url_help',
+                  'The endpoint URL of your storage provider. Not needed if your connector are AWS',
+                )}
+              </ds-text>
+            </Padding>
+          </Row>
+
+          <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
+            <Input
+              backgroundColor="gray5"
               label={t('label.prefix', 'Prefix')}
               value={prefix}
               hasError={!prefixConfirm}
@@ -646,8 +665,19 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
               />
             </Row>
             <Row width="10%" mainAlignment="flex-end">
-              <ds-icon icon="InfoOutline" size="medium" color="gray2"></ds-icon>
-            </Row>
+            <Tooltip
+              placement="top"
+              label={t(
+                'storages.s3Connectors.untrustedSSLTooltip',
+                'Use this only for testing environments or internal infrastructure with custom certificates. Not recommended for production.',
+              )}
+            >
+              <ds-text as="span">
+                <ds-icon icon="InfoOutline" size="large" color="gray0"></ds-icon>
+              </ds-text>
+            </Tooltip>
+          </Row>
+        
           </Row>
           <Row
             width="100%"

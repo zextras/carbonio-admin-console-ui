@@ -64,8 +64,12 @@ describe('DeleteBucketModel (browser)', () => {
 		await setupBrowserTest(
 			<DeleteBucketModel open closeHandler={vi.fn()} saveHandler={saveHandler} />,
 		);
+		const deleteButton = page.getByRole('button', { name: /proceed with deletion/i });
+		await expect.element(deleteButton).toBeDisabled();
 
-		await page.getByRole('button', { name: /yes, delete/i }).click();
+		await page.getByRole('checkbox', { name: /i am sure i want to delete this connector/i }).click();
+		await expect.element(deleteButton).toBeEnabled();
+		await deleteButton.click();
 
 		expect(saveHandler).toHaveBeenCalledTimes(1);
 		expect(hidePopoverSpy).toHaveBeenCalled();

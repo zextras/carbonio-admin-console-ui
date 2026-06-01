@@ -75,7 +75,7 @@ export const VerifySuccess = ({
         </button>
       </div>
       <ds-text as="h2" weight="bold" size="large" className={styles.title}>
-        {t('storages.s3Connectors.verifySuccess.connectorsVerified', 'Connectors verified')}
+        {t('storages.s3Connectors.verifySuccess.connectorsVerified', 'Connectors verified and created')}
       </ds-text>
       <div className={styles.description}>
         <ds-text as="p" color="gray1" weight="light" size="small">

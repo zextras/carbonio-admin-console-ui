@@ -76,6 +76,17 @@
 	gap: 2rem;
 }
 
+.checkboxContainer {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding-top: 1rem;
+}
+
+.checkboxContainer label {
+	line-height: 1;
+}
+
 .actions {
 	display: flex;
 	justify-content: flex-end;

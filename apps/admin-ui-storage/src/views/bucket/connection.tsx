@@ -80,7 +80,7 @@ const Connection: FC<{
   const [prefixConfirm, setprefixConfirm] = useState(true);
   const [bucketNameConfirm, setBucketNameConfirm] = useState(true);
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
+  const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(false);
   const [regionSelection, setRegionSelection] = useState<UISelectItem<string>>(EMPTY_REGION);
 
   const [showVerifyResult, setShowVerifyResult] = useState(false);
@@ -95,16 +95,19 @@ const Connection: FC<{
   const isAccessKeyInvalid =
     hasSubmitted && (accessKeyData === '' || !bucketNameRegex.test(accessKeyData));
   const isSecretKeyInvalid = hasSubmitted && (secretKey === '' || !bucketNameRegex.test(secretKey));
-  const isRegionInvalid =
-    hasSubmitted &&
-    !isCustomRegion &&
-    (getSelectedRegion() === '' || !bucketNameRegex.test(getSelectedRegion()));
   const isCustomRegionInvalid =
     hasSubmitted && isCustomRegion && !bucketNameRegex.test(customRegion);
+  const isEndpointUrlRequired = isCustomRegion || getSelectedRegion() === '';
+  const isEndpointUrlInvalid =
+    hasSubmitted && isEndpointUrlRequired && (urlInput.trim() === '' || !bucketNameRegex.test(urlInput.trim()));
 
   const handleVerifyConnector = (): void => {
     setHasSubmitted(true);
     const selectedRegion = getSelectedRegion();
+    const isRegionValid = isCustomRegion
+      ? bucketNameRegex.test(customRegion)
+      : selectedRegion === '' || bucketNameRegex.test(selectedRegion);
+    const isEndpointValid = !isEndpointUrlRequired || (urlInput.trim() !== '' && bucketNameRegex.test(urlInput.trim()));
     if (
       bucketLabel &&
       bucketName &&
@@ -113,8 +116,8 @@ const Connection: FC<{
       bucketNameRegex.test(accessKeyData) &&
       secretKey &&
       bucketNameRegex.test(secretKey) &&
-      selectedRegion &&
-      bucketNameRegex.test(selectedRegion)
+      isRegionValid &&
+      isEndpointValid
     ) {
       setShowVerifyResult(false);
       setIsVerifySuccess(false);
@@ -390,24 +393,7 @@ const Connection: FC<{
             )}
           </Row>
         </Row>
-        <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-          <Input
-            label={t('label.endpoint_url', 'Endpoint URL')}
-            backgroundColor="gray5"
-            value={urlInput}
-            onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-              setUrlInput(ev.target.value);
-            }}
-          />
-          <Padding top="extrasmall">
-            <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-              {t(
-                'storages.s3Connectors.endpointUrlHelp',
-                'The endpoint URL of your storage provider. Not needed if your connector are AWS',
-              )}
-            </ds-text>
-          </Padding>
-        </Row>
+        
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
           <Select
             items={regionItems}
@@ -417,16 +403,6 @@ const Connection: FC<{
             onChange={onSelectRegionChange}
             showCheckbox={false}
           />
-          {isRegionInvalid && (
-            <Padding top="extrasmall">
-              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-                {t(
-                  'storages.s3Connectors.invalidRegion',
-                  "This field can't be blank or have white space",
-                )}
-              </ds-text>
-            </Padding>
-          )}
         </Row>
         {isCustomRegion && (
           <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
@@ -451,6 +427,35 @@ const Connection: FC<{
             )}
           </Row>
         )}
+        <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+          <Input
+            label={isEndpointUrlRequired ? t('label.endpoint_url_required', 'Endpoint URL*') : t('label.endpoint_url', 'Endpoint URL')}
+            backgroundColor="gray5"
+            value={urlInput}
+            onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+              setUrlInput(ev.target.value);
+            }}
+            hasError={isEndpointUrlInvalid}
+          />
+          {isEndpointUrlInvalid && (
+            <Padding top="extrasmall">
+              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                {t(
+                  'storages.s3Connectors.invalidEndpointUrl',
+                  "This field is required when Region is 'None' or 'Custom'",
+                )}
+              </ds-text>
+            </Padding>
+          )}
+          <Padding top="extrasmall">
+            <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+              {t(
+                'storages.s3Connectors.endpointUrlHelp',
+                'The endpoint URL of your storage provider. Not needed if your connector are AWS',
+              )}
+            </ds-text>
+          </Padding>
+        </Row>
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
           <Input
             label={t('label.prefix', 'Prefix')}

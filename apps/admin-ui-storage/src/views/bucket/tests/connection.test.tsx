@@ -216,7 +216,7 @@ describe('Connection', () => {
         accessKey: 'AKIA_TEST',
         secret: 'SECRET_TEST',
         region: 'us-east-1',
-        insecureHttps: true,
+        insecureHttps: false,
       }),
     );
 
@@ -319,6 +319,9 @@ describe('Connection', () => {
 
     fireEvent.change(screen.getByLabelText('Custom region'), {
       target: { value: 'custom-region-1' },
+    });
+    fireEvent.change(screen.getByLabelText('Endpoint URL*'), {
+      target: { value: 'https://custom-region-endpoint.test' },
     });
 
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));

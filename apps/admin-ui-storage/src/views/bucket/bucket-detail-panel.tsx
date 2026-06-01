@@ -376,6 +376,7 @@ const BucketDetailPanel: FC = () => {
             open={open}
             closeHandler={closeHandler}
             saveHandler={deleteHandler}
+            connectorName={bucketDeleteName.label}
           />
         )}
         <Row width="100%" padding={{ all: 'large' }}>

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button } from '@zextras/ui-components';
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './delete-bucket-model.module.css';
@@ -13,8 +13,10 @@ const DeleteBucketModel: FC<{
 	open: boolean;
 	closeHandler: () => void;
 	saveHandler: () => void;
-}> = ({ open, closeHandler, saveHandler }) => {
+	connectorName?: string;
+}> = ({ open, closeHandler, saveHandler, connectorName = '' }) => {
 	const [t] = useTranslation();
+	const [isConfirmed, setIsConfirmed] = useState(false);
 	const popoverRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -27,6 +29,7 @@ const DeleteBucketModel: FC<{
 
 	const onClose = (): void => {
 		popoverRef.current?.hidePopover();
+		setIsConfirmed(false);
 		closeHandler();
 	};
 
@@ -53,14 +56,33 @@ const DeleteBucketModel: FC<{
 			<div className={styles.topDivider} />
 			<div className={styles.description}>
 				<ds-text as="p" size="medium" color="gray0" overflow="break-word">
-					{t(
-						'storages.s3Connectors.deleteConnectorWarning',
-						'You are trying to delete a never used S3 connector.',
+					{connectorName
+						? t(
+								'storages.s3Connectors.deleteConnectorWarningWithNameConfirm',
+								`You are trying to delete ${connectorName} that is a never used S3 connector.\nAre you sure you want to proceed?`,
+							)
+						: t(
+								'storages.s3Connectors.deleteConnectorWarningConfirm',
+								`You are trying to delete a never used S3 connector.\nAre you sure you want to proceed?`,
+							)}
+				</ds-text>
+			</div>
+			<div className={styles.checkboxContainer}>
+				<input
+					type="checkbox"
+					id="confirm-delete"
+					checked={isConfirmed}
+					onChange={(e) => setIsConfirmed(e.target.checked)}
+					aria-label={t(
+						'storages.s3Connectors.confirmDelete',
+						'I am sure I want to delete this connector',
 					)}
-				</ds-text>
-				<ds-text as="p" size="medium" color="gray0" overflow="break-word">
-					{t('storages.s3Connectors.deleteConnectorConfirm', 'Are you sure you want to proceed?')}
-				</ds-text>
+				/>
+				<label htmlFor="confirm-delete">
+					<ds-text as="span" size="medium">
+						{t('storages.s3Connectors.confirmDelete', 'I am sure I want to delete this connector')}
+					</ds-text>
+				</label>
 			</div>
 			<div className={styles.divider} />
 			<div className={styles.actions}>
@@ -73,8 +95,9 @@ const DeleteBucketModel: FC<{
 				<Button
 					type="default"
 					color="error"
-					label={t('storages.s3Connectors.deleteConnectorConfirmAction', 'YES, DELETE')}
+					label={t('storages.s3Connectors.proceedWithDeletion', 'PROCEED WITH DELETION')}
 					onClick={onDelete}
+					disabled={!isConfirmed}
 				/>
 			</div>
 		</div>
