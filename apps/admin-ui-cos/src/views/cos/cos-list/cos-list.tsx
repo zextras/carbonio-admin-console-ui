@@ -165,10 +165,6 @@ export const CosList = () => {
   }, [searchString]);
 
   useEffect(() => {
-    searchCosListRef.current(searchString);
-  }, [offset]);
-
-  useEffect(() => {
     const table = tableRef.current;
     if (!table) return;
 
