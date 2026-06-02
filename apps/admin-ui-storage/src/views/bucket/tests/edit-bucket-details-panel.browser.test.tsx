@@ -244,7 +244,7 @@ describe('EditBucketDetailPanel (browser)', () => {
 		await page.getByRole('button', { name: /apply changes/i }).click();
 
 		await expect
-			.element(page.getByText('Connector update failed'))
+			.element(page.getByText('verify-error'))
 			.toBeInTheDocument();
 	});
 });

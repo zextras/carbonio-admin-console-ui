@@ -234,7 +234,7 @@ describe('Connection', () => {
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('Connector verification failed')).toBeTruthy();
+      expect(screen.getByText('verify-error')).toBeTruthy();
     });
   });
 
@@ -246,11 +246,7 @@ describe('Connection', () => {
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
     await waitFor(() => {
-      expect(
-        screen.getByText(
-          'We do not support this specific connector. Try again with a different one',
-        ),
-      ).toBeTruthy();
+      expect(screen.getByText('verify-error')).toBeTruthy();
     });
   });
 
@@ -265,13 +261,13 @@ describe('Connection', () => {
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('Connector verification failed')).toBeTruthy();
+      expect(screen.getByText('verify-error')).toBeTruthy();
     });
 
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
 
     await waitFor(() => {
-      expect(screen.queryByText('Connector verification failed')).toBeNull();
+      expect(screen.queryByText('verify-error')).toBeNull();
     });
   });
 
@@ -349,7 +345,7 @@ describe('Connection', () => {
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('Detailed verification failed')).toBeTruthy();
+      expect(screen.getByText('verify-error')).toBeTruthy();
     });
 
     expect(screen.getByText('connectionOk:false')).toBeTruthy();
