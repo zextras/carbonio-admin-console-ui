@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Container,
   DropDownInput,
@@ -14,13 +15,13 @@ import {
   Row,
   useSnackbar,
 } from '@zextras/ui-components';
-import { getCosList, replaceHistory } from '@zextras/ui-shared';
-import { debounce } from 'lodash-es';
+import { replaceHistory } from '@zextras/ui-shared';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
 
-import { type SearchDirectoryEntry, type SearchDirectoryResponse } from '../../../types/cos';
+import { useDebouncedValue } from '../../../hooks/use-debounced-value';
+import { type SearchDirectoryEntry } from '../../../types/cos';
 import {
   ADVANCED,
   COS_LIST,
@@ -34,16 +35,18 @@ import {
   SERVER_POOLS,
   WSC,
 } from '../../constants';
+import { cosQueryKeys } from '../../services/cos-query-keys';
 import { useCosDetail } from '../../services/use-cos-detail';
-import { generateSnackbarFromError } from '../error/generate-snackbar-error';
+import { useCosList } from '../../services/use-cos-list';
 import { GeneralListPanel } from './general-list-panel';
 
 export const CosListPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
   const { pathname } = useLocation();
   const [searchCosName, setSearchCosName] = useState('');
-  const [cosList, setCosList] = useState<Array<SearchDirectoryEntry>>([]);
+  const debouncedSearch = useDebouncedValue(searchCosName, 700);
   const [isCosListExpand, setIsCosListExpand] = useState(false);
   const cosDetailMatch = matchPath(`/${MANAGE_APP_ID}/${COS_ROUTE_ID}/:cosId/:operation`, pathname);
   const selectedCosId = cosDetailMatch?.params.cosId;
@@ -51,38 +54,33 @@ export const CosListPanel: FC = () => {
   const { data: cosDetailData } = useCosDetail(selectedCosId);
   const cosInformation = cosDetailData?.cos?.[0];
   const cosName = cosInformation?.name;
-  const [isShowError, setIsShowError] = useState(false);
   const prevCosRef = useRef<string | undefined>(undefined);
   const [isDetailListExpanded, setIsDetailListExpanded] = useState(() => {
     const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
     return storedValue !== 'false';
   });
 
-  const cosView = cosDetailMatch?.params.operation ?? COS_LIST;
-
-  const getCosLists = (searchData: string): void => {
-    getCosList<SearchDirectoryResponse>(searchData)
-      .then((data) => {
-        if (data?.searchTotal && data.searchTotal > 0 && data.cos) {
-          setCosList(data.cos);
-        } else {
-          setCosList([]);
-          setIsShowError(true);
-        }
-      })
-      .catch((error) => {
-        const snackbarConfig = generateSnackbarFromError(error, t);
-        createSnackbar(snackbarConfig);
-      });
-  };
+  const { data, error } = useCosList({ searchQuery: debouncedSearch, limit: 50, offset: 0 });
+  const cosList = data?.cos ?? [];
+  const isShowError = (data?.searchTotal ?? 0) <= 0 && !error;
 
   useEffect(() => {
-    getCosLists('');
-  }, []);
+    if (error) {
+      createSnackbar({
+        key: 'cos-list-error',
+        type: 'error',
+        label: t('label.error_loading_cos_list', 'Failed to load COS list. Please try again.'),
+        autoHideTimeout: 5000,
+        replace: true,
+      });
+    }
+  }, [error]);
+
+  const cosView = cosDetailMatch?.params.operation ?? COS_LIST;
 
   useEffect(() => {
     if (!!prevCosRef.current && prevCosRef.current !== cosName) {
-      getCosLists('');
+      queryClient.invalidateQueries({ queryKey: cosQueryKeys.all });
     }
     prevCosRef.current = cosName;
   }, [cosName]);
@@ -93,12 +91,6 @@ export const CosListPanel: FC = () => {
       setIsCosListExpand(false);
     }
   }, [cosInformation?.id, cosInformation?.name]);
-
-  const searchCosCallRef = useRef(
-    debounce((searchData: string) => {
-      getCosLists(searchData);
-    }, 700),
-  );
 
   const selectedCos = (cosData: SearchDirectoryEntry) => {
     setSearchCosName(cosData?.name);
@@ -240,10 +232,7 @@ export const CosListPanel: FC = () => {
               : t('cos.search_class_of_service', 'Select a Class of Service')
           }
           onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-            setIsShowError(false);
-            const value = ev.target.value;
-            setSearchCosName(value);
-            searchCosCallRef.current(value);
+            setSearchCosName(ev.target.value);
           }}
           inputValue={searchCosName}
           hasError={isShowError}
