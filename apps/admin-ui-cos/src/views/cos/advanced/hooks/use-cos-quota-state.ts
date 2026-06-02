@@ -156,9 +156,13 @@ export function useCosQuotaState({
           zimbraId,
           Math.round(GbToBytes(fileQuotaLimitGBValue)).toString(),
           COS,
-        ).then(() => setShowFileQuotaLimitMsg(false));
+        )
+          .then(() => setShowFileQuotaLimitMsg(false))
+          .catch(() => setShowFileQuotaLimitMsg(true));
       } else {
-        resetFileQuotaLimitById(zimbraId, COS).then(() => setShowFileQuotaLimitMsg(false));
+        resetFileQuotaLimitById(zimbraId, COS)
+          .then(() => setShowFileQuotaLimitMsg(false))
+          .catch(() => setShowFileQuotaLimitMsg(true));
       }
     }
   }
