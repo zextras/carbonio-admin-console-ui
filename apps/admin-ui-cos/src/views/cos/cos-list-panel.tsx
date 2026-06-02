@@ -20,7 +20,6 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
 
-import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { type SearchDirectoryEntry } from '../../../types/cos';
 import {
   ADVANCED,
@@ -35,6 +34,7 @@ import {
   SERVER_POOLS,
   WSC,
 } from '../../constants';
+import { useDebouncedValue } from '../../hooks/use-debounced-value';
 import { cosQueryKeys } from '../../services/cos-query-keys';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useCosList } from '../../services/use-cos-list';
@@ -68,7 +68,7 @@ export const CosListPanel: FC = () => {
     if (error) {
       createSnackbar({
         key: 'cos-list-error',
-        type: 'error',
+        severity: 'error',
         label: t('label.error_loading_cos_list', 'Failed to load COS list. Please try again.'),
         autoHideTimeout: 5000,
         replace: true,
