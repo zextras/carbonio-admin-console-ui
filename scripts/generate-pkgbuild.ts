@@ -48,13 +48,16 @@ depends=(
   "carbonio-webui-i18n"
   "jq"
 )
-source=('opt')
-sha256sums=('SKIP')
+source=(
+  "\${pkgname}-dist.tar.gz"
+)
+sha256sums=(
+  "SKIP"
+)
 
 package() {
-  cd "\${srcdir}"
   mkdir -p "\${pkgdir}/opt/zextras/admin/iris"
-  cp -a opt/zextras/admin/iris/* "\${pkgdir}/opt/zextras/admin/iris/"
+  cp -a "\${srcdir}/dist/package/opt/zextras/admin/iris/"* "\${pkgdir}/opt/zextras/admin/iris/"
 
   # Set permissions for each component - files and directories only, symlinks are left as-is
   for component in ${componentList}; do
