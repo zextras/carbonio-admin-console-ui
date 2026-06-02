@@ -22,7 +22,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useCosList } from '../../../services/use-cos-list';
-import ScrollContainer from '../../components/scrollComponent';
+import { ScrollComponent } from '../../components/scroll-component';
 import { FunnelSearchIcon } from '../cos-server-pools/funnel-search-icon';
 
 type ZimbraCosAttribute = {
@@ -334,7 +334,7 @@ export const CosList = () => {
                     bottom: isTableTooTall ? '0' : '-4rem',
                   }}
                 >
-                  <ScrollContainer isVisible={isTableTooTall} />
+                  {isTableTooTall && <ScrollComponent />}
                   <Container
                     orientation="horizontal"
                     mainAlignment="space-between"
