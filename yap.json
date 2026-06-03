@@ -3,6 +3,7 @@
   "description": "Admin UI",
   "buildDir": "/tmp/",
   "output": "artifacts",
+  "skipDeps": ["carbonio-nginx", "carbonio-webui-i18n"],
   "projects": [
     {
       "name": "package"

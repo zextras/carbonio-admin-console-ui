@@ -1,3 +1,9 @@
+## [0.13.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.4...v0.13.5) (2026-06-02)
+
+### Other changes
+
+* migrate to buildah (FQDN images + jenkins-lib-common@2.10.0) ([#1217](https://github.com/zextras/carbonio-admin-console-ui/issues/1217)) ([411339e](https://github.com/zextras/carbonio-admin-console-ui/commit/411339ef793b8112c5633a7576bdf0ed22410ab8))
+
 ## [0.13.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.3...v0.13.4) (2026-05-29)
 
 ### Other changes

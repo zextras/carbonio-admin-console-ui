@@ -2,6 +2,6 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
-FROM backplane/jq:latest
+FROM docker.io/backplane/jq:latest
 
 COPY dist/package/opt/zextras/admin/iris/ /opt/zextras/admin/iris/
