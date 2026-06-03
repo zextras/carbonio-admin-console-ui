@@ -6,43 +6,44 @@
 import { Container, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { FeatureSwitchField } from '../../fields/feature-switch-field';
-import type { CosFeaturesFormApi } from '../../types';
+import { withForm } from '../../../../form/form-hook';
+import type { CosFeaturesFormValues } from '../../types';
 
-type GeneralSectionProps = {
-  form: CosFeaturesFormApi;
-  readonlyCOS: boolean;
-};
+export const GeneralSection = withForm({
+  defaultValues: {} as CosFeaturesFormValues,
+  props: { readonlyCOS: false as boolean },
+  render: function Render({ form, readonlyCOS }) {
+    const [t] = useTranslation();
 
-export const GeneralSection = ({ form, readonlyCOS }: GeneralSectionProps) => {
-  const [t] = useTranslation();
-
-  return (
-    <Row
-      mainAlignment="flex-start"
-      crossAlignment="flex-start"
-      padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
-      width="100%"
-    >
-      <Container
+    return (
+      <Row
         mainAlignment="flex-start"
         crossAlignment="flex-start"
-        width="50%"
-        orientation="vertical"
-        padding={{ bottom: 'large' }}
+        padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+        width="100%"
       >
-        <ds-text as="strong" weight="bold">
-          {t('label.general_lbl', 'General')}
-        </ds-text>
-        <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-          <FeatureSwitchField
-            form={form}
-            name="zimbraFeatureOptionsEnabled"
-            label={t('label.can_access_settings', 'Can access Settings')}
-            disabled={readonlyCOS}
-          />
-        </Row>
-      </Container>
-    </Row>
-  );
-};
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          width="50%"
+          orientation="vertical"
+          padding={{ bottom: 'large' }}
+        >
+          <ds-text as="strong" weight="bold">
+            {t('label.general_lbl', 'General')}
+          </ds-text>
+          <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+            <form.AppField name="zimbraFeatureOptionsEnabled">
+              {(field) => (
+                <field.FeatureSwitchField
+                  label={t('label.can_access_settings', 'Can access Settings')}
+                  disabled={readonlyCOS}
+                />
+              )}
+            </form.AppField>
+          </Row>
+        </Container>
+      </Row>
+    );
+  },
+});

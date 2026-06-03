@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, useSnackbar } from '@zextras/ui-components';
 import { type GetCoreAttributesResponse, setCoreAttributes } from '@zextras/ui-shared';
@@ -17,6 +16,7 @@ import {
   MOBILE_CONTACT_FEATURE_SYNC,
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
+import { useAppForm } from '../../../form/form-hook';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
 import { FormPageLayout } from '../../form-page-layout';
@@ -89,7 +89,7 @@ export const FeaturesForm = ({
   const createSnackbar = useSnackbar();
   const modifyCosMutation = useModifyCos(cosId);
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: buildDefaultValues(cosInformation, mobileAttributesData),
     onSubmit: async ({ value }) => {
       const zimbraId = cosInformation?.find((a) => a.n === 'zimbraId')?._content ?? '';
@@ -159,17 +159,19 @@ export const FeaturesForm = ({
       onCancel={() => form.reset()}
       unsavedChanges={isDirty}
     >
-      <Container mainAlignment="flex-start" width="100%" height="auto" orientation="vertical">
-        <GeneralSection form={form} readonlyCOS={readonlyCOS} />
-        <ds-divider />
-        <TwoFactorSection form={form} readonlyCOS={readonlyCOS} isAdvanced={isAdvanced} />
-        <ds-divider />
-        <MailSection form={form} readonlyCOS={readonlyCOS} />
-        <ds-divider />
-        <ContactsCalendarSection form={form} readonlyCOS={readonlyCOS} />
-        <ds-divider />
-        <FilesTasksSection form={form} readonlyCOS={readonlyCOS} />
-      </Container>
+      <form.AppForm>
+        <Container mainAlignment="flex-start" width="100%" height="auto" orientation="vertical">
+          <GeneralSection form={form} readonlyCOS={readonlyCOS} />
+          <ds-divider />
+          <TwoFactorSection form={form} readonlyCOS={readonlyCOS} isAdvanced={isAdvanced} />
+          <ds-divider />
+          <MailSection form={form} readonlyCOS={readonlyCOS} />
+          <ds-divider />
+          <ContactsCalendarSection form={form} readonlyCOS={readonlyCOS} />
+          <ds-divider />
+          <FilesTasksSection form={form} readonlyCOS={readonlyCOS} />
+        </Container>
+      </form.AppForm>
     </FormPageLayout>
   );
 };
