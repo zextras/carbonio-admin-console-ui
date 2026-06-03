@@ -46,7 +46,8 @@ export const CosListPanel: FC = () => {
   const queryClient = useQueryClient();
   const { pathname } = useLocation();
   const [searchCosName, setSearchCosName] = useState('');
-  const debouncedSearch = useDebouncedValue(searchCosName, 700);
+  const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearch = useDebouncedValue(searchQuery, 700);
   const [isCosListExpand, setIsCosListExpand] = useState(false);
   const cosDetailMatch = matchPath(`/${MANAGE_APP_ID}/${COS_ROUTE_ID}/:cosId/:operation`, pathname);
   const selectedCosId = cosDetailMatch?.params.cosId;
@@ -74,7 +75,7 @@ export const CosListPanel: FC = () => {
         replace: true,
       });
     }
-  }, [error]);
+  }, [createSnackbar, error, t]);
 
   const cosView = cosDetailMatch?.params.operation ?? COS_LIST;
 
@@ -83,17 +84,26 @@ export const CosListPanel: FC = () => {
       queryClient.invalidateQueries({ queryKey: cosQueryKeys.all });
     }
     prevCosRef.current = cosName;
-  }, [cosName]);
+  }, [cosName, queryClient]);
 
   useEffect(() => {
     if (cosInformation?.name) {
       setSearchCosName(cosInformation?.name);
+      setSearchQuery('');
       setIsCosListExpand(false);
     }
   }, [cosInformation?.id, cosInformation?.name]);
 
+  useEffect(() => {
+    if (!isCosSelect) {
+      setSearchCosName('');
+      setSearchQuery('');
+    }
+  }, [isCosSelect]);
+
   const selectedCos = (cosData: SearchDirectoryEntry) => {
     setSearchCosName(cosData?.name);
+    setSearchQuery('');
     setIsCosListExpand(false);
     replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
   };
@@ -233,6 +243,7 @@ export const CosListPanel: FC = () => {
           }
           onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
             setSearchCosName(ev.target.value);
+            setSearchQuery(ev.target.value);
           }}
           inputValue={searchCosName}
           hasError={isShowError}

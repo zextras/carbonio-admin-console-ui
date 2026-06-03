@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { AppRouteDescriptor, useAppStore } from '@zextras/ui-shared';
 import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
@@ -14,7 +15,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { GENERAL_INFORMATION, MANAGE_APP_ID } from '../../src/constants';
+import { COS_ROUTE_ID, GENERAL_INFORMATION, MANAGE_APP_ID } from '../../src/constants';
 import { cosQueryKeys } from '../../src/services/cos-query-keys';
 import { CosListPanel } from '../../src/views/cos/cos-list-panel';
 
@@ -43,9 +44,7 @@ const mockCosDetail = {
     {
       id: FIRST_COS_ID,
       name: 'firstCOS',
-      a: [
-        { n: 'zimbraId', _content: FIRST_COS_ID },
-      ],
+      a: [{ n: 'zimbraId', _content: FIRST_COS_ID }],
     },
   ],
 };
@@ -156,6 +155,38 @@ describe('CosListPanel', () => {
     await page.getByText('Details').click();
     const buttonAfterClick = page.getByRole('button').nth(1).element();
     expect(buttonAfterClick.innerHTML).toContain('ChevronDownOutline');
+  });
+
+  it('should show all COS items in dropdown after selecting a COS when no cos is selected', async () => {
+    await setupListPanelTest(mockApiResponse, {
+      initialRouterEntry: `/${MANAGE_APP_ID}/cos/${FIRST_COS_ID}/${GENERAL_INFORMATION}`,
+      seedCosDetail: true,
+    });
+
+    await page.getByPlaceholder('I want to see this COS').click();
+
+    await expect.element(page.getByText('firstCOS')).toBeVisible();
+    await expect.element(page.getByText('secondCOS')).toBeVisible();
+  });
+
+  it('should show all COS items in dropdown after selecting a COS when a cos is already selected', async () => {
+    useAppStore.getState().setters.addRoute({
+      id: COS_ROUTE_ID,
+      route: `${MANAGE_APP_ID}/${COS_ROUTE_ID}`,
+      app: MANAGE_APP_ID,
+    } as AppRouteDescriptor);
+    await setupListPanelTest(mockApiResponse, {
+      initialRouterEntry: `/${MANAGE_APP_ID}/cos/`,
+      seedCosDetail: true,
+    });
+
+    await page.getByPlaceholder('Select a class of service').click();
+    await expect.element(page.getByText('firstCOS')).toBeVisible();
+    await page.getByText('firstCOS').click();
+
+    await expect.element(page.getByPlaceholder('I want to see this COS')).toBeVisible();
+    await page.getByPlaceholder('I want to see this COS').click();
+    await expect.element(page.getByText('secondCOS')).toBeVisible();
   });
 
   it('should change General icon when its section is toggled', async () => {
