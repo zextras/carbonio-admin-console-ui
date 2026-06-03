@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import {
   Button,
@@ -20,6 +19,7 @@ import { useParams } from 'react-router';
 
 import { Attribute } from '../../../../types/attribute';
 import { DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../../constants';
+import { useAppForm } from '../../../form/form-hook';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { renameCos } from '../../../services/rename-cos-service';
@@ -280,7 +280,7 @@ export const GeneralInformationForm = ({
 
   const cosData = attributesToMap(cosInformation);
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: buildDefaultValues(cosInformation),
     onSubmit: async ({ value }) => {
       const zimbraId = cosInformation?.find((a) => a.n === 'zimbraId')?._content;
@@ -376,15 +376,17 @@ export const GeneralInformationForm = ({
         style={{ overflow: 'auto' }}
         width="100%"
       >
-        <CosInfoFields
-          form={form}
-          cosId={cosData.zimbraId}
-          cosCreationDate={cosCreationDate}
-          totalAccount={totalAccount}
-          totalDomain={totalDomain}
-          canDeleteCOS={canDeleteCOS}
-          readonlyCOS={readonlyCOS}
-        />
+        <form.AppForm>
+          <CosInfoFields
+            form={form}
+            cosId={cosData.zimbraId}
+            cosCreationDate={cosCreationDate}
+            totalAccount={totalAccount}
+            totalDomain={totalDomain}
+            canDeleteCOS={canDeleteCOS}
+            readonlyCOS={readonlyCOS}
+          />
+        </form.AppForm>
         <SearchableTable
           title={t('cos.domains_that_use_this_cos', 'Domains that use this COS')}
           searchLabel={t('label.search_for_a_domain', 'Search for a domain')}
