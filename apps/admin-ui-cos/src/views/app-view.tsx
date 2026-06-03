@@ -3,48 +3,42 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import { Container } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
 import { Route, Routes } from 'react-router';
 
+import styles from './app-view.module.css';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosListPanel } from './cos/cos-list-panel';
 
-function getContainerStyle(isPrimaryBarExpanded: boolean) {
-  return {
-    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
-    transition: 'width 300ms',
-  };
-}
-
 export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
-    <Container>
+    <div className={styles.root}>
       <Breadcrumb />
       <Routes>
         <Route
           path={'/*'}
           element={
-            <Container
-              orientation="horizontal"
-              mainAlignment="flex-start"
-              height="calc(100vh - 105px)"
-            >
-              <Container style={{ maxWidth: '265px' }}>
+            <div className={styles.layout}>
+              <div className={styles.sidebar}>
                 <CosListPanel />
-              </Container>
-              <Container style={{ maxWidth: '100%' }}>
-                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
+              </div>
+              <div className={styles.detailWrapper}>
+                <div
+                  className={
+                    isPrimaryBarExpanded
+                      ? styles.detailContentExpanded
+                      : styles.detailContentCollapsed
+                  }
+                >
                   <CosDetailPanel />
-                </Container>
-              </Container>
-            </Container>
+                </div>
+              </div>
+            </div>
           }
         />
       </Routes>
-    </Container>
+    </div>
   );
 };
