@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import { Container } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
@@ -19,7 +19,7 @@ function getContainerStyle(isPrimaryBarExpanded: boolean) {
   };
 }
 
-export const AppView: FC = () => {
+export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container>
@@ -34,15 +34,11 @@ export const AppView: FC = () => {
               height="calc(100vh - 105px)"
             >
               <Container style={{ maxWidth: '265px' }}>
-                <Suspense fallback={<ds-spinner />}>
-                  <CosListPanel />
-                </Suspense>
+                <CosListPanel />
               </Container>
               <Container style={{ maxWidth: '100%' }}>
                 <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-                  <Suspense fallback={<ds-spinner />}>
-                    <CosDetailPanel />
-                  </Suspense>
+                  <CosDetailPanel />
                 </Container>
               </Container>
             </Container>
