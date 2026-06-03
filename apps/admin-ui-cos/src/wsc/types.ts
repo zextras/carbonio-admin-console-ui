@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
-
 type WscCosFormValues = {
 	carbonioFeatureWscEnabled: string;
 	carbonioWscShowMessageReads: string;
@@ -22,20 +20,4 @@ type WscCosFormValues = {
 	carbonioWscMaxAttachmentSize: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type WscCosFormApi = ReactFormExtendedApi<
-	WscCosFormValues,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any
->;
-
-export type { WscCosFormApi, WscCosFormValues };
+export type { WscCosFormValues };

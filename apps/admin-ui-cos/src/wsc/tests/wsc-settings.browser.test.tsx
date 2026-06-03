@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useForm } from '@tanstack/react-form';
 import { QueryClient } from '@tanstack/react-query';
 import {
 	advancedSupportedApiForBrowser,
@@ -19,7 +18,8 @@ import { FC, useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import type { WscCosFormApi, WscCosFormValues } from '../types';
+import { useAppForm } from '../../form/form-hook';
+import type { WscCosFormValues } from '../types';
 import { WscSettings } from '../wsc-settings';
 
 const defaultFeatures: WscCosFormValues = {
@@ -81,7 +81,7 @@ const WscSettingsWrapper: FC<WscSettingsWrapperProps> = ({
 	readonlyFeatures = false,
 	onFormChange,
 }) => {
-	const form = useForm({
+	const form = useAppForm({
 		defaultValues: { ...defaultFeatures, ...featuresOverride },
 		onSubmit: vi.fn(),
 	});
@@ -93,7 +93,11 @@ const WscSettingsWrapper: FC<WscSettingsWrapperProps> = ({
 		onFormChange?.(form.state.values);
 	}
 
-	return <WscSettings form={form as WscCosFormApi} readonlyFeatures={readonlyFeatures} />;
+	return (
+		<form.AppForm>
+			<WscSettings form={form} readonlyFeatures={readonlyFeatures} />
+		</form.AppForm>
+	);
 };
 
 async function setupWscSettingsTest(
