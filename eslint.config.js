@@ -5,6 +5,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactCompiler from 'eslint-plugin-react-compiler';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 import noticeConfig from './notice.config.js';
 import typescriptParser from '@typescript-eslint/parser';
 
@@ -89,10 +90,12 @@ export default tseslint.config(
     files: ['apps/admin-ui-cos/**/*'],
     plugins: {
       'react-compiler': reactCompiler,
+      'jsx-a11y': jsxA11y,
     },
     rules: {
       'react-compiler/react-compiler': 'error',
       'react-hooks/exhaustive-deps': 'warn',
+      ...jsxA11y.configs.recommended.rules,
     },
   },
 );
