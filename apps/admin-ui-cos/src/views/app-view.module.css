@@ -26,14 +26,12 @@
 	max-width: 100%;
 }
 
-.detailContentExpanded {
-	max-width: 981px;
+.detailContent {
+	max-width: 1125px;
 	margin: 0 auto;
 	transition: max-width 300ms;
 }
 
-.detailContentCollapsed {
-	max-width: 1125px;
-	margin: 0 auto;
-	transition: max-width 300ms;
+.detailContent[data-expanded='true'] {
+	max-width: 981px;
 }

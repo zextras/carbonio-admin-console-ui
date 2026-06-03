@@ -25,13 +25,7 @@ export const AppView = () => {
                 <CosListPanel />
               </div>
               <div className={styles.detailWrapper}>
-                <div
-                  className={
-                    isPrimaryBarExpanded
-                      ? styles.detailContentExpanded
-                      : styles.detailContentCollapsed
-                  }
-                >
+                <div className={styles.detailContent} data-expanded={isPrimaryBarExpanded}>
                   <CosDetailPanel />
                 </div>
               </div>
