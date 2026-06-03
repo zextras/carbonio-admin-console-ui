@@ -9,8 +9,8 @@ import { type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { TimeItems } from '../../../../../types/general';
+import { getFieldErrorProps } from '../../../../form/field-components/field-error';
 import { withForm } from '../../../../form/form-hook';
-import { getFieldErrorProps } from '../fields/field-error';
 import type { CosAdvancedFormValues } from '../types';
 
 export default withForm({

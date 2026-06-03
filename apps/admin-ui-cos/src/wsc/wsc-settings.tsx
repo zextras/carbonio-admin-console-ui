@@ -18,8 +18,8 @@ import {
 import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
-import { withForm } from '../form/form-hook';
 import { TRUE } from '../constants';
+import { withForm } from '../form/form-hook';
 import type { WscCosFormValues } from './types';
 
 export const WscSettings = withForm({
