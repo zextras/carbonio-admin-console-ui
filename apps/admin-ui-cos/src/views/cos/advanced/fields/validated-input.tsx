@@ -3,14 +3,30 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Input } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../../../../../types/account';
-import { CosFormApi } from '../types';
+import type { AccountType } from '../../../../../types/account';
 import { getFieldErrorProps } from './field-error';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type CosFormApi = ReactFormExtendedApi<
+  AccountType & { backupEnabled: boolean; backupSelfUndeleteAllowed: boolean },
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>;
 
 type CosValidatedInputProps = {
   form: CosFormApi;

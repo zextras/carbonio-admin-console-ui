@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Container, useSnackbar } from '@zextras/ui-components';
@@ -20,6 +19,7 @@ import {
   COS,
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
+import { useAppForm } from '../../../form/form-hook';
 import { cosQueryKeys } from '../../../services/cos-query-keys';
 import { type ComputedLimit, type QuotaSource } from '../../../services/get-cos-quota';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
@@ -155,7 +155,7 @@ export const CosAdvancedForm = ({
       !!coreAttributesData?.attributes?.[BACKUP_SELF_UNDELETE_ALLOWED]?.[0]?.value,
   };
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: formDefaultValues,
     validators: {
       onChange: cosAdvancedSchema,
@@ -236,22 +236,24 @@ export const CosAdvancedForm = ({
       }}
       unsavedChanges={isDirty}
     >
-      <Container mainAlignment="flex-start" width="100%" orientation="vertical">
-        {isAdvanced && <COSGeneralOptions form={form} readonlyCOS={readonlyCOS} />}
-        <COSForwarding form={form} readonlyCOS={readonlyCOS} />
-        <COSQuotas
-          form={form}
-          quotaState={quotaState}
-          isTotalQuotaActive={isTotalQuotaActive}
-          isAdvanced={isAdvanced}
-          readonlyCOS={readonlyCOS}
-          timeItems={timeItems}
-        />
-        <COSPassword form={form} readonlyCOS={readonlyCOS} />
-        <COSFailedLoginPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
-        <COSTimeoutPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
-        <COSEmailRetentionPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
-      </Container>
+      <form.AppForm>
+        <Container mainAlignment="flex-start" width="100%" orientation="vertical">
+          {isAdvanced && <COSGeneralOptions form={form} readonlyCOS={readonlyCOS} />}
+          <COSForwarding form={form} readonlyCOS={readonlyCOS} />
+          <COSQuotas
+            form={form}
+            quotaState={quotaState}
+            isTotalQuotaActive={isTotalQuotaActive}
+            isAdvanced={isAdvanced}
+            readonlyCOS={readonlyCOS}
+            timeItems={timeItems}
+          />
+          <COSPassword form={form} readonlyCOS={readonlyCOS} />
+          <COSFailedLoginPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
+          <COSTimeoutPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
+          <COSEmailRetentionPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
+        </Container>
+      </form.AppForm>
     </FormPageLayout>
   );
 };

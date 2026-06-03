@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, Input, Padding } from '@zextras/ui-components';
 import { isValidDecimalInput } from '@zextras/ui-shared';
@@ -10,9 +11,25 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BytesToGB, GbToBytes } from '../../../utility/utils';
-import { CosAdvancedFormValues, CosFormApi } from '../types';
+import type { CosAdvancedFormValues } from '../types';
 import { getFieldErrorProps } from './field-error';
 import { QuotaRevertIcon } from './quota-revert-icon';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type CosFormApi = ReactFormExtendedApi<
+  CosAdvancedFormValues,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>;
 
 type QuotaGBFieldInnerProps = {
   fieldState: {

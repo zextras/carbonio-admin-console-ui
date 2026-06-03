@@ -3,15 +3,31 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, Input, ListRow, Select } from '@zextras/ui-components';
 import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../../../../../types/account';
-import { TimeItems } from '../../../../../types/general';
-import { CosFormApi } from '../types';
+import type { AccountType } from '../../../../../types/account';
+import type { TimeItems } from '../../../../../types/general';
 import { getFieldErrorProps } from './field-error';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type CosFormApi = ReactFormExtendedApi<
+  AccountType & { backupEnabled: boolean; backupSelfUndeleteAllowed: boolean },
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>;
 
 type TimeFieldGroupProps = {
   form: CosFormApi;

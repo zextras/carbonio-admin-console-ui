@@ -3,15 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useForm } from '@tanstack/react-form';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { FC } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { CosValidatedInput } from '../fields/validated-input';
+import { useAppForm } from '../../../../form/form-hook';
 import { COS_VALIDATION_MESSAGES, cosAdvancedSchema } from '../schema';
-import { CosAdvancedFormValues, CosFormApi } from '../types';
+import type { CosAdvancedFormValues } from '../types';
 
 const NON_NEGATIVE_INTEGER = COS_VALIDATION_MESSAGES['cos.validation.non_negative_integer'];
 const MAX_LESS_THAN_MIN = COS_VALIDATION_MESSAGES['cos.validation.max_less_than_min_length'];
@@ -19,7 +18,7 @@ const MAX_LESS_THAN_MIN = COS_VALIDATION_MESSAGES['cos.validation.max_less_than_
 const Wrapper: FC<{ onSubmit?: (value: CosAdvancedFormValues) => void }> = ({
   onSubmit = vi.fn(),
 }) => {
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       zimbraPasswordMinLength: '',
       zimbraPasswordMaxLength: '',
@@ -34,21 +33,17 @@ const Wrapper: FC<{ onSubmit?: (value: CosAdvancedFormValues) => void }> = ({
   });
 
   return (
-    <>
-      <CosValidatedInput
-        form={form as CosFormApi}
-        name="zimbraPasswordMinLength"
-        label="Min length"
-      />
-      <CosValidatedInput
-        form={form as CosFormApi}
-        name="zimbraPasswordMaxLength"
-        label="Max length"
-      />
+    <form.AppForm>
+      <form.AppField name="zimbraPasswordMinLength">
+        {(field) => <field.ValidatedInput label="Min length" />}
+      </form.AppField>
+      <form.AppField name="zimbraPasswordMaxLength">
+        {(field) => <field.ValidatedInput label="Max length" />}
+      </form.AppField>
       <button type="button" onClick={() => form.handleSubmit()}>
         Save
       </button>
-    </>
+    </form.AppForm>
   );
 };
 
