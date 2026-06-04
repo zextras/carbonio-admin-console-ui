@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useSelector } from '@tanstack/react-store';
 import { QueryClient } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import {
 	advancedSupportedApiForBrowser,
 	createBrowserAPIInterceptor,
