@@ -355,4 +355,72 @@ describe('WscSettings (browser)', () => {
 			await expect.element(page.getByText('Allow call recording')).toBeVisible();
 		});
 	});
+
+	describe('Additional switch interactions', () => {
+		it("should toggle Show users' online status", async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: "Show users' online status" });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+		});
+
+		it('should toggle Users can create group chats', async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: 'Users can create group chats' });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+		});
+
+		it('should toggle Users can start new private chats', async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: 'Users can start new private chats' });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+		});
+	});
+
+	describe('Select interactions', () => {
+		it('should change message deletion time limit', async () => {
+			await setupWscSettingsTest();
+			await page.getByText('Message deletion time limit').click();
+			await page.getByText('5 minute time limit').click();
+			await expect.element(page.getByText('5 minute time limit')).toBeVisible();
+		});
+
+		it('should change message editing time limit', async () => {
+			await setupWscSettingsTest();
+			await page.getByText('Message editing time limit').click();
+			await page.getByText('10 minute time limit').click();
+			await expect.element(page.getByText('10 minute time limit')).toBeVisible();
+		});
+	});
+
+	describe('Input interactions', () => {
+		it('should update max group members value', async () => {
+			await setupWscSettingsTest();
+			const input = page.getByPlaceholder('Maximum number of group members');
+			await input.clear();
+			await input.fill('50');
+			await expect.element(input).toHaveValue(50);
+		});
+
+		it('should strip leading zeros from max group members', async () => {
+			await setupWscSettingsTest();
+			const input = page.getByPlaceholder('Maximum number of group members');
+			await input.clear();
+			await input.fill('0042');
+			await expect.element(input).toHaveValue(42);
+		});
+
+		it('should update max group picture size', async () => {
+			await setupWscSettingsTest();
+			const input = page.getByPlaceholder('Maximum group picture size in MB');
+			await input.clear();
+			await input.fill('10');
+			await expect.element(input).toHaveValue(10);
+		});
+	});
 });
