@@ -5,7 +5,6 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, Input, ListRow, Row, Select, SelectItem } from '@zextras/ui-components';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { withForm } from '../../../../form/form-hook';
@@ -58,18 +57,11 @@ export const ReceivingMails = withForm({
       { label: t('label.ask_me', 'Ask me'), value: 'prompt' },
     ];
 
-    const [pollingIntervalNum, setPollingIntervalNum] = useState('');
-    const [pollingIntervalType, setPollingIntervalType] = useState('');
-
     const minPollingInterval = useSelector(form.store, (s) => s.values.zimbraMailMinPollingInterval);
 
-    useEffect(() => {
-      const val = minPollingInterval ?? '';
-      const num = val.slice(0, -1) || '';
-      const unit = val.slice(-1) || '';
-      setPollingIntervalNum(num);
-      setPollingIntervalType(unit);
-    }, [minPollingInterval]);
+    const minPollingVal = minPollingInterval ?? '';
+    const pollingIntervalNum = minPollingVal.slice(0, -1) || '';
+    const pollingIntervalType = minPollingVal.slice(-1) || '';
 
     return (
       <Row
@@ -105,7 +97,6 @@ export const ReceivingMails = withForm({
                           type="number"
                           onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                             const num = e.target.value;
-                            setPollingIntervalNum(num);
                             field.handleChange(num ? `${num}${pollingIntervalType}` : '');
                           }}
                           disabled={readonlyCOS}
@@ -128,7 +119,6 @@ export const ReceivingMails = withForm({
                               typeof value === 'object' && value !== null && 'value' in value
                                 ? (value as SelectItem).value
                                 : (value as string);
-                            setPollingIntervalType(v);
                             field.handleChange(pollingIntervalNum ? `${pollingIntervalNum}${v}` : '');
                           }}
                           disabled={readonlyCOS}
