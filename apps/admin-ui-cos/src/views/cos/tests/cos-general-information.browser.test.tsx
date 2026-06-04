@@ -281,6 +281,7 @@ describe('CosGeneralInformation', () => {
 
       const nameInput = page.getByRole('textbox', { name: 'Name' });
       await userEvent.fill(nameInput, 'renamed-cos');
+      await expect.element(nameInput).toHaveValue('renamed-cos');
 
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
       await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
@@ -291,6 +292,7 @@ describe('CosGeneralInformation', () => {
 
       const descInput = page.getByRole('textbox', { name: 'Description' });
       await userEvent.fill(descInput, 'new description');
+      await expect.element(descInput).toHaveValue('new description');
 
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     });
@@ -303,6 +305,7 @@ describe('CosGeneralInformation', () => {
 
       await page.getByRole('button', { name: 'Cancel' }).click();
 
+      await expect.element(descInput).toHaveValue('A test COS');
       await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
     });
 
@@ -311,6 +314,7 @@ describe('CosGeneralInformation', () => {
 
       const notesTextarea = page.getByRole('textbox', { name: 'Notes' });
       await userEvent.fill(notesTextarea, 'new notes content');
+      await expect.element(notesTextarea).toHaveValue('new notes content');
 
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
       await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
@@ -612,7 +616,8 @@ describe('CosGeneralInformation', () => {
           ],
         },
       ]);
-      await expect.element(page.getByText('Normal')).toBeVisible();
+      await expect.element(page.getByText('single@example.com')).toBeVisible();
+      await expect.element(page.getByText('Normal', { exact: true })).toBeVisible();
     });
   });
 });
