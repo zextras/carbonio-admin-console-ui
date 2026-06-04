@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button } from '@zextras/ui-components';
-import { type FC, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './page-layout.module.css';
@@ -18,13 +18,13 @@ type FormPageLayoutProps = {
   unsavedChanges?: boolean;
 };
 
-export const FormPageLayout: FC<FormPageLayoutProps> = ({
+export const FormPageLayout = ({
   title,
   onSave,
   onCancel,
   unsavedChanges,
   children,
-}) => {
+}: FormPageLayoutProps) => {
   const [t] = useTranslation();
 
   return (

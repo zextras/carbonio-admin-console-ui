@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Input, Switch, Tooltip } from '@zextras/ui-components';
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ComputedLimit, QuotaSource } from '../../../../services/get-cos-quota';
@@ -20,14 +20,14 @@ type COSQuotasNewProps = {
   showRevertButton: boolean;
 };
 
-export const COSQuotasNew: FC<COSQuotasNewProps> = ({
+export const COSQuotasNew = ({
   totalComputedQuotaLimit,
   totalQuotaSource,
   initialTotalComputedQuotaLimit,
   onChange,
   readonlyCOS,
   showRevertButton,
-}) => {
+}: COSQuotasNewProps) => {
   const [t] = useTranslation();
 
   const derivedQuotaValue: number | 'unlimited' | undefined = (() => {

@@ -15,7 +15,7 @@ import {
 	setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
-import { FC, useRef } from 'react';
+import { useRef } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -77,11 +77,11 @@ type WscSettingsWrapperProps = {
 	onFormChange?: (values: WscCosFormValues) => void;
 };
 
-const WscSettingsWrapper: FC<WscSettingsWrapperProps> = ({
+const WscSettingsWrapper = ({
 	featuresOverride = {},
 	readonlyFeatures = false,
 	onFormChange,
-}) => {
+}: WscSettingsWrapperProps) => {
 	const form = useAppForm({
 		defaultValues: { ...defaultFeatures, ...featuresOverride },
 		onSubmit: vi.fn(),

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Switch } from '@zextras/ui-components';
-import type { FC } from 'react';
 
 import { useFieldContext } from '../form-context';
 
@@ -13,7 +12,7 @@ type FeatureSwitchFieldProps = {
   disabled?: boolean;
 };
 
-export const FeatureSwitchField: FC<FeatureSwitchFieldProps> = ({ label, disabled }) => {
+export const FeatureSwitchField = ({ label, disabled }: FeatureSwitchFieldProps) => {
   const field = useFieldContext<string>();
   const onClick = () => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE');
 

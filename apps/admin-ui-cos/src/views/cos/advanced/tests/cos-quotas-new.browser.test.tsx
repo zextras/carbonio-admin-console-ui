@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { FC } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
@@ -33,10 +32,13 @@ vi.mock('@zextras/ui-shared', async (importOriginal) => {
 const limitedQuota: ComputedLimit = { type: 'limited', value: 10737418240 }; // 10 GB
 const unlimitedQuota: ComputedLimit = { type: 'unlimited' };
 
-const QuotaWrapper: FC<{
+const QuotaWrapper = ({
+  initialQuota,
+  initialSource = 'global',
+}: {
   initialQuota: ComputedLimit;
   initialSource?: 'global' | 'cos';
-}> = ({ initialQuota, initialSource = 'global' }) => {
+}) => {
   const quotaState = useCosQuotaState({
     cosData: { zimbraId: 'cos-1', zimbraMailQuota: '' } as never,
     cosQuotaData: {

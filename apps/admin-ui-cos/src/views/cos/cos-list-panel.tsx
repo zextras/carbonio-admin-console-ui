@@ -16,7 +16,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
 
@@ -40,7 +40,7 @@ import { useCosDetail } from '../../services/use-cos-detail';
 import { useCosList } from '../../services/use-cos-list';
 import { GeneralListPanel } from './general-list-panel';
 
-export const CosListPanel: FC = () => {
+export const CosListPanel = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const queryClient = useQueryClient();
