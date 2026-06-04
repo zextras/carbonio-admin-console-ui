@@ -3,18 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  Container,
-  Modal,
-  Padding,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Button, Container, Modal, Padding } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { deleteCOS } from '../../../services/delete-cos-service';
+import { useDeleteCos } from '../../../services/use-delete-cos';
 
 type DeleteCosModalProps = {
   open: boolean;
@@ -30,43 +23,18 @@ export const DeleteCosModal = ({
   cosId,
 }: DeleteCosModalProps) => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+  const deleteCosMutation = useDeleteCos();
 
   const onDeleteCOS = (): void => {
-    setIsRequestInProgress(true);
-    deleteCOS(cosId)
-      .then((data: unknown) => {
-        setIsRequestInProgress(false);
-        if (data) {
-          createSnackbar({
-            key: 'info',
-            severity: 'info',
-            label: t('label.delete_cos_succeess', {
-              cosname: cosName,
-              defaultValue: 'The {{cosname}} has been deleted successfully',
-            }),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
+    deleteCosMutation.mutate(
+      { cosId, cosName },
+      {
+        onSuccess: () => {
           onClose();
           replaceHistory(`/cos_list`);
-        }
-      })
-      .catch((error: unknown) => {
-        setIsRequestInProgress(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label:
-            (error as Error)?.message ||
-            t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+        },
+      },
+    );
   };
 
   return (
@@ -98,7 +66,7 @@ export const DeleteCosModal = ({
               label={t('label.yes_delete', 'Yes, Delete')}
               color="error"
               onClick={onDeleteCOS}
-              disabled={isRequestInProgress}
+              disabled={deleteCosMutation.isPending}
             />
           </Container>
         </Container>
