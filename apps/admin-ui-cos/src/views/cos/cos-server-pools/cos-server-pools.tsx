@@ -188,11 +188,7 @@ export const CosServerPools = () => {
   };
 
   if (isPending) {
-    return (
-      <Container crossAlignment="center" mainAlignment="center" height="fill">
-        <ds-spinner />
-      </Container>
-    );
+    return <ds-page-shimmer></ds-page-shimmer>;
   }
 
   return (

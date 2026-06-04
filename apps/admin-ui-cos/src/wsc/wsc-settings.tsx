@@ -90,11 +90,7 @@ export const WscSettings = withForm({
 		})();
 
 		if (requiresLicenseCheck && isLoading) {
-			return (
-				<Container height="fit" padding="large" style={{ userSelect: 'none' }}>
-					<ds-spinner />
-				</Container>
-			);
+			return <ds-page-shimmer></ds-page-shimmer>;
 		}
 
 		return (
