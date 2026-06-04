@@ -5,16 +5,19 @@
 	box-sizing: border-box;
 }
 
+.stickyHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-gray6-regular);
+}
+
 .header {
   display: flex;
   align-items: center;
   width: 100%;
   height: fit-content;
   padding: var(--padding-size-medium) 1.5rem;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: var(--color-gray6-regular);
 }
 
 .title {

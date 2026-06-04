@@ -35,26 +35,28 @@ export const FormPageLayout = ({
         onSave?.();
       }}
     >
-      <div className={styles.header}>
-        <ds-text as="strong" weight="bold" color="gray0" className={styles.title}>
-          {title}
-        </ds-text>
-        {unsavedChanges && (
-          <div className={styles.buttons}>
-            {onCancel && (
-              <Button
-                label={t('label.cancel', 'Cancel')}
-                color="secondary"
-                onClick={onCancel}
-              />
-            )}
-            {onSave && (
-              <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-            )}
-          </div>
-        )}
+      <div className={styles.stickyHeader}>
+        <div className={styles.header}>
+          <ds-text as="strong" weight="bold" color="gray0" className={styles.title}>
+            {title}
+          </ds-text>
+          {unsavedChanges && (
+            <div className={styles.buttons}>
+              {onCancel && (
+                <Button
+                  label={t('label.cancel', 'Cancel')}
+                  color="secondary"
+                  onClick={onCancel}
+                />
+              )}
+              {onSave && (
+                <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+              )}
+            </div>
+          )}
+        </div>
+        <ds-divider></ds-divider>
       </div>
-      <ds-divider></ds-divider>
       <div className={styles.content}>
         {children}
       </div>
