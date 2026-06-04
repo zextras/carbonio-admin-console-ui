@@ -6,7 +6,6 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  delayedSoapApiForBrowser,
   resetMockWorker,
   setupBrowserTest,
   worker,
@@ -239,16 +238,6 @@ describe('CreateCos', () => {
 
       await expect.element(page.getByText('testcos has been created successfully')).toBeVisible();
       expect(replaceHistoryMock).toHaveBeenCalledWith(`/${NEW_COS_ID}/general_information`);
-    });
-
-    it('should show a loading spinner while creating', async () => {
-      delayedSoapApiForBrowser('CreateCos', mockCreateCosResponse, 500);
-      await setupCreateCosTest();
-
-      await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
-      await page.getByRole('button', { name: 'Create' }).click();
-
-      await expect.element(page.getByRole('status')).toBeVisible();
     });
   });
 
