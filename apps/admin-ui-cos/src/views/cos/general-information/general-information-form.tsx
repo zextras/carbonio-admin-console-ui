@@ -4,15 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import {
-  Button,
-  Container,
-  Padding,
-  Row,
-  Tooltip,
-  type TRow,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Button, Container, Padding, Row, Tooltip, type TRow } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -22,10 +14,10 @@ import { DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../../consta
 import { useAppForm } from '../../../form/form-hook';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
-import { renameCos } from '../../../services/rename-cos-service';
 import { useCosAccounts } from '../../../services/use-cos-accounts';
 import { useCosDomains } from '../../../services/use-cos-domains';
 import { useModifyCos } from '../../../services/use-modify-cos';
+import { useRenameCos } from '../../../services/use-rename-cos';
 import { useTotalAccounts } from '../../../services/use-total-accounts';
 import { useTotalDomains } from '../../../services/use-total-domains';
 import { FormPageLayout } from '../../form-page-layout';
@@ -59,7 +51,10 @@ type StatusColorMap = Record<string, { color: string; label: string }>;
 function buildStatusColorMap(t: (key: string, defaultValue: string) => string): StatusColorMap {
   return {
     active: { color: ACCOUNT_STATUS_COLORS.active, label: t('label.active', 'Active') },
-    maintenance: { color: ACCOUNT_STATUS_COLORS.maintenance, label: t('label.in_maintenance', 'In maintenance') },
+    maintenance: {
+      color: ACCOUNT_STATUS_COLORS.maintenance,
+      label: t('label.in_maintenance', 'In maintenance'),
+    },
     locked: { color: ACCOUNT_STATUS_COLORS.locked, label: t('label.locked', 'Locked') },
     closed: { color: ACCOUNT_STATUS_COLORS.closed, label: t('label.closed', 'Closed') },
     pending: { color: ACCOUNT_STATUS_COLORS.pending, label: t('label.pending', 'Pending') },
@@ -223,15 +218,14 @@ function buildDomainList(
   return domains.map((item) => processDomainItem(item, cosId, defaultCosLabel));
 }
 
-
 export const GeneralInformationForm = ({
   cosInformation,
   readonlyCOS,
 }: GeneralInformationFormProps) => {
   const [t] = useTranslation();
   const { cosId } = useParams();
-  const createSnackbar = useSnackbar();
   const modifyCosMutation = useModifyCos(cosId);
+  const renameCosMutation = useRenameCos();
   const { data: totalAccount = 0 } = useTotalAccounts(cosId);
   const { data: totalDomain = 0 } = useTotalDomains(cosId);
 
@@ -310,25 +304,12 @@ export const GeneralInformationForm = ({
           id: { _content: zimbraId },
           newName: { _content: value.cn },
         };
-        try {
-          await renameCos(renameBody);
-          modifyCosMutation.mutate(body, {
-            onSuccess: () => {
-              form.reset(value, { keepDefaultValues: true });
-            },
-          });
-        } catch (error) {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label:
-              (error as Error)?.message ||
-              t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
+        await renameCosMutation.mutateAsync(renameBody);
+        modifyCosMutation.mutate(body, {
+          onSuccess: () => {
+            form.reset(value, { keepDefaultValues: true });
+          },
+        });
       }
     },
   });
