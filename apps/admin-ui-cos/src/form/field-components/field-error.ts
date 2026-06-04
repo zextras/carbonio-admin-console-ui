@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { AnyFieldApi } from '@tanstack/react-form';
+import { TFunction } from 'i18next';
 
 import { COS_VALIDATION_MESSAGES } from '../../views/cos/advanced/schema';
 
@@ -12,7 +13,7 @@ type FieldErrorProps = { hasError: boolean; description?: string };
 export function getFieldErrorProps(
   field: AnyFieldApi,
   isSubmitted: boolean,
-  t: (key: string, defaultValue: string) => string,
+  t: TFunction,
 ): FieldErrorProps {
   const { meta } = field.state;
   const showError = (meta.isBlurred || isSubmitted) && !meta.isValid;
