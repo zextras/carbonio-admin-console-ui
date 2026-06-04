@@ -90,6 +90,7 @@ async function setupCosAdvancedTest(cosData = mockCosData): Promise<void> {
 describe('CosAdvanced', () => {
   beforeEach(async () => {
     vi.resetAllMocks();
+    resetMockWorker();
   });
 
   afterEach(() => {
@@ -307,8 +308,8 @@ describe('CosAdvanced', () => {
       const maxNumInput = page.getByRole('textbox', {
         name: 'Max user-specific forwarding address',
       });
-      await userEvent.clear(maxNumInput);
-      await userEvent.type(maxNumInput, '20');
+      await userEvent.fill(maxNumInput, '20');
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
       await page.getByRole('button', { name: 'Save' }).click();
 
       const requestBody = (await modifyCosPromise) as ModifyCosBody;

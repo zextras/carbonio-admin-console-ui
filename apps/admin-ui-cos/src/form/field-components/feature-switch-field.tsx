@@ -15,11 +15,12 @@ type FeatureSwitchFieldProps = {
 
 export const FeatureSwitchField: FC<FeatureSwitchFieldProps> = ({ label, disabled }) => {
   const field = useFieldContext<string>();
+  const onClick = () => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE');
 
   return (
     <Switch
       value={field.state.value === 'TRUE'}
-      onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
+      onClick={onClick}
       label={label}
       iconColor="primary"
       disabled={disabled}

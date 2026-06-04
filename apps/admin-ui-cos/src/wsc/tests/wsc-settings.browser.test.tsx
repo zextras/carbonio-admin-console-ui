@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useSelector } from '@tanstack/react-store';
 import { QueryClient } from '@tanstack/react-query';
 import {
 	advancedSupportedApiForBrowser,
@@ -14,7 +15,7 @@ import {
 	setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
-import { FC, useState } from 'react';
+import { FC, useRef } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -86,11 +87,12 @@ const WscSettingsWrapper: FC<WscSettingsWrapperProps> = ({
 		onSubmit: vi.fn(),
 	});
 
-	const [prevValues, setPrevValues] = useState<WscCosFormValues>(form.state.values);
+	const values = useSelector(form.store, (s) => s.values);
+	const prevValuesRef = useRef<WscCosFormValues>(values);
 
-	if (form.state.values !== prevValues) {
-		setPrevValues(form.state.values);
-		onFormChange?.(form.state.values);
+	if (values !== prevValuesRef.current) {
+		prevValuesRef.current = values;
+		onFormChange?.(values);
 	}
 
 	return (
@@ -104,14 +106,14 @@ async function setupWscSettingsTest(
 	featuresOverride: Partial<WscCosFormValues> = {},
 	options: { useAdvanced?: boolean } = {},
 ): Promise<void> {
+	const queryClient = seedQueryClient();
+
+	mockCatalogServices();
 	if (options.useAdvanced) {
 		await advancedSupportedApiForBrowser.withAdvancedSupported();
 	} else {
 		await advancedSupportedApiForBrowser.withAdvancedNotSupported();
 	}
-	const queryClient = seedQueryClient();
-
-	mockCatalogServices();
 	createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
 	createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
 		HttpResponse.json({
