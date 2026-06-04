@@ -200,9 +200,9 @@ const CreateDomain: FC = () => {
           label: result?.message
             ? result?.message
             : t(
-                'label.the_last_changes_has_been_saved_successfully',
-                'Changes have been saved successfully',
-              ),
+              'label.the_last_changes_has_been_saved_successfully',
+              'Changes have been saved successfully',
+            ),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,

@@ -400,16 +400,16 @@ export type DistributionListActionRequest = {
         right?: {
             right?: string;
             grantee?:
-                | {
-                      by?: string;
-                      type?: string;
-                      _content?: string;
-                  }
-                | Array<{
-                      by?: string;
-                      type?: string;
-                      _content?: string;
-                  }>;
+            | {
+                by?: string;
+                type?: string;
+                _content?: string;
+            }
+            | Array<{
+                by?: string;
+                type?: string;
+                _content?: string;
+            }>;
         };
         owner?: {
             by?: string;

@@ -181,7 +181,7 @@ const MessageListTable: FC<{
     const tableRows: any = useMemo(
       () =>
         messages.map((v: any, i: number) => ({
-          id: i,
+          id: v.id,
           columns: [
             <Row
               style={{ textAlign: 'left', justifyContent: 'flex-start' }}

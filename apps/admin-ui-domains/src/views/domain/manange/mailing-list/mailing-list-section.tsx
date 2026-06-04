@@ -118,14 +118,8 @@ const MailingListSection: FC<any> = () => {
         const dl = data?.dl;
         const alias = data?.alias;
         const calresource = data?.calresource;
-        const errorFault = (data as unknown as Record<string, unknown>)?.Body;
-        if (errorFault) {
-          setIsShowLdapQueryMessage(true);
-          setLdapQueryErrorMessage(t('label.query_is_not_valid', 'Query is not valid'));
-        } else {
-          setIsShowLdapQueryMessage(false);
-          setLdapQueryErrorMessage('');
-        }
+        setIsShowLdapQueryMessage(false);
+        setLdapQueryErrorMessage('');
         if (dl) {
           dl.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
         }
@@ -145,6 +139,8 @@ const MailingListSection: FC<any> = () => {
         }
       })
       .catch((error) => {
+        setIsShowLdapQueryMessage(true);
+        setLdapQueryErrorMessage(t('label.query_is_not_valid', 'Query is not valid'));
         const snackbarConfig = generateSnackbarFromError(error, t);
         createSnackbar(snackbarConfig);
       });

@@ -532,9 +532,10 @@ const DomainListPanel: FC = () => {
             }}
             onClick={(): void => {
               setIsShowError(false);
-              if (domain.a && domain.a.every((item) => item._content)) {
-                selectedDomain(domain as Parameters<typeof selectedDomain>[0]);
-              }
+              selectedDomain({
+                ...domain,
+                a: domain.a ?? [],
+              } as Parameters<typeof selectedDomain>[0]);
             }}
           >
             {domain?.name}
