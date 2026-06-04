@@ -384,17 +384,77 @@ describe('WscSettings (browser)', () => {
 
 	describe('Select interactions', () => {
 		it('should change message deletion time limit', async () => {
-			await setupWscSettingsTest();
+			const formChanges: Array<WscCosFormValues> = [];
+			await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+			const queryClient = seedQueryClient();
+
+			mockCatalogServices();
+			createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+			createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+				HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({
+								result: { chat_enabled: true, video_chat_enabled: true },
+							}),
+						},
+					},
+				}),
+			);
+			createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+				HttpResponse.json({ items: [] }),
+			);
+
+			await setupBrowserTest(
+				<WscSettingsWrapper
+					onFormChange={(values) => formChanges.push({ ...values })}
+				/>,
+				{ queryClient },
+			);
+
 			await page.getByText('Message deletion time limit').click();
 			await page.getByText('5 minute time limit').click();
-			await expect.element(page.getByText('5 minute time limit')).toBeVisible();
+
+			expect(formChanges.length).toBeGreaterThan(0);
+			const lastChange = formChanges[formChanges.length - 1];
+			expect(lastChange.carbonioWscMessageDeleteTimeLimit).toBe('5m');
 		});
 
 		it('should change message editing time limit', async () => {
-			await setupWscSettingsTest();
+			const formChanges: Array<WscCosFormValues> = [];
+			await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+			const queryClient = seedQueryClient();
+
+			mockCatalogServices();
+			createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+			createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+				HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({
+								result: { chat_enabled: true, video_chat_enabled: true },
+							}),
+						},
+					},
+				}),
+			);
+			createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+				HttpResponse.json({ items: [] }),
+			);
+
+			await setupBrowserTest(
+				<WscSettingsWrapper
+					onFormChange={(values) => formChanges.push({ ...values })}
+				/>,
+				{ queryClient },
+			);
+
 			await page.getByText('Message editing time limit').click();
 			await page.getByText('10 minute time limit').click();
-			await expect.element(page.getByText('10 minute time limit')).toBeVisible();
+
+			expect(formChanges.length).toBeGreaterThan(0);
+			const lastChange = formChanges[formChanges.length - 1];
+			expect(lastChange.carbonioWscMessageEditTimeLimit).toBe('10m');
 		});
 	});
 
