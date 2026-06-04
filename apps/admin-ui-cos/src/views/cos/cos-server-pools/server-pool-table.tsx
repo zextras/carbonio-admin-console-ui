@@ -20,8 +20,6 @@ import { useTranslation } from 'react-i18next';
 
 import { FunnelSearchIcon } from './funnel-search-icon';
 
-const TABLE_CONTAINER_HEIGHT = 'calc(100vh - 340px)';
-
 type ServerPoolTableProps = {
   searchValue: string;
   onSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -105,11 +103,9 @@ export const ServerPoolTable = ({
         mainAlignment="space-between"
         crossAlignment="flex-start"
         width="fill"
-        height={TABLE_CONTAINER_HEIGHT}
         padding={{ top: 'large' }}
       >
         <Table
-          style={{ overflow: 'auto', height: '100%' }}
           rows={tableRows}
           headers={tableHeaders}
           showCheckbox={false}

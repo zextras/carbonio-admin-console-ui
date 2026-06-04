@@ -198,30 +198,35 @@ export const CosServerPools = () => {
         flexDirection: 'column',
         alignItems: 'stretch',
         justifyContent: 'flex-start',
-        flex: '1 1 0%',
-        height: '100%',
-        padding: '1.5rem',
+        padding: 0,
       }}
     >
-      <Container orientation="horizontal" height="fit" padding={{ all: 'medium' }}>
-        <Row takeAvailableSpace mainAlignment="flex-start" minHeight="35px">
-          <ds-text as="strong" weight="bold" color="gray0">
-            {t('label.server_pools', 'Server Pools')}
-          </ds-text>
-        </Row>
-      </Container>
-      <ds-divider></ds-divider>
+      <div
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
+          background: 'var(--color-gray6-regular)',
+        }}
+      >
+        <Container orientation="horizontal" height="fit" padding={{ all: 'medium' }}>
+          <Row takeAvailableSpace mainAlignment="flex-start" minHeight="35px">
+            <ds-text as="strong" weight="bold" color="gray0">
+              {t('label.server_pools', 'Server Pools')}
+            </ds-text>
+          </Row>
+        </Container>
+        <ds-divider></ds-divider>
+      </div>
       <Container
         mainAlignment="flex-start"
         crossAlignment="flex-start"
         padding={{ horizontal: 'medium', vertical: 'large' }}
-        style={{ overflowY: 'auto' }}
       >
         <Container
           orientation="column"
           crossAlignment="flex-start"
           mainAlignment="flex-start"
-          style={{ overflow: 'auto' }}
           width="100%"
         >
           <Container
