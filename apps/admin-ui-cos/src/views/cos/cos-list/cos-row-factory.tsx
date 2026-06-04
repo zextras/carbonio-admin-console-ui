@@ -10,7 +10,6 @@ import {
   ReactElement,
   ReactEventHandler,
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -94,10 +93,9 @@ const CosRowFactory = ({
   rowClassName,
   cellClassName,
 }: CosRowFactoryProps): React.JSX.Element => {
-  const trRef = useRef<HTMLTableRowElement>(null);
   const ckbRef = useRef<HTMLDivElement>(null);
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showCkb, setShowCkb] = useState<boolean>(selected || selectionMode);
-  const [hoverTimer, setHoverTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const clickableRow = useMemo(
     () => (!showCheckbox && typeof row.clickable === 'undefined') || row.clickable,
     [showCheckbox, row.clickable],
@@ -121,48 +119,21 @@ const CosRowFactory = ({
     [row, onChange, clickableRow, showCheckbox],
   );
 
-  const displayCheckbox = useCallback(() => {
+  const displayCheckbox = () => {
     if (hoverDelay > 0) {
-      const timer = setTimeout(() => setShowCkb(true), hoverDelay);
-      setHoverTimer(timer);
+      hoverTimerRef.current = setTimeout(() => setShowCkb(true), hoverDelay);
     } else {
       setShowCkb(true);
     }
-  }, [hoverDelay]);
+  };
 
-  const hideCheckbox = useCallback(() => {
-    if (hoverTimer !== null) {
-      clearTimeout(hoverTimer);
-      setHoverTimer(null);
+  const hideCheckbox = () => {
+    if (hoverTimerRef.current !== null) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
     }
     setShowCkb(false);
-  }, [hoverTimer]);
-
-  useEffect(() => {
-    if (!showCheckboxOnHover) {
-      setShowCkb(true);
-      return;
-    }
-
-    const refSave = trRef.current;
-    if (refSave && showCheckbox) {
-      refSave.addEventListener('mouseenter', displayCheckbox);
-      refSave.addEventListener('mouseleave', hideCheckbox);
-      refSave.addEventListener('focus', displayCheckbox);
-      refSave.addEventListener('blur', hideCheckbox);
-    }
-    return (): void => {
-      if (hoverTimer !== null) {
-        clearTimeout(hoverTimer);
-      }
-      if (refSave) {
-        refSave.removeEventListener('mouseenter', displayCheckbox);
-        refSave.removeEventListener('mouseleave', hideCheckbox);
-        refSave.removeEventListener('focus', displayCheckbox);
-        refSave.removeEventListener('blur', hideCheckbox);
-      }
-    };
-  }, [displayCheckbox, hideCheckbox, showCheckbox, showCheckboxOnHover, hoverDelay, hoverTimer]);
+  };
 
   const rowData = useMemo(
     () =>
@@ -182,8 +153,11 @@ const CosRowFactory = ({
 
   return (
     <tr
-      ref={trRef}
       onClick={onClick}
+      onMouseEnter={showCheckboxOnHover && showCheckbox ? displayCheckbox : undefined}
+      onMouseLeave={showCheckboxOnHover && showCheckbox ? hideCheckbox : undefined}
+      onFocus={showCheckboxOnHover && showCheckbox ? displayCheckbox : undefined}
+      onBlur={showCheckboxOnHover && showCheckbox ? hideCheckbox : undefined}
       className={getTableRowClassNames(
         selected,
         row.highlight,
