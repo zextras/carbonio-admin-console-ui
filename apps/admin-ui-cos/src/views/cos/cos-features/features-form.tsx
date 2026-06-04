@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, useSnackbar } from '@zextras/ui-components';
-import { type GetCoreAttributesResponse, setCoreAttributes } from '@zextras/ui-shared';
+import { Container } from '@zextras/ui-components';
+import { type GetCoreAttributesResponse } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -19,6 +19,7 @@ import {
 import { useAppForm } from '../../../form/form-hook';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
+import { useSetCoreAttributes } from '../../../services/use-set-core-attributes';
 import { FormPageLayout } from '../../form-page-layout';
 import { ContactsCalendarSection } from '../features/sections/contacts-calendar-section';
 import { FilesTasksSection } from '../features/sections/files-tasks-section';
@@ -86,8 +87,8 @@ export const FeaturesForm = ({
 }: CosFeaturesFormProps) => {
   const { cosId } = useParams();
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
   const modifyCosMutation = useModifyCos(cosId);
+  const setCoreAttributesMutation = useSetCoreAttributes();
 
   const form = useAppForm({
     defaultValues: buildDefaultValues(cosInformation, mobileAttributesData),
@@ -105,30 +106,18 @@ export const FeaturesForm = ({
         value.mobileCalendarFeatureSync !== originalMobileCalendarSync;
 
       if (hasMobileChanges && isAdvanced) {
-        try {
-          await setCoreAttributes({
-            mobileCalendarFeatureSync: {
-              value: value.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
-              objectName: cosName,
-              configType: COS,
-            },
-            mobileContactFeatureSync: {
-              value: value.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
-              objectName: cosName,
-              configType: COS,
-            },
-          });
-        } catch {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          return;
-        }
+        await setCoreAttributesMutation.mutateAsync({
+          mobileCalendarFeatureSync: {
+            value: value.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
+            objectName: cosName,
+            configType: COS,
+          },
+          mobileContactFeatureSync: {
+            value: value.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
+            objectName: cosName,
+            configType: COS,
+          },
+        });
       }
 
       const body: ModifyCosBody = {
@@ -141,12 +130,8 @@ export const FeaturesForm = ({
           .map((key) => ({ n: key, _content: value[key] ?? '' })),
       };
 
-      try {
-        await modifyCosMutation.mutateAsync(body);
-        form.reset(value, { keepDefaultValues: true });
-      } catch {
-        // useModifyCos.onError already shows the error snackbar
-      }
+      await modifyCosMutation.mutateAsync(body);
+      form.reset(value, { keepDefaultValues: true });
     },
   });
 
