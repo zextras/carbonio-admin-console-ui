@@ -414,7 +414,7 @@ describe('CosGeneralInformation', () => {
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
       mockEmptySearchDirectoryResponses();
       mockCatalogServices();
-          createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserSoapAPIInterceptor('FlushCache', {});
       createBrowserSoapAPIInterceptor('ModifyCos', {});
       createBrowserSoapAPIInterceptor('RenameCos', {});
       createBrowserSoapAPIInterceptor('DeleteCos', {});
@@ -479,7 +479,7 @@ describe('CosGeneralInformation', () => {
       );
 
       mockCatalogServices();
-          mockSearchDirectoryResponses();
+      mockSearchDirectoryResponses();
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
       createBrowserSoapAPIInterceptor('FlushCache', {});
       createBrowserSoapAPIInterceptor('ModifyCos', {});
@@ -496,6 +496,123 @@ describe('CosGeneralInformation', () => {
 
       const nameInput = page.getByRole('textbox', { name: 'Name' });
       await expect.element(nameInput).toBeDisabled();
+    });
+  });
+
+  describe('Account types and multi-email', () => {
+    async function setupWithAccounts(accounts: Array<Record<string, unknown>>): Promise<void> {
+      const queryClient = getQueryClient();
+      await grantUserCosRights(queryClient);
+      mockCatalogServices();
+      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserSoapAPIInterceptor('SearchDirectory', {
+        account: accounts,
+        searchTotal: accounts.length,
+      });
+
+      await setupBrowserTest(
+        <Routes>
+          <Route path="/:cosId/:operation" element={<CosGeneralInformation />} />
+        </Routes>,
+        { initialRouterEntry: `/${COS_ID}/general_information`, queryClient },
+      );
+      await expect.element(page.getByText('General Information')).toBeVisible();
+    }
+
+    it('should display Admin user type', async () => {
+      await setupWithAccounts([
+        {
+          id: 'acc-admin',
+          name: 'admin@example.com',
+          a: [
+            { n: 'displayName', _content: 'Admin User' },
+            { n: 'mail', _content: 'admin@example.com' },
+            { n: 'zimbraAccountStatus', _content: 'active' },
+            { n: 'zimbraIsAdminAccount', _content: 'TRUE' },
+          ],
+        },
+      ]);
+      await expect.element(page.getByText('Admin', { exact: true })).toBeVisible();
+    });
+
+    it('should display DelegatedAdmin user type', async () => {
+      await setupWithAccounts([
+        {
+          id: 'acc-delegated',
+          name: 'delegated@example.com',
+          a: [
+            { n: 'displayName', _content: 'Delegated Admin' },
+            { n: 'mail', _content: 'delegated@example.com' },
+            { n: 'zimbraAccountStatus', _content: 'active' },
+            { n: 'zimbraIsDelegatedAdminAccount', _content: 'TRUE' },
+          ],
+        },
+      ]);
+      await expect.element(page.getByText('DelegatedAdmin')).toBeVisible();
+    });
+
+    it('should display External user type', async () => {
+      await setupWithAccounts([
+        {
+          id: 'acc-external',
+          name: 'external@example.com',
+          a: [
+            { n: 'displayName', _content: 'External User' },
+            { n: 'mail', _content: 'external@example.com' },
+            { n: 'zimbraAccountStatus', _content: 'active' },
+            { n: 'zimbraIsExternalVirtualAccount', _content: 'TRUE' },
+          ],
+        },
+      ]);
+      await expect.element(page.getByText('External', { exact: true })).toBeVisible();
+    });
+
+    it('should display System user type', async () => {
+      await setupWithAccounts([
+        {
+          id: 'acc-system',
+          name: 'system@example.com',
+          a: [
+            { n: 'displayName', _content: 'System User' },
+            { n: 'mail', _content: 'system@example.com' },
+            { n: 'zimbraAccountStatus', _content: 'active' },
+            { n: 'zimbraIsSystemAccount', _content: 'TRUE' },
+          ],
+        },
+      ]);
+      await expect.element(page.getByText('System', { exact: true })).toBeVisible();
+    });
+
+    it('should display Normal user type for regular accounts', async () => {
+      await setupWithAccounts([
+        {
+          id: 'acc-normal',
+          name: 'normal@example.com',
+          a: [
+            { n: 'displayName', _content: 'Normal User' },
+            { n: 'mail', _content: 'normal@example.com' },
+            { n: 'zimbraAccountStatus', _content: 'active' },
+            { n: 'zimbraIsSystemAccount', _content: 'FALSE' },
+          ],
+        },
+      ]);
+      await expect.element(page.getByText('Normal', { exact: true })).toBeVisible();
+    });
+
+    it('should show 0 for accounts with a single mail entry', async () => {
+      await setupWithAccounts([
+        {
+          id: 'acc-single',
+          name: 'single@example.com',
+          a: [
+            { n: 'displayName', _content: 'Single Mail' },
+            { n: 'mail', _content: 'single@example.com' },
+            { n: 'zimbraAccountStatus', _content: 'active' },
+          ],
+        },
+      ]);
+      await expect.element(page.getByText('Normal')).toBeVisible();
     });
   });
 });
