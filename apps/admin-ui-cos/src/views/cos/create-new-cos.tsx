@@ -59,16 +59,32 @@ export const CreateCos = () => {
         crossAlignment="flex-start"
         mainAlignment="flex-start"
         background="gray6"
-        height="58px"
       >
-        <Row width="100%" mainAlignment="flex-start">
+        <Row width="100%" mainAlignment="space-between" crossAlignment="center">
           <Padding all="large">
             <ds-text as="strong" size="medium" weight="bold" color="gray0">
               {t('label.new_cos', 'New COS')}
             </ds-text>
           </Padding>
-          <ds-divider></ds-divider>
+          <Row mainAlignment="flex-end" crossAlignment="center" padding={{ right: 'large' }}>
+            <Padding right="medium">
+              <Button
+                label={t('label.cancel', 'Cancel')}
+                icon="Close"
+                color="secondary"
+                onClick={onCancel}
+              />
+            </Padding>
+            <Button
+              label={t('label.create', 'Create')}
+              icon="CheckmarkCircle"
+              color="primary"
+              disabled={cosName === ''}
+              onClick={onCreate}
+            />
+          </Row>
         </Row>
+        <ds-divider></ds-divider>
       </Container>
       <Container
         orientation="column"
@@ -138,31 +154,7 @@ export const CreateCos = () => {
           </Container>
         </Row>
       </Container>
-      <Container
-        orientation="horizontal"
-        crossAlignment="flex-start"
-        mainAlignment="flex-end"
-        background="gray6"
-        height="58px"
-        padding={{ top: 'small', right: 'large' }}
-      >
-        <Padding right="medium">
-          <Button
-            label={t('label.cancel', 'Cancel')}
-            icon="Close"
-            color="secondary"
-            onClick={onCancel}
-          />
-        </Padding>
 
-        <Button
-          label={t('label.create', 'Create')}
-          icon="CheckmarkCircle"
-          color="primary"
-          disabled={cosName === ''}
-          onClick={onCreate}
-        />
-      </Container>
     </Container>
   );
 };
