@@ -327,7 +327,7 @@ const Connection: FC<{
           </Row>
         </Row>
         <Row width="100%" padding={{ top: 'large' }}>
-          <Row width="48%" mainAlignment="flex-start">
+          <Row width="48%" mainAlignment="flex-start" style={{display:"inline", height:"100%"}}>
             <Input
               backgroundColor="gray5"
               label={t('storages.s3Connectors.accessKey', 'Access Key ID*')}
@@ -349,7 +349,7 @@ const Connection: FC<{
             )}
           </Row>
           <Padding horizontal={'small'} />
-          <Row width="48%" mainAlignment="flex-end">
+          <Row width="48%" mainAlignment="flex-end" style={{display:"inline", height:"100%"}}>
             <PasswordInput
               backgroundColor="gray5"
               label={t('label.secret_key', 'Secret Access Key*')}

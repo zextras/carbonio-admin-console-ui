@@ -468,7 +468,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           </Row>
 
           <Row width="100%" padding={{ top: 'large' }}>
-            <Row width="48%" mainAlignment="flex-start">
+            <Row width="48%" mainAlignment="flex-start" style={{display:"inline", height:"100%"}}>
               <Input
                 backgroundColor="gray5"
                 label={t('label.access_key', 'Access Key ID*')}
@@ -479,7 +479,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
               />
             </Row>
             <Padding horizontal="small" />
-            <Row width="48%" mainAlignment="flex-end">
+            <Row width="48%" mainAlignment="flex-end" style={{display:"inline", height:"100%"}}>
               <PasswordInput
                 backgroundColor="gray5"
                 label={t('label.secret_key', 'Secret Access Key*')}
