@@ -15,7 +15,7 @@ import {
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
@@ -85,7 +85,6 @@ export const CosList = () => {
   const [t] = useTranslation();
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [isTableTooTall, setIsTableTooTall] = useState(false);
-  const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const tableRef = useRef<HTMLTableElement>(null);
 
   const headers = [
@@ -153,28 +152,24 @@ export const CosList = () => {
       })
     : [];
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const table = tableRef.current;
     if (!table) return;
 
-    const handleResize = debounce((): void => {
+    const handleResize = (): void => {
       const tableHeight = table.clientHeight + TABLE_VIEWPORT_OFFSET;
-      const viewportHeight = window.innerHeight;
-      setIsTableTooTall(tableHeight > viewportHeight);
-    }, DEBOUNCE_RESIZE_DELAY);
+      setIsTableTooTall(tableHeight > window.innerHeight);
+    };
 
-    if (!resizeObserverRef.current) {
-      const observer = new ResizeObserver(handleResize);
-      resizeObserverRef.current = observer;
-      observer.observe(table);
-    }
+    handleResize();
+
+    const debounced = debounce(handleResize, DEBOUNCE_RESIZE_DELAY);
+    const observer = new ResizeObserver(debounced);
+    observer.observe(table);
 
     return () => {
-      handleResize.cancel();
-      if (resizeObserverRef.current) {
-        resizeObserverRef.current.disconnect();
-        resizeObserverRef.current = null;
-      }
+      debounced.cancel();
+      observer.disconnect();
     };
   }, []);
 
