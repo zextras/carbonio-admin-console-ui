@@ -184,7 +184,7 @@ export const ReceivingMails = withForm({
                       background="gray5"
                       label={t('cos.read_receipt_settings', 'Read Receipt settings')}
                       showCheckbox={false}
-                      selection={findSelectItemWithFallback(SEND_READ_RECEIPTS, field.state.value)}
+                      selection={findSelectItemWithFallback(SEND_READ_RECEIPTS, field.state.value) ?? SEND_READ_RECEIPTS[0]}
                       onChange={(value): void => {
                         const v =
                           typeof value === 'object' && value !== null && 'value' in value

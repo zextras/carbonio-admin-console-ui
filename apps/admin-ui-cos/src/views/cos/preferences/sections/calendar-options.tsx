@@ -72,7 +72,7 @@ export const CalendarOptions = withForm({
                       background="gray5"
                       label={t('label.time_zone', 'Time Zone')}
                       showCheckbox={false}
-                      selection={findSelectItemWithFallback(TIMEZONES, field.state.value)}
+                      selection={findSelectItemWithFallback(TIMEZONES, field.state.value) ?? TIMEZONES[0]}
                       onChange={(value): void => {
                         const v =
                           typeof value === 'object' && value !== null && 'value' in value
@@ -99,7 +99,7 @@ export const CalendarOptions = withForm({
                       selection={findSelectItemWithFallback(
                         DEFAULT_APPOINTMENT_DURATION,
                         field.state.value,
-                      )}
+                      ) ?? DEFAULT_APPOINTMENT_DURATION[0]}
                       onChange={(value): void => {
                         const v =
                           typeof value === 'object' && value !== null && 'value' in value
@@ -134,7 +134,7 @@ export const CalendarOptions = withForm({
                         'Appointment Reminder (minutes before)',
                       )}
                       showCheckbox={false}
-                      selection={findSelectItemWithFallback(APPOINTMENT_REMINDER, field.state.value)}
+                      selection={findSelectItemWithFallback(APPOINTMENT_REMINDER, field.state.value) ?? APPOINTMENT_REMINDER[0]}
                       onChange={(value): void => {
                         const v =
                           typeof value === 'object' && value !== null && 'value' in value
@@ -155,7 +155,7 @@ export const CalendarOptions = withForm({
                       background="gray5"
                       label={t('label.default_calendar_view', 'Default Calendar View')}
                       showCheckbox={false}
-                      selection={findSelectItemWithFallback(DEFAULT_VIEW_OPTIONS, field.state.value)}
+                      selection={findSelectItemWithFallback(DEFAULT_VIEW_OPTIONS, field.state.value) ?? DEFAULT_VIEW_OPTIONS[0]}
                       onChange={(value): void => {
                         const v =
                           typeof value === 'object' && value !== null && 'value' in value
@@ -187,7 +187,7 @@ export const CalendarOptions = withForm({
                       background="gray5"
                       label={t('label.the_week_starts_on', 'The Week starts on')}
                       showCheckbox={false}
-                      selection={findSelectItemWithFallback(FIRST_DAY_OF_WEEK, field.state.value)}
+                      selection={findSelectItemWithFallback(FIRST_DAY_OF_WEEK, field.state.value) ?? FIRST_DAY_OF_WEEK[0]}
                       onChange={(value): void => {
                         const v =
                           typeof value === 'object' && value !== null && 'value' in value
@@ -214,7 +214,7 @@ export const CalendarOptions = withForm({
                       selection={findSelectItemWithFallback(
                         APPOINTMENT_VISIBILITY,
                         field.state.value,
-                      )}
+                      ) ?? APPOINTMENT_VISIBILITY[0]}
                       onChange={(value): void => {
                         const v =
                           typeof value === 'object' && value !== null && 'value' in value

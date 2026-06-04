@@ -9,10 +9,10 @@ import { SelectItem } from '@zextras/ui-components';
 import { Attribute } from '../../../../types/attribute';
 
 export function findSelectItemWithFallback(
-  selectItems: SelectItem[],
+  selectItems: Array<SelectItem<string>>,
   value: string,
-): SelectItem<string> {
-  return selectItems.find((item) => item.value === value) || selectItems[-1];
+): SelectItem<string> | undefined {
+  return selectItems.find((item) => item.value === value) ?? selectItems[0];
 }
 
 export function buildCosDataMap(
