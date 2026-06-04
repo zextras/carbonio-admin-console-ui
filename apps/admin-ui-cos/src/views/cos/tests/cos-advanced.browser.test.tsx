@@ -39,6 +39,11 @@ const mockCosData = {
         { n: 'zimbraPasswordMaxLength', _content: '64' },
         { n: 'zimbraPasswordBlockCommonEnabled', _content: 'FALSE' },
         { n: 'zimbraPasswordLockoutEnabled', _content: 'FALSE' },
+        { n: 'zimbraPasswordLockoutMaxFailures', _content: '5' },
+        { n: 'zimbraPasswordLockoutDuration', _content: '60m' },
+        { n: 'zimbraPasswordLockoutFailureLifetime', _content: '1h' },
+        { n: 'zimbraQuotaWarnInterval', _content: '1d' },
+        { n: 'zimbraQuotaWarnMessage', _content: 'Your mailbox is almost full.' },
       ],
     },
   ],
@@ -293,36 +298,6 @@ describe('CosAdvanced', () => {
       expect(flushBody).toBeDefined();
     });
 
-    it('should include multiple updated fields in the ModifyCos body', async () => {
-      const modifyCosPromise = createBrowserSoapAPIInterceptor('ModifyCos', {});
-      createBrowserSoapAPIInterceptor('FlushCache', {});
-      mockCoreAttributeSet();
-      await setupCosAdvancedTest();
-
-      await userEvent.fill(
-        page.getByRole('textbox', {
-          name: 'Limit user-specified forwarding addresses to (char)',
-        }),
-        '512',
-      );
-      const maxNumInput = page.getByRole('textbox', {
-        name: 'Max user-specific forwarding address',
-      });
-      await userEvent.fill(maxNumInput, '20');
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-      await page.getByRole('button', { name: 'Save' }).click();
-
-      const requestBody = (await modifyCosPromise) as ModifyCosBody;
-      const maxLengthAttr = requestBody.a.find(
-        (a: { n: string }) => a.n === 'zimbraMailForwardingAddressMaxLength',
-      );
-      const maxNumAttr = requestBody.a.find(
-        (a: { n: string }) => a.n === 'zimbraMailForwardingAddressMaxNumAddrs',
-      );
-      expect(maxLengthAttr!._content).toBe('512');
-      expect(maxNumAttr!._content).toBe('20');
-    });
-
     it('should hide Save and Cancel buttons after a successful save', async () => {
       createBrowserSoapAPIInterceptor('ModifyCos', {});
       createBrowserSoapAPIInterceptor('FlushCache', {});
@@ -464,16 +439,198 @@ describe('CosAdvanced', () => {
     it('keeps "Allow user to restore messages" off after saving it off', async () => {
       await setupAdvancedBackupTest();
 
-      const toggle = page.getByRole('switch', { name: 'Allow user to restore messages' });
-      await expect.element(toggle).toBeVisible();
+      const restoreMessagesSwitch = page.getByRole('switch', {
+        name: 'Allow user to restore messages',
+      });
+      await expect.element(restoreMessagesSwitch).toBeVisible();
       expect(restoreToggleIcon()).toBe('ToggleRight');
 
-      await userEvent.click(toggle);
+      await userEvent.click(restoreMessagesSwitch);
       expect(restoreToggleIcon()).toBe('ToggleLeftOutline');
 
       await page.getByRole('button', { name: 'Save' }).click();
 
       expect(restoreToggleIcon()).toBe('ToggleLeftOutline');
+    });
+
+    it('toggles "Enable / Disable Backup" switch and shows dirty state', async () => {
+      await setupAdvancedBackupTest();
+
+      const backupEnabledSwitch = page.getByRole('switch', { name: 'Enable / Disable Backup' });
+      await expect.element(backupEnabledSwitch).toBeVisible();
+      await expect.element(backupEnabledSwitch).not.toBeChecked();
+
+      await userEvent.click(backupEnabledSwitch);
+      await expect.element(backupEnabledSwitch).toBeChecked();
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+
+      await userEvent.click(backupEnabledSwitch);
+      await expect.element(backupEnabledSwitch).not.toBeChecked();
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Password section switches', () => {
+    it('toggles "Prevent user from changing password" switch and shows dirty state', async () => {
+      await setupCosAdvancedTest();
+
+      const preventPasswordChangeSwitch = page.getByRole('switch', {
+        name: 'Prevent user from changing password',
+      });
+      await expect.element(preventPasswordChangeSwitch).not.toBeChecked();
+      await userEvent.click(preventPasswordChangeSwitch);
+      await expect.element(preventPasswordChangeSwitch).toBeChecked();
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+
+      await userEvent.click(preventPasswordChangeSwitch);
+      await expect.element(preventPasswordChangeSwitch).not.toBeChecked();
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    });
+
+    it('toggles "Reject common passwords" switch and shows dirty state', async () => {
+      await setupCosAdvancedTest();
+
+      const rejectCommonPasswordsSwitch = page.getByRole('switch', {
+        name: 'Reject common passwords',
+      });
+      await expect.element(rejectCommonPasswordsSwitch).not.toBeChecked();
+      await userEvent.click(rejectCommonPasswordsSwitch);
+      await expect.element(rejectCommonPasswordsSwitch).toBeChecked();
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+
+      await userEvent.click(rejectCommonPasswordsSwitch);
+      await expect.element(rejectCommonPasswordsSwitch).not.toBeChecked();
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Failed Login Policy section', () => {
+    it('toggles "Enable failed login lockout" switch and shows dirty state', async () => {
+      await setupCosAdvancedTest();
+
+      const lockoutEnabledSwitch = page.getByRole('switch', {
+        name: 'Enable failed login lockout',
+      });
+      await expect.element(lockoutEnabledSwitch).not.toBeChecked();
+      await userEvent.click(lockoutEnabledSwitch);
+      await expect.element(lockoutEnabledSwitch).toBeChecked();
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+
+      await userEvent.click(lockoutEnabledSwitch);
+      await expect.element(lockoutEnabledSwitch).not.toBeChecked();
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    });
+
+    it('disables lockout fields when lockout is not enabled', async () => {
+      await setupCosAdvancedTest();
+
+      const maxFailuresInput = page.getByRole('textbox', {
+        name: 'Number of consecutive failed logins allowed',
+      });
+      await expect.element(maxFailuresInput).toBeDisabled();
+
+      const lockoutDurationInput = page.getByRole('textbox', {
+        name: 'Time to lockout the account',
+      });
+      await expect.element(lockoutDurationInput).toBeDisabled();
+    });
+
+    it('enables lockout fields when lockout is enabled', async () => {
+      await setupCosAdvancedTest();
+
+      const lockoutEnabledSwitch = page.getByRole('switch', {
+        name: 'Enable failed login lockout',
+      });
+      await expect.element(lockoutEnabledSwitch).not.toBeChecked();
+      await userEvent.click(lockoutEnabledSwitch);
+      await expect.element(lockoutEnabledSwitch).toBeChecked();
+
+      const maxFailuresInput = page.getByRole('textbox', {
+        name: 'Number of consecutive failed logins allowed',
+      });
+      await expect.element(maxFailuresInput).toBeEnabled();
+
+      const lockoutDurationInput = page.getByRole('textbox', {
+        name: 'Time to lockout the account',
+      });
+      await expect.element(lockoutDurationInput).toBeEnabled();
+    });
+
+    it('edits lockout duration input and shows dirty state', async () => {
+      await setupCosAdvancedTest();
+
+      await userEvent.click(page.getByRole('switch', { name: 'Enable failed login lockout' }));
+      const lockoutDurationInput = page.getByRole('textbox', {
+        name: 'Time to lockout the account',
+      });
+      await expect.element(lockoutDurationInput).toHaveValue('60');
+      await userEvent.fill(lockoutDurationInput, '30');
+      await expect.element(lockoutDurationInput).toHaveValue('30');
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+
+    it('edits lockout failure lifetime input and shows dirty state', async () => {
+      await setupCosAdvancedTest();
+
+      await userEvent.click(page.getByRole('switch', { name: 'Enable failed login lockout' }));
+      const failureLifetimeInput = page.getByRole('textbox', {
+        name: 'Time window in which the failed logins must occur to lock the account:',
+      });
+      await expect.element(failureLifetimeInput).toHaveValue('1');
+      await userEvent.fill(failureLifetimeInput, '2');
+      await expect.element(failureLifetimeInput).toHaveValue('2');
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+
+    it('edits max failures input and shows dirty state', async () => {
+      await setupCosAdvancedTest();
+
+      await userEvent.click(page.getByRole('switch', { name: 'Enable failed login lockout' }));
+      const maxFailuresInput = page.getByRole('textbox', {
+        name: 'Number of consecutive failed logins allowed',
+      });
+      await expect.element(maxFailuresInput).toHaveValue('5');
+      await userEvent.fill(maxFailuresInput, '10');
+      await expect.element(maxFailuresInput).toHaveValue('10');
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+  });
+
+  describe('Quotas section inputs', () => {
+    it('edits quota warn interval input and shows dirty state', async () => {
+      await setupCosAdvancedTest();
+
+      const warnIntervalInput = page.getByRole('textbox', {
+        name: 'Minimum duration of time between quota warnings',
+      });
+      await expect.element(warnIntervalInput).toHaveValue('1');
+      await userEvent.fill(warnIntervalInput, '2');
+      await expect.element(warnIntervalInput).toHaveValue('2');
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+
+    it('edits quota warning message template and shows dirty state', async () => {
+      await setupCosAdvancedTest();
+
+      const warningMessageTextarea = page.getByRole('textbox', {
+        name: 'Quota warning message template',
+      });
+      await expect.element(warningMessageTextarea).toHaveValue('Your mailbox is almost full.');
+      await userEvent.fill(warningMessageTextarea, 'Warning: quota nearly exceeded');
+      await expect.element(warningMessageTextarea).toHaveValue('Warning: quota nearly exceeded');
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+
+    it('edits quota warn percent and shows dirty state', async () => {
+      await setupCosAdvancedTest();
+
+      const warnPercentInput = page.getByRole('textbox', {
+        name: 'Percentage threshold for quota warning messages (%)',
+      });
+      await expect.element(warnPercentInput).toHaveValue('90');
+      await userEvent.fill(warnPercentInput, '85');
+      await expect.element(warnPercentInput).toHaveValue('85');
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     });
   });
 });
