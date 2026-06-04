@@ -5,7 +5,7 @@
  */
 import { ListItems, ListItemType, ListPanelItem } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { COS_LIST, IS_GENERAL_LIST_EXPANDED } from '../../constants';
@@ -20,7 +20,9 @@ export const GeneralListPanel = ({
   selectedOperationItem,
 }: GeneralListPanelProps) => {
   const [t] = useTranslation();
-  const [isGeneralListExpanded, setIsGeneralListExpanded] = useState(true);
+  const [isGeneralListExpanded, setIsGeneralListExpanded] = useState(
+    () => localStorage.getItem(IS_GENERAL_LIST_EXPANDED) !== 'false'
+  );
 
   const navigateToGeneralView = (view: string) => {
     if (view === COS_LIST) {
@@ -38,14 +40,6 @@ export const GeneralListPanel = ({
     }
   };
 
-  useEffect(() => {
-    const storedValue = localStorage.getItem(IS_GENERAL_LIST_EXPANDED);
-    if (storedValue === 'false') {
-      setIsGeneralListExpanded(false);
-    } else {
-      setIsGeneralListExpanded(true);
-    }
-  }, []);
 
   return (
     <>
