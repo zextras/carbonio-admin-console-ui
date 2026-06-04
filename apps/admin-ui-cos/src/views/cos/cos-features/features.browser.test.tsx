@@ -164,6 +164,16 @@ describe('FeaturesForm (browser)', () => {
     await expect.element(filesMobileApp).toBeDisabled();
   });
 
+  it('should toggle Files Mobile App switch in both directions', async () => {
+    await setupTest();
+    const filesMobileApp = page.getByRole('switch', { name: 'Mobile App' }).nth(1);
+    await expect.element(filesMobileApp).toBeChecked();
+    await userEvent.click(filesMobileApp);
+    await expect.element(filesMobileApp).not.toBeChecked();
+    await userEvent.click(filesMobileApp);
+    await expect.element(filesMobileApp).toBeChecked();
+  });
+
   it('should render General section with Can access Settings', async () => {
     await setupTest();
     await expect.element(page.getByText('General')).toBeVisible();
@@ -269,6 +279,57 @@ describe('FeaturesForm (browser)', () => {
       await setupTest(<TestWrapper cosInformation={graceEnabled} isAdvanced />);
       const picker = page.getByPlaceholder('Set grace period expiration date');
       await expect.element(picker).not.toBeDisabled();
+    });
+
+    it('should toggle Untrusted Network switch FALSE→TRUE (round-trip)', async () => {
+      await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
+      const sw = page.getByRole('switch', { name: 'Allow 2FA setup from untrusted networks' });
+      await expect.element(sw).toBeChecked();
+      await userEvent.click(sw);
+      await expect.element(sw).not.toBeChecked();
+      await userEvent.click(sw);
+      await expect.element(sw).toBeChecked();
+    });
+
+    it('should toggle Grace Period switch TRUE→FALSE (round-trip)', async () => {
+      const graceEnabled = ADVANCED_COS_INFO.map((a) =>
+        a.n === 'carbonioOtpGracePeriodEnabled' ? { ...a, _content: 'TRUE' } : a,
+      );
+      await setupTest(<TestWrapper cosInformation={graceEnabled} isAdvanced />);
+      const sw = page.getByRole('switch', { name: 'Allow setup deferral during grace period' });
+      await expect.element(sw).toBeChecked();
+      await userEvent.click(sw);
+      await expect.element(sw).not.toBeChecked();
+      await userEvent.click(sw);
+      await expect.element(sw).toBeChecked();
+    });
+
+    it('should parse valid gentime and display date in date picker', async () => {
+      const withGentime = ADVANCED_COS_INFO.map((a) =>
+        a.n === 'carbonioOtpGracePeriodEndingTime'
+          ? { ...a, _content: '20260115120000Z' }
+          : a.n === 'carbonioOtpGracePeriodEnabled'
+            ? { ...a, _content: 'TRUE' }
+            : a,
+      );
+      await setupTest(<TestWrapper cosInformation={withGentime} isAdvanced />);
+      const picker = page.getByPlaceholder('Set grace period expiration date');
+      await expect.element(picker).not.toBeDisabled();
+      await expect.element(picker).toHaveValue('15/01/2026');
+    });
+
+    it('should handle invalid gentime gracefully in date picker', async () => {
+      const withInvalid = ADVANCED_COS_INFO.map((a) =>
+        a.n === 'carbonioOtpGracePeriodEndingTime'
+          ? { ...a, _content: 'invalid' }
+          : a.n === 'carbonioOtpGracePeriodEnabled'
+            ? { ...a, _content: 'TRUE' }
+            : a,
+      );
+      await setupTest(<TestWrapper cosInformation={withInvalid} isAdvanced />);
+      const picker = page.getByPlaceholder('Set grace period expiration date');
+      await expect.element(picker).not.toBeDisabled();
+      await expect.element(picker).toHaveValue('');
     });
   });
 });
