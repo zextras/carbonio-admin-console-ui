@@ -12,87 +12,41 @@ import {
   ListRow,
   Padding,
   Row,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute } from '../../../types/attribute';
-import { CosResponse } from '../../../types/cos';
 import { GENERAL_INFORMATION } from '../../constants';
-import { createCos } from '../../services/create-cos';
+import { useCreateCos } from '../../services/use-create-cos';
 
 export const CreateCos = () => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
   const [zimbraNotes, setZimbraNotes] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [cosName, setCosName] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const showSuccessSnackBar = (): void => {
-    createSnackbar({
-      key: 'success',
-      severity: 'success',
-      label: t('label.create_cos_success_msg', {
-        cosName,
-        defaultValue: '{{cosName}} has been created successfully',
-      }),
-      autoHideTimeout: 3000,
-      hideButton: true,
-      replace: true,
-    });
-  };
-
-  const routeToCos = (resp: CosResponse): void => {
-    const cos = resp?.cos[0];
-    if (cos) {
-      replaceHistory(`/${cos.id}/${GENERAL_INFORMATION}`);
-    } else {
-      replaceHistory(`/`);
-    }
-  };
+  const createCosMutation = useCreateCos();
 
   const onCreate = (): void => {
-    const attributes: Array<Attribute> = [];
-    setIsLoading(true);
-    attributes.push(
+    const attributes: Array<Attribute> = [
+      { n: 'zimbraNotes', _content: zimbraNotes },
+      { n: 'description', _content: description },
+      { n: 'cn', _content: cosName },
+    ];
+    createCosMutation.mutate(
+      { name: cosName, attributes },
       {
-        n: 'zimbraNotes',
-        _content: zimbraNotes,
-      },
-      {
-        n: 'description',
-        _content: description,
-      },
-      {
-        n: 'cn',
-        _content: cosName,
+        onSuccess: (data) => {
+          const cos = data?.cos[0];
+          if (cos) {
+            replaceHistory(`/${cos.id}/${GENERAL_INFORMATION}`);
+          } else {
+            replaceHistory(`/`);
+          }
+        },
       },
     );
-    createCos(cosName, attributes)
-      .then((data) => {
-        const cos = data?.cos[0];
-        if (cos) {
-          showSuccessSnackBar();
-          routeToCos(data);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error.message
-            ? error.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        setIsLoading(false);
-      });
   };
 
   const onCancel = (): void => {
@@ -101,7 +55,7 @@ export const CreateCos = () => {
 
   return (
     <>
-      {isLoading && <ds-spinner></ds-spinner>}
+      {createCosMutation.isPending && <ds-spinner></ds-spinner>}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           crossAlignment="flex-start"
