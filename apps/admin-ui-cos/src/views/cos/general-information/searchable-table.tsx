@@ -94,7 +94,7 @@ export const SearchableTable = ({
         crossAlignment="flex-start"
         width="fill"
         style={{
-          height: TABLE_CONTAINER_HEIGHT,
+          maxHeight: TABLE_CONTAINER_HEIGHT,
           position: 'relative',
         }}
         padding={hasBottomPadding ? { bottom: 'large' } : undefined}
