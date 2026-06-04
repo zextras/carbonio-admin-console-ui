@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { usePrimaryBarState } from '@zextras/ui-shared';
-import { Route, Routes } from 'react-router';
+import { Route, Routes, useLocation } from 'react-router';
 
+import { CREATE_NEW_COS_ROUTE_ID } from '../constants';
 import styles from './app-view.module.css';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { CosDetailPanel } from './cos/cos-detail-panel';
@@ -13,6 +14,8 @@ import { CosListPanel } from './cos/cos-list-panel';
 
 export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
+  const { pathname } = useLocation();
+  const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);
   return (
     <div className={styles.root}>
       <Breadcrumb />
@@ -21,9 +24,11 @@ export const AppView = () => {
           path={'/*'}
           element={
             <div className={styles.layout}>
-              <div className={styles.sidebar}>
-                <CosListPanel />
-              </div>
+              {!isCreateNewCos && (
+                <div className={styles.sidebar}>
+                  <CosListPanel />
+                </div>
+              )}
               <div className={styles.detailWrapper}>
                 <div className={styles.detailContent} data-expanded={isPrimaryBarExpanded}>
                   <CosDetailPanel />
