@@ -73,6 +73,9 @@ const deploy = (): void => {
   run(buildCommand);
   run('tsx ./scripts/generate-pkgbuild.ts');
 
+  // Create tarball expected by YAP (PKGBUILD source)
+  run('tar czf dist/package/carbonio-admin-console-ui-dist.tar.gz -C . dist/package/opt');
+
   // 2. Create the .deb packages
   colorLog('📦 Packaging...', 'blue');
   run('./scripts/build_packages.sh');
