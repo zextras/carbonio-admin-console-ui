@@ -415,12 +415,125 @@ describe('WscSettings (browser)', () => {
 			await expect.element(input).toHaveValue(42);
 		});
 
+		it('should collapse all zeros to 0 for max group members', async () => {
+			await setupWscSettingsTest();
+			const input = page.getByPlaceholder('Maximum number of group members');
+			await input.clear();
+			await input.fill('000');
+			await expect.element(input).toHaveValue(0);
+		});
+
+		it('should handle cleared input for max group members', async () => {
+			await setupWscSettingsTest();
+			const input = page.getByPlaceholder('Maximum number of group members');
+			await input.clear();
+			await expect.element(input).toHaveValue(0);
+		});
+
 		it('should update max group picture size', async () => {
 			await setupWscSettingsTest();
 			const input = page.getByPlaceholder('Maximum group picture size in MB');
 			await input.clear();
 			await input.fill('10');
 			await expect.element(input).toHaveValue(10);
+		});
+
+		it('should collapse all zeros to 0 for max picture size', async () => {
+			await setupWscSettingsTest();
+			const input = page.getByPlaceholder('Maximum group picture size in MB');
+			await input.clear();
+			await input.fill('000');
+			await expect.element(input).toHaveValue(0);
+		});
+
+		it('should collapse all zeros to 0 for max attachment size', async () => {
+			await setupWscSettingsTest();
+			const input = page.getByPlaceholder('Maximum attachment size in MB');
+			await input.clear();
+			await input.fill('000');
+			await expect.element(input).toHaveValue(0);
+		});
+	});
+
+	describe('Switch round-trip toggles (both directions)', () => {
+		it('should toggle Enable video calls in both directions', async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: 'Enable video calls' });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+			await sw.click();
+			await expect.element(sw).toBeChecked();
+		});
+
+		it('should toggle Enable virtual background in both directions', async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: 'Enable virtual background' });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+			await sw.click();
+			await expect.element(sw).toBeChecked();
+		});
+
+		it('should toggle Users can upload attachments in both directions', async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: 'Users can upload attachments' });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+			await sw.click();
+			await expect.element(sw).toBeChecked();
+		});
+
+		it('should toggle Enable Chat FALSE→TRUE (round-trip)', async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: 'Enable Chat' });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+			await sw.click();
+			await expect.element(sw).toBeChecked();
+		});
+
+		it('should toggle Show read receipts FALSE→TRUE (round-trip)', async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: 'Show read receipts' });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+			await sw.click();
+			await expect.element(sw).toBeChecked();
+		});
+
+		it("should toggle Show users' online status FALSE→TRUE (round-trip)", async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: "Show users' online status" });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+			await sw.click();
+			await expect.element(sw).toBeChecked();
+		});
+
+		it('should toggle Users can create group chats FALSE→TRUE (round-trip)', async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: 'Users can create group chats' });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+			await sw.click();
+			await expect.element(sw).toBeChecked();
+		});
+
+		it('should toggle Users can start new private chats FALSE→TRUE (round-trip)', async () => {
+			await setupWscSettingsTest();
+			const sw = page.getByRole('switch', { name: 'Users can start new private chats' });
+			await expect.element(sw).toBeChecked();
+			await sw.click();
+			await expect.element(sw).not.toBeChecked();
+			await sw.click();
+			await expect.element(sw).toBeChecked();
 		});
 	});
 });
