@@ -20,6 +20,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { useCosList } from '../../../services/use-cos-list';
 import { ScrollComponent } from '../../components/scroll-component';
 import { FunnelSearchIcon } from '../cos-server-pools/funnel-search-icon';
@@ -104,10 +105,10 @@ export const CosList = () => {
 
   const [offset, setOffset] = useState<number>(0);
   const [searchString, setSearchString] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const debouncedSearch = useDebouncedValue(searchString, DEBOUNCE_SEARCH_DELAY);
 
   const { data, isPending, isError } = useCosList({
-    searchQuery,
+    searchQuery: debouncedSearch,
     limit,
     offset,
   });
@@ -151,18 +152,6 @@ export const CosList = () => {
         };
       })
     : [];
-
-  const searchCosListRef = useRef(
-    debounce((searchText: string) => {
-      setSearchQuery(searchText);
-    }, DEBOUNCE_SEARCH_DELAY),
-  );
-  useEffect(() => {
-    if (searchString || offset === 0) {
-      setOffset(0);
-    }
-    searchCosListRef.current(searchString);
-  }, [searchString]);
 
   useEffect(() => {
     const table = tableRef.current;
@@ -249,6 +238,7 @@ export const CosList = () => {
                   backgroundColor="gray5"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     setSearchString(e.target.value);
+                    if (e.target.value) setOffset(0);
                   }}
                   CustomIcon={FunnelSearchIcon}
                 />
