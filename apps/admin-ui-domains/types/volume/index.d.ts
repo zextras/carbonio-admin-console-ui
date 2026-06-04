@@ -62,7 +62,7 @@ export type Bucket = {
 	value?: string;
 };
 
-interface VolumeDetails {
+type VolumeDetails = {
 	id: number;
 	name: string;
 	rootpath: string;
@@ -74,7 +74,7 @@ interface VolumeDetails {
 	fgbits: number;
 	fbits: number;
 	isCurrent: boolean;
-}
+};
 
 export type typeVolApiProperty = {
 	_jsns: string;

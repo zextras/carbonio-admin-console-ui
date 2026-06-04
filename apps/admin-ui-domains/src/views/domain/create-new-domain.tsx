@@ -24,7 +24,7 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import type { Attribute, objectType, SelectItem } from '../../../types';
+import type { Attribute, SelectItem } from '../../../types';
 import type { CreateDomainResponse } from '../../../types/service';
 import {
   ACTIVE,
@@ -194,12 +194,11 @@ const CreateDomain: FC = () => {
       domain: domainName,
     })
       .then((result) => {
-        const res = result as objectType;
         createSnackbar({
           key: 'success',
           severity: 'success',
-          label: res?.message
-            ? res?.message
+          label: result?.message
+            ? result?.message
             : t(
                 'label.the_last_changes_has_been_saved_successfully',
                 'Changes have been saved successfully',

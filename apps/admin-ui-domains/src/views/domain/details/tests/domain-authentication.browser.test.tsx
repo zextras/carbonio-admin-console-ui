@@ -467,6 +467,8 @@ describe('DomainAuthentication (browser)', () => {
             setupDomainStore([
                 { n: 'zimbraAuthMech', _content: 'ldap' },
                 { n: 'zimbraAuthLdapURL', _content: 'ldap://ldap.example.com' },
+                { n: 'zimbraAuthLdapSearchBindDn', _content: 'cn=admin,dc=example,dc=com' },
+                { n: 'zimbraAuthLdapSearchBindPassword', _content: 'secret123' },
             ]);
 
             const checkAuthInterceptor = createBrowserSoapAPIInterceptor('CheckAuthConfig', {
@@ -474,12 +476,6 @@ describe('DomainAuthentication (browser)', () => {
             });
 
             setupBrowserTest(<DomainAuthentication />);
-
-            const bindUserInput = page.getByLabelText('Search Bind User');
-            await userEvent.type(bindUserInput, 'cn=admin,dc=example,dc=com');
-
-            const bindPasswordInput = page.getByLabelText('Search Bind Password');
-            await userEvent.type(bindPasswordInput, 'secret123');
 
             const loginBtn = page.getByRole('button', { name: /login and verify/i });
             await expect.element(loginBtn).not.toBeDisabled();
@@ -493,6 +489,8 @@ describe('DomainAuthentication (browser)', () => {
             setupDomainStore([
                 { n: 'zimbraAuthMech', _content: 'ldap' },
                 { n: 'zimbraAuthLdapURL', _content: 'ldap://ldap.example.com' },
+                { n: 'zimbraAuthLdapSearchBindDn', _content: 'cn=admin,dc=example,dc=com' },
+                { n: 'zimbraAuthLdapSearchBindPassword', _content: 'secret123' },
             ]);
 
             createBrowserSoapAPIInterceptor('CheckAuthConfig', {
@@ -501,13 +499,8 @@ describe('DomainAuthentication (browser)', () => {
 
             setupBrowserTest(<DomainAuthentication />);
 
-            const bindUserInput = page.getByLabelText('Search Bind User');
-            await userEvent.type(bindUserInput, 'cn=admin,dc=example,dc=com');
-
-            const bindPasswordInput = page.getByLabelText('Search Bind Password');
-            await userEvent.type(bindPasswordInput, 'secret123');
-
             const loginBtn = page.getByRole('button', { name: /login and verify/i });
+            await expect.element(loginBtn).not.toBeDisabled();
             await loginBtn.click();
 
             await expect

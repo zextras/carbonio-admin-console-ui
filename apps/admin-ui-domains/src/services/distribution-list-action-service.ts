@@ -6,9 +6,16 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-import type { DistributionListActionRequest, SoapEmptyResponse } from '../../types';
+import type {
+	DistributionListActionRequest,
+	SoapEmptyResponse,
+	SoapEntitySelector
+} from '../../types';
 
-export const distributionListAction = async (dl: unknown, action?: unknown): Promise<SoapEmptyResponse> => {
+export const distributionListAction = async (
+	dl: SoapEntitySelector,
+	action?: DistributionListActionRequest['action']
+): Promise<SoapEmptyResponse> => {
 	const request: DistributionListActionRequest = {
 		_jsns: 'urn:zimbraAccount',
 		dl

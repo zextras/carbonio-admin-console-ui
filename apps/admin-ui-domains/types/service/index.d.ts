@@ -20,6 +20,19 @@ export type SoapAttribute = {
     _content?: string;
 };
 
+export type SoapNamedContent = {
+    n: string;
+    _content: string;
+};
+
+export type JsonValue =
+    | string
+    | number
+    | boolean
+    | null
+    | Array<JsonValue>
+    | { [key: string]: JsonValue };
+
 /**
  * Common shape for SOAP entity references (by id or name)
  */
@@ -53,6 +66,14 @@ export type SearchDirectoryResponse<K extends string, T = SoapEntity> = {
  */
 export type SoapEmptyResponse = Record<string, never>;
 
+export type SoapFaultResponse = {
+    Fault: {
+        Reason?: {
+            Text?: string;
+        };
+    };
+};
+
 /**
  * Common error-or-success result pattern used in REST services
  */
@@ -83,10 +104,10 @@ export type ZextrasRawResponse = {
         };
         ModifySignatureResponse?: Record<string, unknown>;
         GetFolderResponse?: {
-            folder?: Array<unknown>;
+            folder?: Array<Record<string, JsonValue>>;
         };
         GetGrantsResponse?: {
-            grant?: Array<unknown>;
+            grant?: Array<GetGrantsResponse['grant'][number]>;
         };
     };
     response?: {
@@ -355,8 +376,8 @@ export type AddDistributionListMemberRequest = {
 
 export type RemoveDistributionListMemberRequest = {
     _jsns: 'urn:zimbraAdmin';
-    id: unknown;
-    dlm?: unknown;
+    id: SoapNamedContent | string;
+    dlm?: SoapNamedContent | string;
 };
 
 export type AddDistributionListAliasRequest = {
@@ -373,8 +394,29 @@ export type RemoveDistributionListAliasRequest = {
 
 export type DistributionListActionRequest = {
     _jsns: 'urn:zimbraAccount';
-    dl: unknown;
-    action?: unknown;
+    dl: SoapEntitySelector;
+    action?: {
+        op: 'setRights' | 'grantRights' | 'revokeRights' | 'addOwners' | 'removeOwners';
+        right?: {
+            right?: string;
+            grantee?:
+                | {
+                      by?: string;
+                      type?: string;
+                      _content?: string;
+                  }
+                | Array<{
+                      by?: string;
+                      type?: string;
+                      _content?: string;
+                  }>;
+        };
+        owner?: {
+            by?: string;
+            type?: string;
+            _content?: string;
+        };
+    };
 };
 
 export type GetDistributionListMembershipRequest = {
@@ -962,7 +1004,14 @@ export type MailMessage = {
         part: string;
         body?: boolean;
         content?: string;
-        mp?: Array<unknown>;
+        mp?: Array<{
+            ct: string;
+            s?: number;
+            part: string;
+            body?: boolean;
+            content?: string;
+            mp?: Array<Record<string, JsonValue>>;
+        }>;
     }>;
 };
 
@@ -973,13 +1022,76 @@ export type SearchMailResponse = {
     sortBy: string;
 };
 
+
+// ============================================================
+// Mail / extension service types
+// ============================================================
+
+export type MessageActionRequest = {
+    _jsns: 'urn:zimbraMail';
+    action: {
+        id: string;
+        op: string;
+    };
+};
+
+export type MessageActionResponse = SoapEmptyResponse | SoapFaultResponse;
+
+export type RemoveAttachmentsRequest = {
+    _jsns: 'urn:zimbraMail';
+    m: {
+        id: string;
+        part: string;
+    };
+};
+
+export type RemoveAttachmentsResponse = SoapEmptyResponse | SoapFaultResponse;
+
+export type BounceMessageRequest = {
+    _jsns: 'urn:zimbraMail';
+    m: {
+        id: string;
+        e: Array<{
+            t: 't' | 'f';
+            a: string;
+        }>;
+    };
+};
+
+export type BounceMessageResponse = SoapEmptyResponse | SoapFaultResponse;
+
+export type SendMailRequest = {
+    _jsns: 'urn:zimbraMail';
+    m: Record<string, JsonValue>;
+};
+
+export type SendMailResponse = Record<string, JsonValue> | ZextrasRawResponse['Body'] | undefined;
+
+export type CoreAttributeRequestValue = {
+    value: string | number | boolean;
+    objectName: string;
+    configType: string;
+};
+
+export type SetCoreAttributesRequest = Record<string, CoreAttributeRequestValue>;
+
+export type SetCoreAttributesResponse = Record<string, JsonValue>;
+
+export type InitDomainForDelegationRequest = {
+    _jsns: 'urn:zimbraAdmin';
+    domain?: string;
+};
+
+export type InitDomainForDelegationResponse = {
+    message?: string;
+} & Record<string, JsonValue>;
 // ============================================================
 // Batch service types
 // ============================================================
 
-export type BatchRequest = Record<string, unknown>;
+export type BatchRequest = Record<string, JsonValue>;
 
-export type BatchResponse = Record<string, unknown>;
+export type BatchResponse = Record<string, JsonValue>;
 
 // ============================================================
 // SAML configuration types
@@ -1026,9 +1138,9 @@ export type RestoreDeleteAccountResponse = {
 // Init domain for delegation types
 // ============================================================
 
-export type InitDomainForDelegationRequest = Record<string, unknown>;
+export type InitDomainForDelegationRequest = Record<string, JsonValue>;
 
-export type InitDomainForDelegationResponse = Record<string, unknown>;
+export type InitDomainForDelegationResponse = Record<string, JsonValue>;
 
 // ============================================================
 // File Quota types (REST API)

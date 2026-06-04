@@ -12,38 +12,38 @@ export type Domain = {
 	a?: Array<Attribute>;
 };
 
-export interface ICertificateContent {
+export type ICertificateContent = {
 	fileName: string;
 	content: string;
-}
+};
 
-export interface CreateSnackbarType {
+export type CreateSnackbarType = {
 	key: string;
 	type: 'error' | 'success' | 'warning';
 	label: string;
 	autoHideTimeout: number;
 	hideButton: boolean;
 	replace: boolean;
-}
+};
 
-export interface IntervalType {
+export type IntervalType = {
 	label?: string;
 	value?: string;
-}
+};
 
-export interface GalAccountType {
+export type GalAccountType = {
 	id: string;
 	name: string;
 	server: string;
-}
+};
 
-export interface AccountDataType {
+export type AccountDataType = {
 	id?: string;
 	name?: string;
 	galAccount?: GalAccountType | null;
-}
+};
 
-export interface DomainDataType {
+export type DomainDataType = {
 	zimbraGalMaxResults: string;
 	zimbraGalAccountId?: string;
 	zimbraGalMode?: string;
@@ -59,7 +59,7 @@ export interface DomainDataType {
 	zimbraDataSourceGalPollingInterval?: string;
 	zimbraId?: string;
 	zimbraGalLdapPageSizets?: string;
-}
+};
 
 export type themeConfigStore = {
 	carbonioWebUiDarkMode?: boolean;
@@ -91,15 +91,15 @@ export type themeConfigStore = {
 	carbonioAdminDocumentationUrl?: string;
 };
 
-export interface IpRangeValue {
+export type IpRangeValue = {
 	label?: string;
 	value?: string;
-}
+};
 
-interface ChildObject {
+type ChildObject = {
 	trustedIpRange?: string[];
 	trustedDevice?: number;
-}
+};
 
 type TwoFactorAuthPolicyValues = {
 	[key: string]: ChildObject;
@@ -140,7 +140,7 @@ type SelectItem<T = string> = {
 	customComponent?: React.ReactElement;
 };
 
-export interface DomainsByFeature {
+export type DomainsByFeature = {
 	label?: string;
 	value?: string;
-}
+};

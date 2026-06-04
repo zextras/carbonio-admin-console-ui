@@ -29,7 +29,7 @@ import { debounce, filter, flatMapDeep } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types';
+import { Attribute, CosMaxAccountValues } from '../../../../../types';
 import logo from '../../../../assets/guardian.svg';
 import {
   ADMIN_GROUP_FLAG,
@@ -632,7 +632,6 @@ const ManageDelegates: FC = () => {
       domain: domain?.name,
     })
       .then((result) => {
-        const res = result as objectType;
         if (cosMaxAccountList.length > 0) {
           const request: unknown[] = [];
           cosMaxAccountList.forEach((item: CosMaxAccountValues) => {
@@ -704,8 +703,8 @@ const ManageDelegates: FC = () => {
         createSnackbar({
           key: 'success',
           severity: 'success',
-          label: res?.message
-            ? res?.message
+          label: result?.message
+            ? result?.message
             : t(
               'label.the_last_changes_has_been_saved_successfully',
               'Changes have been saved successfully',

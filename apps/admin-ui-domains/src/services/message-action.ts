@@ -6,7 +6,12 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-export const msgActionRequest = async (id: string, op: string): Promise<unknown> =>
+import type { MessageActionRequest, MessageActionResponse } from '../../types';
+
+export const msgActionRequest = async (
+	id: string,
+	op: MessageActionRequest['action']['op']
+): Promise<MessageActionResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/MsgActionRequest`,
 		{
@@ -15,6 +20,6 @@ export const msgActionRequest = async (id: string, op: string): Promise<unknown>
 				id,
 				op
 			}
-		},
+		} as MessageActionRequest,
 		'MsgActionRequest'
 	);
