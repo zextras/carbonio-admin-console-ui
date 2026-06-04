@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { TFunction } from 'i18next';
 import { FC } from 'react';
 
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
@@ -10,7 +11,7 @@ import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 interface BackupRouteLeavingGuardProps {
 	isDirty: boolean;
 	onSave: () => void;
-	t: (key: string, fallback?: string) => string;
+	t: TFunction;
 }
 
 const BackupRouteLeavingGuard: FC<BackupRouteLeavingGuardProps> = ({ isDirty, onSave, t }) => (

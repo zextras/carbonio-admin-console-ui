@@ -9,11 +9,15 @@ import { join } from 'path';
 
 import { colorLog, getWorkspaceRoot } from './utils';
 
-function getLastTag() {
-  return execSync('git describe --tags --abbrev=0', {
-    encoding: 'utf-8',
-    stdio: 'pipe',
-  }).trim();
+function getLastTag(): string {
+  try {
+    return execSync('git describe --tags --abbrev=0', {
+      encoding: 'utf-8',
+      stdio: 'pipe',
+    }).trim();
+  } catch {
+    return 'v0.0.0';
+  }
 }
 
 const main = (): void => {
@@ -31,7 +35,7 @@ pkgver="${pkgVersion}"
 pkgrel="1"
 pkgdesc="Carbonio Admin UI"
 maintainer="Zextras (packages@zextras.com)"
-arch=("x86_64")
+arch=("any")
 license=("AGPL-3.0-only")
 copyright=("2025, Zextras <https://www.zextras.com>")
 section="admin"
@@ -44,13 +48,16 @@ depends=(
   "carbonio-webui-i18n"
   "jq"
 )
-source=('opt')
-sha256sums=('SKIP')
+source=(
+  "\${pkgname}-dist.tar.gz"
+)
+sha256sums=(
+  "SKIP"
+)
 
 package() {
-  cd "\${srcdir}"
   mkdir -p "\${pkgdir}/opt/zextras/admin/iris"
-  cp -a opt/zextras/admin/iris/* "\${pkgdir}/opt/zextras/admin/iris/"
+  cp -a "\${srcdir}/dist/package/opt/zextras/admin/iris/"* "\${pkgdir}/opt/zextras/admin/iris/"
 
   # Set permissions for each component - files and directories only, symlinks are left as-is
   for component in ${componentList}; do

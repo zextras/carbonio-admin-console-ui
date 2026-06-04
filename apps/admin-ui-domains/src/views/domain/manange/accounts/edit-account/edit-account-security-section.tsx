@@ -9,7 +9,7 @@ import {
   ChipInput,
   Container,
   CustomHeaderFactory,
-  DateTimePicker,
+  DatePicker,
   HorizontalWizard,
   HoverableRowFactory,
   InheritedInput,
@@ -30,7 +30,16 @@ import {
 import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
-import { ChangeEvent, FC, ReactElement, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  ReactElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../../assets/gardian.svg';
@@ -504,9 +513,7 @@ const EditAccountSecuritySection: FC = () => {
           Body?: { response?: { content?: unknown } };
           response?: { content?: unknown };
         }) => {
-          const parseRestoreResult = (
-            content: unknown,
-          ): { ok?: boolean | string } | undefined => {
+          const parseRestoreResult = (content: unknown): { ok?: boolean | string } | undefined => {
             if (typeof content === 'string') {
               try {
                 return JSON.parse(content) as { ok?: boolean | string };
@@ -529,18 +536,18 @@ const EditAccountSecuritySection: FC = () => {
             restoreResult.ok === true || restoreResult.ok === 'true' || restoreResult.ok === 'ok';
 
           if (isRestoreSuccess) {
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t('label.otp_restored_successfully', 'OTP has been restored successfully'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          closeRestoreOtpModal();
-          getListOtp(`${accountDetail?.uid}@${domainName}`);
-          return;
-        }
+            createSnackbar({
+              key: 'success',
+              severity: 'success',
+              label: t('label.otp_restored_successfully', 'OTP has been restored successfully'),
+              autoHideTimeout: 3000,
+              hideButton: true,
+              replace: true,
+            });
+            closeRestoreOtpModal();
+            getListOtp(`${accountDetail?.uid}@${domainName}`);
+            return;
+          }
 
           createSnackbar({
             key: 'error',
@@ -672,27 +679,6 @@ const EditAccountSecuritySection: FC = () => {
     },
     [accountDetail, setAccountDetail],
   );
-  const handleFromDateChange = useCallback(
-    (d: Date | null) => {
-      if (!d) {
-        setAccountDetail((prev: any) => ({
-          ...prev,
-          carbonioOtpGracePeriodEndingTime: '',
-        }));
-        return;
-      }
-      const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(
-        d.getUTCDate(),
-      ).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}${String(
-        d.getUTCMinutes(),
-      ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
-      setAccountDetail((prev: any) => ({
-        ...prev,
-        carbonioOtpGracePeriodEndingTime: gentime,
-      }));
-    },
-    [setAccountDetail],
-  );
 
   const gracePeriodDefaultDate = useMemo(() => {
     const gentimeValue =
@@ -724,6 +710,40 @@ const EditAccountSecuritySection: FC = () => {
     accountDetail?.carbonioOtpGracePeriodEndingTime,
     accountDetail?.carbonioOtpGracePeriodEnabled,
   ]);
+
+  const [fromDate, setFromDate] = useState<Date | null>(gracePeriodDefaultDate);
+
+  useEffect(() => {
+    setFromDate(gracePeriodDefaultDate);
+  }, [gracePeriodDefaultDate]);
+
+  const isGracePeriodEnabled =
+    accountDetail?.carbonioOtpGracePeriodEnabled === 'TRUE' &&
+    accountDetail?.carbonioOtpWizardFromUntrusted === 'TRUE' &&
+    accountDetail?.carbonioFeatureOTPMgmtEnabled === 'TRUE';
+
+  const handleFromDateChange = useCallback(
+    (d: Date | null) => {
+      setFromDate(d);
+      if (!d) {
+        setAccountDetail((prev: any) => ({
+          ...prev,
+          carbonioOtpGracePeriodEndingTime: '',
+        }));
+        return;
+      }
+      const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(
+        d.getUTCDate(),
+      ).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}${String(
+        d.getUTCMinutes(),
+      ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
+      setAccountDetail((prev: any) => ({
+        ...prev,
+        carbonioOtpGracePeriodEndingTime: gentime,
+      }));
+    },
+    [setAccountDetail],
+  );
 
   return (
     <Container
@@ -929,7 +949,7 @@ const EditAccountSecuritySection: FC = () => {
           )}
         </>
       )}
-      
+
       {isAdvanced && (
         <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
           <ds-text as="h2" weight="bold">
@@ -1022,23 +1042,17 @@ const EditAccountSecuritySection: FC = () => {
               <ListRow padding={{ top: 'large' }}>
                 <Padding left={'extralarge'} width="100%">
                   <Row width="100%">
-                    <DateTimePicker
-                      disabled={
-                        accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
-                        accountDetail?.carbonioOtpWizardFromUntrusted === FALSE ||
-                        accountDetail?.carbonioOtpGracePeriodEnabled === FALSE
-                      }
+                    <DatePicker
+                      disabled={!isGracePeriodEnabled}
                       width={'21.625rem'}
-                      className="fffff"
                       label={t(
                         'domain.accounts.gracePeriodExpirationDate',
                         'Set grace period expiration date',
                       )}
                       onChange={handleFromDateChange}
                       dateFormat="dd/MM/yyyy"
-                      includeTime={false}
                       minDate={new Date()}
-                      defaultValue={gracePeriodDefaultDate}
+                      selected={fromDate}
                     />
                   </Row>
                 </Padding>

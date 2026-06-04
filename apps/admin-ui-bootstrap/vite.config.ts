@@ -35,17 +35,19 @@ function withLocationRewrite(config: {
     configure: (proxy: any) => {
       proxy.on('proxyReq', (proxyReq: any, req: any) => {
         const targetUrl = new URL(config.target);
+        const localOrigin = `http://${req.headers.host}`;
         proxyReq.setHeader('Origin', targetUrl.origin);
         proxyReq.setHeader('Accept-Encoding', 'identity');
         if (req.headers['referer']) {
           proxyReq.setHeader(
             'Referer',
-            req.headers['referer'].replace('http://localhost:3001', targetUrl.origin),
+            req.headers['referer'].replace(localOrigin, targetUrl.origin),
           );
         }
       });
 
-      proxy.on('proxyRes', (proxyRes: any, _req: any, res: any) => {
+      proxy.on('proxyRes', (proxyRes: any, req: any, res: any) => {
+        const localOrigin = `http://${req.headers.host}`;
         const cookies = proxyRes.headers['set-cookie'];
         if (cookies) {
           if (Array.isArray(cookies)) {
@@ -62,7 +64,7 @@ function withLocationRewrite(config: {
         if (location) {
           proxyRes.headers['location'] = location.replace(
             /https:\/\/[^/]+/,
-            'http://localhost:3001',
+            localOrigin,
           );
         }
 
@@ -85,7 +87,7 @@ function withLocationRewrite(config: {
           res.end = (chunk?: any, ..._args: any[]): any => {
             if (chunk != null) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
             const body = Buffer.concat(chunks).toString('utf8');
-            const modified = body.replaceAll(config.target, 'http://localhost:3001');
+            const modified = body.replaceAll(config.target, localOrigin);
             res.write = originalWrite;
             res.end = originalEnd;
             return originalEnd(modified);
@@ -109,7 +111,10 @@ export default defineConfig(({ command, mode }) => {
       ...(isServeCommand ? [] : [postBuildPlugin()]),
       react({
         babel: {
-          plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+          plugins: [
+            ['babel-plugin-react-compiler', { panicThreshold: 'none' }],
+            ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
+          ],
         },
       }),
       svgr({

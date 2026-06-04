@@ -7,10 +7,11 @@ import { Container, LabeledValue, ListRow, Padding, Tooltip } from '@zextras/ui-
 import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { Volume } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
-import { asQueryString, VolumeItem } from '../hsm-policy-detail';
+import { asQueryString } from '../hsm-policy-detail';
 
-const HSMcreatePolicy: FC<any> = () => {
+const HSMcreatePolicy: FC = () => {
   const [t] = useTranslation();
   const context = useContext(HSMContext);
   const { hsmDetail } = context;
@@ -23,13 +24,13 @@ const HSMcreatePolicy: FC<any> = () => {
 
   useEffect(() => {
     if (hsmDetail?.sourceVolume.length > 0) {
-      setSourceVolumeNames(hsmDetail?.sourceVolume.map((item: VolumeItem) => item.name).join());
+      setSourceVolumeNames(hsmDetail?.sourceVolume.map((item: Volume) => item.name).join());
     }
   }, [hsmDetail?.sourceVolume]);
 
   useEffect(() => {
     if (hsmDetail?.destinationVolume.length > 0) {
-      setDestinationVolumeNames(hsmDetail?.destinationVolume.map((item: VolumeItem) => item.name).join());
+      setDestinationVolumeNames(hsmDetail?.destinationVolume.map((item: Volume) => item.name).join());
     }
   }, [hsmDetail?.destinationVolume]);
 

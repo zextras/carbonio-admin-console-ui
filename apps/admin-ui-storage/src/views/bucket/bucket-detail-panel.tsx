@@ -23,7 +23,7 @@ import { filter } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType, TestConnectionObjectType } from '../../../types';
+import { type BucketDetail, objectType, TestConnectionObjectType } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
@@ -169,18 +169,18 @@ const BucketDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [bucketselection, setBucketselection] = useState<string[]>([]);
-  const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>({});
+  const [bucketDeleteName, setBucketDeleteName] = useState<BucketDetail | undefined>();
   const bucketType = '';
   const [bucketList, setBucketList] = useState<objectType[]>([]);
   const [allBucketList, setAllBucketList] = useState([]);
-  const [connectionData, setConnectionData] = useState<objectType | undefined>();
+  const [connectionData, setConnectionData] = useState<BucketDetail | undefined>();
   const [toggleWizardSection, setToggleWizardSection] = useState(false);
   const [open, setOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [searchBucket, setSearchBucket] = useState('');
   const [showEditDetailView, setShowEditDetailView] = useState(false);
   const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<objectType>();
+  const [selectedRow, setSelectedRow] = useState<BucketDetail>();
 
   const closeHandler = (): void => {
     setOpen(false);
@@ -269,7 +269,7 @@ const BucketDetailPanel: FC = () => {
     t,
   ]);
   const handleClick = (i: number): void => {
-    const volumeObject: objectType | undefined = bucketList.find((s, index) => index === i);
+    const volumeObject = bucketList.find((s, index) => index === i) as BucketDetail | undefined;
     setConnectionData(volumeObject);
     setShowEditDetailView(true);
     setShowDetails(true);
@@ -278,9 +278,9 @@ const BucketDetailPanel: FC = () => {
   useEffect(() => {
     if (selectedRow !== undefined) {
       const getIndex = bucketList.findIndex((data: objectType) => data.uuid === selectedRow.uuid);
-      const volumeObject: objectType | undefined = bucketList.find(
+      const volumeObject = bucketList.find(
         (s, index) => index === getIndex,
-      );
+      ) as BucketDetail | undefined;
       setConnectionData(volumeObject);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -314,12 +314,12 @@ const BucketDetailPanel: FC = () => {
           <NewBucket
             setToggleWizardSection={setToggleWizardSection}
             setDetailsBucket={setShowEditDetailView}
-            setConnectionData={setConnectionData}
+            setConnectionData={setConnectionData as (data: unknown) => void}
             bucketType={bucketType}
           />
         </ModalOverlay>
       )}
-      {showEditDetailView && (
+      {showEditDetailView && connectionData && (
         <ModalOverlay open={showEditDetailView}>
           <EditBucketDetailPanel
             setBucketDeleteName={setBucketDeleteName}
@@ -396,7 +396,7 @@ const BucketDetailPanel: FC = () => {
                 (s, index) => index === selected[0],
               );
               setShowDetails(false);
-              setBucketDeleteName(volumeObject);
+              setBucketDeleteName(volumeObject as BucketDetail | undefined);
             }}
             onDoubleClick={(i: number): void => {
               handleClick(i);

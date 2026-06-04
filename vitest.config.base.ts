@@ -16,7 +16,10 @@ function getPlugins() {
   return [
     react({
       babel: {
-        plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
+        plugins: [
+          ['babel-plugin-react-compiler', { panicThreshold: 'none' }],
+          ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
+        ],
       },
     }),
     svgr({
@@ -119,6 +122,7 @@ function browserProjectConfig() {
         screenshotFailures: !isCI,
         connectTimeout: 60_000,
         providerOptions: { launch: { timeout: 60_000 } },
+        assertionTimeout: 5_000,
       },
       exclude: ['dist/**', 'node_modules/**'],
       globals: true,

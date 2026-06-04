@@ -16,32 +16,12 @@ import {
 import { FC, ReactElement, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { EditHsmPolicyProps, HsmPolicyEditDetail, HsmPolicyFromServer, TabBarItem } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 import EditHsmPolicyDetailSection from './edit-hsm-policy-detail-section';
 import EditHsmPolicyVolumesSection from './edit-hsm-policy-volumes-section';
 
-interface hsmDetailObj {
-  allVolumes: Array<any>;
-  isAllEnabled: boolean;
-  isMessageEnabled: boolean;
-  isEventEnabled: boolean;
-  isContactEnabled: boolean;
-  isDocumentEnabled: boolean;
-  policyCriteria: Array<any>;
-  sourceVolume: Array<any>;
-  destinationVolume: Array<any>;
-  isDataLoaded: boolean;
-  isVolumeLoaded: boolean;
-}
-
-const EditHsmPolicy: FC<{
-  setShowEditHsmPolicyView: any;
-  policies: any;
-  selectedPolicies: any;
-  volumeList: any;
-  onEditSave: any;
-  isEditSaveInProgress: boolean;
-}> = ({
+const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
   setShowEditHsmPolicyView,
   policies,
   selectedPolicies,
@@ -53,8 +33,8 @@ const EditHsmPolicy: FC<{
   const createSnackbar = useSnackbar();
   const [change, setChange] = useState('details');
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [currentPolicy, setCurrentPolicy] = useState<any>();
-  const [hsmDetail, setHsmDetail] = useState<hsmDetailObj>({
+  const [currentPolicy, setCurrentPolicy] = useState<HsmPolicyFromServer>();
+  const [hsmDetail, setHsmDetail] = useState<HsmPolicyEditDetail>({
     allVolumes: volumeList,
     isAllEnabled: false,
     isMessageEnabled: false,
@@ -69,20 +49,20 @@ const EditHsmPolicy: FC<{
   });
 
   useEffect(() => {
-    const policy = policies.find((item: any) => item?.hsmQuery === selectedPolicies);
+    const policy = policies.find((item: HsmPolicyFromServer) => item?.hsmQuery === selectedPolicies);
     if (policy) {
       setCurrentPolicy(policy);
     }
   }, [selectedPolicies, policies]);
 
   const ReusedDefaultTabBar: FC<{
-    item: any;
-    index: any;
-    selected: any;
-    onClick: any;
+    item: TabBarItem;
+    index: number;
+    selected: boolean;
+    onClick: () => void;
   }> = ({ item, selected, onClick }): ReactElement => (
     <DefaultTabBarItem
-      item={item}
+      item={item as unknown as { id: string; label: string }}
       selected={selected}
       onClick={onClick}
       orientation="horizontal"
@@ -95,7 +75,7 @@ const EditHsmPolicy: FC<{
           <ds-icon
             size="medium"
             color={selected ? 'primary' : 'gray'}
-            icon={item.icon}
+            icon={item.icon as 'InfoOutline' | 'OptionsOutline'}
           ></ds-icon>
         </Padding>
         <ds-text as="span" size="small" color={selected ? 'primary' : 'gray'}>
@@ -104,7 +84,7 @@ const EditHsmPolicy: FC<{
       </Row>
     </DefaultTabBarItem>
   );
-  const items: any = [
+  const items = [
     {
       id: 'details',
       label: t('hsm.details', 'Details'),
@@ -117,7 +97,7 @@ const EditHsmPolicy: FC<{
       CustomComponent: ReusedDefaultTabBar,
       icon: 'OptionsOutline',
     },
-  ];
+  ] as Array<TabBarItem>;
 
   const showSnackbar = useCallback(
     (msg: string) => {
@@ -224,7 +204,7 @@ const EditHsmPolicy: FC<{
       >
         <Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
           <TabBar
-            items={items}
+            items={items as unknown as Array<{ id: string; label: string }>}
             selected={change}
             onChange={(ev: unknown, selectedId: string): void => {
               setChange(selectedId);

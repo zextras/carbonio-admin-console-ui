@@ -5,8 +5,10 @@
  */
 import { createContext } from 'react';
 
-type VolumeContext = {
-	volumeDetail: any;
-	setVolumeDetail: (arg: any) => void;
+import type { VolumeWizardDetail } from '../../../../../../types';
+
+type VolumeContextType = {
+	volumeDetail: VolumeWizardDetail;
+	setVolumeDetail: (arg: VolumeWizardDetail | ((prev: VolumeWizardDetail) => VolumeWizardDetail)) => void;
 };
-export const VolumeContext = createContext({} as VolumeContext);
+export const VolumeContext = createContext({} as VolumeContextType);
