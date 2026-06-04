@@ -5,6 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Button, Container, Padding, Row, Tooltip, type TRow } from '@zextras/ui-components';
+import type { DirectoryEntry } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -26,11 +27,7 @@ import { CosInfoFields, type GeneralInfoFormValues } from './cos-info-fields';
 import { DeleteCosModal } from './delete-cos-modal';
 import { SearchableTable } from './searchable-table';
 
-type DirectoryItem = {
-  a?: Array<Attribute>;
-  id?: string;
-  name?: string;
-};
+type AttributeMap = Partial<Record<string, string | Array<string>>>;
 
 type GeneralInformationFormProps = {
   cosInformation: Array<Attribute> | undefined;
@@ -62,60 +59,74 @@ function buildStatusColorMap(t: (key: string, defaultValue: string) => string): 
   };
 }
 
-function processAttributes(
+function flattenAttributes(
   attributes: Array<Attribute> | undefined,
-  record: Record<string, unknown>,
-  arrayFieldName: string,
-): void {
+  arrayFields: Set<string>,
+): AttributeMap {
+  const map: AttributeMap = {};
   attributes?.forEach((ele) => {
     const attrName = ele?.n;
     if (!attrName) return;
-    if (attrName === arrayFieldName) {
-      const existing = record[attrName];
+    if (arrayFields.has(attrName)) {
+      const existing = map[attrName];
       if (Array.isArray(existing)) {
         existing.push(ele._content);
       } else {
-        record[attrName] = [ele._content];
+        map[attrName] = [ele._content];
       }
     } else {
-      record[attrName] = ele._content;
+      map[attrName] = ele._content;
     }
   });
+  return map;
 }
 
-function getUserType(item: Record<string, string>): string {
-  if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
-  if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
-  if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
-  if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
+function getStringAttr(map: AttributeMap, key: string): string {
+  const val = map[key];
+  return typeof val === 'string' ? val : '';
+}
+
+function getStringArrayAttr(map: AttributeMap, key: string): Array<string> {
+  const val = map[key];
+  return Array.isArray(val) ? val : [];
+}
+
+function getUserType(attrs: AttributeMap): string {
+  if (getStringAttr(attrs, 'zimbraIsAdminAccount') === 'TRUE') return 'Admin';
+  if (getStringAttr(attrs, 'zimbraIsDelegatedAdminAccount') === 'TRUE') return 'DelegatedAdmin';
+  if (getStringAttr(attrs, 'zimbraIsExternalVirtualAccount') === 'TRUE') return 'External';
+  if (getStringAttr(attrs, 'zimbraIsSystemAccount') === 'TRUE') return 'System';
   return 'Normal';
 }
 
 function processAccountItem(
-  item: DirectoryItem,
-  statusColor: Record<string, { color: string; label: string }>,
+  item: DirectoryEntry,
+  statusColor: StatusColorMap,
 ): TRow {
-  const acc = item as Record<string, unknown>;
-  processAttributes(item.a, acc, 'mail');
+  const attrs = flattenAttributes(item.a, new Set(['mail']));
+  const mailAddresses = getStringArrayAttr(attrs, 'mail');
+  const aliasCount = mailAddresses.length - 1;
+  const accountStatus = getStringAttr(attrs, 'zimbraAccountStatus');
+
   return {
-    id: item.id ?? '',
+    id: item.id,
     columns: [
       <ds-text as="span" size="small" key={item.id} color="gray0" weight="regular">
         {item.name || ' '}
       </ds-text>,
       <ds-text as="span" size="small" key={item.id} color="gray0" weight="light">
-        {(acc.displayName as string) || <>&nbsp;</>}
+        {getStringAttr(attrs, 'displayName') || <>&nbsp;</>}
       </ds-text>,
       <>
-        {Array.isArray(acc.mail) && (acc.mail as Array<string>).length - 1 > 0 ? (
+        {aliasCount > 0 ? (
           <Tooltip
             key={item.id}
             placement="bottom"
-            label={(acc.mail as Array<string>).slice(1).join(', ')}
+            label={mailAddresses.slice(1).join(', ')}
             maxWidth="auto"
           >
             <ds-text as="span" size="small" weight="light" key={item.id} color="gray1">
-              {(acc.mail as Array<string>).length - 1}
+              {aliasCount}
             </ds-text>
           </Tooltip>
         ) : (
@@ -125,19 +136,19 @@ function processAccountItem(
         )}
       </>,
       <ds-text as="span" size="small" key={item.id} color="gray0" weight="light">
-        {getUserType(acc as Record<string, string>)}
+        {getUserType(attrs)}
       </ds-text>,
       <ds-text
         as="span"
         size="small"
         weight="light"
         key={item.id}
-        color={statusColor[acc.zimbraAccountStatus as string]?.color}
+        color={statusColor[accountStatus]?.color}
       >
-        {statusColor[acc.zimbraAccountStatus as string]?.label}
+        {statusColor[accountStatus]?.label}
       </ds-text>,
       <ds-text as="span" size="small" weight="light" key={item.id} color="gray0">
-        {(acc.description as string) || <>&nbsp;</>}
+        {getStringAttr(attrs, 'description') || <>&nbsp;</>}
       </ds-text>,
     ],
     clickable: true,
@@ -145,18 +156,19 @@ function processAccountItem(
 }
 
 function processDomainItem(
-  item: DirectoryItem,
+  item: DirectoryEntry,
   cosId: string | undefined,
   defaultCosLabel: string,
 ): TRow {
-  const domainItem = item as Record<string, unknown>;
-  processAttributes(item.a, domainItem, 'zimbraDomainCOSMaxAccounts');
-  const cosMaxAccounts = domainItem.zimbraDomainCOSMaxAccounts;
-  const maxAccountValue = Array.isArray(cosMaxAccounts)
-    ? (cosMaxAccounts as Array<string>).find((acc) => acc?.split(':')[0] === cosId)?.split(':')[1]
-    : undefined;
+  const attrs = flattenAttributes(item.a, new Set(['zimbraDomainCOSMaxAccounts']));
+  const cosMaxAccounts = getStringArrayAttr(attrs, 'zimbraDomainCOSMaxAccounts');
+  const maxAccountValue = cosMaxAccounts.find(
+    (acc) => acc?.split(':')[0] === cosId,
+  )?.split(':')[1];
+  const defaultCOSId = getStringAttr(attrs, 'zimbraDomainDefaultCOSId');
+
   return {
-    id: item.id ?? '',
+    id: item.id,
     columns: [
       <ds-text as="span" size="small" key={item.id} color="gray0" weight="regular">
         {item.name || ' '}
@@ -165,7 +177,7 @@ function processDomainItem(
         {maxAccountValue || ' '}
       </ds-text>,
       <Container key={item.id}>
-        {cosId === (domainItem.zimbraDomainDefaultCOSId as string) && (
+        {cosId === defaultCOSId && (
           <Row>
             <Padding right="small">
               <ds-text as="span" size="small" weight="light" color="gray0">
@@ -202,15 +214,15 @@ function buildDefaultValues(cosInformation: Array<Attribute> | undefined): Gener
 }
 
 function buildAccountList(
-  accounts: Array<DirectoryItem> | undefined,
-  statusColor: Record<string, { color: string; label: string }>,
+  accounts: Array<DirectoryEntry> | undefined,
+  statusColor: StatusColorMap,
 ): Array<TRow> {
   if (!accounts?.length) return [];
   return accounts.map((item) => processAccountItem(item, statusColor));
 }
 
 function buildDomainList(
-  domains: Array<DirectoryItem> | undefined,
+  domains: Array<DirectoryEntry> | undefined,
   cosId: string | undefined,
   defaultCosLabel: string,
 ): Array<TRow> {
@@ -251,7 +263,7 @@ export const GeneralInformationForm = ({
   } = useCosAccounts(cosId, debouncedAccountSearch, offset, accountPageSize);
 
   const accountList = buildAccountList(
-    accountsData?.accounts as Array<DirectoryItem>,
+    accountsData?.accounts,
     STATUS_COLOR,
   );
 
@@ -265,7 +277,7 @@ export const GeneralInformationForm = ({
   } = useCosDomains(cosId, debouncedDomainSearch, domainOffset, domainPageSize);
 
   const domainList = buildDomainList(
-    domainsData?.domains as Array<DirectoryItem>,
+    domainsData?.domains,
     cosId,
     t('label.default_cos', 'Default COS'),
   );
