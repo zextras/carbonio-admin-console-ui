@@ -15,15 +15,20 @@
 	display: flex;
 	height: calc(100vh - 105px);
 	width: 100%;
+	overflow: hidden;
 }
 
 .sidebar {
 	max-width: 265px;
+	flex-shrink: 0;
+	overflow: hidden;
 }
 
 .detailWrapper {
 	flex: 1;
 	max-width: 100%;
+	overflow-y: auto;
+	min-width: 0;
 }
 
 .detailContent {
