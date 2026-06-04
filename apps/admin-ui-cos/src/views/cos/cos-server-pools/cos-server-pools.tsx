@@ -198,7 +198,6 @@ export const CosServerPools = () => {
         flexDirection: 'column',
         alignItems: 'stretch',
         justifyContent: 'flex-start',
-        padding: 0,
       }}
     >
       <div
@@ -207,6 +206,7 @@ export const CosServerPools = () => {
           top: 0,
           zIndex: 1,
           background: 'var(--color-gray6-regular)',
+          paddingTop: '0.75rem',
         }}
       >
         <Container orientation="horizontal" height="fit" padding={{ all: 'medium' }}>
