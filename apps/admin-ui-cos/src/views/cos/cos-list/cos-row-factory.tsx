@@ -54,7 +54,7 @@ function getTableRowClassNames(
   if (selected || highlight) {
     classNames.push(styles.selected);
   }
-  if (clickable === true || (typeof clickable === 'undefined' && showCheckbox === false)) {
+  if (clickable === true || (clickable === undefined && showCheckbox === false)) {
     classNames.push(styles.clickable);
   }
   if (customClass) {
@@ -97,7 +97,7 @@ const CosRowFactory = ({
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showCkb, setShowCkb] = useState<boolean>(selected || selectionMode);
   const clickableRow = useMemo(
-    () => (!showCheckbox && typeof row.clickable === 'undefined') || row.clickable,
+    () => (!showCheckbox && row.clickable === undefined) || row.clickable,
     [showCheckbox, row.clickable],
   );
 
@@ -138,7 +138,7 @@ const CosRowFactory = ({
   const rowData = useMemo(
     () =>
       row.columns.map((column, i) => (
-        <td className={getTableCellClassName(styles.tableRowCell, cellClassName, i)} key={i}>
+        <td className={getTableCellClassName(styles.tableRowCell, cellClassName, i)} key={`${row.id}-col-${i}`}>
           {typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}
         </td>
       )),
