@@ -180,4 +180,95 @@ describe('FeaturesForm (browser)', () => {
     await expect.element(page.getByText('Files', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Tasks', { exact: true })).toBeVisible();
   });
+
+  describe('Advanced 2FA enforcement (isAdvanced)', () => {
+    const ADVANCED_COS_INFO: Array<Attribute> = MOCK_COS_INFORMATION.map((a) =>
+      a.n === 'carbonioOtpWizardFromUntrusted'
+        ? { ...a, _content: 'TRUE' }
+        : a,
+    );
+
+    it('should render setup enforcement section when isAdvanced', async () => {
+      await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
+      await expect
+        .element(page.getByText('Two-Factor authenticator setup enforcement'))
+        .toBeVisible();
+    });
+
+    it('should render Untrusted Network switch', async () => {
+      await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
+      await expect
+        .element(page.getByRole('switch', { name: 'Allow 2FA setup from untrusted networks' }))
+        .toBeVisible();
+    });
+
+    it('should toggle Untrusted Network switch', async () => {
+      await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
+      const sw = page.getByRole('switch', { name: 'Allow 2FA setup from untrusted networks' });
+      await expect.element(sw).toBeChecked();
+      await userEvent.click(sw);
+      await expect.element(sw).not.toBeChecked();
+    });
+
+    it('should disable Untrusted Network switch when 2FA mgmt is FALSE', async () => {
+      const twoFADisabled = ADVANCED_COS_INFO.map((a) =>
+        a.n === 'carbonioFeatureOTPMgmtEnabled' ? { ...a, _content: 'FALSE' } : a,
+      );
+      await setupTest(<TestWrapper cosInformation={twoFADisabled} isAdvanced />);
+      await expect
+        .element(page.getByRole('switch', { name: 'Allow 2FA setup from untrusted networks' }))
+        .toBeDisabled();
+    });
+
+    it('should render Grace Period switch', async () => {
+      await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
+      await expect
+        .element(
+          page.getByRole('switch', { name: 'Allow setup deferral during grace period' }),
+        )
+        .toBeVisible();
+    });
+
+    it('should toggle Grace Period switch', async () => {
+      await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
+      const sw = page.getByRole('switch', { name: 'Allow setup deferral during grace period' });
+      await expect.element(sw).not.toBeChecked();
+      await userEvent.click(sw);
+      await expect.element(sw).toBeChecked();
+    });
+
+    it('should disable Grace Period switch when untrusted wizard is FALSE', async () => {
+      const wizardDisabled = ADVANCED_COS_INFO.map((a) =>
+        a.n === 'carbonioOtpWizardFromUntrusted' ? { ...a, _content: 'FALSE' } : a,
+      );
+      await setupTest(<TestWrapper cosInformation={wizardDisabled} isAdvanced />);
+      await expect
+        .element(
+          page.getByRole('switch', { name: 'Allow setup deferral during grace period' }),
+        )
+        .toBeDisabled();
+    });
+
+    it('should render grace period expiration date picker', async () => {
+      await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
+      await expect
+        .element(page.getByText('Set grace period expiration date'))
+        .toBeVisible();
+    });
+
+    it('should disable date picker when grace period is FALSE', async () => {
+      await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
+      const picker = page.getByPlaceholder('Set grace period expiration date');
+      await expect.element(picker).toBeDisabled();
+    });
+
+    it('should enable date picker when grace period is TRUE', async () => {
+      const graceEnabled = ADVANCED_COS_INFO.map((a) =>
+        a.n === 'carbonioOtpGracePeriodEnabled' ? { ...a, _content: 'TRUE' } : a,
+      );
+      await setupTest(<TestWrapper cosInformation={graceEnabled} isAdvanced />);
+      const picker = page.getByPlaceholder('Set grace period expiration date');
+      await expect.element(picker).not.toBeDisabled();
+    });
+  });
 });
