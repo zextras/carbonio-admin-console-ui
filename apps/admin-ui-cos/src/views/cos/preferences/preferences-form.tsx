@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +12,6 @@ import { useParams } from 'react-router';
 import { Attribute } from '../../../../types/attribute';
 import { CosAttributes, CosPrefAttributes } from '../../../../types/cos';
 import { ZIMBRA_ADMIN_URN } from '../../../constants';
-import { useAppForm } from '../../../form/form-hook';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
 import { FormPageLayout } from '../../form-page-layout';
@@ -49,7 +49,7 @@ export const PreferencesForm = ({ cosInformation, readonlyCOS }: PreferencesForm
   const modifyCosMutation = useModifyCos(cosId);
   const locales = localeList(t);
 
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: buildDefaultValues(cosInformation),
     onSubmit: async ({ value }) => {
       const zimbraId = cosInformation?.find((a) => a.n === 'zimbraId')?._content;
@@ -81,23 +81,21 @@ export const PreferencesForm = ({ cosInformation, readonlyCOS }: PreferencesForm
       onCancel={() => form.reset()}
       unsavedChanges={isDirty}
     >
-      <form.AppForm>
-        <Container mainAlignment="flex-start" width="100%" orientation="vertical">
-          <GeneralOptions form={form} readonlyCOS={readonlyCOS} locales={locales} />
-          <ds-divider></ds-divider>
-          <MailOptions form={form} readonlyCOS={readonlyCOS} />
-          <ds-divider></ds-divider>
-          <ReceivingMails form={form} readonlyCOS={readonlyCOS} />
-          <ds-divider></ds-divider>
-          <ForwardingOptions form={form} readonlyCOS={readonlyCOS} />
-          <ds-divider></ds-divider>
-          <SendingMails form={form} readonlyCOS={readonlyCOS} />
-          <ds-divider></ds-divider>
-          <ContactOptions form={form} readonlyCOS={readonlyCOS} />
-          <ds-divider></ds-divider>
-          <CalendarOptions form={form} readonlyCOS={readonlyCOS} />
-        </Container>
-      </form.AppForm>
+      <Container mainAlignment="flex-start" width="100%" orientation="vertical">
+        <GeneralOptions form={form} readonlyCOS={readonlyCOS} locales={locales} />
+        <ds-divider></ds-divider>
+        <MailOptions form={form} readonlyCOS={readonlyCOS} />
+        <ds-divider></ds-divider>
+        <ReceivingMails form={form} readonlyCOS={readonlyCOS} />
+        <ds-divider></ds-divider>
+        <ForwardingOptions form={form} readonlyCOS={readonlyCOS} />
+        <ds-divider></ds-divider>
+        <SendingMails form={form} readonlyCOS={readonlyCOS} />
+        <ds-divider></ds-divider>
+        <ContactOptions form={form} readonlyCOS={readonlyCOS} />
+        <ds-divider></ds-divider>
+        <CalendarOptions form={form} readonlyCOS={readonlyCOS} />
+      </Container>
     </FormPageLayout>
   );
 };

@@ -3,6 +3,24 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { ReactFormExtendedApi } from '@tanstack/react-form';
+
 import type { CosPrefAttributes } from '../../../../types/cos';
 
 export type CosPreferencesFormValues = CosPrefAttributes;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type CosPreferencesFormApi = ReactFormExtendedApi<
+  CosPreferencesFormValues,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>;

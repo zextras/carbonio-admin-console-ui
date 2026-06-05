@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { type AccountType } from '../../types/account';
 import { ZIMBRA_ADMIN_URN } from '../constants';
-import { useAppForm } from '../form/form-hook';
 import { type ModifyCosBody } from '../services/modify-cos-service';
 import { useModifyCos } from '../services/use-modify-cos';
 import { FormPageLayout } from '../views/form-page-layout';
@@ -48,7 +48,7 @@ export const WscCosForm = ({ cosData, readonlyCOS }: WscCosFormProps) => {
 
   const zimbraId = cosData?.zimbraId ?? '';
 
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: { ...WSC_FIELD_DEFAULTS, ...cosData },
     onSubmit: async ({ value }) => {
       const body: ModifyCosBody = {
@@ -79,9 +79,7 @@ export const WscCosForm = ({ cosData, readonlyCOS }: WscCosFormProps) => {
       onCancel={() => form.reset()}
       unsavedChanges={isDirty}
     >
-      <form.AppForm>
-        <WscSettings form={form} readonlyFeatures={readonlyCOS} />
-      </form.AppForm>
+      <WscSettings form={form} readonlyFeatures={readonlyCOS} />
     </FormPageLayout>
   );
 };

@@ -6,76 +6,76 @@
 import { Container, ListRow, Row, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { withForm } from '../../../../form/form-hook';
-import type { CosPreferencesFormValues } from '../types';
+import { CosPreferencesFormApi } from '../types';
 
-export const SendingMails = withForm({
-  defaultValues: {} as CosPreferencesFormValues,
-  props: { readonlyCOS: false as boolean },
-  render: function Render({ form, readonlyCOS }) {
-    const [t] = useTranslation();
+type SendingMailsProps = {
+  form: CosPreferencesFormApi;
+  readonlyCOS: boolean;
+};
 
-    return (
-      <Row
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        padding={{ all: 'large' }}
-        width="100%"
-      >
-        <ds-text as="strong" weight="bold">
-          {t('label.sending_mails', 'Sending Mails')}
-        </ds-text>
-        <Row mainAlignment="flex-start" width="100%">
-          <Container
-            height="fit"
-            crossAlignment="flex-start"
-            background="gray6"
-            padding={{ top: 'large', bottom: 'large' }}
-          >
-            <ListRow>
-              <Container crossAlignment="flex-start">
-                <form.Field name="zimbraPrefSaveToSent">
-                  {(field) => (
-                    <Switch
-                      value={field.state.value === 'TRUE'}
-                      onClick={() =>
-                        field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                      }
-                      label={t('cos.save_to_Sent', 'Save to sent')}
-                      iconColor="primary"
-                      disabled={readonlyCOS}
-                    />
-                  )}
-                </form.Field>
-              </Container>
-            </ListRow>
-          </Container>
-        </Row>
-        <Row mainAlignment="flex-start" width="100%">
-          <Container height="fit" crossAlignment="flex-start" background="gray6">
-            <ListRow>
-              <Container crossAlignment="flex-start">
-                <form.Field name="zimbraFeatureReadReceiptsEnabled">
-                  {(field) => (
-                    <Switch
-                      value={field.state.value === 'TRUE'}
-                      onClick={() =>
-                        field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-                      }
-                      label={t(
-                        'cos.preferences.allowTheUserToAskForAReadReceipt',
-                        'Allow the user to ask for a read receipt',
-                      )}
-                      iconColor="primary"
-                      disabled={readonlyCOS}
-                    />
-                  )}
-                </form.Field>
-              </Container>
-            </ListRow>
-          </Container>
-        </Row>
+export const SendingMails = ({ form, readonlyCOS }: SendingMailsProps) => {
+  const [t] = useTranslation();
+
+  return (
+    <Row
+      mainAlignment="flex-start"
+      crossAlignment="flex-start"
+      padding={{ all: 'large' }}
+      width="100%"
+    >
+      <ds-text as="strong" weight="bold">
+        {t('label.sending_mails', 'Sending Mails')}
+      </ds-text>
+      <Row mainAlignment="flex-start" width="100%">
+        <Container
+          height="fit"
+          crossAlignment="flex-start"
+          background="gray6"
+          padding={{ top: 'large', bottom: 'large' }}
+        >
+          <ListRow>
+            <Container crossAlignment="flex-start">
+              <form.Field name="zimbraPrefSaveToSent">
+                {(field) => (
+                  <Switch
+                    value={field.state.value === 'TRUE'}
+                    onClick={() =>
+                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
+                    }
+                    label={t('cos.save_to_Sent', 'Save to sent')}
+                    iconColor="primary"
+                    disabled={readonlyCOS}
+                  />
+                )}
+              </form.Field>
+            </Container>
+          </ListRow>
+        </Container>
       </Row>
-    );
-  },
-});
+      <Row mainAlignment="flex-start" width="100%">
+        <Container height="fit" crossAlignment="flex-start" background="gray6">
+          <ListRow>
+            <Container crossAlignment="flex-start">
+              <form.Field name="zimbraFeatureReadReceiptsEnabled">
+                {(field) => (
+                  <Switch
+                    value={field.state.value === 'TRUE'}
+                    onClick={() =>
+                      field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
+                    }
+                    label={t(
+                      'cos.preferences.allowTheUserToAskForAReadReceipt',
+                      'Allow the user to ask for a read receipt',
+                    )}
+                    iconColor="primary"
+                    disabled={readonlyCOS}
+                  />
+                )}
+              </form.Field>
+            </Container>
+          </ListRow>
+        </Container>
+      </Row>
+    </Row>
+  );
+};

@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Button, Container, Padding, Row, Tooltip, type TRow } from '@zextras/ui-components';
 import type { DirectoryEntry } from '@zextras/ui-shared';
@@ -12,7 +13,6 @@ import { useParams } from 'react-router';
 
 import { Attribute } from '../../../../types/attribute';
 import { DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../../constants';
-import { useAppForm } from '../../../form/form-hook';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosAccounts } from '../../../services/use-cos-accounts';
@@ -99,10 +99,7 @@ function getUserType(attrs: AttributeMap): string {
   return 'Normal';
 }
 
-function processAccountItem(
-  item: DirectoryEntry,
-  statusColor: StatusColorMap,
-): TRow {
+function processAccountItem(item: DirectoryEntry, statusColor: StatusColorMap): TRow {
   const attrs = flattenAttributes(item.a, new Set(['mail']));
   const mailAddresses = getStringArrayAttr(attrs, 'mail');
   const aliasCount = mailAddresses.length - 1;
@@ -162,9 +159,9 @@ function processDomainItem(
 ): TRow {
   const attrs = flattenAttributes(item.a, new Set(['zimbraDomainCOSMaxAccounts']));
   const cosMaxAccounts = getStringArrayAttr(attrs, 'zimbraDomainCOSMaxAccounts');
-  const maxAccountValue = cosMaxAccounts.find(
-    (acc) => acc?.split(':')[0] === cosId,
-  )?.split(':')[1];
+  const maxAccountValue = cosMaxAccounts
+    .find((acc) => acc?.split(':')[0] === cosId)
+    ?.split(':')[1];
   const defaultCOSId = getStringAttr(attrs, 'zimbraDomainDefaultCOSId');
 
   return {
@@ -262,10 +259,7 @@ export const GeneralInformationForm = ({
     isPlaceholderData: isAccountPlaceholderData,
   } = useCosAccounts(cosId, debouncedAccountSearch, offset, accountPageSize);
 
-  const accountList = buildAccountList(
-    accountsData?.accounts,
-    STATUS_COLOR,
-  );
+  const accountList = buildAccountList(accountsData?.accounts, STATUS_COLOR);
 
   const totalAccounts = accountsData?.total ?? 0;
 
@@ -286,7 +280,7 @@ export const GeneralInformationForm = ({
 
   const cosData = attributesToMap(cosInformation);
 
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: buildDefaultValues(cosInformation),
     onSubmit: async ({ value }) => {
       const zimbraId = cosInformation?.find((a) => a.n === 'zimbraId')?._content;
@@ -369,17 +363,15 @@ export const GeneralInformationForm = ({
         style={{ overflow: 'auto' }}
         width="100%"
       >
-        <form.AppForm>
-          <CosInfoFields
-            form={form}
-            cosId={cosData.zimbraId}
-            cosCreationDate={cosCreationDate}
-            totalAccount={totalAccount}
-            totalDomain={totalDomain}
-            canDeleteCOS={canDeleteCOS}
-            readonlyCOS={readonlyCOS}
-          />
-        </form.AppForm>
+        <CosInfoFields
+          form={form}
+          cosId={cosData.zimbraId}
+          cosCreationDate={cosCreationDate}
+          totalAccount={totalAccount}
+          totalDomain={totalDomain}
+          canDeleteCOS={canDeleteCOS}
+          readonlyCOS={readonlyCOS}
+        />
         <SearchableTable
           title={t('cos.domains_that_use_this_cos', 'Domains that use this COS')}
           searchLabel={t('label.search_for_a_domain', 'Search for a domain')}

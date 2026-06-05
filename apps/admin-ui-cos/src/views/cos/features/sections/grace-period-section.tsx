@@ -7,55 +7,55 @@ import { useField } from '@tanstack/react-form';
 import { Container, Padding, Row, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { withForm } from '../../../../form/form-hook';
-import type { CosFeaturesFormValues } from '../../types';
+import type { CosFeaturesFormApi } from '../../types';
 
-export const GracePeriodSection = withForm({
-  defaultValues: {} as CosFeaturesFormValues,
-  props: { readonlyCOS: false as boolean },
-  render: function Render({ form, readonlyCOS }) {
-    const [t] = useTranslation();
-    const field = useField({ form, name: 'carbonioOtpGracePeriodEnabled' });
-    const otpMgmtField = useField({ form, name: 'carbonioFeatureOTPMgmtEnabled' });
-    const otpWizardField = useField({ form, name: 'carbonioOtpWizardFromUntrusted' });
+type GracePeriodSectionProps = {
+  form: CosFeaturesFormApi;
+  readonlyCOS: boolean;
+};
 
-    return (
-      <Container crossAlignment="flex-start">
-        <Switch
-          value={field.state.value === 'TRUE'}
-          onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
-          label={t(
-            'cos.features.allowSetupDeferralDuringGracePeriod',
-            'Allow setup deferral during grace period',
-          )}
-          iconColor="primary"
-          disabled={
-            readonlyCOS ||
-            otpMgmtField.state.value === 'FALSE' ||
-            otpWizardField.state.value === 'FALSE'
-          }
-        />
-        <Padding left={'extralarge'}>
-          <Row padding={{ left: 'small' }}>
-            <ds-text
-              as="span"
-              color="gray1"
-              size="small"
-              overflow="break-word"
-              disabled={
-                readonlyCOS ||
-                otpMgmtField.state.value === 'FALSE' ||
-                otpWizardField.state.value === 'FALSE'
-              }
-            >
-              {t(
-                'cos.features.allowSetupDeferralDuringGracePeriodInfo',
-                'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
-              )}{' '}
-            </ds-text>
-          </Row>
-        </Padding>
-      </Container>
-    );
-  },
-});
+export const GracePeriodSection = ({ form, readonlyCOS }: GracePeriodSectionProps) => {
+  const [t] = useTranslation();
+  const field = useField({ form, name: 'carbonioOtpGracePeriodEnabled' });
+  const otpMgmtField = useField({ form, name: 'carbonioFeatureOTPMgmtEnabled' });
+  const otpWizardField = useField({ form, name: 'carbonioOtpWizardFromUntrusted' });
+
+  return (
+    <Container crossAlignment="flex-start">
+      <Switch
+        value={field.state.value === 'TRUE'}
+        onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
+        label={t(
+          'cos.features.allowSetupDeferralDuringGracePeriod',
+          'Allow setup deferral during grace period',
+        )}
+        iconColor="primary"
+        disabled={
+          readonlyCOS ||
+          otpMgmtField.state.value === 'FALSE' ||
+          otpWizardField.state.value === 'FALSE'
+        }
+      />
+      <Padding left={'extralarge'}>
+        <Row padding={{ left: 'small' }}>
+          <ds-text
+            as="span"
+            color="gray1"
+            size="small"
+            overflow="break-word"
+            disabled={
+              readonlyCOS ||
+              otpMgmtField.state.value === 'FALSE' ||
+              otpWizardField.state.value === 'FALSE'
+            }
+          >
+            {t(
+              'cos.features.allowSetupDeferralDuringGracePeriodInfo',
+              'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
+            )}{' '}
+          </ds-text>
+        </Row>
+      </Padding>
+    </Container>
+  );
+};

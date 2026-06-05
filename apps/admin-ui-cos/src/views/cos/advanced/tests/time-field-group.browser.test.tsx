@@ -3,12 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { setupBrowserTest } from 'admin-ui-test-utils';
+import { FC } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useAppForm } from '../../../../form/form-hook';
-import type { CosAdvancedFormValues } from '../types';
+import { TimeFieldGroup } from '../fields/time-field-group';
+import { CosAdvancedFormValues, CosFormApi } from '../types';
 
 const timeItems = [
   { label: 'Seconds', value: 's' },
@@ -17,14 +19,11 @@ const timeItems = [
   { label: 'Days', value: 'd' },
 ];
 
-const TestWrapper = ({
+const TestWrapper: FC<{ initialValue?: string; onSubmit?: (v: string) => void }> = ({
   initialValue = '',
   onSubmit = vi.fn(),
-}: {
-  initialValue?: string;
-  onSubmit?: (v: string) => void;
 }) => {
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: {
       zimbraPasswordLockoutDuration: initialValue,
       backupEnabled: false,
@@ -33,17 +32,13 @@ const TestWrapper = ({
     onSubmit: ({ value }) => onSubmit(value.zimbraPasswordLockoutDuration ?? ''),
   });
   return (
-    <form.AppForm>
-      <form.AppField name="zimbraPasswordLockoutDuration">
-        {(field) => (
-          <field.TimeFieldGroup
-            label="Lockout duration"
-            readonlyCOS={false}
-            timeItems={timeItems}
-          />
-        )}
-      </form.AppField>
-    </form.AppForm>
+    <TimeFieldGroup
+      form={form as CosFormApi}
+      name="zimbraPasswordLockoutDuration"
+      label="Lockout duration"
+      readonlyCOS={false}
+      timeItems={timeItems}
+    />
   );
 };
 
@@ -67,25 +62,21 @@ describe('TimeFieldGroup (browser)', () => {
   });
 
   it('disables inputs when readonlyCOS is true', async () => {
-    const W = () => {
-      const f = useAppForm({
+    const W: FC = () => {
+      const f = useForm({
         defaultValues: {
           backupEnabled: false,
           backupSelfUndeleteAllowed: false,
         } as CosAdvancedFormValues,
       });
       return (
-        <f.AppForm>
-          <f.AppField name="zimbraPasswordLockoutDuration">
-            {(field) => (
-              <field.TimeFieldGroup
-                label="Lockout duration"
-                readonlyCOS={true}
-                timeItems={timeItems}
-              />
-            )}
-          </f.AppField>
-        </f.AppForm>
+        <TimeFieldGroup
+          form={f as CosFormApi}
+          name="zimbraPasswordLockoutDuration"
+          label="Lockout duration"
+          readonlyCOS={true}
+          timeItems={timeItems}
+        />
       );
     };
     await setupBrowserTest(<W />);

@@ -6,13 +6,13 @@
 import { useSelector } from '@tanstack/react-store';
 import { Container, Input, Padding } from '@zextras/ui-components';
 import { isValidDecimalInput } from '@zextras/ui-shared';
-import { type ChangeEvent,useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { QuotaRevertIcon } from '../../views/cos/advanced/fields/quota-revert-icon';
-import { BytesToGB, GbToBytes } from '../../views/utility/utils';
-import { useFieldContext } from '../form-context';
+import { BytesToGB, GbToBytes } from '../../../utility/utils';
+import { CosAdvancedFormValues, CosFormApi } from '../types';
 import { getFieldErrorProps } from './field-error';
+import { QuotaRevertIcon } from './quota-revert-icon';
 
 type QuotaGBFieldInnerProps = {
   fieldState: {
@@ -108,29 +108,41 @@ const QuotaGBFieldInner = ({
 };
 
 type QuotaGBFieldProps = {
+  form: CosFormApi;
+  name: keyof CosAdvancedFormValues;
   label: string;
   maximumDigitsLabel: string;
   disabled: boolean;
 };
 
-export const QuotaGBField = ({ label, maximumDigitsLabel, disabled }: QuotaGBFieldProps) => {
+export const QuotaGBField = ({
+  form,
+  name,
+  label,
+  maximumDigitsLabel,
+  disabled,
+}: QuotaGBFieldProps) => {
   const [t] = useTranslation();
-  const field = useFieldContext<string>();
-  const isSubmitted = useSelector(field.form.store, (s) => s.submissionAttempts > 0);
-  const error = getFieldErrorProps(field, isSubmitted, t);
-
+  const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
   return (
-    <QuotaGBFieldInner
-      fieldState={{
-        value: field.state.value as string | undefined,
-        handleChange: field.handleChange,
+    <form.Field name={name}>
+      {(field) => {
+        const error = getFieldErrorProps(field, isSubmitted, t);
+        return (
+          <QuotaGBFieldInner
+            fieldState={{
+              value: field.state.value as string | undefined,
+              handleChange: field.handleChange,
+            }}
+            label={label}
+            maximumDigitsLabel={maximumDigitsLabel}
+            disabled={disabled}
+            hasError={error.hasError}
+            description={error.description}
+            onBlur={() => field.handleBlur()}
+          />
+        );
       }}
-      label={label}
-      maximumDigitsLabel={maximumDigitsLabel}
-      disabled={disabled}
-      hasError={error.hasError}
-      description={error.description}
-      onBlur={() => field.handleBlur()}
-    />
+    </form.Field>
   );
 };
