@@ -54,12 +54,8 @@ export const CreateCos = () => {
   };
 
   return (
-    <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-      <Container
-        crossAlignment="flex-start"
-        mainAlignment="flex-start"
-        background="gray6"
-      >
+    <Container height="fit" padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+      <Container height="fit" crossAlignment="flex-start" mainAlignment="flex-start" background="gray6">
         <Row width="100%" mainAlignment="space-between" crossAlignment="center">
           <Padding all="large">
             <ds-text as="strong" size="medium" weight="bold" color="gray0">
@@ -90,9 +86,8 @@ export const CreateCos = () => {
         orientation="column"
         crossAlignment="flex-start"
         mainAlignment="flex-start"
-        style={{ overflow: 'auto' }}
         width="100%"
-        height="calc(100vh - 150px)"
+        height="fit"
         padding={{ top: 'large' }}
       >
         <Row mainAlignment="flex-start" width="100%">
@@ -154,7 +149,6 @@ export const CreateCos = () => {
           </Container>
         </Row>
       </Container>
-
     </Container>
   );
 };

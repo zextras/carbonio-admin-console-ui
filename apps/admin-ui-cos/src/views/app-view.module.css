@@ -13,7 +13,8 @@
 
 .layout {
 	display: flex;
-	height: calc(100vh - 105px);
+	flex: 1;
+	min-height: 0;
 	width: 100%;
 	overflow: hidden;
 }
