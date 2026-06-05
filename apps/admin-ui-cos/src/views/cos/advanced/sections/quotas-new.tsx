@@ -37,8 +37,10 @@ export const COSQuotasNew = ({
     return undefined;
   })();
 
-  const [quotaOverride, setQuotaOverride] = useState<number | 'unlimited' | undefined>(undefined);
-  const quotaValue = quotaOverride ?? derivedQuotaValue;
+  const [quotaOverride, setQuotaOverride] = useState<number | 'unlimited' | null | undefined>(
+    undefined,
+  );
+  const quotaValue = quotaOverride !== undefined ? quotaOverride : derivedQuotaValue;
 
   useEffect(() => {
     if (totalComputedQuotaLimit === initialTotalComputedQuotaLimit) {
@@ -51,9 +53,12 @@ export const COSQuotasNew = ({
     const parsedValue =
       filteredStringValue === '' ? undefined : Number.parseInt(filteredStringValue, 10);
     const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
-    const valueInBytes = valueInGB === undefined ? undefined : GbToBytes(valueInGB);
-    onChange(valueInBytes ? { type: 'limited', value: valueInBytes } : undefined);
-    setQuotaOverride(valueInGB);
+    if (valueInGB !== undefined) {
+      onChange({ type: 'limited', value: GbToBytes(valueInGB) });
+      setQuotaOverride(valueInGB);
+    } else {
+      setQuotaOverride(null);
+    }
   };
 
   const switchOnChange = () => {

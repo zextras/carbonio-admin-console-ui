@@ -101,7 +101,7 @@ describe('COSQuotasNew (browser)', () => {
     });
   });
 
-  it('should call onChange with undefined when input is cleared', async () => {
+  it('should keep input empty and not call onChange when input is cleared', async () => {
     const onChangeMock = vi.fn();
     await setupBrowserTest(
       <COSQuotasNew
@@ -116,7 +116,8 @@ describe('COSQuotasNew (browser)', () => {
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
     await userEvent.clear(input);
 
-    expect(onChangeMock).toHaveBeenLastCalledWith(undefined);
+    await expect.element(input).toHaveValue('');
+    expect(onChangeMock).not.toHaveBeenCalledWith(undefined);
   });
 
   it('should call onChange with unlimited when switch is toggled on', async () => {

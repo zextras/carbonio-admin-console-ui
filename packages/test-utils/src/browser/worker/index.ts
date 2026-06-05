@@ -37,7 +37,7 @@ export const resetMockWorker = () => {
 };
 
 export const createBrowserAPIInterceptor = async (
-  method: 'get' | 'post',
+  method: 'get' | 'post' | 'put' | 'delete' | 'patch',
   url: string | RegExp,
   response: () => HttpResponse<DefaultBodyType>,
 ): Promise<BrowserAPIInterceptor> => {
