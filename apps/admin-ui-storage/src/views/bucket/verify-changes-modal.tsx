@@ -70,7 +70,7 @@ export const VerifyChangesModal: FC<VerifyChangesModalProps> = ({
       <div className={styles.topDivider} />
       <ds-text as="p" size="medium" color="gray0" className={styles.warning} overflow="break-word">
         <span className={styles.warningPrefix}>
-          {t('label.warning', 'Warning')}:
+          {t('storages.s3Connectors.warning', 'Warning')}:
         </span>{' '}
         <span className={styles.warningText}>
           {t(
@@ -118,7 +118,7 @@ export const VerifyChangesModal: FC<VerifyChangesModalProps> = ({
         <Button color="gray0" label={t('label.cancel', 'CANCEL')} type="outlined" onClick={onClose} />
         <Button
           color="primary"
-          label={t('label.apply_changes', 'APPLY CHANGES')}
+          label={t('storages.s3Connectors.applyChanges', 'APPLY CHANGES')}
           type="default"
           onClick={onApply}
           disabled={!isConfirmed}
