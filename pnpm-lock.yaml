@@ -124,7 +124,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-backup:
@@ -236,7 +236,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -260,7 +260,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-bootstrap:
@@ -420,7 +420,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -447,7 +447,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-cos:
@@ -541,7 +541,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -565,7 +565,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-dashboard:
@@ -683,7 +683,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -707,7 +707,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-domains:
@@ -831,7 +831,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -855,7 +855,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-legalhold:
@@ -973,7 +973,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -997,7 +997,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-mta:
@@ -1115,7 +1115,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -1139,7 +1139,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-notifications:
@@ -1257,7 +1257,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -1281,7 +1281,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-operations:
@@ -1396,7 +1396,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -1420,7 +1420,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-privacy:
@@ -1538,7 +1538,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -1562,7 +1562,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-storage:
@@ -1677,7 +1677,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -1701,7 +1701,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   apps/admin-ui-subscription:
@@ -1819,7 +1819,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -1843,7 +1843,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   packages/test-utils:
@@ -1889,7 +1889,7 @@ importers:
         specifier: ^2.12.0
         version: 2.12.0(eslint@9.39.4(jiti@2.7.0))
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       tailwindcss:
         specifier: ^4.2.1
@@ -1901,7 +1901,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
   packages/ui-components:
@@ -2101,7 +2101,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1
       msw:
-        specifier: ^2.14.2
+        specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.1)(typescript@6.0.3)
       playwright:
         specifier: ^1.59.1
@@ -2125,7 +2125,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/browser-playwright@4.1.7)(@vitest/browser-preview@4.1.7)(@vitest/coverage-istanbul@4.1.7)(@vitest/ui@4.1.7)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.1)(typescript@6.0.3))(vite@8.0.15(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass@1.100.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
       vitest-browser-react:
-        specifier: ^2.1.0
+        specifier: ^2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@4.1.7)
 
 packages:
