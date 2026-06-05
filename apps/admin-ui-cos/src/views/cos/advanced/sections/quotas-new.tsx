@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Input, Switch, Tooltip } from '@zextras/ui-components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ComputedLimit, QuotaSource } from '../../../../services/get-cos-quota';
@@ -39,6 +39,12 @@ export const COSQuotasNew = ({
 
   const [quotaOverride, setQuotaOverride] = useState<number | 'unlimited' | undefined>(undefined);
   const quotaValue = quotaOverride ?? derivedQuotaValue;
+
+  useEffect(() => {
+    if (totalComputedQuotaLimit === initialTotalComputedQuotaLimit) {
+      setQuotaOverride(undefined);
+    }
+  }, [totalComputedQuotaLimit, initialTotalComputedQuotaLimit]);
 
   const inputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const filteredStringValue = e.target.value.replaceAll(/\D/g, '');

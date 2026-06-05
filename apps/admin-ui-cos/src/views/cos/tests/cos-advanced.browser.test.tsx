@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useLoginConfigStore } from '@zextras/ui-shared';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
@@ -631,6 +632,30 @@ describe('CosAdvanced', () => {
       await userEvent.fill(warnPercentInput, '85');
       await expect.element(warnPercentInput).toHaveValue('85');
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+  });
+
+  describe('Total Quota section', () => {
+    beforeEach(() => {
+      useLoginConfigStore.setState({ featureFlags: { totalQuota: true } });
+    });
+
+    afterEach(() => {
+      useLoginConfigStore.setState({ featureFlags: { totalQuota: false } });
+    });
+
+    it('should restore the unlimited quota switch to ON after toggling it off and clicking Cancel', async () => {
+      await setupCosAdvancedTest();
+
+      const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
+      await expect.element(unlimitedSwitch).toBeChecked();
+
+      await userEvent.click(unlimitedSwitch);
+      await expect.element(unlimitedSwitch).not.toBeChecked();
+
+      await page.getByRole('button', { name: 'Cancel' }).click();
+
+      await expect.element(unlimitedSwitch).toBeChecked();
     });
   });
 });
