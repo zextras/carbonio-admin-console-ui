@@ -71,11 +71,37 @@ describe('ds-page-shimmer', () => {
 		it('should make the first row taller (title-like)', async () => {
 			const el = await createDsPageShimmer();
 			const root = el.shadowRoot!;
-			const first = root.querySelector('.row:nth-child(1)');
-			const second = root.querySelector('.row:nth-child(3)');
+			const first = root.querySelector('.row:nth-child(2)');
+			const second = root.querySelector('.row:nth-child(4)');
 			const firstHeight = globalThis.getComputedStyle(first!).height;
 			const secondHeight = globalThis.getComputedStyle(second!).height;
 			expect(parseFloat(firstHeight)).toBeGreaterThan(parseFloat(secondHeight));
+		});
+	});
+
+	describe('progress bar', () => {
+		it('should render a progress bar track', async () => {
+			const el = await createDsPageShimmer();
+			const track = el.shadowRoot!.querySelector('.progress-bar-track');
+			expect(track).not.toBeNull();
+		});
+
+		it('should render a progress bar fill inside the track', async () => {
+			const el = await createDsPageShimmer();
+			const fill = el.shadowRoot!.querySelector('.progress-bar-track .progress-bar-fill');
+			expect(fill).not.toBeNull();
+		});
+
+		it('should start progress at 0', async () => {
+			const el = await createDsPageShimmer();
+			expect(el.progress).toBe(0);
+		});
+
+		it('should animate progress over time', async () => {
+			const el = await createDsPageShimmer();
+			await new Promise((resolve) => setTimeout(resolve, 500));
+			expect(el.progress).toBeGreaterThan(0);
+			expect(el.progress).toBeLessThanOrEqual(90);
 		});
 	});
 
