@@ -86,14 +86,9 @@ export function useCosQuotaState({
   const initTotalComputedQuotaLimit = cosQuotaData?.totalComputedLimit;
   const initTotalQuotaSource = cosQuotaData?.totalQuotaSource;
 
-  const [initialQuota] = useState<{
-    limit: ComputedLimit;
-    source: QuotaSource;
-  } | null>(() =>
-    cosQuotaData
-      ? { limit: cosQuotaData.totalComputedLimit, source: cosQuotaData.totalQuotaSource }
-      : null,
-  );
+  const initialQuota = cosQuotaData
+    ? { limit: cosQuotaData.totalComputedLimit, source: cosQuotaData.totalQuotaSource }
+    : null;
 
   const [totalQuotaOverride, setTotalQuotaOverride] = useState<ComputedLimit | null | undefined>(
     null,

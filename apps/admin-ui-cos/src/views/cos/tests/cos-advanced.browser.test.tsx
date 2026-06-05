@@ -672,5 +672,80 @@ describe('CosAdvanced', () => {
 
       await expect.element(unlimitedSwitch).toBeChecked();
     });
+
+    it('should show the revert icon after changing the quota input value', async () => {
+      const limitedQuotaSeed = {
+        type: 'success',
+        totalComputedLimit: { type: 'limited', value: 1073741824 },
+        totalQuotaSource: 'global',
+      };
+      const queryClient = getQueryClient();
+      await grantUserCosRights(queryClient);
+      queryClient.setQueryData(['cos', 'detail', COS_ID], mockCosData);
+      queryClient.setQueryData(['cos', 'cos-quota', ''], limitedQuotaSeed);
+      queryClient.setQueryData(['cos', 'cos-quota', COS_ID], limitedQuotaSeed);
+      mockCatalogServices();
+      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+
+      await setupBrowserTest(
+        <Routes>
+          <Route path="/:cosId/:operation" element={<CosAdvanced />} />
+        </Routes>,
+        { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
+      );
+
+      const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+      await expect.element(input).toHaveValue('1');
+
+      await userEvent.fill(input, '15');
+
+      await expect
+        .element(page.getByRole('img', { name: 'Click to revert to the inherited value' }))
+        .toBeVisible();
+    });
+
+    it('should not show the revert icon after saving a quota change', async () => {
+      const queryClient = getQueryClient();
+      await grantUserCosRights(queryClient);
+      seedQueryClientData(queryClient);
+      mockCatalogServices();
+      mockCoreAttributeSet();
+      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+      createBrowserSoapAPIInterceptor('ModifyCos', {});
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserAPIInterceptor(
+        'put',
+        `/services/storages/admin/quota/config/cos/${COS_ID}`,
+        () => HttpResponse.json({}),
+      );
+
+      await setupBrowserTest(
+        <Routes>
+          <Route path="/:cosId/:operation" element={<CosAdvanced />} />
+        </Routes>,
+        { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
+      );
+
+      const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
+      await expect.element(unlimitedSwitch).toBeChecked();
+      await userEvent.click(unlimitedSwitch);
+
+      await page.getByRole('button', { name: 'Save' }).click();
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+
+      queryClient.setQueryData(['cos', 'cos-quota', COS_ID], {
+        type: 'success',
+        totalComputedLimit: { type: 'limited', value: 1073741824 },
+        totalQuotaSource: 'cos',
+      });
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'Total quota(GB)' }))
+        .toHaveValue('1');
+
+      await expect
+        .element(page.getByRole('img', { name: 'Click to revert to the inherited value' }))
+        .not.toBeInTheDocument();
+    });
   });
 });
