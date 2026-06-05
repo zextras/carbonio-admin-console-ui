@@ -67,7 +67,7 @@
     "typescript": "^6.0.0",
     "typescript-plugin-css-modules": "^5.2.0",
     "vitest": "^4.1.0",
-    "vitest-browser-react": "^2.1.0"
+    "vitest-browser-react": "^2.2.0"
   },
   "keywords": [],
   "author": "Zextras NP Team <https://www.zextras.com/carbonio/>",
