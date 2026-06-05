@@ -121,27 +121,7 @@ describe('AppView', () => {
   });
 
   it('should hide CosListPanel on create-new-cos route', async () => {
-    const mockCosListResponse = {
-      cos: [
-        {
-          name: 'default',
-          id: 'e00428a1-0c00-11d9-836a-000d93afea2a',
-          a: [
-            { n: 'cn', _content: 'default' },
-            { n: 'description', _content: 'Default COS' },
-          ],
-        },
-      ],
-      searchTotal: 1,
-      more: false,
-    };
-
     const getInfoPromise = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const searchDirPromise = createBrowserSoapAPIInterceptor(
-      'SearchDirectory',
-      mockCosListResponse,
-    );
-    const getAccountPromise = createBrowserSoapAPIInterceptor('GetAccount', {});
     mockCatalogServices();
 
     await setupBrowserTest(<AppView />, {
@@ -149,8 +129,6 @@ describe('AppView', () => {
       queryClient,
     });
     await getInfoPromise;
-    await searchDirPromise;
-    await getAccountPromise;
 
     await expect.element(page.getByText('New COS')).toBeVisible();
     await expect.element(page.getByText('Details')).not.toBeInTheDocument();
