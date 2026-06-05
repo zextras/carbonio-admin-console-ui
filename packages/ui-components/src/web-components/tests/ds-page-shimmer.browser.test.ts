@@ -53,11 +53,11 @@ describe('ds-page-shimmer', () => {
 		it('should update rendered rows when property changes', async () => {
 			const el = await createDsPageShimmer({ rows: '3' });
 			const root = el.shadowRoot!;
-			expect(root.querySelectorAll('.row').length).toBe(3);
+			expect(root.querySelectorAll('.row').length).toBe(6);
 
 			el.rows = 6;
 			await el.updateComplete;
-			expect(root.querySelectorAll('.row').length).toBe(6);
+			expect(root.querySelectorAll('.row').length).toBe(12);
 		});
 	});
 
@@ -65,14 +65,14 @@ describe('ds-page-shimmer', () => {
 		it('should render the correct number of rows', async () => {
 			const el = await createDsPageShimmer({ rows: '4' });
 			const root = el.shadowRoot!;
-			expect(root.querySelectorAll('.row').length).toBe(4);
+			expect(root.querySelectorAll('.row').length).toBe(8);
 		});
 
 		it('should make the first row taller (title-like)', async () => {
 			const el = await createDsPageShimmer();
 			const root = el.shadowRoot!;
-			const first = root.querySelector('.row:nth-child(2)');
-			const second = root.querySelector('.row:nth-child(4)');
+			const first = root.querySelector('.row:nth-child(3)');
+			const second = root.querySelector('.row:nth-child(5)');
 			const firstHeight = globalThis.getComputedStyle(first!).height;
 			const secondHeight = globalThis.getComputedStyle(second!).height;
 			expect(parseFloat(firstHeight)).toBeGreaterThan(parseFloat(secondHeight));

@@ -57,12 +57,12 @@ export class DsPageShimmer extends LitElement {
       height: 1rem;
     }
 
-    .row:nth-child(2) {
+    .row:nth-child(3) {
       width: 30%;
       height: 1.5rem;
     }
 
-    .row:nth-child(3) {
+    .row:nth-child(4) {
       width: 100%;
       height: 2rem;
       margin-top: 0.75rem;
