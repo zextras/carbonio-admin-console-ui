@@ -14,7 +14,7 @@ import {
   Switch,
   useSnackbar,
 } from '@zextras/ui-components';
-import { getSoapFetchRequest, useAllServers, useCurrentUserRights } from '@zextras/ui-shared';
+import { getSoapFetchRequest, setCoreAttributes, useAllServers, useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { type ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,6 @@ import type {
 } from '../../../../types';
 import { CONFIG, SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
-import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {
@@ -472,8 +471,8 @@ const ServerAdvanced: FC = () => {
       },
     };
     setIsRequestInProgress(true);
-    setCoreAttributes(body)
-      .then((data: SetCoreAttributesResponse) => {
+    setCoreAttributes<SetCoreAttributesResponse>(body)
+      .then((data) => {
         setIsRequestInProgress(false);
         if (data?.errors && Array.isArray(data?.errors)) {
           createSnackbar({

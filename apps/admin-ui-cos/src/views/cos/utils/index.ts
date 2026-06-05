@@ -6,19 +6,25 @@
 
 import { SelectItem } from '@zextras/ui-components';
 
-/**
- * Finds a `SelectItem` from a list based on the provided value, returning a fallback item if no match is found.
- *
- * @param {SelectItem[]} selectItems - An array of `SelectItem` objects to search through.
- * @param {string} value - The value to search for in the `selectItems` array.
- * @returns {SelectItem<string>} - The matching `SelectItem` object if found, otherwise returns a fallback item.
- *
- * Note: The fallback item is retrieved using `selectItems[-1]`, which may not work as expected;
- * this is supposed to be used for the Select component of the Design System.
- */
+import { Attribute } from '../../../../types/attribute';
+
 export function findSelectItemWithFallback(
-	selectItems: SelectItem[],
-	value: string
-): SelectItem<string> {
-	return selectItems.find((item) => item.value === value) || selectItems[-1];
+  selectItems: Array<SelectItem<string>>,
+  value: string,
+): SelectItem<string> | undefined {
+  return selectItems.find((item) => item.value === value) ?? selectItems[0];
+}
+
+export function buildCosDataMap(
+  cosInformation: Array<Attribute> | undefined,
+  allowedKeys?: Set<string>,
+): Record<string, string> {
+  const map: Record<string, string> = {};
+  if (!cosInformation?.length) return map;
+  cosInformation.forEach((item) => {
+    if (item?.n && (!allowedKeys || allowedKeys.has(item.n))) {
+      map[item.n] = item._content;
+    }
+  });
+  return map;
 }

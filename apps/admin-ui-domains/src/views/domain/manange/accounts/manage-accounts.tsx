@@ -20,6 +20,11 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import {
+  type CosAttribute,
+  getCoreAttributes,
+  getCosGeneralInformation,
+  type GetCosResponse,
+  getFileQuotaById,
   postSoapFetchRequest,
   useDomainStore,
   useIsAdvanced,
@@ -56,19 +61,12 @@ import {
   getMailboxQuota,
 } from '../../../../services/account-list-directory-service';
 import { checkRightRequest } from '../../../../services/check-right';
-import {
-  CosA,
-  getCosGeneralInformation,
-  GetCosResponse,
-} from '../../../../services/cos-general-information-service';
 import { countAccount } from '../../../../services/count-account-service';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getAccountQuota } from '../../../../services/get-account-quota';
-import { getCoreAttributes } from '../../../../services/get-core-attributes';
 import { getCosQuota } from '../../../../services/get-cos-quota';
 import { getDomainQuota } from '../../../../services/get-domain-quota';
-import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -385,7 +383,7 @@ const ManageAccounts: FC = () => {
   const getCosDetail = useCallback((id: string): void => {
     getCosGeneralInformation(id).then((data: GetCosResponse) => {
       const obj: any = {};
-      data?.cos?.[0]?.a?.forEach((ele: CosA) => {
+      data?.cos?.[0]?.a?.forEach((ele: CosAttribute) => {
         if (obj[ele.n]) {
           obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
         } else {

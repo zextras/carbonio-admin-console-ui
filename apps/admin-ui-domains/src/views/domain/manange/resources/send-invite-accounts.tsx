@@ -16,13 +16,13 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
+import { searchDirectory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
-import { searchDirectory } from '../../../../services/search-directory-service';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { isValidEmail } from '../../../utility/utils';
 
@@ -124,7 +124,7 @@ export const SendInviteAccounts: FC<any> = ({
       const types = 'accounts,distributionlists,aliases';
       const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
 
-      searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name')
+      searchDirectory({ attr: attrs, type: types, domainName: '', query, offset: 0, limit: RECORD_DISPLAY_LIMIT, sortBy: 'name' })
         .then((data) => {
           const result: any[] = [];
           const dl = data?.dl;

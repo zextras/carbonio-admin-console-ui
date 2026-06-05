@@ -110,6 +110,7 @@ export class DsIcon extends LitElement {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         role="img"
+        aria-label=${this.ariaLabel || nothing}
         data-testid="icon: ${this.icon}"
         @click=${this.handleClick}
       >

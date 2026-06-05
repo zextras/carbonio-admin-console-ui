@@ -6,7 +6,6 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -66,7 +65,6 @@ async function expectTuningSectionVisible() {
 
 describe('MTAPostScreenTuning', () => {
   beforeEach(async () => {
-    await grantUserConfigRights();
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse());
   });
 
@@ -75,13 +73,13 @@ describe('MTAPostScreenTuning', () => {
   });
 
   it('renders the page title', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Postscreen Tuning', { exact: true })).toBeVisible();
   });
 
   it('renders the greylisting info banner', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     await expect
       .element(
@@ -93,7 +91,7 @@ describe('MTAPostScreenTuning', () => {
   });
 
   it('renders all three sections with their controls', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     await expectBlacklistingSectionVisible();
     await expectDnsBlacklistingSectionVisible();
@@ -101,7 +99,7 @@ describe('MTAPostScreenTuning', () => {
   });
 
   it('renders Blacklisting section with inputs and select', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Blacklisting', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Blacklist Action', { exact: true })).toBeVisible();
@@ -109,7 +107,7 @@ describe('MTAPostScreenTuning', () => {
   });
 
   it('renders DNS Blacklisting section with all inputs and selects', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     await expect.element(page.getByText('DNS Blacklisting', { exact: true })).toBeVisible();
     await expect.element(page.getByText('DNS Blacklist Sites')).toBeVisible();
@@ -124,7 +122,7 @@ describe('MTAPostScreenTuning', () => {
   });
 
   it('renders Tuning section with all three switches', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Tuning', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Bare Newline')).toBeVisible();
@@ -133,7 +131,7 @@ describe('MTAPostScreenTuning', () => {
   });
 
   it('renders Action selects and Command Time to Live inputs in the Tuning section', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     const actionLabels = page.getByText('Action', { exact: true }).all();
     expect(actionLabels.length).toBeGreaterThanOrEqual(3);
@@ -146,7 +144,7 @@ describe('MTAPostScreenTuning', () => {
   });
 
   it('does not render Save and Cancel buttons when no changes are made', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Postscreen Tuning', { exact: true })).toBeVisible();
     expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
@@ -154,7 +152,7 @@ describe('MTAPostScreenTuning', () => {
   });
 
   it('shows Save and Cancel when a switch changes', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     const bareNewlineSwitch = page.getByText('Bare Newline');
     await expect.element(bareNewlineSwitch).toBeVisible();
@@ -165,7 +163,7 @@ describe('MTAPostScreenTuning', () => {
   });
 
   it('resets dirty state when Cancel is clicked', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     await page.getByText('Bare Newline').click();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
@@ -177,7 +175,7 @@ describe('MTAPostScreenTuning', () => {
   });
 
   it('dismisses the greylisting info banner when close is clicked', async () => {
-    await setupBrowserTest(<MTAPostScreenTuning />);
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
     await expect
       .element(

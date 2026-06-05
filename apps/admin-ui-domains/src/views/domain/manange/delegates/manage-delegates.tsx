@@ -18,7 +18,11 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import {
+  type CosAttribute,
+  getCosGeneralInformation,
+  type GetCosResponse,
   postSoapFetchRequest,
+  searchDirectory,
   useDomainStore,
   useIsAdvanced,
   useUserAccount,
@@ -41,11 +45,6 @@ import {
 } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import { checkRightRequest } from '../../../../services/check-right';
-import {
-  CosA,
-  getCosGeneralInformation,
-  GetCosResponse,
-} from '../../../../services/cos-general-information-service';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getSessions } from '../../../../services/get-sessions';
@@ -53,7 +52,6 @@ import { getSingatures } from '../../../../services/get-signature-service';
 import { InitDomainForDelegation } from '../../../../services/init-domain-for-delegation';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
-import { searchDirectory } from '../../../../services/search-directory-service';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { AccountContext } from '../accounts/account-context';
@@ -227,7 +225,7 @@ const ManageDelegates: FC = () => {
   const getCosDetail = useCallback((id: string): void => {
     getCosGeneralInformation(id).then((data: GetCosResponse) => {
       const obj: any = {};
-      data?.cos?.[0]?.a?.forEach((ele: CosA) => {
+      data?.cos?.[0]?.a?.forEach((ele: CosAttribute) => {
         if (obj[ele.n]) {
           obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
         } else {
@@ -598,11 +596,14 @@ const ManageDelegates: FC = () => {
       const attrs =
         'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
       const types = 'distributionlists,dynamicgroups';
-      searchDirectory(attrs, types, name ?? '', query, offsetData, limitData, 'name')
+      searchDirectory({ attr: attrs, type: types, domainName: name ?? '', query, offset: offsetData, limit: limitData, sortBy: 'name' })
         .then((res) => {
           const data = res?.dl;
           if (data && type === SYSTEM_ACCOUNT_FLAG) {
-            setDistributionList((prevDistributionList) => [...prevDistributionList, ...data]);
+            setDistributionList((prevDistributionList) => [
+              ...prevDistributionList,
+              ...(data as unknown as objectType[]),
+            ]);
             if (res.more) {
               fetchDistributionList(
                 query,
@@ -613,7 +614,7 @@ const ManageDelegates: FC = () => {
               );
             }
           } else if (type === ADMIN_GROUP_FLAG) {
-            setIsInitDomain(data?.length > 0);
+            setIsInitDomain((data?.length ?? 0) > 0);
             setLoading(false);
           }
         })

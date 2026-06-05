@@ -6,7 +6,6 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -63,7 +62,6 @@ async function expectAntivirusWarningsSwitchesVisible() {
 
 describe('MTAAntiVirusAndAntiSpam', () => {
   beforeEach(async () => {
-    await grantUserConfigRights();
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse());
   });
 
@@ -72,45 +70,45 @@ describe('MTAAntiVirusAndAntiSpam', () => {
   });
 
   it('renders the page title', async () => {
-    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />);
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Antivirus & Antispam', { exact: true })).toBeVisible();
   });
 
   it('renders the Antispam section with all controls', async () => {
-    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />);
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
     await expectAntispamSectionVisible();
   });
 
   it('renders the Antivirus Definitions section with all controls', async () => {
-    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />);
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
     await expectAntivirusDefinitionsSectionVisible();
   });
 
   it('renders antivirus warning switches', async () => {
-    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />);
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
     await expectAntivirusWarningsSwitchesVisible();
   });
 
   it('renders the antivirus mirrors table with data', async () => {
-    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />);
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Antivirus Mirrors')).toBeVisible();
     await expect.element(page.getByText('db.local.clamav.net')).toBeVisible();
   });
 
   it('renders the additional virus definitions table with data', async () => {
-    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />);
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Additional Virus Definitions')).toBeVisible();
     await expect.element(page.getByText('https://custom.av.example.com/db')).toBeVisible();
   });
 
   it('renders Add and Remove buttons for both definition tables', async () => {
-    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />);
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
     const addButtons = page.getByRole('button', { name: 'Add' }).all();
     expect(addButtons.length).toBe(2);
@@ -120,7 +118,7 @@ describe('MTAAntiVirusAndAntiSpam', () => {
   });
 
   it('does not render Save and Cancel buttons when no changes are made', async () => {
-    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />);
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Antivirus & Antispam', { exact: true })).toBeVisible();
     expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
@@ -128,7 +126,7 @@ describe('MTAAntiVirusAndAntiSpam', () => {
   });
 
   it('shows Save and Cancel when a switch changes', async () => {
-    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />);
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
     const dkimSwitch = page.getByText('Verify DKIM validity');
     await expect.element(dkimSwitch).toBeVisible();
@@ -139,7 +137,7 @@ describe('MTAAntiVirusAndAntiSpam', () => {
   });
 
   it('resets dirty state when Cancel is clicked', async () => {
-    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />);
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
     await page.getByText('Verify DKIM validity').click();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();

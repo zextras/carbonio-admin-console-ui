@@ -1,0 +1,85 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import { useForm } from '@tanstack/react-form';
+import { setupBrowserTest } from 'admin-ui-test-utils';
+import { describe, expect, it, vi } from 'vitest';
+import { page } from 'vitest/browser';
+
+import { TimeFieldGroup } from '../fields/time-field-group';
+import { CosAdvancedFormValues, CosFormApi } from '../types';
+
+const timeItems = [
+  { label: 'Seconds', value: 's' },
+  { label: 'Minutes', value: 'm' },
+  { label: 'Hours', value: 'h' },
+  { label: 'Days', value: 'd' },
+];
+
+const TestWrapper = ({
+  initialValue = '',
+  onSubmit = vi.fn(),
+}: { initialValue?: string; onSubmit?: (v: string) => void }) => {
+  const form = useForm({
+    defaultValues: {
+      zimbraPasswordLockoutDuration: initialValue,
+      backupEnabled: false,
+      backupSelfUndeleteAllowed: false,
+    } as CosAdvancedFormValues,
+    onSubmit: ({ value }) => onSubmit(value.zimbraPasswordLockoutDuration ?? ''),
+  });
+  return (
+    <TimeFieldGroup
+      form={form as CosFormApi}
+      name="zimbraPasswordLockoutDuration"
+      label="Lockout duration"
+      readonlyCOS={false}
+      timeItems={timeItems}
+    />
+  );
+};
+
+describe('TimeFieldGroup (browser)', () => {
+  it('renders the label and a time range select', async () => {
+    await setupBrowserTest(<TestWrapper />);
+    await expect.element(page.getByText('Lockout duration')).toBeVisible();
+    await expect.element(page.getByText('Time Range')).toBeVisible();
+  });
+
+  it('splits an existing combined value into num and unit', async () => {
+    await setupBrowserTest(<TestWrapper initialValue="5m" />);
+    const input = page.getByRole('textbox', { name: 'Lockout duration' });
+    await expect.element(input).toHaveValue('5');
+  });
+
+  it('shows empty input when value is empty', async () => {
+    await setupBrowserTest(<TestWrapper initialValue="" />);
+    const input = page.getByRole('textbox', { name: 'Lockout duration' });
+    await expect.element(input).toHaveValue('');
+  });
+
+  it('disables inputs when readonlyCOS is true', async () => {
+    const W = () => {
+      const f = useForm({
+        defaultValues: {
+          backupEnabled: false,
+          backupSelfUndeleteAllowed: false,
+        } as CosAdvancedFormValues,
+      });
+      return (
+        <TimeFieldGroup
+          form={f as CosFormApi}
+          name="zimbraPasswordLockoutDuration"
+          label="Lockout duration"
+          readonlyCOS={true}
+          timeItems={timeItems}
+        />
+      );
+    };
+    await setupBrowserTest(<W />);
+    const input = page.getByRole('textbox', { name: 'Lockout duration' });
+    await expect.element(input).toBeDisabled();
+  });
+});

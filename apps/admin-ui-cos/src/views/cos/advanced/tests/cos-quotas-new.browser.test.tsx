@@ -8,10 +8,61 @@ import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { ComputedLimit } from '../../../../services/get-cos-quota';
-import COSQuotasNew from '../cos-quotas-new';
+import { useCosQuotaState } from '../hooks/use-cos-quota-state';
+import { COSQuotasNew } from '../sections/quotas-new';
+
+vi.mock('../../../../services/use-file-quota', () => ({
+  useFileQuota: () => ({ data: undefined }),
+}));
+vi.mock('../../../../services/use-invalidate-cos-quota', () => ({
+  useInvalidateCosQuota: () => vi.fn(),
+}));
+vi.mock('../../../../services/set-cos-quota', () => ({ setCosQuota: vi.fn() }));
+vi.mock('../../../../services/unset-cos-quota', () => ({ unsetCosQuota: vi.fn() }));
+vi.mock('@zextras/ui-shared', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
+  return {
+    ...actual,
+    isValidDecimalInput: (v: string) => /^\d*\.?\d*$/.test(v),
+    setFileQuotaLimitById: vi.fn().mockResolvedValue(undefined),
+    resetFileQuotaLimitById: vi.fn().mockResolvedValue(undefined),
+  };
+});
 
 const limitedQuota: ComputedLimit = { type: 'limited', value: 10737418240 }; // 10 GB
 const unlimitedQuota: ComputedLimit = { type: 'unlimited' };
+
+const QuotaWrapper = ({
+  initialQuota,
+  initialSource = 'global',
+}: {
+  initialQuota: ComputedLimit;
+  initialSource?: 'global' | 'cos';
+}) => {
+  const quotaState = useCosQuotaState({
+    cosData: { zimbraId: 'cos-1', zimbraMailQuota: '' } as never,
+    cosQuotaData: {
+      totalComputedLimit: initialQuota,
+      totalQuotaSource: initialSource,
+    },
+    isTotalQuotaActive: true,
+    isAdvanced: true,
+  });
+
+  return (
+    <>
+      <COSQuotasNew
+        totalComputedQuotaLimit={quotaState.totalComputedQuotaLimit}
+        totalQuotaSource={quotaState.totalQuotaSource}
+        initialTotalComputedQuotaLimit={quotaState.initialTotalComputedQuotaLimit}
+        onChange={quotaState.onTotalQuotaChange}
+        readonlyCOS={false}
+        showRevertButton={quotaState.showQuotaRevertButton}
+      />
+      <span data-testid="is-dirty">{String(quotaState.isDirty)}</span>
+    </>
+  );
+};
 
 describe('COSQuotasNew (browser)', () => {
   it('should render the unlimited quota switch and total quota input', async () => {
@@ -21,6 +72,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={vi.fn()}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
@@ -36,12 +88,12 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={onChangeMock}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
-    await userEvent.clear(input);
-    await userEvent.type(input, '5');
+    await userEvent.fill(input, '5');
 
     expect(onChangeMock).toHaveBeenLastCalledWith({
       type: 'limited',
@@ -49,7 +101,7 @@ describe('COSQuotasNew (browser)', () => {
     });
   });
 
-  it('should call onChange with undefined when input is cleared', async () => {
+  it('should keep input empty and not call onChange when input is cleared', async () => {
     const onChangeMock = vi.fn();
     await setupBrowserTest(
       <COSQuotasNew
@@ -57,13 +109,15 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={onChangeMock}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
     await userEvent.clear(input);
 
-    expect(onChangeMock).toHaveBeenLastCalledWith(undefined);
+    await expect.element(input).toHaveValue('');
+    expect(onChangeMock).not.toHaveBeenCalledWith(undefined);
   });
 
   it('should call onChange with unlimited when switch is toggled on', async () => {
@@ -74,11 +128,11 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={onChangeMock}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
-    const switchIcon = page.getByTestId('icon: ToggleLeftOutline');
-    await userEvent.click(switchIcon);
+    await userEvent.click(page.getByRole('switch', { name: 'Unlimited quota' }));
 
     expect(onChangeMock).toHaveBeenLastCalledWith({ type: 'unlimited' });
   });
@@ -90,6 +144,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={unlimitedQuota}
         onChange={vi.fn()}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
@@ -105,11 +160,11 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={onChangeMock}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
-    const switchIcon = page.getByTestId('icon: ToggleRight');
-    await userEvent.click(switchIcon);
+    await userEvent.click(page.getByRole('switch', { name: 'Unlimited quota' }));
 
     expect(onChangeMock).toHaveBeenLastCalledWith({
       type: 'limited',
@@ -120,16 +175,16 @@ describe('COSQuotasNew (browser)', () => {
   it('should strip non-numeric characters from input', async () => {
     await setupBrowserTest(
       <COSQuotasNew
-        totalComputedQuotaLimit={limitedQuota}
-        initialTotalComputedQuotaLimit={limitedQuota}
+        totalComputedQuotaLimit={undefined}
+        initialTotalComputedQuotaLimit={undefined}
         onChange={vi.fn()}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
-    await userEvent.clear(input);
-    await userEvent.type(input, 'abc');
+    await userEvent.fill(input, 'abc');
 
     await expect.element(input).toHaveValue('');
   });
@@ -141,6 +196,7 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={vi.fn()}
         readonlyCOS={true}
+        showRevertButton={false}
       />,
     );
 
@@ -148,7 +204,7 @@ describe('COSQuotasNew (browser)', () => {
     await expect.element(input).toBeDisabled();
   });
 
-  it('should render revert icon when quota source is cos', async () => {
+  it('should render revert icon when showRevertButton is true', async () => {
     await setupBrowserTest(
       <COSQuotasNew
         totalComputedQuotaLimit={limitedQuota}
@@ -156,10 +212,11 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={vi.fn()}
         readonlyCOS={false}
+        showRevertButton={true}
       />,
     );
 
-    const revertIcon = page.getByTestId('icon: RefreshOutline');
+    const revertIcon = page.getByRole('img', { name: 'Click to revert to the inherited value' });
     await expect.element(revertIcon).toBeVisible();
 
     await userEvent.hover(revertIcon);
@@ -175,10 +232,11 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={limitedQuota}
         onChange={onChangeMock}
         readonlyCOS={false}
+        showRevertButton={true}
       />,
     );
 
-    await userEvent.click(page.getByTestId('icon: RefreshOutline'));
+    await userEvent.click(page.getByRole('img', { name: 'Click to revert to the inherited value' }));
 
     expect(onChangeMock).toHaveBeenLastCalledWith(undefined);
   });
@@ -190,10 +248,24 @@ describe('COSQuotasNew (browser)', () => {
         initialTotalComputedQuotaLimit={undefined}
         onChange={vi.fn()}
         readonlyCOS={false}
+        showRevertButton={false}
       />,
     );
 
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
     await expect.element(input).toHaveValue('');
+  });
+
+  it('should not stay dirty when unlimited quota is toggled off and back on', async () => {
+    await setupBrowserTest(<QuotaWrapper initialQuota={unlimitedQuota} initialSource="global" />);
+
+    await expect.element(page.getByTestId('is-dirty')).toHaveTextContent('false');
+
+    await userEvent.click(page.getByRole('switch', { name: 'Unlimited quota' }));
+    await expect.element(page.getByTestId('is-dirty')).toHaveTextContent('true');
+
+    await userEvent.click(page.getByRole('switch', { name: 'Unlimited quota' }));
+
+    await expect.element(page.getByTestId('is-dirty')).toHaveTextContent('false');
   });
 });

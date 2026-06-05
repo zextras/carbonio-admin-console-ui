@@ -18,7 +18,7 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { getSoapFetchRequest, soapFetch, useAllServers } from '@zextras/ui-shared';
+import { getSoapFetchRequest, setCoreAttributes, soapFetch, useAllServers } from '@zextras/ui-shared';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -34,7 +34,6 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
-import { setCoreAttributes } from '../../../services/set-core-attributes';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
@@ -320,8 +319,8 @@ const HSMsettingPanel: FC = () => {
         configType: SERVER,
       },
     };
-    setCoreAttributes(body)
-      .then((data: { errors?: Array<{ error: string }>; error?: string } | undefined) => {
+    setCoreAttributes<{ errors?: Array<{ error: string }>; error?: string }>(body)
+      .then((data) => {
         setIsRequestInProgress(false);
         if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
           let errMessage = errorMessage;

@@ -8,7 +8,10 @@ import { DefaultBodyType, http, HttpResponse, HttpResponseResolver, StrictReques
 import { setupWorker } from 'msw/browser';
 
 const handleGetTranslations: HttpResponseResolver<never, any> = async () => HttpResponse.json({});
-const defaultHandlers = [http.get('/i18n/en.json', handleGetTranslations)];
+const defaultHandlers = [
+  http.get('/i18n/en.json', handleGetTranslations),
+  http.get(/\[object%20Object\]/, () => new HttpResponse(null, { status: 200 })),
+];
 
 export const worker = setupWorker(...defaultHandlers);
 
@@ -34,8 +37,8 @@ export const resetMockWorker = () => {
 };
 
 export const createBrowserAPIInterceptor = async (
-  method: 'get' | 'post',
-  url: string,
+  method: 'get' | 'post' | 'put' | 'delete' | 'patch',
+  url: string | RegExp,
   response: () => HttpResponse<DefaultBodyType>,
 ): Promise<BrowserAPIInterceptor> => {
   let calledTimes = 0;

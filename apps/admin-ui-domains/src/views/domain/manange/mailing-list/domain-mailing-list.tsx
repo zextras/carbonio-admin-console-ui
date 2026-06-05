@@ -17,7 +17,7 @@ import {
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
+import { searchDirectory, useDomainStore } from '@zextras/ui-shared';
 import { debounce } from 'lodash';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -37,7 +37,6 @@ import {
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
-import { searchDirectory } from '../../../../services/search-directory-service';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list';
@@ -182,7 +181,7 @@ const DomainMailingList: FC = () => {
     const types = 'distributionlists,dynamicgroups';
     const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
     setIsRequestInProgress(true);
-    searchDirectory(attrs, types, domainName || '', query, offset, limit, sortedColumn, sortOrder)
+    searchDirectory({ attr: attrs, type: types, domainName: domainName || '', query, offset, limit, sortBy: sortedColumn, sortAscending: sortOrder })
       .then((data) => {
         const dlList = data?.dl;
         if (dlList) {
