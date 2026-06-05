@@ -27,10 +27,10 @@ import {
   MANAGE,
   NOTIFICATION_ROUTE_ID,
   SERVER,
-  SERVER_VERSION,
   SERVERS_LIST,
   STORAGES_ROUTE_ID,
 } from '../../constants';
+import { useServerVersion } from '../../hooks/use-server-version';
 import CarbonioVersionInformation from './carbonio-version-information-view';
 import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
@@ -41,6 +41,7 @@ const Dashboard: FC = () => {
   const navigate = useNavigate();
   const accounts = useUserAccounts();
   const [userName, setUserName] = useState<string>('');
+  const { serverVersion } = useServerVersion();
 
   const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
   const isAdvanced = useIsAdvanced();
@@ -116,7 +117,7 @@ const Dashboard: FC = () => {
         {isAdvanced && adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
         <ListRow>
           <Container width={'40'} padding={{ all: 'extralarge' }}>
-            <CarbonioVersionInformation userName={userName} serverVersion={SERVER_VERSION} />
+            <CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
           </Container>
           <Container width={'60'} padding={{ all: 'extralarge' }}>
             <QuickAccess
@@ -138,7 +139,7 @@ const Dashboard: FC = () => {
             <Container padding={{ all: 'extralarge' }}>
               <DashboardServerList
                 goToMailStoreServerList={goToMailStoreServerList}
-                serverVersion={SERVER_VERSION}
+                serverVersion={serverVersion}
               />
             </Container>
           </ListRow>
