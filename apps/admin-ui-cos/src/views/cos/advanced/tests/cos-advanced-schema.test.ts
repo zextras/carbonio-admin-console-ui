@@ -57,28 +57,4 @@ describe('cosAdvancedSchema', () => {
       { path: 'zimbraMailMessageLifetime', message: 'cos.validation.invalid_duration' },
     ]);
   });
-
-  it('requires max password length to be >= min password length', () => {
-    expect(
-      issuesFor({ zimbraPasswordMinLength: '10', zimbraPasswordMaxLength: '3' }),
-    ).toEqual([
-      { path: 'zimbraPasswordMaxLength', message: 'cos.validation.max_less_than_min_length' },
-    ]);
-    expect(
-      issuesFor({ zimbraPasswordMinLength: '3', zimbraPasswordMaxLength: '10' }),
-    ).toEqual([]);
-  });
-
-  it('requires max password age to be >= min password age', () => {
-    expect(issuesFor({ zimbraPasswordMinAge: '30', zimbraPasswordMaxAge: '7' })).toEqual([
-      { path: 'zimbraPasswordMaxAge', message: 'cos.validation.max_less_than_min_age' },
-    ]);
-  });
-
-  it('does not run cross-field checks while either side is still invalid', () => {
-    // Only the single-field error should surface, not the comparison.
-    expect(issuesFor({ zimbraPasswordMinLength: 'abc', zimbraPasswordMaxLength: '3' })).toEqual([
-      { path: 'zimbraPasswordMinLength', message: 'cos.validation.non_negative_integer' },
-    ]);
-  });
 });

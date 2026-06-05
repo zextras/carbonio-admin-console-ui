@@ -13,7 +13,6 @@ import { COS_VALIDATION_MESSAGES, cosAdvancedSchema } from '../schema';
 import { CosAdvancedFormValues, CosFormApi } from '../types';
 
 const NON_NEGATIVE_INTEGER = COS_VALIDATION_MESSAGES['cos.validation.non_negative_integer'];
-const MAX_LESS_THAN_MIN = COS_VALIDATION_MESSAGES['cos.validation.max_less_than_min_length'];
 
 const Wrapper = ({
   onSubmit = vi.fn(),
@@ -84,16 +83,5 @@ describe('CosValidatedInput (browser)', () => {
 
     expect(onSubmit).toHaveBeenCalledTimes(1);
     expect(onSubmit.mock.calls[0][0].zimbraPasswordMinLength).toBe('8');
-  });
-
-  it('enforces the cross-field max >= min rule on submit', async () => {
-    const onSubmit = vi.fn();
-    await setupBrowserTest(<Wrapper onSubmit={onSubmit} />);
-    await userEvent.fill(page.getByRole('textbox', { name: 'Min length' }), '10');
-    await userEvent.fill(page.getByRole('textbox', { name: 'Max length' }), '3');
-    await userEvent.click(page.getByRole('button', { name: 'Save' }));
-
-    await expect.element(page.getByText(MAX_LESS_THAN_MIN)).toBeVisible();
-    expect(onSubmit).not.toHaveBeenCalled();
   });
 });

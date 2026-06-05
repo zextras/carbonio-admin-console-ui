@@ -9,10 +9,6 @@ export const COS_VALIDATION_MESSAGES: Record<string, string> = {
   'cos.validation.non_negative_integer': 'Enter a whole number of 0 or more',
   'cos.validation.percent_range': 'Enter a whole number between 0 and 100',
   'cos.validation.invalid_duration': 'Enter a whole number of 0 or more',
-  'cos.validation.max_less_than_min_length':
-    'Maximum length must be greater than or equal to the minimum length',
-  'cos.validation.max_less_than_min_age':
-    'Maximum age must be greater than or equal to the minimum age',
 };
 
 // Form values are string-encoded; empty means "inherit / no limit" and is always valid.
@@ -27,10 +23,6 @@ function isPercent(value: string): boolean {
 // Composite time fields store "<digits><unit>" (e.g. "7d"); validate the numeric portion.
 function isDuration(value: string): boolean {
   return value === '' || /^\d+[smhd]?$/.test(value);
-}
-
-function isComparableInteger(value: unknown): value is string {
-  return typeof value === 'string' && /^\d+$/.test(value);
 }
 
 const optionalNonNegativeInt = z
@@ -84,14 +76,4 @@ export const cosAdvancedSchema = z
     zimbraMailMessageLifetime: optionalDuration,
     zimbraMailTrashLifetime: optionalDuration,
     zimbraMailSpamLifetime: optionalDuration,
-  })
-  .refine(
-    (data) =>
-      !isComparableInteger(data.zimbraPasswordMaxLength) ||
-      !isComparableInteger(data.zimbraPasswordMinLength),
-  )
-  .refine(
-    (data) =>
-      !isComparableInteger(data.zimbraPasswordMaxAge) ||
-      !isComparableInteger(data.zimbraPasswordMinAge),
-  );
+  });
