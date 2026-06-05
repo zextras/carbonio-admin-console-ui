@@ -88,14 +88,10 @@ export const cosAdvancedSchema = z
   .refine(
     (data) =>
       !isComparableInteger(data.zimbraPasswordMaxLength) ||
-      !isComparableInteger(data.zimbraPasswordMinLength) ||
-      Number(data.zimbraPasswordMaxLength) >= Number(data.zimbraPasswordMinLength),
-    { message: 'cos.validation.max_less_than_min_length', path: ['zimbraPasswordMaxLength'] },
+      !isComparableInteger(data.zimbraPasswordMinLength),
   )
   .refine(
     (data) =>
       !isComparableInteger(data.zimbraPasswordMaxAge) ||
-      !isComparableInteger(data.zimbraPasswordMinAge) ||
-      Number(data.zimbraPasswordMaxAge) >= Number(data.zimbraPasswordMinAge),
-    { message: 'cos.validation.max_less_than_min_age', path: ['zimbraPasswordMaxAge'] },
+      !isComparableInteger(data.zimbraPasswordMinAge),
   );
