@@ -5,7 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, Input, ListRow, Select } from '@zextras/ui-components';
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../../../../types/account';
@@ -22,14 +22,14 @@ type TimeFieldGroupProps = {
   disabled?: boolean;
 };
 
-export const TimeFieldGroup: FC<TimeFieldGroupProps> = ({
+export const TimeFieldGroup = ({
   form,
   name,
   label,
   readonlyCOS,
   timeItems,
   disabled,
-}) => {
+}: TimeFieldGroupProps) => {
   const [t] = useTranslation();
   const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
   return (

@@ -5,7 +5,6 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { FC } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
@@ -16,9 +15,9 @@ import { CosAdvancedFormValues, CosFormApi } from '../types';
 const NON_NEGATIVE_INTEGER = COS_VALIDATION_MESSAGES['cos.validation.non_negative_integer'];
 const MAX_LESS_THAN_MIN = COS_VALIDATION_MESSAGES['cos.validation.max_less_than_min_length'];
 
-const Wrapper: FC<{ onSubmit?: (value: CosAdvancedFormValues) => void }> = ({
+const Wrapper = ({
   onSubmit = vi.fn(),
-}) => {
+}: { onSubmit?: (value: CosAdvancedFormValues) => void }) => {
   const form = useForm({
     defaultValues: {
       zimbraPasswordMinLength: '',

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, ListRow, Padding, Row, Switch } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosValidatedInput } from '../fields/validated-input';
@@ -15,7 +14,7 @@ type COSPasswordProps = {
   readonlyCOS: boolean;
 };
 
-const COSPassword: FC<COSPasswordProps> = ({ form, readonlyCOS }) => {
+export const COSPassword = ({ form, readonlyCOS }: COSPasswordProps) => {
   const [t] = useTranslation();
   const labels = {
     password: t('cos.password', 'Password'),
@@ -257,5 +256,3 @@ const COSPassword: FC<COSPasswordProps> = ({ form, readonlyCOS }) => {
     </Row>
   );
 };
-
-export default COSPassword;

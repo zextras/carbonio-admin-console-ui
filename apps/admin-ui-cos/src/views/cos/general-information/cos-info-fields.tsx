@@ -12,7 +12,7 @@ import {
   ListRow,
   Row,
 } from '@zextras/ui-components';
-import type { ChangeEvent, FC } from 'react';
+import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export type GeneralInfoFormValues = {
@@ -46,7 +46,7 @@ type CosInfoFieldsProps = {
   readonlyCOS: boolean;
 };
 
-export const CosInfoFields: FC<CosInfoFieldsProps> = ({
+export const CosInfoFields = ({
   form,
   cosId,
   cosCreationDate,
@@ -54,7 +54,7 @@ export const CosInfoFields: FC<CosInfoFieldsProps> = ({
   totalDomain,
   canDeleteCOS,
   readonlyCOS,
-}) => {
+}: CosInfoFieldsProps) => {
   const [t] = useTranslation();
 
   return (

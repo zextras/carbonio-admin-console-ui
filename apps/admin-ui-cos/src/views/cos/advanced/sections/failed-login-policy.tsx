@@ -5,7 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TimeItems } from '../../../../../types/general';
@@ -19,7 +19,7 @@ type FailedLoginPolicyProps = {
 	timeItems: TimeItems;
 };
 
-const COSFailedLoginPolicy: FC<FailedLoginPolicyProps> = ({ form, readonlyCOS, timeItems }) => {
+const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLoginPolicyProps) => {
 	const [t] = useTranslation();
 	const isLockoutEnabled = useSelector(
 		form.store,

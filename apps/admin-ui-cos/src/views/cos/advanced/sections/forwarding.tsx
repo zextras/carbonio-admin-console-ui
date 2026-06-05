@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, ListRow, Row } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosValidatedInput } from '../fields/validated-input';
@@ -15,7 +14,7 @@ type ForwardingProps = {
   readonlyCOS: boolean;
 };
 
-const COSForwarding: FC<ForwardingProps> = ({ form, readonlyCOS }) => {
+const COSForwarding = ({ form, readonlyCOS }: ForwardingProps) => {
   const [t] = useTranslation();
   const labels = {
     cosForwarding: t('cos.forwarding', 'Forwarding'),

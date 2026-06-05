@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Row } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TimeItems } from '../../../../../types/general';
@@ -17,7 +16,7 @@ type TimeoutPolicyProps = {
   timeItems: TimeItems;
 };
 
-export const COSTimeoutPolicy: FC<TimeoutPolicyProps> = ({ form, readonlyCOS, timeItems }) => {
+export const COSTimeoutPolicy = ({ form, readonlyCOS, timeItems }: TimeoutPolicyProps) => {
   const [t] = useTranslation();
   const labels = {
     timeoutPolicy: t('cos.timeout_policy', 'Timeout Policy'),

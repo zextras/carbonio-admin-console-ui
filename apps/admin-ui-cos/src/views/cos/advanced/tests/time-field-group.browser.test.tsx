@@ -5,7 +5,6 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { FC } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -19,10 +18,10 @@ const timeItems = [
   { label: 'Days', value: 'd' },
 ];
 
-const TestWrapper: FC<{ initialValue?: string; onSubmit?: (v: string) => void }> = ({
+const TestWrapper = ({
   initialValue = '',
   onSubmit = vi.fn(),
-}) => {
+}: { initialValue?: string; onSubmit?: (v: string) => void }) => {
   const form = useForm({
     defaultValues: {
       zimbraPasswordLockoutDuration: initialValue,
@@ -62,7 +61,7 @@ describe('TimeFieldGroup (browser)', () => {
   });
 
   it('disables inputs when readonlyCOS is true', async () => {
-    const W: FC = () => {
+    const W = () => {
       const f = useForm({
         defaultValues: {
           backupEnabled: false,

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Row } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TimeItems } from '../../../../../types/general';
@@ -17,11 +16,11 @@ type EmailRetentionPolicyProps = {
   timeItems: TimeItems;
 };
 
-const COSEmailRetentionPolicy: FC<EmailRetentionPolicyProps> = ({
+const COSEmailRetentionPolicy = ({
   form,
   readonlyCOS,
   timeItems,
-}) => {
+}: EmailRetentionPolicyProps) => {
   const [t] = useTranslation();
   const labels = {
     email: {

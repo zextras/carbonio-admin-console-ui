@@ -4,16 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, ListRow, Row, Switch } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED } from '../../../../constants';
 import { CosFormApi } from '../types';
 
-const COSGeneralOptions: FC<{
+export const COSGeneralOptions = ({
+  form,
+  readonlyCOS,
+}: {
   form: CosFormApi;
   readonlyCOS: boolean;
-}> = ({ form, readonlyCOS }) => {
+}) => {
   const [t] = useTranslation();
 
   const labels = {
@@ -87,5 +89,3 @@ const COSGeneralOptions: FC<{
     </Row>
   );
 };
-
-export default COSGeneralOptions;

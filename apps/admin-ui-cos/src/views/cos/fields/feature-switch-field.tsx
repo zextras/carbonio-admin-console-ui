@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Switch } from '@zextras/ui-components';
-import type { FC } from 'react';
 
 import type { CosFeaturesFormApi, CosFeaturesFormValues } from '../types';
 
@@ -15,12 +14,12 @@ type FeatureSwitchFieldProps = {
   disabled?: boolean;
 };
 
-export const FeatureSwitchField: FC<FeatureSwitchFieldProps> = ({
+export const FeatureSwitchField = ({
   form,
   name,
   label,
   disabled,
-}) => (
+}: FeatureSwitchFieldProps) => (
   <form.Field name={name}>
     {(field) => (
       <Switch
