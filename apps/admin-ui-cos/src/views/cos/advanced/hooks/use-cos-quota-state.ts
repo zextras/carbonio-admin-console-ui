@@ -94,10 +94,7 @@ export function useCosQuotaState({
     null,
   );
 
-  const totalComputedQuotaLimit =
-    totalQuotaOverride === null || totalQuotaOverride === undefined
-      ? initTotalComputedQuotaLimit
-      : totalQuotaOverride;
+  const totalComputedQuotaLimit = totalQuotaOverride ?? initTotalComputedQuotaLimit;
   const totalQuotaSource = getQuotaSource(totalQuotaOverride, initTotalQuotaSource);
 
   const showQuotaRevertButton =
