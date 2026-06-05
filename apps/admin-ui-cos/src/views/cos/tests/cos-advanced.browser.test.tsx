@@ -657,5 +657,20 @@ describe('CosAdvanced', () => {
 
       await expect.element(unlimitedSwitch).toBeChecked();
     });
+
+    it('should restore the unlimited quota switch to ON after toggling it off and clicking revert', async () => {
+      await setupCosAdvancedTest();
+
+      const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
+      await expect.element(unlimitedSwitch).toBeChecked();
+
+      await userEvent.click(unlimitedSwitch);
+      await expect.element(unlimitedSwitch).not.toBeChecked();
+
+      const revertIcon = page.getByRole('img', { name: 'Click to revert to the inherited value' });
+      await userEvent.click(revertIcon);
+
+      await expect.element(unlimitedSwitch).toBeChecked();
+    });
   });
 });
