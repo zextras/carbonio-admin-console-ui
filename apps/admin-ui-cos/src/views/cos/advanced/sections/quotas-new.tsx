@@ -20,6 +20,15 @@ type COSQuotasNewProps = {
   showRevertButton: boolean;
 };
 
+function getDerivedQuotaValue(
+  limit: ComputedLimit | undefined,
+): number | 'unlimited' | undefined {
+  if (limit === undefined) return undefined;
+  if (limit.type === 'unlimited') return 'unlimited';
+  if (limit.value > 0) return BytesToGB(limit.value);
+  return undefined;
+}
+
 export const COSQuotasNew = ({
   totalComputedQuotaLimit,
   totalQuotaSource,
@@ -30,14 +39,7 @@ export const COSQuotasNew = ({
 }: COSQuotasNewProps) => {
   const [t] = useTranslation();
 
-  const derivedQuotaValue: number | 'unlimited' | undefined =
-    totalComputedQuotaLimit === undefined
-      ? undefined
-      : totalComputedQuotaLimit.type === 'unlimited'
-        ? 'unlimited'
-        : totalComputedQuotaLimit.value > 0
-          ? BytesToGB(totalComputedQuotaLimit.value)
-          : undefined;
+  const derivedQuotaValue = getDerivedQuotaValue(totalComputedQuotaLimit);
 
   const [quotaOverride, setQuotaOverride] = useState<number | 'unlimited' | null | undefined>(
     undefined,
