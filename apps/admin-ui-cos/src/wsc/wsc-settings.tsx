@@ -60,33 +60,29 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 	const disableWscSettings =
 		wscEnabled === 'FALSE' || readonlyFeatures || (requiresLicenseCheck && !isLicensed);
 
-	const deleteMessageOptions: Array<SelectItem> = (() => {
-		const timeLimitLabel = t('wsc.section.content.select.timeLimit', 'minute time limit');
-		const userCannotDelete = t(
-			'wsc.section.content.select.deleteLimit.zero',
-			'User cannot delete sent messages',
-		);
-		return [
-			{ value: '0m', label: userCannotDelete },
-			{ value: '5m', label: `5 ${timeLimitLabel}` },
-			{ value: '10m', label: `10 ${timeLimitLabel}` },
-			{ value: '30m', label: `30 ${timeLimitLabel}` },
-		];
-	})();
+	const timeLimitLabel = t('wsc.section.content.select.timeLimit', 'minute time limit');
+	const userCannotDelete = t(
+		'wsc.section.content.select.deleteLimit.zero',
+		'User cannot delete sent messages',
+	);
+	const userCannotEdit = t(
+		'wsc.section.content.select.zero.editLimit',
+		'User cannot edit sent messages',
+	);
 
-	const editMessageOptions: Array<SelectItem> = (() => {
-		const timeLimitLabel = t('wsc.section.content.select.timeLimit', 'minute time limit');
-		const userCannotEdit = t(
-			'wsc.section.content.select.zero.editLimit',
-			'User cannot edit sent messages',
-		);
-		return [
-			{ value: '0m', label: userCannotEdit },
-			{ value: '5m', label: `5 ${timeLimitLabel}` },
-			{ value: '10m', label: `10 ${timeLimitLabel}` },
-			{ value: '30m', label: `30 ${timeLimitLabel}` },
-		];
-	})();
+	const deleteMessageOptions: Array<SelectItem> = [
+		{ value: '0m', label: userCannotDelete },
+		{ value: '5m', label: `5 ${timeLimitLabel}` },
+		{ value: '10m', label: `10 ${timeLimitLabel}` },
+		{ value: '30m', label: `30 ${timeLimitLabel}` },
+	];
+
+	const editMessageOptions: Array<SelectItem> = [
+		{ value: '0m', label: userCannotEdit },
+		{ value: '5m', label: `5 ${timeLimitLabel}` },
+		{ value: '10m', label: `10 ${timeLimitLabel}` },
+		{ value: '30m', label: `30 ${timeLimitLabel}` },
+	];
 
 	if (requiresLicenseCheck && isLoading) {
 		return <ds-page-shimmer></ds-page-shimmer>;

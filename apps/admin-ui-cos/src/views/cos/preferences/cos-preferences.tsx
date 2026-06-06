@@ -18,10 +18,8 @@ export const COSPreferences = (): React.JSX.Element => {
   const cosInformation = cosDetailData?.cos?.[0]?.a;
   const { data: rights = [] } = useCurrentUserRights();
 
-  const readonlyCOS = (() => {
-    const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
-    return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  })();
+  const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
+  const readonlyCOS = !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
   if (isPending) {
     return (

@@ -30,12 +30,14 @@ export const COSQuotasNew = ({
 }: COSQuotasNewProps) => {
   const [t] = useTranslation();
 
-  const derivedQuotaValue: number | 'unlimited' | undefined = (() => {
-    if (totalComputedQuotaLimit === undefined) return undefined;
-    if (totalComputedQuotaLimit.type === 'unlimited') return 'unlimited';
-    if (totalComputedQuotaLimit.value > 0) return BytesToGB(totalComputedQuotaLimit.value);
-    return undefined;
-  })();
+  const derivedQuotaValue: number | 'unlimited' | undefined =
+    totalComputedQuotaLimit === undefined
+      ? undefined
+      : totalComputedQuotaLimit.type === 'unlimited'
+        ? 'unlimited'
+        : totalComputedQuotaLimit.value > 0
+          ? BytesToGB(totalComputedQuotaLimit.value)
+          : undefined;
 
   const [quotaOverride, setQuotaOverride] = useState<number | 'unlimited' | null | undefined>(
     undefined,
