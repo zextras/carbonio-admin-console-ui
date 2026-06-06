@@ -256,6 +256,36 @@ describe('COSQuotasNew (browser)', () => {
     await expect.element(input).toHaveValue('');
   });
 
+  it('should display GB value in input when limited quota has a positive value', async () => {
+    await setupBrowserTest(
+      <COSQuotasNew
+        totalComputedQuotaLimit={limitedQuota}
+        initialTotalComputedQuotaLimit={limitedQuota}
+        onChange={vi.fn()}
+        readonlyCOS={false}
+        showRevertButton={false}
+      />,
+    );
+
+    const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+    await expect.element(input).toHaveValue('10');
+  });
+
+  it('should render empty input when limited quota value is 0', async () => {
+    await setupBrowserTest(
+      <COSQuotasNew
+        totalComputedQuotaLimit={{ type: 'limited', value: 0 }}
+        initialTotalComputedQuotaLimit={{ type: 'limited', value: 0 }}
+        onChange={vi.fn()}
+        readonlyCOS={false}
+        showRevertButton={false}
+      />,
+    );
+
+    const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+    await expect.element(input).toHaveValue('');
+  });
+
   it('should not stay dirty when unlimited quota is toggled off and back on', async () => {
     await setupBrowserTest(<QuotaWrapper initialQuota={unlimitedQuota} initialSource="global" />);
 
