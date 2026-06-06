@@ -19,7 +19,7 @@ type FailedLoginPolicyProps = {
 	timeItems: TimeItems;
 };
 
-const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLoginPolicyProps) => {
+export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLoginPolicyProps) => {
 	const [t] = useTranslation();
 	const isLockoutEnabled = useSelector(
 		form.store,
@@ -195,5 +195,3 @@ const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLoginPolic
 		</Row>
 	);
 };
-
-export default COSFailedLoginPolicy;

@@ -20,7 +20,7 @@ vi.mock('@zextras/ui-components', () => ({
   ),
 }));
 
-import CosRowFactory, { type CosRowFactoryProps } from '../cos-row-factory';
+import { CosRowFactory, type CosRowFactoryProps } from '../cos-row-factory';
 
 function renderRow(overrides: Partial<CosRowFactoryProps> = {}): ReturnType<typeof render> {
   const defaultProps: CosRowFactoryProps = {

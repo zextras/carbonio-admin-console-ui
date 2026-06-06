@@ -16,7 +16,7 @@ type EmailRetentionPolicyProps = {
   timeItems: TimeItems;
 };
 
-const COSEmailRetentionPolicy = ({
+export const COSEmailRetentionPolicy = ({
   form,
   readonlyCOS,
   timeItems,
@@ -92,5 +92,3 @@ const COSEmailRetentionPolicy = ({
     </Row>
   );
 };
-
-export default COSEmailRetentionPolicy;

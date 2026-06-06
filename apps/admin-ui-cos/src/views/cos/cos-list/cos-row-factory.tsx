@@ -78,7 +78,7 @@ function getTableCellClassName(
   return defaultClassName;
 }
 
-const CosRowFactory = ({
+export const CosRowFactory = ({
   index,
   row,
   onChange,
@@ -192,5 +192,3 @@ const CosRowFactory = ({
     </tr>
   );
 };
-
-export default CosRowFactory;
