@@ -6,7 +6,6 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -76,7 +75,6 @@ async function expectInstancesSectionVisible() {
 
 describe('MTAOutBoundFlow', () => {
   beforeEach(async () => {
-    await grantUserConfigRights();
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse());
     createBrowserSoapAPIInterceptor('GetAllServers', getAllServersResponse());
   });
@@ -86,38 +84,38 @@ describe('MTAOutBoundFlow', () => {
   });
 
   it('renders the page title', async () => {
-    await setupBrowserTest(<MTAOutBoundFlow />);
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Outbound Flow', { exact: true })).toBeVisible();
   });
 
   it('renders the General section with all switches and select', async () => {
-    await setupBrowserTest(<MTAOutBoundFlow />);
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
     await expectGeneralSectionVisible();
   });
 
   it('renders all input fields', async () => {
-    await setupBrowserTest(<MTAOutBoundFlow />);
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
     await expectInputFieldsVisible();
   });
 
   it('renders the My Network chip input', async () => {
-    await setupBrowserTest(<MTAOutBoundFlow />);
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
     await expect.element(page.getByText('127.0.0.0/8')).toBeVisible();
     await expect.element(page.getByText('10.0.0.0/24')).toBeVisible();
   });
 
   it('renders the Instances section with table headers', async () => {
-    await setupBrowserTest(<MTAOutBoundFlow />);
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
     await expectInstancesSectionVisible();
   });
 
   it('renders server data in the instances table', async () => {
-    await setupBrowserTest(<MTAOutBoundFlow />);
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
     await expect.element(page.getByText('mail.test.com')).toBeVisible();
     await expect.element(page.getByText('Active').first()).toBeVisible();
@@ -125,7 +123,7 @@ describe('MTAOutBoundFlow', () => {
   });
 
   it('does not render Save and Cancel buttons when no changes are made', async () => {
-    await setupBrowserTest(<MTAOutBoundFlow />);
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Outbound Flow', { exact: true })).toBeVisible();
     expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
@@ -133,7 +131,7 @@ describe('MTAOutBoundFlow', () => {
   });
 
   it('shows Save and Cancel when a switch changes', async () => {
-    await setupBrowserTest(<MTAOutBoundFlow />);
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
     const addClientIpSwitch = page.getByText('Add client IP to the header');
     await expect.element(addClientIpSwitch).toBeVisible();
@@ -144,7 +142,7 @@ describe('MTAOutBoundFlow', () => {
   });
 
   it('resets dirty state when Cancel is clicked', async () => {
-    await setupBrowserTest(<MTAOutBoundFlow />);
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
     await page.getByText('Add client IP to the header').click();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();

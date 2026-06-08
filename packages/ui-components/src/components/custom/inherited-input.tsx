@@ -144,7 +144,6 @@ export const InheritedInput: FC<InheritedInputProps> = ({
       description={description}
       {...pref}
       inputRef={inputRef}
-      highlighted={highlight}
     />
   );
 };

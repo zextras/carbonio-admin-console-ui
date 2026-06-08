@@ -6,12 +6,11 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import MTAServerGeneral from '../mta-server-general';
@@ -130,10 +129,6 @@ async function expectLoggingSectionVisible() {
 }
 
 describe('MTAServerGeneral', { timeout: 20_000 }, () => {
-  beforeEach(async () => {
-    await grantUserConfigRights();
-  });
-
   afterEach(() => {
     resetMockWorker();
   });
@@ -143,6 +138,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
 
     await setupBrowserTest(renderComponent(), {
       initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
     });
 
     await expect.element(page.getByText('General', { exact: true })).toBeVisible();
@@ -154,6 +150,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
 
     await setupBrowserTest(renderComponent(), {
       initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
     });
 
     await expectAuthenticationSectionVisible();
@@ -164,6 +161,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
 
     await setupBrowserTest(renderComponent(), {
       initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
     });
 
     await expectAuthenticationInputsVisible();
@@ -174,6 +172,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
 
     await setupBrowserTest(renderComponent(), {
       initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
     });
 
     await expect.element(page.getByText('My Network')).toBeVisible();
@@ -184,6 +183,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
 
     await setupBrowserTest(renderComponent(), {
       initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
     });
 
     await expectAntispamAntivirusSectionVisible();
@@ -194,6 +194,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
 
     await setupBrowserTest(renderComponent(), {
       initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
     });
 
     await expectLoggingSectionVisible();
@@ -204,6 +205,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
 
     await setupBrowserTest(renderComponent(), {
       initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
     });
 
     await expectAuthenticationSectionVisible();
@@ -216,6 +218,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
 
     await setupBrowserTest(renderComponent(), {
       initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
     });
 
     await expect.element(page.getByText('General', { exact: true })).toBeVisible();
@@ -228,6 +231,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
 
     await setupBrowserTest(renderComponent(), {
       initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
     });
 
     await expect.element(page.getByText('Also check outbound messages')).toBeVisible();
@@ -240,6 +244,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
 
     await setupBrowserTest(renderComponent(), {
       initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
     });
 
     await expect.element(page.getByText('Log level for Amavis', { exact: true })).toBeVisible();

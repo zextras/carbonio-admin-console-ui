@@ -23,24 +23,16 @@ const padding = {
 } as const;
 
 type IconCheckboxProps = Omit<ContainerProps, 'margin'> & {
-  /** Status of the IconCheckbox */
   defaultChecked?: boolean;
-  /** IconCheckbox text */
   label?: string;
-  /** IconCheckbox radius */
   borderRadius?: 'regular' | 'round';
-  /** whether to disable the IconCheckbox or not */
   disabled?: boolean;
-  /** IconCheckbox icon */
   icon: IconName;
-  /** IconCheckbox size */
   size?: 'small' | 'regular' | 'large';
-  /** IconCheckbox margin */
   margin?: 'extrasmall' | 'small' | 'medium' | 'large' | 'extralarge';
-  /** IconCheckbox value */
   value?: boolean;
-  /** change callback */
   onChange: () => void;
+  iconAriaLabel?: string;
 };
 
 const IconCheckbox = ({
@@ -53,6 +45,7 @@ const IconCheckbox = ({
   margin = 'extrasmall',
   value,
   onChange,
+  iconAriaLabel,
   ref,
   ...rest
 }: IconCheckboxProps) => {
@@ -124,7 +117,7 @@ const IconCheckbox = ({
         tabIndex={disabled ? -1 : 0}
       >
         <Padding all={padding[size]}>
-          <ds-icon size={iconSize} icon={icon}></ds-icon>
+          <ds-icon size={iconSize} icon={icon} aria-label={iconAriaLabel}></ds-icon>
         </Padding>
       </div>
       {label && (

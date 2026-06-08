@@ -189,9 +189,8 @@ describe('EditAccountQuotaInputsNew', () => {
     // Verify the component is rendered first
     await expect.element(page.getByText('Unlimited quota')).toBeVisible();
 
-    // Check that the switch is disabled by verifying the icon wrapper has tabindex="-1"
-    const iconWrapper = document.querySelector('[class*="iconWrapper"]');
-    expect(iconWrapper?.getAttribute('tabindex')).toBe('-1');
+    const switchElement = document.querySelector('[role="switch"]');
+    expect(switchElement?.getAttribute('aria-disabled')).toBe('true');
   });
 
   it('should enable the unlimited switch when domainQuotaConstraint is not-set', async () => {
@@ -211,9 +210,8 @@ describe('EditAccountQuotaInputsNew', () => {
     // Verify the component is rendered first
     await expect.element(page.getByText('Unlimited quota')).toBeVisible();
 
-    // Check that the switch is disabled by verifying the icon wrapper has tabindex="-1"
-    const iconWrapper = document.querySelector('[class*="iconWrapper"]');
-    expect(iconWrapper?.getAttribute('tabindex')).toBe('0');
+    const switchElement = document.querySelector('[role="switch"]');
+    expect(switchElement?.getAttribute('aria-disabled')).toBeNull();
   });
 
   it('should render the reset icon when source is account and call onClick handler when clicked', async () => {

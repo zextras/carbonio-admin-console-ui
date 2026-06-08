@@ -18,7 +18,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { replaceHistory, useDomainStore, useMailstoreServers } from '@zextras/ui-shared';
+import { getCosList, replaceHistory, useDomainStore, useMailstoreServers } from '@zextras/ui-shared';
 import { map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +38,6 @@ import { createDomain } from '../../services/create-domain';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
-import { getCosList } from '../../services/search-cos-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import { GbToBytes, isValidEmail } from '../utility/utils';
 

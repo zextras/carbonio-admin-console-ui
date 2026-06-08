@@ -4,27 +4,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MouseEvent } from 'react';
+import type { SyntheticEvent } from 'react';
 
 export type IntegrationsState = {
-	actions: ActionMap;
-	functions: FunctionMap;
-	registerActions: (
-		...items: Array<{ id: string; action: ActionFactory<unknown>; type: string }>
-	) => void;
-	registerFunctions: (...items: Array<{ id: string; fn: AnyFunction }>) => void;
+  actions: ActionMap;
+  functions: FunctionMap;
+  registerActions: (
+    ...items: Array<{ id: string; action: ActionFactory<unknown>; type: string }>
+  ) => void;
+  registerFunctions: (...items: Array<{ id: string; fn: AnyFunction }>) => void;
 };
 
 export type Action = {
-	id: string;
-	label: string;
-	icon: string;
-	click: (ev: MouseEvent) => void;
-	type: string;
-	primary?: boolean;
-	group?: string;
-	disabled?: boolean;
-	[key: string]: unknown;
+  id: string;
+  label: string;
+  onClick: (e: SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
+  icon?: string;
+  type?: string;
+  primary?: boolean;
+  group?: string;
+  disabled?: boolean;
+  [key: string]: unknown;
 };
 
 export type ActionFactory<T> = (target: T) => Action;

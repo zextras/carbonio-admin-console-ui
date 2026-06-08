@@ -1,3 +1,9 @@
+## [0.13.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.5...v0.13.6) (2026-06-05)
+
+### Other changes
+
+* improve cos module code stability ([#1211](https://github.com/zextras/carbonio-admin-console-ui/issues/1211)) ([901f930](https://github.com/zextras/carbonio-admin-console-ui/commit/901f9309150fd6872ddf0bbc581666d32002ea6e))
+
 ## [0.13.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.4...v0.13.5) (2026-06-02)
 
 ### Other changes
