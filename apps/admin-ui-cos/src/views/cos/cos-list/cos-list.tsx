@@ -24,7 +24,7 @@ import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { useCosList } from '../../../services/use-cos-list';
 import { ScrollComponent } from '../../components/scroll-component';
 import { FunnelSearchIcon } from '../cos-server-pools/funnel-search-icon';
-import CosRowFactory from './cos-row-factory';
+import { CosRowFactory } from './cos-row-factory';
 
 type ZimbraCosAttribute = {
   n: string;

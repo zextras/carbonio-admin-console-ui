@@ -14,7 +14,7 @@ type ForwardingProps = {
   readonlyCOS: boolean;
 };
 
-const COSForwarding = ({ form, readonlyCOS }: ForwardingProps) => {
+export const COSForwarding = ({ form, readonlyCOS }: ForwardingProps) => {
   const [t] = useTranslation();
   const labels = {
     cosForwarding: t('cos.forwarding', 'Forwarding'),
@@ -70,5 +70,3 @@ const COSForwarding = ({ form, readonlyCOS }: ForwardingProps) => {
     </Row>
   );
 };
-
-export default COSForwarding;
