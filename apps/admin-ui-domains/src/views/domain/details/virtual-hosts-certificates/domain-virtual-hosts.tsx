@@ -12,7 +12,7 @@ import {
   Row,
   useSnackbar,
 } from '@zextras/ui-components';
-import { soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { flushCache, soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { isEqual, mapValues, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,6 @@ import {
   ZIMBRA_SSL_PRIVATE_KEY,
   ZIMBRA_VIRTUAL_HOSTNAME,
 } from '../../../../constants';
-import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { AlertBanner } from './alert-banner';

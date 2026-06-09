@@ -5,30 +5,30 @@
  */
 import { ListItems, ListItemType, ListPanelItem } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { COS_LIST, IS_GENERAL_LIST_EXPANDED } from '../../constants';
-import { useCosStore } from '../../store/cos/store';
 
 type GeneralListPanelProps = {
   generalOptionItems: Array<ListItemType>;
+  selectedOperationItem?: string | null;
 };
 
-const GeneralListPanel: FC<GeneralListPanelProps> = ({ generalOptionItems }) => {
+export const GeneralListPanel = ({
+  generalOptionItems,
+  selectedOperationItem,
+}: GeneralListPanelProps) => {
   const [t] = useTranslation();
-  const [isGeneralListExpanded, setIsGeneralListExpanded] = useState(true);
-  const { cosView, setCosView } = useCosStore();
-
-  const navigateToGeneralView = useCallback(
-    (view: string) => {
-      setCosView(view);
-      if (view === COS_LIST) {
-        replaceHistory(`/${COS_LIST}`);
-      }
-    },
-    [setCosView],
+  const [isGeneralListExpanded, setIsGeneralListExpanded] = useState(
+    () => localStorage.getItem(IS_GENERAL_LIST_EXPANDED) !== 'false'
   );
+
+  const navigateToGeneralView = (view: string) => {
+    if (view === COS_LIST) {
+      replaceHistory(`/${COS_LIST}`);
+    }
+  };
 
   const toggleGeneralView = (): void => {
     if (isGeneralListExpanded) {
@@ -40,14 +40,6 @@ const GeneralListPanel: FC<GeneralListPanelProps> = ({ generalOptionItems }) => 
     }
   };
 
-  useEffect(() => {
-    const storedValue = localStorage.getItem(IS_GENERAL_LIST_EXPANDED);
-    if (storedValue === 'false') {
-      setIsGeneralListExpanded(false);
-    } else {
-      setIsGeneralListExpanded(true);
-    }
-  }, []);
 
   return (
     <>
@@ -59,12 +51,10 @@ const GeneralListPanel: FC<GeneralListPanelProps> = ({ generalOptionItems }) => 
       {isGeneralListExpanded && (
         <ListItems
           items={generalOptionItems}
-          selectedOperationItem={cosView}
+          selectedOperationItem={selectedOperationItem ?? null}
           setSelectedOperationItem={navigateToGeneralView}
         />
       )}
     </>
   );
 };
-
-export default GeneralListPanel;

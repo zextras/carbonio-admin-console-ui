@@ -17,7 +17,7 @@ import {
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
+import { searchDirectory, useDomainStore } from '@zextras/ui-shared';
 import { format, parse } from 'date-fns';
 import { debounce } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -28,7 +28,6 @@ import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
-import { searchDirectory } from '../../../../services/search-directory-service';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateResource from './create-resource';
@@ -182,7 +181,7 @@ const DomainResources: FC = () => {
       const types = 'resources';
       const query = `${queryString}(&(!(zimbraIsSystemAccount=TRUE)))`;
       setIsRequestInProgress(true);
-      searchDirectory(attrs, types, zimbraDomainName, query, offset, limit, sortBy, sortAsceding)
+      searchDirectory({ attr: attrs, type: types, domainName: zimbraDomainName, query, offset, limit, sortBy, sortAscending: sortAsceding })
         .then((data) => {
           const resourceListResponse = data?.calresource || [];
           if (resourceListResponse && Array.isArray(resourceListResponse)) {

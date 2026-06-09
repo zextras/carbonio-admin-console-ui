@@ -1,0 +1,582 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import { useForm } from '@tanstack/react-form';
+import { QueryClient } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
+import {
+  advancedSupportedApiForBrowser,
+  createBrowserAPIInterceptor,
+  createBrowserSoapAPIInterceptor,
+  createBrowserZextrasActionInterceptor,
+  getGetInfoResponseMock,
+  getQueryClient,
+  setupBrowserTest,
+} from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
+import { useRef } from 'react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { page } from 'vitest/browser';
+
+import type { WscCosFormApi, WscCosFormValues } from '../types';
+import { WscSettings } from '../wsc-settings';
+
+const defaultFeatures: WscCosFormValues = {
+  carbonioFeatureWscEnabled: 'TRUE',
+  carbonioWscShowMessageReads: 'TRUE',
+  carbonioWscShowUsersPresence: 'TRUE',
+  carbonioWscVideoCallEnabled: 'TRUE',
+  carbonioWscRecordingEnabled: 'TRUE',
+  carbonioWscVirtualBackgroundEnabled: 'TRUE',
+  carbonioWscPrivateChatCreation: 'TRUE',
+  carbonioWscGroupChatCreation: 'TRUE',
+  carbonioWscAttachmentUpload: 'TRUE',
+  carbonioWscMessageDeleteTimeLimit: '0m',
+  carbonioWscMessageEditTimeLimit: '0m',
+  carbonioWscMaxGroupMembers: '100',
+  carbonioWscMaxRoomPictureSize: '5',
+  carbonioWscMaxAttachmentSize: '25',
+};
+
+function seedQueryClient(): QueryClient {
+  const queryClient = getQueryClient();
+  queryClient.setQueryData(['account', 'settings'], {
+    prefs: {},
+    attrs: { zimbraIsAdminAccount: 'TRUE' },
+    props: [],
+  });
+  queryClient.setQueryData(['account', 'info'], {
+    id: 'test-user-id',
+    name: 'test@example.com',
+    displayName: '',
+    signatures: { signature: [] },
+    identities: undefined,
+    rights: { targets: [] },
+  });
+  queryClient.setQueryData(['subscription', 'license'], {
+    ok: true,
+    response: {
+      type: 'Purchased',
+      features: [{ name: 'wsc_basic', enabled: true }],
+    },
+  });
+  return queryClient;
+}
+
+function mockCatalogServices(): void {
+  createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+    HttpResponse.json({ items: [] }),
+  );
+}
+
+type WscSettingsWrapperProps = {
+  featuresOverride?: Partial<WscCosFormValues>;
+  readonlyFeatures?: boolean;
+  onFormChange?: (values: WscCosFormValues) => void;
+};
+
+const WscSettingsWrapper = ({
+  featuresOverride = {},
+  readonlyFeatures = false,
+  onFormChange,
+}: WscSettingsWrapperProps) => {
+  const form = useForm({
+    defaultValues: { ...defaultFeatures, ...featuresOverride },
+    onSubmit: vi.fn(),
+  });
+
+  const formValues = useSelector(form.store, (s) => s.values);
+  const prevValuesRef = useRef(formValues);
+
+  if (formValues !== prevValuesRef.current) {
+    prevValuesRef.current = formValues;
+    onFormChange?.(formValues);
+  }
+
+  return <WscSettings form={form as WscCosFormApi} readonlyFeatures={readonlyFeatures} />;
+};
+
+async function setupWscSettingsTest(
+  featuresOverride: Partial<WscCosFormValues> = {},
+  options: { useAdvanced?: boolean } = {},
+): Promise<void> {
+  const queryClient = seedQueryClient();
+
+  mockCatalogServices();
+  if (options.useAdvanced) {
+    await advancedSupportedApiForBrowser.withAdvancedSupported();
+  } else {
+    await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+  }
+  createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+  createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+    HttpResponse.json({
+      Body: {
+        response: {
+          content: JSON.stringify({
+            ok: true,
+            response: {
+              type: 'Purchased',
+              features: [{ name: 'wsc_basic', enabled: true }],
+            },
+          }),
+        },
+      },
+    }),
+  );
+
+  await setupBrowserTest(<WscSettingsWrapper featuresOverride={featuresOverride} />, {
+    queryClient,
+  });
+}
+
+describe('WscSettings (browser)', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  describe('Rendering', () => {
+    it('should render General Settings section', async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByText('General Settings')).toBeVisible();
+    });
+
+    it('should render Messaging & Presence section', async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByText('Messaging & Presence')).toBeVisible();
+    });
+
+    it('should render Private and Group Chats section', async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByText('Private and Group Chats')).toBeVisible();
+    });
+
+    it('should render Video calls section', async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByText('Video calls', { exact: true })).toBeVisible();
+    });
+
+    it('should render Sharing & Attachments section', async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByText('Sharing & Attachments')).toBeVisible();
+    });
+
+    it('should render Enable Chat toggle', async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByText('Enable Chat')).toBeVisible();
+    });
+
+    it('should render Show read receipts toggle', async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByText('Show read receipts')).toBeVisible();
+    });
+
+    it("should render Show users' online status toggle", async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByText("Show users' online status")).toBeVisible();
+    });
+
+    it('should render Maximum number of group members input', async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByPlaceholder('Maximum number of group members')).toBeVisible();
+    });
+
+    it('should render Maximum group picture size input', async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByText('Maximum group picture size in MB')).toBeVisible();
+    });
+
+    it('should render Maximum attachment size input', async () => {
+      await setupWscSettingsTest();
+
+      await expect.element(page.getByText('Maximum attachment size in MB')).toBeVisible();
+    });
+  });
+
+  describe('Disabled state', () => {
+    it('should disable dependent settings when WSC is FALSE', async () => {
+      await setupWscSettingsTest({ carbonioFeatureWscEnabled: 'FALSE' });
+
+      await expect.element(page.getByText('Show read receipts')).toBeDisabled();
+    });
+
+    it('should disable settings when readonlyFeatures is true', async () => {
+      await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+      const queryClient = seedQueryClient();
+
+      mockCatalogServices();
+      createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+      createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                response: {
+                  type: 'Purchased',
+                  features: [{ name: 'wsc_basic', enabled: true }],
+                },
+              }),
+            },
+          },
+        }),
+      );
+
+      await setupBrowserTest(<WscSettingsWrapper readonlyFeatures />, { queryClient });
+
+      await expect.element(page.getByText('Show read receipts')).toBeDisabled();
+    });
+  });
+
+  describe('Interactions', () => {
+    it('should toggle Enable Chat from TRUE to FALSE when clicked', async () => {
+      const formChanges: Array<WscCosFormValues> = [];
+      await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+      const queryClient = seedQueryClient();
+
+      mockCatalogServices();
+      createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+      createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                response: {
+                  type: 'Purchased',
+                  features: [{ name: 'wsc_basic', enabled: true }],
+                },
+              }),
+            },
+          },
+        }),
+      );
+
+      await setupBrowserTest(
+        <WscSettingsWrapper onFormChange={(values) => formChanges.push({ ...values })} />,
+        { queryClient },
+      );
+
+      await page.getByText('Enable Chat').click();
+
+      expect(formChanges.length).toBeGreaterThan(0);
+      const lastChange = formChanges[formChanges.length - 1];
+      expect(lastChange.carbonioFeatureWscEnabled).toBe('FALSE');
+    });
+
+    it('should toggle Show read receipts when clicked', async () => {
+      const formChanges: Array<WscCosFormValues> = [];
+      await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+      const queryClient = seedQueryClient();
+
+      mockCatalogServices();
+      createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+      createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                response: {
+                  type: 'Purchased',
+                  features: [{ name: 'wsc_basic', enabled: true }],
+                },
+              }),
+            },
+          },
+        }),
+      );
+
+      await setupBrowserTest(
+        <WscSettingsWrapper onFormChange={(values) => formChanges.push({ ...values })} />,
+        { queryClient },
+      );
+
+      await page.getByText('Show read receipts').click();
+
+      expect(formChanges.length).toBeGreaterThan(0);
+      const lastChange = formChanges[formChanges.length - 1];
+      expect(lastChange.carbonioWscShowMessageReads).toBe('FALSE');
+      expect(lastChange.carbonioFeatureWscEnabled).toBe('TRUE');
+    });
+  });
+
+  describe('Cascade disable', () => {
+    it('should disable all dependent settings when Enable Chat is FALSE', async () => {
+      await setupWscSettingsTest({ carbonioFeatureWscEnabled: 'FALSE' });
+
+      await expect.element(page.getByText("Show users' online status")).toBeDisabled();
+      await expect.element(page.getByText('Enable video calls')).toBeDisabled();
+      await expect.element(page.getByText('Users can upload attachments')).toBeDisabled();
+    });
+
+    it('should disable Enable virtual background when Enable video calls is FALSE', async () => {
+      await setupWscSettingsTest({ carbonioWscVideoCallEnabled: 'FALSE' });
+
+      await expect.element(page.getByText('Enable virtual background')).toBeDisabled();
+    });
+
+    it('should disable Maximum attachment size when Users can upload attachments is FALSE', async () => {
+      await setupWscSettingsTest({ carbonioWscAttachmentUpload: 'FALSE' });
+
+      await expect.element(page.getByPlaceholder('Maximum attachment size in MB')).toBeDisabled();
+    });
+  });
+
+  describe('Advanced features', () => {
+    it('should render Allow call recording toggle when advanced is supported', async () => {
+      await setupWscSettingsTest({}, { useAdvanced: true });
+
+      await expect.element(page.getByText('Allow call recording')).toBeVisible();
+    });
+  });
+
+  describe('Additional switch interactions', () => {
+    it("should toggle Show users' online status", async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: "Show users' online status" });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+    });
+
+    it('should toggle Users can create group chats', async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: 'Users can create group chats' });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+    });
+
+    it('should toggle Users can start new private chats', async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: 'Users can start new private chats' });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+    });
+  });
+
+  describe('Select interactions', () => {
+    it('should change message deletion time limit', async () => {
+      const formChanges: Array<WscCosFormValues> = [];
+      await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+      const queryClient = seedQueryClient();
+
+      mockCatalogServices();
+      createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+      createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                result: { chat_enabled: true, video_chat_enabled: true },
+              }),
+            },
+          },
+        }),
+      );
+      createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+        HttpResponse.json({ items: [] }),
+      );
+
+      await setupBrowserTest(
+        <WscSettingsWrapper onFormChange={(values) => formChanges.push({ ...values })} />,
+        { queryClient },
+      );
+
+      await page.getByText('Message deletion time limit').click();
+      await page.getByText('5 minute time limit').click();
+
+      expect(formChanges.length).toBeGreaterThan(0);
+      const lastChange = formChanges[formChanges.length - 1];
+      expect(lastChange.carbonioWscMessageDeleteTimeLimit).toBe('5m');
+    });
+
+    it('should change message editing time limit', async () => {
+      const formChanges: Array<WscCosFormValues> = [];
+      await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+      const queryClient = seedQueryClient();
+
+      mockCatalogServices();
+      createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+      createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                result: { chat_enabled: true, video_chat_enabled: true },
+              }),
+            },
+          },
+        }),
+      );
+      createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+        HttpResponse.json({ items: [] }),
+      );
+
+      await setupBrowserTest(
+        <WscSettingsWrapper onFormChange={(values) => formChanges.push({ ...values })} />,
+        { queryClient },
+      );
+
+      await page.getByText('Message editing time limit').click();
+      await page.getByText('10 minute time limit').click();
+
+      expect(formChanges.length).toBeGreaterThan(0);
+      const lastChange = formChanges[formChanges.length - 1];
+      expect(lastChange.carbonioWscMessageEditTimeLimit).toBe('10m');
+    });
+  });
+
+  describe('Input interactions', () => {
+    it('should update max group members value', async () => {
+      await setupWscSettingsTest();
+      const input = page.getByPlaceholder('Maximum number of group members');
+      await input.clear();
+      await input.fill('50');
+      await expect.element(input).toHaveValue(50);
+    });
+
+    it('should strip leading zeros from max group members', async () => {
+      await setupWscSettingsTest();
+      const input = page.getByPlaceholder('Maximum number of group members');
+      await input.clear();
+      await input.fill('0042');
+      await expect.element(input).toHaveValue(42);
+    });
+
+    it('should collapse all zeros to 0 for max group members', async () => {
+      await setupWscSettingsTest();
+      const input = page.getByPlaceholder('Maximum number of group members');
+      await input.clear();
+      await input.fill('000');
+      await expect.element(input).toHaveValue(0);
+    });
+
+    it('should handle cleared input for max group members', async () => {
+      await setupWscSettingsTest();
+      const input = page.getByPlaceholder('Maximum number of group members');
+      await input.clear();
+      await expect.element(input).toHaveValue(0);
+    });
+
+    it('should update max group picture size', async () => {
+      await setupWscSettingsTest();
+      const input = page.getByPlaceholder('Maximum group picture size in MB');
+      await input.clear();
+      await input.fill('10');
+      await expect.element(input).toHaveValue(10);
+    });
+
+    it('should collapse all zeros to 0 for max picture size', async () => {
+      await setupWscSettingsTest();
+      const input = page.getByPlaceholder('Maximum group picture size in MB');
+      await input.clear();
+      await input.fill('000');
+      await expect.element(input).toHaveValue(0);
+    });
+
+    it('should collapse all zeros to 0 for max attachment size', async () => {
+      await setupWscSettingsTest();
+      const input = page.getByPlaceholder('Maximum attachment size in MB');
+      await input.clear();
+      await input.fill('000');
+      await expect.element(input).toHaveValue(0);
+    });
+  });
+
+  describe('Switch round-trip toggles (both directions)', () => {
+    it('should toggle Enable video calls in both directions', async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: 'Enable video calls' });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+      await sw.click();
+      await expect.element(sw).toBeChecked();
+    });
+
+    it('should toggle Enable virtual background in both directions', async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: 'Enable virtual background' });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+      await sw.click();
+      await expect.element(sw).toBeChecked();
+    });
+
+    it('should toggle Users can upload attachments in both directions', async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: 'Users can upload attachments' });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+      await sw.click();
+      await expect.element(sw).toBeChecked();
+    });
+
+    it('should toggle Enable Chat FALSE→TRUE (round-trip)', async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: 'Enable Chat' });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+      await sw.click();
+      await expect.element(sw).toBeChecked();
+    });
+
+    it('should toggle Show read receipts FALSE→TRUE (round-trip)', async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: 'Show read receipts' });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+      await sw.click();
+      await expect.element(sw).toBeChecked();
+    });
+
+    it("should toggle Show users' online status FALSE→TRUE (round-trip)", async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: "Show users' online status" });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+      await sw.click();
+      await expect.element(sw).toBeChecked();
+    });
+
+    it('should toggle Users can create group chats FALSE→TRUE (round-trip)', async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: 'Users can create group chats' });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+      await sw.click();
+      await expect.element(sw).toBeChecked();
+    });
+
+    it('should toggle Users can start new private chats FALSE→TRUE (round-trip)', async () => {
+      await setupWscSettingsTest();
+      const sw = page.getByRole('switch', { name: 'Users can start new private chats' });
+      await expect.element(sw).toBeChecked();
+      await sw.click();
+      await expect.element(sw).not.toBeChecked();
+      await sw.click();
+      await expect.element(sw).toBeChecked();
+    });
+  });
+});

@@ -6,18 +6,20 @@
 
 
 import { Modal } from '@zextras/ui-components';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type Location, useLocation, useNavigate } from 'react-router';
 
-export const RouteLeavingGuard: FC<{
+type RouteLeavingGuardProps = {
 	when?: boolean;
 	onSave: () => void;
 	children?: React.ReactNode;
-}> = ({ children, when, onSave }) => {
+};
+
+export const RouteLeavingGuard = ({ children, when, onSave }: RouteLeavingGuardProps) => {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const lastLocationInitial = useMemo(() => location, []);
+	const lastLocationInitial = useRef(location).current;
 	const [modalVisible, setModalVisible] = useState(false);
 	const [lastLocation, setLastLocation] = useState<Location>(lastLocationInitial);
 	const [confirmedNavigation, setConfirmedNavigation] = useState(false);

@@ -104,11 +104,17 @@ const PrivacyView: FC = () => {
 
   return (
     <div className={styles.root}>
-      <form.Subscribe selector={(state) => state.isDirty}>
+      <form.Subscribe selector={(state) => !state.isDefaultValue}>
         {(isDirty) => (
           <>
             <header className={styles.header}>
-              <ds-text as="h2" size="medium" weight="bold" color="gray0" style={{ flexBasis: '30%' } as React.CSSProperties}>
+              <ds-text
+                as="h2"
+                size="medium"
+                weight="bold"
+                color="gray0"
+                style={{ flexBasis: '30%' } as React.CSSProperties}
+              >
                 {t('label.privacy', 'Privacy')}
               </ds-text>
               {isDirty && (

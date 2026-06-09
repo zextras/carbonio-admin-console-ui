@@ -22,7 +22,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useDomainStore, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
+import { flushCache, useDomainStore, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -49,7 +49,6 @@ import {
 import { createGalSyncAccount } from '../../../services/create-gal-sync-service';
 import { destroyAccount } from '../../../services/destroy-account-service';
 import { getDomainInformation } from '../../../services/domain-information-service';
-import { flushCache } from '../../../services/flush-cache-service';
 import { getAccount } from '../../../services/get-account-service';
 import { getDatasource } from '../../../services/get-datasource-service';
 import { modifyAccountRequest } from '../../../services/modify-account';
@@ -885,17 +884,15 @@ const DomainGalSettings: FC = () => {
 
   const getSelectedDomainInformation = useCallback(
     (id: string): void => {
-      flushCache('all').then((result) => {
-        if (result) {
-          getDomainInformation(id, 1).then((data) => {
-            const domainList = data?.domain[0];
-            if (domainList) {
-              setDomain(domainList);
-              setDomainInformation(domainList?.a);
-              getDomainWithGAlSyncList(domainList?.a);
-            }
-          });
-        }
+      flushCache('all').then(() => {
+        getDomainInformation(id, 1).then((data) => {
+          const domainList = data?.domain[0];
+          if (domainList) {
+            setDomain(domainList);
+            setDomainInformation(domainList?.a);
+            getDomainWithGAlSyncList(domainList?.a);
+          }
+        });
       });
     },
     [getDomainWithGAlSyncList, setDomain],

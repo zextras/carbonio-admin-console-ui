@@ -26,6 +26,7 @@ type SwitchProps = Omit<ContainerProps, 'onChange' | 'onClick'> & {
   onChange?: (checked: boolean) => void;
   size?: SwitchSize;
   iconColor?: string;
+  iconAriaLabel?: string;
   ref?: React.Ref<HTMLDivElement>;
 };
 
@@ -39,6 +40,7 @@ const Switch = ({
   onChange,
   size = 'medium',
   iconColor = 'gray0',
+  iconAriaLabel,
   ref,
   ...rest
 }: SwitchProps) => {
@@ -67,6 +69,11 @@ const Switch = ({
   return (
     <Container
       ref={ckbRef}
+      role="switch"
+      aria-checked={checked}
+      aria-label={label || iconAriaLabel}
+      aria-disabled={disabled || undefined}
+      tabIndex={disabled ? -1 : 0}
       orientation="horizontal"
       width="fit"
       height="fit"
@@ -78,13 +85,13 @@ const Switch = ({
       <div
         className={clsx(styles.iconWrapper, disabled && styles.disabled)}
         style={iconWrapperStyle}
-        tabIndex={disabled ? -1 : 0}
       >
         <ds-icon
           icon={checked ? 'ToggleRight' : 'ToggleLeftOutline'}
           size={size === 'medium' ? 'large' : 'medium'}
           color={String(iconColor)}
           disabled={disabled || undefined}
+          aria-hidden="true"
         />
       </div>
       {label && (

@@ -1,0 +1,44 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.stickyHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-gray6-regular);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+  padding: 2rem 0 0.5rem 1rem;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  height: 2.5rem;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  height: 100%;
+  gap: 1rem;
+  margin-right: 2rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--padding-size-large) 1.5rem;
+  box-sizing: border-box;
+}
