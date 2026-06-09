@@ -33,7 +33,7 @@ import { debounce, filter, flatMapDeep } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Attribute, CosMaxAccountValues } from '../../../../../types';
+import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types';
 import logo from '../../../../assets/guardian.svg';
 import {
   ADMIN_GROUP_FLAG,
