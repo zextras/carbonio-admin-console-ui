@@ -17,13 +17,29 @@ import {
   Paging,
   Row,
   Table,
+  type THeader,
+  type TRow,
   useSnackbar,
 } from '@zextras/ui-components';
 import { searchDirectory } from '@zextras/ui-shared';
 import { sortedUniq, uniq } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type FC,
+  type ReactElement,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import type {
+  SoapFaultResponse,
+  SoapNamedContent,
+} from '../../../../../../types';
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../../constants';
 import { addDistributionListMember } from '../../../../../services/add-distributionlist-member-service';
@@ -31,12 +47,17 @@ import { removeDistributionListMember } from '../../../../../services/remove-dis
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { getAllEmailFromString, isValidEmail } from '../../../../utility/utils';
 import { useSearchWithDebounce } from './hooks/use-search-with-debounce';
+import type {
+  GranteeEntry,
+  MailingListFormSnapshot,
+  SelectedMailingList,
+} from './types';
 
 type MembersTabProps = {
-  dlm: Array<any>;
-  setDlm: (dlm: Array<any>) => void;
-  setPreviousDetail: (fn: any) => void;
-  selectedMailingList: any;
+  dlm: Array<string>;
+  setDlm: (dlm: Array<string>) => void;
+  setPreviousDetail: Dispatch<SetStateAction<MailingListFormSnapshot>>;
+  selectedMailingList: SelectedMailingList;
   isRequestInProgress: boolean;
   setIsRequestInProgress: (v: boolean) => void;
   searchUserLabelValue: string;
@@ -61,23 +82,23 @@ export const MembersTab: FC<MembersTabProps> = ({
   const createSnackbar = useSnackbar();
 
   const limit = 15;
-  const [dlmTableRows, setDlmTableRows] = useState<Array<any>>([]);
-  const [DLMPagedRows, setDLMPagedRows] = useState<Array<any>>([]);
-  const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<Array<any>>(
+  const [dlmTableRows, setDlmTableRows] = useState<Array<TRow>>([]);
+  const [DLMPagedRows, setDLMPagedRows] = useState<Array<TRow>>([]);
+  const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<Array<string>>(
     [],
   );
   const [searchMember, setSearchMember] = useState('');
-  const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
+  const [searchMemberResult, setSearchMemberResult] = useState<Array<GranteeEntry>>([]);
   const [isShowMemberError, setIsShowMemberError] = useState(false);
   const [memberErrorMessage, setMemberErrorMessage] = useState<string | null>('');
   const [offset, setOffset] = useState(0);
   const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
   const [filterMember, setFilterMember] = useState('');
-  const [filteredDlmTableRows, setFilteredDlmTableRows] = useState<Array<any>>([]);
+  const [filteredDlmTableRows, setFilteredDlmTableRows] = useState<Array<TRow>>([]);
   const [isOpenDeleteMemberDialog, setIsOpenDeleteMemberDialog] = useState(false);
   const [memberToDelete, setMemberToDelete] = useState<string | null>(null);
 
-  const memberHeaders: Array<any> = useMemo(
+  const memberHeaders: Array<THeader> = useMemo(
     () => [
       {
         id: 'members',
@@ -87,17 +108,17 @@ export const MembersTab: FC<MembersTabProps> = ({
       },
       !selectedMailingList?.dynamic
         ? {
-            id: 'actions',
-            label: t('label.actions', 'Actions'),
-            width: '20%',
-            bold: false,
-          }
+          id: 'actions',
+          label: t('label.actions', 'Actions'),
+          width: '20%',
+          bold: false,
+        }
         : { id: 'actions', label: '', width: '0%', bold: false },
     ],
     [t],
   );
 
-  const searchMemberItems = searchMemberResult.map((item: any) => ({
+  const searchMemberItems = searchMemberResult.map((item) => ({
     id: item.id,
     label: item.name,
     customComponent: (
@@ -121,7 +142,7 @@ export const MembersTab: FC<MembersTabProps> = ({
   useEffect(() => {
     if (dlm && dlm.length > 0) {
       if (!filterMember) {
-        const allRows = dlm.map((item: any) => ({
+        const allRows = dlm.map((item) => ({
           id: item,
           columns: [
             <ds-text as="span"
@@ -152,12 +173,12 @@ export const MembersTab: FC<MembersTabProps> = ({
           ],
         }));
         const pagedRows = allRows.slice(offset, offset + limit);
-        setDlmTableRows(allRows);
-        setDLMPagedRows(pagedRows);
+        setDlmTableRows(allRows as unknown as Array<TRow>);
+        setDLMPagedRows(pagedRows as unknown as Array<TRow>);
       } else {
         const filteredRows = dlm
-          .filter((item: any) => item.toLowerCase().includes(filterMember.toLowerCase()))
-          .map((item: any) => ({
+          .filter((item) => item.toLowerCase().includes(filterMember.toLowerCase()))
+          .map((item) => ({
             id: item,
             columns: [
               <ds-text as="span"
@@ -188,8 +209,8 @@ export const MembersTab: FC<MembersTabProps> = ({
             ],
           }));
         const pagedRows = filteredRows.slice(offset, offset + limit);
-        setDlmTableRows(filteredRows);
-        setDLMPagedRows(pagedRows);
+        setDlmTableRows(filteredRows as unknown as Array<TRow>);
+        setDLMPagedRows(pagedRows as unknown as Array<TRow>);
       }
     } else {
       setDlmTableRows([]);
@@ -208,18 +229,18 @@ export const MembersTab: FC<MembersTabProps> = ({
 
       searchDirectory({ attr: attrs, type: types, domainName: '', query, offset: 0, limit: RECORD_DISPLAY_LIMIT, sortBy: 'name' })
         .then((data) => {
-          const result: Array<any> = [];
+          const result: Array<GranteeEntry> = [];
           const dl = data?.dl;
           const account = data?.account;
           const alias = data?.alias;
           if (dl) {
-            dl.map((item: any) => result.push(item));
+            dl.map((item: GranteeEntry) => result.push(item));
           }
           if (account) {
-            account.map((item: any) => result.push(item));
+            account.map((item: GranteeEntry) => result.push(item));
           }
           if (alias) {
-            alias.map((item: any) => result.push(item));
+            alias.map((item: GranteeEntry) => result.push(item));
           }
           setSearchMemberResult(result);
         })
@@ -236,11 +257,11 @@ export const MembersTab: FC<MembersTabProps> = ({
   const onAdd = useCallback((): void => {
     if (searchMember !== '') {
       const specialChars = /[ `'"<>,;]/;
-      const allEmails: Array<any> = specialChars.test(searchMember)
+      const allEmails: Array<string> = specialChars.test(searchMember)
         ? getAllEmailFromString(searchMember)
         : [searchMember];
       if (allEmails !== null && allEmails !== undefined) {
-        const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
+        const inValidEmailAddress = allEmails.filter((item) => !isValidEmail(item));
         if (inValidEmailAddress && inValidEmailAddress.length > 0) {
           setIsShowMemberError(true);
           setMemberErrorMessage(
@@ -249,7 +270,7 @@ export const MembersTab: FC<MembersTabProps> = ({
               'The account does not exist. Please check the spelling and try again.',
             ),
           );
-        } else if (dlm.find((item: any) => item === searchMember)) {
+        } else if (dlm.find((item) => item === searchMember)) {
           setIsShowMemberError(true);
           setMemberErrorMessage(
             t(
@@ -259,28 +280,30 @@ export const MembersTab: FC<MembersTabProps> = ({
           );
         } else {
           const sortedList = sortedUniq(allEmails);
-          const newMembers = sortedList.filter((item: any) => !dlm.includes(item));
+          const newMembers = sortedList.filter((item) => !dlm.includes(item));
           if (newMembers.length === 0) return;
           setIsRequestInProgress(true);
-          const addRequests = newMembers.map((item: any) => {
-            const id: any = {
+          const addRequests = newMembers.map((item) => {
+            const id: SoapNamedContent = {
               n: 'id',
               _content: selectedMailingList?.id,
             };
-            const dlmItem: any = {
+            const dlmItem: SoapNamedContent = {
               n: 'dlm',
               _content: item,
             };
             return addDistributionListMember(id, dlmItem);
           });
           Promise.all(addRequests)
-            .then((responses: any) => {
-              const fault = responses.find((r: any) => r?.Fault);
+            .then((responses) => {
+              const fault = (responses as unknown as Array<SoapFaultResponse>).find((r) => r?.Fault);
               if (fault) {
                 createSnackbar({
                   key: 'error',
                   severity: 'error',
-                  label: fault?.Fault?.Reason?.Text,
+                  label:
+                    fault?.Fault?.Reason?.Text ??
+                    t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
                   autoHideTimeout: 3000,
                   hideButton: true,
                   replace: true,
@@ -288,7 +311,7 @@ export const MembersTab: FC<MembersTabProps> = ({
               } else {
                 const updatedDlm = uniq(dlm.concat(newMembers));
                 setDlm(updatedDlm);
-                setPreviousDetail((prevState: any) => ({
+                setPreviousDetail((prevState) => ({
                   ...prevState,
                   dlm: updatedDlm,
                 }));
@@ -309,7 +332,7 @@ export const MembersTab: FC<MembersTabProps> = ({
               }
               setIsRequestInProgress(false);
             })
-            .catch((error: any) => {
+            .catch((error) => {
               createSnackbar({
                 key: 'error',
                 severity: 'error',
@@ -355,7 +378,7 @@ export const MembersTab: FC<MembersTabProps> = ({
       setFilterMember(value);
       setDLMSearchCurrentPage(1);
       setOffset(0);
-      const allRows = dlmTableRows.filter((item: any) =>
+      const allRows = dlmTableRows.filter((item) =>
         item?.id.toLowerCase().includes(value.toLowerCase()),
       );
       setFilteredDlmTableRows(allRows);
@@ -379,30 +402,32 @@ export const MembersTab: FC<MembersTabProps> = ({
   const onDeleteMemberConfirm = useCallback(() => {
     if (!memberToDelete) return;
     setIsRequestInProgress(true);
-    const id: any = {
+    const id: SoapNamedContent = {
       n: 'id',
       _content: selectedMailingList?.id,
     };
-    const dlmItem: any = {
+    const dlmItem: SoapNamedContent = {
       n: 'dlm',
       _content: memberToDelete,
     };
     removeDistributionListMember(id, dlmItem)
-      .then((response: any) => {
-        if (response?.Fault) {
+      .then((response) => {
+        if ((response as unknown as SoapFaultResponse)?.Fault) {
           createSnackbar({
             key: 'error',
             severity: 'error',
-            label: response?.Fault?.Reason?.Text,
+            label:
+              (response as unknown as SoapFaultResponse)?.Fault?.Reason?.Text ??
+              t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
           });
         } else {
-          const updatedDlm = dlm.filter((item: any) => item !== memberToDelete);
+          const updatedDlm = dlm.filter((item) => item !== memberToDelete);
           setDlm(updatedDlm);
           setSelectedDistributionListMember([]);
-          setPreviousDetail((prevState: any) => ({
+          setPreviousDetail((prevState) => ({
             ...prevState,
             dlm: updatedDlm,
           }));
@@ -426,7 +451,7 @@ export const MembersTab: FC<MembersTabProps> = ({
         setIsRequestInProgress(false);
         closeDeleteMemberHandler();
       })
-      .catch((error: any) => {
+      .catch((error) => {
         createSnackbar({
           key: 'error',
           severity: 'error',
@@ -478,7 +503,7 @@ export const MembersTab: FC<MembersTabProps> = ({
                     label={t('label.distribution_list_url', "Distribution List's URL")}
                     value={memberURL}
                     backgroundColor="gray5"
-                    onChange={(e: any): any => {
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                       setMemberURL(e.target.value);
                     }}
                     disabled={!isGlobalAdmin}
@@ -582,7 +607,7 @@ export const MembersTab: FC<MembersTabProps> = ({
                     value={filterMember}
                     backgroundColor="gray5"
                     onChange={handleInputChange}
-                    CustomIcon={(): any => (
+                    CustomIcon={(): ReactElement => (
                       <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                     )}
                   />

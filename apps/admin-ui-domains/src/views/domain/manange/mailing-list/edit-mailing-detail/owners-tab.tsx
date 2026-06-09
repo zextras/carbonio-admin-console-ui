@@ -16,12 +16,29 @@ import {
   Padding,
   Row,
   Table,
+  type THeader,
+  type TRow,
   useSnackbar,
 } from '@zextras/ui-components';
 import { sortedUniq, uniq, uniqBy } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type FC,
+  type ReactElement,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import type {
+  DistributionListActionRequest,
+  SoapEntitySelector,
+  SoapFaultResponse,
+} from '../../../../../../types';
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { ASC, DESC, GRP, USR } from '../../../../../constants';
 import { distributionListAction } from '../../../../../services/distribution-list-action-service';
@@ -29,12 +46,18 @@ import { searchGal } from '../../../../../services/search-gal-service';
 import { getAllEmailFromString, isValidEmail } from '../../../../utility/utils';
 import { useSearchWithDebounce } from './hooks/use-search-with-debounce';
 import { useTableFilter } from './hooks/use-table-filter';
+import type {
+  GranteeEntry,
+  MailingListFormSnapshot,
+  OwnerEntry,
+  SelectedMailingList,
+} from './types';
 
 type OwnersTabProps = {
-  ownersList: Array<any>;
-  setOwnersList: (list: Array<any>) => void;
-  setPreviousDetail: (fn: any) => void;
-  selectedMailingList: any;
+  ownersList: Array<GranteeEntry>;
+  setOwnersList: (list: Array<GranteeEntry>) => void;
+  setPreviousDetail: Dispatch<SetStateAction<MailingListFormSnapshot>>;
+  selectedMailingList: SelectedMailingList;
   isRequestInProgress: boolean;
   setIsRequestInProgress: (v: boolean) => void;
   searchUserLabelValue: string;
@@ -52,15 +75,15 @@ export const OwnersTab: FC<OwnersTabProps> = ({
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
 
-  const [ownerTableRows, setOwnerTableRows] = useState<Array<any>>([]);
-  const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<Array<any>>([]);
+  const [ownerTableRows, setOwnerTableRows] = useState<Array<TRow>>([]);
+  const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<Array<string>>([]);
   const [searchOwner, setSearchOwner] = useState('');
-  const [searchOwnerResult, setSearchOwnerResult] = useState<Array<any>>([]);
+  const [searchOwnerResult, setSearchOwnerResult] = useState<Array<GranteeEntry>>([]);
   const [isShowOwnerError, setIsShowOwnerError] = useState(false);
   const [ownerErrorMessage, setOwnerErrorMessage] = useState<string | null>('');
-  const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
+  const [allOwnerList, setAllOwnerList] = useState<Array<OwnerEntry>>([]);
   const [isOpenDeleteOwnerDialog, setIsOpenDeleteOwnerDialog] = useState(false);
-  const [ownerToDelete, setOwnerToDelete] = useState<any>(null);
+  const [ownerToDelete, setOwnerToDelete] = useState<GranteeEntry | null>(null);
 
   const {
     filterValue: filterOwner,
@@ -70,20 +93,20 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 
   const _allOwnerLists = useMemo(
     () =>
-      ownersList.map((item: any) => ({
+      ownersList.map((item) => ({
         id: item?.id,
         name: item?.name,
-        type: item?.type,
+        type: (item as OwnerEntry)?.type,
       })),
     [ownersList],
   );
 
   const getOwnerType = useCallback(
-    (email?: string): any => {
+    (email?: string): string => {
       let type = 'email';
       const all = [..._allOwnerLists, ...allOwnerList];
-      all.forEach((item: any) => {
-        if (item?.id && item?.type && item?.email === email) {
+      all.forEach((item) => {
+        if (item?.id && item?.type && (item as OwnerEntry)?.email === email) {
           type = item?.type === 'group' || item?.type === GRP ? GRP : USR;
         }
       });
@@ -92,7 +115,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
     [allOwnerList, _allOwnerLists],
   );
 
-  const ownerHeaders: Array<any> = useMemo(
+  const ownerHeaders: Array<THeader> = useMemo(
     () => [
       {
         id: 'owners',
@@ -101,9 +124,11 @@ export const OwnersTab: FC<OwnersTabProps> = ({
         bold: true,
         sortable: true,
         onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
-          const sortFn = (a: any, b: any): number => {
-            const nameA = a?.columns[0]?.props?.children?.toLowerCase() || '';
-            const nameB = b?.columns[0]?.props?.children?.toLowerCase() || '';
+          const sortFn = (a: TRow, b: TRow): number => {
+            const colA = a?.columns[0] as ReactElement<{ children?: string }> | undefined;
+            const colB = b?.columns[0] as ReactElement<{ children?: string }> | undefined;
+            const nameA = colA?.props?.children?.toLowerCase() || '';
+            const nameB = colB?.props?.children?.toLowerCase() || '';
             if (order === ASC) {
               return nameA.localeCompare(nameB);
             } else {
@@ -123,7 +148,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
     [t, ownerTableRows],
   );
 
-  const searchOwnerList = searchOwnerResult.map((item: any) => ({
+  const searchOwnerList = searchOwnerResult.map((item) => ({
     id: item.id,
     label: item.name,
     customComponent: (
@@ -146,10 +171,10 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 
   useEffect(() => {
     if (ownersList && ownersList.length > 0) {
-      const sortedOwners = [...ownersList].sort((a: any, b: any) =>
+      const sortedOwners = [...ownersList].sort((a, b) =>
         (a?.name?.toLowerCase() || '').localeCompare(b?.name?.toLowerCase() || ''),
       );
-      const allRows = sortedOwners.map((item: any) => ({
+      const allRows = sortedOwners.map((item) => ({
         id: item?.name,
         columns: [
           <ds-text as="span"
@@ -189,17 +214,17 @@ export const OwnersTab: FC<OwnersTabProps> = ({
       searchGal(searchKeyword).then((data) => {
         const contactList = data?.cn;
         if (contactList) {
-          let result: Array<any> = [];
-          result = contactList.map((item: any): any => ({
+          let result: Array<GranteeEntry> = [];
+          result = contactList.map((item) => ({
             id: item?.id,
-            name: item?._attrs?.email,
+            name: item?._attrs?.email ?? '',
           }));
           setAllOwnerList(
             uniqBy(
               allOwnerList.concat(
-                contactList.map((item: any) => ({
+                contactList.map((item) => ({
                   id: item?.id,
-                  name: item?._attrs?.email,
+                  name: item?._attrs?.email ?? '',
                   type: item?._attrs?.type,
                 })),
               ),
@@ -220,11 +245,11 @@ export const OwnersTab: FC<OwnersTabProps> = ({
   const onAddOwner = useCallback((): void => {
     if (searchOwner !== '') {
       const specialChars = /[ `'"<>,;]/;
-      const allEmails: Array<any> = specialChars.test(searchOwner)
+      const allEmails: Array<string> = specialChars.test(searchOwner)
         ? getAllEmailFromString(searchOwner)
         : [searchOwner];
       if (allEmails !== null && allEmails !== undefined) {
-        const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
+        const inValidEmailAddress = allEmails.filter((item) => !isValidEmail(item));
         if (inValidEmailAddress && inValidEmailAddress.length > 0) {
           setIsShowOwnerError(true);
           setOwnerErrorMessage(
@@ -233,7 +258,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
               'The account does not exist. Please check the spelling and try again.',
             ),
           );
-        } else if (ownersList.find((item: any) => item?.name === searchOwner)) {
+        } else if (ownersList.find((item) => item?.name === searchOwner)) {
           setIsShowOwnerError(true);
           setOwnerErrorMessage(
             t(
@@ -244,14 +269,17 @@ export const OwnersTab: FC<OwnersTabProps> = ({
         } else {
           setIsShowOwnerError(false);
           const sortedList = sortedUniq(allEmails);
-          const newOwners = sortedList.map((item: any) => ({ name: item, id: item }));
+          const newOwners: Array<GranteeEntry> = sortedList.map((item) => ({
+            name: item,
+            id: item,
+          }));
           setIsRequestInProgress(true);
-          const addOwnerRequests = newOwners.map((owner: any) => {
-            const dl: any = {
+          const addOwnerRequests = newOwners.map((owner) => {
+            const dl: SoapEntitySelector = {
               by: 'id',
               _content: selectedMailingList?.id,
             };
-            const action: any = {
+            const action: DistributionListActionRequest['action'] = {
               op: 'addOwners',
               owner: {
                 by: 'name',
@@ -262,13 +290,15 @@ export const OwnersTab: FC<OwnersTabProps> = ({
             return distributionListAction(dl, action);
           });
           Promise.all(addOwnerRequests)
-            .then((responses: any) => {
-              const fault = responses.find((r: any) => r?.Fault);
+            .then((responses) => {
+              const fault = (responses as unknown as Array<SoapFaultResponse>).find((r) => r?.Fault);
               if (fault) {
                 createSnackbar({
                   key: 'error',
                   severity: 'error',
-                  label: fault?.Fault?.Reason?.Text,
+                  label:
+                    fault?.Fault?.Reason?.Text ??
+                    t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
                   autoHideTimeout: 3000,
                   hideButton: true,
                   replace: true,
@@ -276,7 +306,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
               } else {
                 const updatedOwners = uniq(ownersList.concat(newOwners));
                 setOwnersList(updatedOwners);
-                setPreviousDetail((prevState: any) => ({
+                setPreviousDetail((prevState) => ({
                   ...prevState,
                   ownersList: updatedOwners,
                 }));
@@ -295,7 +325,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
               }
               setIsRequestInProgress(false);
             })
-            .catch((error: any) => {
+            .catch((error) => {
               createSnackbar({
                 key: 'error',
                 severity: 'error',
@@ -344,11 +374,11 @@ export const OwnersTab: FC<OwnersTabProps> = ({
   const onDeleteOwnerConfirm = useCallback(() => {
     if (!ownerToDelete) return;
     setIsRequestInProgress(true);
-    const dl: any = {
+    const dl: SoapEntitySelector = {
       by: 'id',
       _content: selectedMailingList?.id,
     };
-    const action: any = {
+    const action: DistributionListActionRequest['action'] = {
       op: 'removeOwners',
       owner: {
         by: 'name',
@@ -357,23 +387,25 @@ export const OwnersTab: FC<OwnersTabProps> = ({
       },
     };
     distributionListAction(dl, action)
-      .then((response: any) => {
-        if (response?.Fault) {
+      .then((response) => {
+        if ((response as unknown as SoapFaultResponse)?.Fault) {
           createSnackbar({
             key: 'error',
             severity: 'error',
-            label: response?.Fault?.Reason?.Text,
+            label:
+              (response as unknown as SoapFaultResponse)?.Fault?.Reason?.Text ??
+              t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
           });
         } else {
           const updatedOwners = ownersList.filter(
-            (item: any) => item?.name !== ownerToDelete?.name,
+            (item) => item?.name !== ownerToDelete?.name,
           );
           setOwnersList(updatedOwners);
           setSelectedOwnerListMember([]);
-          setPreviousDetail((prevState: any) => ({
+          setPreviousDetail((prevState) => ({
             ...prevState,
             ownersList: updatedOwners,
           }));
@@ -392,7 +424,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
         setIsRequestInProgress(false);
         closeDeleteOwnerHandler();
       })
-      .catch((error: any) => {
+      .catch((error) => {
         createSnackbar({
           key: 'error',
           severity: 'error',
@@ -529,7 +561,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
                     value={filterOwner}
                     backgroundColor="gray5"
                     onChange={handleInputChangeOwner}
-                    CustomIcon={(): any => (
+                    CustomIcon={(): ReactElement => (
                       <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                     )}
                   />

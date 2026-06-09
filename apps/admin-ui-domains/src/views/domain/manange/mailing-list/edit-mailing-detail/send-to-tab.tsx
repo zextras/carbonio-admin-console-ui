@@ -16,10 +16,12 @@ import {
   Row,
   Select,
   Table,
+  type THeader,
+  type TRow,
   useSnackbar,
 } from '@zextras/ui-components';
 import { sortedUniq, uniq } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useMemo, useState } from 'react';
+import { type ChangeEvent, type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
@@ -28,14 +30,15 @@ import { searchGal } from '../../../../../services/search-gal-service';
 import { getAllEmailFromString, isValidEmail } from '../../../../utility/utils';
 import { useSearchWithDebounce } from './hooks/use-search-with-debounce';
 import { useTableFilter } from './hooks/use-table-filter';
+import type { GranteeEntry, GrantTypeOption, GrantTypeValue } from './types';
 
 type SendToTabProps = {
-  grantTypeOptions: Array<any>;
-  grantType: any;
-  onGrantTypeChange: (v: any) => void;
-  grantEmailsList: Array<any>;
-  setGrantEmailsList: (v: Array<any>) => void;
-  setGrantEmails: (v: Array<any>) => void;
+  grantTypeOptions: Array<GrantTypeOption>;
+  grantType: GrantTypeOption | undefined;
+  onGrantTypeChange: (v: GrantTypeValue | null) => void;
+  grantEmailsList: Array<string>;
+  setGrantEmailsList: (v: Array<string>) => void;
+  setGrantEmails: (v: Array<string>) => void;
   setIsDirty: (v: boolean) => void;
   searchUserLabelValue: string;
   isShowSenderToError: boolean;
@@ -58,9 +61,9 @@ export const SendToTab: FC<SendToTabProps> = ({
   const createSnackbar = useSnackbar();
 
   const [grantEmailItem, setGrantEmailItem] = useState('');
-  const [searchGrantEmailResult, setSearchGrantEmailResult] = useState<Array<any>>([]);
-  const [grantEmailTableRows, setGrantEmailTableRows] = useState<Array<any>>([]);
-  const [selectedGrantEmail, setSelectedGrantEmail] = useState<Array<any>>([]);
+  const [searchGrantEmailResult, setSearchGrantEmailResult] = useState<Array<GranteeEntry>>([]);
+  const [grantEmailTableRows, setGrantEmailTableRows] = useState<Array<TRow>>([]);
+  const [selectedGrantEmail, setSelectedGrantEmail] = useState<Array<string>>([]);
   const [senderToErrorMessage, setSenderToErrorMessage] = useState<string>('');
 
   const {
@@ -69,7 +72,7 @@ export const SendToTab: FC<SendToTabProps> = ({
     handleFilterChange: handleInputChangeGrantEmail,
   } = useTableFilter(grantEmailTableRows);
 
-  const grantEmailHeaders: Array<any> = useMemo(
+  const grantEmailHeaders: Array<THeader> = useMemo(
     () => [
       {
         id: 'grantEmail',
@@ -87,7 +90,7 @@ export const SendToTab: FC<SendToTabProps> = ({
     [t],
   );
 
-  const grantItems = searchGrantEmailResult.map((item: any) => ({
+  const grantItems = searchGrantEmailResult.map((item) => ({
     id: item?.id,
     label: item?.name,
     customComponent: (
@@ -112,10 +115,10 @@ export const SendToTab: FC<SendToTabProps> = ({
     searchGal(searchKeyword).then((data) => {
       const contactList = data?.cn;
       if (contactList) {
-        let result: Array<any> = [];
-        result = contactList.map((item: any): any => ({
+        let result: Array<GranteeEntry> = [];
+        result = contactList.map((item) => ({
           id: item?.id,
-          name: item?._attrs?.email,
+          name: item?._attrs?.email ?? '',
         }));
         setSearchGrantEmailResult(result);
       } else {
@@ -129,11 +132,11 @@ export const SendToTab: FC<SendToTabProps> = ({
   const onAddGrantEmail = useCallback(() => {
     if (grantEmailItem !== '') {
       const specialChars = /[ `'"<>,;]/;
-      const allEmails: Array<any> = specialChars.test(grantEmailItem)
+      const allEmails: Array<string> = specialChars.test(grantEmailItem)
         ? getAllEmailFromString(grantEmailItem)
         : [grantEmailItem];
       if (allEmails !== null && allEmails !== undefined) {
-        const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
+        const inValidEmailAddress = allEmails.filter((item) => !isValidEmail(item));
         if (inValidEmailAddress && inValidEmailAddress.length > 0) {
           setIsShowSenderToError(true);
           setSenderToErrorMessage(
@@ -142,7 +145,7 @@ export const SendToTab: FC<SendToTabProps> = ({
               'The account does not exist. Please check the spelling and try again.',
             ),
           );
-        } else if (grantEmailsList.find((item: any) => item === grantEmailItem)) {
+        } else if (grantEmailsList.find((item) => item === grantEmailItem)) {
           setIsShowSenderToError(true);
           setSenderToErrorMessage(
             t(
@@ -189,7 +192,7 @@ export const SendToTab: FC<SendToTabProps> = ({
 
   useMemo(() => {
     if (grantEmailsList && grantEmailsList.length > 0) {
-      const allRows = grantEmailsList.map((item: any) => ({
+      const allRows = grantEmailsList.map((item) => ({
         id: item,
         columns: [
           <ds-text
@@ -213,7 +216,7 @@ export const SendToTab: FC<SendToTabProps> = ({
             style={{ position: 'inherit' }}
             aria-label={t('label.delete', 'Delete')}
             onClick={(): void => {
-              const updated = grantEmailsList.filter((g: any) => item !== g);
+              const updated = grantEmailsList.filter((g) => item !== g);
               setGrantEmailsList(updated);
               setGrantEmails(updated);
               setSelectedGrantEmail([]);
@@ -263,7 +266,7 @@ export const SendToTab: FC<SendToTabProps> = ({
             label={t('domain.distributionList.sendTo.acceptMessageFrom', 'Accept message from')}
             showCheckbox={false}
             onChange={onGrantTypeChange}
-            selection={grantType}
+            selection={grantType as GrantTypeOption}
           />
         </Container>
       </ListRow>
@@ -354,7 +357,7 @@ export const SendToTab: FC<SendToTabProps> = ({
                       value={filterGrantEmail}
                       backgroundColor="gray5"
                       onChange={handleInputChangeGrantEmail}
-                      CustomIcon={(): any => (
+                      CustomIcon={(): ReactElement => (
                         <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                       )}
                     />

@@ -14,10 +14,15 @@ import {
   Select,
   Switch,
 } from '@zextras/ui-components';
-import { type FC } from 'react';
+import { type ChangeEvent, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ManageAliases from '../../../../components/manageAliases';
+import type {
+  MailAliasChip,
+  MailingListRightOption,
+  SelectedMailingList,
+} from './types';
 
 type GeneralTabProps = {
   displayName: string;
@@ -32,15 +37,15 @@ type GeneralTabProps = {
   setDescription: (v: string) => void;
   zimbraDistributionListSendShareMessageToNewMembers: boolean;
   setZimbraDistributionListSendShareMessageToNewMembers: (v: boolean) => void;
-  zimbraMailStatus: any;
-  onRightsChange: (v: any) => void;
-  rightsOptions: Array<any>;
-  zimbraMailAlias: Array<any>;
-  setZimbraMailAlias: (v: Array<any>) => void;
+  zimbraMailStatus: MailingListRightOption | undefined;
+  onRightsChange: (v: MailingListRightOption['value'] | null) => void;
+  rightsOptions: Array<MailingListRightOption>;
+  zimbraMailAlias: Array<MailAliasChip>;
+  setZimbraMailAlias: (v: Array<MailAliasChip>) => void;
   dlCreateDate: string;
   dlId: string;
   dlmCount: number;
-  selectedMailingList: any;
+  selectedMailingList: SelectedMailingList;
   dlMembershipListNames: string;
   setIsDirty: (v: boolean) => void;
 };
@@ -95,7 +100,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             label={t('label.display_name', 'Display Name')}
             value={displayName}
             backgroundColor="gray5"
-            onChange={(e: any): any => {
+            onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               setDisplayName(e.target.value);
             }}
           />
@@ -106,7 +111,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             label={t('label.address', 'Address')}
             value={distributionName}
             backgroundColor="gray5"
-            onChange={(e: any): any => {
+            onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               setDistributionName(e.target.value);
             }}
           />
@@ -120,7 +125,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             label={t('label.status', 'Status')}
             showCheckbox={false}
             onChange={onRightsChange}
-            selection={zimbraMailStatus}
+            selection={zimbraMailStatus as MailingListRightOption}
           />
         </Container>
       </ListRow>
@@ -131,7 +136,9 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         <ManageAliases
           listAliases={zimbraMailAlias}
           setListAliases={setZimbraMailAlias}
-          setAliasChange={(): void => ((): any => true)()}
+          setAliasChange={(): void => {
+            ((): boolean => true)();
+          }}
         />
       </Container>
       {!selectedMailingList?.dynamic && (
@@ -226,7 +233,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
               'Write something that will easily make you remember this element',
             )}
             backgroundColor="gray5"
-            onChange={(e: any): any => {
+            onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               setDescription(e.target.value);
             }}
           />
@@ -243,7 +250,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             value={zimbraNotes}
             label={t('label.notes', 'Notes')}
             backgroundColor="gray5"
-            onChange={(e: any): any => {
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
               setZimbraNotes(e.target.value);
             }}
           />

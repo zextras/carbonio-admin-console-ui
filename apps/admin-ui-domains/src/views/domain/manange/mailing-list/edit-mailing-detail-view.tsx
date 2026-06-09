@@ -11,6 +11,7 @@ import {
   Padding,
   Row,
   TabBar,
+  type TabBarProps,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
@@ -19,6 +20,13 @@ import { differenceBy, isEqual } from 'lodash';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import type {
+  Attribute,
+  DistributionListActionRequest,
+  SoapEntitySelector,
+  SoapFaultResponse,
+  SoapNamedContent,
+} from '../../../../../types';
 import { ALL, DL, EDOM, EMAIL, GRP, GST, PUB, USR } from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { addMailingListAliasRequest } from '../../../../services/add-mailing-list-alias';
@@ -41,13 +49,24 @@ import { OwnersTab } from './edit-mailing-detail/owners-tab';
 import { ReusedDefaultTabBar } from './edit-mailing-detail/reused-default-tab-bar';
 import { SendAsTab } from './edit-mailing-detail/send-as-tab';
 import { SendToTab } from './edit-mailing-detail/send-to-tab';
+import type {
+  DistributionListMembershipEntry,
+  EditMailingListViewProps,
+  GranteeEntry,
+  GrantTypeOption,
+  GrantTypeValue,
+  MailAliasChip,
+  MailingListFormSnapshot,
+  MailingListRightOption,
+  SendAclEntry,
+} from './edit-mailing-detail/types';
 
 export const TRUE_FALSE = {
   TRUE: 'TRUE',
   FALSE: 'FALSE',
 } as const;
 
-const EditMailingListView: FC<any> = ({
+const EditMailingListView: FC<EditMailingListViewProps> = ({
   selectedMailingList,
   setIsUpdateRecord,
   setShowMailingListDetailView,
@@ -66,19 +85,21 @@ const EditMailingListView: FC<any> = ({
   ] = useState<boolean>(false);
 
   const [zimbraHideInGal, setZimbraHideInGal] = useState<boolean>(false);
-  const [zimbraDefaultMailAlias, setDefaultZimbraMailAlias] = useState<any>([]);
-  const [zimbraMailAlias, setZimbraMailAlias] = useState<any>([]);
-  const [dlm, setDlm] = useState<any[]>([]);
+  const [zimbraDefaultMailAlias, setDefaultZimbraMailAlias] = useState<Array<MailAliasChip>>([]);
+  const [zimbraMailAlias, setZimbraMailAlias] = useState<Array<MailAliasChip>>([]);
+  const [dlm, setDlm] = useState<Array<string>>([]);
   const [zimbraNotes, setZimbraNotes] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [zimbraCreateTimestamp, setZimbraCreateTimestamp] = useState<string>('');
   const [dlId, setdlId] = useState<string>('');
-  const [dlMembershipList, setDlMembershipList] = useState<any>([]);
-  const [ownersList, setOwnersList] = useState<any[]>([]);
+  const [dlMembershipList, setDlMembershipList] = useState<
+    NonNullable<MailingListFormSnapshot['dlMembershipList']>
+  >([]);
+  const [ownersList, setOwnersList] = useState<Array<GranteeEntry>>([]);
   const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [memberURL, setMemberURL] = useState<string>();
-  const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
+  const [ownerOfList, setOwnerOfList] = useState<Array<GranteeEntry>>([]);
   const [zimbraIsACLGroup, setZimbraIsACLGroup] = useState<boolean>(false);
   const [isShowSenderToError, setIsShowSenderToError] = useState<boolean>(false);
   const domainList = useDomainStore((state) => state.domainList);
@@ -96,9 +117,9 @@ const EditMailingListView: FC<any> = ({
   const [pendingTab, setPendingTab] = useState<string | null>(null);
 
   // sendEmails
-  const [sendEmails, setSendEmails] = useState<any>([]);
+  const [sendEmails, setSendEmails] = useState<Array<SendAclEntry>>([]);
 
-  const [sendEmailsList, setSendEmailsList] = useState<any>([]);
+  const [sendEmailsList, setSendEmailsList] = useState<Array<SendAclEntry>>([]);
 
   const dlCreateDate = useMemo(() => {
     if (!zimbraCreateTimestamp || zimbraCreateTimestamp === '') {
@@ -108,7 +129,7 @@ const EditMailingListView: FC<any> = ({
     return date && isValid(date) ? format(date, 'dd MMM yyyy - HH:mm') : '';
   }, [zimbraCreateTimestamp]);
 
-  const rightsOptions: any[] = useMemo(
+  const rightsOptions: Array<MailingListRightOption> = useMemo(
     () => [
       {
         label: t('domain.mailingList.canReceive', 'Can Receive'),
@@ -122,23 +143,23 @@ const EditMailingListView: FC<any> = ({
     [t],
   );
 
-  const grantTypeOptions: any[] = useMemo(
+  const grantTypeOptions: Array<GrantTypeOption> = useMemo(
     () => [
       {
         label: t('label.everyone', 'Everyone'),
-        value: PUB,
+        value: PUB as GrantTypeValue,
       },
       {
         label: t('label.members_only', 'Members only'),
-        value: GRP,
+        value: GRP as GrantTypeValue,
       },
       {
         label: t('label.internal_users_only', 'Internal Users only'),
-        value: ALL,
+        value: ALL as GrantTypeValue,
       },
       {
         label: t('label.only_there_users', 'Only these users'),
-        value: EMAIL,
+        value: EMAIL as GrantTypeValue,
       },
     ],
     [t],
@@ -185,13 +206,15 @@ const EditMailingListView: FC<any> = ({
     }
   }, [domainList, getDomainLists]);
 
-  const [previousDetail, setPreviousDetail] = useState<any>({});
+  const [previousDetail, setPreviousDetail] = useState<MailingListFormSnapshot>({});
 
-  const [zimbraMailStatus, setZimbraMailStatus] = useState<any>(rightsOptions[1]);
+  const [zimbraMailStatus, setZimbraMailStatus] = useState<MailingListRightOption | undefined>(
+    rightsOptions[1],
+  );
 
   const onRightsChange = useCallback(
-    (v: any): any => {
-      const it = rightsOptions.find((item: any) => item.value === v);
+    (v: MailingListRightOption['value'] | null): void => {
+      const it = rightsOptions.find((item) => item.value === v);
       setZimbraMailStatus(it);
     },
     [rightsOptions],
@@ -206,14 +229,14 @@ const EditMailingListView: FC<any> = ({
             setdlId(distributionListMembers?.id);
           }
           if (distributionListMembers?.dlm) {
-            const _dlm = distributionListMembers?.dlm.map((item: any) => item?._content);
+            const _dlm = distributionListMembers?.dlm.map((item) => item?._content);
             setDlm(_dlm);
-            setPreviousDetail((prevState: any) => ({
+            setPreviousDetail((prevState) => ({
               ...prevState,
               dlm: _dlm,
             }));
           } else {
-            setPreviousDetail((prevState: any) => ({
+            setPreviousDetail((prevState) => ({
               ...prevState,
               dlm: [],
             }));
@@ -221,51 +244,51 @@ const EditMailingListView: FC<any> = ({
           if (distributionListMembers?.a) {
             /* Get Gal Hide Information */
             const _zimbraHideInGal = distributionListMembers?.a?.find(
-              (a: any) => a?.n === 'zimbraHideInGal',
+              (a: Attribute) => a?.n === 'zimbraHideInGal',
             )?._content;
             if (_zimbraHideInGal === 'TRUE') {
               setZimbraHideInGal(true);
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 zimbraHideInGal: true,
               }));
             } else {
               setZimbraHideInGal(false);
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 zimbraHideInGal: false,
               }));
             }
 
             const _zimbraNotes = distributionListMembers?.a?.find(
-              (a: any) => a?.n === 'zimbraNotes',
+              (a: Attribute) => a?.n === 'zimbraNotes',
             )?._content;
 
             setZimbraNotes(_zimbraNotes || '');
             if (_zimbraNotes) {
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 zimbraNotes: _zimbraNotes,
               }));
             } else {
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 zimbraNotes: '',
               }));
             }
 
             const _description = distributionListMembers?.a?.find(
-              (a: any) => a?.n === 'description',
+              (a: Attribute) => a?.n === 'description',
             )?._content;
 
             setDescription(_description || '');
             if (_description) {
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 description: _description,
               }));
             } else {
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 description: '',
               }));
@@ -273,33 +296,34 @@ const EditMailingListView: FC<any> = ({
 
             const _zimbraDistributionListSendShareMessageToNewMembers =
               distributionListMembers?.a?.find(
-                (a: any) => a?.n === 'zimbraDistributionListSendShareMessageToNewMembers',
+                (a: Attribute) => a?.n === 'zimbraDistributionListSendShareMessageToNewMembers',
               )?._content;
 
             if (_zimbraDistributionListSendShareMessageToNewMembers === 'TRUE') {
               setZimbraDistributionListSendShareMessageToNewMembers(true);
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 zimbraDistributionListSendShareMessageToNewMembers: true,
               }));
             } else {
               setZimbraDistributionListSendShareMessageToNewMembers(false);
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 zimbraDistributionListSendShareMessageToNewMembers: false,
               }));
             }
 
             const _zimbraMailAlias = distributionListMembers?.a?.filter(
-              (a: any) => a?.n === 'zimbraMailAlias' && a?._content !== selectedMailingList?.name,
+              (a: Attribute) =>
+                a?.n === 'zimbraMailAlias' && a?._content !== selectedMailingList?.name,
             );
             if (_zimbraMailAlias && _zimbraMailAlias.length > 0) {
-              const allAlias = _zimbraMailAlias.map((ele: any) => ({ label: ele?._content }));
+              const allAlias = _zimbraMailAlias.map((ele: Attribute) => ({ label: ele?._content }));
               setZimbraMailAlias(allAlias);
               setDefaultZimbraMailAlias(allAlias);
             }
             const _zimbraCreateTimestamp = distributionListMembers?.a?.find(
-              (a: any) => a?.n === 'zimbraCreateTimestamp',
+              (a: Attribute) => a?.n === 'zimbraCreateTimestamp',
             )?._content;
             _zimbraCreateTimestamp
               ? setZimbraCreateTimestamp(_zimbraCreateTimestamp)
@@ -307,40 +331,40 @@ const EditMailingListView: FC<any> = ({
 
             /* Mail status */
             const _zimbraMailStatus = distributionListMembers?.a?.find(
-              (a: any) => a?.n === 'zimbraMailStatus',
+              (a: Attribute) => a?.n === 'zimbraMailStatus',
             )?._content;
             if (_zimbraMailStatus === 'enabled') {
               onRightsChange(rightsOptions[0].value);
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 zimbraMailStatus: rightsOptions[0],
               }));
             } else {
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 zimbraMailStatus: rightsOptions[1],
               }));
             }
 
             const _memberURL = distributionListMembers?.a?.find(
-              (a: any) => a?.n === 'memberURL',
+              (a: Attribute) => a?.n === 'memberURL',
             )?._content;
 
             if (_memberURL) {
               setMemberURL(_memberURL);
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 memberURL: _memberURL,
               }));
             } else if (selectedMailingList?.dynamic) {
-              setPreviousDetail((prevState: any) => ({
+              setPreviousDetail((prevState) => ({
                 ...prevState,
                 memberURL: '',
               }));
             }
 
             const _zimbraIsACLGroup = distributionListMembers?.a?.find(
-              (a: any) => a?.n === 'zimbraIsACLGroup',
+              (a: Attribute) => a?.n === 'zimbraIsACLGroup',
             )?._content;
             if (_zimbraIsACLGroup) {
               setZimbraIsACLGroup(_zimbraIsACLGroup === 'TRUE');
@@ -356,7 +380,7 @@ const EditMailingListView: FC<any> = ({
     getDistributionListMembership(id).then((data) => {
       const members = data?.dl;
       if (members && members.length > 0) {
-        const allMembers = members.map((item: any) => ({
+        const allMembers = members.map((item) => ({
           label: item?.name,
           background: 'gray3',
           color: 'text',
@@ -364,13 +388,13 @@ const EditMailingListView: FC<any> = ({
           name: item?.name,
         }));
         setDlMembershipList(allMembers);
-        setDlMembershipListNames(allMembers.map((item: any) => item?.name).join(', '));
-        setPreviousDetail((prevState: any) => ({
+        setDlMembershipListNames(allMembers.map((item) => item?.name).join(', '));
+        setPreviousDetail((prevState) => ({
           ...prevState,
           dlMembershipList: allMembers,
         }));
       } else {
-        setPreviousDetail((prevState: any) => ({
+        setPreviousDetail((prevState) => ({
           ...prevState,
           dlMembershipList: [],
         }));
@@ -381,23 +405,23 @@ const EditMailingListView: FC<any> = ({
 
   useEffect(() => {
     if (selectedMailingList?.a) {
-      const dsName = selectedMailingList?.a?.find((a: any) => a?.n === 'displayName')?._content;
+      const dsName = selectedMailingList?.a?.find((a: Attribute) => a?.n === 'displayName')?._content;
       if (dsName) {
         setDisplayName(dsName);
-        setPreviousDetail((prevState: any) => ({
+        setPreviousDetail((prevState) => ({
           ...prevState,
           displayName: dsName,
         }));
       } else {
         setDisplayName('');
-        setPreviousDetail((prevState: any) => ({
+        setPreviousDetail((prevState) => ({
           ...prevState,
           displayName: '',
         }));
       }
     }
     setDistributionName(selectedMailingList?.name);
-    setPreviousDetail((prevState: any) => ({
+    setPreviousDetail((prevState) => ({
       ...prevState,
       distributionName: selectedMailingList?.name,
     }));
@@ -407,13 +431,13 @@ const EditMailingListView: FC<any> = ({
     }
   }, [selectedMailingList, getMailingList, getDistributionListMembershipList]);
 
-  const [grantType, setGrantType] = useState<any>([]);
-  const [grantEmails, setGrantEmails] = useState<any>([]);
-  const [grantEmailsList, setGrantEmailsList] = useState<any>([]);
+  const [grantType, setGrantType] = useState<GrantTypeOption | undefined>(undefined);
+  const [grantEmails, setGrantEmails] = useState<Array<GranteeEntry | string>>([]);
+  const [grantEmailsList, setGrantEmailsList] = useState<Array<string>>([]);
 
   const onGrantTypeChange = useCallback(
-    (v: any): any => {
-      const it = grantTypeOptions.find((item: any) => item.value === v);
+    (v: GrantTypeValue | null): void => {
+      const it = grantTypeOptions.find((item) => item.value === v);
       setGrantType(it);
       if (
         previousDetail?.grantType !== undefined &&
@@ -423,7 +447,7 @@ const EditMailingListView: FC<any> = ({
         setIsDirty(true);
       }
     },
-    [grantTypeOptions, grantType, previousDetail?.grantType, setIsDirty],
+    [grantTypeOptions, previousDetail?.grantType, setIsDirty],
   );
 
   useEffect(() => {
@@ -435,7 +459,7 @@ const EditMailingListView: FC<any> = ({
   }, [grantType]);
 
   const getGrantML = useCallback(() => {
-    const getGrantBody: any = {};
+    const getGrantBody: Record<string, unknown> = {};
     const target = {
       type: DL,
       by: 'id',
@@ -443,25 +467,29 @@ const EditMailingListView: FC<any> = ({
     };
     getGrantBody.target = target;
     getGrant(getGrantBody)
-      .then((data: any) => {
-        const emails: Array<{ id: string; name: string }> = [];
-        const owners: Array<{ id: string; name: string }> = [];
-        const sendACL: Array<{ id: string; name: string; sendAcl: string }> = [];
-        let it = grantTypeOptions.find((item: any) => item.value === PUB);
+      .then((data) => {
+        const emails: Array<GranteeEntry> = [];
+        const owners: Array<GranteeEntry> = [];
+        const sendACL: Array<SendAclEntry> = [];
+        let it = grantTypeOptions.find((item) => item.value === PUB);
         if (data && data?.grant && Array.isArray(data?.grant)) {
-          const grant = data?.grant;
+          const grant = data?.grant as unknown as Array<{
+            target?: { type?: string; _content?: string };
+            grantee: Array<{ id?: string; name?: string; type?: string; _content?: string }>;
+            right: Array<{ _content?: string }>;
+          }>;
           if (grant.length > 0) {
             const sendToListItems = grant.filter(
-              (item: any) => item?.right[0]?._content === 'sendToDistList',
+              (item) => item?.right[0]?._content === 'sendToDistList',
             );
             const ownDistListItems = grant.filter(
-              (item: any) => item?.right[0]?._content === 'ownDistList',
+              (item) => item?.right[0]?._content === 'ownDistList',
             );
             const sendAsDistListItems = grant.filter(
-              (item: any) => item?.right[0]?._content === 'sendAsDistList',
+              (item) => item?.right[0]?._content === 'sendAsDistList',
             );
             const sendOnBehalfOfDistListItems = grant.filter(
-              (item: any) => item?.right[0]?._content === 'sendOnBehalfOfDistList',
+              (item) => item?.right[0]?._content === 'sendOnBehalfOfDistList',
             );
 
             let myGrantType = '';
@@ -469,7 +497,7 @@ const EditMailingListView: FC<any> = ({
             if (sendToListItems && sendToListItems.length > 0) {
               const type = sendToListItems[0]?.grantee[0]?.type;
               const sameGranteeAsList = sendToListItems.filter(
-                (item: any) =>
+                (item) =>
                   item?.grantee[0]?.type === type &&
                   item?.grantee[0]?.id === selectedMailingList?.id,
               );
@@ -477,41 +505,41 @@ const EditMailingListView: FC<any> = ({
                 (type === GRP || type === DL || type === USR || type == EDOM || type == GST) &&
                 sameGranteeAsList.length == 0
               ) {
-                onGrantTypeChange(EMAIL);
+                onGrantTypeChange(EMAIL as GrantTypeValue);
                 myGrantType = EMAIL;
               } else if (type === GRP && sameGranteeAsList.length == 1) {
-                onGrantTypeChange(GRP);
+                onGrantTypeChange(GRP as GrantTypeValue);
                 myGrantType = GRP;
               } else if (type === ALL) {
-                onGrantTypeChange(ALL);
+                onGrantTypeChange(ALL as GrantTypeValue);
                 myGrantType = ALL;
               } else {
                 // probably this option is not possible, but just in case set it to PUB
-                onGrantTypeChange(PUB);
+                onGrantTypeChange(PUB as GrantTypeValue);
                 myGrantType = PUB;
               }
             } else {
-              onGrantTypeChange(PUB);
+              onGrantTypeChange(PUB as GrantTypeValue);
               myGrantType = PUB;
             }
 
             if (ownDistListItems && ownDistListItems.length > 0) {
-              ownDistListItems.forEach((grItem: any) => {
+              ownDistListItems.forEach((grItem) => {
                 if (grItem?.right && Array.isArray(grItem?.right)) {
                   owners.push({
-                    id: grItem?.grantee[0]?.id,
-                    name: grItem?.grantee[0]?.name,
+                    id: grItem?.grantee[0]?.id ?? '',
+                    name: grItem?.grantee[0]?.name ?? '',
                   });
                 }
               });
             }
 
             if (sendAsDistListItems && sendAsDistListItems.length > 0) {
-              sendAsDistListItems.forEach((grItem: any) => {
+              sendAsDistListItems.forEach((grItem) => {
                 if (grItem?.right && Array.isArray(grItem?.right)) {
                   sendACL.push({
                     id: grItem?.grantee[0]?.id,
-                    name: grItem?.grantee[0]?.name,
+                    name: grItem?.grantee[0]?.name ?? '',
                     sendAcl: 'sendAsDistList',
                   });
                 }
@@ -519,18 +547,18 @@ const EditMailingListView: FC<any> = ({
             }
 
             if (sendOnBehalfOfDistListItems && sendOnBehalfOfDistListItems.length > 0) {
-              sendOnBehalfOfDistListItems.forEach((grItem: any) => {
+              sendOnBehalfOfDistListItems.forEach((grItem) => {
                 if (grItem?.right && Array.isArray(grItem?.right)) {
                   sendACL.push({
                     id: grItem?.grantee[0]?.id,
-                    name: grItem?.grantee[0]?.name,
+                    name: grItem?.grantee[0]?.name ?? '',
                     sendAcl: 'sendOnBehalfOfDistList',
                   });
                 }
               });
             }
 
-            sendToListItems.forEach((grItem: any) => {
+            sendToListItems.forEach((grItem) => {
               if (
                 grItem?.right &&
                 Array.isArray(grItem?.right) &&
@@ -538,8 +566,8 @@ const EditMailingListView: FC<any> = ({
                 grItem?.grantee[0]?.type !== ALL
               ) {
                 emails.push({
-                  id: grItem?.grantee[0]?.id,
-                  name: grItem?.grantee[0]?.name,
+                  id: grItem?.grantee[0]?.id ?? '',
+                  name: grItem?.grantee[0]?.name ?? '',
                 });
               }
             });
@@ -551,19 +579,19 @@ const EditMailingListView: FC<any> = ({
 
             if (emails.length > 0) {
               setGrantEmails(emails);
-              setGrantEmailsList(emails.map((item: any) => item?.name));
+              setGrantEmailsList(emails.map((item) => item?.name));
             }
 
             if (owners.length > 0) {
               setOwnersList(owners);
             }
 
-            it = grantTypeOptions.find((item: any) => item.value === myGrantType);
+            it = grantTypeOptions.find((item) => item.value === myGrantType);
           }
         } else {
           setGrantType(it);
         }
-        setPreviousDetail((prevState: any) => ({
+        setPreviousDetail((prevState) => ({
           ...prevState,
           grantEmails: emails,
           ownersList: owners,
@@ -583,7 +611,7 @@ const EditMailingListView: FC<any> = ({
           replace: true,
         });
       });
-  }, [createSnackbar, t, selectedMailingList, onGrantTypeChange, grantTypeOptions, grantType]);
+  }, [createSnackbar, t, selectedMailingList, onGrantTypeChange, grantTypeOptions]);
 
   useEffect(() => {
     if (isDirty) return;
@@ -591,7 +619,7 @@ const EditMailingListView: FC<any> = ({
   }, [getGrantML, isDirty]);
 
   const updatePreviousDetail = (): void => {
-    const latestData: any = {};
+    const latestData: MailingListFormSnapshot = {};
     latestData.displayName = displayName;
     latestData.distributionName = distributionName;
     zimbraHideInGal ? (latestData.zimbraHideInGal = true) : (latestData.zimbraHideInGal = false);
@@ -624,7 +652,7 @@ const EditMailingListView: FC<any> = ({
     if (selectedMailingList?.dynamic) {
       previousDetail?.memberURL ? setMemberURL(previousDetail?.memberURL) : setMemberURL('');
     }
-    setDistributionName(previousDetail?.distributionName);
+    setDistributionName(previousDetail?.distributionName ?? '');
     previousDetail?.zimbraHideInGal ? setZimbraHideInGal(true) : setZimbraHideInGal(false);
     previousDetail?.dlm !== undefined ? setDlm(previousDetail?.dlm) : setDlm([]);
     previousDetail?.ownersList !== undefined
@@ -653,21 +681,23 @@ const EditMailingListView: FC<any> = ({
     setIsDirty(false);
   };
 
-  const callAllRequest = (requests: any): void => {
+  const callAllRequest = (requests: Array<Promise<unknown>>): void => {
     setIsLoading(true);
     Promise.all(requests)
-      .then((response: any) => Promise.all(response))
-      .then((data: any) => {
+      .then((response) => Promise.all(response))
+      .then((data) => {
         let isError = false;
         let errorMessage = '';
         if (grantType?.value !== EMAIL) {
           setGrantEmailsList([]);
           setGrantEmails([]);
         }
-        data.forEach((item: any) => {
+        (data as Array<SoapFaultResponse>).forEach((item) => {
           if (item?.Fault) {
             isError = true;
-            errorMessage = item?.Fault?.Reason?.Text;
+            errorMessage =
+              item?.Fault?.Reason?.Text ??
+              t('label.something_wrong_error_msg', 'Something went wrong. Please try again.');
           }
         });
         if (isError) {
@@ -711,8 +741,8 @@ const EditMailingListView: FC<any> = ({
   };
 
   const onSave = (): void => {
-    const attributes: any[] = [];
-    const request: any[] = [];
+    const attributes: Array<SoapNamedContent> = [];
+    const request: Array<Promise<unknown>> = [];
 
     if (previousDetail.displayName !== undefined && previousDetail.displayName !== displayName) {
       attributes.push({
@@ -759,7 +789,7 @@ const EditMailingListView: FC<any> = ({
       !selectedMailingList?.dynamic &&
       previousDetail.zimbraDistributionListSendShareMessageToNewMembers !== undefined &&
       previousDetail.zimbraDistributionListSendShareMessageToNewMembers !==
-        zimbraDistributionListSendShareMessageToNewMembers
+      zimbraDistributionListSendShareMessageToNewMembers
     ) {
       attributes.push({
         n: 'zimbraDistributionListSendShareMessageToNewMembers',
@@ -775,7 +805,7 @@ const EditMailingListView: FC<any> = ({
     ) {
       attributes.push({
         n: 'memberURL',
-        _content: memberURL,
+        _content: memberURL ?? '',
       });
     }
 
@@ -794,27 +824,28 @@ const EditMailingListView: FC<any> = ({
       previousDetail?.dlMembershipList !== undefined &&
       !isEqual(previousDetail?.dlMembershipList, dlMembershipList)
     ) {
-      const newAddedMember: any[] = [];
-      dlMembershipList.forEach((item: any) => {
-        if (!previousDetail?.dlMembershipList.map((i: any) => i?.id).includes(item?.id)) {
+      const previousMembershipList = previousDetail.dlMembershipList;
+      const newAddedMember: Array<DistributionListMembershipEntry> = [];
+      dlMembershipList.forEach((item) => {
+        if (!previousMembershipList.map((i) => i?.id).includes(item?.id)) {
           newAddedMember.push(item);
         }
       });
 
-      const removeMember: any[] = [];
-      previousDetail?.dlMembershipList.forEach((item: any) => {
-        if (!dlMembershipList.map((i: any) => i?.id).includes(item?.id)) {
+      const removeMember: Array<DistributionListMembershipEntry> = [];
+      previousMembershipList.forEach((item) => {
+        if (!dlMembershipList.map((i) => i?.id).includes(item?.id)) {
           removeMember.push(item);
         }
       });
 
       if (newAddedMember.length > 0) {
-        newAddedMember.forEach((item: any) => {
-          const id: any = {
+        newAddedMember.forEach((item) => {
+          const id: SoapNamedContent = {
             n: 'id',
             _content: item?.id,
           };
-          const dlmItem: any = {
+          const dlmItem: SoapNamedContent = {
             n: 'dlm',
             _content: distributionName,
           };
@@ -823,12 +854,12 @@ const EditMailingListView: FC<any> = ({
       }
 
       if (removeMember.length > 0) {
-        removeMember.forEach((item: any) => {
-          const id: any = {
+        removeMember.forEach((item) => {
+          const id: SoapNamedContent = {
             n: 'id',
             _content: item?.id,
           };
-          const dlmItem: any = {
+          const dlmItem: SoapNamedContent = {
             n: 'dlm',
             _content: distributionName,
           };
@@ -843,27 +874,28 @@ const EditMailingListView: FC<any> = ({
       previousDetail?.ownerOfList !== undefined &&
       !isEqual(previousDetail?.ownerOfList, ownerOfList)
     ) {
-      const newAddedMember: any[] = [];
-      ownerOfList.forEach((item: any) => {
-        if (!previousDetail?.ownerOfList.map((i: any) => i?.id).includes(item?.id)) {
+      const previousOwnerOfList = previousDetail.ownerOfList;
+      const newAddedMember: Array<GranteeEntry> = [];
+      ownerOfList.forEach((item) => {
+        if (!previousOwnerOfList.map((i) => i?.id).includes(item?.id)) {
           newAddedMember.push(item);
         }
       });
 
-      const removeMember: any[] = [];
-      previousDetail?.ownerOfList.forEach((item: any) => {
-        if (!ownerOfList.map((i: any) => i?.id).includes(item?.id)) {
+      const removeMember: Array<GranteeEntry> = [];
+      previousOwnerOfList.forEach((item) => {
+        if (!ownerOfList.map((i) => i?.id).includes(item?.id)) {
           removeMember.push(item);
         }
       });
 
       if (newAddedMember.length > 0) {
         newAddedMember.forEach(() => {
-          const id: any = {
+          const id: SoapNamedContent = {
             n: 'id',
             _content: selectedMailingList?.id,
           };
-          const dlmItem: any = {
+          const dlmItem: SoapNamedContent = {
             n: 'dlm',
             _content: distributionName,
           };
@@ -873,11 +905,11 @@ const EditMailingListView: FC<any> = ({
 
       if (removeMember.length > 0) {
         removeMember.forEach(() => {
-          const id: any = {
+          const id: SoapNamedContent = {
             n: 'id',
             _content: selectedMailingList?.id,
           };
-          const dlmItem: any = {
+          const dlmItem: SoapNamedContent = {
             n: 'dlm',
             _content: distributionName,
           };
@@ -891,11 +923,11 @@ const EditMailingListView: FC<any> = ({
       const deleteAliasArr = differenceBy(zimbraDefaultMailAlias, zimbraMailAlias, 'label');
       const addAliasArr = differenceBy(zimbraMailAlias, zimbraDefaultMailAlias, 'label');
 
-      deleteAliasArr.forEach((aliasName: any) => {
+      deleteAliasArr.forEach((aliasName) => {
         request.push(deleteMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`));
       });
 
-      addAliasArr.forEach((aliasName: any) => {
+      addAliasArr.forEach((aliasName) => {
         request.push(addMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`));
       });
 
@@ -909,9 +941,9 @@ const EditMailingListView: FC<any> = ({
       (!isEqual(previousDetail?.grantEmails, grantEmails) ||
         previousDetail?.grantType?.value !== grantType?.value)
     ) {
-      let dl: any = {};
+      let dl: SoapEntitySelector = { by: 'id', _content: selectedMailingList?.id };
       dl = { by: 'id', _content: selectedMailingList?.id };
-      let action: any = {};
+      let action: DistributionListActionRequest['action'];
       if (grantType?.value === PUB) {
         action = {
           op: 'setRights',
@@ -935,10 +967,10 @@ const EditMailingListView: FC<any> = ({
           op: 'setRights',
           right: {
             right: 'sendToDistList',
-            grantee: grantEmails.map((item: any) => ({
+            grantee: grantEmails.map((item) => ({
               type: 'email',
               by: 'name',
-              _content: item?.name ? item?.name : item,
+              _content: typeof item === 'string' ? item : (item?.name ?? ''),
             })),
           },
         };
@@ -1016,7 +1048,7 @@ const EditMailingListView: FC<any> = ({
     if (
       previousDetail?.zimbraDistributionListSendShareMessageToNewMembers !== undefined &&
       previousDetail?.zimbraDistributionListSendShareMessageToNewMembers !==
-        zimbraDistributionListSendShareMessageToNewMembers
+      zimbraDistributionListSendShareMessageToNewMembers
     ) {
       setIsDirty(true);
     }
@@ -1028,7 +1060,7 @@ const EditMailingListView: FC<any> = ({
   useEffect(() => {
     if (
       previousDetail?.zimbraMailStatus !== undefined &&
-      previousDetail?.zimbraMailStatus?.value !== zimbraMailStatus.value
+      previousDetail?.zimbraMailStatus?.value !== zimbraMailStatus?.value
     ) {
       setIsDirty(true);
     }
@@ -1041,7 +1073,7 @@ const EditMailingListView: FC<any> = ({
   }, [previousDetail?.memberURL, memberURL]);
 
   const handleClickDeleteEvent = useCallback(() => {
-    const getGrantBody: any = {};
+    const getGrantBody: Record<string, unknown> = {};
     const grantee = {
       type: GRP,
       by: 'id',
@@ -1050,15 +1082,16 @@ const EditMailingListView: FC<any> = ({
     };
     getGrantBody.grantee = grantee;
     getGrant(getGrantBody)
-      .then((data: any) => {
-        if (data && data?.grant && Array.isArray(data?.grant)) {
+      .then((data) => {
+        const items = data as unknown as { grant?: Array<{ right?: Array<unknown> }> };
+        if (items && items?.grant && Array.isArray(items?.grant)) {
           let granteeTotal = 0;
 
-          const granteeRights = data?.grant?.map((items: any) => items?.right?.length);
+          const granteeRights = items?.grant?.map((entry) => entry?.right?.length);
           const granteeRightLenght = granteeRights?.values();
 
           for (const value of granteeRightLenght) {
-            granteeTotal += value;
+            granteeTotal += value ?? 0;
           }
           setGranteeTotalRights(granteeTotal);
         }
@@ -1078,7 +1111,7 @@ const EditMailingListView: FC<any> = ({
       });
 
     // get grants' rights as target
-    const getGrantBodyTarget: any = {};
+    const getGrantBodyTarget: Record<string, unknown> = {};
     const target = {
       type: DL,
       by: 'id',
@@ -1086,14 +1119,15 @@ const EditMailingListView: FC<any> = ({
     };
     getGrantBodyTarget.target = target;
     getGrant(getGrantBodyTarget)
-      .then((resFromTarget: any) => {
-        if (resFromTarget && resFromTarget?.grant && Array.isArray(resFromTarget?.grant)) {
+      .then((resFromTarget) => {
+        const items = resFromTarget as unknown as { grant?: Array<{ right?: Array<unknown> }> };
+        if (items && items?.grant && Array.isArray(items?.grant)) {
           let targetTotal = 0;
-          const targetRights = resFromTarget?.grant?.map((items: any) => items?.right?.length);
+          const targetRights = items?.grant?.map((entry) => entry?.right?.length);
           const targetRightLenght = targetRights?.values();
 
           for (const value of targetRightLenght) {
-            targetTotal += value;
+            targetTotal += value ?? 0;
           }
           setTargetTotalRights(targetTotal);
         }
@@ -1145,12 +1179,12 @@ const EditMailingListView: FC<any> = ({
           }),
         );
       })
-      .then((error: any) => {
+      .then((error: { message?: string } | void) => {
         setIsRequestInProgress(false);
         createSnackbar({
           key: 'error',
           severity: 'error',
-          label: error.message
+          label: error?.message
             ? error.message
             : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 
@@ -1166,7 +1200,7 @@ const EditMailingListView: FC<any> = ({
     setTotalGrantRights(totalRights);
   }, [granteeTotalRights, targetTotalRights]);
 
-  const items: any = [
+  const items: TabBarProps['items'] = [
     {
       id: 'general',
       label: t('label.general', 'GENERAL'),
@@ -1193,7 +1227,7 @@ const EditMailingListView: FC<any> = ({
       CustomComponent: ReusedDefaultTabBar,
     },
   ];
-  
+
   return (
     <>
       {isLoading && <ds-spinner></ds-spinner>}
@@ -1484,18 +1518,18 @@ const EditMailingListView: FC<any> = ({
               <Padding bottom="large">
                 {totalGrantRights !== 0 && (
                   <Container >
-                  <ds-text as="p" size={'large'} overflow="break-word">
-                    <Trans
-                      i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
-                      defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. If you delete it all rights will be lost."
-                      components={{
-                        bold: <strong />
-                      }}
-                      values={{
-                        totalAccRights: totalGrantRights,
-                      }}
-                    />
-                  </ds-text>
+                    <ds-text as="p" size={'large'} overflow="break-word">
+                      <Trans
+                        i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
+                        defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. If you delete it all rights will be lost."
+                        components={{
+                          bold: <strong />
+                        }}
+                        values={{
+                          totalAccRights: totalGrantRights,
+                        }}
+                      />
+                    </ds-text>
                   </Container>
                 )}
                 <ds-text as="p" size={'large'} overflow="break-word">

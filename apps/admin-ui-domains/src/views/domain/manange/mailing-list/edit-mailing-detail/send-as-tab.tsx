@@ -18,25 +18,48 @@ import {
   RadioGroup,
   Row,
   Table,
+  type THeader,
+  type TRow,
   useSnackbar,
 } from '@zextras/ui-components';
 import { sortedUniq, uniq } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type FC,
+  type ReactElement,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import type {
+  DistributionListActionRequest,
+  SoapEntitySelector,
+  SoapFaultResponse,
+} from '../../../../../../types';
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { distributionListAction } from '../../../../../services/distribution-list-action-service';
 import { searchGal } from '../../../../../services/search-gal-service';
 import { getAllEmailFromString, isValidEmail } from '../../../../utility/utils';
 import { useSearchWithDebounce } from './hooks/use-search-with-debounce';
 import { useTableFilter } from './hooks/use-table-filter';
+import type {
+  GranteeEntry,
+  MailingListFormSnapshot,
+  SelectedMailingList,
+  SendAclEntry,
+} from './types';
 
 type SendAsTabProps = {
-  sendEmailsList: Array<any>;
-  setSendEmailsList: (list: Array<any>) => void;
-  setSendEmails: (list: Array<any>) => void;
-  setPreviousDetail: (fn: any) => void;
-  selectedMailingList: any;
+  sendEmailsList: Array<SendAclEntry>;
+  setSendEmailsList: (list: Array<SendAclEntry>) => void;
+  setSendEmails: (list: Array<SendAclEntry>) => void;
+  setPreviousDetail: Dispatch<SetStateAction<MailingListFormSnapshot>>;
+  selectedMailingList: SelectedMailingList;
   isRequestInProgress: boolean;
   setIsRequestInProgress: (v: boolean) => void;
   searchUserLabelValue: string;
@@ -55,16 +78,16 @@ export const SendAsTab: FC<SendAsTabProps> = ({
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
 
-  const [sendEmailTableRows, setSendEmailTableRows] = useState<Array<any>>([]);
-  const [selectedSendEmail, setSelectedSendEmail] = useState<Array<any>>([]);
+  const [sendEmailTableRows, setSendEmailTableRows] = useState<Array<TRow>>([]);
+  const [selectedSendEmail, setSelectedSendEmail] = useState<Array<string>>([]);
   const [sendEmailItem, setSendEmailItem] = useState('');
   const [radioPermisionValue, setRadioPermisionValue] = useState('sendAs');
   const [isOpenDeleteSendEmailDialog, setIsOpenDeleteSendEmailDialog] = useState(false);
-  const [sendEmailToDelete, setSendEmailToDelete] = useState<any>(null);
+  const [sendEmailToDelete, setSendEmailToDelete] = useState<SendAclEntry | null>(null);
   const [isOpenEditPermissionDialog, setIsOpenEditPermissionDialog] = useState(false);
-  const [editingEmailItem, setEditingEmailItem] = useState<any>(null);
+  const [editingEmailItem, setEditingEmailItem] = useState<SendAclEntry | null>(null);
   const [editPermissionValue, setEditPermissionValue] = useState('sendAs');
-  const [searchGrantEmailResult, setSearchGrantEmailResult] = useState<Array<any>>([]);
+  const [searchGrantEmailResult, setSearchGrantEmailResult] = useState<Array<GranteeEntry>>([]);
   const [isShowSendEmailError, setIsShowSendEmailError] = useState(false);
   const [sendEmailErrorMessage, setSendEmailErrorMessage] = useState<string | null>('');
 
@@ -74,7 +97,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
     handleFilterChange: handleInputChangeSendEmail,
   } = useTableFilter(sendEmailTableRows);
 
-  const sendEmailHeaders: Array<any> = useMemo(
+  const sendEmailHeaders: Array<THeader> = useMemo(
     () => [
       {
         id: 'sendEmail',
@@ -98,7 +121,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
     [t],
   );
 
-  const sendItems = searchGrantEmailResult.map((item: any) => ({
+  const sendItems = searchGrantEmailResult.map((item) => ({
     id: item?.id,
     label: item?.name,
     customComponent: (
@@ -121,7 +144,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 
   useEffect(() => {
     if (sendEmailsList && sendEmailsList.length > 0) {
-      const allRows = sendEmailsList.map((item: any) => ({
+      const allRows = sendEmailsList.map((item) => ({
         id: item?.name,
         columns: [
           <ds-text as="span"
@@ -189,10 +212,10 @@ export const SendAsTab: FC<SendAsTabProps> = ({
     searchGal(searchKeyword).then((data) => {
       const contactList = data?.cn;
       if (contactList) {
-        let result: Array<any> = [];
-        result = contactList.map((item: any): any => ({
+        let result: Array<GranteeEntry> = [];
+        result = contactList.map((item): GranteeEntry => ({
           id: item?.id,
-          name: item?._attrs?.email,
+          name: item?._attrs?.email ?? '',
         }));
         setSearchGrantEmailResult(result);
       } else {
@@ -206,11 +229,13 @@ export const SendAsTab: FC<SendAsTabProps> = ({
   const onAddSendEmail = useCallback(() => {
     if (sendEmailItem !== '') {
       const specialChars = /[ `'"<>,;]/;
-      const allEmails: Array<any> = specialChars.test(sendEmailItem)
+      const allEmails: Array<string | SendAclEntry> = specialChars.test(sendEmailItem)
         ? getAllEmailFromString(sendEmailItem)
         : [sendEmailItem];
       if (allEmails !== null && allEmails !== undefined) {
-        const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
+        const inValidEmailAddress = allEmails.filter(
+          (item) => typeof item === 'string' && !isValidEmail(item),
+        );
         if (inValidEmailAddress && inValidEmailAddress.length > 0) {
           setIsShowSendEmailError(true);
           setSendEmailErrorMessage(
@@ -219,7 +244,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
               'The account does not exist. Please check the spelling and try again.',
             ),
           );
-        } else if (sendEmailsList.find((s: any) => s?.name === sendEmailItem)) {
+        } else if (sendEmailsList.find((s) => s?.name === sendEmailItem)) {
           setIsShowSendEmailError(true);
           setSendEmailErrorMessage(
             t(
@@ -230,25 +255,26 @@ export const SendAsTab: FC<SendAsTabProps> = ({
         } else {
           setIsShowSendEmailError(false);
           setSendEmailItem('');
-          allEmails.forEach((item: any, index: any) => {
+          allEmails.forEach((item, index) => {
+            if (typeof item !== 'string') return;
             if (radioPermisionValue === 'sendAs') {
               allEmails[index] = { name: item, sendAcl: 'sendAsDistList' };
             } else if (radioPermisionValue === 'sendOnBehalfOf') {
               allEmails[index] = { name: item, sendAcl: 'sendOnBehalfOfDistList' };
             }
           });
-          const sortedList = sortedUniq(allEmails);
+          const sortedList = sortedUniq(allEmails) as Array<SendAclEntry>;
           const newSenders = sortedList.filter(
-            (item: any) => !sendEmailsList.find((s: any) => s?.name === item?.name),
+            (item) => !sendEmailsList.find((s) => s?.name === item?.name),
           );
           if (newSenders.length === 0) return;
           setIsRequestInProgress(true);
-          const addRequests = newSenders.map((item: any) => {
-            const dl: any = {
+          const addRequests = newSenders.map((item) => {
+            const dl: SoapEntitySelector = {
               by: 'id',
               _content: selectedMailingList?.id,
             };
-            const action: any = {
+            const action: DistributionListActionRequest['action'] = {
               op: 'grantRights',
               right: {
                 right: item?.sendAcl,
@@ -262,13 +288,17 @@ export const SendAsTab: FC<SendAsTabProps> = ({
             return distributionListAction(dl, action);
           });
           Promise.all(addRequests)
-            .then((responses: any) => {
-              const fault = responses.find((r: any) => r?.Fault);
+            .then((responses) => {
+              const fault = (responses as unknown as Array<SoapFaultResponse>).find(
+                (r) => r?.Fault,
+              );
               if (fault) {
                 createSnackbar({
                   key: 'error',
                   severity: 'error',
-                  label: fault?.Fault?.Reason?.Text,
+                  label:
+                    fault?.Fault?.Reason?.Text ??
+                    t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
                   autoHideTimeout: 3000,
                   hideButton: true,
                   replace: true,
@@ -277,7 +307,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                 const updatedEmails = uniq(sendEmailsList.concat(newSenders));
                 setSendEmailsList(updatedEmails);
                 setSendEmails(updatedEmails);
-                setPreviousDetail((prevState: any) => ({
+                setPreviousDetail((prevState) => ({
                   ...prevState,
                   sendEmailsList: updatedEmails,
                 }));
@@ -295,7 +325,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
               }
               setIsRequestInProgress(false);
             })
-            .catch((error: any) => {
+            .catch((error) => {
               createSnackbar({
                 key: 'error',
                 severity: 'error',
@@ -345,11 +375,11 @@ export const SendAsTab: FC<SendAsTabProps> = ({
   const onDeleteSendEmailConfirm = useCallback(() => {
     if (!sendEmailToDelete) return;
     setIsRequestInProgress(true);
-    const dl: any = {
+    const dl: SoapEntitySelector = {
       by: 'id',
       _content: selectedMailingList?.id,
     };
-    const action: any = {
+    const action: DistributionListActionRequest['action'] = {
       op: 'revokeRights',
       right: {
         right: sendEmailToDelete?.sendAcl,
@@ -361,19 +391,21 @@ export const SendAsTab: FC<SendAsTabProps> = ({
       },
     };
     distributionListAction(dl, action)
-      .then((response: any) => {
-        if (response?.Fault) {
+      .then((response) => {
+        if ((response as unknown as SoapFaultResponse)?.Fault) {
           createSnackbar({
             key: 'error',
             severity: 'error',
-            label: response?.Fault?.Reason?.Text,
+            label:
+              (response as unknown as SoapFaultResponse)?.Fault?.Reason?.Text ??
+              t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
           });
         } else {
           const updatedEmails = sendEmailsList.filter(
-            (item: any) =>
+            (item) =>
               !(
                 item?.name === sendEmailToDelete?.name &&
                 item?.sendAcl === sendEmailToDelete?.sendAcl
@@ -382,7 +414,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           setSendEmailsList(updatedEmails);
           setSendEmails(updatedEmails);
           setSelectedSendEmail([]);
-          setPreviousDetail((prevState: any) => ({
+          setPreviousDetail((prevState) => ({
             ...prevState,
             sendEmailsList: updatedEmails,
           }));
@@ -401,7 +433,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
         setIsRequestInProgress(false);
         closeDeleteSendEmailHandler();
       })
-      .catch((error: any) => {
+      .catch((error) => {
         createSnackbar({
           key: 'error',
           severity: 'error',
@@ -592,7 +624,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                       value={filterSendEmail}
                       backgroundColor="gray5"
                       onChange={handleInputChangeSendEmail}
-                      CustomIcon={(): any => (
+                      CustomIcon={(): ReactElement => (
                         <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                       )}
                     />
@@ -673,7 +705,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                       }
                       if (
                         sendEmailsList.find(
-                          (s: any) => s?.name === editingEmailItem?.name && s?.sendAcl === newAcl,
+                          (s) => s?.name === editingEmailItem?.name && s?.sendAcl === newAcl,
                         )
                       ) {
                         createSnackbar({
@@ -690,8 +722,8 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                         return;
                       }
                       setIsRequestInProgress(true);
-                      const dl: any = { by: 'id', _content: selectedMailingList?.id };
-                      const revokeAction: any = {
+                      const dl: SoapEntitySelector = { by: 'id', _content: selectedMailingList?.id };
+                      const revokeAction: DistributionListActionRequest['action'] = {
                         op: 'revokeRights',
                         right: {
                           right: editingEmailItem?.sendAcl,
@@ -702,7 +734,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                           },
                         },
                       };
-                      const grantAction: any = {
+                      const grantAction: DistributionListActionRequest['action'] = {
                         op: 'grantRights',
                         right: {
                           right: newAcl,
@@ -714,24 +746,28 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                         },
                       };
                       distributionListAction(dl, revokeAction)
-                        .then((revokeRes: any) => {
-                          if (revokeRes?.Fault) {
-                            throw new Error(revokeRes?.Fault?.Reason?.Text);
+                        .then((revokeRes) => {
+                          if ((revokeRes as unknown as SoapFaultResponse)?.Fault) {
+                            throw new Error(
+                              (revokeRes as unknown as SoapFaultResponse)?.Fault?.Reason?.Text,
+                            );
                           }
                           return distributionListAction(dl, grantAction);
                         })
-                        .then((grantRes: any) => {
-                          if (grantRes?.Fault) {
-                            throw new Error(grantRes?.Fault?.Reason?.Text);
+                        .then((grantRes) => {
+                          if ((grantRes as unknown as SoapFaultResponse)?.Fault) {
+                            throw new Error(
+                              (grantRes as unknown as SoapFaultResponse)?.Fault?.Reason?.Text,
+                            );
                           }
-                          const updatedList = sendEmailsList.map((item: any) =>
+                          const updatedList: Array<SendAclEntry> = sendEmailsList.map((item) =>
                             item?.name === editingEmailItem?.name
                               ? { ...item, sendAcl: newAcl }
                               : item,
                           );
                           setSendEmailsList(updatedList);
                           setSendEmails(updatedList);
-                          setPreviousDetail((prevState: any) => ({
+                          setPreviousDetail((prevState) => ({
                             ...prevState,
                             sendEmailsList: updatedList,
                           }));
@@ -750,16 +786,16 @@ export const SendAsTab: FC<SendAsTabProps> = ({
                           setIsOpenEditPermissionDialog(false);
                           setIsRequestInProgress(false);
                         })
-                        .catch((error: any) => {
+                        .catch((error) => {
                           createSnackbar({
                             key: 'error',
                             severity: 'error',
                             label: error?.message
                               ? error?.message
                               : t(
-                                  'label.something_wrong_error_msg',
-                                  'Something went wrong. Please try again.',
-                                ),
+                                'label.something_wrong_error_msg',
+                                'Something went wrong. Please try again.',
+                              ),
                             autoHideTimeout: 3000,
                             hideButton: true,
                             replace: true,
