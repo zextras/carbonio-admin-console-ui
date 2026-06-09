@@ -59,12 +59,3 @@ export type SearchDirectoryEntry = {
   name: string;
   a: Array<Attribute>;
 };
-
-export type SearchDirectoryResponse = {
-  cos?: Array<SearchDirectoryEntry>;
-  account?: Array<SearchDirectoryEntry>;
-  dl?: Array<SearchDirectoryEntry>;
-  domain?: Array<SearchDirectoryEntry>;
-  more?: boolean;
-  searchTotal?: number;
-};

@@ -131,7 +131,12 @@ import {
 } from './services/get-file-quota';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { resetFileQuotaLimitById } from './services/reset-file-quota-limit';
-import { getCosList } from './services/search-cos-service';
+import {
+  getCosList,
+  type SearchCosAttribute,
+  type SearchCosEntry,
+  type SearchCosResponse,
+} from './services/search-cos-service';
 import {
   type DirectoryAttribute,
   type DirectoryEntry,
@@ -306,6 +311,9 @@ export type {
   FileQuotaResponse,
   GetCoreAttributesResponse,
   GetCosResponse,
+  SearchCosAttribute,
+  SearchCosEntry,
+  SearchCosResponse,
   SearchDomainDirectories,
 };
 export type {

@@ -1,17 +1,35 @@
 /*
- * SPDX-FileCPromiseopyrightText: 2026 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { soapFetch } from '../network/fetch';
 
-export const getCosList = async <T = unknown>(
+export type SearchCosAttribute = {
+	n: string;
+	_content: string;
+	c?: boolean;
+};
+
+export type SearchCosEntry = {
+	id: string;
+	name: string;
+	a: Array<SearchCosAttribute>;
+};
+
+export type SearchCosResponse = {
+	cos?: Array<SearchCosEntry>;
+	more?: boolean;
+	searchTotal?: number;
+};
+
+export const getCosList = async <T = SearchCosResponse>(
 	searchKeyWord: string,
 	limit?: number,
 	offset?: number,
-): Promise<SearchCosesResponse> =>
-	soapFetch<SearchDirectoryRequest, SearchCosesResponse>(`SearchDirectory`, {
+): Promise<T> =>
+	soapFetch<unknown, T>(`SearchDirectory`, {
 		method: 'POST',
 		credentials: 'include',
 		headers: {
