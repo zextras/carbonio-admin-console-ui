@@ -39,8 +39,8 @@ const DomainListChipInput: FC<{
   );
 
   const onInputType = useCallback<NonNullable<ChipInputProps['onInputType']>>(
-    ({ textContent }: { textContent: any }) => {
-      getAllDomainList(textContent);
+    ({ textContent }) => {
+      getAllDomainList(textContent ?? '');
     },
     [getAllDomainList],
   );

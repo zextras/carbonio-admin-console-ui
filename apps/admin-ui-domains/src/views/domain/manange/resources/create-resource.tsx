@@ -8,64 +8,40 @@ import { Button, Container, HorizontalWizard, useSnackbar, WizardInSection } fro
 import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ResourceContext } from './resource-context';
+import { ResourceContext, ResourceDetail } from './resource-context';
 import ResourceCreateSection from './resource-create-section';
 import ResourceDetailSection from './resource-detail-section';
 import ResourceSharingSection from './resource-sharing-section';
 
-type ResourceDetailObj = {
-	name: string;
-	changeNameBool: boolean;
-	domain: string;
-	description: string;
-	password: string;
-	repeatPassword: string;
-	displayName: string;
-	zimbraCOSId: any;
-	zimbraAccountStatus: any;
-	zimbraCalResType: any;
-	zimbraCalResAutoDeclineRecurring: any;
-	zimbraCalResMaxNumConflictsAllowed: string;
-	zimbraCalResMaxPercentConflictsAllowed: string;
-	zimbraPrefCalendarAutoAcceptSignatureId: any;
-	zimbraPrefCalendarAutoDeclineSignatureId: any;
-	zimbraPrefCalendarAutoDenySignatureId: any;
-	sendInviteList: Array<any>;
-	signaturelist: Array<any>;
-	schedulePolicyType: any;
-	signatureItems: Array<any>;
-	zimbraNotes: string;
-};
-
 const CreateResource: FC<{
-	setShowCreateResourceView: any;
-	createResourceReq: any;
+  setShowCreateResourceView: any;
+  createResourceReq: any;
 }> = ({ setShowCreateResourceView, createResourceReq }) => {
-	const { t } = useTranslation();
-	const createSnackbar = useSnackbar();
-	const [resourceDetail, setResourceDetail] = useState<ResourceDetailObj>({
-		name: '',
-		changeNameBool: false,
-		domain: '',
-		description: '',
-		password: '',
-		repeatPassword: '',
-		displayName: '',
-		zimbraCOSId: {},
-		zimbraAccountStatus: {},
-		zimbraCalResType: {},
-		zimbraCalResAutoDeclineRecurring: {},
-		zimbraCalResMaxNumConflictsAllowed: '',
-		zimbraCalResMaxPercentConflictsAllowed: '',
-		zimbraPrefCalendarAutoAcceptSignatureId: {},
-		zimbraPrefCalendarAutoDeclineSignatureId: {},
-		zimbraPrefCalendarAutoDenySignatureId: {},
-		sendInviteList: [],
-		signaturelist: [],
-		schedulePolicyType: {},
-		signatureItems: [],
-		zimbraNotes: '',
-	});
+  const { t } = useTranslation();
+  const createSnackbar = useSnackbar();
+  const [resourceDetail, setResourceDetail] = useState<ResourceDetail>({
+    name: '',
+    changeNameBool: false,
+    domain: '',
+    description: '',
+    password: '',
+    repeatPassword: '',
+    displayName: '',
+    zimbraCOSId: {},
+    zimbraAccountStatus: {},
+    zimbraCalResType: {},
+    zimbraCalResAutoDeclineRecurring: {},
+    zimbraCalResMaxNumConflictsAllowed: '',
+    zimbraCalResMaxPercentConflictsAllowed: '',
+    zimbraPrefCalendarAutoAcceptSignatureId: {},
+    zimbraPrefCalendarAutoDeclineSignatureId: {},
+    zimbraPrefCalendarAutoDenySignatureId: {},
+    sendInviteList: [],
+    signaturelist: [],
+    schedulePolicyType: {},
+    signatureItems: [],
+    zimbraNotes: '',
+  });
 
   const createErrorSnackbar = useCallback(
     (label: string): void => {
@@ -94,12 +70,12 @@ const CreateResource: FC<{
       zimbraCalResAutoDeclineRecurring: resourceDetail?.zimbraCalResAutoDeclineRecurring?.value,
       zimbraCalResAutoAcceptDecline:
         resourceDetail?.schedulePolicyType?.value === 1 ||
-        resourceDetail?.schedulePolicyType?.value === 3
+          resourceDetail?.schedulePolicyType?.value === 3
           ? 'TRUE'
           : 'FALSE',
       zimbraCalResAutoDeclineIfBusy:
         resourceDetail?.schedulePolicyType?.value === 1 ||
-        resourceDetail?.schedulePolicyType?.value === 2
+          resourceDetail?.schedulePolicyType?.value === 2
           ? 'TRUE'
           : 'FALSE',
     }),
@@ -301,13 +277,13 @@ const CreateResource: FC<{
       }}
     >
       <ResourceContext.Provider value={{ resourceDetail, setResourceDetail }}>
-			<HorizontalWizard
-				steps={wizardSteps}
-				title={t('label.create_resource', 'Create Resource')}
-				Wrapper={WizardInSection}
-				onComplete={onComplete}
-				setToggleWizardSection={setShowCreateResourceView}
-			/>
+        <HorizontalWizard
+          steps={wizardSteps}
+          title={t('label.create_resource', 'Create Resource')}
+          Wrapper={WizardInSection}
+          onComplete={onComplete}
+          setToggleWizardSection={setShowCreateResourceView}
+        />
       </ResourceContext.Provider>
     </Container>
   );

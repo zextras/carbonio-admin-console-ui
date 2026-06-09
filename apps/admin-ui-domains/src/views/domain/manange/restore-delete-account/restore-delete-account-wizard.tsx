@@ -10,26 +10,26 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import RestoreAccountConfigSection from './restore-delete-account-config-section';
-import { RestoreDeleteAccountContext } from './restore-delete-account-context';
+import { RestoreAccountDetail, RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreSelectAccountSection from './restore-delete-account-select-section';
 import RestoreAccountStartSection from './restore-delete-account-start-section';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
-	const { t } = useTranslation();
-	return (
-		<Section
-			title={t('label.restore_account', 'Restore Account')}
-			padding={{ all: '0' }}
-			footer={wizardFooter}
-			divider
-			showClose={false}
-			onClose={(): void => {
-				setToggleWizardSection(false);
-			}}
-		>
-			{wizard}
-		</Section>
-	);
+  const { t } = useTranslation();
+  return (
+    <Section
+      title={t('label.restore_account', 'Restore Account')}
+      padding={{ all: '0' }}
+      footer={wizardFooter}
+      divider
+      showClose={false}
+      onClose={(): void => {
+        setToggleWizardSection(false);
+      }}
+    >
+      {wizard}
+    </Section>
+  );
 };
 
 const RestoreDeleteAccountWizard: FC<{
@@ -41,22 +41,7 @@ const RestoreDeleteAccountWizard: FC<{
   const navigate = useNavigate();
   const location = useLocation();
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>();
-  interface AccountDetailObj {
-    name: string;
-    id: string;
-    createDate: string;
-    status: string;
-    copyAccount: string;
-    dateTime: string | null;
-    lastAvailableStatus: boolean;
-    hsmApply: boolean;
-    dataSource: boolean;
-    isEmailNotificationEnable: boolean;
-    notificationReceiver: string;
-    copyDomain: string;
-    serverName: string;
-  }
-  const [restoreAccountDetail, setRestoreAccountDetail] = useState<AccountDetailObj>({
+  const [restoreAccountDetail, setRestoreAccountDetail] = useState<RestoreAccountDetail>({
     name: '',
     id: '',
     createDate: '',

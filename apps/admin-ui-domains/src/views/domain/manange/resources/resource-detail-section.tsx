@@ -126,7 +126,7 @@ const ResourceDetailSection: FC = () => {
     (v: SelectValue): void => {
       const objItem = cosItems.find((item: any) => item.value === v);
       if (objItem !== resourceDetail?.zimbraCOSId) {
-        setResourceDetail((prev: any) => ({ ...prev, zimbraCOSId: objItem }));
+        setResourceDetail((prev) => ({ ...prev, zimbraCOSId: objItem }));
       }
     },
     [cosItems, resourceDetail?.zimbraCOSId, setResourceDetail],
@@ -136,7 +136,7 @@ const ResourceDetailSection: FC = () => {
     (v: SelectValue): void => {
       const objItem = accountStatusOptions.find((item: any) => item.value === v);
       if (objItem !== resourceDetail?.zimbraAccountStatus) {
-        setResourceDetail((prev: any) => ({ ...prev, zimbraAccountStatus: objItem }));
+        setResourceDetail((prev) => ({ ...prev, zimbraAccountStatus: objItem }));
       }
     },
     [accountStatusOptions, resourceDetail?.zimbraAccountStatus, setResourceDetail],
@@ -146,7 +146,7 @@ const ResourceDetailSection: FC = () => {
     (v: SelectValue): void => {
       const objItem = resourceTypeOptions.find((item: any) => item.value === v);
       if (objItem !== resourceDetail?.zimbraCalResType) {
-        setResourceDetail((prev: any) => ({ ...prev, zimbraCalResType: objItem }));
+        setResourceDetail((prev) => ({ ...prev, zimbraCalResType: objItem }));
       }
     },
     [resourceDetail?.zimbraCalResType, resourceTypeOptions, setResourceDetail],
@@ -156,7 +156,7 @@ const ResourceDetailSection: FC = () => {
     (v: SelectValue): void => {
       const objItem = autoRefuseOption.find((item: any) => item.value === v);
       if (objItem !== resourceDetail?.zimbraCalResAutoDeclineRecurring) {
-        setResourceDetail((prev: any) => ({ ...prev, zimbraCalResAutoDeclineRecurring: objItem }));
+        setResourceDetail((prev) => ({ ...prev, zimbraCalResAutoDeclineRecurring: objItem }));
       }
     },
     [autoRefuseOption, resourceDetail?.zimbraCalResAutoDeclineRecurring, setResourceDetail],
@@ -166,7 +166,7 @@ const ResourceDetailSection: FC = () => {
     (v: SelectValue): void => {
       const objItem = schedulePolicyItems.find((item: any) => item.value === v);
       if (objItem !== resourceDetail?.schedulePolicyType) {
-        setResourceDetail((prev: any) => ({ ...prev, schedulePolicyType: objItem }));
+        setResourceDetail((prev) => ({ ...prev, schedulePolicyType: objItem }));
       }
     },
     [resourceDetail?.schedulePolicyType, schedulePolicyItems, setResourceDetail],
@@ -174,15 +174,15 @@ const ResourceDetailSection: FC = () => {
 
   const changeResourceDetail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setResourceDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+      setResourceDetail((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     },
     [setResourceDetail],
   );
 
   const changeResourceName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setResourceDetail((prev: any) => ({ ...prev, changeNameBool: true }));
-      setResourceDetail((prev: any) => ({
+      setResourceDetail((prev) => ({ ...prev, changeNameBool: true }));
+      setResourceDetail((prev) => ({
         ...prev,
         [e.target.name]: e.target.value?.replaceAll(' ', '')?.toLowerCase(),
       }));
@@ -207,13 +207,13 @@ const ResourceDetailSection: FC = () => {
 
   useEffect(() => {
     if (domainName) {
-      setResourceDetail((prev: any) => ({ ...prev, domain: domainName }));
+      setResourceDetail((prev) => ({ ...prev, domain: domainName }));
     }
   }, [domainName, setResourceDetail]);
 
   useEffect(() => {
     !resourceDetail?.changeNameBool &&
-      setResourceDetail((prev: any) => ({ ...prev, name: generatedName }));
+      setResourceDetail((prev) => ({ ...prev, name: generatedName }));
   }, [
     generatedName,
     resourceDetail?.changeNameBool,
@@ -223,31 +223,31 @@ const ResourceDetailSection: FC = () => {
 
   useEffect(() => {
     if (accountStatusOptions && accountStatusOptions.length > 0) {
-      setResourceDetail((prev: any) => ({ ...prev, zimbraAccountStatus: accountStatusOptions[0] }));
+      setResourceDetail((prev) => ({ ...prev, zimbraAccountStatus: accountStatusOptions[0] }));
     }
   }, [accountStatusOptions, setResourceDetail]);
 
   useEffect(() => {
     if (resourceTypeOptions && resourceTypeOptions.length > 0) {
-      setResourceDetail((prev: any) => ({ ...prev, zimbraCalResType: resourceTypeOptions[0] }));
+      setResourceDetail((prev) => ({ ...prev, zimbraCalResType: resourceTypeOptions[0] }));
     }
   }, [resourceTypeOptions, setResourceDetail]);
 
   useEffect(() => {
     if (cosItems && cosItems.length > 0) {
-      setResourceDetail((prev: any) => ({ ...prev, zimbraCOSId: cosItems[0] }));
+      setResourceDetail((prev) => ({ ...prev, zimbraCOSId: cosItems[0] }));
     }
   }, [cosItems, setResourceDetail]);
 
   useEffect(() => {
     if (schedulePolicyItems && schedulePolicyItems.length > 0) {
-      setResourceDetail((prev: any) => ({ ...prev, schedulePolicyType: schedulePolicyItems[0] }));
+      setResourceDetail((prev) => ({ ...prev, schedulePolicyType: schedulePolicyItems[0] }));
     }
   }, [schedulePolicyItems, setResourceDetail]);
 
   useEffect(() => {
     if (autoRefuseOption && autoRefuseOption.length > 0) {
-      setResourceDetail((prev: any) => ({
+      setResourceDetail((prev) => ({
         ...prev,
         zimbraCalResAutoDeclineRecurring: autoRefuseOption[1],
       }));

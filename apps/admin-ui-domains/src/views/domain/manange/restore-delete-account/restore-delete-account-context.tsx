@@ -3,10 +3,26 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createContext } from 'react';
+import { createContext, Dispatch, SetStateAction } from 'react';
 
-type RestoreDeleteAccountContext = {
-	restoreAccountDetail: any;
-	setRestoreAccountDetail: (arg: any) => void;
+export type RestoreAccountDetail = {
+	name: string;
+	id: string;
+	createDate: string;
+	status: string;
+	copyAccount: string;
+	dateTime: string | null;
+	lastAvailableStatus: boolean;
+	hsmApply: boolean;
+	dataSource: boolean;
+	isEmailNotificationEnable: boolean;
+	notificationReceiver: string;
+	copyDomain: string;
+	serverName: string;
 };
-export const RestoreDeleteAccountContext = createContext({} as RestoreDeleteAccountContext);
+
+type RestoreDeleteAccountContextValue = {
+	restoreAccountDetail: RestoreAccountDetail | null;
+	setRestoreAccountDetail: Dispatch<SetStateAction<RestoreAccountDetail>>;
+};
+export const RestoreDeleteAccountContext = createContext({} as RestoreDeleteAccountContextValue);

@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Row } from '@zextras/ui-components';
-import { FC, useCallback,useContext } from 'react';
+import { FC, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ResourceContext } from './resource-context';
+import { ResourceContext, ResourceDetail } from './resource-context';
 import { SendInviteAccounts } from './send-invite-accounts';
 
 const ResourceSharingSection: FC = () => {
@@ -16,8 +16,8 @@ const ResourceSharingSection: FC = () => {
 	const { resourceDetail, setResourceDetail } = context;
 
 	const setSendInviteList = useCallback(
-		(v: any) => {
-			setResourceDetail((prev: any) => ({ ...prev, sendInviteList: v }));
+		(v: ResourceDetail['sendInviteList']) => {
+			setResourceDetail((prev) => ({ ...prev, sendInviteList: v }));
 		},
 		[setResourceDetail]
 	);
