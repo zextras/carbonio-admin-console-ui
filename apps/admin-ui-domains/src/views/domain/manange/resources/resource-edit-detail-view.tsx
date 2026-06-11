@@ -16,14 +16,23 @@ import {
   Padding,
   Row,
   Select,
+  type SelectItem,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDomainStore, useStickyBarStore } from '@zextras/ui-shared';
 import { format, parse } from 'date-fns';
 import { isEqual } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import {
+  type Attribute,
+  type Cos,
+  type DelegateAuthResponse,
+  type GetCalendarResourceResponse,
+  type ModifyCalendarResourceResponse,
+  type SoapEntity,
+} from '../../../../../types';
 import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
 import { getCalenderResource } from '../../../../services/get-cal-resource-service';
 import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
@@ -55,7 +64,19 @@ export const SCHEDULE_POLITY_TYPE = {
   NO_AUTO_ACCEPT: 4,
 } as const;
 
-const ResourceEditDetailView: FC<any> = ({
+type SelectOption = SelectItem<string>;
+
+type InviteAttribute = Attribute & { id: string };
+
+type ResourceEditDetailViewProps = {
+  selectedResourceList: SoapEntity;
+  setShowResourceEditDetailView: (value: boolean) => void;
+  setIsUpdateRecord: (value: boolean) => void;
+  isEditMode?: boolean;
+  setIsEditMode?: (value: boolean) => void;
+};
+
+const ResourceEditDetailView: FC<ResourceEditDetailViewProps> = ({
   selectedResourceList,
   setShowResourceEditDetailView,
   setIsUpdateRecord,
@@ -63,12 +84,12 @@ const ResourceEditDetailView: FC<any> = ({
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const cosList = useDomainStore((state) => state.cosList);
-  const [resourceInformation, setResourceInformation]: any = useState([]);
-  const [resourceDetailData, setResourceDetailData]: any = useState({});
-  const [sendInviteList, setSendInviteList] = useState<any[]>([]);
-  const [sendInviteData, setSendInviteData]: any = useState([]);
-  const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
-  const [cosItems, setCosItems] = useState<any[]>([]);
+  const [resourceInformation, setResourceInformation] = useState<Array<Attribute>>([]);
+  const [resourceDetailData, setResourceDetailData] = useState<Record<string, string>>({});
+  const [sendInviteList, setSendInviteList] = useState<Array<InviteAttribute>>([]);
+  const [sendInviteData, setSendInviteData] = useState<Array<InviteAttribute>>([]);
+  const [zimbraCOSId, setZimbraCOSId] = useState<SelectOption | undefined>(undefined);
+  const [cosItems, setCosItems] = useState<Array<SelectOption>>([]);
   const [resourceName, setResourceName] = useState<string>('');
   const [resourceMail, setResourceMail] = useState<string>('');
   const [zimbraCalResMaxNumConflictsAllowed, setZimbraCalResMaxNumConflictsAllowed] =
@@ -83,7 +104,7 @@ const ResourceEditDetailView: FC<any> = ({
     [t],
   );
 
-  const resourceTypeOptions: any[] = useMemo(
+  const resourceTypeOptions: Array<SelectOption> = useMemo(
     () => [
       {
         label: t('label.meeting_room', 'Meeting Room'),
@@ -97,7 +118,7 @@ const ResourceEditDetailView: FC<any> = ({
     [t],
   );
 
-  const accountStatusOptions: any[] = useMemo(
+  const accountStatusOptions: Array<SelectOption> = useMemo(
     () => [
       {
         label: t('label.active', 'Active'),
@@ -111,7 +132,7 @@ const ResourceEditDetailView: FC<any> = ({
     [t],
   );
 
-  const autoRefuseOption: any[] = useMemo(
+  const autoRefuseOption: Array<SelectOption> = useMemo(
     () => [
       {
         label: t('label.yes', 'Yes'),
@@ -125,82 +146,88 @@ const ResourceEditDetailView: FC<any> = ({
     [t],
   );
 
-  const schedulePolicyItems: any[] = useMemo(
+  const schedulePolicyItems: Array<SelectOption> = useMemo(
     () => [
       {
         label: t(
           'label.auto_accept_auto_decline_on_conflict',
           'Automatic acceptance if available, automatic rejection in case of conflict',
         ),
-        value: SCHEDULE_POLITY_TYPE.AUTO_ACCEPT,
+        value: String(SCHEDULE_POLITY_TYPE.AUTO_ACCEPT),
       },
       {
         label: t(
           'label.manual_accept_auto_decline_on_conflict',
           'Handle acceptance, automatic rejection in case of conflict',
         ),
-        value: SCHEDULE_POLITY_TYPE.MANUAL_ACCEPT,
+        value: String(SCHEDULE_POLITY_TYPE.MANUAL_ACCEPT),
       },
       {
         label: t('label.auto_accept_always', 'Automatic acceptance if available always'),
-        value: SCHEDULE_POLITY_TYPE.AUTO_ACCEPT_ALWAYS,
+        value: String(SCHEDULE_POLITY_TYPE.AUTO_ACCEPT_ALWAYS),
       },
       {
         label: t('label.no_auto_accept_or_decline', 'No automatic acceptance if available always'),
-        value: SCHEDULE_POLITY_TYPE.NO_AUTO_ACCEPT,
+        value: String(SCHEDULE_POLITY_TYPE.NO_AUTO_ACCEPT),
       },
     ],
     [t],
   );
 
-  const [zimbraCalResType, setZimbraCalResType]: any = useState(resourceTypeOptions[0]);
-  const [zimbraAccountStatus, setZimbraAccountStatus]: any = useState(accountStatusOptions[0]);
-  const [zimbraCalResAutoDeclineRecurring, setZimbraCalResAutoDeclineRecurring]: any = useState(
-    autoRefuseOption[0],
+  const [zimbraCalResType, setZimbraCalResType] = useState<SelectOption | undefined>(
+    resourceTypeOptions[0],
   );
-  const [defaultSchedulePolicyType, setDefaultSchedulePolicyType]: any = useState();
-  const [schedulePolicyType, setSchedulePolicyType]: any = useState();
+  const [zimbraAccountStatus, setZimbraAccountStatus] = useState<SelectOption | undefined>(
+    accountStatusOptions[0],
+  );
+  const [zimbraCalResAutoDeclineRecurring, setZimbraCalResAutoDeclineRecurring] = useState<
+    SelectOption | undefined
+  >(autoRefuseOption[0]);
+  const [defaultSchedulePolicyType, setDefaultSchedulePolicyType] = useState<
+    SelectOption | undefined
+  >();
+  const [schedulePolicyType, setSchedulePolicyType] = useState<SelectOption | undefined>();
 
-  const [password, setPassword]: any = useState('');
-  const [repeatPassword, setRepeatPassword]: any = useState('');
+  const [password, setPassword] = useState<string>('');
+  const [repeatPassword, setRepeatPassword] = useState<string>('');
 
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
   useEffect(() => {
-    const arrayItem: any[] = [
+    const arrayItem: Array<SelectOption> = [
       {
         label: t('label.auto', 'Auto'),
         value: '',
       },
     ];
-    cosList.forEach((item: any) => {
+    cosList.forEach((item: Cos) => {
       arrayItem.push({
-        label: item.name,
-        value: item.id,
+        label: item.name ?? '',
+        value: item.id ?? '',
       });
     });
     setCosItems(arrayItem);
   }, [cosList, t]);
 
-  const generateSendInviteList = (sendInviteTo: any): void => {
+  const generateSendInviteList = (sendInviteTo: Array<InviteAttribute> | undefined): void => {
     if (sendInviteTo && Array.isArray(sendInviteTo)) {
       setSendInviteList(sendInviteTo);
     }
   };
 
   const getResourceDetail = useCallback((): void => {
-    getCalenderResource(selectedResourceList?.id).then((data) => {
-      const resourceDetailResponse = data?.calresource[0] || {};
+    getCalenderResource(selectedResourceList?.id).then((data: GetCalendarResourceResponse) => {
+      const resourceDetailResponse = data?.calresource[0];
       const sendInviteTo = resourceDetailResponse?.a
-        ?.filter((value: any) => value?.n === 'zimbraPrefCalendarForwardInvitesTo')
-        .map((item: any, index: any): any => {
+        ?.filter((value: Attribute) => value?.n === 'zimbraPrefCalendarForwardInvitesTo')
+        .map((item: Attribute, index: number): InviteAttribute => {
           const id = index?.toString();
           return { ...item, id };
         });
       generateSendInviteList(sendInviteTo);
-      setSendInviteData(sendInviteTo);
-      setResourceInformation(resourceDetailResponse?.a);
+      setSendInviteData(sendInviteTo ?? []);
+      setResourceInformation(resourceDetailResponse?.a ?? []);
     });
   }, [selectedResourceList?.id]);
 
@@ -210,28 +237,30 @@ const ResourceEditDetailView: FC<any> = ({
 
   useEffect(() => {
     if (!!resourceInformation && resourceInformation.length > 0) {
-      const obj: any = {};
-      resourceInformation.map((item: any) => {
+      const obj: Record<string, string> = {};
+      resourceInformation.map((item: Attribute) => {
         obj[item?.n] = item._content;
         return '';
       });
       setResourceName(obj?.displayName);
       setResourceMail(obj?.mail);
       setZimbraCalResType(
-        resourceTypeOptions.find((item: any) => item.value === obj.zimbraCalResType),
+        resourceTypeOptions.find((item: SelectOption) => item.value === obj.zimbraCalResType),
       );
       setZimbraAccountStatus(
-        accountStatusOptions.find((item: any) => item.value === obj.zimbraAccountStatus),
+        accountStatusOptions.find((item: SelectOption) => item.value === obj.zimbraAccountStatus),
       );
       if (obj.zimbraCalResAutoDeclineRecurring) {
         setZimbraCalResAutoDeclineRecurring(
-          autoRefuseOption.find((item: any) => item.value === obj.zimbraCalResAutoDeclineRecurring),
+          autoRefuseOption.find(
+            (item: SelectOption) => item.value === obj.zimbraCalResAutoDeclineRecurring,
+          ),
         );
       } else {
         setZimbraCalResAutoDeclineRecurring(autoRefuseOption[1]);
       }
       if (obj.zimbraCOSId) {
-        const getItem = cosItems.find((item: any) => item.value === obj.zimbraCOSId);
+        const getItem = cosItems.find((item: SelectOption) => item.value === obj.zimbraCOSId);
         if (getItem) {
           setZimbraCOSId(getItem);
         } else {
@@ -265,7 +294,10 @@ const ResourceEditDetailView: FC<any> = ({
   }, [resourceInformation, resourceTypeOptions, accountStatusOptions, autoRefuseOption, cosItems]);
 
   const setSchedulePolicyItem = useCallback(
-    (zimbraCalResAutoAcceptDecline: any, zimbraCalResAutoDeclineIfBusy: any): any => {
+    (
+      zimbraCalResAutoAcceptDecline: string | undefined,
+      zimbraCalResAutoDeclineIfBusy: string | undefined,
+    ): void => {
       if (zimbraCalResAutoAcceptDecline === 'TRUE' && zimbraCalResAutoDeclineIfBusy === 'TRUE') {
         setDefaultSchedulePolicyType(schedulePolicyItems[0]);
         setSchedulePolicyType(schedulePolicyItems[0]);
@@ -298,8 +330,8 @@ const ResourceEditDetailView: FC<any> = ({
   ]);
 
   const onResouseTypeChange = useCallback(
-    (v: any): any => {
-      const objItem = resourceTypeOptions.find((item: any) => item.value === v);
+    (v: string | null): void => {
+      const objItem = resourceTypeOptions.find((item: SelectOption) => item.value === v);
       if (objItem !== zimbraCalResType) {
         setZimbraCalResType(objItem);
       }
@@ -308,8 +340,8 @@ const ResourceEditDetailView: FC<any> = ({
   );
 
   const onAccountStatusChange = useCallback(
-    (v: any): any => {
-      const objItem = accountStatusOptions.find((item: any) => item.value === v);
+    (v: string | null): void => {
+      const objItem = accountStatusOptions.find((item: SelectOption) => item.value === v);
       if (objItem !== zimbraAccountStatus) {
         setZimbraAccountStatus(objItem);
       }
@@ -318,8 +350,8 @@ const ResourceEditDetailView: FC<any> = ({
   );
 
   const onAutoRefuseChange = useCallback(
-    (v: any): any => {
-      const objItem = autoRefuseOption.find((item: any) => item.value === v);
+    (v: string | null): void => {
+      const objItem = autoRefuseOption.find((item: SelectOption) => item.value === v);
       if (objItem !== zimbraCalResAutoDeclineRecurring) {
         setZimbraCalResAutoDeclineRecurring(objItem);
       }
@@ -328,8 +360,8 @@ const ResourceEditDetailView: FC<any> = ({
   );
 
   const onCosChange = useCallback(
-    (v: any): any => {
-      const objItem = cosItems.find((item: any) => item.value === v);
+    (v: string | null): void => {
+      const objItem = cosItems.find((item: SelectOption) => item.value === v);
       if (objItem !== zimbraCOSId) {
         setZimbraCOSId(objItem);
       }
@@ -338,8 +370,8 @@ const ResourceEditDetailView: FC<any> = ({
   );
 
   const onSchedulePolicyChange = useCallback(
-    (v: any): any => {
-      const objItem = schedulePolicyItems.find((item: any) => item.value === v);
+    (v: string | null): void => {
+      const objItem = schedulePolicyItems.find((item: SelectOption) => item.value === v);
       if (objItem !== schedulePolicyType) {
         setSchedulePolicyType(objItem);
       }
@@ -375,7 +407,7 @@ const ResourceEditDetailView: FC<any> = ({
     if (
       resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed !== undefined &&
       resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed !==
-        zimbraCalResMaxPercentConflictsAllowed
+      zimbraCalResMaxPercentConflictsAllowed
     ) {
       setIsDirty(true);
     }
@@ -424,7 +456,7 @@ const ResourceEditDetailView: FC<any> = ({
     if (
       resourceDetailData?.zimbraCalResAutoDeclineRecurring !== undefined &&
       resourceDetailData?.zimbraCalResAutoDeclineRecurring !==
-        zimbraCalResAutoDeclineRecurring?.value
+      zimbraCalResAutoDeclineRecurring?.value
     ) {
       setIsDirty(true);
     }
@@ -455,18 +487,20 @@ const ResourceEditDetailView: FC<any> = ({
     setZimbraCalResMaxPercentConflictsAllowed(
       resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed,
     );
-    setZimbraCOSId(cosItems.find((item: any) => item.value === resourceDetailData?.zimbraCOSId));
+    setZimbraCOSId(cosItems.find((item: SelectOption) => item.value === resourceDetailData?.zimbraCOSId));
     setZimbraCalResType(
-      resourceTypeOptions.find((item: any) => item.value === resourceDetailData?.zimbraCalResType),
+      resourceTypeOptions.find(
+        (item: SelectOption) => item.value === resourceDetailData?.zimbraCalResType,
+      ),
     );
     setZimbraAccountStatus(
       accountStatusOptions.find(
-        (item: any) => item.value === resourceDetailData?.zimbraAccountStatus,
+        (item: SelectOption) => item.value === resourceDetailData?.zimbraAccountStatus,
       ),
     );
     setZimbraCalResAutoDeclineRecurring(
       autoRefuseOption.find(
-        (item: any) => item.value === resourceDetailData.zimbraCalResAutoDeclineRecurring,
+        (item: SelectOption) => item.value === resourceDetailData.zimbraCalResAutoDeclineRecurring,
       ),
     );
     setSchedulePolicyItem(
@@ -479,7 +513,7 @@ const ResourceEditDetailView: FC<any> = ({
     setIsDirty(false);
   };
 
-  const callAllRequest = (requests: any): void => {
+  const callAllRequest = (requests: Array<Promise<unknown>>): void => {
     Promise.all(requests).then(() => {
       createSnackbar({
         key: 'success',
@@ -526,8 +560,8 @@ const ResourceEditDetailView: FC<any> = ({
 
   const onSave = (): void => {
     if (!validatePassword()) return;
-    const attributes: any[] = [];
-    const requests: any[] = [];
+    const attributes: Array<Attribute> = [];
+    const requests: Array<Promise<unknown>> = [];
     if (password !== '' && password === repeatPassword) {
       requests.push(setPasswordRequest(selectedResourceList.id, password));
     }
@@ -553,31 +587,31 @@ const ResourceEditDetailView: FC<any> = ({
     });
     attributes.push({
       n: 'zimbraCOSId',
-      _content: zimbraCOSId?.value,
+      _content: zimbraCOSId?.value ?? '',
     });
     attributes.push({
       n: 'zimbraCalResType',
-      _content: zimbraCalResType?.value,
+      _content: zimbraCalResType?.value ?? '',
     });
     attributes.push({
       n: 'zimbraAccountStatus',
-      _content: zimbraAccountStatus?.value,
+      _content: zimbraAccountStatus?.value ?? '',
     });
     attributes.push({
       n: 'zimbraCalResAutoDeclineRecurring',
-      _content: zimbraCalResAutoDeclineRecurring?.value,
+      _content: zimbraCalResAutoDeclineRecurring?.value ?? '',
     });
     attributes.push({
       n: 'zimbraCalResAutoAcceptDecline',
       _content:
-        schedulePolicyType?.value === 1 || schedulePolicyType?.value === 3 ? 'TRUE' : 'FALSE',
+        schedulePolicyType?.value === '1' || schedulePolicyType?.value === '3' ? 'TRUE' : 'FALSE',
     });
     attributes.push({
       n: 'zimbraCalResAutoDeclineIfBusy',
       _content:
-        schedulePolicyType?.value === 1 || schedulePolicyType?.value === 2 ? 'TRUE' : 'FALSE',
+        schedulePolicyType?.value === '1' || schedulePolicyType?.value === '2' ? 'TRUE' : 'FALSE',
     });
-    sendInviteList.forEach((item: any) => {
+    sendInviteList.forEach((item: InviteAttribute) => {
       attributes.push({
         n: 'zimbraPrefCalendarForwardInvitesTo',
         _content: item?._content,
@@ -629,7 +663,7 @@ const ResourceEditDetailView: FC<any> = ({
           ),
         );
       })
-      .then((error: any) => {
+      .catch((error: Error) => {
         setIsRequestInProgress(false);
         createSnackbar({
           key: 'error',
@@ -652,13 +686,13 @@ const ResourceEditDetailView: FC<any> = ({
 
   const onDisableResource = useCallback(() => {
     setIsRequestInProgress(true);
-    const attributes: any[] = [];
+    const attributes: Array<Attribute> = [];
     attributes.push({
       n: 'zimbraAccountStatus',
       _content: STATUS.CLOSED,
     });
     modifyCalendarResource(selectedResourceList?.id, attributes)
-      .then((data) => {
+      .then((data: ModifyCalendarResourceResponse) => {
         if (data?.calresource && Array.isArray(data?.calresource)) {
           onSuccess(
             t(
@@ -671,7 +705,7 @@ const ResourceEditDetailView: FC<any> = ({
           );
         }
       })
-      .catch((error) => {
+      .catch((error: Error) => {
         setIsRequestInProgress(false);
         createSnackbar({
           key: 'error',
@@ -693,7 +727,7 @@ const ResourceEditDetailView: FC<any> = ({
 
   const onViewMail = useCallback(() => {
     getDelegateAuthRequest(selectedResourceList?.id)
-      .then((data: any) => {
+      .then((data: DelegateAuthResponse) => {
         if (data?.authToken?.[0]) {
           window.open(
             `https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
@@ -712,7 +746,7 @@ const ResourceEditDetailView: FC<any> = ({
         }
       })
 
-      .catch((error) => {
+      .catch((error: Error) => {
         createSnackbar({
           key: 'error',
           severity: 'error',
@@ -837,7 +871,7 @@ const ResourceEditDetailView: FC<any> = ({
                 label={t('label.name', 'Name')}
                 backgroundColor="gray5"
                 value={resourceName}
-                onChange={(e: any): any => {
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   setResourceName(e.target.value);
                 }}
               />
@@ -855,7 +889,7 @@ const ResourceEditDetailView: FC<any> = ({
                 label={t('label.email', 'Email')}
                 backgroundColor="gray5"
                 value={resourceMail}
-                onChange={(e: any): any => {
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   setResourceMail(e.target.value);
                 }}
               />
@@ -890,7 +924,7 @@ const ResourceEditDetailView: FC<any> = ({
                 label={t('label.type', 'Type')}
                 showCheckbox={false}
                 onChange={onResouseTypeChange}
-                selection={zimbraCalResType}
+                selection={zimbraCalResType ?? { label: '', value: '' }}
               />
             </Row>
           </Container>
@@ -909,7 +943,7 @@ const ResourceEditDetailView: FC<any> = ({
                 label={t('label.status', 'Status')}
                 showCheckbox={false}
                 onChange={onAccountStatusChange}
-                selection={zimbraAccountStatus}
+                selection={zimbraAccountStatus ?? { label: '', value: '' }}
               />
             </Row>
           </Container>
@@ -926,7 +960,7 @@ const ResourceEditDetailView: FC<any> = ({
                 label={t('label.class_of_service', 'Class of Service')}
                 showCheckbox={false}
                 onChange={onCosChange}
-                selection={zimbraCOSId}
+                selection={zimbraCOSId ?? { label: '', value: '' }}
               />
             </Row>
           </Container>
@@ -945,7 +979,7 @@ const ResourceEditDetailView: FC<any> = ({
                 label={t('label.auto_refuse', 'Auto-Refuse')}
                 showCheckbox={false}
                 onChange={onAutoRefuseChange}
-                selection={zimbraCalResAutoDeclineRecurring}
+                selection={zimbraCalResAutoDeclineRecurring ?? { label: '', value: '' }}
               />
             </Row>
           </Container>
@@ -964,7 +998,7 @@ const ResourceEditDetailView: FC<any> = ({
                 label={t('label.schedule_policy', 'Set Policy')}
                 showCheckbox={false}
                 onChange={onSchedulePolicyChange}
-                selection={schedulePolicyType}
+                selection={schedulePolicyType ?? { label: '', value: '' }}
               />
             </Row>
           </Container>
@@ -981,7 +1015,7 @@ const ResourceEditDetailView: FC<any> = ({
                 label={t('label.maximum_conflict_allowed', 'Maximum Conflict Allowed')}
                 backgroundColor="gray5"
                 value={zimbraCalResMaxNumConflictsAllowed}
-                onChange={(e: any): any => {
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   setZimbraCalResMaxNumConflictsAllowed(e.target.value);
                 }}
               />
@@ -998,7 +1032,7 @@ const ResourceEditDetailView: FC<any> = ({
                 label={t('label.percentage_maximum_conflict_allowed', '% Maximum Conflict Allowed')}
                 backgroundColor="gray5"
                 value={zimbraCalResMaxPercentConflictsAllowed}
-                onChange={(e: any): any => {
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
                 }}
               />
@@ -1033,13 +1067,13 @@ const ResourceEditDetailView: FC<any> = ({
                 value={
                   resourceDetailData?.zimbraCreateTimestamp
                     ? format(
-                        parse(
-                          resourceDetailData?.zimbraCreateTimestamp,
-                          'yyyyMMddHHmmss.SSSX',
-                          new Date(),
-                        ),
-                        'dd MMM yyyy | hh:mm:ss a',
-                      )
+                      parse(
+                        resourceDetailData?.zimbraCreateTimestamp,
+                        'yyyyMMddHHmmss.SSSX',
+                        new Date(),
+                      ),
+                      'dd MMM yyyy | hh:mm:ss a',
+                    )
                     : '--'
                 }
               />
@@ -1071,7 +1105,7 @@ const ResourceEditDetailView: FC<any> = ({
                   value={password}
                   inputName="password"
                   type="password"
-                  onChange={(e: any): any => {
+                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     setPassword(e.target.value);
                     setIsDirty(true);
                   }}
@@ -1094,7 +1128,7 @@ const ResourceEditDetailView: FC<any> = ({
                   value={repeatPassword}
                   inputName="repeatPassword"
                   type="password"
-                  onChange={(e: any): any => {
+                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     setRepeatPassword(e.target.value);
                     setIsDirty(true);
                   }}
@@ -1121,7 +1155,7 @@ const ResourceEditDetailView: FC<any> = ({
             label={t('label.description', 'Description')}
             backgroundColor="gray5"
             value={zimbraNotes}
-            onChange={(e: any): any => {
+            onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               setZimbraNotes(e.target.value);
             }}
           />
@@ -1164,7 +1198,7 @@ const ResourceEditDetailView: FC<any> = ({
                   defaults="Are you sure you want to delete <bold>{{name}}</bod> ?"
                   components={{
                     bold: <strong />,
-                    name: selectedResourceList?.name,
+                    name: <>{selectedResourceList?.name}</>,
                   }}
                 />
               </ds-text>

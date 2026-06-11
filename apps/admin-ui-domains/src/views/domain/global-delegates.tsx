@@ -12,6 +12,7 @@ import {
   Paging,
   Row,
   Table,
+  type THeader,
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -27,6 +28,18 @@ import { debounce, filter, flatMapDeep } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import {
+  type Attribute,
+  type GetAccountMembershipResponse,
+  type GetAccountResponse,
+  type GetSessionsResponse,
+  type SearchDirectoryResponse,
+  type SessionInfo,
+  type Signature,
+  type SoapEntity,
+  type TRow,
+  type ZextrasRawResponse,
+} from '../../../types';
 import logo from '../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
@@ -37,7 +50,7 @@ import { getSingatures } from '../../services/get-signature-service';
 import { fetchSoap } from '../../services/listOTP-service';
 import ScrollContainer from '../components/scrollComponent';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import { AccountContext } from './manange/accounts/account-context';
+import { AccountContext, AccountDetail, CosDetail } from './manange/accounts/account-context';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 
 type UserSession = {
@@ -48,28 +61,67 @@ type UserSession = {
   service: string;
 };
 
+type DelegateMembership = { label: string; closable: boolean; disabled: boolean };
+
+type FolderGrant = {
+  d: string;
+  gt: string;
+  zid: string;
+  id?: string;
+  name?: string;
+};
+
+type MailFolder = {
+  id: string;
+  name?: string;
+  folder?: Array<MailFolder>;
+  acl?: { grant?: Array<FolderGrant> };
+};
+
+type DelegateIdentity = {
+  grantee?: Array<{ id?: string; name?: string; type?: string }>;
+  folder?: Array<FolderGrant>;
+};
+
+type OtpItem = {
+  id: string;
+  label?: string;
+  enabled?: boolean;
+  failed_attempts?: number;
+  created: string | number;
+  description?: string;
+};
+
+type StatusColorMap = Record<string, { color: string; label: string }>;
+
+type AccountTableRow = TRow & { item?: SoapEntity };
+type OtpTableRow = TRow & { item?: OtpItem };
+
 const GlobalDelegates: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [accountDetail, setAccountDetail] = useState<any>({});
-  const [cosDetail, setCosDetail] = useState<any>({});
-  const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
+  const [accountDetail, setAccountDetail] = useState<AccountDetail>({});
+  const [cosDetail, setCosDetail] = useState<CosDetail>({});
+  const [accSpecificDetail, setAccSpecificDetail] = useState<Record<string, string>>({});
   const [defaultTab, setDefaultTab] = useState('general');
-  const [directMemberList, setDirectMemberList] = useState<any>([]);
-  const [inDirectMemberList, setInDirectMemberList] = useState<any>([]);
-  const [initAccountDetail, setInitAccountDetail] = useState<any>({});
-  const [otpList, setOtpList] = useState<any[]>([]);
-  const [credentialList, setCredentialList] = useState<any[]>([]);
-  const [identitiesList, setIdentitiesList] = useState<any[]>([]);
-  const [folderList, setFolderList] = useState<any[]>([]);
-  const [deligateDetail, setDeligateDetail] = useState<any>({});
+  const [directMemberList, setDirectMemberList] = useState<Array<DelegateMembership>>([]);
+  const [inDirectMemberList, setInDirectMemberList] = useState<Array<DelegateMembership>>([]);
+  const [initAccountDetail, setInitAccountDetail] = useState<Record<string, unknown>>({});
+  const [otpList, setOtpList] = useState<Array<OtpTableRow>>([]);
+  const [credentialList, setCredentialList] = useState<Array<unknown>>([]);
+  const [identitiesList, setIdentitiesList] = useState<Array<DelegateIdentity>>([]);
+  const [folderList, setFolderList] = useState<Array<MailFolder>>([]);
+  const [deligateDetail, setDeligateDetail] = useState<Record<string, unknown>>({});
   const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
   const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
   const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
-  const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
+  const flatten = useCallback(
+    (item: MailFolder): Array<MailFolder> => [item, ...flatMapDeep(item.folder ?? [], flatten)],
+    [],
+  );
   const isAdvanced = useIsAdvanced();
   const tableRef = useRef<HTMLTableElement>(null);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -77,7 +129,7 @@ const GlobalDelegates: FC = () => {
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const [allowedDeletePassword, setAllowedDeletePassword] = useState<boolean>(false);
 
-  const headers: any = useMemo(
+  const headers: Array<THeader> = useMemo(
     () => [
       {
         id: 'account',
@@ -107,8 +159,8 @@ const GlobalDelegates: FC = () => {
     [t],
   );
 
-  const [accountList, setAccountList] = useState<any[]>([]);
-  const [selectedAccount, setSelectedAccount] = useState<any>({});
+  const [accountList, setAccountList] = useState<Array<AccountTableRow>>([]);
+  const [selectedAccount, setSelectedAccount] = useState<Record<string, unknown>>({});
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [totalAccount, setTotalAccount] = useState<number>(0);
@@ -122,22 +174,25 @@ const GlobalDelegates: FC = () => {
     getGlobalConfig: false,
   });
 
-  const [signatureList, setSignatureList] = useState<any[]>([]);
-  const [signatureItems, setSignatureItems] = useState<any[]>([]);
+  const [signatureList, setSignatureList] = useState<Array<Signature>>([]);
+  const [signatureItems, setSignatureItems] = useState<Array<Signature>>([]);
 
-  const generateSignatureList = (signatureResponse: any): void => {
+  const generateSignatureList = (signatureResponse: Array<Signature>): void => {
     if (signatureResponse && Array.isArray(signatureResponse)) {
       setSignatureList(signatureResponse);
     }
   };
   const getSignatureDetail = useCallback((id: string): void => {
-    getSingatures(id).then((data: any) => {
-      const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
+    getSingatures(id).then((data) => {
+      const signatureResponse =
+        ((data as ZextrasRawResponse)?.Body?.GetSignaturesResponse?.signature as
+          | Array<Signature>
+          | undefined) ?? [];
       generateSignatureList(signatureResponse);
     });
   }, []);
 
-  const STATUS_COLOR: any = useMemo(
+  const STATUS_COLOR: StatusColorMap = useMemo(
     () => ({
       active: {
         color: '#8BC34A',
@@ -167,7 +222,7 @@ const GlobalDelegates: FC = () => {
     [t],
   );
 
-  const accountUserType = useCallback((item: any): string => {
+  const accountUserType = useCallback((item: Record<string, unknown>): string => {
     if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
     if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
     if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
@@ -175,10 +230,10 @@ const GlobalDelegates: FC = () => {
     return 'Normal';
   }, []);
   const getAccountSpecificDetail = useCallback((id: string): void => {
-    getAccountRequest(id, '', 0).then((res: any) => {
-      const accountObj: any = {};
+    getAccountRequest(id, '', 0).then((res: GetAccountResponse) => {
+      const accountObj: Record<string, string> = {};
 
-      res?.account?.[0]?.a?.forEach((ele: any) => {
+      res?.account?.[0]?.a?.forEach((ele: Attribute) => {
         if (accountObj[ele.n]) {
           accountObj[ele.n] = `${accountObj[ele.n]}, ${ele._content}`;
         } else {
@@ -196,7 +251,7 @@ const GlobalDelegates: FC = () => {
   }, []);
   const getCosDetail = useCallback((id: string): void => {
     getCosGeneralInformation(id).then((data: GetCosResponse) => {
-      const obj: any = {};
+      const obj: Record<string, string> = {};
       data?.cos?.[0]?.a?.forEach((ele: CosAttribute) => {
         if (obj[ele.n]) {
           obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
@@ -217,10 +272,10 @@ const GlobalDelegates: FC = () => {
   const getAccountDetail = useCallback(
     (id: string): void => {
       getAccountRequest(id, '', 1)
-        .then((data: any) => {
-          const obj: any = {};
+        .then((data: GetAccountResponse) => {
+          const obj: Record<string, string> = {};
 
-          data?.account?.[0]?.a?.forEach((ele: any) => {
+          data?.account?.[0]?.a?.forEach((ele: Attribute) => {
             if (obj[ele.n]) {
               obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
             } else {
@@ -241,7 +296,7 @@ const GlobalDelegates: FC = () => {
             ? obj.zimbraPrefCalendarForwardInvitesTo
             : '';
 
-          obj.name = data?.account?.[0]?.name;
+          obj.name = data?.account?.[0]?.name ?? '';
           if (obj.zimbraIsAdminAccount === undefined) {
             obj.zimbraIsAdminAccount = 'FALSE';
           }
@@ -255,7 +310,7 @@ const GlobalDelegates: FC = () => {
           getCosDetail(obj.zimbraCOSId);
         })
 
-        .catch((error: any) => {
+        .catch((error: Error) => {
           createSnackbar({
             key: 'error',
             severity: 'error',
@@ -273,11 +328,11 @@ const GlobalDelegates: FC = () => {
   const getAccountMembership = useCallback(
     (id: string): void => {
       getAccountMembershipRequest(id)
-        .then((data: any) => {
-          const directMemArr: any[] = [];
-          const inDirectMemArr: any[] = [];
+        .then((data: GetAccountMembershipResponse) => {
+          const directMemArr: Array<DelegateMembership> = [];
+          const inDirectMemArr: Array<DelegateMembership> = [];
 
-          data?.dl?.forEach((ele: any) => {
+          data?.dl?.forEach((ele) => {
             if (ele?.via)
               inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
             else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
@@ -287,7 +342,7 @@ const GlobalDelegates: FC = () => {
           setInDirectMemberList(inDirectMemArr);
         })
 
-        .catch((error: any) => {
+        .catch((error: Error) => {
           createSnackbar({
             key: 'error',
             severity: 'error',
@@ -309,12 +364,13 @@ const GlobalDelegates: FC = () => {
         module: 'ZxAuth',
         action: 'list_totp_command',
         account: `${id}`,
-      }).then((res: any) => {
-        if (res?.ok) {
-          const otpListResponse = res.response?.list;
+      }).then((res) => {
+        const typedRes = res as { ok?: boolean; response?: { list?: Array<OtpItem> } };
+        if (typedRes?.ok) {
+          const otpListResponse = typedRes.response?.list;
           if (otpListResponse && Array.isArray(otpListResponse)) {
-            const otpListArr: any = [];
-            otpListResponse.forEach((item: any): any => {
+            const otpListArr: Array<OtpTableRow> = [];
+            otpListResponse.forEach((item: OtpItem) => {
               otpListArr.push({
                 id: item?.id,
                 columns: [
@@ -354,16 +410,17 @@ const GlobalDelegates: FC = () => {
       action: 'credential',
       request: 'list',
       account: `${id}`,
-    }).then((res: any) => {
-      if (res.response?.values) {
-        setCredentialList(res.response?.values);
+    }).then((res) => {
+      const typedRes = res as { response?: { values?: Array<unknown> } };
+      if (typedRes.response?.values) {
+        setCredentialList(typedRes.response?.values);
       } else {
         setCredentialList([]);
       }
     });
   }, []);
   const getFolderList = useCallback(
-    (acc: any, delegateList: any): void => {
+    (acc: { id: string; name: string }, delegateList: Array<DelegateIdentity>): void => {
       postSoapFetchRequest(
         `/service/admin/soap/GetFolderRequest`,
         {
@@ -371,29 +428,30 @@ const GlobalDelegates: FC = () => {
         },
         'GetFolderRequest',
         acc.id,
-      ).then((res: any) => {
-        const allFolder =
-          res?.Body?.GetFolderResponse?.folder ||
-          flatMapDeep(res?.Body?.GetFolderResponse?.folder, flatten) ||
-          [];
-        allFolder.forEach((ele: any) => {
+      ).then((res) => {
+        const folderResponse = (res as ZextrasRawResponse)?.Body?.GetFolderResponse?.folder as
+          | Array<MailFolder>
+          | undefined;
+        const allFolder: Array<MailFolder> =
+          folderResponse || flatMapDeep(folderResponse ?? [], flatten) || [];
+        allFolder.forEach((ele) => {
           ele.id = ele.id.split(':')[1];
           return ele;
         });
-        const filteredFolders = filter(allFolder, (ele: any) =>
+        const filteredFolders = filter(allFolder, (ele) =>
           ['1', '2', '7', '10', '4', '5', '6', '3'].includes(ele.id),
         );
-        const userDelegate: any[] = [];
-        filteredFolders.forEach((ele: any) => {
+        const userDelegate: Array<FolderGrant & { id: string; name?: string }> = [];
+        filteredFolders.forEach((ele) => {
           ele?.acl?.grant &&
-            ele?.acl?.grant.forEach((el: any) => {
+            ele?.acl?.grant.forEach((el) => {
               userDelegate.push({ ...el, id: ele.id, name: ele.name });
             });
         });
         setFolderList(filteredFolders);
-        userDelegate.forEach((ele: any) => {
+        userDelegate.forEach((ele) => {
           let found = false;
-          delegateList.forEach((el: any) => {
+          delegateList.forEach((el) => {
             // const folder: any[] = filter(userDelegate, { d: ele?.grantee?.[0]?.name });
             if (el?.grantee?.[0]?.name === ele?.d) {
               found = true;
@@ -418,8 +476,8 @@ const GlobalDelegates: FC = () => {
     [flatten],
   );
   const getIdentitiesList = useCallback(
-    (acc: any): void => {
-      const request: any = {
+    (acc: { id: string; name: string }): void => {
+      const request = {
         _jsns: ZIMBRA_ADMIN_URN,
         target: {
           _content: acc.name,
@@ -434,28 +492,31 @@ const GlobalDelegates: FC = () => {
         },
         'GetGrantsRequest',
         acc.id,
-      ).then((res: any) => {
-        getFolderList(acc, res?.Body?.GetGrantsResponse?.grant || []);
+      ).then((res) => {
+        const grants = (res as ZextrasRawResponse)?.Body?.GetGrantsResponse?.grant as
+          | Array<DelegateIdentity>
+          | undefined;
+        getFolderList(acc, grants ?? []);
       });
     },
     [getFolderList],
   );
 
-  const getAllUserSession = useCallback((acc: any) => {
-    const sessionType: string[] = ['admin', 'imap', 'soap'];
+  const getAllUserSession = useCallback((acc: string) => {
+    const sessionType: Array<string> = ['admin', 'imap', 'soap'];
     setUserSessionList([]);
     setAllUserSessionList([]);
     sessionType.forEach((item: string) => {
-      getSessions(item, acc).then((resp: any) => {
+      getSessions(item, acc).then((resp: GetSessionsResponse) => {
         if (resp && resp?.s) {
           const existingSession = resp?.s;
           if (existingSession) {
-            const session: UserSession[] = [];
+            const session: Array<UserSession> = [];
             const filterSession = existingSession.filter(
-              (sessionItem: any) => sessionItem?.name === acc,
+              (sessionItem: SessionInfo) => sessionItem?.name === acc,
             );
             if (filterSession.length > 0) {
-              filterSession.forEach((element: any) => {
+              filterSession.forEach((element: SessionInfo) => {
                 session.push({
                   ip: '',
                   name: element?.name,
@@ -465,8 +526,8 @@ const GlobalDelegates: FC = () => {
                 });
               });
             }
-            setUserSessionList((prev: any) => [...prev, ...session]);
-            setAllUserSessionList((prev: any) => [...prev, ...session]);
+            setUserSessionList((prev) => [...prev, ...session]);
+            setAllUserSessionList((prev) => [...prev, ...session]);
           }
         }
       });
@@ -564,7 +625,7 @@ const GlobalDelegates: FC = () => {
   );
 
   const openDetailView = useCallback(
-    (acc: any): void => {
+    (acc: SoapEntity): void => {
       setShowEditAccountView(true);
       getAccountDetail(acc?.id);
       getSignatureDetail(acc?.id);
@@ -597,77 +658,82 @@ const GlobalDelegates: FC = () => {
     const attrs =
       'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
     accountListDirectory(attrs, type, domainName, searchQuery, offset, limit)
-      .then((data: any) => {
-        const accountListResponse: any = data?.account || [];
+      .then((data: SearchDirectoryResponse<'account' | 'dl' | 'calresource'>) => {
+        const accountListResponse = data?.account ?? [];
         if (accountListResponse && Array.isArray(accountListResponse)) {
-          const accountListArr: any = [];
+          const accountListArr: Array<AccountTableRow> = [];
           setTotalAccount(data.searchTotal || 0);
-          accountListResponse.forEach((item: any): any => {
-            item?.a?.forEach((ele: any) => {
+          accountListResponse.forEach((item) => {
+            const mutable = item as SoapEntity & Record<string, unknown> & {
+              mail?: Array<string>;
+              description?: string;
+            };
+            item?.a?.forEach((ele: Attribute) => {
               if (ele?.n === 'mail') {
-                if (item[ele?.n]) {
-                  item[ele?.n].push(ele._content);
+                const existing = mutable[ele.n];
+                if (Array.isArray(existing)) {
+                  existing.push(ele._content);
                 } else {
-                  item[ele?.n] = [ele._content];
+                  mutable[ele.n] = [ele._content];
                 }
               } else {
-                item[ele?.n] = ele._content;
+                mutable[ele.n] = ele._content;
               }
             });
             accountListArr.push({
-              id: item?.id,
+              id: mutable?.id,
               columns: [
                 <ds-text
                   as="span"
                   size="small"
-                  key={item?.id}
+                  key={mutable?.id}
                   color="gray0"
                   weight="regular"
                   onClick={(): void => {
-                    openDetailView(item);
+                    openDetailView(mutable);
                   }}
                 >
-                  {item?.name || ' '}
+                  {mutable?.name || ' '}
                 </ds-text>,
                 <ds-text
                   as="span"
                   size="small"
-                  key={item?.id}
+                  key={mutable?.id}
                   color="gray0"
                   weight="light"
                   onClick={(): void => {
-                    openDetailView(item);
+                    openDetailView(mutable);
                   }}
                 >
-                  {accountUserType(item)}
+                  {accountUserType(mutable)}
                 </ds-text>,
                 <ds-text
                   as="span"
                   size="small"
-                  key={item?.id}
+                  key={mutable?.id}
                   color="gray0"
                   weight="light"
                   onClick={(): void => {
-                    openDetailView(item);
+                    openDetailView(mutable);
                   }}
                 >
-                  {item?.name.split('@')[1] || ' '}
+                  {mutable?.name?.split('@')[1] || ' '}
                 </ds-text>,
                 <ds-text
                   as="span"
                   size="small"
                   weight="light"
-                  key={item?.id}
+                  key={mutable?.id}
                   color="gray0"
                   onClick={(event: { stopPropagation: () => void }): void => {
                     event.stopPropagation();
-                    openDetailView(item);
+                    openDetailView(mutable);
                   }}
                 >
-                  {item?.description || <>&nbsp;</>}
+                  {mutable?.description || <>&nbsp;</>}
                 </ds-text>,
               ],
-              item,
+              item: mutable,
               clickable: true,
             });
           });
@@ -675,7 +741,7 @@ const GlobalDelegates: FC = () => {
         }
         setIsRequestInProgress(false);
       })
-      .catch((error: any) => {
+      .catch((error: Error) => {
         const snackbarConfig = generateSnackbarFromError(error, t);
         createSnackbar(snackbarConfig);
         setIsRequestInProgress(false);
