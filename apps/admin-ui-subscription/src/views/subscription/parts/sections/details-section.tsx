@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { LabeledValue } from '@zextras/ui-components';
 import { useLicenseInfo, useVersion } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useCallback, useMemo, useState } from 'react';
@@ -30,22 +29,29 @@ export const DetailsSection = () => {
   const CopyIcon = useMemo(() => {
     function CopyIconButton() {
       return (
-        <button type="button" className={styles.copyButton} onClick={handleCopy}>
-          <ds-icon icon="Copy" size="1rem" />
+        <button
+          type="button"
+          className={styles.copyInlineButton}
+          onClick={handleCopy}
+          aria-label={t('label.copy', 'Copy')}
+        >
+          <ds-icon icon="Copy" size="1.5rem" color="primary" />
         </button>
       );
     }
     return CopyIconButton;
-  }, [handleCopy]);
+  }, [handleCopy, t]);
 
   if (!response) return null;
+
+  const isPerpetualSubscription = response.subType === 'PERPETUAL';
 
   const subscriptionType = response.subType
     ? response.subType.charAt(0) + response.subType.slice(1).toLowerCase()
     : '';
 
   return (
-    <div className={styles.sectionWrapper}>
+    <div className={`${styles.sectionWrapper} ${styles.detailsSection}`}>
       <div
         className={styles.detailsToggle}
         onClick={(): void => setOpen((prev) => !prev)}
@@ -62,38 +68,72 @@ export const DetailsSection = () => {
       </div>
       {open && (
         <div className={styles.detailsGrid}>
-          <LabeledValue
-            label={t('core.subscription.company_name', 'Company Name')}
-            value={response.endUser ?? ''}
-          />
-          <LabeledValue
-            label={t('core.subscription.partner', 'Partner')}
-            value={response.customer ?? ''}
-          />
-          <div className={styles.copyFieldWrapper}>
-            <LabeledValue
-              label={t('core.subscription.order_id', 'Order ID')}
-              value={response.infrastructureId ?? ''}
-              CustomIcon={response.infrastructureId ? CopyIcon : undefined}
-            />
+          <div className={styles.detailItem}>
+            <ds-text size="small" className={styles.detailLabel}>
+              {t('core.subscription.company_name', 'Company Name')}
+            </ds-text>
+            <div className={styles.detailValueRow}>
+              <ds-text className={styles.detailValue}>{response.endUser ?? ''}</ds-text>
+            </div>
           </div>
-          <LabeledValue
-            label={t('core.subscription.version', 'Module version')}
-            value={version ?? ''}
-          />
-          <LabeledValue
-            label={t('core.subscription.type', 'Subscription type')}
-            value={subscriptionType}
-          />
-          <LabeledValue
-            label={t('core.subscription.accounts', 'Total account')}
-            value={`${response.accountCount ?? 0}/${response.licensedUsers ?? 0}`}
-          />
-          {response.maintenanceEndDate && (
-            <LabeledValue
-              label={t('core.subscription.maintenance_end_date', 'Maintenance expiration date')}
-              value={format(response.maintenanceEndDate, DATE_FORMAT)}
-            />
+
+          <div className={styles.detailItem}>
+            <ds-text size="small" className={styles.detailLabel}>
+              {t('core.subscription.partner', 'Partner')}
+            </ds-text>
+            <div className={styles.detailValueRow}>
+              <ds-text className={styles.detailValue}>{response.customer ?? ''}</ds-text>
+            </div>
+          </div>
+
+          <div className={styles.detailItem}>
+            <ds-text size="small" className={styles.detailLabel}>
+              {t('core.subscription.orderId', 'Order ID')}
+            </ds-text>
+            <div className={styles.detailValueRow}>
+              <ds-text className={styles.detailValue}>{response.infrastructureId ?? ''}</ds-text>
+              {response.infrastructureId && <CopyIcon />}
+            </div>
+          </div>
+
+          <div className={styles.detailItem}>
+            <ds-text size="small" className={styles.detailLabel}>
+              {t('core.subscription.version', 'Module version')}
+            </ds-text>
+            <div className={styles.detailValueRow}>
+              <ds-text className={styles.detailValue}>{response.carbonioVersion ?? ''}</ds-text>
+            </div>
+          </div>
+
+          <div className={styles.detailItem}>
+            <ds-text size="small" className={styles.detailLabel}>
+              {t('core.subscription.subscriptionType', 'Subscription type')}
+            </ds-text>
+            <div className={styles.detailValueRow}>
+              <ds-text className={styles.detailValue}>{subscriptionType}</ds-text>
+            </div>
+          </div>
+
+          <div className={styles.detailItem}>
+            <ds-text size="small" className={styles.detailLabel}>
+              {t('core.subscription.totalActiveAccounts', 'Total active accounts')}
+            </ds-text>
+            <div className={styles.detailValueRow}>
+              <ds-text className={styles.detailValue}>{`${response.accountCount ?? 0}`}</ds-text>
+            </div>
+          </div>
+
+          {isPerpetualSubscription && response.maintenanceEndDate && (
+            <div className={styles.detailItem}>
+              <ds-text size="small" className={styles.detailLabel}>
+                {t('core.subscription.maintenance_end_date', 'Maintenance expiration date')}
+              </ds-text>
+              <div className={styles.detailValueRow}>
+                <ds-text className={styles.detailValue}>
+                  {format(response.maintenanceEndDate, DATE_FORMAT)}
+                </ds-text>
+              </div>
+            </div>
           )}
         </div>
       )}

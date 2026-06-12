@@ -56,6 +56,12 @@
 
 /* Details section */
 
+.detailsSection {
+  border-radius: 4px;
+  padding-left: 1rem;
+  background: var(--color-card-bg);
+}
+
 .detailsToggle {
   display: flex;
   align-items: center;
@@ -67,27 +73,53 @@
 
 .detailsGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 4rem;
   padding-top: 0.75rem;
 }
 
-.copyFieldWrapper {
-  position: relative;
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
 }
 
-.copyButton {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
+.detailLabel {
+  color: var(--color-secondary-active);
+}
+
+.detailValueRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.detailValue {
+  color: var(--color-text-regular);
+}
+
+.copyInlineButton {
+  display: inline-flex;
+  align-items: center;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.25rem;
-  display: flex;
-  align-items: center;
-  margin-top: -0.75rem;
+  padding: 0;
+  color: var(--color-primary-regular);
+}
+
+.copyInlineButton:focus-visible {
+  outline: 2px solid var(--color-primary-regular);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .detailsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 .addonsContainer {

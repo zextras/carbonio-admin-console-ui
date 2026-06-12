@@ -33,6 +33,7 @@ export const PerpetualSubscription = () => {
       <div className={styles.content}>
         <ActiveEditionSection />
         <AddonsSection />
+        <ds-divider style={{paddingBottom:'1.9rem', paddingTop:'0.4rem'}}></ds-divider>
         <DetailsSection />
       </div>
     </div>

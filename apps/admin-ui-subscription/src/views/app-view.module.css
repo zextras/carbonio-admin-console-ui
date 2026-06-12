@@ -16,10 +16,11 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  width: 100%;
+  width: calc(100% - 4.5rem);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  padding: 1.5rem 2rem 1.5rem 2.5rem;
 }
 
 .innerContent {

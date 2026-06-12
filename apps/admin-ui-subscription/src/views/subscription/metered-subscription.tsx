@@ -10,6 +10,7 @@ import { DataValidity } from './parts/cards/data-validity';
 import { LastDataSent } from './parts/cards/last-data-sent';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
 import { TotalAccounts } from './parts/cards/total-accounts';
+import { DetailsSection } from './parts/sections/details-section';
 import styles from './subscription-layout.module.css';
 
 export const MeteredSubscription = () => {
@@ -26,6 +27,10 @@ export const MeteredSubscription = () => {
         <LastDataSent />
         <DataValidity />
         <TotalAccounts />
+      </div>
+      <div className={styles.content}>
+        <ds-divider style={{paddingBottom:'1.9rem', paddingTop:'0.4rem'}}></ds-divider>
+        <DetailsSection />
       </div>
     </div>
   );
