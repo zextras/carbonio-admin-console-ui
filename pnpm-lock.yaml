@@ -16,7 +16,7 @@ importers:
         version: 19.2.6
     devDependencies:
       '@eslint/js':
-        specifier: ^9.39.1
+        specifier: ^9.39.4
         version: 9.39.4
       '@semantic-release/changelog':
         specifier: ^6.0.3
@@ -64,7 +64,7 @@ importers:
         specifier: ^1.4.7
         version: 1.4.7
       eslint:
-        specifier: ^9.39.1
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-jsx-a11y:
         specifier: ^6.10.2
@@ -85,10 +85,10 @@ importers:
         specifier: ^13.0.0
         version: 13.0.0(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-testing-library:
-        specifier: ^7.6.6
+        specifier: ^7.16.2
         version: 7.16.2(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3)
       eslint-plugin-unused-imports:
-        specifier: ^4.3.0
+        specifier: ^4.4.1
         version: 4.4.1(@typescript-eslint/eslint-plugin@8.60.0(@typescript-eslint/parser@8.60.0(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.4(jiti@2.7.0))
       knip:
         specifier: ^6.14.1
@@ -230,7 +230,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -414,7 +414,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -538,7 +538,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -680,7 +680,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -828,7 +828,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -970,7 +970,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -1112,7 +1112,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -1254,7 +1254,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -1393,7 +1393,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -1535,7 +1535,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -1674,7 +1674,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -1816,7 +1816,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -1889,7 +1889,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
@@ -1971,7 +1971,7 @@ importers:
         specifier: ^2.12.0
         version: 2.12.0(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-lit:
-        specifier: ^2.1.1
+        specifier: ^2.3.1
         version: 2.3.1(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-notice:
         specifier: ^1.0.0
@@ -2098,7 +2098,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       eslint:
-        specifier: ^9.34.0
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.7.0)
       eslint-plugin-css-modules:
         specifier: ^2.12.0
