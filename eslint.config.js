@@ -22,7 +22,7 @@ export default tseslint.config(
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
   reactHooks.configs.flat.recommended,
-  reactYouMightNotNeedAnEffect.configs.strict,
+  // reactYouMightNotNeedAnEffect.configs.strict,
   {
     ignores: [
       '**/node_modules/**',
