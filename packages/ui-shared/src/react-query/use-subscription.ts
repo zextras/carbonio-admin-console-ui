@@ -107,7 +107,12 @@ const removeLicense = async (): Promise<LicenseResponse> => {
 };
 
 const fetchLicenseInfo = async (): Promise<LicenseResponse> => {
-  return JSON.parse(response.response.content);
+  const res = await fetchSoap('zextras', {
+    _jsns: ZIMBRA_ADMIN_URN,
+    module: 'ZxCore',
+    action: 'getLicenseInfo',
+  });
+  return JSON.parse(res.response.content);
 };
 
 export const useLicenseInfo = () => {
@@ -138,6 +143,8 @@ export function invalidateLicenseQuery(queryClient: ReturnType<typeof useQueryCl
 }
 
 export const useActivateLicense = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async ({ token, renewal = false }: { token: string; renewal?: boolean }) => {
       const result = await activateLicense(token, renewal);
@@ -145,6 +152,9 @@ export const useActivateLicense = () => {
         throw new Error(result.message || 'Activation failed');
       }
       return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.license() });
     },
   });
 };

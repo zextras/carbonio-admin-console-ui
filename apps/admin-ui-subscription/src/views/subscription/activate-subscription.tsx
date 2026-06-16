@@ -3,9 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
 import { Button, Input } from '@zextras/ui-components';
-import { invalidateLicenseQuery, useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
+import {
+  useActivateLicense,
+  useBreakpoint,
+} from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -32,7 +34,6 @@ export const ActivateSubscription = (): React.JSX.Element => {
   const [showResult, setShowResult] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const activateLicenseMutation = useActivateLicense();
   const breakpoint = useBreakpoint();
   const isLargeViewport = breakpoint === 'xl' || breakpoint === '2xl';
@@ -66,8 +67,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
   }, []);
 
   const handleSuccessComplete = useCallback((): void => {
-    invalidateLicenseQuery(queryClient);
-  }, [queryClient]);
+  }, []);
 
   return (
     <div className={styles.outer}>
