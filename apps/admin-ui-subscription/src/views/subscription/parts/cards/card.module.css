@@ -16,3 +16,9 @@
   flex: 1 0 0;
   background: var(--color-card-bg);
 }
+
+.labelWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}

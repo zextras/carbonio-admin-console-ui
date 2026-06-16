@@ -89,6 +89,12 @@
   color: var(--color-secondary-active);
 }
 
+.labelWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .detailValueRow {
   display: flex;
   align-items: center;

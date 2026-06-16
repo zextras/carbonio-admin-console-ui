@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Tooltip } from '@zextras/ui-components';
 import { useLicenseInfo } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
@@ -19,9 +20,20 @@ export const TotalAccounts = () => {
 
   return (
     <div className={styles.card}>
-      <ds-text size="small" as="span" color="gray0">
-        {title}
-      </ds-text>
+      <div className={styles.labelWithIcon}>
+        <ds-text size="small" as="span" color="gray0">
+          {title}
+        </ds-text>
+        <Tooltip
+          placement="top"
+          label={t(
+            'core.subscription.totalActiveAccountsTooltip',
+            'System accounts, distribution lists, external or guest, closed or inactive accounts are excluded from this count.',
+          )}
+        >
+          <ds-icon icon="InfoOutline" size="medium" color="gray0" />
+        </Tooltip>
+      </div>
       <ds-text weight="bold" color="gray0" style={{ fontSize: '1.5rem' }}>
         {activeAccounts}
       </ds-text>

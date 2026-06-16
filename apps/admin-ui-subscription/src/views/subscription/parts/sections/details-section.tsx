@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Tooltip } from '@zextras/ui-components';
 import { useLicenseInfo, useVersion } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useCallback, useMemo, useState } from 'react';
@@ -115,9 +116,20 @@ export const DetailsSection = () => {
           </div>
 
           <div className={styles.detailItem}>
-            <ds-text size="small" className={styles.detailLabel}>
-              {t('core.subscription.totalActiveAccounts', 'Total active accounts')}
-            </ds-text>
+            <div className={styles.labelWithIcon}>
+              <ds-text size="small" className={styles.detailLabel}>
+                {t('core.subscription.totalActiveAccounts', 'Total active accounts')}
+              </ds-text>
+              <Tooltip
+                placement="top"
+                label={t(
+                  'core.subscription.totalActiveAccountsTooltip',
+                  'System accounts, distribution lists, external or guest, closed or inactive accounts are excluded from this count.',
+                )}
+              >
+                <ds-icon icon="InfoOutline" size="medium" color="gray0" />
+              </Tooltip>
+            </div>
             <div className={styles.detailValueRow}>
               <ds-text className={styles.detailValue}>{`${response.accountCount ?? 0}`}</ds-text>
             </div>
