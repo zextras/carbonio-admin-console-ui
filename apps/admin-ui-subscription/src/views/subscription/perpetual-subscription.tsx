@@ -10,6 +10,7 @@ import { ActiveEdition } from './parts/cards/active-edition';
 import { MaxVersion } from './parts/cards/max-version';
 import { SeatUtilization } from './parts/cards/seat-utilization';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
+import { ActivationTokenSection } from './parts/sections/activation-token-section';
 import { ActiveEditionSection } from './parts/sections/active-edition-section';
 import { AddonsSection } from './parts/sections/addons-section';
 import { DetailsSection } from './parts/sections/details-section';
@@ -35,6 +36,7 @@ export const PerpetualSubscription = () => {
         <AddonsSection />
         <ds-divider style={{paddingBottom:'1.9rem', paddingTop:'0.4rem'}}></ds-divider>
         <DetailsSection />
+        <ActivationTokenSection />
       </div>
     </div>
   );

@@ -5,7 +5,7 @@
  */
 
 import { Tooltip } from '@zextras/ui-components';
-import { useLicenseInfo, useVersion } from '@zextras/ui-shared';
+import { useLicenseInfo } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,6 @@ export const DetailsSection = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(true);
   const { data: licenseData } = useLicenseInfo();
-  const { data: version } = useVersion();
 
   const response = licenseData?.response;
 

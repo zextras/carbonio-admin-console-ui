@@ -173,9 +173,7 @@ describe('AppView', () => {
       setupTest(licenseData);
 
       await expect.element(page.getByText('Expires on')).toBeVisible();
-      await expect
-        .element(page.getByText('Activation token', { exact: true }))
-        .not.toBeInTheDocument();
+      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
     });
 
     it('should render PerpetualSubscription for Purchased + PERPETUAL', async () => {
@@ -229,13 +227,11 @@ describe('AppView', () => {
       expect(activateElements).toHaveLength(0);
     });
 
-    it('should not render ActivateSubscription when license is present and feature flag is on', async () => {
+    it('should render Activation token section when license is present and feature flag is on', async () => {
       const licenseData = createMockLicenseData();
       setupTest(licenseData);
 
-      await expect
-        .element(page.getByText('Activation token', { exact: true }))
-        .not.toBeInTheDocument();
+      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
     });
 
     it('should not render legacy Subscription when feature flag is on and type matches', async () => {

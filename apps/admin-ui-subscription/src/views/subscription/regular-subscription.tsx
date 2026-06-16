@@ -10,6 +10,7 @@ import { ActiveEdition } from './parts/cards/active-edition';
 import { SeatUtilization } from './parts/cards/seat-utilization';
 import { SubscriptionExpiry } from './parts/cards/subscription-expiry';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
+import { ActivationTokenSection } from './parts/sections/activation-token-section';
 import { DetailsSection } from './parts/sections/details-section';
 import styles from './subscription-layout.module.css';
 
@@ -31,6 +32,7 @@ export const RegularSubscription = () => {
       <div className={styles.content}>
         <ds-divider style={{paddingBottom:'1.9rem', paddingTop:'0.4rem'}}></ds-divider>
         <DetailsSection />
+        <ActivationTokenSection />
       </div>
     </div>
   );

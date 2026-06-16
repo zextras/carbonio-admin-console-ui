@@ -3,13 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button } from '@zextras/ui-components';
 import {
   useBreakpoint,
   useLicenseInfo,
   useLocalStorage,
   usePrimaryBarState,
-  useRemoveLicense,
 } from '@zextras/ui-shared';
 import { type CSSProperties, type ReactNode, useEffect } from 'react';
 
@@ -72,11 +70,7 @@ export const AppView = () => {
     null,
   );
 
-  const removeLicenseMutation = useRemoveLicense();
 
-  const doRemoveLicense = (): void => {
-    removeLicenseMutation.mutate(undefined);
-  };
   const { data: licenseData, isFetching } = useLicenseInfo();
   const subscriptionType = licenseData?.response?.type;
   const subType = licenseData?.response?.subType;
@@ -98,13 +92,6 @@ export const AppView = () => {
           </div>
         </div>
       )}
-      <Button
-        label={'deactivate'}
-        type="outlined"
-        color="error"
-        onClick={(): void => doRemoveLicense()}
-        size="extralarge"
-      />
     </div>
   );
 };
