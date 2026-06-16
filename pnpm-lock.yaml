@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@babel/plugin-proposal-decorators':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       react:
         specifier: ^19.2.3
@@ -182,19 +182,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -354,16 +354,16 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tailwindcss/vite':
         specifier: ^4.3.1
@@ -496,19 +496,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@testing-library/react':
         specifier: ^16.3.2
@@ -635,19 +635,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -783,19 +783,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -925,19 +925,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -1067,19 +1067,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -1206,19 +1206,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -1348,19 +1348,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -1490,19 +1490,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -1629,19 +1629,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -1771,19 +1771,19 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/plugin-transform-runtime':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
@@ -2047,16 +2047,16 @@ importers:
         version: 5.0.14(@types/react@19.2.15)(immer@11.1.8)(react@19.2.6)(use-sync-external-store@1.6.0(react@19.2.6))
     devDependencies:
       '@babel/core':
-        specifier: ^7.29.0
+        specifier: ^7.29.7
         version: 7.29.7
       '@babel/preset-env':
-        specifier: ^7.29.2
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-react':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@babel/preset-typescript':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@tanstack/react-query-devtools':
         specifier: ^5.90.2
