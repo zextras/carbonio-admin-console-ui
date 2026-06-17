@@ -36,7 +36,7 @@
     "@zextras/admin-ui-subscription": "workspace:*",
     "@zextras/ui-components": "workspace:*",
     "@zextras/ui-shared": "workspace:*",
-    "date-fns": "^4.1.0",
+    "date-fns": "^4.4.0",
     "i18next": "^26.2.0",
     "i18next-http-backend": "^4.0.0",
     "immer": "^11.1.8",

@@ -27,7 +27,7 @@
     "@vitest/browser-preview": "^4.1.0",
     "@zextras/ui-components": "workspace:*",
     "@zextras/ui-shared": "workspace:*",
-    "date-fns": "^4.1.0",
+    "date-fns": "^4.4.0",
     "html-entities": "^2.6.0",
     "i18next": "^26.2.0",
     "immer": "^11.1.8",

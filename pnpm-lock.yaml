@@ -317,7 +317,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui-shared
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.4.0
         version: 4.4.0
       i18next:
         specifier: ^26.2.0
@@ -595,7 +595,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui-shared
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.4.0
         version: 4.4.0
       html-entities:
         specifier: ^2.6.0
@@ -740,7 +740,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui-shared
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.4.0
         version: 4.4.0
       html-entities:
         specifier: ^2.6.0
@@ -885,7 +885,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui-shared
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.4.0
         version: 4.4.0
       html-entities:
         specifier: ^2.6.0
@@ -1027,7 +1027,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui-shared
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.4.0
         version: 4.4.0
       html-entities:
         specifier: ^2.6.0
@@ -1166,7 +1166,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui-shared
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.4.0
         version: 4.4.0
       html-entities:
         specifier: ^2.6.0
@@ -1731,7 +1731,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui-shared
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.4.0
         version: 4.4.0
       html-entities:
         specifier: ^2.6.0
@@ -1928,7 +1928,7 @@ importers:
         specifier: ^3.38.1
         version: 3.49.0
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.4.0
         version: 4.4.0
       lit:
         specifier: ^3.3.2
@@ -2007,7 +2007,7 @@ importers:
         specifier: ^5.90.5
         version: 5.100.14(react@19.2.6)
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.4.0
         version: 4.4.0
       i18next:
         specifier: ^26.2.0
