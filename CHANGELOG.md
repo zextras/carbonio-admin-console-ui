@@ -1,3 +1,9 @@
+## [0.13.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.6...v0.13.7) (2026-06-17)
+
+### Bug Fixes
+
+* **deps:** update babel to ^7.29.7 ([#1231](https://github.com/zextras/carbonio-admin-console-ui/issues/1231)) ([1060861](https://github.com/zextras/carbonio-admin-console-ui/commit/1060861e1780e75ee899708bd314b0b7b7c87b08))
+
 ## [0.13.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.5...v0.13.6) (2026-06-05)
 
 ### Other changes
