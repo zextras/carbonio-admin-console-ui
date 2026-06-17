@@ -65,7 +65,7 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@floating-ui/dom": "^1.5.3",
+    "@floating-ui/dom": "^1.7.6",
     "@posthog/react": "^1.8.1",
     "@zextras/ui-shared": "workspace:*",
     "core-js": "^3.38.1",
