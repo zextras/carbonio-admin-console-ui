@@ -73,7 +73,7 @@
     "lodash-es": "^4.17.21",
     "polished": "^4.2.2",
     "@daypicker/react": "^10.0.1",
-    "date-fns": "^4.1.0",
+    "date-fns": "^4.4.0",
     "react-router": "^7.13.0",
     "zod": "^4.3.6"
   }
