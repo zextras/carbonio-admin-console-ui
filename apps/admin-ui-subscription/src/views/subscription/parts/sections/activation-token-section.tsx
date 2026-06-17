@@ -10,6 +10,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DATE_FORMAT } from '../../constants';
+import { ChangeTokenModal } from '../modals/change-token-modal';
 import { DeactivateTokenModal } from '../modals/deactivate-token-modal';
 import styles from './sections.module.css';
 
@@ -47,6 +48,7 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
   const [open, setOpen] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showToken, setShowToken] = useState(false);
+  const [changeTokenModalOpen, setChangeTokenModalOpen] = useState(false);
   const [deactivateModalOpen, setDeactivateModalOpen] = useState(false);
 
   const response = licenseData?.response;
@@ -80,7 +82,13 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
     (option: ActivationTokenMenuOption): void => {
       setMenuOpen(false);
 
-      if (option === 'deactivate-license') {
+      if (option === 'change-token') {
+        if (!onMenuOptionSelect) {
+          setChangeTokenModalOpen(true);
+        } else {
+          onMenuOptionSelect(option);
+        }
+      } else if (option === 'deactivate-license') {
         if (!onMenuOptionSelect) {
           setDeactivateModalOpen(true);
         } else {
@@ -219,6 +227,10 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
         open={deactivateModalOpen}
         onClose={(): void => setDeactivateModalOpen(false)}
         onConfirm={handleDeactivateConfirm}
+      />
+      <ChangeTokenModal
+        open={changeTokenModalOpen}
+        onClose={(): void => setChangeTokenModalOpen(false)}
       />
     </div>
   );
