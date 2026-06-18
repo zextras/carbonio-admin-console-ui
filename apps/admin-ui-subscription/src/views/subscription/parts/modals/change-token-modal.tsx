@@ -14,9 +14,10 @@ import styles from './change-token-modal.module.css';
 type ChangeTokenModalProps = {
   open: boolean;
   onClose: () => void;
+  onConfirm: (token: string) => void;
 };
 
-export const ChangeTokenModal: FC<ChangeTokenModalProps> = ({ open, onClose }) => {
+export const ChangeTokenModal: FC<ChangeTokenModalProps> = ({ open, onClose, onConfirm }) => {
   const { t } = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
   const [token, setToken] = useState('');
@@ -64,8 +65,7 @@ export const ChangeTokenModal: FC<ChangeTokenModalProps> = ({ open, onClose }) =
       return;
     }
 
-    popoverRef.current?.hidePopover();
-    onClose();
+    onConfirm(token.trim());
   }
 
   return (

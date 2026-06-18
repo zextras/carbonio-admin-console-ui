@@ -4,12 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLicenseInfo, useRemoveLicense } from '@zextras/ui-shared';
+import { useSnackbar } from '@zextras/ui-components';
+import { useActivateLicense, useLicenseInfo, useRemoveLicense } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DATE_FORMAT } from '../../constants';
+import { ActivationError } from '../activation/activation-error';
+import { ActivationProgress } from '../activation/activation-progress';
 import { ChangeTokenModal } from '../modals/change-token-modal';
 import { DeactivateTokenModal } from '../modals/deactivate-token-modal';
 import styles from './sections.module.css';
@@ -44,15 +47,17 @@ function maskToken(token?: string): string {
 export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSectionProps) => {
   const { t } = useTranslation();
   const { data: licenseData } = useLicenseInfo();
+  const activateLicenseMutation = useActivateLicense();
   const removeLicenseMutation = useRemoveLicense();
+  const menuWrapperRef = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showToken, setShowToken] = useState(false);
   const [changeTokenModalOpen, setChangeTokenModalOpen] = useState(false);
   const [deactivateModalOpen, setDeactivateModalOpen] = useState(false);
-
+  const [showActivationResult, setShowActivationResult] = useState(false);
+  const createSnackbar = useSnackbar();
   const response = licenseData?.response;
-
   const displayedToken = useMemo(() => {
     if (!response?.authenticationToken) {
       return '-';
@@ -96,15 +101,53 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
         }
       } else {
         onMenuOptionSelect?.(option);
+        createSnackbar({
+						key: 'info-snackbar',
+						severity: 'info',
+						label: 'Subscription renewal feature is in progress.',
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
       }
     },
-    [onMenuOptionSelect],
+    [onMenuOptionSelect, createSnackbar],
   );
 
   const handleDeactivateConfirm = useCallback((): void => {
     removeLicenseMutation.mutate(undefined);
     setDeactivateModalOpen(false);
   }, [removeLicenseMutation]);
+
+  const handleChangeTokenConfirm = useCallback(
+    (token: string): void => {
+      setChangeTokenModalOpen(false);
+      setShowActivationResult(false);
+      activateLicenseMutation.mutate({ token, renewal: false });
+    },
+    [activateLicenseMutation],
+  );
+
+  const handleActivationProgressComplete = useCallback((): void => {
+    setShowActivationResult(true);
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      return;
+    }
+
+    function handleClickOutside(event: MouseEvent): void {
+      if (menuWrapperRef.current?.contains(event.target as Node)) {
+        return;
+      }
+      setMenuOpen(false);
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpen]);
 
   return (
     <div className={`${styles.sectionWrapper} ${styles.detailsSection}`}>
@@ -127,7 +170,7 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
         </div>
 
         {open && (
-          <div className={styles.activationMenuWrapper}>
+          <div ref={menuWrapperRef} className={styles.activationMenuWrapper}>
             <button
               type="button"
               className={styles.menuTriggerButton}
@@ -200,27 +243,31 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
             </div>
           </div>
 
-          <div className={styles.detailItem}>
-            <ds-text size="small" className={styles.detailLabel}>
-              {t('core.subscription.lastValidationCheck', 'Last validation check')}
-            </ds-text>
-            <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue}>
-                {formatDateValue(response?.lastValidationCheck)}
-              </ds-text>
-            </div>
-          </div>
+          {response?.type !== 'ISP' && (
+            <>
+              <div className={styles.detailItem}>
+                <ds-text size="small" className={styles.detailLabel}>
+                  {t('core.subscription.lastValidationCheck', 'Last validation check')}
+                </ds-text>
+                <div className={styles.detailValueRow}>
+                  <ds-text className={styles.detailValue}>
+                    {formatDateValue(response?.lastValidationCheck)}
+                  </ds-text>
+                </div>
+              </div>
 
-          <div className={styles.detailItem}>
-            <ds-text size="small" className={styles.detailLabel}>
-              {t('core.subscription.nextValidationCheck', 'Next validation check')}
-            </ds-text>
-            <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue}>
-                {formatDateValue(response?.nextValidationDeadline)}
-              </ds-text>
-            </div>
-          </div>
+              <div className={styles.detailItem}>
+                <ds-text size="small" className={styles.detailLabel}>
+                  {t('core.subscription.nextValidationCheck', 'Next validation check')}
+                </ds-text>
+                <div className={styles.detailValueRow}>
+                  <ds-text className={styles.detailValue}>
+                    {formatDateValue(response?.nextValidationDeadline)}
+                  </ds-text>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
       <DeactivateTokenModal
@@ -231,7 +278,13 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
       <ChangeTokenModal
         open={changeTokenModalOpen}
         onClose={(): void => setChangeTokenModalOpen(false)}
+        onConfirm={handleChangeTokenConfirm}
       />
+      <ActivationProgress
+        isPending={activateLicenseMutation.isPending}
+        onComplete={handleActivationProgressComplete}
+      />
+      <ActivationError isError={showActivationResult && activateLicenseMutation.isError} />
     </div>
   );
 };
