@@ -21,11 +21,11 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  BUCKET_LIST,
   DATA_VOLUMES,
   HSM_SETTINGS,
   IS_SERVER_LIST_EXPANDED,
   IS_SERVER_SPECIFIC_LIST_EXPANDED,
+  S3CONNECTOR_LIST,
   SERVERS_LIST,
 } from '../../constants';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
@@ -105,8 +105,8 @@ const BucketListPanel: FC = () => {
         isSelected: isStoreSelect,
       },
       {
-        id: BUCKET_LIST,
-        name: t('storages.s3Connectors', 'S3 connectors'),
+        id: S3CONNECTOR_LIST,
+        name: t('storages.s3Connectors.title', 'S3 connectors'),
         isSelected: isStoreSelect,
       },
     ],
@@ -116,7 +116,7 @@ const BucketListPanel: FC = () => {
   const globalOptions = useMemo(
     () =>
       !isAdvanced
-        ? globalServerOption.filter((item: any) => item?.id !== BUCKET_LIST)
+        ? globalServerOption.filter((item: any) => item?.id !== S3CONNECTOR_LIST)
         : globalServerOption,
     [isAdvanced, globalServerOption],
   );

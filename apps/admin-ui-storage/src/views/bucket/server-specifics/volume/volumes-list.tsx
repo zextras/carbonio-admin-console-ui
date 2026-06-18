@@ -794,7 +794,6 @@ const VolumesDetailPanel: FC = () => {
               style={{ gap: '1rem' }}
             >
               <Button
-                type="outlined"
                 label={t('label.new_volume_button', 'NEW VOLUME')}
                 icon="PlusOutline"
                 color="primary"

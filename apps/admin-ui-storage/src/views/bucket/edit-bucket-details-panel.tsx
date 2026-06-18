@@ -104,7 +104,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const [accessKeyData, setAccessKeyData] = useState(bucketDetail?.accessKey ?? '');
   const [secretKey, setSecretKey] = useState(bucketDetail?.secret ?? '');
   const [urlData, setUrlData] = useState(bucketDetail?.url ?? '');
-  const [prefix, setPrefix] = useState(bucketDetail?.prefix ?? '');
+  const [prefix, setPrefix] = useState(bucketDetail?.destinationPath ?? '');
   const [prefixConfirm, setPrefixConfirm] = useState(true);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [regionSelection, setRegionSelection] = useState(initialRegion);
@@ -168,7 +168,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       });
     }
 
-    if (prefix !== (bucketDetail?.prefix ?? '')) {
+    if (prefix !== (bucketDetail?.destinationPath ?? '')) {
       fields.push({
         label: t('label.prefix', 'Prefix'),
         value: prefix.trim() || '-',
@@ -204,7 +204,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     bucketDetail?.bucketName,
     bucketDetail?.insecureHttps,
     bucketDetail?.label,
-    bucketDetail?.prefix,
+    bucketDetail?.destinationPath,
     bucketDetail?.secret,
     bucketDetail?.url,
     bucketLabel,
@@ -227,7 +227,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     accessKeyData !== (bucketDetail?.accessKey ?? '') ||
     secretKey !== (bucketDetail?.secret ?? '') ||
     urlData !== (bucketDetail?.url ?? '') ||
-    prefix !== (bucketDetail?.prefix ?? '') ||
+    prefix !== (bucketDetail?.destinationPath ?? '') ||
     currentRegionValue !== initialRegionValue ||
     String(acceptUntrustedSSL) !== String(bucketDetail?.insecureHttps ?? true);
 
@@ -242,7 +242,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       .then((regions) => {
         const mappedRegions = regions.map((region) => ({
           value: region.id,
-          label: region.description,
+          label: `${region.description}, [${region.id}]`
         }));
         setBaseRegions(mappedRegions);
       })
@@ -297,8 +297,8 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     if (urlData !== (bucketDetail?.url ?? '')) {
       payload.url = urlData;
     }
-    if (prefix !== (bucketDetail?.prefix ?? '')) {
-      payload.prefix = prefix;
+    if (prefix !== (bucketDetail?.destinationPath ?? '')) {
+      payload.destinationPath = prefix;
     }
     if (currentRegionValue !== initialRegionValue) {
       payload.region = currentRegionValue;

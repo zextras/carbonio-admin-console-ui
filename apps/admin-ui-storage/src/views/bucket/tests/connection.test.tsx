@@ -156,9 +156,7 @@ vi.mock('../parts/verify/verify-error', () => ({
 }));
 
 async function fillRequiredFields(): Promise<void> {
-  await waitFor(() => {
-    expect(screen.getByRole('option', { name: 'US East 1' })).toBeTruthy();
-  });
+  await screen.findByRole('option', { name: /US East 1/i });
 
   fireEvent.change(screen.getByLabelText('Descriptive name*'), {
     target: { value: 'Main bucket' },
@@ -291,7 +289,7 @@ describe('Connection', () => {
     expect(mockCreateS3Connector).toHaveBeenCalledWith(
       expect.objectContaining({
         url: 'https://s3.example.test',
-        prefix: 'team/folder',
+        destinationPath: 'team/folder',
       }),
     );
   });

@@ -136,7 +136,7 @@ const Connection: FC<{
         payload.url = urlInput.trim();
       }
       if (prefix.trim() !== '') {
-        payload.prefix = prefix.trim();
+        payload.destinationPath = prefix.trim();
       }
 
       createS3Connector(payload)
@@ -176,7 +176,7 @@ const Connection: FC<{
       .then((regions) => {
         const mappedRegions = regions.map((region) => ({
           value: region.id,
-          label: region.description,
+          label: `${region.description}, [${region.id}]`
         }));
         setBucketRegions(mappedRegions);
       })

@@ -127,13 +127,13 @@ export type S3Region = {
 };
 
 export type S3Connector = {
-	uuid: string;
+  	uuid: string;
 	label: string;
 	bucketName: string;
 	region: string;
 	url?: string;
 	accessKey?: string;
-	prefix?: string;
+	destinationPath?: string;
 	insecureHttps?: boolean;
 	tieringSupported?: boolean;
 	chunkEncoding?: boolean;
@@ -169,7 +169,7 @@ export type CreateS3ConnectorRequest = {
 	url?: string;
 	accessKey: string;
 	secret: string;
-	prefix?: string;
+	destinationPath?: string;
 	insecureHttps?: boolean;
 	notes?: string;
 };
@@ -186,7 +186,7 @@ export type UpdateS3ConnectorRequest = {
 	url?: string;
 	accessKey?: string;
 	secret?: string;
-	prefix?: string;
+	destinationPath?: string;
 	insecureHttps?: boolean;
 	notes?: string;
 };

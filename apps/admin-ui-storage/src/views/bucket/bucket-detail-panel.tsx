@@ -215,7 +215,7 @@ const BucketDetailPanel: FC = () => {
           region: connector.region || '',
           url: connector.url || '',
           accessKey: connector.accessKey || '',
-          prefix: connector.prefix || '',
+          destinationPath: connector.destinationPath || '',
           insecureHttps: String(connector.insecureHttps ?? false),
           notes: connector.notes || '',
           storeType: ((connector as unknown as { storeType?: string }).storeType || 'S3'),
@@ -349,7 +349,7 @@ const BucketDetailPanel: FC = () => {
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
           <ds-text as="h2" weight="bold">
-            {t('storages.s3Connectors', 'S3 connectors')}
+            {t('storages.s3Connectors.title', 'S3 connectors')}
           </ds-text>
         </Row>
         <ds-divider></ds-divider>
