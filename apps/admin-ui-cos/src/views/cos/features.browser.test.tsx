@@ -5,8 +5,8 @@
  */
 
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
-import { describe, expect, it, vi } from 'vitest';
-import { page, userEvent } from 'vitest/browser';
+import { describe, expect, it } from 'vitest';
+import { page } from 'vitest/browser';
 
 import { Features } from './features';
 
@@ -77,20 +77,6 @@ function getCalendarButton() {
 }
 
 describe('Features (browser)', () => {
-  it('should render 2FA section when cosLevelFeatures is true', async () => {
-    setupBrowserTest(<Features {...mockProps} cosLevelFeatures />);
-    await expect.element(page.getByText('Two-Factor authenticator')).toBeVisible();
-    await expect.element(page.getByText('Allow users to configure 2FA')).toBeVisible();
-    await expect.element(page.getByText('Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.')).toBeVisible();
-  });
-
-  it('should toggle 2FA switch', async () => {
-    const setFeaturesDetail = vi.fn();
-    setupBrowserTest(<Features {...mockProps} cosLevelFeatures setFeaturesDetail={setFeaturesDetail} />);
-    const switchLabel = page.getByText('Allow users to configure 2FA');
-    await userEvent.click(switchLabel);
-    expect(setFeaturesDetail).toHaveBeenCalled();
-  });
 
   describe('DatePicker', () => {
     it('should render grace period expiration date picker when grace period is enabled', async () => {

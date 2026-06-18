@@ -143,7 +143,7 @@ export const Features: FC<{
         </Container>
         <ds-divider></ds-divider>
       </Row>
-      {cosLevelFeatures && (
+      {cosLevelFeatures && isAdvanced && (
         <Row
           mainAlignment="flex-start"
           crossAlignment="flex-start"
@@ -182,7 +182,6 @@ export const Features: FC<{
                 </ds-text>
               </Row>
             </Padding>
-            {isAdvanced && (
               <Row mainAlignment="flex-start" width="100%" padding={{ vertical: 'large' }}>
                 <ds-text as="strong" weight="bold">
                   {t(
@@ -301,7 +300,6 @@ export const Features: FC<{
                 </Container>
                 {/* </Row> */}
               </Row>
-            )}
           </Container>
           <ds-divider></ds-divider>
         </Row>
