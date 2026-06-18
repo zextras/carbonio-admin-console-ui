@@ -690,7 +690,14 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           crossAlignment="center"
         >
           <Row width="auto" mainAlignment="flex-start">
-            {showDeleteConnector && (
+            <Tooltip
+              placement="top"
+              label={
+                !showDeleteConnector
+                  ? t('label.delete_connector_disabled_tooltip', 'S3 connector is in use and cannot be deleted')
+                  : ''
+              }
+            >
               <Button
                 type="ghost"
                 color="error"
@@ -699,8 +706,11 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
                   setBucketDeleteName(bucketDetail);
                   setOpen(true);
                 }}
+                disabled={!showDeleteConnector}
               />
-            )}
+            </Tooltip>
+              
+            
           </Row>
           <Row width="auto" mainAlignment="flex-end">
             <Padding right="small">

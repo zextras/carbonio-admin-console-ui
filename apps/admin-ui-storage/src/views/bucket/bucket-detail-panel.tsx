@@ -25,7 +25,8 @@ import { useTranslation } from 'react-i18next';
 
 import {
   DeleteS3ConnectorRequest,
-  objectType
+  objectType,
+  S3Connector,
 } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
@@ -42,6 +43,68 @@ type TableHeader = {
 };
 
 type SingleSelection = [] | [string];
+
+type BucketConnectorRow = objectType & {
+  uuid: string;
+  id: string;
+  label: string;
+  bucketName: string;
+  region: string;
+  url: string;
+  accessKey: string;
+  destinationPath: string;
+  insecureHttps: string;
+  notes: string;
+  storeType: string;
+  'usage in external backup': string;
+  'usage in powerstore volumes': string;
+  'usage in powerstore volume': string;
+  usage: string;
+};
+
+function usageItemToString(item: unknown): string {
+  if (item === null || item === undefined) {
+    return '';
+  }
+
+  if (typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean') {
+    return String(item);
+  }
+
+  if (typeof item === 'object') {
+    const usageObject = item as Record<string, unknown>;
+    const preferredKeys = ['label', 'name', 'id', 'uuid', 'bucketName', 'volumeName'];
+
+    const preferredValue = preferredKeys
+      .map((key) => usageObject[key])
+      .find((candidate) =>
+        typeof candidate === 'string' || typeof candidate === 'number' || typeof candidate === 'boolean',
+      );
+
+    if (preferredValue !== undefined) {
+      return String(preferredValue);
+    }
+
+    try {
+      return JSON.stringify(usageObject);
+    } catch {
+      return '';
+    }
+  }
+
+  return '';
+}
+
+function normalizeUsage(value: unknown): string {
+  if (Array.isArray(value)) {
+    return value
+      .map(usageItemToString)
+      .filter((entry) => entry.trim() !== '')
+      .join(', ');
+  }
+
+  return usageItemToString(value);
+}
 
 const headers = (t: TFunction): Array<TableHeader> => [
   {
@@ -71,7 +134,7 @@ const headers = (t: TFunction): Array<TableHeader> => [
 ];
 
 const BucketListTable: FC<{
-  volumes: objectType[];
+  volumes: Array<BucketConnectorRow>;
   selectedRows: SingleSelection;
   onSelectionChange: (selected: string[]) => void;
   onDoubleClick: (i: number) => void;
@@ -187,9 +250,9 @@ const BucketDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
-  const [bucketList, setBucketList] = useState<objectType[]>([]);
+  const [bucketList, setBucketList] = useState<Array<BucketConnectorRow>>([]);
   const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>();
-  const [allBucketList, setAllBucketList] = useState<Array<objectType>>([]);
+  const [allBucketList, setAllBucketList] = useState<Array<BucketConnectorRow>>([]);
   const [connectionData, setConnectionData] = useState<objectType | undefined>();
   const [toggleWizardSection, setToggleWizardSection] = useState(false);
   const [open, setOpen] = useState(false);
@@ -207,7 +270,7 @@ const BucketDetailPanel: FC = () => {
   const getBucketListType = useCallback((): void => {
     listS3Connector()
       .then((connectors) => {
-        const mappedConnectors: Array<objectType> = connectors.map((connector) => ({
+        const mappedConnectors: Array<BucketConnectorRow> = connectors.map((connector: S3Connector) => ({
           uuid: connector.uuid,
           id: connector.uuid,
           label: connector.label || '',
@@ -219,6 +282,11 @@ const BucketDetailPanel: FC = () => {
           insecureHttps: String(connector.insecureHttps ?? false),
           notes: connector.notes || '',
           storeType: ((connector as unknown as { storeType?: string }).storeType || 'S3'),
+          'usage in external backup': normalizeUsage(connector['usage in external backup']),
+          'usage in powerstore volumes': normalizeUsage(connector['usage in powerstore volumes']),
+          'usage in powerstore volume': normalizeUsage(connector['usage in powerstore volume']),
+          usage: normalizeUsage(connector.usage),
+
         }));
         setBucketList(mappedConnectors);
         setAllBucketList(mappedConnectors);
@@ -286,7 +354,7 @@ const BucketDetailPanel: FC = () => {
 
   useEffect(() => {
     if (selectedRow !== undefined) {
-      const getIndex = bucketList.findIndex((data: objectType) => data.uuid === selectedRow.uuid);
+      const getIndex = bucketList.findIndex((data) => data.uuid === selectedRow.uuid);
       const volumeObject = bucketList.find((s, index) => index === getIndex);
       setConnectionData(volumeObject);
     }

@@ -140,6 +140,10 @@ export type S3Connector = {
 	calculateMD5WhenDeleting?: boolean;
 	directorySymbol?: string;
 	notes?: string;
+	'usage in external backup'?: string | Array<string>;
+	'usage in powerstore volumes'?: string | Array<string>;
+	'usage in powerstore volume'?: string | Array<string>;
+	usage?: string | Array<string>;
 };
 
 export type ListS3RegionsResponseContent = {
