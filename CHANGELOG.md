@@ -1,3 +1,10 @@
+## [0.13.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.7...v0.13.8) (2026-06-18)
+
+### Bug Fixes
+
+* **deps:** update date-fns to ^4.4.0 ([#1232](https://github.com/zextras/carbonio-admin-console-ui/issues/1232)) ([80b3fa6](https://github.com/zextras/carbonio-admin-console-ui/commit/80b3fa6b66b72589d142a3e78342de7d3480133b))
+* **deps:** update dependency @floating-ui/dom to ^1.7.6 ([#1233](https://github.com/zextras/carbonio-admin-console-ui/issues/1233)) ([c913e1a](https://github.com/zextras/carbonio-admin-console-ui/commit/c913e1adb02383f592c9890f1b3dff2785bc5cc5))
+
 ## [0.13.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.6...v0.13.7) (2026-06-17)
 
 ### Bug Fixes
