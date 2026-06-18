@@ -1,3 +1,9 @@
+## [0.13.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.8...v0.13.9) (2026-06-18)
+
+### Bug Fixes
+
+* **deps:** update dependency core-js to ^3.49.0 ([#1234](https://github.com/zextras/carbonio-admin-console-ui/issues/1234)) ([7d31661](https://github.com/zextras/carbonio-admin-console-ui/commit/7d3166155783a7aa113f5cfe98dba7433b365696))
+
 ## [0.13.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.7...v0.13.8) (2026-06-18)
 
 ### Bug Fixes
