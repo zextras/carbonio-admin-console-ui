@@ -68,7 +68,7 @@
     "@floating-ui/dom": "^1.7.6",
     "@posthog/react": "^1.8.1",
     "@zextras/ui-shared": "workspace:*",
-    "core-js": "^3.38.1",
+    "core-js": "^3.49.0",
     "lit": "^3.3.2",
     "lodash-es": "^4.17.21",
     "polished": "^4.2.2",
