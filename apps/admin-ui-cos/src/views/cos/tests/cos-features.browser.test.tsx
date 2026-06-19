@@ -177,6 +177,7 @@ describe('CosFeatures', () => {
       await clickSwitchByInputName('zimbraFeatureOutOfOfficeReplyEnabled');
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     });
+  });
 
   describe('Save', () => {
     it('should send ModifyCos with correct body when saving', async () => {
