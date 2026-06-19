@@ -97,7 +97,7 @@ importers:
         specifier: ^3.3.2
         version: 3.3.3
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-router:
         specifier: ^7.13.0
@@ -242,7 +242,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -426,7 +426,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       prop-types:
         specifier: ^15.8.1
@@ -550,7 +550,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -692,7 +692,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -840,7 +840,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -982,7 +982,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -1124,7 +1124,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -1266,7 +1266,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -1405,7 +1405,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -1547,7 +1547,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -1686,7 +1686,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -1828,7 +1828,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       react-dom:
         specifier: ^19.2.3
@@ -2110,7 +2110,7 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.60.0
+        specifier: ^1.61.0
         version: 1.61.0
       prop-types:
         specifier: ^15.8.1
