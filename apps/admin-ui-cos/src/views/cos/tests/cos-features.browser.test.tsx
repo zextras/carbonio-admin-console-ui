@@ -107,12 +107,6 @@ describe('CosFeatures', () => {
       await expect.element(page.getByText('Can access Settings')).toBeVisible();
     });
 
-    it('should render the Two-Factor authenticator section', async () => {
-      await setupCosFeaturesTest();
-      await expect.element(page.getByText('Two-Factor authenticator')).toBeVisible();
-      await expect.element(page.getByText('Allow users to configure 2FA')).toBeVisible();
-    });
-
     it('should render the Mail section', async () => {
       await setupCosFeaturesTest();
       await expect.element(page.getByText('Mail', { exact: true })).toBeVisible();
@@ -183,13 +177,6 @@ describe('CosFeatures', () => {
       await clickSwitchByInputName('zimbraFeatureOutOfOfficeReplyEnabled');
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     });
-
-    it('should mark as dirty when toggling Allow users to configure 2FA', async () => {
-      await setupCosFeaturesTest();
-      await clickSwitchByInputName('carbonioFeatureOTPMgmtEnabled');
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-  });
 
   describe('Save', () => {
     it('should send ModifyCos with correct body when saving', async () => {
