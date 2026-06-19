@@ -15,10 +15,9 @@ import { UntrustedNetworkSection } from './untrusted-network-section';
 type TwoFactorSectionProps = {
   form: CosFeaturesFormApi;
   readonlyCOS: boolean;
-  isAdvanced: boolean;
 };
 
-export const TwoFactorSection = ({ form, readonlyCOS, isAdvanced }: TwoFactorSectionProps) => {
+export const TwoFactorSection = ({ form, readonlyCOS }: TwoFactorSectionProps) => {
   const [t] = useTranslation();
 
   return (
@@ -55,7 +54,6 @@ export const TwoFactorSection = ({ form, readonlyCOS, isAdvanced }: TwoFactorSec
             </ds-text>
           </Row>
         </Padding>
-        {isAdvanced && (
           <Row mainAlignment="flex-start" width="100%" padding={{ vertical: 'large' }}>
             <ds-text as="strong" weight="bold">
               {t(
@@ -80,7 +78,6 @@ export const TwoFactorSection = ({ form, readonlyCOS, isAdvanced }: TwoFactorSec
               </ListRow>
             </Container>
           </Row>
-        )}
       </Container>
     </Row>
   );

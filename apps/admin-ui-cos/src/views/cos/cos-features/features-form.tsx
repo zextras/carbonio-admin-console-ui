@@ -147,8 +147,7 @@ export const FeaturesForm = ({
       <Container mainAlignment="flex-start" width="100%" height="auto" orientation="vertical">
         <GeneralSection form={form} readonlyCOS={readonlyCOS} />
         <ds-divider />
-        <TwoFactorSection form={form} readonlyCOS={readonlyCOS} isAdvanced={isAdvanced} />
-        <ds-divider />
+        {isAdvanced && <><TwoFactorSection form={form} readonlyCOS={readonlyCOS} /><ds-divider /></>}
         <MailSection form={form} readonlyCOS={readonlyCOS} />
         <ds-divider />
         <ContactsCalendarSection form={form} readonlyCOS={readonlyCOS} />
