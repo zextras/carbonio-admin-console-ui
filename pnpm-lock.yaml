@@ -92,7 +92,7 @@ importers:
         version: 4.4.1(@typescript-eslint/eslint-plugin@8.61.1(@typescript-eslint/parser@8.61.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.4(jiti@2.7.0))
       knip:
         specifier: ^6.14.1
-        version: 6.17.1
+        version: 6.17.2
       lit:
         specifier: ^3.3.2
         version: 3.3.3
@@ -107,7 +107,7 @@ importers:
         version: 25.0.5(typescript@6.0.3)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tsx:
         specifier: ^4.22.4
         version: 4.22.4
@@ -134,7 +134,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -158,7 +158,7 @@ importers:
         version: 11.1.8
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -249,7 +249,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -273,7 +273,7 @@ importers:
         version: 5.2.10
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -433,7 +433,7 @@ importers:
         version: 15.8.1
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -457,7 +457,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-form':
         specifier: ^1.32.0
         version: 1.33.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -478,7 +478,7 @@ importers:
         version: 11.1.8
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       react:
         specifier: ^19.2.3
         version: 19.2.7
@@ -557,7 +557,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -578,7 +578,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -611,7 +611,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -699,7 +699,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -720,7 +720,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -756,7 +756,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -847,7 +847,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -868,7 +868,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -901,7 +901,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -989,7 +989,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -1010,7 +1010,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1043,7 +1043,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1131,7 +1131,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -1152,7 +1152,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1182,7 +1182,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1273,7 +1273,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -1294,7 +1294,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1324,7 +1324,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1412,7 +1412,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -1433,7 +1433,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-form':
         specifier: ^1.27.0
         version: 1.33.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1466,7 +1466,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1554,7 +1554,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -1575,7 +1575,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1605,7 +1605,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1693,7 +1693,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -1714,7 +1714,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1747,7 +1747,7 @@ importers:
         version: 4.18.1
       posthog-js:
         specifier: ^1.261.0
-        version: 1.390.2
+        version: 1.391.7
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1835,7 +1835,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -1856,7 +1856,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -1920,7 +1920,7 @@ importers:
         version: 1.7.6
       '@posthog/react':
         specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)
       '@zextras/ui-shared':
         specifier: workspace:*
         version: link:../ui-shared
@@ -2117,7 +2117,7 @@ importers:
         version: 15.8.1
       sonarqube-scanner:
         specifier: ^4.3.6
-        version: 4.3.6
+        version: 4.3.8
       tailwindcss:
         specifier: ^4.3.1
         version: 4.3.1
@@ -2788,8 +2788,8 @@ packages:
       '@csstools/css-parser-algorithms': ^4.0.0
       '@csstools/css-tokenizer': ^4.0.0
 
-  '@csstools/css-color-parser@4.1.7':
-    resolution: {integrity: sha512-CmjJFQTFQx/U/xNJhSjCQ0ilpesPmNQ8+eOUeM/+kDOVW33qsIjeOXc27vrQDdWVkf83ZSWwtg7kXSUvKDJ8cQ==}
+  '@csstools/css-color-parser@4.1.8':
+    resolution: {integrity: sha512-3chWb7PRLijpJpPIKkDxdu6IBeO5MrFACND57On0j8OPpc0wZibcGc3xAHrSEbOx/KDRyMHoIxGn0w1PhXMYHw==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       '@csstools/css-parser-algorithms': ^4.0.0
@@ -2996,12 +2996,6 @@ packages:
 
   '@esbuild/win32-x64@0.28.1':
     resolution: {integrity: sha512-bm4Mowrv+GXMlpWX++EcXw/iLyd1o3+bJkC2DkWXYVvgZCqD/bSj9ctZeAMC3cIxgjRVR2Dufaiu4YPxr5gW1A==}
-    engines: {node: '>=18'}
-    cpu: [x64]
-    os: [win32]
-
-  '@esbuild/win32-x64@0.28.0':
-    resolution: {integrity: sha512-pEl1bO9mfAmIC+tW5btTmrKaujg3zGtUmWNdCw/xs70FBjwAL3o9OEKNHvNmnyylD6ubxUERiEhdsL0xBQ9efw==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
@@ -3558,8 +3552,8 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@posthog/core@1.35.2':
-    resolution: {integrity: sha512-aV6nkkKCF//NnR9SyQD00+sPg0A4v1m3Xk/fcsnYs+z3qCRXgjwOhfQX2lceAKWlru3o5l9Yn/480GovLOnqKA==}
+  '@posthog/core@1.35.3':
+    resolution: {integrity: sha512-EsGPbSLl39Jgo2KZ+kI9UAxFnh5nddaN5bNm2rXvUwF+vGmam9eN1EXeNbxhRU7ulEeIiGdm7XjoU7pzavkgIQ==}
 
   '@posthog/react@1.10.2':
     resolution: {integrity: sha512-/KXzUZiSByE9/6fHmnfDVVvld/3pvBuM6KFUuT5NkR4XwOHEAT/EwNwhUUFOOJpsyDa0PaEWWHZS6VY9r2CB3Q==}
@@ -3571,8 +3565,8 @@ packages:
       '@types/react':
         optional: true
 
-  '@posthog/types@1.390.0':
-    resolution: {integrity: sha512-zMjK6nrUWhAlL8ECrM4WldvgawqdoAE5B0ys7eA0lCoWuyzfFoSyh6zYtEuBSDRyN7fQLSfNCK+mQH4ngOl7Zw==}
+  '@posthog/types@1.390.2':
+    resolution: {integrity: sha512-WcfKz2GNn2vfDX8vXmJYbKxegPxVWHuDQ/pHdAn0HoZDXDFnEp/+x3qBQA+fEvtbPjjtjgAt2wIgJMlM7asx7g==}
 
   '@rolldown/binding-android-arm64@1.0.3':
     resolution: {integrity: sha512-454rs7jHngixp/NMxd5srYD57OnzSlZ/eFTETjORQHLwJG1lRtmNOJcBerZlfu4GjKqeq8aCCIQrMdHyhI51Hw==}
@@ -3925,8 +3919,8 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
-  '@tanstack/devtools-event-client@0.4.3':
-    resolution: {integrity: sha512-OZI6QyULw0FI0wjgmeYzCIfbgPsOEzwJtCpa69XrfLMtNXLGnz3d/dIabk7frg0TmHo+Ah49w5I4KC7Tufwsvw==}
+  '@tanstack/devtools-event-client@0.4.4':
+    resolution: {integrity: sha512-6T5Yop/793YI+H+5J8Hsyj4kCih9sl4t3ElLgKioW5hk3ocn+ZdSJ94tT7vL7uabxSugWYBZlOTMPzEw2puvQw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -4285,6 +4279,10 @@ packages:
     resolution: {integrity: sha512-+Ut8d9LLqwEvHHJl1+PIHqoyDxFgVN847JTVM3Izi3xHDWPE4UtzzXysMZQs64DMcrJfBeS/uoEP4AD3HQHnQQ==}
     engines: {node: '>=12.0'}
 
+  agent-base@6.0.2:
+    resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
+    engines: {node: '>= 6.0.0'}
+
   agent-base@9.0.0:
     resolution: {integrity: sha512-TQf59BsZnytt8GdJKLPfUZ54g/iaUL2OWDSFCCvMOhsHduDQxO8xC4PNeyIkVcA5KwL2phPSv0douC0fgWzmnA==}
     engines: {node: '>= 20'}
@@ -4415,8 +4413,8 @@ packages:
     resolution: {integrity: sha512-s7iGf5GaVMxEG0ENN9x+xTr7GFZCb1ZP/1uATUpCEK2X78nDB3RwbtFCo9pGAf9ru+VwoQ464DkaLEeRM08wJA==}
     engines: {node: '>=4'}
 
-  axios@1.15.0:
-    resolution: {integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==}
+  axios@1.17.0:
+    resolution: {integrity: sha512-J8SwNxprqqpbfenehxWYXE7CW+wM1BB4w3+N+g+/Wx40xM4rsLrfPmHHxSWIxJLYDgSY/HqlFPIYb2/S3rxafw==}
 
   axobject-query@4.1.0:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
@@ -4536,8 +4534,8 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  browserslist@4.28.2:
-    resolution: {integrity: sha512-48xSriZYYg+8qXna9kwqjIVzuQxi+KYWp2+5nCYnYKPTr0LvD89Jqk2Or5ogxz0NUMfIjhh2lIUX/LyX9B4oIg==}
+  browserslist@4.28.4:
+    resolution: {integrity: sha512-MTc8i/x9jBQd1iMw2CFGS+rwMa07eYjLR0CCTLDACl9xhxy+nIs3KeML/biicXtk9JrZ6dnnTatmc7ErPXIxqw==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
@@ -5033,11 +5031,6 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  esbuild@0.28.0:
-    resolution: {integrity: sha512-sNR9MHpXSUV/XB4zmsFKN+QgVG82Cc7+/aaxJ8Adi8hyOac+EXptIp45QBPaVyX3N70664wRbTcLTOemCAnyqw==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   escalade@3.2.0:
     resolution: {integrity: sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==}
     engines: {node: '>=6'}
@@ -5377,6 +5370,9 @@ packages:
     resolution: {integrity: sha512-w9UMqWwJxHNOvoNzSJ2oPF5wvYcvP7jUvYzhp67yEhTi17ZDBBC1z9pTdGuzjD+EFIqLSYRweZjqfiPzQ06Ebg==}
     engines: {node: '>= 0.4'}
 
+  get-tsconfig@4.14.0:
+    resolution: {integrity: sha512-yTb+8DXzDREzgvYmh6s9vHsSVCHeC0G3PI5bEXNBHtmshPnO+S5O7qgLEOn0I5QvMy6kpZN8K1NKGyilLb93wA==}
+
   git-log-parser@1.2.1:
     resolution: {integrity: sha512-PI+sPDvHXNPl5WNOErAK05s3j0lgwUzMN6o8cyQrDaKfT3qd7TmNJKeXX+SknI5I0QhG5fVPAEwSY4tRGDtYoQ==}
 
@@ -5512,6 +5508,10 @@ packages:
   http-proxy-agent@9.1.0:
     resolution: {integrity: sha512-2NxoveTT58mjYT4n3RPTEfCZGLMbidoO8XEieXfpSYxu+PQJ1qpx4ypwH6N+uF9twBPIvRRgvkvW5HUTYWENig==}
     engines: {node: '>= 20'}
+
+  https-proxy-agent@5.0.1:
+    resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
+    engines: {node: '>= 6'}
 
   https-proxy-agent@9.1.0:
     resolution: {integrity: sha512-ag87y7cJJ9/3+GxFr8Oy4O5faDsGRGnBGsJj/YjOSsSx/5eadKLYTMPlzuR6obgoCDDm0abAAZitXXQkMOPSpA==}
@@ -5873,8 +5873,8 @@ packages:
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
-  knip@6.17.1:
-    resolution: {integrity: sha512-HcQsZSQ4Ymhuay4BVzJtM5pFZNDSomYYqcNCZOSITPQh9g18a09DqziWAxSt2G+BH9wGlG+0ZjWpEnaFlnKseQ==}
+  knip@6.17.2:
+    resolution: {integrity: sha512-TkjaPEg0No9aDCofdCLdB9+wxfrczvZNim15E/iLd+kz5lub90nZuwjiYqZg7xHTvQSITF2M6L3Bv9ydBkx28g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -6185,8 +6185,8 @@ packages:
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
 
-  nanoid@3.3.13:
-    resolution: {integrity: sha512-sPdqC6ByMVVGvF1ynvvMo0/o+oD1VX7DaHhijt1bFgjvBkHBib4t49GoNDhf2NDta4oeUNlaGbSt5K7qjZ955Q==}
+  nanoid@3.3.15:
+    resolution: {integrity: sha512-y7Wygv/7mEOvxTuEQDB8StXdMRBWf1kR/tlhAzBRUFkB2jfcLOAxO/SHmOO2zgz1pVgK29/kyupn059/bCHdjA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -6606,8 +6606,8 @@ packages:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.390.2:
-    resolution: {integrity: sha512-z1zh0mMokecCILXxabmo5Xag6uCVYEDhP2JnMYLNxwmKN7d7u1S94XYmhUTF3iyAo2JOg6c7n86mGaTXliz4MA==}
+  posthog-js@1.391.7:
+    resolution: {integrity: sha512-zjAJZeL+1PhJIfXVavgd5WY3VObDUEOMBwTM1tfDVPUDeT+8H7q7miPOpTLD40VQXErntfXYBq0flw3WdWyscw==}
 
   preact@10.29.2:
     resolution: {integrity: sha512-7tNmwg/7mzzAoB/8kSg6Hl37JraAZw3Z3A0JSY7VXlZwo82Xn0G7wKbNNs2qoF4ZEEsQGTwDAroNdqKs1ofJxQ==}
@@ -6635,8 +6635,9 @@ packages:
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
 
-  properties-file@4.0.0:
-    resolution: {integrity: sha512-VWnuWVVQIeYPdJwWfBVu6/SQExpAliGkY8Bq58pHHPJHgD4THXlJfsc+qC41+62iV4WNwQhmrxbqpEXIvIMOmw==}
+  properties-file@5.0.5:
+    resolution: {integrity: sha512-Gfi6UgMENAzww1P4hloKhLIQxqcYmUS5z+Lhm/jmFV+ushbE416NalT42oEfJbF9vd0a02B3AaLHiQGmNSQ9EA==}
+    engines: {node: '>=0.4.0'}
 
   proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
@@ -6829,6 +6830,9 @@ packages:
     resolution: {integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==}
     engines: {node: '>=8'}
 
+  resolve-pkg-maps@1.0.0:
+    resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
+
   resolve@1.22.12:
     resolution: {integrity: sha512-TyeJ1zif53BPfHootBGwPRYT1RUt6oGWsaQr8UyZW/eAm9bKoijtvruSDEmZHm92CwS9nj7/fWttqPCgzep8CA==}
     engines: {node: '>= 0.4'}
@@ -6900,13 +6904,13 @@ packages:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
 
-  semver@7.7.4:
-    resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
+  semver@7.8.4:
+    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
     engines: {node: '>=10'}
     hasBin: true
 
-  semver@7.8.4:
-    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
+  semver@7.8.5:
+    resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -6981,15 +6985,15 @@ packages:
     resolution: {integrity: sha512-vZ7rfeehZui7wQs438JXBckYLkIIdfHOXsaVEUMyS5fHo1483l1bMdo0EDSWYclY0yZKFOipDy4KHuKs6ssvdg==}
     engines: {node: '>=8.0.0'}
 
-  smol-toml@1.6.1:
-    resolution: {integrity: sha512-dWUG8F5sIIARXih1DTaQAX4SsiTXhInKf1buxdY9DIg4ZYPZK5nGM1VRIYmEbDbsHt7USo99xSLFu5Q1IqTmsg==}
+  smol-toml@1.7.0:
+    resolution: {integrity: sha512-aqVvWoyO21L23mb+drl4RmMXbf6N7FdHjAhTRA9ZBL7apWBgfWC16KjrASI+1p9GAroljyMHj6fK67i0UiTNvQ==}
     engines: {node: '>= 18'}
 
   snake-case@3.0.4:
     resolution: {integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==}
 
-  sonarqube-scanner@4.3.6:
-    resolution: {integrity: sha512-gRtTf11UXl5SqXrRKzXagdRh06v8n2qXAypEhmlTOFCdAUlR4TboPzYClMFFT7NCZq5jKZSyN2mk5jj01RgVVQ==}
+  sonarqube-scanner@4.3.8:
+    resolution: {integrity: sha512-mkxxVmUJB5ammq4y8RJSWuW79MdV0tW5Bpi/rzi7hytu1ahyQwFdSoBlAoH1UsLSvfd1iM5R+5sjZbWlaOhGhA==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -7165,8 +7169,8 @@ packages:
     resolution: {integrity: sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A==}
     engines: {node: '>=6'}
 
-  tar-stream@3.1.8:
-    resolution: {integrity: sha512-U6QpVRyCGHva435KoNWy9PRoi2IFYCgtEhq9nmrPPpbRacPs9IH4aJ3gbrFC8dPcXvdSZ4XXfXT5Fshbp2MtlQ==}
+  tar-stream@3.2.0:
+    resolution: {integrity: sha512-ojzvCvVaNp6aOTFmG7jaRD0meowIAuPc3cMMhSgKiVWws1GyHbGd/xvnyuRKcKlMpt3qvxx6r0hreCNITP9hIg==}
 
   teex@1.0.1:
     resolution: {integrity: sha512-eYE6iEI62Ni1H8oIa7KlDU6uQBtqr4Eajni3wX7rpfXD8ysFx8z0+dri+KWEPWpBsxXfxu58x/0jvTVT1ekOSg==}
@@ -7773,7 +7777,7 @@ snapshots:
     dependencies:
       '@asamuzakjp/generational-cache': 1.0.1
       '@csstools/css-calc': 3.2.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-color-parser': 4.1.7(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-color-parser': 4.1.8(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-tokenizer': 4.0.0
 
@@ -7833,7 +7837,7 @@ snapshots:
     dependencies:
       '@babel/compat-data': 7.29.7
       '@babel/helper-validator-option': 7.29.7
-      browserslist: 4.28.2
+      browserslist: 4.28.4
       lru-cache: 5.1.1
       semver: 6.3.1
 
@@ -8594,7 +8598,7 @@ snapshots:
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-tokenizer': 4.0.0
 
-  '@csstools/css-color-parser@4.1.7(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)':
+  '@csstools/css-color-parser@4.1.8(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)':
     dependencies:
       '@csstools/color-helpers': 6.0.2
       '@csstools/css-calc': 3.2.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
@@ -8728,9 +8732,6 @@ snapshots:
     optional: true
 
   '@esbuild/win32-x64@0.28.1':
-    optional: true
-
-  '@esbuild/win32-x64@0.28.0':
     optional: true
 
   '@eslint-community/eslint-utils@4.9.1(eslint@9.39.4(jiti@2.7.0))':
@@ -9167,18 +9168,18 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@posthog/core@1.35.2':
+  '@posthog/core@1.35.3':
     dependencies:
-      '@posthog/types': 1.390.0
+      '@posthog/types': 1.390.2
 
-  '@posthog/react@1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)':
+  '@posthog/react@1.10.2(@types/react@19.2.17)(posthog-js@1.391.7)(react@19.2.7)':
     dependencies:
-      posthog-js: 1.390.2
+      posthog-js: 1.391.7
       react: 19.2.7
     optionalDependencies:
       '@types/react': 19.2.17
 
-  '@posthog/types@1.390.0': {}
+  '@posthog/types@1.390.2': {}
 
   '@rolldown/binding-android-arm64@1.0.3':
     optional: true
@@ -9321,7 +9322,7 @@ snapshots:
       read-pkg: 10.1.0
       registry-auth-token: 5.1.1
       semantic-release: 25.0.5(typescript@6.0.3)
-      semver: 7.8.4
+      semver: 7.8.5
       tempy: 3.2.0
 
   '@semantic-release/release-notes-generator@14.1.1(semantic-release@25.0.5(typescript@6.0.3))':
@@ -9515,11 +9516,11 @@ snapshots:
       tailwindcss: 4.3.1
       vite: 8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0)
 
-  '@tanstack/devtools-event-client@0.4.3': {}
+  '@tanstack/devtools-event-client@0.4.4': {}
 
   '@tanstack/form-core@1.33.0':
     dependencies:
-      '@tanstack/devtools-event-client': 0.4.3
+      '@tanstack/devtools-event-client': 0.4.4
       '@tanstack/pacer-lite': 0.1.1
       '@tanstack/store': 0.11.0
 
@@ -9773,7 +9774,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.61.1
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.8.4
+      semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
@@ -9963,6 +9964,12 @@ snapshots:
 
   adm-zip@0.5.17: {}
 
+  agent-base@6.0.2:
+    dependencies:
+      debug: 4.4.3
+    transitivePeerDependencies:
+      - supports-color
+
   agent-base@9.0.0: {}
 
   aggregate-error@3.1.0:
@@ -10099,13 +10106,15 @@ snapshots:
 
   axe-core@4.12.1: {}
 
-  axios@1.15.0:
+  axios@1.17.0:
     dependencies:
       follow-redirects: 1.16.0
       form-data: 4.0.6
+      https-proxy-agent: 5.0.1
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
+      - supports-color
 
   axobject-query@4.1.0: {}
 
@@ -10224,13 +10233,13 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  browserslist@4.28.2:
+  browserslist@4.28.4:
     dependencies:
       baseline-browser-mapping: 2.10.38
       caniuse-lite: 1.0.30001799
       electron-to-chromium: 1.5.376
       node-releases: 2.0.48
-      update-browserslist-db: 1.2.3(browserslist@4.28.2)
+      update-browserslist-db: 1.2.3(browserslist@4.28.4)
 
   call-bind-apply-helpers@1.0.2:
     dependencies:
@@ -10381,7 +10390,7 @@ snapshots:
       conventional-commits-filter: 5.0.0
       handlebars: 4.7.9
       meow: 13.2.0
-      semver: 7.8.4
+      semver: 7.8.5
 
   conventional-commits-filter@5.0.0: {}
 
@@ -10402,7 +10411,7 @@ snapshots:
 
   core-js-compat@3.49.0:
     dependencies:
-      browserslist: 4.28.2
+      browserslist: 4.28.4
 
   core-js@3.49.0: {}
 
@@ -10569,7 +10578,7 @@ snapshots:
       require-package-name: 2.0.1
       resolve: 1.22.12
       resolve-from: 5.0.0
-      semver: 7.8.4
+      semver: 7.8.5
       yargs: 16.2.2
     transitivePeerDependencies:
       - supports-color
@@ -10824,35 +10833,6 @@ snapshots:
       '@esbuild/win32-arm64': 0.28.1
       '@esbuild/win32-ia32': 0.28.1
       '@esbuild/win32-x64': 0.28.1
-
-  esbuild@0.28.0:
-    optionalDependencies:
-      '@esbuild/aix-ppc64': 0.28.0
-      '@esbuild/android-arm': 0.28.0
-      '@esbuild/android-arm64': 0.28.0
-      '@esbuild/android-x64': 0.28.0
-      '@esbuild/darwin-arm64': 0.28.0
-      '@esbuild/darwin-x64': 0.28.0
-      '@esbuild/freebsd-arm64': 0.28.0
-      '@esbuild/freebsd-x64': 0.28.0
-      '@esbuild/linux-arm': 0.28.0
-      '@esbuild/linux-arm64': 0.28.0
-      '@esbuild/linux-ia32': 0.28.0
-      '@esbuild/linux-loong64': 0.28.0
-      '@esbuild/linux-mips64el': 0.28.0
-      '@esbuild/linux-ppc64': 0.28.0
-      '@esbuild/linux-riscv64': 0.28.0
-      '@esbuild/linux-s390x': 0.28.0
-      '@esbuild/linux-x64': 0.28.0
-      '@esbuild/netbsd-arm64': 0.28.0
-      '@esbuild/netbsd-x64': 0.28.0
-      '@esbuild/openbsd-arm64': 0.28.0
-      '@esbuild/openbsd-x64': 0.28.0
-      '@esbuild/openharmony-arm64': 0.28.0
-      '@esbuild/sunos-x64': 0.28.0
-      '@esbuild/win32-arm64': 0.28.0
-      '@esbuild/win32-ia32': 0.28.0
-      '@esbuild/win32-x64': 0.28.0
 
   escalade@3.2.0: {}
 
@@ -11267,6 +11247,10 @@ snapshots:
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
 
+  get-tsconfig@4.14.0:
+    dependencies:
+      resolve-pkg-maps: 1.0.0
+
   git-log-parser@1.2.1:
     dependencies:
       argv-formatter: 1.0.0
@@ -11413,6 +11397,13 @@ snapshots:
       proxy-agent-negotiate: 1.1.0
     transitivePeerDependencies:
       - kerberos
+      - supports-color
+
+  https-proxy-agent@5.0.1:
+    dependencies:
+      agent-base: 6.0.2
+      debug: 4.4.3
+    transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@9.1.0:
@@ -11757,7 +11748,7 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  knip@6.17.1:
+  knip@6.17.2:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.4)
       formatly: 0.3.0
@@ -11766,7 +11757,7 @@ snapshots:
       oxc-parser: 0.135.0
       oxc-resolver: 11.21.3
       picomatch: 4.0.4
-      smol-toml: 1.6.1
+      smol-toml: 1.7.0
       strip-json-comments: 5.0.3
       tinyglobby: 0.2.17
       unbash: 4.0.1
@@ -11942,7 +11933,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.8.4
+      semver: 7.8.5
 
   make-dir@5.1.0:
     optional: true
@@ -12061,7 +12052,7 @@ snapshots:
       object-assign: 4.1.1
       thenify-all: 1.6.0
 
-  nanoid@3.3.13: {}
+  nanoid@3.3.15: {}
 
   natural-compare@1.4.0: {}
 
@@ -12104,13 +12095,13 @@ snapshots:
   normalize-package-data@6.0.2:
     dependencies:
       hosted-git-info: 7.0.2
-      semver: 7.8.4
+      semver: 7.8.5
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@8.0.0:
     dependencies:
       hosted-git-info: 9.0.3
-      semver: 7.8.4
+      semver: 7.8.5
       validate-npm-package-license: 3.0.4
 
   normalize-url@9.0.1: {}
@@ -12423,14 +12414,14 @@ snapshots:
 
   postcss@8.5.15:
     dependencies:
-      nanoid: 3.3.13
+      nanoid: 3.3.15
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.390.2:
+  posthog-js@1.391.7:
     dependencies:
-      '@posthog/core': 1.35.2
-      '@posthog/types': 1.390.0
+      '@posthog/core': 1.35.3
+      '@posthog/types': 1.390.2
       core-js: 3.49.0
       dompurify: 3.4.11
       fflate: 0.4.8
@@ -12462,7 +12453,7 @@ snapshots:
       object-assign: 4.1.1
       react-is: 16.13.1
 
-  properties-file@4.0.0: {}
+  properties-file@5.0.5: {}
 
   proto-list@1.2.4: {}
 
@@ -12648,6 +12639,8 @@ snapshots:
 
   resolve-from@5.0.0: {}
 
+  resolve-pkg-maps@1.0.0: {}
+
   resolve@1.22.12:
     dependencies:
       es-errors: 1.3.0
@@ -12757,7 +12750,7 @@ snapshots:
       p-reduce: 3.0.0
       read-package-up: 12.0.0
       resolve-from: 5.0.0
-      semver: 7.8.4
+      semver: 7.8.5
       signale: 1.4.0
       yargs: 18.0.0
     transitivePeerDependencies:
@@ -12771,9 +12764,9 @@ snapshots:
 
   semver@6.3.1: {}
 
-  semver@7.7.4: {}
-
   semver@7.8.4: {}
+
+  semver@7.8.5: {}
 
   set-blocking@2.0.0: {}
 
@@ -12861,30 +12854,31 @@ snapshots:
 
   slugify@1.6.9: {}
 
-  smol-toml@1.6.1: {}
+  smol-toml@1.7.0: {}
 
   snake-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
       tslib: 2.8.1
 
-  sonarqube-scanner@4.3.6:
+  sonarqube-scanner@4.3.8:
     dependencies:
       adm-zip: 0.5.17
-      axios: 1.15.0
+      axios: 1.17.0
       commander: 14.0.3
       hpagent: 1.2.0
       node-forge: 1.4.0
-      properties-file: 4.0.0
+      properties-file: 5.0.5
       proxy-from-env: 2.1.0
-      semver: 7.7.4
+      semver: 7.8.4
       slugify: 1.6.9
-      tar-stream: 3.1.8
+      tar-stream: 3.2.0
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
       - debug
       - react-native-b4a
+      - supports-color
 
   source-map-js@1.2.1: {}
 
@@ -13083,7 +13077,7 @@ snapshots:
 
   tapable@2.3.3: {}
 
-  tar-stream@3.1.8:
+  tar-stream@3.2.0:
     dependencies:
       b4a: 1.8.1
       bare-fs: 4.7.2
@@ -13354,9 +13348,9 @@ snapshots:
 
   until-async@3.0.2: {}
 
-  update-browserslist-db@1.2.3(browserslist@4.28.2):
+  update-browserslist-db@1.2.3(browserslist@4.28.4):
     dependencies:
-      browserslist: 4.28.2
+      browserslist: 4.28.4
       escalade: 3.2.0
       picocolors: 1.1.1
 
