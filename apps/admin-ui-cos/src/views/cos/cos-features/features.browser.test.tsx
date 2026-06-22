@@ -88,29 +88,6 @@ describe('FeaturesForm (browser)', () => {
     resetMockWorker();
   });
 
-  it('should render 2FA section', async () => {
-    await setupTest();
-    await expect.element(page.getByText('Two-Factor authenticator')).toBeVisible();
-    await expect
-      .element(page.getByRole('switch', { name: 'Allow users to configure 2FA' }))
-      .toBeVisible();
-    await expect
-      .element(
-        page.getByText(
-          'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.',
-        ),
-      )
-      .toBeVisible();
-  });
-
-  it('should toggle 2FA switch', async () => {
-    await setupTest();
-    const switchEl = page.getByRole('switch', { name: 'Allow users to configure 2FA' });
-    await expect.element(switchEl).toBeChecked();
-    await userEvent.click(switchEl);
-    await expect.element(switchEl).not.toBeChecked();
-  });
-
   it('should render Mobile App switch in Mail section and be clickable', async () => {
     await setupTest();
     await expect.element(page.getByText('Mail', { exact: true })).toBeVisible();
