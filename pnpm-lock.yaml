@@ -178,7 +178,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -350,7 +350,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -492,7 +492,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -631,7 +631,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -779,7 +779,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -921,7 +921,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -1063,7 +1063,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -1202,7 +1202,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -1344,7 +1344,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -1486,7 +1486,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -1625,7 +1625,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -1767,7 +1767,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
@@ -2043,7 +2043,7 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
       zustand:
-        specifier: ^5.0.13
+        specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
       '@babel/core':
