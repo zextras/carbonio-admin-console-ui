@@ -29,8 +29,6 @@ function getMaxWidth(breakpoint: string, isSidebarOpen = false): string {
 function getContainerStyle(breakpoint: string, isSidebarOpen = false): CSSProperties {
   return {
     maxWidth: getMaxWidth(breakpoint, isSidebarOpen),
-    transition: 'max-width 300ms',
-    // padding: '0 clamp(0.5rem, 2vw, 2rem)',
   };
 }
 
@@ -80,12 +78,12 @@ export const AppView = () => {
   }, [featureFlag, setFeatureFlag]);
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.root}>
       <Breadcrumb />
       {!isFetching && (
-        <div className={styles.scrollableContent}>
+        <div className={styles.detailWrapper}>
           <div
-            className={styles.innerContent}
+            className={styles.detailContent}
             style={getContainerStyle(breakpoint, isPrimaryBarExpanded)}
           >
             {getSubscriptionView(subscriptionType, subType, featureFlag)}
