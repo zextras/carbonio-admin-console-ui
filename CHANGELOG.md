@@ -1,3 +1,9 @@
+## [0.13.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.10...v0.13.11) (2026-06-19)
+
+### Bug Fixes
+
+* hide 2fa carbonio ce in cos ([#1255](https://github.com/zextras/carbonio-admin-console-ui/issues/1255)) ([8d93f7c](https://github.com/zextras/carbonio-admin-console-ui/commit/8d93f7c42490a900e209b6295cd0f01a0544abb2))
+
 ## [0.13.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.9...v0.13.10) (2026-06-19)
 
 ### Bug Fixes
