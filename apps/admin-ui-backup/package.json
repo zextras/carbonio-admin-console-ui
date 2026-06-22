@@ -61,7 +61,7 @@
     "msw": "^2.14.6",
     "playwright": "^1.61.0",
     "react-dom": "^19.2.3",
-    "sonarqube-scanner": "^4.3.6",
+    "sonarqube-scanner": "^4.3.8",
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3",
     "typescript-plugin-css-modules": "^5.2.0",
