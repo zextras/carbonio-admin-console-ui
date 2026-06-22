@@ -6,7 +6,6 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -69,8 +68,7 @@ function getAllConfigResponse() {
 }
 
 describe('MTAInboundFlowSecurity', () => {
-  beforeEach(() => {
-    grantUserConfigRights();
+  beforeEach(async () => {
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse());
   });
 
@@ -79,20 +77,22 @@ describe('MTAInboundFlowSecurity', () => {
   });
 
   it('renders all main sections and base controls', async () => {
-    await setupBrowserTest(<MTAInboundFlowSecurity />);
+    await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
 
     await expect.element(page.getByText('Inbound Flow & Security', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Settings', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Rejection', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Protocol Checks', { exact: true })).toBeVisible();
-    await expect.element(page.getByRole('button', { name: 'Add commonly blocked extensions' })).toBeVisible();
+    await expect
+      .element(page.getByRole('button', { name: 'Add commonly blocked extensions' }))
+      .toBeVisible();
 
     expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
     expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
   });
 
   it('shows Save and Cancel when a switch changes', async () => {
-    await setupBrowserTest(<MTAInboundFlowSecurity />);
+    await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
 
     const rejectUnlistedSenderSwitch = page.getByText('Reject unlisted Sender');
     await expect.element(rejectUnlistedSenderSwitch).toBeVisible();
@@ -103,7 +103,7 @@ describe('MTAInboundFlowSecurity', () => {
   });
 
   it('resets dirty state when Cancel is clicked', async () => {
-    await setupBrowserTest(<MTAInboundFlowSecurity />);
+    await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
 
     await page.getByText('Reject unlisted Sender').click();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
@@ -117,7 +117,7 @@ describe('MTAInboundFlowSecurity', () => {
   it('submits a ModifyConfig request with changed data on save', async () => {
     const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
 
-    await setupBrowserTest(<MTAInboundFlowSecurity />);
+    await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
 
     await page.getByText('Reject unlisted Sender').click();
 

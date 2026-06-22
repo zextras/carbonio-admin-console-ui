@@ -3,54 +3,41 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
+import { Route, Routes, useLocation } from 'react-router';
 
+import { CREATE_NEW_COS_ROUTE_ID } from '../constants';
+import styles from './app-view.module.css';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosListPanel } from './cos/cos-list-panel';
 
-function getContainerStyle(isPrimaryBarExpanded: boolean) {
-  return {
-    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
-    transition: 'width 300ms',
-  };
-}
-
-const AppView: FC = () => {
+export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
+  const { pathname } = useLocation();
+  const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);
   return (
-    <Container>
+    <div className={styles.root}>
       <Breadcrumb />
       <Routes>
         <Route
           path={'/*'}
           element={
-            <Container
-              orientation="horizontal"
-              mainAlignment="flex-start"
-              height="calc(100vh - 105px)"
-            >
-              <Container style={{ maxWidth: '265px' }}>
-                <Suspense fallback={<ds-spinner />}>
+            <div className={styles.layout}>
+              {!isCreateNewCos && (
+                <div className={styles.sidebar}>
                   <CosListPanel />
-                </Suspense>
-              </Container>
-              <Container style={{ maxWidth: '100%' }}>
-                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-                  <Suspense fallback={<ds-spinner />}>
-                    <CosDetailPanel />
-                  </Suspense>
-                </Container>
-              </Container>
-            </Container>
+                </div>
+              )}
+              <div className={styles.detailWrapper}>
+                <div className={styles.detailContent} data-expanded={isPrimaryBarExpanded}>
+                  <CosDetailPanel />
+                </div>
+              </div>
+            </div>
           }
         />
       </Routes>
-    </Container>
+    </div>
   );
 };
-
-export default AppView;

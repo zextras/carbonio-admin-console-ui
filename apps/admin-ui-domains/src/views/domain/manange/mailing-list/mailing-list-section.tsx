@@ -18,12 +18,11 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useUserSettings } from '@zextras/ui-shared';
+import { searchDirectory, useUserSettings } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LDAP, LDAP_QUERY, TRUE } from '../../../../constants';
-import { searchDirectory } from '../../../../services/search-directory-service';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { isValidLdapQuery } from '../../../utility/utils';
 import { MailingListContext } from './mailinglist-context';
@@ -106,12 +105,12 @@ const MailingListSection: FC<any> = () => {
 
   const getMemberFromLdapQuery = useCallback(() => {
     const query = mailingListDetail?.memberURL.replace('ldap:///??sub?', '');
-    searchDirectory(
-      'cn,description,name,zimbraId',
-      'accounts,distributionlists,dynamicgroups,accounts,aliases,dynamicgroups,resources',
-      '',
+    searchDirectory({
+      attr: 'cn,description,name,zimbraId',
+      type: 'accounts,distributionlists,dynamicgroups,accounts,aliases,dynamicgroups,resources',
+      domainName: '',
       query,
-    )
+    })
       .then((data) => {
         const allList: any[] = [];
         const account = data?.account;

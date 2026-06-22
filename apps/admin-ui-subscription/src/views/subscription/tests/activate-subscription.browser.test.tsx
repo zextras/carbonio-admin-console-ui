@@ -8,7 +8,6 @@ import {
   createBrowserZextrasActionInterceptor,
   delayedSoapApiForBrowser,
   getQueryClient,
-  grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -33,13 +32,10 @@ function setupActivateSubscriptionTest(
   component: React.ReactElement,
 ): ReturnType<typeof setupBrowserTest> {
   const queryClient = getQueryClient();
-  return setupBrowserTest(component, { queryClient });
+  return setupBrowserTest(component, { queryClient, grantRights: 'config' });
 }
 
 describe('ActivateSubscription', () => {
-  beforeEach(async () => {
-    await grantUserConfigRights();
-  });
 
   afterEach(() => {
     resetMockWorker();

@@ -2,8 +2,10 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
+import reactCompiler from 'eslint-plugin-react-compiler';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 import noticeConfig from './notice.config.js';
 import typescriptParser from '@typescript-eslint/parser';
 
@@ -18,6 +20,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
+  reactHooks.configs.flat.recommended,
   {
     ignores: [
       '**/node_modules/**',
@@ -34,7 +37,6 @@ export default tseslint.config(
   },
   {
     plugins: {
-      'react-hooks': reactHooks,
       'simple-import-sort': simpleImportSort,
       'unused-imports': unusedImports,
     },
@@ -47,9 +49,7 @@ export default tseslint.config(
     },
     settings: { react: { version: 'detect' } },
     rules: {
-      ...reactHooks.configs.recommended.rules,
       'no-console': ['error', { allow: ['error'] }],
-      // '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'simple-import-sort/imports': 'error',
@@ -63,7 +63,6 @@ export default tseslint.config(
           'ts-ignore': true,
         },
       ],
-      // TODO: remove all the rules below this line once the codebase is cleaned up
       '@typescript-eslint/no-explicit-any': 'warn',
       'react/no-children-prop': 'warn',
       '@typescript-eslint/no-unused-expressions': 'warn',
@@ -71,6 +70,13 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-function-type': 'warn',
       '@typescript-eslint/no-empty-object-type': 'warn',
       'react/prop-types': 'off',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/set-state-in-render': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
+      'react-hooks/use-memo': 'warn',
+      'react-hooks/static-components': 'warn',
     },
   },
   noticeConfig,
@@ -78,6 +84,18 @@ export default tseslint.config(
     files: ['**/icons/**/*.[jt]sx'],
     rules: {
       'notice/notice': 'off',
+    },
+  },
+  {
+    files: ['apps/admin-ui-cos/**/*'],
+    plugins: {
+      'react-compiler': reactCompiler,
+      'jsx-a11y': jsxA11y,
+    },
+    rules: {
+      'react-compiler/react-compiler': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      ...jsxA11y.configs.recommended.rules,
     },
   },
 );

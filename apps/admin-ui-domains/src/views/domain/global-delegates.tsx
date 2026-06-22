@@ -15,7 +15,13 @@ import {
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
-import { postSoapFetchRequest, useIsAdvanced } from '@zextras/ui-shared';
+import {
+  CosAttribute,
+  getCosGeneralInformation,
+  type GetCosResponse,
+  postSoapFetchRequest,
+  useIsAdvanced,
+} from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { debounce, filter, flatMapDeep } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -24,11 +30,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
-import {
-  CosA,
-  getCosGeneralInformation,
-  GetCosResponse,
-} from '../../services/cos-general-information-service';
 import { getAccountRequest } from '../../services/get-account';
 import { getAccountMembershipRequest } from '../../services/get-account-membership';
 import { getSessions } from '../../services/get-sessions';
@@ -196,7 +197,7 @@ const GlobalDelegates: FC = () => {
   const getCosDetail = useCallback((id: string): void => {
     getCosGeneralInformation(id).then((data: GetCosResponse) => {
       const obj: any = {};
-      data?.cos?.[0]?.a?.forEach((ele: CosA) => {
+      data?.cos?.[0]?.a?.forEach((ele: CosAttribute) => {
         if (obj[ele.n]) {
           obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
         } else {
@@ -775,7 +776,13 @@ const GlobalDelegates: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text
+                      as="p"
+                      weight="light"
+                      color="#828282"
+                      size="large"
+                      overflow="break-word"
+                    >
                       {t('label.this_list_is_empty', 'This list is empty.')}
                     </ds-text>
                   </Row>
@@ -786,7 +793,13 @@ const GlobalDelegates: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text
+                      as="p"
+                      weight="light"
+                      color="#828282"
+                      size="large"
+                      overflow="break-word"
+                    >
                       <Trans
                         i18nKey="label.create_account_list_msg"
                         defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"

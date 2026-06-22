@@ -1,3 +1,25 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+hoist: true
+hoistPattern:
+  - '*eslint*'
+  - '*typescript*'
+  - '*prettier*'
+  - '*styled-components*'
+publicHoistPattern:
+  - '*eslint*'
+  - '*typescript*'
+  - '*prettier*'
+  - '*styled-components*'
+  - 'turbo'
+shamefullyHoist: true
+dedupePeerDependents: true
+minimumReleaseAge: 0
+allowBuilds:
+  '@parcel/watcher': true
+  core-js: true
+  esbuild: true
+  msw: true
+  protobufjs: true

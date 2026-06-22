@@ -12,7 +12,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { flushCache, soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -26,7 +26,6 @@ import {
   ZIMBRA_ADMIN_URN,
   ZIMBRA_ID,
 } from '../../../../constants';
-import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 
 export const LoadAndVerifyCert: FC<{

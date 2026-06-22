@@ -10,7 +10,7 @@ import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../../constants';
  */
 export const generateSnackbarFromError = (
 	error: Error,
-	t: TFunction<'translation', undefined, 'translation'>
+	t: TFunction
 ): SnackbarConfig => {
 	let errorText = '';
 

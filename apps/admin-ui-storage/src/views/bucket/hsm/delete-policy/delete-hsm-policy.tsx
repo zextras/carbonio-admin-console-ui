@@ -15,16 +15,10 @@ import {
 import { FC, useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import type { DeleteHsmPolicyProps, HsmPolicyFromServer } from '../../../../../types';
 import { APPOINTMENT, CONTACT, DOCUMENT, MESSAGE } from '../../../../constants';
 
-const DeleteHsmPolicy: FC<{
-  showDeletePolicyView: boolean;
-  setShowDeletePolicyView: any;
-  selectedPolicies: any;
-  onDeletePolicy: any;
-  isRequestInProgress: boolean;
-  policies: any;
-}> = ({
+const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
   showDeletePolicyView,
   setShowDeletePolicyView,
   selectedPolicies,
@@ -36,14 +30,14 @@ const DeleteHsmPolicy: FC<{
   const createSnackbar = useSnackbar();
   const getHSMType = useCallback(
     (query: string): string => {
-      const hsmType: Array<any> = policies.find((item: any) => item?.hsmQuery === query)?.hsmType;
+      const hsmType = policies.find((item: HsmPolicyFromServer) => item?.hsmQuery === query)?.hsmType ?? [];
       let hsmTypeString = '';
       if (hsmType && hsmType?.length > 0) {
         if (hsmType.length === 4) {
           hsmTypeString = 'document,message,contact,appointment:';
         } else {
           const item: string[] = [];
-          hsmType.forEach((element: any) => {
+          hsmType.forEach((element: number) => {
             if (element === 5) {
               item.push(MESSAGE);
             } else if (element === 8) {

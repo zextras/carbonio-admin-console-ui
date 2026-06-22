@@ -42,7 +42,7 @@ function getThemeColorVar(colorName: string, state: string): string {
   if (hexPattern.test(colorName)) {
     return colorName;
   }
-  const sanitized = colorName.replace(/[^a-zA-Z0-9-]/g, '');
+  const sanitized = colorName.replaceAll(/[^a-zA-Z0-9-]/g, '');
   return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${colorName}))`;
 }
 
@@ -147,7 +147,7 @@ function reducer<TValue>(
   }
 }
 
-function DefaultOnAdd<TValue>(valueToAdd: unknown): ChipItem<TValue> {
+function defaultOnAdd<TValue>(valueToAdd: unknown): ChipItem<TValue> {
   if (typeof valueToAdd === 'string') {
     return { label: valueToAdd };
   }
@@ -269,7 +269,7 @@ const ChipInputComponent = <TValue = unknown,>({
   options = [],
   onInputType,
   onInputTypeDebounce = 300,
-  onAdd = DefaultOnAdd<TValue>,
+  onAdd = defaultOnAdd<TValue>,
   background = INPUT_BACKGROUND_COLOR,
   confirmChipOnBlur = true,
   separators = [
@@ -772,5 +772,7 @@ export {
   type ChipInputProps,
   type ChipInputType,
   type ChipItem,
-  DefaultOnAdd,
+  defaultOnAdd,
+  getThemeColorVar,
+  reducer,
 };

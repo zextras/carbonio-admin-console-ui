@@ -275,6 +275,176 @@ describe('ManageAccounts (browser)', () => {
         });
     });
 
+    describe('Account type detection', () => {
+        it('should display DelegatedAdmin type for delegated admin accounts', async () => {
+            const delegatedAdminAccounts = [
+                buildAccount('delegated@example.com', 'acc-da', {
+                    displayName: 'Delegated Admin',
+                    isDelegated: 'TRUE',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(delegatedAdminAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('DelegatedAdmin', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display System type for system accounts', async () => {
+            const systemAccounts = [
+                buildAccount('system@example.com', 'acc-sys', {
+                    displayName: 'System Account',
+                    isSystem: 'TRUE',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(systemAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('System', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display External type for external virtual accounts', async () => {
+            const externalAccounts = [
+                buildAccount('external@example.com', 'acc-ext', {
+                    displayName: 'External Account',
+                    isExternal: 'TRUE',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(externalAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('External', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display Admin type for admin accounts', async () => {
+            const adminAccounts = [
+                buildAccount('admin@example.com', 'acc-admin', {
+                    displayName: 'Admin User',
+                    isAdmin: 'TRUE',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(adminAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Admin', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display Normal type for regular accounts', async () => {
+            const normalAccounts = [
+                buildAccount('user@example.com', 'acc-normal', {
+                    displayName: 'Normal User',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(normalAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Normal', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display all account types when mixed accounts exist', async () => {
+            const mixedAccounts = [
+                buildAccount('user@example.com', 'acc-1'),
+                buildAccount('admin@example.com', 'acc-2', { isAdmin: 'TRUE' }),
+                buildAccount('delegated@example.com', 'acc-3', { isDelegated: 'TRUE' }),
+                buildAccount('system@example.com', 'acc-4', { isSystem: 'TRUE' }),
+                buildAccount('external@example.com', 'acc-5', { isExternal: 'TRUE' }),
+            ];
+            setupSearchDirectoryInterceptor(mixedAccounts);
+            setupCountAccountInterceptor(5);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Normal', { exact: true }).first())
+                .toBeInTheDocument();
+            await expect
+                .element(page.getByText('Admin', { exact: true }).first())
+                .toBeInTheDocument();
+            await expect
+                .element(page.getByText('DelegatedAdmin', { exact: true }).first())
+                .toBeInTheDocument();
+            await expect
+                .element(page.getByText('System', { exact: true }).first())
+                .toBeInTheDocument();
+            await expect
+                .element(page.getByText('External', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+    });
+
+    describe('Account type priority', () => {
+        it('should display Admin when account has both isAdmin and isDelegated set to TRUE', async () => {
+            const combinedAccounts = [
+                buildAccount('combined@example.com', 'acc-combined', {
+                    displayName: 'Combined Account',
+                    isAdmin: 'TRUE',
+                    isDelegated: 'TRUE',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(combinedAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Admin', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display Admin when account has both isAdmin and isSystem set to TRUE', async () => {
+            const combinedAccounts = [
+                buildAccount('admin-sys@example.com', 'acc-admin-sys', {
+                    displayName: 'Admin System',
+                    isAdmin: 'TRUE',
+                    isSystem: 'TRUE',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(combinedAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Admin', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display DelegatedAdmin when account has both isDelegated and isSystem set to TRUE', async () => {
+            const combinedAccounts = [
+                buildAccount('del-sys@example.com', 'acc-del-sys', {
+                    displayName: 'Delegated System',
+                    isDelegated: 'TRUE',
+                    isSystem: 'TRUE',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(combinedAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('DelegatedAdmin', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display DelegatedAdmin when account has isDelegated TRUE but isAdmin FALSE', async () => {
+            const accounts = [
+                buildAccount('del-only@example.com', 'acc-del-only', {
+                    displayName: 'Delegated Only',
+                    isAdmin: 'FALSE',
+                    isDelegated: 'TRUE',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(accounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('DelegatedAdmin', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+    });
+
     describe('API interaction', () => {
         it('should send SearchDirectory request with accounts type', async () => {
             const interceptor = setupSearchDirectoryInterceptor();

@@ -20,7 +20,11 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import {
+  type DirectoryEntry,
+  type DomainDirectories,
+  flushCache,
   replaceHistory,
+  searchDirectory,
   useDomainStore,
   useIsAdvanced,
   useTotalQuotaActive,
@@ -47,10 +51,8 @@ import {
 } from '../../../constants';
 import { batchService } from '../../../services/batch-service';
 import { deleteDomain } from '../../../services/delete-domain-service';
-import { flushCache } from '../../../services/flush-cache-service';
 import { getDomainQuota } from '../../../services/get-domain-quota';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { searchDirectory } from '../../../services/search-directory-service';
 import { setDomainQuota } from '../../../services/set-domain-quota';
 import { unsetDomainQuota } from '../../../services/unset-domain-quota';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
@@ -185,36 +187,8 @@ const DomainGeneralSettings: FC = () => {
   const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
     objectType[]
   >([]);
-  interface Attribute {
-    n: string;
-    _content: string;
-  }
 
-  interface AccountDlAlias {
-    name: string;
-    id: string;
-    isExternal?: boolean;
-    dynamic?: boolean;
-    targetName?: string;
-    a: Attribute[];
-    zimbraIsSystemAccount?: string;
-  }
-
-  interface DomainDirectoies {
-    account: AccountDlAlias[];
-    dl: AccountDlAlias[];
-    alias: AccountDlAlias[];
-    calresource: AccountDlAlias[];
-  }
-  interface SearchDomainDirectoies {
-    account: AccountDlAlias[];
-    dl: AccountDlAlias[];
-    alias: AccountDlAlias[];
-    calresource: AccountDlAlias[];
-    more: boolean;
-    searchTotal: number;
-  }
-  const [domainDirectoies, setDomainDirectoies] = useState<DomainDirectoies>({
+  const [domainDirectories, setDomainDirectories] = useState<DomainDirectories>({
     account: [],
     dl: [],
     alias: [],
@@ -251,7 +225,7 @@ const DomainGeneralSettings: FC = () => {
   }, [cosList]);
 
   useMemo(() => {
-    setDomainDirectoies({
+    setDomainDirectories({
       account: [],
       dl: [],
       alias: [],
@@ -589,7 +563,7 @@ const DomainGeneralSettings: FC = () => {
       { n: 'zimbraHelpDelegatedURL', _content: zimbraHelpDelegatedURL },
       { n: 'zimbraPublicServiceHostname', _content: publicServiceHostName },
       { n: 'carbonioNotificationFrom', _content: carbonioNotificationFrom },
-      { n: 'zimbraPublicServiceProtocol', _content: selectedPublicServiceProtocol.value }
+      { n: 'zimbraPublicServiceProtocol', _content: selectedPublicServiceProtocol.value },
     ];
 
     addConditionalAttributes(attributes);
@@ -650,7 +624,7 @@ const DomainGeneralSettings: FC = () => {
     deleteDomain(domainData.zimbraId).then(() => {
       setIsRequestInProgress(false);
       setOpenDeleteDomainConfirmDialog(false);
-      setDomainDirectoies({
+      setDomainDirectories({
         account: [],
         dl: [],
         alias: [],
@@ -676,19 +650,19 @@ const DomainGeneralSettings: FC = () => {
     const dlDeleteBatch: any[] = [];
     const resourceDeleteBatch: any[] = [];
 
-    domainDirectoies.account.forEach((item: any): any =>
+    domainDirectories.account.forEach((item: any): any =>
       accountDeleteBatch.push({
         id: item?.id,
         _jsns: ZIMBRA_ADMIN_URN,
       }),
     );
-    domainDirectoies.dl.forEach((item: any): any =>
+    domainDirectories.dl.forEach((item: any): any =>
       dlDeleteBatch.push({
         id: { _content: item?.id },
         _jsns: ZIMBRA_ADMIN_URN,
       }),
     );
-    domainDirectoies.calresource.forEach((item: any): any =>
+    domainDirectories.calresource.forEach((item: any): any =>
       resourceDeleteBatch.push({
         id: item?.id,
         _jsns: ZIMBRA_ADMIN_URN,
@@ -729,18 +703,18 @@ const DomainGeneralSettings: FC = () => {
     (
       offset: number,
       limit: number,
-      accountListArr: AccountDlAlias[],
-      dlListArr: AccountDlAlias[],
-      aliasListArr: AccountDlAlias[],
-      calResourceArr: AccountDlAlias[],
+      accountListArr: DirectoryEntry[],
+      dlListArr: DirectoryEntry[],
+      aliasListArr: DirectoryEntry[],
+      calResourceArr: DirectoryEntry[],
     ): void => {
       const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
       const attrs =
         'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus, zimbraIsSystemAccount';
-      searchDirectory(attrs, type, domainName, '', offset, limit)
-        .then((data: SearchDomainDirectoies) => {
+      searchDirectory({ attr: attrs, type, domainName, query: '', offset, limit })
+        .then((data) => {
           if (data?.account?.length) {
-            data.account.forEach((item: AccountDlAlias) => {
+            data.account.forEach((item: DirectoryEntry) => {
               const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });
               if (zimbraIsSystemAccount) {
                 item.zimbraIsSystemAccount = zimbraIsSystemAccount._content;
@@ -767,14 +741,14 @@ const DomainGeneralSettings: FC = () => {
               cloneDeep(aliasListArr),
               cloneDeep(calResourceArr),
             );
-          } else if (data?.searchTotal > 0) {
+          } else if ((data?.searchTotal ?? 0) > 0) {
             if (
               accountListArr?.length ||
               dlListArr?.length ||
               aliasListArr?.length ||
               calResourceArr?.length
             ) {
-              setDomainDirectoies({
+              setDomainDirectories({
                 account: cloneDeep(accountListArr),
                 dl: cloneDeep(dlListArr),
                 alias: cloneDeep(aliasListArr),
@@ -1088,7 +1062,7 @@ const DomainGeneralSettings: FC = () => {
                       value={domainQuotaGB}
                       backgroundColor="gray5"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                        const digits = e.target.value.replace(/[^0-9]/g, '');
+                        const digits = e.target.value.replaceAll(/\D/g, '');
                         setDomainQuotaGB(digits.replace(/^0+/, ''));
                       }}
                       disabled={!isGlobalAdmin}
@@ -1260,7 +1234,7 @@ const DomainGeneralSettings: FC = () => {
                   onClose={(): void => {
                     setConfirmDomainName('');
                     setOpenDeleteDomainConfirmDialog(false);
-                    setDomainDirectoies({
+                    setDomainDirectories({
                       account: [],
                       dl: [],
                       alias: [],
@@ -1276,7 +1250,7 @@ const DomainGeneralSettings: FC = () => {
                           onClick={(): void => {
                             setConfirmDomainName('');
                             setOpenDeleteDomainConfirmDialog(false);
-                            setDomainDirectoies({
+                            setDomainDirectories({
                               account: [],
                               dl: [],
                               alias: [],
@@ -1315,19 +1289,19 @@ const DomainGeneralSettings: FC = () => {
                       })}
                     </ds-text>
                     <br />
-                    {domainDirectoies.account.length ? (
+                    {domainDirectories.account.length ? (
                       <ds-text as="p" overflow="break-word" weight="regular">
-                        {domainDirectoies.account.length} {t('label.accounts', 'Accounts')}
+                        {domainDirectories.account.length} {t('label.accounts', 'Accounts')}
                       </ds-text>
                     ) : (
                       <></>
                     )}
-                    {filter(domainDirectoies.account, {
+                    {filter(domainDirectories.account, {
                       zimbraIsSystemAccount: 'TRUE',
                     }).length ? (
                       <ds-text as="p" overflow="break-word" weight="regular">
                         {
-                          filter(domainDirectoies.account, {
+                          filter(domainDirectories.account, {
                             zimbraIsSystemAccount: 'TRUE',
                           }).length
                         }{' '}
@@ -1336,24 +1310,24 @@ const DomainGeneralSettings: FC = () => {
                     ) : (
                       <></>
                     )}
-                    {domainDirectoies.dl.length ? (
+                    {domainDirectories.dl.length ? (
                       <ds-text as="p" overflow="break-word" weight="regular">
-                        {domainDirectoies.dl.length}{' '}
+                        {domainDirectories.dl.length}{' '}
                         {t('label.distribution_list', 'Distribution List')}
                       </ds-text>
                     ) : (
                       <></>
                     )}
-                    {domainDirectoies.alias.length ? (
+                    {domainDirectories.alias.length ? (
                       <ds-text as="p" overflow="break-word" weight="regular">
-                        {domainDirectoies.alias.length} {t('label.aliases', 'Aliases')}
+                        {domainDirectories.alias.length} {t('label.aliases', 'Aliases')}
                       </ds-text>
                     ) : (
                       <></>
                     )}
-                    {domainDirectoies.calresource.length ? (
+                    {domainDirectories.calresource.length ? (
                       <ds-text as="p" overflow="break-word" weight="regular">
-                        {domainDirectoies.calresource.length} {t('label.resources', 'Resources')}
+                        {domainDirectories.calresource.length} {t('label.resources', 'Resources')}
                       </ds-text>
                     ) : (
                       <></>
@@ -1433,7 +1407,9 @@ const DomainGeneralSettings: FC = () => {
             'Are you sure you want to leave this page without saving?',
           )}
         </ds-text>
-        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
+        <ds-text as="p">
+          {t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}
+        </ds-text>
       </RouteLeavingGuard>
     </Container>
   );

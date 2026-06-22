@@ -5,22 +5,27 @@
  */
 
 import {
+  createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
   getGetInfoResponseMock,
   getQueryClient,
-  grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useCosStore } from '../../store/cos/store';
-import AppView from '../app-view';
+import { AppView } from '../app-view';
+
+function mockCatalogServices(): void {
+  createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+    HttpResponse.json({ items: [] }),
+  );
+}
 
 afterEach(() => {
   resetMockWorker();
-  useCosStore.getState().reset();
 });
 
 describe('AppView', () => {
@@ -30,13 +35,10 @@ describe('AppView', () => {
   beforeEach(async () => {
     queryClient = getQueryClient();
     queryClient.setQueryData(['all-config'], [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }]);
-    grantUserConfigRights();
-    useCosStore.getState().reset();
   });
 
   afterEach(() => {
     resetMockWorker();
-    useCosStore.getState().reset();
   });
 
   it('should render BreadCrumb component', async () => {
@@ -91,21 +93,21 @@ describe('AppView', () => {
       more: false,
     };
 
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const searchDirectoryInterceptor = createBrowserSoapAPIInterceptor(
+    const getInfoPromise = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    const searchDirPromise = createBrowserSoapAPIInterceptor(
       'SearchDirectory',
       mockCosListResponse,
     );
-
-    const getAccountInterceptor = createBrowserSoapAPIInterceptor('GetAccount', {});
+    const getAccountPromise = createBrowserSoapAPIInterceptor('GetAccount', {});
+    mockCatalogServices();
 
     await setupBrowserTest(<AppView />, {
       initialRouterEntry: `/cos_list`,
       queryClient,
     });
-    await getInfoInterceptor;
-    await searchDirectoryInterceptor;
-    await getAccountInterceptor;
+    await getInfoPromise;
+    await searchDirPromise;
+    await getAccountPromise;
 
     // Verify CosListPanel renders with action buttons
     await expect.element(page.getByText('General', { exact: true })).toBeVisible();
@@ -116,5 +118,19 @@ describe('AppView', () => {
     expect(cosListElements).toHaveLength(2);
     await expect.element(cosListElements[0]).toBeVisible();
     await expect.element(cosListElements[1]).toBeVisible();
+  });
+
+  it('should hide CosListPanel on create-new-cos route', async () => {
+    const getInfoPromise = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    mockCatalogServices();
+
+    await setupBrowserTest(<AppView />, {
+      initialRouterEntry: `/create-new-cos`,
+      queryClient,
+    });
+    await getInfoPromise;
+
+    await expect.element(page.getByText('New COS')).toBeVisible();
+    await expect.element(page.getByText('Details')).not.toBeInTheDocument();
   });
 });

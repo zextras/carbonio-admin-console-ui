@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSnackbar } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
+import { searchDirectory, useDomainStore } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -29,7 +29,6 @@ import {
   WHITELABEL_SETTINGS,
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
-import { searchDirectory } from '../../services/search-directory-service';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import DomainTwoFactorAuthentication from './details/domain-2fa';
 import DomainAuthentication from './details/domain-authentication';
@@ -77,7 +76,7 @@ const DomainOperations: FC = (): React.JSX.Element => {
     const attrs = 'cn,description';
     const types = 'coses';
 
-    searchDirectory(attrs, types, '', '', 0, 0)
+    searchDirectory({ attr: attrs, type: types, domainName: '', query: '', offset: 0, limit: 0 })
       .then((data) => {
         const cosLists = data?.cos;
         if (cosLists) {

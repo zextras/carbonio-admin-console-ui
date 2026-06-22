@@ -5,7 +5,6 @@
  */
 
 import { type QueryClient } from '@tanstack/react-query';
-import { queryClient } from '@zextras/ui-shared';
 import { clone, cloneDeep, map } from 'lodash-es';
 import { type ReactElement } from 'react';
 import { useLocation } from 'react-router';
@@ -21,19 +20,24 @@ export const LocationDisplay = () => {
   return <div data-testid="location">{location.pathname}</div>;
 };
 
-export const setupBrowserTest = (
+type GrantRights = 'cos' | 'config';
+
+type SetupBrowserTestOptions = {
+  initialRouterEntry?: string;
+  queryClient?: QueryClient;
+  grantRights?: GrantRights;
+};
+
+export const setupBrowserTest = async (
   ui: ReactElement,
-  options?: { initialRouterEntry?: string; queryClient?: QueryClient },
+  options?: SetupBrowserTestOptions,
 ): Promise<RenderResult> => {
   const effectiveQueryClient = options?.queryClient ?? getQueryClient();
 
-  if (!options?.queryClient) {
-    const globalCache = queryClient.getQueryCache().getAll();
-    globalCache.forEach((query) => {
-      if (query.queryKey[0] === 'account' || query.queryKey[0] === 'effective-rights') {
-        effectiveQueryClient.setQueryData(query.queryKey, query.state.data);
-      }
-    });
+  if (options?.grantRights === 'cos') {
+    await grantUserCosRights(effectiveQueryClient);
+  } else if (options?.grantRights === 'config') {
+    await grantUserConfigRights(effectiveQueryClient);
   }
 
   return render(ui, {
@@ -45,12 +49,8 @@ export const setupBrowserTest = (
   });
 };
 
-export async function setupAccount(queryClientParam?: QueryClient): Promise<void> {
-  // Use provided queryClient or fall back to global one
-  const effectiveQueryClient = queryClientParam ?? queryClient;
-
-  // Populate React Query cache with test data
-  effectiveQueryClient.setQueryData(['account', 'info'], {
+export async function setupAccount(queryClientParam: QueryClient): Promise<void> {
+  queryClientParam.setQueryData(['account', 'info'], {
     id: 'test-user-id',
     name: 'test@example.com',
     displayName: '',
@@ -61,18 +61,17 @@ export async function setupAccount(queryClientParam?: QueryClient): Promise<void
     rights: { targets: [] },
   });
 
-  effectiveQueryClient.setQueryData(['account', 'settings'], {
+  queryClientParam.setQueryData(['account', 'settings'], {
     prefs: {},
     attrs: {},
     props: [],
   });
 
-  effectiveQueryClient.setQueryData(['account', 'version'], '1.0.0');
+  queryClientParam.setQueryData(['account', 'version'], '1.0.0');
 }
 
-export async function grantUserConfigRights(queryClientParam?: QueryClient): Promise<void> {
+export async function grantUserConfigRights(queryClientParam: QueryClient): Promise<void> {
   await setupAccount(queryClientParam);
-  const effectiveQueryClient = queryClientParam ?? queryClient;
 
   const mockConfigRightsData = [
     {
@@ -85,12 +84,11 @@ export async function grantUserConfigRights(queryClientParam?: QueryClient): Pro
       ],
     },
   ];
-  effectiveQueryClient.setQueryData(['effective-rights', 'test@example.com'], mockConfigRightsData);
+  queryClientParam.setQueryData(['effective-rights', 'test@example.com'], mockConfigRightsData);
 }
 
-export async function grantUserCosRights(queryClientParam?: QueryClient): Promise<void> {
+export async function grantUserCosRights(queryClientParam: QueryClient): Promise<void> {
   await setupAccount(queryClientParam);
-  const effectiveQueryClient = queryClientParam ?? queryClient;
 
   const mockCosRightsData = [
     {
@@ -110,7 +108,7 @@ export async function grantUserCosRights(queryClientParam?: QueryClient): Promis
       ],
     },
   ];
-  effectiveQueryClient.setQueryData(['effective-rights', 'test@example.com'], mockCosRightsData);
+  queryClientParam.setQueryData(['effective-rights', 'test@example.com'], mockCosRightsData);
 }
 type GetGetInfoResponseMockOptions = {
   prefs?: typeof getInfoResponseBaseMock.prefs._attrs;

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Container,
   DropDownInput,
@@ -15,10 +16,9 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { debounce } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { matchPath, useLocation } from 'react-router';
 
 import { type SearchDirectoryEntry } from '../../../types/cos';
 import {
@@ -34,171 +34,128 @@ import {
   SERVER_POOLS,
   WSC,
 } from '../../constants';
-import { getCosList } from '../../services/search-cos-service';
-import { useCosStore } from '../../store/cos/store';
-import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import GeneralListPanel from './general-list-panel';
+import { useDebouncedValue } from '../../hooks/use-debounced-value';
+import { cosQueryKeys } from '../../services/cos-query-keys';
+import { useCosDetail } from '../../services/use-cos-detail';
+import { useCosList } from '../../services/use-cos-list';
+import { GeneralListPanel } from './general-list-panel';
 
-export const CosListPanel: FC = () => {
+export const CosListPanel = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
   const { pathname } = useLocation();
   const [searchCosName, setSearchCosName] = useState('');
-  const [isCosSelect, setIsCosSelect] = useState(false);
-  const [cosList, setCosList] = useState<Array<SearchDirectoryEntry>>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearch = useDebouncedValue(searchQuery, 700);
   const [isCosListExpand, setIsCosListExpand] = useState(false);
-  const { cosView, setCosView, cos } = useCosStore();
-  const setCos = useCosStore((state) => state.setCos);
-  const cosInformation = useCosStore((state) => state.cos);
-  const cosName = useCosStore((state) => state.cos?.name);
-  const [isShowError, setIsShowError] = useState(false);
+  const cosDetailMatch = matchPath(`/${MANAGE_APP_ID}/${COS_ROUTE_ID}/:cosId/:operation`, pathname);
+  const selectedCosId = cosDetailMatch?.params.cosId;
+  const isCosSelect = !!selectedCosId;
+  const { data: cosDetailData } = useCosDetail(selectedCosId);
+  const cosInformation = cosDetailData?.cos?.[0];
+  const cosName = cosInformation?.name;
   const prevCosRef = useRef<string | undefined>(undefined);
-  const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
+  const [isDetailListExpanded, setIsDetailListExpanded] = useState(() => {
+    const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
+    return storedValue !== 'false';
+  });
 
-  const getCosLists = useCallback(
-    (searchData: string): void => {
-      getCosList(searchData)
-        .then((data) => {
-          if (data && data?.searchTotal && data.searchTotal > 0 && data.cos) {
-            setCosList(data.cos);
-          } else {
-            setCosList([]);
-            setIsShowError(true);
-          }
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, t],
-  );
+  const { data, error } = useCosList({ searchQuery: debouncedSearch, limit: 50, offset: 0 });
+  const cosList = data?.cos ?? [];
+  const isShowError = (data?.searchTotal ?? 0) <= 0 && !error;
 
   useEffect(() => {
-    getCosLists('');
-  }, [getCosLists]);
+    if (error) {
+      createSnackbar({
+        key: 'cos-list-error',
+        severity: 'error',
+        label: t('label.error_loading_cos_list', 'Failed to load COS list. Please try again.'),
+        autoHideTimeout: 5000,
+        replace: true,
+      });
+    }
+  }, [createSnackbar, error, t]);
+
+  const cosView = cosDetailMatch?.params.operation ?? COS_LIST;
 
   useEffect(() => {
     if (!!prevCosRef.current && prevCosRef.current !== cosName) {
-      getCosLists('');
+      queryClient.invalidateQueries({ queryKey: cosQueryKeys.all });
     }
     prevCosRef.current = cosName;
-  }, [cosName, getCosLists]);
+  }, [cosName, queryClient]);
 
   useEffect(() => {
     if (cosInformation?.name) {
       setSearchCosName(cosInformation?.name);
-      setIsCosSelect(true);
+      setSearchQuery('');
       setIsCosListExpand(false);
-      setCosView(GENERAL_INFORMATION);
-      if (cosInformation?.id) {
-        setCos({ name: cosInformation?.name, id: cosInformation?.id });
-        replaceHistory(`/${cosInformation.id}/${GENERAL_INFORMATION}`);
-      }
     }
-  }, [cosInformation?.id, cosInformation?.name, setCos, setCosView]);
-
-  useEffect(() => {
-    if (
-      (pathname && pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`) ||
-      pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}/`
-    ) {
-      setCosList([]);
-      setIsCosSelect(false);
-      setSearchCosName('');
-      setIsCosListExpand(false);
-      setCosView('');
-      setCos({});
-      replaceHistory(`/${COS_LIST}`);
-    }
-  }, [pathname, setCos, setCosView]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchCosCall = useCallback(
-    debounce((searchData) => {
-      getCosLists(searchData);
-    }, 700),
-    [debounce],
-  );
+  }, [cosInformation?.id, cosInformation?.name]);
 
   useEffect(() => {
     if (!isCosSelect) {
-      searchCosCall(searchCosName);
+      setSearchCosName('');
+      setSearchQuery('');
     }
-  }, [searchCosName, isCosSelect, searchCosCall]);
+  }, [isCosSelect]);
 
-  const toggleDetailView = (): void => {
-    if (isDetailListExpanded) {
-      setIsDetailListExpanded(false);
-      localStorage.setItem(IS_COS_DETAIL_LIST_EXPANDED, 'false');
-    } else {
-      setIsDetailListExpanded(true);
-      localStorage.removeItem(IS_COS_DETAIL_LIST_EXPANDED);
-    }
-    setIsDetailListExpanded(!isDetailListExpanded);
+  const selectedCos = (cosData: SearchDirectoryEntry) => {
+    setSearchCosName(cosData?.name);
+    setSearchQuery('');
+    setIsCosListExpand(false);
+    replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
   };
 
-  const navigateToCosView = useCallback(
-    (view: string) => {
-      if (isCosSelect && cos?.id) {
-        setCosView(view);
-        replaceHistory(`/${cos.id}/${view}`);
-      }
-    },
-    [isCosSelect, cos?.id, setCosView],
-  );
+  const toggleDetailView = (): void => {
+    const newValue = !isDetailListExpanded;
+    setIsDetailListExpanded(newValue);
+    if (newValue) {
+      localStorage.removeItem(IS_COS_DETAIL_LIST_EXPANDED);
+    } else {
+      localStorage.setItem(IS_COS_DETAIL_LIST_EXPANDED, 'false');
+    }
+  };
 
-  const selectedCos = useCallback(
-    (cosData: SearchDirectoryEntry) => {
-      setIsCosSelect(true);
-      setSearchCosName(cosData?.name);
-      setIsCosListExpand(false);
-      setCos({
-        a: cosData?.a,
-        id: cosData?.id,
-        name: cosData?.name,
-      });
-      setCosView(GENERAL_INFORMATION);
-      replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
-    },
-    [setCos, setCosView],
-  );
+  const navigateToCosView = (view: string) => {
+    if (isCosSelect && selectedCosId) {
+      replaceHistory(`/${selectedCosId}/${view}`);
+    }
+  };
 
-  const detailOptions = useMemo<Array<ListItemType>>(
-    () => [
-      {
-        id: GENERAL_INFORMATION,
-        name: t('label.general_information', 'General Information'),
-        isSelected: isCosSelect,
-      },
-      {
-        id: FEATURES,
-        name: t('label.features', 'Features'),
-        isSelected: isCosSelect,
-      },
-      {
-        id: WSC,
-        name: t('label.wsc', 'Chat'),
-        isSelected: isCosSelect,
-      },
-      {
-        id: PREFERENCES,
-        name: t('label.preferences', 'Preferences'),
-        isSelected: isCosSelect,
-      },
-      {
-        id: SERVER_POOLS,
-        name: t('label.server_pools', 'Server Pools'),
-        isSelected: isCosSelect,
-      },
-      {
-        id: ADVANCED,
-        name: t('label.advanced', 'Advanced'),
-        isSelected: isCosSelect,
-      },
-    ],
-    [t, isCosSelect],
-  );
+  const detailOptions: Array<ListItemType> = [
+    {
+      id: GENERAL_INFORMATION,
+      name: t('label.general_information', 'General Information'),
+      isSelected: isCosSelect,
+    },
+    {
+      id: FEATURES,
+      name: t('label.features', 'Features'),
+      isSelected: isCosSelect,
+    },
+    {
+      id: WSC,
+      name: t('label.wsc', 'Chat'),
+      isSelected: isCosSelect,
+    },
+    {
+      id: PREFERENCES,
+      name: t('label.preferences', 'Preferences'),
+      isSelected: isCosSelect,
+    },
+    {
+      id: SERVER_POOLS,
+      name: t('label.server_pools', 'Server Pools'),
+      isSelected: isCosSelect,
+    },
+    {
+      id: ADVANCED,
+      name: t('label.advanced', 'Advanced'),
+      isSelected: isCosSelect,
+    },
+  ];
 
   const customIconDetail = {
     icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
@@ -208,75 +165,63 @@ export const CosListPanel: FC = () => {
     },
   };
 
-  const globalOptionItems = useMemo<Array<ListItemType>>(
-    () => [
-      {
-        id: COS_LIST,
-        name: t('label.Cos_list', 'COS List'),
-        isSelected: true,
-      },
-    ],
-    [t],
-  );
+  const globalOptionItems: Array<ListItemType> = [
+    {
+      id: COS_LIST,
+      name: t('label.Cos_list', 'COS List'),
+      isSelected: true,
+    },
+  ];
 
   const items =
     cosList.length > MAX_COS_DISPLAY
       ? [
-        {
-          customComponent: (
-            <>
-              <Row mainAlignment="flex-start">
-                <Padding horizontal="small">
-                  <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
-                </Padding>
-              </Row>
-              <Row
-                mainAlignment="flex-start"
-                width="100%"
-                padding={{
-                  all: 'small',
-                }}
-              >
-                <ds-text as="p" overflow="break-word">
-                  {t(
-                    'many_cos_info_msg',
-                    'So many COSes! Which one would you like to see? Start typing to filter.',
-                  )}
-                </ds-text>
-              </Row>
-            </>
-          ),
-        },
-      ]
+          {
+            customComponent: (
+              <>
+                <Row mainAlignment="flex-start">
+                  <Padding horizontal="small">
+                    <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
+                  </Padding>
+                </Row>
+                <Row
+                  mainAlignment="flex-start"
+                  width="100%"
+                  padding={{
+                    all: 'small',
+                  }}
+                >
+                  <ds-text as="p" overflow="break-word">
+                    {t(
+                      'many_cos_info_msg',
+                      'So many COSes! Which one would you like to see? Start typing to filter.',
+                    )}
+                  </ds-text>
+                </Row>
+              </>
+            ),
+          },
+        ]
       : cosList.map((cosData) => ({
-        id: cosData.id,
-        label: cosData.name,
-        customComponent: (
-          <Row
-            style={{
-              display: 'block',
-              textAlign: 'left',
-              height: 'inherit',
-              padding: '3px',
-              width: 'inherit',
-            }}
-            onClick={(): void => {
-              selectedCos(cosData);
-            }}
-          >
-            {cosData?.name}
-          </Row>
-        ),
-      }));
-
-  useEffect(() => {
-    const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
-    if (storedValue === 'false') {
-      setIsDetailListExpanded(false);
-    } else {
-      setIsDetailListExpanded(true);
-    }
-  }, []);
+          id: cosData.id,
+          label: cosData.name,
+          customComponent: (
+            <Row
+              style={{
+                display: 'block',
+                textAlign: 'left',
+                height: 'inherit',
+                padding: '3px',
+                width: 'inherit',
+              }}
+              onClick={(): void => {
+                selectedCos(cosData);
+              }}
+            >
+              {cosData?.name}
+            </Row>
+          ),
+        }));
 
   return (
     <Container
@@ -284,9 +229,9 @@ export const CosListPanel: FC = () => {
       crossAlignment="flex-start"
       mainAlignment="flex-start"
       background="gray5"
-      style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
+      style={{ overflow: 'auto', borderTop: '1px solid var(--color-white)' }}
     >
-      <GeneralListPanel generalOptionItems={globalOptionItems} />
+      <GeneralListPanel generalOptionItems={globalOptionItems} selectedOperationItem={cosView} />
       <Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
       <Row mainAlignment="flex-start" width="100%">
         <DropDownInput
@@ -297,9 +242,8 @@ export const CosListPanel: FC = () => {
               : t('cos.search_class_of_service', 'Select a Class of Service')
           }
           onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-            setIsCosSelect(false);
-            setIsShowError(false);
             setSearchCosName(ev.target.value);
+            setSearchQuery(ev.target.value);
           }}
           inputValue={searchCosName}
           hasError={isShowError}

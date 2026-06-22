@@ -933,7 +933,7 @@ export const localeList = (t: TFunction): SelectItem[] => [
     value: 'vi',
   },
   {
-    label: t('locale.label_bosnian', { value: 'bosanski', defaultValue: 'Bosnian - {{value}}' }),
+    label: t('locale.label_bosnian', { value: 'Bosanski', defaultValue: 'Bosnian - {{value}}' }),
     value: 'bs',
   },
   {
@@ -1131,11 +1131,6 @@ export const charactorSet = (): Array<{ value: string; label: string }> => [
 export const BytesToGB = (data: string | number): number => divide(Number(data) || 0, 1024 ** 3);
 
 export const GbToBytes = (data: string | number): number => multiply(Number(data), 1024 ** 3);
-
-export const isValidDecimalNumber = (value: string): boolean => {
-  const regex = /^\d*\.?\d*$/;
-  return regex.test(value);
-};
 
 export function bytesToHumanReadable(bytes: number): string {
   if (bytes === 0) return '0 Bytes';

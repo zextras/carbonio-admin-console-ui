@@ -14,7 +14,7 @@ import {
   TextArea,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { flushCache, useDomainStore, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +30,6 @@ import {
   ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
   ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../../constants';
-import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import styles from './domain-disclaimer.module.css';
 
@@ -138,7 +137,7 @@ const DomainDisclaimer: FC = () => {
       // Convert accented char
       const convertDiatrictTextSignature = domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText
         .normalize('NFD')
-        .replace(/\p{Diacritic}/gu, "'");
+        .replaceAll(/\p{Diacritic}/gu, "'");
       // add new line after 997 char
       const limitTextSignature = convertDiatrictTextSignature.replace(longLineRg, '$1\n');
       attributes.push({

@@ -15,6 +15,10 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import {
+  flushCache,
+  resetFileQuotaLimitById,
+  setCoreAttributes,
+  setFileQuotaLimitById,
   useCurrentUserRights,
   useDomainStore,
   useIsAdvanced,
@@ -51,17 +55,13 @@ import {
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
 import { deleteAccount } from '../../../../../services/delete-account-service';
-import { flushCache } from '../../../../../services/flush-cache-service';
 import { getAccountQuota } from '../../../../../services/get-account-quota';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
-import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { setAccountQuota } from '../../../../../services/set-account-quota';
-import { setCoreAttributes } from '../../../../../services/set-core-attributes';
-import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
@@ -130,20 +130,18 @@ const EditAccount: FC<{
   const { data: rights = [] } = useCurrentUserRights();
 
   const userType = useMemo(() => {
-    if (
-      !userSetting?.attrs?.zimbraIsAdminAccount ||
-      userSetting?.attrs?.zimbraIsAdminAccount === 'FALSE'
-    ) {
-      return 'Normal';
-    }
     if (userSetting?.attrs?.zimbraIsDelegatedAdminAccount === 'TRUE') {
       return 'DelegatedAdmin';
     }
     if (userSetting?.attrs?.zimbraIsSystemAdminAccount === 'TRUE') {
       return 'System';
     }
-    return 'Admin';
+    if (userSetting?.attrs?.zimbraIsAdminAccount === 'TRUE') {
+      return 'Admin';
+    }
+    return 'Normal';
   }, [userSetting]);
+
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
   const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -868,10 +866,7 @@ const EditAccount: FC<{
 
   const onDeleteAccount = useCallback(() => {
     if (userType === 'DelegatedAdmin' || userType === 'System') {
-      if (
-        accountUserType(selectedAccount) === 'DelegatedAdmin' ||
-        accountUserType(selectedAccount) === 'System'
-      ) {
+      if (accountUserType(selectedAccount) === 'System') {
         setisOpenDeleteHintModel(true);
       } else {
         setIsOpenDeleteDialog(true);
@@ -1139,7 +1134,9 @@ const EditAccount: FC<{
             'Are you sure you want to leave this page without saving?',
           )}
         </ds-text>
-        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
+        <ds-text as="p">
+          {t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}
+        </ds-text>
       </RouteLeavingGuard>
       <Modal
         size="small"
@@ -1296,7 +1293,12 @@ const EditAccount: FC<{
         >
           <Container>
             <Padding bottom="medium" top="medium">
-              <ds-text style={{ textAlign: 'center' }} size={'extralarge'} overflow="break-word" as="p">
+              <ds-text
+                style={{ textAlign: 'center' }}
+                size={'extralarge'}
+                overflow="break-word"
+                as="p"
+              >
                 {t(
                   'label.delete_delegated_account_content',
                   `The system accounts can't be deleted from here. Please visit the respective module to manage the account.`,

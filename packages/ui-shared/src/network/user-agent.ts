@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import UAParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 
-const { os, browser } = UAParser();
+const { os, browser } = new UAParser().getResult();
 export const userAgent = `CarbonioWebClient - ${browser.name} ${browser.version} (${os.name})`;

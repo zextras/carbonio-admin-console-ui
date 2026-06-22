@@ -6,7 +6,7 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-type RenameCosBody = {
+export type RenameCosBody = {
 	_jsns: string;
 	id: { _content: string };
 	newName: { _content: string };

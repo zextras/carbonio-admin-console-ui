@@ -112,7 +112,35 @@ import {
   useVersion,
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
+import {
+  type CosAttribute,
+  type CosEntry,
+  getCosGeneralInformation,
+  type GetCosResponse,
+} from './services/cos-general-information-service';
+import { flushCache } from './services/flush-cache-service';
+import {
+  type CoreAttributeRequest,
+  type CoreAttributeValue,
+  getCoreAttributes,
+  type GetCoreAttributesResponse,
+} from './services/get-core-attributes';
+import {
+  type FileQuotaResponse,
+  getFileQuotaById,
+} from './services/get-file-quota';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
+import { resetFileQuotaLimitById } from './services/reset-file-quota-limit';
+import { getCosList } from './services/search-cos-service';
+import {
+  type DirectoryAttribute,
+  type DirectoryEntry,
+  type DomainDirectories,
+  searchDirectory,
+  type SearchDomainDirectories,
+} from './services/search-directory-service';
+import { setCoreAttributes } from './services/set-core-attributes';
+import { setFileQuotaLimitById } from './services/set-file-quota-limit';
 import { usePrimaryBarState } from './shell/hooks';
 import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
 import { useAppStore } from './store/app/store';
@@ -126,6 +154,7 @@ import { useLoginConfigStore } from './store/login/store';
 import { useDomainStore } from './store/shared/domains';
 import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
+import { isValidDecimalInput } from './utils/validators';
 
 // Default fallback pkg for when app context cannot be determined
 const defaultPkg: Pick<CarbonioModule, 'name' | 'priority' | 'icon'> = {
@@ -179,16 +208,22 @@ export {
   CONTENT,
   fetchAccountSettings,
   fetchExternalSoap,
+  flushCache,
   FORUM_URL,
   getAccount,
   getAllNotifications,
   getAllRights,
   getApp,
+  getCoreAttributes,
+  getCosGeneralInformation,
+  getCosList,
+  getFileQuotaById,
   getLocale,
   getRights,
   getShell,
   getSoapFetchRequest,
   invalidateLicenseQuery,
+  isValidDecimalInput,
   LOCAL_STORAGE_LAST_PRIMARY_KEY,
   LOGIN_V3_CONFIG_PATH,
   loginConfig,
@@ -204,9 +239,13 @@ export {
   registerApp,
   removeRoute,
   replaceHistory,
+  resetFileQuotaLimitById,
   SCALING_LIMIT,
   SCALING_OPTIONS,
+  searchDirectory,
   SEND_FEEDBACK_URL,
+  setCoreAttributes,
+  setFileQuotaLimitById,
   SHELL_APP_ID,
   SnackbarManagerContext,
   soapFetch,
@@ -253,7 +292,22 @@ export {
   useVersion,
   ZIMBRA_ADMIN_URN,
 };
-export type { CloseSnackbarFn, CreateSnackbarFn, CreateSnackbarFnArgs };
+export type {
+  CloseSnackbarFn,
+  CoreAttributeRequest,
+  CoreAttributeValue,
+  CosAttribute,
+  CosEntry,
+  CreateSnackbarFn,
+  CreateSnackbarFnArgs,
+  DirectoryAttribute,
+  DirectoryEntry,
+  DomainDirectories,
+  FileQuotaResponse,
+  GetCoreAttributesResponse,
+  GetCosResponse,
+  SearchDomainDirectories,
+};
 export type {
   Feature,
   LicenseInfo,

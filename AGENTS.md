@@ -76,6 +76,11 @@ Year is auto-updated by eslint. The header is required in all files except:
   }
   ```
 
+### React Compiler
+- This project uses the **React Compiler** (babel plugin)
+- **Do not use `useMemo` or `useCallback`** — the compiler handles memoization automatically
+- Writing manual memoization hooks is redundant and linters will flag them
+
 ### React Components
 - Use named exports only, no default exports
 - Type components with `FC` from 'react': `const ComponentName: FC = () => {}`

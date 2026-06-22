@@ -35,7 +35,7 @@ export {
   type ChipInputProps,
   type ChipItem,
 } from './components/inputs/chipInput/ChipInput';
-export * from './components/inputs/DateTimePicker';
+export * from './components/inputs/DatePicker';
 export * from './components/inputs/IconCheckbox';
 export * from './components/inputs/Input';
 export * from './components/inputs/labeled-value';
@@ -56,6 +56,7 @@ export * from './components/inputs/TextArea';
 export * from './components/navigation/TabBar';
 
 /** custom components */
+export * from './components/custom/box-layout';
 export * from './components/custom/breadcrumb';
 export * from './components/custom/custom-table-header-factory';
 export * from './components/custom/custom-text-area';
@@ -78,6 +79,7 @@ export * from './components/custom/notification-detail';
 export * from './components/custom/notification-view';
 export * from './components/custom/paging';
 export * from './components/custom/primary-bar-tooltip';
+export * from './components/custom/setting-layout';
 export * from './components/custom/track-number-per-page';
 
 /** display components */
