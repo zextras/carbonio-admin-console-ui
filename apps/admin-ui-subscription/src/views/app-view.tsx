@@ -57,7 +57,7 @@ function getSubscriptionView(
   if (subscriptionType === 'ISP') {
     return <MeteredSubscription />;
   }
-  return <></>;
+  return null;
 }
 
 export const AppView = () => {
@@ -67,7 +67,6 @@ export const AppView = () => {
     'new_subscription_feature_flag',
     null,
   );
-
 
   const { data: licenseData, isFetching } = useLicenseInfo();
   const subscriptionType = licenseData?.response?.type;

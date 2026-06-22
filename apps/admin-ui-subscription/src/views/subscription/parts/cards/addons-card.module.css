@@ -7,13 +7,12 @@
 .addonRow {
   display: flex;
   align-items: center;
-  padding: 1.25rem 0;
-  border-bottom: 1px solid var(--color-gray5-regular);
+  background: var(--color-card-bg);
+  margin-bottom: 0.5rem;
+  padding: 1.25rem;
+  border-left: 0.25rem solid var(--color-primary-regular);
+  border-radius: 0.25rem;
   gap: 1.5rem;
-}
-
-.addonRow:last-child {
-  border-bottom: none;
 }
 
 .addonLeft {
@@ -28,17 +27,6 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-}
-
-.addonSeatUsage {
-  display: flex;
-  margin: 0 1rem;
-  flex-direction: column;
-  gap: 0.5rem;
-  /* flex: 1 1 0; */
-  max-width: 25rem;
-  /* width: 400px; */
-  min-width: 25rem;
 }
 
 .addonStats {

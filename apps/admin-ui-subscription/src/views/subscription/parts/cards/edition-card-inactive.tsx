@@ -16,7 +16,7 @@ type EditionCardProps = {
 
 export const EditionCardInactive = ({ config }: EditionCardProps) => {
   const { t } = useTranslation();
-  const activeLabel = t('label.inactive', 'Inactive').toUpperCase();
+  const activeLabel = t('label.inactive', 'not active').toUpperCase();
   const editionLabel = t(config.labelKey, config.labelDefault);
 
   const description = (

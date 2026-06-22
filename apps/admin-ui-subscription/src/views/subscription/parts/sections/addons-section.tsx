@@ -47,7 +47,6 @@ export const AddonsSection = () => {
   const { data: licenseData } = useLicenseInfo();
 
   const editionsData = licenseData?.response?.editions ?? [];
-  const accountCount = licenseData?.response?.accountCount ?? 0;
 
   const presentAddons: Array<AddonDisplayConfig> = ADDON_CONFIGS.map((config) => ({
     ...config,
@@ -69,12 +68,7 @@ export const AddonsSection = () => {
       </div>
       <div className={styles.addonsContainer}>
         {presentAddons.map((config) => (
-          <AddonsCardActive
-            key={config.name}
-            config={config}
-            accountCount={accountCount}
-            editions={editionsData}
-          />
+          <AddonsCardActive key={config.name} config={config} editions={editionsData} />
         ))}
       </div>
     </div>

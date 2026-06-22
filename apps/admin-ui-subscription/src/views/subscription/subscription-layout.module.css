@@ -14,7 +14,7 @@
 
 .header {
   display: flex;
-  align-items: flex-start;
+  justify-content: space-between;
   padding: var(--padding-size-large) 0;
   height: 58px;
   box-sizing: border-box;
@@ -24,12 +24,17 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  /* padding: var(--padding-size-large); */
   overflow: auto;
   width: 100%;
-  /* height: calc(100vh - 200px); */
   box-sizing: border-box;
   border-radius: 1rem;
+}
+
+.syncRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
 }
 
 .card {

@@ -6,6 +6,7 @@
 
 .sectionWrapper {
   width: 100%;
+  margin-top: 1.5rem;
   padding: 1.5rem 0;
   box-sizing: border-box;
 }
@@ -22,13 +23,6 @@
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.5rem;
-}
-
-.syncRow {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-shrink: 0;
 }
 
 .editionGrid {
@@ -208,6 +202,4 @@
 
 .addonsContainer {
   margin-top: 1.5rem;
-  background: var(--color-card-bg);
-  padding: 1.25rem;
 }

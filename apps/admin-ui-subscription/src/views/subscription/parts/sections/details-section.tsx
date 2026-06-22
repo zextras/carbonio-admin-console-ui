@@ -7,7 +7,7 @@
 import { Tooltip } from '@zextras/ui-components';
 import { useLicenseInfo } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DATE_FORMAT } from '../../constants';
@@ -20,27 +20,11 @@ export const DetailsSection = () => {
 
   const response = licenseData?.response;
 
-  const handleCopy = useCallback((): void => {
+  const handleCopy = (): void => {
     if (response?.infrastructureId) {
       void navigator.clipboard.writeText(response.infrastructureId);
     }
-  }, [response?.infrastructureId]);
-
-  const CopyIcon = useMemo(() => {
-    function CopyIconButton() {
-      return (
-        <button
-          type="button"
-          className={styles.copyInlineButton}
-          onClick={handleCopy}
-          aria-label={t('label.copy', 'Copy')}
-        >
-          <ds-icon icon="Copy" size="1.5rem" color="primary" />
-        </button>
-      );
-    }
-    return CopyIconButton;
-  }, [handleCopy, t]);
+  };
 
   if (!response) return null;
 
@@ -92,7 +76,16 @@ export const DetailsSection = () => {
             </ds-text>
             <div className={styles.detailValueRow}>
               <ds-text className={styles.detailValue}>{response.infrastructureId ?? ''}</ds-text>
-              {response.infrastructureId && <CopyIcon />}
+              {response.infrastructureId && (
+                <button
+                  type="button"
+                  className={styles.copyInlineButton}
+                  onClick={handleCopy}
+                  aria-label={t('label.copy', 'Copy')}
+                >
+                  <ds-icon icon="Copy" size="1.5rem" color="primary" />
+                </button>
+              )}
             </div>
           </div>
 

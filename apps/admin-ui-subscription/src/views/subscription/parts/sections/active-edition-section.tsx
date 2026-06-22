@@ -4,12 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, type IconName } from '@zextras/ui-components';
+import { type IconName } from '@zextras/ui-components';
 import { useLicenseInfo } from '@zextras/ui-shared';
-import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { DATE_FORMAT } from '../../constants';
 import { EditionCardActive } from '../cards/edition-card-active';
 import { EditionCardInactive } from '../cards/edition-card-inactive';
 import styles from './sections.module.css';
@@ -34,11 +32,9 @@ const MAIN_EDITION_CONFIGS: Array<EditionDisplayConfig> = [
 
 export const ActiveEditionSection = () => {
   const { t } = useTranslation();
-  const { data: licenseData, isFetching, refetch } = useLicenseInfo();
+  const { data: licenseData } = useLicenseInfo();
 
   const editionsData = licenseData?.response?.editions ?? [];
-  const accountCount = licenseData?.response?.accountCount ?? 0;
-  const updateTime = licenseData?.response?.updateTime;
 
   const mainEditions: Array<EditionDisplayConfig> = MAIN_EDITION_CONFIGS.map((config) => ({
     ...config,
@@ -59,33 +55,11 @@ export const ActiveEditionSection = () => {
             )}
           </ds-text>
         </div>
-        <div className={styles.syncRow}>
-          {updateTime && (
-            <ds-text size="small">
-              {`${t('label.last_sync', 'Last sync')} ${format(updateTime, DATE_FORMAT)}`}
-            </ds-text>
-          )}
-          <Button
-            label={t('label.update_data', 'Update data')}
-            type="outlined"
-            icon="Sync"
-            iconPlacement="right"
-            onClick={(): void => {
-              void refetch();
-            }}
-            loading={isFetching}
-          />
-        </div>
       </div>
       <div className={styles.editionGrid}>
         {mainEditions.map((config) =>
           config.active ? (
-            <EditionCardActive
-              key={config.name}
-              config={config}
-              editions={editionsData}
-              accountCount={accountCount}
-            />
+            <EditionCardActive key={config.name} config={config} editions={editionsData} />
           ) : (
             <EditionCardInactive key={config.name} config={config} />
           ),
