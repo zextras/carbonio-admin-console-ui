@@ -21,10 +21,8 @@ export const AddonsCardInactive = ({ editions, config }: AddonsCardProps) => {
 
   if (!editions) return null;
 
-  const edition = editions.find((e) => e.name === config.name)!;
-
   return (
-    <div key={config.name} className={styles.addonRow}>
+    <div key={config.name} className={styles.addonRowInactive}>
       <div className={styles.addonLeft}>
         <div className={styles.addonNameRow}>
           <ds-icon icon={config.icon} size="1.25rem" />

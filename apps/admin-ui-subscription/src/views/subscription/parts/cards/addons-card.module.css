@@ -4,13 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-.addonRow {
+.addonRowActive {
   display: flex;
   align-items: center;
   background: var(--color-card-bg);
   margin-bottom: 0.5rem;
   padding: 1.25rem;
   border-left: 0.25rem solid var(--color-primary-regular);
+  border-radius: 0.25rem;
+  gap: 1.5rem;
+}
+
+.addonRowInactive {
+  display: flex;
+  align-items: center;
+  background: var(--color-gray5-regular);
+  margin-bottom: 0.5rem;
+  padding: 1.25rem;
+  border-left: 0.25rem solid var(--color-gray0-disabled);
   border-radius: 0.25rem;
   gap: 1.5rem;
 }

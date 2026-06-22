@@ -9,6 +9,7 @@ import { useLicenseInfo } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { AddonsCardActive } from '../cards/addons-card-active';
+import { AddonsCardInactive } from '../cards/addons-card-inactive';
 import styles from './sections.module.css';
 
 export type AddonDisplayConfig = {
@@ -67,9 +68,13 @@ export const AddonsSection = () => {
         </ds-text>
       </div>
       <div className={styles.addonsContainer}>
-        {presentAddons.map((config) => (
-          <AddonsCardActive key={config.name} config={config} editions={editionsData} />
-        ))}
+        {presentAddons.map((config) =>
+          config.active ? (
+            <AddonsCardActive key={config.name} config={config} editions={editionsData} />
+          ) : (
+            <AddonsCardInactive key={config.name} config={config} editions={editionsData} />
+          ),
+        )}
       </div>
     </div>
   );

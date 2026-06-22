@@ -25,7 +25,7 @@ export const AddonsCardActive = ({ editions, config }: AddonsCardProps) => {
   const total = Number.parseInt(edition.quantity, 10);
 
   return (
-    <div key={config.name} className={styles.addonRow}>
+    <div key={config.name} className={styles.addonRowActive}>
       <div className={styles.addonLeft}>
         <div className={styles.addonNameRow}>
           <ds-icon icon={config.icon} size="1.25rem" />
