@@ -38,7 +38,7 @@
     "react-router-dom": "^7.13.0",
     "ua-parser-js": "^2.0.10",
     "zod": "^4.3.6",
-    "zustand": "^5.0.13"
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
@@ -64,7 +64,7 @@
     "msw": "^2.14.6",
     "playwright": "^1.61.0",
     "prop-types": "^15.8.1",
-    "sonarqube-scanner": "^4.3.6",
+    "sonarqube-scanner": "^4.3.8",
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3",
     "typescript-plugin-css-modules": "^5.2.0",
