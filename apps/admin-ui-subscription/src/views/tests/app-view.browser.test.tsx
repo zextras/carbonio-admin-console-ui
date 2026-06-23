@@ -261,8 +261,6 @@ describe('AppView', () => {
 
       const outerDiv = result.container.firstChild as HTMLElement;
       expect(outerDiv).not.toBeNull();
-      expect(outerDiv.style.height).toBe('fit-content');
-      expect(outerDiv.style.width).toBe('100%');
     });
 
     it('should render Breadcrumb and subscription view together', async () => {

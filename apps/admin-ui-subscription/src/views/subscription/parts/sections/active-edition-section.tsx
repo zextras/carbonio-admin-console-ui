@@ -38,7 +38,9 @@ export const ActiveEditionSection = () => {
 
   const mainEditions: Array<EditionDisplayConfig> = MAIN_EDITION_CONFIGS.map((config) => ({
     ...config,
-    active: editionsData.find((e) => e.name === config.name)?.quantity !== '0',
+    active: editionsData.some(
+      (e) => e.name === config.name && e.quantity !== 'none' && e.quantity !== '0',
+    ),
   }));
 
   return (
