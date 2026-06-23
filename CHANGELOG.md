@@ -1,3 +1,34 @@
+## [0.13.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.10...v0.13.11) (2026-06-19)
+
+### Bug Fixes
+
+* hide 2fa carbonio ce in cos ([#1255](https://github.com/zextras/carbonio-admin-console-ui/issues/1255)) ([8d93f7c](https://github.com/zextras/carbonio-admin-console-ui/commit/8d93f7c42490a900e209b6295cd0f01a0544abb2))
+
+## [0.13.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.9...v0.13.10) (2026-06-19)
+
+### Bug Fixes
+
+* **deps:** update dependency polished to ^4.3.1 ([#1236](https://github.com/zextras/carbonio-admin-console-ui/issues/1236)) ([410836b](https://github.com/zextras/carbonio-admin-console-ui/commit/410836ba5623b23453d9b9c7bff6411c6507d0b1))
+
+## [0.13.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.8...v0.13.9) (2026-06-18)
+
+### Bug Fixes
+
+* **deps:** update dependency core-js to ^3.49.0 ([#1234](https://github.com/zextras/carbonio-admin-console-ui/issues/1234)) ([7d31661](https://github.com/zextras/carbonio-admin-console-ui/commit/7d3166155783a7aa113f5cfe98dba7433b365696))
+
+## [0.13.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.7...v0.13.8) (2026-06-18)
+
+### Bug Fixes
+
+* **deps:** update date-fns to ^4.4.0 ([#1232](https://github.com/zextras/carbonio-admin-console-ui/issues/1232)) ([80b3fa6](https://github.com/zextras/carbonio-admin-console-ui/commit/80b3fa6b66b72589d142a3e78342de7d3480133b))
+* **deps:** update dependency @floating-ui/dom to ^1.7.6 ([#1233](https://github.com/zextras/carbonio-admin-console-ui/issues/1233)) ([c913e1a](https://github.com/zextras/carbonio-admin-console-ui/commit/c913e1adb02383f592c9890f1b3dff2785bc5cc5))
+
+## [0.13.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.6...v0.13.7) (2026-06-17)
+
+### Bug Fixes
+
+* **deps:** update babel to ^7.29.7 ([#1231](https://github.com/zextras/carbonio-admin-console-ui/issues/1231)) ([1060861](https://github.com/zextras/carbonio-admin-console-ui/commit/1060861e1780e75ee899708bd314b0b7b7c87b08))
+
 ## [0.13.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.5...v0.13.6) (2026-06-05)
 
 ### Other changes
