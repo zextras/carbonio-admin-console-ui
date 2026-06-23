@@ -8,7 +8,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import * as response from '../../../../response-perpetual.json';
 import { ZIMBRA_ADMIN_URN } from '../constants';
 import { useSnackbar } from '../hooks/useSnackbar';
 import { fetchSoap } from '../services/subscription-service';
@@ -82,7 +81,12 @@ const queryKeys = {
 };
 
 const fetchVersion = async (): Promise<VersionResponse> => {
-  return JSON.parse(response.response.content);
+  const res = await fetchSoap('zextras', {
+    _jsns: ZIMBRA_ADMIN_URN,
+    module: 'ZxCore',
+    action: 'getVersion',
+  });
+  return JSON.parse(res.response.content);
 };
 
 const activateLicense = async (token: string, renewal = false): Promise<LicenseResponse> => {

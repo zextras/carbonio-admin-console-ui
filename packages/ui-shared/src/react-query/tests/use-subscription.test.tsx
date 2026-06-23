@@ -254,8 +254,7 @@ describe('useActivateLicense', () => {
     expect(result.current.error?.message).toBe('Activation failed');
   });
 
-  it('should not automatically invalidate the license query on success', async () => {
-    interceptSoapAction('getLicenseInfo', () => createSoapResponse({ ok: false }));
+  it('should invalidate the license query on success', async () => {
     interceptSoapAction('activate-license', () =>
       createSoapResponse({
         ok: true,
@@ -274,7 +273,9 @@ describe('useActivateLicense', () => {
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(invalidateSpy).not.toHaveBeenCalled();
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: ['subscription', 'license'],
+    });
     invalidateSpy.mockRestore();
   });
 });
