@@ -4,6 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--padding-size-large) 0;
+  height: 58px;
+  box-sizing: border-box;
+}
+
+.syncRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
 .sectionWrapper {
   width: 100%;
   margin-top: 1.5rem;
