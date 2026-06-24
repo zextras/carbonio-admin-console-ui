@@ -24,8 +24,8 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+  BucketConnectorRow,
   DeleteS3ConnectorRequest,
-  objectType,
   S3Connector,
 } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
@@ -43,68 +43,6 @@ type TableHeader = {
 };
 
 type SingleSelection = [] | [string];
-
-type BucketConnectorRow = objectType & {
-  uuid: string;
-  id: string;
-  label: string;
-  bucketName: string;
-  region: string;
-  url: string;
-  accessKey: string;
-  destinationPath: string;
-  insecureHttps: string;
-  notes: string;
-  storeType: string;
-  'usage in external backup': string;
-  'usage in powerstore volumes': string;
-  'usage in powerstore volume': string;
-  usage: string;
-};
-
-function usageItemToString(item: unknown): string {
-  if (item === null || item === undefined) {
-    return '';
-  }
-
-  if (typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean') {
-    return String(item);
-  }
-
-  if (typeof item === 'object') {
-    const usageObject = item as Record<string, unknown>;
-    const preferredKeys = ['label', 'name', 'id', 'uuid', 'bucketName', 'volumeName'];
-
-    const preferredValue = preferredKeys
-      .map((key) => usageObject[key])
-      .find((candidate) =>
-        typeof candidate === 'string' || typeof candidate === 'number' || typeof candidate === 'boolean',
-      );
-
-    if (preferredValue !== undefined) {
-      return String(preferredValue);
-    }
-
-    try {
-      return JSON.stringify(usageObject);
-    } catch {
-      return '';
-    }
-  }
-
-  return '';
-}
-
-function normalizeUsage(value: unknown): string {
-  if (Array.isArray(value)) {
-    return value
-      .map(usageItemToString)
-      .filter((entry) => entry.trim() !== '')
-      .join(', ');
-  }
-
-  return usageItemToString(value);
-}
 
 const headers = (t: TFunction): Array<TableHeader> => [
   {
@@ -251,16 +189,16 @@ const BucketDetailPanel: FC = () => {
   const createSnackbar = useSnackbar();
   const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
   const [bucketList, setBucketList] = useState<Array<BucketConnectorRow>>([]);
-  const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>();
+  const [bucketDeleteName, setBucketDeleteName] = useState<BucketConnectorRow | undefined>();
   const [allBucketList, setAllBucketList] = useState<Array<BucketConnectorRow>>([]);
-  const [connectionData, setConnectionData] = useState<objectType | undefined>();
+  const [connectionData, setConnectionData] = useState<BucketConnectorRow | undefined>();
   const [toggleWizardSection, setToggleWizardSection] = useState(false);
   const [open, setOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [searchBucket, setSearchBucket] = useState('');
   const [showEditDetailView, setShowEditDetailView] = useState(false);
   const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<objectType>();
+  const [selectedRow, setSelectedRow] = useState<BucketConnectorRow>();
 
   const closeHandler = (): void => {
     setOpen(false);
@@ -282,10 +220,10 @@ const BucketDetailPanel: FC = () => {
           insecureHttps: String(connector.insecureHttps ?? false),
           notes: connector.notes || '',
           storeType: ((connector as unknown as { storeType?: string }).storeType || 'S3'),
-          'usage in external backup': normalizeUsage(connector['usage in external backup']),
-          'usage in powerstore volumes': normalizeUsage(connector['usage in powerstore volumes']),
-          'usage in powerstore volume': normalizeUsage(connector['usage in powerstore volume']),
-          usage: normalizeUsage(connector.usage),
+          'usage in external backup': connector['usage in external backup'] ?? '',
+          'usage in powerstore volumes': connector['usage in powerstore volumes'] ?? '',
+          'usage in powerstore volume': connector['usage in powerstore volume'] ?? '',
+          usage: connector.usage ?? '',
 
         }));
         setBucketList(mappedConnectors);
@@ -472,7 +410,7 @@ const BucketDetailPanel: FC = () => {
               if (Number.isNaN(selectedIndex)) {
                 return;
               }
-              const volumeObject: objectType | undefined = bucketList.find(
+              const volumeObject: BucketConnectorRow | undefined = bucketList.find(
                 (s, index) => index === selectedIndex,
               );
               setShowDetails(false);

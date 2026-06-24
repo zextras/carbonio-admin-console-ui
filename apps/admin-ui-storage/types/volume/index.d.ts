@@ -140,10 +140,38 @@ export type S3Connector = {
 	calculateMD5WhenDeleting?: boolean;
 	directorySymbol?: string;
 	notes?: string;
-	'usage in external backup'?: string | Array<string>;
-	'usage in powerstore volumes'?: string | Array<string>;
-	'usage in powerstore volume'?: string | Array<string>;
-	usage?: string | Array<string>;
+	'usage in external backup'?: string | Array<{ server?: string } | Record<string, string>>;
+	'usage in powerstore volumes'?:
+		| string
+		| Array<{ server?: string; volume?: string } | Record<string, string>>;
+	'usage in powerstore volume'?:
+		| string
+		| Array<{ server?: string; volume?: string } | Record<string, string>>;
+	usage?: string | Array<unknown>;
+};
+
+export type S3ConnectorUsageValue =
+	| string
+	| Array<{ server?: string; volume?: string } | Record<string, string>>
+	| Array<unknown>;
+
+export type BucketConnectorRow = {
+	uuid: string;
+	id: string;
+	label: string;
+	bucketName: string;
+	region: string;
+	url: string;
+	accessKey: string;
+	destinationPath: string;
+	insecureHttps: string;
+	notes: string;
+	storeType: string;
+	secret?: string;
+	'usage in external backup': S3ConnectorUsageValue;
+	'usage in powerstore volumes': S3ConnectorUsageValue;
+	'usage in powerstore volume': S3ConnectorUsageValue;
+	usage: S3ConnectorUsageValue;
 };
 
 export type ListS3RegionsResponseContent = {

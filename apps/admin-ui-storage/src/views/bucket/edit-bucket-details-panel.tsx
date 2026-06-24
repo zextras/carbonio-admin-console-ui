@@ -7,6 +7,7 @@
 import {
   Button,
   Container,
+  DefaultTabBarItem,
   Input,
   Padding,
   PasswordInput,
@@ -14,26 +15,32 @@ import {
   Select,
   SelectItem,
   Switch,
+  TabBar,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType, UpdateS3ConnectorRequest } from '../../../types';
+import { BucketConnectorRow, UpdateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { listS3Regions, updateS3Connector } from '../../services/bucket-service';
+import { EditBucketUsageTable } from './parts/edit-bucket-usage-table';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
+import { parseBackupUsage, parseVolumeUsage } from './utils/s3-connector-usage';
 import { VerifyChangesModal } from './verify-changes-modal';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 const bucketNameRegex = /^\S+$/;
 const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
 const NO_REGION_VALUE = '';
+const GENERAL_TAB = 'general';
+const VOLUMES_TAB = 'volumes';
+const BACKUP_TAB = 'backup';
 
-function isBucketUnused(bucketDetail: objectType | undefined): boolean {
+function isBucketUnused(bucketDetail: BucketConnectorRow | undefined): boolean {
   const usageCandidates = [
     bucketDetail?.['usage in external backup'],
     bucketDetail?.['usage in powerstore volumes'],
@@ -60,11 +67,11 @@ function isBucketUnused(bucketDetail: objectType | undefined): boolean {
 type EditBucketDetailPanelProps = {
   setShowEditDetailView: (value: boolean) => void;
   title: string;
-  setBucketDeleteName: (value: objectType | undefined) => void;
-  bucketDetail: objectType | undefined;
+  setBucketDeleteName: (value: BucketConnectorRow | undefined) => void;
+  bucketDetail: BucketConnectorRow | undefined;
   setOpen: (value: boolean) => void;
   getBucketListType: () => void;
-  setSelectedRow: (value: objectType | undefined) => void;
+  setSelectedRow: (value: BucketConnectorRow | undefined) => void;
   setToggleForGetAPICall: (value: boolean) => void;
   toggleForGetAPICall: boolean;
 };
@@ -120,6 +127,99 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const [isVerifyPending, setIsVerifyPending] = useState(false);
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);
   const [isVerifyError, setIsVerifyError] = useState(false);
+  const [selectedTab, setSelectedTab] = useState(GENERAL_TAB);
+
+  const volumeUsageRows = useMemo(
+    () =>
+      parseVolumeUsage(bucketDetail?.['usage in powerstore volumes']).map((row) => ({
+        server: row.server,
+        volume: row.volume,
+      })),
+    [bucketDetail],
+  );
+
+  const backupUsageRows = useMemo(
+    () =>
+      parseBackupUsage(bucketDetail?.['usage in external backup']).map((row) => ({
+        server: row.server,
+      })),
+    [bucketDetail],
+  );
+
+  const volumeHeaders = useMemo(
+    () => [
+      {
+        id: 'server',
+        label: t('label.server', 'Server'),
+        bold: true,
+        width: '50%',
+      },
+      {
+        id: 'volume',
+        label: t('label.volume', 'Volume'),
+        bold: true,
+        width: '50%',
+      },
+    ],
+    [t],
+  );
+
+  const backupHeaders = useMemo(
+    () => [
+      {
+        id: 'server',
+        label: t('label.server_name', 'Server name'),
+        bold: true,
+        width: '100%',
+      },
+    ],
+    [t],
+  );
+
+  const ReusedDefaultTabBar: FC<{
+    item: { id: string; label: string };
+    index: number;
+    selected: boolean;
+    onClick: () => void;
+  }> = ({ item, index, selected, onClick }): ReactElement => (
+    <DefaultTabBarItem
+      item={item}
+      tabIndex={index}
+      selected={selected}
+      onClick={onClick}
+      orientation="horizontal"
+      background="gray6"
+      underlineColor="primary"
+      forceWidthEquallyDistributed={false}
+    >
+      <Row padding="small">
+        <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
+          {item.label}
+        </ds-text>
+      </Row>
+    </DefaultTabBarItem>
+  );
+
+  const tabItems = useMemo(
+    () => [
+      {
+        id: GENERAL_TAB,
+        label: t('label.general', 'GENERAL'),
+        CustomComponent: ReusedDefaultTabBar,
+      },
+      {
+        id: VOLUMES_TAB,
+        label: t('label.volumes', 'VOLUMES'),
+        CustomComponent: ReusedDefaultTabBar,
+      },
+      {
+        id: BACKUP_TAB,
+        label: t('label.backup', 'BACKUP'),
+        CustomComponent: ReusedDefaultTabBar,
+      },
+    ],
+    [t],
+  );
 
   const currentRegionValue = isCustomRegion ? customRegion : regionSelection?.value ?? '';
   const initialRegionValue = bucketDetail?.region ?? '';
@@ -411,10 +511,35 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         </Row>
         <ds-divider></ds-divider>
         <Container
-          padding={{ all: 'large' }}
+          padding={{ all: 'small' }}
           mainAlignment="flex-start"
           crossAlignment="flex-start"
+          background="white"
         >
+          <TabBar
+            items={tabItems as unknown as Array<{ id: string; label: string }>}
+            selected={selectedTab}
+            onChange={(ev: unknown, selectedId: string): void => {
+              setSelectedTab(selectedId);
+            }}
+            width="100%"
+            background="gray6"
+          />
+          <ds-divider></ds-divider>
+        </Container>
+        <Container
+          padding={{ left: 'large', right: 'large' }}
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          background="white"
+          style={{ overflow: 'auto' }}
+        >
+          {selectedTab === GENERAL_TAB && (
+            <Container
+              padding={{ all: 'large' }}
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+            >
           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'small' }}>
             <ds-text as="span" size="extrasmall" color="secondary">
               {t('label.id', 'ID')}
@@ -679,6 +804,24 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
               )}
             </ds-text>
           </Row>
+            </Container>
+          )}
+          {selectedTab === VOLUMES_TAB && (
+            <EditBucketUsageTable
+              rows={volumeUsageRows}
+              columnKeys={['server', 'volume']}
+              headers={volumeHeaders}
+              searchLabel={t('storages.s3Connectors.filterVolumesList', 'Filter volumes list')}
+            />
+          )}
+          {selectedTab === BACKUP_TAB && (
+            <EditBucketUsageTable
+              rows={backupUsageRows}
+              columnKeys={['server']}
+              headers={backupHeaders}
+              searchLabel={t('storages.s3Connectors.filterBackupList', 'Filter backup list')}
+            />
+          )}
         </Container>
 
         <ds-divider></ds-divider>
