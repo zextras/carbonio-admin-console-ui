@@ -44,7 +44,7 @@ importers:
         version: 4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))(vitest@4.1.9)
       '@vitest/browser-playwright':
         specifier: ^4.1.0
-        version: 4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(playwright@1.61.0)(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))(vitest@4.1.9)
+        version: 4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(playwright@1.61.1)(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))(vitest@4.1.9)
       '@vitest/browser-preview':
         specifier: ^4.1.0
         version: 4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))(vitest@4.1.9)
@@ -100,8 +100,8 @@ importers:
         specifier: ^3.3.2
         version: 3.3.3
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-router:
         specifier: ^7.13.0
         version: 7.18.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -245,8 +245,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -429,8 +429,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1
@@ -553,8 +553,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -695,8 +695,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -843,8 +843,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -985,8 +985,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -1127,8 +1127,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -1269,8 +1269,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -1408,8 +1408,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -1550,8 +1550,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -1689,8 +1689,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -1831,8 +1831,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       react-dom:
         specifier: ^19.2.3
         version: 19.2.7(react@19.2.7)
@@ -2113,8 +2113,8 @@ importers:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@25.9.4)(typescript@6.0.3)
       playwright:
-        specifier: ^1.61.0
-        version: 1.61.0
+        specifier: ^1.61.1
+        version: 1.61.1
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1
@@ -6553,13 +6553,13 @@ packages:
     resolution: {integrity: sha512-C+VUP+8jis7EsQZIhDYmS5qlNtjv2yP4SNtjXK9AP1ZcTRlnSfuumaTnRfYZnYgUUYVIKqL0fRvmUGDV2fmp6g==}
     engines: {node: '>=4'}
 
-  playwright-core@1.61.0:
-    resolution: {integrity: sha512-caX7TrY3Ml6egyDX0WUcTHDxodl/b51y5wJOdCEA36QviK/s2g081hvmGs8eaE3DWb6NYZQ6BjO/QkNRPenoPA==}
+  playwright-core@1.61.1:
+    resolution: {integrity: sha512-h7Qlt6m4REp25qvIdvbDtVmD4LqVXfpRxhORv9L0jzETM05p4fuPJ3dKyuSXQxDSbXnmS79HAgi9589lGSpLkg==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.61.0:
-    resolution: {integrity: sha512-Z+7BeeqQPRRzklHsVFP4KTGIyMxKUmfeRA4WisM6G3/XW6nwGeX6fX9qYaDa+CiUqpOkb2f6X3nar05R3kSuJQ==}
+  playwright@1.61.1:
+    resolution: {integrity: sha512-DWnY5o3YbLWK4GovuAVwpqL+1VwGNdUGrRr++8j8PtQQzvAVZUIMjKQ90fY689sEJZJBbZVw1rXaOKSTitkzPQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -9817,11 +9817,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/browser-playwright@4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(playwright@1.61.0)(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))(vitest@4.1.9)':
+  '@vitest/browser-playwright@4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(playwright@1.61.1)(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))(vitest@4.1.9)':
     dependencies:
       '@vitest/browser': 4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))(vitest@4.1.9)
       '@vitest/mocker': 4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
-      playwright: 1.61.0
+      playwright: 1.61.1
       tinyrainbow: 3.1.0
       vitest: 4.1.9(@types/node@25.9.4)(@vitest/browser-playwright@4.1.9)(@vitest/browser-preview@4.1.9)(@vitest/coverage-istanbul@4.1.9)(@vitest/ui@4.1.9)(jsdom@29.1.1)(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))
     transitivePeerDependencies:
@@ -12376,11 +12376,11 @@ snapshots:
       find-up: 2.1.0
       load-json-file: 4.0.0
 
-  playwright-core@1.61.0: {}
+  playwright-core@1.61.1: {}
 
-  playwright@1.61.0:
+  playwright@1.61.1:
     dependencies:
-      playwright-core: 1.61.0
+      playwright-core: 1.61.1
     optionalDependencies:
       fsevents: 2.3.2
 
@@ -13448,7 +13448,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.9.4
-      '@vitest/browser-playwright': 4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(playwright@1.61.0)(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))(vitest@4.1.9)
+      '@vitest/browser-playwright': 4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(playwright@1.61.1)(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))(vitest@4.1.9)
       '@vitest/browser-preview': 4.1.9(msw@2.14.6(@types/node@25.9.4)(typescript@6.0.3))(vite@8.0.16(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass@1.101.0)(stylus@0.62.0)(tsx@4.22.4)(yaml@2.9.0))(vitest@4.1.9)
       '@vitest/coverage-istanbul': 4.1.9(vitest@4.1.9)
       '@vitest/ui': 4.1.9(vitest@4.1.9)
