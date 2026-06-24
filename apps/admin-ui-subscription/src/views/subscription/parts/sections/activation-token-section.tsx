@@ -88,16 +88,16 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
       setMenuOpen(false);
 
       if (option === 'change-token') {
-        if (!onMenuOptionSelect) {
-          setChangeTokenModalOpen(true);
-        } else {
+        if (onMenuOptionSelect) {
           onMenuOptionSelect(option);
+        } else {
+          setChangeTokenModalOpen(true);
         }
       } else if (option === 'deactivate-license') {
-        if (!onMenuOptionSelect) {
-          setDeactivateModalOpen(true);
-        } else {
+        if (onMenuOptionSelect) {
           onMenuOptionSelect(option);
+        } else {
+          setDeactivateModalOpen(true);
         }
       } else {
         onMenuOptionSelect?.(option);
