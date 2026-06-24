@@ -17,7 +17,7 @@ type EditionCardProps = {
 
 export const EditionCardActive = ({ editions, config }: EditionCardProps) => {
   const edition = editions.find((e) => e.name === config.name)!;
-  const total = parseInt(edition.quantity, 10);
+  const total = Number.parseInt(edition.quantity, 10);
   const { t } = useTranslation();
   const activeLabel = t('label.active', 'Active').toUpperCase();
   const editionLabel = t(config.labelKey, config.labelDefault);
