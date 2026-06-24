@@ -79,6 +79,12 @@
   cursor: pointer;
   user-select: none;
   padding: 0.5rem 0;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: 100%;
 }
 
 .activationHeaderRow {

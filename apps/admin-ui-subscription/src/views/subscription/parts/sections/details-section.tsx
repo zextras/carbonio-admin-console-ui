@@ -36,20 +36,16 @@ export const DetailsSection = () => {
 
   return (
     <div className={`${styles.sectionWrapper} ${styles.detailsSection}`}>
-      <div
+      <button
+        type="button"
         className={styles.detailsToggle}
         onClick={(): void => setOpen((prev) => !prev)}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e): void => {
-          if (e.key === 'Enter' || e.key === ' ') setOpen((prev) => !prev);
-        }}
       >
         <ds-icon icon={open ? 'ChevronUp' : 'ChevronDown'} size="1rem" />
         <ds-text weight="bold" color="gray0">
           {t('label.details', 'Details')}
         </ds-text>
-      </div>
+      </button>
       {open && (
         <div className={styles.detailsGrid}>
           <div className={styles.detailItem}>

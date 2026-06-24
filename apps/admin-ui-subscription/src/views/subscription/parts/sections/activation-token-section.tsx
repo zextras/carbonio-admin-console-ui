@@ -152,22 +152,16 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
   return (
     <div className={`${styles.sectionWrapper} ${styles.detailsSection}`}>
       <div className={styles.activationHeaderRow}>
-        <div
+        <button
+          type="button"
           className={styles.detailsToggle}
           onClick={toggleOpen}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e): void => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              toggleOpen();
-            }
-          }}
         >
           <ds-icon icon={open ? 'ChevronUp' : 'ChevronDown'} size="1rem" />
           <ds-text weight="bold" color="gray0">
             {t('core.subscription.activationToken', 'Activation token')}
           </ds-text>
-        </div>
+        </button>
 
         {open && (
           <div ref={menuWrapperRef} className={styles.activationMenuWrapper}>
