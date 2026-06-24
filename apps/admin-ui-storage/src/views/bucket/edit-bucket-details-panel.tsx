@@ -510,11 +510,12 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           </Row>
         </Row>
         <ds-divider></ds-divider>
-        <Container
+        <Row
           padding={{ all: 'small' }}
           mainAlignment="flex-start"
           crossAlignment="flex-start"
           background="white"
+          width="fill"
         >
           <TabBar
             items={tabItems as unknown as Array<{ id: string; label: string }>}
@@ -526,7 +527,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
             background="gray6"
           />
           <ds-divider></ds-divider>
-        </Container>
+        </Row>
         <Container
           padding={{ left: 'large', right: 'large' }}
           mainAlignment="flex-start"
