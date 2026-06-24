@@ -9,6 +9,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import noticeConfig from './notice.config.js';
 import typescriptParser from '@typescript-eslint/parser';
 
+import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 
@@ -21,6 +22,7 @@ export default tseslint.config(
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
   reactHooks.configs.flat.recommended,
+  // reactYouMightNotNeedAnEffect.configs.strict,
   {
     ignores: [
       '**/node_modules/**',

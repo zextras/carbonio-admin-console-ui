@@ -1,3 +1,15 @@
+## [0.13.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.12...v0.13.13) (2026-06-24)
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to ^26.3.1 ([#1241](https://github.com/zextras/carbonio-admin-console-ui/issues/1241)) ([84af5dd](https://github.com/zextras/carbonio-admin-console-ui/commit/84af5ddc9f340c3d5fc2c53af7ae417141e0cb48))
+
+## [0.13.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.11...v0.13.12) (2026-06-23)
+
+### Bug Fixes
+
+* **deps:** update dependency zustand to ^5.0.14 ([#1237](https://github.com/zextras/carbonio-admin-console-ui/issues/1237)) ([850def7](https://github.com/zextras/carbonio-admin-console-ui/commit/850def7e72dab594f23402125f994943ba79ed45))
+
 ## [0.13.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.10...v0.13.11) (2026-06-19)
 
 ### Bug Fixes
