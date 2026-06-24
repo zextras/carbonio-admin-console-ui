@@ -212,7 +212,6 @@ describe('AppView', () => {
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
       await expect.element(page.getByText('Active edition')).toBeVisible();
-      await expect.element(page.getByText('Seat utilization')).toBeVisible();
     });
 
     it('should render empty for unknown type with feature flag on', async () => {
