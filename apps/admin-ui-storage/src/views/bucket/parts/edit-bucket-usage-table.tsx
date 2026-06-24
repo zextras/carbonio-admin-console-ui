@@ -18,6 +18,8 @@ import {
 import { type ChangeEvent, type FC, type ReactElement, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import logo from '../../../assets/gardian.svg';
+
 const PAGE_SIZE = 10;
 
 type EditBucketUsageTableProps = {
@@ -85,48 +87,64 @@ export const EditBucketUsageTable: FC<EditBucketUsageTableProps> = ({
       crossAlignment="flex-start"
       width="fill"
     >
-      <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
-        <Input
-          label={searchLabel}
-          value={searchValue}
-          backgroundColor="gray5"
-          disabled={rows.length === 0 && searchValue.length === 0}
-          onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-            setSearchValue(event.target.value);
-          }}
-          CustomIcon={(): ReactElement => (
-            <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-          )}
-        />
-      </Row>
-      <Table
-        headers={headers}
-        rows={tableRows}
-        showCheckbox={false}
-        multiSelect={false}
-        RowFactory={HoverableRowFactory}
-        HeaderFactory={CustomHeaderFactory}
-      />
-      {filteredRows.length === 0 && (
-        <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-          <ds-text as="p">{t('label.this_list_is_empty', 'This list is empty.')}</ds-text>
-        </Row>
-      )}
-      {filteredRows.length > 0 && (
-        <Container
-          orientation="horizontal"
-          mainAlignment="flex-start"
-          width="100%"
-          padding={{ top: 'large' }}
-        >
-          <Paging
-            totalItem={filteredRows.length}
-            setOffset={setOffset}
-            pageSize={PAGE_SIZE}
-            currentPageProp={currentPage}
-            onPageChange={setCurrentPage}
+      {rows.length > 0 && (
+        <>
+          <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
+            <Input
+              label={searchLabel}
+              value={searchValue}
+              backgroundColor="gray5"
+              disabled={rows.length === 0 && searchValue.length === 0}
+              onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+                setSearchValue(event.target.value);
+              }}
+              CustomIcon={(): ReactElement => (
+                <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+              )}
+            />
+          </Row>
+          <Table
+            headers={headers}
+            rows={tableRows}
+            showCheckbox={false}
+            multiSelect={false}
+            RowFactory={HoverableRowFactory}
+            HeaderFactory={CustomHeaderFactory}
           />
-        </Container>
+          {filteredRows.length === 0 && (
+            <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
+              <ds-text as="p">{t('label.this_list_is_empty', 'This list is empty.')}</ds-text>
+            </Row>
+          )}
+          {filteredRows.length > 0 && (
+            <Row
+              orientation="horizontal"
+              mainAlignment="flex-start"
+              width="100%"
+              padding={{ top: 'large' }}
+            >
+              <Paging
+                totalItem={filteredRows.length}
+                setOffset={setOffset}
+                pageSize={PAGE_SIZE}
+                currentPageProp={currentPage}
+                onPageChange={setCurrentPage}
+              />
+            </Row>
+          )}
+        </>
+      )}
+      {rows.length === 0 && (
+        <Row width="100%">
+          <Row width="100%">
+            <img src={logo} alt="logo" />
+          </Row>
+          <Row padding={{ top: 'extralarge' }} style={{ textAlign: 'center' }}>
+            <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+              {t('label.this_list_is_empty', 'This list is empty.')}
+            </ds-text>
+          </Row>
+        </Row>
       )}
     </Container>
   );
