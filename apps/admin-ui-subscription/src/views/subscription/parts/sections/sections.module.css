@@ -7,9 +7,9 @@
 .header {
   display: flex;
   justify-content: space-between;
-  padding: var(--padding-size-large) 0;
-  height: 58px;
+  margin: 3rem 0;
   box-sizing: border-box;
+  padding: 0 0.5rem;
 }
 
 .syncRow {
@@ -42,7 +42,7 @@
 
 .editionGrid {
   display: flex;
-  gap: 1rem;
+  gap: 24px;
 }
 
 .quotaLabelRow {
@@ -70,6 +70,7 @@
   padding-left: 1rem;
   background: var(--color-card-bg);
   margin-bottom: 2rem;
+  box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.1);
 }
 
 .detailsToggle {

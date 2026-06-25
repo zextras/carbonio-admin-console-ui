@@ -11,6 +11,7 @@
   margin-bottom: 0.5rem;
   padding: 1.25rem;
   border-left: 0.25rem solid var(--color-primary-regular);
+  box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.1);
   border-radius: 0.25rem;
   gap: 1.5rem;
 }
@@ -22,6 +23,7 @@
   margin-bottom: 0.5rem;
   padding: 1.25rem;
   border-left: 0.25rem solid var(--color-gray0-disabled);
+  box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.1);
   border-radius: 0.25rem;
   gap: 1.5rem;
 }

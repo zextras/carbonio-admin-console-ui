@@ -24,7 +24,7 @@ export const RegularSubscription = () => {
       <div className={styles.content}>
         <ActiveEditionSection />
         <AddonsSection />
-        <ds-divider></ds-divider>
+        <ds-divider style={{ padding: '1.5rem 0' }}></ds-divider>
         <DetailsSection />
         <ActivationTokenSection />
       </div>
