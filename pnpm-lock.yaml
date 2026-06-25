@@ -116,7 +116,7 @@ importers:
         version: 4.22.4
       turbo:
         specifier: latest
-        version: 2.9.18
+        version: 2.10.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -136,8 +136,8 @@ importers:
   apps/admin-ui-backup:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -275,8 +275,8 @@ importers:
         specifier: ^5.2.6
         version: 5.2.10
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -459,8 +459,8 @@ importers:
   apps/admin-ui-cos:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-form':
         specifier: ^1.32.0
         version: 1.33.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -580,8 +580,8 @@ importers:
   apps/admin-ui-dashboard:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -722,8 +722,8 @@ importers:
   apps/admin-ui-domains:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -870,8 +870,8 @@ importers:
   apps/admin-ui-legalhold:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1012,8 +1012,8 @@ importers:
   apps/admin-ui-mta:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1154,8 +1154,8 @@ importers:
   apps/admin-ui-notifications:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1296,8 +1296,8 @@ importers:
   apps/admin-ui-operations:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1435,8 +1435,8 @@ importers:
   apps/admin-ui-privacy:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-form':
         specifier: ^1.27.0
         version: 1.33.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1577,8 +1577,8 @@ importers:
   apps/admin-ui-storage:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1716,8 +1716,8 @@ importers:
   apps/admin-ui-subscription:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1858,8 +1858,8 @@ importers:
   packages/test-utils:
     dependencies:
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -1922,8 +1922,8 @@ importers:
         specifier: ^1.7.6
         version: 1.7.6
       '@posthog/react':
-        specifier: ^1.8.1
-        version: 1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        specifier: ^1.10.3
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
       '@zextras/ui-shared':
         specifier: workspace:*
         version: link:../ui-shared
@@ -3558,8 +3558,8 @@ packages:
   '@posthog/core@1.35.2':
     resolution: {integrity: sha512-aV6nkkKCF//NnR9SyQD00+sPg0A4v1m3Xk/fcsnYs+z3qCRXgjwOhfQX2lceAKWlru3o5l9Yn/480GovLOnqKA==}
 
-  '@posthog/react@1.10.2':
-    resolution: {integrity: sha512-/KXzUZiSByE9/6fHmnfDVVvld/3pvBuM6KFUuT5NkR4XwOHEAT/EwNwhUUFOOJpsyDa0PaEWWHZS6VY9r2CB3Q==}
+  '@posthog/react@1.10.3':
+    resolution: {integrity: sha512-Qu//fGQmVlX0B9kTA3LLg67e7AYLEmeuA0Bf1qSyUM0uUILcRQGjQezhNQPLYSTakOqvXEnl6fM2iQBF6Toxrw==}
     peerDependencies:
       '@types/react': '>=16.8.0'
       posthog-js: '>=1.257.2'
@@ -4019,33 +4019,33 @@ packages:
   '@tsconfig/vite-react@8.0.6':
     resolution: {integrity: sha512-O+Eg45m/oNBY9r0EsI/N3VnXvrT4SZbcjTYW5M50eoBVnIUXL+W+ha0uDkK1WqezflsBrHkBSEyn+WdewFJJmw==}
 
-  '@turbo/darwin-64@2.9.18':
-    resolution: {integrity: sha512-9f27peFu16ur8c0v9nUFUEyBnbKuuFsUTjHFWfmwGfzySBXbHwzU44QhZon6Mznz0cHsIr3984NQj/bVrnGSRw==}
+  '@turbo/darwin-64@2.10.0':
+    resolution: {integrity: sha512-EwvHThXzpY0KGd1/NAmuewI5D+aVa3Rl/OlxE36yfjUKb/+ySrfJrSlEFt8aD1OXwnnaHnQnPKHFndor0Zxlsg==}
     cpu: [x64]
     os: [darwin]
 
-  '@turbo/darwin-arm64@2.9.18':
-    resolution: {integrity: sha512-9A6TMRq/Ib+QnbhLlgkhOm+624wO4pzSQ/yQviQfWHOlFvaYxdnIAYmu2H6TS6y7kSVL0DvzNe04NbESTOzFVQ==}
+  '@turbo/darwin-arm64@2.10.0':
+    resolution: {integrity: sha512-9d2fTyyG0lf5Wq1bwJA9qUaeecViMkLcdctWaMMmCkxZ/JqypmqOwK3W6vmejeKVgkr06gSoiX8bD+xN5Jpxcg==}
     cpu: [arm64]
     os: [darwin]
 
-  '@turbo/linux-64@2.9.18':
-    resolution: {integrity: sha512-zCdIDtz69AnbYh913elJRRoF3QY5aa2HNnf+4rAkc7bQ+tWujiDkCNV7stazOUPggaDvhKIf2Z87qHftTeXSkw==}
+  '@turbo/linux-64@2.10.0':
+    resolution: {integrity: sha512-sZBtjMuufitanjzi6UssoUpJMnnPlLMcdcJj3m3ptNsSq31Xh7MnjhwA5nWvLDTfEFg8GPcbYFXMo8vSdKRfqQ==}
     cpu: [x64]
     os: [linux]
 
-  '@turbo/linux-arm64@2.9.18':
-    resolution: {integrity: sha512-Va1kXI04naMgYwqv/5Dfa36dTDx8015U7oaQAjrXa45ua9OoFjSV4OmvkML4EmXvUclQHCiBRbY8bvd0jV7eAg==}
+  '@turbo/linux-arm64@2.10.0':
+    resolution: {integrity: sha512-vkq/Z8R+1DQ+kifWFa810IjRy2NNBVvha3cg9sWA3nFh6nnGrHSMnnJKrzH7c/No9kq4Jb55Ru44YKsCSBgrKg==}
     cpu: [arm64]
     os: [linux]
 
-  '@turbo/windows-64@2.9.18':
-    resolution: {integrity: sha512-m0kDhZANxSNz9ck1ybogFscHabriAsp4eDFNrN/1H5WrgTF7b3VlcPZnhuO3v2+E2KnCbeAc+UUT10BZZHdDKw==}
+  '@turbo/windows-64@2.10.0':
+    resolution: {integrity: sha512-CRUEguLWxFQHptYZS7HjPhNhAFawfea07iR+xAQ5e4klgLrPCMdexBkXwSCwOxqTFknJ7RZFN3gOaADsw+Gttg==}
     cpu: [x64]
     os: [win32]
 
-  '@turbo/windows-arm64@2.9.18':
-    resolution: {integrity: sha512-nUdR8WqoomUys9iIQmG45TMiizJ+5BV8egSeLLZba/AWblyp3fVBcIH1kSE58OtK4g2YzbMJEth6Ttv9w5rqMA==}
+  '@turbo/windows-arm64@2.10.0':
+    resolution: {integrity: sha512-dVHGaf9F8twzgibcBqKoADT/LLqf9++jDb+hq/LPWWaOmRpp4M+/pVOm7vy4z9D++xg8eaxWLT0+wQxFwhYu9A==}
     cpu: [arm64]
     os: [win32]
 
@@ -7289,8 +7289,8 @@ packages:
     resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==}
     engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
 
-  turbo@2.9.18:
-    resolution: {integrity: sha512-bwabv6PupzeavybzEoArBAkwq5fnzwf8OFnRtpHwnviFWuwJPFxtyH+aVp36TmIqK3aYYgtTJ3J0m2ysxxSzQg==}
+  turbo@2.10.0:
+    resolution: {integrity: sha512-o016H9PPtuH2deb3mh3Vci3Avfi9UYgM/RONQisY7HnloupP0IFSbFS3gFYJgFJP8nwBrByHWFQIDa8T2zIXPw==}
     hasBin: true
 
   type-check@0.4.0:
@@ -9180,7 +9180,7 @@ snapshots:
     dependencies:
       '@posthog/types': 1.390.0
 
-  '@posthog/react@1.10.2(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)':
+  '@posthog/react@1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)':
     dependencies:
       posthog-js: 1.390.2
       react: 19.2.7
@@ -9609,22 +9609,22 @@ snapshots:
 
   '@tsconfig/vite-react@8.0.6': {}
 
-  '@turbo/darwin-64@2.9.18':
+  '@turbo/darwin-64@2.10.0':
     optional: true
 
-  '@turbo/darwin-arm64@2.9.18':
+  '@turbo/darwin-arm64@2.10.0':
     optional: true
 
-  '@turbo/linux-64@2.9.18':
+  '@turbo/linux-64@2.10.0':
     optional: true
 
-  '@turbo/linux-arm64@2.9.18':
+  '@turbo/linux-arm64@2.10.0':
     optional: true
 
-  '@turbo/windows-64@2.9.18':
+  '@turbo/windows-64@2.10.0':
     optional: true
 
-  '@turbo/windows-arm64@2.9.18':
+  '@turbo/windows-arm64@2.10.0':
     optional: true
 
   '@tybys/wasm-util@0.10.2':
@@ -13213,14 +13213,14 @@ snapshots:
 
   tunnel@0.0.6: {}
 
-  turbo@2.9.18:
+  turbo@2.10.0:
     optionalDependencies:
-      '@turbo/darwin-64': 2.9.18
-      '@turbo/darwin-arm64': 2.9.18
-      '@turbo/linux-64': 2.9.18
-      '@turbo/linux-arm64': 2.9.18
-      '@turbo/windows-64': 2.9.18
-      '@turbo/windows-arm64': 2.9.18
+      '@turbo/darwin-64': 2.10.0
+      '@turbo/darwin-arm64': 2.10.0
+      '@turbo/linux-64': 2.10.0
+      '@turbo/linux-arm64': 2.10.0
+      '@turbo/windows-64': 2.10.0
+      '@turbo/windows-arm64': 2.10.0
 
   type-check@0.4.0:
     dependencies:

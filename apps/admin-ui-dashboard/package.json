@@ -21,7 +21,7 @@
     "test:ci": "vitest run --coverage"
   },
   "dependencies": {
-    "@posthog/react": "^1.8.1",
+    "@posthog/react": "^1.10.3",
     "@tanstack/react-query": "^5.90.5",
     "@types/react-csv": "^1.1.10",
     "@vitest/browser-preview": "^4.1.0",
