@@ -215,7 +215,7 @@ const BucketDetailPanel: FC = () => {
           region: connector.region || '',
           url: connector.url || '',
           accessKey: connector.accessKey || '',
-          destinationPath: connector.destinationPath || '',
+          prefix: connector.prefix || '',
           insecureHttps: String(connector.insecureHttps ?? false),
           notes: connector.notes || '',
           storeType: ((connector as unknown as { storeType?: string }).storeType || 'S3'),

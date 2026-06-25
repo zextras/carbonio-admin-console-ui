@@ -134,6 +134,7 @@ export type S3Connector = {
 	url?: string;
 	accessKey?: string;
 	destinationPath?: string;
+	prefix?: string;
 	insecureHttps?: boolean;
 	tieringSupported?: boolean;
 	chunkEncoding?: boolean;
@@ -186,7 +187,7 @@ export type UpdateS3ConnectorRequest = {
 	url?: string;
 	accessKey?: string;
 	secret?: string;
-	destinationPath?: string;
+	prefix?: string;
 	insecureHttps?: boolean;
 	notes?: string;
 };

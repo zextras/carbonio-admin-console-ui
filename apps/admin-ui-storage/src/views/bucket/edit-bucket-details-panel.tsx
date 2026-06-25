@@ -28,7 +28,6 @@ import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
 import { VerifyChangesModal } from './verify-changes-modal';
 
-const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 const bucketNameRegex = /^\S+$/;
 const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
 const NO_REGION_VALUE = '';
@@ -104,8 +103,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const [accessKeyData, setAccessKeyData] = useState(bucketDetail?.accessKey ?? '');
   const [secretKey, setSecretKey] = useState(bucketDetail?.secret ?? '');
   const [urlData, setUrlData] = useState(bucketDetail?.url ?? '');
-  const [prefix, setPrefix] = useState(bucketDetail?.destinationPath ?? '');
-  const [prefixConfirm, setPrefixConfirm] = useState(true);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [regionSelection, setRegionSelection] = useState(initialRegion);
   const [isCustomRegion, setIsCustomRegion] = useState(initialRegion.value === CUSTOM_REGION_VALUE);
@@ -127,7 +124,9 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     hasSubmitted && isCustomRegion && !bucketNameRegex.test(customRegion);
   const isEndpointUrlRequired = isCustomRegion || currentRegionValue === '';
   const isEndpointUrlInvalid =
-    hasSubmitted && isEndpointUrlRequired && (urlData.trim() === '' || !bucketNameRegex.test(urlData.trim()));
+    hasSubmitted &&
+    isEndpointUrlRequired &&
+    (urlData.trim() === '' || !bucketNameRegex.test(urlData.trim()));
 
   const changedFields = useMemo(() => {
     const fields: Array<{ label: string; value: string }> = [];
@@ -168,13 +167,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       });
     }
 
-    if (prefix !== (bucketDetail?.destinationPath ?? '')) {
-      fields.push({
-        label: t('label.prefix', 'Prefix'),
-        value: prefix.trim() || '-',
-      });
-    }
-
     if (accessKeyData !== (bucketDetail?.accessKey ?? '')) {
       fields.push({
         label: t('label.access_key', 'Access Key ID'),
@@ -204,7 +196,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     bucketDetail?.bucketName,
     bucketDetail?.insecureHttps,
     bucketDetail?.label,
-    bucketDetail?.destinationPath,
     bucketDetail?.secret,
     bucketDetail?.url,
     bucketLabel,
@@ -213,7 +204,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     customRegion,
     initialRegionValue,
     isCustomRegion,
-    prefix,
     regionSelection?.label,
     regionSelection?.value,
     secretKey,
@@ -227,7 +217,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     accessKeyData !== (bucketDetail?.accessKey ?? '') ||
     secretKey !== (bucketDetail?.secret ?? '') ||
     urlData !== (bucketDetail?.url ?? '') ||
-    prefix !== (bucketDetail?.destinationPath ?? '') ||
     currentRegionValue !== initialRegionValue ||
     String(acceptUntrustedSSL) !== String(bucketDetail?.insecureHttps ?? true);
 
@@ -242,7 +231,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       .then((regions) => {
         const mappedRegions = regions.map((region) => ({
           value: region.id,
-          label: `${region.description}, [${region.id}]`
+          label: `${region.description}, [${region.id}]`,
         }));
         setBaseRegions(mappedRegions);
       })
@@ -297,9 +286,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     if (urlData !== (bucketDetail?.url ?? '')) {
       payload.url = urlData;
     }
-    if (prefix !== (bucketDetail?.destinationPath ?? '')) {
-      payload.destinationPath = prefix;
-    }
     if (currentRegionValue !== initialRegionValue) {
       payload.region = currentRegionValue;
     }
@@ -334,10 +320,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     }
 
     if (isEndpointUrlRequired && (urlData.trim() === '' || !bucketNameRegex.test(urlData.trim()))) {
-      return;
-    }
-
-    if (!prefixConfirm) {
       return;
     }
 
@@ -468,7 +450,11 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           </Row>
 
           <Row width="100%" padding={{ top: 'large' }}>
-            <Row width="48%" mainAlignment="flex-start" style={{display:"inline", height:"100%"}}>
+            <Row
+              width="48%"
+              mainAlignment="flex-start"
+              style={{ display: 'inline', height: '100%' }}
+            >
               <Input
                 backgroundColor="gray5"
                 label={t('label.access_key', 'Access Key ID*')}
@@ -479,7 +465,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
               />
             </Row>
             <Padding horizontal="small" />
-            <Row width="48%" mainAlignment="flex-end" style={{display:"inline", height:"100%"}}>
+            <Row width="48%" mainAlignment="flex-end" style={{ display: 'inline', height: '100%' }}>
               <PasswordInput
                 backgroundColor="gray5"
                 label={t('label.secret_key', 'Secret Access Key*')}
@@ -579,7 +565,11 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
             <Input
               backgroundColor="gray5"
-              label={isEndpointUrlRequired ? t('label.endpoint_url_required', 'Endpoint URL*') : t('label.endpoint_url', 'Endpoint URL')}
+              label={
+                isEndpointUrlRequired
+                  ? t('label.endpoint_url_required', 'Endpoint URL*')
+                  : t('label.endpoint_url', 'Endpoint URL')
+              }
               value={urlData}
               onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
                 setUrlData(ev.target.value);
@@ -610,32 +600,10 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
             <Input
               backgroundColor="gray5"
               label={t('label.prefix', 'Prefix')}
-              value={prefix}
-              hasError={!prefixConfirm}
-              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                const nextPrefix = ev.target.value;
-                setPrefix(nextPrefix);
-                setPrefixConfirm(nextPrefix === '' || prefixRegex.test(nextPrefix));
-              }}
+              disabled
+              defaultValue={bucketDetail?.prefix ?? ''}
+              onChange={(): void => {}}
             />
-            <Padding top="extrasmall">
-              <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-                {t(
-                  'buckets.prefix_hint',
-                  'Optional. Limits access to a specific path within the bucket (e.g. mydomains/folder)',
-                )}
-              </ds-text>
-            </Padding>
-            {!prefixConfirm && (
-              <Padding top="extrasmall">
-                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-                  {t(
-                    'buckets.invalid_prefix',
-                    'The prefix should not contain spaces. The allowed letters are a-z, A-Z, and special characters /-.',
-                  )}
-                </ds-text>
-              </Padding>
-            )}
           </Row>
 
           <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
@@ -653,19 +621,18 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
               />
             </Row>
             <Row width="10%" mainAlignment="flex-end">
-            <Tooltip
-              placement="top"
-              label={t(
-                'storages.s3Connectors.untrustedSSLTooltip',
-                'Use this only for testing environments or internal infrastructure with custom certificates. Not recommended for production.',
-              )}
-            >
-              <ds-text as="span">
-                <ds-icon icon="InfoOutline" size="large" color="gray0"></ds-icon>
-              </ds-text>
-            </Tooltip>
-          </Row>
-        
+              <Tooltip
+                placement="top"
+                label={t(
+                  'storages.s3Connectors.untrustedSSLTooltip',
+                  'Use this only for testing environments or internal infrastructure with custom certificates. Not recommended for production.',
+                )}
+              >
+                <ds-text as="span">
+                  <ds-icon icon="InfoOutline" size="large" color="gray0"></ds-icon>
+                </ds-text>
+              </Tooltip>
+            </Row>
           </Row>
           <Row
             width="100%"
@@ -719,7 +686,8 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
               label={t('label.verify_and_save_changes', 'VERIFY & SAVE CHANGES')}
               onClick={onVerifyAndSaveChanges}
               disabled={
-                (isCustomRegion && !bucketNameRegex.test(customRegion)) || changedFields.length === 0
+                (isCustomRegion && !bucketNameRegex.test(customRegion)) ||
+                changedFields.length === 0
               }
             />
           </Row>

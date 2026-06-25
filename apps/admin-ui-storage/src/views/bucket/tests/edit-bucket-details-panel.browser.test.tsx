@@ -89,7 +89,6 @@ type BucketDetail = {
 	accessKey: string;
 	secret: string;
 	url: string;
-	destinationPath: string;
 	prefix: string;
 	region: string;
 	insecureHttps: string;
@@ -105,7 +104,6 @@ function createBucketDetail(overrides: Partial<BucketDetail> = {}): BucketDetail
 		accessKey: 'AKIA_TEST',
 		secret: 'secret-key',
 		url: 'https://s3.example.test',
-		destinationPath: 'tenants/root',
 		prefix: 'tenants/root',
 		region: 'us-east-1',
 		insecureHttps: 'true',
