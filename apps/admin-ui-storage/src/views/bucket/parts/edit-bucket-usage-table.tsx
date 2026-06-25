@@ -22,6 +22,16 @@ import logo from '../../../assets/gardian.svg';
 
 const PAGE_SIZE = 10;
 
+type SearchFilterInputIconProps = {
+  hasError: boolean;
+  hasFocus: boolean;
+  disabled: boolean;
+};
+
+const SearchFilterInputIcon: FC<SearchFilterInputIconProps> = (): ReactElement => (
+  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
+
 type EditBucketUsageTableProps = {
   rows: Array<Record<string, string>>;
   columnKeys: Array<string>;
@@ -98,9 +108,7 @@ export const EditBucketUsageTable: FC<EditBucketUsageTableProps> = ({
               onChange={(event: ChangeEvent<HTMLInputElement>): void => {
                 setSearchValue(event.target.value);
               }}
-              CustomIcon={(): ReactElement => (
-                <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-              )}
+              CustomIcon={SearchFilterInputIcon}
             />
           </Row>
           <Table

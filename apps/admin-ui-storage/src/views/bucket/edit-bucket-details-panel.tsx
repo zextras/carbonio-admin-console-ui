@@ -63,6 +63,37 @@ function isBucketUnused(bucketDetail: BucketConnectorRow | undefined): boolean {
   });
 }
 
+type ReusedDefaultTabBarProps = {
+  item: { id: string; label: string };
+  index: number;
+  selected: boolean;
+  onClick: () => void;
+};
+
+const ReusedDefaultTabBar: FC<ReusedDefaultTabBarProps> = ({
+  item,
+  index,
+  selected,
+  onClick,
+}): ReactElement => (
+  <DefaultTabBarItem
+    item={item}
+    tabIndex={index}
+    selected={selected}
+    onClick={onClick}
+    orientation="horizontal"
+    background="gray6"
+    underlineColor="primary"
+    forceWidthEquallyDistributed={false}
+  >
+    <Row padding="small">
+      <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
+        {item.label}
+      </ds-text>
+    </Row>
+  </DefaultTabBarItem>
+);
+
 type EditBucketDetailPanelProps = {
   setShowEditDetailView: (value: boolean) => void;
   title: string;
@@ -171,30 +202,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       },
     ],
     [t],
-  );
-
-  const ReusedDefaultTabBar: FC<{
-    item: { id: string; label: string };
-    index: number;
-    selected: boolean;
-    onClick: () => void;
-  }> = ({ item, index, selected, onClick }): ReactElement => (
-    <DefaultTabBarItem
-      item={item}
-      tabIndex={index}
-      selected={selected}
-      onClick={onClick}
-      orientation="horizontal"
-      background="gray6"
-      underlineColor="primary"
-      forceWidthEquallyDistributed={false}
-    >
-      <Row padding="small">
-        <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
-          {item.label}
-        </ds-text>
-      </Row>
-    </DefaultTabBarItem>
   );
 
   const tabItems = useMemo(
@@ -841,12 +848,12 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
             <Tooltip
               placement="top"
               label={
-                !showDeleteConnector
-                  ? t(
+                showDeleteConnector
+                  ? ''
+                  : t(
                       'label.delete_connector_disabled_tooltip',
                       'S3 connector is in use and cannot be deleted',
                     )
-                  : ''
               }
             >
               <Button
