@@ -20,7 +20,8 @@ const AdvancedMailstoresCreate: FC<{
   const { advancedVolumeDetail } = context;
   const volTypeList = useMemo(() => volumeTypeList(t), [t]);
   const [volumeType, setVolumeType] = useState<string>('');
-  const [bucketS3, setBucketS3] = useState(false);
+  const showTieringSettings =
+    advancedVolumeDetail?.unusedBucketType === S3 && advancedVolumeDetail?.tieringSupported === true;
 
   useEffect(() => {
     if (
@@ -41,14 +42,6 @@ const AdvancedMailstoresCreate: FC<{
     )?.label;
     setVolumeType(volumeTypeObject ?? '');
   }, [advancedVolumeDetail?.volumeMain, volTypeList]);
-
-  useEffect(() => {
-    if (advancedVolumeDetail?.unusedBucketType === S3) {
-      setBucketS3(true);
-    } else {
-      setBucketS3(false);
-    }
-  }, [advancedVolumeDetail?.unusedBucketType]);
 
   return (
     <>
@@ -126,7 +119,7 @@ const AdvancedMailstoresCreate: FC<{
             backgroundColor="gray6"
           />
         </Row>
-        {bucketS3 && (
+        {showTieringSettings && (
           <>
             <Row padding={{ top: 'large' }} width="100%">
               <LabeledValue

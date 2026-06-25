@@ -36,7 +36,8 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
   const setIsAllocationToggle = useBucketVolumeStore((state) => state?.setIsAllocationToggle);
   const [primaryRadio, setPrimaryRadio] = useState(false);
   const [secondaryRadio, setSecondaryRadio] = useState(false);
-  const [bucketS3, setBucketS3] = useState(false);
+  const showTieringSettings =
+    advancedVolumeDetail?.unusedBucketType === S3 && advancedVolumeDetail?.tieringSupported === true;
 
   const changeVolDetail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -114,12 +115,18 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
   ]);
 
   useEffect(() => {
-    if (advancedVolumeDetail?.unusedBucketType === S3) {
-      setBucketS3(true);
-    } else {
-      setBucketS3(false);
+    if (showTieringSettings) {
+      return;
     }
-  }, [advancedVolumeDetail?.unusedBucketType]);
+
+    setAdvancedVolumeDetail((prev) => ({
+      ...prev,
+      useInfrequentAccess: false,
+      useIntelligentTiering: false,
+    }));
+    onSelection({ useInfrequentAccess: false }, true);
+    onSelection({ useIntelligentTiering: false }, true);
+  }, [onSelection, setAdvancedVolumeDetail, showTieringSettings]);
 
   return (
     <>
@@ -224,7 +231,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
             onChange={changeVolDetail}
           />
         </Row>
-        {bucketS3 && (
+        {showTieringSettings && (
           <>
             <Row
               padding={{ top: 'large' }}

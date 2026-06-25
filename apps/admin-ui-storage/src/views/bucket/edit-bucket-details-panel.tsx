@@ -869,7 +869,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
             </Tooltip>
           </Row>
           <Row width="auto" mainAlignment="flex-end">
-            <Padding right="small">
+            {/* <Padding right="small">
               <Button
                 type="outlined"
                 color="primary"
@@ -877,7 +877,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
                 onClick={onTestConnection}
                 disabled={isVerifyPending || !bucketDetail?.uuid}
               />
-            </Padding>
+            </Padding> */}
             <Button
               type="default"
               color="primary"

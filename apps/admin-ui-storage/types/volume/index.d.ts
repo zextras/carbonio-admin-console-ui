@@ -58,6 +58,7 @@ export type BucketVolume = {
 	bucketName?: string;
 	protocol?: string;
 	storeType?: string;
+	tieringSupported?: boolean;
 	accessKey?: string;
 	secret?: string;
 	label?: string;
@@ -298,6 +299,7 @@ export type VolumeWizardDetail = {
 	id?: string | number;
 	volumeName?: string;
 	volumeMain?: number | string;
+	tieringSupported?: boolean;
 	path?: string;
 	isCurrent?: boolean;
 	isCompression?: boolean;

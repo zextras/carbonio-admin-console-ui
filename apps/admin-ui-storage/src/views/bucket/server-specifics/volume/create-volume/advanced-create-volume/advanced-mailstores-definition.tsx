@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import type {
   AdvancedVolumeWizardDetail,
   BucketVolume,
-  objectType,
   VolumeAllocationItem,
   VolumeWizardDetail,
 } from '../../../../../../../types';
@@ -101,6 +100,11 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
       bucketName: selectedBucketDetail?.bucketName,
       unusedBucketType: selectedBucketDetail?.storeType,
       bucketId: selectedBucketDetail?.uuid,
+      tieringSupported: selectedBucketDetail?.tieringSupported,
+      useInfrequentAccess: selectedBucketDetail?.tieringSupported ? prev.useInfrequentAccess : false,
+      useIntelligentTiering: selectedBucketDetail?.tieringSupported
+        ? prev.useIntelligentTiering
+        : false,
     }));
   };
 
@@ -111,33 +115,38 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
 
   const getBucketListType = useCallback((): void => {
     listS3Connector().then((values) => {
-      const connectors: Array<objectType> = values.map((items) => ({
+      const connectors: Array<BucketVolume> = values.map((items) => ({
         uuid: items.uuid,
         label: items.label || '',
         bucketName: items.bucketName || '',
         storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
         notes: items.notes || '',
+        tieringSupported:
+          (items as unknown as { tieringSupported?: boolean }).tieringSupported ?? false,
+        [USAGE_IN_EXTERNAL_BACKUP]:
+          (items as unknown as { 'usage in external backup'?: string | Array<string> })[
+            'usage in external backup'
+          ] ?? UNUSED,
       }));
 
       const allData = connectors.filter(
-        (items: objectType) =>
+        (items: BucketVolume) =>
           !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
       );
 
       const volUnusedBucketList: Array<{ label: string; value: string }> = allData.map(
-        (items: objectType) => {
+        (items: BucketVolume) => {
           const volumeObject = getBucketTypeLabel(items?.storeType);
           return {
             label: `${volumeObject} | ${items?.label}`,
-            value: items?.uuid,
+            value: items?.uuid ?? '',
           };
         },
       );
-
       setIsVolumeAllDetail(allData);
       setBackupUnusedBucketList(volUnusedBucketList);
     });
-  }, [setIsVolumeAllDetail]);
+  }, [getBucketTypeLabel, setIsVolumeAllDetail]);
 
   useEffect(() => {
     const volumeTypeObject = volAllocationList?.find(

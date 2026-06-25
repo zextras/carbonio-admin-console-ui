@@ -696,7 +696,7 @@ const ModifyVolume: FC<{
             type: volData.type ?? 0,
             compressBlobs: volData.compressBlobs === 'true' || volData.compressBlobs === '1',
             isCurrent: volData.isCurrent === true || volData.isCurrent === 1,
-            rootpath: volData.rootpath ?? '',
+            rootpath: volData.path ?? '',
             compressionThreshold: volData.compressionThreshold ?? '',
           });
           setmodifyVolumeToggle(true);
@@ -832,7 +832,8 @@ const ModifyVolume: FC<{
                 label={t('label.volume_id', 'Volume ID')}
                 value={id}
                 backgroundColor="gray6"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setId(e?.target?.value)}
+                disabled
+                onChange={(): void => {}}
               />
             </Row>
             <Row padding={{ top: 'large' }} width="100%">

@@ -97,9 +97,16 @@ export const volTableHeader = (t: TFunction, isAdvanced: boolean): THeader[] =>
 		{
 			id: 'compression',
 			label: t('volume.volume_header.compression', 'Compression'),
-			width: '25%',
+			width: '20%',
 			align: 'left',
 			bold: true
+		},
+		{
+			id: 'actions',
+			label: t('label.actions', 'Actions'),
+			width: '10%',
+			align: 'left',
+			bold: true,
 		}
 	].filter(Boolean) as THeader[];
 
@@ -145,9 +152,16 @@ export const indexerHeaders = (
 		{
 			id: 'current',
 			label: t('volume.volume_indexer_header.current', 'Current'),
-			width: '45%',
+			width: '20%',
 			align: 'left',
 			bold: true
+		},
+		{
+			id: 'actions',
+			label: t('label.actions', 'Actions'),
+			width: '10%',
+			align: 'left',
+			bold: true,
 		}
 	].filter(Boolean) as Array<{
 		id: string;

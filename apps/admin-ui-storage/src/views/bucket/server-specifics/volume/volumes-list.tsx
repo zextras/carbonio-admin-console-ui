@@ -147,6 +147,15 @@ const VolumeListTable: FC<{
               {v?.compressed ? YES : NO}
             </ds-text>
           </Row>,
+          <Row key={`${i}-actions`} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+            <button
+              type="button"
+              onClick={(): void => { onClick(i); }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 0px 0px 14px', display: 'inline-flex', alignItems: 'center' }}
+            >
+              <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
+            </button>
+          </Row>
         ];
 
         return {
@@ -776,7 +785,6 @@ const VolumesDetailPanel: FC = () => {
               style={{ gap: '1rem' }}
             >
               <Button
-                type="outlined"
                 label={t('label.new_volume_button', 'NEW VOLUME')}
                 icon="PlusOutline"
                 color="primary"
