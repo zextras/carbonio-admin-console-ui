@@ -21,7 +21,7 @@ const SERVER_ID = 'server-1';
 const PRIMARY_VOLUME: Volume = {
 	id: 5,
 	name: 'primary-local',
-	rootpath: '/opt/zextras/store',
+	path: '/opt/zextras/store',
 	type: 1,
 	compressBlobs: 'true',
 	compressionThreshold: '4096',
@@ -31,7 +31,7 @@ const PRIMARY_VOLUME: Volume = {
 const SECONDARY_VOLUME: Volume = {
 	id: 6,
 	name: 'secondary-local',
-	rootpath: '/opt/zextras/secondary',
+	path: '/opt/zextras/secondary',
 	type: 2,
 	compressBlobs: 'false',
 	compressionThreshold: '4096',
@@ -41,7 +41,7 @@ const SECONDARY_VOLUME: Volume = {
 const INDEX_VOLUME: Volume = {
 	id: 7,
 	name: 'index-local',
-	rootpath: '/opt/zextras/index',
+	path: '/opt/zextras/index',
 	type: 10,
 	compressBlobs: 'false',
 	compressionThreshold: '4096',
@@ -117,7 +117,7 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 			await setupBrowserTest(renderModifyVolume(PRIMARY_VOLUME.id as number));
 			await expect
 				.element(page.getByRole('textbox', { name: /path/i }))
-				.toHaveValue(PRIMARY_VOLUME.rootpath as string);
+				.toHaveValue(PRIMARY_VOLUME.path as string);
 		});
 
 		it('should not call setmodifyVolumeToggle when volumeId does not match any volume', async () => {
