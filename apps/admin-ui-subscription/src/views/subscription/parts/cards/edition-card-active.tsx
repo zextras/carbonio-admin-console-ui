@@ -5,6 +5,7 @@
  */
 
 import { theme } from '@zextras/ui-components';
+import { isUnlimitedQuantity } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { type EditionDisplayConfig } from '../sections/active-edition-section';
@@ -17,6 +18,7 @@ type EditionCardProps = {
 
 export const EditionCardActive = ({ editions, config }: EditionCardProps) => {
   const edition = editions.find((e) => e.name === config.name)!;
+  const isUnlimited = isUnlimitedQuantity(edition.quantity);
   const total = Number.parseInt(edition.quantity, 10);
   const { t } = useTranslation();
   const activeLabel = t('label.active', 'Active').toUpperCase();
@@ -38,7 +40,7 @@ export const EditionCardActive = ({ editions, config }: EditionCardProps) => {
         <div className={styles.statItem}>
           <ds-text size="small">{t('label.total_seat', 'Total seat')}</ds-text>
           <ds-text weight="bold" color="gray0" style={{ fontSize: '1.25rem' }}>
-            {total}
+            {isUnlimited ? t('label.unlimited', 'Unlimited') : total}
           </ds-text>
         </div>
       </div>

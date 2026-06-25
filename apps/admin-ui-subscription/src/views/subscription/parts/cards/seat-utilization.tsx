@@ -5,7 +5,7 @@
  */
 
 import { theme } from '@zextras/ui-components';
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { isUnlimitedQuantity, useLicenseInfo } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
@@ -51,8 +51,10 @@ export const SeatUtilization = () => {
 
   const { data: licenseData } = useLicenseInfo();
 
+  const licensedUsers = licenseData?.response?.licensedUsers;
+  const isUnlimited = isUnlimitedQuantity(licensedUsers);
   const activeAccounts = licenseData?.response?.accountCount ?? 0;
-  const totalLicences = Number(licenseData?.response?.licensedUsers ?? '0');
+  const totalLicences = isUnlimited ? 0 : Number(licensedUsers ?? '0');
   const usage = calculateUsagePercentage(activeAccounts, totalLicences);
 
   const usagePercentageLabel = `${Math.round(usage)}%`;
@@ -75,7 +77,9 @@ export const SeatUtilization = () => {
           background={getTagIconBackground(usage)}
         ></ds-tag-icon>
       </div>
-      <ds-text style={{ paddingTop: '1rem' }}>{`${activeAccounts}/${totalLicences}`}</ds-text>
+      <ds-text style={{ paddingTop: '1rem' }}>{`${activeAccounts}/${
+        isUnlimited ? t('label.unlimited', 'Unlimited') : totalLicences
+      }`}</ds-text>
     </div>
   );
 };

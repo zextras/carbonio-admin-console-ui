@@ -5,7 +5,7 @@
  */
 
 import { Tooltip } from '@zextras/ui-components';
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { isUnlimitedQuantity, useLicenseInfo } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import styles from './card.module.css';
@@ -16,7 +16,8 @@ export const TotalAccounts = () => {
   const title = t('core.subscription.total_accounts', 'Total active accounts');
   const { data: licenseData } = useLicenseInfo();
 
-  const activeAccounts = licenseData?.response?.licensedUsers;
+  const licensedUsers = licenseData?.response?.licensedUsers;
+  const isUnlimited = isUnlimitedQuantity(licensedUsers);
 
   return (
     <div className={styles.card}>
@@ -35,7 +36,7 @@ export const TotalAccounts = () => {
         </Tooltip>
       </div>
       <ds-text weight="bold" color="gray0" style={{ fontSize: '1.5rem' }}>
-        {activeAccounts}
+        {isUnlimited ? t('label.unlimited', 'Unlimited') : licensedUsers}
       </ds-text>
     </div>
   );

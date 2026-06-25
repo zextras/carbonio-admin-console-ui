@@ -5,7 +5,7 @@
  */
 
 import { theme } from '@zextras/ui-components';
-import { LicenseInfo } from '@zextras/ui-shared';
+import { isUnlimitedQuantity, LicenseInfo } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { type AddonDisplayConfig } from '../sections/addons-section';
@@ -22,6 +22,7 @@ export const AddonsCardActive = ({ editions, config }: AddonsCardProps) => {
   if (!editions) return null;
 
   const edition = editions.find((e) => e.name === config.name)!;
+  const isUnlimited = isUnlimitedQuantity(edition.quantity);
   const total = Number.parseInt(edition.quantity, 10);
 
   return (
@@ -46,7 +47,7 @@ export const AddonsCardActive = ({ editions, config }: AddonsCardProps) => {
         <div className={styles.statItem}>
           <ds-text size="extrasmall">{t('label.total_seat', 'Total seat')}</ds-text>
           <ds-text weight="bold" color="gray0" style={{ fontSize: '1rem' }}>
-            {total}
+            {isUnlimited ? t('label.unlimited', 'Unlimited') : total}
           </ds-text>
         </div>
       </div>

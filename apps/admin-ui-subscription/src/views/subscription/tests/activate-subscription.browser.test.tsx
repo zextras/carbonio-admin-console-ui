@@ -5,11 +5,11 @@
  */
 
 import {
-  createBrowserZextrasActionInterceptor,
-  delayedSoapApiForBrowser,
-  getQueryClient,
-  resetMockWorker,
-  setupBrowserTest,
+	createBrowserZextrasActionInterceptor,
+	delayedBrowserZextrasActionInterceptor,
+	getQueryClient,
+	resetMockWorker,
+	setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import React from 'react';
@@ -103,6 +103,27 @@ describe('ActivateSubscription', () => {
   describe('Activation popup', () => {
     it('should show activation popup with title and description when activate button is clicked', async () => {
       const mockDelayMs = 500;
+      delayedBrowserZextrasActionInterceptor(
+        'activate-license',
+        () =>
+          HttpResponse.json({
+            Body: {
+              response: {
+                content: JSON.stringify({
+                  ok: true,
+                  message: 'License activated successfully',
+                  response: {
+                    type: 'Purchased',
+                    subType: 'REGULAR',
+                    expired: false,
+                    features: [],
+                  },
+                }),
+              },
+            },
+          }),
+        mockDelayMs,
+      );
       setupActivateSubscriptionTest(<ActivateSubscription />);
 
       const input = page.getByRole('textbox');
@@ -111,7 +132,6 @@ describe('ActivateSubscription', () => {
       const activateButton = page.getByText('Activate subscription');
       await activateButton.click();
 
-      delayedSoapApiForBrowser('activate-license', 500);
       await expect.element(page.getByText('Activating subscription')).toBeVisible();
       await expect
         .element(page.getByText('Please wait while we verify and set up your workspace'))

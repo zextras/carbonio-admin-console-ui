@@ -5,7 +5,7 @@
  */
 
 import { type IconName } from '@zextras/ui-components';
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { isUnlimitedQuantity, useLicenseInfo } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { AddonsCardActive } from '../cards/addons-card-active';
@@ -49,10 +49,13 @@ export const AddonsSection = () => {
 
   const editionsData = licenseData?.response?.editions ?? [];
 
-  const presentAddons: Array<AddonDisplayConfig> = ADDON_CONFIGS.map((config) => ({
-    ...config,
-    active: Number(editionsData.find((e) => e.name === config.name)?.quantity) > 0,
-  }));
+  const presentAddons: Array<AddonDisplayConfig> = ADDON_CONFIGS.map((config) => {
+    const editionQuantity = editionsData.find((e) => e.name === config.name)?.quantity;
+    return {
+      ...config,
+      active: isUnlimitedQuantity(editionQuantity) || Number(editionQuantity) > 0,
+    };
+  });
 
   return (
     <div className={styles.sectionWrapper}>

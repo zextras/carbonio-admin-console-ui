@@ -41,7 +41,7 @@ describe('ServiceStatus', () => {
 		await expect.element(page.getByText('100 users')).toBeVisible();
 	});
 
-	it('shows "Enabled" when quantity is unlimited and the module is enabled', async () => {
+	it('shows "Unlimited" when quantity is unlimited and the module is enabled', async () => {
 		const data: AllModuleConfig = {
 			name: { value: 'Basic', label: 'Files' },
 			quantity: 'unlimited',
@@ -49,17 +49,28 @@ describe('ServiceStatus', () => {
 		};
 		setupTest(<ServiceStatus data={data} />);
 
-		await expect.element(page.getByText('Enabled', { exact: true })).toBeVisible();
+		await expect.element(page.getByText('Unlimited', { exact: true })).toBeVisible();
 	});
 
-	it('shows "Disabled" when quantity is unlimited and the module is disabled', async () => {
+	it('shows "Unlimited" when quantity is -1', async () => {
 		const data: AllModuleConfig = {
 			name: { value: 'Basic', label: 'Files' },
-			quantity: 'unlimited',
+			quantity: '-1',
+			enabled: true,
+		};
+		setupTest(<ServiceStatus data={data} />);
+
+		await expect.element(page.getByText('Unlimited', { exact: true })).toBeVisible();
+	});
+
+	it('shows "Unlimited" when quantity is 999999', async () => {
+		const data: AllModuleConfig = {
+			name: { value: 'Basic', label: 'Files' },
+			quantity: '999999',
 			enabled: false,
 		};
 		setupTest(<ServiceStatus data={data} />);
 
-		await expect.element(page.getByText('Disabled', { exact: true })).toBeVisible();
+		await expect.element(page.getByText('Unlimited', { exact: true })).toBeVisible();
 	});
 });

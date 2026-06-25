@@ -4,13 +4,38 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DefaultBodyType, http, HttpResponse, HttpResponseResolver, StrictRequest } from 'msw';
+import {
+	DefaultBodyType,
+	http,
+	HttpResponse,
+	HttpResponseResolver,
+	passthrough,
+	StrictRequest,
+} from 'msw';
 import { setupWorker } from 'msw/browser';
 
 const handleGetTranslations: HttpResponseResolver<never, any> = async () => HttpResponse.json({});
+
+const handleZextrasSoapAction: HttpResponseResolver = async ({ request }) => {
+	const body = (await request.clone().json().catch(() => null)) as
+		| { Body?: { zextras?: { action?: string } } }
+		| null;
+	const action = body?.Body?.zextras?.action;
+	const withContent = (payload: unknown) =>
+		HttpResponse.json({ Body: { response: { content: JSON.stringify(payload) } } });
+	if (action === 'getLicenseInfo') {
+		return withContent({ ok: true, response: { type: 'None', features: [] } });
+	}
+	if (action === 'getVersion') {
+		return withContent({ ok: true, response: { version: '0.0.0' } });
+	}
+	return passthrough();
+};
+
 const defaultHandlers = [
-  http.get('/i18n/en.json', handleGetTranslations),
-  http.get(/\[object%20Object\]/, () => new HttpResponse(null, { status: 200 })),
+	http.get('/i18n/en.json', handleGetTranslations),
+	http.get(/\[object%20Object\]/, () => new HttpResponse(null, { status: 200 })),
+	http.post('/service/admin/soap/zextras', handleZextrasSoapAction),
 ];
 
 export const worker = setupWorker(...defaultHandlers);
@@ -160,29 +185,59 @@ export const delayedSoapApiForBrowser = <RequestParamsType, ResponseType = never
 };
 
 export const createBrowserZextrasActionInterceptor = (
-  action: string,
-  response: () => HttpResponse<DefaultBodyType>,
+	action: string,
+	response: () => HttpResponse<DefaultBodyType>,
 ) => {
-  let calledTimes = 0;
-  const requestBodies: Array<unknown> = [];
+	let calledTimes = 0;
+	const requestBodies: Array<unknown> = [];
 
-  worker.use(
-    http.post('/service/admin/soap/zextras', async ({ request }) => {
-      const body = (await request.clone().json()) as Record<string, unknown>;
-      const zextras = (body?.Body as Record<string, unknown>)?.zextras as
-        | Record<string, unknown>
-        | undefined;
-      if (zextras?.action !== action) {
-        return HttpResponse.json({ Body: {} });
-      }
-      calledTimes += 1;
-      requestBodies.push(body);
-      return response();
-    }),
-  );
+	worker.use(
+		http.post('/service/admin/soap/zextras', async ({ request }) => {
+			const body = (await request.clone().json()) as Record<string, unknown>;
+			const zextras = (body?.Body as Record<string, unknown>)?.zextras as
+				| Record<string, unknown>
+				| undefined;
+			if (zextras?.action !== action) {
+				return HttpResponse.json({ Body: {} });
+			}
+			calledTimes += 1;
+			requestBodies.push(body);
+			return response();
+		}),
+	);
 
-  return {
-    getCalledTimes: () => calledTimes,
-    getLastRequestBody: <T = Record<string, unknown>>() => requestBodies.at(-1) as T | undefined,
-  };
+	return {
+		getCalledTimes: () => calledTimes,
+		getLastRequestBody: <T = Record<string, unknown>>() => requestBodies.at(-1) as T | undefined,
+	};
+};
+
+export const delayedBrowserZextrasActionInterceptor = (
+	action: string,
+	response: () => HttpResponse<DefaultBodyType>,
+	delayMs: number = 100,
+): BrowserAPIInterceptor => {
+	let calledTimes = 0;
+	const requests: Array<StrictRequest<DefaultBodyType>> = [];
+
+	worker.use(
+		http.post('/service/admin/soap/zextras', async ({ request }) => {
+			const body = (await request.clone().json()) as Record<string, unknown>;
+			const zextras = (body?.Body as Record<string, unknown>)?.zextras as
+				| Record<string, unknown>
+				| undefined;
+			if (zextras?.action !== action) {
+				return HttpResponse.json({ Body: {} });
+			}
+			calledTimes += 1;
+			requests.push(request);
+			await new Promise((resolve) => setTimeout(resolve, delayMs));
+			return response();
+		}),
+	);
+
+	return {
+		getLastRequest: () => requests[requests.length - 1],
+		getCalledTimes: () => calledTimes,
+	};
 };
