@@ -24,8 +24,9 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+  BucketConnectorRow,
   DeleteS3ConnectorRequest,
-  objectType
+  S3Connector,
 } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
@@ -71,7 +72,7 @@ const headers = (t: TFunction): Array<TableHeader> => [
 ];
 
 const BucketListTable: FC<{
-  volumes: objectType[];
+  volumes: Array<BucketConnectorRow>;
   selectedRows: SingleSelection;
   onSelectionChange: (selected: string[]) => void;
   onDoubleClick: (i: number) => void;
@@ -187,17 +188,17 @@ const BucketDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
-  const [bucketList, setBucketList] = useState<objectType[]>([]);
-  const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>();
-  const [allBucketList, setAllBucketList] = useState<Array<objectType>>([]);
-  const [connectionData, setConnectionData] = useState<objectType | undefined>();
+  const [bucketList, setBucketList] = useState<Array<BucketConnectorRow>>([]);
+  const [bucketDeleteName, setBucketDeleteName] = useState<BucketConnectorRow | undefined>();
+  const [allBucketList, setAllBucketList] = useState<Array<BucketConnectorRow>>([]);
+  const [connectionData, setConnectionData] = useState<BucketConnectorRow | undefined>();
   const [toggleWizardSection, setToggleWizardSection] = useState(false);
   const [open, setOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [searchBucket, setSearchBucket] = useState('');
   const [showEditDetailView, setShowEditDetailView] = useState(false);
   const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<objectType>();
+  const [selectedRow, setSelectedRow] = useState<BucketConnectorRow>();
 
   const closeHandler = (): void => {
     setOpen(false);
@@ -207,7 +208,7 @@ const BucketDetailPanel: FC = () => {
   const getBucketListType = useCallback((): void => {
     listS3Connector()
       .then((connectors) => {
-        const mappedConnectors: Array<objectType> = connectors.map((connector) => ({
+        const mappedConnectors: Array<BucketConnectorRow> = connectors.map((connector: S3Connector) => ({
           uuid: connector.uuid,
           id: connector.uuid,
           label: connector.label || '',
@@ -219,6 +220,11 @@ const BucketDetailPanel: FC = () => {
           insecureHttps: String(connector.insecureHttps ?? false),
           notes: connector.notes || '',
           storeType: ((connector as unknown as { storeType?: string }).storeType || 'S3'),
+          'usage in external backup': connector['usage in external backup'] ?? '',
+          'usage in powerstore volumes': connector['usage in powerstore volumes'] ?? '',
+          'usage in powerstore volume': connector['usage in powerstore volume'] ?? '',
+          usage: connector.usage ?? '',
+
         }));
         setBucketList(mappedConnectors);
         setAllBucketList(mappedConnectors);
@@ -286,7 +292,7 @@ const BucketDetailPanel: FC = () => {
 
   useEffect(() => {
     if (selectedRow !== undefined) {
-      const getIndex = bucketList.findIndex((data: objectType) => data.uuid === selectedRow.uuid);
+      const getIndex = bucketList.findIndex((data) => data.uuid === selectedRow.uuid);
       const volumeObject = bucketList.find((s, index) => index === getIndex);
       setConnectionData(volumeObject);
     }
@@ -404,7 +410,7 @@ const BucketDetailPanel: FC = () => {
               if (Number.isNaN(selectedIndex)) {
                 return;
               }
-              const volumeObject: objectType | undefined = bucketList.find(
+              const volumeObject: BucketConnectorRow | undefined = bucketList.find(
                 (s, index) => index === selectedIndex,
               );
               setShowDetails(false);

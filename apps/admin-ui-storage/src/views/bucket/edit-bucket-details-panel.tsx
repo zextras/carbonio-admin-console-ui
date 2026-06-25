@@ -7,6 +7,7 @@
 import {
   Button,
   Container,
+  DefaultTabBarItem,
   Input,
   Padding,
   PasswordInput,
@@ -14,25 +15,31 @@ import {
   Select,
   SelectItem,
   Switch,
+  TabBar,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType, UpdateS3ConnectorRequest } from '../../../types';
+import { BucketConnectorRow, UpdateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { listS3Regions, updateS3Connector } from '../../services/bucket-service';
+import { EditBucketUsageTable } from './parts/edit-bucket-usage-table';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
+import { parseBackupUsage, parseVolumeUsage } from './utils/s3-connector-usage';
 import { VerifyChangesModal } from './verify-changes-modal';
 
 const bucketNameRegex = /^\S+$/;
 const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
 const NO_REGION_VALUE = '';
+const GENERAL_TAB = 'general';
+const VOLUMES_TAB = 'volumes';
+const BACKUP_TAB = 'backup';
 
-function isBucketUnused(bucketDetail: objectType | undefined): boolean {
+function isBucketUnused(bucketDetail: BucketConnectorRow | undefined): boolean {
   const usageCandidates = [
     bucketDetail?.['usage in external backup'],
     bucketDetail?.['usage in powerstore volumes'],
@@ -59,11 +66,11 @@ function isBucketUnused(bucketDetail: objectType | undefined): boolean {
 type EditBucketDetailPanelProps = {
   setShowEditDetailView: (value: boolean) => void;
   title: string;
-  setBucketDeleteName: (value: objectType | undefined) => void;
-  bucketDetail: objectType | undefined;
+  setBucketDeleteName: (value: BucketConnectorRow | undefined) => void;
+  bucketDetail: BucketConnectorRow | undefined;
   setOpen: (value: boolean) => void;
   getBucketListType: () => void;
-  setSelectedRow: (value: objectType | undefined) => void;
+  setSelectedRow: (value: BucketConnectorRow | undefined) => void;
   setToggleForGetAPICall: (value: boolean) => void;
   toggleForGetAPICall: boolean;
 };
@@ -117,6 +124,99 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const [isVerifyPending, setIsVerifyPending] = useState(false);
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);
   const [isVerifyError, setIsVerifyError] = useState(false);
+  const [selectedTab, setSelectedTab] = useState(GENERAL_TAB);
+
+  const volumeUsageRows = useMemo(
+    () =>
+      parseVolumeUsage(bucketDetail?.['usage in powerstore volumes']).map((row) => ({
+        server: row.server,
+        volume: row.volume,
+      })),
+    [bucketDetail],
+  );
+
+  const backupUsageRows = useMemo(
+    () =>
+      parseBackupUsage(bucketDetail?.['usage in external backup']).map((row) => ({
+        server: row.server,
+      })),
+    [bucketDetail],
+  );
+
+  const volumeHeaders = useMemo(
+    () => [
+      {
+        id: 'server',
+        label: t('label.server', 'Server'),
+        bold: true,
+        width: '50%',
+      },
+      {
+        id: 'volume',
+        label: t('label.volume', 'Volume'),
+        bold: true,
+        width: '50%',
+      },
+    ],
+    [t],
+  );
+
+  const backupHeaders = useMemo(
+    () => [
+      {
+        id: 'server',
+        label: t('label.server_name', 'Server name'),
+        bold: true,
+        width: '100%',
+      },
+    ],
+    [t],
+  );
+
+  const ReusedDefaultTabBar: FC<{
+    item: { id: string; label: string };
+    index: number;
+    selected: boolean;
+    onClick: () => void;
+  }> = ({ item, index, selected, onClick }): ReactElement => (
+    <DefaultTabBarItem
+      item={item}
+      tabIndex={index}
+      selected={selected}
+      onClick={onClick}
+      orientation="horizontal"
+      background="gray6"
+      underlineColor="primary"
+      forceWidthEquallyDistributed={false}
+    >
+      <Row padding="small">
+        <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
+          {item.label}
+        </ds-text>
+      </Row>
+    </DefaultTabBarItem>
+  );
+
+  const tabItems = useMemo(
+    () => [
+      {
+        id: GENERAL_TAB,
+        label: t('label.general', 'GENERAL').toUpperCase(),
+        CustomComponent: ReusedDefaultTabBar,
+      },
+      {
+        id: VOLUMES_TAB,
+        label: t('label.volumes', 'VOLUMES').toUpperCase(),
+        CustomComponent: ReusedDefaultTabBar,
+      },
+      {
+        id: BACKUP_TAB,
+        label: t('label.backup', 'BACKUP').toUpperCase(),
+        CustomComponent: ReusedDefaultTabBar,
+      },
+    ],
+    [t],
+  );
 
   const currentRegionValue = isCustomRegion ? customRegion : regionSelection?.value ?? '';
   const initialRegionValue = bucketDetail?.region ?? '';
@@ -392,260 +492,311 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           </Row>
         </Row>
         <ds-divider></ds-divider>
-        <Container
-          padding={{ all: 'large' }}
+        <Row
+          padding={{ all: 'small' }}
           mainAlignment="flex-start"
           crossAlignment="flex-start"
+          background="white"
+          width="fill"
         >
-          <Row width="100%" mainAlignment="flex-start" padding={{ top: 'small' }}>
-            <ds-text as="span" size="extrasmall" color="secondary">
-              {t('label.id', 'ID')}
-            </ds-text>
-          </Row>
-          <Row width="100%" mainAlignment="flex-start" padding={{ top: 'extrasmall' }}>
-            <ds-text as="span" size="small" color="gray1" weight="bold">
-              {bucketDetail?.uuid}
-            </ds-text>
-          </Row>
-
-          <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-            <Input
-              backgroundColor="gray5"
-              label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
-              value={bucketLabel}
-              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                setBucketLabel(ev.target.value);
-              }}
-              hasError={hasSubmitted && bucketLabel.trim() === ''}
-            />
-            {hasSubmitted && bucketLabel.trim() === '' && (
-              <Padding top="extrasmall">
-                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-                  {t('storages.s3Connectors.descriptiveNameRequired', 'This field is mandatory')}
-                </ds-text>
-              </Padding>
-            )}
-          </Row>
-
-          <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-            <Input
-              backgroundColor="gray5"
-              label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
-              value={bucketName}
-              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                setBucketName(ev.target.value);
-              }}
-              hasError={hasSubmitted && bucketName.trim() === ''}
-            />
-            {hasSubmitted && bucketName.trim() === '' && (
-              <Padding top="extrasmall">
-                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-                  {t(
-                    'storages.s3Connectors.invalidBucketName',
-                    "This field can't be blank or have white space",
-                  )}
-                </ds-text>
-              </Padding>
-            )}
-          </Row>
-
-          <Row width="100%" padding={{ top: 'large' }}>
-            <Row
-              width="48%"
+          <TabBar
+            items={tabItems as unknown as Array<{ id: string; label: string }>}
+            selected={selectedTab}
+            onChange={(ev: unknown, selectedId: string): void => {
+              setSelectedTab(selectedId);
+            }}
+            width="100%"
+            background="gray6"
+          />
+          <ds-divider></ds-divider>
+        </Row>
+        <Container
+          padding={{ left: 'large', right: 'large' }}
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          background="white"
+          style={{ overflow: 'auto' }}
+        >
+          {selectedTab === GENERAL_TAB && (
+            <Container
+              padding={{ all: 'large' }}
               mainAlignment="flex-start"
-              style={{ display: 'inline', height: '100%' }}
+              crossAlignment="flex-start"
             >
-              <Input
-                backgroundColor="gray5"
-                label={t('label.access_key', 'Access Key ID*')}
-                value={accessKeyData}
-                onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                  setAccessKeyData(ev.target.value);
-                }}
-              />
-            </Row>
-            <Padding horizontal="small" />
-            <Row width="48%" mainAlignment="flex-end" style={{ display: 'inline', height: '100%' }}>
-              <PasswordInput
-                backgroundColor="gray5"
-                label={t('label.secret_key', 'Secret Access Key*')}
-                value={secretKey}
-                onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                  setSecretKey(ev.target.value);
-                }}
-              />
-            </Row>
-          </Row>
+              <Row width="100%" mainAlignment="flex-start" padding={{ top: 'small' }}>
+                <ds-text as="span" size="extrasmall" color="secondary">
+                  {t('label.id', 'ID')}
+                </ds-text>
+              </Row>
+              <Row width="100%" mainAlignment="flex-start" padding={{ top: 'extrasmall' }}>
+                <ds-text as="span" size="small" color="gray1" weight="bold">
+                  {bucketDetail?.uuid}
+                </ds-text>
+              </Row>
 
-          <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-            <Select
-              items={[
-                {
-                  label: t('label.region_none', 'None'),
-                  value: NO_REGION_VALUE,
-                },
-                {
-                  label: t('label.region_set_custom', 'Set custom'),
-                  value: CUSTOM_REGION_VALUE,
-                },
-                ...baseRegions,
-              ]}
-              background="gray5"
-              label={t('label.region', 'Region')}
-              selection={regionSelection}
-              showCheckbox={false}
-              onChange={(selectedValue): void => {
-                const regionValue = Array.isArray(selectedValue)
-                  ? (selectedValue[0] as SelectItem<string> | undefined)?.value
-                  : selectedValue;
+              <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
+                <Input
+                  backgroundColor="gray5"
+                  label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
+                  value={bucketLabel}
+                  onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                    setBucketLabel(ev.target.value);
+                  }}
+                  hasError={hasSubmitted && bucketLabel.trim() === ''}
+                />
+                {hasSubmitted && bucketLabel.trim() === '' && (
+                  <Padding top="extrasmall">
+                    <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                      {t(
+                        'storages.s3Connectors.descriptiveNameRequired',
+                        'This field is mandatory',
+                      )}
+                    </ds-text>
+                  </Padding>
+                )}
+              </Row>
 
-                if (
-                  regionValue !== CUSTOM_REGION_VALUE &&
-                  regionValue !== NO_REGION_VALUE &&
-                  typeof regionValue !== 'string'
-                ) {
-                  return;
-                }
+              <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
+                <Input
+                  backgroundColor="gray5"
+                  label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
+                  value={bucketName}
+                  onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                    setBucketName(ev.target.value);
+                  }}
+                  hasError={hasSubmitted && bucketName.trim() === ''}
+                />
+                {hasSubmitted && bucketName.trim() === '' && (
+                  <Padding top="extrasmall">
+                    <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                      {t(
+                        'storages.s3Connectors.invalidBucketName',
+                        "This field can't be blank or have white space",
+                      )}
+                    </ds-text>
+                  </Padding>
+                )}
+              </Row>
 
-                const nextSelection =
-                  typeof regionValue === 'string' ? regionValue : CUSTOM_REGION_VALUE;
+              <Row width="100%" padding={{ top: 'large' }}>
+                <Row
+                  width="48%"
+                  mainAlignment="flex-start"
+                  style={{ display: 'inline', height: '100%' }}
+                >
+                  <Input
+                    backgroundColor="gray5"
+                    label={t('label.access_key', 'Access Key ID*')}
+                    value={accessKeyData}
+                    onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                      setAccessKeyData(ev.target.value);
+                    }}
+                  />
+                </Row>
+                <Padding horizontal="small" />
+                <Row
+                  width="48%"
+                  mainAlignment="flex-end"
+                  style={{ display: 'inline', height: '100%' }}
+                >
+                  <PasswordInput
+                    backgroundColor="gray5"
+                    label={t('label.secret_key', 'Secret Access Key*')}
+                    value={secretKey}
+                    onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                      setSecretKey(ev.target.value);
+                    }}
+                  />
+                </Row>
+              </Row>
 
-                if (nextSelection === NO_REGION_VALUE) {
-                  setIsCustomRegion(false);
-                  setRegionSelection({
-                    label: t('label.region_none', 'None'),
-                    value: NO_REGION_VALUE,
-                  });
-                  setCustomRegion('');
-                  return;
-                }
+              <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
+                <Select
+                  items={[
+                    {
+                      label: t('label.region_none', 'None'),
+                      value: NO_REGION_VALUE,
+                    },
+                    {
+                      label: t('label.region_set_custom', 'Set custom'),
+                      value: CUSTOM_REGION_VALUE,
+                    },
+                    ...baseRegions,
+                  ]}
+                  background="gray5"
+                  label={t('label.region', 'Region')}
+                  selection={regionSelection}
+                  showCheckbox={false}
+                  onChange={(selectedValue): void => {
+                    const regionValue = Array.isArray(selectedValue)
+                      ? (selectedValue[0] as SelectItem<string> | undefined)?.value
+                      : selectedValue;
 
-                if (nextSelection === CUSTOM_REGION_VALUE) {
-                  setIsCustomRegion(true);
-                  setRegionSelection({
-                    label: t('label.region_set_custom', 'Set custom'),
-                    value: CUSTOM_REGION_VALUE,
-                  });
-                  return;
-                }
+                    if (
+                      regionValue !== CUSTOM_REGION_VALUE &&
+                      regionValue !== NO_REGION_VALUE &&
+                      typeof regionValue !== 'string'
+                    ) {
+                      return;
+                    }
 
-                const selectedRegion = baseRegions.find((item) => item.value === nextSelection);
-                if (selectedRegion) {
-                  setIsCustomRegion(false);
-                  setRegionSelection(selectedRegion);
-                }
-              }}
-            />
-          </Row>
+                    const nextSelection =
+                      typeof regionValue === 'string' ? regionValue : CUSTOM_REGION_VALUE;
 
-          {isCustomRegion && (
-            <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-              <Input
-                backgroundColor="gray5"
-                label={t('label.custom_region', 'Custom region')}
-                value={customRegion}
-                onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                  setCustomRegion(ev.target.value);
-                }}
-                hasError={isCustomRegionInvalid}
-              />
-              {isCustomRegionInvalid && (
+                    if (nextSelection === NO_REGION_VALUE) {
+                      setIsCustomRegion(false);
+                      setRegionSelection({
+                        label: t('label.region_none', 'None'),
+                        value: NO_REGION_VALUE,
+                      });
+                      setCustomRegion('');
+                      return;
+                    }
+
+                    if (nextSelection === CUSTOM_REGION_VALUE) {
+                      setIsCustomRegion(true);
+                      setRegionSelection({
+                        label: t('label.region_set_custom', 'Set custom'),
+                        value: CUSTOM_REGION_VALUE,
+                      });
+                      return;
+                    }
+
+                    const selectedRegion = baseRegions.find((item) => item.value === nextSelection);
+                    if (selectedRegion) {
+                      setIsCustomRegion(false);
+                      setRegionSelection(selectedRegion);
+                    }
+                  }}
+                />
+              </Row>
+
+              {isCustomRegion && (
+                <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
+                  <Input
+                    backgroundColor="gray5"
+                    label={t('label.custom_region', 'Custom region')}
+                    value={customRegion}
+                    onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                      setCustomRegion(ev.target.value);
+                    }}
+                    hasError={isCustomRegionInvalid}
+                  />
+                  {isCustomRegionInvalid && (
+                    <Padding top="extrasmall">
+                      <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                        {t(
+                          'storages.s3Connectors.invalidCustomRegion',
+                          "This field can't be blank or have white space",
+                        )}
+                      </ds-text>
+                    </Padding>
+                  )}
+                </Row>
+              )}
+
+              <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
+                <Input
+                  backgroundColor="gray5"
+                  label={
+                    isEndpointUrlRequired
+                      ? t('label.endpoint_url_required', 'Endpoint URL*')
+                      : t('label.endpoint_url', 'Endpoint URL')
+                  }
+                  value={urlData}
+                  onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                    setUrlData(ev.target.value);
+                  }}
+                  hasError={isEndpointUrlInvalid}
+                />
+                {isEndpointUrlInvalid && (
+                  <Padding top="extrasmall">
+                    <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                      {t(
+                        'storages.s3Connectors.invalidEndpointUrl',
+                        "This field is required when Region is 'None' or 'Custom'",
+                      )}
+                    </ds-text>
+                  </Padding>
+                )}
                 <Padding top="extrasmall">
-                  <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                  <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
                     {t(
-                      'storages.s3Connectors.invalidCustomRegion',
-                      "This field can't be blank or have white space",
+                      'buckets.endpoint_url_help',
+                      'The endpoint URL of your storage provider. Not needed if your connector are AWS',
                     )}
                   </ds-text>
                 </Padding>
-              )}
-            </Row>
-          )}
+              </Row>
 
-          <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-            <Input
-              backgroundColor="gray5"
-              label={
-                isEndpointUrlRequired
-                  ? t('label.endpoint_url_required', 'Endpoint URL*')
-                  : t('label.endpoint_url', 'Endpoint URL')
-              }
-              value={urlData}
-              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                setUrlData(ev.target.value);
-              }}
-              hasError={isEndpointUrlInvalid}
-            />
-            {isEndpointUrlInvalid && (
-              <Padding top="extrasmall">
-                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+              <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
+                <Input
+                  backgroundColor="gray5"
+                  disabled
+                  label={t('label.prefix', 'Prefix')}
+                  defaultValue={bucketDetail?.prefix ?? ''}
+                  onChange={(): void => {}}
+                />
+              </Row>
+
+              <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
+                <ds-text weight="bold" color="gray0" size="small">
+                  {t('storages.s3Connectors.security', 'Security')}
+                </ds-text>
+              </Row>
+              <Row width="100%" padding={{ top: 'small' }} mainAlignment="space-between">
+                <Row width="90%" mainAlignment="flex-start">
+                  <Switch
+                    label={t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates')}
+                    value={acceptUntrustedSSL}
+                    onClick={(): void => setAcceptUntrustedSSL(!acceptUntrustedSSL)}
+                    iconColor="primary"
+                  />
+                </Row>
+                <Row width="10%" mainAlignment="flex-end">
+                  <Tooltip
+                    placement="top"
+                    label={t(
+                      'storages.s3Connectors.untrustedSSLTooltip',
+                      'Use this only for testing environments or internal infrastructure with custom certificates. Not recommended for production.',
+                    )}
+                  >
+                    <ds-text as="span">
+                      <ds-icon icon="InfoOutline" size="large" color="gray0"></ds-icon>
+                    </ds-text>
+                  </Tooltip>
+                </Row>
+              </Row>
+              <Row
+                width="100%"
+                padding={{ top: 'extrasmall', left: '2rem' }}
+                mainAlignment="flex-start"
+              >
+                <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
                   {t(
-                    'storages.s3Connectors.invalidEndpointUrl',
-                    "This field is required when Region is 'None' or 'Custom'",
+                    'buckets.untrusted_ssl_hint',
+                    'Allow connections with self-signed or unverifiable certificates.',
                   )}
                 </ds-text>
-              </Padding>
-            )}
-            <Padding top="extrasmall">
-              <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-                {t(
-                  'buckets.endpoint_url_help',
-                  'The endpoint URL of your storage provider. Not needed if your connector are AWS',
-                )}
-              </ds-text>
-            </Padding>
-          </Row>
-
-          <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-            <Input
-              backgroundColor="gray5"
-              label={t('label.prefix', 'Prefix')}
-              disabled
-              defaultValue={bucketDetail?.prefix ?? ''}
-              onChange={(): void => {}}
+              </Row>
+            </Container>
+          )}
+          {selectedTab === VOLUMES_TAB && (
+            <EditBucketUsageTable
+              rows={volumeUsageRows}
+              columnKeys={['server', 'volume']}
+              headers={volumeHeaders}
+              searchLabel={t('storages.s3Connectors.filterVolumesList', 'Filter volumes list')}
             />
-          </Row>
-
-          <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-            <ds-text weight="bold" color="gray0" size="small">
-              {t('storages.s3Connectors.security', 'Security')}
-            </ds-text>
-          </Row>
-          <Row width="100%" padding={{ top: 'small' }} mainAlignment="space-between">
-            <Row width="90%" mainAlignment="flex-start">
-              <Switch
-                label={t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates')}
-                value={acceptUntrustedSSL}
-                onClick={(): void => setAcceptUntrustedSSL(!acceptUntrustedSSL)}
-                iconColor="primary"
-              />
-            </Row>
-            <Row width="10%" mainAlignment="flex-end">
-              <Tooltip
-                placement="top"
-                label={t(
-                  'storages.s3Connectors.untrustedSSLTooltip',
-                  'Use this only for testing environments or internal infrastructure with custom certificates. Not recommended for production.',
-                )}
-              >
-                <ds-text as="span">
-                  <ds-icon icon="InfoOutline" size="large" color="gray0"></ds-icon>
-                </ds-text>
-              </Tooltip>
-            </Row>
-          </Row>
-          <Row
-            width="100%"
-            padding={{ top: 'extrasmall', left: '2rem' }}
-            mainAlignment="flex-start"
-          >
-            <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-              {t(
-                'buckets.untrusted_ssl_hint',
-                'Allow connections with self-signed or unverifiable certificates.',
-              )}
-            </ds-text>
-          </Row>
+          )}
+          {selectedTab === BACKUP_TAB && (
+            <EditBucketUsageTable
+              rows={backupUsageRows}
+              columnKeys={['server']}
+              headers={backupHeaders}
+              searchLabel={t('storages.s3Connectors.filterBackupList', 'Filter backup list')}
+            />
+          )}
         </Container>
 
         <ds-divider></ds-divider>
@@ -657,7 +808,17 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
           crossAlignment="center"
         >
           <Row width="auto" mainAlignment="flex-start">
-            {showDeleteConnector && (
+            <Tooltip
+              placement="top"
+              label={
+                !showDeleteConnector
+                  ? t(
+                      'label.delete_connector_disabled_tooltip',
+                      'S3 connector is in use and cannot be deleted',
+                    )
+                  : ''
+              }
+            >
               <Button
                 type="ghost"
                 color="error"
@@ -666,8 +827,9 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
                   setBucketDeleteName(bucketDetail);
                   setOpen(true);
                 }}
+                disabled={!showDeleteConnector}
               />
-            )}
+            </Tooltip>
           </Row>
           <Row width="auto" mainAlignment="flex-end">
             <Padding right="small">

@@ -9,6 +9,7 @@ import { useEffect, useRef } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
+import type { BucketConnectorRow } from '../../../../types';
 import EditBucketDetailPanel from '../edit-bucket-details-panel';
 
 const mockSnackbar = vi.hoisted(() => vi.fn());
@@ -93,7 +94,8 @@ type BucketDetail = {
 	region: string;
 	insecureHttps: string;
 	usage?: string;
-	'usage in powerstore volumes'?: string;
+	'usage in powerstore volumes'?: string | Array<Record<string, string>>;
+	'usage in external backup'?: string | Array<Record<string, string>>;
 };
 
 function createBucketDetail(overrides: Partial<BucketDetail> = {}): BucketDetail {
@@ -132,7 +134,7 @@ function renderEditBucketPanel(overrides: RenderOverrides = {}) {
 			setShowEditDetailView={setShowEditDetailView}
 			title="Edit S3 connector"
 			setBucketDeleteName={setBucketDeleteName}
-			bucketDetail={bucketDetail as unknown as { [key: string]: string }}
+			bucketDetail={bucketDetail as unknown as BucketConnectorRow}
 			setOpen={setOpen}
 			getBucketListType={getBucketListType}
 			setSelectedRow={setSelectedRow}
@@ -246,5 +248,99 @@ describe('EditBucketDetailPanel (browser)', () => {
 		await expect
 			.element(page.getByText('verify-error'))
 			.toBeInTheDocument();
+	});
+
+	it('should render general, volumes, and backup tabs', async () => {
+		const { view } = renderEditBucketPanel();
+
+		await setupBrowserTest(view);
+
+		await expect.element(page.getByText('GENERAL')).toBeInTheDocument();
+		await expect.element(page.getByText('VOLUMES')).toBeInTheDocument();
+		await expect.element(page.getByText('BACKUP')).toBeInTheDocument();
+	});
+
+	it('should show volume usage rows in the volumes tab', async () => {
+		const { view } = renderEditBucketPanel({
+			bucketDetail: createBucketDetail({
+				'usage in powerstore volumes': [
+					{ server: 'kc-dev3-mbox.demo.zextras.io', volume: 'kcdev3secondary' },
+					{ server: 'kc-dev3-mbox.demo.zextras.io', volume: 'othervolume' },
+				],
+			}),
+		});
+
+		await setupBrowserTest(view);
+		await page.getByText('VOLUMES').click();
+
+		await expect.element(page.getByText('kcdev3secondary')).toBeInTheDocument();
+		await expect.element(page.getByText('othervolume')).toBeInTheDocument();
+	});
+
+	it('should show backup usage rows in the backup tab', async () => {
+		const { view } = renderEditBucketPanel({
+			bucketDetail: createBucketDetail({
+				'usage in external backup': [
+					{ server: 'kc-dev3-mbox.demo.zextras.io' },
+					{ server: 'kc-dev3-mbox2.demo.zextras.io' },
+				],
+			}),
+		});
+
+		await setupBrowserTest(view);
+		await page.getByText('BACKUP').click();
+
+		await expect.element(page.getByText('kc-dev3-mbox.demo.zextras.io')).toBeInTheDocument();
+		await expect.element(page.getByText('kc-dev3-mbox2.demo.zextras.io')).toBeInTheDocument();
+	});
+
+	it('should filter volume usage rows with search input', async () => {
+		const { view } = renderEditBucketPanel({
+			bucketDetail: createBucketDetail({
+				'usage in powerstore volumes': [
+					{ server: 'alpha-server.demo.zextras.io', volume: 'alpha-volume' },
+					{ server: 'beta-server.demo.zextras.io', volume: 'beta-volume' },
+				],
+			}),
+		});
+
+		await setupBrowserTest(view);
+		await page.getByText('VOLUMES').click();
+		await page.getByLabelText('Filter volumes list').fill('beta-volume');
+
+		await expect.element(page.getByText('beta-volume')).toBeInTheDocument();
+		expect(page.getByText('alpha-volume').elements()).toHaveLength(0);
+	});
+
+	it('should show pagination when volume usage has more than 10 rows', async () => {
+		const volumeRows = Array.from({ length: 11 }, (_, index) => ({
+			server: `server-${index}.demo.zextras.io`,
+			volume: `volume-${index}`,
+		}));
+
+		const { view } = renderEditBucketPanel({
+			bucketDetail: createBucketDetail({
+				'usage in powerstore volumes': volumeRows,
+			}),
+		});
+
+		await setupBrowserTest(view);
+		await page.getByText('VOLUMES').click();
+
+		await expect.element(page.getByTestId('next-page')).toBeInTheDocument();
+	});
+
+	it('should show empty state when usage is unused', async () => {
+		const { view } = renderEditBucketPanel({
+			bucketDetail: createBucketDetail({
+				'usage in powerstore volumes': 'unused',
+				'usage in external backup': 'unused',
+			}),
+		});
+
+		await setupBrowserTest(view);
+		await page.getByText('VOLUMES').click();
+
+		await expect.element(page.getByText('This list is empty.')).toBeInTheDocument();
 	});
 });
