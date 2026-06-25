@@ -147,7 +147,7 @@ const VolumeListTable: FC<{
               {v?.compressed ? YES : NO}
             </ds-text>
           </Row>,
-          <Row key={`${i}-actions`} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+          <Row key={i} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
             <button
               type="button"
               onClick={(): void => { onClick(i); }}

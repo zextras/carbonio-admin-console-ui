@@ -44,115 +44,113 @@ const AdvancedMailstoresCreate: FC<{
   }, [advancedVolumeDetail?.volumeMain, volTypeList]);
 
   return (
-    <>
-      <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-        <Row padding={{ top: 'large' }} width="100%">
+    <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t('label.volume_server_name', 'Server')}
+          backgroundColor="gray6"
+          value={externalData}
+        />
+      </Row>
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t('label.volume_allocation', 'Allocation')}
+          backgroundColor="gray6"
+          value={advancedVolumeDetail?.volumeAllocation}
+        />
+      </Row>
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t('label.volume_name', 'Volume Name')}
+          value={advancedVolumeDetail?.volumeName}
+          backgroundColor="gray6"
+        />
+      </Row>
+      <ListRow>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ top: 'large', right: 'large' }}
+        >
           <LabeledValue
-            label={t('label.volume_server_name', 'Server')}
+            label={t('label.bucket_name', 'Bucket Name')}
             backgroundColor="gray6"
-            value={externalData}
+            value={advancedVolumeDetail?.bucketName}
           />
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%">
+        </Container>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ top: 'large', right: 'large' }}
+        >
           <LabeledValue
-            label={t('label.volume_allocation', 'Allocation')}
+            label={t('label.type', 'Type')}
             backgroundColor="gray6"
-            value={advancedVolumeDetail?.volumeAllocation}
+            value={advancedVolumeDetail?.unusedBucketType}
           />
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%">
+        </Container>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ top: 'large' }}
+        >
           <LabeledValue
-            label={t('label.volume_name', 'Volume Name')}
-            value={advancedVolumeDetail?.volumeName}
+            label={t('label.ID', 'ID')}
             backgroundColor="gray6"
+            value={advancedVolumeDetail?.bucketId}
           />
-        </Row>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'large', right: 'large' }}
-          >
+        </Container>
+      </ListRow>
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t('label.type_of_volume', 'Type of Volume')}
+          value={volumeType}
+          backgroundColor="gray6"
+        />
+      </Row>
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t(
+            'label.prefix_name',
+            'Prefix - all objects will have this prefix in their name',
+          )}
+          value={advancedVolumeDetail?.prefix}
+          backgroundColor="gray6"
+        />
+      </Row>
+      {showTieringSettings && (
+        <>
+          <Row padding={{ top: 'large' }} width="100%">
             <LabeledValue
-              label={t('label.bucket_name', 'Bucket Name')}
+              label={t('label.infrequent_access', 'Infrequent access')}
+              value={advancedVolumeDetail?.useInfrequentAccess ? ENABLED : DISABLED}
               backgroundColor="gray6"
-              value={advancedVolumeDetail?.bucketName}
             />
-          </Container>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'large', right: 'large' }}
-          >
+          </Row>
+          <Row padding={{ top: 'large' }} width="100%">
             <LabeledValue
-              label={t('label.type', 'Type')}
+              label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
+              value={advancedVolumeDetail?.useIntelligentTiering ? ENABLED : DISABLED}
               backgroundColor="gray6"
-              value={advancedVolumeDetail?.unusedBucketType}
             />
-          </Container>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'large' }}
-          >
-            <LabeledValue
-              label={t('label.ID', 'ID')}
-              backgroundColor="gray6"
-              value={advancedVolumeDetail?.bucketId}
-            />
-          </Container>
-        </ListRow>
-        <Row padding={{ top: 'large' }} width="100%">
-          <LabeledValue
-            label={t('label.type_of_volume', 'Type of Volume')}
-            value={volumeType}
-            backgroundColor="gray6"
-          />
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%">
-          <LabeledValue
-            label={t(
-              'label.prefix_name',
-              'Prefix - all objects will have this prefix in their name',
-            )}
-            value={advancedVolumeDetail?.prefix}
-            backgroundColor="gray6"
-          />
-        </Row>
-        {showTieringSettings && (
-          <>
-            <Row padding={{ top: 'large' }} width="100%">
-              <LabeledValue
-                label={t('label.infrequent_access', 'Infrequent access')}
-                value={advancedVolumeDetail?.useInfrequentAccess ? ENABLED : DISABLED}
-                backgroundColor="gray6"
-              />
-            </Row>
-            <Row padding={{ top: 'large' }} width="100%">
-              <LabeledValue
-                label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
-                value={advancedVolumeDetail?.useIntelligentTiering ? ENABLED : DISABLED}
-                backgroundColor="gray6"
-              />
-            </Row>
-          </>
-        )}
-        <Row padding={{ top: 'large' }} width="100%">
-          <LabeledValue
-            label={t('label.volume_as_current', 'Volum as current')}
-            value={advancedVolumeDetail?.isCurrent ? YES : NO}
-            backgroundColor="gray6"
-          />
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%">
-          <LabeledValue
-            label={t('label.centralized', 'Centralized')}
-            value={advancedVolumeDetail?.centralized ? YES : NO}
-            backgroundColor="gray6"
-          />
-        </Row>
-      </Container>
-    </>
+          </Row>
+        </>
+      )}
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t('label.volume_as_current', 'Volum as current')}
+          value={advancedVolumeDetail?.isCurrent ? YES : NO}
+          backgroundColor="gray6"
+        />
+      </Row>
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t('label.centralized', 'Centralized')}
+          value={advancedVolumeDetail?.centralized ? YES : NO}
+          backgroundColor="gray6"
+        />
+      </Row>
+    </Container>
   );
 };
 
