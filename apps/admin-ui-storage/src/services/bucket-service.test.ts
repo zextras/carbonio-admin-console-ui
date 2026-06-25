@@ -12,6 +12,7 @@ import {
 	fetchSoap,
 	listS3Connector,
 	listS3Regions,
+	testS3Connector,
 	updateS3Connector,
 } from './bucket-service';
 
@@ -284,6 +285,51 @@ describe('bucket-service', () => {
 
 			await expect(deleteS3Connector(payload)).rejects.toThrow(
 				'Missing SOAP response content',
+			);
+		});
+	});
+
+	// ─── testS3Connector ─────────────────────────────────────────────────────
+
+	describe('testS3Connector', () => {
+		const payload = {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxPowerstore' as const,
+			action: 'testS3Connector' as const,
+			uuid: 'conn-1',
+		};
+
+		it('should return mutation response on success', async () => {
+			mockPostSoapFetchRequest.mockResolvedValue(
+				makeSoapResponse({ ok: true, response: { message: 'tested' } }),
+			);
+
+			const result = await testS3Connector(payload);
+
+			expect(result).toEqual({ ok: true, response: { message: 'tested' } });
+		});
+
+		it('should return failure response when server signals error', async () => {
+			mockPostSoapFetchRequest.mockResolvedValue(
+				makeSoapResponse({ ok: false, error: 'Connection failed' }),
+			);
+
+			const result = await testS3Connector(payload);
+
+			expect(result).toEqual({ ok: false, error: 'Connection failed' });
+		});
+
+		it('should pass payload to fetchSoap', async () => {
+			mockPostSoapFetchRequest.mockResolvedValue(
+				makeSoapResponse({ ok: true }),
+			);
+
+			await testS3Connector(payload);
+
+			expect(mockPostSoapFetchRequest).toHaveBeenCalledWith(
+				'/service/admin/soap/zextras',
+				payload,
+				'zextras',
 			);
 		});
 	});

@@ -15,6 +15,7 @@ import EditBucketDetailPanel from '../edit-bucket-details-panel';
 const mockSnackbar = vi.hoisted(() => vi.fn());
 const mockListS3Regions = vi.hoisted(() => vi.fn());
 const mockUpdateS3Connector = vi.hoisted(() => vi.fn());
+const mockTestS3Connector = vi.hoisted(() => vi.fn());
 
 vi.mock('@zextras/ui-components', async (importOriginal) => {
 	const actual = (await importOriginal()) as Record<string, unknown>;
@@ -27,6 +28,7 @@ vi.mock('@zextras/ui-components', async (importOriginal) => {
 vi.mock('../../../services/bucket-service', () => ({
 	listS3Regions: mockListS3Regions,
 	updateS3Connector: mockUpdateS3Connector,
+	testS3Connector: mockTestS3Connector,
 }));
 
 vi.mock('../verify-changes-modal', () => ({
@@ -164,6 +166,7 @@ describe('EditBucketDetailPanel (browser)', () => {
 			},
 		]);
 		mockUpdateS3Connector.mockResolvedValue({ ok: true });
+		mockTestS3Connector.mockResolvedValue({ ok: true });
 	});
 
 	it('should show delete connector action for an unused bucket and open delete modal', async () => {
@@ -248,6 +251,45 @@ describe('EditBucketDetailPanel (browser)', () => {
 		await expect
 			.element(page.getByText('verify-error'))
 			.toBeInTheDocument();
+	});
+
+	it('should render test connection button instead of cancel', async () => {
+		const { view } = renderEditBucketPanel();
+
+		await setupBrowserTest(view);
+
+		await expect
+			.element(page.getByRole('button', { name: /test connection/i }))
+			.toBeInTheDocument();
+		expect(page.getByRole('button', { name: /^cancel$/i }).elements()).toHaveLength(0);
+	});
+
+	it('should call testS3Connector and show success on test connection', async () => {
+		const { view, bucketDetail } = renderEditBucketPanel();
+
+		await setupBrowserTest(view);
+		await page.getByRole('button', { name: /test connection/i }).click();
+
+		await vi.waitFor(() => {
+			expect(mockTestS3Connector).toHaveBeenCalledTimes(1);
+		});
+		expect(mockTestS3Connector).toHaveBeenCalledWith(
+			expect.objectContaining({
+				action: 'testS3Connector',
+				uuid: bucketDetail.uuid,
+			}),
+		);
+		await expect.element(page.getByText('verify-success')).toBeInTheDocument();
+	});
+
+	it('should show verify error when test connection fails', async () => {
+		mockTestS3Connector.mockResolvedValue({ ok: false, error: 'Connection failed' });
+		const { view } = renderEditBucketPanel();
+
+		await setupBrowserTest(view);
+		await page.getByRole('button', { name: /test connection/i }).click();
+
+		await expect.element(page.getByText('verify-error')).toBeInTheDocument();
 	});
 
 	it('should render general, volumes, and backup tabs', async () => {

@@ -14,6 +14,7 @@ import {
 	S3Connector,
 	S3ConnectorMutationResponse,
 	S3Region,
+	TestS3ConnectorRequest,
 	UpdateS3ConnectorRequest,
 	ZextrasRawResponse
 } from '../../types';
@@ -96,6 +97,13 @@ export async function updateS3Connector(
 
 export async function deleteS3Connector(
 	payload: DeleteS3ConnectorRequest,
+): Promise<S3ConnectorMutationResponse> {
+	const res = (await fetchSoap('zextras', payload)) as SoapContentResponse;
+	return parseSoapContent<S3ConnectorMutationResponse>(res);
+}
+
+export async function testS3Connector(
+	payload: TestS3ConnectorRequest,
 ): Promise<S3ConnectorMutationResponse> {
 	const res = (await fetchSoap('zextras', payload)) as SoapContentResponse;
 	return parseSoapContent<S3ConnectorMutationResponse>(res);
