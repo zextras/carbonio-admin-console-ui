@@ -185,7 +185,7 @@ describe('EditBucketDetailPanel (browser)', () => {
 		expect(setSelectedRow).toHaveBeenCalledWith(bucketDetail);
 	});
 
-	it('should hide delete connector action when bucket is used', async () => {
+	it('should disable delete connector action when bucket is used', async () => {
 		const { view } = renderEditBucketPanel({
 			bucketDetail: createBucketDetail({
 				usage: 'used',
@@ -195,7 +195,9 @@ describe('EditBucketDetailPanel (browser)', () => {
 
 		await setupBrowserTest(view);
 
-		expect(page.getByRole('button', { name: /delete connector/i }).elements()).toHaveLength(0);
+		await expect
+			.element(page.getByRole('button', { name: /delete connector/i }))
+			.toHaveAttribute('disabled');
 	});
 
 	it('should disable verify button when no field has changed', async () => {
