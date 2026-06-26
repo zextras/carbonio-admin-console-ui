@@ -272,7 +272,7 @@ importers:
   apps/admin-ui-bootstrap:
     dependencies:
       '@fontsource/roboto':
-        specifier: ^5.2.6
+        specifier: ^5.2.10
         version: 5.2.10
       '@posthog/react':
         specifier: ^1.10.3
@@ -2004,7 +2004,7 @@ importers:
   packages/ui-shared:
     dependencies:
       '@fontsource/roboto':
-        specifier: ^5.2.6
+        specifier: ^5.2.10
         version: 5.2.10
       '@tanstack/react-query':
         specifier: ^5.90.5
