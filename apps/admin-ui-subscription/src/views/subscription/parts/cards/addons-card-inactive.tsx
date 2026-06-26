@@ -37,11 +37,6 @@ export const AddonsCardInactive = ({ editions, config }: AddonsCardProps) => {
         </div>
         <ds-text size="small">{t(config.descriptionKey, config.descriptionDefault)}</ds-text>
       </div>
-      <div className={styles.addonRightInactive}>
-        <span className={styles.addonCta}>
-          {t('core.subscription.contact_provider', 'Contact your provider to activate')}
-        </span>
-      </div>
     </div>
   );
 };
