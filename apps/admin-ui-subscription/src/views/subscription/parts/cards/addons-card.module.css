@@ -7,7 +7,7 @@
 .addonRowActive {
   display: flex;
   align-items: center;
-  background: var(--color-card-bg);
+  background: var(--color-gray6-regular);
   margin-bottom: 0.5rem;
   padding: 1.25rem;
   border-left: 0.25rem solid var(--color-primary-regular);
