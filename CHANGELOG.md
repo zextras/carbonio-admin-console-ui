@@ -1,3 +1,9 @@
+## [0.13.15](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.14...v0.13.15) (2026-06-26)
+
+### Bug Fixes
+
+* **deps:** update dependency @fontsource/roboto to ^5.2.10 ([#1238](https://github.com/zextras/carbonio-admin-console-ui/issues/1238)) ([44dd40a](https://github.com/zextras/carbonio-admin-console-ui/commit/44dd40ac468de08215949ca3e74ea10b6ab0fcd7))
+
 ## [0.13.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.13...v0.13.14) (2026-06-25)
 
 ### Bug Fixes
