@@ -49,7 +49,7 @@
 
 .pill {
   border-radius: 100px;
-  background: #e0f9c3;
+  background: var(--color-success-banner);
 }
 
 .inputField {
