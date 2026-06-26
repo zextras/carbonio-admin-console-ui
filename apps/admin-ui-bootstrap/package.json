@@ -5,7 +5,7 @@
   "private": true,
   "engines": {
     "node": "v22",
-    "npm": "v10"
+    "npm": "10.9.8"
   },
   "scripts": {
     "dev": "vite",
