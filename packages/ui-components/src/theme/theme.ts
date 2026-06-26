@@ -44,7 +44,6 @@ export type Theme = {
     errorBanner: string;
     currentColor: string;
     avatar: Record<string, string>;
-    card: Record<string, string>;
   };
   icon: {
     size: {
@@ -226,7 +225,6 @@ export const theme: Theme = {
       focus: 'var(--color-transparent-focus)',
       disabled: 'var(--color-transparent-disabled)',
     },
-    card: { background: 'var(--color-card-bg)' },
     black: 'var(--color-black)',
     white: 'var(--color-white)',
     successBanner: 'var(--color-success-banner)',
