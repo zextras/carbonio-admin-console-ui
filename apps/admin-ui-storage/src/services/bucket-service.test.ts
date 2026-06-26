@@ -297,6 +297,13 @@ describe('bucket-service', () => {
 			module: 'ZxPowerstore' as const,
 			action: 'testS3Connector' as const,
 			uuid: 'conn-1',
+			label: 'Test connector',
+			bucketName: 'test-bucket',
+			accessKey: 'AKIA_TEST',
+			secret: 'secret-key',
+			url: 'https://s3.example.test',
+			region: 'us-east-1',
+			insecureHttps: true,
 		};
 
 		it('should return mutation response on success', async () => {

@@ -22,9 +22,9 @@ import {
 import { ChangeEvent, FC, ReactElement, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BucketConnectorRow, UpdateS3ConnectorRequest } from '../../../types';
+import { BucketConnectorRow, TestS3ConnectorRequest, UpdateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
-import { listS3Regions, updateS3Connector } from '../../services/bucket-service';
+import { listS3Regions, testS3Connector, updateS3Connector } from '../../services/bucket-service';
 import { EditBucketUsageTable } from './parts/edit-bucket-usage-table';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
@@ -61,6 +61,33 @@ function isBucketUnused(bucketDetail: BucketConnectorRow | undefined): boolean {
 
     return !value;
   });
+}
+
+type S3ConnectorFormFields = Pick<
+  UpdateS3ConnectorRequest,
+  'label' | 'bucketName' | 'accessKey' | 'secret' | 'url' | 'region' | 'insecureHttps'
+>;
+
+type S3ConnectorFormState = {
+  bucketLabel: string;
+  bucketName: string;
+  accessKeyData: string;
+  secretKey: string;
+  urlData: string;
+  currentRegionValue: string;
+  acceptUntrustedSSL: boolean;
+};
+
+function buildS3ConnectorFieldsFromForm(formState: S3ConnectorFormState): S3ConnectorFormFields {
+  return {
+    label: formState.bucketLabel,
+    bucketName: formState.bucketName,
+    accessKey: formState.accessKeyData,
+    secret: formState.secretKey,
+    url: formState.urlData,
+    region: formState.currentRegionValue,
+    insecureHttps: formState.acceptUntrustedSSL,
+  };
 }
 
 type ReusedDefaultTabBarProps = {
@@ -464,6 +491,47 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     setIsVerifyPending(false);
   }
 
+  async function onTestConnection(): Promise<void> {
+    setShowVerifyResult(false);
+    setIsVerifySuccess(false);
+    setIsVerifyError(false);
+    setIsVerifyPending(true);
+
+    try {
+      const payload: TestS3ConnectorRequest = {
+        _jsns: ZIMBRA_ADMIN_URN,
+        module: 'ZxPowerstore',
+        action: 'testS3Connector',
+        uuid: bucketDetail?.uuid ?? '',
+        ...buildS3ConnectorFieldsFromForm({
+          bucketLabel,
+          bucketName,
+          accessKeyData,
+          secretKey,
+          urlData,
+          currentRegionValue,
+          acceptUntrustedSSL,
+        }),
+      };
+
+      const response = await testS3Connector(payload);
+
+      if (response?.ok) {
+        setIsVerifySuccess(true);
+      } else {
+        const errorDetails =
+          typeof response?.error === 'string' ? undefined : (response?.error?.details as CheckResult | undefined);
+        setCheckDetails(errorDetails);
+        setIsVerifyError(true);
+      }
+    } catch {
+      setCheckDetails(undefined);
+      setIsVerifyError(true);
+    } finally {
+      setIsVerifyPending(false);
+    }
+  }
+
   function handleProgressComplete(): void {
     setShowVerifyResult(true);
   }
@@ -839,6 +907,15 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
             </Tooltip>
           </Row>
           <Row width="auto" mainAlignment="flex-end">
+            <Padding right="small">
+              <Button
+                type="outlined"
+                color="primary"
+                label={t('storages.s3Connectors.testConnection', 'Test Connection')}
+                onClick={onTestConnection}
+                disabled={isVerifyPending || !bucketDetail?.uuid}
+              />
+            </Padding>
             <Button
               type="default"
               color="primary"

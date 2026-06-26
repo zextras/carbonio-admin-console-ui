@@ -233,11 +233,8 @@ export type DeleteS3ConnectorRequest = {
 	iAmSure: boolean;
 };
 
-export type TestS3ConnectorRequest = {
-	_jsns: string;
-	module: 'ZxPowerstore';
+export type TestS3ConnectorRequest = Omit<UpdateS3ConnectorRequest, 'action' | 'iAmSure'> & {
 	action: 'testS3Connector';
-	uuid: string;
 };
 
 export type S3ConnectorApiError = {

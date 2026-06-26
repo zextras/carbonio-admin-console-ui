@@ -255,6 +255,60 @@ describe('EditBucketDetailPanel (browser)', () => {
 			.toBeInTheDocument();
 	});
 
+	it('should call testS3Connector with all current form values on test connection', async () => {
+		const { view, bucketDetail } = renderEditBucketPanel();
+
+		await setupBrowserTest(view);
+		await page.getByRole('button', { name: /test connection/i }).click();
+
+		await vi.waitFor(() => {
+			expect(mockTestS3Connector).toHaveBeenCalledTimes(1);
+		});
+		expect(mockTestS3Connector).toHaveBeenCalledWith(
+			expect.objectContaining({
+				action: 'testS3Connector',
+				uuid: bucketDetail.uuid,
+				label: bucketDetail.label,
+				bucketName: bucketDetail.bucketName,
+				accessKey: bucketDetail.accessKey,
+				secret: bucketDetail.secret,
+				url: bucketDetail.url,
+				region: bucketDetail.region,
+				insecureHttps: true,
+			}),
+		);
+		expect(mockTestS3Connector.mock.calls[0]?.[0]).not.toHaveProperty('iAmSure');
+		await expect.element(page.getByText('verify-success')).toBeInTheDocument();
+	});
+
+	it('should send unsaved form values when testing connection', async () => {
+		const { view } = renderEditBucketPanel();
+
+		await setupBrowserTest(view);
+		await page.getByLabelText('Descriptive name*').fill('Updated bucket name');
+		await page.getByRole('button', { name: /test connection/i }).click();
+
+		await vi.waitFor(() => {
+			expect(mockTestS3Connector).toHaveBeenCalledTimes(1);
+		});
+		expect(mockTestS3Connector).toHaveBeenCalledWith(
+			expect.objectContaining({
+				action: 'testS3Connector',
+				label: 'Updated bucket name',
+			}),
+		);
+	});
+
+	it('should show verify error when test connection fails', async () => {
+		mockTestS3Connector.mockResolvedValue({ ok: false, error: 'Connection failed' });
+		const { view } = renderEditBucketPanel();
+
+		await setupBrowserTest(view);
+		await page.getByRole('button', { name: /test connection/i }).click();
+
+		await expect.element(page.getByText('verify-error')).toBeInTheDocument();
+	});
+
 	it('should render general, volumes, and backup tabs', async () => {
 		const { view } = renderEditBucketPanel();
 
