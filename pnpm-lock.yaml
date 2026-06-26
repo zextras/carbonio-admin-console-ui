@@ -97,7 +97,7 @@ importers:
         specifier: ^6.14.1
         version: 6.17.1
       lit:
-        specifier: ^3.3.2
+        specifier: ^3.3.3
         version: 3.3.3
       playwright:
         specifier: ^1.61.1
@@ -1934,7 +1934,7 @@ importers:
         specifier: ^4.4.0
         version: 4.4.0
       lit:
-        specifier: ^3.3.2
+        specifier: ^3.3.3
         version: 3.3.3
       lodash-es:
         specifier: ^4.17.21
