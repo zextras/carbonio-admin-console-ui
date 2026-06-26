@@ -12,7 +12,7 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
     devDependencies:
       '@eslint/js':
@@ -166,7 +166,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-csv:
         specifier: ^2.2.2
@@ -209,13 +209,13 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -248,7 +248,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -335,10 +335,10 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       react-i18next:
         specifier: ^17.0.8
@@ -387,10 +387,10 @@ importers:
         specifier: ^15.7.15
         version: 15.7.15
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.2.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@types/ua-parser-js':
         specifier: ^0.7.39
@@ -483,7 +483,7 @@ importers:
         specifier: ^1.261.0
         version: 1.390.2
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-i18next:
         specifier: ^17.0.8
@@ -520,10 +520,10 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -556,7 +556,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -619,7 +619,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-csv:
         specifier: ^2.2.2
@@ -662,10 +662,10 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -698,7 +698,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -764,7 +764,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-csv:
         specifier: ^2.2.2
@@ -810,10 +810,10 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -846,7 +846,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -909,7 +909,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-csv:
         specifier: ^2.2.2
@@ -952,10 +952,10 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -988,7 +988,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -1051,7 +1051,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-csv:
         specifier: ^2.2.2
@@ -1094,10 +1094,10 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -1130,7 +1130,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -1190,7 +1190,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-csv:
         specifier: ^2.2.2
@@ -1233,13 +1233,13 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-csv':
         specifier: ^1.1.10
         version: 1.1.10
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -1272,7 +1272,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -1332,7 +1332,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-csv:
         specifier: ^2.2.2
@@ -1375,10 +1375,10 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -1411,7 +1411,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -1474,7 +1474,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-csv:
         specifier: ^2.2.2
@@ -1517,10 +1517,10 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -1553,7 +1553,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -1613,7 +1613,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-csv:
         specifier: ^2.2.2
@@ -1656,10 +1656,10 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -1692,7 +1692,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -1755,7 +1755,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-csv:
         specifier: ^2.2.2
@@ -1798,10 +1798,10 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
@@ -1834,7 +1834,7 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       sonarqube-scanner:
         specifier: ^4.3.8
@@ -1870,10 +1870,10 @@ importers:
         specifier: ^26.3.1
         version: 26.3.1(typescript@6.0.3)
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       react-router:
         specifier: ^7.13.0
@@ -1959,10 +1959,10 @@ importers:
         specifier: ^4.17.12
         version: 4.17.12
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.1.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       clsx:
         specifier: ^2.1.1
@@ -1980,13 +1980,13 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0(eslint@9.39.4(jiti@2.7.0))
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-docgen-typescript:
         specifier: ^2.4.0
         version: 2.4.0(typescript@6.0.3)
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       tailwindcss:
         specifier: ^4.3.1
@@ -2025,10 +2025,10 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       react:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7
       react-dom:
-        specifier: ^19.2.3
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       react-i18next:
         specifier: ^17.0.8
@@ -2077,10 +2077,10 @@ importers:
         specifier: ^15.7.15
         version: 15.7.15
       '@types/react':
-        specifier: ^19.1.0
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.2.0
+        specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitest/browser':
         specifier: ^4.1.0
