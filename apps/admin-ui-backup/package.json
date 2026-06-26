@@ -29,7 +29,7 @@
     "html-entities": "^2.6.0",
     "i18next": "^26.3.1",
     "immer": "^11.1.8",
-    "posthog-js": "^1.261.0",
+    "posthog-js": "^1.393.5",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.3",
     "react-csv": "^2.2.2",
