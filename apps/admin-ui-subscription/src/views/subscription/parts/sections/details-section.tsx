@@ -7,7 +7,7 @@
 import { Tooltip } from '@zextras/ui-components';
 import { useLicenseInfo } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DATE_FORMAT } from '../../constants';
@@ -17,14 +17,30 @@ export const DetailsSection = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(true);
   const { data: licenseData } = useLicenseInfo();
+  const pillRef = useRef<HTMLDivElement>(null);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const response = licenseData?.response;
 
-  const handleCopy = (): void => {
-    if (response?.infrastructureId) {
-      void navigator.clipboard.writeText(response.infrastructureId);
+  const handleCopy = async () => {
+    if (!response?.infrastructureId) return;
+    try {
+      await navigator.clipboard.writeText(response.infrastructureId);
+      pillRef.current?.showPopover();
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = setTimeout(() => {
+        pillRef.current?.hidePopover();
+      }, 3000);
+    } catch {
+      pillRef.current?.hidePopover();
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, []);
 
   if (!response) return null;
 
@@ -141,6 +157,20 @@ export const DetailsSection = () => {
           )}
         </div>
       )}
+      <div
+        popover="manual"
+        ref={pillRef}
+        className={styles.copyPill}
+        role="status"
+        aria-live="polite"
+      >
+        <span className={styles.copyPillInner}>
+          <ds-icon icon="CheckmarkOutline" size="small" color="success" />
+          <ds-text size="small">
+            {t('label.copied_to_clipboard', 'Copied to clipboard')}
+          </ds-text>
+        </span>
+      </div>
     </div>
   );
 };

@@ -227,3 +227,30 @@
 .addonsContainer {
   margin-top: 1.5rem;
 }
+
+.copyPill {
+  inset: auto;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.copyPill::backdrop {
+  background: transparent;
+  pointer-events: none;
+}
+
+.copyPillInner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 1rem;
+  border-radius: 100px;
+  background: var(--color-success-banner);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+}
