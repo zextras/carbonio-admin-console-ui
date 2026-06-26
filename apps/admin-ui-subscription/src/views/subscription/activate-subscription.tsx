@@ -131,7 +131,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
         isSuccess={showResult && activateLicenseMutation.isSuccess}
         onComplete={handleSuccessComplete}
       />
-      <ActivationError isError={showResult && activateLicenseMutation.isError} />
+      {showResult && activateLicenseMutation.isError && <ActivationError />}
     </div>
   );
 };

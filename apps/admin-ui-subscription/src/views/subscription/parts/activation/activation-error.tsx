@@ -4,24 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button } from '@zextras/ui-components';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './activation-error.module.css';
 
-type ActivationErrorProps = {
-  isError: boolean;
-};
-
-export const ActivationError = ({ isError }: ActivationErrorProps): React.JSX.Element => {
+export const ActivationError = () => {
   const { t } = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isError) {
-      popoverRef.current?.showPopover();
-    }
-  }, [isError]);
+    popoverRef.current?.showPopover();
+  }, []);
 
   const onClick = () => popoverRef.current?.hidePopover();
   const buttonLabel = t('label.back', 'back');
@@ -35,7 +29,13 @@ export const ActivationError = ({ isError }: ActivationErrorProps): React.JSX.El
         {t('subscription.activate.activation_error.title', 'Something went wrong')}
       </ds-text>
       <div className={styles.description}>
-        <ds-text as="p" color="gray0" weight="light" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
+        <ds-text
+          as="p"
+          color="gray0"
+          weight="light"
+          overflow="break-word"
+          style={{ whiteSpace: 'pre-line' }}
+        >
           {t(
             'subscription.activate.activation_error.description',
             'Please verify that you have inserted the correct token.\nIf the error persists contact your provider or try again later.',
