@@ -27,7 +27,7 @@ vi.mock('../../../constants', async (importOriginal) => {
 });
 
 const LONG_TOKEN = 'ABCDEFGHIJKLMNOP';
-const SHORT_TOKEN = 'ABCD1234';
+const SHORT_TOKEN = 'AB12';
 
 const createMockLicenseData = (responseOverrides: Record<string, unknown> = {}) => ({
 	ok: true,
@@ -68,7 +68,7 @@ describe('ActivationTokenSection', () => {
 		it('renders the token masked by default', async () => {
 			setupTest(<ActivationTokenSection />);
 
-			await expect.element(page.getByText('ABCD*******LMNOP', { exact: true })).toBeVisible();
+			await expect.element(page.getByText('AB************OP', { exact: true })).toBeVisible();
 		});
 
 		it('reveals the full token and toggles the button label when Show token is clicked', async () => {

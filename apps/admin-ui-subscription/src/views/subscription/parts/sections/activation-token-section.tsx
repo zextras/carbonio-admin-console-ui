@@ -7,7 +7,7 @@
 import { useSnackbar } from '@zextras/ui-components';
 import { useActivateLicense, useLicenseInfo, useRemoveLicense } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DATE_FORMAT } from '../../constants';
@@ -35,13 +35,13 @@ function maskToken(token?: string): string {
     return '-';
   }
 
-  if (token.length <= 8) {
+  if (token.length <= 4) {
     return token;
   }
 
-  const prefix = token.slice(0, 4);
-  const suffix = token.slice(-5);
-  return `${prefix}${'*'.repeat(Math.max(1, token.length - 9))}${suffix}`;
+  const prefix = token.slice(0, 2);
+  const suffix = token.slice(-2);
+  return `${prefix}${'*'.repeat(token.length - 4)}${suffix}`;
 }
 
 export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSectionProps) => {
@@ -58,15 +58,15 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
   const [showActivationResult, setShowActivationResult] = useState(false);
   const createSnackbar = useSnackbar();
   const response = licenseData?.response;
-  const displayedToken = useMemo(() => {
+  const displayedToken = () => {
     if (!response?.authenticationToken) {
       return '-';
     }
 
     return showToken ? response.authenticationToken : maskToken(response.authenticationToken);
-  }, [response?.authenticationToken, showToken]);
+  };
 
-  const toggleOpen = useCallback((): void => {
+  const toggleOpen = (): void => {
     setOpen((prevOpen) => {
       const nextOpen = !prevOpen;
 
@@ -77,60 +77,54 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
 
       return nextOpen;
     });
-  }, []);
+  };
 
-  const handleToggleToken = useCallback((): void => {
+  const handleToggleToken = (): void => {
     setShowToken((prev) => !prev);
-  }, []);
+  };
 
-  const handleMenuOption = useCallback(
-    (option: ActivationTokenMenuOption): void => {
-      setMenuOpen(false);
+  const handleMenuOption = (option: ActivationTokenMenuOption): void => {
+    setMenuOpen(false);
 
-      if (option === 'change-token') {
-        if (onMenuOptionSelect) {
-          onMenuOptionSelect(option);
-        } else {
-          setChangeTokenModalOpen(true);
-        }
-      } else if (option === 'deactivate-license') {
-        if (onMenuOptionSelect) {
-          onMenuOptionSelect(option);
-        } else {
-          setDeactivateModalOpen(true);
-        }
+    if (option === 'change-token') {
+      if (onMenuOptionSelect) {
+        onMenuOptionSelect(option);
       } else {
-        onMenuOptionSelect?.(option);
-        createSnackbar({
-						key: 'info-snackbar',
-						severity: 'info',
-						label: 'Subscription renewal feature is in progress.',
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+        setChangeTokenModalOpen(true);
       }
-    },
-    [onMenuOptionSelect, createSnackbar],
-  );
+    } else if (option === 'deactivate-license') {
+      if (onMenuOptionSelect) {
+        onMenuOptionSelect(option);
+      } else {
+        setDeactivateModalOpen(true);
+      }
+    } else {
+      onMenuOptionSelect?.(option);
+      createSnackbar({
+        key: 'info-snackbar',
+        severity: 'info',
+        label: 'Subscription renewal feature is in progress.',
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
+      });
+    }
+  };
 
-  const handleDeactivateConfirm = useCallback((): void => {
+  const handleDeactivateConfirm = (): void => {
     removeLicenseMutation.mutate(undefined);
     setDeactivateModalOpen(false);
-  }, [removeLicenseMutation]);
+  };
 
-  const handleChangeTokenConfirm = useCallback(
-    (token: string): void => {
-      setChangeTokenModalOpen(false);
-      setShowActivationResult(false);
-      activateLicenseMutation.mutate({ token, renewal: false });
-    },
-    [activateLicenseMutation],
-  );
+  const handleChangeTokenConfirm = (token: string): void => {
+    setChangeTokenModalOpen(false);
+    setShowActivationResult(false);
+    activateLicenseMutation.mutate({ token, renewal: false });
+  };
 
-  const handleActivationProgressComplete = useCallback((): void => {
+  const handleActivationProgressComplete = (): void => {
     setShowActivationResult(true);
-  }, []);
+  };
 
   useEffect(() => {
     if (!menuOpen) {
@@ -152,11 +146,7 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
   return (
     <div className={`${styles.sectionWrapper} ${styles.detailsSection}`}>
       <div className={styles.activationHeaderRow}>
-        <button
-          type="button"
-          className={styles.detailsToggle}
-          onClick={toggleOpen}
-        >
+        <button type="button" className={styles.detailsToggle} onClick={toggleOpen}>
           <ds-icon icon={open ? 'ChevronUp' : 'ChevronDown'} size="1rem" />
           <ds-text weight="bold" color="gray0">
             {t('core.subscription.activationToken', 'Activation token')}
@@ -198,7 +188,9 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
                   onClick={(): void => handleMenuOption('deactivate-license')}
                 >
                   <ds-icon icon="DeletePermanentlyOutline" size="large" color="error" />
-                  <span>{t('core.subscription.deactivateSubscription', 'Deactivate subscription')}</span>
+                  <span>
+                    {t('core.subscription.deactivateSubscription', 'Deactivate subscription')}
+                  </span>
                 </button>
               </div>
             )}
@@ -213,7 +205,7 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
               {t('core.subscription.token', 'Token')}
             </ds-text>
             <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue}>{displayedToken}</ds-text>
+              <ds-text className={styles.detailValue}>{displayedToken()}</ds-text>
               {response?.authenticationToken && (
                 <button
                   type="button"
@@ -233,7 +225,9 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
               {t('core.subscription.startDate', 'Start date')}
             </ds-text>
             <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue}>{formatDateValue(response?.dateStart)}</ds-text>
+              <ds-text className={styles.detailValue}>
+                {formatDateValue(response?.dateStart)}
+              </ds-text>
             </div>
           </div>
 
@@ -278,7 +272,7 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
         isPending={activateLicenseMutation.isPending}
         onComplete={handleActivationProgressComplete}
       />
-      <ActivationError isError={showActivationResult && activateLicenseMutation.isError} />
+      {showActivationResult && activateLicenseMutation.isError && <ActivationError />}
     </div>
   );
 };
