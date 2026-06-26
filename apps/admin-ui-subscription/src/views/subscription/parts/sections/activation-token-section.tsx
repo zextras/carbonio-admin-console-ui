@@ -263,11 +263,12 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
         onClose={(): void => setDeactivateModalOpen(false)}
         onConfirm={handleDeactivateConfirm}
       />
-      <ChangeTokenModal
-        open={changeTokenModalOpen}
-        onClose={(): void => setChangeTokenModalOpen(false)}
-        onConfirm={handleChangeTokenConfirm}
-      />
+      {changeTokenModalOpen && (
+        <ChangeTokenModal
+          onClose={(): void => setChangeTokenModalOpen(false)}
+          onConfirm={handleChangeTokenConfirm}
+        />
+      )}
       <ActivationProgress
         isPending={activateLicenseMutation.isPending}
         onComplete={handleActivationProgressComplete}

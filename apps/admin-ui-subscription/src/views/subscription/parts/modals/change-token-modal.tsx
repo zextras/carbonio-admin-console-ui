@@ -5,19 +5,18 @@
  */
 
 import { Button, Input } from '@zextras/ui-components';
-import { ChangeEvent, FC, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import styles from './change-token-modal.module.css';
 
 type ChangeTokenModalProps = {
-  open: boolean;
   onClose: () => void;
   onConfirm: (token: string) => void;
 };
 
-export const ChangeTokenModal: FC<ChangeTokenModalProps> = ({ open, onClose, onConfirm }) => {
+export const ChangeTokenModal = ({ onClose, onConfirm }: ChangeTokenModalProps) => {
   const { t } = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
   const [token, setToken] = useState('');
@@ -28,30 +27,21 @@ export const ChangeTokenModal: FC<ChangeTokenModalProps> = ({ open, onClose, onC
     .trim()
     .min(1, t('subscription.activate.error.empty', 'Please enter your activation token'));
 
-  const validate = useCallback(
-    (value: string): boolean => {
-      const result = activationTokenSchema.safeParse(value);
+  const validate = (value: string): boolean => {
+    const result = activationTokenSchema.safeParse(value);
 
-      if (!result.success) {
-        setValidationError(result.error.issues[0]?.message);
-        return false;
-      }
+    if (!result.success) {
+      setValidationError(result.error.issues[0]?.message);
+      return false;
+    }
 
-      setValidationError(null);
-      return true;
-    },
-    [activationTokenSchema],
-  );
+    setValidationError(null);
+    return true;
+  };
 
   useEffect(() => {
-    if (open) {
-      popoverRef.current?.showPopover();
-    } else {
-      popoverRef.current?.hidePopover();
-      setToken('');
-      setValidationError(null);
-    }
-  }, [open]);
+    popoverRef.current?.showPopover();
+  }, []);
 
   function handleClose(): void {
     popoverRef.current?.hidePopover();
@@ -139,3 +129,4 @@ export const ChangeTokenModal: FC<ChangeTokenModalProps> = ({ open, onClose, onC
     </div>
   );
 };
+
