@@ -224,6 +224,25 @@ describe('AdvancedMailstoresDefinition', () => {
     });
   });
 
+  it('should initialize local allocation from default selection and enable next when volume name exists', async () => {
+    const setToggleNextBtn = vi.fn();
+    const setCompleteLoading = vi.fn();
+
+    render(
+      <TestHarness
+        setToggleNextBtn={setToggleNextBtn}
+        setCompleteLoading={setCompleteLoading}
+        initialVolumeDetail={{ volumeName: 'Volume A' }}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(setToggleNextBtn).toHaveBeenCalledWith(true);
+      expect(setCompleteLoading).toHaveBeenCalledWith(true);
+      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(true);
+    });
+  });
+
   it('should render external bucket selector and complete after choosing a bucket', async () => {
     const setToggleNextBtn = vi.fn();
     const setCompleteLoading = vi.fn();
@@ -252,6 +271,30 @@ describe('AdvancedMailstoresDefinition', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Amazon Web Service S3 | Unused connector' }));
 
     await waitFor(() => {
+      expect(setCompleteLoading).toHaveBeenCalledWith(true);
+      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(false);
+    });
+
+    expect(screen.getByTestId('advanced-state').textContent).toContain('unused-bucket');
+    expect(screen.getByTestId('advanced-state').textContent).toContain('conn-unused');
+  });
+
+  it('should auto-select first available bucket for object storage and enable completion', async () => {
+    const setToggleNextBtn = vi.fn();
+    const setCompleteLoading = vi.fn();
+
+    render(
+      <TestHarness
+        setToggleNextBtn={setToggleNextBtn}
+        setCompleteLoading={setCompleteLoading}
+        initialVolumeDetail={{ volumeName: 'Volume A' }}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Object Storage' }));
+
+    await waitFor(() => {
+      expect(setToggleNextBtn).toHaveBeenCalledWith(false);
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
       expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(false);
     });

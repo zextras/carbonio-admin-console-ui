@@ -69,44 +69,83 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
     [setAdvancedVolumeDetail, setVolumeDetail],
   );
 
-  const onVolAllocationChange = (v: unknown): void => {
-    if (typeof v !== 'number') {
+  const onVolAllocationChange = useCallback(
+    (v: unknown): void => {
+      if (typeof v !== 'number') {
+        return;
+      }
+
+      setVolumeDetail((prev: VolumeWizardDetail) => ({ ...prev, volumeAllocation: v }));
+      const volumeTypeObject = volAllocationList?.find(
+        (item: VolumeAllocationItem) => item?.value === v,
+      )?.label;
+      setAdvancedVolumeDetail((prev: AdvancedVolumeWizardDetail) => ({
+        ...prev,
+        volumeAllocation: volumeTypeObject,
+      }));
+      if (v === LOCAL_TYPE_VALUE) {
+        setToggleNextBtn(true);
+      } else {
+        setToggleNextBtn(false);
+      }
+    },
+    [setAdvancedVolumeDetail, setToggleNextBtn, setVolumeDetail, volAllocationList],
+  );
+
+  useEffect(() => {
+    if (volumeDetail?.volumeAllocation) {
       return;
     }
 
-    setVolumeDetail((prev: VolumeWizardDetail) => ({ ...prev, volumeAllocation: v }));
-    const volumeTypeObject = volAllocationList?.find(
-      (item: VolumeAllocationItem) => item?.value === v,
-    )?.label;
-    setAdvancedVolumeDetail((prev: AdvancedVolumeWizardDetail) => ({
-      ...prev,
-      volumeAllocation: volumeTypeObject,
-    }));
-    if (v === LOCAL_TYPE_VALUE) {
-      setToggleNextBtn(true);
-    } else {
-      setToggleNextBtn(false);
+    const defaultAllocation = volAllocationList?.[0]?.value;
+    if (typeof defaultAllocation === 'number') {
+      onVolAllocationChange(defaultAllocation);
     }
-  };
+  }, [onVolAllocationChange, volAllocationList, volumeDetail?.volumeAllocation]);
 
-  const onUnusedBucketListChange = (e: unknown): void => {
-    if (typeof e !== 'string') {
+  const onUnusedBucketListChange = useCallback(
+    (e: unknown): void => {
+      if (typeof e !== 'string') {
+        return;
+      }
+
+      const selectedBucketDetail = isVolumeAllDetail?.find((item: BucketVolume) => item?.uuid === e);
+      setAdvancedVolumeDetail((prev: AdvancedVolumeWizardDetail) => ({
+        ...prev,
+        bucketName: selectedBucketDetail?.bucketName,
+        unusedBucketType: selectedBucketDetail?.storeType,
+        bucketId: selectedBucketDetail?.uuid,
+        tieringSupported: selectedBucketDetail?.tieringSupported,
+        useInfrequentAccess: selectedBucketDetail?.tieringSupported
+          ? prev.useInfrequentAccess
+          : false,
+        useIntelligentTiering: selectedBucketDetail?.tieringSupported
+          ? prev.useIntelligentTiering
+          : false,
+      }));
+    },
+    [isVolumeAllDetail, setAdvancedVolumeDetail],
+  );
+
+  useEffect(() => {
+    if (volumeDetail?.volumeAllocation !== EXTERNAL_TYPE_VALUE) {
       return;
     }
 
-    const selectedBucketDetail = isVolumeAllDetail?.find((item: BucketVolume) => item?.uuid === e);
-    setAdvancedVolumeDetail((prev: AdvancedVolumeWizardDetail) => ({
-      ...prev,
-      bucketName: selectedBucketDetail?.bucketName,
-      unusedBucketType: selectedBucketDetail?.storeType,
-      bucketId: selectedBucketDetail?.uuid,
-      tieringSupported: selectedBucketDetail?.tieringSupported,
-      useInfrequentAccess: selectedBucketDetail?.tieringSupported ? prev.useInfrequentAccess : false,
-      useIntelligentTiering: selectedBucketDetail?.tieringSupported
-        ? prev.useIntelligentTiering
-        : false,
-    }));
-  };
+    if (advancedVolumeDetail?.bucketId) {
+      return;
+    }
+
+    const defaultBucket = backupUnusedBucketList?.[0]?.value;
+    if (typeof defaultBucket === 'string' && defaultBucket !== '') {
+      onUnusedBucketListChange(defaultBucket);
+    }
+  }, [
+    advancedVolumeDetail?.bucketId,
+    backupUnusedBucketList,
+    onUnusedBucketListChange,
+    volumeDetail?.volumeAllocation,
+  ]);
 
   function getBucketTypeLabel(storeType: string | undefined): string | undefined {
     return bucketTypeItems?.find((item) => item?.value?.toLowerCase() === storeType?.toLowerCase())
