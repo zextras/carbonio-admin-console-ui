@@ -34,6 +34,8 @@ export const DetailsSection = () => {
     ? response.subType.charAt(0) + response.subType.slice(1).toLowerCase()
     : '';
 
+  const copyTooltipLabel = t('label.copy_to_clipboard', 'Copy to clipboard');
+
   return (
     <div className={`${styles.sectionWrapper} ${styles.detailsSection}`}>
       <button
@@ -73,14 +75,16 @@ export const DetailsSection = () => {
             <div className={styles.detailValueRow}>
               <ds-text className={styles.detailValue}>{response.infrastructureId ?? ''}</ds-text>
               {response.infrastructureId && (
-                <button
-                  type="button"
-                  className={styles.copyInlineButton}
-                  onClick={handleCopy}
-                  aria-label={t('label.copy', 'Copy')}
-                >
-                  <ds-icon icon="Copy" size="1.5rem" color="primary" />
-                </button>
+                <Tooltip label={copyTooltipLabel}>
+                  <button
+                    type="button"
+                    className={styles.copyInlineButton}
+                    onClick={handleCopy}
+                    aria-label={t('label.copy', 'Copy')}
+                  >
+                    <ds-icon icon="Copy" size="1.5rem" color="primary" />
+                  </button>
+                </Tooltip>
               )}
             </div>
           </div>
