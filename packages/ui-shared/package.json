@@ -52,9 +52,9 @@
     "@types/prop-types": "^15.7.15",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.2.0",
-    "@vitest/browser": "^4.1.0",
-    "@vitest/browser-preview": "^4.1.0",
-    "@vitest/coverage-istanbul": "^4.1.0",
+    "@vitest/browser": "^4.1.9",
+    "@vitest/browser-preview": "^4.1.9",
+    "@vitest/coverage-istanbul": "^4.1.9",
     "babel-plugin-i18next-extract": "^1.1.0",
     "cjs-module-lexer": "^2.2.0",
     "clsx": "^2.1.1",
@@ -68,7 +68,7 @@
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3",
     "typescript-plugin-css-modules": "^5.2.0",
-    "vitest": "^4.1.0",
+    "vitest": "^4.1.9",
     "vitest-browser-react": "^2.2.0"
   },
   "files": [
