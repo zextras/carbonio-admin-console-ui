@@ -73,7 +73,7 @@
     "tsx": "^4.22.4",
     "turbo": "latest",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.1",
+    "typescript-eslint": "^8.62.0",
     "vite-plugin-svgr": "^5.2.0",
     "vitest": "^4.1.0",
     "vitest-browser-react": "^2.2.0"
