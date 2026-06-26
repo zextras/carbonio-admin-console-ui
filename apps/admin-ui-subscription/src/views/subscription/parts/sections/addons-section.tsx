@@ -36,7 +36,7 @@ const ADDON_CONFIGS: Array<AddonDisplayConfig> = [
     name: 'replica_addon',
     labelKey: 'label.mailreplica',
     labelDefault: 'UserReplica',
-    icon: 'Copy',
+    icon: 'BackupOutline',
     descriptionKey: 'core.subscription.mailreplica_description',
     descriptionDefault:
       'Provides advanced availability and redundancy options, supporting high-reliability environments and business-critical deployments.',
