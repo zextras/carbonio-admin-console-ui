@@ -37,7 +37,7 @@
     "react-router": "^7.13.0",
     "react-router-dom": "^7.13.0",
     "ua-parser-js": "^2.0.10",
-    "zod": "^4.3.6",
+    "zod": "^4.4.3",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
