@@ -80,7 +80,6 @@ export const ActivateSubscription = (): React.JSX.Element => {
           <div className={styles.inputField}>
             <Input
               label={t('subscription.activate.insert_token', 'Insert here the activation token')}
-              autoFocus
               trimOnPaste
               backgroundColor="gray5"
               hasError={validationError !== null}
