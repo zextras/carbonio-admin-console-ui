@@ -411,15 +411,6 @@ const ModifyVolume: FC<{
     setIsDirty(false);
   };
 
-  const onVolumeTypeChange = useCallback(
-    (e: number | null): void => {
-      const volumeObject: VolumeAllocationItem | undefined = volTypeList?.find(
-        (item: VolumeType): boolean => item?.value === e,
-      ) as VolumeAllocationItem | undefined;
-      setType(volumeObject);
-    },
-    [volTypeList],
-  );
   const buttons = [
     {
       align: 'right' as const,
@@ -814,17 +805,6 @@ const ModifyVolume: FC<{
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
                   setName(e?.target?.value)
                 }
-              />
-            </Row>
-            <Row padding={{ top: 'large' }} width="100%">
-              <Select
-                items={volTypeList}
-                background="gray5"
-                label={t('label.volume_main', 'Volume Main')}
-                defaultSelection={type}
-                showCheckbox={false}
-                onChange={onVolumeTypeChange}
-                disabled
               />
             </Row>
             <Row padding={{ top: 'large' }} width="100%">
