@@ -4,7 +4,7 @@
   "description": "The Zextras Carbonio web admin",
   "private": true,
   "engines": {
-    "node": "v22",
+    "node": "24.18.0",
     "npm": "v10"
   },
   "scripts": {
