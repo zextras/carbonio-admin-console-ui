@@ -26,7 +26,7 @@
     "@vitest/browser-preview": "^4.1.0",
     "@zextras/ui-components": "workspace:*",
     "@zextras/ui-shared": "workspace:*",
-    "i18next": "^26.3.1",
+    "i18next": "^26.3.2",
     "immer": "^11.1.8",
     "posthog-js": "^1.261.0",
     "react": "^19.2.3",
