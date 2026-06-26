@@ -1,3 +1,9 @@
+## [0.13.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.15...v0.13.16) (2026-06-26)
+
+### Other changes
+
+* **.github/renovate:** enable dependency dashboard and set automerge to branch ([#1270](https://github.com/zextras/carbonio-admin-console-ui/issues/1270)) ([27c2cf3](https://github.com/zextras/carbonio-admin-console-ui/commit/27c2cf357bd180738188c1e0f1573ffbedf7b59a))
+
 ## [0.13.15](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.14...v0.13.15) (2026-06-26)
 
 ### Bug Fixes
