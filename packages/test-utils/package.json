@@ -12,7 +12,7 @@
   },
   "engines": {
     "node": ">=20.0.0 <21.0.0",
-    "pnpm": ">=10.15.0"
+    "pnpm": ">=10.34.4"
   },
   "scripts": {
     "type-check": "tsc --build",
@@ -22,7 +22,7 @@
   "msw": {
     "workerDirectory": "./public"
   },
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.34.4",
   "author": "zextras",
   "license": "AGPL-3.0-only",
   "files": [
