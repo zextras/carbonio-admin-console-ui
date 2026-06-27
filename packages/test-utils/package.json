@@ -45,7 +45,7 @@
     "react-dom": "^19.2.3"
   },
   "dependencies": {
-    "@posthog/react": "^1.8.1",
+    "@posthog/react": "^1.10.3",
     "@zextras/ui-components": "workspace:*",
     "@zextras/ui-shared": "workspace:*",
     "i18next": "^26.3.1",

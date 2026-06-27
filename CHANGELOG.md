@@ -1,3 +1,21 @@
+## [0.13.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.15...v0.13.16) (2026-06-26)
+
+### Other changes
+
+* **.github/renovate:** enable dependency dashboard and set automerge to branch ([#1270](https://github.com/zextras/carbonio-admin-console-ui/issues/1270)) ([27c2cf3](https://github.com/zextras/carbonio-admin-console-ui/commit/27c2cf357bd180738188c1e0f1573ffbedf7b59a))
+
+## [0.13.15](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.14...v0.13.15) (2026-06-26)
+
+### Bug Fixes
+
+* **deps:** update dependency @fontsource/roboto to ^5.2.10 ([#1238](https://github.com/zextras/carbonio-admin-console-ui/issues/1238)) ([44dd40a](https://github.com/zextras/carbonio-admin-console-ui/commit/44dd40ac468de08215949ca3e74ea10b6ab0fcd7))
+
+## [0.13.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.13...v0.13.14) (2026-06-25)
+
+### Bug Fixes
+
+* **deps:** update dependency @posthog/react to ^1.10.3 ([#1252](https://github.com/zextras/carbonio-admin-console-ui/issues/1252)) ([4188235](https://github.com/zextras/carbonio-admin-console-ui/commit/4188235f1c54a575c4e8a354bd6e74196b0f7be9))
+
 ## [0.13.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.12...v0.13.13) (2026-06-24)
 
 ### Bug Fixes
