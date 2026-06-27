@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
-import { CopyToClipboardButton } from '../CopyToClipboardButton';
+import { CopyToClipboardButton } from '../copy-to-clipboard-button';
 
 describe('CopyToClipboardButton', () => {
   const writeText = vi.fn().mockResolvedValue(undefined);
@@ -29,7 +29,7 @@ describe('CopyToClipboardButton', () => {
   it('does not show the confirmation pill initially', async () => {
     await render(<CopyToClipboardButton value="order-123" />);
 
-    await expect.element(page.getByText('Copied to clipboard')).not.toBeInTheDocument();
+    await expect.element(page.getByText('Copied to clipboard')).not.toBeVisible();
   });
 
   it('shows the confirmation pill after clicking copy', async () => {
