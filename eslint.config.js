@@ -89,7 +89,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['apps/admin-ui-cos/**/*', 'apps/admin-ui-subscription/**/*'],
+    files: ['apps/admin-ui-subscription/**/*'],
     plugins: {
       'react-compiler': reactCompiler,
       'jsx-a11y': jsxA11y,
@@ -100,6 +100,18 @@ export default tseslint.config(
       'react-hooks/exhaustive-deps': 'warn',
       ...jsxA11y.configs.recommended.rules,
       ...reactYouMightNotNeedAnEffect.configs.strict.rules,
+    },
+  },
+  {
+    files: ['apps/admin-ui-cos/**/*'],
+    plugins: {
+      'react-compiler': reactCompiler,
+      'jsx-a11y': jsxA11y,
+    },
+    rules: {
+      'react-compiler/react-compiler': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      ...jsxA11y.configs.recommended.rules,
     },
   },
 );
