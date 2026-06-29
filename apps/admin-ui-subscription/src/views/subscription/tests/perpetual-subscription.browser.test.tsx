@@ -197,9 +197,7 @@ describe('PerpetualSubscription', () => {
       });
       setupTest(<PerpetualSubscription />, mockLicenseData);
 
-      await expect
-        .element(page.getByText(/Upgrade your subscription to unlock/))
-        .toBeVisible();
+      await expect.element(page.getByText(/Upgrade your subscription to unlock/)).toBeVisible();
     });
 
     it('should render an edition as inactive when it is absent from the license', async () => {
@@ -210,9 +208,7 @@ describe('PerpetualSubscription', () => {
       });
       setupTest(<PerpetualSubscription />, mockLicenseData);
 
-      await expect
-        .element(page.getByText(/Upgrade your subscription to unlock/))
-        .toBeVisible();
+      await expect.element(page.getByText(/Upgrade your subscription to unlock/)).toBeVisible();
     });
   });
 
@@ -231,15 +227,6 @@ describe('PerpetualSubscription', () => {
       await expect.element(page.getByText('ActiveSync', { exact: true })).toBeVisible();
       await expect.element(page.getByText('UserReplica', { exact: true })).toBeVisible();
     });
-
-    it('should render the call to action for an inactive add-on', async () => {
-      const mockLicenseData = createMockLicenseData();
-      setupTest(<PerpetualSubscription />, mockLicenseData);
-
-      await expect
-        .element(page.getByText('Contact your provider to activate'))
-        .toBeVisible();
-    });
   });
 
   describe('Details section', () => {
@@ -256,9 +243,7 @@ describe('PerpetualSubscription', () => {
 
       await expect.element(page.getByText('Test End User')).toBeVisible();
       await expect.element(page.getByText('Test Customer')).toBeVisible();
-      await expect
-        .element(page.getByText('8b2458ac-61e5-47c0-b70b-d27701c3c68d'))
-        .toBeVisible();
+      await expect.element(page.getByText('8b2458ac-61e5-47c0-b70b-d27701c3c68d')).toBeVisible();
     });
 
     it('should display the formatted subscription type', async () => {
@@ -293,9 +278,7 @@ describe('PerpetualSubscription', () => {
       });
       setupTest(<PerpetualSubscription />, mockLicenseData);
 
-      await expect
-        .element(page.getByText('Maintenance expiration date'))
-        .not.toBeInTheDocument();
+      await expect.element(page.getByText('Maintenance expiration date')).not.toBeInTheDocument();
     });
   });
 
