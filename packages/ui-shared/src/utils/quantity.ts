@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const UNLIMITED_QUANTITY_VALUES = ['-1', 'unlimited', '999999'];
+const UNLIMITED_QUANTITY_VALUES = new Set(['-1', 'unlimited', '999999']);
 
 export const isUnlimitedQuantity = (
 	quantity: string | number | undefined | null,
@@ -12,5 +12,5 @@ export const isUnlimitedQuantity = (
 	if (quantity == null) {
 		return false;
 	}
-	return UNLIMITED_QUANTITY_VALUES.includes(String(quantity).trim().toLowerCase());
+	return UNLIMITED_QUANTITY_VALUES.has(String(quantity).trim().toLowerCase());
 };
