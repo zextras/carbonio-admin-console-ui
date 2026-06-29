@@ -17,23 +17,17 @@ const setupTest = (component: React.ReactElement) => {
 };
 
 describe('ChangeTokenModal', () => {
-	it('shows the modal content when open is true', async () => {
-		setupTest(<ChangeTokenModal open onClose={vi.fn()} onConfirm={vi.fn()} />);
+	it('shows the modal content when rendered', async () => {
+		setupTest(<ChangeTokenModal onClose={vi.fn()} onConfirm={vi.fn()} />);
 
 		await expect.element(page.getByText('Change token', { exact: true })).toBeVisible();
 		await expect.element(page.getByText('CONFIRM TOKEN')).toBeVisible();
 		await expect.element(page.getByText('CANCEL')).toBeVisible();
 	});
 
-	it('hides the modal content when open is false', async () => {
-		setupTest(<ChangeTokenModal open={false} onClose={vi.fn()} onConfirm={vi.fn()} />);
-
-		await expect.element(page.getByText('Change token', { exact: true })).not.toBeVisible();
-	});
-
 	it('calls onConfirm with the trimmed token when CONFIRM TOKEN is clicked with a valid token', async () => {
 		const onConfirm = vi.fn();
-		setupTest(<ChangeTokenModal open onClose={vi.fn()} onConfirm={onConfirm} />);
+		setupTest(<ChangeTokenModal onClose={vi.fn()} onConfirm={onConfirm} />);
 
 		const input = page.getByRole('textbox');
 		await userEvent.type(input, '  MY-NEW-TOKEN  ');
@@ -44,7 +38,7 @@ describe('ChangeTokenModal', () => {
 
 	it('calls onConfirm when the Enter key is pressed with a valid token', async () => {
 		const onConfirm = vi.fn();
-		setupTest(<ChangeTokenModal open onClose={vi.fn()} onConfirm={onConfirm} />);
+		setupTest(<ChangeTokenModal onClose={vi.fn()} onConfirm={onConfirm} />);
 
 		const input = page.getByRole('textbox');
 		await userEvent.type(input, 'MY-TOKEN');
@@ -55,7 +49,7 @@ describe('ChangeTokenModal', () => {
 
 	it('shows a validation error and does not call onConfirm when confirming with an empty token', async () => {
 		const onConfirm = vi.fn();
-		setupTest(<ChangeTokenModal open onClose={vi.fn()} onConfirm={onConfirm} />);
+		setupTest(<ChangeTokenModal onClose={vi.fn()} onConfirm={onConfirm} />);
 
 		await page.getByText('CONFIRM TOKEN').click();
 
@@ -67,7 +61,7 @@ describe('ChangeTokenModal', () => {
 
 	it('shows a validation error when confirming with a whitespace-only token', async () => {
 		const onConfirm = vi.fn();
-		setupTest(<ChangeTokenModal open onClose={vi.fn()} onConfirm={onConfirm} />);
+		setupTest(<ChangeTokenModal onClose={vi.fn()} onConfirm={onConfirm} />);
 
 		const input = page.getByRole('textbox');
 		await userEvent.type(input, '   ');
@@ -80,7 +74,7 @@ describe('ChangeTokenModal', () => {
 	});
 
 	it('clears the validation error when the user starts typing again', async () => {
-		setupTest(<ChangeTokenModal open onClose={vi.fn()} onConfirm={vi.fn()} />);
+		setupTest(<ChangeTokenModal onClose={vi.fn()} onConfirm={vi.fn()} />);
 
 		await page.getByText('CONFIRM TOKEN').click();
 		await expect
@@ -93,7 +87,7 @@ describe('ChangeTokenModal', () => {
 	});
 
 	it('does not show a validation error on blur with valid content', async () => {
-		setupTest(<ChangeTokenModal open onClose={vi.fn()} onConfirm={vi.fn()} />);
+		setupTest(<ChangeTokenModal onClose={vi.fn()} onConfirm={vi.fn()} />);
 
 		const input = page.getByRole('textbox');
 		await userEvent.type(input, 'VALID-TOKEN');
@@ -104,7 +98,7 @@ describe('ChangeTokenModal', () => {
 
 	it('calls onClose when the CANCEL button is clicked', async () => {
 		const onClose = vi.fn();
-		setupTest(<ChangeTokenModal open onClose={onClose} onConfirm={vi.fn()} />);
+		setupTest(<ChangeTokenModal onClose={onClose} onConfirm={vi.fn()} />);
 
 		await page.getByText('CANCEL').click();
 
@@ -113,7 +107,7 @@ describe('ChangeTokenModal', () => {
 
 	it('calls onClose when the close icon is clicked', async () => {
 		const onClose = vi.fn();
-		setupTest(<ChangeTokenModal open onClose={onClose} onConfirm={vi.fn()} />);
+		setupTest(<ChangeTokenModal onClose={onClose} onConfirm={vi.fn()} />);
 
 		await page.getByRole('button', { name: 'Close' }).click();
 
