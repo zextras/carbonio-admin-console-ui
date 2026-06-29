@@ -138,12 +138,12 @@ describe('ActivationTokenSection', () => {
 			await changeTokenMenuItem().click();
 			await expect.element(page.getByText('CONFIRM TOKEN')).toBeVisible();
 
-			await page.getByText('CANCEL', { exact: true }).click();
+		await page.getByText('CANCEL', { exact: true }).click();
 
-			await expect.element(page.getByText('CONFIRM TOKEN')).not.toBeVisible();
-		});
+		expect(page.getByText('CONFIRM TOKEN').elements()).toHaveLength(0);
+	});
 
-		it('opens the deactivate modal when Deactivate subscription is selected', async () => {
+	it('opens the deactivate modal when Deactivate subscription is selected', async () => {
 			setupTest(<ActivationTokenSection />);
 
 			await openMenu();
@@ -197,9 +197,9 @@ describe('ActivationTokenSection', () => {
 			await openMenu();
 			await changeTokenMenuItem().click();
 
-			expect(onMenuOptionSelect).toHaveBeenCalledWith('change-token');
-			await expect.element(page.getByText('CONFIRM TOKEN')).not.toBeVisible();
-		});
+		expect(onMenuOptionSelect).toHaveBeenCalledWith('change-token');
+		expect(page.getByText('CONFIRM TOKEN').elements()).toHaveLength(0);
+	});
 
 		it('calls the callback with deactivate-license instead of opening the modal', async () => {
 			const onMenuOptionSelect = vi.fn();
