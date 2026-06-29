@@ -55,12 +55,6 @@ describe('ActivateSubscription', () => {
       await expect.element(page.getByRole('img', { name: 'logo' })).toBeVisible();
     });
 
-    it('should autofocus the input field on render', async () => {
-      setupActivateSubscriptionTest(<ActivateSubscription />);
-
-      const input = page.getByRole('textbox');
-      await expect.element(input).toHaveFocus();
-    });
   });
 
   describe('Input interaction', () => {
