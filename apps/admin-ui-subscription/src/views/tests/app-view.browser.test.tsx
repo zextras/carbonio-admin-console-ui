@@ -185,10 +185,11 @@ describe('AppView', () => {
       await expect.element(page.getByText('Max Carbonio version')).toBeVisible();
     });
 
-    it('should render MeteredSubscription for ISP type', async () => {
+    it('should render MeteredSubscription for Purchased + METERED', async () => {
       const licenseData = createMockLicenseData({
         response: {
-          type: 'ISP',
+          type: 'Purchased',
+          subType: 'METERED',
           renewDaysLeft: 15,
           renewTimeLeft: 15 * 24 * 60 * 60 * 1000,
           lastValidationCheck: new Date('2026-04-20T00:00:00Z').getTime(),
