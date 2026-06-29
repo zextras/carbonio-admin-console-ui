@@ -11,5 +11,6 @@ export * from './global';
 export * from './legalholds';
 export * from './mta';
 export * from './server';
+export * from './service';
 export * from './table';
 export * from './volume';
