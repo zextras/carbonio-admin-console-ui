@@ -116,7 +116,7 @@ importers:
         version: 4.22.4
       turbo:
         specifier: latest
-        version: 2.10.0
+        version: 2.10.2
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -137,7 +137,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -160,8 +160,8 @@ importers:
         specifier: ^11.1.8
         version: 11.1.8
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -276,7 +276,7 @@ importers:
         version: 5.2.10
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -460,7 +460,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-form':
         specifier: ^1.32.0
         version: 1.33.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -480,8 +480,8 @@ importers:
         specifier: ^11.1.8
         version: 11.1.8
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -581,7 +581,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -613,8 +613,8 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -723,7 +723,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -758,8 +758,8 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -871,7 +871,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -903,8 +903,8 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1013,7 +1013,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1045,8 +1045,8 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1155,7 +1155,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1184,8 +1184,8 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1297,7 +1297,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1326,8 +1326,8 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1436,7 +1436,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-form':
         specifier: ^1.27.0
         version: 1.33.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1468,8 +1468,8 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1578,7 +1578,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1607,8 +1607,8 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1717,7 +1717,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.0(react@19.2.7)
@@ -1749,8 +1749,8 @@ importers:
         specifier: ^4.17.21
         version: 4.18.1
       posthog-js:
-        specifier: ^1.261.0
-        version: 1.390.2
+        specifier: ^1.396.3
+        version: 1.396.3
       qrcode.react:
         specifier: ^4.2.0
         version: 4.2.0(react@19.2.7)
@@ -1859,7 +1859,7 @@ importers:
     dependencies:
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@zextras/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -1923,7 +1923,7 @@ importers:
         version: 1.7.6
       '@posthog/react':
         specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)
+        version: 1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)
       '@zextras/ui-shared':
         specifier: workspace:*
         version: link:../ui-shared
@@ -3555,8 +3555,8 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@posthog/core@1.35.2':
-    resolution: {integrity: sha512-aV6nkkKCF//NnR9SyQD00+sPg0A4v1m3Xk/fcsnYs+z3qCRXgjwOhfQX2lceAKWlru3o5l9Yn/480GovLOnqKA==}
+  '@posthog/core@1.39.2':
+    resolution: {integrity: sha512-G/TL5Xykl+9xCDtBwHHPRSToS/43UjzyxKOfhlTwu/hJHt3v39Q2OFu8hdum71Iu7+tuxxISGVcFMlIST7ksjA==}
 
   '@posthog/react@1.10.3':
     resolution: {integrity: sha512-Qu//fGQmVlX0B9kTA3LLg67e7AYLEmeuA0Bf1qSyUM0uUILcRQGjQezhNQPLYSTakOqvXEnl6fM2iQBF6Toxrw==}
@@ -3568,8 +3568,8 @@ packages:
       '@types/react':
         optional: true
 
-  '@posthog/types@1.390.0':
-    resolution: {integrity: sha512-zMjK6nrUWhAlL8ECrM4WldvgawqdoAE5B0ys7eA0lCoWuyzfFoSyh6zYtEuBSDRyN7fQLSfNCK+mQH4ngOl7Zw==}
+  '@posthog/types@1.392.0':
+    resolution: {integrity: sha512-nctNujXL3FC1v99FktaTMSugSD9ZOZekEpahUSafkU2TSvW+XGKNkQZbokuJtiWvPBK208dwMJva8UfBkChqpw==}
 
   '@rolldown/binding-android-arm64@1.0.3':
     resolution: {integrity: sha512-454rs7jHngixp/NMxd5srYD57OnzSlZ/eFTETjORQHLwJG1lRtmNOJcBerZlfu4GjKqeq8aCCIQrMdHyhI51Hw==}
@@ -4019,33 +4019,33 @@ packages:
   '@tsconfig/vite-react@8.0.6':
     resolution: {integrity: sha512-O+Eg45m/oNBY9r0EsI/N3VnXvrT4SZbcjTYW5M50eoBVnIUXL+W+ha0uDkK1WqezflsBrHkBSEyn+WdewFJJmw==}
 
-  '@turbo/darwin-64@2.10.0':
-    resolution: {integrity: sha512-EwvHThXzpY0KGd1/NAmuewI5D+aVa3Rl/OlxE36yfjUKb/+ySrfJrSlEFt8aD1OXwnnaHnQnPKHFndor0Zxlsg==}
+  '@turbo/darwin-64@2.10.2':
+    resolution: {integrity: sha512-wBM3ObqOWnKUDmg7QfUFDkDHPFUAJmrYlYqmEM8jMPAPA/I6wRJIbWimeQUqhOiQ8xPKhzyWM+xaiUP0wz8FEQ==}
     cpu: [x64]
     os: [darwin]
 
-  '@turbo/darwin-arm64@2.10.0':
-    resolution: {integrity: sha512-9d2fTyyG0lf5Wq1bwJA9qUaeecViMkLcdctWaMMmCkxZ/JqypmqOwK3W6vmejeKVgkr06gSoiX8bD+xN5Jpxcg==}
+  '@turbo/darwin-arm64@2.10.2':
+    resolution: {integrity: sha512-/Cq0joWnuMjDPfhjbFP4sv+C/7gkQ415zlaO4XUzD5EZxbtrKgXKvuuydMvogG8GeUnN1aDltW71RlmEfpjbyw==}
     cpu: [arm64]
     os: [darwin]
 
-  '@turbo/linux-64@2.10.0':
-    resolution: {integrity: sha512-sZBtjMuufitanjzi6UssoUpJMnnPlLMcdcJj3m3ptNsSq31Xh7MnjhwA5nWvLDTfEFg8GPcbYFXMo8vSdKRfqQ==}
+  '@turbo/linux-64@2.10.2':
+    resolution: {integrity: sha512-mMsf5IIhiKuceEXNstd25IbadjBXZ0amxzFOqliEzJX6HyeeHdBQPVSY583PWqYDyqM/FB8d5ZjkthfBSeuH3Q==}
     cpu: [x64]
     os: [linux]
 
-  '@turbo/linux-arm64@2.10.0':
-    resolution: {integrity: sha512-vkq/Z8R+1DQ+kifWFa810IjRy2NNBVvha3cg9sWA3nFh6nnGrHSMnnJKrzH7c/No9kq4Jb55Ru44YKsCSBgrKg==}
+  '@turbo/linux-arm64@2.10.2':
+    resolution: {integrity: sha512-Wcng1i2kaKmXutmwxT9MUoYZvdaIekXAdlGr4+0TpgbhGLw7nDuEcRBFrxb5BbRoX1d1q8SpdRxLc45TvDZIdQ==}
     cpu: [arm64]
     os: [linux]
 
-  '@turbo/windows-64@2.10.0':
-    resolution: {integrity: sha512-CRUEguLWxFQHptYZS7HjPhNhAFawfea07iR+xAQ5e4klgLrPCMdexBkXwSCwOxqTFknJ7RZFN3gOaADsw+Gttg==}
+  '@turbo/windows-64@2.10.2':
+    resolution: {integrity: sha512-SsNhM7Ho7EpAdwtrJKBOic9Hso23vu6Dp0gAfLOvUFjPzurr/sGQlXZEvr6z89ne4RDOypTwz5CBDrixpMKtXw==}
     cpu: [x64]
     os: [win32]
 
-  '@turbo/windows-arm64@2.10.0':
-    resolution: {integrity: sha512-dVHGaf9F8twzgibcBqKoADT/LLqf9++jDb+hq/LPWWaOmRpp4M+/pVOm7vy4z9D++xg8eaxWLT0+wQxFwhYu9A==}
+  '@turbo/windows-arm64@2.10.2':
+    resolution: {integrity: sha512-Gf+S7ICAdimT/n02bOuVWKvhHnct/HYjZg3oBNIz5hZ9ZyWHbQim9J3P5Qip8WpX0ksxF7eaBVziJCuLnjhqDg==}
     cpu: [arm64]
     os: [win32]
 
@@ -6619,8 +6619,8 @@ packages:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@1.390.2:
-    resolution: {integrity: sha512-z1zh0mMokecCILXxabmo5Xag6uCVYEDhP2JnMYLNxwmKN7d7u1S94XYmhUTF3iyAo2JOg6c7n86mGaTXliz4MA==}
+  posthog-js@1.396.3:
+    resolution: {integrity: sha512-CL4mH3F2azsONko/zC2931RLdt6RxTsEr7x7Lyk0SDmj5hZuvBCTbg9MKViXwSRhBr3/SaGcaHS1n95WxTrsCw==}
 
   preact@10.29.2:
     resolution: {integrity: sha512-7tNmwg/7mzzAoB/8kSg6Hl37JraAZw3Z3A0JSY7VXlZwo82Xn0G7wKbNNs2qoF4ZEEsQGTwDAroNdqKs1ofJxQ==}
@@ -7289,8 +7289,8 @@ packages:
     resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==}
     engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
 
-  turbo@2.10.0:
-    resolution: {integrity: sha512-o016H9PPtuH2deb3mh3Vci3Avfi9UYgM/RONQisY7HnloupP0IFSbFS3gFYJgFJP8nwBrByHWFQIDa8T2zIXPw==}
+  turbo@2.10.2:
+    resolution: {integrity: sha512-wTExrNrRjB8qzIcg+ZLm0A3GFNLDsWNwdS/RBXB0FPrBDyzk3i96Yx+TxWZC7a0k1SIreFB8ciUbxjmEqTH8IQ==}
     hasBin: true
 
   type-check@0.4.0:
@@ -9176,18 +9176,18 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@posthog/core@1.35.2':
+  '@posthog/core@1.39.2':
     dependencies:
-      '@posthog/types': 1.390.0
+      '@posthog/types': 1.392.0
 
-  '@posthog/react@1.10.3(@types/react@19.2.17)(posthog-js@1.390.2)(react@19.2.7)':
+  '@posthog/react@1.10.3(@types/react@19.2.17)(posthog-js@1.396.3)(react@19.2.7)':
     dependencies:
-      posthog-js: 1.390.2
+      posthog-js: 1.396.3
       react: 19.2.7
     optionalDependencies:
       '@types/react': 19.2.17
 
-  '@posthog/types@1.390.0': {}
+  '@posthog/types@1.392.0': {}
 
   '@rolldown/binding-android-arm64@1.0.3':
     optional: true
@@ -9609,22 +9609,22 @@ snapshots:
 
   '@tsconfig/vite-react@8.0.6': {}
 
-  '@turbo/darwin-64@2.10.0':
+  '@turbo/darwin-64@2.10.2':
     optional: true
 
-  '@turbo/darwin-arm64@2.10.0':
+  '@turbo/darwin-arm64@2.10.2':
     optional: true
 
-  '@turbo/linux-64@2.10.0':
+  '@turbo/linux-64@2.10.2':
     optional: true
 
-  '@turbo/linux-arm64@2.10.0':
+  '@turbo/linux-arm64@2.10.2':
     optional: true
 
-  '@turbo/windows-64@2.10.0':
+  '@turbo/windows-64@2.10.2':
     optional: true
 
-  '@turbo/windows-arm64@2.10.0':
+  '@turbo/windows-arm64@2.10.2':
     optional: true
 
   '@tybys/wasm-util@0.10.2':
@@ -12433,10 +12433,10 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@1.390.2:
+  posthog-js@1.396.3:
     dependencies:
-      '@posthog/core': 1.35.2
-      '@posthog/types': 1.390.0
+      '@posthog/core': 1.39.2
+      '@posthog/types': 1.392.0
       core-js: 3.49.0
       dompurify: 3.4.11
       fflate: 0.4.8
@@ -13213,14 +13213,14 @@ snapshots:
 
   tunnel@0.0.6: {}
 
-  turbo@2.10.0:
+  turbo@2.10.2:
     optionalDependencies:
-      '@turbo/darwin-64': 2.10.0
-      '@turbo/darwin-arm64': 2.10.0
-      '@turbo/linux-64': 2.10.0
-      '@turbo/linux-arm64': 2.10.0
-      '@turbo/windows-64': 2.10.0
-      '@turbo/windows-arm64': 2.10.0
+      '@turbo/darwin-64': 2.10.2
+      '@turbo/darwin-arm64': 2.10.2
+      '@turbo/linux-64': 2.10.2
+      '@turbo/linux-arm64': 2.10.2
+      '@turbo/windows-64': 2.10.2
+      '@turbo/windows-arm64': 2.10.2
 
   type-check@0.4.0:
     dependencies:
