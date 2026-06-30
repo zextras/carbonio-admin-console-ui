@@ -15,7 +15,6 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { debounce } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -25,6 +24,7 @@ import logo from '../../../../assets/gardian.svg';
 import { ZX_MOBILE } from '../../../../constants';
 import { doRemoveDevice } from '../../../../services/do-remove-device';
 import { getAllDevices } from '../../../../services/get-all-devices';
+import { useDomainStore } from '../../../../store/store';
 import ActiveDeviceDetail from './active-device-detail';
 
 type MobileDevice = {

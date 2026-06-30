@@ -3,21 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  IconCheckbox,
-  Input,
-  Padding,
-  Row,
-  Switch,
-  SwitchProps,
-  Tooltip,
-} from '@zextras/ui-components';
-import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
+import { Container, IconCheckbox, Input, Padding, Row, Switch, SwitchProps, Tooltip, } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ComputedLimit, QuotaSource } from '../../../../../../services/get-account-quota';
+import { useDomainStore } from '../../../../../../store/store';
 import { BytesToGB, GbToBytes } from '../../../../../utility/utils';
 import { TotalQuotaSourceIcon } from './total-quota-source-icon';
 

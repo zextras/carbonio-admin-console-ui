@@ -5,12 +5,12 @@
  */
 
 import { Button, Container, HorizontalWizard, WizardInSection } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
 import { noop } from 'lodash-es';
 import { type FC, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LDAP, PUB } from '../../../../constants';
+import { useDomainStore } from '../../../../store/store';
 import MailingListMembersSection from './mailing-list-members-section';
 import MailingListSection from './mailing-list-section';
 import MailingListSettingsSection from './mailing-list-settings-sections';

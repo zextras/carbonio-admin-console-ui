@@ -5,7 +5,6 @@
  */
 
 import { type QueryClient } from '@tanstack/react-query';
-import { useDomainStore } from '@zextras/ui-shared';
 import {
   advancedSupportedApiForBrowser,
   getQueryClient,
@@ -16,6 +15,7 @@ import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { useDomainStore } from '../../../../../store/store';
 import ManageDelegates from '../manage-delegates';
 
 const DOMAIN_NAME = 'example.com';

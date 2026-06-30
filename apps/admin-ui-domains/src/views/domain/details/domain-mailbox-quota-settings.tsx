@@ -3,24 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  Input,
-  ListRow,
-  Padding,
-  Paging,
-  Row,
-  Select,
-  Table,
-  THeader,
-  TrackNumberPerPage,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
+import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, ListRow, Padding, Paging, Row, Select, Table, THeader, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
+import { flushCache, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import { isEqual, reduce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -40,6 +24,7 @@ import {
 import { getQuotaUsageAdvance } from '../../../services/get-file-quota-accounts-usage';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import { useDomainStore } from '../../../store/store';
 import DownloadCSV from '../../app/shared/download-csv';
 import { MailBoxQuota } from '../../app/types/mailbox_quota';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';

@@ -3,28 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  ChipInput,
-  Container,
-  CustomHeaderFactory,
-  CustomTextArea,
-  DropDownInput,
-  HoverableRowFactory,
-  InheritedSelect,
-  Input,
-  LabeledValue,
-  Modal,
-  Padding,
-  Paging,
-  Row,
-  Select,
-  Switch,
-  Table,
-  Tooltip,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
+import { Button, ChipInput, Container, CustomHeaderFactory, CustomTextArea, DropDownInput, HoverableRowFactory, InheritedSelect, Input, LabeledValue, Modal, Padding, Paging, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import { debounce, map } from 'lodash-es';
 import React, {
   ChangeEvent,
@@ -43,6 +23,7 @@ import { endSession } from '../../../../../services/end-session';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
+import { useDomainStore } from '../../../../../store/store';
 import CustomChip from '../../../../components/customChip';
 import ManageAliases from '../../../../components/manageAliases';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';

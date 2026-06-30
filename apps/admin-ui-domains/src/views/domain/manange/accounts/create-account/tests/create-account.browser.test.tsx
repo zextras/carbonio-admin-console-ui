@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/ui-shared';
 import { createBrowserAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
+import { useDomainStore } from '../../../../../../store/store';
 import { AccountContext } from '../account-context';
 import CreateAccount from '../create-account';
 import CreateAccountDetailSection from '../create-account-detail-section';

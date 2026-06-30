@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
-import { flushCache, useAllConfig, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { flushCache, useAllConfig, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, isEqual, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,7 @@ import { themeConfigStore } from '../../../../types/domain';
 import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { getDomainInformation } from '../../../services/domain-information-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import { useDomainStore } from '../../../store/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
 import { ThemeConfigs } from '../theme/theme-configs';

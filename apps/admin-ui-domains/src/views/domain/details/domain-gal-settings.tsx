@@ -3,26 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  Dropdown,
-  DropdownItem,
-  HoverableRowFactory,
-  Input,
-  LabeledValue,
-  ListRow,
-  Padding,
-  Row,
-  Select,
-  Switch,
-  Table,
-  Tooltip,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, useDomainStore, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
+import { Button, Container, CustomHeaderFactory, Dropdown, DropdownItem, HoverableRowFactory, Input, LabeledValue, ListRow, Padding, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
+import { flushCache, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -55,6 +37,7 @@ import { modifyAccountRequest } from '../../../services/modify-account';
 import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
+import { useDomainStore } from '../../../store/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
 import CreateGalsyncAccountModel from './create-galsync-account-model';

@@ -3,14 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { PrimaryBarTooltip } from '@zextras/ui-components';
-import {
-  addRoute,
-  registerActions,
-  useCurrentUserRights,
-  useDomainStore,
-} from '@zextras/ui-shared';
+import { addRoute, registerActions, useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -26,6 +20,7 @@ import {
   MANAGE_APP_ID,
   PRIMARY_BAR_DOMAINS,
 } from './constants';
+import { useDomainStore } from './store/store';
 import AppView from './views/app-view';
 
 const App: FC = () => {

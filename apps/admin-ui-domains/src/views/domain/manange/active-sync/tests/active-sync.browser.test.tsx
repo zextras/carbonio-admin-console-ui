@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/ui-shared';
 import { setupBrowserTest, worker } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
+import { useDomainStore } from '../../../../../store/store';
 import ActiveSync from '../active-sync';
 
 const DOMAIN_NAME = 'example.com';

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/ui-shared';
 import {
     advancedSupportedApiForBrowser,
     createBrowserSoapAPIInterceptor,
@@ -15,6 +14,7 @@ import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
+import { useDomainStore } from '../../../../store/store';
 import DomainAuthentication from '../domain-authentication';
 
 const DOMAIN_ID = 'test-domain-id-auth';

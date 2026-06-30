@@ -3,22 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomTextArea,
-  Displayer,
-  Input,
-  LabeledValue,
-  ListRow,
-  Modal,
-  Padding,
-  Row,
-  Select,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { useDomainStore, useStickyBarStore } from '@zextras/ui-shared';
+import { Button, Container, CustomTextArea, Displayer, Input, LabeledValue, ListRow, Modal, Padding, Row, Select, useSnackbar, } from '@zextras/ui-components';
+import { useStickyBarStore } from '@zextras/ui-shared';
 import { format, parse } from 'date-fns';
 import { isEqual } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -30,6 +16,7 @@ import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-r
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { setPasswordRequest } from '../../../../services/set-password-service';
+import { useDomainStore } from '../../../../store/store';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { SendInviteAccounts } from './send-invite-accounts';
 

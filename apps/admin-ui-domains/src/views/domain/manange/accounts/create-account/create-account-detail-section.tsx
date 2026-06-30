@@ -14,12 +14,12 @@ import {
   Switch,
   Tooltip,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
 import { find, head } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../../../types';
+import { useDomainStore } from '../../../../../store/store';
 import {
   AccountStatus,
   checkValidUserName,

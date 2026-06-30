@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, ChipInput, Container, Padding, Row, Switch } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
 import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { sendMail } from '../../../../../services/send-mail-service';
+import { useDomainStore } from '../../../../../store/store';
 import CustomChip from '../../../../components/customChip';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from './account-context';

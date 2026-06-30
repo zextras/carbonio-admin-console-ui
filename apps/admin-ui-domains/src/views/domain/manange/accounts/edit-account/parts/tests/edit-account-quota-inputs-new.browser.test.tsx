@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useDomainStore } from '@zextras/ui-shared';
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
+import { useDomainStore } from '../../../../../../../store/store';
 import { EditAccountQuotaInputsNew } from '../edit-account-quota-inputs-new';
 
 const defaultQuotaLimit = 10737418240;

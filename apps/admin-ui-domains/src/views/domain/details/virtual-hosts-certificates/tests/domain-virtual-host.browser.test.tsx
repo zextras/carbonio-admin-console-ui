@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/ui-shared';
 import { createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { useDomainStore } from '../../../../../store/store';
 import { DomainVirtualHosts } from '../domain-virtual-hosts';
 
 const mockDomainData = {

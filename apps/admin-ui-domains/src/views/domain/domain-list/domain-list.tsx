@@ -3,18 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  Input,
-  Paging,
-  Row,
-  Table,
-  TrackNumberPerPage,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { replaceHistory, useDomainStore } from '@zextras/ui-shared';
+import { Container, CustomHeaderFactory, HoverableRowFactory, Input, Paging, Row, Table, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
+import { replaceHistory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -22,6 +12,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { getDomainList } from '../../../services/search-domain-service';
+import { useDomainStore } from '../../../store/store';
 import ScrollContainer from '../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 

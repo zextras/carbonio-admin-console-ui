@@ -3,27 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-	Container,
-	DropDownInput,
-	ListItems,
-	type ListItemType,
-	ListPanelItem,
-	Padding,
-	Row,
-	useSnackbar,
-} from '@zextras/ui-components';
-import {
-	getAllRights,
-	replaceHistory,
-	useAllConfig,
-	useBackupServers,
-	useCurrentUserRights,
-	useDomainStore,
-	useIsAdvanced,
-	useTotalQuotaActive,
-} from '@zextras/ui-shared';
+import { Container, DropDownInput, ListItems, type ListItemType, ListPanelItem, Padding, Row, useSnackbar, } from '@zextras/ui-components';
+import { getAllRights, replaceHistory, useAllConfig, useBackupServers, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -66,6 +47,7 @@ import {
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
+import { useDomainStore } from '../../store/store';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import GlobalListPanel from './global-list-panel';
 

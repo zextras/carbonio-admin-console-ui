@@ -3,15 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { Button, Container, HorizontalWizard, Padding, useSnackbar, WizardInSection } from '@zextras/ui-components';
-import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { createAccountRequest } from '../../../../../services/create-account';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
+import { useDomainStore } from '../../../../../store/store';
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';

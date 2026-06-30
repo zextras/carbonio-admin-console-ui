@@ -3,21 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  Input,
-  ModalOverlay,
-  Padding,
-  Paging,
-  Row,
-  Table,
-  TrackNumberPerPage,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { searchDirectory, useDomainStore } from '@zextras/ui-shared';
+import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, ModalOverlay, Padding, Paging, Row, Table, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
+import { searchDirectory } from '@zextras/ui-shared';
 import { debounce } from 'lodash';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -37,6 +24,7 @@ import {
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
+import { useDomainStore } from '../../../../store/store';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list';

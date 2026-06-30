@@ -3,17 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  Modal,
-  Padding,
-  Row,
-  TabBar,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { Button, Container, Modal, Padding, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
+import { useUserSettings } from '@zextras/ui-shared';
 import { format, isValid } from 'date-fns';
 import { differenceBy, isEqual } from 'lodash';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -32,6 +23,7 @@ import { modifyDistributionList } from '../../../../services/modify-distribution
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
 import { getDomainList } from '../../../../services/search-domain-service';
+import { useDomainStore } from '../../../../store/store';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getDateTimeFromStr } from '../../../utility/utils';
@@ -999,8 +991,6 @@ const EditMailingListView: FC<any> = ({
       setIsDirty(true);
     }
   }, [previousDetail?.ownerOfList, ownerOfList]);
-
-
 
   useEffect(() => {
     if (

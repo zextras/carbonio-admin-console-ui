@@ -16,7 +16,6 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,6 +31,7 @@ import { generateSignedCertificate } from '../../../services/generate-signed-cer
 import { getSamlConfig } from '../../../services/get-saml-configurations';
 import { importSamlConfig } from '../../../services/import-saml-configurations';
 import { updateSamlAttributes } from '../../../services/update-saml-attributes';
+import { useDomainStore } from '../../../store/store';
 import { copyTextToClipboard, download, getServiceUrl, getSPEntityId } from '../../utility/utils';
 
 type SamlAttribute = {

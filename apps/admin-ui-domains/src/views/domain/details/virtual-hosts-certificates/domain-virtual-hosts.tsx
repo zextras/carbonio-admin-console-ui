@@ -3,16 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  ModalOverlay,
-  Padding,
-  Row,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { Button, Container, ModalOverlay, Padding, Row, useSnackbar, } from '@zextras/ui-components';
+import { flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
 import { isEqual, mapValues, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +21,7 @@ import {
   ZIMBRA_VIRTUAL_HOSTNAME,
 } from '../../../../constants';
 import { modifyDomain } from '../../../../services/modify-domain-service';
+import { useDomainStore } from '../../../../store/store';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { AlertBanner } from './alert-banner';
 import { CertificateView } from './certificate-view';

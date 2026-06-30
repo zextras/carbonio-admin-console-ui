@@ -151,7 +151,6 @@ import { useI18nStore } from './store/i18n/store';
 import { useActions } from './store/integrations/hooks';
 import { useIntegrationsStore } from './store/integrations/store';
 import { useLoginConfigStore } from './store/login/store';
-import { useDomainStore } from './store/shared/domains';
 import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
 import { isValidDecimalInput } from './utils/validators';
@@ -265,7 +264,6 @@ export {
   useCurrentRoute,
   useCurrentUserRights,
   useDomainInformation,
-  useDomainStore,
   useGlobalCarbonioSendAnalytics,
   useHasAllRights,
   useI18nStore,

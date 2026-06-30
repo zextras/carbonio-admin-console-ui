@@ -8,7 +8,11 @@ import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query
 import { useCallback } from 'react';
 
 import { soapFetch } from '../network/fetch';
-import { Attribute } from '../store/shared/domains/types';
+
+type Attribute = {
+	n: string;
+	_content: string;
+};
 
 type ConfigOptions = Omit<UseQueryOptions<Array<Attribute>>, 'queryKey' | 'queryFn'> & {
   enabled?: boolean;

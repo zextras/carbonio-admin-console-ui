@@ -5,7 +5,6 @@
  */
 
 import { QueryClient } from '@tanstack/react-query';
-import { useDomainStore } from '@zextras/ui-shared';
 import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
@@ -16,6 +15,7 @@ import { http, HttpResponse } from 'msw';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
+import { useDomainStore } from '../../../../store/store';
 import DomainGalSettings from '../domain-gal-settings';
 
 const DOMAIN_NAME = 'example.com';

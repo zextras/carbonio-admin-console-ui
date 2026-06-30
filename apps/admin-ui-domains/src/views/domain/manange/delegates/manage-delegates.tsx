@@ -3,31 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  ListRow,
-  ModalOverlay,
-  Paging,
-  Row,
-  Table,
-  TrackNumberPerPage,
-  useSnackbar,
-} from '@zextras/ui-components';
-import {
-  type CosAttribute,
-  getCosGeneralInformation,
-  type GetCosResponse,
-  postSoapFetchRequest,
-  searchDirectory,
-  useDomainStore,
-  useIsAdvanced,
-  useUserAccount,
-  useUserSettings,
-} from '@zextras/ui-shared';
+import { Button, Container, CustomHeaderFactory, HoverableRowFactory, ListRow, ModalOverlay, Paging, Row, Table, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
+import { type CosAttribute, getCosGeneralInformation, type GetCosResponse, postSoapFetchRequest, searchDirectory, useIsAdvanced, useUserAccount, useUserSettings } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { debounce, filter, flatMapDeep } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -52,6 +29,7 @@ import { getSingatures } from '../../../../services/get-signature-service';
 import { InitDomainForDelegation } from '../../../../services/init-domain-for-delegation';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
+import { useDomainStore } from '../../../../store/store';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { AccountContext } from '../accounts/account-context';

@@ -3,34 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  Input,
-  ModalOverlay,
-  Padding,
-  Paging,
-  Row,
-  Table,
-  Tooltip,
-  TrackNumberPerPage,
-  useSnackbar,
-} from '@zextras/ui-components';
-import {
-  type CosAttribute,
-  getCoreAttributes,
-  getCosGeneralInformation,
-  type GetCosResponse,
-  getFileQuotaById,
-  postSoapFetchRequest,
-  useDomainStore,
-  useIsAdvanced,
-  useTotalQuotaActive,
-  useUserAccount,
-} from '@zextras/ui-shared';
+import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, ModalOverlay, Padding, Paging, Row, Table, Tooltip, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
+import { type CosAttribute, getCoreAttributes, getCosGeneralInformation, type GetCosResponse, getFileQuotaById, postSoapFetchRequest, useIsAdvanced, useTotalQuotaActive, useUserAccount } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { debounce, filter, flatMapDeep } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -70,6 +44,7 @@ import { getDomainQuota } from '../../../../services/get-domain-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
+import { useDomainStore } from '../../../../store/store';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { AccountContext, AccountDetail } from './account-context';

@@ -4,10 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
-import { useDomainStore, useLocalStorage } from '@zextras/ui-shared';
+import { useLocalStorage } from '@zextras/ui-shared';
 import { cloneDeep, find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+
+import { useDomainStore } from '../../store/store';
 
 type DomainDetailPanelProps = {
   children?: React.ReactNode;

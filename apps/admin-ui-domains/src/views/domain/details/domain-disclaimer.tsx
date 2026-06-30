@@ -3,18 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  ListRow,
-  Padding,
-  Row,
-  Switch,
-  TextArea,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { Button, Container, ListRow, Padding, Row, Switch, TextArea, useSnackbar, } from '@zextras/ui-components';
+import { flushCache, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -31,6 +21,7 @@ import {
   ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../../constants';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import { useDomainStore } from '../../../store/store';
 import styles from './domain-disclaimer.module.css';
 
 const DomainDisclaimer: FC = () => {

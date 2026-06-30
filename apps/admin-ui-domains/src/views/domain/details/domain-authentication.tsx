@@ -3,22 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  Container,
-  Input,
-  ListRow,
-  Padding,
-  PasswordInput,
-  Popper,
-  Row,
-  Select,
-  SelectItem,
-  Switch,
-  Tooltip as TooltipDefault,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
+import { Button, Container, Input, ListRow, Padding, PasswordInput, Popper, Row, Select, SelectItem, Switch, Tooltip as TooltipDefault, useSnackbar, } from '@zextras/ui-components';
+import { flushCache, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +13,7 @@ import { Attribute, objectType } from '../../../../types';
 import { CHECK_OK, DISABLED, ENABLED, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import { useDomainStore } from '../../../store/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidLdapBaseUrl } from '../../utility/utils';
 

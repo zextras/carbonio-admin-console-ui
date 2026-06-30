@@ -3,16 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomTextArea,
-  Padding,
-  Tooltip,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { Button, Container, CustomTextArea, Padding, Tooltip, useSnackbar, } from '@zextras/ui-components';
+import { flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,6 +19,7 @@ import {
   ZIMBRA_ID,
 } from '../../../../constants';
 import { modifyDomain } from '../../../../services/modify-domain-service';
+import { useDomainStore } from '../../../../store/store';
 
 export const LoadAndVerifyCert: FC<{
   setToggleWizardSection: any;

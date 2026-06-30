@@ -3,33 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  ChipInput,
-  ChipItem,
-  Container,
-  CustomTextArea,
-  Input,
-  LabeledValue,
-  ListRow,
-  Modal,
-  Padding,
-  Row,
-  Select,
-  useSnackbar,
-} from '@zextras/ui-components';
-import {
-  type DirectoryEntry,
-  type DomainDirectories,
-  flushCache,
-  replaceHistory,
-  searchDirectory,
-  useDomainStore,
-  useIsAdvanced,
-  useTotalQuotaActive,
-  useUserSettings,
-} from '@zextras/ui-shared';
+import { Button, ChipInput, ChipItem, Container, CustomTextArea, Input, LabeledValue, ListRow, Modal, Padding, Row, Select, useSnackbar, } from '@zextras/ui-components';
+import { type DirectoryEntry, type DomainDirectories, flushCache, replaceHistory, searchDirectory, useIsAdvanced, useTotalQuotaActive, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -55,6 +30,7 @@ import { getDomainQuota } from '../../../services/get-domain-quota';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { setDomainQuota } from '../../../services/set-domain-quota';
 import { unsetDomainQuota } from '../../../services/unset-domain-quota';
+import { useDomainStore } from '../../../store/store';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import {

@@ -13,12 +13,12 @@ import {
   Select,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
 import React, { ChangeEvent, FC, useCallback, useContext, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
+import { useDomainStore } from '../../../../../store/store';
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 

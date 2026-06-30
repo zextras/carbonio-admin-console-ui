@@ -12,11 +12,11 @@ import {
   Row,
   Select,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
 import { cloneDeep, noop, uniqBy } from 'lodash-es';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useDomainStore } from '../../store/store';
 import CustomChip from './customChip';
 
 const ManageAliases: FC<{

@@ -3,21 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  DropDownInput,
-  HoverableRowFactory,
-  Input,
-  ListRow,
-  Padding,
-  Row,
-  Table,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, getCosList, postSoapFetchRequest, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { Button, Container, CustomHeaderFactory, DropDownInput, HoverableRowFactory, Input, ListRow, Padding, Row, Table, useSnackbar, } from '@zextras/ui-components';
+import { flushCache, getCosList, postSoapFetchRequest, useUserSettings } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, KeyboardEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,6 +15,7 @@ import { CosMaxAccountValues } from '../../../../types/domain';
 import { HELPDESK_ADMINS, MAX_COS_DISPLAY, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { copyCos } from '../../../services/copy-cos-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import { useDomainStore } from '../../../store/store';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 
 const DomainCosLink: FC<{

@@ -13,10 +13,10 @@ import {
   Select,
   SelectItem,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useDomainStore } from '../../../../store/store';
 import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
 import { ResourceContext } from './resource-context';
 import {
