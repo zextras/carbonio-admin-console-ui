@@ -6,7 +6,7 @@
 
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { TrialSubscription } from '../trial-subscription';
@@ -264,6 +264,10 @@ describe('TrialSubscription', () => {
   });
 
   describe('SubscriptionExpiry card', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
     it('should render the Expires on label', async () => {
       const mockLicenseData = createMockLicenseData();
       setupTest(<TrialSubscription />, mockLicenseData);
@@ -283,6 +287,7 @@ describe('TrialSubscription', () => {
     });
 
     it('should display days remaining text when expiry is within a year', async () => {
+      vi.useFakeTimers({ now: new Date('2026-06-01T00:00:00Z'), toFake: ['Date'] });
       const mockLicenseData = createMockLicenseData({
         response: {
           dateEnd: new Date('2026-07-01T00:00:00Z').getTime(),
