@@ -9,7 +9,6 @@ import {
 	http,
 	HttpResponse,
 	HttpResponseResolver,
-	passthrough,
 	StrictRequest,
 } from 'msw';
 import { setupWorker } from 'msw/browser';
@@ -21,15 +20,17 @@ const handleZextrasSoapAction: HttpResponseResolver = async ({ request }) => {
 		| { Body?: { zextras?: { action?: string } } }
 		| null;
 	const action = body?.Body?.zextras?.action;
-	const withContent = (payload: unknown) =>
-		HttpResponse.json({ Body: { response: { content: JSON.stringify(payload) } } });
+	const withContent = (payload: unknown, init?: ResponseInit) =>
+		HttpResponse.json({ Body: { response: { content: JSON.stringify(payload) } } }, init);
 	if (action === 'getLicenseInfo') {
 		return withContent({ ok: true, response: { type: 'None', features: [] } });
 	}
 	if (action === 'getVersion') {
 		return withContent({ ok: true, response: { version: '0.0.0' } });
 	}
-	return passthrough();
+	const message = `Unhandled zextras SOAP action: ${action ?? 'unknown'}`;
+	console.error(`[test-utils] ${message}`);
+	return withContent({ ok: false, message }, { status: 500 });
 };
 
 const defaultHandlers = [
