@@ -137,6 +137,7 @@ export const DomainContentPanel = () => (
         <Route path={RESOURCES} element={<DomainResources />} />
         <Route path={RESTORE_ACCOUNT} element={<RestoreAccount />} />
         <Route path={DISCLAIMER} element={<DomainDisclaimer />} />
+        <Route path="*" element={null} />
       </Route>
       <Route path={CREATE_NEW_DOMAIN_ROUTE_ID} element={<CreateDomain />} />
       <Route
