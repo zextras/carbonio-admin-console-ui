@@ -182,7 +182,7 @@ describe('AppView', () => {
       });
       setupTest(licenseData);
 
-      await expect.element(page.getByText('Max Carbonio version')).toBeVisible();
+      await expect.element(page.getByText('Max Carbonio Version')).toBeVisible();
     });
 
     it('should render MeteredSubscription for Purchased + METERED', async () => {

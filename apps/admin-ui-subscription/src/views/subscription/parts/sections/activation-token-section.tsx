@@ -103,7 +103,10 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
       createSnackbar({
         key: 'info-snackbar',
         severity: 'info',
-        label: 'Subscription renewal feature is in progress.',
+        label: t(
+          'core.subscription.renewal_in_progress',
+          'Subscription renewal feature is in progress.',
+        ),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
