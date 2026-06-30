@@ -33,7 +33,6 @@ const App: FC = () => {
   const navigate = useNavigate();
 
   const { data: rights } = useCurrentUserRights();
-  const setDomainView = useDomainStore((state) => state.setDomainView);
   const setDomain = useDomainStore((state) => state.setDomain);
 
   const createDomainRight = useMemo(() => {
@@ -101,7 +100,6 @@ const App: FC = () => {
         onClick: (): void => {
           navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
           setDomain({});
-          setDomainView(CREATE_NEW_DOMAIN_ROUTE_ID);
         },
         disabled: !createDomainRight,
         group: APP_ID,
@@ -111,7 +109,7 @@ const App: FC = () => {
       type: 'new',
     };
     registerActions(actionConfig);
-  }, [createDomainRight, navigate, setDomain, setDomainView, t]);
+  }, [createDomainRight, navigate, setDomain, t]);
 
   return null;
 };

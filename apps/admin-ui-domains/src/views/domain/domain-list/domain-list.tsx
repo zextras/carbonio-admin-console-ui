@@ -14,7 +14,7 @@ import {
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
+import { replaceHistory, useDomainStore } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -61,7 +61,6 @@ type ZimbraDomainEntry = {
 const DomainList: FC = () => {
   const [t] = useTranslation();
   const setDomain = useDomainStore((state) => state.setDomain);
-  const setDomainView = useDomainStore((state) => state.setDomainView);
   const [hasError, setHasError] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
   const [isTableTooTall, setIsTableTooTall] = useState(false);
@@ -142,9 +141,9 @@ const DomainList: FC = () => {
         id: domain?.id,
         name: domain?.name,
       });
-      setDomainView(GENERAL_SETTINGS);
+      replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
     },
-    [setDomain, setDomainView],
+    [setDomain],
   );
 
   const getAllDomainList = useCallback((): void => {

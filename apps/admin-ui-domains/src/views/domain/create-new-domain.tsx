@@ -51,7 +51,6 @@ const CreateDomain: FC = () => {
   const createSnackbar = useSnackbar();
   const navigate = useNavigate();
   const setDomain = useDomainStore((state) => state.setDomain);
-  const setDomainView = useDomainStore((state) => state.setDomainView);
   const setIsDomainSupportDelegatedAdmin = useDomainStore(
     (state) => state.setIsDomainSupportDelegatedAdmin,
   );
@@ -180,7 +179,7 @@ const CreateDomain: FC = () => {
         id: domainId,
         name: resp?.domain[0]?.name,
       });
-      setDomainView(GENERAL_SETTINGS);
+      replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
     } else {
       replaceHistory(`/`);
     }

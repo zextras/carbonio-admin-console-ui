@@ -21,16 +21,12 @@ interface DomainState {
   domainWithoutConfig: Domain;
   /** List of available Classes of Service */
   cosList: Array<Cos>;
-  /** Current view identifier for domain pages */
-  domainView: string;
   /** List of all domains */
   domainList: Array<Domain>;
   /** Whether the current domain supports delegated admin */
   isDomainSupportDelegatedAdmin: boolean;
   /** Domain name for which the banner was closed */
   closeDomainBanner: string;
-  /** Whether quick access mode is enabled */
-  isQuickAccess: boolean;
   /** Whether certificate is available for the domain */
   isCertificateAvailbale: boolean;
 
@@ -47,14 +43,10 @@ interface DomainState {
   setDomainList: (domainList: Array<Domain>) => void;
   /** Remove/clear the current domain */
   removeDomain: () => void;
-  /** Set the current domain view */
-  setDomainView: (domainView: string) => void;
   /** Set whether the domain supports delegated admin */
   setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin: boolean) => void;
   /** Set the domain name for which banner was closed */
   setCloseDomainBanner: (domainName: string) => void;
-  /** Set quick access mode */
-  setIsQuickAccess: (isQuickAccess: boolean) => void;
   /** Set certificate availability */
   setIsCertificateAvailbale: (isCertificateAvailbale: boolean) => void;
 }
@@ -87,11 +79,9 @@ export const useDomainStore = create<DomainState>()(
       domainsQuota: {},
       domainWithoutConfig: {},
       cosList: [],
-      domainView: '',
       domainList: [],
       isDomainSupportDelegatedAdmin: false,
       closeDomainBanner: '',
-      isQuickAccess: false,
       isCertificateAvailbale: false,
 
       setDomain: (domain): void => set({ domain }, false, 'setDomain'),
@@ -121,15 +111,6 @@ export const useDomainStore = create<DomainState>()(
           'removeDomain',
         ),
 
-      setDomainView: (domainView): void =>
-        set(
-          produce((state) => {
-            state.domainView = domainView;
-          }),
-          false,
-          'setDomainView',
-        ),
-
       setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin): void =>
         set({ isDomainSupportDelegatedAdmin }, false, 'setIsDomainSupportDelegatedAdmin'),
 
@@ -141,8 +122,6 @@ export const useDomainStore = create<DomainState>()(
           false,
           'setCloseDomainBanner',
         ),
-
-      setIsQuickAccess: (isQuickAccess): void => set({ isQuickAccess }, false, 'setIsQuickAccess'),
 
       setIsCertificateAvailbale: (isCertificateAvailbale): void =>
         set({ isCertificateAvailbale }, false, 'setIsCertificateAvailbale'),
