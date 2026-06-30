@@ -96,10 +96,9 @@ const DomainListPanel: FC = () => {
 	const globalSub = globalMatch
 		? ((globalMatch.params as Record<string, string | undefined>)['*'] ?? '')
 		: '';
+	const globalView = globalSub ? `${GLOBAL_ROUTE}/${globalSub}` : GLOBAL_SETTINGS_ROUTE;
 	const domainView = isGlobalRoute
-		? globalSub
-			? `${GLOBAL_ROUTE}/${globalSub}`
-			: GLOBAL_SETTINGS_ROUTE
+		? globalView
 		: (domainMatch?.params.operation ?? GLOBAL_DOMAIN_ROUTE);
 
 	useEffect(() => {
