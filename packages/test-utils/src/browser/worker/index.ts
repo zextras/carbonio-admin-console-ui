@@ -50,8 +50,15 @@ type BrowserAPIInterceptor = {
   getCalledTimes: () => number;
 };
 
-export const startMockWorker = async () => {
-  await worker.start({ onUnhandledRequest: 'warn', quiet: true });
+type WorkerStartOptions = NonNullable<Parameters<typeof worker.start>[0]>;
+
+export const startMockWorker = async (
+	options?: Pick<WorkerStartOptions, 'onUnhandledRequest'>,
+) => {
+	await worker.start({
+		onUnhandledRequest: options?.onUnhandledRequest ?? 'warn',
+		quiet: true,
+	});
 };
 
 export const stopMockWorker = () => {
