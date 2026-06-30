@@ -5,7 +5,7 @@
  */
 
 import { type IconName } from '@zextras/ui-components';
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { isUnlimitedQuantity, useLicenseInfo } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { EditionCardActive } from '../cards/edition-card-active';
@@ -39,7 +39,9 @@ export const ActiveEditionSection = () => {
   const mainEditions: Array<EditionDisplayConfig> = MAIN_EDITION_CONFIGS.map((config) => ({
     ...config,
     active: editionsData.some(
-      (e) => e.name === config.name && e.quantity !== 'none' && e.quantity !== '0',
+      (e) =>
+        e.name === config.name &&
+        (isUnlimitedQuantity(e.quantity) || Number(e.quantity) > 0),
     ),
   }));
 

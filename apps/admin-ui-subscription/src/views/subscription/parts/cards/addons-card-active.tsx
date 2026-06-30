@@ -24,6 +24,7 @@ export const AddonsCardActive = ({ editions, config }: AddonsCardProps) => {
   const edition = editions.find((e) => e.name === config.name)!;
   const isUnlimited = isUnlimitedQuantity(edition.quantity);
   const total = Number.parseInt(edition.quantity, 10);
+  const safeTotal = Number.isNaN(total) ? 0 : total;
 
   return (
     <div key={config.name} className={styles.addonRowActive}>
@@ -47,7 +48,7 @@ export const AddonsCardActive = ({ editions, config }: AddonsCardProps) => {
         <div className={styles.statItem}>
           <ds-text size="extrasmall">{t('label.total_seat', 'Total seat')}</ds-text>
           <ds-text weight="bold" color="gray0" style={{ fontSize: '1rem' }}>
-            {isUnlimited ? t('label.unlimited', 'Unlimited') : total}
+            {isUnlimited ? t('label.unlimited', 'Unlimited') : safeTotal}
           </ds-text>
         </div>
       </div>

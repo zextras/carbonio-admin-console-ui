@@ -64,14 +64,8 @@ describe('AddonsCardActive', () => {
 });
 
 describe('AddonsCardInactive', () => {
-  it('renders nothing when editions is undefined', async () => {
-    setupTest(<AddonsCardInactive config={addonConfig} editions={undefined} />);
-
-    expect(page.getByText('NOT ACTIVE').elements()).toHaveLength(0);
-  });
-
-  it('renders the not active badge and the call to action when editions is defined', async () => {
-    setupTest(<AddonsCardInactive config={addonConfig} editions={[]} />);
+  it('renders the not active badge and the call to action', async () => {
+    setupTest(<AddonsCardInactive config={addonConfig} />);
 
     await expect.element(page.getByText('NOT ACTIVE', { exact: true })).toBeVisible();
   });

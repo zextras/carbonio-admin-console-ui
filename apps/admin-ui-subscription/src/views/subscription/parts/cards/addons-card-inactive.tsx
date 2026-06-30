@@ -5,21 +5,17 @@
  */
 
 import { theme } from '@zextras/ui-components';
-import { LicenseInfo } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { type AddonDisplayConfig } from '../sections/addons-section';
 import styles from './addons-card.module.css';
 
 type AddonsCardProps = {
-  editions: LicenseInfo['editions'];
   config: AddonDisplayConfig;
 };
 
-export const AddonsCardInactive = ({ editions, config }: AddonsCardProps) => {
+export const AddonsCardInactive = ({ config }: AddonsCardProps) => {
   const { t } = useTranslation();
-
-  if (!editions) return null;
 
   return (
     <div key={config.name} className={styles.addonRowInactive}>

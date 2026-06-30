@@ -75,7 +75,7 @@ export const AddonsSection = () => {
           config.active ? (
             <AddonsCardActive key={config.name} config={config} editions={editionsData} />
           ) : (
-            <AddonsCardInactive key={config.name} config={config} editions={editionsData} />
+            <AddonsCardInactive key={config.name} config={config} />
           ),
         )}
       </div>

@@ -68,7 +68,7 @@ export const AppView = () => {
     null,
   );
 
-  const { data: licenseData, isFetching } = useLicenseInfo();
+  const { data: licenseData, isLoading } = useLicenseInfo();
   const subscriptionType = licenseData?.response?.type;
   const subType = licenseData?.response?.subType;
 
@@ -79,7 +79,7 @@ export const AppView = () => {
   return (
     <div className={styles.root}>
       <Breadcrumb />
-      {!isFetching && (
+      {!isLoading && (
         <div className={styles.detailWrapper}>
           <div
             className={styles.detailContent}
