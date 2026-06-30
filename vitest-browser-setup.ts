@@ -15,6 +15,9 @@ import {
   startMockWorker,
   stopMockWorker,
 } from './packages/test-utils/src/browser/worker';
+import { suppressLitDevModeWarning } from './packages/test-utils/src/browser/utils/lit';
+
+suppressLitDevModeWarning();
 
 // Mock TinyMCE global object to prevent errors during module imports
 vi.stubGlobal('tinymce', {

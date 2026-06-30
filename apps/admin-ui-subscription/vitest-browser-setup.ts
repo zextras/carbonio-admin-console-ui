@@ -9,7 +9,9 @@ import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
 vi.stubGlobal('BASE_PATH', '');
 
-import { resetMockWorker, startMockWorker, stopMockWorker } from 'admin-ui-test-utils';
+import { resetMockWorker, startMockWorker, stopMockWorker, suppressLitDevModeWarning } from 'admin-ui-test-utils';
+
+suppressLitDevModeWarning();
 
 vi.stubGlobal('tinymce', {
   PluginManager: {
