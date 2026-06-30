@@ -1,3 +1,9 @@
+## [0.13.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.16...v0.13.17) (2026-06-30)
+
+### Bug Fixes
+
+* **deps:** update react ([7464293](https://github.com/zextras/carbonio-admin-console-ui/commit/7464293a72a9a2b463c6665296b52855125d1c45))
+
 ## [0.13.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.15...v0.13.16) (2026-06-26)
 
 ### Other changes
