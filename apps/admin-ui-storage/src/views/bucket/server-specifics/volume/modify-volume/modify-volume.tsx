@@ -83,6 +83,28 @@ function isExternalVolume(volume: Volume | undefined): boolean {
   );
 }
 
+function syncAdvancedVolumeByType(
+  volumeType: number,
+  volumes: Volume[],
+  volumeDetailType: number | undefined,
+  volumeDetailId: number | undefined,
+  onExternalVolume: (volDetail: Volume) => void,
+  onLocalVolume: () => void,
+  setCurrentVolume: (volume: Volume | undefined) => void,
+): void {
+  if (volumeDetailType !== volumeType) {
+    return;
+  }
+
+  const volDetail = volumes.find((items) => items?.id === volumeDetailId);
+  if (isExternalVolume(volDetail)) {
+    onExternalVolume(volDetail as Volume);
+  } else {
+    onLocalVolume();
+  }
+  setCurrentVolume(volumes.find((volume) => volume?.isCurrent));
+}
+
 type PreviousDetailState = {
   name: string;
   type: number | undefined;
@@ -97,6 +119,62 @@ type PreviousDetailState = {
   useInfrequentAccess: boolean | undefined;
   useIntelligentTiering: boolean | undefined;
 };
+
+type VolumeDetailSnapshot = {
+  name: string;
+  id: number;
+  type: number;
+  compressBlobs: boolean;
+  isCurrent: boolean;
+  rootpath: string;
+  compressionThreshold: string;
+};
+
+function buildUndoFormState(
+  previousDetail: Partial<PreviousDetailState>,
+  volumeDetail: VolumeDetailSnapshot,
+  externalVolDetail: Volume,
+): PreviousDetailState {
+  return {
+    name: previousDetail.name ?? volumeDetail.name ?? '',
+    type: previousDetail.type,
+    id: previousDetail.id ?? String(volumeDetail.id ?? ''),
+    rootpath: previousDetail.rootpath ?? volumeDetail.rootpath ?? '',
+    compressBlobs: previousDetail.compressBlobs ?? volumeDetail.compressBlobs ?? false,
+    isCurrent: previousDetail.isCurrent ?? volumeDetail.isCurrent ?? false,
+    compressionThreshold:
+      previousDetail.compressionThreshold ?? String(volumeDetail.compressionThreshold ?? ''),
+    volumePrefix: previousDetail.volumePrefix ?? externalVolDetail?.volumePrefix,
+    infrequentAccessThreshold:
+      previousDetail.infrequentAccessThreshold ?? externalVolDetail?.infrequentAccessThreshold,
+    bucketConfigurationId:
+      previousDetail.bucketConfigurationId ?? getVolumeBucketConfigurationId(externalVolDetail),
+    useInfrequentAccess:
+      previousDetail.useInfrequentAccess ?? externalVolDetail?.useInfrequentAccess,
+    useIntelligentTiering:
+      previousDetail.useIntelligentTiering ?? externalVolDetail?.useIntelligentTiering,
+  };
+}
+
+function applyUndoVolumeType(
+  previousType: number | undefined,
+  volumeDetailType: number,
+  volTypeList: VolumeType[] | undefined,
+  setType: (type: VolumeAllocationItem | undefined) => void,
+): void {
+  if (previousType === undefined) {
+    const volumeTypeObject = volTypeList?.find(
+      (item: VolumeType) => item?.value === volumeDetailType,
+    );
+    setType(volumeTypeObject as VolumeAllocationItem);
+    return;
+  }
+
+  const volumeObject = volTypeList?.find(
+    (item: VolumeType) => item?.value === previousType,
+  ) as VolumeAllocationItem | undefined;
+  setType(volumeObject);
+}
 
 const ModifyVolume: FC<{
   volumeId: any;
@@ -355,37 +433,20 @@ const ModifyVolume: FC<{
   };
 
   const onUndo = (): void => {
-    setName(previousDetail.name ?? volumeDetail?.name ?? '');
+    const undoState = buildUndoFormState(previousDetail, volumeDetail, externalVolDetail);
 
-    if (previousDetail.type !== undefined) {
-      onVolumeTypeChange(previousDetail.type);
-    } else {
-      const volumeTypeObject = volTypeList?.find(
-        (item: VolumeType) => item?.value === volumeDetail?.type,
-      );
-      setType(volumeTypeObject as VolumeAllocationItem);
-    }
-
-    setId(previousDetail.id ?? String(volumeDetail?.id ?? ''));
-    setRootpath(previousDetail.rootpath ?? volumeDetail?.rootpath ?? '');
-    setCompressBlobs(previousDetail.compressBlobs ?? volumeDetail?.compressBlobs ?? false);
-    setIsCurrent(previousDetail.isCurrent ?? volumeDetail?.isCurrent ?? false);
-    setCompressionThreshold(
-      previousDetail.compressionThreshold ?? String(volumeDetail?.compressionThreshold ?? ''),
-    );
-    setBucketConfigurationId(
-      previousDetail.bucketConfigurationId ?? getVolumeBucketConfigurationId(externalVolDetail),
-    );
-    setVolumePrefix(previousDetail.volumePrefix ?? externalVolDetail?.volumePrefix);
-    setInfrequentAccessThreshold(
-      previousDetail.infrequentAccessThreshold ?? externalVolDetail?.infrequentAccessThreshold,
-    );
-    setUseInfrequentAccess(
-      previousDetail.useInfrequentAccess ?? externalVolDetail?.useInfrequentAccess,
-    );
-    setUseIntelligentTiering(
-      previousDetail.useIntelligentTiering ?? externalVolDetail?.useIntelligentTiering,
-    );
+    setName(undoState.name);
+    applyUndoVolumeType(undoState.type, volumeDetail.type, volTypeList, setType);
+    setId(undoState.id);
+    setRootpath(undoState.rootpath);
+    setCompressBlobs(undoState.compressBlobs);
+    setIsCurrent(undoState.isCurrent);
+    setCompressionThreshold(undoState.compressionThreshold);
+    setBucketConfigurationId(undoState.bucketConfigurationId);
+    setVolumePrefix(undoState.volumePrefix);
+    setInfrequentAccessThreshold(undoState.infrequentAccessThreshold);
+    setUseInfrequentAccess(undoState.useInfrequentAccess);
+    setUseIntelligentTiering(undoState.useIntelligentTiering);
     setIsDirty(false);
   };
 
@@ -600,45 +661,37 @@ const ModifyVolume: FC<{
   ]);
 
   useEffect(() => {
-    if (isAdvanced) {
-      if (volumeDetail?.type === 1) {
-        const volDetail = volumeList?.primaries?.filter(
-          (items: Volume) => items?.id === volumeDetail?.id,
-        )[0];
-        if (isExternalVolume(volDetail)) {
-          hydrateExternalVolumeFields(volDetail);
-        } else {
-          setExternalVolDetail({});
-        }
-        const volume = volumeList?.primaries?.find((v: Volume) => v?.isCurrent);
-        setCurrentVolume(volume);
-      }
-      if (volumeDetail?.type === 2) {
-        const volDetail = volumeList?.secondaries?.filter(
-          (items: Volume) => items?.id === volumeDetail?.id,
-        )[0];
-        if (isExternalVolume(volDetail)) {
-          hydrateExternalVolumeFields(volDetail);
-        } else {
-          setExternalVolDetail({});
-        }
-
-        const volume = volumeList?.secondaries?.find((v: Volume) => v?.isCurrent);
-        setCurrentVolume(volume);
-      }
-      if (volumeDetail?.type === 10) {
-        const volDetail = volumeList?.indexes?.filter(
-          (items: Volume) => items?.id === volumeDetail?.id,
-        )[0];
-        if (isExternalVolume(volDetail)) {
-          hydrateExternalVolumeFields(volDetail);
-        } else {
-          setExternalVolDetail({});
-        }
-        const volume = volumeList?.indexes?.find((v: Volume) => v?.isCurrent);
-        setCurrentVolume(volume);
-      }
+    if (!isAdvanced) {
+      return;
     }
+
+    syncAdvancedVolumeByType(
+      1,
+      volumeList.primaries,
+      volumeDetail?.type,
+      volumeDetail?.id,
+      hydrateExternalVolumeFields,
+      () => setExternalVolDetail({}),
+      setCurrentVolume,
+    );
+    syncAdvancedVolumeByType(
+      2,
+      volumeList.secondaries,
+      volumeDetail?.type,
+      volumeDetail?.id,
+      hydrateExternalVolumeFields,
+      () => setExternalVolDetail({}),
+      setCurrentVolume,
+    );
+    syncAdvancedVolumeByType(
+      10,
+      volumeList.indexes,
+      volumeDetail?.type,
+      volumeDetail?.id,
+      hydrateExternalVolumeFields,
+      () => setExternalVolDetail({}),
+      setCurrentVolume,
+    );
   }, [
     volumeList?.primaries,
     volumeDetail?.type,

@@ -94,9 +94,7 @@ function applyFileblobFields(
   obj: AdvancedUpdateVolumePayload,
   form: AdvancedUpdateVolumeFormState,
 ): void {
-  obj.volumePath = form.rootpath;
-  obj.volumeCompressed = form.compressBlobs;
-  obj.volumeThreshold = form.compressionThreshold || 0;
+  applyLocalVolumeFields(obj, form);
 }
 
 function applyOpenioFields(obj: AdvancedUpdateVolumePayload): void {
