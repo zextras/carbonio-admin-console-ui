@@ -6,10 +6,10 @@
 
 import {
 	advancedSupportedApiForBrowser,
+	createBrowserZextrasActionInterceptor,
 	setupBrowserTest,
-	worker,
 } from 'admin-ui-test-utils';
-import { http, HttpResponse } from 'msw';
+import { HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -29,32 +29,22 @@ type S3ConnectorEntry = {
 	'usage in external backup'?: string;
 };
 
-function setupListS3ConnectorInterceptor(connectors: Array<S3ConnectorEntry>): void {
-	worker.use(
-		http.post('/service/admin/soap/zextras', async ({ request }) => {
-			const body = (await request.json()) as {
-				Body?: { zextras?: { action?: string } };
-			};
-			const zextrasBody = body?.Body?.zextras;
-
-			if (zextrasBody?.action === 'listS3Connector') {
-				const values = connectors.map((connector) => ({
-					...connector,
-					id: connector.uuid,
-				}));
-				return HttpResponse.json({
-					Body: {
+function setupListS3ConnectorInterceptor(connectors: Array<S3ConnectorEntry>) {
+	return createBrowserZextrasActionInterceptor('listS3Connector', () =>
+		HttpResponse.json({
+			Body: {
+				response: {
+					content: JSON.stringify({
+						ok: true,
 						response: {
-							content: JSON.stringify({
-								ok: true,
-								response: { values },
-							}),
+							values: connectors.map((connector) => ({
+								...connector,
+								id: connector.uuid,
+							})),
 						},
-					},
-				});
-			}
-
-			return HttpResponse.json({ Body: {} });
+					}),
+				},
+			},
 		}),
 	);
 }
@@ -208,9 +198,11 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 			indexes: [INDEX_VOLUME],
 		};
 
+		let listS3ConnectorInterceptor: ReturnType<typeof setupListS3ConnectorInterceptor>;
+
 		beforeEach(async () => {
 			await advancedSupportedApiForBrowser.withAdvancedSupported();
-			setupListS3ConnectorInterceptor([
+			listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
 				{
 					uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
 					label: 'Tiering S3 connector',
@@ -224,6 +216,9 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 
 		it('should display tiering controls for external S3 volume with tiering support', async () => {
 			await setupBrowserTest(renderModifyVolume(EXTERNAL_S3_VOLUME.id as number, EXTERNAL_VOLUME_LIST));
+			await vi.waitFor(() => {
+				expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+			});
 			await expect
 				.element(page.getByText('Use infrequent access', { exact: true }))
 				.toBeVisible();

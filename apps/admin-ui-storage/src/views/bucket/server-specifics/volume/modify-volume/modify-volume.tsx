@@ -461,7 +461,7 @@ const ModifyVolume: FC<{
       setIsVolumeAllDetail(selectableConnectors);
       setBackupUnusedBucketList(volUnusedBucketList);
       setSelectedBucket(currentBucketOption);
-    });
+    }).catch(() => undefined);
   }, [
     externalVolDetail,
     getBucketTypeLabel,
