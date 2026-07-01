@@ -1,3 +1,9 @@
+## [0.14.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.18...v0.14.0) (2026-07-01)
+
+### Features
+
+* add details section to subscription module ([62e4aee](https://github.com/zextras/carbonio-admin-console-ui/commit/62e4aee6087916c2a34747f619f54ba676fbe2b3))
+
 ## [0.13.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.17...v0.13.18) (2026-07-01)
 
 ### Bug Fixes

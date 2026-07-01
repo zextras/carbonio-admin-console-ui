@@ -6,6 +6,7 @@
     "github>zextras/infra-renovate-config:javascript"
   ],
   "dependencyDashboard": true,
+  "dependencyDashboardApproval": true,
   "automergeType": "branch",
   "automergeStrategy": "auto",
   "packageRules": [
