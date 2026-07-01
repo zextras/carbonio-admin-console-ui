@@ -6,18 +6,20 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const getDelegateAuthRequest = async (id: string, name?: string): Promise<any> => {
-	const request: any = {
+import type { DelegateAuthRequest, DelegateAuthResponse } from '../../types';
+
+export const getDelegateAuthRequest = async (id: string, name?: string): Promise<DelegateAuthResponse> => {
+	const request: DelegateAuthRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		account: [
 			{
-				_content: id || name,
+				_content: id || name || '',
 				by: id ? 'id' : 'name'
 			}
 		]
 	};
 
-	return soapFetch(`DelegateAuth`, {
+	return soapFetch<DelegateAuthRequest, DelegateAuthResponse>(`DelegateAuth`, {
 		...request
 	});
 };

@@ -6,10 +6,11 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { GetAccountMembershipRequest, GetAccountMembershipResponse } from '../../types';
 import { DISPLAYNAME } from '../constants';
 
-export const getAccountMembershipRequest = async (id: string, attrs?: string): Promise<any> => {
-	const request: any = {
+export const getAccountMembershipRequest = async (id: string, attrs?: string): Promise<GetAccountMembershipResponse> => {
+	const request: GetAccountMembershipRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		attrs: attrs ?? DISPLAYNAME,
 		account: [
@@ -20,7 +21,7 @@ export const getAccountMembershipRequest = async (id: string, attrs?: string): P
 		]
 	};
 
-	return soapFetch(`GetAccountMembership`, {
+	return soapFetch<GetAccountMembershipRequest, GetAccountMembershipResponse>(`GetAccountMembership`, {
 		...request
 	});
 };

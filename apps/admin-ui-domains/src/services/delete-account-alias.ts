@@ -6,15 +6,16 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
- 
-export const deleteAccountAliasRequest = async (id: string, alias: string): Promise<any> => {
-	const request: any = {
+import type { RemoveAccountAliasRequest, SoapEmptyResponse } from '../../types';
+
+export const deleteAccountAliasRequest = async (id: string, alias: string): Promise<SoapEmptyResponse> => {
+	const request: RemoveAccountAliasRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		id,
 		alias: alias.trim()
 	};
 
-	return soapFetch(`RemoveAccountAlias`, {
+	return soapFetch<RemoveAccountAliasRequest, SoapEmptyResponse>(`RemoveAccountAlias`, {
 		...request
 	});
 };

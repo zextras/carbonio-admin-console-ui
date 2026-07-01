@@ -44,7 +44,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
   const [searchDomainName, setSearchDomainName] = useState('');
   const [domainList, setDomainList] = useState<Array<{ id: string; name: string }>>([]);
   const [distributionList, setDistributionList] = useState<any>([]);
-  const [accountDistributionList, setAccountDistributionList] = useState([]);
+  const [accountDistributionList, setAccountDistributionList] = useState<Array<unknown>>([]);
   const [domainId, setDomainId] = useState('');
   const [sendSelectedRows, setSendSelectedRows] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<any>([]);
@@ -109,7 +109,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
           list?.via === undefined &&
           list?.a?.some((item: any) => item.n === 'zimbraIsAdminGroup' && item._content === 'TRUE'),
       );
-      setAccountDistributionList(lists);
+      setAccountDistributionList(lists ?? []);
     });
   }, [accountDetail?.zimbraId]);
 

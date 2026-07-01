@@ -78,7 +78,7 @@ const ManageDelegates: FC = () => {
   const [open, setOpen] = useState(false);
   const [accountName, setAccountName] = useState('');
   const [distributionList, setDistributionList] = useState<objectType[]>([]);
-  const [accountDistributionList, setAccountDistributionList] = useState([]);
+  const [accountDistributionList, setAccountDistributionList] = useState<Array<any>>([]);
   const [allAccount, setAllAccount] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
@@ -548,21 +548,22 @@ const ManageDelegates: FC = () => {
     (id: string) => {
       getAccountMembershipRequest(id)
         .then((res) => {
-          const data = res?.dl?.filter((item: objectType) => item?.via === undefined);
+          const dlList = res?.dl as Array<objectType> | undefined;
+          const data = dlList?.filter((item: objectType) => item?.via === undefined);
 
           const tableList = data
             ? data.map((item: objectType) => {
-                const selectedItem: any = distributionList.filter(
-                  (i: objectType) => i.name === item.name,
-                );
-                const des = selectedItem[0].a?.filter((i: Attribute) => i.n === 'description')[0]
-                  ._content;
-                return {
-                  ...item,
-                  accname: accountName.split('@')[0],
-                  description: des,
-                };
-              })
+              const selectedItem: any = distributionList.filter(
+                (i: objectType) => i.name === item.name,
+              );
+              const des = selectedItem[0].a?.filter((i: Attribute) => i.n === 'description')[0]
+                ._content;
+              return {
+                ...item,
+                accname: accountName.split('@')[0],
+                description: des,
+              };
+            })
             : [];
           setAccountDistributionList(tableList || []);
         })
@@ -707,9 +708,9 @@ const ManageDelegates: FC = () => {
           label: res?.message
             ? res?.message
             : t(
-                'label.the_last_changes_has_been_saved_successfully',
-                'Changes have been saved successfully',
-              ),
+              'label.the_last_changes_has_been_saved_successfully',
+              'Changes have been saved successfully',
+            ),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,

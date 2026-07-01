@@ -313,7 +313,7 @@ const DomainGalSettings: FC = () => {
   const getGalAccount = (accountId: string): void => {
     getAccount(accountId).then((data) => {
       const galAccount: {
-        a: Attribute[];
+        a?: Attribute[];
         id: string;
         name: string;
       } = data?.account[0];
@@ -854,10 +854,10 @@ const DomainGalSettings: FC = () => {
         obj.id = listItems?.id;
         obj.galAccount = matchingData
           ? {
-              server: matchingData?.accountData[0]?._content,
-              name: matchingData?.name,
-              id: matchingData?.id,
-            }
+            server: matchingData?.accountData[0]?._content,
+            name: matchingData?.name,
+            id: matchingData?.id,
+          }
           : null;
         return obj;
       });
@@ -875,13 +875,13 @@ const DomainGalSettings: FC = () => {
         getAccount(item?._content)
           .then((data) => {
             const galAccount: {
-              a: Attribute[];
+              a?: Attribute[];
               id: string;
               name: string;
             } = data?.account[0];
             const accountData: Attribute[] = galAccount?.a?.filter(
               (account) => account?.n === 'zimbraMailHost',
-            );
+            ) ?? [];
 
             return {
               accountData,
@@ -890,7 +890,7 @@ const DomainGalSettings: FC = () => {
             };
           })
 
-          .catch(() => {}),
+          .catch(() => { }),
       );
       Promise.all(result).then((results) => {
         getAllTableList(results);

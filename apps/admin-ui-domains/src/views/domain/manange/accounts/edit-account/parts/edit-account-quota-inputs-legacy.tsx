@@ -38,7 +38,7 @@ export const EditAccountQuotaInputsLegacy = ({
 
   const setEmptyValue = useCallback(
     (keyName: string) => {
-      setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+      setAccountDetail((prev) => ({ ...prev, [keyName]: undefined }));
     },
     [setAccountDetail],
   );
@@ -81,7 +81,7 @@ export const EditAccountQuotaInputsLegacy = ({
       }
       setQuotaLimitMsg(false);
       setQuotaGBValue(value);
-      setAccountDetail((prev: any) => ({
+      setAccountDetail((prev) => ({
         ...prev,
         [name]: value ? Math.round(GbToBytes(value)) : '',
       }));

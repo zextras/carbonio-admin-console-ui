@@ -6,12 +6,14 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { EndSessionRequest, SoapEmptyResponse } from '../../types';
+
 export const endSession = async (
 	sessionId: string,
 	accountName: string,
 	token: string
-): Promise<any> =>
-	soapFetch(
+): Promise<SoapEmptyResponse> =>
+	soapFetch<EndSessionRequest, SoapEmptyResponse>(
 		`EndSession`,
 		{
 			_jsns: 'urn:zimbraAccount',

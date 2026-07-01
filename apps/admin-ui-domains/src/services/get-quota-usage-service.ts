@@ -6,13 +6,15 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { GetQuotaUsageRequest, GetQuotaUsageResponse } from '../../types';
+
 export const getQuotaUsage = async (
 	domainName: string,
 	offset?: number,
 	limit?: number,
 	propSortBy?: string
-): Promise<any> => {
-	const request: any = {
+): Promise<GetQuotaUsageResponse> => {
+	const request: GetQuotaUsageRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		sortBy: propSortBy || 'totalUsed',
 		offset: offset || 0,
@@ -21,7 +23,7 @@ export const getQuotaUsage = async (
 		domain: domainName,
 		allServers: '1'
 	};
-	return soapFetch(`GetQuotaUsage`, {
+	return soapFetch<GetQuotaUsageRequest, GetQuotaUsageResponse>(`GetQuotaUsage`, {
 		...request
 	});
 };

@@ -284,15 +284,16 @@ const CreateAccount: FC<{
       account: `${accountDetail?.name}`,
     }).then((res) => {
       if (res.ok) {
+        const response = res.response as Record<string, string>;
         setAccountDetail((prev: any) => ({
           ...prev,
-          qrData: `otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${
-            res.response.secret
-          }&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits=${
-            res.response.digits_length
-          }&period=${res.response.period}`,
-          secrateCode: res.response.secret,
-          pinCodes: res.response.static_otp_codes,
+          qrData: `otpauth://totp/${encodeURIComponent(response.label)}?secret=${
+            response.secret
+          }&issuer=${response.issuer}&algorithm=${response.algorithm}&digits=${
+            response.digits_length
+          }&period=${response.period}`,
+          secrateCode: response.secret,
+          pinCodes: response.static_otp_codes,
           showOtpOptionSection: false,
         }));
       }

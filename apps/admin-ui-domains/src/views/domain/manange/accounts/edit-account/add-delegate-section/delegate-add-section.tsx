@@ -60,7 +60,7 @@ const DelegateAddSection: FC = () => {
               backgroundColor="gray5"
               value={
                 DELEGETES_RIGHTS_TYPE.find(
-                  (item: any) => item.value === deligateDetail?.delegeteRights,
+                  (item) => item.value === deligateDetail?.delegeteRights,
                 )?.label
               }
             />

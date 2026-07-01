@@ -3,7 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-const codeRows = (pinCodes: any): string => `<tr>
+type PinCode = { code?: string };
+
+const codeRows = (pinCodes: ReadonlyArray<PinCode> | undefined): string => `<tr>
 				<td style="color:#696969;">${pinCodes?.[0]?.code || ''}</td>
 				<td style="color:#696969;">${pinCodes?.[1]?.code || ''}</td>
 			</tr>
@@ -27,7 +29,10 @@ const codeRows = (pinCodes: any): string => `<tr>
 				<td style="color:#696969;">${pinCodes?.[10]?.code || ''}</td>
 				<td style="color:#696969;">${pinCodes?.[11]?.code || ''}</td>
 			</tr>`;
-export const emailContent = (pinCodes: unknown, secrateCode: string): string => `<html>
+export const emailContent = (
+    pinCodes: ReadonlyArray<PinCode> | undefined,
+    secrateCode: string,
+): string => `<html>
 
 <head>
     <meta charset="utf-8">
@@ -54,9 +59,8 @@ export const emailContent = (pinCodes: unknown, secrateCode: string): string => 
                 <td style="padding: 0 30px;">
                     <table style="width: 100%; margin-bottom: 20px;">
                         <tr>
-                            <td rowspan="9"><img alt="Image unavailable. Please use the Secret Code." src="${
-															window?.document?.getElementsByTagName('canvas')[0]?.toDataURL() || ''
-														}" alt="qr" style="width: 180px;" /></td>
+                            <td rowspan="9"><img alt="Image unavailable. Please use the Secret Code." src="${window?.document?.getElementsByTagName('canvas')[0]?.toDataURL() || ''
+    }" alt="qr" style="width: 180px;" /></td>
                         </tr>
                         ${codeRows(pinCodes)}
                         <tr>

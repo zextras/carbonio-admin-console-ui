@@ -72,7 +72,7 @@ const DelegateSelectModeSection: FC = () => {
           if (data?.dl?.length) {
             data.account = data?.dl;
           }
-          data?.account.map(
+          data?.account?.map(
             (delegateAccount: any) =>
               delegateAccount.id !== accountDetail.zimbraId &&
               accountListArr.push({

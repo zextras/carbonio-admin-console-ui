@@ -6,14 +6,16 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const renameAccountRequest = async (id: string, newName: string): Promise<any> => {
-	const request: any = {
+import type { RenameAccountRequest, RenameAccountResponse } from '../../types';
+
+export const renameAccountRequest = async (id: string, newName: string): Promise<RenameAccountResponse> => {
+	const request: RenameAccountRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		id,
 		newName
 	};
 
-	return soapFetch(`RenameAccount`, {
+	return soapFetch<RenameAccountRequest, RenameAccountResponse>(`RenameAccount`, {
 		...request
 	});
 };

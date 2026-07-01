@@ -6,13 +6,15 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
+import type { RestoreDeleteAccountRequest, RestoreDeleteAccountResponse } from '../../types';
+
 export const doRestoreDeleteAccount = async (
 	dataItem: unknown,
 	targetServers: string
-): Promise<any> => {
-	const data: any = dataItem;
+): Promise<RestoreDeleteAccountResponse> => {
+	const data = dataItem as RestoreDeleteAccountRequest;
 	return fetchExternalSoap(
-		`/service/extension/zextras_admin/backup/doRestoreOnNewAccount?targetServers=${targetServers}`,
+		`/service/extension/zextras_admin/backup/doRestoreOnNewAccount?targetServers=${encodeURIComponent(targetServers)}`,
 		{
 			...data
 		}

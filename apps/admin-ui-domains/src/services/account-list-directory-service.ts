@@ -6,6 +6,7 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
+import type { GetMailboxRequest, GetMailboxResponse, SearchDirectoryRequest, SearchDirectoryResponse } from '../../types';
 import { ASC } from '../constants';
 
 export const accountListDirectory = async (
@@ -17,8 +18,8 @@ export const accountListDirectory = async (
 	limit: number,
 	sortBy?: string,
 	sortAscending?: string
-): Promise<any> => {
-	const request: any = {
+): Promise<SearchDirectoryResponse<'account' | 'dl' | 'calresource'>> => {
+	const request: SearchDirectoryRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		offset,
 		limit,
@@ -40,19 +41,19 @@ export const accountListDirectory = async (
 	if (sortAscending !== '') {
 		request.sortAscending = sortAscending === ASC ? 1 : 0;
 	}
-	return soapFetch(`SearchDirectory`, {
+	return soapFetch<SearchDirectoryRequest, SearchDirectoryResponse<'account' | 'dl' | 'calresource'>>(`SearchDirectory`, {
 		...request
 	});
 };
 
-export const getMailboxQuota = async (id: string): Promise<any> => {
-	const request: any = {
+export const getMailboxQuota = async (id: string): Promise<GetMailboxResponse> => {
+	const request: GetMailboxRequest = {
 		_jsns: 'urn:zimbraAdmin',
 		mbox: {
 			id
 		}
 	};
-	return soapFetch(`GetMailbox`, {
+	return soapFetch<GetMailboxRequest, GetMailboxResponse>(`GetMailbox`, {
 		...request
 	});
 };

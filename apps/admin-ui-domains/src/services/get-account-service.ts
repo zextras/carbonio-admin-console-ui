@@ -6,8 +6,10 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const getAccount = async (accountId: string): Promise<any> =>
-	soapFetch(`GetAccount`, {
+import type { GetAccountRequest, GetAccountResponse } from '../../types';
+
+export const getAccount = async (accountId: string): Promise<GetAccountResponse> =>
+	soapFetch<GetAccountRequest, GetAccountResponse>(`GetAccount`, {
 		_jsns: 'urn:zimbraAdmin',
 		account: {
 			by: 'id',

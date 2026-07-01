@@ -5,20 +5,23 @@
  */
 
 import {
-	Button,
-	Checkbox,
-	ChipInput,
-	ChipInputProps,
-	Container,
-	CustomHeaderFactory,
-	HorizontalWizard,
-	HoverableRowFactory,
-	InheritedSelect,
-	Padding,
-	Row,
+  Button,
+  type ButtonProps,
+  Checkbox,
+  ChipInput,
+  ChipInputProps,
+  type ChipItem,
+  Container,
+  CustomHeaderFactory,
+  HorizontalWizard,
+  HoverableRowFactory,
+  InheritedSelect,
+  Padding,
+  Row,
   Table,
-	useSnackbar,
-	WizardInSection,
+  type THeader,
+  useSnackbar,
+  WizardInSection,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { cloneDeep, debounce, filter, find, findIndex, map, pullAt } from 'lodash-es';
@@ -34,14 +37,15 @@ import {
 } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import { type JsonValue, type SoapEntity } from '../../../../../../types';
 import logo from '../../../../../assets/gardian.svg';
 import {
   MANAGE_NO_SEND,
-	READ_MAILS_ONLY,
-	SEND_MAILS_ONLY,
-	SEND_READ_MAILS,
-	SEND_READ_MANAGE_MAILS,
-	ZIMBRA_ADMIN_URN,
+  READ_MAILS_ONLY,
+  SEND_MAILS_ONLY,
+  SEND_READ_MAILS,
+  SEND_READ_MANAGE_MAILS,
+  ZIMBRA_ADMIN_URN,
 } from '../../../../../constants';
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
 import { batchService } from '../../../../../services/batch-service';
@@ -52,6 +56,52 @@ import { AccountContext } from '../account-context';
 import DelegateAddSection from './add-delegate-section/delegate-add-section';
 import DelegateSelectModeSection from './add-delegate-section/delegate-selectmode-section';
 import DelegateSetRightsSection from './add-delegate-section/delegate-setright-section';
+
+type FolderGrant = {
+  perm: string;
+  id?: string;
+  zid?: string;
+  [key: string]: unknown;
+};
+
+type DelegateGrantee = {
+  id?: string;
+  name?: string;
+  type?: string;
+};
+
+type DelegateRight = {
+  _content?: string;
+};
+
+type DelegateIdentity = {
+  grantee?: Array<DelegateGrantee>;
+  folder?: Array<FolderGrant>;
+  right?: Array<DelegateRight>;
+  delegeteRights?: string;
+  folderSelection?: string;
+  [key: string]: unknown;
+};
+
+type DelegateRow = DelegateIdentity & {
+  id: string;
+  columns: Array<ReactElement>;
+  sendRights: boolean;
+  readFolder: boolean;
+  writeFolder: boolean;
+  clickable: boolean;
+};
+
+type AccountOption = ChipItem & {
+  id: string;
+  label: string;
+  type: 'usr' | 'grp';
+  ele: SoapEntity;
+};
+
+type BatchRequestPart = { [key: string]: JsonValue };
+
+type WizardButtonProps = ButtonProps & { completeLoading?: boolean };
 
 const EditAccountDelegatesSection: FC = () => {
   const context = useContext(AccountContext);
@@ -76,8 +126,8 @@ const EditAccountDelegatesSection: FC = () => {
   const createSnackbar = useSnackbar();
 
   const isAdvanced = useIsAdvanced();
-  const [simpleSelectedList, setSimpleSelectedList] = useState<any>([]);
-  const [identityListItem, setIdentityListItem] = useState<any>([]);
+  const [simpleSelectedList, setSimpleSelectedList] = useState<Array<AccountOption>>([]);
+  const [identityListItem, setIdentityListItem] = useState<Array<DelegateRow>>([]);
   const [isSimplified, setIsSimplified] = useState<boolean>(true);
   const [readRightCheck, setReadRightCheck] = useState<boolean>(false);
   const [readRightWriteCheck, setReadWriteRightCheck] = useState<boolean>(false);
@@ -89,10 +139,10 @@ const EditAccountDelegatesSection: FC = () => {
   );
 
   useEffect(() => {
-    const identitiesArr: any = [];
-    identitiesList.forEach((item: any): any => {
+    const identitiesArr: Array<DelegateRow> = [];
+    identitiesList.forEach((item: DelegateIdentity): void => {
       identitiesArr.push({
-        id: item?.grantee?.[0]?.id,
+        id: item?.grantee?.[0]?.id ?? '',
         columns: [
           <ds-text as="span" size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
             {item?.grantee?.[0]?.name || ' '}
@@ -107,27 +157,26 @@ const EditAccountDelegatesSection: FC = () => {
           <ds-text as="span" size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
             {find(
               item?.folder || [],
-              (ele: any) => ele.perm.includes('r') && !ele.perm.includes('w'),
+              (ele: FolderGrant) => ele.perm.includes('r') && !ele.perm.includes('w'),
             )
               ? 'Read'
               : ' '}
-            {find(item?.folder || [], (ele: any) => ele.perm.includes('w')) ? 'Read, Write' : ' '}
+            {find(item?.folder || [], (ele: FolderGrant) => ele.perm.includes('w')) ? 'Read, Write' : ' '}
           </ds-text>,
         ],
         sendRights: !!(
           item?.right?.[0]?._content === 'sendAs' || item?.right?.[0]?._content === 'sendOnBehalfOf'
         ),
-        readFolder: !!find(item?.folder || [], (ele: any) => ele.perm.includes('r')),
-        writeFolder: !!find(item?.folder || [], (ele: any) => ele.perm.includes('w')),
+        readFolder: !!find(item?.folder || [], (ele: FolderGrant) => ele.perm.includes('r')),
+        writeFolder: !!find(item?.folder || [], (ele: FolderGrant) => ele.perm.includes('w')),
         ...item,
         clickable: true,
       });
-      return '';
     });
     setIdentityListItem(identitiesArr);
   }, [identitiesList]);
 
-  const headers: any = useMemo(
+  const headers: Array<THeader> = useMemo(
     () => [
       {
         id: 'accounts',
@@ -156,7 +205,7 @@ const EditAccountDelegatesSection: FC = () => {
     ],
     [t],
   );
-  const simplifiedViewTableHeader: any = useMemo(
+  const simplifiedViewTableHeader: Array<THeader> = useMemo(
     () => [
       {
         id: 'accounts',
@@ -200,18 +249,18 @@ const EditAccountDelegatesSection: FC = () => {
 
   const handleDeleteeDelegate = useCallback((): void => {
     const selectedDelegate = find(identitiesList, (o) => o?.grantee?.[0].id === selectedRows[0]);
-    const revokeUsrRigths: any[] = [];
-    const folderUsrRights: any[] = [];
+    const revokeUsrRigths: Array<BatchRequestPart> = [];
+    const folderUsrRights: Array<BatchRequestPart> = [];
 
     if (selectedDelegate) {
       if (selectedDelegate?.folder?.length) {
-        selectedDelegate.folder.forEach((ele: any) => {
+        selectedDelegate.folder.forEach((ele: FolderGrant) => {
           folderUsrRights.push({
             _jsns: 'urn:zimbraMail',
             action: {
               op: '!grant',
-              id: ele.id,
-              zid: ele.zid,
+              id: ele.id ?? '',
+              zid: ele.zid ?? '',
             },
           });
         });
@@ -284,8 +333,8 @@ const EditAccountDelegatesSection: FC = () => {
       handleDeleteeDelegate();
     }
 
-    const grantUsrRigths: any[] = [];
-    const folderUsrRights: any[] = [];
+    const grantUsrRigths: Array<BatchRequestPart> = [];
+    const folderUsrRights: Array<BatchRequestPart> = [];
 
     if (
       deligateDetail?.delegeteRights &&
@@ -330,7 +379,7 @@ const EditAccountDelegatesSection: FC = () => {
           grant: {
             perm:
               deligateDetail?.delegeteRights === READ_MAILS_ONLY ||
-              deligateDetail?.delegeteRights === SEND_MAILS_ONLY
+                deligateDetail?.delegeteRights === SEND_MAILS_ONLY
                 ? 'r'
                 : 'rwidxa',
             gt: deligateDetail?.grantee?.[0]?.type,
@@ -361,13 +410,13 @@ const EditAccountDelegatesSection: FC = () => {
           severity: 'success',
           label: editMode
             ? t(
-                'account_details.delegate_updated_successfully',
-                'Delegate`s rights updated successfully',
-              )
+              'account_details.delegate_updated_successfully',
+              'Delegate`s rights updated successfully',
+            )
             : t(
-                'account_details.delegate_created_successfully',
-                'Delegate`s rights created successfully',
-              ),
+              'account_details.delegate_created_successfully',
+              'Delegate`s rights created successfully',
+            ),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -395,7 +444,7 @@ const EditAccountDelegatesSection: FC = () => {
         icon: 'PlusOutline',
         view: DelegateSelectModeSection,
         clickDisabled: true,
-        CancelButton: (props: any) => (
+        CancelButton: (props: WizardButtonProps): ReactElement => (
           <Button
             {...props}
             type="outlined"
@@ -408,7 +457,7 @@ const EditAccountDelegatesSection: FC = () => {
           />
         ),
         PrevButton: (): ReactElement => <></>,
-        NextButton: (props: any) => (
+        NextButton: (props: WizardButtonProps): ReactElement => (
           <Button
             {...props}
             label={t('account_details.NEXT', 'NEXT')}
@@ -423,7 +472,7 @@ const EditAccountDelegatesSection: FC = () => {
         icon: 'OptionsOutline',
         view: DelegateSetRightsSection,
         clickDisabled: true,
-        CancelButton: (props: any) => (
+        CancelButton: (props: WizardButtonProps): ReactElement => (
           <Button
             {...props}
             type="outlined"
@@ -435,17 +484,17 @@ const EditAccountDelegatesSection: FC = () => {
             onClick={(): void => setShowCreateIdentity(false)}
           />
         ),
-        PrevButton: (props: any): any => (
+        PrevButton: (props: WizardButtonProps): ReactElement => (
           <Button
             {...props}
             label={t('label.volume_back_button', 'BACK')}
             icon={'ChevronLeftOutline'}
             iconPlacement="left"
-            disable={props.completeLoading}
+            disabled={props.completeLoading}
             color="secondary"
           />
         ),
-        NextButton: (props: any) => (
+        NextButton: (props: WizardButtonProps): ReactElement => (
           <Button
             {...props}
             label={t('account_details.NEXT', 'NEXT')}
@@ -460,7 +509,7 @@ const EditAccountDelegatesSection: FC = () => {
         icon: 'KeyOutline',
         view: DelegateAddSection,
         clickDisabled: true,
-        CancelButton: (props: any) => (
+        CancelButton: (props: WizardButtonProps): ReactElement => (
           <Button
             {...props}
             type="outlined"
@@ -472,17 +521,17 @@ const EditAccountDelegatesSection: FC = () => {
             onClick={(): void => setShowCreateIdentity(false)}
           />
         ),
-        PrevButton: (props: any): any => (
+        PrevButton: (props: WizardButtonProps): ReactElement => (
           <Button
             {...props}
             label={t('label.volume_back_button', 'BACK')}
             icon={'ChevronLeftOutline'}
             iconPlacement="left"
-            disable={props.completeLoading}
+            disabled={props.completeLoading}
             color="secondary"
           />
         ),
-        NextButton: (props: any) => (
+        NextButton: (props: WizardButtonProps): ReactElement => (
           <Button
             {...props}
             label={t('account_details.ADD', 'ADD')}
@@ -496,10 +545,10 @@ const EditAccountDelegatesSection: FC = () => {
     [handleCreateDelegateAPI, t],
   );
 
-  const [selectedAccounts, setSelectedAccounts] = useState<any>([]);
-  const [options, setOptions] = useState<any>([]);
+  const [selectedAccounts, setSelectedAccounts] = useState<Array<AccountOption>>([]);
+  const [options, setOptions] = useState<Array<AccountOption>>([]);
 
-  const inputRef = useRef<any>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -524,11 +573,11 @@ const EditAccountDelegatesSection: FC = () => {
   );
 
   const addAccountGroupRights = useCallback((): void => {
-    const revokeUsrRigths: any[] = [];
-    const grantUsrRigths: any[] = [];
-    const folderUsrRights: any[] = [];
+    const revokeUsrRigths: Array<BatchRequestPart> = [];
+    const grantUsrRigths: Array<BatchRequestPart> = [];
+    const folderUsrRights: Array<BatchRequestPart> = [];
 
-    simpleSelectedList?.forEach((item: any): any => {
+    simpleSelectedList?.forEach((item: AccountOption): void => {
       if (sendRightCheck || sendBehalfRightCheck) {
         revokeUsrRigths.push({
           _jsns: ZIMBRA_ADMIN_URN,
@@ -652,22 +701,22 @@ const EditAccountDelegatesSection: FC = () => {
         setReadSelectedRows([]);
       }
 
-      const revokeUsrRigths: any[] = [];
-      const folderUsrRights: any[] = [];
+      const revokeUsrRigths: Array<BatchRequestPart> = [];
+      const folderUsrRights: Array<BatchRequestPart> = [];
 
-      selectedDelegateArr.forEach((selectedDelegate: any) => {
+      selectedDelegateArr.forEach((selectedDelegate: DelegateIdentity | undefined) => {
         if (selectedDelegate) {
           if (
             (rightsType === 'readWrite' || rightsType === 'read') &&
             selectedDelegate?.folder?.length
           ) {
-            selectedDelegate.folder.forEach((ele: any) => {
+            selectedDelegate.folder.forEach((ele: FolderGrant) => {
               folderUsrRights.push({
                 _jsns: 'urn:zimbraMail',
                 action: {
                   op: '!grant',
-                  id: ele.id,
-                  zid: ele.zid,
+                  id: ele.id ?? '',
+                  zid: ele.zid ?? '',
                 },
               });
             });
@@ -682,8 +731,8 @@ const EditAccountDelegatesSection: FC = () => {
               },
               grantee: {
                 by: 'name',
-                type: selectedDelegate?.grantee?.[0]?.type,
-                _content: selectedDelegate?.grantee?.[0]?.name,
+                type: selectedDelegate?.grantee?.[0]?.type ?? '',
+                _content: selectedDelegate?.grantee?.[0]?.name ?? '',
               },
               right: {
                 _content: selectedDelegate?.right?.[0]?._content,
@@ -742,21 +791,21 @@ const EditAccountDelegatesSection: FC = () => {
       'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
     accountListDirectory(attrs, type, '', searchQuery, 0, 10)
       .then((data) => {
-        const accountListArr: any[] = [];
+        const accountListArr: Array<AccountOption> = [];
         data?.account?.map(
-          (delegateAccount: any) =>
+          (delegateAccount: SoapEntity) =>
             delegateAccount.id !== accountDetail.zimbraId &&
             accountListArr.push({
               id: delegateAccount.id,
-              label: delegateAccount.name,
+              label: delegateAccount.name ?? '',
               type: 'usr',
               ele: delegateAccount,
             }),
         );
-        data?.dl?.map((delegateAccount: any) =>
+        data?.dl?.map((delegateAccount: SoapEntity) =>
           accountListArr.push({
             id: delegateAccount.id,
-            label: delegateAccount.name,
+            label: delegateAccount.name ?? '',
             type: 'grp',
             ele: delegateAccount,
           }),
@@ -773,11 +822,11 @@ const EditAccountDelegatesSection: FC = () => {
     if (searchQuery.length > 2) getAccountList();
   }, [getAccountList, searchQuery]);
   const onDeligateSendSettingsChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefDelegatedSendSaveTarget: v }));
+    setAccountDetail((prev) => ({ ...prev, zimbraPrefDelegatedSendSaveTarget: v }));
   };
   const setEmptyValue = useCallback(
     (keyName: string) => {
-      setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+      setAccountDetail((prev) => ({ ...prev, [keyName]: undefined }));
     },
     [setAccountDetail],
   );
@@ -881,27 +930,28 @@ const EditAccountDelegatesSection: FC = () => {
                 'account_details.start_typing_account',
                 'Start typing an Account / Group to add it to the rights',
               )}
-              options={options}
+              options={options as unknown as ChipInputProps['options']}
               disableOptions
               background="gray5"
               bottomBorderColor="gray3"
               onInputType={filterOptions}
               inputRef={inputRef}
               value={selectedAccounts}
-              onChange={(contacts: any): void => {
-                const data: any = [];
+              onChange={(contacts): void => {
+                const data: Array<AccountOption> = [];
                 let listArr = cloneDeep(simpleSelectedList);
-                map(contacts, (contact: any) => {
-                  data.push(contact);
+                map(contacts, (contact: ChipItem) => {
+                  data.push(contact as AccountOption);
                   if (
                     !find(listArr, { label: contact.label }) &&
                     find(options, { label: contact.label })
                   ) {
-                    listArr.push(find(options, { label: contact.label }));
+                    const matched = find(options, { label: contact.label });
+                    if (matched) listArr.push(matched);
                   }
                 });
-                const pullIndex: any = [];
-                map(listArr, (ele: any, index) => {
+                const pullIndex: Array<number> = [];
+                map(listArr, (ele: AccountOption, index) => {
                   const indexEle = findIndex(contacts, { label: ele.label });
                   if (indexEle < 0) {
                     pullIndex.push(index);
@@ -911,7 +961,7 @@ const EditAccountDelegatesSection: FC = () => {
                   listArr = pullAt(listArr, pullIndex);
                 }
                 setSimpleSelectedList(listArr);
-                const filterData: any = [];
+                const filterData: Array<AccountOption> = [];
                 map(data, (ele) => {
                   if (isValidEmail(ele.label ?? '')) filterData.push(ele);
                 });
@@ -1281,12 +1331,12 @@ const EditAccountDelegatesSection: FC = () => {
           {showCreateIdentity && (
             <>
               <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-					<HorizontalWizard
-						steps={wizardSteps}
-						title={t('account_details.add_user_on_delegates_list', 'Add user on Delegates List')}
-						Wrapper={WizardInSection}
-						setToggleWizardSection={setShowCreateIdentity}
-					/>
+                <HorizontalWizard
+                  steps={wizardSteps}
+                  title={t('account_details.add_user_on_delegates_list', 'Add user on Delegates List')}
+                  Wrapper={WizardInSection}
+                  setToggleWizardSection={setShowCreateIdentity}
+                />
               </Row>
             </>
           )}
