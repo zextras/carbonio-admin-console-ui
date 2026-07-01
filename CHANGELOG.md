@@ -1,3 +1,9 @@
+## [0.13.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.17...v0.13.18) (2026-07-01)
+
+### Bug Fixes
+
+* **deps:** update dependency posthog-js to ^1.396.3 ([fdf0163](https://github.com/zextras/carbonio-admin-console-ui/commit/fdf0163b9185b0174c10dd675c055236297e730b))
+
 ## [0.13.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.16...v0.13.17) (2026-06-30)
 
 ### Bug Fixes
