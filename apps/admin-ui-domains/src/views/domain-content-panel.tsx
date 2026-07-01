@@ -43,7 +43,7 @@ import DomainMailboxQuotaSetting from './domain/details/domain-mailbox-quota-set
 import DomainSaml from './domain/details/domain-saml';
 import DomainTheme from './domain/details/domain-theme';
 import { DomainVirtualHosts } from './domain/details/virtual-hosts-certificates/domain-virtual-hosts';
-import DomainDetailPanel from './domain/domain-detail-panel';
+import { DomainDetailPanel } from './domain/domain-detail-panel';
 import DomainList from './domain/domain-list/domain-list';
 import { DomainOperationsLayout } from './domain/domain-operations-layout';
 import GlobalActiveSync from './domain/global/global-active-sync';

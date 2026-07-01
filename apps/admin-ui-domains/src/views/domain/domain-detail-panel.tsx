@@ -6,8 +6,9 @@
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { useLocalStorage } from '@zextras/ui-shared';
 import { cloneDeep, find } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router';
 
 import { useDomainStore } from '../../store/store';
 
@@ -15,11 +16,11 @@ type DomainDetailPanelProps = {
   children?: React.ReactNode;
 };
 
-const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
+export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
   const [t] = useTranslation();
   const domain = useDomainStore((state) => state.domain);
-  const closeDomainBanner = useDomainStore((state) => state.closeDomainBanner);
-  const setCloseDomainBanner = useDomainStore((state) => state.setCloseDomainBanner);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const closeDomainBanner = searchParams.get('bannerDismissed') ?? '';
   const [domainLocalValue, setDomainLocalValue] = useLocalStorage<Record<string, boolean>>(
     'close_domain_never_show',
     {},
@@ -39,17 +40,6 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
       closeDomainBanner !== domain.name
     );
   }, [closeDomainBanner, domain?.a, domain.name, domainLocalValue]);
-  const setCloseDomainNameBanner = useCallback(
-    (domainName: string) => {
-      setCloseDomainBanner(domainName);
-    },
-    [setCloseDomainBanner],
-  );
-  useEffect(() => {
-    if (domain?.name !== closeDomainBanner) {
-      setCloseDomainNameBanner('');
-    }
-  }, [closeDomainBanner, domain, setCloseDomainNameBanner]);
   return (
     <Container
       orientation="column"
@@ -98,7 +88,7 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
               style={{ cursor: 'pointer' }}
               onClick={(): void => {
                 setShowDomainClose(false);
-                setCloseDomainNameBanner(domain?.name || '');
+                setSearchParams({ bannerDismissed: domain?.name || '' }, { replace: true });
               }}
             ></ds-icon>
           </Row>
@@ -110,4 +100,3 @@ const DomainDetailPanel: FC<DomainDetailPanelProps> = ({ children }) => {
     </Container>
   );
 };
-export default DomainDetailPanel;

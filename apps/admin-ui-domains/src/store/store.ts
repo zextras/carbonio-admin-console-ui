@@ -25,8 +25,6 @@ interface DomainState {
   domainList: Array<Domain>;
   /** Whether the current domain supports delegated admin */
   isDomainSupportDelegatedAdmin: boolean;
-  /** Domain name for which the banner was closed */
-  closeDomainBanner: string;
   /** Whether certificate is available for the domain */
   isCertificateAvailbale: boolean;
 
@@ -45,8 +43,6 @@ interface DomainState {
   removeDomain: () => void;
   /** Set whether the domain supports delegated admin */
   setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin: boolean) => void;
-  /** Set the domain name for which banner was closed */
-  setCloseDomainBanner: (domainName: string) => void;
   /** Set certificate availability */
   setIsCertificateAvailbale: (isCertificateAvailbale: boolean) => void;
 }
@@ -81,7 +77,6 @@ export const useDomainStore = create<DomainState>()(
       cosList: [],
       domainList: [],
       isDomainSupportDelegatedAdmin: false,
-      closeDomainBanner: '',
       isCertificateAvailbale: false,
 
       setDomain: (domain): void => set({ domain }, false, 'setDomain'),
@@ -113,15 +108,6 @@ export const useDomainStore = create<DomainState>()(
 
       setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin): void =>
         set({ isDomainSupportDelegatedAdmin }, false, 'setIsDomainSupportDelegatedAdmin'),
-
-      setCloseDomainBanner: (domainName): void =>
-        set(
-          produce((state) => {
-            state.closeDomainBanner = domainName;
-          }),
-          false,
-          'setCloseDomainBanner',
-        ),
 
       setIsCertificateAvailbale: (isCertificateAvailbale): void =>
         set({ isCertificateAvailbale }, false, 'setIsCertificateAvailbale'),

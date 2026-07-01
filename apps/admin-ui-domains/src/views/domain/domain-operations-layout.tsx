@@ -12,7 +12,7 @@ import { Outlet, useParams } from 'react-router';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { useDomainStore } from '../../store/store';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import DomainDetailPanel from './domain-detail-panel';
+import { DomainDetailPanel } from './domain-detail-panel';
 
 export const DomainOperationsLayout = () => {
   const [t] = useTranslation();
