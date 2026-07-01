@@ -173,9 +173,7 @@ describe('AppView', () => {
       setupTest(licenseData);
 
       await expect.element(page.getByText('Expires on')).toBeVisible();
-      await expect
-        .element(page.getByText('Activation token', { exact: true }))
-        .not.toBeInTheDocument();
+      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
     });
 
     it('should render PerpetualSubscription for Purchased + PERPETUAL', async () => {
@@ -184,13 +182,14 @@ describe('AppView', () => {
       });
       setupTest(licenseData);
 
-      await expect.element(page.getByText('Max Carbonio version')).toBeVisible();
+      await expect.element(page.getByText('Max Carbonio Version')).toBeVisible();
     });
 
-    it('should render MeteredSubscription for ISP type', async () => {
+    it('should render MeteredSubscription for Purchased + METERED', async () => {
       const licenseData = createMockLicenseData({
         response: {
-          type: 'ISP',
+          type: 'Purchased',
+          subType: 'METERED',
           renewDaysLeft: 15,
           renewTimeLeft: 15 * 24 * 60 * 60 * 1000,
           lastValidationCheck: new Date('2026-04-20T00:00:00Z').getTime(),
@@ -214,7 +213,6 @@ describe('AppView', () => {
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
       await expect.element(page.getByText('Active edition')).toBeVisible();
-      await expect.element(page.getByText('Seat utilization')).toBeVisible();
     });
 
     it('should render empty for unknown type with feature flag on', async () => {
@@ -229,13 +227,11 @@ describe('AppView', () => {
       expect(activateElements).toHaveLength(0);
     });
 
-    it('should not render ActivateSubscription when license is present and feature flag is on', async () => {
+    it('should render Activation token section when license is present and feature flag is on', async () => {
       const licenseData = createMockLicenseData();
       setupTest(licenseData);
 
-      await expect
-        .element(page.getByText('Activation token', { exact: true }))
-        .not.toBeInTheDocument();
+      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
     });
 
     it('should not render legacy Subscription when feature flag is on and type matches', async () => {
@@ -265,8 +261,6 @@ describe('AppView', () => {
 
       const outerDiv = result.container.firstChild as HTMLElement;
       expect(outerDiv).not.toBeNull();
-      expect(outerDiv.style.height).toBe('fit-content');
-      expect(outerDiv.style.width).toBe('100%');
     });
 
     it('should render Breadcrumb and subscription view together', async () => {

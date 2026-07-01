@@ -15,6 +15,7 @@ export * from './web-components';
 export { type IconName } from './web-components/icon-registry';
 /** Basic components */
 export * from './components/basic/button/Button';
+export * from './components/basic/copy-to-clipboard-button/copy-to-clipboard-button';
 export * from './components/basic/Link';
 
 /** Layout components */

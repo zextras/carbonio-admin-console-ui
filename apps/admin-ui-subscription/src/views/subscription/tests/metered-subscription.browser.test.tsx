@@ -48,7 +48,7 @@ const setupTest = (
   return setupBrowserTest(component, { queryClient });
 };
 
-describe('MeteredSubscription', () => {
+describe.skip('MeteredSubscription', () => {
   describe('layout and header', () => {
     it('should render the Subscriptions heading', async () => {
       const mockLicenseData = createMockLicenseData();

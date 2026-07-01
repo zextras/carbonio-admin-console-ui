@@ -14,5 +14,12 @@
   gap: 0.25rem;
   height: 8.5rem;
   flex: 1 0 0;
-  background: var(--color-card-bg);
+  background: var(--color-gray6-regular);
+  box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.1);
+}
+
+.labelWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
