@@ -36,6 +36,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
   const setIsAllocationToggle = useBucketVolumeStore((state) => state?.setIsAllocationToggle);
   const [primaryRadio, setPrimaryRadio] = useState(false);
   const [secondaryRadio, setSecondaryRadio] = useState(false);
+  const isLocalBlockDevice = advancedVolumeDetail?.volumeAllocation === 'Local Block Device';
   const showTieringSettings =
     advancedVolumeDetail?.unusedBucketType === S3 && advancedVolumeDetail?.tieringSupported === true;
 
@@ -68,23 +69,37 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
   }, [advancedVolumeDetail?.volumeMain]);
 
   const changeSwitchInfraquentAccess = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    const newValue = !advancedVolumeDetail?.useInfrequentAccess;
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
-      useInfrequentAccess: !advancedVolumeDetail?.useInfrequentAccess,
+      useInfrequentAccess: newValue,
+      useIntelligentTiering: newValue ? false : prev.useIntelligentTiering,
+      infrequentAccessThreshold: newValue ? advancedVolumeDetail?.infrequentAccessThreshold : '',
     }));
-    onSelection({ useInfrequentAccess: !advancedVolumeDetail?.useInfrequentAccess }, true);
-  }, [advancedVolumeDetail?.useInfrequentAccess, onSelection, setAdvancedVolumeDetail]);
+    onSelection({ useInfrequentAccess: newValue }, true);
+    if (newValue) {
+      onSelection({ useIntelligentTiering: false }, true);
+    }
+    if (!newValue) {
+      onSelection({ infrequentAccessThreshold: '' }, true);
+    }
+  }, [advancedVolumeDetail?.useInfrequentAccess, advancedVolumeDetail?.infrequentAccessThreshold, onSelection, setAdvancedVolumeDetail]);
 
   const changeSwitchInfraquentTiering = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    const newValue = !advancedVolumeDetail?.useIntelligentTiering;
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
-      useIntelligentTiering: !advancedVolumeDetail?.useIntelligentTiering,
+      useIntelligentTiering: newValue,
+      useInfrequentAccess: newValue ? false : prev.useInfrequentAccess,
     }));
-    onSelection({ useIntelligentTiering: !advancedVolumeDetail?.useIntelligentTiering }, true);
+    onSelection({ useIntelligentTiering: newValue }, true);
+    if (newValue) {
+      onSelection({ useInfrequentAccess: false }, true);
+    }
   }, [advancedVolumeDetail?.useIntelligentTiering, onSelection, setAdvancedVolumeDetail]);
 
   const changeSwitchIsCurrent = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
       isCurrent: !advancedVolumeDetail?.isCurrent,
     }));
@@ -92,7 +107,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
   }, [advancedVolumeDetail?.isCurrent, onSelection, setAdvancedVolumeDetail]);
 
   const changeSwitchCentralized = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
       centralized: !advancedVolumeDetail?.centralized,
     }));
@@ -230,7 +245,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
           onChange={changeVolDetail}
         />
       </Row>
-      {showTieringSettings && (
+      {showTieringSettings && !isLocalBlockDevice && (
         <>
           <Row
             padding={{ top: 'large' }}
@@ -266,10 +281,12 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
             <Row width="48.5%" mainAlignment="flex-start">
               <Input
                 inputName="infrequentAccessThreshold"
-                label={t('label.size_threshold', 'Size Threshold')}
+                label={t('label.size_threshold', 'Bytes Size Threshold')}
+                type="number"
+                value={advancedVolumeDetail?.infrequentAccessThreshold || ''}
                 backgroundColor="gray5"
                 onChange={changeVolDetail}
-                disabled
+                disabled={!advancedVolumeDetail?.useInfrequentAccess}
               />
             </Row>
           </Row>
@@ -300,7 +317,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
       <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
         <Switch
           value={advancedVolumeDetail?.isCurrent}
-          label={t('label.enable_current', 'Enable as Current')}
+          label={t('label.set_as_current', 'Set as Current')}
           onClick={changeSwitchIsCurrent}
           iconColor="primary"
         />
@@ -313,23 +330,27 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
           )}
         </ds-text>
       </Row>
-      <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-        <Switch
-          value={advancedVolumeDetail?.centralized}
-          label={t('label.storage_centralized', 'I want this Storage to be centralized')}
-          onClick={changeSwitchCentralized}
-          iconColor="primary"
-        />
-      </Row>
-      <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-        <ds-text as="p" color="secondary" style={{ whiteSpace: 'pre-line' }}>
-          <Trans
-            i18nKey="label.storage_centralized_helpertext"
-            defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
-            components={{ bold: <strong /> }}
-          />
-        </ds-text>
-      </Row>
+      {!isLocalBlockDevice && (
+        <>
+          <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+            <Switch
+              value={advancedVolumeDetail?.centralized}
+              label={t('label.storage_centralized', 'I want this Storage to be centralized')}
+              onClick={changeSwitchCentralized}
+              iconColor="primary"
+            />
+          </Row>
+          <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+            <ds-text as="p" color="secondary" style={{ whiteSpace: 'pre-line', width: '100%' }} overflow="break-word">
+              <Trans
+                i18nKey="label.storage_centralized_helpertext"
+                defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
+                components={{ bold: <strong /> }}
+              />
+            </ds-text>
+          </Row>
+        </>
+      )}
     </Container>
   );
 };

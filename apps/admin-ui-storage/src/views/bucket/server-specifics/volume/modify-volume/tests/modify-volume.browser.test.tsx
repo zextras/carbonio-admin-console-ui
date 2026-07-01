@@ -7,7 +7,9 @@
 import {
 	advancedSupportedApiForBrowser,
 	setupBrowserTest,
+	worker,
 } from 'admin-ui-test-utils';
+import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -17,6 +19,45 @@ import ModifyVolume from '../modify-volume';
 
 const SERVER_NAME = 'mailstore1.test.com';
 const SERVER_ID = 'server-1';
+
+type S3ConnectorEntry = {
+	uuid: string;
+	label: string;
+	bucketName: string;
+	storeType: string;
+	tieringSupported?: boolean;
+	'usage in external backup'?: string;
+};
+
+function setupListS3ConnectorInterceptor(connectors: Array<S3ConnectorEntry>): void {
+	worker.use(
+		http.post('/service/admin/soap/zextras', async ({ request }) => {
+			const body = (await request.json()) as {
+				Body?: { zextras?: { action?: string } };
+			};
+			const zextrasBody = body?.Body?.zextras;
+
+			if (zextrasBody?.action === 'listS3Connector') {
+				const values = connectors.map((connector) => ({
+					...connector,
+					id: connector.uuid,
+				}));
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({
+								ok: true,
+								response: { values },
+							}),
+						},
+					},
+				});
+			}
+
+			return HttpResponse.json({ Body: {} });
+		}),
+	);
+}
 
 const PRIMARY_VOLUME: Volume = {
 	id: 5,
@@ -141,6 +182,54 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 			await expect
 				.element(page.getByRole('textbox', { name: /volume name/i }))
 				.toHaveValue(INDEX_VOLUME.name as string);
+		});
+	});
+
+	describe('external S3 volume tiering', () => {
+		const EXTERNAL_S3_VOLUME: Volume = {
+			id: 9,
+			name: 's3primary',
+			compressed: true,
+			uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
+			tieringSupported: true,
+			useInfrequentAccess: false,
+			infrequentAccessThreshold: 65536,
+			useIntelligentTiering: false,
+			volumePrefix: '',
+			centralized: false,
+			storeType: 'S3',
+			isCurrent: false,
+			volumeType: 'primary',
+		};
+
+		const EXTERNAL_VOLUME_LIST = {
+			primaries: [EXTERNAL_S3_VOLUME],
+			secondaries: [SECONDARY_VOLUME],
+			indexes: [INDEX_VOLUME],
+		};
+
+		beforeEach(async () => {
+			await advancedSupportedApiForBrowser.withAdvancedSupported();
+			setupListS3ConnectorInterceptor([
+				{
+					uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
+					label: 'Tiering S3 connector',
+					bucketName: 'tiering-bucket',
+					storeType: 'S3',
+					tieringSupported: true,
+					'usage in external backup': 'UNUSED',
+				},
+			]);
+		});
+
+		it('should display tiering controls for external S3 volume with tiering support', async () => {
+			await setupBrowserTest(renderModifyVolume(EXTERNAL_S3_VOLUME.id as number, EXTERNAL_VOLUME_LIST));
+			await expect
+				.element(page.getByText('Use infrequent access', { exact: true }))
+				.toBeVisible();
+			await expect
+				.element(page.getByText('Use intelligent tiering', { exact: true }))
+				.toBeVisible();
 		});
 	});
 });

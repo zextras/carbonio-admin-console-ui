@@ -20,7 +20,7 @@ export const BucketTypeItems = (t: TFunction): Array<{ value: string; label: str
 		value: 'Alibaba'
 	},
 	{
-		label: t('buckets.s3_types.amazone_web_service_s3', 'Amazon Web Service S3'),
+		label: t('buckets.aws_s3', 'S3'),
 		value: 'S3'
 	},
 	{

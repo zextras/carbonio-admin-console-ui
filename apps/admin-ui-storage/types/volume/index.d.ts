@@ -20,6 +20,8 @@ export type Volume = {
 	bucketConfigurationId?: string;
 	centralized?: boolean;
 	compressed?: boolean;
+	uuid?: string;
+	tieringSupported?: boolean;
 	infrequentAccessThreshold?: number;
 	isDrivePrimary?: boolean;
 	path?: string;

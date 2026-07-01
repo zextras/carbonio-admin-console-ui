@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -15,6 +15,7 @@ const mockSoapFetch = vi.hoisted(() => vi.fn());
 const mockCreateSnackbar = vi.hoisted(() => vi.fn());
 const mockListS3Connector = vi.hoisted(() => vi.fn());
 const mockSetIsVolumeAllDetail = vi.hoisted(() => vi.fn());
+const mockVolumeAllDetail = vi.hoisted(() => ({ value: [] as Array<unknown> }));
 const mockAdvancedMode = vi.hoisted(() => ({ value: false }));
 const mockT = vi.hoisted(
   () => (_key: string, fallback?: string, options?: { message?: string }) =>
@@ -69,10 +70,51 @@ vi.mock('@zextras/ui-components', () => ({
   ListRow: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
   Modal: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
   Padding: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-  Radio: ({ label }: { label: string }) => <div>{label}</div>,
+  Radio: ({
+    label,
+    disabled,
+    onClick,
+  }: {
+    label: string;
+    disabled?: boolean;
+    onClick?: () => void;
+  }) => (
+    <button type="button" disabled={disabled} onClick={onClick}>
+      {label}
+    </button>
+  ),
   Row: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-  Select: ({ label }: { label: string }) => <div>{label}</div>,
-  Switch: ({ label }: { label: string }) => <div>{label}</div>,
+  Select: ({
+    label,
+    items,
+    onChange,
+    selection,
+  }: {
+    label: string;
+    items?: Array<{ label: string; value: string }>;
+    onChange?: (value: string) => void;
+    selection?: { label: string; value: string };
+  }) => (
+    <label>
+      {label}
+      <select
+        aria-label={label}
+        value={selection?.value ?? ''}
+        onChange={(event) => onChange?.(event.target.value)}
+      >
+        {items?.map((item) => (
+          <option key={item.value} value={item.value}>
+            {item.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  ),
+  Switch: ({ label, onClick }: { label: string; onClick?: () => void }) => (
+    <button type="button" onClick={onClick}>
+      {label}
+    </button>
+  ),
   Tooltip: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
   useSnackbar: () => mockCreateSnackbar,
 }));
@@ -92,8 +134,11 @@ vi.mock('../../../../../../store/bucket-volume/store', () => ({
   ) =>
     selector({
       selectedServerName: 'mailstore1.example.com',
-      isVolumeAllDetail: [],
-      setIsVolumeAllDetail: mockSetIsVolumeAllDetail,
+      isVolumeAllDetail: mockVolumeAllDetail.value,
+      setIsVolumeAllDetail: (items: Array<unknown>) => {
+        mockVolumeAllDetail.value = items;
+        mockSetIsVolumeAllDetail(items);
+      },
     }),
 }));
 
@@ -101,6 +146,7 @@ describe('ModifyVolume', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAdvancedMode.value = false;
+    mockVolumeAllDetail.value = [];
   });
 
   it('should show error snackbar and refresh volume list when GetVolume fails in non-advanced mode', async () => {
@@ -216,5 +262,246 @@ describe('ModifyVolume', () => {
     });
 
     expect(setmodifyVolumeToggle).toHaveBeenCalledWith(true);
+  });
+
+  const externalS3Connectors = [
+    {
+      uuid: 'bucket-1',
+      label: 'Primary connector',
+      bucketName: 'primary-bucket',
+      storeType: 'S3',
+      tieringSupported: true,
+      'usage in external backup': 'UNUSED',
+    },
+    {
+      uuid: 'bucket-2',
+      label: 'Secondary connector',
+      bucketName: 'secondary-bucket',
+      storeType: 'Ceph',
+      tieringSupported: false,
+      'usage in external backup': 'UNUSED',
+    },
+  ];
+
+  const externalS3VolumeList = {
+    primaries: [
+      {
+        id: 100,
+        name: 'external-primary-volume',
+        type: 1,
+        rootpath: '/opt/store',
+        compressBlobs: 'false',
+        compressionThreshold: '4096',
+        isCurrent: false,
+        uuid: 'bucket-1',
+        tieringSupported: true,
+        volumePrefix: 'mail',
+        storeType: 'S3',
+        useInfrequentAccess: true,
+        useIntelligentTiering: false,
+        infrequentAccessThreshold: 1024,
+      },
+    ],
+    secondaries: [],
+    indexes: [],
+  } satisfies { primaries: Volume[]; secondaries: Volume[]; indexes: Volume[] };
+
+  function renderExternalS3Volume(): ReturnType<typeof render> {
+    mockAdvancedMode.value = true;
+    mockListS3Connector.mockResolvedValue(externalS3Connectors);
+
+    return render(
+      <ModifyVolume
+        volumeId={100}
+        setmodifyVolumeToggle={vi.fn()}
+        getAllVolumesRequest={vi.fn()}
+        selectedServerId="server-1"
+        volumeList={externalS3VolumeList}
+        setOpen={vi.fn()}
+      />,
+    );
+  }
+
+  it('should disable primary and secondary volume type radios for external volumes', async () => {
+    renderExternalS3Volume();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Available Buckets List (that are not in use in the backup)'),
+      ).toBeTruthy();
+    });
+
+    expect(screen.getByRole('button', { name: 'This is a Primary Volume' }).hasAttribute('disabled')).toBe(
+      true,
+    );
+    expect(
+      screen.getByRole('button', { name: 'This is a Secondary Volume' }).hasAttribute('disabled'),
+    ).toBe(true);
+  });
+
+  it('should render tiering switches for external S3 volume when connector supports tiering', async () => {
+    renderExternalS3Volume();
+
+    await waitFor(() => {
+      expect(screen.getByText('Use infrequent access')).toBeTruthy();
+      expect(screen.getByText('Use intelligent tiering')).toBeTruthy();
+    });
+  });
+
+  it('should render tiering switches when volume uses uuid from getAllVolumes API shape', async () => {
+    mockAdvancedMode.value = true;
+    mockListS3Connector.mockResolvedValue([
+      {
+        uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
+        label: 'S3 connector',
+        bucketName: 's3-bucket',
+        storeType: 'S3',
+        tieringSupported: true,
+        'usage in external backup': 'UNUSED',
+      },
+    ]);
+
+    const apiShapedVolumeList = {
+      primaries: [
+        {
+          id: 9,
+          name: 's3primary',
+          compressed: true,
+          uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
+          tieringSupported: true,
+          useInfrequentAccess: false,
+          infrequentAccessThreshold: 65536,
+          useIntelligentTiering: false,
+          volumePrefix: '',
+          centralized: false,
+          storeType: 'S3',
+          isCurrent: false,
+          volumeType: 'primary',
+        },
+      ],
+      secondaries: [],
+      indexes: [],
+    } satisfies { primaries: Volume[]; secondaries: Volume[]; indexes: Volume[] };
+
+    render(
+      <ModifyVolume
+        volumeId={9}
+        setmodifyVolumeToggle={vi.fn()}
+        getAllVolumesRequest={vi.fn()}
+        selectedServerId="server-1"
+        volumeList={apiShapedVolumeList}
+        setOpen={vi.fn()}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Use infrequent access')).toBeTruthy();
+      expect(screen.getByText('Use intelligent tiering')).toBeTruthy();
+    });
+  });
+
+  it('should not render tiering switches when volume tieringSupported is false', async () => {
+    mockAdvancedMode.value = true;
+    mockListS3Connector.mockResolvedValue([
+      {
+        uuid: '09dd7b71-23f0-47f2-b580-5593f3aaabe8',
+        label: 'Ceph connector',
+        bucketName: 'ceph-bucket',
+        storeType: 'S3',
+        tieringSupported: false,
+        'usage in external backup': 'UNUSED',
+      },
+    ]);
+
+    render(
+      <ModifyVolume
+        volumeId={6}
+        setmodifyVolumeToggle={vi.fn()}
+        getAllVolumesRequest={vi.fn()}
+        selectedServerId="server-1"
+        volumeList={{
+          primaries: [
+            {
+              id: 6,
+              name: 'cephprimary',
+              compressed: true,
+              uuid: '09dd7b71-23f0-47f2-b580-5593f3aaabe8',
+              tieringSupported: false,
+              useInfrequentAccess: false,
+              infrequentAccessThreshold: 65536,
+              useIntelligentTiering: false,
+              volumePrefix: '',
+              storeType: 'S3',
+              isCurrent: false,
+              volumeType: 'primary',
+            },
+          ],
+          secondaries: [],
+          indexes: [],
+        }}
+        setOpen={vi.fn()}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Available Buckets List (that are not in use in the backup)'),
+      ).toBeTruthy();
+    });
+
+    expect(screen.queryByText('Use infrequent access')).toBeNull();
+    expect(screen.queryByText('Use intelligent tiering')).toBeNull();
+  });
+
+  it('should not render tiering switches when connector does not support tiering', async () => {
+    mockAdvancedMode.value = true;
+    mockListS3Connector.mockResolvedValue([
+      {
+        uuid: 'bucket-1',
+        label: 'Primary connector',
+        bucketName: 'primary-bucket',
+        storeType: 'S3',
+        tieringSupported: false,
+        'usage in external backup': 'UNUSED',
+      },
+    ]);
+
+    render(
+      <ModifyVolume
+        volumeId={100}
+        setmodifyVolumeToggle={vi.fn()}
+        getAllVolumesRequest={vi.fn()}
+        selectedServerId="server-1"
+        volumeList={externalS3VolumeList}
+        setOpen={vi.fn()}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Available Buckets List (that are not in use in the backup)'),
+      ).toBeTruthy();
+    });
+
+    expect(screen.queryByText('Use infrequent access')).toBeNull();
+    expect(screen.queryByText('Use intelligent tiering')).toBeNull();
+  });
+
+  it('should hide tiering switches and reset flags when bucket changes to non-tiering connector', async () => {
+    renderExternalS3Volume();
+
+    await waitFor(() => {
+      expect(screen.getByText('Use infrequent access')).toBeTruthy();
+    });
+
+    fireEvent.change(
+      screen.getByLabelText('Available Buckets List (that are not in use in the backup)'),
+      { target: { value: 'bucket-2' } },
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('Use infrequent access')).toBeNull();
+      expect(screen.queryByText('Use intelligent tiering')).toBeNull();
+    });
   });
 });

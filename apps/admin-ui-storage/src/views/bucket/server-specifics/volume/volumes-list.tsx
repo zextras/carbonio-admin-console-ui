@@ -64,6 +64,20 @@ type SoapContentResponse = {
   };
 };
 
+function normalizeAdvancedVolume(volume: Volume): Volume {
+  return {
+    ...volume,
+    bucketConfigurationId: volume.bucketConfigurationId ?? volume.uuid,
+    compressBlobs: volume.compressBlobs ?? String(volume.compressed ?? false),
+    compressionThreshold: volume.compressionThreshold ?? String(volume.threshold ?? ''),
+    rootpath: volume.rootpath ?? volume.path,
+  };
+}
+
+function normalizeAdvancedVolumeList(volumes: Array<Volume> | undefined): Array<Volume> {
+  return volumes?.map(normalizeAdvancedVolume) ?? [];
+}
+
 const VolumeListTable: FC<{
   volumes: Array<Volume>;
   selectedRows: Array<string>;
@@ -249,9 +263,11 @@ const VolumesDetailPanel: FC = () => {
             (key) => result?.response[key],
           )[0];
           if (getAllVolResponse?.ok) {
-            const primaries = getAllVolResponse?.response?.primaries;
-            const secondaries = getAllVolResponse?.response?.secondaries;
-            const indexes = getAllVolResponse?.response?.indexes;
+            const primaries = normalizeAdvancedVolumeList(getAllVolResponse?.response?.primaries);
+            const secondaries = normalizeAdvancedVolumeList(
+              getAllVolResponse?.response?.secondaries,
+            );
+            const indexes = normalizeAdvancedVolumeList(getAllVolResponse?.response?.indexes);
             setVolumeList({
               primaries,
               indexes,
