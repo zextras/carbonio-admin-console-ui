@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, ChipInput, Container, CustomTextArea, Input, ListRow, Padding, Row, Select, Switch, Tooltip, useSnackbar, } from '@zextras/ui-components';
-import { getCosList, replaceHistory, useMailstoreServers } from '@zextras/ui-shared';
+import { replaceHistory, useCosList, useMailstoreServers } from '@zextras/ui-shared';
 import { map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -54,6 +54,15 @@ const CreateDomain: FC = () => {
   const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
   const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
   const { data: allMailStoreList = [] } = useMailstoreServers();
+  const { data: cosData, isLoading: isCosListLoading, error: cosError } = useCosList({
+    searchQuery: '',
+    limit: 0,
+    offset: 0,
+  });
+  const cosItems: Array<SelectItem> = (cosData?.cos ?? []).map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
   const [isDomainDelegatedAdmin, setIsDomainDelegatedAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
@@ -61,9 +70,6 @@ const CreateDomain: FC = () => {
     { label: string }[]
   >([]);
   const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
-  const [cosItems, setCosItems] = useState<any[]>([]);
-  const cosList = useDomainStore((state) => state.cosList);
-  const setCosList = useDomainStore((state) => state.setCosList);
   const [zimbraDomainDefaultCOSId, setZimbraDomainDefaultCOSId] = useState<string>('');
 
   useEffect(() => {
@@ -115,30 +121,12 @@ const CreateDomain: FC = () => {
     setZimbraPublisServiceHostname(item);
   };
 
-  const getCosLists = (cos: string): any => {
-    setIsLoading(true);
-    getCosList(cos, 0)
-      .then((data) => {
-        const searchResponse: any = data;
-        if (!!searchResponse && searchResponse?.searchTotal > 0) {
-          setCosList(searchResponse?.cos);
-          setIsLoading(false);
-        } else {
-          setCosList([]);
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {
-        const snackbarConfig = generateSnackbarFromError(error, t);
-        createSnackbar(snackbarConfig);
-        setIsLoading(false);
-      });
-  };
-
   useEffect(() => {
-    getCosLists('');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (cosError) {
+      const snackbarConfig = generateSnackbarFromError(cosError, t);
+      createSnackbar(snackbarConfig);
+    }
+  }, [cosError, createSnackbar, t]);
 
   useEffect(() => {
     getCreateObjectAttribute();
@@ -343,22 +331,9 @@ const CreateDomain: FC = () => {
     setIsDomainSupportDelegatedAdmin(!isDomainDelegatedAdmin);
   }, [isDomainDelegatedAdmin, setIsDomainSupportDelegatedAdmin]);
 
-  useEffect(() => {
-    if (!!cosList && cosList.length > 0) {
-      const arrayItem: any[] = [];
-      cosList.forEach((item: any) => {
-        arrayItem.push({
-          label: item.name,
-          value: item.id,
-        });
-      });
-      setCosItems(arrayItem);
-    }
-  }, [cosList]);
-
   return (
     <>
-      {isLoading && <ds-spinner></ds-spinner>}
+      {(isLoading || isCosListLoading) && <ds-spinner></ds-spinner>}
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <Container
           crossAlignment="flex-start"
@@ -564,13 +539,12 @@ const CreateDomain: FC = () => {
                     showCheckbox={false}
                     onChange={(e: any): any => {
                       setZimbraDomainDefaultCOSId(
-                        cosItems.find((item: any) => item.value === e)?.value,
+                        cosItems.find((item) => item.value === e)?.value ?? '',
                       );
                     }}
                     selection={
-                      zimbraDomainDefaultCOSId === ''
-                        ? cosItems[-1]
-                        : cosItems.find((item: any) => item.value === zimbraDomainDefaultCOSId)
+                      cosItems.find((item) => item.value === zimbraDomainDefaultCOSId) ??
+                      cosItems[-1]
                     }
                   />
                 </Container>

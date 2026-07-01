@@ -84,6 +84,7 @@ import { queryClient, ReactQueryProvider } from './providers/react-query-provide
 import { useUserAccount, useUserAccounts, useUserSettings } from './react-query/use-account';
 import { useBackupServers } from './react-query/use-backup-servers';
 import { useAllConfig, useConfigAttribute } from './react-query/use-config';
+import { useCosList } from './react-query/use-cos-list';
 import { useDomainInformation } from './react-query/use-domain-information';
 import { useGlobalCarbonioSendAnalytics } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
@@ -263,6 +264,7 @@ export {
   useBridge,
   useConfigAttribute,
   useContextBridge,
+  useCosList,
   useCurrentRoute,
   useCurrentUserRights,
   useDomainInformation,
