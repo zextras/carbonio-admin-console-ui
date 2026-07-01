@@ -7,7 +7,7 @@ import { produce } from 'immer';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { Cos, Domain } from './types';
+import { Domain } from './types';
 
 /**
  * Domain store state interface
@@ -19,12 +19,8 @@ interface DomainState {
   domainsQuota: Record<string, number | 'not-set'>;
   /** The currently selected domain without configuration */
   domainWithoutConfig: Domain;
-  /** List of available Classes of Service */
-  cosList: Array<Cos>;
   /** List of all domains */
   domainList: Array<Domain>;
-  /** Whether the current domain supports delegated admin */
-  isDomainSupportDelegatedAdmin: boolean;
   /** Whether certificate is available for the domain */
   isCertificateAvailbale: boolean;
 
@@ -35,14 +31,10 @@ interface DomainState {
   setDomainQuota: (domainId: string, limit: number | 'not-set') => void;
   /** Set the current domain without configuration */
   setDomainWioutConfig: (domain: Domain) => void;
-  /** Set the list of Classes of Service */
-  setCosList: (cosList: Array<Cos>) => void;
   /** Set the list of all domains */
   setDomainList: (domainList: Array<Domain>) => void;
   /** Remove/clear the current domain */
   removeDomain: () => void;
-  /** Set whether the domain supports delegated admin */
-  setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin: boolean) => void;
   /** Set certificate availability */
   setIsCertificateAvailbale: (isCertificateAvailbale: boolean) => void;
 }
@@ -74,9 +66,7 @@ export const useDomainStore = create<DomainState>()(
       domain: {},
       domainsQuota: {},
       domainWithoutConfig: {},
-      cosList: [],
       domainList: [],
-      isDomainSupportDelegatedAdmin: false,
       isCertificateAvailbale: false,
 
       setDomain: (domain): void => set({ domain }, false, 'setDomain'),
@@ -95,8 +85,6 @@ export const useDomainStore = create<DomainState>()(
 
       setDomainList: (domainList): void => set({ domainList }, false, 'setDomainList'),
 
-      setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
-
       removeDomain: (): void =>
         set(
           produce((state) => {
@@ -105,9 +93,6 @@ export const useDomainStore = create<DomainState>()(
           false,
           'removeDomain',
         ),
-
-      setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin): void =>
-        set({ isDomainSupportDelegatedAdmin }, false, 'setIsDomainSupportDelegatedAdmin'),
 
       setIsCertificateAvailbale: (isCertificateAvailbale): void =>
         set({ isCertificateAvailbale }, false, 'setIsCertificateAvailbale'),

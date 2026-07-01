@@ -14,6 +14,7 @@ import {
   Switch,
   Tooltip,
 } from '@zextras/ui-components';
+import { useCosList } from '@zextras/ui-shared';
 import { find, head } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +37,8 @@ const CreateAccountDetailSection: FC = () => {
   const domain = useDomainStore((state) => state.domain);
   const [showAutoFillAlert, setShowAutoFillAlert] = useState<boolean>(false);
 
-  const cosList = useDomainStore((state) => state.cosList);
+  const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
+  const cosList = cosData?.cos ?? [];
   const [cosItems, setCosItems] = useState<any[]>([]);
   const { accountDetail, setAccountDetail } = context;
 

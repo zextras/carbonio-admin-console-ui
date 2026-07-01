@@ -38,9 +38,6 @@ const CreateDomain: FC = () => {
   const createSnackbar = useSnackbar();
   const navigate = useNavigate();
   const setDomain = useDomainStore((state) => state.setDomain);
-  const setIsDomainSupportDelegatedAdmin = useDomainStore(
-    (state) => state.setIsDomainSupportDelegatedAdmin,
-  );
   const [zimbraGalMode, setZimbraGalMode] = useState<string>('Internal');
   const [zimbraPublicServiceHostnameList, setZimbraPublicServiceHostnameList] = useState<
     SelectItem[]
@@ -326,10 +323,6 @@ const CreateDomain: FC = () => {
   const onCancel = (): void => {
     navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}`);
   };
-
-  useEffect(() => {
-    setIsDomainSupportDelegatedAdmin(!isDomainDelegatedAdmin);
-  }, [isDomainDelegatedAdmin, setIsDomainSupportDelegatedAdmin]);
 
   return (
     <>

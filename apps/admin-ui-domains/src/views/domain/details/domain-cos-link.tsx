@@ -3,8 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Container, CustomHeaderFactory, DropDownInput, HoverableRowFactory, Input, ListRow, Padding, Row, Table, useSnackbar, } from '@zextras/ui-components';
-import { flushCache, getCosList, postSoapFetchRequest, useUserSettings } from '@zextras/ui-shared';
+import { domainByIdKey, flushCache, getCosList, postSoapFetchRequest, useUserSettings } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, KeyboardEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +16,6 @@ import { CosMaxAccountValues } from '../../../../types/domain';
 import { HELPDESK_ADMINS, MAX_COS_DISPLAY, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { copyCos } from '../../../services/copy-cos-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useDomainStore } from '../../../store/store';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 
 const DomainCosLink: FC<{
@@ -33,7 +33,7 @@ const DomainCosLink: FC<{
   const [maxAccountValue, setMaxAccountValue] = useState('');
   const [domainCosMaxAccountList, setDomainCosMaxAccountList] = useState<Array<any>>([]);
   const [cosMaxAccountListRow, setCosMaxAccountListRow] = useState<Array<any>>([]);
-  const setDomain = useDomainStore((state) => state.setDomain);
+  const queryClient = useQueryClient();
   const createSnackbar = useSnackbar();
   const userSetting = useUserSettings();
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
@@ -175,7 +175,7 @@ const DomainCosLink: FC<{
           }
           const domain: any = data?.domain[0];
           if (domain) {
-            setDomain(domain);
+            queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
           }
           setMaxAccountValue('');
         })
@@ -233,7 +233,7 @@ const DomainCosLink: FC<{
         });
       }
     },
-    [cosMaxAccountList, createSnackbar, domainId, domainName, isGlobalAdmin, setDomain, t],
+    [cosMaxAccountList, createSnackbar, domainId, domainName, isGlobalAdmin, queryClient, t],
   );
 
   const onDuplicate = useCallback(
@@ -309,7 +309,7 @@ const DomainCosLink: FC<{
           }
           const domain: any = data?.domain[0];
           if (domain) {
-            setDomain(domain);
+            queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
           }
           setMaxAccountValue('');
         })
@@ -364,7 +364,7 @@ const DomainCosLink: FC<{
         });
       });
     },
-    [createSnackbar, domainId, domainName, isGlobalAdmin, setDomain, t],
+    [createSnackbar, domainId, domainName, isGlobalAdmin, queryClient, t],
   );
 
   const markAsDefaultCos = useCallback(
@@ -400,7 +400,7 @@ const DomainCosLink: FC<{
           }
           const domain: any = data?.domain[0];
           if (domain) {
-            setDomain(domain);
+            queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
           }
         })
         .catch((error) => {
@@ -416,7 +416,7 @@ const DomainCosLink: FC<{
           });
         });
     },
-    [createSnackbar, domainId, isGlobalAdmin, setDomain, t],
+    [createSnackbar, domainId, isGlobalAdmin, queryClient, t],
   );
 
   const removeCosLinkRows = useCallback(

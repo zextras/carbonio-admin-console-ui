@@ -85,6 +85,7 @@ import { useUserAccount, useUserAccounts, useUserSettings } from './react-query/
 import { useBackupServers } from './react-query/use-backup-servers';
 import { useAllConfig, useConfigAttribute } from './react-query/use-config';
 import { useCosList } from './react-query/use-cos-list';
+import { domainByIdKey, useDomainById } from './react-query/use-domain-by-id';
 import { useDomainInformation } from './react-query/use-domain-information';
 import { useGlobalCarbonioSendAnalytics } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
@@ -126,6 +127,7 @@ import {
   getCoreAttributes,
   type GetCoreAttributesResponse,
 } from './services/get-core-attributes';
+import { getDomainInformation } from './services/get-domain-information';
 import {
   type FileQuotaResponse,
   getFileQuotaById,
@@ -207,6 +209,7 @@ export {
   CARBONIO_LOGO_URL,
   CONFIG,
   CONTENT,
+  domainByIdKey,
   fetchAccountSettings,
   fetchExternalSoap,
   flushCache,
@@ -218,6 +221,7 @@ export {
   getCoreAttributes,
   getCosGeneralInformation,
   getCosList,
+  getDomainInformation,
   getFileQuotaById,
   getLocale,
   getRights,
@@ -267,6 +271,7 @@ export {
   useCosList,
   useCurrentRoute,
   useCurrentUserRights,
+  useDomainById,
   useDomainInformation,
   useGlobalCarbonioSendAnalytics,
   useHasAllRights,

@@ -13,6 +13,7 @@ import {
   Select,
   SelectItem,
 } from '@zextras/ui-components';
+import { useCosList } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,7 +33,8 @@ const ResourceDetailSection: FC = () => {
   const { t } = useTranslation();
   const context = useContext(ResourceContext);
   const { resourceDetail, setResourceDetail } = context;
-  const cosList = useDomainStore((state) => state.cosList);
+  const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
+  const cosList = cosData?.cos ?? [];
   const [cosItems, setCosItems] = useState<any[]>([]);
   const domainName = useDomainStore((state) => state.domain?.name);
 

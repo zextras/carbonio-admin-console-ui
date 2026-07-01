@@ -18,6 +18,7 @@ import {
   ZIMBRA_ADMIN_URN,
   ZIMBRA_ID,
 } from '../../../../constants';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/store';
 
@@ -27,7 +28,8 @@ export const LoadAndVerifyCert: FC<{
 }> = ({ setToggleWizardSection, externalData }) => {
   let fileReader: FileReader;
   const { t } = useTranslation();
-  const domainInformation = useDomainStore((state) => state.domain?.a);
+  const { data: domain } = useSelectedDomain();
+  const domainInformation = domain?.a;
   const [verifyBtnLoading, setVerifyBtnLoading] = useState(false);
   const [uploadBtnTgl, setUploadBtnTgl] = useState(false);
   const createSnackbar = useSnackbar();

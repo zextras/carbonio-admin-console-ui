@@ -11,16 +11,8 @@ import { page } from 'vitest/browser';
 import { useDomainStore } from '../../../../../store/store';
 import { DomainVirtualHosts } from '../domain-virtual-hosts';
 
-const mockDomainData = {
-	name: 'test-domain.com',
-	id: 'domain-123',
-	a: [
-		{ n: 'zimbraId', _content: 'domain-123' },
-		{ n: 'zimbraDomainName', _content: 'test-domain.com' },
-		{ n: 'zimbraVirtualHostname', _content: 'virtual1.test-domain.com' },
-		{ n: 'zimbraVirtualHostname', _content: 'virtual2.test-domain.com' }
-	]
-};
+const DOMAIN_ID = 'domain-123';
+const DOMAIN_NAME = 'test-domain.com';
 
 const mockGetDomainCertResponse = {
 	cert: [
@@ -36,7 +28,13 @@ const mockGetDomainCertResponse = {
 const mockGetDomainResponse = {
 	domain: [
 		{
+			name: DOMAIN_NAME,
+			id: DOMAIN_ID,
 			a: [
+				{ n: 'zimbraId', _content: DOMAIN_ID },
+				{ n: 'zimbraDomainName', _content: DOMAIN_NAME },
+				{ n: 'zimbraVirtualHostname', _content: 'virtual1.test-domain.com' },
+				{ n: 'zimbraVirtualHostname', _content: 'virtual2.test-domain.com' },
 				{ n: 'zimbraSSLCertificate', _content: 'certificate-content' },
 				{ n: 'zimbraSSLPrivateKey', _content: 'private-key-content' }
 			]
@@ -47,8 +45,6 @@ const mockGetDomainResponse = {
 describe('DomainVirtualHosts (browser)', () => {
 	beforeEach(() => {
 		useDomainStore.setState({
-			domain: mockDomainData,
-			setDomain: vi.fn(),
 			setIsCertificateAvailbale: vi.fn()
 		});
 	});
@@ -61,7 +57,7 @@ describe('DomainVirtualHosts (browser)', () => {
 		createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
 		createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
 
-		await setupBrowserTest(<DomainVirtualHosts />);
+		await setupBrowserTest(<DomainVirtualHosts />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
 
 		await expect.element(page.getByText('Virtual Hosts')).toBeVisible();
 	});
@@ -70,7 +66,7 @@ describe('DomainVirtualHosts (browser)', () => {
 		createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
 		createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
 
-		await setupBrowserTest(<DomainVirtualHosts />);
+		await setupBrowserTest(<DomainVirtualHosts />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
 
 		await expect.element(page.getByText('virtual1.test-domain.com')).toBeVisible();
 		await expect.element(page.getByText('virtual2.test-domain.com')).toBeVisible();
@@ -80,7 +76,7 @@ describe('DomainVirtualHosts (browser)', () => {
 		createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
 		createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
 
-		await setupBrowserTest(<DomainVirtualHosts />);
+		await setupBrowserTest(<DomainVirtualHosts />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
 
 		const saveButtons = page.getByRole('button', { name: /save/i }).elements();
 		const cancelButtons = page.getByRole('button', { name: /cancel/i }).elements();
@@ -93,7 +89,7 @@ describe('DomainVirtualHosts (browser)', () => {
 		createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
 		createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
 
-		await setupBrowserTest(<DomainVirtualHosts />);
+		await setupBrowserTest(<DomainVirtualHosts />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
 
 		// Simulate certificate generation by triggering the alert
 		// This would normally happen through the CertificateView component
@@ -110,7 +106,7 @@ describe('DomainVirtualHosts (browser)', () => {
 		createBrowserSoapAPIInterceptor('GetDomainCert', {});
 		createBrowserSoapAPIInterceptor('GetDomain', { domain: [{ a: [] }] });
 
-		await setupBrowserTest(<DomainVirtualHosts />);
+		await setupBrowserTest(<DomainVirtualHosts />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
 
 		// Should render without certificate info
 		await expect.element(page.getByText('Virtual Hosts')).toBeVisible();
@@ -120,7 +116,7 @@ describe('DomainVirtualHosts (browser)', () => {
 		createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
 		createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
 
-		await setupBrowserTest(<DomainVirtualHosts />);
+		await setupBrowserTest(<DomainVirtualHosts />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
 
 		// Component should still render for non-admin
 		await expect.element(page.getByText('Virtual Hosts')).toBeVisible();

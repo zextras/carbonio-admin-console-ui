@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, ChipInput, Container, CustomHeaderFactory, CustomTextArea, DropDownInput, HoverableRowFactory, InheritedSelect, Input, LabeledValue, Modal, Padding, Paging, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
-import { useIsAdvanced } from '@zextras/ui-shared';
+import { useCosList, useIsAdvanced } from '@zextras/ui-shared';
 import { debounce, map } from 'lodash-es';
 import React, {
   ChangeEvent,
@@ -78,7 +78,8 @@ export const EditAccountGeneralSection: FC<{
   } = useContext(AccountContext);
   const domainInformation = useDomainStore((state) => state.domain?.a);
   const domainName = useDomainStore((state) => state.domain?.name);
-  const cosList = useDomainStore((state) => state.cosList);
+  const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
+  const cosList = cosData?.cos ?? [];
   const [t] = useTranslation();
   const localeZone = useMemo(() => localeList(t), [t]);
   const ACCOUNT_STATUS: Array<{ value: string; label: string }> = useMemo(

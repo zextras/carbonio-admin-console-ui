@@ -3,11 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, ChipInput, ChipItem, Container, CustomTextArea, Input, LabeledValue, ListRow, Modal, Padding, Row, Select, useSnackbar, } from '@zextras/ui-components';
-import { type DirectoryEntry, type DomainDirectories, flushCache, replaceHistory, searchDirectory, useIsAdvanced, useTotalQuotaActive, useUserSettings } from '@zextras/ui-shared';
+import { type DirectoryEntry, domainByIdKey, type DomainDirectories, flushCache, replaceHistory, searchDirectory, useCosList, useIsAdvanced, useTotalQuotaActive, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { CosMaxAccountValues, Domain, DomainsByFeature, objectType } from '../../../../types';
 import {
@@ -24,6 +26,7 @@ import {
   ZIMBRA_ADMIN_URN,
   ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS,
 } from '../../../constants';
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { batchService } from '../../../services/batch-service';
 import { deleteDomain } from '../../../services/delete-domain-service';
 import { getDomainQuota } from '../../../services/get-domain-quota';
@@ -49,10 +52,14 @@ const DomainGeneralSettings: FC = () => {
   const [t] = useTranslation();
   const isTotalQuotaActive = useTotalQuotaActive();
   const timezones = useMemo(() => timeZoneList(t), [t]);
-  const cosList = useDomainStore((state) => state.cosList);
-  const domainInformation = useDomainStore((state) => state.domain?.a);
+  const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
+  const cosList = cosData?.cos ?? [];
+  const { data: domain } = useSelectedDomain();
+  const domainInformation = domain?.a;
   const setDomain = useDomainStore((state) => state.setDomain);
   const removeDomain = useDomainStore((state) => state.removeDomain);
+  const queryClient = useQueryClient();
+  const { domainId } = useParams();
   const createSnackbar = useSnackbar();
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
   const userSetting = useUserSettings();
@@ -481,7 +488,7 @@ const DomainGeneralSettings: FC = () => {
     });
     const domain: Domain = data?.domain[0];
     if (domain) {
-      setDomain(domain);
+      queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
     }
     setIsLoading(false);
   };
@@ -781,7 +788,7 @@ const DomainGeneralSettings: FC = () => {
         }
         const domain: any = data?.domain[0];
         if (domain) {
-          setDomain(domain);
+          queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
         }
         const refDomainData = cloneDeep(domainData);
         refDomainData.zimbraDomainStatus = domainStatusItems[1].value;

@@ -3,8 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Container, ModalOverlay, Padding, Row, useSnackbar, } from '@zextras/ui-components';
-import { flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
+import { domainByIdKey, flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
 import { isEqual, mapValues, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +21,7 @@ import {
   ZIMBRA_SSL_PRIVATE_KEY,
   ZIMBRA_VIRTUAL_HOSTNAME,
 } from '../../../../constants';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/store';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
@@ -33,8 +35,9 @@ export const DomainVirtualHosts: FC = () => {
   const [t] = useTranslation();
   const { domainId } = useParams();
   const createSnackbar = useSnackbar();
-  const domainInformation: any = useDomainStore((state) => state.domain?.a);
-  const setDomain = useDomainStore((state) => state.setDomain);
+  const { data: domain } = useSelectedDomain();
+  const domainInformation: any = domain?.a;
+  const queryClient = useQueryClient();
   const [toggleCertiBtn, setToggleCertiBtn] = useState(true);
   const [items, setItems] = useState<any>([]);
   const [defaultItems, setDefaultItems] = useState<any>([]);
@@ -170,7 +173,7 @@ export const DomainVirtualHosts: FC = () => {
         }
         const domainData: any = data?.domain?.[0];
         if (domainData) {
-          setDomain(domainData);
+          queryClient.setQueryData(domainByIdKey(domainId, 1), domainData);
         }
       })
       .catch((error) => {

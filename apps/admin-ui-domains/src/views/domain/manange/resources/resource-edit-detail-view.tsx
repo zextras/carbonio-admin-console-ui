@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, CustomTextArea, Displayer, Input, LabeledValue, ListRow, Modal, Padding, Row, Select, useSnackbar, } from '@zextras/ui-components';
-import { useStickyBarStore } from '@zextras/ui-shared';
+import { useCosList, useStickyBarStore } from '@zextras/ui-shared';
 import { format, parse } from 'date-fns';
 import { isEqual } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -16,7 +16,6 @@ import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-r
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { setPasswordRequest } from '../../../../services/set-password-service';
-import { useDomainStore } from '../../../../store/store';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { SendInviteAccounts } from './send-invite-accounts';
 
@@ -49,7 +48,8 @@ const ResourceEditDetailView: FC<any> = ({
 }) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const cosList = useDomainStore((state) => state.cosList);
+  const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
+  const cosList = cosData?.cos ?? [];
   const [resourceInformation, setResourceInformation]: any = useState([]);
   const [resourceDetailData, setResourceDetailData]: any = useState({});
   const [sendInviteList, setSendInviteList] = useState<any[]>([]);

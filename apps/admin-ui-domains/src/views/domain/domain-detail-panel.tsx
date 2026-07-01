@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 
-import { useDomainStore } from '../../store/store';
+import { useSelectedDomain } from '../../hooks/use-selected-domain';
 
 type DomainDetailPanelProps = {
   children?: React.ReactNode;
@@ -18,7 +18,7 @@ type DomainDetailPanelProps = {
 
 export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
   const [t] = useTranslation();
-  const domain = useDomainStore((state) => state.domain);
+  const { data: domain } = useSelectedDomain();
   const [searchParams, setSearchParams] = useSearchParams();
   const closeDomainBanner = searchParams.get('bannerDismissed') ?? '';
   const [domainLocalValue, setDomainLocalValue] = useLocalStorage<Record<string, boolean>>(
@@ -27,19 +27,19 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
   );
 
   const [showDomainClose, setShowDomainClose] = useState<boolean>(
-    domain.name ? !domainLocalValue[domain.name] : true,
+    domain?.name ? !domainLocalValue[domain?.name] : true,
   );
 
   const isDomainClosed = useMemo(() => {
     const domainStatus = find(domain?.a, { n: 'zimbraDomainStatus' });
     return !!(
       domainStatus?._content === 'closed' &&
-      domain.name &&
-      !domainLocalValue[domain.name] &&
+      domain?.name &&
+      !domainLocalValue[domain?.name] &&
       !location.pathname.includes('domains/global') &&
-      closeDomainBanner !== domain.name
+      closeDomainBanner !== domain?.name
     );
-  }, [closeDomainBanner, domain?.a, domain.name, domainLocalValue]);
+  }, [closeDomainBanner, domain?.a, domain?.name, domainLocalValue]);
   return (
     <Container
       orientation="column"
@@ -74,9 +74,9 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
                 onClick={(): void => {
                   setShowDomainClose(false);
                   const domainLocal = cloneDeep(domainLocalValue);
-                  if (domain?.name) {
-                    domainLocal[domain.name] = true;
-                  }
+    if (domain?.name) {
+      domainLocal[domain?.name] = true;
+    }
                   setDomainLocalValue(domainLocal);
                 }}
               />
