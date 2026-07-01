@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { Tooltip } from '@zextras/ui-components';
+import { isUnlimitedQuantity, useLicenseInfo } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import styles from './card.module.css';
@@ -15,15 +16,27 @@ export const TotalAccounts = () => {
   const title = t('core.subscription.total_accounts', 'Total active accounts');
   const { data: licenseData } = useLicenseInfo();
 
-  const activeAccounts = licenseData?.response?.licensedUsers;
+  const licensedUsers = licenseData?.response?.licensedUsers;
+  const isUnlimited = isUnlimitedQuantity(licensedUsers);
 
   return (
     <div className={styles.card}>
-      <ds-text size="small" as="span" color="gray0">
-        {title}
-      </ds-text>
+      <div className={styles.labelWithIcon}>
+        <ds-text size="small" as="span" color="gray0">
+          {title}
+        </ds-text>
+        <Tooltip
+          placement="top"
+          label={t(
+            'core.subscription.totalActiveAccountsTooltip',
+            'System accounts, distribution lists, external or guest, closed or inactive accounts are excluded from this count.',
+          )}
+        >
+          <ds-icon icon="InfoOutline" size="medium" color="gray0" />
+        </Tooltip>
+      </div>
       <ds-text weight="bold" color="gray0" style={{ fontSize: '1.5rem' }}>
-        {activeAccounts}
+        {isUnlimited ? t('label.unlimited', 'Unlimited') : licensedUsers}
       </ds-text>
     </div>
   );

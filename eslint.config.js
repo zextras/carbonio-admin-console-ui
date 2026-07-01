@@ -89,6 +89,20 @@ export default tseslint.config(
     },
   },
   {
+    files: ['apps/admin-ui-subscription/**/*'],
+    plugins: {
+      'react-compiler': reactCompiler,
+      'jsx-a11y': jsxA11y,
+      'react-you-might-not-need-an-effect': reactYouMightNotNeedAnEffect,
+    },
+    rules: {
+      'react-compiler/react-compiler': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      ...jsxA11y.configs.recommended.rules,
+      ...reactYouMightNotNeedAnEffect.configs.strict.rules,
+    },
+  },
+  {
     files: ['apps/admin-ui-cos/**/*'],
     plugins: {
       'react-compiler': reactCompiler,
