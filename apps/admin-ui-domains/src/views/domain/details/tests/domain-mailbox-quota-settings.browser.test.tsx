@@ -114,19 +114,19 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
 
     describe('Rendering', () => {
         it('should render the Mailbox Quota header', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Mailbox Quota', { exact: true })).toBeVisible();
         });
 
         it('should render the Domain Quota Settings section', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Domain Quota Settings')).toBeVisible();
         });
 
         it('should render the Max mailbox quota input', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByText('Max mailbox quota for the Mails (GB)'))
@@ -134,7 +134,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should render the Mail Space Quota threshold input', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByText('Mail Space Quota threshold (%) warning'))
@@ -142,7 +142,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should render the Mail Over-quota Criteria select', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByText('Allow Send/Receive'))
@@ -150,7 +150,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should render the Receiver of Quota warning input', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByText('Receiver of Quota warning (email)'))
@@ -158,13 +158,13 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should render the Accounts section', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Accounts')).toBeVisible();
         });
 
         it('should render the Download Quota Report button', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByRole('button', { name: /download quota report/i }))
@@ -172,14 +172,14 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should render table headers', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Account', { exact: true })).toBeVisible();
             await expect.element(page.getByText('Mails', { exact: true })).toBeVisible();
         });
 
         it('should not show Save and Cancel buttons when no changes are made', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Mailbox Quota', { exact: true })).toBeVisible();
             await expect
@@ -193,7 +193,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
 
     describe('Pre-populated fields', () => {
         it('should display the converted quota value in GB', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             // 10737418240 bytes = 10.00 GB
             const quotaInput = page.getByLabelText('Max mailbox quota for the Mails (GB)');
@@ -201,21 +201,21 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should display the quota threshold percentage', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const thresholdInput = page.getByLabelText('Mail Space Quota threshold (%) warning');
             await expect.element(thresholdInput).toHaveValue(80);
         });
 
         it('should display the quota warning email recipient', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const emailInput = page.getByLabelText('Receiver of Quota warning (email)');
             await expect.element(emailInput).toHaveValue('admin@quota.example.com');
         });
 
         it('should show Allow Send/Receive as default policy', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Allow Send/Receive')).toBeVisible();
         });
@@ -223,7 +223,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
 
     describe('Quota table', () => {
         it('should display account names in the table', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByText('user1@quota.example.com'))
@@ -234,7 +234,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should show quota usage data', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             // user1: 536870912 bytes used = 0.50 GB
             await expect.element(page.getByText('user1@quota.example.com')).toBeVisible();
@@ -242,7 +242,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should show quota percentage', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             // user1: 536870912/1073741824 = 50%
             await expect.element(page.getByText('user1@quota.example.com')).toBeVisible();
@@ -251,7 +251,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
 
         it('should show empty table when no accounts', async () => {
             interceptGetQuotaUsage([], 0);
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Account', { exact: true })).toBeVisible();
             await expect
@@ -262,7 +262,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
 
     describe('Editing fields', () => {
         it('should show Save and Cancel when quota warning email is changed', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const emailInput = page.getByLabelText('Receiver of Quota warning (email)');
             await userEvent.clear(emailInput);
@@ -273,7 +273,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should show Save and Cancel when threshold is changed', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const thresholdInput = page.getByLabelText('Mail Space Quota threshold (%) warning');
             await userEvent.clear(thresholdInput);
@@ -283,7 +283,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should revert changes when Cancel is clicked', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const emailInput = page.getByLabelText('Receiver of Quota warning (email)');
             await userEvent.clear(emailInput);
@@ -299,7 +299,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should show error when threshold is empty', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const thresholdInput = page.getByLabelText('Mail Space Quota threshold (%) warning');
             await userEvent.clear(thresholdInput);
@@ -324,7 +324,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
                 ],
             });
 
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const emailInput = page.getByLabelText('Receiver of Quota warning (email)');
             await userEvent.clear(emailInput);
@@ -354,7 +354,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
                 ],
             });
 
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const emailInput = page.getByLabelText('Receiver of Quota warning (email)');
             await userEvent.clear(emailInput);
@@ -378,7 +378,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
                 ),
             );
 
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const emailInput = page.getByLabelText('Receiver of Quota warning (email)');
             await userEvent.clear(emailInput);
@@ -391,7 +391,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should disable Save when threshold has error', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const thresholdInput = page.getByLabelText('Mail Space Quota threshold (%) warning');
             await userEvent.clear(thresholdInput);
@@ -408,19 +408,19 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
 
     describe('Different policy selections', () => {
         it('should render with Block Send policy', async () => {
-            setupDomainStore([
+            queryClient = setupDomainStore([
                 { n: 'zimbraDomainAggregateQuotaPolicy', _content: 'BLOCKSEND' },
             ]);
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Block Send')).toBeVisible();
         });
 
         it('should render with Block Send/Receive policy', async () => {
-            setupDomainStore([
+            queryClient = setupDomainStore([
                 { n: 'zimbraDomainAggregateQuotaPolicy', _content: 'BLOCKSENDRECEIVE' },
             ]);
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Block Send/Receive')).toBeVisible();
         });
@@ -428,8 +428,8 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
 
     describe('Empty quota', () => {
         it('should show empty input when domain quota is not set', async () => {
-            setupDomainStore([{ n: 'zimbraMailDomainQuota', _content: '' }]);
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            queryClient = setupDomainStore([{ n: 'zimbraMailDomainQuota', _content: '' }]);
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const quotaInput = page.getByLabelText('Max mailbox quota for the Mails (GB)');
             await expect.element(quotaInput).toHaveValue('');
@@ -439,7 +439,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
     describe('Download Quota Report', () => {
         it('should disable download button when no accounts exist', async () => {
             interceptGetQuotaUsage([], 0);
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Account', { exact: true })).toBeVisible();
 
@@ -448,7 +448,7 @@ describe('DomainMailboxQuotaSetting (browser)', () => {
         });
 
         it('should enable download button when accounts exist', async () => {
-            setupBrowserTest(<DomainMailboxQuotaSetting />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings` });
+            setupBrowserTest(<DomainMailboxQuotaSetting />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByText('user1@quota.example.com'))

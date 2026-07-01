@@ -32,6 +32,7 @@ export type WrapperProps = {
   children?: React.ReactNode;
   queryClient?: QueryClient;
   initialRouterEntry?: string;
+  withDomainIdRoute?: boolean;
 };
 
 export const getQueryClient = (): QueryClient => {
@@ -99,34 +100,38 @@ export const Wrapper = ({
   children,
   queryClient: providedQueryClient,
   initialRouterEntry,
+  withDomainIdRoute,
 }: WrapperProps) => {
   const defaultQueryClient = useMemo(() => getQueryClient(), []);
   const queryClient = providedQueryClient ?? defaultQueryClient;
+
+  const tree = useMemo(
+    () => (
+      <QueryClientProvider client={queryClient}>
+        <SnackbarManager>
+          <I18NextTestProvider>
+            <ModalManager>
+              <BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
+            </ModalManager>
+          </I18NextTestProvider>
+        </SnackbarManager>
+      </QueryClientProvider>
+    ),
+    [children, queryClient],
+  );
 
   const router = useMemo(
     () =>
       createMemoryRouter(
         [
-          {
-            path: '*',
-            element: (
-              <QueryClientProvider client={queryClient}>
-                <SnackbarManager>
-                  <I18NextTestProvider>
-                    <ModalManager>
-                      <BootstrapBridgeProvider>{children}</BootstrapBridgeProvider>
-                    </ModalManager>
-                  </I18NextTestProvider>
-                </SnackbarManager>
-              </QueryClientProvider>
-            ),
-          },
+          ...(withDomainIdRoute ? [{ path: '/:domainId/*', element: tree }] : []),
+          { path: '*', element: tree },
         ],
         {
           initialEntries: [initialRouterEntry ?? '/'],
         },
       ),
-    [children, queryClient, initialRouterEntry],
+    [withDomainIdRoute, tree, initialRouterEntry],
   );
 
   return <RouterProvider router={router} />;

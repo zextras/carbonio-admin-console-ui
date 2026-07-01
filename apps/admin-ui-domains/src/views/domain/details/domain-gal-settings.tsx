@@ -879,7 +879,7 @@ const DomainGalSettings: FC = () => {
 
           .catch(() => {}),
       );
-      Promise.all(result).then((results) => {
+      Promise.all(result ?? []).then((results) => {
         getAllTableList(results);
       });
     },
