@@ -46,7 +46,6 @@ describe('AccountOtpSection – QRCodeSVG', () => {
         id: 'domain-123',
         a: [{ n: 'zimbraDomainStatus', _content: 'active' }],
       },
-      cosList: [],
     });
     vi.clearAllMocks();
   });
