@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createBrowserAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
+import { createBrowserAPIInterceptor, createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
@@ -83,12 +83,13 @@ describe('CreateAccountDetailSection (browser)', () => {
         id: 'domain-123',
         a: [{ n: 'zimbraDomainStatus', _content: 'active' }],
       },
-      cosList: [
+    });
+    createBrowserSoapAPIInterceptor('SearchDirectory', {
+      cos: [
         { name: 'Default COS', id: 'default-cos-id' },
         { name: 'Premium COS', id: 'premium-cos-id' },
       ],
     });
-
     vi.clearAllMocks();
   });
 
@@ -399,7 +400,9 @@ describe('CreateAccount API Integration (browser)', () => {
         id: 'domain-123',
         a: [{ n: 'zimbraDomainStatus', _content: 'active' }],
       },
-      cosList: [
+    });
+    createBrowserSoapAPIInterceptor('SearchDirectory', {
+      cos: [
         { name: 'Default COS', id: 'default-cos-id' },
         { name: 'Premium COS', id: 'premium-cos-id' },
       ],
