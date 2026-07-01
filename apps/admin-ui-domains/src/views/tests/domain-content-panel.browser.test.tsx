@@ -88,7 +88,7 @@ function MockRestoreAccount() {
   return <div>VIEW:restore_account</div>;
 }
 
-vi.mock('../domain/domain-detail-panel', () => ({ default: MockDetailPanel }));
+vi.mock('../domain/domain-detail-panel', () => ({ DomainDetailPanel: MockDetailPanel }));
 vi.mock('../domain/create-new-domain', () => ({ default: MockCreateNewDomain }));
 vi.mock('../domain/global/global-detail-panel', () => ({ default: MockGlobalDetailPanel }));
 vi.mock('../domain/global/global-theme', () => ({ default: MockGlobalTheme }));
