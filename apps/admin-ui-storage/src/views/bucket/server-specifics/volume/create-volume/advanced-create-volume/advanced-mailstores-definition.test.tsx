@@ -260,20 +260,15 @@ describe('AdvancedMailstoresDefinition', () => {
     expect(setToggleNextBtn).toHaveBeenCalledWith(false);
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Amazon Web Service S3 | Unused connector' })).toBeTruthy();
+      expect(screen.getByRole('button', { name: 'S3 | Unused connector' })).toBeTruthy();
     });
-
-    await waitFor(() => {
-      expect(setCompleteLoading).toHaveBeenCalledWith(false);
-      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(true);
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: 'Amazon Web Service S3 | Unused connector' }));
 
     await waitFor(() => {
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
       expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(false);
     });
+
+    fireEvent.click(screen.getByRole('button', { name: 'S3 | Unused connector' }));
 
     expect(screen.getByTestId('advanced-state').textContent).toContain('unused-bucket');
     expect(screen.getByTestId('advanced-state').textContent).toContain('conn-unused');
