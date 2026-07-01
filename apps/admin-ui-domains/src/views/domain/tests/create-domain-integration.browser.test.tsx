@@ -16,7 +16,6 @@ describe('createDomain Integration (browser)', () => {
         // Setup minimal store state
         useDomainStore.setState({
             domain: undefined,
-            cosList: []
         });
 
         // Setup interceptors for API calls made during component mount
