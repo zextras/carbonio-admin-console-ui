@@ -26,7 +26,13 @@ import { isEmpty } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { BucketVolume, objectType, Volume, type VolumeAllocationItem, VolumeType } from '../../../../../../types';
+import {
+  BucketVolume,
+  objectType,
+  Volume,
+  type VolumeAllocationItem,
+  VolumeType,
+} from '../../../../../../types';
 import {
   ALIBABA,
   AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
@@ -117,7 +123,9 @@ const ModifyVolume: FC<{
   );
   const [previousDetail, setPreviousDetail] = useState<Record<string, unknown>>({});
   const [externalVolDetail, setExternalVolDetail] = useState<Volume>({});
-  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<Array<{ label: string; value: string }>>([]);
+  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<
+    Array<{ label: string; value: string }>
+  >([]);
   const [allocation, setAllocation] = useState<VolumeAllocationItem>();
   const [bucketName, setBucketName] = useState('');
   const [storeType, setStoreType] = useState<string | undefined>('');
@@ -171,7 +179,7 @@ const ModifyVolume: FC<{
       [key: string]: string | boolean | number | undefined | VolumeType;
     } = {};
     latestData.name = name;
-    latestData.type = type;
+    latestData.type = type?.value;
     latestData.id = id;
     latestData.rootpath = rootpath;
     latestData.compressBlobs = compressBlobs;
@@ -189,9 +197,6 @@ const ModifyVolume: FC<{
   const onSave = async (): Promise<void> => {
     setIsLoading(true);
     if (isAdvanced) {
-      if (type) {
-        type.label = labelMap[type?.value];
-      }
       const obj: { [key: string]: string | boolean | number | undefined } = {};
 
       obj._jsns = ZIMBRA_ADMIN_URN;
@@ -200,9 +205,10 @@ const ModifyVolume: FC<{
       obj.targetServers = selectedServerName;
       obj.currentVolumeName = volumeDetail?.name;
       obj.volumeName = name;
-      obj.volumeType = type?.label?.toLowerCase();
+      obj.volumeType = type ? labelMap[type?.value]?.toLowerCase() : '';
       obj.volumeCurrent = isCurrent;
       obj.storeType = externalVolDetail?.storeType;
+      obj.volumeId = id;
 
       if (Object.keys(externalVolDetail)?.length === 0) {
         obj.volumePath = rootpath;
@@ -375,11 +381,17 @@ const ModifyVolume: FC<{
   };
 
   const onUndo = (): void => {
-    previousDetail?.name ? setName(String(previousDetail?.name)) : setName(volumeDetail?.name ?? '');
-    const volumeTypeObject = volTypeList?.find(
-      (item: VolumeType) => item?.value === volumeDetail?.type,
-    );
-    previousDetail?.type ? setType(previousDetail?.type as VolumeAllocationItem) : setType(volumeTypeObject as VolumeAllocationItem);
+    previousDetail?.name
+      ? setName(String(previousDetail?.name))
+      : setName(volumeDetail?.name ?? '');
+    if (previousDetail?.type) {
+      onVolumeTypeChange(previousDetail?.type as number);
+    } else {
+      const volumeTypeObject = volTypeList?.find(
+        (item: VolumeType) => item?.value === volumeDetail?.type,
+      );
+      setType(volumeTypeObject as VolumeAllocationItem);
+    }
     previousDetail?.id ? setId(String(previousDetail?.id)) : setId(String(volumeDetail?.id ?? ''));
     previousDetail?.rootpath
       ? setRootpath(String(previousDetail?.rootpath))
@@ -411,6 +423,15 @@ const ModifyVolume: FC<{
     setIsDirty(false);
   };
 
+  const onVolumeTypeChange = useCallback(
+    (typeValue: number | null): void => {
+      const volumeObject: VolumeAllocationItem | undefined = volTypeList?.find(
+        (item: VolumeType): boolean => item?.value === typeValue,
+      ) as VolumeAllocationItem | undefined;
+      setType(volumeObject);
+    },
+    [volTypeList],
+  );
   const buttons = [
     {
       align: 'right' as const,
@@ -671,6 +692,18 @@ const ModifyVolume: FC<{
     setAllocation(volumeTypeObject);
   }, [volAllocationList, volumeDetail?.type]);
 
+  // Maps volumeType (from advanced API) to numeric type value (1, 2, 10)
+  function getNormalizedVolumeType(volData: Volume): number {
+    if (isAdvanced && volData?.volumeType) {
+      const volumeTypeStr = volData.volumeType?.toLowerCase();
+      if (volumeTypeStr === 'primary') return 1;
+      if (volumeTypeStr === 'secondary') return 2;
+      if (volumeTypeStr === 'index') return 10;
+    }
+    // CE version returns type as numeric value
+    return volData?.type ?? 0;
+  }
+
   const getVolumeDetailData = useCallback(
     (volId: string): void => {
       if (isAdvanced) {
@@ -684,7 +717,7 @@ const ModifyVolume: FC<{
           setVolumeDetail({
             name: volData.name ?? '',
             id: volData.id ?? 0,
-            type: volData.type ?? 0,
+            type: getNormalizedVolumeType(volData),
             compressBlobs: volData.compressBlobs === 'true' || volData.compressBlobs === '1',
             isCurrent: volData.isCurrent === true || volData.isCurrent === 1,
             rootpath: volData.path ?? '',
@@ -712,7 +745,7 @@ const ModifyVolume: FC<{
           setVolumeDetail({
             name: volData?.name ?? '',
             id: volData?.id ?? 0,
-            type: volData?.type ?? 0,
+            type: getNormalizedVolumeType(volData),
             compressBlobs: Boolean(volData?.compressBlobs),
             isCurrent: Boolean(volData?.isCurrent),
             rootpath: volData?.rootpath ?? '',
@@ -807,6 +840,38 @@ const ModifyVolume: FC<{
                 }
               />
             </Row>
+            {volumeDetail?.type !== 10 && (
+              <Row
+                padding={{ top: 'large' }}
+                width="100%"
+                mainAlignment="center"
+                crossAlignment="center"
+                background="gray6"
+              >
+                <Row width={isAdvanced ? '48%' : '100%'}>
+                  <Radio
+                    label={t('label.primary_volume', 'This is a Primary Volume') + '111'}
+                    value={PRIMARY_TYPE_VALUE}
+                    checked={type?.value === 1}
+                    onClick={(): void => onVolumeTypeChange(1)}
+                    iconColor="primary"
+                    disabled
+                  />
+                </Row>
+                {isAdvanced && (
+                  <Row width="48%">
+                    <Radio
+                      label={t('label.secondary_volume', 'This is a Secondary Volume')}
+                      value={SECONDARY_TYPE_VALUE}
+                      checked={type?.value === 2}
+                      onClick={(): void => onVolumeTypeChange(2)}
+                      iconColor="primary"
+                      disabled
+                    />
+                  </Row>
+                )}
+              </Row>
+            )}
             <Row padding={{ top: 'large' }} width="100%">
               <Input
                 label={t('label.volume_id', 'Volume ID')}
@@ -835,36 +900,6 @@ const ModifyVolume: FC<{
                 )}
               </ds-text>
             </Padding>
-            <Row
-              padding={{ top: 'large' }}
-              width="100%"
-              mainAlignment="center"
-              crossAlignment="center"
-              background="gray6"
-            >
-              <Row width={isAdvanced ? '48%' : '100%'}>
-                <Radio
-                  label={t('label.primary_volume', 'This is a Primary Volume')}
-                  value={PRIMARY_TYPE_VALUE}
-                  checked={type?.value === 1}
-                  onClick={(): void => { }}
-                  iconColor="primary"
-                  disabled
-                />
-              </Row>
-              {isAdvanced && (
-                <Row width="48%">
-                  <Radio
-                    label={t('label.secondary_volume', 'This is a Secondary Volume')}
-                    value={SECONDARY_TYPE_VALUE}
-                    checked={type?.value === 2}
-                    onClick={(): void => { }}
-                    iconColor="primary"
-                    disabled
-                  />
-                </Row>
-              )}
-            </Row>
             <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
               {volumeDetail?.type !== 10 && (
                 <>
@@ -1028,34 +1063,36 @@ const ModifyVolume: FC<{
                 />
               </Container>
             </ListRow>
-            <Row
-              padding={{ top: 'large' }}
-              width="100%"
-              mainAlignment="center"
-              crossAlignment="center"
-              background="gray6"
-            >
-              <Row width="48%">
-                <Radio
-                  label={t('label.primary_volume', 'This is a Primary Volume')}
-                  value={PRIMARY_TYPE_VALUE}
-                  checked={type?.value === 1}
-                  onClick={(): void => { }}
-                  iconColor="primary"
-                  disabled
-                />
+            {volumeDetail?.type !== 10 && (
+              <Row
+                padding={{ top: 'large' }}
+                width="100%"
+                mainAlignment="center"
+                crossAlignment="center"
+                background="gray6"
+              >
+                <Row width={isAdvanced ? '48%' : '100%'}>
+                  <Radio
+                    label={t('label.primary_volume', 'This is a Primary Volume')}
+                    value={PRIMARY_TYPE_VALUE}
+                    checked={type?.value === 1}
+                    onClick={(): void => onVolumeTypeChange(1)}
+                    iconColor="primary"
+                  />
+                </Row>
+                {isAdvanced && (
+                  <Row width="48%">
+                    <Radio
+                      label={t('label.secondary_volume', 'This is a Secondary Volume')}
+                      value={SECONDARY_TYPE_VALUE}
+                      checked={type?.value === 2}
+                      onClick={(): void => onVolumeTypeChange(2)}
+                      iconColor="primary"
+                    />
+                  </Row>
+                )}
               </Row>
-              <Row width="48%">
-                <Radio
-                  label={t('label.secondary_volume', 'This is a Secondary Volume')}
-                  value={SECONDARY_TYPE_VALUE}
-                  checked={type?.value === 2}
-                  onClick={(): void => { }}
-                  iconColor="primary"
-                  disabled
-                />
-              </Row>
-            </Row>
+            )}
             <Row padding={{ top: 'large' }} width="100%">
               <Input
                 inputName="prefix"
