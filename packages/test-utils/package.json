@@ -41,15 +41,15 @@
     "vitest-browser-react": "^2.2.0"
   },
   "peerDependencies": {
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "dependencies": {
     "@posthog/react": "^1.10.3",
     "@zextras/ui-components": "workspace:*",
     "@zextras/ui-shared": "workspace:*",
     "i18next": "^26.3.1",
-    "react": "^19.2.3",
+    "react": "^19.2.7",
     "react-router": "^7.13.0",
     "zod": "^4.3.6"
   }
