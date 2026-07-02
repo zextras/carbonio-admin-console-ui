@@ -1164,7 +1164,7 @@ const ModifyVolume: FC<{
                   <Row width="48.5%" mainAlignment="flex-start">
                     <Input
                       inputName="infrequentAccessThreshold"
-                      label={t('label.size_threshold', 'Bytes Size Threshold')}
+                      label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
                       type="number"
                       backgroundColor="gray5"
                       value={infrequentAccessThreshold}
