@@ -26,9 +26,7 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
     {},
   );
 
-  const [showDomainClose, setShowDomainClose] = useState<boolean>(
-    domain?.name ? !domainLocalValue[domain?.name] : true,
-  );
+	const [dismissedDomainName, setDismissedDomainName] = useState<string | null>(null);
 
   const isDomainClosed = useMemo(() => {
     const domainStatus = find(domain?.a, { n: 'zimbraDomainStatus' });
@@ -48,7 +46,7 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
       style={{ overflowY: 'hidden' }}
       background="gray6"
     >
-      {isDomainClosed && showDomainClose ? (
+      {isDomainClosed && dismissedDomainName !== domain?.name ? (
         <Row background="warning" width="100%" padding="small" mainAlignment="space-between">
           <Row mainAlignment="flex-start">
             <ds-icon icon="CloseCircleOutline" size="large" color="white"></ds-icon>
@@ -72,7 +70,7 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
                 color="white"
                 backgroundColor="warning"
                 onClick={(): void => {
-                  setShowDomainClose(false);
+                  setDismissedDomainName(domain?.name ?? null);
                   const domainLocal = cloneDeep(domainLocalValue);
     if (domain?.name) {
       domainLocal[domain?.name] = true;
@@ -87,7 +85,7 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
               color="white"
               style={{ cursor: 'pointer' }}
               onClick={(): void => {
-                setShowDomainClose(false);
+                setDismissedDomainName(domain?.name ?? null);
                 setSearchParams(
                   (prev) => {
                     const next = new URLSearchParams(prev);
