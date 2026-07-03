@@ -947,13 +947,13 @@ const ManageDelegates: FC = () => {
       background="gray6"
       mainAlignment="flex-start"
     >
-      {accountDistributionList?.length > 0 && open && (
+      {accountDistributionList?.length > 0 && open && domain && (
         <DisableDelegateAdminModel
           open={open}
           closeHandler={closeHandler}
           removeAllACLs={removeAllACLs}
           saveHandler={deleteHandler}
-          modelDetail={domain!}
+          modelDetail={domain}
         />
       )}
       <Container
