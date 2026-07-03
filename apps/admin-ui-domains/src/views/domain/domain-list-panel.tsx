@@ -5,12 +5,10 @@
  */
 import { Container, DropDownInput, ListItems, type ListItemType, ListPanelItem, Padding, Row, useSnackbar, } from '@zextras/ui-components';
 import { getAllRights, replaceHistory, useAllConfig, useBackupServers, useCurrentUserRights, useDomainById, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
-import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
 
-import { DomainResponse } from '../../../types';
 import {
 	ACCOUNTS,
 	ACTIVE_SYNC,
@@ -46,9 +44,9 @@ import {
 	WHITELABEL_SETTINGS,
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../constants';
-import { getDomainList } from '../../services/search-domain-service';
+import { useDebouncedValue } from '../../hooks/use-debounced-value';
+import { useDomainSearch } from '../../services/use-domain-search';
 import type { Domain } from '../../store/types';
-import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import GlobalListPanel from './global-list-panel';
 
 const DOMAINS_BASE = `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`;
@@ -59,13 +57,8 @@ const DomainListPanel: FC = () => {
 	const locationService = useLocation();
 	const [isDomainListExpand, setIsDomainListExpand] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState('');
-	const [domainList, setDomainList] = useState<
-		{
-			name: string;
-			id: string;
-			a: { n: string; _content: string }[];
-		}[]
-	>([]);
+	const [searchQuery, setSearchQuery] = useState('');
+	const debouncedSearch = useDebouncedValue(searchQuery, 700);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 
@@ -90,6 +83,26 @@ const DomainListPanel: FC = () => {
 		domainId: selectedDomainId || undefined,
 	});
 
+	const { data, error } = useDomainSearch({
+		searchQuery: debouncedSearch,
+		limit: 50,
+		offset: 0,
+	});
+	const domainList = data?.domain ?? [];
+	const isShowError = (data?.searchTotal ?? 0) <= 0 && !error;
+
+	useEffect(() => {
+		if (error) {
+			createSnackbar({
+				key: 'domain-list-error',
+				severity: 'error',
+				label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+				autoHideTimeout: 5000,
+				replace: true,
+			});
+		}
+	}, [createSnackbar, error, t]);
+
 	const isAdvanced = useIsAdvanced();
 	const isTotalQuotaActive = useTotalQuotaActive();
 	const { data: backupData } = useBackupServers({
@@ -98,8 +111,6 @@ const DomainListPanel: FC = () => {
 	const [manageOptions, setListItemType] = useState<ListItemType[]>([]);
 	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
 	const { data: rights } = useCurrentUserRights();
-	const [isShowError, setIsShowError] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
 	const { data: globalConfigInformation = [] } = useAllConfig();
 	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
 
@@ -107,16 +118,6 @@ const DomainListPanel: FC = () => {
 		const isAvail2Fa = domainInformation?.a?.find((item) => item?.n === 'zimbraAuthMech');
 		setIs2FAAvailable(isAvail2Fa === undefined);
 	}, [domainInformation]);
-
-	const loadingComponent = [
-		{
-			customComponent: (
-				<Container>
-					<ds-spinner></ds-spinner>
-				</Container>
-			),
-		},
-	];
 
 	useEffect(() => {
 		if (rights && rights.length > 0) {
@@ -140,72 +141,25 @@ const DomainListPanel: FC = () => {
 		}
 	}, [rights]);
 
-	const getDomainLists = useCallback(
-		(domainName: string): void => {
-			setIsLoading(true);
-			getDomainList(domainName, 0)
-				.then((data) => {
-					const searchResponse: DomainResponse = data;
-					if (!!searchResponse && searchResponse?.searchTotal > 0) {
-						setDomainList(searchResponse?.domain);
-						setIsLoading(false);
-					} else if (domainName !== '' && searchResponse?.searchTotal === 0) {
-						setIsShowError(true);
-						setDomainList([]);
-						setIsLoading(false);
-					} else {
-						setDomainList([]);
-						setIsLoading(false);
-					}
-				})
-				.catch((error) => {
-					const snackbarConfig = generateSnackbarFromError(error, t);
-					createSnackbar(snackbarConfig);
-					setIsLoading(false);
-				});
-		},
-		[createSnackbar, t],
-	);
-
 	useEffect(() => {
-		getDomainLists('');
-	}, [getDomainLists]);
-
-	useMemo(() => {
 		if (domainInformation?.name) {
 			setSearchDomainName(domainInformation?.name);
+			setSearchQuery('');
 			setIsDomainListExpand(false);
 		}
 	}, [domainInformation?.id, domainInformation?.name]);
 
 	useEffect(() => {
-		if (
-			locationService.pathname &&
-			locationService.pathname === DOMAINS_BASE
-		) {
-			setDomainList([]);
-			setSearchDomainName('');
-			setIsDomainListExpand(false);
-		}
-	}, [locationService]);
-
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const searchDomainCall = useCallback(
-		debounce((domain) => {
-			getDomainLists(domain);
-		}, 700),
-		[debounce],
-	);
-
-	useEffect(() => {
 		if (!isDomainSelect) {
-			searchDomainCall(searchDomainName);
+			setSearchDomainName('');
+			setSearchQuery('');
 		}
-	}, [searchDomainName, isDomainSelect, searchDomainCall]);
+	}, [isDomainSelect]);
 
 	const selectedDomain = useCallback(
 		(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => {
 			setSearchDomainName(domain?.name);
+			setSearchQuery('');
 			setIsDomainListExpand(false);
 			replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
 		},
@@ -445,13 +399,7 @@ const DomainListPanel: FC = () => {
 
 	const customIconDetail = {
 		onClick: (): void => {
-			setIsShowError(false);
-			if (searchDomainName === '') {
-				setIsDomainListExpand(!isDomainListExpand);
-			} else {
-				setSearchDomainName('');
-				replaceHistory(`/${GLOBAL_DOMAIN_ROUTE}`);
-			}
+			setIsDomainListExpand(!isDomainListExpand);
 		},
 		size: '1.25rem',
 		icon: searchDomainName === '' ? ('GlobeOutline' as const) : ('CloseOutline' as const),
@@ -503,7 +451,6 @@ const DomainListPanel: FC = () => {
 									width: 'inherit',
 								}}
 								onClick={(): void => {
-									setIsShowError(false);
 									selectedDomain(domain);
 								}}
 							>
@@ -542,7 +489,7 @@ const DomainListPanel: FC = () => {
 		>
 			{isShowGlobalConfig && globalOptionsItems.length > 0 && (
 				<GlobalListPanel
-					globalOptionItems={globalOptionItems}
+					globalOptionItems={globalOptionsItems}
 					selectedOperationItem={domainView}
 					setSelectedOperationItem={navigateToView}
 				/>
@@ -550,7 +497,7 @@ const DomainListPanel: FC = () => {
 
 			<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 				<DropDownInput
-					items={isLoading ? loadingComponent : items}
+					items={items}
 					inputLabel={
 						isDomainSelect
 							? t('domain.i_want_to_see_this_domain', 'I want to see this domain')
@@ -559,7 +506,7 @@ const DomainListPanel: FC = () => {
 					hasError={isShowError}
 					onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
 						setSearchDomainName(ev.target.value);
-						setIsShowError(false);
+						setSearchQuery(ev.target.value);
 					}}
 					inputValue={searchDomainName}
 					isCustomIcon

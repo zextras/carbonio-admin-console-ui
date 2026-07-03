@@ -7,5 +7,7 @@
 export const domainQueryKeys = {
   all: ['domain'] as const,
   list: () => [...domainQueryKeys.all, 'list'] as const,
+  searchList: (searchQuery: string, limit: number, offset: number) =>
+    [...domainQueryKeys.all, 'search-list', searchQuery, limit, offset] as const,
   quota: (domainId: string) => [...domainQueryKeys.all, 'quota', domainId] as const,
 } as const;
