@@ -88,7 +88,14 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
               style={{ cursor: 'pointer' }}
               onClick={(): void => {
                 setShowDomainClose(false);
-                setSearchParams({ bannerDismissed: domain?.name || '' }, { replace: true });
+                setSearchParams(
+                  (prev) => {
+                    const next = new URLSearchParams(prev);
+                    next.set('bannerDismissed', domain?.name || '');
+                    return next;
+                  },
+                  { replace: true },
+                );
               }}
             ></ds-icon>
           </Row>
