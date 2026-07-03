@@ -22,9 +22,9 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
 import { ZX_MOBILE } from '../../../../constants';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { doRemoveDevice } from '../../../../services/do-remove-device';
 import { getAllDevices } from '../../../../services/get-all-devices';
-import { useDomainStore } from '../../../../store/store';
 import ActiveDeviceDetail from './active-device-detail';
 
 type MobileDevice = {
@@ -57,7 +57,8 @@ const ActiveSync: FC = () => {
   const [searchString, setSearchString] = useState<string>('');
   const [backupAllDevice, setBackupAllDevice] = useState<Array<MobileDevice>>([]);
   const [hasError, setHasError] = useState<boolean>(false);
-  const domainName = useDomainStore((state) => state.domain?.name) ?? '';
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name ?? '';
   const [selectRow, setSelectRow] = useState<any>([]);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 

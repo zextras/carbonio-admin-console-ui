@@ -5,27 +5,17 @@
  */
 
 import { createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { useDomainStore } from '../../../store/store';
 import CreateDomain from '../create-new-domain';
 
 describe('createDomain Integration (browser)', () => {
     beforeEach(() => {
-        // Setup minimal store state
-        useDomainStore.setState({
-            domain: undefined,
-        });
-
         // Setup interceptors for API calls made during component mount
         createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
         createBrowserSoapAPIInterceptor('SearchDirectory', { cos: [] });
         createBrowserSoapAPIInterceptor('GetCreateObjectAttrs', { setAttrs: [{ a: [] }] });
-    });
-
-    afterEach(() => {
-        useDomainStore.setState({});
     });
 
     it('should create domain with basic data (domain name only)', async () => {

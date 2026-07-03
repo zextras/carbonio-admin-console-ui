@@ -4,16 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupBrowserTest, worker } from 'admin-ui-test-utils';
+import { domainByIdKey } from '@zextras/ui-shared';
+import { getQueryClient, setupBrowserTest as _setupBrowserTest, worker } from 'admin-ui-test-utils';
 import { noop } from 'lodash-es';
 import { http, HttpResponse } from 'msw';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { useDomainStore } from '../../../../../store/store';
 import { RestoreDeleteAccountContext } from '../restore-delete-account-context';
 import RestoreDeleteInheritedSelectSection from '../restore-delete-account-select-section';
 
+const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
 
 type BackupAccount = {
@@ -67,35 +68,28 @@ function setupGetBackupAccountsInterceptor(
     );
 }
 
-function setupDomainStore(): void {
-    useDomainStore.setState({
-        domain: {
-            name: DOMAIN_NAME,
-            id: 'test-domain-id',
-            a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
-        },
+function renderWithContext(): ReturnType<typeof _setupBrowserTest> {
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+        id: DOMAIN_ID,
+        name: DOMAIN_NAME,
+        a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
     });
-}
-
-function renderWithContext(): ReturnType<typeof setupBrowserTest> {
-    return setupBrowserTest(
+    return _setupBrowserTest(
         <RestoreDeleteAccountContext.Provider
             value={{ restoreAccountDetail: null, setRestoreAccountDetail: noop }}
         >
             <RestoreDeleteInheritedSelectSection />
         </RestoreDeleteAccountContext.Provider>,
+        {
+            queryClient,
+            withDomainIdRoute: true,
+            initialRouterEntry: `/${DOMAIN_ID}`,
+        },
     );
 }
 
 describe('RestoreDeleteAccountSelectSection (browser)', () => {
-    beforeEach(() => {
-        setupDomainStore();
-    });
-
-    afterEach(() => {
-        useDomainStore.setState({});
-    });
-
     describe('Rendering', () => {
         it('should render the description text about restoring an account', async () => {
             setupGetBackupAccountsInterceptor();

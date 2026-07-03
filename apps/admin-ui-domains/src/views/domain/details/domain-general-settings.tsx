@@ -33,7 +33,6 @@ import { getDomainQuota } from '../../../services/get-domain-quota';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { setDomainQuota } from '../../../services/set-domain-quota';
 import { unsetDomainQuota } from '../../../services/unset-domain-quota';
-import { useDomainStore } from '../../../store/store';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import {
@@ -56,8 +55,6 @@ const DomainGeneralSettings: FC = () => {
   const cosList = cosData?.cos ?? [];
   const { data: domain } = useSelectedDomain();
   const domainInformation = domain?.a;
-  const setDomain = useDomainStore((state) => state.setDomain);
-  const removeDomain = useDomainStore((state) => state.removeDomain);
   const queryClient = useQueryClient();
   const { domainId } = useParams();
   const createSnackbar = useSnackbar();
@@ -621,11 +618,9 @@ const DomainGeneralSettings: FC = () => {
         hideButton: true,
         replace: true,
       });
-      removeDomain();
-      setDomain({});
       replaceHistory(`/`);
     });
-  }, [createSnackbar, domainData.zimbraId, removeDomain, setDomain, t]);
+  }, [createSnackbar, domainData.zimbraId, t]);
 
   const onDeleteAccountAndDomain = (): void => {
     setIsRequestInProgress(true);

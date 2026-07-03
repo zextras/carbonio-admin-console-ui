@@ -9,9 +9,9 @@ import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'rea
 import { useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
+import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
 import { createAccountRequest } from '../../../../../services/create-account';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { useDomainStore } from '../../../../../store/store';
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';
@@ -75,7 +75,8 @@ const CreateAccount: FC<{
 }) => {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
   const [accountDetail, setAccountDetail] = useState<AccountDetailObj>({
     name: '',
     givenName: '',

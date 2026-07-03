@@ -20,7 +20,7 @@ import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState 
 import { useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../../../types';
-import { useDomainStore } from '../../../../../store/store';
+import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
 import {
   AccountStatus,
   checkValidUserName,
@@ -33,8 +33,8 @@ import { AccountContext } from './account-context';
 
 const CreateAccountDetailSection: FC = () => {
   const context = useContext(AccountContext);
-  const domainName = useDomainStore((state) => state.domain?.name);
-  const domain = useDomainStore((state) => state.domain);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
   const [showAutoFillAlert, setShowAutoFillAlert] = useState<boolean>(false);
 
   const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
@@ -57,9 +57,9 @@ const CreateAccountDetailSection: FC = () => {
   const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
 
   const extLdapAuth = useMemo(() => {
-    if (!!domain.a && domain.a?.length > 0) {
+    if (!!domain?.a && domain.a?.length > 0) {
       const obj: objectType = {};
-      domain.a?.forEach((item: Attribute) => {
+      domain?.a?.forEach((item: Attribute) => {
         obj[item?.n] = item._content;
       });
       if (obj?.zimbraAuthLdapURL !== undefined && obj?.zimbraAuthLdapURL !== '') {

@@ -4,15 +4,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createBrowserAPIInterceptor, createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
+import { domainByIdKey } from '@zextras/ui-shared';
+import { createBrowserAPIInterceptor, createBrowserSoapAPIInterceptor, getQueryClient, setupBrowserTest as _setupBrowserTest } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { type ReactElement } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
+import { type RenderResult } from 'vitest-browser-react';
 
-import { useDomainStore } from '../../../../../../store/store';
 import { AccountContext } from '../account-context';
 import CreateAccount from '../create-account';
 import CreateAccountDetailSection from '../create-account-detail-section';
+
+const DOMAIN_ID = 'domain-123';
+const DOMAIN_NAME = 'test-domain.com';
+
+function setupBrowserTest(ui: ReactElement): Promise<RenderResult> {
+  const queryClient = getQueryClient();
+  queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+    id: DOMAIN_ID,
+    name: DOMAIN_NAME,
+    a: [{ n: 'zimbraDomainStatus', _content: 'active' }],
+  });
+  return _setupBrowserTest(ui, {
+    queryClient,
+    withDomainIdRoute: true,
+    initialRouterEntry: `/${DOMAIN_ID}`,
+  });
+}
 
 const mockAccountContext = {
   accountDetail: {
@@ -76,14 +95,6 @@ const mockAccountContext = {
 
 describe('CreateAccountDetailSection (browser)', () => {
   beforeEach(() => {
-    // Setup domain store
-    useDomainStore.setState({
-      domain: {
-        name: 'test-domain.com',
-        id: 'domain-123',
-        a: [{ n: 'zimbraDomainStatus', _content: 'active' }],
-      },
-    });
     createBrowserSoapAPIInterceptor('SearchDirectory', {
       cos: [
         { name: 'Default COS', id: 'default-cos-id' },
@@ -91,10 +102,6 @@ describe('CreateAccountDetailSection (browser)', () => {
       ],
     });
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    useDomainStore.setState({});
   });
 
   describe('Basic Rendering', () => {
@@ -394,23 +401,12 @@ describe('CreateAccount API Integration (browser)', () => {
   };
 
   beforeEach(() => {
-    useDomainStore.setState({
-      domain: {
-        name: 'test-domain.com',
-        id: 'domain-123',
-        a: [{ n: 'zimbraDomainStatus', _content: 'active' }],
-      },
-    });
     createBrowserSoapAPIInterceptor('SearchDirectory', {
       cos: [
         { name: 'Default COS', id: 'default-cos-id' },
         { name: 'Premium COS', id: 'premium-cos-id' },
       ],
     });
-  });
-
-  afterEach(() => {
-    useDomainStore.setState({});
   });
 
   it('should send correct request payload for account creation', async () => {

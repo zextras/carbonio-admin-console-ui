@@ -12,11 +12,13 @@ import {
   Row,
   Select,
 } from '@zextras/ui-components';
+import { useDomainById } from '@zextras/ui-shared';
 import { cloneDeep, noop, uniqBy } from 'lodash-es';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
-import { useDomainStore } from '../../store/store';
+import { useDomainList } from '../../services/use-domain-list';
 import CustomChip from './customChip';
 
 const ManageAliases: FC<{
@@ -28,8 +30,10 @@ const ManageAliases: FC<{
 }> = ({ listAliases, setListAliases, setAliasChange, aliasType = '', viewType = 'large' }) => {
   const [t] = useTranslation();
   const [showManageAliesModal, setShowManageAliesModal] = useState<boolean>(false);
-  const domainName = useDomainStore((state) => state.domain?.name);
-  const domainList = useDomainStore((state) => state.domainList);
+  const { domainId } = useParams();
+  const { data: domain } = useDomainById<{ name?: string }>({ domainId });
+  const domainName = domain?.name;
+  const { data: domainList = [] } = useDomainList();
   const [aliasNameValue, setAliasNameValue] = useState<string>('');
   const [selectedDomainName, setSelectedDomainName] = useState<string>('');
   const onDomainOptionChange = (v: string): void => {
@@ -140,7 +144,6 @@ const ManageAliases: FC<{
               width="40%"
             >
               <Select
-                // @ts-expect-error - needs a fix // Need to fix it with custom soultion
                 items={domainList.map((ele) => ({
                   label: ele.name,
                   value: ele.name,
@@ -148,7 +151,7 @@ const ManageAliases: FC<{
                 background="gray5"
                 label={t('account_details.domain', 'Domain')}
                 showCheckbox={false}
-                // @ts-expect-error - needs a fix // Need to fix it with custom soultion
+                // @ts-expect-error - needs a fix
                 selection={{
                   label: selectedDomainName || domainName,
                   value: selectedDomainName || domainName,

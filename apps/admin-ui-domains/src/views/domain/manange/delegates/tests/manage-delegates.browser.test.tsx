@@ -5,20 +5,44 @@
  */
 
 import { type QueryClient } from '@tanstack/react-query';
+import { domainByIdKey } from '@zextras/ui-shared';
 import {
   advancedSupportedApiForBrowser,
   getQueryClient,
-  setupBrowserTest,
+  setupBrowserTest as _setupBrowserTest,
   worker,
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { type ReactElement } from 'react';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
+import { type RenderResult } from 'vitest-browser-react';
 
-import { useDomainStore } from '../../../../../store/store';
 import ManageDelegates from '../manage-delegates';
 
+const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
+
+function seedDomainData(queryClient: QueryClient): void {
+  queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+    id: DOMAIN_ID,
+    name: DOMAIN_NAME,
+    a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
+  });
+}
+
+function setupBrowserTest(
+  ui: ReactElement,
+  options?: { queryClient?: QueryClient },
+): Promise<RenderResult> {
+  const queryClient = options?.queryClient ?? getQueryClient();
+  seedDomainData(queryClient);
+  return _setupBrowserTest(ui, {
+    queryClient,
+    withDomainIdRoute: true,
+    initialRouterEntry: `/${DOMAIN_ID}`,
+  });
+}
 
 type AccountEntry = {
   name: string;
@@ -173,16 +197,6 @@ function setupSearchDirectoryHandler(
   );
 }
 
-function setupDomainStore(): void {
-  useDomainStore.setState({
-    domain: {
-      name: DOMAIN_NAME,
-      id: 'test-domain-id',
-      a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
-    },
-  });
-}
-
 function setupGlobalAdminSettings(queryClient: QueryClient): void {
   queryClient.setQueryData(['account', 'settings'], {
     prefs: {},
@@ -193,12 +207,7 @@ function setupGlobalAdminSettings(queryClient: QueryClient): void {
 
 describe('ManageDelegates (browser)', () => {
   beforeEach(async () => {
-    setupDomainStore();
     await advancedSupportedApiForBrowser.withAdvancedNotSupported();
-  });
-
-  afterEach(() => {
-    useDomainStore.setState({});
   });
 
   describe('Rendering', () => {

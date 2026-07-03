@@ -22,9 +22,6 @@ import { getGrant } from '../../../../services/get-grant';
 import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
-import { getDomainList } from '../../../../services/search-domain-service';
-import { useDomainStore } from '../../../../store/store';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getDateTimeFromStr } from '../../../utility/utils';
 import { GeneralTab } from './edit-mailing-detail/general-tab';
@@ -73,8 +70,6 @@ const EditMailingListView: FC<any> = ({
   const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
   const [zimbraIsACLGroup, setZimbraIsACLGroup] = useState<boolean>(false);
   const [isShowSenderToError, setIsShowSenderToError] = useState<boolean>(false);
-  const domainList = useDomainStore((state) => state.domainList);
-  const setDomainListStore = useDomainStore((state) => state.setDomainList);
   const [granteeTotalRights, setGranteeTotalRights] = useState(0);
   const [targetTotalRights, setTargetTotalRights] = useState(0);
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
@@ -144,49 +139,6 @@ const EditMailingListView: FC<any> = ({
       }
     }
   }, [userSetting?.attrs]);
-
-  type DomainResponse = {
-    domain: [
-      {
-        name: string;
-        id: string;
-        a: { n: string; _content: string }[];
-      },
-    ];
-    more: boolean;
-    searchTotal: number;
-    _jsns: string;
-  };
-
-  const getDomainLists = useCallback(
-    (offset: number): void => {
-      getDomainList('', offset)
-        .then((data) => {
-          const searchResponse: DomainResponse = data;
-          if (!!searchResponse && searchResponse?.searchTotal > 0) {
-            if (searchResponse?.domain?.length) {
-              setDomainListStore([...domainList, ...searchResponse.domain]);
-              if (searchResponse?.more) {
-                getDomainLists(offset + 50);
-              }
-            }
-          } else {
-            setDomainListStore([]);
-          }
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, domainList, setDomainListStore, t],
-  );
-
-  useEffect(() => {
-    if (!domainList?.length) {
-      getDomainLists(0);
-    }
-  }, [domainList, getDomainLists]);
 
   const [previousDetail, setPreviousDetail] = useState<any>({});
 

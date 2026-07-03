@@ -9,8 +9,8 @@ import { QRCodeSVG } from 'qrcode.react';
 import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { useDomainStore } from '../../../../../store/store';
 import CustomChip from '../../../../components/customChip';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from './account-context';
@@ -21,7 +21,8 @@ const AccountOtpSection: FC<{
 }> = ({ setToggleNextBtn }) => {
   const context = useContext(AccountContext);
   const { accountDetail, setAccountDetail } = context;
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
   const [sendEmailTo, setSendEmailTo] = useState<any>('');
   const [t] = useTranslation();
 

@@ -5,10 +5,9 @@
  */
 
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useDomainStore } from '../../../../../../store/store';
 import { AccountContext } from '../account-context';
 import AccountOtpSection from '../account-otp-section';
 
@@ -40,18 +39,7 @@ const buildContext = (overrides: Partial<typeof baseAccountDetail> = {}) => ({
 
 describe('AccountOtpSection – QRCodeSVG', () => {
   beforeEach(() => {
-    useDomainStore.setState({
-      domain: {
-        name: 'test-domain.com',
-        id: 'domain-123',
-        a: [{ n: 'zimbraDomainStatus', _content: 'active' }],
-      },
-    });
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    useDomainStore.setState({});
   });
 
   describe('QR code view (showOtpOptionSection = false)', () => {

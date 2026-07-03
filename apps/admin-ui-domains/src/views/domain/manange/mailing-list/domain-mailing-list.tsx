@@ -21,10 +21,10 @@ import {
   RECORD_DISPLAY_LIMIT,
   TRUE,
 } from '../../../../constants';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
-import { useDomainStore } from '../../../../store/store';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list';
@@ -33,7 +33,8 @@ import EditMailingListView from './edit-mailing-detail-view';
 const DomainMailingList: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
   const [mailingList, setMailingList] = useState<any[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);

@@ -12,7 +12,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { getDomainList } from '../../../services/search-domain-service';
-import { useDomainStore } from '../../../store/store';
 import ScrollContainer from '../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 
@@ -51,7 +50,6 @@ type ZimbraDomainEntry = {
 
 const DomainList: FC = () => {
   const [t] = useTranslation();
-  const setDomain = useDomainStore((state) => state.setDomain);
   const [hasError, setHasError] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
   const [isTableTooTall, setIsTableTooTall] = useState(false);
@@ -127,14 +125,9 @@ const DomainList: FC = () => {
 
   const onDomainSelect = useCallback(
     (domain: ZimbraDomainEntry) => {
-      setDomain({
-        a: domain?.a,
-        id: domain?.id,
-        name: domain?.name,
-      });
       replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
     },
-    [setDomain],
+    [],
   );
 
   const getAllDomainList = useCallback((): void => {

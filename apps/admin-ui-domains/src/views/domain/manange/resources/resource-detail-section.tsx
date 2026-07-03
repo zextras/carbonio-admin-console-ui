@@ -17,7 +17,7 @@ import { useCosList } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useDomainStore } from '../../../../store/store';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
 import { ResourceContext } from './resource-context';
 import {
@@ -36,7 +36,8 @@ const ResourceDetailSection: FC = () => {
   const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
   const cosList = cosData?.cos ?? [];
   const [cosItems, setCosItems] = useState<any[]>([]);
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
 
   const resourceTypeOptions: Array<{ label: string; value: string }> = useMemo(
     () => [

@@ -5,18 +5,28 @@
  */
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { useDomainStore } from '../../../../../../../store/store';
+import { domainQueryKeys } from '../../../../../../../services/domain-query-keys';
 import { EditAccountQuotaInputsNew } from '../edit-account-quota-inputs-new';
 
 const defaultQuotaLimit = 10737418240;
 
-function setupAdvancedTest(component: React.ReactElement) {
+function setupAdvancedTest(component: React.ReactElement, quotaLimit?: number) {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['advanced-supported'], { supported: true });
-  return setupBrowserTest(component, { queryClient });
+  if (typeof quotaLimit === 'number') {
+    queryClient.setQueryData(domainQueryKeys.quota('test-domain'), {
+      type: 'success',
+      limit: quotaLimit,
+    });
+  }
+  return setupBrowserTest(component, {
+    queryClient,
+    withDomainIdRoute: true,
+    initialRouterEntry: '/test-domain',
+  });
 }
 
 function setupNotAdvancedTest(component: React.ReactElement) {
@@ -26,10 +36,6 @@ function setupNotAdvancedTest(component: React.ReactElement) {
 }
 
 describe('EditAccountQuotaInputsNew', () => {
-  afterEach(() => {
-    useDomainStore.setState({ domain: { id: undefined }, domainsQuota: {} });
-  });
-
   it('should render the total quota input when advanced is supported', async () => {
     await setupAdvancedTest(
       <EditAccountQuotaInputsNew
@@ -173,17 +179,13 @@ describe('EditAccountQuotaInputsNew', () => {
   });
 
   it('should disable the unlimited switch when domainQuotaConstraint is defined', async () => {
-    useDomainStore.setState({
-      domain: { id: 'test-domain' },
-      domainsQuota: { 'test-domain': 10737418240 },
-    });
-
     await setupAdvancedTest(
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
         onQuotaErrorChange={vi.fn()}
       />,
+      10737418240,
     );
 
     // Verify the component is rendered first
@@ -194,11 +196,6 @@ describe('EditAccountQuotaInputsNew', () => {
   });
 
   it('should enable the unlimited switch when domainQuotaConstraint is not-set', async () => {
-    useDomainStore.setState({
-      domain: { id: 'test-domain' },
-      domainsQuota: { 'test-domain': 'not-set' },
-    });
-
     await setupAdvancedTest(
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
@@ -273,17 +270,13 @@ describe('EditAccountQuotaInputsNew', () => {
   describe('Domain quota constraint description', () => {
     it('should show proper description under the input when a domain constraint is set', async () => {
       const domainConstraint = 10737418240; // 10 GB in bytes
-      useDomainStore.setState({
-        domain: { id: 'test-domain' },
-        domainsQuota: { 'test-domain': domainConstraint },
-      });
-
       await setupAdvancedTest(
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
           onQuotaErrorChange={vi.fn()}
         />,
+        domainConstraint,
       );
 
       // Verify the description is shown with the correct constraint value
@@ -294,11 +287,6 @@ describe('EditAccountQuotaInputsNew', () => {
     });
 
     it('should not show description under the input when a domain constraint is not set', async () => {
-      useDomainStore.setState({
-        domain: { id: 'test-domain' },
-        domainsQuota: { 'test-domain': 'not-set' },
-      });
-
       await setupAdvancedTest(
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
@@ -313,17 +301,13 @@ describe('EditAccountQuotaInputsNew', () => {
 
     it('should show a proper error description when user tries to exceed the constraint value', async () => {
       const domainConstraint = 10737418240; // 10 GB in bytes
-      useDomainStore.setState({
-        domain: { id: 'test-domain' },
-        domainsQuota: { 'test-domain': domainConstraint },
-      });
-
       await setupAdvancedTest(
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
           onQuotaErrorChange={vi.fn()}
         />,
+        domainConstraint,
       );
 
       // Get the input and enter a value that exceeds the constraint (15 GB)
@@ -345,11 +329,6 @@ describe('EditAccountQuotaInputsNew', () => {
   describe('Tooltip cases', () => {
     it('should show tooltip with inherited value (10 GB) from domain when source is account', async () => {
       const domainConstraint = 10737418240; // 10 GB in bytes
-      useDomainStore.setState({
-        domain: { id: 'test-domain' },
-        domainsQuota: { 'test-domain': domainConstraint },
-      });
-
       await setupAdvancedTest(
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
@@ -357,6 +336,7 @@ describe('EditAccountQuotaInputsNew', () => {
           onChange={vi.fn()}
           onQuotaErrorChange={vi.fn()}
         />,
+        domainConstraint,
       );
 
       const resetIcon = page.getByTestId('icon: RefreshOutline');
@@ -369,11 +349,6 @@ describe('EditAccountQuotaInputsNew', () => {
 
     it('should show tooltip with inherited value (5 GB) from COS when source is account', async () => {
       const cosLimit = 5368709120; // 5 GB in bytes
-      useDomainStore.setState({
-        domain: { id: 'test-domain' },
-        domainsQuota: { 'test-domain': 'not-set' },
-      });
-
       await setupAdvancedTest(
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
@@ -394,11 +369,6 @@ describe('EditAccountQuotaInputsNew', () => {
     it('should show tooltip with minimum value (5 GB) when both domain (10 GB) and COS (5 GB) quotas are set: COS wins', async () => {
       const domainConstraint = 10737418240; // 10 GB in bytes
       const cosLimit = 5368709120; // 5 GB in bytes
-      useDomainStore.setState({
-        domain: { id: 'test-domain' },
-        domainsQuota: { 'test-domain': domainConstraint },
-      });
-
       await setupAdvancedTest(
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
@@ -407,6 +377,7 @@ describe('EditAccountQuotaInputsNew', () => {
           onChange={vi.fn()}
           onQuotaErrorChange={vi.fn()}
         />,
+        domainConstraint,
       );
 
       const resetIcon = page.getByTestId('icon: RefreshOutline');
@@ -419,11 +390,6 @@ describe('EditAccountQuotaInputsNew', () => {
     it('should show tooltip with minimum value (5 GB) when both domain (5 GB) and COS (10 GB) quotas are set: Domain wins', async () => {
       const domainConstraint = 5368709120; // 10 GB in bytes
       const cosLimit = 10737418240; // 5 GB in bytes
-      useDomainStore.setState({
-        domain: { id: 'test-domain' },
-        domainsQuota: { 'test-domain': domainConstraint },
-      });
-
       await setupAdvancedTest(
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
@@ -432,6 +398,7 @@ describe('EditAccountQuotaInputsNew', () => {
           onChange={vi.fn()}
           onQuotaErrorChange={vi.fn()}
         />,
+        domainConstraint,
       );
 
       const resetIcon = page.getByTestId('icon: RefreshOutline');
@@ -443,11 +410,6 @@ describe('EditAccountQuotaInputsNew', () => {
 
     it('should not show tooltip when source is not account', async () => {
       const domainConstraint = 10737418240; // 10 GB in bytes
-      useDomainStore.setState({
-        domain: { id: 'test-domain' },
-        domainsQuota: { 'test-domain': domainConstraint },
-      });
-
       await setupAdvancedTest(
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
@@ -455,6 +417,7 @@ describe('EditAccountQuotaInputsNew', () => {
           onChange={vi.fn()}
           onQuotaErrorChange={vi.fn()}
         />,
+        domainConstraint,
       );
 
       expect(document.body.textContent).not.toContain('The inherited value was');

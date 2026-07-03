@@ -21,9 +21,9 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, FALSE, ZIMBRA_ADMIN_URN } from '../../../../../constants';
+import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { useDomainStore } from '../../../../../store/store';
 import CustomChip from '../../../../components/customChip';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
@@ -35,7 +35,8 @@ const EditAccountSecuritySection: FC = () => {
   const context = useContext(AccountContext);
   const { otpList, accountDetail, setAccountDetail, getListOtp, accSpecificDetail, cosDetail } =
     context;
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
   const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
   const [qrData, setQrData] = useState('');
   const [secrateCode, setSecrateCode] = useState('');

@@ -20,7 +20,6 @@ import {
   MANAGE_APP_ID,
   PRIMARY_BAR_DOMAINS,
 } from './constants';
-import { useDomainStore } from './store/store';
 import AppView from './views/app-view';
 
 const App: FC = () => {
@@ -28,7 +27,6 @@ const App: FC = () => {
   const navigate = useNavigate();
 
   const { data: rights } = useCurrentUserRights();
-  const setDomain = useDomainStore((state) => state.setDomain);
 
   const createDomainRight = useMemo(() => {
     const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
@@ -94,7 +92,6 @@ const App: FC = () => {
         icon: '',
         onClick: (): void => {
           navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
-          setDomain({});
         },
         disabled: !createDomainRight,
         group: APP_ID,
@@ -104,7 +101,7 @@ const App: FC = () => {
       type: 'new',
     };
     registerActions(actionConfig);
-  }, [createDomainRight, navigate, setDomain, t]);
+  }, [createDomainRight, navigate, t]);
 
   return null;
 };

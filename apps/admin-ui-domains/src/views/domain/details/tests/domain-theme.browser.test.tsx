@@ -10,10 +10,9 @@ import {
   getQueryClient,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { useDomainStore } from '../../../../store/store';
 import DomainTheme from '../domain-theme';
 
 const DOMAIN_ID = 'test-domain-id-123';
@@ -52,18 +51,16 @@ function setupThemeTest(
   });
   queryClient.setQueryData(['all-config'], []);
   queryClient.setQueryData(['account', 'settings'], { prefs: {}, attrs: {}, props: [] });
-  useDomainStore.setState({
-    domainWithoutConfig: { id: DOMAIN_ID, name: DOMAIN_NAME, a: domainAttributes },
+  queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 0), {
+    id: DOMAIN_ID,
+    name: DOMAIN_NAME,
+    a: domainAttributes,
   });
   return queryClient;
 }
 
 describe('DomainTheme', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
-
-  afterEach(() => {
-    useDomainStore.setState({ domainWithoutConfig: {} });
-  });
 
   describe('Rendering', () => {
     it('should render the Whitelabel Settings header', async () => {

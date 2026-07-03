@@ -5,7 +5,7 @@
  */
 import { Button, Container, CustomTextArea, Padding, Tooltip, useSnackbar, } from '@zextras/ui-components';
 import { flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ICertificateContent } from '../../../../../types';
@@ -20,7 +20,7 @@ import {
 } from '../../../../constants';
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../../services/modify-domain-service';
-import { useDomainStore } from '../../../../store/store';
+import { CertificateContext } from './certificate-context';
 
 export const LoadAndVerifyCert: FC<{
   setToggleWizardSection: any;
@@ -36,7 +36,7 @@ export const LoadAndVerifyCert: FC<{
   const [domainCertiErr, setDomainCertiErr] = useState(true);
   const [domainCertiCaChainErr, setDomainCertiCaChainErr] = useState(true);
   const [privateKeyErr, setPrivateKeyErr] = useState(true);
-  const isCertificateAvailbale = useDomainStore((state) => state.isCertificateAvailbale);
+  const { isCertificateAvailable: isCertificateAvailbale } = useContext(CertificateContext);
   const [objDomainCertificate, setObjDomainCertificate] = useState<ICertificateContent>({
     fileName: '',
     content: '',

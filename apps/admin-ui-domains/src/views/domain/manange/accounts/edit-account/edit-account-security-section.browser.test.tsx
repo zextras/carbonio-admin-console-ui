@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { domainByIdKey } from '@zextras/ui-shared';
 import { createBrowserAPIInterceptor, getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { useDomainStore } from '../../../../../store/store';
 import { AccountContext } from '../account-context';
 import EditAccountSecuritySection from './edit-account-security-section';
 
@@ -120,23 +120,18 @@ const mockContextValue = {
 function setupEditAccountSecurityTest(component: React.ReactElement) {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['advanced-supported'], { supported: true });
-
-  return setupBrowserTest(component, { queryClient });
-}
-
-beforeEach(async () => {
-  // Set up domain store
-  useDomainStore.setState({
-    domain: {
-      name: 'test-domain.com',
-      id: 'domain-id',
-    },
+  queryClient.setQueryData(domainByIdKey('domain-id', 1), {
+    id: 'domain-id',
+    name: 'test-domain.com',
+    a: [],
   });
-});
 
-afterEach(() => {
-  useDomainStore.setState({});
-});
+  return setupBrowserTest(component, {
+    queryClient,
+    withDomainIdRoute: true,
+    initialRouterEntry: '/domain-id',
+  });
+}
 
 describe('EditAccountSecuritySection (browser)', () => {
   describe('Basic Rendering', () => {

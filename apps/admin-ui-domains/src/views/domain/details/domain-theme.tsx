@@ -15,7 +15,6 @@ import { themeConfigStore } from '../../../../types/domain';
 import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { useDomainStore } from '../../../store/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
 import { ThemeConfigs } from '../theme/theme-configs';
@@ -27,8 +26,8 @@ const DomainTheme: FC = () => {
   const [domainTheme, setDomainTheme] = useState<themeConfigStore>({});
   const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
   const { data: configInformation = [] } = useAllConfig();
-  const domainInformation = useDomainStore((state) => state.domainWithoutConfig?.a);
-  const setDomainWioutConfig = useDomainStore((state) => state.setDomainWioutConfig);
+  const { data: domainWithoutConfig } = useSelectedDomain(0);
+  const domainInformation = domainWithoutConfig?.a;
   const { data: selectedDomain } = useSelectedDomain();
   const domainName = selectedDomain?.name;
   const queryClient = useQueryClient();
@@ -98,7 +97,7 @@ const DomainTheme: FC = () => {
           getDomainInformation(domain.id, 0).then((res) => {
             const domainData = res?.domain[0];
             if (domainData) {
-              setDomainWioutConfig(domainData);
+              queryClient.setQueryData(domainByIdKey(domainId, 0), domainData);
             }
           });
         }

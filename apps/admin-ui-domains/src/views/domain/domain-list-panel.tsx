@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, DropDownInput, ListItems, type ListItemType, ListPanelItem, Padding, Row, useSnackbar, } from '@zextras/ui-components';
-import { getAllRights, replaceHistory, useAllConfig, useBackupServers, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
+import { getAllRights, replaceHistory, useAllConfig, useBackupServers, useCurrentUserRights, useDomainById, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -47,7 +47,7 @@ import {
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
-import { useDomainStore } from '../../store/store';
+import type { Domain } from '../../store/types';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import GlobalListPanel from './global-list-panel';
 
@@ -66,23 +66,8 @@ const DomainListPanel: FC = () => {
 			a: { n: string; _content: string }[];
 		}[]
 	>([]);
-	const domainInformation = useDomainStore((state) => state.domain);
-	const setDomain = useDomainStore((state) => state.setDomain);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
-
-	const isAdvanced = useIsAdvanced();
-	const isTotalQuotaActive = useTotalQuotaActive();
-	const { data: backupData } = useBackupServers({
-		enabled: isAdvanced,
-	});
-	const [manageOptions, setListItemType] = useState<ListItemType[]>([]);
-	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
-	const { data: rights } = useCurrentUserRights();
-	const [isShowError, setIsShowError] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const { data: globalConfigInformation = [] } = useAllConfig();
-	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
 
 	const globalMatch =
 		matchPath(`${DOMAINS_BASE}/${GLOBAL_ROUTE}/*`, locationService.pathname) ??
@@ -100,6 +85,23 @@ const DomainListPanel: FC = () => {
 	const domainView = isGlobalRoute
 		? globalView
 		: (domainMatch?.params.operation ?? GLOBAL_DOMAIN_ROUTE);
+
+	const { data: domainInformation } = useDomainById<Domain>({
+		domainId: selectedDomainId || undefined,
+	});
+
+	const isAdvanced = useIsAdvanced();
+	const isTotalQuotaActive = useTotalQuotaActive();
+	const { data: backupData } = useBackupServers({
+		enabled: isAdvanced,
+	});
+	const [manageOptions, setListItemType] = useState<ListItemType[]>([]);
+	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
+	const { data: rights } = useCurrentUserRights();
+	const [isShowError, setIsShowError] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const { data: globalConfigInformation = [] } = useAllConfig();
+	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
 
 	useEffect(() => {
 		const isAvail2Fa = domainInformation?.a?.find((item) => item?.n === 'zimbraAuthMech');
@@ -184,9 +186,8 @@ const DomainListPanel: FC = () => {
 			setDomainList([]);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
-			setDomain({});
 		}
-	}, [locationService, setDomain]);
+	}, [locationService]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchDomainCall = useCallback(

@@ -5,10 +5,9 @@
  */
 
 import { createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useDomainStore } from '../../../../../store/store';
 import { DomainVirtualHosts } from '../domain-virtual-hosts';
 
 const DOMAIN_ID = 'domain-123';
@@ -43,17 +42,7 @@ const mockGetDomainResponse = {
 };
 
 describe('DomainVirtualHosts (browser)', () => {
-	beforeEach(() => {
-		useDomainStore.setState({
-			setIsCertificateAvailbale: vi.fn()
-		});
-	});
-
-	afterEach(() => {
-		useDomainStore.setState({});
-	});
-
-	it('should render the main sections', async () => {
+    it('should render the main sections', async () => {
 		createBrowserSoapAPIInterceptor('GetDomainCert', mockGetDomainCertResponse);
 		createBrowserSoapAPIInterceptor('GetDomain', mockGetDomainResponse);
 

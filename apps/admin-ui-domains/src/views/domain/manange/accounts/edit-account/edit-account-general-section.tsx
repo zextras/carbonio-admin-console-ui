@@ -19,11 +19,11 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../../../types';
 import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE } from '../../../../../constants';
+import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
 import { endSession } from '../../../../../services/end-session';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
-import { useDomainStore } from '../../../../../store/store';
 import CustomChip from '../../../../components/customChip';
 import ManageAliases from '../../../../components/manageAliases';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
@@ -76,8 +76,9 @@ export const EditAccountGeneralSection: FC<{
     setDefaultCOS,
     allowedDeletePassword,
   } = useContext(AccountContext);
-  const domainInformation = useDomainStore((state) => state.domain?.a);
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainInformation = domain?.a;
+  const domainName = domain?.name;
   const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
   const cosList = cosData?.cos ?? [];
   const [t] = useTranslation();

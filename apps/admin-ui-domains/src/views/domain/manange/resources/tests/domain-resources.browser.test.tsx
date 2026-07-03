@@ -4,14 +4,35 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { domainByIdKey } from '@zextras/ui-shared';
+import {
+    createBrowserSoapAPIInterceptor,
+    getQueryClient,
+    setupBrowserTest as _setupBrowserTest,
+} from 'admin-ui-test-utils';
+import { type ReactElement } from 'react';
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
+import { type RenderResult } from 'vitest-browser-react';
 
-import { useDomainStore } from '../../../../../store/store';
 import DomainResources from '../domain-resources';
 
+const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
+
+function setupBrowserTest(ui: ReactElement): Promise<RenderResult> {
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+        id: DOMAIN_ID,
+        name: DOMAIN_NAME,
+        a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
+    });
+    return _setupBrowserTest(ui, {
+        queryClient,
+        withDomainIdRoute: true,
+        initialRouterEntry: `/${DOMAIN_ID}`,
+    });
+}
 
 type ResourceAttribute = { n: string; _content: string };
 
@@ -81,25 +102,7 @@ function setupSearchDirectoryInterceptor(
     });
 }
 
-function setupDomainStore(): void {
-    useDomainStore.setState({
-        domain: {
-            name: DOMAIN_NAME,
-            id: 'test-domain-id',
-            a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
-        },
-    });
-}
-
 describe('DomainResources (browser)', () => {
-    beforeEach(() => {
-        setupDomainStore();
-    });
-
-    afterEach(() => {
-        useDomainStore.setState({});
-    });
-
     describe('Rendering', () => {
         it('should render the Resources title', async () => {
             setupSearchDirectoryInterceptor();

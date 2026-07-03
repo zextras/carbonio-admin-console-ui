@@ -17,8 +17,8 @@ import React, { ChangeEvent, FC, useCallback, useContext, useMemo, useState } fr
 import { Trans, useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
+import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { useDomainStore } from '../../../../../store/store';
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 
@@ -57,7 +57,8 @@ interface AddCredentialApiType {
 export const ServicesPassphrase: FC = () => {
   const context = useContext(AccountContext);
   const { accountDetail, credentialList, getCredentialList } = context;
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [createCredentialModal, setCreateCredentialModal] = useState<boolean>(false);

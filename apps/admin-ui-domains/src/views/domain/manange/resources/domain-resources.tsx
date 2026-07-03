@@ -12,10 +12,10 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
 import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
-import { useDomainStore } from '../../../../store/store';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import CreateResource from './create-resource';
@@ -30,7 +30,8 @@ const DomainResources: FC = () => {
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [totalAccount, setTotalAccount] = useState<number>(0);
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
   const [searchString, setSearchString] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedResourceList, setSelectedResourceList] = useState<any>({});

@@ -10,7 +10,7 @@ import { type FC, type ReactElement, useCallback, useEffect, useMemo, useState }
 import { useTranslation } from 'react-i18next';
 
 import { LDAP, PUB } from '../../../../constants';
-import { useDomainStore } from '../../../../store/store';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import MailingListMembersSection from './mailing-list-members-section';
 import MailingListSection from './mailing-list-section';
 import MailingListSettingsSection from './mailing-list-settings-sections';
@@ -44,7 +44,7 @@ const CreateMailingList: FC<{
 	isLoading: boolean;
 }> = ({ setShowCreateMailingListView, createMailingListReq, isLoading }) => {
 	const { t } = useTranslation();
-	const domainInformation = useDomainStore((state) => state.domain);
+	const { data: domainInformation } = useSelectedDomain();
 
 	const [mailingListDetail, setMailingListDetail] = useState<MailingListDetailObj>({
 		name: '',
