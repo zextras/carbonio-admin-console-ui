@@ -38,7 +38,6 @@ const mockContextValue = {
   setSignatureList: vi.fn(),
   setAllUserSessionList: vi.fn(),
   setAccSpecificDetail: vi.fn(),
-  setAccountDetail: vi.fn(),
   setDirectMemberList: vi.fn(),
   setInitAccountDetail: vi.fn(),
   setUserSessionList: vi.fn(),
@@ -141,6 +140,34 @@ describe('EditAccountDelegatesSection (browser)', () => {
     );
     await userEvent.type(chipInput, 'abc');
     await expect(searchInterceptor).resolves.toHaveProperty('query');
+  });
+
+  it('should remove a selected delegate from simplified view and call Batch', async () => {
+    const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
+    const delegateIdentity = {
+      grantee: [{ id: 'delegate-id', name: 'delegate@example.com', type: 'usr' }],
+      folder: [{ perm: 'rwidxa', id: 'folder-1', zid: 'zid-1' }],
+    };
+
+    setupTest({ identitiesList: [delegateIdentity] });
+
+    await expect.element(page.getByText('delegate@example.com').first()).toBeVisible();
+    await userEvent.click(page.getByText('delegate@example.com').first());
+    await userEvent.click(page.getByRole('button', { name: /REMOVE/i }).first());
+
+    const request = await batchInterceptor;
+
+    expect(request).toMatchObject({
+      FolderActionRequest: [
+        {
+          action: {
+            id: 'folder-1',
+            op: '!grant',
+            zid: 'zid-1',
+          },
+        },
+      ],
+    });
   });
 
   it('should render an identity row and open edit wizard when delegate is selected', async () => {
