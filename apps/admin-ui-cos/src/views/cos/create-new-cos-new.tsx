@@ -13,96 +13,42 @@ import {
   ListRow,
   Padding,
   Row,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
 
 import { Attribute } from '../../../types/attribute';
-import { CosResponse } from '../../../types/cos';
-import { COS_ROUTE_ID, MANAGE } from '../../constants';
-import { createCos } from '../../services/create-cos';
-import { useCosStore } from '../../store/cos/store';
+import { GENERAL_INFORMATION } from '../../constants';
+import { useCreateCos } from '../../services/use-create-cos';
 import styles from './create-new-cos.module.css';
 
 export const CreateNewCos = () => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-  const navigate = useNavigate();
   const [zimbraNotes, setZimbraNotes] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [cosName, setCosName] = useState<string>('');
-  const { setCosView, setCos } = useCosStore();
-
-  const showSuccessSnackBar = (): void => {
-    createSnackbar({
-      key: 'success',
-      severity: 'success',
-      label: t('label.create_cos_success_msg', {
-        cosName,
-        defaultValue: '{{cosName}} has been created successfully',
-      }),
-      autoHideTimeout: 3000,
-      hideButton: true,
-      replace: true,
-    });
-  };
-
-  const routeToCos = (resp: CosResponse): void => {
-    const cos = resp?.cos[0];
-    if (cos) {
-      setCos({
-        a: cos?.a,
-        id: cos?.id,
-        name: cos?.name,
-      });
-      setCosView('general_information');
-      replaceHistory(`/${cos.id}/general_information`);
-    } else {
-      replaceHistory(`/`);
-    }
-  };
+  const createCosMutation = useCreateCos();
 
   const onCreate = (): void => {
-    const attributes: Array<Attribute> = [];
-    attributes.push({
-      n: 'zimbraNotes',
-      _content: zimbraNotes,
-    });
-    attributes.push({
-      n: 'description',
-      _content: description,
-    });
-    attributes.push({
-      n: 'cn',
-      _content: cosName,
-    });
-    createCos(cosName, attributes)
-      .then((data) => {
-        const cos = data?.cos[0];
-        if (cos) {
-          showSuccessSnackBar();
-          routeToCos(data);
-        }
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error.message
-            ? error.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+    const attributes: Array<Attribute> = [
+      { n: 'zimbraNotes', _content: zimbraNotes },
+      { n: 'description', _content: description },
+      { n: 'cn', _content: cosName },
+    ];
+    createCosMutation.mutate(
+      { name: cosName, attributes },
+      {
+        onSuccess: (data) => {
+          const cos = data?.cos[0];
+          replaceHistory(cos ? `/${cos.id}/${GENERAL_INFORMATION}` : '/');
+        },
+      },
+    );
   };
 
   const onCancel = (): void => {
-    navigate(`/${MANAGE}/${COS_ROUTE_ID}`);
+    replaceHistory('/');
   };
 
   const stepperSteps: Array<DsStepperStep> = [
