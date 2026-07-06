@@ -12,19 +12,21 @@ import { type Operation } from '../types/operations';
 import { getAllDoneOperations } from './get-all-done-operation';
 import { operationQueryKeys } from './operation-query-keys';
 
+const fetchDoneOperations = async (): Promise<Array<Operation>> => {
+	const response = await getAllDoneOperations();
+	const res = JSON.parse(response?.Body?.response?.content);
+	if (res?.ok) {
+		return (res?.response?.operationList ?? []) as Array<Operation>;
+	}
+	return [];
+};
+
 export const useDoneOperations = () => {
 	const { data: allServersList = [] } = useMailstoreServers();
 
 	return useQuery({
 		queryKey: operationQueryKeys.doneOperations(),
-		queryFn: async (): Promise<Array<Operation>> => {
-			const response = await getAllDoneOperations();
-			const res = JSON.parse(response?.Body?.response?.content);
-			if (res?.ok) {
-				return (res?.response?.operationList ?? []) as Array<Operation>;
-			}
-			return [];
-		},
+		queryFn: fetchDoneOperations,
 		select: (operations: Array<Operation>): Array<Operation> =>
 			map(operations, (item) => {
 				const matchingServer = find(allServersList, { id: item.serverId });

@@ -12,28 +12,29 @@ import { getAllOperations } from './get-all-operations';
 import { operationQueryKeys } from './operation-query-keys';
 
 type UseAllOperationsOptions = {
-	select?: (data: Array<Operation>) => Array<Operation>;
+  select?: (data: Array<Operation>) => Array<Operation>;
+};
+
+const fetchAllOperations = async (serverName: string): Promise<Array<Operation>> => {
+  const response = await getAllOperations();
+  const res = JSON.parse(response?.Body?.response?.content);
+  if (res?.response?.[serverName]?.ok) {
+    return (res?.response?.[serverName]?.response?.operationList ?? []) as Array<Operation>;
+  }
+  return [];
 };
 
 export const useAllOperations = (options?: UseAllOperationsOptions) => {
-	const { data: serverList = [] } = useAllServers();
-	const serverName = serverList[0]?.name;
+  const { data: serverList = [] } = useAllServers();
+  const serverName = serverList[0]?.name;
 
-	return useQuery({
-		queryKey: operationQueryKeys.allOperations(),
-		queryFn: async (): Promise<Array<Operation>> => {
-			const response = await getAllOperations();
-			const res = JSON.parse(response?.Body?.response?.content);
-			if (res?.response?.[`${serverName}`]?.ok) {
-				return (res?.response?.[`${serverName}`]?.response?.operationList ??
-					[]) as Array<Operation>;
-			}
-			return [];
-		},
-		enabled: !!serverName,
-		staleTime: 30_000,
-		retry: 1,
-		refetchOnWindowFocus: false,
-		select: options?.select,
-	});
+  return useQuery({
+    queryKey: operationQueryKeys.allOperations(),
+    queryFn: () => fetchAllOperations(serverName ?? ''),
+    enabled: !!serverName,
+    staleTime: 30_000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+    select: options?.select,
+  });
 };
