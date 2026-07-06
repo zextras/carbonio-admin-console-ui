@@ -5,7 +5,7 @@
  */
 
 import { Container, Input, ModalOverlay, Paging, Row, useSnackbar } from '@zextras/ui-components';
-import { ChangeEvent, FC, ReactElement, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useDoneOperations } from '../../services/use-done-operations';
@@ -13,6 +13,10 @@ import { type Operation } from '../../types/operations';
 import { OperationsDoneHeader } from '../utility/utils';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
+
+const FunnelSearchIcon = () => (
+  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
 
 const DoneDetailPanel: FC = () => {
   const [t] = useTranslation();
@@ -106,9 +110,7 @@ const DoneDetailPanel: FC = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   setSearchOperation(e.target.value);
                 }}
-                CustomIcon={(): ReactElement => (
-                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                )}
+                CustomIcon={FunnelSearchIcon}
               />
             </Container>
           </Row>
