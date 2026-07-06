@@ -12,7 +12,7 @@ import {
     setupBrowserTest as _setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { type ReactElement } from 'react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
@@ -276,6 +276,16 @@ describe('ManageAccounts (browser)', () => {
             await userEvent.type(searchInput, 'admin');
             await expect.element(searchInput).toHaveValue('admin');
         });
+
+        it('should trigger a new SearchDirectory request when the query changes', async () => {
+            const interceptor = setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            const searchInput = page.getByLabelText("I'm looking for this account…");
+            await userEvent.type(searchInput, 'admin');
+            await interceptor;
+            await expect.element(searchInput).toHaveValue('admin');
+        });
     });
 
     describe('Account type detection', () => {
@@ -445,6 +455,53 @@ describe('ManageAccounts (browser)', () => {
             await expect
                 .element(page.getByText('DelegatedAdmin', { exact: true }).first())
                 .toBeInTheDocument();
+        });
+    });
+
+    describe('Interactions', () => {
+        it('should open the create account modal when the add button is clicked', async () => {
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            const addButton = page.getByRole('button').first();
+            await addButton.click();
+
+            await expect.element(page.getByText('Create Account Wizard', { exact: true })).toBeVisible();
+        });
+
+        it('should open the edit account view when a row is selected', async () => {
+            const getAccountInterceptor = createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                        { n: 'zimbraIsAdminAccount', _content: 'FALSE' },
+                        { n: 'zimbraIsDelegatedAdminAccount', _content: 'FALSE' },
+                        { n: 'mail', _content: 'user1@example.com' },
+                        { n: 'displayName', _content: 'User One' },
+                    ],
+                }],
+            });
+            const membershipInterceptor = createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            const grantsInterceptor = createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            const folderInterceptor = createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            const sessionsInterceptor = createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+            await expect(getAccountInterceptor).resolves.toBeDefined();
+            await expect(membershipInterceptor).resolves.toBeDefined();
+            await expect(grantsInterceptor).resolves.toBeDefined();
+            await expect(folderInterceptor).resolves.toBeDefined();
+            await expect(sessionsInterceptor).resolves.toBeDefined();
         });
     });
 
