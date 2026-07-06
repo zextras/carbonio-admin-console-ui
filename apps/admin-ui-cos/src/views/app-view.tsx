@@ -8,8 +8,8 @@ import { Route, Routes } from 'react-router';
 
 import { CREATE_NEW_COS_ROUTE_ID } from '../constants';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
-import CosOperations from './cos/cos-detail-operation';
-import CosList from './cos/cos-list';
+import { CosDetailPanel } from './cos/cos-detail-panel';
+import { CosList } from './cos/cos-list/cos-list';
 import { CosListPanel } from './cos/cos-list-panel';
 import { CreateNewCos } from './cos/create-new-cos-new';
 
@@ -96,7 +96,7 @@ export const AppView = () => {
                   <CosListPanel />
                 </div>
                 <div style={getContainerStyle(breakpoint, isPrimaryBarExpanded, true)}>
-                  <CosOperations />
+                  <CosDetailPanel />
                 </div>
               </>
             }
