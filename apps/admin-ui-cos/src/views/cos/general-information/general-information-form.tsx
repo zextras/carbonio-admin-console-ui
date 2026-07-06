@@ -159,9 +159,7 @@ function processDomainItem(
 ): TRow {
   const attrs = flattenAttributes(item.a, new Set(['zimbraDomainCOSMaxAccounts']));
   const cosMaxAccounts = getStringArrayAttr(attrs, 'zimbraDomainCOSMaxAccounts');
-  const maxAccountValue = cosMaxAccounts
-    .find((acc) => acc?.split(':')[0] === cosId)
-    ?.split(':')[1];
+  const maxAccountValue = cosMaxAccounts.find((acc) => acc?.split(':')[0] === cosId)?.split(':')[1];
   const defaultCOSId = getStringAttr(attrs, 'zimbraDomainDefaultCOSId');
 
   return {
@@ -360,7 +358,6 @@ export const GeneralInformationForm = ({
         orientation="column"
         crossAlignment="flex-start"
         mainAlignment="flex-start"
-        style={{ overflow: 'auto' }}
         width="100%"
       >
         <CosInfoFields
