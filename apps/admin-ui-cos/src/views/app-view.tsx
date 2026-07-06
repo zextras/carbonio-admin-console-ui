@@ -7,10 +7,10 @@ import { Route, Routes } from 'react-router';
 
 import { COS_LIST, CREATE_NEW_COS_ROUTE_ID } from '../constants';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
-import CosOperations from './cos/cos-detail-operation';
+import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosLayout } from './cos/cos-layout';
 import styles from './cos/cos-layout.module.css';
-import CosList from './cos/cos-list';
+import { CosList } from './cos/cos-list/cos-list';
 import { CreateNewCos } from './cos/create-new-cos-new';
 
 export const AppView = () => {
@@ -39,7 +39,7 @@ export const AppView = () => {
             path={'/:cosId/:operation'}
             element={
               <CosLayout variant="detail">
-                <CosOperations />
+                <CosDetailPanel />
               </CosLayout>
             }
           />

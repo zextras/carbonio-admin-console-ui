@@ -48,6 +48,7 @@ export const useLastLoginTimestamp = (options: LastLoginTimestampOptions = {}) =
 
   const retryFn = () => (failureCount: number, error: Error) => {
     failureCount < 3 &&
+      // eslint-disable-next-line no-console
       console.warn(`Failed to fetch last login timestamp (attempt ${failureCount}):`, error);
     return failureCount < 3;
   };
