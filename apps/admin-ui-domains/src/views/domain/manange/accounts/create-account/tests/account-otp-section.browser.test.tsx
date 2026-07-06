@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/ui-shared';
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { AccountContext } from '../account-context';
@@ -40,19 +39,7 @@ const buildContext = (overrides: Partial<typeof baseAccountDetail> = {}) => ({
 
 describe('AccountOtpSection – QRCodeSVG', () => {
   beforeEach(() => {
-    useDomainStore.setState({
-      domain: {
-        name: 'test-domain.com',
-        id: 'domain-123',
-        a: [{ n: 'zimbraDomainStatus', _content: 'active' }],
-      },
-      cosList: [],
-    });
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    useDomainStore.setState({});
   });
 
   describe('QR code view (showOtpOptionSection = false)', () => {

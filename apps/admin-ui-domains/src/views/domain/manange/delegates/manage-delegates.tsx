@@ -3,31 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  ListRow,
-  ModalOverlay,
-  Paging,
-  Row,
-  Table,
-  TrackNumberPerPage,
-  useSnackbar,
-} from '@zextras/ui-components';
-import {
-  type CosAttribute,
-  getCosGeneralInformation,
-  type GetCosResponse,
-  postSoapFetchRequest,
-  searchDirectory,
-  useDomainStore,
-  useIsAdvanced,
-  useUserAccount,
-  useUserSettings,
-} from '@zextras/ui-shared';
+import { Button, Container, CustomHeaderFactory, HoverableRowFactory, ListRow, ModalOverlay, Paging, Row, Table, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
+import { type CosAttribute, getCosGeneralInformation, type GetCosResponse, postSoapFetchRequest, searchDirectory, useIsAdvanced, useUserAccount, useUserSettings } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { debounce, filter, flatMapDeep } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -43,6 +20,7 @@ import {
   ZIMBRA_ADMIN_URN,
   ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS,
 } from '../../../../constants';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import { checkRightRequest } from '../../../../services/check-right';
 import { getAccountRequest } from '../../../../services/get-account';
@@ -74,7 +52,7 @@ type CheckRightResponse = {
 const ManageDelegates: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const domain = useDomainStore((state) => state.domain);
+  const { data: domain } = useSelectedDomain();
   const [open, setOpen] = useState(false);
   const [accountName, setAccountName] = useState('');
   const [distributionList, setDistributionList] = useState<objectType[]>([]);
@@ -109,7 +87,7 @@ const ManageDelegates: FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
-  const domainInformation = useDomainStore((state) => state.domain?.a);
+  const domainInformation = domain?.a;
   const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
   const [isTableTooTall, setIsTableTooTall] = useState(false);
   const [allowedDeletePassword, setAllowedDeletePassword] = useState<boolean>(false);
@@ -833,7 +811,7 @@ const ManageDelegates: FC = () => {
       '(|(&(zimbraIsAdminAccount=TRUE))(&(zimbraIsDelegatedAdminAccount=TRUE)(!(zimbraIsAdminAccount=TRUE))))';
     const attrs =
       'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-    accountListDirectory(attrs, type, domain.name, searchQuery, offset, pageLimit)
+    accountListDirectory(attrs, type, domain?.name, searchQuery, offset, pageLimit)
       .then((data: any) => {
         const accountListResponse: any = data?.account || [];
         if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -847,7 +825,7 @@ const ManageDelegates: FC = () => {
         const snackbarConfig = generateSnackbarFromError(error, t);
         createSnackbar(snackbarConfig);
       });
-  }, [domain.name, offset, pageLimit, parseAccountListResponse, t, createSnackbar]);
+  }, [domain?.name, offset, pageLimit, parseAccountListResponse, t, createSnackbar]);
 
   useEffect(() => {
     fetchDistributionList(
@@ -970,7 +948,7 @@ const ManageDelegates: FC = () => {
       background="gray6"
       mainAlignment="flex-start"
     >
-      {accountDistributionList?.length > 0 && open && (
+      {accountDistributionList?.length > 0 && open && domain && (
         <DisableDelegateAdminModel
           open={open}
           closeHandler={closeHandler}

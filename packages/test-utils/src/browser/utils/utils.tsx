@@ -26,6 +26,7 @@ type SetupBrowserTestOptions = {
   initialRouterEntry?: string;
   queryClient?: QueryClient;
   grantRights?: GrantRights;
+  withDomainIdRoute?: boolean;
 };
 
 export const setupBrowserTest = async (
@@ -42,7 +43,11 @@ export const setupBrowserTest = async (
 
   return render(ui, {
     wrapper: ({ children }: Pick<WrapperProps, 'children'>) => (
-      <Wrapper queryClient={effectiveQueryClient} initialRouterEntry={options?.initialRouterEntry}>
+      <Wrapper
+        queryClient={effectiveQueryClient}
+        initialRouterEntry={options?.initialRouterEntry}
+        withDomainIdRoute={options?.withDomainIdRoute}
+      >
         {children}
       </Wrapper>
     ),

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Container,
@@ -84,17 +84,18 @@ import {
   TOTAL_QUOTA_USED_BY_MODULE,
   ZIMBRA_ADMIN_URN,
 } from '../../../../constants';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import {
   accountListDirectory,
   getMailboxQuota,
 } from '../../../../services/account-list-directory-service';
 import { checkRightRequest } from '../../../../services/check-right';
 import { countAccount } from '../../../../services/count-account-service';
+import { domainQueryKeys } from '../../../../services/domain-query-keys';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getAccountQuota } from '../../../../services/get-account-quota';
 import { getCosQuota } from '../../../../services/get-cos-quota';
-import { getDomainQuota } from '../../../../services/get-domain-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -166,9 +167,10 @@ const ManageAccounts: FC = () => {
   const isTotalQuotaActive = useTotalQuotaActive();
   const createSnackbar = useSnackbar();
   const timer = useRef<Timer | undefined>(undefined);
-  const domainName = useDomainStore((state) => state.domain?.name);
-  const domainId = useDomainStore((state) => state.domain?.id);
-  const setDomainQuota = useDomainStore((state) => state.setDomainQuota);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
+  const domainId = domain?.id;
+  const queryClient = useQueryClient();
   const [accountDetail, setAccountDetail] = useState<AccountDetail>({});
   const [initAccountDetail, setInitAccountDetail] = useState<AccountDetail>({});
   const [cosDetail, setCosDetail] = useState<CosDetail>({});
@@ -652,14 +654,10 @@ const ManageAccounts: FC = () => {
         }
       });
       if (domainId) {
-        getDomainQuota(domainId).then((res) => {
-          if (res.type !== 'error') {
-            setDomainQuota(domainId, res.type === 'success' ? res.limit : 'not-set');
-          }
-        });
+        queryClient.invalidateQueries({ queryKey: domainQueryKeys.quota(domainId) });
       }
     },
-    [createSnackbar, domainId, setAccDetailValue, setDomainQuota, t],
+    [createSnackbar, domainId, setAccDetailValue, queryClient, t],
   );
 
   const getAccountDetail = useCallback(
