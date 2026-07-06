@@ -3,16 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  ModalOverlay,
-  Padding,
-  Row,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, soapFetch, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button, Container, ModalOverlay, Padding, Row, useSnackbar, } from '@zextras/ui-components';
+import { domainByIdKey, flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
 import { isEqual, mapValues, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,9 +21,11 @@ import {
   ZIMBRA_SSL_PRIVATE_KEY,
   ZIMBRA_VIRTUAL_HOSTNAME,
 } from '../../../../constants';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { AlertBanner } from './alert-banner';
+import { CertificateContext } from './certificate-context';
 import { CertificateView } from './certificate-view';
 import DeleteCertificateModel from './delete-certificate-model';
 import { LoadVerifyCertificateWizard } from './load-verify-certificate-wizard';
@@ -40,8 +35,9 @@ export const DomainVirtualHosts: FC = () => {
   const [t] = useTranslation();
   const { domainId } = useParams();
   const createSnackbar = useSnackbar();
-  const domainInformation: any = useDomainStore((state) => state.domain?.a);
-  const setDomain = useDomainStore((state) => state.setDomain);
+  const { data: domain } = useSelectedDomain();
+  const domainInformation: any = domain?.a;
+  const queryClient = useQueryClient();
   const [toggleCertiBtn, setToggleCertiBtn] = useState(true);
   const [items, setItems] = useState<any>([]);
   const [defaultItems, setDefaultItems] = useState<any>([]);
@@ -53,7 +49,7 @@ export const DomainVirtualHosts: FC = () => {
   const [open, setOpen] = useState(false);
   const [alertToggle, setAlertToggle] = useState(false);
   const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
-  const setIsCertificateAvailbale = useDomainStore((state) => state.setIsCertificateAvailbale);
+  const [isCertificateAvailable, setIsCertificateAvailable] = useState(false);
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
   const userSetting = useUserSettings();
 
@@ -177,7 +173,7 @@ export const DomainVirtualHosts: FC = () => {
         }
         const domainData: any = data?.domain?.[0];
         if (domainData) {
-          setDomain(domainData);
+          queryClient.setQueryData(domainByIdKey(domainId, 1), domainData);
         }
       })
       .catch((error) => {
@@ -207,13 +203,13 @@ export const DomainVirtualHosts: FC = () => {
         const data = mapValues(res?.cert[0], (value) => value[0]._content);
         setDomainCertiDetails(data);
         setToggleCertiBtn(false);
-        setIsCertificateAvailbale(true);
+        setIsCertificateAvailable(true);
       })
       // TODO: On no cert found server always returns error so used empty catch for now
 
       .catch((error) => {
         if (error) {
-          setIsCertificateAvailbale(false);
+          setIsCertificateAvailable(false);
         }
       });
     const zimbraData =
@@ -251,7 +247,7 @@ export const DomainVirtualHosts: FC = () => {
           replace: true,
         });
       });
-  }, [createSnackbar, domainId, domainInformation, setIsCertificateAvailbale, t]);
+  }, [createSnackbar, domainId, domainInformation, setIsCertificateAvailable, t]);
 
   const deleteHandler = (): void => {
     const body: {
@@ -289,7 +285,7 @@ export const DomainVirtualHosts: FC = () => {
         getAllCertiDetailsAPICall();
         setDomainCertiDetails({});
         setToggleCertiBtn(true);
-        setIsCertificateAvailbale(false);
+        setIsCertificateAvailable(false);
       })
       .catch((error) => {
         createSnackbar({
@@ -320,7 +316,8 @@ export const DomainVirtualHosts: FC = () => {
   };
 
   return (
-    <Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
+    <CertificateContext.Provider value={{ isCertificateAvailable, setIsCertificateAvailable }}>
+      <Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
       {toggleLoadVerifyCertWizard && (
         <ModalOverlay open={toggleLoadVerifyCertWizard}>
           <LoadVerifyCertificateWizard
@@ -417,6 +414,7 @@ export const DomainVirtualHosts: FC = () => {
         </ds-text>
         <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
       </RouteLeavingGuard>
-    </Container>
+      </Container>
+    </CertificateContext.Provider>
   );
 };

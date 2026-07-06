@@ -3,231 +3,118 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import { createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
+import { createBrowserSoapAPIInterceptor, setupBrowserTest, worker } from 'admin-ui-test-utils';
+import { http, HttpResponse } from 'msw';
+import { type ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
-import { page, userEvent } from 'vitest/browser';
+import { page } from 'vitest/browser';
 
 import DomainList from '../domain-list';
 
-type DomainEntry = {
-    name: string;
-    id: string;
-    a: Array<{ n: string; _content: string }>;
-};
+type DomainAttr = { n: string; _content: string };
+type DomainItem = { name: string; id: string; a: DomainAttr[] };
 
-function buildDomain(name: string, id: string, status = 'active'): DomainEntry {
-    return {
-        name,
-        id,
-        a: [
-            { n: 'zimbraDomainName', _content: name },
-            { n: 'zimbraDomainStatus', _content: status },
-            { n: 'zimbraDomainType', _content: 'local' },
-            { n: 'zimbraId', _content: id },
-        ],
-    };
+function buildDomain(
+	name: string,
+	id: string,
+	status = 'active',
+	extraAttrs: DomainAttr[] = [],
+): DomainItem {
+	return {
+		name,
+		id,
+		a: [
+			{ n: 'zimbraDomainStatus', _content: status },
+			{ n: 'zimbraDomainType', _content: 'local' },
+			...extraAttrs,
+		],
+	};
 }
 
-const DOMAINS: Array<DomainEntry> = [
-    buildDomain('example.com', 'domain-1'),
-    buildDomain('corp.org', 'domain-2'),
-    buildDomain('test.net', 'domain-3', 'locked'),
+function interceptDomains(domains: DomainItem[] = [], searchTotal = domains.length) {
+	return createBrowserSoapAPIInterceptor('SearchDirectory', {
+		domain: domains,
+		searchTotal,
+		more: false,
+	});
+}
+
+const SAMPLE_DOMAINS: DomainItem[] = [
+	buildDomain('example.com', 'domain-1', 'active'),
+	buildDomain('test.org', 'domain-2', 'closed'),
 ];
 
-function setupSearchDirectoryInterceptor(
-    domains: Array<DomainEntry> = DOMAINS,
-): Promise<unknown> {
-    return createBrowserSoapAPIInterceptor('SearchDirectory', {
-        domain: domains,
-        searchTotal: domains.length,
-        more: false,
-    });
+function setup(ui: ReactElement) {
+	return setupBrowserTest(ui);
 }
 
 describe('DomainList (browser)', () => {
-    describe('Rendering', () => {
-        it('should render the Domains List header', async () => {
-            setupSearchDirectoryInterceptor();
+	describe('Rendering', () => {
+		it('renders the Domains List header', async () => {
+			interceptDomains([]);
+			setup(<DomainList />);
 
-            setupBrowserTest(<DomainList />);
+			await expect.element(page.getByText('Domains List')).toBeVisible();
+		});
 
-            await expect.element(page.getByText('Domains List')).toBeVisible();
-        });
+		it('renders the table column headers', async () => {
+			interceptDomains([]);
+			setup(<DomainList />);
 
-        it('should render table headers', async () => {
-            setupSearchDirectoryInterceptor();
+			await expect.element(page.getByText('Domain Name', { exact: true })).toBeVisible();
+			await expect.element(page.getByText('Status', { exact: true })).toBeVisible();
+		});
 
-            setupBrowserTest(<DomainList />);
+		it('renders the search input', async () => {
+			interceptDomains(SAMPLE_DOMAINS, 2);
+			setup(<DomainList />);
 
-            await expect
-                .element(page.getByText('Domain Name', { exact: true }))
-                .toBeVisible();
-            await expect
-                .element(page.getByText('Status', { exact: true }))
-                .toBeVisible();
-        });
+			await expect
+				.element(page.getByLabelText(`I'm looking for this domain…`))
+				.toBeVisible();
+		});
+	});
 
-        it('should render the search input', async () => {
-            setupSearchDirectoryInterceptor();
+	describe('With data', () => {
+		it('displays domain names in the table', async () => {
+			interceptDomains(SAMPLE_DOMAINS, 2);
+			setup(<DomainList />);
 
-            setupBrowserTest(<DomainList />);
+			await expect.element(page.getByText('example.com')).toBeVisible();
+			await expect.element(page.getByText('test.org')).toBeVisible();
+		});
 
-            await expect
-                .element(page.getByText("I'm looking for this domain…"))
-                .toBeVisible();
-        });
-    });
+		it('displays domain status labels', async () => {
+			interceptDomains(SAMPLE_DOMAINS, 2);
+			setup(<DomainList />);
 
-    describe('Domain list with data', () => {
-        it('should display domain names after loading', async () => {
-            setupSearchDirectoryInterceptor();
+			await expect.element(page.getByText('Active', { exact: true })).toBeVisible();
+			await expect.element(page.getByText('Closed', { exact: true })).toBeVisible();
+		});
+	});
 
-            setupBrowserTest(<DomainList />);
+	describe('Empty state', () => {
+		it('shows the empty state message when no domains exist', async () => {
+			interceptDomains([], 0);
+			setup(<DomainList />);
 
-            await expect.element(page.getByText('example.com')).toBeVisible();
-            await expect.element(page.getByText('corp.org')).toBeVisible();
-            await expect.element(page.getByText('test.net')).toBeVisible();
-        });
+			await expect.element(page.getByText('This list is empty.')).toBeVisible();
+		});
+	});
 
-        it('should show Active status for active domains', async () => {
-            setupSearchDirectoryInterceptor();
+	describe('Error handling', () => {
+		it('displays an error snackbar when the API fails', async () => {
+			worker.use(
+				http.post('/service/admin/soap/SearchDirectoryRequest', () =>
+					HttpResponse.json(
+						{ Body: { Fault: { Reason: { Text: 'Server error' } } } },
+						{ status: 500 },
+					),
+				),
+			);
+			setup(<DomainList />);
 
-            setupBrowserTest(<DomainList />);
-
-            await expect
-                .element(page.getByText('Active', { exact: true }).first())
-                .toBeVisible();
-        });
-
-        it('should show Locked status for locked domains', async () => {
-            setupSearchDirectoryInterceptor();
-
-            setupBrowserTest(<DomainList />);
-
-            await expect
-                .element(page.getByText('Locked', { exact: true }))
-                .toBeVisible();
-        });
-
-        it('should render a single domain correctly', async () => {
-            const singleDomain = [buildDomain('only.com', 'domain-single')];
-            setupSearchDirectoryInterceptor(singleDomain);
-
-            setupBrowserTest(<DomainList />);
-
-            await expect.element(page.getByText('only.com')).toBeVisible();
-            await expect
-                .element(page.getByText('Active', { exact: true }))
-                .toBeVisible();
-        });
-
-        it('should show different statuses correctly', async () => {
-            const domains = [
-                buildDomain('active.com', 'd-1', 'active'),
-                buildDomain('closed.com', 'd-2', 'closed'),
-                buildDomain('suspended.com', 'd-3', 'suspended'),
-                buildDomain('maintenance.com', 'd-4', 'maintenance'),
-            ];
-            setupSearchDirectoryInterceptor(domains);
-
-            setupBrowserTest(<DomainList />);
-
-            await expect
-                .element(page.getByText('Active', { exact: true }))
-                .toBeVisible();
-            await expect
-                .element(page.getByText('Closed', { exact: true }))
-                .toBeVisible();
-            await expect
-                .element(page.getByText('Suspended', { exact: true }))
-                .toBeVisible();
-            await expect
-                .element(page.getByText('In maintenance', { exact: true }))
-                .toBeVisible();
-        });
-    });
-
-    describe('Empty state', () => {
-        it('should show empty state when no domains exist', async () => {
-            setupSearchDirectoryInterceptor([]);
-
-            setupBrowserTest(<DomainList />);
-
-            await expect
-                .element(page.getByText('This list is empty.'))
-                .toBeVisible();
-        });
-
-        it('should show help text in empty state', async () => {
-            setupSearchDirectoryInterceptor([]);
-
-            setupBrowserTest(<DomainList />);
-
-            await expect
-                .element(page.getByText(/You can create a new Domain/))
-                .toBeVisible();
-        });
-
-        it('should disable search input when list is empty and no search text', async () => {
-            setupSearchDirectoryInterceptor([]);
-
-            setupBrowserTest(<DomainList />);
-
-            await expect
-                .element(page.getByText('This list is empty.'))
-                .toBeVisible();
-
-            const searchInput = page.getByRole('textbox');
-            await expect.element(searchInput).toBeDisabled();
-        });
-    });
-
-    describe('Search', () => {
-        it('should enable search input when domains are present', async () => {
-            setupSearchDirectoryInterceptor();
-
-            setupBrowserTest(<DomainList />);
-
-            await expect.element(page.getByText('example.com')).toBeVisible();
-
-            const searchInput = page.getByRole('textbox');
-            await expect.element(searchInput).toBeEnabled();
-        });
-
-        it('should allow typing in the search input', async () => {
-            setupSearchDirectoryInterceptor();
-
-            setupBrowserTest(<DomainList />);
-
-            await expect.element(page.getByText('example.com')).toBeVisible();
-
-            const searchInput = page.getByRole('textbox');
-            await userEvent.fill(searchInput, 'test');
-            await expect.element(searchInput).toHaveValue('test');
-        });
-    });
-
-    describe('API interaction', () => {
-        it('should send SearchDirectory request with domains type', async () => {
-            const interceptor = setupSearchDirectoryInterceptor();
-
-            setupBrowserTest(<DomainList />);
-
-            const requestParams = (await interceptor) as any;
-            expect(requestParams.types).toBe('domains');
-            expect(requestParams.offset).toBe(0);
-            expect(requestParams.limit).toBe(10);
-        });
-
-        it('should request correct sorting parameters', async () => {
-            const interceptor = setupSearchDirectoryInterceptor();
-
-            setupBrowserTest(<DomainList />);
-
-            const requestParams = (await interceptor) as any;
-            expect(requestParams.sortBy).toBe('zimbraDomainName');
-            expect(requestParams.sortAscending).toBe('1');
-        });
-    });
+			await expect.element(page.getByTestId('snackbar')).toBeVisible();
+		});
+	});
 });

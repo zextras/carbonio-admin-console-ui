@@ -4,37 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Padding } from '@zextras/ui-components';
+import { Container } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router';
 
-import logo from '../assets/ninja_robo.svg';
-import {
-  ACTIVE_SYNC,
-  ADMINISTRATORS,
-  CREATE_NEW_DOMAIN_ROUTE_ID,
-  DOMAINS,
-  GENERAL_INFORMATION,
-  GLOBAL_ROUTE,
-  QUARANTINE,
-  SETTINGS,
-  TWO_FACTOR_AUTHENTICATION,
-  WHITELABEL_SETTINGS,
-} from '../constants';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
-import CreateDomain from './domain/create-new-domain';
-import DomainOperations from './domain/domain-detail-operation';
-import DomainDetailPanel from './domain/domain-detail-panel';
-import DomainList from './domain/domain-list/domain-list';
 import DomainListPanel from './domain/domain-list-panel';
-import GlobalActiveSync from './domain/global/global-active-sync';
-import GlobalDetailPanel from './domain/global/global-detail-panel';
-import GlobalTheme from './domain/global/global-theme';
-import GlobalTwoFactorAuthentcation from './domain/global/global-two-factor-auth';
-import GlobalDelegates from './domain/global-delegates';
-import QuarantineList from './quarantine/quarantine-list';
+import { DomainContentPanel } from './domain-content-panel';
 
 function getContainerStyle(isPrimaryBarExpanded: boolean) {
   return {
@@ -44,46 +20,6 @@ function getContainerStyle(isPrimaryBarExpanded: boolean) {
 }
 const AppView: FC = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
-  const [t] = useTranslation();
-
-  const EmptyState: FC = () => (
-    <Container>
-      <ds-text
-        as="span"
-        overflow="break-word"
-        weight="regular"
-        size="large"
-        style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-      >
-        <img src={logo} alt="logo" />
-      </ds-text>
-      <Padding all="medium" width="47%">
-        <ds-text
-          as="p"
-          color="gray1"
-          overflow="break-word"
-          weight="regular"
-          size="large"
-          style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-        >
-          {t(
-            'select_domain_or_create_new',
-            'Please select a domain from the menu on the left or click on "Create" button to create a new one.',
-          )}
-        </ds-text>
-      </Padding>
-      <Padding all="medium">
-        <ds-text
-          as="span"
-          size="small"
-          overflow="break-word"
-          style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-        >
-          <ds-icon icon="Plus" size="large" color="primary"></ds-icon>
-        </ds-text>
-      </Padding>
-    </Container>
-  );
 
   return (
     <Container height={'fit'}>
@@ -96,46 +32,7 @@ const AppView: FC = () => {
         </Container>
         <Container style={{ maxWidth: '100%' }}>
           <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-            <Suspense fallback={<ds-spinner />}>
-              <Routes>
-                <Route path={GLOBAL_ROUTE} element={<GlobalDetailPanel />} />
-                <Route path={`${GLOBAL_ROUTE}/${WHITELABEL_SETTINGS}`} element={<GlobalTheme />} />
-                <Route
-                  path={`${GLOBAL_ROUTE}/${TWO_FACTOR_AUTHENTICATION}`}
-                  element={<GlobalTwoFactorAuthentcation />}
-                />
-                <Route path={`${GLOBAL_ROUTE}/${QUARANTINE}`} element={<QuarantineList />} />
-                <Route path={`${GLOBAL_ROUTE}/${DOMAINS}`} element={<DomainList />} />
-                <Route path={`${GLOBAL_ROUTE}/${ADMINISTRATORS}`} element={<GlobalDelegates />} />
-                <Route path={`${GLOBAL_ROUTE}/${SETTINGS}`} element={<GlobalDetailPanel />} />
-                <Route path={`${GLOBAL_ROUTE}/${ACTIVE_SYNC}`} element={<GlobalActiveSync />} />
-                <Route
-                  path={`:domainId/${GENERAL_INFORMATION}`}
-                  element={
-                    <DomainDetailPanel>
-                      <DomainOperations />
-                    </DomainDetailPanel>
-                  }
-                />
-                <Route
-                  path={`:domainId/:operation`}
-                  element={
-                    <DomainDetailPanel>
-                      <DomainOperations />
-                    </DomainDetailPanel>
-                  }
-                />
-                <Route path={CREATE_NEW_DOMAIN_ROUTE_ID} element={<CreateDomain />} />
-                <Route
-                  index
-                  element={
-                    <DomainDetailPanel>
-                      <EmptyState />
-                    </DomainDetailPanel>
-                  }
-                />
-              </Routes>
-            </Suspense>
+            <DomainContentPanel />
           </Container>
         </Container>
       </Container>
