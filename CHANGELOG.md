@@ -1,3 +1,9 @@
+## [0.14.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.0...v0.14.1) (2026-07-06)
+
+### Bug Fixes
+
+* **ci:** cap turbo concurrency to prevent OOM in Jenkins CI ([#1279](https://github.com/zextras/carbonio-admin-console-ui/issues/1279)) ([a7958b2](https://github.com/zextras/carbonio-admin-console-ui/commit/a7958b2564c39ec3ba473228e0cba9ca4acbeb32))
+
 ## [0.14.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.18...v0.14.0) (2026-07-01)
 
 ### Features
