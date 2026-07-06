@@ -8,7 +8,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { type ChangeEvent, type ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import BucketDetailPanel from '../bucket-detail-panel';
+import { type BucketConnectorRow } from '../../../../types';
+import BucketDetailPanel, { resolveSelectedBucketConnector } from '../bucket-detail-panel';
 
 const mockListS3Connector = vi.hoisted(() => vi.fn());
 const mockDeleteS3Connector = vi.hoisted(() => vi.fn());
@@ -226,6 +227,26 @@ describe('BucketDetailPanel', () => {
       }),
     ]);
     mockDeleteS3Connector.mockResolvedValue({ ok: true });
+  });
+
+  it('should resolve selected connector by row id from table selection', () => {
+    const bucketList = [
+      {
+        uuid: 'uuid-1',
+        id: 'uuid-1',
+        label: 'Main connector',
+        bucketName: 'main-bucket',
+      } as BucketConnectorRow,
+      {
+        uuid: 'uuid-2',
+        id: 'uuid-2',
+        label: 'Backup connector',
+        bucketName: 'backup-bucket',
+      } as BucketConnectorRow,
+    ];
+
+    expect(resolveSelectedBucketConnector(bucketList, 'uuid-2')?.uuid).toBe('uuid-2');
+    expect(resolveSelectedBucketConnector(bucketList, 'missing')).toBeUndefined();
   });
 
   it('should render fetched connectors and open edit view on row click', async () => {

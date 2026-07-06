@@ -25,11 +25,11 @@ import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/ut
 import { VolumeContext } from '../volume-context';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
-interface AdvancedMailstoresDefinitionProps {
+type AdvancedMailstoresDefinitionProps = {
   externalData: string;
   setCompleteLoading: (newValue: boolean) => void;
   setToggleNextBtn: (newValue: boolean) => void;
-}
+};
 
 const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   externalData,

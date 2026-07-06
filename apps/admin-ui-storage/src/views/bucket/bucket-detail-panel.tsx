@@ -44,6 +44,22 @@ type TableHeader = {
 
 type SingleSelection = [] | [string];
 
+export function resolveSelectedBucketConnector(
+  bucketList: Array<BucketConnectorRow>,
+  selectedValue?: string,
+): BucketConnectorRow | undefined {
+  if (selectedValue === undefined) {
+    return undefined;
+  }
+
+  const selectedIndex = Number(selectedValue);
+  if (Number.isInteger(selectedIndex) && selectedIndex >= 0 && selectedIndex < bucketList.length) {
+    return bucketList[selectedIndex];
+  }
+
+  return bucketList.find((bucket) => bucket.uuid === selectedValue || bucket.id === selectedValue);
+}
+
 const headers = (t: TFunction): Array<TableHeader> => [
   {
     id: 'id',
@@ -406,13 +422,8 @@ const BucketDetailPanel: FC = () => {
               const nextSelection: SingleSelection =
                 firstSelected === undefined ? [] : [firstSelected];
               setBucketselection(nextSelection);
-              const selectedIndex = Number(firstSelected);
-              if (Number.isNaN(selectedIndex)) {
-                return;
-              }
-              const volumeObject: BucketConnectorRow | undefined = bucketList.find(
-                (s, index) => index === selectedIndex,
-              );
+
+              const volumeObject = resolveSelectedBucketConnector(bucketList, firstSelected);
               setShowDetails(false);
               setBucketDeleteName(volumeObject);
             }}
