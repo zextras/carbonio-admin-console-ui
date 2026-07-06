@@ -349,7 +349,7 @@ const MailstoresCreate: FC<{
       <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
         <Switch
           value={volumeDetail?.isCurrent}
-          label={t('label.enable_current', 'Enable as Current')}
+          label={t('label.set_as_current', 'Set as Current')}
           onClick={changeSwitchIsCurrent}
           iconColor="primary"
         />

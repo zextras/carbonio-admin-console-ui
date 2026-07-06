@@ -36,7 +36,9 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
   const setIsAllocationToggle = useBucketVolumeStore((state) => state?.setIsAllocationToggle);
   const [primaryRadio, setPrimaryRadio] = useState(false);
   const [secondaryRadio, setSecondaryRadio] = useState(false);
-  const [bucketS3, setBucketS3] = useState(false);
+  const isLocalBlockDevice = advancedVolumeDetail?.volumeAllocation === 'Local Block Device';
+  const showTieringSettings =
+    advancedVolumeDetail?.unusedBucketType === S3 && advancedVolumeDetail?.tieringSupported === true;
 
   const changeVolDetail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -67,23 +69,37 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
   }, [advancedVolumeDetail?.volumeMain]);
 
   const changeSwitchInfraquentAccess = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    const newValue = !advancedVolumeDetail?.useInfrequentAccess;
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
-      useInfrequentAccess: !advancedVolumeDetail?.useInfrequentAccess,
+      useInfrequentAccess: newValue,
+      useIntelligentTiering: newValue ? false : prev.useIntelligentTiering,
+      infrequentAccessThreshold: newValue ? advancedVolumeDetail?.infrequentAccessThreshold : '',
     }));
-    onSelection({ useInfrequentAccess: !advancedVolumeDetail?.useInfrequentAccess }, true);
-  }, [advancedVolumeDetail?.useInfrequentAccess, onSelection, setAdvancedVolumeDetail]);
+    onSelection({ useInfrequentAccess: newValue }, true);
+    if (newValue) {
+      onSelection({ useIntelligentTiering: false }, true);
+    }
+    if (!newValue) {
+      onSelection({ infrequentAccessThreshold: '' }, true);
+    }
+  }, [advancedVolumeDetail?.useInfrequentAccess, advancedVolumeDetail?.infrequentAccessThreshold, onSelection, setAdvancedVolumeDetail]);
 
   const changeSwitchInfraquentTiering = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    const newValue = !advancedVolumeDetail?.useIntelligentTiering;
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
-      useIntelligentTiering: !advancedVolumeDetail?.useIntelligentTiering,
+      useIntelligentTiering: newValue,
+      useInfrequentAccess: newValue ? false : prev.useInfrequentAccess,
     }));
-    onSelection({ useIntelligentTiering: !advancedVolumeDetail?.useIntelligentTiering }, true);
+    onSelection({ useIntelligentTiering: newValue }, true);
+    if (newValue) {
+      onSelection({ useInfrequentAccess: false }, true);
+    }
   }, [advancedVolumeDetail?.useIntelligentTiering, onSelection, setAdvancedVolumeDetail]);
 
   const changeSwitchIsCurrent = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
       isCurrent: !advancedVolumeDetail?.isCurrent,
     }));
@@ -91,7 +107,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
   }, [advancedVolumeDetail?.isCurrent, onSelection, setAdvancedVolumeDetail]);
 
   const changeSwitchCentralized = useCallback((): void => {
-    setAdvancedVolumeDetail((prev: object) => ({
+    setAdvancedVolumeDetail((prev) => ({
       ...prev,
       centralized: !advancedVolumeDetail?.centralized,
     }));
@@ -114,218 +130,228 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
   ]);
 
   useEffect(() => {
-    if (advancedVolumeDetail?.unusedBucketType === S3) {
-      setBucketS3(true);
-    } else {
-      setBucketS3(false);
+    if (showTieringSettings) {
+      return;
     }
-  }, [advancedVolumeDetail?.unusedBucketType]);
+
+    setAdvancedVolumeDetail((prev) => ({
+      ...prev,
+      useInfrequentAccess: false,
+      useIntelligentTiering: false,
+    }));
+    onSelection({ useInfrequentAccess: false }, true);
+    onSelection({ useIntelligentTiering: false }, true);
+  }, [onSelection, setAdvancedVolumeDetail, showTieringSettings]);
 
   return (
-    <>
-      <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-        <Row padding={{ top: 'large' }} width="100%">
-          <LabeledValue
-            label={t('label.volume_server_name', 'Server')}
-            backgroundColor="gray6"
-            value={externalData}
-          />
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%">
-          <LabeledValue
-            label={t('label.storage_type', 'Storage Type')}
-            backgroundColor="gray6"
-            value={advancedVolumeDetail?.volumeAllocation}
-          />
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%">
-          <LabeledValue
-            label={t('label.volume_name', 'Volume Name')}
-            value={advancedVolumeDetail?.volumeName}
-            backgroundColor="gray6"
-          />
-        </Row>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'large', right: 'large' }}
-          >
-            <LabeledValue
-              label={t('label.bucket_name', 'Bucket Name')}
-              backgroundColor="gray6"
-              value={advancedVolumeDetail?.bucketName}
-            />
-          </Container>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'large', right: 'large' }}
-          >
-            <LabeledValue
-              label={t('label.type', 'Type')}
-              backgroundColor="gray6"
-              value={advancedVolumeDetail?.unusedBucketType}
-            />
-          </Container>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'large' }}
-          >
-            <LabeledValue
-              label={t('label.ID', 'ID')}
-              backgroundColor="gray6"
-              value={advancedVolumeDetail?.bucketId}
-            />
-          </Container>
-        </ListRow>
-        <Row
-          padding={{ top: 'large' }}
-          width="100%"
-          mainAlignment="center"
-          crossAlignment="center"
-          background="gray6"
+    <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t('label.volume_server_name', 'Server')}
+          backgroundColor="gray6"
+          value={externalData}
+        />
+      </Row>
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t('label.storage_type', 'Storage Type')}
+          backgroundColor="gray6"
+          value={advancedVolumeDetail?.volumeAllocation}
+        />
+      </Row>
+      <Row padding={{ top: 'large' }} width="100%">
+        <LabeledValue
+          label={t('label.volume_name', 'Volume Name')}
+          value={advancedVolumeDetail?.volumeName}
+          backgroundColor="gray6"
+        />
+      </Row>
+      <ListRow>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ top: 'large', right: 'large' }}
         >
-          <Row width="48%">
-            <Radio
-              label={t('label.primary_volume', 'This is a Primary Volume')}
-              value={PRIMARY_TYPE_VALUE.toString()}
-              checked={primaryRadio}
-              onClick={(): void => {
-                setPrimaryRadio(!primaryRadio);
-                setSecondaryRadio(false);
-              }}
-              iconColor="primary"
-            />
-          </Row>
-          <Row width="48%">
-            <Radio
-              label={t('label.secondary_volume', 'This is a Secondary Volume')}
-              value={SECONDARY_TYPE_VALUE}
-              checked={secondaryRadio}
-              onClick={(): void => {
-                setSecondaryRadio(!secondaryRadio);
-                setPrimaryRadio(false);
-              }}
-              iconColor="primary"
-            />
-          </Row>
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%">
-          <Input
-            inputName="prefix"
-            label={t(
-              'label.prefix_name',
-              'Prefix - all objects will have this prefix in their name',
-            )}
-            value={advancedVolumeDetail?.prefix}
-            backgroundColor="gray5"
-            onChange={changeVolDetail}
+          <LabeledValue
+            label={t('label.bucket_name', 'Bucket Name')}
+            backgroundColor="gray6"
+            value={advancedVolumeDetail?.bucketName}
+          />
+        </Container>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ top: 'large', right: 'large' }}
+        >
+          <LabeledValue
+            label={t('label.type', 'Type')}
+            backgroundColor="gray6"
+            value={advancedVolumeDetail?.unusedBucketType}
+          />
+        </Container>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ top: 'large' }}
+        >
+          <LabeledValue
+            label={t('label.ID', 'ID')}
+            backgroundColor="gray6"
+            value={advancedVolumeDetail?.bucketId}
+          />
+        </Container>
+      </ListRow>
+      <Row
+        padding={{ top: 'large' }}
+        width="100%"
+        mainAlignment="center"
+        crossAlignment="center"
+        background="gray6"
+      >
+        <Row width="48%">
+          <Radio
+            label={t('label.primary_volume', 'This is a Primary Volume')}
+            value={PRIMARY_TYPE_VALUE.toString()}
+            checked={primaryRadio}
+            onClick={(): void => {
+              setPrimaryRadio(!primaryRadio);
+              setSecondaryRadio(false);
+            }}
+            iconColor="primary"
           />
         </Row>
-        {bucketS3 && (
-          <>
-            <Row
-              padding={{ top: 'large' }}
-              mainAlignment="flex-start"
-              width="100%"
-              background="gray6"
-            >
-              <Row width="48.5%" mainAlignment="flex-start">
-                <Row mainAlignment="flex-start" width="100%">
-                  <Switch
-                    value={advancedVolumeDetail?.useInfrequentAccess}
-                    label={t('label.use_infraquent_access', 'Use infrequent access')}
-                    onClick={changeSwitchInfraquentAccess}
-                    iconColor="primary"
-                  />
-                </Row>
-                <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-                  <Link
-                    color="secondary"
-                    href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Trans
-                      i18nKey="label.use_infraquent_access_helptext"
-                      defaults="<underline>Amazon Storage Class Documentation</underline>"
-                      components={{ underline: <u /> }}
-                    />
-                  </Link>
-                </Row>
-              </Row>
-              <Padding horizontal="small" />
-              <Row width="48.5%" mainAlignment="flex-start">
-                <Input
-                  inputName="infrequentAccessThreshold"
-                  label={t('label.size_threshold', 'Size Threshold')}
-                  backgroundColor="gray5"
-                  onChange={changeVolDetail}
-                  disabled
+        <Row width="48%">
+          <Radio
+            label={t('label.secondary_volume', 'This is a Secondary Volume')}
+            value={SECONDARY_TYPE_VALUE}
+            checked={secondaryRadio}
+            onClick={(): void => {
+              setSecondaryRadio(!secondaryRadio);
+              setPrimaryRadio(false);
+            }}
+            iconColor="primary"
+          />
+        </Row>
+      </Row>
+      <Row padding={{ top: 'large' }} width="100%">
+        <Input
+          inputName="prefix"
+          label={t(
+            'label.prefix_name',
+            'Prefix - all objects will have this prefix in their name',
+          )}
+          value={advancedVolumeDetail?.prefix}
+          backgroundColor="gray5"
+          onChange={changeVolDetail}
+        />
+      </Row>
+      {showTieringSettings && !isLocalBlockDevice && (
+        <>
+          <Row
+            padding={{ top: 'large' }}
+            mainAlignment="flex-start"
+            width="100%"
+            background="gray6"
+          >
+            <Row width="48.5%" mainAlignment="flex-start">
+              <Row mainAlignment="flex-start" width="100%">
+                <Switch
+                  value={advancedVolumeDetail?.useInfrequentAccess}
+                  label={t('label.use_infraquent_access', 'Use infrequent access')}
+                  onClick={changeSwitchInfraquentAccess}
+                  iconColor="primary"
                 />
               </Row>
+              <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+                <Link
+                  color="secondary"
+                  href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Trans
+                    i18nKey="label.use_infraquent_access_helptext"
+                    defaults="<underline>Amazon Storage Class Documentation</underline>"
+                    components={{ underline: <u /> }}
+                  />
+                </Link>
+              </Row>
             </Row>
-            <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-              <Switch
-                value={advancedVolumeDetail?.useIntelligentTiering}
-                label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
-                onClick={changeSwitchInfraquentTiering}
-                iconColor="primary"
+            <Padding horizontal="small" />
+            <Row width="48.5%" mainAlignment="flex-start">
+              <Input
+                inputName="infrequentAccessThreshold"
+                label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
+                type="number"
+                value={advancedVolumeDetail?.infrequentAccessThreshold || ''}
+                backgroundColor="gray5"
+                onChange={changeVolDetail}
+                disabled={!advancedVolumeDetail?.useInfrequentAccess}
               />
             </Row>
-            <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-              <Link
-                color="secondary"
-                href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Trans
-                  i18nKey="label.use_intelligent_tiering_helptext"
-                  defaults="<underline>Amazon Tiering Documentation</underline>"
-                  components={{ underline: <u /> }}
-                />
-              </Link>
-            </Row>
-          </>
-        )}
-        <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-          <Switch
-            value={advancedVolumeDetail?.isCurrent}
-            label={t('label.enable_current', 'Enable as Current')}
-            onClick={changeSwitchIsCurrent}
-            iconColor="primary"
-          />
-        </Row>
-        <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-          <ds-text as="p" color="secondary">
-            {t(
-              'label.enable_current_helptext',
-              'Enabling this option will disable the current active volume.',
-            )}
-          </ds-text>
-        </Row>
-        <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-          <Switch
-            value={advancedVolumeDetail?.centralized}
-            label={t('label.storage_centralized', 'I want this Storage to be centralized')}
-            onClick={changeSwitchCentralized}
-            iconColor="primary"
-          />
-        </Row>
-        <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-          <ds-text as="p" color="secondary" style={{ whiteSpace: 'pre-line' }}>
-            <Trans
-              i18nKey="label.storage_centralized_helpertext"
-              defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
-              components={{ bold: <strong /> }}
+          </Row>
+          <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+            <Switch
+              value={advancedVolumeDetail?.useIntelligentTiering}
+              label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
+              onClick={changeSwitchInfraquentTiering}
+              iconColor="primary"
             />
-          </ds-text>
-        </Row>
-      </Container>
-    </>
+          </Row>
+          <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+            <Link
+              color="secondary"
+              href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Trans
+                i18nKey="label.use_intelligent_tiering_helptext"
+                defaults="<underline>Amazon Tiering Documentation</underline>"
+                components={{ underline: <u /> }}
+              />
+            </Link>
+          </Row>
+        </>
+      )}
+      <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+        <Switch
+          value={advancedVolumeDetail?.isCurrent}
+          label={t('label.set_as_current', 'Set as Current')}
+          onClick={changeSwitchIsCurrent}
+          iconColor="primary"
+        />
+      </Row>
+      <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+        <ds-text as="p" color="secondary">
+          {t(
+            'label.enable_current_helptext',
+            'Enabling this option will disable the current active volume.',
+          )}
+        </ds-text>
+      </Row>
+      {!isLocalBlockDevice && (
+        <>
+          <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+            <Switch
+              value={advancedVolumeDetail?.centralized}
+              label={t('label.storage_centralized', 'I want this Storage to be centralized')}
+              onClick={changeSwitchCentralized}
+              iconColor="primary"
+            />
+          </Row>
+          <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+            <ds-text as="p" color="secondary" style={{ whiteSpace: 'pre-line', width: '100%' }} overflow="break-word">
+              <Trans
+                i18nKey="label.storage_centralized_helpertext"
+                defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
+                components={{ bold: <strong /> }}
+              />
+            </ds-text>
+          </Row>
+        </>
+      )}
+    </Container>
   );
 };
 

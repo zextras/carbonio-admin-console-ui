@@ -8,7 +8,7 @@ import { FC, useState } from 'react';
 import { useParams } from 'react-router';
 
 import type { VolumeWizardDetail } from '../../../types';
-import { BUCKET_LIST, DATA_VOLUMES, HSM_SETTINGS, SERVERS_LIST } from '../../constants';
+import { DATA_VOLUMES, HSM_SETTINGS, S3CONNECTOR_LIST, SERVERS_LIST } from '../../constants';
 import BucketDetailPanel from './bucket-detail-panel';
 import ServersDetailPanel from './global-servers/server-detail-panel';
 import HSMsettingPanel from './hsm/hsm-setting-panel';
@@ -38,7 +38,7 @@ const BucketOperation: FC = () => {
                 <ServersDetailPanel />
               </Container>
             );
-          case BUCKET_LIST:
+          case S3CONNECTOR_LIST:
             return (
               <Container style={{ transition: 'max-width 300ms' }}>
                 <BucketDetailPanel />
