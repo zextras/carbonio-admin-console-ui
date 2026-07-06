@@ -69,14 +69,14 @@ function setupGetAllOperationsInterceptor(
     operations: Array<Operation> = MOCK_RUNNING_OPERATIONS,
     serverName = SERVER_NAME,
 ): void {
-    worker.use(
-        http.post('/service/admin/soap/zextras', async ({ request }) => {
-            const body = (await request.json()) as Record<string, unknown>;
-            const zextrasBody = (body?.Body as Record<string, unknown>)?.zextras as
-                | Record<string, unknown>
-                | undefined;
+        worker.use(
+            http.post('/service/admin/soap/zextras', async ({ request }) => {
+                const body = (await request.json()) as Record<string, unknown>;
+                const zextrasBody = (body?.Body as Record<string, unknown>)?.zextras as
+                    | Record<string, unknown>
+                    | undefined;
 
-            if (zextrasBody?.action === 'getAllOperations') {
+                if (zextrasBody?.action === 'getAllOperations') {
                 return HttpResponse.json({
                     Body: {
                         response: {
@@ -219,5 +219,78 @@ describe('RunningDetailPanel', () => {
         await setupBrowserTest(<RunningDetailPanel />);
         await page.getByText('doBackup').click();
         await expect.element(page.getByText('COPY')).toBeVisible();
+    });
+
+    it('should stop the operation and refetch on success', async () => {
+        setupGetAllServersInterceptor();
+        let stopCalledTimes = 0;
+        worker.use(
+            http.post('/service/admin/soap/zextras', async ({ request }) => {
+                const body = (await request.json()) as Record<string, unknown>;
+                const zextrasBody = (body?.Body as Record<string, unknown>)?.zextras as
+                    | Record<string, unknown>
+                    | undefined;
+
+                if (zextrasBody?.action === 'getAllOperations') {
+                    return HttpResponse.json({
+                        Body: {
+                            response: {
+                                content: JSON.stringify({
+                                    response: {
+                                        [SERVER_NAME]: {
+                                            ok: true,
+                                            response: { operationList: MOCK_RUNNING_OPERATIONS },
+                                        },
+                                    },
+                                }),
+                            },
+                        },
+                    });
+                }
+                if (zextrasBody?.action === 'doStopOperation') {
+                    stopCalledTimes += 1;
+                    return HttpResponse.json({
+                        Body: {
+                            response: {
+                                content: JSON.stringify({
+                                    response: { [SERVER_NAME]: { ok: true } },
+                                }),
+                            },
+                        },
+                    });
+                }
+
+                return HttpResponse.json({ Body: {} });
+            }),
+        );
+
+        await setupBrowserTest(<RunningDetailPanel />);
+        await page.getByText('doBackup').click();
+        await page.getByRole('button', { name: 'STOP OPERATION' }).click();
+        await expect.element(page.getByText('You are stopping doBackup')).toBeVisible();
+        await page.getByTestId('modal').getByRole('button', { name: 'STOP OPERATION' }).click();
+
+        await expect.poll(() => stopCalledTimes).toBe(1);
+    });
+
+    it('should show Empty Table when fetching operations fails', async () => {
+        setupGetAllServersInterceptor();
+        worker.use(
+            http.post('/service/admin/soap/zextras', async ({ request }) => {
+                const body = (await request.json()) as Record<string, unknown>;
+                const zextrasBody = (body?.Body as Record<string, unknown>)?.zextras as
+                    | Record<string, unknown>
+                    | undefined;
+
+                if (zextrasBody?.action === 'getAllOperations') {
+                    return HttpResponse.json({ Body: {} }, { status: 500 });
+                }
+
+                return HttpResponse.json({ Body: {} });
+            }),
+        );
+
+        await setupBrowserTest(<RunningDetailPanel />);
+        await expect.element(page.getByText('Empty Table')).toBeVisible();
     });
 });
