@@ -3,21 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  IconCheckbox,
-  Input,
-  Padding,
-  Row,
-  Switch,
-  SwitchProps,
-  Tooltip,
-} from '@zextras/ui-components';
-import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
+import { Container, IconCheckbox, Input, Padding, Row, Switch, SwitchProps, Tooltip, } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { ComputedLimit, QuotaSource } from '../../../../../../services/get-account-quota';
+import { useDomainQuota } from '../../../../../../services/use-domain-quota';
 import { BytesToGB, GbToBytes } from '../../../../../utility/utils';
 import { TotalQuotaSourceIcon } from './total-quota-source-icon';
 
@@ -40,13 +33,9 @@ export const EditAccountQuotaInputsNew = ({
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
   const [quotaValue, setQuotaValue] = useState<number | 'unlimited' | undefined>(undefined);
 
-  const domainQuotaConstraint = useDomainStore((state) => {
-    if (state.domain.id) {
-      return state.domainsQuota[state.domain.id];
-    } else {
-      return undefined;
-    }
-  });
+  const { domainId } = useParams();
+  const { data: quotaData } = useDomainQuota(domainId);
+  const domainQuotaConstraint = quotaData?.type === 'success' ? quotaData.limit : 'not-set';
 
   useEffect(() => {
     setQuotaValue(

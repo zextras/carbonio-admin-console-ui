@@ -3,31 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  ChipInput,
-  Container,
-  CustomHeaderFactory,
-  DatePicker,
-  HorizontalWizard,
-  HoverableRowFactory,
-  InheritedInput,
-  InheritedSelect,
-  InheritedSwitch,
-  Input,
-  ListRow,
-  Modal,
-  Padding,
-  Row,
-  Select,
-  Switch,
-  Table,
-  Tooltip,
-  useSnackbar,
-  WizardInSection,
-} from '@zextras/ui-components';
-import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
+import { Button, ChipInput, Container, CustomHeaderFactory, DatePicker, HorizontalWizard, HoverableRowFactory, InheritedInput, InheritedSelect, InheritedSwitch, Input, ListRow, Modal, Padding, Row, Select, Switch, Table, Tooltip, useSnackbar, WizardInSection, } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
 import {
@@ -44,6 +21,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, FALSE, ZIMBRA_ADMIN_URN } from '../../../../../constants';
+import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import CustomChip from '../../../../components/customChip';
@@ -57,7 +35,8 @@ const EditAccountSecuritySection: FC = () => {
   const context = useContext(AccountContext);
   const { otpList, accountDetail, setAccountDetail, getListOtp, accSpecificDetail, cosDetail } =
     context;
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
   const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
   const [qrData, setQrData] = useState('');
   const [secrateCode, setSecrateCode] = useState('');

@@ -15,7 +15,7 @@ import {
   Row,
   useSnackbar,
 } from '@zextras/ui-components';
-import { replaceHistory } from '@zextras/ui-shared';
+import { replaceHistory, useCosList } from '@zextras/ui-shared';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
@@ -37,7 +37,6 @@ import {
 import { useDebouncedValue } from '../../hooks/use-debounced-value';
 import { cosQueryKeys } from '../../services/cos-query-keys';
 import { useCosDetail } from '../../services/use-cos-detail';
-import { useCosList } from '../../services/use-cos-list';
 import { GeneralListPanel } from './general-list-panel';
 
 export const CosListPanel = () => {

@@ -3,21 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  Input,
-  Padding,
-  Paging,
-  Row,
-  Table,
-  TrackNumberPerPage,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { searchDirectory, useDomainStore } from '@zextras/ui-shared';
+import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, Padding, Paging, Row, Table, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
+import { searchDirectory } from '@zextras/ui-shared';
 import { format, parse } from 'date-fns';
 import { debounce } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -25,6 +12,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
 import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
@@ -42,7 +30,8 @@ const DomainResources: FC = () => {
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [totalAccount, setTotalAccount] = useState<number>(0);
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
   const [searchString, setSearchString] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedResourceList, setSelectedResourceList] = useState<any>({});

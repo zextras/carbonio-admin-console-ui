@@ -3,21 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  ListRow,
-  Padding,
-  Row,
-  Switch,
-  TextArea,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button, Container, ListRow, Padding, Row, Switch, TextArea, useSnackbar, } from '@zextras/ui-components';
+import { domainByIdKey, flushCache, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { DomainDisclaimerType, objectType } from '../../../../types';
 import Composer from '../../../composer/composer';
@@ -30,15 +22,18 @@ import {
   ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
   ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../../constants';
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import styles from './domain-disclaimer.module.css';
 
 const DomainDisclaimer: FC = () => {
   const [t] = useTranslation();
-  const domainInformation = useDomainStore((state) => state.domain?.a);
-  const domainId = useDomainStore((state) => state.domain?.id);
-  const domainName = useDomainStore((state) => state.domain?.name);
-  const setDomain = useDomainStore((state) => state.setDomain);
+  const { data: domain } = useSelectedDomain();
+  const domainInformation = domain?.a;
+  const domainId = domain?.id;
+  const domainName = domain?.name;
+  const queryClient = useQueryClient();
+  const { domainId: routeDomainId } = useParams();
   const createSnackbar = useSnackbar();
   const [defaulRichTextContent, setDefaulRichTextContent] = useState<string>('');
   const [domainDisclaimerInitialDetail, setDomainDisclaimerInitialDetail] =
@@ -222,7 +217,7 @@ const DomainDisclaimer: FC = () => {
         }
         const domain: objectType = responseData?.domain[0];
         if (domain) {
-          setDomain(domain);
+          queryClient.setQueryData(domainByIdKey(routeDomainId, 1), domain);
         }
       })
       .catch((error) => {
@@ -246,7 +241,8 @@ const DomainDisclaimer: FC = () => {
     createSnackbar,
     t,
     isGlobalAdmin,
-    setDomain,
+    queryClient,
+    routeDomainId,
   ]);
 
   return (
