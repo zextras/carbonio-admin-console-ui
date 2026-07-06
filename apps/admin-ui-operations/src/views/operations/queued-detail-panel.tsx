@@ -107,11 +107,12 @@ const QuededDetailPanel: FC = () => {
 		<>
 			{wizardDetailToggle && (
 				<ModalOverlay open={wizardDetailToggle}>
-					<OperationsWizardDetailPanel
-						setWizardDetailToggle={setWizardDetailToggle}
-						setOpen={setOpen}
-						selectedData={selectedData}
-					/>
+				<OperationsWizardDetailPanel
+					setWizardDetailToggle={setWizardDetailToggle}
+					setOpen={setOpen}
+					selectedData={selectedData}
+					allowStop
+				/>
 				</ModalOverlay>
 			)}
 			<Container

@@ -61,11 +61,12 @@ const DoneDetailPanel: FC = () => {
 		<>
 			{wizardDetailToggle && (
 				<ModalOverlay open={wizardDetailToggle}>
-					<OperationsWizardDetailPanel
-						setWizardDetailToggle={setWizardDetailToggle}
-						setOpen={() => {}}
-						selectedData={selectedData}
-					/>
+				<OperationsWizardDetailPanel
+					setWizardDetailToggle={setWizardDetailToggle}
+					setOpen={() => {}}
+					selectedData={selectedData}
+					allowStop={false}
+				/>
 				</ModalOverlay>
 			)}
 			<Container
