@@ -4,11 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { Route, Routes } from 'react-router';
+import { useParams } from 'react-router';
 
 import {
   ADVANCED,
-  CREATE_NEW_COS_ROUTE_ID,
   FEATURES,
   GENERAL_INFORMATION,
   PREFERENCES,
@@ -18,11 +17,29 @@ import {
 import { WscCosSettings } from '../../wsc/wsc-cos-settings';
 import { CosAdvanced } from './advanced/cos-advanced';
 import { CosFeatures } from './cos-features/cos-features';
-import { CosList } from './cos-list/cos-list';
 import { CosServerPools } from './cos-server-pools/cos-server-pools';
-import { CreateCos } from './create-new-cos';
 import { CosGeneralInformation } from './general-information/cos-general-information';
 import { COSPreferences } from './preferences/cos-preferences';
+
+const CosDetailContent = () => {
+  const { operation } = useParams();
+  switch (operation?.toLowerCase()) {
+    case GENERAL_INFORMATION:
+      return <CosGeneralInformation />;
+    case FEATURES:
+      return <CosFeatures />;
+    case WSC:
+      return <WscCosSettings />;
+    case PREFERENCES:
+      return <COSPreferences />;
+    case ADVANCED:
+      return <CosAdvanced />;
+    case SERVER_POOLS:
+      return <CosServerPools />;
+    default:
+      return null;
+  }
+};
 
 export const CosDetailPanel = () => (
   <Container
@@ -31,16 +48,6 @@ export const CosDetailPanel = () => (
     mainAlignment="flex-start"
     background="gray6"
   >
-    <Routes>
-      <Route index element={<CosList />} />
-      <Route path={`/:cosId/${GENERAL_INFORMATION}`} element={<CosGeneralInformation />} />
-      <Route path={`/:cosId/${FEATURES}`} element={<CosFeatures />} />
-      <Route path={`/:cosId/${WSC}`} element={<WscCosSettings />} />
-      <Route path={`/:cosId/${PREFERENCES}`} element={<COSPreferences />} />
-      <Route path={`/:cosId/${ADVANCED}`} element={<CosAdvanced />} />
-      <Route path={`/:cosId/${SERVER_POOLS}`} element={<CosServerPools />} />
-      <Route path={`/${CREATE_NEW_COS_ROUTE_ID}`} element={<CreateCos />} />
-      <Route path={'/cos_list'} element={<CosList />} />
-    </Routes>
+    <CosDetailContent />
   </Container>
 );

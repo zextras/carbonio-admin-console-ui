@@ -35,15 +35,6 @@ export const CosLayout = ({ children, variant = 'list' }: CosLayoutProps) => {
     );
   }
 
-  if (variant === 'detail') {
-    return (
-      <>
-        <CosListPanel />
-        <div style={containerStyle}>{children}</div>
-      </>
-    );
-  }
-
   return (
     <>
       <CosListPanel />
