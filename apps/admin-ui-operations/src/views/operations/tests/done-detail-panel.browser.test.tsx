@@ -14,7 +14,6 @@ import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { useOperationStore } from '../../../store/operation/store';
 import { type Operation } from '../../../types/operations';
 import DoneDetailPanel from '../done-detail-panel';
 
@@ -122,12 +121,10 @@ function setupGetOperationLogInterceptor(
 describe('DoneDetailPanel', () => {
     beforeEach(() => {
         vi.resetAllMocks();
-        useOperationStore.getState().setDoneData([]);
     });
 
     afterEach(() => {
         resetMockWorker();
-        useOperationStore.getState().setDoneData([]);
     });
 
     it('should render the Done Operations heading', async () => {
