@@ -23,93 +23,128 @@ import { filter } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type BucketDetail, objectType, TestConnectionObjectType } from '../../../types';
+import {
+  BucketConnectorRow,
+  DeleteS3ConnectorRequest,
+  S3Connector,
+} from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
-import { fetchSoap } from '../../services/bucket-service';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
+import { deleteS3Connector, listS3Connector } from '../../services/bucket-service';
 import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import NewBucket from './new-bucket';
 
-const headers = (t: TFunction): any => [
+type TableHeader = {
+  id: string;
+  label: string;
+  bold: boolean;
+  width?: string;
+};
+
+type SingleSelection = [] | [string];
+
+export function resolveSelectedBucketConnector(
+  bucketList: Array<BucketConnectorRow>,
+  selectedValue?: string,
+): BucketConnectorRow | undefined {
+  if (selectedValue === undefined) {
+    return undefined;
+  }
+
+  const selectedIndex = Number(selectedValue);
+  if (Number.isInteger(selectedIndex) && selectedIndex >= 0 && selectedIndex < bucketList.length) {
+    return bucketList[selectedIndex];
+  }
+
+  return bucketList.find((bucket) => bucket.uuid === selectedValue || bucket.id === selectedValue);
+}
+
+const headers = (t: TFunction): Array<TableHeader> => [
+  {
+    id: 'id',
+    label: t('label.id', 'ID'),
+    width: '35%',
+    bold: true,
+  },
   {
     id: 'label',
-    label: t('label.label', 'Label'),
+    label: t('label.descriptive_name', 'Descriptive Name'),
+    width: '25%',
     bold: true,
   },
   {
-    id: 'name',
-    label: t('label.bucket_name', 'Name'),
+    id: 'bucketName',
+    label: t('label.bucket_name', 'Bucket name'),
+    width: '25%',
     bold: true,
   },
   {
-    id: 'type',
-    label: t('label.type', 'Type'),
+    id: 'actions',
+    label: t('label.actions', 'Actions'),
+    width: '10%',
     bold: true,
   },
 ];
 
 const BucketListTable: FC<{
-  volumes: objectType[];
-  selectedRows: any;
+  volumes: Array<BucketConnectorRow>;
+  selectedRows: SingleSelection;
   onSelectionChange: (selected: string[]) => void;
   onDoubleClick: (i: number) => void;
   onClick: (i: number) => void;
 }> = ({ volumes, selectedRows, onSelectionChange, onDoubleClick, onClick }) => {
   const [t] = useTranslation();
-  const tableRows: any = useMemo(
+  const tableRows: Array<{
+    id: string;
+    columns: Array<string | React.ReactElement>;
+    clickable: boolean;
+  }> =
+    useMemo(
     () =>
       volumes.map((v, i) => ({
-        id: i,
+        id: v.uuid,
         columns: [
-          <Tooltip placement="bottom" label={v.notes} key={v.label}>
+          <Tooltip placement="bottom" label={v.uuid} key={`${v.uuid}-id`}>
             <Row
-              onDoubleClick={(): void => {
-                onDoubleClick(i);
-              }}
-              onClick={(): void => {
-                onClick(i);
-              }}
-              style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-            >
-              <ds-text as="span" size="small" weight="regular">
-                {v.label}
-              </ds-text>
-            </Row>
-          </Tooltip>,
-          <Tooltip placement="bottom" label={v.notes} key={v.bucketName}>
-            <Row
-              key={i}
-              onDoubleClick={(): void => {
-                onDoubleClick(i);
-              }}
-              onClick={(): void => {
-                onClick(i);
-              }}
+              onDoubleClick={(): void => { onDoubleClick(i); }}
+              onClick={(): void => { onClick(i); }}
               style={{ textAlign: 'left', justifyContent: 'flex-start' }}
             >
               <ds-text as="span" size="small" weight="light">
-                {v.bucketName}
+                {v.uuid}
               </ds-text>
             </Row>
           </Tooltip>,
-          <Tooltip placement="bottom" label={v.notes} key={v.storeType}>
-            <Row
-              key={i}
-              onDoubleClick={(): void => {
-                onDoubleClick(i);
-              }}
-              onClick={(): void => {
-                onClick(i);
-              }}
-              style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+          <Row
+            key={`${v.uuid}-label`}
+            onDoubleClick={(): void => { onDoubleClick(i); }}
+            onClick={(): void => { onClick(i); }}
+            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+          >
+            <ds-text as="span" size="small" weight="regular">
+              {v.label}
+            </ds-text>
+          </Row>,
+          <Row
+            key={`${v.uuid}-bucket`}
+            onDoubleClick={(): void => { onDoubleClick(i); }}
+            onClick={(): void => { onClick(i); }}
+            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+          >
+            <ds-text as="span" size="small" weight="light">
+              {v.bucketName}
+            </ds-text>
+          </Row>,
+          <Row key={`${v.uuid}-actions`} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+            <button
+              type="button"
+              onClick={(): void => { onClick(i); }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 0px 0px 14px', display: 'inline-flex', alignItems: 'center' }}
             >
-              <ds-text as="span" size="small" weight="light">
-                {v.storeType}
-              </ds-text>
-            </Row>
-          </Tooltip>,
+              <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
+            </button>
+          </Row>,
         ],
         clickable: true,
       })),
@@ -168,75 +203,66 @@ const BucketListTable: FC<{
 const BucketDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [bucketselection, setBucketselection] = useState<string[]>([]);
-  const [bucketDeleteName, setBucketDeleteName] = useState<BucketDetail | undefined>();
-  const bucketType = '';
-  const [bucketList, setBucketList] = useState<objectType[]>([]);
-  const [allBucketList, setAllBucketList] = useState([]);
-  const [connectionData, setConnectionData] = useState<BucketDetail | undefined>();
+  const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
+  const [bucketList, setBucketList] = useState<Array<BucketConnectorRow>>([]);
+  const [bucketDeleteName, setBucketDeleteName] = useState<BucketConnectorRow | undefined>();
+  const [allBucketList, setAllBucketList] = useState<Array<BucketConnectorRow>>([]);
+  const [connectionData, setConnectionData] = useState<BucketConnectorRow | undefined>();
   const [toggleWizardSection, setToggleWizardSection] = useState(false);
   const [open, setOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [searchBucket, setSearchBucket] = useState('');
   const [showEditDetailView, setShowEditDetailView] = useState(false);
   const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<BucketDetail>();
+  const [selectedRow, setSelectedRow] = useState<BucketConnectorRow>();
 
   const closeHandler = (): void => {
     setOpen(false);
-    setShowDetails(!showDetails);
+    setShowDetails(false);
   };
 
-  const { selectedServerName } = useBucketVolumeStore((state) => state);
-
   const getBucketListType = useCallback((): void => {
-    const objToSend: {
-      _jsns: string;
-      module: string;
-      action: string;
-      type: string;
-      showSecrets: boolean;
-      targetServer?: string;
-    } = {
-      _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'listBuckets',
-      type: 'all',
-      showSecrets: true,
-    };
+    listS3Connector()
+      .then((connectors) => {
+        const mappedConnectors: Array<BucketConnectorRow> = connectors.map((connector: S3Connector) => ({
+          uuid: connector.uuid,
+          id: connector.uuid,
+          label: connector.label || '',
+          bucketName: connector.bucketName || '',
+          region: connector.region || '',
+          url: connector.url || '',
+          accessKey: connector.accessKey || '',
+          prefix: connector.prefix || '',
+          insecureHttps: String(connector.insecureHttps ?? false),
+          notes: connector.notes || '',
+          storeType: ((connector as unknown as { storeType?: string }).storeType || 'S3'),
+          'usage in external backup': connector['usage in external backup'] ?? '',
+          'usage in powerstore volumes': connector['usage in powerstore volumes'] ?? '',
+          'usage in powerstore volume': connector['usage in powerstore volume'] ?? '',
+          usage: connector.usage ?? '',
 
-    if (selectedServerName !== '') {
-      objToSend.targetServer = selectedServerName;
-    }
-
-    fetchSoap('zextras', objToSend).then((res: any) => {
-      const response = JSON.parse(res.Body.response.content);
-      if (response.ok) {
-        setBucketList(response.response.values);
-        setAllBucketList(response.response.values);
-      } else {
+        }));
+        setBucketList(mappedConnectors);
+        setAllBucketList(mappedConnectors);
+      })
+      .catch(() => {
         setBucketList([]);
-      }
-    });
-  }, [selectedServerName]);
+        setAllBucketList([]);
+      });
+  }, []);
 
   const deleteHandler = useCallback(() => {
     // delete  api call here
     setOpen(false);
-    const objectToSendDeleteBucket: TestConnectionObjectType = {
+    const objectToSendDeleteBucket: DeleteS3ConnectorRequest = {
       _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'doDeleteBucket',
-      storeType: bucketDeleteName?.storeType,
-      bucketConfigurationId: bucketDeleteName?.uuid,
-      targetServer: selectedServerName,
+      module: 'ZxPowerstore',
+      action: 'deleteS3Connector',
+      uuid: bucketDeleteName?.uuid || '',
+      iAmSure: true,
     };
 
-    if (selectedServerName === '') {
-      delete objectToSendDeleteBucket?.targetServers;
-    }
-    fetchSoap('zextras', objectToSendDeleteBucket).then((res) => {
-      const response = JSON.parse(res.Body.response.content);
+    deleteS3Connector(objectToSendDeleteBucket).then((response) => {
       if (response.ok) {
         getBucketListType();
         createSnackbar({
@@ -249,27 +275,32 @@ const BucketDetailPanel: FC = () => {
         });
         setShowEditDetailView(false);
       } else {
+        const errorMessage =
+          typeof response?.error === 'string'
+            ? response.error
+            : response?.error?.message;
+
         createSnackbar({
           key: '1',
           severity: 'error',
-          label: t('label.delete_bucket_fail', 'The {{name}} has not been removed', {
-            name: bucketDeleteName?.bucketName,
-          }),
+          label:
+            errorMessage ||
+            t('label.delete_bucket_fail', 'The {{name}} has not been removed', {
+              name: bucketDeleteName?.bucketName,
+            }),
           autoHideTimeout: 2000,
         });
       }
     });
   }, [
-    bucketDeleteName?.storeType,
     bucketDeleteName?.uuid,
     bucketDeleteName?.bucketName,
-    selectedServerName,
     getBucketListType,
     createSnackbar,
     t,
   ]);
   const handleClick = (i: number): void => {
-    const volumeObject = bucketList.find((s, index) => index === i) as BucketDetail | undefined;
+    const volumeObject = bucketList.find((s, index) => index === i);
     setConnectionData(volumeObject);
     setShowEditDetailView(true);
     setShowDetails(true);
@@ -277,10 +308,8 @@ const BucketDetailPanel: FC = () => {
 
   useEffect(() => {
     if (selectedRow !== undefined) {
-      const getIndex = bucketList.findIndex((data: objectType) => data.uuid === selectedRow.uuid);
-      const volumeObject = bucketList.find(
-        (s, index) => index === getIndex,
-      ) as BucketDetail | undefined;
+      const getIndex = bucketList.findIndex((data) => data.uuid === selectedRow.uuid);
+      const volumeObject = bucketList.find((s, index) => index === getIndex);
       setConnectionData(volumeObject);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -315,7 +344,6 @@ const BucketDetailPanel: FC = () => {
             setToggleWizardSection={setToggleWizardSection}
             setDetailsBucket={setShowEditDetailView}
             setConnectionData={setConnectionData as (data: unknown) => void}
-            bucketType={bucketType}
           />
         </ModalOverlay>
       )}
@@ -325,7 +353,7 @@ const BucketDetailPanel: FC = () => {
             setBucketDeleteName={setBucketDeleteName}
             setOpen={setOpen}
             setShowEditDetailView={setShowEditDetailView}
-            title="Bucket Connection"
+            title="S3 details"
             bucketDetail={connectionData}
             getBucketListType={getBucketListType}
             setSelectedRow={setSelectedRow}
@@ -343,7 +371,7 @@ const BucketDetailPanel: FC = () => {
       >
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
           <ds-text as="h2" weight="bold">
-            {t('buckets.bucket_list', 'Buckets List')}
+            {t('storages.s3Connectors.title', 'S3 connectors')}
           </ds-text>
         </Row>
         <ds-divider></ds-divider>
@@ -356,8 +384,7 @@ const BucketDetailPanel: FC = () => {
           padding={{ top: 'extralarge', right: 'large', left: 'large' }}
         >
           <Button
-            type="outlined"
-            label={t('label.bucket_create_button', 'CREATE')}
+            label={t('storages.createNewS3', 'CREATE A NEW S3')}
             icon="PlusOutline"
             color="primary"
             onClick={(): void => {
@@ -366,19 +393,19 @@ const BucketDetailPanel: FC = () => {
             }}
           />
         </Row>
-        {bucketDeleteName && (
+        {open && bucketDeleteName && (
           <BucketDeleteModel
             open={open}
             closeHandler={closeHandler}
             saveHandler={deleteHandler}
-            BucketDetail={bucketDeleteName}
+            connectorName={bucketDeleteName.label}
           />
         )}
         <Row width="100%" padding={{ all: 'large' }}>
           <Input
             disabled={bucketList.length === 0 && searchBucket.length === 0}
             backgroundColor="gray5"
-            label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
+            label={t('storages.s3Connectors.filterS3List', 'Filter S3 List')}
             CustomIcon={(): React.ReactElement => (
               <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
             )}
@@ -390,13 +417,15 @@ const BucketDetailPanel: FC = () => {
           <BucketListTable
             volumes={bucketList}
             selectedRows={bucketselection}
-            onSelectionChange={(selected: any): void => {
-              setBucketselection(selected);
-              const volumeObject: objectType | undefined = bucketList.find(
-                (s, index) => index === selected[0],
-              );
+            onSelectionChange={(selected: string[]): void => {
+              const [firstSelected] = selected;
+              const nextSelection: SingleSelection =
+                firstSelected === undefined ? [] : [firstSelected];
+              setBucketselection(nextSelection);
+
+              const volumeObject = resolveSelectedBucketConnector(bucketList, firstSelected);
               setShowDetails(false);
-              setBucketDeleteName(volumeObject as BucketDetail | undefined);
+              setBucketDeleteName(volumeObject);
             }}
             onDoubleClick={(i: number): void => {
               handleClick(i);

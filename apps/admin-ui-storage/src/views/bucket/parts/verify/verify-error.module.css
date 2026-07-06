@@ -1,0 +1,128 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.popover {
+  inset: 0;
+  margin: auto;
+  position: relative;
+  border: none;
+  border-radius: 1.5rem;
+  background: var(--color-gray6-regular, white);
+  padding: 2rem 2rem 2rem;
+  width: min(31.25rem, calc(100vw - 2rem));
+  min-height: 17rem;
+  max-height: min(calc(100vh - 2rem), 28rem);
+  box-shadow: 0 0.25rem 1.5rem rgba(0, 0, 0, 0.08);
+  color: var(--color-gray0-regular);
+}
+
+.popover:popover-open {
+  display: flex;
+  flex-direction: column;
+}
+
+.popover::backdrop {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.imageCircle {
+  padding: 8px;
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1000px;
+  border: 1px solid var(--color-error-regular);
+  flex-shrink: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.closeButton {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-gray1-regular);
+  cursor: pointer;
+  padding: 0;
+}
+
+.closeButton:hover {
+  background: var(--color-gray5-regular);
+}
+
+.title {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 0.125rem;
+}
+
+.description {
+  line-height: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.detailsToggle {
+  border: none;
+  background: transparent;
+  color: var(--color-primary-regular);
+  padding: 0;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.checksContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-gray4-regular, #e0e0e0);
+  margin: 1.5rem 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex-shrink: 0;
+}

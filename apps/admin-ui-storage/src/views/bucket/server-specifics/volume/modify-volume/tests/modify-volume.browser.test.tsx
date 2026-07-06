@@ -6,8 +6,10 @@
 
 import {
 	advancedSupportedApiForBrowser,
+	createBrowserZextrasActionInterceptor,
 	setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -18,10 +20,39 @@ import ModifyVolume from '../modify-volume';
 const SERVER_NAME = 'mailstore1.test.com';
 const SERVER_ID = 'server-1';
 
+type S3ConnectorEntry = {
+	uuid: string;
+	label: string;
+	bucketName: string;
+	storeType: string;
+	tieringSupported?: boolean;
+	'usage in external backup'?: string;
+};
+
+function setupListS3ConnectorInterceptor(connectors: Array<S3ConnectorEntry>) {
+	return createBrowserZextrasActionInterceptor('listS3Connector', () =>
+		HttpResponse.json({
+			Body: {
+				response: {
+					content: JSON.stringify({
+						ok: true,
+						response: {
+							values: connectors.map((connector) => ({
+								...connector,
+								id: connector.uuid,
+							})),
+						},
+					}),
+				},
+			},
+		}),
+	);
+}
+
 const PRIMARY_VOLUME: Volume = {
 	id: 5,
 	name: 'primary-local',
-	rootpath: '/opt/zextras/store',
+	path: '/opt/zextras/store',
 	type: 1,
 	compressBlobs: 'true',
 	compressionThreshold: '4096',
@@ -31,7 +62,7 @@ const PRIMARY_VOLUME: Volume = {
 const SECONDARY_VOLUME: Volume = {
 	id: 6,
 	name: 'secondary-local',
-	rootpath: '/opt/zextras/secondary',
+	path: '/opt/zextras/secondary',
 	type: 2,
 	compressBlobs: 'false',
 	compressionThreshold: '4096',
@@ -41,7 +72,7 @@ const SECONDARY_VOLUME: Volume = {
 const INDEX_VOLUME: Volume = {
 	id: 7,
 	name: 'index-local',
-	rootpath: '/opt/zextras/index',
+	path: '/opt/zextras/index',
 	type: 10,
 	compressBlobs: 'false',
 	compressionThreshold: '4096',
@@ -117,7 +148,7 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 			await setupBrowserTest(renderModifyVolume(PRIMARY_VOLUME.id as number));
 			await expect
 				.element(page.getByRole('textbox', { name: /path/i }))
-				.toHaveValue(PRIMARY_VOLUME.rootpath as string);
+				.toHaveValue(PRIMARY_VOLUME.path as string);
 		});
 
 		it('should not call setmodifyVolumeToggle when volumeId does not match any volume', async () => {
@@ -141,6 +172,59 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 			await expect
 				.element(page.getByRole('textbox', { name: /volume name/i }))
 				.toHaveValue(INDEX_VOLUME.name as string);
+		});
+	});
+
+	describe('external S3 volume tiering', () => {
+		const EXTERNAL_S3_VOLUME: Volume = {
+			id: 9,
+			name: 's3primary',
+			compressed: true,
+			uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
+			tieringSupported: true,
+			useInfrequentAccess: false,
+			infrequentAccessThreshold: 65536,
+			useIntelligentTiering: false,
+			volumePrefix: '',
+			centralized: false,
+			storeType: 'S3',
+			isCurrent: false,
+			volumeType: 'primary',
+		};
+
+		const EXTERNAL_VOLUME_LIST = {
+			primaries: [EXTERNAL_S3_VOLUME],
+			secondaries: [SECONDARY_VOLUME],
+			indexes: [INDEX_VOLUME],
+		};
+
+		let listS3ConnectorInterceptor: ReturnType<typeof setupListS3ConnectorInterceptor>;
+
+		beforeEach(async () => {
+			await advancedSupportedApiForBrowser.withAdvancedSupported();
+			listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+				{
+					uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
+					label: 'Tiering S3 connector',
+					bucketName: 'tiering-bucket',
+					storeType: 'S3',
+					tieringSupported: true,
+					'usage in external backup': 'UNUSED',
+				},
+			]);
+		});
+
+		it('should display tiering controls for external S3 volume with tiering support', async () => {
+			await setupBrowserTest(renderModifyVolume(EXTERNAL_S3_VOLUME.id as number, EXTERNAL_VOLUME_LIST));
+			await vi.waitFor(() => {
+				expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+			});
+			await expect
+				.element(page.getByText('Use infrequent access', { exact: true }))
+				.toBeVisible();
+			await expect
+				.element(page.getByText('Use intelligent tiering', { exact: true }))
+				.toBeVisible();
 		});
 	});
 });

@@ -6,485 +6,434 @@
 import {
   Button,
   Container,
-  type IconName,
   Input,
-  LabeledValue,
   Padding,
   PasswordInput,
   Row,
   Select,
   type SelectItem as UISelectItem,
-  useSnackbar,
+  Switch,
+  Tooltip,
 } from '@zextras/ui-components';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type ConnectionProps, TestConnectionObjectType, ZextrasRawResponse } from '../../../types';
-import {
-  ALIBABA,
-  AMAZON_WEB_SERVICE_S3,
-  CUSTOM_S3,
-  ERROR,
-  FAIL,
-  HTTP,
-  HTTPS,
-  SUCCESS,
-  V4,
-  ZIMBRA_ADMIN_URN,
-} from '../../constants';
-import { fetchSoap } from '../../services/bucket-service';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
+import { CreateS3ConnectorRequest } from '../../../types';
+import { ZIMBRA_ADMIN_URN } from '../../constants';
+import { createS3Connector, listS3Regions } from '../../services/bucket-service';
+import { CheckResult, VerifyError } from './parts/verify/verify-error';
+import { VerifyProgress } from './parts/verify/verify-progress';
+import { VerifySuccess } from './parts/verify/verify-success';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
+const bucketNameRegex = /^\S+$/;
+const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
+const NO_REGION_VALUE = '';
+const EMPTY_REGION: UISelectItem<string> = { value: '', label: '' };
 
-const Connection: FC<ConnectionProps> = ({ isActive, onSelection, externalData, setCompleteLoading }) => {
+type S3ConnectorError = {
+  error?: string | { message: string; details?: CheckResult };
+  message?: string;
+  details?: CheckResult;
+};
+
+const Connection: FC<{
+  onCancel?: () => void;
+}> = ({ onCancel }) => {
   const [t] = useTranslation();
-  const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
-  const bucketRegions = useMemo(() => BucketRegions(t), [t]);
-  const bucketRegionsInAlibaba = useMemo(() => BucketRegionsInAlibaba(t), [t]);
-  const createSnackbar = useSnackbar();
+  const [bucketRegions, setBucketRegions] = useState<Array<{ value: string; label: string }>>([]);
+  const regionItems = useMemo(
+    () => [
+      {
+        label: t('label.region_none', 'None'),
+        value: NO_REGION_VALUE,
+      },
+      {
+        label: t('label.region_set_custom', 'Set custom'),
+        value: CUSTOM_REGION_VALUE,
+      },
+      ...bucketRegions,
+    ],
+    [bucketRegions, t],
+  );
   const [buttonColor, setButtonColor] = useState<string>('primary');
-  const [icon, setIcon] = useState<IconName>('ActivityOutline');
   const [buttonDetail, setButtonDetail] = useState(
-    t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR'),
+    t('buckets.connection.verify_and_create_connector', 'VERIFY & CREATE CONNECTOR'),
   );
   const [bucketName, setBucketName] = useState('');
   const [bucketLabel, setBucketLabel] = useState('');
-  const [bucketNotes, setBucketNotes] = useState('');
   const [accessKeyData, setAccessKeyData] = useState('');
   const [secretKey, setSecretKey] = useState('');
-  const [regionsData, setRegionsData] = useState<UISelectItem>();
+  const [regionsData, setRegionsData] = useState<UISelectItem<string> | undefined>();
   const [urlInput, setUrlInput] = useState('');
   const [prefix, setPrefix] = useState('');
-  const [BucketUid, setBucketUid] = useState('');
-  const [bucketTypeData, setBucketTypeData] = useState<string | undefined>(
-    bucketTypeItems[1]?.value,
-  );
-  const [verifyCheck, setVerifyCheck] = useState<string>('');
-  const [verifyFailErr, setverifyFailErr] = useState('');
-  const [bothFail, setbothFail] = useState('');
-  const [bucketDetailButton, setBucketDetailButton] = useState<boolean>(true);
-  const [showPrefix, setShowPrefix] = useState(false);
-  const [showRegion, setShowRegion] = useState(true);
-  const [showURL, setShowURL] = useState(true);
+  const [customRegion, setCustomRegion] = useState('');
+  const [isCustomRegion, setIsCustomRegion] = useState(false);
+
+  const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [prefixConfirm, setprefixConfirm] = useState(true);
-  const [regionSelection, setRegionSelection] = useState<UISelectItem | undefined>(bucketRegions[0]);
-  const bucketType = externalData;
-  const { selectedServerName } = useBucketVolumeStore((state) => state);
+  const [bucketNameConfirm, setBucketNameConfirm] = useState(true);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(false);
+  const [regionSelection, setRegionSelection] = useState<UISelectItem<string>>(EMPTY_REGION);
+
+  const [showVerifyResult, setShowVerifyResult] = useState(false);
+  const [isVerifyPending, setIsVerifyPending] = useState(false);
+  const [isVerifySuccess, setIsVerifySuccess] = useState(false);
+  const [isVerifyError, setIsVerifyError] = useState(false);
+
+  function getSelectedRegion(): string {
+    return isCustomRegion ? customRegion.trim() : regionsData?.value ?? '';
+  }
+
+  const isAccessKeyInvalid =
+    hasSubmitted && (accessKeyData === '' || !bucketNameRegex.test(accessKeyData));
+  const isSecretKeyInvalid = hasSubmitted && (secretKey === '' || !bucketNameRegex.test(secretKey));
+  const isCustomRegionInvalid =
+    hasSubmitted && isCustomRegion && !bucketNameRegex.test(customRegion);
+  const isEndpointUrlRequired = isCustomRegion || getSelectedRegion() === '';
+  const isEndpointUrlInvalid =
+    hasSubmitted && isEndpointUrlRequired && (urlInput.trim() === '' || !bucketNameRegex.test(urlInput.trim()));
+
   const handleVerifyConnector = (): void => {
-    if (bucketName && accessKeyData && secretKey) {
-      const storeType = bucketType || bucketTypeData;
-      const objectToSend: TestConnectionObjectType = {
+    setHasSubmitted(true);
+    const selectedRegion = getSelectedRegion();
+    const isRegionValid = isCustomRegion
+      ? bucketNameRegex.test(customRegion)
+      : selectedRegion === '' || bucketNameRegex.test(selectedRegion);
+    const isEndpointValid = !isEndpointUrlRequired || (urlInput.trim() !== '' && bucketNameRegex.test(urlInput.trim()));
+    if (
+      bucketLabel &&
+      bucketName &&
+      bucketNameRegex.test(bucketName) &&
+      accessKeyData &&
+      bucketNameRegex.test(accessKeyData) &&
+      secretKey &&
+      bucketNameRegex.test(secretKey) &&
+      isRegionValid &&
+      isEndpointValid
+    ) {
+      setShowVerifyResult(false);
+      setIsVerifySuccess(false);
+      setIsVerifyError(false);
+      setIsVerifyPending(true);
+
+      const payload: CreateS3ConnectorRequest = {
         _jsns: ZIMBRA_ADMIN_URN,
-        module: 'ZxCore',
-        action: 'doCreateBucket',
-        storeType,
+        module: 'ZxPowerstore',
+        action: 'createS3Connector',
+        iAmSure: true,
         bucketName,
         label: bucketLabel,
-        notes: bucketNotes,
         accessKey: accessKeyData,
         secret: secretKey,
-        region: regionsData?.value,
-        signatureVersion: V4,
-        protocol: urlInput.startsWith(HTTPS) ? HTTPS : HTTP,
-        url:
-          bucketTypeData === AMAZON_WEB_SERVICE_S3 ||
-            bucketType === AMAZON_WEB_SERVICE_S3 ||
-            bucketTypeData === ALIBABA ||
-            bucketType === ALIBABA
-            ? ''
-            : urlInput,
-        prefix,
-        targetServer: selectedServerName,
+        region: selectedRegion,
+        insecureHttps: acceptUntrustedSSL,
+        notes: '',
       };
-      if (storeType === CUSTOM_S3) {
-        delete objectToSend.region;
+
+      if (urlInput.trim() !== '') {
+        payload.url = urlInput.trim();
       }
-      if (prefix === '') {
-        delete objectToSend.prefix;
-      }
-      if (selectedServerName === '') {
-        delete objectToSend?.targetServers;
+      if (prefix.trim() !== '') {
+        payload.destinationPath = prefix.trim();
       }
 
-      fetchSoap('zextras', objectToSend).then((res: ZextrasRawResponse) => {
-        const response = JSON.parse(res.Body.response.content);
-        if (response.ok) {
-          const data = response.response.message;
-          const responseData = data.split("'");
-          setBucketUid(responseData[1]);
-          onSelection({ uuid: responseData[1] }, false);
-          const objToSendTestConnection: TestConnectionObjectType = {
-            _jsns: ZIMBRA_ADMIN_URN,
-            module: 'ZxCore',
-            action: 'testS3Connection',
-            targetServers: selectedServerName,
-            bucketId: responseData[1],
-          };
-
-          if (selectedServerName === '') {
-            delete objToSendTestConnection?.targetServers;
+      createS3Connector(payload)
+        .then((rawResponse) => {
+          const response = rawResponse as { ok?: boolean; error?: string | S3ConnectorError };
+          if (response?.ok) {
+            setIsVerifySuccess(true);
+            return;
           }
 
-          fetchSoap('zextras', objToSendTestConnection).then((responseVerify) => {
-            const responseVerifyData = JSON.parse(responseVerify.Body.response.content);
-            if (
-              responseVerifyData.ok &&
-              responseVerifyData.response[selectedServerName] &&
-              responseVerifyData.response[selectedServerName].ok
-            ) {
-              setVerifyCheck(SUCCESS);
-              setBucketDetailButton(true);
-              if (isActive) {
-                setCompleteLoading(true);
-              }
-            } else {
-              const errorResponse = responseVerifyData?.error;
-
-              const errorResponsePart = errorResponse.split(objToSendTestConnection?.bucketId);
-              const errorStoreTypeMessage = errorResponsePart[1].replace('as', '');
-
-              setVerifyCheck(ERROR);
-              setverifyFailErr(
-                t(
-                  'label.bucket_verification_failed_message',
-                  'Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})',
-                  {
-                    bucketType: errorStoreTypeMessage,
-                    bucketId: objToSendTestConnection?.bucketId,
-                  },
-                ),
-              );
-              setBucketDetailButton(true);
-              if (isActive) {
-                setCompleteLoading(true);
-              }
-            }
-          });
-        } else {
-          setBucketDetailButton(false);
-          setbothFail(
-            response?.error?.message ||
-            response?.error ||
-            response?.exception?.message ||
-            response.response[selectedServerName].error.message,
-          );
-          setVerifyCheck(FAIL);
-        }
-      });
+          const errorDetails =
+            typeof response?.error === 'string' ? undefined : response?.error?.details;
+          setCheckDetails(errorDetails);
+          setIsVerifyError(true);
+        })
+        .catch(() => {
+          setCheckDetails(undefined);
+          setIsVerifyError(true);
+        })
+        .finally(() => {
+          setIsVerifyPending(false);
+        });
     }
   };
 
-  useEffect(() => {
-    if (regionsData === undefined) {
-      const volumeObject =
-        bucketType === ALIBABA || bucketTypeData === ALIBABA
-          ? bucketRegionsInAlibaba[0]
-          : bucketRegions[0];
-      setRegionsData(volumeObject);
-    }
+  const handleProgressComplete = useCallback((): void => {
+    setShowVerifyResult(true);
+  }, []);
 
-    if (
-      (bucketTypeData === AMAZON_WEB_SERVICE_S3 || bucketType === AMAZON_WEB_SERVICE_S3) &&
-      bucketName &&
-      regionsData?.value &&
-      accessKeyData &&
-      secretKey
-    ) {
-      setBucketDetailButton(false);
-    } else if (
-      (bucketTypeData === ALIBABA || bucketType === ALIBABA) &&
-      bucketName &&
-      regionsData?.value &&
-      accessKeyData &&
-      secretKey &&
-      urlInput &&
-      prefixConfirm
-    ) {
-      setBucketDetailButton(false);
-    } else if (
-      bucketTypeData !== AMAZON_WEB_SERVICE_S3 &&
-      bucketType !== AMAZON_WEB_SERVICE_S3 &&
-      bucketTypeData !== ALIBABA &&
-      bucketType !== ALIBABA &&
-      bucketName &&
-      accessKeyData &&
-      secretKey &&
-      urlInput &&
-      prefixConfirm
-    ) {
-      setBucketDetailButton(false);
-    } else {
-      setBucketDetailButton(true);
-    }
-  }, [
-    accessKeyData,
-    bucketName,
-    bucketRegions,
-    bucketRegionsInAlibaba,
-    bucketType,
-    bucketTypeData,
-    prefix,
-    prefixConfirm,
-    regionsData,
-    regionsData?.value,
-    secretKey,
-    urlInput,
-  ]);
-  useEffect(() => {
-    setCompleteLoading(false);
-  }, [setCompleteLoading]);
+  const handleSuccessComplete = useCallback((): void => {
+    setShowVerifyResult(false);
+    onCancel?.();
+  }, [onCancel]);
 
   useEffect(() => {
-    if (bucketTypeData !== '') {
-      if (bucketTypeData === undefined) {
-        setShowPrefix(false);
-      } else {
-        setShowPrefix(true);
-      }
-    }
-  }, [bucketType, bucketTypeData, prefix]);
+    listS3Regions()
+      .then((regions) => {
+        const mappedRegions = regions.map((region) => ({
+          value: region.id,
+          label: `${region.description}, [${region.id}]`
+        }));
+        setBucketRegions(mappedRegions);
+      })
+      .catch(() => {
+        setBucketRegions([]);
+      });
+  }, []);
 
   useEffect(() => {
-    if (bucketTypeData !== '') {
-      if (
-        bucketTypeData === undefined ||
-        bucketTypeData === ALIBABA ||
-        bucketType === ALIBABA ||
-        bucketTypeData === AMAZON_WEB_SERVICE_S3 ||
-        bucketType === AMAZON_WEB_SERVICE_S3
-      ) {
-        setShowRegion(true);
-      } else {
-        setShowRegion(false);
-        if (regionsData) {
-          regionsData.value = '';
-        }
-      }
+    if (regionsData === undefined && bucketRegions.length > 0) {
+      setRegionSelection({
+        label: t('label.region_none', 'None'),
+        value: NO_REGION_VALUE,
+      });
     }
-  }, [bucketType, bucketTypeData, regionsData]);
-
-  useEffect(() => {
-    if (
-      bucketTypeData === undefined ||
-      (bucketTypeData !== AMAZON_WEB_SERVICE_S3 && bucketType !== AMAZON_WEB_SERVICE_S3)
-    ) {
-      setShowURL(true);
-    } else {
-      setShowURL(false);
-    }
-  }, [bucketType, bucketTypeData, showURL]);
-
-  useEffect(() => {
-    if (bucketType !== '') {
-      const volumeObject = bucketTypeItems.find((s) => s.value === bucketType);
-      setBucketTypeData(volumeObject?.label);
-      onSelection({ storeType: bucketType }, false);
-    }
-  }, [bucketType, bucketTypeData, bucketTypeItems, onSelection]);
+  }, [bucketRegions, regionsData, t]);
 
   useEffect(() => {
     setButtonColor('primary');
-    setIcon('ActivityOutline');
     setButtonDetail(
-      t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR'),
+      t('buckets.connection.verify_and_create_connector', 'VERIFY & CREATE CONNECTOR'),
     );
-    setBucketDetailButton(true);
     setBucketName('');
     setAccessKeyData('');
     setSecretKey('');
     setUrlInput('');
     setPrefix('');
-  }, [bucketTypeData, t]);
-
-  const onSelectBucketTypeChange = useCallback(
-    (e: string | null): void => {
-      if (!e) return;
-      const volumeObject = bucketTypeItems.find((s) => s.value === e);
-      setVerifyCheck('');
-      setBucketTypeData(volumeObject?.value);
-      onSelection({ storeType: bucketTypeData }, false);
-      setRegionSelection(
-        bucketType === ALIBABA || volumeObject?.value === ALIBABA
-          ? bucketRegionsInAlibaba[0]
-          : bucketRegions[0],
-      );
-      setRegionsData(
-        bucketType === ALIBABA || volumeObject?.value === ALIBABA
-          ? bucketRegionsInAlibaba[0]
-          : bucketRegions[0],
-      );
-    },
-    [
-      bucketRegions,
-      bucketRegionsInAlibaba,
-      bucketType,
-      bucketTypeData,
-      bucketTypeItems,
-      onSelection,
-    ],
-  );
+    setCustomRegion('');
+    setIsCustomRegion(false);
+    setRegionSelection({
+      label: t('label.region_none', 'None'),
+      value: NO_REGION_VALUE,
+    });
+    setRegionsData(undefined);
+  }, [bucketRegions, t]);
 
   const onSelectRegionChange = useCallback(
     (e: string | null): void => {
-      if (!e) return;
-      const volumeObject =
-        bucketType === ALIBABA || bucketTypeData === ALIBABA
-          ? bucketRegionsInAlibaba.find((s) => s.value === e)
-          : bucketRegions.find((s) => s.value === e);
-      setRegionsData(volumeObject);
-      setRegionSelection(volumeObject);
-      onSelection({ region: volumeObject?.value }, false);
+      if (e === null) {
+        setIsCustomRegion(false);
+        setCustomRegion('');
+        setRegionsData(undefined);
+        setRegionSelection({
+          label: t('label.region_none', 'None'),
+          value: NO_REGION_VALUE,
+        });
+        return;
+      }
+
+      if (e === CUSTOM_REGION_VALUE) {
+        setIsCustomRegion(true);
+        setRegionSelection({
+          label: t('label.region_set_custom', 'Set custom'),
+          value: CUSTOM_REGION_VALUE,
+        });
+        return;
+      }
+
+      if (e === NO_REGION_VALUE) {
+        setIsCustomRegion(false);
+        setCustomRegion('');
+        setRegionsData(undefined);
+        setRegionSelection({
+          label: t('label.region_none', 'None'),
+          value: NO_REGION_VALUE,
+        });
+        return;
+      }
+
+      const volumeObject = bucketRegions.find((s) => s.value === e);
+      if (volumeObject) {
+        setIsCustomRegion(false);
+        setRegionsData(volumeObject);
+        setRegionSelection(volumeObject);
+      }
     },
-    [bucketRegions, bucketRegionsInAlibaba, bucketType, bucketTypeData, onSelection],
+    [bucketRegions, t],
   );
 
-  useEffect(() => {
-    if (verifyCheck === SUCCESS) {
-      setButtonColor('success');
-      setIcon('CheckmarkCircle2');
-      setButtonDetail(
-        t('label.connector_is_create_and_verified', 'CONNECTOR IS CREATED AND VERIFIED'),
-      );
-    } else if (verifyCheck === ERROR) {
-      setButtonColor('error');
-      setIcon('AlertTriangle');
-      setButtonDetail(
-        t(
-          'label.connection_is_created_verify_connector_fail',
-          'CONNECTOR IS CREATED BUT VERIFICATION HAS FAILED',
-        ),
-      );
-    } else if (verifyCheck === FAIL) {
-      setButtonColor('error');
-      setIcon('AlertTriangle');
-      setButtonDetail(
-        t(
-          'label.connector_is_not_created_and_verification_failed',
-          'CONNECTOR IS NOT CREATED AND VERIFICATION HAS FAILED',
-        ),
-      );
-      createSnackbar({
-        key: '1',
-        severity: 'error',
-        label: t('label.verify_error', '{{name}}', {
-          name: bothFail,
-        }),
-        autoHideTimeout: 5000,
-      });
-    } else {
-      setButtonColor('primary');
-      setIcon('ActivityOutline');
-      setButtonDetail(
-        t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR'),
-      );
-    }
-  }, [bothFail, createSnackbar, t, verifyCheck, verifyFailErr]);
-
   return (
-    <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-      {bucketType !== '' ? (
-        <Row padding={{ top: 'extralarge' }} width="100%">
-          <LabeledValue
-            label={t('label.bucket_type', 'Bucket Type')}
-            backgroundColor="gray5"
-            value={bucketTypeData}
-          />
+    <Container
+      orientation="vertical"
+      mainAlignment="flex-start"
+      crossAlignment="stretch"
+      style={{ minHeight: 'calc(100vh - 12rem)' }}
+    >
+      <Container
+        mainAlignment="flex-start"
+        padding={{ horizontal: 'large' }}
+        style={{ paddingBottom: '1rem' }}
+        height={'100%'}
+      >
+        <Row padding={{ top: 'extralarge' }} width="100%" mainAlignment="flex-start">
+          <ds-text as="h5" weight="bold">
+            {t('storages.s3Connectors.sectionTitle', 'S3 connection')}
+          </ds-text>
         </Row>
-      ) : (
-        <Row padding={{ top: 'extralarge' }} width="100%">
+        <Row padding={{ top: 'extrasmall' }} width="100%" mainAlignment="flex-start">
+          <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+            {t(
+              'storages.s3Connectors.newconnectDescription',
+              'Before starting the connection, an S3 bucket must be previously created in your system',
+            )}
+          </ds-text>
+        </Row>
+        <Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
+          <Input
+            backgroundColor="gray5"
+            label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
+            value={bucketLabel}
+            onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+              setBucketLabel(ev.target.value);
+            }}
+            hasError={hasSubmitted && bucketLabel === ''}
+          />
+          {hasSubmitted && bucketLabel === '' && (
+            <Padding top="extrasmall">
+              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                {t('storages.s3Connectors.descriptiveNameRequired', 'This field is mandatory')}
+              </ds-text>
+            </Padding>
+          )}
+        </Row>
+        <Row width="100%" padding={{ top: 'large' }}>
+          <Row width="100%" mainAlignment="flex-start">
+            <Input
+              backgroundColor="gray5"
+              label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
+              value={bucketName}
+              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                setBucketName(ev.target.value);
+                setBucketNameConfirm(
+                  ev.target.value === '' || bucketNameRegex.test(ev.target.value),
+                );
+              }}
+              hasError={hasSubmitted && (bucketName === '' || !bucketNameConfirm)}
+            />
+            {hasSubmitted && (bucketName === '' || !bucketNameConfirm) && (
+              <Padding top="extrasmall">
+                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                  {t(
+                    'storages.s3Connectors.invalidBucketName',
+                    "This field can't be blank or have white space",
+                  )}
+                </ds-text>
+              </Padding>
+            )}
+          </Row>
+        </Row>
+        <Row width="100%" padding={{ top: 'large' }}>
+          <Row width="48%" mainAlignment="flex-start" style={{display:"inline", height:"100%"}}>
+            <Input
+              backgroundColor="gray5"
+              label={t('storages.s3Connectors.accessKey', 'Access Key ID*')}
+              value={accessKeyData}
+              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                setAccessKeyData(ev.target.value);
+              }}
+              hasError={isAccessKeyInvalid}
+            />
+            {isAccessKeyInvalid && (
+              <Padding top="extrasmall">
+                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                  {t(
+                    'storages.s3Connectors.invalidAccessKey',
+                    "This field can't be blank or have white space",
+                  )}
+                </ds-text>
+              </Padding>
+            )}
+          </Row>
+          <Padding horizontal={'small'} />
+          <Row width="48%" mainAlignment="flex-end" style={{display:"inline", height:"100%"}}>
+            <PasswordInput
+              backgroundColor="gray5"
+              label={t('label.secret_key', 'Secret Access Key*')}
+              value={secretKey}
+              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                setSecretKey(ev.target.value);
+              }}
+              hasError={isSecretKeyInvalid}
+            />
+            {isSecretKeyInvalid && (
+              <Padding top="extrasmall" width='100%'>
+                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                  {t(
+                    'storages.s3Connectors.invalidSecretKey',
+                    "This field can't be blank or have white space",
+                  )}
+                </ds-text>
+              </Padding>
+            )}
+          </Row>
+        </Row>
+        
+        <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
           <Select
-            items={bucketTypeItems}
+            items={regionItems}
             background="gray5"
-            label={t('buckets.bucket_type', 'Bucket Type')}
-            // defaultSelection={bucketTypeItems?.filter((items) => items?.value === bucketTypeData)}
-            defaultSelection={bucketTypeItems[0]}
-            onChange={onSelectBucketTypeChange}
+            label={t('label.region', 'Region')}
+            selection={regionSelection}
+            onChange={onSelectRegionChange}
             showCheckbox={false}
           />
         </Row>
-      )}
-      <Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
-        <Input
-          backgroundColor="gray5"
-          label={t('label.label', 'Label')}
-          value={bucketLabel}
-          onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-            setBucketLabel(ev.target.value);
-          }}
-        />
-      </Row>
-      <Row width="100%" padding={{ top: 'large' }}>
-        <Row width={showRegion ? '48%' : '100%'} mainAlignment="flex-start">
-          <Input
-            backgroundColor="gray5"
-            label={t('label.bucket_name', 'Bucket Name')}
-            value={bucketName}
-            onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-              setBucketName(ev.target.value);
-              onSelection({ bucketName: ev.target.value }, false);
-            }}
-          />
-        </Row>
-        {showRegion && (
-          <>
-            <Padding horizontal={'small'} />
-            <Row width="48%" mainAlignment="flex-end">
-              <Select
-                items={
-                  bucketTypeData === ALIBABA || bucketType === ALIBABA
-                    ? bucketRegionsInAlibaba
-                    : bucketRegions
-                }
-                background="gray5"
-                label={t('label.region', 'Region')}
-                defaultSelection={regionSelection}
-                onChange={onSelectRegionChange}
-                showCheckbox={false}
-              />
-            </Row>
-          </>
+        {isCustomRegion && (
+          <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
+            <Input
+              backgroundColor="gray5"
+              label={t('label.custom_region', 'Custom region')}
+              value={customRegion}
+              onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
+                setCustomRegion(ev.target.value);
+              }}
+              hasError={isCustomRegionInvalid}
+            />
+            {isCustomRegionInvalid && (
+              <Padding top="extrasmall">
+                <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                  {t(
+                    'storages.s3Connectors.invalidCustomRegion',
+                    "This field can't be blank or have white space",
+                  )}
+                </ds-text>
+              </Padding>
+            )}
+          </Row>
         )}
-      </Row>
-      <Row width="100%" padding={{ top: 'large' }}>
-        <Row width="48%" mainAlignment="flex-start">
+        <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
           <Input
-            backgroundColor="gray5"
-            label={t('label.access_key', 'Access Key')}
-            value={accessKeyData}
-            onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-              setAccessKeyData(ev.target.value);
-              onSelection({ accessKey: ev.target.value }, false);
-            }}
-          />
-        </Row>
-        <Padding horizontal={'small'} />
-        <Row width="48%" mainAlignment="flex-end">
-          <PasswordInput
-            backgroundColor="gray5"
-            label={t('label.secret_key', 'Secret Key')}
-            value={secretKey}
-            onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-              setSecretKey(ev.target.value);
-              onSelection({ secret: ev.target.value }, false);
-            }}
-          />
-        </Row>
-      </Row>
-      {showURL && (
-        <Row padding={{ top: 'large' }} width="100%">
-          <Input
-            label={t('label.url', 'URL')}
+            label={isEndpointUrlRequired ? t('label.endpoint_url_required', 'Endpoint URL*') : t('label.endpoint_url', 'Endpoint URL')}
             backgroundColor="gray5"
             value={urlInput}
             onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
               setUrlInput(ev.target.value);
             }}
+            hasError={isEndpointUrlInvalid}
           />
+          {isEndpointUrlInvalid && (
+            <Padding top="extrasmall">
+              <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
+                {t(
+                  'storages.s3Connectors.invalidEndpointUrl',
+                  "This field is required when Region is 'None' or 'Custom'",
+                )}
+              </ds-text>
+            </Padding>
+          )}
+          <Padding top="extrasmall">
+            <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+              {t(
+                'storages.s3Connectors.endpointUrlHelp',
+                'The endpoint URL of your storage provider. Not needed if your connector are AWS',
+              )}
+            </ds-text>
+          </Padding>
         </Row>
-      )}
-      {showPrefix && (
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
           <Input
             label={t('label.prefix', 'Prefix')}
@@ -504,71 +453,108 @@ const Connection: FC<ConnectionProps> = ({ isActive, onSelection, externalData, 
             }}
             hasError={!prefixConfirm}
           />
+          <Padding top="extrasmall">
+            <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+              {t(
+                'storages.s3Connectors.prefixHint',
+                'Optional. Limits access to a specific path within the bucket (e.g. mydomains/folder)',
+              )}
+            </ds-text>
+          </Padding>
           {!prefixConfirm && (
             <Padding top="extrasmall">
               <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
                 {t(
-                  'buckets.invalid_prefix',
+                  'storages.s3Connectors.invalidPrefix',
                   'The prefix should not contain spaces. The allowed letters are a-z, A-Z, and special characters /-.',
                 )}
               </ds-text>
             </Padding>
           )}
         </Row>
-      )}
-      <Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
-        <Input
-          backgroundColor="gray5"
-          label={t('label.description', 'Description')}
-          value={bucketNotes}
-          onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-            setBucketNotes(ev.target.value);
-          }}
-        />
-      </Row>
-      <Row width="100%" padding={{ top: 'large' }} style={{ display: 'block' }}>
-        <Button
-          type="outlined"
-          label={buttonDetail}
-          icon={icon}
-          iconPlacement="right"
-          color={buttonColor}
-          width="fill"
-          size="large"
-          style={{ width: '100%' }}
-          onClick={handleVerifyConnector}
-          disabled={bucketDetailButton}
-        />
-      </Row>
-      {verifyCheck === SUCCESS && (
-        <Row width="100%" padding={{ top: 'large' }}>
-          <LabeledValue label={t('label.uuid', 'uuid')} value={BucketUid} />
+        <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
+          <ds-text as="h6" weight="bold">
+            {t('storages.s3Connectors.security', 'Security')}
+          </ds-text>
         </Row>
-      )}
-      {verifyCheck === ERROR && (
-        <Container
-          background="warning"
-          width="100%"
-          orientation="horizontal"
-          height="auto"
-          padding={{ all: 'large' }}
-          style={{ marginTop: '1rem' }}
-        >
-          <Row width="10%" mainAlignment="flex-start">
-            <ds-icon
-              icon="AlertTriangleOutline"
-              color="gray6"
-              size="large"
-              style={{ height: '2rem', width: '2rem' }}
-            ></ds-icon>
+        <Row width="100%" padding={{ top: 'small' }} mainAlignment="space-between">
+          <Row width="90%" mainAlignment="flex-start">
+            <Switch
+              label={t(
+                'storages.s3Connectors.acceptUntrustedSSL',
+                'Accept untrusted SSL certificates',
+              )}
+              value={acceptUntrustedSSL}
+              onClick={(): void => {
+                setAcceptUntrustedSSL(!acceptUntrustedSSL);
+              }}
+              iconColor="primary"
+            />
           </Row>
-          <Row width="86%" mainAlignment="flex-end">
-            <ds-text as="p" overflow="break-word" color="gray6">
-              {verifyFailErr}
-            </ds-text>
+          <Row width="10%" mainAlignment="flex-end">
+            <Tooltip
+              placement="top"
+              label={t(
+                'storages.s3Connectors.untrustedSSLTooltip',
+                'Use this only for testing environments or internal infrastructure with custom certificates. Not recommended for production.',
+              )}
+            >
+              <ds-text as="span">
+                <ds-icon icon="InfoOutline" size="large" color="gray0"></ds-icon>
+              </ds-text>
+            </Tooltip>
           </Row>
-        </Container>
-      )}
+        </Row>
+        <Row width="100%" padding={{ top: 'extrasmall', left: '2rem' }} mainAlignment="flex-start">
+          <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+            {t(
+              'storages.s3Connectors.untrustedSSLHint',
+              'Allow connections with self-signed or unverifiable certificates.',
+            )}
+          </ds-text>
+        </Row>
+      </Container>
+
+      <Container
+        width="100%"
+        background="white"
+        style={{ position: 'sticky', bottom: 0, zIndex: 1 }}
+        height={'4.5rem'}
+      >
+        <ds-divider></ds-divider>
+        <Row width="100%" padding={{ all: 'large' }} mainAlignment="flex-end">
+          <Row width="auto" mainAlignment="flex-end">
+            <Padding right="small">
+              <Button
+                type="outlined"
+                label={t('label.bucket_cancel_button', 'CANCEL')}
+                color="secondary"
+                icon="ChevronLeftOutline"
+                iconPlacement="left"
+                onClick={(): void => {
+                  onCancel?.();
+                }}
+              />
+            </Padding>
+            <Button
+              type="default"
+              label={buttonDetail}
+              color={buttonColor}
+              onClick={handleVerifyConnector}
+            />
+          </Row>
+        </Row>
+      </Container>
+      <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
+      <VerifySuccess
+        isSuccess={showVerifyResult && isVerifySuccess}
+        onComplete={handleSuccessComplete}
+      />
+      <VerifyError
+        isError={showVerifyResult && isVerifyError}
+        checkDetails={checkDetails}
+        onRetry={() => setShowVerifyResult(false)}
+      />
     </Container>
   );
 };

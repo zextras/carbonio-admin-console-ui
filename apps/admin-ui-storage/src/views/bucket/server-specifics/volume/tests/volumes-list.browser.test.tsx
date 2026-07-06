@@ -34,6 +34,7 @@ const PRIMARIES = [
 		availableSpace: 19308,
 		storeType: 'LOCAL',
 		isCurrent: true,
+		type: 1,
 		volumeType: 'primary',
 	},
 ];
@@ -49,6 +50,7 @@ const SECONDARIES = [
 		availableSpace: 19308,
 		storeType: 'LOCAL',
 		isCurrent: false,
+		type: 2,
 		volumeType: 'secondary',
 	},
 ];
@@ -64,9 +66,26 @@ const INDEXES = [
 		availableSpace: 19308,
 		storeType: 'LOCAL',
 		isCurrent: true,
+		type: 10,
 		volumeType: 'index',
 	},
 ];
+
+function buildAdvancedVolumesSoapContent(
+	primaries: Array<Record<string, unknown>> = PRIMARIES,
+	secondaries: Array<Record<string, unknown>> = SECONDARIES,
+	indexes: Array<Record<string, unknown>> = INDEXES,
+): string {
+	return JSON.stringify({
+		ok: true,
+		response: {
+			[SERVER_NAME]: {
+				ok: true,
+				response: { primaries, secondaries, indexes },
+			},
+		},
+	});
+}
 
 function setupAllServersInterceptor(): Promise<unknown> {
 	return createBrowserSoapAPIInterceptor('GetAllServers', {
@@ -101,10 +120,7 @@ function setupGetAllVolumesAdvanced(
 				return HttpResponse.json({
 					Body: {
 						response: {
-							content: JSON.stringify({
-								response: { primaries, secondaries, indexes },
-								ok: true,
-							}),
+							content: buildAdvancedVolumesSoapContent(primaries, secondaries, indexes),
 						},
 					},
 				});
@@ -131,10 +147,7 @@ function setupEmptyVolumesAdvanced(): void {
 				return HttpResponse.json({
 					Body: {
 						response: {
-							content: JSON.stringify({
-								response: { primaries: [], secondaries: [], indexes: [] },
-								ok: true,
-							}),
+							content: buildAdvancedVolumesSoapContent([], [], []),
 						},
 					},
 				});

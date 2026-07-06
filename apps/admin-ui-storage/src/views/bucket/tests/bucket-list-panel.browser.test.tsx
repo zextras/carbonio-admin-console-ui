@@ -131,12 +131,12 @@ describe('BucketListPanel (browser)', () => {
 		});
 
 		describe('Rendering', () => {
-			it('should render the Bucket List item in advanced mode', async () => {
+			it('should render the S3 connectors item in advanced mode', async () => {
 				setupGetAllServersInterceptor();
 				setupAllConfigInterceptor();
 				await setupBrowserTest(<BucketListPanel />);
 				await expect
-					.element(page.getByText('Bucket List', { exact: true }))
+					.element(page.getByText('S3 connectors', { exact: true }))
 					.toBeVisible();
 			});
 
@@ -169,7 +169,7 @@ describe('BucketListPanel (browser)', () => {
 					.element(page.getByText('Servers List', { exact: true }))
 					.toBeVisible();
 				await expect
-					.element(page.getByText('Bucket List', { exact: true }))
+					.element(page.getByText('S3 connectors', { exact: true }))
 					.toBeVisible();
 				await expect
 					.element(page.getByText('Data Volumes', { exact: true }))
