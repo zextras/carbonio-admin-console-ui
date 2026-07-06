@@ -26,7 +26,6 @@ const App = () => {
   const navigate = useNavigate();
 
   const { data: rights } = useCurrentUserRights();
-
   const showCOS = checkShowCOS(rights);
   const createCosRight = checkCreateCosRight(rights);
 
