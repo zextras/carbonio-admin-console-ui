@@ -227,4 +227,25 @@ describe('DoneDetailPanel', () => {
         await page.getByText('doBackup').click();
         await expect.element(page.getByText('COPY')).toBeVisible();
     });
+
+    it('should show Empty Table when fetching done operations fails', async () => {
+        setupGetAllServersInterceptor();
+        worker.use(
+            http.post('/service/admin/soap/zextras', async ({ request }) => {
+                const body = (await request.json()) as Record<string, unknown>;
+                const zextrasBody = (body?.Body as Record<string, unknown>)?.zextras as
+                    | Record<string, unknown>
+                    | undefined;
+
+                if (zextrasBody?.action === 'getOperationLog') {
+                    return HttpResponse.json({ Body: {} }, { status: 500 });
+                }
+
+                return HttpResponse.json({ Body: {} });
+            }),
+        );
+
+        await setupBrowserTest(<DoneDetailPanel />);
+        await expect.element(page.getByText('Empty Table')).toBeVisible();
+    });
 });
