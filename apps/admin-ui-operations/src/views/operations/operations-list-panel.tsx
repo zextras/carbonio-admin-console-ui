@@ -13,7 +13,7 @@ import { useLocation } from 'react-router';
 import { DONE_ROUTE_ID, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID } from '../../constants';
 import { type ManageOption } from '../../types/operations';
 
-const VALID_TABS = [RUNNING_ROUTE_ID, QUEUED_ROUTE_ID, DONE_ROUTE_ID];
+const VALID_TABS = new Set([RUNNING_ROUTE_ID, QUEUED_ROUTE_ID, DONE_ROUTE_ID]);
 
 const OperationsListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -21,8 +21,8 @@ const OperationsListPanel: FC = () => {
 
 	const selectedOperationItem = useMemo(() => {
 		const segments = pathname.replace(/\/+$/, '').split('/');
-		const last = segments[segments.length - 1];
-		return VALID_TABS.includes(last) ? last : RUNNING_ROUTE_ID;
+		const last = segments.at(-1) ?? '';
+		return VALID_TABS.has(last) ? last : RUNNING_ROUTE_ID;
 	}, [pathname]);
 
 	const manageOptions = useMemo<Array<ManageOption>>(
