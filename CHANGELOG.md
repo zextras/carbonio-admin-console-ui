@@ -1,3 +1,9 @@
+## [0.14.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.1...v0.14.2) (2026-07-06)
+
+### Other changes
+
+* improve routing for admin UI domains ([#1276](https://github.com/zextras/carbonio-admin-console-ui/issues/1276)) ([73943a8](https://github.com/zextras/carbonio-admin-console-ui/commit/73943a8023f977eb508b9a63f14cd0d98ce78d2c))
+
 ## [0.14.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.0...v0.14.1) (2026-07-06)
 
 ### Bug Fixes
