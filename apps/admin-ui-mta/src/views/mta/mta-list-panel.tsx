@@ -12,7 +12,7 @@ import {
   Row,
 } from '@zextras/ui-components';
 import { replaceHistory, useGlobalCarbonioSendAnalytics, useMtaServers } from '@zextras/ui-shared';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -171,7 +171,13 @@ const MTAListPanel: FC = () => {
     [searchServer, handleCustomIconClick],
   );
 
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     if (selectedOperationItem === MTA_SERVER_GENERAL) {
       replaceHistory(`/${selectedServer}/${selectedOperationItem}`);
     } else {
