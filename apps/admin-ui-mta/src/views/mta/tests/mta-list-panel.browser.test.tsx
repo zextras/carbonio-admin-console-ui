@@ -54,6 +54,7 @@ describe('MTAListPanel navigation', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
   beforeEach(async () => {
+    localStorage.clear();
     queryClient = getQueryClient();
     await grantUserConfigRights(queryClient);
     setupInterceptors();
@@ -138,5 +139,18 @@ describe('MTAListPanel navigation', () => {
     await page.getByText('General').click();
 
     expect(mockedReplaceHistory).toHaveBeenCalledWith(`/mail.test.com/${MTA_SERVER_GENERAL}`);
+  });
+
+  it('shows error message when server search has no matching results', async () => {
+    await setupBrowserTest(<MTAListPanel />, {
+      initialRouterEntry: `${MTA_BASE}/${INBOUND_FLOW_SECURITY}`,
+      queryClient,
+    });
+
+    const input = page.getByPlaceholder('Select a Server');
+    await input.click();
+    await input.fill('xyznomatch');
+
+    await expect.element(page.getByText(/Not found/i)).toBeVisible();
   });
 });
