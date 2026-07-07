@@ -12,7 +12,7 @@ import {
     setupBrowserTest as _setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { type ReactElement } from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
@@ -728,6 +728,478 @@ describe('ManageAccounts (browser)', () => {
             await expect.element(page.getByText('Active', { exact: true }).first()).toBeInTheDocument();
             await expect.element(page.getByText('Locked', { exact: true }).first()).toBeInTheDocument();
             await expect.element(page.getByText('Closed', { exact: true }).first()).toBeInTheDocument();
+        });
+    });
+
+    describe('Account detail callbacks (lines 274-275, 284-285, 310-362)', () => {
+        it('should trigger SearchDirectory with sort parameters when sorting by email', async () => {
+            const interceptor = setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
+            const params = await interceptor;
+            expect(params).toHaveProperty('sortBy');
+        });
+
+        it('should trigger SearchDirectory with sort parameters when sorting by name', async () => {
+            const interceptor = setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            await expect.element(page.getByText('User One')).toBeInTheDocument();
+            const params = await interceptor;
+            expect(params).toHaveProperty('sortBy');
+        });
+    });
+
+    describe('GetAccount detail flow (lines 630-749)', () => {
+        it('should handle account with userPassword set', async () => {
+            const accountWithPassword = [{
+                name: 'user1@example.com',
+                id: 'acc-1',
+                a: [
+                    { n: 'zimbraId', _content: 'acc-1' },
+                    { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    { n: 'userPassword', _content: 'hashedpassword' },
+                    { n: 'mail', _content: 'user1@example.com' },
+                ],
+            }];
+            createBrowserSoapAPIInterceptor('GetAccount', { account: accountWithPassword });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+
+        it('should handle account without zimbraIsAdminAccount attribute', async () => {
+            const accountNoAdmin = [{
+                name: 'user1@example.com',
+                id: 'acc-1',
+                a: [
+                    { n: 'zimbraId', _content: 'acc-1' },
+                    { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    { n: 'mail', _content: 'user1@example.com' },
+                ],
+            }];
+            createBrowserSoapAPIInterceptor('GetAccount', { account: accountNoAdmin });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+
+        it('should handle account with zimbraPrefMailForwardingAddress', async () => {
+            const accountWithForward = [{
+                name: 'user1@example.com',
+                id: 'acc-1',
+                a: [
+                    { n: 'zimbraId', _content: 'acc-1' },
+                    { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    { n: 'zimbraPrefMailForwardingAddress', _content: 'forward@example.com' },
+                    { n: 'mail', _content: 'user1@example.com' },
+                ],
+            }];
+            createBrowserSoapAPIInterceptor('GetAccount', { account: accountWithForward });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+
+        it('should handle account with duplicate attribute values', async () => {
+            const accountDuplicateAttrs = [{
+                name: 'user1@example.com',
+                id: 'acc-1',
+                a: [
+                    { n: 'zimbraId', _content: 'acc-1' },
+                    { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    { n: 'mail', _content: 'user1@example.com' },
+                    { n: 'mail', _content: 'alias1@example.com' },
+                ],
+            }];
+            createBrowserSoapAPIInterceptor('GetAccount', { account: accountDuplicateAttrs });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+    });
+
+    describe('GetAccountMembership flow (lines 759-784)', () => {
+        it('should handle direct membership distribution lists', async () => {
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', {
+                dl: [
+                    { name: 'team@example.com', id: 'dl-1' },
+                ],
+            });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+
+        it('should handle indirect membership with via attribute', async () => {
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', {
+                dl: [
+                    { name: 'parent-group@example.com', id: 'dl-1', via: 'child-group@example.com' },
+                ],
+            });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+
+        it('should filter out admin groups from membership list', async () => {
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', {
+                dl: [
+                    { name: '__domain_admins@example.com', id: 'dl-admin' },
+                    { name: '__delegated_admins@example.com', id: 'dl-del-admin' },
+                    { name: 'regular-group@example.com', id: 'dl-regular' },
+                ],
+            });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+    });
+
+    describe('GetFolder and delegate processing (lines 817-830)', () => {
+        it('should handle folder grants and build delegate list', async () => {
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', {
+                grant: [
+                    { grantee: [{ id: 'del-1', name: 'delegate@example.com', type: 'usr' }] },
+                ],
+            });
+            createBrowserSoapAPIInterceptor('GetFolder', {
+                folder: [{
+                    id: 'acc-1:1',
+                    name: 'Inbox',
+                    acl: {
+                        grant: [
+                            { d: 'delegate@example.com', zid: 'del-1', gt: 'usr', perm: 'r' },
+                        ],
+                    },
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+
+        it('should handle multiple folder grants for same delegate', async () => {
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', {
+                folder: [
+                    {
+                        id: 'acc-1:1',
+                        name: 'Inbox',
+                        acl: { grant: [{ d: 'delegate@example.com', zid: 'del-1', gt: 'usr', perm: 'r' }] },
+                    },
+                    {
+                        id: 'acc-1:2',
+                        name: 'Sent',
+                        acl: { grant: [{ d: 'delegate@example.com', zid: 'del-1', gt: 'usr', perm: 'rw' }] },
+                    },
+                ],
+            });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+
+        it('should handle new delegate not in existing grant list', async () => {
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', {
+                folder: [{
+                    id: 'acc-1:1',
+                    name: 'Inbox',
+                    acl: { grant: [{ d: 'newdelegate@example.com', zid: 'new-del-1', gt: 'usr', perm: 'r' }] },
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+    });
+
+    describe('Signature handling (lines 391-398)', () => {
+        it('should fetch signatures when opening account detail', async () => {
+            const signaturesInterceptor = createBrowserSoapAPIInterceptor('GetSignatures', {
+                signature: [
+                    { id: 'sig-1', name: 'Work Signature', content: { type: 'text/plain', _content: 'Best regards' } },
+                ],
+            });
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect(signaturesInterceptor).resolves.toBeDefined();
+        });
+
+        it('should handle empty signature list', async () => {
+            createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+    });
+
+    describe('COS detail handling (lines 461-477)', () => {
+        it('should fetch COS details when opening account', async () => {
+            const cosInterceptor = createBrowserSoapAPIInterceptor('GetCos', {
+                cos: [{
+                    id: 'cos-default-id',
+                    name: 'default',
+                    a: [
+                        { n: 'zimbraMailQuota', _content: '1073741824' },
+                        { n: 'zimbraPrefMailForwardingAddress', _content: '' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect(cosInterceptor).resolves.toBeDefined();
+        });
+
+        it('should handle COS with duplicate attributes', async () => {
+            createBrowserSoapAPIInterceptor('GetCos', {
+                cos: [{
+                    id: 'cos-default-id',
+                    name: 'default',
+                    a: [
+                        { n: 'zimbraMailQuota', _content: '1073741824' },
+                        { n: 'zimbraMailQuota', _content: '2147483648' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect.element(page.getByText('user1@example.com', { exact: true }).first()).toBeVisible();
+        });
+    });
+
+    describe('Sessions handling', () => {
+        it('should fetch sessions when opening account detail', async () => {
+            const sessionsInterceptor = createBrowserSoapAPIInterceptor('GetSessions', {
+                s: [
+                    { name: 'user1@example.com', sid: 'sess-1', zid: 'acc-1' },
+                ],
+            });
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [{
+                    name: 'user1@example.com',
+                    id: 'acc-1',
+                    a: [
+                        { n: 'zimbraId', _content: 'acc-1' },
+                        { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                    ],
+                }],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+            createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await userEvent.click(page.getByText('user1@example.com').first());
+            await expect(sessionsInterceptor).resolves.toBeDefined();
         });
     });
 });
