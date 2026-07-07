@@ -11,15 +11,18 @@ import {
   Padding,
   Row,
 } from '@zextras/ui-components';
-import { replaceHistory, useGlobalCarbonioSendAnalytics, useMtaServers } from '@zextras/ui-shared';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { replaceHistory, useMtaServers } from '@zextras/ui-shared';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { matchPath, useLocation } from 'react-router';
 
 import {
   ADVANCED,
   ANTIVIRUS_AND_ANTISPAM,
   INBOUND_FLOW_SECURITY,
   IS_SERVER_SPECIFICS_EXPANDED,
+  MANAGE_APP_ID,
+  MTA_ROUTE_ID,
   MTA_SERVER_GENERAL,
   OUTBOUND_FLOW,
   POSTSCREEN_TUNING,
@@ -35,15 +38,18 @@ const MTAListPanel: FC = () => {
     localStorage.getItem(IS_SERVER_SPECIFICS_EXPANDED) !== 'false',
   );
 
-  const [selectedServer, setSelectedServer] = useState('');
-  const [isServerSelect, setIsServerSelect] = useState(false);
-  const [selectedOperationItem, setSelectedOperationItem] = useState(INBOUND_FLOW_SECURITY);
+  const locationService = useLocation();
+  const mtaBase = `/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`;
+  const serverMatch = matchPath(`${mtaBase}/:server/:operation`, locationService.pathname);
+  const opMatch = serverMatch ? null : matchPath(`${mtaBase}/:operation`, locationService.pathname);
+  const selectedOperationItem = serverMatch?.params.operation ?? opMatch?.params.operation ?? null;
+  const selectedServer = serverMatch?.params.server ?? '';
+  const isServerSelect = !!serverMatch;
 
   const [searchServer, setSearchServer] = useState('');
   const [isShowError, setIsShowError] = useState(false);
 
   const { data: mtaServerList = [] } = useMtaServers();
-  const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 
   const filteredServers = useMemo(
     () => mtaServerList.filter((item: MtaServer) => item.name?.includes(searchServer)),
@@ -65,10 +71,9 @@ const MTAListPanel: FC = () => {
               width: 'inherit',
             }}
             onClick={(): void => {
-              setSelectedServer(serverItem.name || '');
-              setSearchServer(serverItem.name || '');
-              setSelectedOperationItem(MTA_SERVER_GENERAL);
-              setIsServerSelect(true);
+              const serverName = serverItem.name || '';
+              setSearchServer(serverName);
+              replaceHistory(`/${serverName}/${MTA_SERVER_GENERAL}`);
             }}
           >
             {serverItem.name}
@@ -158,8 +163,7 @@ const MTAListPanel: FC = () => {
     setIsShowError(false);
     if (searchServer !== '') {
       setSearchServer('');
-      setIsServerSelect(false);
-      setSelectedOperationItem(MTA_SERVER_GENERAL);
+      replaceHistory(`/${INBOUND_FLOW_SECURITY}`);
     }
   }, [searchServer]);
 
@@ -171,19 +175,16 @@ const MTAListPanel: FC = () => {
     [searchServer, handleCustomIconClick],
   );
 
-  const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    if (selectedOperationItem === MTA_SERVER_GENERAL) {
-      replaceHistory(`/${selectedServer}/${selectedOperationItem}`);
-    } else {
-      replaceHistory(`/${selectedOperationItem}`);
-    }
-  }, [globalCarbonioSendAnalytics, selectedOperationItem, selectedServer]);
+  const handleSelectOperation = useCallback(
+    (id: string): void => {
+      if (id === MTA_SERVER_GENERAL) {
+        replaceHistory(`/${selectedServer}/${id}`);
+      } else {
+        replaceHistory(`/${id}`);
+      }
+    },
+    [selectedServer],
+  );
 
   return (
     <Container
@@ -202,7 +203,7 @@ const MTAListPanel: FC = () => {
         <ListItems
           items={mailTransferAgentOptions}
           selectedOperationItem={selectedOperationItem}
-          setSelectedOperationItem={setSelectedOperationItem}
+          setSelectedOperationItem={handleSelectOperation}
         />
       )}
 
@@ -247,7 +248,7 @@ const MTAListPanel: FC = () => {
           <ListItems
             items={serverOptions}
             selectedOperationItem={selectedOperationItem}
-            setSelectedOperationItem={setSelectedOperationItem}
+            setSelectedOperationItem={handleSelectOperation}
           />
         )}
       </Container>
