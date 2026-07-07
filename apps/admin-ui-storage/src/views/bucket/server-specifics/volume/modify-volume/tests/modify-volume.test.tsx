@@ -124,16 +124,18 @@ vi.mock('../../../../../../services/bucket-service', () => ({
   fetchSoap: vi.fn(),
 }));
 
+vi.mock('react-router', () => ({
+  useParams: () => ({ server: 'mailstore1.example.com' }),
+}));
+
 vi.mock('../../../../../../store/bucket-volume/store', () => ({
   useBucketVolumeStore: (
     selector: (state: {
-      selectedServerName: string;
       isVolumeAllDetail: Array<unknown>;
       setIsVolumeAllDetail: (items: Array<unknown>) => void;
     }) => unknown,
   ) =>
     selector({
-      selectedServerName: 'mailstore1.example.com',
       isVolumeAllDetail: mockVolumeAllDetail.value,
       setIsVolumeAllDetail: (items: Array<unknown>) => {
         mockVolumeAllDetail.value = items;

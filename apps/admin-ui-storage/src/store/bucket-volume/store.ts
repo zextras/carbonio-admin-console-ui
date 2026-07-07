@@ -8,22 +8,17 @@ import { devtools } from 'zustand/middleware';
 
 import type { BucketVolume } from '../../../types';
 
-type BucketVolumeServerNameState = {
-	selectedServerName: string;
-	setSelectedServerName: (v: string) => void;
+type BucketVolumeState = {
 	isVolumeAllDetail: Array<BucketVolume>;
 	setIsVolumeAllDetail: (isVolumeAllDetail: Array<BucketVolume>) => void;
 	isAllocationToggle: boolean;
 	setIsAllocationToggle: (isAllocationToggle: boolean) => void;
 };
 
-export const useBucketVolumeStore = create<BucketVolumeServerNameState>()(
+export const useBucketVolumeStore = create<BucketVolumeState>()(
 	devtools((set) => ({
-		selectedServerName: '',
 		isVolumeAllDetail: [],
 		isAllocationToggle: false,
-		setSelectedServerName: (selectedServerName): void =>
-			set({ selectedServerName }, false, 'setSelectedServerName'),
 		setIsVolumeAllDetail: (isVolumeAllDetail): void =>
 			set({ isVolumeAllDetail }, false, 'setIsVolumeAllDetail'),
 		setIsAllocationToggle: (isAllocationToggle): void =>
