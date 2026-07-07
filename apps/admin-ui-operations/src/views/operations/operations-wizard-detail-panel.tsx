@@ -6,7 +6,6 @@
 import { Button, Container, LabeledValue, ListRow, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
 
 import {
   DONE_ROUTE_ID,
@@ -23,11 +22,11 @@ const OperationsWizardDetailPanel: FC<{
   setWizardDetailToggle: (value: boolean) => void;
   setOpen: (value: boolean) => void;
   selectedData: any;
-}> = ({ setWizardDetailToggle, setOpen, selectedData }) => {
+  allowStop: boolean;
+}> = ({ setWizardDetailToggle, setOpen, selectedData, allowStop }) => {
   const [t] = useTranslation();
   const [status, setStatus] = useState('');
   const createSnackbar = useSnackbar();
-  const { operation } = useParams();
 
   useEffect(() => {
     if (selectedData?.state === STARTED) {
@@ -119,7 +118,7 @@ const OperationsWizardDetailPanel: FC<{
               onClick={copyOperationHandler}
             />
           </Padding>
-          {operation !== DONE_ROUTE_ID && (
+          {allowStop && (
             <Button
               type="outlined"
               label={

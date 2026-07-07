@@ -14,7 +14,6 @@ import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { useOperationStore } from '../../../store/operation/store';
 import { type Operation } from '../../../types/operations';
 import DoneDetailPanel from '../done-detail-panel';
 
@@ -122,12 +121,10 @@ function setupGetOperationLogInterceptor(
 describe('DoneDetailPanel', () => {
     beforeEach(() => {
         vi.resetAllMocks();
-        useOperationStore.getState().setDoneData([]);
     });
 
     afterEach(() => {
         resetMockWorker();
-        useOperationStore.getState().setDoneData([]);
     });
 
     it('should render the Done Operations heading', async () => {
@@ -229,5 +226,26 @@ describe('DoneDetailPanel', () => {
         await expect.element(page.getByText('doBackup')).toBeVisible();
         await page.getByText('doBackup').click();
         await expect.element(page.getByText('COPY')).toBeVisible();
+    });
+
+    it('should show Empty Table when fetching done operations fails', async () => {
+        setupGetAllServersInterceptor();
+        worker.use(
+            http.post('/service/admin/soap/zextras', async ({ request }) => {
+                const body = (await request.json()) as Record<string, unknown>;
+                const zextrasBody = (body?.Body as Record<string, unknown>)?.zextras as
+                    | Record<string, unknown>
+                    | undefined;
+
+                if (zextrasBody?.action === 'getOperationLog') {
+                    return HttpResponse.json({ Body: {} }, { status: 500 });
+                }
+
+                return HttpResponse.json({ Body: {} });
+            }),
+        );
+
+        await setupBrowserTest(<DoneDetailPanel />);
+        await expect.element(page.getByText('Empty Table')).toBeVisible();
     });
 });
