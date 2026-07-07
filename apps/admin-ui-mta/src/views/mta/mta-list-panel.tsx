@@ -40,8 +40,11 @@ const MTAListPanel: FC = () => {
 
   const locationService = useLocation();
   const mtaBase = `/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`;
-  const serverMatch = matchPath(`${mtaBase}/:server/:operation`, locationService.pathname);
-  const opMatch = serverMatch ? null : matchPath(`${mtaBase}/:operation`, locationService.pathname);
+  const relativePathname = locationService.pathname.startsWith(mtaBase)
+    ? locationService.pathname.slice(mtaBase.length) || '/'
+    : locationService.pathname;
+  const serverMatch = matchPath(`/:server/:operation`, relativePathname);
+  const opMatch = serverMatch ? null : matchPath(`/:operation`, relativePathname);
   const selectedOperationItem = serverMatch?.params.operation ?? opMatch?.params.operation ?? null;
   const selectedServer = serverMatch?.params.server ?? '';
   const isServerSelect = !!serverMatch;
