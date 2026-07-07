@@ -17,7 +17,6 @@ import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useBackupStore } from '../../../../store/backup/store';
 import BackupConfiguration from '../backup-configuration';
 
 const BackupConfigurationWithRoute = () => (
@@ -121,7 +120,6 @@ describe('BackupConfiguration', () => {
 	beforeEach(async () => {
 		queryClient = getQueryClient();
 		await grantUserConfigRights(queryClient);
-		useBackupStore.getState().setSelectedBackupServer(SERVER_NAME);
 		queryClient.setQueryData(
 			['subscription', 'license'],
 			buildLicenseData([

@@ -11,17 +11,11 @@ import type { GlobalConfig } from '../../../types';
 type BackupState = {
 	globalConfig: GlobalConfig;
 	setGlobalConfig: (backup: GlobalConfig) => void;
-	selectedServer: string;
-	setSelectedBackupServer: (server: string) => void;
 };
 
 export const useBackupStore = create<BackupState>()(
 	devtools((set) => ({
 		globalConfig: {},
-		setGlobalConfig: (globalConfig): void => set({ globalConfig }, false, 'setGlobalConfig'),
-		selectedServer: '',
-		setSelectedBackupServer: (selectedServer): void => {
-			set({ selectedServer }, false, 'setSelectedServer');
-		}
+		setGlobalConfig: (globalConfig): void => set({ globalConfig }, false, 'setGlobalConfig')
 	}))
 );

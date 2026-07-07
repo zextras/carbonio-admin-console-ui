@@ -65,7 +65,7 @@ describe('BackupServerConfig', () => {
 
     afterEach(() => {
         resetMockWorker();
-        useBackupStore.setState({ globalConfig: {}, selectedServer: '' });
+        useBackupStore.setState({ globalConfig: {} });
     });
 
     describe('Rendering', () => {

@@ -9,9 +9,22 @@ import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router';
 
 import type { DumpGlobalConfigResponse } from '../../../types';
+import {
+  ADVANCED,
+  ADVANCED_LBL,
+  CONFIGURATION_BACKUP,
+  IMPORT_EXTERNAL_BACKUP,
+  SERVER_CONFIG,
+  SERVERS_LIST,
+} from '../../constants';
 import { dumpGlobalConfig } from '../../services/dump-global-config';
 import { useBackupStore } from '../../store/backup/store';
-import BackupDetailOperation from './backup-detail-operation';
+import ImportExternalBackup from './actions/import-external-backup';
+import BackupConfiguration from './configuration/backup-configuration';
+import BackupAdvanced from './default-setting/backup-advanced';
+import BackupServerConfig from './default-setting/backup-server-config';
+import ServersList from './default-setting/backup-servers-list';
+import ServerAdvanced from './server-advanced/server-advanced';
 
 const BackupDetailPanel: FC = () => {
   const globalConfig = useBackupStore((state) => state.globalConfig);
@@ -55,8 +68,12 @@ const BackupDetailPanel: FC = () => {
         </Row>
       ) : (
         <Routes>
-          <Route path={`/:operation`} element={<BackupDetailOperation />} />
-          <Route path={`/:server/:operation`} element={<BackupDetailOperation />} />
+          <Route path={`/${SERVER_CONFIG}`} element={<BackupServerConfig />} />
+          <Route path={`/${ADVANCED}`} element={<BackupAdvanced />} />
+          <Route path={`/${SERVERS_LIST}`} element={<ServersList />} />
+          <Route path={`/${IMPORT_EXTERNAL_BACKUP}`} element={<ImportExternalBackup />} />
+          <Route path={`/:server/${CONFIGURATION_BACKUP}`} element={<BackupConfiguration />} />
+          <Route path={`/:server/${ADVANCED_LBL}`} element={<ServerAdvanced />} />
         </Routes>
       )}
     </Container>

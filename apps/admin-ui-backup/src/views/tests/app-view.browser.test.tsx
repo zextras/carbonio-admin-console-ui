@@ -88,12 +88,12 @@ describe('AppView', () => {
 			['subscription', 'license'],
 			buildLicenseData([{ name: 'backup_basic', quantity: '1', enabled: true }]),
 		);
-		useBackupStore.setState({ globalConfig: {}, selectedServer: '' });
+		useBackupStore.setState({ globalConfig: {} });
 	});
 
 	afterEach(() => {
 		resetMockWorker();
-		useBackupStore.setState({ globalConfig: {}, selectedServer: '' });
+		useBackupStore.setState({ globalConfig: {} });
 	});
 
 	describe('Layout', () => {
