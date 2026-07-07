@@ -16,7 +16,7 @@ import { HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useBackupStore } from '../../store/backup/store';
+import { backupQueryKeys } from '../../services/backup-query-keys';
 import AppView from '../app-view';
 
 function buildLicenseData(
@@ -88,12 +88,12 @@ describe('AppView', () => {
 			['subscription', 'license'],
 			buildLicenseData([{ name: 'backup_basic', quantity: '1', enabled: true }]),
 		);
-		useBackupStore.setState({ globalConfig: {} });
+		queryClient.removeQueries({ queryKey: backupQueryKeys.all });
 	});
 
 	afterEach(() => {
 		resetMockWorker();
-		useBackupStore.setState({ globalConfig: {} });
+		queryClient.removeQueries({ queryKey: backupQueryKeys.all });
 	});
 
 	describe('Layout', () => {
@@ -152,8 +152,8 @@ describe('AppView', () => {
 			createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
 			await mockDumpGlobalConfigWithData();
 
-			useBackupStore.setState({
-				globalConfig: { privateKeyAlgorithm: 'RSA' },
+			queryClient.setQueryData(backupQueryKeys.globalConfig(), {
+				privateKeyAlgorithm: 'RSA',
 			});
 
 			await setupBrowserTest(<AppView />, {

@@ -4,11 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Padding, Row } from '@zextras/ui-components';
-import { FC, useCallback, useEffect } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router';
 
-import type { DumpGlobalConfigResponse } from '../../../types';
 import {
   ADVANCED,
   ADVANCED_LBL,
@@ -17,8 +16,7 @@ import {
   SERVER_CONFIG,
   SERVERS_LIST,
 } from '../../constants';
-import { dumpGlobalConfig } from '../../services/dump-global-config';
-import { useBackupStore } from '../../store/backup/store';
+import { useGlobalConfig } from '../../services/use-global-config';
 import ImportExternalBackup from './actions/import-external-backup';
 import BackupConfiguration from './configuration/backup-configuration';
 import BackupAdvanced from './default-setting/backup-advanced';
@@ -27,23 +25,8 @@ import ServersList from './default-setting/backup-servers-list';
 import ServerAdvanced from './server-advanced/server-advanced';
 
 const BackupDetailPanel: FC = () => {
-  const globalConfig = useBackupStore((state) => state.globalConfig);
-  const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
+  const { data: globalConfig = {} } = useGlobalConfig();
   const [t] = useTranslation();
-  const getGlobalConfig = useCallback((): void => {
-    dumpGlobalConfig().then((data: DumpGlobalConfigResponse) => {
-      if (data?.Body?.response?.content) {
-        const parseData = JSON.parse(data.Body.response.content);
-        if (parseData?.response) {
-          setGlobalConfig(parseData?.response);
-        }
-      }
-    });
-  }, [setGlobalConfig]);
-
-  useEffect(() => {
-    !globalConfig?.privateKeyAlgorithm && getGlobalConfig();
-  }, [getGlobalConfig, globalConfig?.privateKeyAlgorithm]);
   return (
     <Container
       orientation="column"

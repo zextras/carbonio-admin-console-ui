@@ -25,20 +25,26 @@ vi.mock('../../services/modify-backup', () => ({
   modifyBackupRequest: vi.fn(),
 }));
 
-vi.mock('../../store/backup/store', () => ({
-  useBackupStore: vi.fn(),
+vi.mock('../../services/use-global-config', () => ({
+  useGlobalConfig: vi.fn(),
 }));
 
+vi.mock('@tanstack/react-query', () => ({
+  useQueryClient: vi.fn(),
+}));
+
+import { useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights, useUserAccounts } from '@zextras/ui-shared';
 
+import { backupQueryKeys } from '../../services/backup-query-keys';
 import { modifyBackupRequest } from '../../services/modify-backup';
-import { useBackupStore } from '../../store/backup/store';
+import { useGlobalConfig } from '../../services/use-global-config';
 import { useBackupConfig } from '../useBackupConfig';
 
 describe('useBackupConfig', () => {
   let mockCreateSnackbar: Mock;
-  let mockSetGlobalConfig: Mock;
+  let mockInvalidateQueries: Mock;
 
   const mockGlobalConfig = {
     backupEnabled: true,
@@ -67,16 +73,14 @@ describe('useBackupConfig', () => {
 
   beforeEach(() => {
     mockCreateSnackbar = vi.fn();
-    mockSetGlobalConfig = vi.fn();
+    mockInvalidateQueries = vi.fn();
 
     (useSnackbar as Mock).mockReturnValue(mockCreateSnackbar);
 
-    (useBackupStore as unknown as Mock).mockImplementation((selector) => {
-      const state = {
-        globalConfig: mockGlobalConfig,
-        setGlobalConfig: mockSetGlobalConfig,
-      };
-      return selector(state);
+    (useGlobalConfig as unknown as Mock).mockReturnValue({ data: mockGlobalConfig });
+
+    (useQueryClient as unknown as Mock).mockReturnValue({
+      invalidateQueries: mockInvalidateQueries,
     });
 
     (useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
@@ -216,10 +220,8 @@ describe('useBackupConfig', () => {
         });
       });
 
-      expect(mockSetGlobalConfig).toHaveBeenCalledWith({
-        ...mockGlobalConfig,
-        backupEnabled: false,
-        backupPath: '/new-backup',
+      expect(mockInvalidateQueries).toHaveBeenCalledWith({
+        queryKey: backupQueryKeys.globalConfig(),
       });
 
       expect(mockCreateSnackbar).toHaveBeenCalledWith({
@@ -248,7 +250,7 @@ describe('useBackupConfig', () => {
       });
 
       await waitFor(() => {
-        expect(mockSetGlobalConfig).toHaveBeenCalled();
+        expect(mockInvalidateQueries).toHaveBeenCalled();
         expect(mockCreateSnackbar).toHaveBeenCalledWith(
           expect.objectContaining({ severity: 'success' }),
         );
@@ -275,7 +277,7 @@ describe('useBackupConfig', () => {
       });
 
       await waitFor(() => {
-        expect(mockSetGlobalConfig).not.toHaveBeenCalled();
+        expect(mockInvalidateQueries).not.toHaveBeenCalled();
         expect(mockCreateSnackbar).toHaveBeenCalledWith({
           key: 'error',
           severity: 'error',
@@ -335,7 +337,7 @@ describe('useBackupConfig', () => {
       });
 
       await waitFor(() => {
-        expect(mockSetGlobalConfig).not.toHaveBeenCalled();
+        expect(mockInvalidateQueries).not.toHaveBeenCalled();
         expect(mockCreateSnackbar).toHaveBeenCalledWith({
           key: 'error',
           severity: 'error',
@@ -568,9 +570,8 @@ describe('useBackupConfig', () => {
       });
 
       await waitFor(() => {
-        expect(mockSetGlobalConfig).toHaveBeenCalledWith({
-          ...mockGlobalConfig,
-          backupEnabled: false,
+        expect(mockInvalidateQueries).toHaveBeenCalledWith({
+          queryKey: backupQueryKeys.globalConfig(),
         });
       });
 
@@ -607,7 +608,7 @@ describe('useBackupConfig', () => {
       });
 
       expect(result.current.isDirty).toBe(true);
-      expect(mockSetGlobalConfig).not.toHaveBeenCalled();
+      expect(mockInvalidateQueries).not.toHaveBeenCalled();
     });
   });
 });
