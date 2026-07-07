@@ -8,6 +8,16 @@ import { resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
+import {
+  ADVANCED,
+  ANTIVIRUS_AND_ANTISPAM,
+  INBOUND_FLOW_SECURITY,
+  MTA_SERVER_GENERAL,
+  OUTBOUND_FLOW,
+  POSTSCREEN_TUNING,
+  QUEUE,
+} from '../../../constants';
+
 vi.mock('../antvirus-and-antispam/antivirus-and-antispam', () => ({
   default: () => <div>VIEW:antivirus-and-antispam</div>,
 }));
@@ -33,12 +43,12 @@ vi.mock('../stats/mta-stats', () => ({
 import { MTADetailPanel } from '../mta-detail-panel';
 
 const globalOpRoutes: Array<[string, string]> = [
-  ['general_lbl', 'VIEW:inbound-flow-security'],
-  ['postscreen_tuning', 'VIEW:postscreen-tuning'],
-  ['outbound_flow', 'VIEW:outbound-flow'],
-  ['antivirus_and_antispam', 'VIEW:antivirus-and-antispam'],
-  ['advanced', 'VIEW:advanced'],
-  ['queue', 'VIEW:queue'],
+  [INBOUND_FLOW_SECURITY, 'VIEW:inbound-flow-security'],
+  [POSTSCREEN_TUNING, 'VIEW:postscreen-tuning'],
+  [OUTBOUND_FLOW, 'VIEW:outbound-flow'],
+  [ANTIVIRUS_AND_ANTISPAM, 'VIEW:antivirus-and-antispam'],
+  [ADVANCED, 'VIEW:advanced'],
+  [QUEUE, 'VIEW:queue'],
 ];
 
 const SERVER_ID = 'mail.test.com';
@@ -64,9 +74,9 @@ describe('MTADetailPanel routing', () => {
     });
   });
 
-  it(`renders MTAServerGeneral for /:server/mta_server_general`, async () => {
+  it(`renders MTAServerGeneral for /:server/${MTA_SERVER_GENERAL}`, async () => {
     await setupBrowserTest(<MTADetailPanel />, {
-      initialRouterEntry: `/${SERVER_ID}/mta_server_general`,
+      initialRouterEntry: `/${SERVER_ID}/${MTA_SERVER_GENERAL}`,
     });
 
     await expect.element(page.getByText('VIEW:mta-server-general')).toBeVisible();

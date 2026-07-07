@@ -21,7 +21,15 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { MANAGE_APP_ID, MTA_ROUTE_ID, MTA_SERVER_GENERAL } from '../../../constants';
+import {
+  ADVANCED,
+  INBOUND_FLOW_SECURITY,
+  MANAGE_APP_ID,
+  MTA_ROUTE_ID,
+  MTA_SERVER_GENERAL,
+  OUTBOUND_FLOW,
+  QUEUE,
+} from '../../../constants';
 import MTAListPanel from '../mta-list-panel';
 
 const mockedReplaceHistory = vi.mocked(replaceHistory);
@@ -58,40 +66,40 @@ describe('MTAListPanel navigation', () => {
 
   it('navigates to /outbound_flow when clicking the Outbound Flow item', async () => {
     await setupBrowserTest(<MTAListPanel />, {
-      initialRouterEntry: `${MTA_BASE}/general_lbl`,
+      initialRouterEntry: `${MTA_BASE}/${INBOUND_FLOW_SECURITY}`,
       queryClient,
     });
 
     await page.getByText('Outbound Flow').click();
 
-    expect(mockedReplaceHistory).toHaveBeenCalledWith('/outbound_flow');
+    expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${OUTBOUND_FLOW}`);
   });
 
   it('navigates to /queue when clicking the Queue item', async () => {
     await setupBrowserTest(<MTAListPanel />, {
-      initialRouterEntry: `${MTA_BASE}/general_lbl`,
+      initialRouterEntry: `${MTA_BASE}/${INBOUND_FLOW_SECURITY}`,
       queryClient,
     });
 
     await page.getByText('Queue').click();
 
-    expect(mockedReplaceHistory).toHaveBeenCalledWith('/queue');
+    expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${QUEUE}`);
   });
 
   it('navigates to /advanced when clicking the Advanced item', async () => {
     await setupBrowserTest(<MTAListPanel />, {
-      initialRouterEntry: `${MTA_BASE}/general_lbl`,
+      initialRouterEntry: `${MTA_BASE}/${INBOUND_FLOW_SECURITY}`,
       queryClient,
     });
 
     await page.getByText('Advanced').click();
 
-    expect(mockedReplaceHistory).toHaveBeenCalledWith('/advanced');
+    expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${ADVANCED}`);
   });
 
   it('navigates to server route when selecting a server from the dropdown', async () => {
     await setupBrowserTest(<MTAListPanel />, {
-      initialRouterEntry: `${MTA_BASE}/general_lbl`,
+      initialRouterEntry: `${MTA_BASE}/${INBOUND_FLOW_SECURITY}`,
       queryClient,
     });
 
@@ -106,7 +114,7 @@ describe('MTAListPanel navigation', () => {
 
   it('navigates back to default when clearing the server search', async () => {
     await setupBrowserTest(<MTAListPanel />, {
-      initialRouterEntry: `${MTA_BASE}/general_lbl`,
+      initialRouterEntry: `${MTA_BASE}/${INBOUND_FLOW_SECURITY}`,
       queryClient,
     });
 
@@ -118,7 +126,7 @@ describe('MTAListPanel navigation', () => {
 
     await page.getByTestId('icon: CloseOutline').click();
 
-    expect(mockedReplaceHistory).toHaveBeenCalledWith('/general_lbl');
+    expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${INBOUND_FLOW_SECURITY}`);
   });
 
   it('navigates to server general when clicking General under a server route', async () => {
