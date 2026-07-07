@@ -51,6 +51,7 @@ const CreateMailstoresVolume: FC<{
     volumeAllocation: '',
     bucketName: '',
     unusedBucketType: '',
+    tieringSupported: false,
     bucketId: '',
     prefix: '',
     centralized: false,

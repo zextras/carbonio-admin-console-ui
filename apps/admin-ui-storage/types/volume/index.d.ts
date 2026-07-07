@@ -20,6 +20,8 @@ export type Volume = {
 	bucketConfigurationId?: string;
 	centralized?: boolean;
 	compressed?: boolean;
+	uuid?: string;
+	tieringSupported?: boolean;
 	infrequentAccessThreshold?: number;
 	isDrivePrimary?: boolean;
 	path?: string;
@@ -58,6 +60,7 @@ export type BucketVolume = {
 	bucketName?: string;
 	protocol?: string;
 	storeType?: string;
+	tieringSupported?: boolean;
 	accessKey?: string;
 	secret?: string;
 	label?: string;
@@ -121,6 +124,137 @@ export type TestConnectionObjectType = {
 	bucketConfigurationId?: string;
 };
 
+export type S3Region = {
+	id: string;
+	description: string;
+};
+
+export type S3Connector = {
+  	uuid: string;
+	label: string;
+	bucketName: string;
+	region: string;
+	url?: string;
+	accessKey?: string;
+	destinationPath?: string;
+	prefix?: string;
+	insecureHttps?: boolean;
+	tieringSupported?: boolean;
+	chunkEncoding?: boolean;
+	calculateMD5WhenDeleting?: boolean;
+	directorySymbol?: string;
+	notes?: string;
+	'usage in external backup'?: string | Array<{ server?: string } | Record<string, string>>;
+	'usage in powerstore volumes'?:
+		| string
+		| Array<{ server?: string; volume?: string } | Record<string, string>>;
+	'usage in powerstore volume'?:
+		| string
+		| Array<{ server?: string; volume?: string } | Record<string, string>>;
+	usage?: string | Array<unknown>;
+};
+
+export type S3ConnectorUsageValue =
+	| string
+	| Array<{ server?: string; volume?: string } | Record<string, string>>
+	| Array<unknown>;
+
+export type BucketConnectorRow = {
+	uuid: string;
+	id: string;
+	label: string;
+	bucketName: string;
+	region: string;
+	url: string;
+	accessKey: string;
+	prefix: string;
+	insecureHttps: string;
+	notes: string;
+	storeType: string;
+	secret?: string;
+	'usage in external backup': S3ConnectorUsageValue;
+	'usage in powerstore volumes': S3ConnectorUsageValue;
+	'usage in powerstore volume': S3ConnectorUsageValue;
+	usage: S3ConnectorUsageValue;
+};
+
+export type ListS3RegionsResponseContent = {
+	ok: boolean;
+	response?: {
+		values: Array<S3Region>;
+	};
+	error?: string;
+};
+
+export type ListS3ConnectorResponseContent = {
+	ok: boolean;
+	response?: {
+		values: Array<S3Connector>;
+	};
+	error?: string;
+};
+
+export type CreateS3ConnectorRequest = {
+	_jsns: string;
+	module: 'ZxPowerstore';
+	action: 'createS3Connector';
+	iAmSure: boolean;
+	bucketName: string;
+	label: string;
+	region: string;
+	url?: string;
+	accessKey: string;
+	secret: string;
+	destinationPath?: string;
+	insecureHttps?: boolean;
+	notes?: string;
+};
+
+export type UpdateS3ConnectorRequest = {
+	_jsns: string;
+	module: 'ZxPowerstore';
+	action: 'updateS3Connector';
+	uuid: string;
+	iAmSure: boolean;
+	bucketName?: string;
+	label?: string;
+	region?: string;
+	url?: string;
+	accessKey?: string;
+	secret?: string;
+	prefix?: string;
+	insecureHttps?: boolean;
+	notes?: string;
+};
+
+export type DeleteS3ConnectorRequest = {
+	_jsns: string;
+	module: 'ZxPowerstore';
+	action: 'deleteS3Connector';
+	uuid: string;
+	iAmSure: boolean;
+};
+
+export type TestS3ConnectorRequest = Omit<UpdateS3ConnectorRequest, 'action' | 'iAmSure'> & {
+	action: 'testS3Connector';
+};
+
+export type S3ConnectorApiError = {
+	code?: string;
+	message?: string;
+	time?: number;
+	details?: Record<string, string>;
+};
+
+export type S3ConnectorMutationResponse = {
+	ok?: boolean;
+	response?: {
+		message?: string;
+	};
+	error?: string | S3ConnectorApiError;
+	message?: string;
+};
+
 export type CreateVolumeRequest = {
 	compressBlobs?: string | boolean;
 	compressionThreshold?: string | number;
@@ -164,6 +298,7 @@ export type VolumeWizardDetail = {
 	id?: string | number;
 	volumeName?: string;
 	volumeMain?: number | string;
+	tieringSupported?: boolean;
 	path?: string;
 	isCurrent?: boolean;
 	isCompression?: boolean;

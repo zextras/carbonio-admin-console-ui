@@ -5,17 +5,25 @@
  */
 
 import { Container, ListItems } from '@zextras/ui-components';
-import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/ui-shared';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { replaceHistory } from '@zextras/ui-shared';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router';
 
 import { DONE_ROUTE_ID, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID } from '../../constants';
 import { type ManageOption } from '../../types/operations';
 
+const VALID_TABS = new Set([RUNNING_ROUTE_ID, QUEUED_ROUTE_ID, DONE_ROUTE_ID]);
+
 const OperationsListPanel: FC = () => {
 	const [t] = useTranslation();
-	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
-	const [selectedOperationItem, setSelectedOperationItem] = useState(RUNNING_ROUTE_ID);
+	const { pathname } = useLocation();
+
+	const selectedOperationItem = useMemo(() => {
+		const segments = pathname.replace(/\/+$/, '').split('/');
+		const last = segments.at(-1) ?? '';
+		return VALID_TABS.has(last) ? last : RUNNING_ROUTE_ID;
+	}, [pathname]);
 
 	const manageOptions = useMemo<Array<ManageOption>>(
 		() => [
@@ -38,12 +46,6 @@ const OperationsListPanel: FC = () => {
 		[t]
 	);
 
-	useEffect(() => {
-		if (selectedOperationItem) {
-			replaceHistory(`/${selectedOperationItem}`);
-		}
-	}, [selectedOperationItem, globalCarbonioSendAnalytics]);
-
 	return (
 		<Container
 			orientation="column"
@@ -55,7 +57,9 @@ const OperationsListPanel: FC = () => {
 			<ListItems
 				items={manageOptions}
 				selectedOperationItem={selectedOperationItem}
-				setSelectedOperationItem={setSelectedOperationItem}
+				setSelectedOperationItem={(id: string): void => {
+					replaceHistory(`/${id}`);
+				}}
 			/>
 		</Container>
 	);

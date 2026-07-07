@@ -6,13 +6,21 @@
 import { type THeader } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 
+import { CheckResult } from '../bucket/parts/verify/verify-error';
+
+type S3ConnectorError = {
+  error?: string | { message: string; details?: CheckResult };
+  message?: string;
+  details?: CheckResult;
+};
+
 export const BucketTypeItems = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('buckets.s3_types.alibaba_cloud_s3', 'Alibaba Cloud S3'),
 		value: 'Alibaba'
 	},
 	{
-		label: t('buckets.s3_types.amazone_web_service_s3', 'Amazon Web Service S3'),
+		label: t('buckets.aws_s3', 'S3'),
 		value: 'S3'
 	},
 	{
@@ -89,9 +97,16 @@ export const volTableHeader = (t: TFunction, isAdvanced: boolean): THeader[] =>
 		{
 			id: 'compression',
 			label: t('volume.volume_header.compression', 'Compression'),
-			width: '25%',
+			width: '20%',
 			align: 'left',
 			bold: true
+		},
+		{
+			id: 'actions',
+			label: t('label.actions', 'Actions'),
+			width: '10%',
+			align: 'left',
+			bold: true,
 		}
 	].filter(Boolean) as THeader[];
 
@@ -137,9 +152,16 @@ export const indexerHeaders = (
 		{
 			id: 'current',
 			label: t('volume.volume_indexer_header.current', 'Current'),
-			width: '45%',
+			width: '20%',
 			align: 'left',
 			bold: true
+		},
+		{
+			id: 'actions',
+			label: t('label.actions', 'Actions'),
+			width: '10%',
+			align: 'left',
+			bold: true,
 		}
 	].filter(Boolean) as Array<{
 		id: string;
@@ -424,3 +446,13 @@ export const BucketRegionsInAlibaba = (t: TFunction): Array<{ value: string; lab
 		value: 'oss-me-east-1'
 	}
 ];
+
+export const formatedErrorMessage = (response: S3ConnectorError): S3ConnectorError => {
+	if (response.details) {
+		Object.entries(response.details).forEach(([key, value]) => {
+			const placeholder = `{${key}}`;
+			response.message = response?.message?.replace(placeholder, value);
+		});
+	}
+	return response;
+};

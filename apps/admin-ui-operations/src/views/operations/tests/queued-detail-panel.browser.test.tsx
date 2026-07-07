@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createBrowserSoapAPIInterceptor, resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
+import { createBrowserSoapAPIInterceptor, resetMockWorker, setupBrowserTest, worker } from 'admin-ui-test-utils';
+import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { useOperationStore } from '../../../store/operation/store';
 import { type Operation } from '../../../types/operations';
 import QuededDetailPanel from '../queued-detail-panel';
 
@@ -51,7 +51,9 @@ const MOCK_QUEUED_OPERATIONS: Array<Operation> = [
     },
 ];
 
-function setupGetAllServersInterceptor(serverName = 'mailstore1.test.com'): void {
+const SERVER_NAME = 'mailstore1.test.com';
+
+function setupGetAllServersInterceptor(serverName = SERVER_NAME): void {
     createBrowserSoapAPIInterceptor('GetAllServers', {
         server: [
             {
@@ -63,38 +65,61 @@ function setupGetAllServersInterceptor(serverName = 'mailstore1.test.com'): void
     });
 }
 
-function setQueuedData(data: Array<Operation> = MOCK_QUEUED_OPERATIONS): void {
-    useOperationStore.getState().setQueuedData(data);
+function setupGetAllOperationsInterceptor(
+    operations: Array<Operation> = MOCK_QUEUED_OPERATIONS,
+    serverName = SERVER_NAME,
+): void {
+    worker.use(
+        http.post('/service/admin/soap/zextras', async ({ request }) => {
+            const body = (await request.json()) as Record<string, unknown>;
+            const zextrasBody = (body?.Body as Record<string, unknown>)?.zextras as
+                | Record<string, unknown>
+                | undefined;
+
+            if (zextrasBody?.action === 'getAllOperations') {
+                return HttpResponse.json({
+                    Body: {
+                        response: {
+                            content: JSON.stringify({
+                                response: {
+                                    [serverName]: {
+                                        ok: true,
+                                        response: {
+                                            operationList: operations,
+                                        },
+                                    },
+                                },
+                            }),
+                        },
+                    },
+                });
+            }
+
+            return HttpResponse.json({ Body: {} });
+        }),
+    );
 }
 
 describe('QuededDetailPanel', () => {
-    const mockGetAllOperationAPICallHandler = vi.fn();
-
     beforeEach(() => {
         vi.resetAllMocks();
-        useOperationStore.getState().setQueuedData([]);
     });
 
     afterEach(() => {
         resetMockWorker();
-        useOperationStore.getState().setQueuedData([]);
     });
 
     it('should render the Queued Operations heading', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
         await expect.element(page.getByText('Queued Operations')).toBeVisible();
     });
 
     it('should render table headers', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
         await expect.element(page.getByText('Server')).toBeVisible();
         await expect.element(page.getByText('Operation', { exact: true })).toBeVisible();
         await expect.element(page.getByText('Author')).toBeVisible();
@@ -104,10 +129,8 @@ describe('QuededDetailPanel', () => {
 
     it('should render operation data in the table', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
         await expect.element(page.getByText('mailstore1.test.com')).toBeVisible();
         await expect.element(page.getByText('doBackup')).toBeVisible();
         await expect.element(page.getByText('mailstore2.test.com')).toBeVisible();
@@ -116,29 +139,24 @@ describe('QuededDetailPanel', () => {
 
     it('should show Empty Table when no queued operations', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData([]);
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor([]);
+        await setupBrowserTest(<QuededDetailPanel />);
         await expect.element(page.getByText('Empty Table')).toBeVisible();
     });
 
     it('should show author in the table rows', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
+        await expect.element(page.getByText('doBackup')).toBeVisible();
         const authorElements = page.getByText('admin@test.com');
         expect(authorElements.elements().length).toBeGreaterThanOrEqual(1);
     });
 
     it('should open wizard detail panel when a row is clicked', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
         await page.getByText('doBackup').click();
         await expect.element(page.getByText('Details')).toBeVisible();
         await expect.element(page.getByText('Operation Type')).toBeVisible();
@@ -146,10 +164,8 @@ describe('QuededDetailPanel', () => {
 
     it('should show operation name and server name in wizard header', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
         await page.getByText('doBackup').click();
         await expect
             .element(page.getByText('doBackup on mailstore1.test.com'))
@@ -158,20 +174,16 @@ describe('QuededDetailPanel', () => {
 
     it('should show CANCEL OPERATION button for queued operations', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
         await page.getByText('doBackup').click();
         await expect.element(page.getByText('CANCEL OPERATION')).toBeVisible();
     });
 
     it('should open confirmation modal when CANCEL OPERATION is clicked', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
         await page.getByText('doBackup').click();
         await page.getByText('CANCEL OPERATION').click();
         await expect
@@ -182,10 +194,8 @@ describe('QuededDetailPanel', () => {
 
     it('should close confirmation modal when LET IT RUN is clicked', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
         await page.getByText('doBackup').click();
         await page.getByText('CANCEL OPERATION').click();
         await expect.element(page.getByText('You are cancelling doBackup')).toBeVisible();
@@ -195,10 +205,8 @@ describe('QuededDetailPanel', () => {
 
     it('should close wizard panel when close button is clicked', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
         await page.getByText('doBackup').click();
         await expect.element(page.getByText('doBackup on mailstore1.test.com')).toBeVisible();
         await page.getByTestId('icon: CloseOutline').click();
@@ -207,11 +215,82 @@ describe('QuededDetailPanel', () => {
 
     it('should show COPY button in wizard detail panel', async () => {
         setupGetAllServersInterceptor();
-        setQueuedData();
-        await setupBrowserTest(
-            <QuededDetailPanel getAllOperationAPICallHandler={mockGetAllOperationAPICallHandler} />,
-        );
+        setupGetAllOperationsInterceptor();
+        await setupBrowserTest(<QuededDetailPanel />);
         await page.getByText('doBackup').click();
         await expect.element(page.getByText('COPY')).toBeVisible();
+    });
+
+    it('should cancel the operation and refetch on success', async () => {
+        setupGetAllServersInterceptor();
+        let stopCalledTimes = 0;
+        worker.use(
+            http.post('/service/admin/soap/zextras', async ({ request }) => {
+                const body = (await request.json()) as Record<string, unknown>;
+                const zextrasBody = (body?.Body as Record<string, unknown>)?.zextras as
+                    | Record<string, unknown>
+                    | undefined;
+
+                if (zextrasBody?.action === 'getAllOperations') {
+                    return HttpResponse.json({
+                        Body: {
+                            response: {
+                                content: JSON.stringify({
+                                    response: {
+                                        [SERVER_NAME]: {
+                                            ok: true,
+                                            response: { operationList: MOCK_QUEUED_OPERATIONS },
+                                        },
+                                    },
+                                }),
+                            },
+                        },
+                    });
+                }
+                if (zextrasBody?.action === 'doStopOperation') {
+                    stopCalledTimes += 1;
+                    return HttpResponse.json({
+                        Body: {
+                            response: {
+                                content: JSON.stringify({
+                                    response: { [SERVER_NAME]: { ok: true } },
+                                }),
+                            },
+                        },
+                    });
+                }
+
+                return HttpResponse.json({ Body: {} });
+            }),
+        );
+
+        await setupBrowserTest(<QuededDetailPanel />);
+        await page.getByText('doBackup').click();
+        await page.getByRole('button', { name: 'CANCEL OPERATION' }).click();
+        await expect.element(page.getByText('You are cancelling doBackup')).toBeVisible();
+        await page.getByTestId('modal').getByRole('button', { name: 'CANCEL OPERATION' }).click();
+
+        await expect.poll(() => stopCalledTimes).toBe(1);
+    });
+
+    it('should show Empty Table when fetching operations fails', async () => {
+        setupGetAllServersInterceptor();
+        worker.use(
+            http.post('/service/admin/soap/zextras', async ({ request }) => {
+                const body = (await request.json()) as Record<string, unknown>;
+                const zextrasBody = (body?.Body as Record<string, unknown>)?.zextras as
+                    | Record<string, unknown>
+                    | undefined;
+
+                if (zextrasBody?.action === 'getAllOperations') {
+                    return HttpResponse.json({ Body: {} }, { status: 500 });
+                }
+
+                return HttpResponse.json({ Body: {} });
+            }),
+        );
+
+        await setupBrowserTest(<QuededDetailPanel />);
+        await expect.element(page.getByText('Empty Table')).toBeVisible();
     });
 });
