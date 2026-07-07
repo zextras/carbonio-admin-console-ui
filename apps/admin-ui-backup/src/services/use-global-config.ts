@@ -7,8 +7,8 @@
 import { useQuery } from '@tanstack/react-query';
 
 import type { GlobalConfig } from '../../types';
-import { dumpGlobalConfig } from './dump-global-config';
 import { backupQueryKeys } from './backup-query-keys';
+import { dumpGlobalConfig } from './dump-global-config';
 
 export const useGlobalConfig = () =>
 	useQuery({
