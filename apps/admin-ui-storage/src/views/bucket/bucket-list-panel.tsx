@@ -27,15 +27,25 @@ import {
   STORAGES_ROUTE_ID,
 } from '../../constants';
 
+function getRelativePathname(pathname: string, base: string): string {
+  if (!pathname.startsWith(base)) {
+    return pathname;
+  }
+  const stripped = pathname.slice(base.length);
+  if (stripped === '') {
+    return '/';
+  }
+  return stripped;
+}
+
 const BucketListPanel: FC = () => {
   const [t] = useTranslation();
 
   const locationService = useLocation();
   const storageBase = `/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`;
-  const serverMatch = matchPath(`${storageBase}/:server/:operation`, locationService.pathname);
-  const opMatch = serverMatch
-    ? null
-    : matchPath(`${storageBase}/:operation`, locationService.pathname);
+  const relativePathname = getRelativePathname(locationService.pathname, storageBase);
+  const serverMatch = matchPath(`/:server/:operation`, relativePathname);
+  const opMatch = serverMatch ? null : matchPath(`/:operation`, relativePathname);
   const selectedOperationItem =
     serverMatch?.params.operation ?? opMatch?.params.operation ?? null;
   const selectedServer = serverMatch?.params.server ?? '';
@@ -46,17 +56,23 @@ const BucketListPanel: FC = () => {
 
   const [isServerListExpand, setIsServerListExpand] = useState(true);
   const [isServerSpecificListExpand, setIsServerSpecificListExpand] = useState(true);
-  const [searchVolumeName, setSearchVolumeName] = useState('');
+  const [searchVolumeName, setSearchVolumeName] = useState(selectedServer);
   const [itemsVolume, setItemsVolume] = useState<
     Array<{ id: string | undefined; label: string | undefined; customComponent: React.ReactElement }>
   >([]);
   const [isShowError, setIsShowError] = useState(false);
 
   useEffect(() => {
-    if (selectedServer && searchVolumeName !== selectedServer) {
+    if (selectedServer) {
       setSearchVolumeName(selectedServer);
     }
-  }, [selectedServer, searchVolumeName]);
+  }, [selectedServer]);
+
+  useEffect(() => {
+    if (!isServerSelect) {
+      setSearchVolumeName('');
+    }
+  }, [isServerSelect]);
 
   const filteredServers = useMemo(
     () => volumeList.filter((item) => item.name?.includes(searchVolumeName)),

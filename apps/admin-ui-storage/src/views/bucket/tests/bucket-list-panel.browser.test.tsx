@@ -297,4 +297,24 @@ describe('BucketListPanel navigation', () => {
 
 		await expect.element(page.getByText(/Not found/i)).toBeVisible();
 	});
+
+	it('keeps the current server route on refresh without redirecting to servers_list', async () => {
+		await setupBrowserTest(<BucketListPanel />, {
+			initialRouterEntry: `${STORAGE_BASE}/mailstore1.test.com/${HSM_SETTINGS}`,
+			queryClient,
+		});
+
+		expect(mockedReplaceHistory).not.toHaveBeenCalledWith(`/${SERVERS_LIST}`);
+	});
+
+	it('populates the server search field from the URL on a server-specific route', async () => {
+		await setupBrowserTest(<BucketListPanel />, {
+			initialRouterEntry: `${STORAGE_BASE}/mailstore1.test.com/${HSM_SETTINGS}`,
+			queryClient,
+		});
+
+		await expect
+			.element(page.getByPlaceholder('Select a Server'))
+			.toHaveValue('mailstore1.test.com');
+	});
 });
