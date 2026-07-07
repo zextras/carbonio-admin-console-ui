@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ADVANCED,
   ANTIVIRUS_AND_ANTISPAM,
-  GENERAL,
+  INBOUND_FLOW_SECURITY,
   IS_SERVER_SPECIFICS_EXPANDED,
   MTA_SERVER_GENERAL,
   OUTBOUND_FLOW,
@@ -37,7 +37,7 @@ const MTAListPanel: FC = () => {
 
   const [selectedServer, setSelectedServer] = useState('');
   const [isServerSelect, setIsServerSelect] = useState(false);
-  const [selectedOperationItem, setSelectedOperationItem] = useState(GENERAL);
+  const [selectedOperationItem, setSelectedOperationItem] = useState(INBOUND_FLOW_SECURITY);
 
   const [searchServer, setSearchServer] = useState('');
   const [isShowError, setIsShowError] = useState(false);
@@ -89,7 +89,7 @@ const MTAListPanel: FC = () => {
   const mailTransferAgentOptions = useMemo(
     () => [
       {
-        id: GENERAL,
+        id: INBOUND_FLOW_SECURITY,
         name: t('mta.inbound_flow_and_security', 'Inbound Flow & Security'),
         isSelected: true,
       },

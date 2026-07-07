@@ -11,7 +11,7 @@ import { Route, Routes } from 'react-router';
 import {
   ADVANCED,
   ANTIVIRUS_AND_ANTISPAM,
-  GENERAL,
+  INBOUND_FLOW_SECURITY,
   MTA_SERVER_GENERAL,
   OUTBOUND_FLOW,
   POSTSCREEN_TUNING,
@@ -49,7 +49,7 @@ export const MTADetailPanel: FC = () => (
     <Routes>
       <Route index element={<EmptyState />} />
 
-      <Route path={`/${GENERAL}`} element={<MTAInboundFlowSecurity />} />
+      <Route path={`/${INBOUND_FLOW_SECURITY}`} element={<MTAInboundFlowSecurity />} />
       <Route path={`/${POSTSCREEN_TUNING}`} element={<MTAPostScreenTuning />} />
       <Route path={`/${OUTBOUND_FLOW}`} element={<MTAOutBoundFlow />} />
       <Route path={`/${ANTIVIRUS_AND_ANTISPAM}`} element={<MTAAntiVirusAndAntiSpam />} />
