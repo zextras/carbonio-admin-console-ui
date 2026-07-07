@@ -80,4 +80,9 @@ describe('App', () => {
     const { container } = render(<App />);
     expect(container.innerHTML).toBe('');
   });
+
+  it('should render NotificationsTooltipView content', () => {
+    const { getByTestId } = render(<NotificationsTooltipView />);
+    expect(getByTestId('primary-bar-tooltip')).toBeDefined();
+  });
 });
