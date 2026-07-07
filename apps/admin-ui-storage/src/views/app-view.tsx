@@ -3,10 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Padding } from '@zextras/ui-components';
+import { Container } from '@zextras/ui-components';
 import { FC, type ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 
 import {
   DATA_VOLUMES,
@@ -21,19 +20,6 @@ import HSMsettingPanel from './bucket/hsm/hsm-setting-panel';
 import { VolumesDetailRoute } from './bucket/volumes-detail-route';
 import { StorageLayout } from './storage-layout';
 
-const EmptyState: FC = () => {
-  const [t] = useTranslation();
-  return (
-    <Container height="fill" mainAlignment="center" crossAlignment="center">
-      <Padding horizontal="large">
-        <ds-text as="p" size="medium" color="secondary">
-          {t('storages.select_an_option', 'Please select an option from the list')}
-        </ds-text>
-      </Padding>
-    </Container>
-  );
-};
-
 const DetailContainer: FC<{ children: ReactNode }> = ({ children }) => (
   <Container style={{ transition: 'max-width 300ms' }}>{children}</Container>
 );
@@ -44,7 +30,7 @@ const AppView: FC = () => {
       <Breadcrumb />
       <Routes>
         <Route element={<StorageLayout />}>
-          <Route index element={<EmptyState />} />
+          <Route index element={<Navigate to={SERVERS_LIST} replace />} />
           <Route
             path={SERVERS_LIST}
             element={

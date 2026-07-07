@@ -4,11 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Padding } from '@zextras/ui-components';
 import { resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
 import { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Outlet, Route, Routes } from 'react-router';
+import { Navigate, Outlet, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -19,25 +17,12 @@ import {
   SERVERS_LIST,
 } from '../../../constants';
 
-const EmptyState: FC = () => {
-  const [t] = useTranslation();
-  return (
-    <Container height="fill" mainAlignment="center" crossAlignment="center">
-      <Padding horizontal="large">
-        <ds-text as="p" size="medium" color="secondary">
-          {t('storages.select_an_option', 'Please select an option from the list')}
-        </ds-text>
-      </Padding>
-    </Container>
-  );
-};
-
 const TestLayout: FC = () => <Outlet />;
 
 const StorageRoutes: FC = () => (
   <Routes>
     <Route element={<TestLayout />}>
-      <Route index element={<EmptyState />} />
+      <Route index element={<Navigate to={SERVERS_LIST} replace />} />
       <Route path={SERVERS_LIST} element={<div>VIEW:servers-list</div>} />
       <Route path={S3CONNECTOR_LIST} element={<div>VIEW:s3connector-list</div>} />
       <Route path={`:server/${DATA_VOLUMES}`} element={<div>VIEW:data-volumes</div>} />
@@ -59,12 +44,10 @@ describe('Storage bucket routes', () => {
     resetMockWorker();
   });
 
-  it('renders the empty state on the index route', async () => {
+  it('redirects the index route to servers_list', async () => {
     await setupBrowserTest(<StorageRoutes />, { initialRouterEntry: '/' });
 
-    await expect
-      .element(page.getByText(/Please select an option from the list/i))
-      .toBeVisible();
+    await expect.element(page.getByText('VIEW:servers-list')).toBeVisible();
   });
 
   describe('global storage operation routes', () => {
@@ -97,6 +80,5 @@ describe('Storage bucket routes', () => {
     });
 
     await expect.element(page.getByText('VIEW:servers-list')).not.toBeInTheDocument();
-    await expect.element(page.getByText(/Please select an option/i)).not.toBeInTheDocument();
   });
 });

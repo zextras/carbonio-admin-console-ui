@@ -156,7 +156,7 @@ describe('AppView', () => {
     await expect.element(page.getByText('Home').nth(0)).toBeVisible();
   });
 
-  it('renders the empty state on the index route', async () => {
+  it('redirects the index route to servers_list', async () => {
     setupInterceptors();
 
     await setupBrowserTest(<AppView />, {
@@ -164,9 +164,8 @@ describe('AppView', () => {
       queryClient,
     });
 
-    await expect
-      .element(page.getByText(/Please select an option from the list/i))
-      .toBeVisible();
+    await expect.element(page.getByLabelText('Search for a Server')).toBeInTheDocument();
+    await expect.element(page.getByText(SERVER_NAME)).toBeVisible();
   });
 
   it('renders the list panel shell on the index route', async () => {
