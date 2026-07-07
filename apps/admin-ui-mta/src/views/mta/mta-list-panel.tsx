@@ -30,6 +30,17 @@ import {
 } from '../../constants';
 import type { DropdownItem, MtaServer } from '../../types/mta';
 
+function getRelativePathname(pathname: string, base: string): string {
+  if (!pathname.startsWith(base)) {
+    return pathname;
+  }
+  const stripped = pathname.slice(base.length);
+  if (stripped === '') {
+    return '/';
+  }
+  return stripped;
+}
+
 const MTAListPanel: FC = () => {
   const [t] = useTranslation();
 
@@ -40,9 +51,7 @@ const MTAListPanel: FC = () => {
 
   const locationService = useLocation();
   const mtaBase = `/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`;
-  const relativePathname = locationService.pathname.startsWith(mtaBase)
-    ? locationService.pathname.slice(mtaBase.length) || '/'
-    : locationService.pathname;
+  const relativePathname = getRelativePathname(locationService.pathname, mtaBase);
   const serverMatch = matchPath(`/:server/:operation`, relativePathname);
   const opMatch = serverMatch ? null : matchPath(`/:operation`, relativePathname);
   const selectedOperationItem = serverMatch?.params.operation ?? opMatch?.params.operation ?? null;
