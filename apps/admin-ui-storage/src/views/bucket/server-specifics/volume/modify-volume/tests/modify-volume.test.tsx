@@ -12,6 +12,7 @@ import { Volume } from '../../../../../../../types';
 import ModifyVolume from '../modify-volume';
 
 const mockSoapFetch = vi.hoisted(() => vi.fn());
+const mockFetchSoap = vi.hoisted(() => vi.fn());
 const mockCreateSnackbar = vi.hoisted(() => vi.fn());
 const mockListS3Connector = vi.hoisted(() => vi.fn());
 const mockSetIsVolumeAllDetail = vi.hoisted(() => vi.fn());
@@ -121,7 +122,7 @@ vi.mock('@zextras/ui-components', () => ({
 
 vi.mock('../../../../../../services/bucket-service', () => ({
   listS3Connector: mockListS3Connector,
-  fetchSoap: vi.fn(),
+  fetchSoap: mockFetchSoap,
 }));
 
 vi.mock('react-router', () => ({
@@ -504,6 +505,167 @@ describe('ModifyVolume', () => {
     await waitFor(() => {
       expect(screen.queryByText('Use infrequent access')).toBeNull();
       expect(screen.queryByText('Use intelligent tiering')).toBeNull();
+    });
+  });
+
+  const advancedLocalVolumeList = {
+    primaries: [
+      {
+        id: 5,
+        name: 'primary-local',
+        path: '/opt/zextras/store',
+        compressBlobs: 'true',
+        compressionThreshold: '4096',
+        isCurrent: true,
+        volumeType: 'primary',
+      },
+    ],
+    secondaries: [],
+    indexes: [],
+  } satisfies { primaries: Volume[]; secondaries: Volume[]; indexes: Volume[] };
+
+  function createAdvancedUpdateSuccessResponse(serverName = 'mailstore1.example.com'): {
+    Body: { response: { content: string } };
+  } {
+    return {
+      Body: {
+        response: {
+          content: JSON.stringify({
+            response: {
+              [serverName]: { ok: true },
+            },
+          }),
+        },
+      },
+    };
+  }
+
+  function createAdvancedUpdateErrorResponse(serverName = 'mailstore1.example.com'): {
+    Body: { response: { content: string } };
+  } {
+    return {
+      Body: {
+        response: {
+          content: JSON.stringify({
+            response: {
+              [serverName]: { ok: false },
+            },
+          }),
+        },
+      },
+    };
+  }
+
+  function renderAdvancedLocalVolume(): {
+    setmodifyVolumeToggle: ReturnType<typeof vi.fn>;
+    getAllVolumesRequest: ReturnType<typeof vi.fn>;
+  } {
+    mockAdvancedMode.value = true;
+
+    const setmodifyVolumeToggle = vi.fn();
+    const getAllVolumesRequest = vi.fn();
+
+    render(
+      <ModifyVolume
+        volumeId={5}
+        setmodifyVolumeToggle={setmodifyVolumeToggle}
+        getAllVolumesRequest={getAllVolumesRequest}
+        selectedServerId="server-1"
+        volumeList={advancedLocalVolumeList}
+        setOpen={vi.fn()}
+      />,
+    );
+
+    return { setmodifyVolumeToggle, getAllVolumesRequest };
+  }
+
+  async function makeLocalVolumeDirtyAndSave(): Promise<void> {
+    await waitFor(() => {
+      expect((screen.getByLabelText('Volume Name') as HTMLInputElement).value).toBe('primary-local');
+    });
+
+    fireEvent.change(screen.getByLabelText('Volume Name'), {
+      target: { value: 'primary-local-updated' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Save' })).toBeTruthy();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+  }
+
+  describe('advanced save', () => {
+    it('should call fetchSoap with advanced update payload when saving a local volume', async () => {
+      mockFetchSoap.mockResolvedValue(createAdvancedUpdateSuccessResponse());
+
+      const { setmodifyVolumeToggle, getAllVolumesRequest } = renderAdvancedLocalVolume();
+
+      await makeLocalVolumeDirtyAndSave();
+
+      await waitFor(() => {
+        expect(mockFetchSoap).toHaveBeenCalledWith(
+          'zextras',
+          expect.objectContaining({
+            action: 'doUpdateVolume',
+            targetServers: 'mailstore1.example.com',
+            currentVolumeName: 'primary-local',
+            volumeName: 'primary-local-updated',
+            volumeType: 'primary',
+            volumeId: '5',
+            volumePath: '/opt/zextras/store',
+            volumeCompressed: true,
+            volumeThreshold: '4096',
+          }),
+        );
+      });
+
+      expect(mockCreateSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'success',
+          label: 'All changes have been saved successfully',
+        }),
+      );
+      expect(getAllVolumesRequest).toHaveBeenCalled();
+      expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
+    });
+
+    it('should show error snackbar when advanced update response is not ok', async () => {
+      mockFetchSoap.mockResolvedValue(createAdvancedUpdateErrorResponse());
+
+      const { setmodifyVolumeToggle } = renderAdvancedLocalVolume();
+
+      await makeLocalVolumeDirtyAndSave();
+
+      await waitFor(() => {
+        expect(mockCreateSnackbar).toHaveBeenCalledWith(
+          expect.objectContaining({
+            severity: 'error',
+            label: 'Something went wrong, please try again',
+          }),
+        );
+      });
+
+      expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
+    });
+
+    it('should show error snackbar when fetchSoap throws during advanced save', async () => {
+      mockFetchSoap.mockRejectedValue(new Error('network down'));
+
+      const { setmodifyVolumeToggle } = renderAdvancedLocalVolume();
+
+      await makeLocalVolumeDirtyAndSave();
+
+      await waitFor(() => {
+        expect(mockCreateSnackbar).toHaveBeenCalledWith(
+          expect.objectContaining({
+            severity: 'error',
+            label: 'Something went wrong, please try again',
+          }),
+        );
+      });
+
+      expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
     });
   });
 });
