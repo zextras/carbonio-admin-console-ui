@@ -12,7 +12,7 @@ export const TRUE = 'TRUE';
 export const FALSE = 'FALSE';
 export const RECORD_DISPLAY_LIMIT = 10;
 export const MTA_ROUTE_ID = 'mail_transfer_agent';
-export const GENERAL = 'general_lbl';
+export const INBOUND_FLOW_SECURITY = 'general_lbl';
 export const ZIMBRA_MTA_BLOCKED_EXTENSION = 'zimbraMtaBlockedExtension';
 export const ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN = 'zimbraMtaBlockedExtensionWarnAdmin';
 export const ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT = 'zimbraMtaBlockedExtensionWarnRecipient';
@@ -67,17 +67,17 @@ export const ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION = 'zimbraMtaPostscreenDnsblActi
 export const ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES = 'zimbraMtaPostscreenDnsblSites';
 export const ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD = 'zimbraMtaPostscreenDnsblThreshold';
 export const ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD =
-	'zimbraMtaPostscreenDnsblWhitelistThreshold';
+  'zimbraMtaPostscreenDnsblWhitelistThreshold';
 export const ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL = 'zimbraMtaPostscreenDnsblMinTTL';
 export const ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL = 'zimbraMtaPostscreenDnsblMaxTTL';
 export const ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL = 'zimbraMtaPostscreenDnsblTTL';
 export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE = 'zimbraMtaPostscreenBareNewlineEnable';
 export const ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE =
-	'zimbraMtaPostscreenNonSmtpCommandEnable';
+  'zimbraMtaPostscreenNonSmtpCommandEnable';
 export const ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE = 'zimbraMtaPostscreenPipeliningEnable';
 export const ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION = 'zimbraMtaPostscreenPipeliningAction';
 export const ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION =
-	'zimbraMtaPostscreenNonSmtpCommandAction';
+  'zimbraMtaPostscreenNonSmtpCommandAction';
 export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION = 'zimbraMtaPostscreenBareNewlineAction';
 export const ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL = 'zimbraMtaPostscreenPipeliningTTL';
 export const ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL = 'zimbraMtaPostscreenNonSmtpCommandTTL';
