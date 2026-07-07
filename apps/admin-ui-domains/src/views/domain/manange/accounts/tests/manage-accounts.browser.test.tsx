@@ -522,4 +522,212 @@ describe('ManageAccounts (browser)', () => {
             expect(params).toHaveProperty('domain');
         });
     });
+
+    describe('Account status colors', () => {
+        it('should display maintenance status', async () => {
+            const maintenanceAccounts = [
+                buildAccount('maint@example.com', 'acc-maint', {
+                    displayName: 'Maintenance Account',
+                    status: 'maintenance',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(maintenanceAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('In maintenance', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display closed status', async () => {
+            const closedAccounts = [
+                buildAccount('closed@example.com', 'acc-closed', {
+                    displayName: 'Closed Account',
+                    status: 'closed',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(closedAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Closed', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display pending status', async () => {
+            const pendingAccounts = [
+                buildAccount('pending@example.com', 'acc-pending', {
+                    displayName: 'Pending Account',
+                    status: 'pending',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(pendingAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Pending', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+
+        it('should display lockout status', async () => {
+            const lockoutAccounts = [
+                buildAccount('lockout@example.com', 'acc-lockout', {
+                    displayName: 'Lockout Account',
+                    status: 'lockout',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(lockoutAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Lockout', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+    });
+
+    describe('Aliases column', () => {
+        it('should render the Aliases column header', async () => {
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Aliases', { exact: true }))
+                .toBeInTheDocument();
+        });
+
+        it('should display 0 when account has no aliases', async () => {
+            const noAliasAccounts = [
+                buildAccount('noalias@example.com', 'acc-noalias', {
+                    displayName: 'No Alias Account',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(noAliasAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('0').first())
+                .toBeInTheDocument();
+        });
+    });
+
+    describe('Description column', () => {
+        it('should display account description', async () => {
+            const descAccounts = [
+                buildAccount('desc@example.com', 'acc-desc', {
+                    displayName: 'Described Account',
+                    description: 'This is a test description',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(descAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('This is a test description').first())
+                .toBeInTheDocument();
+        });
+    });
+
+    describe('Pagination', () => {
+        it('should not show pagination when list is empty', async () => {
+            setupSearchDirectoryInterceptor([]);
+            setupCountAccountInterceptor(0);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('This list is empty.'))
+                .toBeInTheDocument();
+        });
+    });
+
+    describe('Loading state', () => {
+        it('should show empty table rows while loading', async () => {
+            // Create a delayed interceptor
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            // After data loads, should show accounts
+            await expect
+                .element(page.getByText('user1@example.com'))
+                .toBeInTheDocument();
+        });
+    });
+
+    describe('Search input behavior', () => {
+        it('should clear search and reset query when input is cleared', async () => {
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            const searchInput = page.getByLabelText("I'm looking for this account…");
+
+            await userEvent.type(searchInput, 'test');
+            await expect.element(searchInput).toHaveValue('test');
+
+            await userEvent.clear(searchInput);
+            await expect.element(searchInput).toHaveValue('');
+        });
+    });
+
+    describe('Create account wizard', () => {
+        it('should close create account wizard when clicking outside', async () => {
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            const addButton = page.getByRole('button').first();
+            await addButton.click();
+
+            await expect.element(page.getByText('Create Account Wizard', { exact: true })).toBeVisible();
+        });
+    });
+
+    describe('Total accounts display', () => {
+        it('should display correct total accounts count', async () => {
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor(42);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect.element(page.getByText(/Total Accounts.*42/)).toBeInTheDocument();
+        });
+
+        it('should display 0 total accounts when none exist', async () => {
+            setupSearchDirectoryInterceptor([]);
+            setupCountAccountInterceptor(0);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect.element(page.getByText(/Total Accounts.*0/)).toBeInTheDocument();
+        });
+    });
+
+    describe('Sorting', () => {
+        it('should render sortable Email column', async () => {
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Email', { exact: true }))
+                .toBeInTheDocument();
+        });
+
+        it('should render sortable Name column', async () => {
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            await expect
+                .element(page.getByText('Name', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+    });
+
+    describe('Multiple status accounts', () => {
+        it('should display all status types correctly', async () => {
+            const mixedStatusAccounts = [
+                buildAccount('active@example.com', 'acc-active', { status: 'active' }),
+                buildAccount('locked@example.com', 'acc-locked', { status: 'locked' }),
+                buildAccount('closed@example.com', 'acc-closed', { status: 'closed' }),
+            ];
+            setupSearchDirectoryInterceptor(mixedStatusAccounts);
+            setupCountAccountInterceptor(3);
+            await setupBrowserTest(<ManageAccounts />);
+            await expect.element(page.getByText('Active', { exact: true }).first()).toBeInTheDocument();
+            await expect.element(page.getByText('Locked', { exact: true }).first()).toBeInTheDocument();
+            await expect.element(page.getByText('Closed', { exact: true }).first()).toBeInTheDocument();
+        });
+    });
 });

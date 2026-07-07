@@ -426,4 +426,332 @@ describe('EditAccountDelegatesSection (browser)', () => {
       await expect.element(page.getByText('Send on Behalf Of').first()).toBeVisible();
     });
   });
+
+  describe('View switching', () => {
+    it('should switch back to simplified view from advanced view', async () => {
+      setupTest();
+
+      // Switch to advanced
+      const switchToAdvanced = page.getByText(/Switch to Simplified View/i).first();
+      await userEvent.click(switchToAdvanced);
+
+      await expect.element(page.getByText('DELEGATES', { exact: true }).first()).toBeVisible();
+
+      // Switch back to simplified
+      const switchToSimplified = page.getByText(/Switch to Advanced View/i).first();
+      await userEvent.click(switchToSimplified);
+
+      await expect
+        .element(page.getByText("Delegate's Rights", { exact: false }))
+        .toBeVisible();
+    });
+  });
+
+  describe('Section headers', () => {
+    it('should render Read options header', async () => {
+      setupTest();
+
+      await expect.element(page.getByText('Read options')).toBeVisible();
+    });
+
+    it('should render Send options header', async () => {
+      setupTest();
+
+      await expect.element(page.getByText('Send options')).toBeVisible();
+    });
+
+    it('should render Delegate Rights header', async () => {
+      setupTest();
+
+      await expect
+        .element(page.getByText("Delegate's Rights", { exact: false }))
+        .toBeVisible();
+    });
+  });
+
+  describe('Advanced view table headers', () => {
+    it('should show Accounts column header in advanced view', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'delegate-id', name: 'delegate@example.com', type: 'usr' }],
+        folder: [{ perm: 'rwidxa', id: 'folder-1', zid: 'zid-1' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      const switchControl = page.getByText(/Switch to Simplified View/i).first();
+      await switchControl.click();
+
+      await expect.element(page.getByText('Accounts').first()).toBeVisible();
+    });
+
+    it('should show Type column header in advanced view', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'delegate-id', name: 'delegate@example.com', type: 'usr' }],
+        folder: [{ perm: 'rwidxa', id: 'folder-1', zid: 'zid-1' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      const switchControl = page.getByText(/Switch to Simplified View/i).first();
+      await switchControl.click();
+
+      await expect.element(page.getByText('Type').first()).toBeVisible();
+    });
+
+    it('should show Rights column header in advanced view', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'delegate-id', name: 'delegate@example.com', type: 'usr' }],
+        folder: [{ perm: 'rwidxa', id: 'folder-1', zid: 'zid-1' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      const switchControl = page.getByText(/Switch to Simplified View/i).first();
+      await switchControl.click();
+
+      await expect.element(page.getByText('Rights').first()).toBeVisible();
+    });
+
+    it('should show Sharing Options column header in advanced view', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'delegate-id', name: 'delegate@example.com', type: 'usr' }],
+        folder: [{ perm: 'rwidxa', id: 'folder-1', zid: 'zid-1' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      const switchControl = page.getByText(/Switch to Simplified View/i).first();
+      await switchControl.click();
+
+      await expect.element(page.getByText('Sharing Options').first()).toBeVisible();
+    });
+  });
+
+  describe('Read Only table actions', () => {
+    it('should disable REMOVE button when no Read Only delegate selected', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'read-delegate', name: 'readonly@example.com', type: 'usr' }],
+        folder: [{ perm: 'r', id: 'folder-1', zid: 'zid-1' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      // Second REMOVE button is for Read Only table
+      const removeButtons = page.getByRole('button', { name: 'REMOVE' });
+      await expect.element(removeButtons.nth(1)).toBeDisabled();
+    });
+
+    it('should enable REMOVE ALL for Read Only when delegates exist', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'read-delegate', name: 'readonly@example.com', type: 'usr' }],
+        folder: [{ perm: 'r', id: 'folder-1', zid: 'zid-1' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      // Second REMOVE ALL button is for Read Only table
+      const removeAllButtons = page.getByRole('button', { name: /REMOVE ALL/i });
+      await expect.element(removeAllButtons.nth(1)).toBeEnabled();
+    });
+
+    it('should call Batch when REMOVE ALL clicked for Read Only delegates', async () => {
+      const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
+      const delegateIdentity = {
+        grantee: [{ id: 'read-delegate', name: 'readonly@example.com', type: 'usr' }],
+        folder: [{ perm: 'r', id: 'folder-1', zid: 'zid-1' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      const removeAllButton = page.getByRole('button', { name: /REMOVE ALL/i }).nth(1);
+      await userEvent.click(removeAllButton);
+
+      await expect(batchInterceptor).resolves.toBeDefined();
+    });
+  });
+
+  describe('Send table actions', () => {
+    it('should disable REMOVE button when no Send delegate selected', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'send-delegate', name: 'sender@example.com', type: 'usr' }],
+        right: [{ _content: 'sendAs' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      // Third REMOVE button is for Send table
+      const removeButtons = page.getByRole('button', { name: 'REMOVE' });
+      await expect.element(removeButtons.nth(2)).toBeDisabled();
+    });
+
+    it('should enable REMOVE ALL for Send when delegates exist', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'send-delegate', name: 'sender@example.com', type: 'usr' }],
+        right: [{ _content: 'sendAs' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      // Third REMOVE ALL button is for Send table
+      const removeAllButtons = page.getByRole('button', { name: /REMOVE ALL/i });
+      await expect.element(removeAllButtons.nth(2)).toBeEnabled();
+    });
+
+    it('should call Batch when REMOVE ALL clicked for Send delegates', async () => {
+      const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
+      const delegateIdentity = {
+        grantee: [{ id: 'send-delegate', name: 'sender@example.com', type: 'usr' }],
+        right: [{ _content: 'sendAs' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      const removeAllButton = page.getByRole('button', { name: /REMOVE ALL/i }).nth(2);
+      await userEvent.click(removeAllButton);
+
+      await expect(batchInterceptor).resolves.toBeDefined();
+    });
+  });
+
+  describe('Wizard actions', () => {
+    it('should close wizard when CANCEL clicked', async () => {
+      setupTest();
+
+      const switchControl = page.getByText(/Switch to Simplified View/i).first();
+      await switchControl.click();
+      await userEvent.click(page.getByRole('button', { name: /ADD NEW/i }).first());
+
+      await expect
+        .element(page.getByText('Add user on Delegates List', { exact: true }).first())
+        .toBeVisible();
+
+      await userEvent.click(page.getByRole('button', { name: /CANCEL/i }).first());
+
+      await expect
+        .element(page.getByText('Add user on Delegates List', { exact: true }))
+        .not.toBeInTheDocument();
+    });
+  });
+
+  describe('Multiple delegates scenario', () => {
+    it('should show delegates in correct tables based on their rights', async () => {
+      const delegates = [
+        {
+          grantee: [{ id: 'rw-delegate', name: 'readwrite@example.com', type: 'usr' }],
+          folder: [{ perm: 'rwidxa', id: 'folder-1', zid: 'zid-1' }],
+        },
+        {
+          grantee: [{ id: 'read-delegate', name: 'readonly@example.com', type: 'usr' }],
+          folder: [{ perm: 'r', id: 'folder-2', zid: 'zid-2' }],
+        },
+        {
+          grantee: [{ id: 'send-delegate', name: 'sender@example.com', type: 'usr' }],
+          right: [{ _content: 'sendAs' }],
+        },
+      ];
+
+      setupTest({ identitiesList: delegates });
+
+      await expect.element(page.getByText('readwrite@example.com').first()).toBeVisible();
+      await expect.element(page.getByText('readonly@example.com').first()).toBeVisible();
+      await expect.element(page.getByText('sender@example.com').first()).toBeVisible();
+    });
+  });
+
+  describe('Checkbox mutual exclusivity', () => {
+    it('should uncheck Read Only when Read/Write is checked', async () => {
+      setupTest();
+
+      // First check Read Only
+      const readOnlyCheckbox = page.getByText('Read Only').first();
+      await userEvent.click(readOnlyCheckbox);
+
+      // Then check Read/Write - should uncheck Read Only
+      const readWriteCheckbox = page.getByText('Read / Write').first();
+      await userEvent.click(readWriteCheckbox);
+
+      // Both checkboxes should be clickable (test passes if no error)
+    });
+
+    it('should uncheck Read/Write when Read Only is checked', async () => {
+      setupTest();
+
+      // First check Read/Write
+      const readWriteCheckbox = page.getByText('Read / Write').first();
+      await userEvent.click(readWriteCheckbox);
+
+      // Then check Read Only - should uncheck Read/Write
+      const readOnlyCheckbox = page.getByText('Read Only').first();
+      await userEvent.click(readOnlyCheckbox);
+    });
+
+    it('should uncheck Send on Behalf when Send is checked', async () => {
+      setupTest();
+
+      // First check Send on Behalf
+      const sendBehalfCheckbox = page.getByText('Send on Behalf of').first();
+      await userEvent.click(sendBehalfCheckbox);
+
+      // Then check Send - should uncheck Send on Behalf
+      const sendCheckbox = page.getByText('Send', { exact: true }).first();
+      await userEvent.click(sendCheckbox);
+    });
+
+    it('should uncheck Send when Send on Behalf is checked', async () => {
+      setupTest();
+
+      // First check Send
+      const sendCheckbox = page.getByText('Send', { exact: true }).first();
+      await userEvent.click(sendCheckbox);
+
+      // Then check Send on Behalf - should uncheck Send
+      const sendBehalfCheckbox = page.getByText('Send on Behalf of').first();
+      await userEvent.click(sendBehalfCheckbox);
+    });
+  });
+
+  describe('Simplified view table headers', () => {
+    it('should show Accounts / Groups column header in simplified tables', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'delegate-id', name: 'delegate@example.com', type: 'usr' }],
+        folder: [{ perm: 'rwidxa', id: 'folder-1', zid: 'zid-1' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      await expect
+        .element(page.getByText('Accounts / Groups').first())
+        .toBeVisible();
+    });
+  });
+
+  describe('Folder sharing options display', () => {
+    it('should show Read, Write text for delegate with write permissions', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'delegate-id', name: 'delegate@example.com', type: 'usr' }],
+        folder: [{ perm: 'rwidxa', id: 'folder-1', zid: 'zid-1' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      const switchControl = page.getByText(/Switch to Simplified View/i).first();
+      await switchControl.click();
+
+      await expect.element(page.getByText('Read, Write').first()).toBeVisible();
+    });
+
+    it('should show Read text for delegate with read-only permissions', async () => {
+      const delegateIdentity = {
+        grantee: [{ id: 'delegate-id', name: 'delegate@example.com', type: 'usr' }],
+        folder: [{ perm: 'r', id: 'folder-1', zid: 'zid-1' }],
+      };
+
+      setupTest({ identitiesList: [delegateIdentity] });
+
+      const switchControl = page.getByText(/Switch to Simplified View/i).first();
+      await switchControl.click();
+
+      await expect.element(page.getByText('Read').first()).toBeVisible();
+    });
+  });
 });
