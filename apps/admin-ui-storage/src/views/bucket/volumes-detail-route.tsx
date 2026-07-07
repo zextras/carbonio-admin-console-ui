@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 import type { VolumeWizardDetail } from '../../../types';
 import { VolumeContext } from './server-specifics/volume/create-volume/volume-context';
@@ -22,9 +22,14 @@ export const VolumesDetailRoute: FC = () => {
     volumeAllocation: 0,
   });
 
+  const volumeContextValue = useMemo(
+    () => ({ volumeDetail, setVolumeDetail }),
+    [volumeDetail, setVolumeDetail],
+  );
+
   return (
     <Container style={{ transition: 'max-width 300ms' }}>
-      <VolumeContext.Provider value={{ volumeDetail, setVolumeDetail }}>
+      <VolumeContext.Provider value={volumeContextValue}>
         <VolumesDetailPanel />
       </VolumeContext.Provider>
     </Container>
