@@ -88,5 +88,5 @@ export const buildPath = (routeId: string, ...segments: Array<string | undefined
   const routes = getRoutes();
   const route = routes[routeId]?.path ?? routeId;
   const parts = [route, ...segments.filter((s): s is string => Boolean(s))];
-  return `/${parts.join('/')}`.replace(/\/{2,}/g, '/');
+  return `/${parts.join('/')}`.replaceAll(/\/{2,}/g, '/');
 };

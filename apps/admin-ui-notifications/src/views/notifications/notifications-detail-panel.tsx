@@ -22,7 +22,7 @@ const NotificationsDetailPanel: FC = () => {
     >
       <Routes>
         <Route index element={<NotificationListView />} />
-        <Route path={`/${LIST}`} element={<NotificationListView />} />
+        <Route path={LIST} element={<NotificationListView />} />
         <Route path="*" element={null} />
       </Routes>
     </Container>

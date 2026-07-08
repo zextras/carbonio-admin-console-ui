@@ -33,14 +33,14 @@ export const CosDetailPanel = () => (
   >
     <Routes>
       <Route index element={<CosList />} />
-      <Route path={`/:cosId/${GENERAL_INFORMATION}`} element={<CosGeneralInformation />} />
-      <Route path={`/:cosId/${FEATURES}`} element={<CosFeatures />} />
-      <Route path={`/:cosId/${WSC}`} element={<WscCosSettings />} />
-      <Route path={`/:cosId/${PREFERENCES}`} element={<COSPreferences />} />
-      <Route path={`/:cosId/${ADVANCED}`} element={<CosAdvanced />} />
-      <Route path={`/:cosId/${SERVER_POOLS}`} element={<CosServerPools />} />
-      <Route path={`/${CREATE_NEW_COS_ROUTE_ID}`} element={<CreateCos />} />
-      <Route path={'/cos_list'} element={<CosList />} />
+      <Route path={`:cosId/${GENERAL_INFORMATION}`} element={<CosGeneralInformation />} />
+      <Route path={`:cosId/${FEATURES}`} element={<CosFeatures />} />
+      <Route path={`:cosId/${WSC}`} element={<WscCosSettings />} />
+      <Route path={`:cosId/${PREFERENCES}`} element={<COSPreferences />} />
+      <Route path={`:cosId/${ADVANCED}`} element={<CosAdvanced />} />
+      <Route path={`:cosId/${SERVER_POOLS}`} element={<CosServerPools />} />
+      <Route path={CREATE_NEW_COS_ROUTE_ID} element={<CreateCos />} />
+      <Route path={'cos_list'} element={<CosList />} />
     </Routes>
   </Container>
 );
