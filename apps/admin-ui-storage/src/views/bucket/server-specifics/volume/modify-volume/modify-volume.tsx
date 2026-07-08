@@ -25,6 +25,7 @@ import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/ui-shared'
 import { isEmpty } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import {
   BucketVolume,
@@ -256,9 +257,8 @@ const ModifyVolume: FC<{
   const [isCurrentToggle, setIsCurrentToggle] = useState<boolean>(false);
   const [currentVolume, setCurrentVolume] = useState<Volume>();
   const createSnackbar = useSnackbar();
-  const { selectedServerName, isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore(
-    (state) => state,
-  );
+  const { server } = useParams<{ server: string }>();
+  const { isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore((state) => state);
   const { isSticky, setIsSticky } = useStickyBarStore();
 
   const showTieringSettings = isS3StoreType(storeType) && tieringSupported;
@@ -383,7 +383,7 @@ const ModifyVolume: FC<{
 
     try {
       if (isAdvanced) {
-        const obj = buildAdvancedUpdatePayload(selectedServerName, volumeDetail?.name, labelMap, {
+        const obj = buildAdvancedUpdatePayload(server ?? '', volumeDetail?.name, labelMap, {
           name,
           typeValue: type?.value,
           id,
@@ -400,7 +400,7 @@ const ModifyVolume: FC<{
           useIntelligentTiering,
         });
         const res = await fetchSoap('zextras', obj);
-        handleAdvancedUpdateResponse(res, selectedServerName, {
+        handleAdvancedUpdateResponse(res, server ?? '', {
           onSuccess: finishSaveSuccess,
           onError: finishSaveError,
         });
@@ -993,7 +993,7 @@ const ModifyVolume: FC<{
             <Row padding={{ top: 'small' }} width="100%">
               <LabeledValue
                 label={t('label.volume_server_name', 'Server')}
-                value={selectedServerName}
+                value={server ?? ''}
                 backgroundColor="gray5"
               />
             </Row>

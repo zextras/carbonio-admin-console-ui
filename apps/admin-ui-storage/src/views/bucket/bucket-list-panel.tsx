@@ -11,112 +11,132 @@ import {
   Padding,
   Row,
 } from '@zextras/ui-components';
-import {
-  replaceHistory,
-  useGlobalCarbonioSendAnalytics,
-  useIsAdvanced,
-  useMailstoreServers,
-} from '@zextras/ui-shared';
+import { replaceHistory, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { matchPath, useLocation } from 'react-router';
 
 import {
   DATA_VOLUMES,
   HSM_SETTINGS,
   IS_SERVER_LIST_EXPANDED,
   IS_SERVER_SPECIFIC_LIST_EXPANDED,
+  MANAGE_APP_ID,
   S3CONNECTOR_LIST,
   SERVERS_LIST,
+  STORAGES_ROUTE_ID,
 } from '../../constants';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
+
+function getRelativePathname(pathname: string, base: string): string {
+  if (!pathname.startsWith(base)) {
+    return pathname;
+  }
+  const stripped = pathname.slice(base.length);
+  if (stripped === '') {
+    return '/';
+  }
+  return stripped;
+}
 
 const BucketListPanel: FC = () => {
   const [t] = useTranslation();
 
-  const setSelectedServerName = useBucketVolumeStore((state) => state.setSelectedServerName);
+  const locationService = useLocation();
+  const storageBase = `/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`;
+  const relativePathname = getRelativePathname(locationService.pathname, storageBase);
+  const serverMatch = matchPath(`/:server/:operation`, relativePathname);
+  const opMatch = serverMatch ? null : matchPath(`/:operation`, relativePathname);
+  const selectedOperationItem =
+    serverMatch?.params.operation ?? opMatch?.params.operation ?? null;
+  const selectedServer = serverMatch?.params.server ?? '';
+  const isServerSelect = !!serverMatch;
+
   const { data: volumeList = [], isError, isLoading } = useMailstoreServers();
-  const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
-  const [isStoreSelect, setIsStoreSelect] = useState(false);
-  const [isStoreVolumeSelect, setIsStoreVolumeSelect] = useState(false);
-  const [selectedOperationItem, setSelectedOperationItem] = useState('');
+  const isAdvanced = useIsAdvanced();
+
   const [isServerListExpand, setIsServerListExpand] = useState(true);
   const [isServerSpecificListExpand, setIsServerSpecificListExpand] = useState(true);
-  const [searchVolumeName, setSearchVolumeName] = useState('');
-  const [isVolumeListExpand, setIsVolumeListExpand] = useState(false);
-  const isAdvanced = useIsAdvanced();
-  const [itemsVolume, setItemsVolume] = useState();
+  const [searchVolumeName, setSearchVolumeName] = useState(selectedServer);
+  const [itemsVolume, setItemsVolume] = useState<
+    Array<{ id: string | undefined; label: string | undefined; customComponent: React.ReactElement }>
+  >([]);
   const [isShowError, setIsShowError] = useState(false);
 
-  const selectedVolume = useCallback(
-    (volume: any) => {
-      setIsStoreSelect(true);
-      setSelectedServerName(volume?.name);
-      setSearchVolumeName(volume?.name);
-      setSelectedOperationItem(DATA_VOLUMES);
-      setIsStoreVolumeSelect(true);
-      setIsVolumeListExpand(false);
-    },
-    [setSelectedServerName],
+  useEffect(() => {
+    if (selectedServer) {
+      setSearchVolumeName(selectedServer);
+    }
+  }, [selectedServer]);
+
+  useEffect(() => {
+    if (!isServerSelect) {
+      setSearchVolumeName('');
+    }
+  }, [isServerSelect]);
+
+  const filteredServers = useMemo(
+    () => volumeList.filter((item) => item.name?.includes(searchVolumeName)),
+    [volumeList, searchVolumeName],
   );
 
-  const addServerToList = useCallback(
-    (list: any) => {
-      const data = list.map((volume: any) => ({
-        id: volume.id,
-        label: volume.name,
-        customComponent: (
-          <Row
-            style={{
-              display: 'block',
-              textAlign: 'left',
-              height: 'inherit',
-              padding: '3px',
-              width: 'inherit',
-            }}
-            onClick={(): void => {
-              selectedVolume(volume);
-            }}
-          >
-            {volume?.name}
-          </Row>
-        ),
-      }));
-      setItemsVolume(data);
-    },
-    [selectedVolume],
-  );
+  const addServerToList = useCallback((list: typeof volumeList) => {
+    const data = list.map((volume) => ({
+      id: volume.id,
+      label: volume.name,
+      customComponent: (
+        <Row
+          style={{
+            display: 'block',
+            textAlign: 'left',
+            height: 'inherit',
+            padding: '3px',
+            width: 'inherit',
+          }}
+          onClick={(): void => {
+            const serverName = volume.name || '';
+            setSearchVolumeName(serverName);
+            replaceHistory(`/${serverName}/${DATA_VOLUMES}`);
+          }}
+        >
+          {volume.name}
+        </Row>
+      ),
+    }));
+    setItemsVolume(data);
+  }, []);
 
   useEffect(() => {
     if (isError || isLoading) {
       return;
     }
-    const filterList = volumeList.filter((item: any) => item.name?.includes(searchVolumeName));
-    addServerToList(filterList);
-    if (volumeList.length > 0 && filterList.length === 0) {
+    addServerToList(filteredServers);
+    if (volumeList.length > 0 && filteredServers.length === 0 && searchVolumeName !== '') {
       setIsShowError(true);
+    } else {
+      setIsShowError(false);
     }
-  }, [searchVolumeName, addServerToList, volumeList, isError, isLoading]);
+  }, [searchVolumeName, addServerToList, volumeList, filteredServers, isError, isLoading]);
 
   const globalServerOption = useMemo(
     () => [
       {
         id: SERVERS_LIST,
         name: t('label.servers_list', 'Servers List'),
-        isSelected: isStoreSelect,
+        isSelected: true,
       },
       {
         id: S3CONNECTOR_LIST,
         name: t('storages.s3Connectors.title', 'S3 connectors'),
-        isSelected: isStoreSelect,
+        isSelected: true,
       },
     ],
-    [t, isStoreSelect],
+    [t],
   );
 
   const globalOptions = useMemo(
     () =>
       !isAdvanced
-        ? globalServerOption.filter((item: any) => item?.id !== S3CONNECTOR_LIST)
+        ? globalServerOption.filter((item) => item.id !== S3CONNECTOR_LIST)
         : globalServerOption,
     [isAdvanced, globalServerOption],
   );
@@ -126,93 +146,87 @@ const BucketListPanel: FC = () => {
       {
         id: DATA_VOLUMES,
         name: t('label.data_volumes', 'Data Volumes'),
-        isSelected: isStoreVolumeSelect,
+        isSelected: isServerSelect,
       },
       {
         id: HSM_SETTINGS,
         name: t('label.hsm_settings', 'HSM Settings'),
-        isSelected: isStoreVolumeSelect,
+        isSelected: isServerSelect,
       },
     ],
-    [t, isStoreVolumeSelect],
+    [t, isServerSelect],
   );
 
   const serverOptions = useMemo(
     () =>
       !isAdvanced
-        ? serverSpecificOption.filter((item: any) => item?.id !== HSM_SETTINGS)
+        ? serverSpecificOption.filter((item) => item.id !== HSM_SETTINGS)
         : serverSpecificOption,
     [isAdvanced, serverSpecificOption],
   );
 
-  useEffect(() => {
-    setIsStoreSelect(true);
-  }, []);
-
-  useEffect(() => {
-    setSelectedOperationItem(SERVERS_LIST);
-  }, []);
-
-  useEffect(() => {
-    if (isStoreSelect) {
-      if (selectedOperationItem) {
-        if (selectedOperationItem === DATA_VOLUMES || selectedOperationItem === HSM_SETTINGS) {
-          replaceHistory(`${searchVolumeName}/${selectedOperationItem}`);
-        } else {
-          replaceHistory(`/${selectedOperationItem}`);
-        }
+  const toggleServer = useCallback((): void => {
+    setIsServerListExpand((prev) => {
+      const next = !prev;
+      if (next) {
+        localStorage.removeItem(IS_SERVER_LIST_EXPANDED);
       } else {
-        replaceHistory(`/${selectedOperationItem}`);
+        localStorage.setItem(IS_SERVER_LIST_EXPANDED, 'false');
       }
-    }
-  }, [isStoreSelect, selectedOperationItem, searchVolumeName, globalCarbonioSendAnalytics]);
+      return next;
+    });
+  }, []);
 
-  const toggleServer = (): void => {
-    if (isServerListExpand) {
-      setIsServerListExpand(false);
-      localStorage.setItem(IS_SERVER_LIST_EXPANDED, 'false');
-    } else {
-      setIsServerListExpand(true);
-      localStorage.removeItem(IS_SERVER_LIST_EXPANDED);
-    }
-  };
-  const toggleServerSpecific = (): void => {
-    if (isServerSpecificListExpand) {
-      setIsServerSpecificListExpand(false);
-      localStorage.setItem(IS_SERVER_SPECIFIC_LIST_EXPANDED, 'false');
-    } else {
-      setIsServerSpecificListExpand(true);
-      localStorage.removeItem(IS_SERVER_SPECIFIC_LIST_EXPANDED);
-    }
-    setIsServerSpecificListExpand(!isServerSpecificListExpand);
-  };
+  const toggleServerSpecific = useCallback((): void => {
+    setIsServerSpecificListExpand((prev) => {
+      const next = !prev;
+      if (next) {
+        localStorage.removeItem(IS_SERVER_SPECIFIC_LIST_EXPANDED);
+      } else {
+        localStorage.setItem(IS_SERVER_SPECIFIC_LIST_EXPANDED, 'false');
+      }
+      return next;
+    });
+  }, []);
 
-  const customIconDetail = {
-    icon: searchVolumeName === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
-    onClick: (): void => {
-      setIsVolumeListExpand(!isVolumeListExpand);
-      setIsShowError(false);
-      if (searchVolumeName !== '') {
-        setSearchVolumeName('');
-        setIsStoreVolumeSelect(false);
-        setSelectedOperationItem(SERVERS_LIST);
+  const handleInputChange = useCallback((ev: React.ChangeEvent<HTMLInputElement>): void => {
+    setIsShowError(false);
+    setSearchVolumeName(ev.target.value);
+  }, []);
+
+  const handleCustomIconClick = useCallback((): void => {
+    setIsShowError(false);
+    if (searchVolumeName !== '') {
+      setSearchVolumeName('');
+      replaceHistory(`/${SERVERS_LIST}`);
+    }
+  }, [searchVolumeName]);
+
+  const customIconDetail = useMemo(
+    () => ({
+      icon: searchVolumeName === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
+      onClick: handleCustomIconClick,
+    }),
+    [searchVolumeName, handleCustomIconClick],
+  );
+
+  const handleSelectOperation = useCallback(
+    (id: string): void => {
+      if (id === DATA_VOLUMES || id === HSM_SETTINGS) {
+        replaceHistory(`/${selectedServer}/${id}`);
+      } else {
+        replaceHistory(`/${id}`);
       }
     },
-  };
+    [selectedServer],
+  );
 
   useEffect(() => {
     const storedServerValue = localStorage.getItem(IS_SERVER_LIST_EXPANDED);
-    if (storedServerValue === 'false') {
-      setIsServerListExpand(false);
-    } else {
-      setIsServerListExpand(true);
-    }
+    setIsServerListExpand(storedServerValue !== 'false');
+
     const storedValue = localStorage.getItem(IS_SERVER_SPECIFIC_LIST_EXPANDED);
-    if (storedValue === 'false') {
-      setIsServerSpecificListExpand(false);
-    } else {
-      setIsServerSpecificListExpand(true);
-    }
+    setIsServerSpecificListExpand(storedValue !== 'false');
   }, []);
 
   return (
@@ -234,7 +248,7 @@ const BucketListPanel: FC = () => {
           <ListItems
             items={globalOptions}
             selectedOperationItem={selectedOperationItem}
-            setSelectedOperationItem={setSelectedOperationItem}
+            setSelectedOperationItem={handleSelectOperation}
           />
         )}
         <ListPanelItem
@@ -248,10 +262,7 @@ const BucketListPanel: FC = () => {
               <DropDownInput
                 items={itemsVolume}
                 inputLabel={t('label.select_a_server', 'Select a Server')}
-                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-                  setIsShowError(false);
-                  setSearchVolumeName(ev.target.value);
-                }}
+                onChange={handleInputChange}
                 hasError={isShowError}
                 inputValue={searchVolumeName}
                 isCustomIcon
@@ -273,7 +284,7 @@ const BucketListPanel: FC = () => {
             <ListItems
               items={serverOptions}
               selectedOperationItem={selectedOperationItem}
-              setSelectedOperationItem={setSelectedOperationItem}
+              setSelectedOperationItem={handleSelectOperation}
             />
           </>
         )}
