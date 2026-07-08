@@ -56,7 +56,6 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
-import { useBackupStore } from '../../../store/backup/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const BackupConfiguration: FC = () => {
@@ -106,7 +105,6 @@ const BackupConfiguration: FC = () => {
   const [manageExternalVolumeNewLocalMountpoint, setManageExternalVolumeNewLocalMountpoint] =
     useState<string>('');
   const [rootVolumePath, setRootVolumePath] = useState<string>('');
-  const selectedBackupServer = useBackupStore((state) => state.selectedServer);
   const { data: rights } = useCurrentUserRights();
   const allowSetBackup = useMemo(() => {
     const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
@@ -966,7 +964,7 @@ const BackupConfiguration: FC = () => {
                   crossAlignment="flex-start"
                 >
                   <ds-text as="h2" size="medium" weight="bold" color="gray0">
-                    {selectedBackupServer}{' '}
+                    {server}{' '}
                     {t('backup.backup_configuration', 'backup configuration')}
                   </ds-text>
                 </Row>
