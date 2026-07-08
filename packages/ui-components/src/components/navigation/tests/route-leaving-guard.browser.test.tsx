@@ -8,7 +8,7 @@ import { Outlet, Route, Routes, useNavigate } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { RouteLeavingGuard } from '../nav-guard';
+import { RouteLeavingGuard } from '../route-leaving-guard';
 
 function NavigationTrigger({ label }: { label: string }): React.ReactElement {
   const navigate = useNavigate();
@@ -19,18 +19,10 @@ function NavigationTrigger({ label }: { label: string }): React.ReactElement {
   );
 }
 
-function Layout({
-  when,
-  children,
-}: {
-  when: boolean;
-  children: React.ReactNode;
-}): React.ReactElement {
+function Layout({ when }: { when: boolean }): React.ReactElement {
   return (
     <>
-      <RouteLeavingGuard when={when} onSave={onSave}>
-        {children}
-      </RouteLeavingGuard>
+      <RouteLeavingGuard when={when} onSave={onSave} />
       <Outlet />
     </>
   );
@@ -38,17 +30,10 @@ function Layout({
 
 const onSave = vi.fn();
 
-const guardChildren = (
-  <>
-    <p>Unsaved line 1</p>
-    <p>Unsaved line 2</p>
-  </>
-);
-
 async function setupGuardTest(when = true): Promise<void> {
   await setupBrowserTest(
     <Routes>
-      <Route element={<Layout when={when}>{guardChildren}</Layout>}>
+      <Route element={<Layout when={when} />}>
         <Route
           path="/"
           element={
@@ -78,8 +63,10 @@ describe('RouteLeavingGuard', () => {
       await page.getByRole('button', { name: 'Go Away' }).click();
 
       await expect.element(page.getByText('You have unsaved changes')).toBeVisible();
-      await expect.element(page.getByText('Unsaved line 1')).toBeVisible();
-      await expect.element(page.getByText('Unsaved line 2')).toBeVisible();
+      // default body copy is rendered
+      await expect
+        .element(page.getByText('Are you sure you want to leave this page without saving?'))
+        .toBeVisible();
     });
 
     it('should render Leave anyway and Save and leave buttons', async () => {
@@ -125,6 +112,44 @@ describe('RouteLeavingGuard', () => {
 
       await expect.element(page.getByText('You have unsaved changes')).not.toBeInTheDocument();
       await expect.element(page.getByText('Other Page')).toBeVisible();
+    });
+  });
+
+  describe('custom children', () => {
+    function CustomLayout({ when }: { when: boolean }): React.ReactElement {
+      return (
+        <>
+          <RouteLeavingGuard when={when} onSave={onSave}>
+            <p>Custom body line</p>
+          </RouteLeavingGuard>
+          <Outlet />
+        </>
+      );
+    }
+
+    it('should render custom children when provided', async () => {
+      await setupBrowserTest(
+        <Routes>
+          <Route element={<CustomLayout when={true} />}>
+            <Route
+              path="/"
+              element={
+                <>
+                  <span>Home Page</span>
+                  <NavigationTrigger label="Go Away" />
+                </>
+              }
+            />
+            <Route path="/other" element={<span>Other Page</span>} />
+          </Route>
+        </Routes>,
+        { initialRouterEntry: '/' },
+      );
+      await expect.element(page.getByText('Home Page')).toBeVisible();
+
+      await page.getByRole('button', { name: 'Go Away' }).click();
+
+      await expect.element(page.getByText('Custom body line')).toBeVisible();
     });
   });
 });

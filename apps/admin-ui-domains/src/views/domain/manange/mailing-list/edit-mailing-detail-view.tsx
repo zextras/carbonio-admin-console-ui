@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Modal, Padding, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, Modal, Padding, RouteLeavingGuard, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { format, isValid } from 'date-fns';
 import { differenceBy, isEqual } from 'lodash';
@@ -22,7 +22,6 @@ import { getGrant } from '../../../../services/get-grant';
 import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getDateTimeFromStr } from '../../../utility/utils';
 import { GeneralTab } from './edit-mailing-detail/general-tab';
 import { MembersTab } from './edit-mailing-detail/members-tab';
@@ -1391,15 +1390,7 @@ const EditMailingListView: FC<any> = ({
           </Modal>
         )}
 
-        <RouteLeavingGuard when={isDirty} onSave={onSave}>
-          <ds-text as="p">
-            {t(
-              'label.unsaved_changes_line1',
-              'Are you sure you want to leave this page without saving?',
-            )}
-          </ds-text>
-          <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
-        </RouteLeavingGuard>
+        <RouteLeavingGuard when={isDirty} onSave={onSave} />
         {isOpenDeleteDialog && (
           <Modal
             size="medium"

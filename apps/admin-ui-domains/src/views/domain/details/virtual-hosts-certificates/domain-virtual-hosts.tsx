@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, ModalOverlay, Padding, Row, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, ModalOverlay, Padding, RouteLeavingGuard, Row, useSnackbar, } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
 import { isEqual, mapValues, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -23,7 +23,6 @@ import {
 } from '../../../../constants';
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../../services/modify-domain-service';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { AlertBanner } from './alert-banner';
 import { CertificateContext } from './certificate-context';
 import { CertificateView } from './certificate-view';
@@ -405,15 +404,7 @@ export const DomainVirtualHosts: FC = () => {
           />
         </Container>
       </Container>
-      <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <ds-text as="p">
-          {t(
-            'label.unsaved_changes_line1',
-            'Are you sure you want to leave this page without saving?',
-          )}
-        </ds-text>
-        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
-      </RouteLeavingGuard>
+      <RouteLeavingGuard when={isDirty} onSave={onSave} />
       </Container>
     </CertificateContext.Provider>
   );
