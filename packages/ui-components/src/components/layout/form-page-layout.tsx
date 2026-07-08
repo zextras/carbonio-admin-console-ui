@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button } from '../basic/button/Button';
 import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './form-page-layout.module.css';
+import { Button } from '../basic/button/Button';
 import { RouteLeavingGuard } from '../utilities/route-leaving-guard';
+import styles from './form-page-layout.module.css';
 
 type FormPageLayoutProps = {
   title: string;

@@ -10,8 +10,8 @@ import {
   Input,
   ListRow,
   Padding,
-  Row,
   RouteLeavingGuard,
+  Row,
   Switch,
   useSnackbar,
 } from '@zextras/ui-components';

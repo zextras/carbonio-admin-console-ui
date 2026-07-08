@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, CustomHeaderFactory, Dropdown, DropdownItem, HoverableRowFactory, Input, LabeledValue, ListRow, Padding, Row, RouteLeavingGuard, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, CustomHeaderFactory, Dropdown, DropdownItem, HoverableRowFactory, Input, LabeledValue, ListRow, Padding, RouteLeavingGuard, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, getDomainInformation, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, Padding, Row, RouteLeavingGuard, useSnackbar } from '@zextras/ui-components';
+import { Button, Container, Padding, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, getDomainInformation, useAllConfig, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, isEqual, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Modal, Padding, Row, RouteLeavingGuard, TabBar, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, Modal, Padding, RouteLeavingGuard, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { format, isValid } from 'date-fns';
 import { differenceBy, isEqual } from 'lodash';

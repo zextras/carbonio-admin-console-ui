@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, ChipInput, ChipItem, Container, CustomTextArea, Input, LabeledValue, ListRow, Modal, Padding, Row, RouteLeavingGuard, Select, useSnackbar, } from '@zextras/ui-components';
+import { Button, ChipInput, ChipItem, Container, CustomTextArea, Input, LabeledValue, ListRow, Modal, Padding, RouteLeavingGuard, Row, Select, useSnackbar, } from '@zextras/ui-components';
 import { type DirectoryEntry, domainByIdKey, type DomainDirectories, flushCache, replaceHistory, searchDirectory, useCosList, useIsAdvanced, useTotalQuotaActive, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, ListRow, Padding, Paging, Row, RouteLeavingGuard, Select, Table, THeader, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, ListRow, Padding, Paging, RouteLeavingGuard, Row, Select, Table, THeader, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import { isEqual, reduce } from 'lodash-es';

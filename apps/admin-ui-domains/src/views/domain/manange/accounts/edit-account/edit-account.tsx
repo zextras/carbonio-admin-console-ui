@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, DefaultTabBarItem, Modal, Padding, Row, RouteLeavingGuard, TabBar, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, DefaultTabBarItem, Modal, Padding, RouteLeavingGuard, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
 import { flushCache, resetFileQuotaLimitById, setCoreAttributes, setFileQuotaLimitById, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive, useUserSettings } from '@zextras/ui-shared';
 import { differenceBy, find, isEqual, reduce, remove } from 'lodash-es';
 import { FC, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';

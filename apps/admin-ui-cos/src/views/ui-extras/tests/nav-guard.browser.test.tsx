@@ -3,12 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { RouteLeavingGuard } from '@zextras/ui-components';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { Outlet, Route, Routes, useNavigate } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
-
-import { RouteLeavingGuard } from '@zextras/ui-components';
 
 function NavigationTrigger({ label }: { label: string }): React.ReactElement {
   const navigate = useNavigate();

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, Input, ListRow, Padding, PasswordInput, Popper, Row, RouteLeavingGuard, Select, SelectItem, Switch, Tooltip as TooltipDefault, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, Input, ListRow, Padding, PasswordInput, Popper, RouteLeavingGuard, Row, Select, SelectItem, Switch, Tooltip as TooltipDefault, useSnackbar, } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
