@@ -40,7 +40,7 @@ import {
 const BackupListPanel: FC = () => {
   const [t] = useTranslation();
   const location = useLocation();
-  const segments = location.pathname.replaceAll(/^\/+|\/+$/g, '').split('/');
+  const segments = location.pathname.split('/').filter(Boolean);
   const backupIdx = segments.lastIndexOf('backup');
   const afterBackup =
     backupIdx >= 0 && backupIdx < segments.length - 1 ? segments.slice(backupIdx + 1) : [];
