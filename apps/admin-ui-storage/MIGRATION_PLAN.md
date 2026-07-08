@@ -77,6 +77,67 @@
 
 ---
 
+## Phase 1.5 -- Split `useBucketVolumeStore` (server state -> TanStack Query)
+
+**Rationale:** `useBucketVolumeStore` (`src/store/bucket-volume/store.ts`) is a HYBRID store mixing server data with UI state. The `isVolumeAllDetail` field caches `listS3Connector()` SOAP results shared across components -- this belongs in TanStack Query. The `isAllocationToggle` field is pure UI state for the advanced volume wizard. Splitting eliminates a global state dependency and gives us automatic caching/invalidation for S3 connector data.
+
+**Files touched:**
+- `src/store/bucket-volume/store.ts` -- **delete (eventually)**
+- `src/services/bucket-service.ts` -- existing `listS3Connector` service function
+- `src/services/use-list-s3-connectors.ts` -- **create** (React Query hook)
+- `src/services/bucket-volume-query-keys.ts` -- **create** (query keys)
+- `src/views/bucket/server-specifics/volume/volumes-list.tsx` -- replace store read with hook
+- `src/views/bucket/server-specifics/volume/modify-volume/modify-volume.tsx` -- replace store read/write with hook
+- `src/views/bucket/server-specifics/volume/create-volume/advanced-create-volume/advanced-mailstores-definition.tsx` -- replace store read/write with hook
+- `src/views/bucket/server-specifics/volume/create-volume/advanced-create-volume/advanced-mailstores-config.tsx` -- move `isAllocationToggle` to local `useState`
+- `src/views/bucket/server-specifics/volume/create-volume/advanced-create-volume/create-mailstores-volume.tsx` -- move `isAllocationToggle` to local `useState` or context
+
+### Step 1.5.1: Create query keys
+- Create `src/services/bucket-volume-query-keys.ts` following the `backupQueryKeys` pattern from admin-ui-backup:
+  ```ts
+  const bucketVolumeQueryKeys = {
+    all: ['bucket-volume'] as const,
+    s3Connectors: () => [...bucketVolumeQueryKeys.all, 's3-connectors'] as const,
+  } as const;
+  ```
+
+### Step 1.5.2: Create `useListS3Connectors` hook
+- Create `src/services/use-list-s3-connectors.ts`:
+  ```ts
+  export function useListS3Connectors() {
+    return useQuery({
+      queryKey: bucketVolumeQueryKeys.s3Connectors(),
+      queryFn: () => listS3Connector(),
+    });
+  }
+  ```
+- Components that need filtered subsets use the `select` option or derive locally
+
+### Step 1.5.3: Migrate consumers of `isVolumeAllDetail`
+- `volumes-list.tsx` -- replace `useBucketVolumeStore` read with `useListS3Connectors()`
+- `modify-volume.tsx` -- replace store read/write with `useListS3Connectors()` (remove `setIsVolumeAllDetail` calls; use `queryClient.invalidateQueries` after mutations)
+- `advanced-mailstores-definition.tsx` -- replace store read/write with `useListS3Connectors()`
+
+### Step 1.5.4: Migrate `isAllocationToggle`
+- `advanced-mailstores-config.tsx` -- replace `useBucketVolumeStore` with local `useState`
+- `create-mailstores-volume.tsx` -- pass `isAllocationToggle` as prop or via `AdvancedVolumeContext` (will be unified into TanStack Form in Phase 6)
+
+### Step 1.5.5: Delete store
+- Remove `src/store/bucket-volume/store.ts`
+- Remove `zustand` import from any remaining files (if this was the only consumer)
+- Remove `zustand` from `package.json` if no longer needed
+
+### Step 1.5.6: Tests
+- Add tests for `useListS3Connectors` hook (mock `listS3Connector`, verify query behavior)
+- Update existing tests that mock the store to mock the hook instead
+
+### Step 1.5.7: Verify
+- `pnpm test --filter admin-ui-storage`
+- `pnpm lint --filter admin-ui-storage`
+- `pnpm type-check --filter admin-ui-storage`
+
+---
+
 ## Phase 2 -- Volume Create Wizard (#2) -- Reference Implementation
 
 **Why first:** Simplest context-based form, has existing tests, establishes the migration pattern for all subsequent forms.
@@ -244,6 +305,8 @@
 ### Step 6.3: Unify dual-context into single form
 - `CreateMailstoresVolume` creates one `useForm` instance
 - Remove `AdvancedVolumeContext` entirely
+- `isAllocationToggle` already moved to local state in Phase 1.5 -- fold into form values or pass as form field
+- S3 connector data now comes from `useListS3Connectors()` hook (Phase 1.5) instead of store
 - Coordinate with Phase 2's Volume form for shared fields (`volumeName`, `volumeAllocation`) -- pass as props or merge into a parent form
 - Each step component receives the `form` prop and uses `useField`/`form.Field`
 
