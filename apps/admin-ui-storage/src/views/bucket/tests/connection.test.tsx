@@ -5,7 +5,7 @@
  */
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import React, { ChangeEvent, useEffect, useRef } from 'react';
+import React, { act, ChangeEvent, useEffect, useRef } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import Connection from '../connection';
@@ -33,18 +33,36 @@ vi.mock('@zextras/ui-components', () => ({
     </button>
   ),
   Container: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  getFieldErrorProps: (
+    field: { state: { meta: { isBlurred: boolean; isValid: boolean; errors: Array<{ message?: string } | string> } } },
+    isSubmitted: boolean,
+    t: (key: string, fallback?: string) => string,
+    messages?: Record<string, string>,
+  ) => {
+    const { meta } = field.state;
+    const showError = (meta.isBlurred || isSubmitted) && !meta.isValid;
+    if (!showError) return { hasError: false };
+    const firstError = meta.errors[0];
+    const key = typeof firstError === 'string' ? firstError : firstError?.message;
+    return { hasError: true, description: key ? t(key, messages?.[key] ?? key) : undefined };
+  },
   Input: ({
     label,
     value,
     onChange,
+    hasError,
+    description,
   }: {
     label: string;
     value: string;
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    hasError?: boolean;
+    description?: string;
   }) => (
     <label>
       {label}
       <input aria-label={label} value={value} onChange={onChange} />
+      {hasError && description && <span>{description}</span>}
     </label>
   ),
   Padding: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
@@ -52,14 +70,19 @@ vi.mock('@zextras/ui-components', () => ({
     label,
     value,
     onChange,
+    hasError,
+    description,
   }: {
     label: string;
     value: string;
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    hasError?: boolean;
+    description?: string;
   }) => (
     <label>
       {label}
       <input aria-label={label} value={value} onChange={onChange} />
+      {hasError && description && <span>{description}</span>}
     </label>
   ),
   Row: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
@@ -158,20 +181,22 @@ vi.mock('../parts/verify/verify-error', () => ({
 async function fillRequiredFields(): Promise<void> {
   await screen.findByRole('option', { name: /US East 1/i });
 
-  fireEvent.change(screen.getByLabelText('Descriptive name*'), {
-    target: { value: 'Main bucket' },
-  });
-  fireEvent.change(screen.getByLabelText('Bucket name*'), {
-    target: { value: 'main-bucket' },
-  });
-  fireEvent.change(screen.getByLabelText('Access Key ID*'), {
-    target: { value: 'AKIA_TEST' },
-  });
-  fireEvent.change(screen.getByLabelText('Secret Access Key*'), {
-    target: { value: 'SECRET_TEST' },
-  });
-  fireEvent.change(screen.getByLabelText('Region'), {
-    target: { value: 'us-east-1' },
+  await act(async () => {
+    fireEvent.change(screen.getByLabelText('Descriptive name*'), {
+      target: { value: 'Main bucket' },
+    });
+    fireEvent.change(screen.getByLabelText('Bucket name*'), {
+      target: { value: 'main-bucket' },
+    });
+    fireEvent.change(screen.getByLabelText('Access Key ID*'), {
+      target: { value: 'AKIA_TEST' },
+    });
+    fireEvent.change(screen.getByLabelText('Secret Access Key*'), {
+      target: { value: 'SECRET_TEST' },
+    });
+    fireEvent.change(screen.getByLabelText('Region'), {
+      target: { value: 'us-east-1' },
+    });
   });
 }
 
@@ -190,7 +215,9 @@ describe('Connection', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
-    expect(screen.getByText('This field is mandatory')).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText('This field is mandatory')).toBeTruthy();
+    });
     expect(mockCreateS3Connector).not.toHaveBeenCalled();
   });
 
