@@ -216,6 +216,15 @@ describe('EditAccountDelegatesSection (browser)', () => {
       const readOnlyCheckbox = page.getByText('Read Only').first();
       await expect.element(readOnlyCheckbox).toBeVisible();
       await userEvent.click(readOnlyCheckbox);
+
+      // Button still disabled because no account selected
+      await expect
+        .element(
+          page.getByRole('button', {
+            name: /ADD THE ACCOUNT \/ GROUP WITH SELECTED RIGHTS/i,
+          }).first(),
+        )
+        .toBeDisabled();
     });
 
     it('should toggle Send checkbox when clicked', async () => {
@@ -224,6 +233,15 @@ describe('EditAccountDelegatesSection (browser)', () => {
       const sendCheckbox = page.getByText('Send', { exact: true }).first();
       await expect.element(sendCheckbox).toBeVisible();
       await userEvent.click(sendCheckbox);
+
+      // Button still disabled because no account selected
+      await expect
+        .element(
+          page.getByRole('button', {
+            name: /ADD THE ACCOUNT \/ GROUP WITH SELECTED RIGHTS/i,
+          }).first(),
+        )
+        .toBeDisabled();
     });
 
     it('should toggle Send on Behalf of checkbox and uncheck Send', async () => {
@@ -232,6 +250,15 @@ describe('EditAccountDelegatesSection (browser)', () => {
       const sendBehalfCheckbox = page.getByText('Send on Behalf of').first();
       await expect.element(sendBehalfCheckbox).toBeVisible();
       await userEvent.click(sendBehalfCheckbox);
+
+      // Button still disabled because no account selected
+      await expect
+        .element(
+          page.getByRole('button', {
+            name: /ADD THE ACCOUNT \/ GROUP WITH SELECTED RIGHTS/i,
+          }).first(),
+        )
+        .toBeDisabled();
     });
   });
 
@@ -683,6 +710,8 @@ describe('EditAccountDelegatesSection (browser)', () => {
       // Then check Read Only - should uncheck Read/Write
       const readOnlyCheckbox = page.getByText('Read Only').first();
       await userEvent.click(readOnlyCheckbox);
+
+      await expect.element(readOnlyCheckbox).toBeVisible();
     });
 
     it('should uncheck Send on Behalf when Send is checked', async () => {
@@ -695,6 +724,8 @@ describe('EditAccountDelegatesSection (browser)', () => {
       // Then check Send - should uncheck Send on Behalf
       const sendCheckbox = page.getByText('Send', { exact: true }).first();
       await userEvent.click(sendCheckbox);
+
+      await expect.element(sendCheckbox).toBeVisible();
     });
 
     it('should uncheck Send when Send on Behalf is checked', async () => {
@@ -707,6 +738,8 @@ describe('EditAccountDelegatesSection (browser)', () => {
       // Then check Send on Behalf - should uncheck Send
       const sendBehalfCheckbox = page.getByText('Send on Behalf of').first();
       await userEvent.click(sendBehalfCheckbox);
+
+      await expect.element(sendBehalfCheckbox).toBeVisible();
     });
   });
 

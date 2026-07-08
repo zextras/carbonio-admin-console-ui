@@ -782,6 +782,43 @@ const ManageAccounts: FC = () => {
     [setDirectMemberList, setInDirectMemberList, t, createSnackbar],
   );
 
+  const extractUserDelegates = useCallback(
+    (filteredFolders: Array<MailFolder>): Array<FolderGrant & { id: string; name?: string }> => {
+      const userDelegate: Array<FolderGrant & { id: string; name?: string }> = [];
+      filteredFolders.forEach((ele) => {
+        ele?.acl?.grant?.forEach((el) => {
+          userDelegate.push({ ...el, id: ele.id, name: ele.name });
+        });
+      });
+      return userDelegate;
+    },
+    [],
+  );
+
+  const updateDelegateList = useCallback(
+    (
+      userDelegate: Array<FolderGrant & { id: string; name?: string }>,
+      delegateList: Array<DelegateIdentity>,
+    ): void => {
+      userDelegate.forEach((ele) => {
+        const existingDelegate = delegateList.find((el) => el?.grantee?.[0]?.name === ele?.d);
+        if (existingDelegate) {
+          if (existingDelegate?.folder?.length) {
+            existingDelegate.folder.push(ele);
+          } else {
+            existingDelegate.folder = [ele];
+          }
+        } else {
+          delegateList.push({
+            grantee: [{ id: ele.zid, name: ele.d, type: ele.gt }],
+            folder: [ele],
+          });
+        }
+      });
+    },
+    [],
+  );
+
   const getFolderList = useCallback(
     (acc: { id: string; name: string }, delegateList: Array<DelegateIdentity>): void => {
       postSoapFetchRequest(
@@ -804,39 +841,13 @@ const ManageAccounts: FC = () => {
         const filteredFolders = filter(allFolder, (ele) =>
           ['1', '2', '7', '10', '4', '5', '6', '3'].includes(ele.id),
         );
-        const userDelegate: Array<FolderGrant & { id: string; name?: string }> = [];
-        filteredFolders.forEach((ele) => {
-          ele?.acl?.grant &&
-            ele?.acl?.grant.forEach((el) => {
-              userDelegate.push({ ...el, id: ele.id, name: ele.name });
-            });
-        });
+        const userDelegate = extractUserDelegates(filteredFolders);
         setFolderList(filteredFolders);
-        userDelegate.forEach((ele) => {
-          let found = false;
-          delegateList.forEach((el) => {
-            // const folder: any[] = filter(userDelegate, { d: ele?.grantee?.[0]?.name });
-            if (el?.grantee?.[0]?.name === ele?.d) {
-              found = true;
-              if (el?.folder?.length) {
-                el?.folder.push(ele);
-              } else {
-                el.folder = [ele];
-              }
-            }
-          });
-          if (!found) {
-            delegateList.push({
-              grantee: [{ id: ele.zid, name: ele.d, type: ele.gt }],
-              folder: [ele],
-            });
-          }
-        });
-
+        updateDelegateList(userDelegate, delegateList);
         setIdentitiesList(delegateList);
       });
     },
-    [flatten],
+    [flatten, extractUserDelegates, updateDelegateList],
   );
   const getIdentitiesList = useCallback(
     (acc: { id: string; name: string }): void => {
@@ -950,16 +961,16 @@ const ManageAccounts: FC = () => {
     const attrs =
       'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
     const offsetParam = offset ?? 0;
-    accountListDirectory(
-      attrs,
+    accountListDirectory({
+      attr: attrs,
       type,
       domainName,
-      searchQuery,
-      offsetParam,
+      query: searchQuery,
+      offset: offsetParam,
       limit,
-      sortedColumn,
-      sortOrder,
-    )
+      sortBy: sortedColumn,
+      sortAscending: sortOrder,
+    })
       .then((data: SearchDirectoryResponse<'account' | 'dl' | 'calresource'>) => {
         setIsRequestInProgress(false);
         const accountListResponse = data?.account ?? [];

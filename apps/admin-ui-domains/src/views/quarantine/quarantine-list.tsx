@@ -1013,8 +1013,8 @@ const QuarantineList: FC = () => {
     getDelegateAuthRequest(quarantineAccountId)
       .then((data: any) => {
         if (data?.authToken?.[0]) {
-          window.open(
-            `https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content
+          globalThis.open(
+            `https://${globalThis.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content
             }&isredirect=1&adminPreAuth=1&redirectURL=${encodeURIComponent(
               '/service/home/~/?auth=co&view=text&id=',
             )}${message.id.split(':')[1]}`,

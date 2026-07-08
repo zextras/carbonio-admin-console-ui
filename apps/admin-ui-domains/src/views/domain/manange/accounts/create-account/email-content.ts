@@ -59,7 +59,7 @@ export const emailContent = (
                 <td style="padding: 0 30px;">
                     <table style="width: 100%; margin-bottom: 20px;">
                         <tr>
-                            <td rowspan="9"><img alt="Image unavailable. Please use the Secret Code." src="${window?.document?.getElementsByTagName('canvas')[0]?.toDataURL() || ''
+                            <td rowspan="9"><img alt="Image unavailable. Please use the Secret Code." src="${globalThis?.document?.getElementsByTagName('canvas')[0]?.toDataURL() || ''
     }" alt="qr" style="width: 180px;" /></td>
                         </tr>
                         ${codeRows(pinCodes)}

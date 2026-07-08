@@ -789,7 +789,7 @@ const EditAccountDelegatesSection: FC = () => {
     const type = 'distributionlists,accounts';
     const attrs =
       'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-    accountListDirectory(attrs, type, '', searchQuery, 0, 10)
+    accountListDirectory({ attr: attrs, type, domainName: '', query: searchQuery, offset: 0, limit: 10 })
       .then((data) => {
         const accountListArr: Array<AccountOption> = [];
         data?.account?.map(

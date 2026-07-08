@@ -18,8 +18,7 @@ const DelegateAddSection: FC = () => {
   const { accountDetail, deligateDetail } = context;
 
   return (
-    <>
-      <Container
+    <Container
         mainAlignment="flex-start"
         padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
       >
@@ -66,9 +65,7 @@ const DelegateAddSection: FC = () => {
             />
           </Row>
         </Row>
-        {deligateDetail?.delegeteRights === READ_MAILS_ONLY ? (
-          <></>
-        ) : (
+        {deligateDetail?.delegeteRights === READ_MAILS_ONLY ? null : (
           <Row mainAlignment="flex-start" width="100%">
             <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
               <LabeledValue
@@ -102,8 +99,7 @@ const DelegateAddSection: FC = () => {
             </Row>
           </Row>
         )}
-      </Container>
-    </>
+    </Container>
   );
 };
 

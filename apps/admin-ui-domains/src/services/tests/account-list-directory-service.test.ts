@@ -22,7 +22,7 @@ describe('accountListDirectory', () => {
   it('should call soapFetch with SearchDirectory and the base pagination and attrs', async () => {
     vi.mocked(soapFetch).mockResolvedValue({ account: [], searchTotal: 0 });
 
-    await accountListDirectory('displayName', 'account', undefined, '', 0, 25);
+    await accountListDirectory({ attr: 'displayName', type: 'account', domainName: undefined, query: '', offset: 0, limit: 25 });
 
     expect(soapFetch).toHaveBeenCalledWith('SearchDirectory', {
       _jsns: 'urn:zimbraAdmin',
@@ -40,7 +40,7 @@ describe('accountListDirectory', () => {
   it('should include the domain when a non-empty domainName is provided', async () => {
     vi.mocked(soapFetch).mockResolvedValue({ account: [], searchTotal: 0 });
 
-    await accountListDirectory('displayName', 'account', 'example.com', '', 0, 10);
+    await accountListDirectory({ attr: 'displayName', type: 'account', domainName: 'example.com', query: '', offset: 0, limit: 10 });
 
     expect(soapFetch).toHaveBeenCalledWith(
       'SearchDirectory',
@@ -51,7 +51,7 @@ describe('accountListDirectory', () => {
   it('should include the query when a non-empty query string is provided', async () => {
     vi.mocked(soapFetch).mockResolvedValue({ account: [], searchTotal: 0 });
 
-    await accountListDirectory('displayName', 'account', undefined, 'foo', 0, 10);
+    await accountListDirectory({ attr: 'displayName', type: 'account', domainName: undefined, query: 'foo', offset: 0, limit: 10 });
 
     expect(soapFetch).toHaveBeenCalledWith(
       'SearchDirectory',
@@ -62,7 +62,7 @@ describe('accountListDirectory', () => {
   it('should include sortBy when a non-empty sortBy string is provided', async () => {
     vi.mocked(soapFetch).mockResolvedValue({ account: [], searchTotal: 0 });
 
-    await accountListDirectory('displayName', 'account', undefined, '', 0, 10, 'name');
+    await accountListDirectory({ attr: 'displayName', type: 'account', domainName: undefined, query: '', offset: 0, limit: 10, sortBy: 'name' });
 
     expect(soapFetch).toHaveBeenCalledWith(
       'SearchDirectory',
@@ -73,13 +73,13 @@ describe('accountListDirectory', () => {
   it('should encode sortAscending as 1 when ASC and 0 otherwise', async () => {
     vi.mocked(soapFetch).mockResolvedValue({ account: [], searchTotal: 0 });
 
-    await accountListDirectory('displayName', 'account', undefined, '', 0, 10, 'name', ASC);
+    await accountListDirectory({ attr: 'displayName', type: 'account', domainName: undefined, query: '', offset: 0, limit: 10, sortBy: 'name', sortAscending: ASC });
     expect(soapFetch).toHaveBeenLastCalledWith(
       'SearchDirectory',
       expect.objectContaining({ sortAscending: 1 }),
     );
 
-    await accountListDirectory('displayName', 'account', undefined, '', 0, 10, 'name', 'desc');
+    await accountListDirectory({ attr: 'displayName', type: 'account', domainName: undefined, query: '', offset: 0, limit: 10, sortBy: 'name', sortAscending: 'desc' });
     expect(soapFetch).toHaveBeenLastCalledWith(
       'SearchDirectory',
       expect.objectContaining({ sortAscending: 0 }),
@@ -90,7 +90,7 @@ describe('accountListDirectory', () => {
     vi.mocked(soapFetch).mockRejectedValue(new Error('SOAP fault'));
 
     await expect(
-      accountListDirectory('displayName', 'account', undefined, '', 0, 10),
+      accountListDirectory({ attr: 'displayName', type: 'account', domainName: undefined, query: '', offset: 0, limit: 10 }),
     ).rejects.toThrow('SOAP fault');
   });
 });

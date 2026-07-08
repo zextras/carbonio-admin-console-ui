@@ -596,7 +596,7 @@ const GlobalDelegates: FC = () => {
     const domainName = '';
     const attrs =
       'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-    accountListDirectory(attrs, type, domainName, searchQuery, offset, limit)
+    accountListDirectory({ attr: attrs, type, domainName, query: searchQuery, offset, limit })
       .then((data: any) => {
         const accountListResponse: any = data?.account || [];
         if (accountListResponse && Array.isArray(accountListResponse)) {
