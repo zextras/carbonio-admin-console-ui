@@ -8,7 +8,7 @@ import { FC, useMemo } from 'react';
 
 import type { GlobalConfig } from '../../../../types';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
-import { useBackupStore } from '../../../store/backup/store';
+import { useGlobalConfig } from '../../../services/use-global-config';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
 import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 
@@ -25,7 +25,7 @@ const BackupAdvanced: FC = () => {
     t,
   } = useBackupConfig();
 
-  const globalConfig = useBackupStore((state) => state.globalConfig);
+  const { data: globalConfig } = useGlobalConfig();
 
   const compressLevelItems = useMemo(
     () => [

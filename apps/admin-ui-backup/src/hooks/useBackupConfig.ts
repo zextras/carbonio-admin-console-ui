@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
@@ -21,8 +22,9 @@ import { useTranslation } from 'react-i18next';
 
 import type { GlobalConfig, ModifyBackupData } from '../../types';
 import { CONFIG } from '../constants';
+import { backupQueryKeys } from '../services/backup-query-keys';
 import { modifyBackupRequest } from '../services/modify-backup';
-import { useBackupStore } from '../store/backup/store';
+import { useGlobalConfig } from '../services/use-global-config';
 
 export const useBackupConfig = (): {
 	isDirty: boolean;
@@ -39,8 +41,8 @@ export const useBackupConfig = (): {
 } => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const globalConfig = useBackupStore((state) => state.globalConfig);
-	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
+	const { data: globalConfig = {} } = useGlobalConfig();
+	const queryClient = useQueryClient();
 	const [backupDetail, setBackupDetail] = useState<GlobalConfig>(cloneDeep(globalConfig));
 	const createSnackbar = useSnackbar();
 	const { data: rights } = useCurrentUserRights();
@@ -69,7 +71,8 @@ export const useBackupConfig = (): {
 		modifyBackupRequest(modifiedData)
 			.then((data) => {
 				if (data?.status === 200 || isEmpty(data)) {
-					setGlobalConfig(backupDetail);
+					queryClient.setQueryData(backupQueryKeys.globalConfig(), backupDetail);
+					queryClient.invalidateQueries({ queryKey: backupQueryKeys.globalConfig() });
 					createSnackbar({
 						key: 'success',
 						severity: 'success',
@@ -109,7 +112,7 @@ export const useBackupConfig = (): {
 					replace: true
 				});
 			});
-	}, [globalConfig, backupDetail, setGlobalConfig, createSnackbar, t]);
+	}, [globalConfig, backupDetail, queryClient, createSnackbar, t]);
 
 	useEffect(() => {
 		if (!isEqual(globalConfig, backupDetail)) {
