@@ -6,7 +6,6 @@
 import { Container } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import PrivacyView from './privacy/privacy-view';
@@ -23,22 +22,15 @@ const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <Breadcrumb />
-      <Routes>
-        <Route
-          path={'/'}
-          element={
-            <Container orientation="horizontal" mainAlignment="flex-start">
-              <Container style={{ maxWidth: '100%' }}>
-                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-                  <Suspense fallback={<ds-spinner />}>
-                    <PrivacyView />
-                  </Suspense>
-                </Container>
-              </Container>
-            </Container>
-          }
-        />
-      </Routes>
+      <Container orientation="horizontal" mainAlignment="flex-start">
+        <Container style={{ maxWidth: '100%' }}>
+          <Container style={getContainerStyle(isPrimaryBarExpanded)}>
+            <Suspense fallback={<ds-spinner />}>
+              <PrivacyView />
+            </Suspense>
+          </Container>
+        </Container>
+      </Container>
     </Container>
   );
 };

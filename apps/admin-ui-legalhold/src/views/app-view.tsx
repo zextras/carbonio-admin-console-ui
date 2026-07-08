@@ -5,7 +5,6 @@
  */
 import { Container } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
@@ -14,24 +13,17 @@ const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <Breadcrumb />
-      <Routes>
-        <Route
-          path={'/*'}
-          element={
-            <Container
-              orientation="horizontal"
-              mainAlignment="flex-start"
-              style={{ overflow: 'hidden' }}
-            >
-              <Container style={{ maxWidth: '100%' }}>
-                <Suspense fallback={<ds-spinner />}>
-                  <LegalHoldPanel />
-                </Suspense>
-              </Container>
-            </Container>
-          }
-        />
-      </Routes>
+      <Container
+        orientation="horizontal"
+        mainAlignment="flex-start"
+        style={{ overflow: 'hidden' }}
+      >
+        <Container style={{ maxWidth: '100%' }}>
+          <Suspense fallback={<ds-spinner />}>
+            <LegalHoldPanel />
+          </Suspense>
+        </Container>
+      </Container>
     </Container>
   );
 };
