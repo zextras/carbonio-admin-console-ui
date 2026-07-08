@@ -1,3 +1,15 @@
+## [0.14.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.4...v0.14.5) (2026-07-08)
+
+### Other changes
+
+* **admin-ui-storage:** improve routing ([#1283](https://github.com/zextras/carbonio-admin-console-ui/issues/1283)) ([3e20bdf](https://github.com/zextras/carbonio-admin-console-ui/commit/3e20bdfdde2d526748bfe9addb261375c0b1ff6c))
+
+## [0.14.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.3...v0.14.4) (2026-07-07)
+
+### Other changes
+
+* **mta/mta-detail-panel:** flatten router routes ([#1282](https://github.com/zextras/carbonio-admin-console-ui/issues/1282)) ([6fdb52d](https://github.com/zextras/carbonio-admin-console-ui/commit/6fdb52d625e66121549ecb06be5f7f95deac4580))
+
 ## [0.14.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.2...v0.14.3) (2026-07-07)
 
 ### Other changes

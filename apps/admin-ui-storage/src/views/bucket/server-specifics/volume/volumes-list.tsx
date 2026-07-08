@@ -203,11 +203,11 @@ const VolumeListTable: FC<{
 };
 
 const VolumesDetailPanel: FC = () => {
-  const { server } = useParams();
+  const { server = '' } = useParams<{ server: string }>();
   const [t] = useTranslation();
   const context = useContext(VolumeContext);
   const { setVolumeDetail } = context;
-  const { isVolumeAllDetail, selectedServerName } = useBucketVolumeStore((state) => state);
+  const { isVolumeAllDetail } = useBucketVolumeStore((state) => state);
   const isAdvanced = useIsAdvanced();
   const volIndexerHeaders = useMemo(() => indexerHeaders(t, isAdvanced), [t, isAdvanced]);
   const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t, isAdvanced), [t, isAdvanced]);
@@ -255,7 +255,7 @@ const VolumesDetailPanel: FC = () => {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
         action: 'getAllVolumes',
-        targetServers: selectedServerName,
+        targetServers: server,
       })
         .then((res) => {
           const result = JSON.parse(res?.Body?.response?.content);
@@ -326,7 +326,7 @@ const VolumesDetailPanel: FC = () => {
           });
         });
     }
-  }, [isAdvanced, selectedServerName, createSnackbar, t, selectedServerId]);
+  }, [isAdvanced, server, createSnackbar, t, selectedServerId]);
 
   const deleteHandler = async (data: Volume | undefined): Promise<void> => {
     if (!data) {
@@ -337,7 +337,7 @@ const VolumesDetailPanel: FC = () => {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
         action: 'doDeleteVolume',
-        targetServers: selectedServerName,
+        targetServers: server,
         volumeName: data?.name,
       })
         .then((res) => {
@@ -448,7 +448,7 @@ const VolumesDetailPanel: FC = () => {
     obj._jsns = ZIMBRA_ADMIN_URN;
     obj.module = 'ZxPowerstore';
     obj.action = 'doCreateVolume';
-    obj.targetServers = selectedServerName;
+    obj.targetServers = server;
     obj.volumeName = attr?.volumeName;
     obj.volumeType = attr?.volumeType;
     obj.storeType = attr?.storeType;
@@ -521,7 +521,7 @@ const VolumesDetailPanel: FC = () => {
         const typedRes = res as SoapContentResponse;
         const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
         if (result?.ok) {
-          if (result?.response[selectedServerName]?.ok) {
+          if (result?.response[server]?.ok) {
             getAllVolumesRequest();
             createSnackbar({
               key: '1',
@@ -536,7 +536,7 @@ const VolumesDetailPanel: FC = () => {
               key: '1',
               severity: 'error',
               label: t('label.volume_detail_error', '{{message}}', {
-                message: result?.response[selectedServerName]?.error?.message,
+                message: result?.response[server]?.error?.message,
               }),
             });
           }
@@ -581,7 +581,7 @@ const VolumesDetailPanel: FC = () => {
           _jsns: ZIMBRA_ADMIN_URN,
           module: 'ZxPowerstore',
           action: 'doCreateVolume',
-          targetServers: selectedServerName,
+          targetServers: server,
           volumeName: attr?.name,
           volumeType: volType,
           storeType: 'FILE_BLOB',
@@ -716,14 +716,13 @@ const VolumesDetailPanel: FC = () => {
   };
 
   useEffect(() => {
-    if (serverList && serverList?.length > 0) {
-      const lookupName = server || selectedServerName;
-      const serverData = serverList?.find((s: { name?: string }) => s?.name === lookupName);
+    if (serverList && serverList?.length > 0 && server) {
+      const serverData = serverList?.find((s: { name?: string }) => s?.name === server);
       if (serverData && serverData?.id) {
         setSelectedServerId(serverData?.id);
       }
     }
-  }, [serverList, server, selectedServerName]);
+  }, [serverList, server]);
 
   return (
     <>
@@ -732,7 +731,7 @@ const VolumesDetailPanel: FC = () => {
           <CreateMailstoresVolume
             setToggleWizardExternal={setToggleWizardExternal}
             setToggleWizardLocal={setToggleWizardLocal}
-            volName={selectedServerName}
+            volName={server}
             CreateAdvancedRequest={CreateAdvancedRequest}
           />
         </ModalOverlay>
@@ -742,7 +741,7 @@ const VolumesDetailPanel: FC = () => {
           <NewVolume
             setToggleWizardLocal={setToggleWizardLocal}
             setToggleWizardExternal={setToggleWizardExternal}
-            volName={selectedServerName}
+            volName={server}
             CreateVolumeRequest={CreateVolumeRequest}
             isLoading={isLoading}
           />
@@ -779,7 +778,7 @@ const VolumesDetailPanel: FC = () => {
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
           <ds-text as="h2" weight="bold">
             {t('volume.serverName_volumes', '{{serverName}} Volumes', {
-              serverName: selectedServerName,
+              serverName: server,
             })}
           </ds-text>
         </Row>

@@ -11,21 +11,35 @@ import {
   Padding,
   Row,
 } from '@zextras/ui-components';
-import { replaceHistory, useGlobalCarbonioSendAnalytics, useMtaServers } from '@zextras/ui-shared';
+import { replaceHistory, useMtaServers } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { matchPath, useLocation } from 'react-router';
 
 import {
   ADVANCED,
   ANTIVIRUS_AND_ANTISPAM,
-  GENERAL,
+  INBOUND_FLOW_SECURITY,
   IS_SERVER_SPECIFICS_EXPANDED,
+  MANAGE_APP_ID,
+  MTA_ROUTE_ID,
   MTA_SERVER_GENERAL,
   OUTBOUND_FLOW,
   POSTSCREEN_TUNING,
   QUEUE,
 } from '../../constants';
 import type { DropdownItem, MtaServer } from '../../types/mta';
+
+function getRelativePathname(pathname: string, base: string): string {
+  if (!pathname.startsWith(base)) {
+    return pathname;
+  }
+  const stripped = pathname.slice(base.length);
+  if (stripped === '') {
+    return '/';
+  }
+  return stripped;
+}
 
 const MTAListPanel: FC = () => {
   const [t] = useTranslation();
@@ -35,15 +49,19 @@ const MTAListPanel: FC = () => {
     localStorage.getItem(IS_SERVER_SPECIFICS_EXPANDED) !== 'false',
   );
 
-  const [selectedServer, setSelectedServer] = useState('');
-  const [isServerSelect, setIsServerSelect] = useState(false);
-  const [selectedOperationItem, setSelectedOperationItem] = useState(GENERAL);
+  const locationService = useLocation();
+  const mtaBase = `/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`;
+  const relativePathname = getRelativePathname(locationService.pathname, mtaBase);
+  const serverMatch = matchPath(`/:server/:operation`, relativePathname);
+  const opMatch = serverMatch ? null : matchPath(`/:operation`, relativePathname);
+  const selectedOperationItem = serverMatch?.params.operation ?? opMatch?.params.operation ?? null;
+  const selectedServer = serverMatch?.params.server ?? '';
+  const isServerSelect = !!serverMatch;
 
   const [searchServer, setSearchServer] = useState('');
   const [isShowError, setIsShowError] = useState(false);
 
   const { data: mtaServerList = [] } = useMtaServers();
-  const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
 
   const filteredServers = useMemo(
     () => mtaServerList.filter((item: MtaServer) => item.name?.includes(searchServer)),
@@ -65,10 +83,9 @@ const MTAListPanel: FC = () => {
               width: 'inherit',
             }}
             onClick={(): void => {
-              setSelectedServer(serverItem.name || '');
-              setSearchServer(serverItem.name || '');
-              setSelectedOperationItem(MTA_SERVER_GENERAL);
-              setIsServerSelect(true);
+              const serverName = serverItem.name || '';
+              setSearchServer(serverName);
+              replaceHistory(`/${serverName}/${MTA_SERVER_GENERAL}`);
             }}
           >
             {serverItem.name}
@@ -89,7 +106,7 @@ const MTAListPanel: FC = () => {
   const mailTransferAgentOptions = useMemo(
     () => [
       {
-        id: GENERAL,
+        id: INBOUND_FLOW_SECURITY,
         name: t('mta.inbound_flow_and_security', 'Inbound Flow & Security'),
         isSelected: true,
       },
@@ -158,8 +175,7 @@ const MTAListPanel: FC = () => {
     setIsShowError(false);
     if (searchServer !== '') {
       setSearchServer('');
-      setIsServerSelect(false);
-      setSelectedOperationItem(MTA_SERVER_GENERAL);
+      replaceHistory(`/${INBOUND_FLOW_SECURITY}`);
     }
   }, [searchServer]);
 
@@ -171,13 +187,16 @@ const MTAListPanel: FC = () => {
     [searchServer, handleCustomIconClick],
   );
 
-  useEffect(() => {
-    if (selectedOperationItem === MTA_SERVER_GENERAL) {
-      replaceHistory(`/${selectedServer}/${selectedOperationItem}`);
-    } else {
-      replaceHistory(`/${selectedOperationItem}`);
-    }
-  }, [globalCarbonioSendAnalytics, selectedOperationItem, selectedServer]);
+  const handleSelectOperation = useCallback(
+    (id: string): void => {
+      if (id === MTA_SERVER_GENERAL) {
+        replaceHistory(`/${selectedServer}/${id}`);
+      } else {
+        replaceHistory(`/${id}`);
+      }
+    },
+    [selectedServer],
+  );
 
   return (
     <Container
@@ -196,7 +215,7 @@ const MTAListPanel: FC = () => {
         <ListItems
           items={mailTransferAgentOptions}
           selectedOperationItem={selectedOperationItem}
-          setSelectedOperationItem={setSelectedOperationItem}
+          setSelectedOperationItem={handleSelectOperation}
         />
       )}
 
@@ -241,7 +260,7 @@ const MTAListPanel: FC = () => {
           <ListItems
             items={serverOptions}
             selectedOperationItem={selectedOperationItem}
-            setSelectedOperationItem={setSelectedOperationItem}
+            setSelectedOperationItem={handleSelectOperation}
           />
         )}
       </Container>
