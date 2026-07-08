@@ -8,7 +8,8 @@ import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
 import { Route, Routes } from 'react-router';
 
-import NotificationDetailOperation from './notification-detail-operation';
+import { LIST } from '../../constants';
+import NotificationListView from './notification-list-view';
 
 const NotificationsDetailPanel: FC = () => {
   return (
@@ -20,7 +21,9 @@ const NotificationsDetailPanel: FC = () => {
       background="gray6"
     >
       <Routes>
-        <Route path={'/:operation'} element={<NotificationDetailOperation />} />
+        <Route index element={<NotificationListView />} />
+        <Route path={`/${LIST}`} element={<NotificationListView />} />
+        <Route path="*" element={null} />
       </Routes>
     </Container>
   );
