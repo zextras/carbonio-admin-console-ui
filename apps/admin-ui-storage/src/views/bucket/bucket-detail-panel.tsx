@@ -312,12 +312,10 @@ const BucketDetailPanel: FC = () => {
       const volumeObject = bucketList.find((s, index) => index === getIndex);
       setConnectionData(volumeObject);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bucketList, toggleForGetAPICall]);
 
   useEffect(() => {
     getBucketListType();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleWizardSection]);
 
   const filterBucketList = (e: React.ChangeEvent<HTMLInputElement>): void => {

@@ -47,7 +47,7 @@ import {
 import { fetchSoap } from '../../../../services/bucket-service';
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
-import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
+import { useListS3Connectors } from '../../../../services/use-list-s3-connectors';
 import { indexerHeaders, volTableHeader } from '../../../utility/utils';
 import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
 import NewVolume from './create-volume/new-volume';
@@ -207,7 +207,7 @@ const VolumesDetailPanel: FC = () => {
   const [t] = useTranslation();
   const context = useContext(VolumeContext);
   const { setVolumeDetail } = context;
-  const { isVolumeAllDetail } = useBucketVolumeStore((state) => state);
+  const { data: isVolumeAllDetail = [] } = useListS3Connectors();
   const isAdvanced = useIsAdvanced();
   const volIndexerHeaders = useMemo(() => indexerHeaders(t, isAdvanced), [t, isAdvanced]);
   const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t, isAdvanced), [t, isAdvanced]);

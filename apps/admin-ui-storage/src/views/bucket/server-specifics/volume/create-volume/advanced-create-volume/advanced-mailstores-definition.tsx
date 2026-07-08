@@ -20,7 +20,6 @@ import {
   USAGE_IN_EXTERNAL_BACKUP,
 } from '../../../../../../constants';
 import { listS3Connector } from '../../../../../../services/bucket-service';
-import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
 import { VolumeContext } from '../volume-context';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
@@ -40,10 +39,8 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   const context = useContext(VolumeContext);
   const advancedContext = useContext(AdvancedVolumeContext);
   const { volumeDetail, setVolumeDetail } = context;
-  const { advancedVolumeDetail, setAdvancedVolumeDetail } = advancedContext;
-  const { setIsAllocationToggle, isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore(
-    (state) => state,
-  );
+  const { advancedVolumeDetail, setAdvancedVolumeDetail, setIsAllocationToggle } = advancedContext;
+  const [isVolumeAllDetail, setIsVolumeAllDetail] = useState<Array<BucketVolume>>([]);
   const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
   const [allocation, setAllocation] = useState<VolumeAllocationItem>();
@@ -234,7 +231,6 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
 
   useEffect(() => {
     getBucketListType();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

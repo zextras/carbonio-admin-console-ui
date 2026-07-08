@@ -8,7 +8,6 @@ import { type FC, type ReactElement, useCallback, useMemo, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 
 import type { AdvancedVolumeWizardDetail } from '../../../../../../../types';
-import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { volumeTypeList } from '../../../../../utility/utils';
 import AdvancedMailstoresConfig from './advanced-mailstores-config';
 import AdvancedMailstoresCreate from './advanced-mailstores-create';
@@ -43,7 +42,7 @@ const CreateMailstoresVolume: FC<{
 }> = ({ setToggleWizardExternal, setToggleWizardLocal, volName, CreateAdvancedRequest }) => {
   const { t } = useTranslation();
   const volTypeList = useMemo(() => volumeTypeList(t), [t]);
-  const isAllocationToggle = useBucketVolumeStore((state) => state?.isAllocationToggle);
+  const [isAllocationToggle, setIsAllocationToggle] = useState(false);
   const [advancedVolumeDetail, setAdvancedVolumeDetail] = useState<AdvancedVolumeWizardDetail>({
     volumeName: '',
     volumeMain: 0,
@@ -196,7 +195,7 @@ const CreateMailstoresVolume: FC<{
   }, [CreateAdvancedRequest, advancedVolumeDetail, volTypeList]);
 
   return (
-    <AdvancedVolumeContext.Provider value={{ advancedVolumeDetail, setAdvancedVolumeDetail }}>
+    <AdvancedVolumeContext.Provider value={{ advancedVolumeDetail, setAdvancedVolumeDetail, isAllocationToggle, setIsAllocationToggle }}>
       <HorizontalWizard
         steps={wizardSteps}
         Wrapper={WizardInSection}

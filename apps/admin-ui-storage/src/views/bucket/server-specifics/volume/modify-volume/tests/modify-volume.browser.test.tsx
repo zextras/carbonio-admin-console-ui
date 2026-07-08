@@ -16,7 +16,6 @@ import { page } from 'vitest/browser';
 
 import { Volume } from '../../../../../../../types';
 import { DATA_VOLUMES } from '../../../../../../constants';
-import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import ModifyVolume from '../modify-volume';
 
 const SERVER_NAME = 'mailstore1.test.com';
@@ -121,12 +120,6 @@ function renderModifyVolume(
 }
 
 describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
-	beforeEach(() => {
-		useBucketVolumeStore.setState({
-			isVolumeAllDetail: [],
-		});
-	});
-
 	describe('advanced mode: loads volume data from volumeList without API call', () => {
 		beforeEach(async () => {
 			await advancedSupportedApiForBrowser.withAdvancedSupported();

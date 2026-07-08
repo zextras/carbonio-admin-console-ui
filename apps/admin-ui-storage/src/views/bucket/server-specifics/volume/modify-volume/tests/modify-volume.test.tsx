@@ -15,8 +15,6 @@ const mockSoapFetch = vi.hoisted(() => vi.fn());
 const mockFetchSoap = vi.hoisted(() => vi.fn());
 const mockCreateSnackbar = vi.hoisted(() => vi.fn());
 const mockListS3Connector = vi.hoisted(() => vi.fn());
-const mockSetIsVolumeAllDetail = vi.hoisted(() => vi.fn());
-const mockVolumeAllDetail = vi.hoisted(() => ({ value: [] as Array<unknown> }));
 const mockAdvancedMode = vi.hoisted(() => ({ value: false }));
 const mockT = vi.hoisted(
   () => (_key: string, fallback?: string, options?: { message?: string }) =>
@@ -67,6 +65,7 @@ vi.mock('@zextras/ui-components', () => ({
       <span>{value}</span>
     </div>
   ),
+  // eslint-disable-next-line jsx-a11y/anchor-is-valid
   Link: ({ children }: { children?: React.ReactNode }) => <a>{children}</a>,
   ListRow: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
   Modal: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
@@ -129,27 +128,10 @@ vi.mock('react-router', () => ({
   useParams: () => ({ server: 'mailstore1.example.com' }),
 }));
 
-vi.mock('../../../../../../store/bucket-volume/store', () => ({
-  useBucketVolumeStore: (
-    selector: (state: {
-      isVolumeAllDetail: Array<unknown>;
-      setIsVolumeAllDetail: (items: Array<unknown>) => void;
-    }) => unknown,
-  ) =>
-    selector({
-      isVolumeAllDetail: mockVolumeAllDetail.value,
-      setIsVolumeAllDetail: (items: Array<unknown>) => {
-        mockVolumeAllDetail.value = items;
-        mockSetIsVolumeAllDetail(items);
-      },
-    }),
-}));
-
 describe('ModifyVolume', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAdvancedMode.value = false;
-    mockVolumeAllDetail.value = [];
   });
 
   it('should show error snackbar and refresh volume list when GetVolume fails in non-advanced mode', async () => {
@@ -252,10 +234,6 @@ describe('ModifyVolume', () => {
 
     await waitFor(() => {
       expect(mockListS3Connector).toHaveBeenCalled();
-      expect(mockSetIsVolumeAllDetail).toHaveBeenCalledWith([
-        expect.objectContaining({ uuid: 'bucket-1', label: 'Primary connector' }),
-        expect.objectContaining({ uuid: 'bucket-2', label: 'Secondary connector' }),
-      ]);
     });
 
     await waitFor(() => {

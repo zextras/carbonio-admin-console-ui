@@ -131,11 +131,12 @@ export type S3Region = {
 
 export type S3Connector = {
   	uuid: string;
-	label: string;
-	bucketName: string;
-	region: string;
-	url?: string;
-	accessKey?: string;
+ 	label: string;
+ 	bucketName: string;
+ 	region: string;
+ 	url?: string;
+ 	accessKey?: string;
+ 	secret?: string;
 	destinationPath?: string;
 	prefix?: string;
 	insecureHttps?: boolean;

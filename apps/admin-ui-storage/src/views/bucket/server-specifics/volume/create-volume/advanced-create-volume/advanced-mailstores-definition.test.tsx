@@ -14,24 +14,7 @@ import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const mockListS3Connector = vi.hoisted(() => vi.fn());
-const mockStore = vi.hoisted(() => {
-  const state = {
-    isVolumeAllDetail: [] as Array<{ uuid: string; bucketName: string; storeType: string }>,
-    isAllocationToggle: false,
-  };
-
-  return {
-    state,
-    setIsVolumeAllDetail: vi.fn(
-      (value: Array<{ uuid: string; bucketName: string; storeType: string }>) => {
-        state.isVolumeAllDetail = value;
-      },
-    ),
-    setIsAllocationToggle: vi.fn((value: boolean) => {
-      state.isAllocationToggle = value;
-    }),
-  };
-});
+const setIsAllocationToggleSpy = vi.hoisted(() => vi.fn());
 
 const mockT = vi.hoisted(() => (key: string, fallback?: string) => fallback ?? key);
 
@@ -87,25 +70,6 @@ vi.mock('../../../../../../services/bucket-service', () => ({
   listS3Connector: mockListS3Connector,
 }));
 
-vi.mock('../../../../../../store/bucket-volume/store', () => ({
-  useBucketVolumeStore: (
-    selector: (state: {
-      isVolumeAllDetail: Array<{ uuid: string; bucketName: string; storeType: string }>;
-      isAllocationToggle: boolean;
-      setIsVolumeAllDetail: (
-        value: Array<{ uuid: string; bucketName: string; storeType: string }>,
-      ) => void;
-      setIsAllocationToggle: (value: boolean) => void;
-    }) => unknown,
-  ) =>
-    selector({
-      isVolumeAllDetail: mockStore.state.isVolumeAllDetail,
-      isAllocationToggle: mockStore.state.isAllocationToggle,
-      setIsVolumeAllDetail: mockStore.setIsVolumeAllDetail,
-      setIsAllocationToggle: mockStore.setIsAllocationToggle,
-    }),
-}));
-
 type HarnessProps = {
   setToggleNextBtn: (newValue: boolean) => void;
   setCompleteLoading: (newValue: boolean) => void;
@@ -145,7 +109,7 @@ function TestHarness({
 
   return (
     <VolumeContext.Provider value={{ volumeDetail, setVolumeDetail }}>
-      <AdvancedVolumeContext.Provider value={{ advancedVolumeDetail, setAdvancedVolumeDetail }}>
+      <AdvancedVolumeContext.Provider value={{ advancedVolumeDetail, setAdvancedVolumeDetail, isAllocationToggle: false, setIsAllocationToggle: setIsAllocationToggleSpy }}>
         <AdvancedMailstoresDefinition
           externalData="server-a"
           setToggleNextBtn={setToggleNextBtn}
@@ -160,8 +124,7 @@ function TestHarness({
 describe('AdvancedMailstoresDefinition', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockStore.state.isVolumeAllDetail = [];
-    mockStore.state.isAllocationToggle = false;
+    setIsAllocationToggleSpy.mockClear();
 
     mockListS3Connector.mockResolvedValue([
       {
@@ -220,7 +183,7 @@ describe('AdvancedMailstoresDefinition', () => {
 
     await waitFor(() => {
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
-      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(true);
+      expect(setIsAllocationToggleSpy).toHaveBeenCalledWith(true);
     });
   });
 
@@ -239,7 +202,7 @@ describe('AdvancedMailstoresDefinition', () => {
     await waitFor(() => {
       expect(setToggleNextBtn).toHaveBeenCalledWith(true);
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
-      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(true);
+      expect(setIsAllocationToggleSpy).toHaveBeenCalledWith(true);
     });
   });
 
@@ -265,7 +228,7 @@ describe('AdvancedMailstoresDefinition', () => {
 
     await waitFor(() => {
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
-      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(false);
+      expect(setIsAllocationToggleSpy).toHaveBeenCalledWith(false);
     });
 
     fireEvent.click(screen.getByRole('button', { name: 'S3 | Unused connector' }));
@@ -291,7 +254,7 @@ describe('AdvancedMailstoresDefinition', () => {
     await waitFor(() => {
       expect(setToggleNextBtn).toHaveBeenCalledWith(false);
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
-      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(false);
+      expect(setIsAllocationToggleSpy).toHaveBeenCalledWith(false);
     });
 
     expect(screen.getByTestId('advanced-state').textContent).toContain('unused-bucket');

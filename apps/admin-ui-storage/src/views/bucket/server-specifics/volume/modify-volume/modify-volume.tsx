@@ -47,7 +47,6 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../../../../constants';
 import { fetchSoap, listS3Connector } from '../../../../../services/bucket-service';
-import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
 import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 import {
   buildAdvancedUpdatePayload,
@@ -258,7 +257,7 @@ const ModifyVolume: FC<{
   const [currentVolume, setCurrentVolume] = useState<Volume>();
   const createSnackbar = useSnackbar();
   const { server } = useParams<{ server: string }>();
-  const { isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore((state) => state);
+  const [isVolumeAllDetail, setIsVolumeAllDetail] = useState<Array<BucketVolume>>([]);
   const { isSticky, setIsSticky } = useStickyBarStore();
 
   const showTieringSettings = isS3StoreType(storeType) && tieringSupported;
@@ -647,7 +646,6 @@ const ModifyVolume: FC<{
     if (!isEmpty(externalVolDetail)) {
       getAllBuckets();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalVolDetail]);
 
   useEffect(() => {

@@ -79,7 +79,7 @@ vi.mock('@zextras/ui-components', () => ({
     onClick?: () => void;
     onDoubleClick?: () => void;
   }) => (
-    <div role="button" tabIndex={0} onClick={onClick} onDoubleClick={onDoubleClick}>
+    <div role="button" tabIndex={0} onClick={onClick} onKeyDown={onClick} onDoubleClick={onDoubleClick}>
       {children}
     </div>
   ),

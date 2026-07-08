@@ -26,14 +26,12 @@ import {
   S3,
   SECONDARY_TYPE_VALUE,
 } from '../../../../../../constants';
-import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelection, externalData, setCompleteLoading }) => {
   const context = useContext(AdvancedVolumeContext);
   const { t } = useTranslation();
-  const { advancedVolumeDetail, setAdvancedVolumeDetail } = context;
-  const setIsAllocationToggle = useBucketVolumeStore((state) => state?.setIsAllocationToggle);
+  const { advancedVolumeDetail, setAdvancedVolumeDetail, setIsAllocationToggle } = context;
   const [primaryRadio, setPrimaryRadio] = useState(false);
   const [secondaryRadio, setSecondaryRadio] = useState(false);
   const isLocalBlockDevice = advancedVolumeDetail?.volumeAllocation === 'Local Block Device';

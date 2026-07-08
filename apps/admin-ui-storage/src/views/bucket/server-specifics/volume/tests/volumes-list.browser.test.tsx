@@ -7,6 +7,7 @@
 import {
 	advancedSupportedApiForBrowser,
 	createBrowserSoapAPIInterceptor,
+	createBrowserZextrasActionInterceptor,
 	getQueryClient,
 	setupBrowserTest,
 	worker,
@@ -14,11 +15,10 @@ import {
 import { http, HttpResponse } from 'msw';
 import React from 'react';
 import { Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { DATA_VOLUMES } from '../../../../../constants';
-import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
 import { VolumeContext } from '../create-volume/volume-context';
 import VolumesDetailPanel from '../volumes-list';
 
@@ -190,15 +190,18 @@ function renderWithContext(): React.ReactElement {
 
 describe('VolumesDetailPanel (browser)', () => {
 	beforeEach(() => {
-		useBucketVolumeStore.setState({
-			isVolumeAllDetail: [],
-		});
-	});
-
-	afterEach(() => {
-		useBucketVolumeStore.setState({
-			isVolumeAllDetail: [],
-		});
+		createBrowserZextrasActionInterceptor('listS3Connector', () =>
+			HttpResponse.json({
+				Body: {
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: { values: [] },
+						}),
+					},
+				},
+			}),
+		);
 	});
 
 	describe('CE mode', () => {

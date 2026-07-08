@@ -10,5 +10,7 @@ import type { AdvancedVolumeWizardDetail } from '../../../../../../../types';
 type AdvancedVolumeContextType = {
 	advancedVolumeDetail: AdvancedVolumeWizardDetail;
 	setAdvancedVolumeDetail: (arg: AdvancedVolumeWizardDetail | ((prev: AdvancedVolumeWizardDetail) => AdvancedVolumeWizardDetail)) => void;
+	isAllocationToggle: boolean;
+	setIsAllocationToggle: (value: boolean) => void;
 };
 export const AdvancedVolumeContext = createContext({} as AdvancedVolumeContextType);
