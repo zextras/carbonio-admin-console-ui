@@ -42,7 +42,8 @@ describe('LicenseBanner', () => {
       routes: {
         [SUBSCRIPTIONS_ROUTE_ID]: {
           id: SUBSCRIPTIONS_ROUTE_ID,
-          route: `manage/${SUBSCRIPTIONS_ROUTE_ID}`,
+          route: SUBSCRIPTIONS_ROUTE_ID,
+          path: `manage/${SUBSCRIPTIONS_ROUTE_ID}`,
           app: 'carbonio-admin-ui-subscription',
         },
       },

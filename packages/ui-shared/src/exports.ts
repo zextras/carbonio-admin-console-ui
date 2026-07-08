@@ -195,6 +195,16 @@ function getCallerPkg(): Pick<CarbonioModule, 'name' | 'priority' | 'icon'> {
   return defaultPkg;
 }
 
+/**
+ * Registers an app route.
+ *
+ * `route` is the raw, app-declared segment (e.g. `'storage'`). The store derives the full URL
+ * `path` by prefixing it with `primarybarSection.id` when a section is provided — so
+ * `primarybarSection.id` is BOTH the primary-bar grouping key AND the URL prefix
+ * (e.g. section `'manage'` + route `'storage'` → mounted at `/manage/storage`).
+ *
+ * See {@link AppRoute} for the stored shape (`route` raw + `path` prefixed).
+ */
 const addRoute = (route: Partial<AppRouteDescriptor>) =>
   useAppStore.getState().setters.addRoute(normalizeRoute(route, getCallerPkg()));
 const removeRoute = (routeId: string) => useAppStore.getState().setters.removeRoute(routeId);

@@ -11,9 +11,9 @@ import { buildPath } from '../hooks';
 const STORAGE_ID = 'storage';
 const SUBSCRIPTIONS_ID = 'subscriptions';
 
-function registerRoute(id: string, route: string): void {
+function registerRoute(id: string, path: string): void {
   useAppStore.setState((state) => ({
-    routes: { ...state.routes, [id]: { id, route, app: id } },
+    routes: { ...state.routes, [id]: { id, route: id, path, app: id } },
   }));
 }
 

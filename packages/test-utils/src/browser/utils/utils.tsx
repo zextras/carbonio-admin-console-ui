@@ -32,9 +32,9 @@ export const LocationDisplay = () => {
  *                  (e.g. 'manage' -> 'manage/storage').
  */
 export function registerAppRoute(routeId: string, sectionId?: string): void {
-  const route = sectionId ? `${sectionId}/${routeId}` : routeId;
+  const path = sectionId ? `${sectionId}/${routeId}` : routeId;
   useAppStore.setState((state) => ({
-    routes: { ...state.routes, [routeId]: { id: routeId, route, app: routeId } },
+    routes: { ...state.routes, [routeId]: { id: routeId, route: routeId, path, app: routeId } },
   }));
 }
 

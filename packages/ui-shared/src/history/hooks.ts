@@ -16,29 +16,29 @@ export const useCurrentRoute = (): AppRoute | undefined => {
   const location = useLocation();
   const routes = useAppRoutes();
   return useMemo(
-    () => find(routes, (r) => startsWith(trim(location.pathname, '/'), r.route)),
+    () => find(routes, (r) => startsWith(trim(location.pathname, '/'), r.path)),
     [location.pathname, routes],
   );
 };
 const getCurrentRoute = (): AppRoute | undefined => {
   const history = useContextBridge.getState().functions.getHistory?.();
   const routes = getRoutes();
-  return find(routes, (r) => startsWith(trim(history.location.pathname, '/'), r.route));
+  return find(routes, (r) => startsWith(trim(history.location.pathname, '/'), r.path));
 };
 
 const parseParams = (params: HistoryParams): To => {
   if (typeof params === 'string') {
-    return replace(`/${getCurrentRoute()?.route}/${params}`, '//', '/');
+    return replace(`/${getCurrentRoute()?.path}/${params}`, '//', '/');
   }
   const routeToApply = params.route
     ? find(getRoutes(), (r) => r.id === params.route || r.route === params.route)
     : getCurrentRoute();
   return typeof params.path === 'string'
-    ? replace(`/${routeToApply?.route}/${params.path}`, '//', '/')
+    ? replace(`/${routeToApply?.path}/${params.path}`, '//', '/')
     : {
         search: params.path.search,
         hash: params.path.hash,
-        pathname: replace(`/${routeToApply?.route}/${params.path.pathname}`, '//', '/'),
+        pathname: replace(`/${routeToApply?.path}/${params.path.pathname}`, '//', '/'),
       };
 };
 
@@ -62,7 +62,7 @@ export const replaceHistory = (params: HistoryParams): void => {
 export const useRelativePathname = (): string => {
   const { pathname } = useLocation();
   const currentRoute = useCurrentRoute();
-  const base = currentRoute ? `/${currentRoute.route}` : '';
+  const base = currentRoute ? `/${currentRoute.path}` : '';
   return useMemo(() => {
     if (!base || !startsWith(pathname, base)) {
       return pathname;
@@ -86,7 +86,7 @@ export const useRelativePathname = (): string => {
  */
 export const buildPath = (routeId: string, ...segments: Array<string | undefined>): string => {
   const routes = getRoutes();
-  const route = routes[routeId]?.route ?? routeId;
+  const route = routes[routeId]?.path ?? routeId;
   const parts = [route, ...segments.filter((s): s is string => Boolean(s))];
   return `/${parts.join('/')}`.replace(/\/{2,}/g, '/');
 };

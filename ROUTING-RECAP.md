@@ -66,6 +66,22 @@ All list panels now use `useRelativePathname()` + react-router's `matchPath`, re
 - **Net:** +39/−585 (~546-line reduction). Verification: type-check 15/15, lint 0 errors,
   ui-components 321, cos 480, backup 149, domains 864 tests pass. **Not committed.**
 
+### Done — decouple `route` from `path` (Tier 1, item 2)
+
+- The store **no longer mutates** the app's `route` input. The raw route and the computed full URL
+  now live in **separate fields**: `route` = raw app-declared segment (e.g. `'storage'`),
+  `path` = full prefixed URL (e.g. `'manage/storage'`), derived once in `addRoute`.
+- **Types** (`types/apps/index.d.ts`): added `path` to `AppRoute`, `AppView`, `PrimaryBarView`;
+  JSDoc on `AppRoute`/`AppRouteDescriptor`/`PrimarybarSection` documenting the
+  section-id-as-URL-prefix dual role.
+- **Consumers** read `.path` for URL purposes: `app-view-container.tsx` (mount + redirect),
+  `shell-primary-bar.tsx` (nav map), `history/hooks.ts` (`useCurrentRoute`, `replaceHistory`,
+  `buildPath`, `useRelativePathname`).
+- JSDoc on the public `addRoute` wrapper (`exports.ts`).
+- **Net:** +70/−27 across 10 files. Verification: type-check 15/15, lint 0 errors, ui-shared 141,
+  bootstrap (full-shell) 3, storage/mta/backup list-panels + dashboard license-banner 47,
+  notifications/operations 16 tests pass. **No URL/registration/behavior change. Not committed.**
+
 ---
 
 ## Still needs doing (from the original analysis)
@@ -75,10 +91,10 @@ All list panels now use `useRelativePathname()` + react-router's `matchPath`, re
 - [x] **3 duplicated `nav-guard.tsx` files** (domains/cos/backup) → hoisted to a single
       `@zextras/ui-components` export (`RouteLeavingGuard`) with default body; backup's mounting
       styles consolidated; ~16 inline body duplications eliminated. *(done — see above)*
-- [ ] **Architectural: decouple or document `primarybarSection.id`-as-URL-prefix**.
-      `store.ts:74-77` prefixes each route with its section id, so the sidebar-group label
-      doubles as a URL segment. Confusing even to careful readers. Either decouple or document
-      prominently.
+- [x] **Architectural: decouple or document `primarybarSection.id`-as-URL-prefix** → split into
+      explicit `route` (raw) + `path` (prefixed URL) fields; store stopped mutating `route`;
+      dual-role documented at every relevant type and `addRoute`. No URL/behavior change.
+      *(done — see above)*
 
 ### Tier 2 — consistency / correctness
 
