@@ -28,7 +28,6 @@ import {
   type GetCosResponse,
   getFileQuotaById,
   postSoapFetchRequest,
-  useDomainStore,
   useIsAdvanced,
   useTotalQuotaActive,
   useUserAccount,

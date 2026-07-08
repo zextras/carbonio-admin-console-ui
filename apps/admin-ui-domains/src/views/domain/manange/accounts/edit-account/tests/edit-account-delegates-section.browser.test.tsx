@@ -9,7 +9,7 @@ import {
   getQueryClient,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { AccountContext } from '../../account-context';

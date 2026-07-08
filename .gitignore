@@ -40,6 +40,7 @@ Thumbs.db
 *.tgz
 zextras-carbonio-*.tgz
 /tool-versions
+.sonarlint
 
 # Yarn
 .yarn/*

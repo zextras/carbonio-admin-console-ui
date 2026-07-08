@@ -12,7 +12,7 @@ import {
     setupBrowserTest as _setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { type ReactElement } from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
