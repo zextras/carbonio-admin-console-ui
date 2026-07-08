@@ -49,15 +49,32 @@ All list panels now use `useRelativePathname()` + react-router's `matchPath`, re
 
 **Net change:** +140/−91 across 16 modified files + 2 new files. **Not committed.**
 
+### Done — `nav-guard` hoist to `@zextras/ui-components` (Tier 1, item 1)
+
+- **New shared component** `packages/ui-components/src/components/navigation/route-leaving-guard.tsx`:
+  based on the cleanest variant (cos — `useRef` not `useMemo`, no `as any`), **bakes the standard
+  modal body as default** so `<RouteLeavingGuard when={isDirty} onSave={onSave} />` needs no
+  children. `children` stays optional for custom bodies.
+- Placed in `ui-components` (not `ui-shared`) to avoid the circular dependency
+  (`ui-components → ui-shared` already). Declared `react-i18next` as a formal ui-components dep
+  (was undeclared but used by 13 files).
+- **Deleted 5 files**: 3× `nav-guard.tsx` (domains/cos/backup), `BackupRouteLeavingGuard.tsx`, and
+  the cos nav-guard test (moved to `ui-components/.../navigation/tests/route-leaving-guard.browser.test.tsx`).
+- **Migrated 16 consumers**: 12 domains forms, cos `form-page-layout`, 4 backup forms — consolidating
+  backup's 2 mounting styles (wrapper vs direct-inline) into one consistent usage, and eliminating
+  ~16 inline duplications of the modal body text.
+- **Net:** +39/−585 (~546-line reduction). Verification: type-check 15/15, lint 0 errors,
+  ui-components 321, cos 480, backup 149, domains 864 tests pass. **Not committed.**
+
 ---
 
 ## Still needs doing (from the original analysis)
 
 ### Tier 1 — highest payoff
 
-- [ ] **3 duplicated `nav-guard.tsx` files** (domains/cos/backup) → hoist to a single
-      `@zextras/ui-shared` export. Backup additionally has 3 different mounting styles to
-      consolidate; domains/cos copies differ slightly.
+- [x] **3 duplicated `nav-guard.tsx` files** (domains/cos/backup) → hoisted to a single
+      `@zextras/ui-components` export (`RouteLeavingGuard`) with default body; backup's mounting
+      styles consolidated; ~16 inline body duplications eliminated. *(done — see above)*
 - [ ] **Architectural: decouple or document `primarybarSection.id`-as-URL-prefix**.
       `store.ts:74-77` prefixes each route with its section id, so the sidebar-group label
       doubles as a URL segment. Confusing even to careful readers. Either decouple or document
