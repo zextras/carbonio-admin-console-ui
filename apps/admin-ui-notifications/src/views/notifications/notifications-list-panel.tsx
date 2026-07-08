@@ -5,33 +5,19 @@
  */
 
 import { Container, ListItems, ListPanelItem } from '@zextras/ui-components';
-import { replaceHistory } from '@zextras/ui-shared';
+import { replaceHistory, useRelativePathname } from '@zextras/ui-shared';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { matchPath, useLocation } from 'react-router';
+import { matchPath } from 'react-router';
 
-import { LIST, LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID } from '../../constants';
+import { LIST } from '../../constants';
 import { type ManageOption } from '../../types/notifications';
-
-const NOTIFICATIONS_BASE = `/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`;
-
-function getRelativePathname(pathname: string, base: string): string {
-  if (!pathname.startsWith(base)) {
-    return pathname;
-  }
-  const stripped = pathname.slice(base.length);
-  if (stripped === '') {
-    return '/';
-  }
-  return stripped;
-}
 
 const NotificationsListPanel: FC = () => {
   const [t] = useTranslation();
   const [isManageOptionsExpanded, setIsManageOptionsExpanded] = useState<boolean>(true);
 
-  const { pathname } = useLocation();
-  const relativePathname = getRelativePathname(pathname, NOTIFICATIONS_BASE);
+  const relativePathname = useRelativePathname();
   const opMatch = matchPath(`/:operation`, relativePathname);
   const selectedOperationItem = opMatch?.params.operation ?? LIST;
 

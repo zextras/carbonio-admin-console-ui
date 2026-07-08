@@ -6,6 +6,7 @@
 
 import { Container, ListRow } from '@zextras/ui-components';
 import {
+  buildPath,
   getRights,
   useCurrentUserRights,
   useDomainInformation,
@@ -22,8 +23,6 @@ import {
   DOMAINS_ROUTE_ID,
   LIST,
   LIST_SERVER,
-  LOG_AND_QUEUES,
-  MANAGE,
   NOTIFICATION_ROUTE_ID,
   SERVER,
   SERVERS_LIST,
@@ -53,9 +52,9 @@ const Dashboard: FC = () => {
     (operation: string) => {
       if (domainInformation && domainInformation?.id) {
         if (operation === 'account') {
-          navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${ACCOUNTS}`);
+          navigate(buildPath(DOMAINS_ROUTE_ID, domainInformation?.id, ACCOUNTS));
         } else if (operation === 'malinglist') {
-          navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${DISTRIBUTION_LIST}`);
+          navigate(buildPath(DOMAINS_ROUTE_ID, domainInformation?.id, DISTRIBUTION_LIST));
         }
       }
     },
@@ -71,11 +70,11 @@ const Dashboard: FC = () => {
   }, [accounts]);
 
   const goToMailStoreServerList = useCallback(() => {
-    navigate(`/${MANAGE}/${STORAGES_ROUTE_ID}/${SERVERS_LIST}`);
+    navigate(buildPath(STORAGES_ROUTE_ID, SERVERS_LIST));
   }, [navigate]);
 
   const goToMailNotificationt = useCallback(() => {
-    navigate(`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}/${LIST}`);
+    navigate(buildPath(NOTIFICATION_ROUTE_ID, LIST));
   }, [navigate]);
 
   useEffect(() => {

@@ -38,6 +38,8 @@ export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext, registerApp } from './apps/loader';
+
+export * from './constants/route-ids';
 import {
   ACTION_TYPES,
   BASENAME,
@@ -59,7 +61,7 @@ import {
   TRUE,
   ZIMBRA_ADMIN_URN,
 } from './constants';
-import { replaceHistory, useCurrentRoute } from './history/hooks';
+import { buildPath, replaceHistory, useCurrentRoute, useRelativePathname } from './history/hooks';
 import { useBreakpoint } from './hooks/use-breakpoint';
 import { useLocalStorage } from './hooks/use-local-storage';
 import { useMediaQuery } from './hooks/use-media-query';
@@ -202,6 +204,7 @@ export {
   ACTION_TYPES,
   addRoute,
   BASENAME,
+  buildPath,
   CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
   CARBONIO_HELP_ADMIN_URL,
@@ -287,6 +290,7 @@ export {
   useModuleLicenseInfo,
   useMtaServers,
   usePrimaryBarState,
+  useRelativePathname,
   useRemoveLicense,
   useServerVersion,
   useSnackbar,

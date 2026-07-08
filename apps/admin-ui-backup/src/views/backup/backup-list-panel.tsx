@@ -18,10 +18,11 @@ import {
   useCurrentUserRights,
   useMailstoreServers,
   useModuleLicenseInfo,
+  useRelativePathname,
 } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { matchPath } from 'react-router';
 
 import type { MailstoreServer } from '../../../types';
 import {
@@ -39,14 +40,13 @@ import {
 
 const BackupListPanel: FC = () => {
   const [t] = useTranslation();
-  const location = useLocation();
-  const segments = location.pathname.split('/').filter(Boolean);
-  const backupIdx = segments.lastIndexOf('backup');
-  const afterBackup =
-    backupIdx >= 0 && backupIdx < segments.length - 1 ? segments.slice(backupIdx + 1) : [];
-  const selectedOperationItem = afterBackup.at(-1) ?? SERVERS_LIST;
-  const selectedServer = afterBackup.length >= 2 ? afterBackup[0] : '';
-  const isServerSelect = selectedServer !== '';
+  const relativePathname = useRelativePathname();
+  const serverMatch = matchPath('/:server/:operation', relativePathname);
+  const opMatch = serverMatch ? null : matchPath('/:operation', relativePathname);
+  const selectedOperationItem =
+    serverMatch?.params.operation ?? opMatch?.params.operation ?? SERVERS_LIST;
+  const selectedServer = serverMatch?.params.server ?? '';
+  const isServerSelect = !!serverMatch;
   const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
   const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
   const { data: serverList = [], isError, isLoading } = useMailstoreServers();

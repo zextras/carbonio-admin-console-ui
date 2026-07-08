@@ -46,3 +46,47 @@ export const replaceHistory = (params: HistoryParams): void => {
   const history = useContextBridge.getState().functions.getHistory?.();
   history.replace(parseParams(params));
 };
+
+/**
+ * Returns the current URL pathname relative to the active app's registered
+ * route prefix. For example, when the storage app (registered as
+ * `manage/storage`) is mounted at `/manage/storage/servers_list`, this returns
+ * `/servers_list`.
+ *
+ * If no registered route matches the current location, the full pathname is
+ * returned unchanged.
+ *
+ * Use this together with react-router's `matchPath` to derive the active
+ * selection in a list panel without re-implementing prefix stripping per app.
+ */
+export const useRelativePathname = (): string => {
+  const { pathname } = useLocation();
+  const currentRoute = useCurrentRoute();
+  const base = currentRoute ? `/${currentRoute.route}` : '';
+  return useMemo(() => {
+    if (!base || !startsWith(pathname, base)) {
+      return pathname;
+    }
+    const stripped = pathname.slice(base.length);
+    return stripped === '' ? '/' : stripped;
+  }, [pathname, base]);
+};
+
+/**
+ * Builds an absolute path from a registered route ID plus optional path
+ * segments. The route's prefixed path (e.g. `manage/storage`) is read from the
+ * route registry, so callers never need to hard-code the section prefix.
+ *
+ * Examples (given a registered `storage` route of `manage/storage`):
+ *   buildPath('storage', 'servers_list')      -> '/manage/storage/servers_list'
+ *   buildPath('storage', server, 'data_volumes') -> '/manage/storage/mail1/data_volumes'
+ *   buildPath('storage')                      -> '/manage/storage'
+ *
+ * Unknown route IDs fall back to using the ID itself as the path.
+ */
+export const buildPath = (routeId: string, ...segments: Array<string | undefined>): string => {
+  const routes = getRoutes();
+  const route = routes[routeId]?.route ?? routeId;
+  const parts = [route, ...segments.filter((s): s is string => Boolean(s))];
+  return `/${parts.join('/')}`.replace(/\/{2,}/g, '/');
+};

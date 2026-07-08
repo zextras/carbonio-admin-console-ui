@@ -15,6 +15,7 @@ import {
 	getGetInfoResponseMock,
 	getQueryClient,
 	grantUserConfigRights,
+	registerAppRoute,
 	resetMockWorker,
 	setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -25,6 +26,7 @@ import {
 	ADVANCED,
 	ADVANCED_LBL,
 	BACKUP_BASIC,
+	BACKUP_ROUTE_ID,
 	CONFIGURATION_BACKUP,
 	SERVER_CONFIG,
 	SERVERS_LIST,
@@ -85,6 +87,10 @@ function seedLicense(queryClient: ReturnType<typeof getQueryClient>): void {
 
 describe('BackupListPanel', () => {
 	let queryClient: ReturnType<typeof getQueryClient>;
+
+	beforeEach(() => {
+		registerAppRoute(BACKUP_ROUTE_ID);
+	});
 
 	afterEach(() => {
 		resetMockWorker();
