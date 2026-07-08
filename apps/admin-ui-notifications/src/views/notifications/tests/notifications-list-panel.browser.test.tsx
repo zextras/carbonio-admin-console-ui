@@ -146,8 +146,9 @@ describe('NotificationsListPanel', () => {
 
     await expect.element(page.getByText('List')).toBeVisible();
     await page.getByText('List').click();
-    await expect.element(page.getByTestId('location')).toHaveTextContent(
-      `${NOTIFICATIONS_BASE}/list`,
-    );
+    await expect
+      .element(page.getByTestId('location'))
+      .toHaveTextContent(`${NOTIFICATIONS_BASE}/list`);
+    useAppStore.getState().setters.removeRoute(NOTIFICATION_ROUTE_ID);
   });
 });
