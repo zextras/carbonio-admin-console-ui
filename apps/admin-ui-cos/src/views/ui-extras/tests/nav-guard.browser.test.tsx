@@ -8,7 +8,7 @@ import { Outlet, Route, Routes, useNavigate } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { RouteLeavingGuard } from '../nav-guard';
+import { RouteLeavingGuard } from '@zextras/ui-components';
 
 function NavigationTrigger({ label }: { label: string }): React.ReactElement {
   const navigate = useNavigate();

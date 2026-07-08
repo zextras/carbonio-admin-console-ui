@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { 	Button,	Container,	Padding,	Row,	useSnackbar } from '@zextras/ui-components';
+import { 	Button,	Container,	Padding,	Row,	RouteLeavingGuard,	useSnackbar } from '@zextras/ui-components';
 import {  differenceWith, isEqual, map, some  } from 'lodash-es';
 import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
 import {  useTranslation  } from 'react-i18next';
@@ -13,7 +13,6 @@ import {  OK  } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import {  list2faPolicies  } from '../../../services/list-2fa-policies';
 import {  set2faPolicies  } from '../../../services/set-2fa-policies';
-import {  RouteLeavingGuard  } from '../../ui-extras/nav-guard';
 import {  isValidIpRange,TwoFactorPolicyArray  } from '../../utility/utils';
 import {  TwoFactorAuthencationConfig  } from '../two-factor-authentication/2fa-config';
 

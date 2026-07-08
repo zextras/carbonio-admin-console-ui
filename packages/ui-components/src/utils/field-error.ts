@@ -6,8 +6,6 @@
 import type { AnyFieldApi } from '@tanstack/react-form';
 import { type TFunction } from 'i18next';
 
-import { COS_VALIDATION_MESSAGES } from '../schema';
-
 type FieldErrorProps = {
   hasError: boolean;
   description?: string;
@@ -17,6 +15,7 @@ export function getFieldErrorProps(
   field: AnyFieldApi,
   isSubmitted: boolean,
   t: TFunction,
+  errorMessages?: Record<string, string>,
 ): FieldErrorProps {
   const { meta } = field.state;
   const showError = (meta.isBlurred || isSubmitted) && !meta.isValid;
@@ -29,6 +28,8 @@ export function getFieldErrorProps(
 
   return {
     hasError: true,
-    description: key ? t(key, COS_VALIDATION_MESSAGES[key] ?? key) : undefined,
+    description: key
+      ? t(key, errorMessages?.[key] ?? key)
+      : undefined,
   };
 }

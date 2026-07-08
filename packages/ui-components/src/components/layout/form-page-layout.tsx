@@ -1,14 +1,14 @@
 /*
- * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button } from '@zextras/ui-components';
+import { Button } from '../basic/button/Button';
 import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './page-layout.module.css';
-import { RouteLeavingGuard } from './ui-extras/nav-guard';
+import styles from './form-page-layout.module.css';
+import { RouteLeavingGuard } from '../utilities/route-leaving-guard';
 
 type FormPageLayoutProps = {
   title: string;
@@ -57,9 +57,7 @@ export const FormPageLayout = ({
         </div>
         <ds-divider></ds-divider>
       </div>
-      <div className={styles.content}>
-        {children}
-      </div>
+      <div className={styles.content}>{children}</div>
       {onSave && (
         <RouteLeavingGuard when={unsavedChanges} onSave={onSave}>
           <ds-text as="p">

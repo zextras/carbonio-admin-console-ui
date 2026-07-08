@@ -12,6 +12,7 @@ import {
   ListRow,
   Padding,
   Row,
+  RouteLeavingGuard,
   Select,
   Switch,
   useSnackbar,
@@ -57,7 +58,6 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { useBackupStore } from '../../../store/backup/store';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const BackupConfiguration: FC = () => {
   const { server } = useParams();

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Modal, Padding, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, Modal, Padding, Row, RouteLeavingGuard, TabBar, useSnackbar, } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { format, isValid } from 'date-fns';
 import { differenceBy, isEqual } from 'lodash';
@@ -22,7 +22,6 @@ import { getGrant } from '../../../../services/get-grant';
 import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getDateTimeFromStr } from '../../../utility/utils';
 import { GeneralTab } from './edit-mailing-detail/general-tab';
 import { MembersTab } from './edit-mailing-detail/members-tab';

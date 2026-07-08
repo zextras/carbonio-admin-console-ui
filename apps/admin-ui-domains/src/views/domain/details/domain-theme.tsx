@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
+import { Button, Container, Padding, Row, RouteLeavingGuard, useSnackbar } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, getDomainInformation, useAllConfig, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, isEqual, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -15,7 +15,6 @@ import { themeConfigStore } from '../../../../types/domain';
 import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
 import { ThemeConfigs } from '../theme/theme-configs';
 import { ResetTheme } from '../theme/theme-reset';

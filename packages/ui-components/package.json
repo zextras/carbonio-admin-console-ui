@@ -67,6 +67,7 @@
   "dependencies": {
     "@floating-ui/dom": "^1.7.6",
     "@posthog/react": "^1.10.3",
+    "@tanstack/react-form": "^1.32.0",
     "@zextras/ui-shared": "workspace:*",
     "core-js": "^3.49.0",
     "lit": "^3.3.2",

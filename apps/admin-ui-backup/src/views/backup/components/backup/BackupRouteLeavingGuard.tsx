@@ -3,10 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { RouteLeavingGuard } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 import { FC } from 'react';
-
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 
 interface BackupRouteLeavingGuardProps {
 	isDirty: boolean;

@@ -1,22 +1,24 @@
 /*
- * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Modal } from '@zextras/ui-components';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import { Modal } from '../feedback/Modal';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type Location, useLocation, useNavigate } from 'react-router';
 
-export const RouteLeavingGuard: FC<{
+type RouteLeavingGuardProps = {
   when?: boolean;
   onSave: () => void;
   children?: React.ReactNode;
-}> = ({ children, when, onSave }) => {
+};
+
+export const RouteLeavingGuard = ({ children, when, onSave }: RouteLeavingGuardProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const lastLocationInitial = useMemo(() => location, []);
+  const lastLocationInitial = useRef(location).current;
   const [modalVisible, setModalVisible] = useState(false);
   const [lastLocation, setLastLocation] = useState<Location>(lastLocationInitial);
   const [confirmedNavigation, setConfirmedNavigation] = useState(false);
@@ -51,7 +53,7 @@ export const RouteLeavingGuard: FC<{
         location.pathname !== lastLocationInitial.pathname &&
         location.pathname !== lastLocation?.pathname
       ) {
-        const shouldBlock = handleBlockedNavigation(location as any);
+        const shouldBlock = handleBlockedNavigation(location);
         if (!shouldBlock) {
           navigate(lastLocation?.pathname || lastLocationInitial.pathname, { replace: true });
         }
@@ -67,7 +69,6 @@ export const RouteLeavingGuard: FC<{
 
   return (
     <>
-      {/* Your own alert/dialog/modal component */}
       <Modal
         open={modalVisible}
         onClose={onClose}

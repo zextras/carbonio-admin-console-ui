@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, ModalOverlay, Padding, Row, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, ModalOverlay, Padding, Row, RouteLeavingGuard, useSnackbar, } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
 import { isEqual, mapValues, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -23,7 +23,6 @@ import {
 } from '../../../../constants';
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../../services/modify-domain-service';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { AlertBanner } from './alert-banner';
 import { CertificateContext } from './certificate-context';
 import { CertificateView } from './certificate-view';

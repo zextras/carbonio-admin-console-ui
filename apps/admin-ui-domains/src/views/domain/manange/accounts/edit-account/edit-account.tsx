@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, DefaultTabBarItem, Modal, Padding, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, DefaultTabBarItem, Modal, Padding, Row, RouteLeavingGuard, TabBar, useSnackbar, } from '@zextras/ui-components';
 import { flushCache, resetFileQuotaLimitById, setCoreAttributes, setFileQuotaLimitById, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive, useUserSettings } from '@zextras/ui-shared';
 import { differenceBy, find, isEqual, reduce, remove } from 'lodash-es';
 import { FC, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -43,7 +43,6 @@ import { renameAccountRequest } from '../../../../../services/rename-account';
 import { setAccountQuota } from '../../../../../services/set-account-quota';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
-import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 import EditAccountAdministrationSection from './edit-account-administration-section';

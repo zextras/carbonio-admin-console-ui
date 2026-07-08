@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, Input, Padding } from '@zextras/ui-components';
+import { Container, getFieldErrorProps, Input, Padding } from '@zextras/ui-components';
 import { isValidDecimalInput } from '@zextras/ui-shared';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BytesToGB, GbToBytes } from '../../../utility/utils';
+import { COS_VALIDATION_MESSAGES } from '../schema';
 import { CosAdvancedFormValues, CosFormApi } from '../types';
-import { getFieldErrorProps } from './field-error';
 import { QuotaRevertIcon } from './quota-revert-icon';
 
 type QuotaGBFieldInnerProps = {
@@ -127,7 +127,7 @@ export const QuotaGBField = ({
   return (
     <form.Field name={name}>
       {(field) => {
-        const error = getFieldErrorProps(field, isSubmitted, t);
+        const error = getFieldErrorProps(field, isSubmitted, t, COS_VALIDATION_MESSAGES);
         return (
           <QuotaGBFieldInner
             fieldState={{

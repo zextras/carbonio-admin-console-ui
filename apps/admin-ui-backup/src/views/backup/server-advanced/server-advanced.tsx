@@ -11,6 +11,7 @@ import {
   ListRow,
   Padding,
   Row,
+  RouteLeavingGuard,
   Switch,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -29,7 +30,6 @@ import type {
 } from '../../../../types';
 import { CONFIG, SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {
   const { server } = useParams();
