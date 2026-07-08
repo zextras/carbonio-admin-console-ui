@@ -27,17 +27,13 @@ import ServerAdvanced from './server-advanced/server-advanced';
 const BackupDetailPanel: FC = () => {
   const { data: globalConfig, isLoading } = useGlobalConfig();
   const [t] = useTranslation();
-  return (
-    <Container
-      orientation="column"
-      crossAlignment="center"
-      mainAlignment="flex-start"
-      style={{ overflowY: 'hidden' }}
-      background="gray6"
-    >
-      {isLoading ? (
-        <Container />
-      ) : !Object.keys(globalConfig ?? {}).length ? (
+
+  const renderContent = () => {
+    if (isLoading) {
+      return <Container />;
+    }
+    if (Object.keys(globalConfig ?? {}).length === 0) {
+      return (
         <Row background="info" width="100%" padding="small" mainAlignment="space-between">
           <Row mainAlignment="flex-start">
             <ds-icon icon="CloseCircleOutline" size="large" color="white"></ds-icon>
@@ -51,16 +47,29 @@ const BackupDetailPanel: FC = () => {
             </Padding>
           </Row>
         </Row>
-      ) : (
-        <Routes>
-          <Route path={`/${SERVER_CONFIG}`} element={<BackupServerConfig />} />
-          <Route path={`/${ADVANCED}`} element={<BackupAdvanced />} />
-          <Route path={`/${SERVERS_LIST}`} element={<ServersList />} />
-          <Route path={`/${IMPORT_EXTERNAL_BACKUP}`} element={<ImportExternalBackup />} />
-          <Route path={`/:server/${CONFIGURATION_BACKUP}`} element={<BackupConfiguration />} />
-          <Route path={`/:server/${ADVANCED_LBL}`} element={<ServerAdvanced />} />
-        </Routes>
-      )}
+      );
+    }
+    return (
+      <Routes>
+        <Route path={`/${SERVER_CONFIG}`} element={<BackupServerConfig />} />
+        <Route path={`/${ADVANCED}`} element={<BackupAdvanced />} />
+        <Route path={`/${SERVERS_LIST}`} element={<ServersList />} />
+        <Route path={`/${IMPORT_EXTERNAL_BACKUP}`} element={<ImportExternalBackup />} />
+        <Route path={`/:server/${CONFIGURATION_BACKUP}`} element={<BackupConfiguration />} />
+        <Route path={`/:server/${ADVANCED_LBL}`} element={<ServerAdvanced />} />
+      </Routes>
+    );
+  };
+
+  return (
+    <Container
+      orientation="column"
+      crossAlignment="center"
+      mainAlignment="flex-start"
+      style={{ overflowY: 'hidden' }}
+      background="gray6"
+    >
+      {renderContent()}
     </Container>
   );
 };

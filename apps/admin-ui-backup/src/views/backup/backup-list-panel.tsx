@@ -40,12 +40,11 @@ import {
 const BackupListPanel: FC = () => {
   const [t] = useTranslation();
   const location = useLocation();
-  const segments = location.pathname.replace(/^\/+|\/+$/g, '').split('/');
+  const segments = location.pathname.replaceAll(/^\/+|\/+$/g, '').split('/');
   const backupIdx = segments.lastIndexOf('backup');
   const afterBackup =
     backupIdx >= 0 && backupIdx < segments.length - 1 ? segments.slice(backupIdx + 1) : [];
-  const selectedOperationItem =
-    afterBackup.length > 0 ? afterBackup[afterBackup.length - 1] : SERVERS_LIST;
+  const selectedOperationItem = afterBackup.at(-1) ?? SERVERS_LIST;
   const selectedServer = afterBackup.length >= 2 ? afterBackup[0] : '';
   const isServerSelect = selectedServer !== '';
   const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
