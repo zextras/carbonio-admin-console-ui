@@ -5,11 +5,10 @@
  */
 import { createContext } from 'react';
 
-import type { AdvancedVolumeWizardDetail } from '../../../../../../../types';
+import type { AdvancedVolumeFormApi } from './types';
 
 type AdvancedVolumeContextType = {
-	advancedVolumeDetail: AdvancedVolumeWizardDetail;
-	setAdvancedVolumeDetail: (arg: AdvancedVolumeWizardDetail | ((prev: AdvancedVolumeWizardDetail) => AdvancedVolumeWizardDetail)) => void;
+	form: AdvancedVolumeFormApi;
 	isAllocationToggle: boolean;
 	setIsAllocationToggle: (value: boolean) => void;
 };

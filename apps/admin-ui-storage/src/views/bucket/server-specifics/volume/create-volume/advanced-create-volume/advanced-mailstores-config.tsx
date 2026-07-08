@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useSelector } from '@tanstack/react-store';
 import {
   Container,
   Input,
@@ -14,14 +15,13 @@ import {
   Row,
   Switch,
 } from '@zextras/ui-components';
-import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from 'react';
+import { type ChangeEvent, type FC, useContext, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { AdvancedMailstoresConfigProps } from '../../../../../../../types';
 import {
   AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
   AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
-  EMPTY_TYPE_VALUE,
   PRIMARY_TYPE_VALUE,
   S3,
   SECONDARY_TYPE_VALUE,
@@ -29,117 +29,49 @@ import {
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
 const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelection, externalData, setCompleteLoading }) => {
-  const context = useContext(AdvancedVolumeContext);
+  const { form, setIsAllocationToggle } = useContext(AdvancedVolumeContext);
   const { t } = useTranslation();
-  const { advancedVolumeDetail, setAdvancedVolumeDetail, setIsAllocationToggle } = context;
-  const [primaryRadio, setPrimaryRadio] = useState(false);
-  const [secondaryRadio, setSecondaryRadio] = useState(false);
-  const isLocalBlockDevice = advancedVolumeDetail?.volumeAllocation === 'Local Block Device';
-  const showTieringSettings =
-    advancedVolumeDetail?.unusedBucketType === S3 && advancedVolumeDetail?.tieringSupported === true;
 
-  const changeVolDetail = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAdvancedVolumeDetail((prev) => ({ ...prev, [e?.target?.name]: e?.target?.value }));
-    },
-    [setAdvancedVolumeDetail],
-  );
+  const volumeName = useSelector(form.store, (s) => s.values.volumeName);
+  const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);
+  const bucketName = useSelector(form.store, (s) => s.values.bucketName);
+  const unusedBucketType = useSelector(form.store, (s) => s.values.unusedBucketType);
+  const bucketId = useSelector(form.store, (s) => s.values.bucketId);
+  const tieringSupported = useSelector(form.store, (s) => s.values.tieringSupported);
+  const prefix = useSelector(form.store, (s) => s.values.prefix);
+  const volumeMain = useSelector(form.store, (s) => s.values.volumeMain);
+  const useInfrequentAccess = useSelector(form.store, (s) => s.values.useInfrequentAccess);
+  const useIntelligentTiering = useSelector(form.store, (s) => s.values.useIntelligentTiering);
+  const infrequentAccessThreshold = useSelector(form.store, (s) => s.values.infrequentAccessThreshold);
+  const isCurrent = useSelector(form.store, (s) => s.values.isCurrent);
+  const centralized = useSelector(form.store, (s) => s.values.centralized);
 
-  useEffect(() => {
-    if (primaryRadio) {
-      setAdvancedVolumeDetail((prev) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
-      onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
-    } else if (secondaryRadio) {
-      setAdvancedVolumeDetail((prev) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
-      onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
-    } else {
-      setAdvancedVolumeDetail((prev) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
-      onSelection({ volumeMain: EMPTY_TYPE_VALUE }, true);
-    }
-  }, [onSelection, primaryRadio, secondaryRadio, setAdvancedVolumeDetail]);
+  const isLocalBlockDevice = volumeAllocation === 'Local Block Device';
+  const showTieringSettings = unusedBucketType === S3 && tieringSupported === true;
+
+  const changeVolDetail = (e: ChangeEvent<HTMLInputElement>): void => {
+    form.setFieldValue(e.target.name as 'prefix' | 'infrequentAccessThreshold', e.target.value);
+  };
 
   useEffect(() => {
-    if (advancedVolumeDetail?.volumeMain === PRIMARY_TYPE_VALUE) {
-      setPrimaryRadio(true);
-    } else if (advancedVolumeDetail?.volumeMain === SECONDARY_TYPE_VALUE) {
-      setSecondaryRadio(true);
-    }
-  }, [advancedVolumeDetail?.volumeMain]);
-
-  const changeSwitchInfraquentAccess = useCallback((): void => {
-    const newValue = !advancedVolumeDetail?.useInfrequentAccess;
-    setAdvancedVolumeDetail((prev) => ({
-      ...prev,
-      useInfrequentAccess: newValue,
-      useIntelligentTiering: newValue ? false : prev.useIntelligentTiering,
-      infrequentAccessThreshold: newValue ? advancedVolumeDetail?.infrequentAccessThreshold : '',
-    }));
-    onSelection({ useInfrequentAccess: newValue }, true);
-    if (newValue) {
-      onSelection({ useIntelligentTiering: false }, true);
-    }
-    if (!newValue) {
-      onSelection({ infrequentAccessThreshold: '' }, true);
-    }
-  }, [advancedVolumeDetail?.useInfrequentAccess, advancedVolumeDetail?.infrequentAccessThreshold, onSelection, setAdvancedVolumeDetail]);
-
-  const changeSwitchInfraquentTiering = useCallback((): void => {
-    const newValue = !advancedVolumeDetail?.useIntelligentTiering;
-    setAdvancedVolumeDetail((prev) => ({
-      ...prev,
-      useIntelligentTiering: newValue,
-      useInfrequentAccess: newValue ? false : prev.useInfrequentAccess,
-    }));
-    onSelection({ useIntelligentTiering: newValue }, true);
-    if (newValue) {
-      onSelection({ useInfrequentAccess: false }, true);
-    }
-  }, [advancedVolumeDetail?.useIntelligentTiering, onSelection, setAdvancedVolumeDetail]);
-
-  const changeSwitchIsCurrent = useCallback((): void => {
-    setAdvancedVolumeDetail((prev) => ({
-      ...prev,
-      isCurrent: !advancedVolumeDetail?.isCurrent,
-    }));
-    onSelection({ isCurrent: !advancedVolumeDetail?.isCurrent }, true);
-  }, [advancedVolumeDetail?.isCurrent, onSelection, setAdvancedVolumeDetail]);
-
-  const changeSwitchCentralized = useCallback((): void => {
-    setAdvancedVolumeDetail((prev) => ({
-      ...prev,
-      centralized: !advancedVolumeDetail?.centralized,
-    }));
-    onSelection({ centralized: !advancedVolumeDetail?.centralized }, true);
-  }, [advancedVolumeDetail?.centralized, onSelection, setAdvancedVolumeDetail]);
-
-  useEffect(() => {
-    if (advancedVolumeDetail?.volumeMain !== 0) {
+    if (volumeMain !== 0) {
       setCompleteLoading(true);
       setIsAllocationToggle(false);
     } else {
       setCompleteLoading(false);
       setIsAllocationToggle(true);
     }
-  }, [
-    advancedVolumeDetail?.prefix,
-    advancedVolumeDetail?.volumeMain,
-    setCompleteLoading,
-    setIsAllocationToggle,
-  ]);
+  }, [prefix, volumeMain, setCompleteLoading, setIsAllocationToggle]);
 
   useEffect(() => {
     if (showTieringSettings) {
       return;
     }
-
-    setAdvancedVolumeDetail((prev) => ({
-      ...prev,
-      useInfrequentAccess: false,
-      useIntelligentTiering: false,
-    }));
+    form.setFieldValue('useInfrequentAccess', false);
+    form.setFieldValue('useIntelligentTiering', false);
     onSelection({ useInfrequentAccess: false }, true);
     onSelection({ useIntelligentTiering: false }, true);
-  }, [onSelection, setAdvancedVolumeDetail, showTieringSettings]);
+  }, [onSelection, form, showTieringSettings]);
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
@@ -154,13 +86,13 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
         <LabeledValue
           label={t('label.storage_type', 'Storage Type')}
           backgroundColor="gray6"
-          value={advancedVolumeDetail?.volumeAllocation}
+          value={volumeAllocation}
         />
       </Row>
       <Row padding={{ top: 'large' }} width="100%">
         <LabeledValue
           label={t('label.volume_name', 'Volume Name')}
-          value={advancedVolumeDetail?.volumeName}
+          value={volumeName}
           backgroundColor="gray6"
         />
       </Row>
@@ -173,7 +105,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
           <LabeledValue
             label={t('label.bucket_name', 'Bucket Name')}
             backgroundColor="gray6"
-            value={advancedVolumeDetail?.bucketName}
+            value={bucketName}
           />
         </Container>
         <Container
@@ -184,7 +116,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
           <LabeledValue
             label={t('label.type', 'Type')}
             backgroundColor="gray6"
-            value={advancedVolumeDetail?.unusedBucketType}
+            value={unusedBucketType}
           />
         </Container>
         <Container
@@ -195,7 +127,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
           <LabeledValue
             label={t('label.ID', 'ID')}
             backgroundColor="gray6"
-            value={advancedVolumeDetail?.bucketId}
+            value={bucketId}
           />
         </Container>
       </ListRow>
@@ -210,10 +142,10 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
           <Radio
             label={t('label.primary_volume', 'This is a Primary Volume')}
             value={PRIMARY_TYPE_VALUE.toString()}
-            checked={primaryRadio}
+            checked={volumeMain === PRIMARY_TYPE_VALUE}
             onClick={(): void => {
-              setPrimaryRadio(!primaryRadio);
-              setSecondaryRadio(false);
+              form.setFieldValue('volumeMain', volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE);
+              onSelection({ volumeMain: volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE }, true);
             }}
             iconColor="primary"
           />
@@ -222,10 +154,10 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
           <Radio
             label={t('label.secondary_volume', 'This is a Secondary Volume')}
             value={SECONDARY_TYPE_VALUE}
-            checked={secondaryRadio}
+            checked={volumeMain === SECONDARY_TYPE_VALUE}
             onClick={(): void => {
-              setSecondaryRadio(!secondaryRadio);
-              setPrimaryRadio(false);
+              form.setFieldValue('volumeMain', volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE);
+              onSelection({ volumeMain: volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE }, true);
             }}
             iconColor="primary"
           />
@@ -238,7 +170,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
             'label.prefix_name',
             'Prefix - all objects will have this prefix in their name',
           )}
-          value={advancedVolumeDetail?.prefix}
+          value={prefix}
           backgroundColor="gray5"
           onChange={changeVolDetail}
         />
@@ -254,9 +186,24 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
             <Row width="48.5%" mainAlignment="flex-start">
               <Row mainAlignment="flex-start" width="100%">
                 <Switch
-                  value={advancedVolumeDetail?.useInfrequentAccess}
+                  value={useInfrequentAccess}
                   label={t('label.use_infraquent_access', 'Use infrequent access')}
-                  onClick={changeSwitchInfraquentAccess}
+                  onClick={(): void => {
+                    const newValue = !useInfrequentAccess;
+                    form.setFieldValue('useInfrequentAccess', newValue);
+                    if (newValue) {
+                      form.setFieldValue('useIntelligentTiering', false);
+                    } else {
+                      form.setFieldValue('infrequentAccessThreshold', '');
+                    }
+                    onSelection({ useInfrequentAccess: newValue }, true);
+                    if (newValue) {
+                      onSelection({ useIntelligentTiering: false }, true);
+                    }
+                    if (!newValue) {
+                      onSelection({ infrequentAccessThreshold: '' }, true);
+                    }
+                  }}
                   iconColor="primary"
                 />
               </Row>
@@ -281,18 +228,28 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
                 inputName="infrequentAccessThreshold"
                 label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
                 type="number"
-                value={advancedVolumeDetail?.infrequentAccessThreshold || ''}
+                value={infrequentAccessThreshold || ''}
                 backgroundColor="gray5"
                 onChange={changeVolDetail}
-                disabled={!advancedVolumeDetail?.useInfrequentAccess}
+                disabled={!useInfrequentAccess}
               />
             </Row>
           </Row>
           <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
             <Switch
-              value={advancedVolumeDetail?.useIntelligentTiering}
+              value={useIntelligentTiering}
               label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
-              onClick={changeSwitchInfraquentTiering}
+              onClick={(): void => {
+                const newValue = !useIntelligentTiering;
+                form.setFieldValue('useIntelligentTiering', newValue);
+                if (newValue) {
+                  form.setFieldValue('useInfrequentAccess', false);
+                }
+                onSelection({ useIntelligentTiering: newValue }, true);
+                if (newValue) {
+                  onSelection({ useInfrequentAccess: false }, true);
+                }
+              }}
               iconColor="primary"
             />
           </Row>
@@ -314,9 +271,13 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
       )}
       <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
         <Switch
-          value={advancedVolumeDetail?.isCurrent}
+          value={isCurrent}
           label={t('label.set_as_current', 'Set as Current')}
-          onClick={changeSwitchIsCurrent}
+          onClick={(): void => {
+            const newValue = !isCurrent;
+            form.setFieldValue('isCurrent', newValue);
+            onSelection({ isCurrent: newValue }, true);
+          }}
           iconColor="primary"
         />
       </Row>
@@ -332,9 +293,13 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
         <>
           <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
             <Switch
-              value={advancedVolumeDetail?.centralized}
+              value={centralized}
               label={t('label.storage_centralized', 'I want this Storage to be centralized')}
-              onClick={changeSwitchCentralized}
+              onClick={(): void => {
+                const newValue = !centralized;
+                form.setFieldValue('centralized', newValue);
+                onSelection({ centralized: newValue }, true);
+              }}
               iconColor="primary"
             />
           </Row>

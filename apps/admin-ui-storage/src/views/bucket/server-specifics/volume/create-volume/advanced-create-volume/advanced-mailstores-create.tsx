@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useSelector } from '@tanstack/react-store';
 import { Container, LabeledValue, ListRow, Row } from '@zextras/ui-components';
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,33 +16,40 @@ const AdvancedMailstoresCreate: FC<{
   externalData: string;
   setCompleteLoading: (v: boolean) => void;
 }> = ({ externalData, setCompleteLoading }) => {
-  const context = useContext(AdvancedVolumeContext);
+  const { form } = useContext(AdvancedVolumeContext);
   const { t } = useTranslation();
-  const { advancedVolumeDetail } = context;
   const volTypeList = useMemo(() => volumeTypeList(t), [t]);
   const [volumeType, setVolumeType] = useState<string>('');
-  const showTieringSettings =
-    advancedVolumeDetail?.unusedBucketType === S3 && advancedVolumeDetail?.tieringSupported === true;
+
+  const volumeName = useSelector(form.store, (s) => s.values.volumeName);
+  const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);
+  const bucketName = useSelector(form.store, (s) => s.values.bucketName);
+  const unusedBucketType = useSelector(form.store, (s) => s.values.unusedBucketType);
+  const bucketId = useSelector(form.store, (s) => s.values.bucketId);
+  const tieringSupported = useSelector(form.store, (s) => s.values.tieringSupported);
+  const volumeMain = useSelector(form.store, (s) => s.values.volumeMain);
+  const prefix = useSelector(form.store, (s) => s.values.prefix);
+  const useInfrequentAccess = useSelector(form.store, (s) => s.values.useInfrequentAccess);
+  const useIntelligentTiering = useSelector(form.store, (s) => s.values.useIntelligentTiering);
+  const isCurrent = useSelector(form.store, (s) => s.values.isCurrent);
+  const centralized = useSelector(form.store, (s) => s.values.centralized);
+
+  const showTieringSettings = unusedBucketType === S3 && tieringSupported === true;
 
   useEffect(() => {
-    if (
-      advancedVolumeDetail?.volumeAllocation &&
-      advancedVolumeDetail?.volumeName &&
-      advancedVolumeDetail?.unusedBucketType &&
-      volumeType
-    ) {
+    if (volumeAllocation && volumeName && unusedBucketType && volumeType) {
       setCompleteLoading(true);
     } else {
       setCompleteLoading(false);
     }
-  }, [advancedVolumeDetail, setCompleteLoading, volumeType]);
+  }, [volumeAllocation, volumeName, unusedBucketType, volumeType, setCompleteLoading]);
 
   useEffect(() => {
     const volumeTypeObject = volTypeList?.find(
-      (item: { label?: string; value?: number }) => item?.value === advancedVolumeDetail?.volumeMain,
+      (item: { label?: string; value?: number }) => item?.value === volumeMain,
     )?.label;
     setVolumeType(volumeTypeObject ?? '');
-  }, [advancedVolumeDetail?.volumeMain, volTypeList]);
+  }, [volumeMain, volTypeList]);
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
@@ -56,13 +64,13 @@ const AdvancedMailstoresCreate: FC<{
         <LabeledValue
           label={t('label.volume_allocation', 'Allocation')}
           backgroundColor="gray6"
-          value={advancedVolumeDetail?.volumeAllocation}
+          value={volumeAllocation}
         />
       </Row>
       <Row padding={{ top: 'large' }} width="100%">
         <LabeledValue
           label={t('label.volume_name', 'Volume Name')}
-          value={advancedVolumeDetail?.volumeName}
+          value={volumeName}
           backgroundColor="gray6"
         />
       </Row>
@@ -75,7 +83,7 @@ const AdvancedMailstoresCreate: FC<{
           <LabeledValue
             label={t('label.bucket_name', 'Bucket Name')}
             backgroundColor="gray6"
-            value={advancedVolumeDetail?.bucketName}
+            value={bucketName}
           />
         </Container>
         <Container
@@ -86,7 +94,7 @@ const AdvancedMailstoresCreate: FC<{
           <LabeledValue
             label={t('label.type', 'Type')}
             backgroundColor="gray6"
-            value={advancedVolumeDetail?.unusedBucketType}
+            value={unusedBucketType}
           />
         </Container>
         <Container
@@ -97,7 +105,7 @@ const AdvancedMailstoresCreate: FC<{
           <LabeledValue
             label={t('label.ID', 'ID')}
             backgroundColor="gray6"
-            value={advancedVolumeDetail?.bucketId}
+            value={bucketId}
           />
         </Container>
       </ListRow>
@@ -114,7 +122,7 @@ const AdvancedMailstoresCreate: FC<{
             'label.prefix_name',
             'Prefix - all objects will have this prefix in their name',
           )}
-          value={advancedVolumeDetail?.prefix}
+          value={prefix}
           backgroundColor="gray6"
         />
       </Row>
@@ -123,14 +131,14 @@ const AdvancedMailstoresCreate: FC<{
           <Row padding={{ top: 'large' }} width="100%">
             <LabeledValue
               label={t('label.infrequent_access', 'Infrequent access')}
-              value={advancedVolumeDetail?.useInfrequentAccess ? ENABLED : DISABLED}
+              value={useInfrequentAccess ? ENABLED : DISABLED}
               backgroundColor="gray6"
             />
           </Row>
           <Row padding={{ top: 'large' }} width="100%">
             <LabeledValue
               label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
-              value={advancedVolumeDetail?.useIntelligentTiering ? ENABLED : DISABLED}
+              value={useIntelligentTiering ? ENABLED : DISABLED}
               backgroundColor="gray6"
             />
           </Row>
@@ -139,14 +147,14 @@ const AdvancedMailstoresCreate: FC<{
       <Row padding={{ top: 'large' }} width="100%">
         <LabeledValue
           label={t('label.volume_as_current', 'Volum as current')}
-          value={advancedVolumeDetail?.isCurrent ? YES : NO}
+          value={isCurrent ? YES : NO}
           backgroundColor="gray6"
         />
       </Row>
       <Row padding={{ top: 'large' }} width="100%">
         <LabeledValue
           label={t('label.centralized', 'Centralized')}
-          value={advancedVolumeDetail?.centralized ? YES : NO}
+          value={centralized ? YES : NO}
           backgroundColor="gray6"
         />
       </Row>

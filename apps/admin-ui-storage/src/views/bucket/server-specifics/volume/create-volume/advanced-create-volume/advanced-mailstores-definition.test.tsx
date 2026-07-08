@@ -5,8 +5,9 @@
  */
 
 import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import React, { SetStateAction, useState } from 'react';
+import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { AdvancedVolumeWizardDetail } from '../../../../../../../types';
@@ -14,6 +15,7 @@ import { volumeCreateSchema } from '../schema';
 import { VolumeContext } from '../volume-context';
 import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
+import type { AdvancedVolumeFormValues } from './types';
 
 const mockListS3Connector = vi.hoisted(() => vi.fn());
 const setIsAllocationToggleSpy = vi.hoisted(() => vi.fn());
@@ -79,15 +81,6 @@ type HarnessProps = {
   initialAdvancedVolumeDetail?: AdvancedVolumeWizardDetail;
 };
 
-function applyUpdate<T>(
-  update: SetStateAction<T>,
-  setState: React.Dispatch<SetStateAction<T>>,
-): void {
-  setState((prevState) =>
-    typeof update === 'function' ? (update as (prev: T) => T)(prevState) : update,
-  );
-}
-
 function TestHarness({
   setToggleNextBtn,
   setCompleteLoading,
@@ -110,23 +103,39 @@ function TestHarness({
     onSubmit: async () => {},
   });
 
-  const [advancedVolumeDetail, setAdvancedVolumeDetailState] = useState<AdvancedVolumeWizardDetail>(
-    initialAdvancedVolumeDetail ?? {},
-  );
+  const [isAllocationToggle] = React.useState(false);
 
-  function setAdvancedVolumeDetail(update: SetStateAction<AdvancedVolumeWizardDetail>): void {
-    applyUpdate(update, setAdvancedVolumeDetailState);
-  }
+  const advancedForm = useForm({
+    defaultValues: {
+      volumeName: (initialFormValues?.volumeName as string) ?? '',
+      volumeMain: 0,
+      isCurrent: false,
+      volumeAllocation: '',
+      bucketName: '',
+      unusedBucketType: '',
+      tieringSupported: false,
+      bucketId: '',
+      prefix: '',
+      centralized: false,
+      useInfrequentAccess: false,
+      infrequentAccessThreshold: '',
+      useIntelligentTiering: false,
+      ...initialAdvancedVolumeDetail,
+    } as AdvancedVolumeFormValues,
+    onSubmit: async () => {},
+  });
+
+  const advancedValues = useSelector(advancedForm.store, (s) => s.values);
 
   return (
     <VolumeContext.Provider value={{ form }}>
-      <AdvancedVolumeContext.Provider value={{ advancedVolumeDetail, setAdvancedVolumeDetail, isAllocationToggle: false, setIsAllocationToggle: setIsAllocationToggleSpy }}>
+      <AdvancedVolumeContext.Provider value={{ form: advancedForm, isAllocationToggle, setIsAllocationToggle: setIsAllocationToggleSpy }}>
         <AdvancedMailstoresDefinition
           externalData="server-a"
           setToggleNextBtn={setToggleNextBtn}
           setCompleteLoading={setCompleteLoading}
         />
-        <div data-testid="advanced-state">{JSON.stringify(advancedVolumeDetail)}</div>
+        <div data-testid="advanced-state">{JSON.stringify(advancedValues)}</div>
       </AdvancedVolumeContext.Provider>
     </VolumeContext.Provider>
   );

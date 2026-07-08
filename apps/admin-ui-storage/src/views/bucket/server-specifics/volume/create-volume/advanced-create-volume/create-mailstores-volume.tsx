@@ -3,16 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { AdvancedVolumeWizardDetail } from '../../../../../../../types';
 import { volumeTypeList } from '../../../../../utility/utils';
 import AdvancedMailstoresConfig from './advanced-mailstores-config';
 import AdvancedMailstoresCreate from './advanced-mailstores-create';
 import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
+import type { AdvancedVolumeFormValues } from './types';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
   const { t } = useTranslation();
@@ -43,20 +44,24 @@ const CreateMailstoresVolume: FC<{
   const { t } = useTranslation();
   const volTypeList = useMemo(() => volumeTypeList(t), [t]);
   const [isAllocationToggle, setIsAllocationToggle] = useState(false);
-  const [advancedVolumeDetail, setAdvancedVolumeDetail] = useState<AdvancedVolumeWizardDetail>({
-    volumeName: '',
-    volumeMain: 0,
-    isCurrent: false,
-    volumeAllocation: '',
-    bucketName: '',
-    unusedBucketType: '',
-    tieringSupported: false,
-    bucketId: '',
-    prefix: '',
-    centralized: false,
-    useInfrequentAccess: false,
-    infrequentAccessThreshold: '',
-    useIntelligentTiering: false,
+
+  const form = useForm({
+    defaultValues: {
+      volumeName: '',
+      volumeMain: 0,
+      isCurrent: false,
+      volumeAllocation: '',
+      bucketName: '',
+      unusedBucketType: '',
+      tieringSupported: false,
+      bucketId: '',
+      prefix: '',
+      centralized: false,
+      useInfrequentAccess: false,
+      infrequentAccessThreshold: '',
+      useIntelligentTiering: false,
+    } as AdvancedVolumeFormValues,
+    onSubmit: async () => {},
   });
 
   const wizardSteps = [
@@ -178,24 +183,25 @@ const CreateMailstoresVolume: FC<{
   ];
 
   const onComplete = useCallback(() => {
+    const v = form.state.values;
     const volumeType = volTypeList
-      ?.filter((item) => item?.value === advancedVolumeDetail?.volumeMain)[0]
+      ?.filter((item) => item?.value === v.volumeMain)[0]
       ?.label?.toLowerCase();
     CreateAdvancedRequest({
-      volumeName: advancedVolumeDetail?.volumeName,
+      volumeName: v.volumeName,
       volumeType,
-      storeType: advancedVolumeDetail?.unusedBucketType,
-      bucketConfigurationId: advancedVolumeDetail?.bucketId,
-      volumePrefix: advancedVolumeDetail?.prefix,
-      centralized: advancedVolumeDetail?.centralized,
-      isCurrent: advancedVolumeDetail?.isCurrent ? 1 : 0,
-      useInfrequentAccess: advancedVolumeDetail?.useInfrequentAccess,
-      useIntelligentTiering: advancedVolumeDetail?.useIntelligentTiering,
+      storeType: v.unusedBucketType,
+      bucketConfigurationId: v.bucketId,
+      volumePrefix: v.prefix,
+      centralized: v.centralized,
+      isCurrent: v.isCurrent ? 1 : 0,
+      useInfrequentAccess: v.useInfrequentAccess,
+      useIntelligentTiering: v.useIntelligentTiering,
     });
-  }, [CreateAdvancedRequest, advancedVolumeDetail, volTypeList]);
+  }, [CreateAdvancedRequest, form, volTypeList]);
 
   return (
-    <AdvancedVolumeContext.Provider value={{ advancedVolumeDetail, setAdvancedVolumeDetail, isAllocationToggle, setIsAllocationToggle }}>
+    <AdvancedVolumeContext.Provider value={{ form, isAllocationToggle, setIsAllocationToggle }}>
       <HorizontalWizard
         steps={wizardSteps}
         Wrapper={WizardInSection}

@@ -114,4 +114,16 @@ export default tseslint.config(
       ...jsxA11y.configs.recommended.rules,
     },
   },
+  {
+    files: ['apps/admin-ui-storage/**/*'],
+    plugins: {
+      'react-compiler': reactCompiler,
+      'jsx-a11y': jsxA11y,
+    },
+    rules: {
+      'react-compiler/react-compiler': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      ...jsxA11y.configs.recommended.rules,
+    },
+  },
 );
