@@ -4,37 +4,48 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
   DefaultTabBarItem,
+  getFieldErrorProps,
   Input,
   Padding,
   PasswordInput,
   Row,
   Select,
-  SelectItem,
+  type SelectItem,
   Switch,
   TabBar,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { ChangeEvent, FC, ReactElement, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, type FC, type ReactElement, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BucketConnectorRow, TestS3ConnectorRequest, UpdateS3ConnectorRequest } from '../../../types';
+import {
+  type BucketConnectorRow,
+  type TestS3ConnectorRequest,
+  type UpdateS3ConnectorRequest,
+} from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { listS3Regions, testS3Connector, updateS3Connector } from '../../services/bucket-service';
 import { EditBucketUsageTable } from './parts/edit-bucket-usage-table';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
+import {
+  CUSTOM_REGION_VALUE,
+  NO_REGION_VALUE,
+  S3_CONNECTOR_VALIDATION_MESSAGES,
+  s3ConnectorSchema,
+} from './s3-connector-schema';
+import type { S3ConnectorFormValues } from './s3-connector-types';
 import { parseBackupUsage, parseVolumeUsage } from './utils/s3-connector-usage';
 import { VerifyChangesModal } from './verify-changes-modal';
 
-const bucketNameRegex = /^\S+$/;
-const CUSTOM_REGION_VALUE = 'SET_CUSTOM_REGION';
-const NO_REGION_VALUE = '';
 const GENERAL_TAB = 'general';
 const VOLUMES_TAB = 'volumes';
 const BACKUP_TAB = 'backup';
@@ -48,46 +59,13 @@ function isBucketUnused(bucketDetail: BucketConnectorRow | undefined): boolean {
   ];
 
   return usageCandidates.every((value) => {
-    if (Array.isArray(value)) {
-      return value.length === 0;
-    }
-
+    if (Array.isArray(value)) return value.length === 0;
     if (typeof value === 'string') {
       const normalized = value.trim().toLowerCase();
-      return (
-        normalized === '' || normalized === 'unused' || normalized === '-' || normalized === 'none'
-      );
+      return normalized === '' || normalized === 'unused' || normalized === '-' || normalized === 'none';
     }
-
     return !value;
   });
-}
-
-type S3ConnectorFormFields = Pick<
-  UpdateS3ConnectorRequest,
-  'label' | 'bucketName' | 'accessKey' | 'secret' | 'url' | 'region' | 'insecureHttps'
->;
-
-type S3ConnectorFormState = {
-  bucketLabel: string;
-  bucketName: string;
-  accessKeyData: string;
-  secretKey: string;
-  urlData: string;
-  currentRegionValue: string;
-  acceptUntrustedSSL: boolean;
-};
-
-function buildS3ConnectorFieldsFromForm(formState: S3ConnectorFormState): S3ConnectorFormFields {
-  return {
-    label: formState.bucketLabel,
-    bucketName: formState.bucketName,
-    accessKey: formState.accessKeyData,
-    secret: formState.secretKey,
-    url: formState.urlData,
-    region: formState.currentRegionValue,
-    insecureHttps: formState.acceptUntrustedSSL,
-  };
 }
 
 type ReusedDefaultTabBarProps = {
@@ -147,42 +125,63 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [baseRegions, setBaseRegions] = useState<Array<SelectItem<string>>>([]);
-
-  const initialRegion = useMemo(() => {
-    if (!bucketDetail?.region) {
-      return {
-        label: t('label.region_none', 'None'),
-        value: NO_REGION_VALUE,
-      };
-    }
-    return (
-      baseRegions.find((item) => item.value === bucketDetail?.region) || {
-        label: t('label.region_set_custom', 'Set custom'),
-        value: CUSTOM_REGION_VALUE,
-      }
-    );
-  }, [baseRegions, bucketDetail?.region, t]);
-
-  const [bucketLabel, setBucketLabel] = useState(bucketDetail?.label ?? '');
-  const [bucketName, setBucketName] = useState(bucketDetail?.bucketName ?? '');
-  const [accessKeyData, setAccessKeyData] = useState(bucketDetail?.accessKey ?? '');
-  const [secretKey, setSecretKey] = useState(bucketDetail?.secret ?? '');
-  const [urlData, setUrlData] = useState(bucketDetail?.url ?? '');
-  const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [regionSelection, setRegionSelection] = useState(initialRegion);
-  const [isCustomRegion, setIsCustomRegion] = useState(initialRegion.value === CUSTOM_REGION_VALUE);
-  const [customRegion, setCustomRegion] = useState(
-    initialRegion.value === CUSTOM_REGION_VALUE ? bucketDetail?.region ?? '' : '',
-  );
-  const [acceptUntrustedSSL, setAcceptUntrustedSSL] = useState(true);
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
-
   const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [showVerifyResult, setShowVerifyResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);
   const [isVerifyError, setIsVerifyError] = useState(false);
   const [selectedTab, setSelectedTab] = useState(GENERAL_TAB);
+
+  const initialInsecureHttps = String(bucketDetail?.insecureHttps ?? true) === 'true';
+  const initialRegionValue = bucketDetail?.region ?? '';
+
+  const computedRegionValue = useMemo(() => {
+    if (!initialRegionValue) return NO_REGION_VALUE;
+    if (baseRegions.some((item) => item.value === initialRegionValue)) return initialRegionValue;
+    return CUSTOM_REGION_VALUE;
+  }, [baseRegions, initialRegionValue]);
+
+  const form = useForm({
+    defaultValues: {
+      bucketLabel: bucketDetail?.label ?? '',
+      bucketName: bucketDetail?.bucketName ?? '',
+      accessKey: bucketDetail?.accessKey ?? '',
+      secretKey: bucketDetail?.secret ?? '',
+      url: bucketDetail?.url ?? '',
+      prefix: bucketDetail?.prefix ?? '',
+      customRegion:
+        computedRegionValue === CUSTOM_REGION_VALUE ? initialRegionValue : '',
+      regionValue: computedRegionValue,
+      acceptUntrustedSSL: initialInsecureHttps,
+    } as S3ConnectorFormValues,
+    validators: { onChange: s3ConnectorSchema },
+    onSubmit: async () => {},
+  });
+
+  useEffect(() => {
+    form.setFieldValue('regionValue', computedRegionValue);
+    form.setFieldValue(
+      'customRegion',
+      computedRegionValue === CUSTOM_REGION_VALUE ? initialRegionValue : '',
+    );
+  }, [computedRegionValue, initialRegionValue, form]);
+
+  const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const values = useSelector(form.store, (s) => s.values);
+  const regionValue = values.regionValue;
+  const isCustomRegion = regionValue === CUSTOM_REGION_VALUE;
+  const isEndpointUrlRequired = isCustomRegion || regionValue === NO_REGION_VALUE;
+
+  const regionSelection = useMemo(() => {
+    const regionItems = [
+      { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
+      { label: t('label.region_set_custom', 'Set custom'), value: CUSTOM_REGION_VALUE },
+      ...baseRegions,
+    ];
+    return regionItems.find((item) => item.value === regionValue) ?? { value: '', label: '' };
+  }, [baseRegions, regionValue, t]);
 
   const volumeUsageRows = useMemo(
     () =>
@@ -203,156 +202,65 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
 
   const volumeHeaders = useMemo(
     () => [
-      {
-        id: 'server',
-        label: t('label.server', 'Server'),
-        bold: true,
-        width: '50%',
-      },
-      {
-        id: 'volume',
-        label: t('label.volume', 'Volume'),
-        bold: true,
-        width: '50%',
-      },
+      { id: 'server', label: t('label.server', 'Server'), bold: true, width: '50%' },
+      { id: 'volume', label: t('label.volume', 'Volume'), bold: true, width: '50%' },
     ],
     [t],
   );
 
   const backupHeaders = useMemo(
-    () => [
-      {
-        id: 'server',
-        label: t('label.server_name', 'Server name'),
-        bold: true,
-        width: '100%',
-      },
-    ],
+    () => [{ id: 'server', label: t('label.server_name', 'Server name'), bold: true, width: '100%' }],
     [t],
   );
 
   const tabItems = useMemo(
     () => [
-      {
-        id: GENERAL_TAB,
-        label: t('label.general', 'GENERAL').toUpperCase(),
-        CustomComponent: ReusedDefaultTabBar,
-      },
-      {
-        id: VOLUMES_TAB,
-        label: t('label.volumes', 'VOLUMES').toUpperCase(),
-        CustomComponent: ReusedDefaultTabBar,
-      },
-      {
-        id: BACKUP_TAB,
-        label: t('label.backup', 'BACKUP').toUpperCase(),
-        CustomComponent: ReusedDefaultTabBar,
-      },
+      { id: GENERAL_TAB, label: t('label.general', 'GENERAL').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
+      { id: VOLUMES_TAB, label: t('label.volumes', 'VOLUMES').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
+      { id: BACKUP_TAB, label: t('label.backup', 'BACKUP').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
     ],
     [t],
   );
 
-  const currentRegionValue = isCustomRegion ? customRegion : regionSelection?.value ?? '';
-  const initialRegionValue = bucketDetail?.region ?? '';
-  const isCustomRegionInvalid =
-    hasSubmitted && isCustomRegion && !bucketNameRegex.test(customRegion);
-  const isEndpointUrlRequired = isCustomRegion || currentRegionValue === '';
-  const isEndpointUrlInvalid =
-    hasSubmitted &&
-    isEndpointUrlRequired &&
-    (urlData.trim() === '' || !bucketNameRegex.test(urlData.trim()));
+  const currentRegionValue = isCustomRegion ? values.customRegion : regionValue;
 
   const changedFields = useMemo(() => {
     const fields: Array<{ label: string; value: string }> = [];
 
-    if (bucketLabel !== (bucketDetail?.label ?? '')) {
-      fields.push({
-        label: t('label.descriptive_name', 'Descriptive name'),
-        value: bucketLabel.trim() || '-',
-      });
+    if (values.bucketLabel !== (bucketDetail?.label ?? '')) {
+      fields.push({ label: t('label.descriptive_name', 'Descriptive name'), value: values.bucketLabel.trim() || '-' });
     }
-
-    if (urlData !== (bucketDetail?.url ?? '')) {
-      fields.push({
-        label: t('label.endpoint_url', 'Endpoint URL'),
-        value: urlData.trim() || '-',
-      });
+    if (values.url !== (bucketDetail?.url ?? '')) {
+      fields.push({ label: t('label.endpoint_url', 'Endpoint URL'), value: values.url.trim() || '-' });
     }
-
     if (currentRegionValue !== initialRegionValue) {
       let regionLabel: string;
-      if (regionSelection?.value === NO_REGION_VALUE) {
+      if (regionValue === NO_REGION_VALUE) {
         regionLabel = t('label.region_none', 'None');
       } else if (isCustomRegion) {
-        regionLabel = customRegion.trim() || '-';
+        regionLabel = values.customRegion.trim() || '-';
       } else {
-        regionLabel = String(regionSelection?.label ?? regionSelection?.value ?? '-');
+        regionLabel = String(regionSelection?.label ?? regionValue ?? '-');
       }
-      fields.push({
-        label: t('label.region', 'Region'),
-        value: regionLabel,
-      });
+      fields.push({ label: t('label.region', 'Region'), value: regionLabel });
     }
-
-    if (bucketName !== (bucketDetail?.bucketName ?? '')) {
-      fields.push({
-        label: t('label.bucket_name', 'Bucket name'),
-        value: bucketName.trim() || '-',
-      });
+    if (values.bucketName !== (bucketDetail?.bucketName ?? '')) {
+      fields.push({ label: t('label.bucket_name', 'Bucket name'), value: values.bucketName.trim() || '-' });
     }
-
-    if (accessKeyData !== (bucketDetail?.accessKey ?? '')) {
-      fields.push({
-        label: t('label.access_key', 'Access Key ID'),
-        value: accessKeyData.trim() || '-',
-      });
+    if (values.accessKey !== (bucketDetail?.accessKey ?? '')) {
+      fields.push({ label: t('label.access_key', 'Access Key ID'), value: values.accessKey.trim() || '-' });
     }
-
-    if (secretKey !== (bucketDetail?.secret ?? '')) {
-      fields.push({
-        label: t('label.secret_key', 'Secret Access Key'),
-        value: '********',
-      });
+    if (values.secretKey !== (bucketDetail?.secret ?? '')) {
+      fields.push({ label: t('label.secret_key', 'Secret Access Key'), value: '********' });
     }
-
-    if (String(acceptUntrustedSSL) !== String(bucketDetail?.insecureHttps ?? true)) {
+    if (values.acceptUntrustedSSL !== initialInsecureHttps) {
       fields.push({
         label: t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates'),
-        value: acceptUntrustedSSL ? t('label.yes', 'Yes') : t('label.no', 'No'),
+        value: values.acceptUntrustedSSL ? t('label.yes', 'Yes') : t('label.no', 'No'),
       });
     }
-
     return fields;
-  }, [
-    accessKeyData,
-    acceptUntrustedSSL,
-    bucketDetail?.accessKey,
-    bucketDetail?.bucketName,
-    bucketDetail?.insecureHttps,
-    bucketDetail?.label,
-    bucketDetail?.secret,
-    bucketDetail?.url,
-    bucketLabel,
-    bucketName,
-    currentRegionValue,
-    customRegion,
-    initialRegionValue,
-    isCustomRegion,
-    regionSelection?.label,
-    regionSelection?.value,
-    secretKey,
-    t,
-    urlData,
-  ]);
-
-  const isDirty =
-    bucketLabel !== (bucketDetail?.label ?? '') ||
-    bucketName !== (bucketDetail?.bucketName ?? '') ||
-    accessKeyData !== (bucketDetail?.accessKey ?? '') ||
-    secretKey !== (bucketDetail?.secret ?? '') ||
-    urlData !== (bucketDetail?.url ?? '') ||
-    currentRegionValue !== initialRegionValue ||
-    String(acceptUntrustedSSL) !== String(bucketDetail?.insecureHttps ?? true);
+  }, [values, bucketDetail, currentRegionValue, initialRegionValue, regionValue, isCustomRegion, regionSelection, initialInsecureHttps, t]);
 
   const showDeleteConnector = isBucketUnused(bucketDetail);
 
@@ -363,38 +271,20 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   useEffect(() => {
     listS3Regions()
       .then((regions) => {
-        const mappedRegions = regions.map((region) => ({
-          value: region.id,
-          label: `${region.description}, [${region.id}]`,
-        }));
-        setBaseRegions(mappedRegions);
+        setBaseRegions(
+          regions.map((region) => ({
+            value: region.id,
+            label: `${region.description}, [${region.id}]`,
+          })),
+        );
       })
       .catch(() => {
         setBaseRegions([]);
       });
   }, []);
 
-  useEffect(() => {
-    setAcceptUntrustedSSL(String(bucketDetail?.insecureHttps ?? true) === 'true');
-  }, [bucketDetail?.insecureHttps]);
-
-  useEffect(() => {
-    setRegionSelection(initialRegion);
-    const isCustom = initialRegion.value === CUSTOM_REGION_VALUE;
-    setIsCustomRegion(isCustom);
-    setCustomRegion(
-      isCustom && initialRegion.value !== NO_REGION_VALUE ? bucketDetail?.region ?? '' : '',
-    );
-  }, [bucketDetail?.region, initialRegion]);
-
-  async function saveChanges(): Promise<{
-    ok: boolean;
-    errorMessage: string;
-    errorDetails?: CheckResult;
-  }> {
-    if (!isDirty) {
-      return { ok: true, errorMessage: '' };
-    }
+  async function saveChanges(): Promise<{ ok: boolean; errorDetails?: CheckResult }> {
+    const v = form.state.values;
 
     const payload: UpdateS3ConnectorRequest = {
       _jsns: ZIMBRA_ADMIN_URN,
@@ -402,62 +292,37 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       action: 'updateS3Connector',
       uuid: bucketDetail?.uuid ?? '',
       iAmSure: true,
-      insecureHttps: acceptUntrustedSSL,
+      insecureHttps: v.acceptUntrustedSSL,
     };
 
-    if (bucketLabel !== (bucketDetail?.label ?? '')) {
-      payload.label = bucketLabel;
-    }
-    if (bucketName !== (bucketDetail?.bucketName ?? '')) {
-      payload.bucketName = bucketName;
-    }
-    if (accessKeyData !== (bucketDetail?.accessKey ?? '')) {
-      payload.accessKey = accessKeyData;
-    }
-    if (secretKey !== (bucketDetail?.secret ?? '')) {
-      payload.secret = secretKey;
-    }
-    if (urlData !== (bucketDetail?.url ?? '')) {
-      payload.url = urlData;
-    }
-    if (currentRegionValue !== initialRegionValue) {
-      payload.region = currentRegionValue;
-    }
+    if (v.bucketLabel !== (bucketDetail?.label ?? '')) payload.label = v.bucketLabel;
+    if (v.bucketName !== (bucketDetail?.bucketName ?? '')) payload.bucketName = v.bucketName;
+    if (v.accessKey !== (bucketDetail?.accessKey ?? '')) payload.accessKey = v.accessKey;
+    if (v.secretKey !== (bucketDetail?.secret ?? '')) payload.secret = v.secretKey;
+    if (v.url !== (bucketDetail?.url ?? '')) payload.url = v.url;
+    if (currentRegionValue !== initialRegionValue) payload.region = currentRegionValue;
 
     const updateResData = await updateS3Connector(payload);
 
     if (updateResData?.ok) {
       getBucketListType();
       setToggleForGetAPICall(!toggleForGetAPICall);
-      return { ok: true, errorMessage: '' };
+      return { ok: true };
     }
 
-    const errorMessage =
-      typeof updateResData?.error === 'string'
-        ? updateResData.error
-        : updateResData?.error?.message || '';
     const errorDetails =
       typeof updateResData?.error === 'string' ? undefined : updateResData?.error?.details;
-
-    return { ok: false, errorMessage, errorDetails };
+    return { ok: false, errorDetails };
   }
 
-  async function onVerifyAndSaveChanges(): Promise<void> {
-    setHasSubmitted(true);
+  function onVerifyAndSaveChanges(): void {
+    void form.handleSubmit();
+  }
 
-    if (bucketLabel.trim() === '' || bucketName.trim() === '') {
-      return;
-    }
-
-    if (isCustomRegion && !bucketNameRegex.test(customRegion)) {
-      return;
-    }
-
-    if (isEndpointUrlRequired && (urlData.trim() === '' || !bucketNameRegex.test(urlData.trim()))) {
-      return;
-    }
-
-    if (!isDirty || changedFields.length === 0) {
+  useEffect(() => {
+    if (form.state.submissionAttempts > 0 && form.state.isValid && isDirty && changedFields.length > 0) {
+      setIsVerifyModalOpen(true);
+    } else if (form.state.submissionAttempts > 0 && form.state.isValid && !isDirty) {
       createSnackbar({
         key: 'no-changes',
         severity: 'info',
@@ -466,11 +331,8 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         hideButton: true,
         replace: true,
       });
-      return;
     }
-
-    setIsVerifyModalOpen(true);
-  }
+  }, [form.state.submissionAttempts, form.state.isValid, isDirty, changedFields.length, createSnackbar, t]);
 
   async function onApplyChanges(): Promise<void> {
     setIsVerifyModalOpen(false);
@@ -487,7 +349,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       setCheckDetails(errorDetails);
       setIsVerifyError(true);
     }
-
+    setShowVerifyResult(true);
     setIsVerifyPending(false);
   }
 
@@ -498,20 +360,19 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     setIsVerifyPending(true);
 
     try {
+      const v = form.state.values;
       const payload: TestS3ConnectorRequest = {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
         action: 'testS3Connector',
         uuid: bucketDetail?.uuid ?? '',
-        ...buildS3ConnectorFieldsFromForm({
-          bucketLabel,
-          bucketName,
-          accessKeyData,
-          secretKey,
-          urlData,
-          currentRegionValue,
-          acceptUntrustedSSL,
-        }),
+        label: v.bucketLabel,
+        bucketName: v.bucketName,
+        accessKey: v.accessKey,
+        secret: v.secretKey,
+        url: v.url,
+        region: currentRegionValue,
+        insecureHttps: v.acceptUntrustedSSL,
       };
 
       const response = await testS3Connector(payload);
@@ -528,6 +389,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       setCheckDetails(undefined);
       setIsVerifyError(true);
     } finally {
+      setShowVerifyResult(true);
       setIsVerifyPending(false);
     }
   }
@@ -610,190 +472,128 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
               </Row>
 
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-                <Input
-                  backgroundColor="gray5"
-                  label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
-                  value={bucketLabel}
-                  onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                    setBucketLabel(ev.target.value);
+                <form.Field name="bucketLabel">
+                  {(field) => {
+                    const error = getFieldErrorProps(field, isSubmitted, t, S3_CONNECTOR_VALIDATION_MESSAGES);
+                    return (
+                      <Input
+                        backgroundColor="gray5"
+                        label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                        hasError={error.hasError}
+                        description={error.description}
+                      />
+                    );
                   }}
-                  hasError={hasSubmitted && bucketLabel.trim() === ''}
-                />
-                {hasSubmitted && bucketLabel.trim() === '' && (
-                  <Padding top="extrasmall">
-                    <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-                      {t(
-                        'storages.s3Connectors.descriptiveNameRequired',
-                        'This field is mandatory',
-                      )}
-                    </ds-text>
-                  </Padding>
-                )}
+                </form.Field>
               </Row>
 
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-                <Input
-                  backgroundColor="gray5"
-                  label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
-                  value={bucketName}
-                  onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                    setBucketName(ev.target.value);
+                <form.Field name="bucketName">
+                  {(field) => {
+                    const error = getFieldErrorProps(field, isSubmitted, t, S3_CONNECTOR_VALIDATION_MESSAGES);
+                    return (
+                      <Input
+                        backgroundColor="gray5"
+                        label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                        hasError={error.hasError}
+                        description={error.description}
+                      />
+                    );
                   }}
-                  hasError={hasSubmitted && bucketName.trim() === ''}
-                />
-                {hasSubmitted && bucketName.trim() === '' && (
-                  <Padding top="extrasmall">
-                    <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-                      {t(
-                        'storages.s3Connectors.invalidBucketName',
-                        "This field can't be blank or have white space",
-                      )}
-                    </ds-text>
-                  </Padding>
-                )}
+                </form.Field>
               </Row>
 
               <Row width="100%" padding={{ top: 'large' }}>
-                <Row
-                  width="48%"
-                  mainAlignment="flex-start"
-                  style={{ display: 'inline', height: '100%' }}
-                >
-                  <Input
-                    backgroundColor="gray5"
-                    label={t('label.access_key', 'Access Key ID*')}
-                    value={accessKeyData}
-                    onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                      setAccessKeyData(ev.target.value);
-                    }}
-                  />
+                <Row width="48%" mainAlignment="flex-start" style={{ display: 'inline', height: '100%' }}>
+                  <form.Field name="accessKey">
+                    {(field) => (
+                      <Input
+                        backgroundColor="gray5"
+                        label={t('label.access_key', 'Access Key ID*')}
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                      />
+                    )}
+                  </form.Field>
                 </Row>
                 <Padding horizontal="small" />
-                <Row
-                  width="48%"
-                  mainAlignment="flex-end"
-                  style={{ display: 'inline', height: '100%' }}
-                >
-                  <PasswordInput
-                    backgroundColor="gray5"
-                    label={t('label.secret_key', 'Secret Access Key*')}
-                    value={secretKey}
-                    onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                      setSecretKey(ev.target.value);
-                    }}
-                  />
+                <Row width="48%" mainAlignment="flex-end" style={{ display: 'inline', height: '100%' }}>
+                  <form.Field name="secretKey">
+                    {(field) => (
+                      <PasswordInput
+                        backgroundColor="gray5"
+                        label={t('label.secret_key', 'Secret Access Key*')}
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                      />
+                    )}
+                  </form.Field>
                 </Row>
               </Row>
 
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-                <Select
-                  items={[
-                    {
-                      label: t('label.region_none', 'None'),
-                      value: NO_REGION_VALUE,
-                    },
-                    {
-                      label: t('label.region_set_custom', 'Set custom'),
-                      value: CUSTOM_REGION_VALUE,
-                    },
-                    ...baseRegions,
-                  ]}
-                  background="gray5"
-                  label={t('label.region', 'Region')}
-                  selection={regionSelection}
-                  showCheckbox={false}
-                  onChange={(selectedValue): void => {
-                    const regionValue = Array.isArray(selectedValue)
-                      ? (selectedValue[0] as SelectItem<string> | undefined)?.value
-                      : selectedValue;
-
-                    if (
-                      regionValue !== CUSTOM_REGION_VALUE &&
-                      regionValue !== NO_REGION_VALUE &&
-                      typeof regionValue !== 'string'
-                    ) {
-                      return;
-                    }
-
-                    const nextSelection =
-                      typeof regionValue === 'string' ? regionValue : CUSTOM_REGION_VALUE;
-
-                    if (nextSelection === NO_REGION_VALUE) {
-                      setIsCustomRegion(false);
-                      setRegionSelection({
-                        label: t('label.region_none', 'None'),
-                        value: NO_REGION_VALUE,
-                      });
-                      setCustomRegion('');
-                      return;
-                    }
-
-                    if (nextSelection === CUSTOM_REGION_VALUE) {
-                      setIsCustomRegion(true);
-                      setRegionSelection({
-                        label: t('label.region_set_custom', 'Set custom'),
-                        value: CUSTOM_REGION_VALUE,
-                      });
-                      return;
-                    }
-
-                    const selectedRegion = baseRegions.find((item) => item.value === nextSelection);
-                    if (selectedRegion) {
-                      setIsCustomRegion(false);
-                      setRegionSelection(selectedRegion);
-                    }
-                  }}
-                />
+                <form.Field name="regionValue">
+                  {(field) => (
+                    <Select
+                      items={[
+                        { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
+                        { label: t('label.region_set_custom', 'Set custom'), value: CUSTOM_REGION_VALUE },
+                        ...baseRegions,
+                      ]}
+                      background="gray5"
+                      label={t('label.region', 'Region')}
+                      selection={regionSelection}
+                      showCheckbox={false}
+                      onChange={(e: string | null): void => field.handleChange(e ?? NO_REGION_VALUE)}
+                    />
+                  )}
+                </form.Field>
               </Row>
 
               {isCustomRegion && (
                 <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-                  <Input
-                    backgroundColor="gray5"
-                    label={t('label.custom_region', 'Custom region')}
-                    value={customRegion}
-                    onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                      setCustomRegion(ev.target.value);
+                  <form.Field name="customRegion">
+                    {(field) => {
+                      const error = getFieldErrorProps(field, isSubmitted, t, S3_CONNECTOR_VALIDATION_MESSAGES);
+                      return (
+                        <Input
+                          backgroundColor="gray5"
+                          label={t('label.custom_region', 'Custom region')}
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                          hasError={error.hasError}
+                          description={error.description}
+                        />
+                      );
                     }}
-                    hasError={isCustomRegionInvalid}
-                  />
-                  {isCustomRegionInvalid && (
-                    <Padding top="extrasmall">
-                      <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-                        {t(
-                          'storages.s3Connectors.invalidCustomRegion',
-                          "This field can't be blank or have white space",
-                        )}
-                      </ds-text>
-                    </Padding>
-                  )}
+                  </form.Field>
                 </Row>
               )}
 
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-                <Input
-                  backgroundColor="gray5"
-                  label={
-                    isEndpointUrlRequired
-                      ? t('label.endpoint_url_required', 'Endpoint URL*')
-                      : t('label.endpoint_url', 'Endpoint URL')
-                  }
-                  value={urlData}
-                  onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
-                    setUrlData(ev.target.value);
+                <form.Field name="url">
+                  {(field) => {
+                    const error = getFieldErrorProps(field, isSubmitted, t, S3_CONNECTOR_VALIDATION_MESSAGES);
+                    return (
+                      <Input
+                        backgroundColor="gray5"
+                        label={
+                          isEndpointUrlRequired
+                            ? t('label.endpoint_url_required', 'Endpoint URL*')
+                            : t('label.endpoint_url', 'Endpoint URL')
+                        }
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                        hasError={error.hasError}
+                        description={error.description}
+                      />
+                    );
                   }}
-                  hasError={isEndpointUrlInvalid}
-                />
-                {isEndpointUrlInvalid && (
-                  <Padding top="extrasmall">
-                    <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
-                      {t(
-                        'storages.s3Connectors.invalidEndpointUrl',
-                        "This field is required when Region is 'None' or 'Custom'",
-                      )}
-                    </ds-text>
-                  </Padding>
-                )}
+                </form.Field>
                 <Padding top="extrasmall">
                   <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
                     {t(
@@ -821,12 +621,16 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
               </Row>
               <Row width="100%" padding={{ top: 'small' }} mainAlignment="space-between">
                 <Row width="90%" mainAlignment="flex-start">
-                  <Switch
-                    label={t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates')}
-                    value={acceptUntrustedSSL}
-                    onClick={(): void => setAcceptUntrustedSSL(!acceptUntrustedSSL)}
-                    iconColor="primary"
-                  />
+                  <form.Field name="acceptUntrustedSSL">
+                    {(field) => (
+                      <Switch
+                        label={t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates')}
+                        value={field.state.value}
+                        onClick={(): void => field.handleChange(!field.state.value)}
+                        iconColor="primary"
+                      />
+                    )}
+                  </form.Field>
                 </Row>
                 <Row width="10%" mainAlignment="flex-end">
                   <Tooltip
@@ -842,11 +646,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
                   </Tooltip>
                 </Row>
               </Row>
-              <Row
-                width="100%"
-                padding={{ top: 'extrasmall', left: '2rem' }}
-                mainAlignment="flex-start"
-              >
+              <Row width="100%" padding={{ top: 'extrasmall', left: '2rem' }} mainAlignment="flex-start">
                 <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
                   {t(
                     'buckets.untrusted_ssl_hint',
@@ -912,7 +712,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
                 type="outlined"
                 color="primary"
                 label={t('storages.s3Connectors.testConnection', 'Test Connection')}
-                onClick={onTestConnection}
+                onClick={(): void => void onTestConnection()}
                 disabled={isVerifyPending || !bucketDetail?.uuid}
               />
             </Padding>
@@ -921,11 +721,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
               color="primary"
               label={t('label.verify_and_save_changes', 'VERIFY & SAVE CHANGES')}
               onClick={onVerifyAndSaveChanges}
-              disabled={
-                isVerifyPending ||
-                (isCustomRegion && !bucketNameRegex.test(customRegion)) ||
-                changedFields.length === 0
-              }
+              disabled={isVerifyPending || changedFields.length === 0}
             />
           </Row>
         </Row>
@@ -937,14 +733,11 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
         applyHandler={onApplyChanges}
       />
       <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
-      <VerifySuccess
-        isSuccess={showVerifyResult && isVerifySuccess}
-        onComplete={handleSuccessComplete}
-      />
+      <VerifySuccess isSuccess={showVerifyResult && isVerifySuccess} onComplete={handleSuccessComplete} />
       <VerifyError
         isError={showVerifyResult && isVerifyError}
         checkDetails={checkDetails}
-        onRetry={() => setShowVerifyResult(false)}
+        onRetry={(): void => setShowVerifyResult(false)}
       />
     </>
   );
