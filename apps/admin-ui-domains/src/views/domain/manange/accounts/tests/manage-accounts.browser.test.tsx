@@ -489,6 +489,10 @@ describe('ManageAccounts (browser)', () => {
             const grantsInterceptor = createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
             const folderInterceptor = createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
             const sessionsInterceptor = createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+            createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
+            createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -770,6 +774,8 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
             createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
             createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -796,6 +802,8 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
             createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
             createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -823,6 +831,8 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
             createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
             createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -850,6 +860,8 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
             createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
             createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -882,6 +894,8 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
             createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
             createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -912,6 +926,8 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
             createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
             createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -944,6 +960,8 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
             createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
             createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -986,6 +1004,8 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
             createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
             createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -1025,6 +1045,8 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
             createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
             createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -1057,6 +1079,8 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
             createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
             createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -1088,6 +1112,9 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
             createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+            createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -1113,6 +1140,9 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
             createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+            createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -1149,6 +1179,9 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
             createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+            createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -1183,6 +1216,9 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
             createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
             createBrowserSoapAPIInterceptor('GetSessions', { s: [] });
+            createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -1213,6 +1249,10 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
             createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
             createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+            createBrowserSoapAPIInterceptor('GetCos', { cos: [{ id: 'cos-default-id', name: 'default', a: [] }] });
+            createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+            createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+            createBrowserSoapAPIInterceptor('GetMailbox', { mbox: [] });
 
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
