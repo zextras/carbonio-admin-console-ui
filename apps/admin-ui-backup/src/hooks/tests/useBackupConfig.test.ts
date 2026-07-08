@@ -45,6 +45,7 @@ import { useBackupConfig } from '../useBackupConfig';
 describe('useBackupConfig', () => {
   let mockCreateSnackbar: Mock;
   let mockInvalidateQueries: Mock;
+  let mockSetQueryData: Mock;
 
   const mockGlobalConfig = {
     backupEnabled: true,
@@ -74,6 +75,7 @@ describe('useBackupConfig', () => {
   beforeEach(() => {
     mockCreateSnackbar = vi.fn();
     mockInvalidateQueries = vi.fn();
+    mockSetQueryData = vi.fn();
 
     (useSnackbar as Mock).mockReturnValue(mockCreateSnackbar);
 
@@ -81,6 +83,7 @@ describe('useBackupConfig', () => {
 
     (useQueryClient as unknown as Mock).mockReturnValue({
       invalidateQueries: mockInvalidateQueries,
+      setQueryData: mockSetQueryData,
     });
 
     (useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
@@ -224,6 +227,14 @@ describe('useBackupConfig', () => {
         queryKey: backupQueryKeys.globalConfig(),
       });
 
+      expect(mockSetQueryData).toHaveBeenCalledWith(
+        backupQueryKeys.globalConfig(),
+        expect.objectContaining({
+          backupEnabled: false,
+          backupPath: '/new-backup',
+        }),
+      );
+
       expect(mockCreateSnackbar).toHaveBeenCalledWith({
         key: 'success',
         severity: 'success',
@@ -251,6 +262,7 @@ describe('useBackupConfig', () => {
 
       await waitFor(() => {
         expect(mockInvalidateQueries).toHaveBeenCalled();
+        expect(mockSetQueryData).toHaveBeenCalled();
         expect(mockCreateSnackbar).toHaveBeenCalledWith(
           expect.objectContaining({ severity: 'success' }),
         );

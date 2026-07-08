@@ -71,6 +71,7 @@ export const useBackupConfig = (): {
 		modifyBackupRequest(modifiedData)
 			.then((data) => {
 				if (data?.status === 200 || isEmpty(data)) {
+					queryClient.setQueryData(backupQueryKeys.globalConfig(), backupDetail);
 					queryClient.invalidateQueries({ queryKey: backupQueryKeys.globalConfig() });
 					createSnackbar({
 						key: 'success',
