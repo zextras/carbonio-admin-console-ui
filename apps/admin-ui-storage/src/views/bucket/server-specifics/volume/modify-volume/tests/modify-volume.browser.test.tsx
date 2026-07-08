@@ -10,15 +10,18 @@ import {
 	setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
+import { Route, Routes } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { Volume } from '../../../../../../../types';
+import { DATA_VOLUMES } from '../../../../../../constants';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import ModifyVolume from '../modify-volume';
 
 const SERVER_NAME = 'mailstore1.test.com';
 const SERVER_ID = 'server-1';
+const VOLUME_ROUTE_ENTRY = `/${SERVER_NAME}/${DATA_VOLUMES}`;
 
 type S3ConnectorEntry = {
 	uuid: string;
@@ -99,21 +102,27 @@ function renderModifyVolume(
 	const setOpen = overrides?.setOpen ?? vi.fn();
 
 	return (
-		<ModifyVolume
-			volumeId={volumeId}
-			setmodifyVolumeToggle={setmodifyVolumeToggle}
-			getAllVolumesRequest={getAllVolumesRequest}
-			selectedServerId={SERVER_ID}
-			volumeList={volumeList}
-			setOpen={setOpen}
-		/>
+		<Routes>
+			<Route
+				path={`/:server/${DATA_VOLUMES}`}
+				element={
+					<ModifyVolume
+						volumeId={volumeId}
+						setmodifyVolumeToggle={setmodifyVolumeToggle}
+						getAllVolumesRequest={getAllVolumesRequest}
+						selectedServerId={SERVER_ID}
+						volumeList={volumeList}
+						setOpen={setOpen}
+					/>
+				}
+			/>
+		</Routes>
 	);
 }
 
 describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 	beforeEach(() => {
 		useBucketVolumeStore.setState({
-			selectedServerName: SERVER_NAME,
 			isVolumeAllDetail: [],
 		});
 	});
@@ -124,28 +133,36 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 		});
 
 		it('should display primary volume name when volumeId matches a primary volume', async () => {
-			await setupBrowserTest(renderModifyVolume(PRIMARY_VOLUME.id as number));
+			await setupBrowserTest(renderModifyVolume(PRIMARY_VOLUME.id as number), {
+				initialRouterEntry: VOLUME_ROUTE_ENTRY,
+			});
 			await expect
 				.element(page.getByText(`${PRIMARY_VOLUME.name} Details`, { exact: true }))
 				.toBeVisible();
 		});
 
 		it('should display secondary volume name when volumeId matches a secondary volume', async () => {
-			await setupBrowserTest(renderModifyVolume(SECONDARY_VOLUME.id as number));
+			await setupBrowserTest(renderModifyVolume(SECONDARY_VOLUME.id as number), {
+				initialRouterEntry: VOLUME_ROUTE_ENTRY,
+			});
 			await expect
 				.element(page.getByText(`${SECONDARY_VOLUME.name} Details`, { exact: true }))
 				.toBeVisible();
 		});
 
 		it('should display index volume name when volumeId matches an index volume', async () => {
-			await setupBrowserTest(renderModifyVolume(INDEX_VOLUME.id as number));
+			await setupBrowserTest(renderModifyVolume(INDEX_VOLUME.id as number), {
+				initialRouterEntry: VOLUME_ROUTE_ENTRY,
+			});
 			await expect
 				.element(page.getByText(`${INDEX_VOLUME.name} Details`, { exact: true }))
 				.toBeVisible();
 		});
 
 		it('should display the volume path for a matched primary volume', async () => {
-			await setupBrowserTest(renderModifyVolume(PRIMARY_VOLUME.id as number));
+			await setupBrowserTest(renderModifyVolume(PRIMARY_VOLUME.id as number), {
+				initialRouterEntry: VOLUME_ROUTE_ENTRY,
+			});
 			await expect
 				.element(page.getByRole('textbox', { name: /path/i }))
 				.toHaveValue(PRIMARY_VOLUME.path as string);
@@ -155,20 +172,25 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 			const setmodifyVolumeToggle = vi.fn();
 			await setupBrowserTest(
 				renderModifyVolume(9999, VOLUME_LIST, { setmodifyVolumeToggle }),
+				{ initialRouterEntry: VOLUME_ROUTE_ENTRY },
 			);
 			// No match: toggle should not have been called with true
 			expect(setmodifyVolumeToggle).not.toHaveBeenCalledWith(true);
 		});
 
 		it('should render the Volume Name input with the correct value for secondary volume', async () => {
-			await setupBrowserTest(renderModifyVolume(SECONDARY_VOLUME.id as number));
+			await setupBrowserTest(renderModifyVolume(SECONDARY_VOLUME.id as number), {
+				initialRouterEntry: VOLUME_ROUTE_ENTRY,
+			});
 			await expect
 				.element(page.getByRole('textbox', { name: /volume name/i }))
 				.toHaveValue(SECONDARY_VOLUME.name as string);
 		});
 
 		it('should render the Volume Name input with the correct value for index volume', async () => {
-			await setupBrowserTest(renderModifyVolume(INDEX_VOLUME.id as number));
+			await setupBrowserTest(renderModifyVolume(INDEX_VOLUME.id as number), {
+				initialRouterEntry: VOLUME_ROUTE_ENTRY,
+			});
 			await expect
 				.element(page.getByRole('textbox', { name: /volume name/i }))
 				.toHaveValue(INDEX_VOLUME.name as string);
@@ -215,7 +237,10 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 		});
 
 		it('should display tiering controls for external S3 volume with tiering support', async () => {
-			await setupBrowserTest(renderModifyVolume(EXTERNAL_S3_VOLUME.id as number, EXTERNAL_VOLUME_LIST));
+			await setupBrowserTest(
+				renderModifyVolume(EXTERNAL_S3_VOLUME.id as number, EXTERNAL_VOLUME_LIST),
+				{ initialRouterEntry: VOLUME_ROUTE_ENTRY },
+			);
 			await vi.waitFor(() => {
 				expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
 			});

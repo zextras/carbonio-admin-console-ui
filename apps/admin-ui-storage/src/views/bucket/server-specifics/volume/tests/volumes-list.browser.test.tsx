@@ -13,9 +13,11 @@ import {
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
 import React from 'react';
+import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { DATA_VOLUMES } from '../../../../../constants';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
 import { VolumeContext } from '../create-volume/volume-context';
 import VolumesDetailPanel from '../volumes-list';
@@ -173,23 +175,28 @@ function renderWithContext(): React.ReactElement {
 	};
 
 	return (
-		<VolumeContext.Provider value={volumeContext}>
-			<VolumesDetailPanel />
-		</VolumeContext.Provider>
+		<Routes>
+			<Route
+				path={`/:server/${DATA_VOLUMES}`}
+				element={
+					<VolumeContext.Provider value={volumeContext}>
+						<VolumesDetailPanel />
+					</VolumeContext.Provider>
+				}
+			/>
+		</Routes>
 	);
 }
 
 describe('VolumesDetailPanel (browser)', () => {
 	beforeEach(() => {
 		useBucketVolumeStore.setState({
-			selectedServerName: SERVER_NAME,
 			isVolumeAllDetail: [],
 		});
 	});
 
 	afterEach(() => {
 		useBucketVolumeStore.setState({
-			selectedServerName: '',
 			isVolumeAllDetail: [],
 		});
 	});
