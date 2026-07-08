@@ -51,7 +51,7 @@ const BackupListPanel: FC = () => {
   const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
   const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
   const { data: serverList = [], isError, isLoading } = useMailstoreServers();
-  const [searchServer, setSearchServer] = useState<string>('');
+  const [searchServer, setSearchServer] = useState<string>(selectedServer);
   const [serverNames, setServerNames] = useState<Array<ListItemType>>([]);
   const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
   const { moduleLicenseInfo } = useModuleLicenseInfo();
