@@ -25,7 +25,7 @@ import ServersList from './default-setting/backup-servers-list';
 import ServerAdvanced from './server-advanced/server-advanced';
 
 const BackupDetailPanel: FC = () => {
-  const { data: globalConfig = {} } = useGlobalConfig();
+  const { data: globalConfig, isLoading } = useGlobalConfig();
   const [t] = useTranslation();
   return (
     <Container
@@ -35,7 +35,9 @@ const BackupDetailPanel: FC = () => {
       style={{ overflowY: 'hidden' }}
       background="gray6"
     >
-      {!Object.keys(globalConfig).length ? (
+      {isLoading ? (
+        <Container />
+      ) : !Object.keys(globalConfig ?? {}).length ? (
         <Row background="info" width="100%" padding="small" mainAlignment="space-between">
           <Row mainAlignment="flex-start">
             <ds-icon icon="CloseCircleOutline" size="large" color="white"></ds-icon>

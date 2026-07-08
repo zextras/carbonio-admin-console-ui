@@ -25,7 +25,7 @@ const BackupAdvanced: FC = () => {
     t,
   } = useBackupConfig();
 
-  const { data: globalConfig = {} } = useGlobalConfig();
+  const { data: globalConfig } = useGlobalConfig();
 
   const compressLevelItems = useMemo(
     () => [
