@@ -24,12 +24,11 @@ export function getFieldErrorProps(
   }
 
   const firstError = meta.errors[0];
-  const key = typeof firstError === 'string' ? firstError : firstError?.message;
+  const rawKey = typeof firstError === 'string' ? firstError : firstError?.message;
+  const key = typeof rawKey === 'string' ? rawKey : undefined;
 
   return {
     hasError: true,
-    description: key
-      ? t(key, errorMessages?.[key] ?? key)
-      : undefined,
+    description: key ? t(key, errorMessages?.[key] ?? key) : undefined,
   };
 }
