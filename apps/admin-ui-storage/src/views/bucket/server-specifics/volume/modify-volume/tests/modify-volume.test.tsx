@@ -15,6 +15,7 @@ const mockSoapFetch = vi.hoisted(() => vi.fn());
 const mockFetchSoap = vi.hoisted(() => vi.fn());
 const mockCreateSnackbar = vi.hoisted(() => vi.fn());
 const mockListS3Connector = vi.hoisted(() => vi.fn());
+const mockS3ConnectorsData = vi.hoisted(() => ({ current: [] as Array<Record<string, unknown>> }));
 const mockAdvancedMode = vi.hoisted(() => ({ value: false }));
 const mockT = vi.hoisted(
   () => (_key: string, fallback?: string, options?: { message?: string }) =>
@@ -124,6 +125,10 @@ vi.mock('../../../../../../services/bucket-service', () => ({
   fetchSoap: mockFetchSoap,
 }));
 
+vi.mock('../../../../../../services/use-list-s3-connectors', () => ({
+  useListS3Connectors: () => ({ data: mockS3ConnectorsData.current, isLoading: false }),
+}));
+
 vi.mock('react-router', () => ({
   useParams: () => ({ server: 'mailstore1.example.com' }),
 }));
@@ -132,6 +137,7 @@ describe('ModifyVolume', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAdvancedMode.value = false;
+    mockS3ConnectorsData.current = [];
   });
 
   it('should show error snackbar and refresh volume list when GetVolume fails in non-advanced mode', async () => {
@@ -185,7 +191,7 @@ describe('ModifyVolume', () => {
 
   it('should set unused bucket data when external advanced volume loads connectors', async () => {
     mockAdvancedMode.value = true;
-    mockListS3Connector.mockResolvedValue([
+    mockS3ConnectorsData.current = [
       {
         uuid: 'bucket-1',
         label: 'Primary connector',
@@ -198,7 +204,7 @@ describe('ModifyVolume', () => {
         bucketName: 'secondary-bucket',
         storeType: 'Ceph',
       },
-    ]);
+    ];
 
     const setmodifyVolumeToggle = vi.fn();
 
@@ -231,10 +237,6 @@ describe('ModifyVolume', () => {
         setOpen={vi.fn()}
       />,
     );
-
-    await waitFor(() => {
-      expect(mockListS3Connector).toHaveBeenCalled();
-    });
 
     await waitFor(() => {
       expect(
@@ -289,7 +291,7 @@ describe('ModifyVolume', () => {
 
   function renderExternalS3Volume(): ReturnType<typeof render> {
     mockAdvancedMode.value = true;
-    mockListS3Connector.mockResolvedValue(externalS3Connectors);
+    mockS3ConnectorsData.current = externalS3Connectors;
 
     return render(
       <ModifyVolume
@@ -331,7 +333,7 @@ describe('ModifyVolume', () => {
 
   it('should render tiering switches when volume uses uuid from getAllVolumes API shape', async () => {
     mockAdvancedMode.value = true;
-    mockListS3Connector.mockResolvedValue([
+    mockS3ConnectorsData.current = [
       {
         uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
         label: 'S3 connector',
@@ -340,7 +342,7 @@ describe('ModifyVolume', () => {
         tieringSupported: true,
         'usage in external backup': 'UNUSED',
       },
-    ]);
+    ];
 
     const apiShapedVolumeList = {
       primaries: [
@@ -383,7 +385,7 @@ describe('ModifyVolume', () => {
 
   it('should not render tiering switches when volume tieringSupported is false', async () => {
     mockAdvancedMode.value = true;
-    mockListS3Connector.mockResolvedValue([
+    mockS3ConnectorsData.current = [
       {
         uuid: '09dd7b71-23f0-47f2-b580-5593f3aaabe8',
         label: 'Ceph connector',
@@ -392,7 +394,7 @@ describe('ModifyVolume', () => {
         tieringSupported: false,
         'usage in external backup': 'UNUSED',
       },
-    ]);
+    ];
 
     render(
       <ModifyVolume
@@ -436,7 +438,7 @@ describe('ModifyVolume', () => {
 
   it('should not render tiering switches when connector does not support tiering', async () => {
     mockAdvancedMode.value = true;
-    mockListS3Connector.mockResolvedValue([
+    mockS3ConnectorsData.current = [
       {
         uuid: 'bucket-1',
         label: 'Primary connector',
@@ -445,7 +447,7 @@ describe('ModifyVolume', () => {
         tieringSupported: false,
         'usage in external backup': 'UNUSED',
       },
-    ]);
+    ];
 
     render(
       <ModifyVolume
