@@ -1,3 +1,9 @@
+## [0.14.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.5...v0.14.6) (2026-07-08)
+
+### Other changes
+
+* **admin-ui-notifications:** improve routing ([#1284](https://github.com/zextras/carbonio-admin-console-ui/issues/1284)) ([f422793](https://github.com/zextras/carbonio-admin-console-ui/commit/f422793fbe803070c00b9722cc80ee62aaeb939d))
+
 ## [0.14.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.4...v0.14.5) (2026-07-08)
 
 ### Other changes
