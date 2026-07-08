@@ -5,10 +5,9 @@
  */
 import { createContext } from 'react';
 
-import type { VolumeWizardDetail } from '../../../../../../types';
+import type { VolumeCreateFormApi } from './types';
 
 type VolumeContextType = {
-	volumeDetail: VolumeWizardDetail;
-	setVolumeDetail: (arg: VolumeWizardDetail | ((prev: VolumeWizardDetail) => VolumeWizardDetail)) => void;
+	form: VolumeCreateFormApi;
 };
 export const VolumeContext = createContext({} as VolumeContextType);

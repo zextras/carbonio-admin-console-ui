@@ -50,10 +50,9 @@ const NewVolume: FC<{
   isLoading,
 }) => {
   const { t } = useTranslation();
-  const context = useContext(VolumeContext);
+  const { form } = useContext(VolumeContext);
 
   const isAdvanced = useIsAdvanced();
-  const { volumeDetail } = context;
 
   const wizardSteps = [
     {
@@ -112,16 +111,17 @@ const NewVolume: FC<{
   ];
 
   const onComplete = useCallback(() => {
+    const values = form.state.values;
     CreateVolumeRequest({
-      id: volumeDetail?.id,
-      name: volumeDetail?.volumeName,
-      rootpath: volumeDetail?.path,
-      type: volumeDetail?.volumeMain,
-      compressBlobs: volumeDetail?.isCompression ? 1 : 0,
-      compressionThreshold: volumeDetail?.isCompression ? volumeDetail?.compressionThreshold : 0,
-      isCurrent: volumeDetail?.isCurrent ? 1 : 0,
+      id: values.id,
+      name: values.volumeName,
+      rootpath: values.path,
+      type: values.volumeMain,
+      compressBlobs: values.isCompression ? 1 : 0,
+      compressionThreshold: values.isCompression ? values.compressionThreshold : 0,
+      isCurrent: values.isCurrent ? 1 : 0,
     });
-  }, [volumeDetail, CreateVolumeRequest]);
+  }, [form, CreateVolumeRequest]);
 
   return (
     <>

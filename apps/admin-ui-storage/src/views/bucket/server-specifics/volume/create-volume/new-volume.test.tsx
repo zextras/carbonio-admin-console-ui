@@ -4,11 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import NewVolume from './new-volume';
+import { volumeCreateSchema } from './schema';
 import { VolumeContext } from './volume-context';
 
 const mockAdvancedMode = vi.hoisted(() => ({ value: false }));
@@ -104,14 +106,40 @@ vi.mock('@zextras/ui-components', () => ({
 }));
 
 type VolumeDetailValue = {
-  id?: number;
+  id?: number | string;
   volumeName?: string;
   path?: string;
   volumeMain?: number;
   isCompression?: boolean;
-  compressionThreshold?: number;
+  compressionThreshold?: number | string;
   isCurrent?: boolean;
 };
+
+function VolumeProvider({
+  children,
+  initialFormValues,
+}: {
+  children: React.ReactNode;
+  initialFormValues: Record<string, unknown>;
+}): React.JSX.Element {
+  const form = useForm({
+    defaultValues: {
+      id: '',
+      volumeName: '',
+      volumeMain: 1,
+      path: '',
+      isCurrent: false,
+      isCompression: false,
+      compressionThreshold: '',
+      volumeAllocation: 0,
+      ...initialFormValues,
+    },
+    validators: { onChange: volumeCreateSchema },
+    onSubmit: async () => {},
+  });
+
+  return <VolumeContext.Provider value={{ form }}>{children}</VolumeContext.Provider>;
+}
 
 function renderComponent(options?: {
   isAdvanced?: boolean;
@@ -125,19 +153,16 @@ function renderComponent(options?: {
   const CreateVolumeRequest = vi.fn();
 
   render(
-    <VolumeContext.Provider
-      value={{
-        volumeDetail: {
-          id: 7,
-          volumeName: 'primary-volume',
-          path: '/opt/zextras/store',
-          volumeMain: 1,
-          isCompression: true,
-          compressionThreshold: 4096,
-          isCurrent: true,
-          ...options?.volumeDetail,
-        },
-        setVolumeDetail: vi.fn(),
+    <VolumeProvider
+      initialFormValues={{
+        id: 7,
+        volumeName: 'primary-volume',
+        path: '/opt/zextras/store',
+        volumeMain: 1,
+        isCompression: true,
+        compressionThreshold: 4096,
+        isCurrent: true,
+        ...options?.volumeDetail,
       }}
     >
       <NewVolume
@@ -147,7 +172,7 @@ function renderComponent(options?: {
         CreateVolumeRequest={CreateVolumeRequest}
         isLoading={options?.isLoading ?? false}
       />
-    </VolumeContext.Provider>,
+    </VolumeProvider>,
   );
 
   return {

@@ -4,11 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React, { SetStateAction, useState } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { AdvancedVolumeWizardDetail, VolumeWizardDetail } from '../../../../../../../types';
+import type { AdvancedVolumeWizardDetail } from '../../../../../../../types';
+import { volumeCreateSchema } from '../schema';
 import { VolumeContext } from '../volume-context';
 import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
@@ -73,7 +75,7 @@ vi.mock('../../../../../../services/bucket-service', () => ({
 type HarnessProps = {
   setToggleNextBtn: (newValue: boolean) => void;
   setCompleteLoading: (newValue: boolean) => void;
-  initialVolumeDetail?: VolumeWizardDetail;
+  initialFormValues?: Record<string, unknown>;
   initialAdvancedVolumeDetail?: AdvancedVolumeWizardDetail;
 };
 
@@ -89,26 +91,35 @@ function applyUpdate<T>(
 function TestHarness({
   setToggleNextBtn,
   setCompleteLoading,
-  initialVolumeDetail,
+  initialFormValues,
   initialAdvancedVolumeDetail,
 }: HarnessProps): React.JSX.Element {
-  const [volumeDetail, setVolumeDetailState] = useState<VolumeWizardDetail>(
-    initialVolumeDetail ?? {},
-  );
+  const form = useForm({
+    defaultValues: {
+      id: '',
+      volumeName: '',
+      volumeMain: 1,
+      path: '',
+      isCurrent: false,
+      isCompression: false,
+      compressionThreshold: '',
+      volumeAllocation: 0,
+      ...initialFormValues,
+    },
+    validators: { onChange: volumeCreateSchema },
+    onSubmit: async () => {},
+  });
+
   const [advancedVolumeDetail, setAdvancedVolumeDetailState] = useState<AdvancedVolumeWizardDetail>(
     initialAdvancedVolumeDetail ?? {},
   );
-
-  function setVolumeDetail(update: SetStateAction<VolumeWizardDetail>): void {
-    applyUpdate(update, setVolumeDetailState);
-  }
 
   function setAdvancedVolumeDetail(update: SetStateAction<AdvancedVolumeWizardDetail>): void {
     applyUpdate(update, setAdvancedVolumeDetailState);
   }
 
   return (
-    <VolumeContext.Provider value={{ volumeDetail, setVolumeDetail }}>
+    <VolumeContext.Provider value={{ form }}>
       <AdvancedVolumeContext.Provider value={{ advancedVolumeDetail, setAdvancedVolumeDetail, isAllocationToggle: false, setIsAllocationToggle: setIsAllocationToggleSpy }}>
         <AdvancedMailstoresDefinition
           externalData="server-a"
@@ -173,7 +184,7 @@ describe('AdvancedMailstoresDefinition', () => {
       <TestHarness
         setToggleNextBtn={setToggleNextBtn}
         setCompleteLoading={setCompleteLoading}
-        initialVolumeDetail={{ volumeName: 'Volume A' }}
+        initialFormValues={{ volumeName: 'Volume A' }}
       />,
     );
 
@@ -195,7 +206,7 @@ describe('AdvancedMailstoresDefinition', () => {
       <TestHarness
         setToggleNextBtn={setToggleNextBtn}
         setCompleteLoading={setCompleteLoading}
-        initialVolumeDetail={{ volumeName: 'Volume A' }}
+        initialFormValues={{ volumeName: 'Volume A' }}
       />,
     );
 
@@ -214,7 +225,7 @@ describe('AdvancedMailstoresDefinition', () => {
       <TestHarness
         setToggleNextBtn={setToggleNextBtn}
         setCompleteLoading={setCompleteLoading}
-        initialVolumeDetail={{ volumeName: 'Volume A' }}
+        initialFormValues={{ volumeName: 'Volume A' }}
       />,
     );
 
@@ -245,7 +256,7 @@ describe('AdvancedMailstoresDefinition', () => {
       <TestHarness
         setToggleNextBtn={setToggleNextBtn}
         setCompleteLoading={setCompleteLoading}
-        initialVolumeDetail={{ volumeName: 'Volume A' }}
+        initialFormValues={{ volumeName: 'Volume A' }}
       />,
     );
 

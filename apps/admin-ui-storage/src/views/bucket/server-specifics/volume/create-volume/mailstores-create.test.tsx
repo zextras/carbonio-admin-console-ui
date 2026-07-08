@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import React, { SetStateAction, useState } from 'react';
+import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { VolumeWizardDetail } from '../../../../../../types';
 import MailstoresCreate from './mailstores-create';
+import { volumeCreateSchema } from './schema';
 import { VolumeContext } from './volume-context';
 
 const mockAdvancedMode = vi.hoisted(() => ({ value: false }));
@@ -38,6 +39,7 @@ vi.mock('../../../../utility/utils', () => ({
 }));
 
 vi.mock('@zextras/ui-components', () => ({
+  getFieldErrorProps: () => ({ hasError: false }),
   Container: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
   Row: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
   Padding: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
@@ -93,36 +95,32 @@ vi.mock('@zextras/ui-components', () => ({
   ),
 }));
 
-function applyUpdate<T>(
-  update: SetStateAction<T>,
-  setState: React.Dispatch<SetStateAction<T>>,
-): void {
-  setState((prevState) =>
-    typeof update === 'function' ? (update as (prev: T) => T)(prevState) : update,
-  );
-}
-
 function TestHarness({
-  onSelection,
   setCompleteLoading,
-  initialVolumeDetail,
+  initialFormValues,
 }: {
-  onSelection: ReturnType<typeof vi.fn>;
   setCompleteLoading: ReturnType<typeof vi.fn>;
-  initialVolumeDetail?: VolumeWizardDetail;
+  initialFormValues?: Record<string, unknown>;
 }): React.JSX.Element {
-  const [volumeDetail, setVolumeDetailState] = useState<VolumeWizardDetail>(
-    initialVolumeDetail ?? {},
-  );
-
-  function setVolumeDetail(update: SetStateAction<VolumeWizardDetail>): void {
-    applyUpdate(update, setVolumeDetailState);
-  }
+  const form = useForm({
+    defaultValues: {
+      id: '',
+      volumeName: '',
+      volumeMain: 1,
+      path: '',
+      isCurrent: false,
+      isCompression: false,
+      compressionThreshold: '',
+      volumeAllocation: 0,
+      ...initialFormValues,
+    },
+    validators: { onChange: volumeCreateSchema },
+    onSubmit: async () => {},
+  });
 
   return (
-    <VolumeContext.Provider value={{ volumeDetail, setVolumeDetail }}>
+    <VolumeContext.Provider value={{ form }}>
       <MailstoresCreate
-        onSelection={onSelection}
         externalData="mailstore1.example.com"
         setCompleteLoading={setCompleteLoading}
       />
@@ -137,12 +135,9 @@ describe('MailstoresCreate', () => {
   });
 
   it('should enable completion in non-advanced mode when name and path are filled without compression', async () => {
-    const onSelection = vi.fn();
     const setCompleteLoading = vi.fn();
 
-    render(
-      <TestHarness onSelection={onSelection} setCompleteLoading={setCompleteLoading} />,
-    );
+    render(<TestHarness setCompleteLoading={setCompleteLoading} />);
 
     fireEvent.change(screen.getByLabelText('Volume Name'), {
       target: { value: 'primary-volume' },
@@ -157,32 +152,24 @@ describe('MailstoresCreate', () => {
   });
 
   it('should hide compression controls when index volume is selected in non-advanced mode', async () => {
-    const onSelection = vi.fn();
     const setCompleteLoading = vi.fn();
 
-    render(
-      <TestHarness onSelection={onSelection} setCompleteLoading={setCompleteLoading} />,
-    );
+    render(<TestHarness setCompleteLoading={setCompleteLoading} />);
 
     expect(screen.getByText('Enable Compression')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: 'Index' }));
 
     await waitFor(() => {
-      expect(onSelection).toHaveBeenCalledWith({ volumeMain: 10 }, true);
+      expect(screen.queryByText('Enable Compression')).toBeNull();
+      expect(screen.queryByLabelText('Compression Threshold')).toBeNull();
     });
-
-    expect(screen.queryByText('Enable Compression')).toBeNull();
-    expect(screen.queryByLabelText('Compression Threshold')).toBeNull();
   });
 
   it('should keep completion disabled when compression is enabled without threshold', async () => {
-    const onSelection = vi.fn();
     const setCompleteLoading = vi.fn();
 
-    render(
-      <TestHarness onSelection={onSelection} setCompleteLoading={setCompleteLoading} />,
-    );
+    render(<TestHarness setCompleteLoading={setCompleteLoading} />);
 
     fireEvent.change(screen.getByLabelText('Volume Name'), {
       target: { value: 'primary-volume' },
@@ -193,21 +180,18 @@ describe('MailstoresCreate', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Enable Compression' }));
 
     await waitFor(() => {
-      expect(onSelection).toHaveBeenCalledWith({ isCompression: true }, true);
       expect(setCompleteLoading).toHaveBeenCalledWith(false);
     });
   });
 
   it('should select advanced volume type through radio buttons and enable completion', async () => {
     mockAdvancedMode.value = true;
-    const onSelection = vi.fn();
     const setCompleteLoading = vi.fn();
 
     render(
       <TestHarness
-        onSelection={onSelection}
         setCompleteLoading={setCompleteLoading}
-        initialVolumeDetail={{ volumeAllocation: 'internal' }}
+        initialFormValues={{ volumeAllocation: 'internal' }}
       />,
     );
 
@@ -220,7 +204,6 @@ describe('MailstoresCreate', () => {
     fireEvent.click(screen.getByRole('button', { name: 'This is a Secondary Volume' }));
 
     await waitFor(() => {
-      expect(onSelection).toHaveBeenCalledWith({ volumeMain: 2 }, true);
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
     });
 

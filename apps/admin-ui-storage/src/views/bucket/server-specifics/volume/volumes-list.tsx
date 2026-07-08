@@ -205,8 +205,7 @@ const VolumeListTable: FC<{
 const VolumesDetailPanel: FC = () => {
   const { server = '' } = useParams<{ server: string }>();
   const [t] = useTranslation();
-  const context = useContext(VolumeContext);
-  const { setVolumeDetail } = context;
+  const { form } = useContext(VolumeContext);
   const { data: isVolumeAllDetail = [] } = useListS3Connectors();
   const isAdvanced = useIsAdvanced();
   const volIndexerHeaders = useMemo(() => indexerHeaders(t, isAdvanced), [t, isAdvanced]);
@@ -804,16 +803,7 @@ const VolumesDetailPanel: FC = () => {
                 icon="PlusOutline"
                 color="primary"
                 onClick={(): void => {
-                  setVolumeDetail({
-                    id: '',
-                    volumeName: '',
-                    volumeMain: 1,
-                    path: '',
-                    isCurrent: false,
-                    isCompression: false,
-                    compressionThreshold: '',
-                    volumeAllocation: 0,
-                  });
+                  form.reset();
                   if (isAdvanced) {
                     setToggleWizardExternal(!toggleWizardExternal);
                   } else {

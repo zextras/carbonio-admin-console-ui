@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
 import {
 	advancedSupportedApiForBrowser,
 	createBrowserSoapAPIInterceptor,
@@ -19,6 +20,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { DATA_VOLUMES } from '../../../../../constants';
+import { volumeCreateSchema } from '../create-volume/schema';
 import { VolumeContext } from '../create-volume/volume-context';
 import VolumesDetailPanel from '../volumes-list';
 
@@ -159,29 +161,34 @@ function setupEmptyVolumesAdvanced(): void {
 	);
 }
 
-function renderWithContext(): React.ReactElement {
-	const volumeContext = {
-		volumeDetail: {
+function VolumeProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
+	const form = useForm({
+		defaultValues: {
 			id: '',
 			volumeName: '',
 			volumeMain: 1,
 			path: '',
 			isCurrent: false,
 			isCompression: false,
-			compressionThreshold: 0,
+			compressionThreshold: '',
 			volumeAllocation: 0,
 		},
-		setVolumeDetail: (): void => { },
-	};
+		validators: { onChange: volumeCreateSchema },
+		onSubmit: async () => {},
+	});
 
+	return <VolumeContext.Provider value={{ form }}>{children}</VolumeContext.Provider>;
+}
+
+function renderWithContext(): React.ReactElement {
 	return (
 		<Routes>
 			<Route
 				path={`/:server/${DATA_VOLUMES}`}
 				element={
-					<VolumeContext.Provider value={volumeContext}>
+					<VolumeProvider>
 						<VolumesDetailPanel />
-					</VolumeContext.Provider>
+					</VolumeProvider>
 				}
 			/>
 		</Routes>
