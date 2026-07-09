@@ -27,6 +27,7 @@
     "test:headed": "HEADED=true turbo run test --no-cache",
     "type-check": "turbo run type-check",
     "lint": "turbo run lint",
+    "lint:ci": "turbo run lint --concurrency=4",
     "lint:fix": "turbo run lint:fix",
     "type-lint": "turbo run type-check && turbo run lint",
     "sonar": "sonar-scanner",
