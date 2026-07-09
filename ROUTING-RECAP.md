@@ -134,3 +134,26 @@ All list panels now use `useRelativePathname()` + react-router's `matchPath`, re
 - [x] **Typos**: `QuededDetailPanel` → `QueuedDetailPanel` (component identifier across 3 files;
       filename was already correct); `'malinglist'` → `'mailinglist'` (2 dashboard files). *(done)*
 - [ ] **Indentation**: operations app uses tabs while siblings use spaces.
+
+---
+
+## Test coverage (added)
+
+Coverage added for new/refactored code (per SonarQube "0% on new code" report). **7 files, 18
+new tests**, all green (type-check 15/15, lint 0 errors):
+
+- `packages/ui-shared/src/store/app/store.ts` — `addRoute` `path` derivation + `removeRoute` (unit).
+- `apps/admin-ui-privacy/.../app-view.tsx` — renders breadcrumb + PrivacyView (browser).
+- `apps/admin-ui-operations/.../operations-layout.tsx` — renders list panel + Outlet child (browser).
+- `apps/admin-ui-operations/.../operations-list-panel.tsx` — tabs render + click→`replaceHistory` (browser).
+- `apps/admin-ui-cos/.../delete-cos-modal.tsx` — delete success→`replaceHistory('/cos_list')` (jsdom).
+- `apps/admin-ui-legalhold/.../restore-account.tsx` — close button→`onBack` (extended browser test).
+- `apps/admin-ui-domains/.../restore-delete-account-wizard.tsx` — Cancel→`onReset` (browser, child-stubbed).
+
+### Deferred (need heavier/async test setup)
+- `dashboard-view.tsx` — `buildPath` navigation callbacks. Blocked by web-component click
+  propagation + the `domainInformation` async chain (off `GetInfo`, which overrides seeded cache).
+  Needs a custom deterministic jsdom setup (mocked hooks) — recommend a follow-up.
+- `global-theme.tsx`, `global-two-factor-auth.tsx` — nav-guard + dirty/save flows (Tier C).
+- `app-view-container.tsx`, `shell-primary-bar.tsx` — bootstrap shell (`.path` end-to-end; Tier C).
+- `restore-delete-account.tsx` — wizard remount + restore success/error/catch (8 conditions; Tier C).
