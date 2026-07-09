@@ -5,10 +5,11 @@
  */
 import { createContext } from 'react';
 
-import type { HsmPolicyEditDetail } from '../../../../../types';
+import type { Volume } from '../../../../../types';
+import type { HsmFormApi } from '../types';
 
-type HSMContext = {
-	hsmDetail: HsmPolicyEditDetail;
-	setHsmDetail: (arg: HsmPolicyEditDetail | ((prev: HsmPolicyEditDetail) => HsmPolicyEditDetail)) => void;
+type HSMContextType = {
+	form: HsmFormApi;
+	allVolumes: Array<Volume>;
 };
-export const HSMContext = createContext({} as HSMContext);
+export const HSMContext = createContext({} as HSMContextType);
