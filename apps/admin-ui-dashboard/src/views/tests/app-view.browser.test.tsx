@@ -9,12 +9,15 @@ import {
   createBrowserSoapAPIInterceptor,
   getGetInfoResponseMock,
   getQueryClient,
+  LocationDisplay,
+  registerAppRoute,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import type { ReactElement } from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { DASHBOARD } from '../../constants';
+import { ACCOUNTS, DASHBOARD, DISTRIBUTION_LIST, DOMAINS_ROUTE_ID } from '../../constants';
 import { AppView } from '../app-view';
 
 describe('AppView', () => {
@@ -24,7 +27,12 @@ describe('AppView', () => {
     queryClient = getQueryClient();
   });
 
-  async function setupAppViewTest(initialRoute?: string) {
+  async function setupAppViewTest(initialRoute?: string, extra?: ReactElement) {
+    // Register peer-app routes so buildPath() resolves prefixed paths.
+    registerAppRoute(DOMAINS_ROUTE_ID, 'manage');
+    registerAppRoute('storage', 'manage');
+    registerAppRoute('notifications', 'logandqueues');
+
     // Setup API interceptors
     const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
     createBrowserSoapAPIInterceptor('GetAllEffectiveRights', {
@@ -43,22 +51,31 @@ describe('AppView', () => {
         },
       ],
     });
+    // useDomainInformation reads `response.domain[0]`, so the mock must return an array.
     createBrowserSoapAPIInterceptor('GetDomain', {
-      domain: {
-        id: 'domain-1',
-        name: 'test.com',
-        a: [{ n: 'zimbraDomainName', _content: 'test.com' }],
-      },
+      domain: [
+        {
+          id: 'domain-1',
+          name: 'test.com',
+          a: [{ n: 'zimbraDomainName', _content: 'test.com' }],
+        },
+      ],
     });
     createBrowserSoapAPIInterceptor('GetVersionInfo', {
       info: { majorversion: '24', minorversion: '5', microversion: '0' },
     });
     createBrowserSoapAPIInterceptor('SearchDirectory', {});
 
-    await setupBrowserTest(<AppView />, {
-      initialRouterEntry: initialRoute || `/${DASHBOARD}`,
-      queryClient,
-    });
+    await setupBrowserTest(
+      <>
+        <AppView />
+        {extra}
+      </>,
+      {
+        initialRouterEntry: initialRoute || `/${DASHBOARD}`,
+        queryClient,
+      },
+    );
 
     await getInfoInterceptor;
   }
@@ -142,6 +159,33 @@ describe('AppView', () => {
       await expect.element(page.getByText(/Server/i)).toBeVisible();
       await expect.element(page.getByText(/Date/i)).toBeVisible();
       await expect.element(page.getByText(/Type/i)).toBeVisible();
+    });
+  });
+
+  describe('navigation', () => {
+    it('navigates to the domain accounts route when the Accounts quick access is opened', async () => {
+      await setupAppViewTest(undefined, <LocationDisplay />);
+
+      // Wait for the domain info to load (Quick Access shows the domain name).
+      await expect.element(page.getByText(/Quick Access to test\.com/i)).toBeVisible();
+
+      await page.getByText('Open').first().click();
+
+      await expect
+        .element(page.getByTestId('location'))
+        .toHaveTextContent(`/manage/${DOMAINS_ROUTE_ID}/domain-1/${ACCOUNTS}`);
+    });
+
+    it('navigates to the distribution list route when the Distribution List quick access is opened', async () => {
+      await setupAppViewTest(undefined, <LocationDisplay />);
+
+      await expect.element(page.getByText(/Quick Access to test\.com/i)).toBeVisible();
+
+      await page.getByText('Open').nth(1).click();
+
+      await expect
+        .element(page.getByTestId('location'))
+        .toHaveTextContent(`/manage/${DOMAINS_ROUTE_ID}/domain-1/${DISTRIBUTION_LIST}`);
     });
   });
 });
