@@ -33,12 +33,12 @@ const HSMpolicySettings: FC = () => {
   const { server } = useParams();
   const [t] = useTranslation();
   const context = useContext(HSMContext);
-  const { hsmDetail, setHsmDetail } = context;
-  const [all, setAll] = useState<boolean>(hsmDetail?.isAllEnabled);
-  const [isMessageEnable, setIsMessageEnable] = useState<boolean>(hsmDetail?.isMessageEnabled);
-  const [isEventEnable, setIsEventEnable] = useState<boolean>(hsmDetail?.isEventEnabled);
-  const [isContactEnable, setIsContactEnable] = useState<boolean>(hsmDetail?.isContactEnabled);
-  const [isDocument, setIsDocument] = useState<boolean>(hsmDetail?.isDocumentEnabled);
+  const { form, allVolumes } = context;
+  const [all, setAll] = useState<boolean>(form.state.values.isAllEnabled);
+  const [isMessageEnable, setIsMessageEnable] = useState<boolean>(form.state.values.isMessageEnabled);
+  const [isEventEnable, setIsEventEnable] = useState<boolean>(form.state.values.isEventEnabled);
+  const [isContactEnable, setIsContactEnable] = useState<boolean>(form.state.values.isContactEnabled);
+  const [isDocument, setIsDocument] = useState<boolean>(form.state.values.isDocumentEnabled);
   const [policyCriteriaRows, setPolicyCriteriaRows] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>();
   const [value, setValue] = useState<string>();
   const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
@@ -133,18 +133,18 @@ const HSMpolicySettings: FC = () => {
     isShowDateScale ? dateScaleOption[2] : scaleOptions[0],
   );
   const [showSourceVolume, setShowSourceVolume] = useState<boolean>(
-    hsmDetail?.sourceVolume.length > 0,
+    form.state.values.sourceVolume.length > 0,
   );
   const [showDestinationVolume, setShowDestinationVolume] = useState<boolean>(
-    hsmDetail?.destinationVolume.length > 0,
+    form.state.values.destinationVolume.length > 0,
   );
 
   const [volumeRows, setVolumeRows] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>([]);
   const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<string>>(
-    hsmDetail?.destinationVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
+    form.state.values.destinationVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
   );
   const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<string>>(
-    hsmDetail?.sourceVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
+    form.state.values.sourceVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
   );
   const createSnackbar = useSnackbar();
   const header = useMemo(
@@ -191,9 +191,8 @@ const HSMpolicySettings: FC = () => {
   );
 
   useEffect(() => {
-    const volumeList = hsmDetail?.allVolumes;
-    if (volumeList && volumeList.length > 0) {
-      const allRows = volumeList.map((item) => ({
+    if (allVolumes && allVolumes.length > 0) {
+      const allRows = allVolumes.map((item) => ({
         id: String(item?.id ?? ''),
         columns: [
           <ds-text as="span" size="small" weight="regular" key={item?.id}>
@@ -220,35 +219,25 @@ const HSMpolicySettings: FC = () => {
     } else {
       setVolumeRows([]);
     }
-  }, [hsmDetail?.allVolumes, getVoumeType, t]);
+  }, [allVolumes, getVoumeType, t]);
 
   useEffect(() => {
-    if (Array.isArray(hsmDetail?.allVolumes)) {
-      const sourceVol = hsmDetail?.allVolumes?.filter((item) =>
-        item?.id != null && selectedSourceVolume?.includes(String(item.id)),
+    if (Array.isArray(allVolumes)) {
+      const sourceVol = allVolumes.filter((item) =>
+        item?.id != null && selectedSourceVolume.includes(String(item.id)),
       );
-      if (sourceVol) {
-        setHsmDetail((prev) => ({
-          ...prev,
-          sourceVolume: sourceVol,
-        }));
-      }
+      form.setFieldValue('sourceVolume', sourceVol);
     }
-  }, [hsmDetail?.allVolumes, selectedSourceVolume, setHsmDetail]);
+  }, [allVolumes, selectedSourceVolume, form]);
 
   useEffect(() => {
-    if (Array.isArray(hsmDetail?.allVolumes)) {
-      const destVol = hsmDetail?.allVolumes?.filter((item) =>
-        item?.id != null && selectedDestinationVolume?.includes(String(item.id)),
+    if (Array.isArray(allVolumes)) {
+      const destVol = allVolumes.filter((item) =>
+        item?.id != null && selectedDestinationVolume.includes(String(item.id)),
       );
-      if (destVol) {
-        setHsmDetail((prev) => ({
-          ...prev,
-          destinationVolume: destVol,
-        }));
-      }
+      form.setFieldValue('destinationVolume', destVol);
     }
-  }, [hsmDetail?.allVolumes, selectedDestinationVolume, setHsmDetail]);
+  }, [allVolumes, selectedDestinationVolume, form]);
 
   const onOptionChange = (v: string | null): void => {
     const it = options.find((item) => item.value === v);
@@ -272,7 +261,7 @@ const HSMpolicySettings: FC = () => {
     setSelectedScale(it);
   };
 
-  const [policyCriteria, setPolicyCriteria] = useState<Array<PolicyCriteriaItem>>(hsmDetail?.policyCriteria);
+  const [policyCriteria, setPolicyCriteria] = useState<Array<PolicyCriteriaItem>>(form.state.values.policyCriteria);
 
   const onAdd = useCallback(() => {
     setPolicyCriteria((prev) => [
@@ -286,11 +275,8 @@ const HSMpolicySettings: FC = () => {
   }, [selectedOption?.value, selectedScale?.value, value]);
 
   useEffect(() => {
-    setHsmDetail((prev) => ({
-      ...prev,
-      policyCriteria,
-    }));
-  }, [policyCriteria, setHsmDetail]);
+    form.setFieldValue('policyCriteria', policyCriteria);
+  }, [policyCriteria, form]);
 
   useEffect(() => {
     if (policyCriteria.length > 0) {
@@ -327,37 +313,28 @@ const HSMpolicySettings: FC = () => {
   const onClickAll = useCallback(
     (check: boolean) => {
       setAll(check);
-      setHsmDetail((prev) => ({
-        ...prev,
-        isAllEnabled: check,
-        isMessageEnabled: check,
-        isEventEnabled: check,
-        isContactEnabled: check,
-        isDocumentEnabled: check,
-      }));
+      form.setFieldValue('isAllEnabled', check);
+      form.setFieldValue('isMessageEnabled', check);
+      form.setFieldValue('isEventEnabled', check);
+      form.setFieldValue('isContactEnabled', check);
+      form.setFieldValue('isDocumentEnabled', check);
       setIsDocument(check);
       setIsContactEnable(check);
       setIsMessageEnable(check);
       setIsEventEnable(check);
     },
-    [setHsmDetail],
+    [form],
   );
 
   useEffect(() => {
     if (!isDocument || !isContactEnable || !isMessageEnable || !isEventEnable) {
       setAll(false);
-      setHsmDetail((prev) => ({
-        ...prev,
-        isAllEnabled: false,
-      }));
+      form.setFieldValue('isAllEnabled', false);
     } else if (isDocument && isContactEnable && isMessageEnable && isEventEnable) {
       setAll(true);
-      setHsmDetail((prev) => ({
-        ...prev,
-        isAllEnabled: true,
-      }));
+      form.setFieldValue('isAllEnabled', true);
     }
-  }, [isDocument, isContactEnable, isMessageEnable, isEventEnable, setHsmDetail]);
+  }, [isDocument, isContactEnable, isMessageEnable, isEventEnable, form]);
 
   const onDeletePolicy = useCallback(() => {
     const reducedArr = policyCriteria.filter(
@@ -407,10 +384,7 @@ const HSMpolicySettings: FC = () => {
             value={isMessageEnable}
             onClick={(): void => {
               setIsMessageEnable(!isMessageEnable);
-              setHsmDetail((prev) => ({
-                ...prev,
-                isMessageEnabled: !isMessageEnable,
-              }));
+              form.setFieldValue('isMessageEnabled', !isMessageEnable);
             }}
           />
         </Container>
@@ -422,10 +396,7 @@ const HSMpolicySettings: FC = () => {
             value={isDocument}
             onClick={(): void => {
               setIsDocument(!isDocument);
-              setHsmDetail((prev) => ({
-                ...prev,
-                isDocumentEnabled: !isDocument,
-              }));
+              form.setFieldValue('isDocumentEnabled', !isDocument);
             }}
           />
         </Container>
@@ -437,10 +408,7 @@ const HSMpolicySettings: FC = () => {
             value={isEventEnable}
             onClick={(): void => {
               setIsEventEnable(!isEventEnable);
-              setHsmDetail((prev) => ({
-                ...prev,
-                isEventEnabled: !isEventEnable,
-              }));
+              form.setFieldValue('isEventEnabled', !isEventEnable);
             }}
           />
         </Container>
@@ -452,10 +420,7 @@ const HSMpolicySettings: FC = () => {
             value={isContactEnable}
             onClick={(): void => {
               setIsContactEnable(!isContactEnable);
-              setHsmDetail((prev) => ({
-                ...prev,
-                isContactEnabled: !isContactEnable,
-              }));
+              form.setFieldValue('isContactEnabled', !isContactEnable);
             }}
           />
         </Container>

@@ -4,13 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
 import { Button, type ButtonProps, Container, HorizontalWizard, Padding, Section } from '@zextras/ui-components';
-import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
+import { type FC, type ReactElement, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import type { CreateHsmPolicyProps, HsmPolicyEditDetail } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
+import type { HsmPolicyFormValues } from '../types';
 import HSMcreatePolicy from './hsm-create-policy';
 import HSMpolicySettings from './hsm-policy-settings';
 
@@ -39,26 +41,31 @@ const WizardInSection: FC<{ wizard: ReactElement; wizardFooter: ReactElement; se
 };
 
 const CreateHsmPolicy: FC<CreateHsmPolicyProps> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy, runCustomHSMpolicy }) => {
-  const [hsmDetail, setHsmDetail] = useState<HsmDetailObj>({
-    allVolumes: volumeList,
-    isAllEnabled: true,
-    isMessageEnabled: true,
-    isEventEnabled: true,
-    isContactEnabled: true,
-    isDocumentEnabled: true,
-    policyCriteria: [],
-    sourceVolume: [],
-    destinationVolume: [],
-  });
   const { t } = useTranslation();
 
+  const form = useForm({
+    defaultValues: {
+      isAllEnabled: true,
+      isMessageEnabled: true,
+      isEventEnabled: true,
+      isContactEnabled: true,
+      isDocumentEnabled: true,
+      policyCriteria: [],
+      sourceVolume: [],
+      destinationVolume: [],
+    } as HsmPolicyFormValues,
+    onSubmit: async () => {},
+  });
+
   const onCreate = useCallback(() => {
-    createHSMpolicy(hsmDetail);
-  }, [createHSMpolicy, hsmDetail]);
+    const v = form.state.values;
+    createHSMpolicy({ ...v, allVolumes: volumeList });
+  }, [createHSMpolicy, form, volumeList]);
 
   const onRunCustomPolicy = useCallback(() => {
-    runCustomHSMpolicy(hsmDetail);
-  }, [hsmDetail, runCustomHSMpolicy]);
+    const v = form.state.values;
+    runCustomHSMpolicy({ ...v, allVolumes: volumeList });
+  }, [form, runCustomHSMpolicy, volumeList]);
 
   const standardHsmPolicyWizardStep = useMemo(
     () => [
@@ -154,7 +161,7 @@ const CreateHsmPolicy: FC<CreateHsmPolicyProps> = ({ setShowCreateHsmPolicyView,
         inset: '0rem',
       }}
     >
-      <HSMContext.Provider value={{ hsmDetail, setHsmDetail }}>
+      <HSMContext.Provider value={{ form, allVolumes: volumeList }}>
         <HorizontalWizard
           steps={standardHsmPolicyWizardStep}
           Wrapper={WizardInSection}

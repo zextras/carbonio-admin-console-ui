@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useSelector } from '@tanstack/react-store';
 import { Container, LabeledValue, ListRow, Padding, Tooltip } from '@zextras/ui-components';
 import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,25 +15,26 @@ import { asQueryString } from '../hsm-policy-detail';
 const HSMcreatePolicy: FC = () => {
   const [t] = useTranslation();
   const context = useContext(HSMContext);
-  const { hsmDetail } = context;
+  const { form } = context;
+  const formValues = useSelector(form.store, (s) => s.values);
   const [hsmQuery, setHsmQuery] = useState<string>('');
   const [sourceVolumeNames, setSourceVolumeNames] = useState<string>('');
   const [destinationVolumeNames, setDestinationVolumeNames] = useState<string>('');
   useEffect(() => {
-    setHsmQuery(asQueryString(hsmDetail));
-  }, [hsmDetail]);
+    setHsmQuery(asQueryString(formValues));
+  }, [formValues]);
 
   useEffect(() => {
-    if (hsmDetail?.sourceVolume.length > 0) {
-      setSourceVolumeNames(hsmDetail?.sourceVolume.map((item: Volume) => item.name).join());
+    if (formValues.sourceVolume.length > 0) {
+      setSourceVolumeNames(formValues.sourceVolume.map((item: Volume) => item.name).join());
     }
-  }, [hsmDetail?.sourceVolume]);
+  }, [formValues.sourceVolume]);
 
   useEffect(() => {
-    if (hsmDetail?.destinationVolume.length > 0) {
-      setDestinationVolumeNames(hsmDetail?.destinationVolume.map((item: Volume) => item.name).join());
+    if (formValues.destinationVolume.length > 0) {
+      setDestinationVolumeNames(formValues.destinationVolume.map((item: Volume) => item.name).join());
     }
-  }, [hsmDetail?.destinationVolume]);
+  }, [formValues.destinationVolume]);
 
   return (
     <Container
