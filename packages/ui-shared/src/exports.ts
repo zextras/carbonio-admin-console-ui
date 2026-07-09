@@ -146,7 +146,7 @@ import {
 } from './services/search-directory-service';
 import { setCoreAttributes } from './services/set-core-attributes';
 import { setFileQuotaLimitById } from './services/set-file-quota-limit';
-import { usePrimaryBarState } from './shell/hooks';
+import { useDetailViewMaxWidth, usePrimaryBarState } from './shell/hooks';
 import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
 import { useAppStore } from './store/app/store';
 import { normalizeRoute } from './store/app/utils';
@@ -284,6 +284,7 @@ export {
   useCosList,
   useCurrentRoute,
   useCurrentUserRights,
+  useDetailViewMaxWidth,
   useDomainById,
   useDomainInformation,
   useGlobalCarbonioSendAnalytics,

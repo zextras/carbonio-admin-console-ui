@@ -5,21 +5,15 @@
  */
 
 import { Container } from '@zextras/ui-components';
-import { usePrimaryBarState } from '@zextras/ui-shared';
+import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import DomainListPanel from './domain/domain-list-panel';
 import { DomainContentPanel } from './domain-content-panel';
 
-function getContainerStyle(isPrimaryBarExpanded: boolean) {
-  return {
-    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
-    transition: 'width 300ms',
-  };
-}
 const AppView: FC = () => {
-  const isPrimaryBarExpanded = usePrimaryBarState();
+  const detailViewMaxWidth = useDetailViewMaxWidth();
 
   return (
     <Container height={'fit'}>
@@ -31,7 +25,7 @@ const AppView: FC = () => {
           </Suspense>
         </Container>
         <Container style={{ maxWidth: '100%' }}>
-          <Container style={getContainerStyle(isPrimaryBarExpanded)}>
+          <Container style={{ maxWidth: detailViewMaxWidth, transition: 'width 300ms' }}>
             <DomainContentPanel />
           </Container>
         </Container>

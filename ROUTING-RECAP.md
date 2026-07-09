@@ -122,9 +122,10 @@ All list panels now use `useRelativePathname()` + react-router's `matchPath`, re
 
 ### Tier 3 — polish
 
-- [ ] **Duplicated `primaryBar` width logic** (`isPrimaryBarExpanded ? 981 : 1125`) across 7 apps
-      (backup, domains, mta, notifications, operations, privacy + a variant in subscription) →
-      extract to a shared hook/style.
+- [x] **Duplicated `primaryBar` width logic** (`isPrimaryBarExpanded ? 981 : 1125`) across 6 apps
+      → extracted to a shared `useDetailViewMaxWidth()` hook in `@zextras/ui-shared`; removed the
+      per-app `getContainerStyle`/ternary. Subscription's breakpoint-based variant left as-is
+      (genuinely different responsive logic). +2 hook unit tests. *(done)*
 - [ ] **AppView export inconsistency**: cos & subscription use named exports; the other 9 use
       default → unify.
 - [ ] **React Compiler violations** (`useMemo`/`useCallback`, per AGENTS.md) in legalhold (incl.
