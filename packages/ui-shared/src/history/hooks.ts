@@ -63,13 +63,11 @@ export const useRelativePathname = (): string => {
   const { pathname } = useLocation();
   const currentRoute = useCurrentRoute();
   const base = currentRoute ? `/${currentRoute.path}` : '';
-  return useMemo(() => {
-    if (!base || !startsWith(pathname, base)) {
-      return pathname;
-    }
-    const stripped = pathname.slice(base.length);
-    return stripped === '' ? '/' : stripped;
-  }, [pathname, base]);
+  if (!base || !startsWith(pathname, base)) {
+    return pathname;
+  }
+  const stripped = pathname.slice(base.length);
+  return stripped === '' ? '/' : stripped;
 };
 
 /**
