@@ -161,6 +161,122 @@ type FilterOption = SelectItem<string>;
 
 type AccountTableRow = Omit<TRow, 'id'> & { id: string; item?: SoapEntity };
 type OtpTableRow = TRow & { item?: OtpItem };
+
+type MutableAccount = SoapEntity &
+  Record<string, unknown> & {
+    displayName?: string;
+    mail?: Array<string>;
+    description?: string;
+    zimbraAccountStatus?: string;
+  };
+
+const processAccountAttributes = (item: SoapEntity): MutableAccount => {
+  const mutable = item as MutableAccount;
+  item?.a?.forEach((ele: Attribute & { pd?: boolean }) => {
+    if (ele?.n === 'mail') {
+      const existing = mutable[ele.n];
+      if (Array.isArray(existing)) {
+        existing.push(ele._content);
+      } else {
+        mutable[ele.n] = [ele._content];
+      }
+    } else if (ele?.pd && ele?.n === 'zimbraIsAdminAccount' && ele?.pd === true) {
+      mutable[ele.n] = 'TRUE';
+    } else {
+      mutable[ele.n] = ele._content;
+    }
+  });
+  return mutable;
+};
+
+const extractSessionsFromResponse = (
+  resp: GetSessionsResponse,
+  acc: string,
+): Array<UserSession> => {
+  if (!resp?.s) return [];
+  const filterSession = resp.s.filter((sessionItem: SessionInfo) => sessionItem?.name === acc);
+  return filterSession.map((element: SessionInfo) => ({
+    ip: '',
+    name: element?.name,
+    sid: element?.sid,
+    service: '',
+    zid: element?.zid,
+  }));
+};
+
+type CreateColumnsParams = {
+  account: MutableAccount;
+  onRowClick: (acc: MutableAccount) => void;
+  statusColorMap: StatusColorMap;
+  getAccountType: (item: Record<string, unknown>) => string;
+};
+
+const createAccountTableColumns = ({
+  account,
+  onRowClick,
+  statusColorMap,
+  getAccountType,
+}: CreateColumnsParams): Array<ReactElement> => {
+  const handleClick = (): void => onRowClick(account);
+  const aliasCount = (account?.mail?.length ?? 0) - 1 || 0;
+  const statusColor = statusColorMap[account?.zimbraAccountStatus ?? ''];
+
+  const aliasColumn = aliasCount ? (
+    <Tooltip
+      key={account?.id}
+      placement="bottom"
+      label={account?.mail?.slice(1).join(', ') ?? ''}
+      maxWidth="auto"
+    >
+      <ds-text
+        as="span"
+        size="small"
+        weight="light"
+        key={account?.id}
+        color="#828282"
+        onClick={handleClick}
+      >
+        {aliasCount}
+      </ds-text>
+    </Tooltip>
+  ) : (
+    <ds-text as="span" size="small" key={account?.id} color="#828282" weight="light" onClick={handleClick}>
+      0
+    </ds-text>
+  );
+
+  return [
+    <ds-text as="span" size="small" key={account?.id} color="gray0" weight="regular" onClick={handleClick}>
+      {account?.name || ' '}
+    </ds-text>,
+    <ds-text as="span" size="small" key={account?.id} color="gray0" weight="light" onClick={handleClick}>
+      {account?.displayName || <>&nbsp;</>}
+    </ds-text>,
+    aliasColumn,
+    <ds-text as="span" size="small" key={account?.id} color="gray0" weight="light" onClick={handleClick}>
+      {getAccountType(account)}
+    </ds-text>,
+    <ds-text as="span" size="small" weight="light" key={account?.id} color={statusColor?.color} onClick={handleClick}>
+      {statusColor?.label}
+    </ds-text>,
+    <Tooltip key={`${account.id}-userDesc`} label={account?.description || <>&nbsp;</>}>
+      <ds-text
+        as="span"
+        size="small"
+        weight="light"
+        key={account?.id}
+        color="gray0"
+        onClick={(event: { stopPropagation: () => void }): void => {
+          event.stopPropagation();
+          handleClick();
+        }}
+      >
+        {account?.description ?? <>&nbsp;</>}
+      </ds-text>
+    </Tooltip>,
+  ];
+};
+
 const ManageAccounts: FC = () => {
   const [t] = useTranslation();
   const isTotalQuotaActive = useTotalQuotaActive();
@@ -877,32 +993,15 @@ const ManageAccounts: FC = () => {
   );
 
   const getAllUserSession = useCallback((acc: string) => {
-    const sessionType: Array<string> = ['admin', 'imap', 'soap'];
+    const sessionTypes: Array<string> = ['admin', 'imap', 'soap'];
     setUserSessionList([]);
     setAllUserSessionList([]);
-    sessionType.forEach((item: string) => {
-      getSessions(item, acc).then((resp: GetSessionsResponse) => {
-        if (resp && resp?.s) {
-          const existingSession = resp?.s;
-          if (existingSession) {
-            const session: Array<UserSession> = [];
-            const filterSession = existingSession.filter(
-              (sessionItem: SessionInfo) => sessionItem?.name === acc,
-            );
-            if (filterSession.length > 0) {
-              filterSession.forEach((element: SessionInfo) => {
-                session.push({
-                  ip: '',
-                  name: element?.name,
-                  sid: element?.sid,
-                  service: '',
-                  zid: element?.zid,
-                });
-              });
-            }
-            setUserSessionList((prev) => [...prev, ...session]);
-            setAllUserSessionList((prev) => [...prev, ...session]);
-          }
+    sessionTypes.forEach((sessionType: string) => {
+      getSessions(sessionType, acc).then((resp: GetSessionsResponse) => {
+        const sessions = extractSessionsFromResponse(resp, acc);
+        if (sessions.length > 0) {
+          setUserSessionList((prev) => [...prev, ...sessions]);
+          setAllUserSessionList((prev) => [...prev, ...sessions]);
         }
       });
     });
@@ -975,135 +1074,21 @@ const ManageAccounts: FC = () => {
         setIsRequestInProgress(false);
         const accountListResponse = data?.account ?? [];
         if (accountListResponse && Array.isArray(accountListResponse)) {
-          const accountListArr: Array<AccountTableRow> = [];
           setTotalAccount(data.searchTotal || 0);
-          accountListResponse.forEach((item) => {
-            const mutable = item as SoapEntity & Record<string, unknown> & {
-              displayName?: string;
-              mail?: Array<string>;
-              description?: string;
-              zimbraAccountStatus?: string;
-            };
-            item?.a?.forEach((ele: Attribute & { pd?: boolean }) => {
-              if (ele?.n === 'mail') {
-                const existing = mutable[ele.n];
-                if (Array.isArray(existing)) {
-                  existing.push(ele._content);
-                } else {
-                  mutable[ele.n] = [ele._content];
-                }
-              } else if (ele?.pd && ele?.n === 'zimbraIsAdminAccount' && ele?.pd === true) {
-                mutable[ele.n] = 'TRUE';
-              } else {
-                mutable[ele.n] = ele._content;
-              }
+          const accountListArr: Array<AccountTableRow> = accountListResponse.map((item) => {
+            const account = processAccountAttributes(item);
+            const columns = createAccountTableColumns({
+              account,
+              onRowClick: handleClickTableRow,
+              statusColorMap: STATUS_COLOR,
+              getAccountType: accountUserType,
             });
-            accountListArr.push({
-              id: mutable?.id,
-              columns: [
-                <ds-text
-                  as="span"
-                  size="small"
-                  key={mutable?.id}
-                  color="gray0"
-                  weight="regular"
-                  onClick={(): void => {
-                    handleClickTableRow(mutable);
-                  }}
-                >
-                  {mutable?.name || ' '}
-                </ds-text>,
-                <ds-text
-                  as="span"
-                  size="small"
-                  key={mutable?.id}
-                  color="gray0"
-                  weight="light"
-                  onClick={(): void => {
-                    handleClickTableRow(mutable);
-                  }}
-                >
-                  {mutable?.displayName || <>&nbsp;</>}
-                </ds-text>,
-                <>
-                  {(mutable?.mail?.length ?? 0) - 1 || 0 ? (
-                    <Tooltip
-                      key={mutable?.id}
-                      placement="bottom"
-                      label={mutable?.mail?.slice(1).join(', ') ?? ''}
-                      maxWidth="auto"
-                    >
-                      <ds-text
-                        as="span"
-                        size="small"
-                        weight="light"
-                        key={mutable?.id}
-                        color="#828282"
-                        onClick={(): void => {
-                          handleClickTableRow(mutable);
-                        }}
-                      >
-                        {(mutable?.mail?.length ?? 0) - 1 || 0}
-                      </ds-text>
-                    </Tooltip>
-                  ) : (
-                    <ds-text
-                      as="span"
-                      size="small"
-                      key={mutable?.id}
-                      color="#828282"
-                      weight="light"
-                      onClick={(): void => {
-                        handleClickTableRow(mutable);
-                      }}
-                    >
-                      0
-                    </ds-text>
-                  )}
-                </>,
-                <ds-text
-                  as="span"
-                  size="small"
-                  key={mutable?.id}
-                  color="gray0"
-                  weight="light"
-                  onClick={(): void => {
-                    handleClickTableRow(mutable);
-                  }}
-                >
-                  {accountUserType(mutable)}
-                </ds-text>,
-                <ds-text
-                  as="span"
-                  size="small"
-                  weight="light"
-                  key={mutable?.id}
-                  color={STATUS_COLOR[mutable?.zimbraAccountStatus ?? '']?.color}
-                  onClick={(): void => {
-                    handleClickTableRow(mutable);
-                  }}
-                >
-                  {STATUS_COLOR[mutable?.zimbraAccountStatus ?? '']?.label}
-                </ds-text>,
-                <Tooltip key={`${mutable.id}-userDesc`} label={mutable?.description || <>&nbsp;</>}>
-                  <ds-text
-                    as="span"
-                    size="small"
-                    weight="light"
-                    key={mutable?.id}
-                    color="gray0"
-                    onClick={(event: { stopPropagation: () => void }): void => {
-                      event.stopPropagation();
-                      handleClickTableRow(mutable);
-                    }}
-                  >
-                    {mutable?.description ?? <>&nbsp;</>}
-                  </ds-text>
-                </Tooltip>,
-              ],
-              item: mutable,
+            return {
+              id: account?.id,
+              columns,
+              item: account,
               clickable: true,
-            });
+            };
           });
           setAccountList(accountListArr);
         }
