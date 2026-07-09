@@ -21,7 +21,7 @@ const mockLegalHoldAccount: BackupAccountItem = {
   deletedTimestamp: undefined,
 };
 
-const mockSetIsShowRestoreView = () => {};
+const mockOnBack = () => {};
 
 describe('RestoreAccountView (browser)', () => {
   describe('DatePicker', () => {
@@ -29,7 +29,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -40,7 +40,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -51,7 +51,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -64,7 +64,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -78,7 +78,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -91,7 +91,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
