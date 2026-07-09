@@ -697,7 +697,7 @@ describe('EditAccountDelegatesSection (browser)', () => {
       const readWriteCheckbox = page.getByText('Read / Write').first();
       await userEvent.click(readWriteCheckbox);
 
-      // Both checkboxes should be clickable (test passes if no error)
+      await expect.element(readWriteCheckbox).toBeVisible();
     });
 
     it('should uncheck Read/Write when Read Only is checked', async () => {

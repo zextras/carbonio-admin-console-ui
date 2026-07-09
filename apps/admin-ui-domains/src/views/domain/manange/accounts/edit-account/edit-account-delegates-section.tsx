@@ -26,6 +26,7 @@ import {
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { cloneDeep, debounce, filter, find, findIndex, map, pullAt } from 'lodash-es';
 import {
+  createContext,
   FC,
   ReactElement,
   useCallback,
@@ -102,6 +103,72 @@ type AccountOption = ChipItem & {
 type BatchRequestPart = { [key: string]: JsonValue };
 
 type WizardButtonProps = ButtonProps & { completeLoading?: boolean };
+
+type WizardContextValue = {
+  closeWizard: () => void;
+  submitDelegate: () => void;
+};
+
+const WizardContext = createContext<WizardContextValue | null>(null);
+
+const WizardCancelButton: FC<WizardButtonProps> = (props) => {
+  const [t] = useTranslation();
+  const wizardContext = useContext(WizardContext);
+  return (
+    <Button
+      {...props}
+      type="outlined"
+      key="wizard-cancel"
+      label={t('label.volume_cancel_button', 'CANCEL')}
+      icon="CloseOutline"
+      iconPlacement="right"
+      color="secondary"
+      onClick={(): void => wizardContext?.closeWizard()}
+    />
+  );
+};
+
+const WizardPrevButtonEmpty: FC = () => <></>;
+
+const WizardPrevButton: FC<WizardButtonProps> = (props) => {
+  const [t] = useTranslation();
+  return (
+    <Button
+      {...props}
+      label={t('label.volume_back_button', 'BACK')}
+      icon="ChevronLeftOutline"
+      iconPlacement="left"
+      disabled={props.completeLoading}
+      color="secondary"
+    />
+  );
+};
+
+const WizardNextButton: FC<WizardButtonProps> = (props) => {
+  const [t] = useTranslation();
+  return (
+    <Button
+      {...props}
+      label={t('account_details.NEXT', 'NEXT')}
+      icon="ChevronRightOutline"
+      iconPlacement="right"
+    />
+  );
+};
+
+const WizardAddButton: FC<WizardButtonProps> = (props) => {
+  const [t] = useTranslation();
+  const wizardContext = useContext(WizardContext);
+  return (
+    <Button
+      {...props}
+      label={t('account_details.ADD', 'ADD')}
+      icon="PersonOutline"
+      iconPlacement="right"
+      onClick={(): void => wizardContext?.submitDelegate()}
+    />
+  );
+};
 
 const EditAccountDelegatesSection: FC = () => {
   const context = useContext(AccountContext);
@@ -436,6 +503,14 @@ const EditAccountDelegatesSection: FC = () => {
     deligateDetail,
   ]);
 
+  const wizardContextValue = useMemo<WizardContextValue>(
+    () => ({
+      closeWizard: () => setShowCreateIdentity(false),
+      submitDelegate: handleCreateDelegateAPI,
+    }),
+    [handleCreateDelegateAPI],
+  );
+
   const wizardSteps = useMemo(
     () => [
       {
@@ -444,27 +519,9 @@ const EditAccountDelegatesSection: FC = () => {
         icon: 'PlusOutline',
         view: DelegateSelectModeSection,
         clickDisabled: true,
-        CancelButton: (props: WizardButtonProps): ReactElement => (
-          <Button
-            {...props}
-            type="outlined"
-            key="wizard-cancel"
-            label={t('label.volume_cancel_button', 'CANCEL')}
-            icon={'CloseOutline'}
-            iconPlacement="right"
-            color="secondary"
-            onClick={(): void => setShowCreateIdentity(false)}
-          />
-        ),
-        PrevButton: (): ReactElement => <></>,
-        NextButton: (props: WizardButtonProps): ReactElement => (
-          <Button
-            {...props}
-            label={t('account_details.NEXT', 'NEXT')}
-            icon="ChevronRightOutline"
-            iconPlacement="right"
-          />
-        ),
+        CancelButton: WizardCancelButton,
+        PrevButton: WizardPrevButtonEmpty,
+        NextButton: WizardNextButton,
       },
       {
         name: 'set-rights',
@@ -472,36 +529,9 @@ const EditAccountDelegatesSection: FC = () => {
         icon: 'OptionsOutline',
         view: DelegateSetRightsSection,
         clickDisabled: true,
-        CancelButton: (props: WizardButtonProps): ReactElement => (
-          <Button
-            {...props}
-            type="outlined"
-            key="wizard-cancel"
-            label={t('label.volume_cancel_button', 'CANCEL')}
-            icon={'CloseOutline'}
-            iconPlacement="right"
-            color="secondary"
-            onClick={(): void => setShowCreateIdentity(false)}
-          />
-        ),
-        PrevButton: (props: WizardButtonProps): ReactElement => (
-          <Button
-            {...props}
-            label={t('label.volume_back_button', 'BACK')}
-            icon={'ChevronLeftOutline'}
-            iconPlacement="left"
-            disabled={props.completeLoading}
-            color="secondary"
-          />
-        ),
-        NextButton: (props: WizardButtonProps): ReactElement => (
-          <Button
-            {...props}
-            label={t('account_details.NEXT', 'NEXT')}
-            icon="ChevronRightOutline"
-            iconPlacement="right"
-          />
-        ),
+        CancelButton: WizardCancelButton,
+        PrevButton: WizardPrevButton,
+        NextButton: WizardNextButton,
       },
       {
         name: 'add-delegate',
@@ -509,40 +539,12 @@ const EditAccountDelegatesSection: FC = () => {
         icon: 'KeyOutline',
         view: DelegateAddSection,
         clickDisabled: true,
-        CancelButton: (props: WizardButtonProps): ReactElement => (
-          <Button
-            {...props}
-            type="outlined"
-            key="wizard-cancel"
-            label={t('label.volume_cancel_button', 'CANCEL')}
-            icon={'CloseOutline'}
-            iconPlacement="right"
-            color="secondary"
-            onClick={(): void => setShowCreateIdentity(false)}
-          />
-        ),
-        PrevButton: (props: WizardButtonProps): ReactElement => (
-          <Button
-            {...props}
-            label={t('label.volume_back_button', 'BACK')}
-            icon={'ChevronLeftOutline'}
-            iconPlacement="left"
-            disabled={props.completeLoading}
-            color="secondary"
-          />
-        ),
-        NextButton: (props: WizardButtonProps): ReactElement => (
-          <Button
-            {...props}
-            label={t('account_details.ADD', 'ADD')}
-            icon="PersonOutline"
-            iconPlacement="right"
-            onClick={(): void => handleCreateDelegateAPI()}
-          />
-        ),
+        CancelButton: WizardCancelButton,
+        PrevButton: WizardPrevButton,
+        NextButton: WizardAddButton,
       },
     ],
-    [handleCreateDelegateAPI, t],
+    [t],
   );
 
   const [selectedAccounts, setSelectedAccounts] = useState<Array<AccountOption>>([]);
@@ -1329,7 +1331,7 @@ const EditAccountDelegatesSection: FC = () => {
             </>
           )}
           {showCreateIdentity && (
-            <>
+            <WizardContext.Provider value={wizardContextValue}>
               <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
                 <HorizontalWizard
                   steps={wizardSteps}
@@ -1338,7 +1340,7 @@ const EditAccountDelegatesSection: FC = () => {
                   setToggleWizardSection={setShowCreateIdentity}
                 />
               </Row>
-            </>
+            </WizardContext.Provider>
           )}
         </Container>
       )}
