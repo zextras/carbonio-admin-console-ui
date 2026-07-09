@@ -32,7 +32,7 @@ const main = (): void => {
   const pkgbuildContent = `# Unified package containing all Carbonio Admin UI components
 pkgname="carbonio-admin-console-ui"
 pkgver="${pkgVersion}"
-pkgrel="2"
+pkgrel="1"
 pkgdesc="Carbonio Admin UI"
 maintainer="Zextras (packages@zextras.com)"
 arch=("any")
