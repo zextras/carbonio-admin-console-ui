@@ -6,47 +6,39 @@
 
 import { Container, useSnackbar } from '@zextras/ui-components';
 import { noop } from 'lodash-es';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router';
 
 import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
 import RestoreAccountWizard from './restore-delete-account-wizard';
 
 const RestoreDeleteAccount: FC = () => {
   const [t] = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
   const createSnackbar = useSnackbar();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isRequestWorkInProgress, setIsRequestWorkInProgress] = useState<any>();
+  const [wizardKey, setWizardKey] = useState(0);
 
-  const backToFirstTab = useCallback(() => {
-    const lastloc = location?.pathname;
-    navigate(lastloc.replace('/restore_account', ''));
-    setTimeout(() => {
-      navigate(lastloc);
-    }, 10);
-  }, [location, navigate]);
+  // Remounts the wizard (resetting its internal state to the first step) without
+  // any URL manipulation. Used on successful restore and on cancel.
+  const resetWizard = useCallback(() => {
+    setWizardKey((state) => state + 1);
+  }, []);
 
-  useMemo(() => {
+  useEffect(() => {
     if (isSuccess) {
-      backToFirstTab();
+      resetWizard();
       setIsSuccess(false);
     }
-  }, [isSuccess, backToFirstTab]);
+  }, [isSuccess, resetWizard]);
 
   const restoreAccountRequest = useCallback(
     (
-      name: string,
       id: string,
       createDate: string,
-      status: string,
       copyAccount: string,
       dateTime: string | null,
-      lastAvailableStatus: boolean,
       hsmApply: boolean,
-      dataSource: boolean,
       notificationReceiver: string,
       isEmailNotificationEnable: boolean,
       copyDomain: string,
@@ -134,9 +126,11 @@ const RestoreDeleteAccount: FC = () => {
           mainAlignment="flex-start"
         >
           <RestoreAccountWizard
+            key={wizardKey}
             setShowRestoreAccountWizard={noop}
             restoreAccountRequest={restoreAccountRequest}
             isRequestWorkInProgress={isRequestWorkInProgress}
+            onReset={resetWizard}
           />
         </Container>
       </Container>

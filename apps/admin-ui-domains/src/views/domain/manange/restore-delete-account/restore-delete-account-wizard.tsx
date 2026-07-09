@@ -7,7 +7,6 @@
 import { Button, Container, HorizontalWizard, Section } from '@zextras/ui-components';
 import { type FC, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router';
 
 import RestoreAccountConfigSection from './restore-delete-account-config-section';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
@@ -36,10 +35,9 @@ const RestoreDeleteAccountWizard: FC<{
   setShowRestoreAccountWizard: any;
   restoreAccountRequest: any;
   isRequestWorkInProgress: any;
-}> = ({ setShowRestoreAccountWizard, restoreAccountRequest, isRequestWorkInProgress }) => {
+  onReset: () => void;
+}> = ({ setShowRestoreAccountWizard, restoreAccountRequest, isRequestWorkInProgress, onReset }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>();
   interface AccountDetailObj {
     name: string;
@@ -90,14 +88,6 @@ const RestoreDeleteAccountWizard: FC<{
     );
   }, [restoreAccountDetail, restoreAccountRequest]);
 
-  const backToFirstTab = useCallback(() => {
-    const lastloc = location?.pathname;
-    navigate(lastloc.replace('/restore_account', ''));
-    setTimeout(() => {
-      navigate(lastloc);
-    }, 100);
-  }, [location, navigate]);
-
   useEffect(() => {
     if (isRequestWorkInProgress === false) {
       setIsRequestInProgress(undefined);
@@ -121,7 +111,7 @@ const RestoreDeleteAccountWizard: FC<{
             color="secondary"
             icon="CloseOutline"
             iconPlacement="right"
-            onClick={backToFirstTab}
+            onClick={onReset}
           />
         ),
         PrevButton: () => <></>,
@@ -149,7 +139,7 @@ const RestoreDeleteAccountWizard: FC<{
             color="secondary"
             icon="CloseOutline"
             iconPlacement="right"
-            onClick={backToFirstTab}
+            onClick={onReset}
           />
         ),
         PrevButton: (props: any) => (
@@ -184,7 +174,7 @@ const RestoreDeleteAccountWizard: FC<{
             color="secondary"
             icon="CloseOutline"
             iconPlacement="right"
-            onClick={backToFirstTab}
+            onClick={onReset}
           />
         ),
         PrevButton: (props: any) => (
@@ -218,7 +208,7 @@ const RestoreDeleteAccountWizard: FC<{
       restoreAccountDetail?.copyAccount,
       restoreAccountDetail?.copyDomain,
       restoreAccountDetail?.name,
-      backToFirstTab,
+      onReset,
       isRequestInProgress,
     ],
   );
