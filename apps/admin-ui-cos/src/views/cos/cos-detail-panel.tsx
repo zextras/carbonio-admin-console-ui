@@ -8,6 +8,7 @@ import { Route, Routes } from 'react-router';
 
 import {
   ADVANCED,
+  COS_LIST,
   CREATE_NEW_COS_ROUTE_ID,
   FEATURES,
   GENERAL_INFORMATION,
@@ -40,7 +41,7 @@ export const CosDetailPanel = () => (
       <Route path={`:cosId/${ADVANCED}`} element={<CosAdvanced />} />
       <Route path={`:cosId/${SERVER_POOLS}`} element={<CosServerPools />} />
       <Route path={CREATE_NEW_COS_ROUTE_ID} element={<CreateCos />} />
-      <Route path={'cos_list'} element={<CosList />} />
+      <Route path={COS_LIST} element={<CosList />} />
     </Routes>
   </Container>
 );
