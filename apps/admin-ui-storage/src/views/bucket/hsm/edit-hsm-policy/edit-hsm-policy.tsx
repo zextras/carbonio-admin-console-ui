@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
@@ -16,8 +18,9 @@ import {
 import { FC, ReactElement, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { EditHsmPolicyProps, HsmPolicyEditDetail, HsmPolicyFromServer, TabBarItem } from '../../../../../types';
+import type { EditHsmPolicyProps, HsmPolicyFromServer, TabBarItem } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
+import type { HsmPolicyFormValues } from '../types';
 import EditHsmPolicyDetailSection from './edit-hsm-policy-detail-section';
 import EditHsmPolicyVolumesSection from './edit-hsm-policy-volumes-section';
 
@@ -32,21 +35,20 @@ const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const [change, setChange] = useState('details');
-  const [isDirty, setIsDirty] = useState<boolean>(false);
   const [currentPolicy, setCurrentPolicy] = useState<HsmPolicyFromServer>();
-  const [hsmDetail, setHsmDetail] = useState<HsmPolicyEditDetail>({
-    allVolumes: volumeList,
-    isAllEnabled: false,
-    isMessageEnabled: false,
-    isEventEnabled: false,
-    isContactEnabled: false,
-    isDocumentEnabled: false,
-    policyCriteria: [],
-    sourceVolume: [],
-    destinationVolume: [],
-    isDataLoaded: false,
-    isVolumeLoaded: false,
+  const form = useForm({
+    defaultValues: {
+      isAllEnabled: false,
+      isMessageEnabled: false,
+      isEventEnabled: false,
+      isContactEnabled: false,
+      isDocumentEnabled: false,
+      policyCriteria: [],
+      sourceVolume: [],
+      destinationVolume: [],
+    } as HsmPolicyFormValues,
   });
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
   useEffect(() => {
     const policy = policies.find((item: HsmPolicyFromServer) => item?.hsmQuery === selectedPolicies);
@@ -114,21 +116,22 @@ const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
   );
 
   const onSave = useCallback(() => {
+    const values = form.state.values;
     if (
-      hsmDetail?.isContactEnabled === false &&
-      hsmDetail?.isDocumentEnabled === false &&
-      hsmDetail?.isEventEnabled === false &&
-      hsmDetail?.isMessageEnabled === false
+      values.isContactEnabled === false &&
+      values.isDocumentEnabled === false &&
+      values.isEventEnabled === false &&
+      values.isMessageEnabled === false
     ) {
       showSnackbar(t('hsm.select_at_least_one_type', 'Select at least one type'));
       return;
     }
-    if (hsmDetail?.policyCriteria.length === 0) {
+    if (values.policyCriteria.length === 0) {
       showSnackbar(t('hsm.add_at_lease_one_criteria', 'Add at least one criteria'));
       return;
     }
-    onEditSave(hsmDetail);
-  }, [hsmDetail, onEditSave, showSnackbar, t]);
+    onEditSave({ ...values, allVolumes: volumeList });
+  }, [form, onEditSave, showSnackbar, t, volumeList]);
 
   return (
     <Container
@@ -166,7 +169,10 @@ const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
                 <Button
                   label={t('label.cancel', 'Cancel')}
                   color="secondary"
-                  onClick={(): void => setShowEditHsmPolicyView(false)}
+                  onClick={(): void => {
+                    form.reset();
+                    setShowEditHsmPolicyView(false);
+                  }}
                 />
               </Padding>
 
@@ -219,14 +225,10 @@ const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
         <Row width="100%">
           <ds-divider></ds-divider>
         </Row>
-        <HSMContext.Provider value={{ hsmDetail, setHsmDetail }}>
+        <HSMContext.Provider value={{ form, allVolumes: volumeList }}>
           <Container crossAlignment="flex-start" padding={{ all: '0rem' }}>
-            {change === 'details' && (
-              <EditHsmPolicyDetailSection currentPolicy={currentPolicy} setIsDirty={setIsDirty} />
-            )}
-            {change === 'volumes' && (
-              <EditHsmPolicyVolumesSection currentPolicy={currentPolicy} setIsDirty={setIsDirty} />
-            )}
+            {change === 'details' && <EditHsmPolicyDetailSection currentPolicy={currentPolicy} />}
+            {change === 'volumes' && <EditHsmPolicyVolumesSection currentPolicy={currentPolicy} />}
           </Container>
         </HSMContext.Provider>
       </Container>
