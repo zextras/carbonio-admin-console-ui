@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
@@ -23,7 +25,7 @@ import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import type { HsmPolicyEditDetail, HsmPolicyFromServer, HsmSettingsValues, Volume } from '../../../../types';
+import type { HsmPolicyEditDetail, HsmPolicyFromServer, Volume } from '../../../../types';
 import {
   APPOINTMENT,
   CONTACT,
@@ -44,20 +46,38 @@ type Timeout = ReturnType<typeof setTimeout>;
 const HSMsettingPanel: FC = () => {
   const { server } = useParams() as { server: string };
   const [t] = useTranslation();
-  const [isDirty, setIsDirty] = useState<boolean>(false);
   const [policies, setPolicies] = useState<Array<HsmPolicyFromServer>>([]);
   const [policiesRow, setPoliciesRow] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>([]);
   const [showCreateHsmPolicyView, setShowCreateHsmPolicyView] = useState<boolean>(false);
   const [showEditHsmPolicyView, setShowEditHsmPolicyView] = useState<boolean>(false);
   const [showDeletePolicyView, setShowDeletePolicyView] = useState<boolean>(false);
   const { data: serverList = [] } = useAllServers();
-  const [isZxPowerstoreMoveSchedulingEnabled, setIsZxPowerstoreMoveSchedulingEnabled] =
-    useState<boolean>(false);
-  const [powerstoreMoveSchedulerValue, setPowerstoreMoveSchedulerValue] = useState<string>('');
-  const [powerstoreSpaceThreshold, setPowerstoreSpaceThreshold] = useState<number>(0);
-  const [deduplicateAfterScheduledMoveBlobs, setDeduplicateAfterScheduledMoveBlobs] =
-    useState<boolean>(false);
-  const [oldValues, setOldValues] = useState<HsmSettingsValues>({} as HsmSettingsValues);
+  const form = useForm({
+    defaultValues: {
+      isZxPowerstoreMoveSchedulingEnabled: false,
+      powerstoreMoveSchedulerValue: '',
+      powerstoreSpaceThreshold: 0,
+      deduplicateAfterScheduledMoveBlobs: false,
+    },
+    onSubmit: async () => {},
+  });
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const isZxPowerstoreMoveSchedulingEnabled = useSelector(
+    form.store,
+    (s) => s.values.isZxPowerstoreMoveSchedulingEnabled,
+  );
+  const powerstoreMoveSchedulerValue = useSelector(
+    form.store,
+    (s) => s.values.powerstoreMoveSchedulerValue,
+  );
+  const powerstoreSpaceThreshold = useSelector(
+    form.store,
+    (s) => s.values.powerstoreSpaceThreshold,
+  );
+  const deduplicateAfterScheduledMoveBlobs = useSelector(
+    form.store,
+    (s) => s.values.deduplicateAfterScheduledMoveBlobs,
+  );
   const [volumeList, setVolumeList] = useState<Array<Volume>>([]);
   const createSnackbar = useSnackbar();
   const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
@@ -196,39 +216,32 @@ const HSMsettingPanel: FC = () => {
     }
   }, [handleClick, policies]);
 
-  const setValuesFromAttributes = useCallback((attributes: Record<string, { value: unknown }> | undefined) => {
-    if (!attributes) return;
-    const olderValues = {} as HsmSettingsValues;
-    if (attributes) {
+  const setValuesFromAttributes = useCallback(
+    (attributes: Record<string, { value: unknown }> | undefined) => {
+      if (!attributes) return;
+      const newValues = { ...form.state.values };
       if (attributes?.powerstoreMoveScheduler) {
-        const schedulePattern = (attributes?.powerstoreMoveScheduler?.value as Record<string, string> | undefined)?.['cron-pattern'];
-        const pattern = schedulePattern || '';
-        setPowerstoreMoveSchedulerValue(pattern);
-        olderValues.powerstoreMoveSchedulerValue = pattern;
+        const schedulePattern = (
+          attributes?.powerstoreMoveScheduler?.value as Record<string, string> | undefined
+        )?.['cron-pattern'];
+        newValues.powerstoreMoveSchedulerValue = schedulePattern || '';
       }
       if (attributes?.ZxPowerstore_SpaceThreshold) {
         const spaceThreshold = attributes?.ZxPowerstore_SpaceThreshold?.value;
-        const val = (spaceThreshold as number) || 0;
-        setPowerstoreSpaceThreshold(val);
-        olderValues.powerstoreSpaceThreshold = val;
+        newValues.powerstoreSpaceThreshold = (spaceThreshold as number) || 0;
       }
-
       if (attributes?.deduplicateAfterScheduledMoveBlobs) {
         const duplicate = attributes?.deduplicateAfterScheduledMoveBlobs;
-        const val = !!duplicate?.value;
-        setDeduplicateAfterScheduledMoveBlobs(val);
-        olderValues.deduplicateAfterScheduledMoveBlobs = val;
+        newValues.deduplicateAfterScheduledMoveBlobs = !!duplicate?.value;
       }
-
       if (attributes?.ZxPowerstore_MoveSchedulingEnabled) {
         const moveScheduling = attributes?.ZxPowerstore_MoveSchedulingEnabled?.value;
-        const val = moveScheduling === true;
-        setIsZxPowerstoreMoveSchedulingEnabled(val);
-        olderValues.isZxPowerstoreMoveSchedulingEnabled = val;
+        newValues.isZxPowerstoreMoveSchedulingEnabled = moveScheduling === true;
       }
-      setOldValues(olderValues);
-    }
-  }, []);
+      form.reset(newValues);
+    },
+    [form],
+  );
 
   const getZxPowerStoreServers = useCallback(() => {
     getSoapFetchRequest(
@@ -245,7 +258,6 @@ const HSMsettingPanel: FC = () => {
             setValuesFromAttributes(attributes);
           }
         }
-        setIsDirty(false);
       }
     });
   }, [server, setValuesFromAttributes]);
@@ -280,41 +292,33 @@ const HSMsettingPanel: FC = () => {
   }, [server, getZxPowerStoreServers, serverList, getAllVolumes]);
 
   const onCancel = useCallback(() => {
-    setIsZxPowerstoreMoveSchedulingEnabled(oldValues?.isZxPowerstoreMoveSchedulingEnabled);
-    setPowerstoreMoveSchedulerValue(oldValues?.powerstoreMoveSchedulerValue);
-    setPowerstoreSpaceThreshold(oldValues?.powerstoreSpaceThreshold);
-    setDeduplicateAfterScheduledMoveBlobs(oldValues?.deduplicateAfterScheduledMoveBlobs);
-    setIsDirty(false);
-  }, [
-    oldValues?.isZxPowerstoreMoveSchedulingEnabled,
-    oldValues?.powerstoreMoveSchedulerValue,
-    oldValues?.powerstoreSpaceThreshold,
-    oldValues?.deduplicateAfterScheduledMoveBlobs,
-  ]);
+    form.reset();
+  }, [form]);
 
   const onSave = useCallback(() => {
     setIsRequestInProgress(true);
+    const values = form.state.values;
     const body = {
       powerstoreMoveScheduler: {
         value: {
-          'cron-pattern': powerstoreMoveSchedulerValue,
-          'cron-enabled': isZxPowerstoreMoveSchedulingEnabled,
+          'cron-pattern': values.powerstoreMoveSchedulerValue,
+          'cron-enabled': values.isZxPowerstoreMoveSchedulingEnabled,
         },
         objectName: server,
         configType: SERVER,
       },
       ZxPowerstore_SpaceThreshold: {
-        value: powerstoreSpaceThreshold,
+        value: values.powerstoreSpaceThreshold,
         objectName: server,
         configType: SERVER,
       },
       deduplicateAfterScheduledMoveBlobs: {
-        value: deduplicateAfterScheduledMoveBlobs,
+        value: values.deduplicateAfterScheduledMoveBlobs,
         objectName: server,
         configType: SERVER,
       },
       ZxPowerstore_MoveSchedulingEnabled: {
-        value: isZxPowerstoreMoveSchedulingEnabled,
+        value: values.isZxPowerstoreMoveSchedulingEnabled,
         objectName: server,
         configType: SERVER,
       },
@@ -331,14 +335,7 @@ const HSMsettingPanel: FC = () => {
           }
           showSnackbar('error', 'error', errMessage);
         } else {
-          setIsDirty(false);
-          setOldValues((prev) => ({
-            ...prev,
-            isZxPowerstoreMoveSchedulingEnabled,
-            powerstoreMoveSchedulerValue,
-            powerstoreSpaceThreshold,
-            deduplicateAfterScheduledMoveBlobs,
-          }));
+          form.reset(values, { keepDefaultValues: true });
           showSnackbar(
             'success',
             'success',
@@ -353,52 +350,7 @@ const HSMsettingPanel: FC = () => {
         setIsRequestInProgress(false);
         showSnackbar('error', 'error', error ? error?.error ?? errorMessage : errorMessage);
       });
-  }, [
-    powerstoreMoveSchedulerValue,
-    isZxPowerstoreMoveSchedulingEnabled,
-    server,
-    powerstoreSpaceThreshold,
-    deduplicateAfterScheduledMoveBlobs,
-    errorMessage,
-    showSnackbar,
-    t,
-  ]);
-
-  useEffect(() => {
-    if (
-      oldValues.isZxPowerstoreMoveSchedulingEnabled !== undefined &&
-      oldValues.isZxPowerstoreMoveSchedulingEnabled !== isZxPowerstoreMoveSchedulingEnabled
-    ) {
-      setIsDirty(true);
-    }
-  }, [oldValues.isZxPowerstoreMoveSchedulingEnabled, isZxPowerstoreMoveSchedulingEnabled]);
-
-  useEffect(() => {
-    if (
-      oldValues.powerstoreMoveSchedulerValue !== undefined &&
-      oldValues.powerstoreMoveSchedulerValue !== powerstoreMoveSchedulerValue
-    ) {
-      setIsDirty(true);
-    }
-  }, [oldValues.powerstoreMoveSchedulerValue, powerstoreMoveSchedulerValue]);
-
-  useEffect(() => {
-    if (
-      oldValues.powerstoreSpaceThreshold !== undefined &&
-      oldValues.powerstoreSpaceThreshold !== powerstoreSpaceThreshold
-    ) {
-      setIsDirty(true);
-    }
-  }, [oldValues.powerstoreSpaceThreshold, powerstoreSpaceThreshold]);
-
-  useEffect(() => {
-    if (
-      oldValues.deduplicateAfterScheduledMoveBlobs !== undefined &&
-      oldValues.deduplicateAfterScheduledMoveBlobs !== deduplicateAfterScheduledMoveBlobs
-    ) {
-      setIsDirty(true);
-    }
-  }, [oldValues.deduplicateAfterScheduledMoveBlobs, deduplicateAfterScheduledMoveBlobs]);
+  }, [form, server, errorMessage, showSnackbar, t]);
 
   const onDeletePolicy = useCallback(
     (isEditSave?: boolean) => {
@@ -639,7 +591,10 @@ const HSMsettingPanel: FC = () => {
               label={t('hsm.enable_scheduler', 'Enable Scheduler')}
               value={isZxPowerstoreMoveSchedulingEnabled}
               onClick={(): void =>
-                setIsZxPowerstoreMoveSchedulingEnabled(!isZxPowerstoreMoveSchedulingEnabled)
+                form.setFieldValue(
+                  'isZxPowerstoreMoveSchedulingEnabled',
+                  !isZxPowerstoreMoveSchedulingEnabled,
+                )
               }
               iconColor="primary"
             />
@@ -655,7 +610,7 @@ const HSMsettingPanel: FC = () => {
               backgroundColor="gray5"
               value={powerstoreMoveSchedulerValue}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                setPowerstoreMoveSchedulerValue(e.target.value);
+                form.setFieldValue('powerstoreMoveSchedulerValue', e.target.value);
               }}
             />
           </Container>
@@ -668,7 +623,10 @@ const HSMsettingPanel: FC = () => {
             )}
             value={deduplicateAfterScheduledMoveBlobs}
             onClick={(): void =>
-              setDeduplicateAfterScheduledMoveBlobs(!deduplicateAfterScheduledMoveBlobs)
+              form.setFieldValue(
+                'deduplicateAfterScheduledMoveBlobs',
+                !deduplicateAfterScheduledMoveBlobs,
+              )
             }
             iconColor="primary"
           />
@@ -776,7 +734,7 @@ const HSMsettingPanel: FC = () => {
               backgroundColor="gray5"
               value={powerstoreSpaceThreshold}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                setPowerstoreSpaceThreshold(Number(e.target.value) || 0);
+                form.setFieldValue('powerstoreSpaceThreshold', Number(e.target.value) || 0);
               }}
             />
           </Container>
