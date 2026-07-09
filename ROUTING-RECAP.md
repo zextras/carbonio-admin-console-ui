@@ -98,21 +98,27 @@ All list panels now use `useRelativePathname()` + react-router's `matchPath`, re
 
 ### Tier 2 — consistency / correctness
 
-- [ ] **Leading-slash absolute nested-route paths** (`path={`/${X}`}`) in mta, backup,
-      notifications, cos → normalize to relative paths (storage/operations/domains already do).
-- [ ] **Pointless single-route `<Routes>` shells** in legalhold, privacy (`path="/"`), and
-      dashboard app-view → remove the shell (render directly) or adopt real sub-routes.
-- [ ] **Dead `<Navigate to="activate" replace />`** in `subscription.tsx:215` — no matching route
-      exists; activation is conditional rendering in `app-view.tsx`.
-- [ ] **Hard-coded literals**:
-      - `'cos_list'` string in `cos-detail-panel.tsx:43` and `delete-cos-modal.tsx:34` (use the
-        `COS_LIST` constant instead).
-      - `'/restore_account'` in domains restore wizard (`restore-delete-account.tsx:26`,
-        `restore-delete-account-wizard.tsx:95`) — pathname `.replace()` + `setTimeout` re-nav,
-        brittle.
-- [ ] **Mixed selection model**: operations (state + `<ModalOverlay>`) and legalhold (pure
-      `useState`) aren't deep-linkable/refresh-safe, unlike the URL-driven apps. Decide whether
-      item-level detail should move into the URL.
+- [x] **Leading-slash absolute nested-route paths** (`path={`/${X}`}`) in mta, backup,
+      notifications, cos → normalized to relative paths (22 paths across 4 detail panels).
+      Verified by 5 routing test suites (40 tests). *(done)*
+- [x] **Pointless single-route `<Routes>` shells** in legalhold, privacy (`path="/"`), and
+      dashboard app-view → removed; each renders its content directly. *(done)*
+- [x] **Dead `<Navigate to="activate" replace />`** in `subscription.tsx:215` → removed (was
+      unreachable; app-view guards it via conditional rendering, and no `/activate` route exists).
+      *(done)*
+- [x] **Hard-coded literals**:
+      - `'cos_list'` → `COS_LIST` constant in `cos-detail-panel.tsx` + `delete-cos-modal.tsx`. *(done)*
+      - domains restore wizard `'/restore_account'` + `setTimeout` re-nav hack → replaced with a
+        clean `key`-based remount (`wizardKey` counter; wizard gains `onReset` prop). Eliminates
+        the navigate-away-and-back dance, the literal, and `useLocation`/`useNavigate` deps. *(done)*
+- [x] **Mixed selection model**:
+      - operations: left as state-based — its detail is a `<ModalOverlay>` (modals are correctly
+        ephemeral, not deep-linked). *(decided: intentional)*
+      - legalhold: refactored to URL-driven (`/services/legal_hold/restore/:accountId`) via the
+        shared `useRelativePathname` + `matchPath`; removed `isShowRestoreView` boolean; account
+        looked up from the loaded list; `RestoreAccountView` takes `onBack`. Limitation: cold
+        deep-link to a non-default-page account needs a backend by-id endpoint (frontend-only max).
+        *(done — pragmatic)*
 
 ### Tier 3 — polish
 
