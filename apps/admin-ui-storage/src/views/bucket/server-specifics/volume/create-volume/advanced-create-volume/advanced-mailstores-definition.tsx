@@ -7,25 +7,35 @@ import { Container, Input, LabeledValue, Padding, Row, Select } from '@zextras/u
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { objectType, VolumeAllocationItem } from '../../../../../../../types';
+import type {
+  AdvancedVolumeWizardDetail,
+  BucketVolume,
+  VolumeAllocationItem,
+  VolumeWizardDetail,
+} from '../../../../../../../types';
 import {
   EXTERNAL_TYPE_VALUE,
   LOCAL_TYPE_VALUE,
   UNUSED,
   USAGE_IN_EXTERNAL_BACKUP,
-  ZIMBRA_ADMIN_URN,
 } from '../../../../../../constants';
-import { fetchSoap } from '../../../../../../services/bucket-service';
+import { listS3Connector } from '../../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
 import { VolumeContext } from '../volume-context';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
-const AdvancedMailstoresDefinition: FC<{
+type AdvancedMailstoresDefinitionProps = {
   externalData: string;
   setCompleteLoading: (newValue: boolean) => void;
   setToggleNextBtn: (newValue: boolean) => void;
-}> = ({ externalData, setToggleNextBtn, setCompleteLoading }) => {
+};
+
+const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
+  externalData,
+  setToggleNextBtn,
+  setCompleteLoading,
+}) => {
   const { t } = useTranslation();
   const context = useContext(VolumeContext);
   const advancedContext = useContext(AdvancedVolumeContext);
@@ -37,14 +47,19 @@ const AdvancedMailstoresDefinition: FC<{
   const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
   const [allocation, setAllocation] = useState<VolumeAllocationItem>();
-  const [unusedType, setUnusedType] = useState<{ label: string; value: string }>();
+  const [unusedType, setUnusedType] = useState<{ label: string; value: string } | undefined>();
   const [errName, setErrName] = useState(true);
-  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<Array<{ label: string; value: string }>>([]);
+  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<
+    Array<{ label: string; value: string }>
+  >([]);
 
   const changeVolName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setVolumeDetail((prev) => ({ ...prev, volumeName: e?.target?.value }));
-      setAdvancedVolumeDetail((prev) => ({ ...prev, volumeName: e?.target?.value }));
+      setVolumeDetail((prev: VolumeWizardDetail) => ({ ...prev, volumeName: e?.target?.value }));
+      setAdvancedVolumeDetail((prev: AdvancedVolumeWizardDetail) => ({
+        ...prev,
+        volumeName: e?.target?.value,
+      }));
       if (e?.target?.value === '') {
         setErrName(false);
       } else {
@@ -54,62 +69,123 @@ const AdvancedMailstoresDefinition: FC<{
     [setAdvancedVolumeDetail, setVolumeDetail],
   );
 
-  const onVolAllocationChange = (v: number | null): void => {
-    setVolumeDetail((prev) => ({ ...prev, volumeAllocation: v ?? undefined }));
-    const volumeTypeObject = volAllocationList?.find(
-      (item: VolumeAllocationItem) => item?.value === v,
-    )?.label;
-    setAdvancedVolumeDetail((prev) => ({
-      ...prev,
-      volumeAllocation: volumeTypeObject,
-    }));
-    if (v === LOCAL_TYPE_VALUE) {
-      setToggleNextBtn(true);
-    } else {
-      setToggleNextBtn(false);
-    }
-  };
+  const onVolAllocationChange = useCallback(
+    (v: unknown): void => {
+      if (typeof v !== 'number') {
+        return;
+      }
 
-  const onUnusedBucketListChange = (e: string | null): void => {
-    const selectedBucketDetail = isVolumeAllDetail?.find(
-      (item) => item?.uuid === e,
-    );
-    setAdvancedVolumeDetail((prev) => ({
-      ...prev,
-      bucketName: selectedBucketDetail?.bucketName,
-      unusedBucketType: selectedBucketDetail?.storeType,
-      bucketId: selectedBucketDetail?.uuid,
-    }));
-  };
+      setVolumeDetail((prev: VolumeWizardDetail) => ({ ...prev, volumeAllocation: v }));
+      const volumeTypeObject = volAllocationList?.find(
+        (item: VolumeAllocationItem) => item?.value === v,
+      )?.label;
+      setAdvancedVolumeDetail((prev: AdvancedVolumeWizardDetail) => ({
+        ...prev,
+        volumeAllocation: volumeTypeObject,
+      }));
+      if (v === LOCAL_TYPE_VALUE) {
+        setToggleNextBtn(true);
+      } else {
+        setToggleNextBtn(false);
+      }
+    },
+    [setAdvancedVolumeDetail, setToggleNextBtn, setVolumeDetail, volAllocationList],
+  );
+
+  useEffect(() => {
+    if (volumeDetail?.volumeAllocation) {
+      return;
+    }
+
+    const defaultAllocation = volAllocationList?.[0]?.value;
+    if (typeof defaultAllocation === 'number') {
+      onVolAllocationChange(defaultAllocation);
+    }
+  }, [onVolAllocationChange, volAllocationList, volumeDetail?.volumeAllocation]);
+
+  const onUnusedBucketListChange = useCallback(
+    (e: unknown): void => {
+      if (typeof e !== 'string') {
+        return;
+      }
+
+      const selectedBucketDetail = isVolumeAllDetail?.find((item: BucketVolume) => item?.uuid === e);
+      setAdvancedVolumeDetail((prev: AdvancedVolumeWizardDetail) => ({
+        ...prev,
+        bucketName: selectedBucketDetail?.bucketName,
+        unusedBucketType: selectedBucketDetail?.storeType,
+        bucketId: selectedBucketDetail?.uuid,
+        tieringSupported: selectedBucketDetail?.tieringSupported,
+        useInfrequentAccess: selectedBucketDetail?.tieringSupported
+          ? prev.useInfrequentAccess
+          : false,
+        useIntelligentTiering: selectedBucketDetail?.tieringSupported
+          ? prev.useIntelligentTiering
+          : false,
+      }));
+    },
+    [isVolumeAllDetail, setAdvancedVolumeDetail],
+  );
+
+  useEffect(() => {
+    if (volumeDetail?.volumeAllocation !== EXTERNAL_TYPE_VALUE) {
+      return;
+    }
+
+    if (advancedVolumeDetail?.bucketId) {
+      return;
+    }
+
+    const defaultBucket = backupUnusedBucketList?.[0]?.value;
+    if (typeof defaultBucket === 'string' && defaultBucket !== '') {
+      onUnusedBucketListChange(defaultBucket);
+    }
+  }, [
+    advancedVolumeDetail?.bucketId,
+    backupUnusedBucketList,
+    onUnusedBucketListChange,
+    volumeDetail?.volumeAllocation,
+  ]);
+
+  function getBucketTypeLabel(storeType: string | undefined): string | undefined {
+    return bucketTypeItems?.find((item) => item?.value?.toLowerCase() === storeType?.toLowerCase())
+      ?.label;
+  }
 
   const getBucketListType = useCallback((): void => {
-    fetchSoap('zextras', {
-      _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'listBuckets',
-      type: 'all',
-      showSecrets: true,
-    }).then((res) => {
-      const response = JSON.parse(res?.Body?.response?.content);
-      if (response?.ok && Array.isArray(response?.response?.values) && response.response.values.length !== 0) {
-        const volUnusedBucketList: Array<{ label: string; value: string }> = [];
-        const allData = response?.response?.values
-          ?.filter((items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
-          .map((items: objectType) => {
-            const volumeObject: string | undefined = bucketTypeItems?.find(
-              (s) => s?.value?.toLowerCase() === items?.storeType?.toLowerCase(),
-            )?.label;
-            volUnusedBucketList.push({
-              label: `${volumeObject} | ${items?.label}`,
-              value: items?.uuid,
-            });
-            return items;
-          });
-        setIsVolumeAllDetail(allData);
-        setBackupUnusedBucketList(volUnusedBucketList);
-      }
+    listS3Connector().then((values) => {
+      const connectors: Array<BucketVolume> = values.map((items) => ({
+        uuid: items.uuid,
+        label: items.label || '',
+        bucketName: items.bucketName || '',
+        storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
+        notes: items.notes || '',
+        tieringSupported:
+          (items as unknown as { tieringSupported?: boolean }).tieringSupported ?? false,
+        [USAGE_IN_EXTERNAL_BACKUP]:
+          (items as unknown as { 'usage in external backup'?: string | Array<string> })[
+            'usage in external backup'
+          ] ?? UNUSED,
+      }));
+
+      const allData = connectors.filter(
+        (items: BucketVolume) =>
+          !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
+      );
+
+      const volUnusedBucketList: Array<{ label: string; value: string }> = allData.map(
+        (items: BucketVolume) => {
+          const volumeObject = getBucketTypeLabel(items?.storeType);
+          return {
+            label: `${volumeObject} | ${items?.label}`,
+            value: items?.uuid ?? '',
+          };
+        },
+      );
+      setIsVolumeAllDetail(allData);
+      setBackupUnusedBucketList(volUnusedBucketList);
     });
-  }, [bucketTypeItems, setIsVolumeAllDetail]);
+  }, [getBucketTypeLabel, setIsVolumeAllDetail]);
 
   useEffect(() => {
     const volumeTypeObject = volAllocationList?.find(
@@ -145,10 +221,10 @@ const AdvancedMailstoresDefinition: FC<{
   ]);
 
   useEffect(() => {
-    const matchingItem = backupUnusedBucketList?.find(
+    const volumeTypeObject = backupUnusedBucketList?.find(
       (item) => item?.value === advancedVolumeDetail?.bucketId,
     );
-    setUnusedType(matchingItem);
+    setUnusedType(volumeTypeObject);
   }, [
     backupUnusedBucketList,
     advancedVolumeDetail?.unusedBucketType,
@@ -193,7 +269,7 @@ const AdvancedMailstoresDefinition: FC<{
           background="gray5"
           label={t('label.storage_type', 'Storage Type')}
           showCheckbox={false}
-          defaultSelection={allocation}
+          selection={allocation || volAllocationList[0]}
           onChange={onVolAllocationChange}
         />
       </Row>
@@ -209,7 +285,7 @@ const AdvancedMailstoresDefinition: FC<{
                 'Available Buckets List (that are not in use in the backup)',
               )}
               showCheckbox={false}
-              defaultSelection={unusedType}
+              selection={unusedType || backupUnusedBucketList[0]}
               onChange={onUnusedBucketListChange}
             />
           </Row>

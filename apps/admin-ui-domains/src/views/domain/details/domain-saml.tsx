@@ -16,7 +16,6 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,6 +26,7 @@ import {
   ZIMBRA_PUBLIC_SERVICE_HOSTNAME,
   ZIMBRA_PUBLIC_SERVICE_PROTOCOL,
 } from '../../../constants';
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { deleteSamlAttributes } from '../../../services/delete-saml-attributes';
 import { generateSignedCertificate } from '../../../services/generate-signed-certificate';
 import { getSamlConfig } from '../../../services/get-saml-configurations';
@@ -44,7 +44,8 @@ const DomainSaml: FC = () => {
   const [samlAttributes, setSamlAttributes] = useState<Array<SamlAttribute>>([]);
   const [samlTableRows, setSamlTableRows] = useState<any[]>([]);
   const [isAllowUnsecure, setIsAllowUnsecure] = useState<boolean>(false);
-  const domainName = useDomainStore((state) => state.domain?.name) || '';
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name || '';
   const createSnackbar = useSnackbar();
   const [samlAttrKey, setSamlAttrKey] = useState<string>('');
   const [samlAttrValue, setSamlAttrValue] = useState<any>('');
@@ -52,7 +53,7 @@ const DomainSaml: FC = () => {
   const [entityId, setEntityId] = useState<string>('');
   const [serverUrl, setServiceUrl] = useState<string>('');
   const [showBannerText, setShowBannerText] = useState<boolean>(true);
-  const domainInformation: any = useDomainStore((state) => state.domain?.a);
+  const domainInformation: any = domain?.a;
 
   const headers: any = useMemo(
     () => [

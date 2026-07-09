@@ -26,6 +26,7 @@
     "test:ci": "turbo run test:ci --concurrency=2",
     "test:headed": "HEADED=true turbo run test --no-cache",
     "type-check": "turbo run type-check",
+    "type-check:ci": "turbo run type-check --concurrency=4",
     "lint": "turbo run lint",
     "lint:ci": "turbo run lint --concurrency=4",
     "lint:fix": "turbo run lint:fix",
@@ -36,7 +37,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.29.7",
-    "react": "^19.2.3"
+    "react": "^19.2.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -61,19 +62,20 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-you-might-not-need-an-effect": "^1.0.1",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "eslint-plugin-testing-library": "^7.16.2",
     "eslint-plugin-unused-imports": "^4.4.1",
     "knip": "^6.14.1",
     "lit": "^3.3.2",
-    "playwright": "^1.60.0",
+    "playwright": "^1.61.1",
     "react-router": "^7.13.0",
     "semantic-release": "^25.0.5",
-    "sonarqube-scanner": "^4.3.6",
+    "sonarqube-scanner": "^4.3.8",
     "tsx": "^4.22.4",
     "turbo": "latest",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.49.0",
+    "typescript-eslint": "^8.61.1",
     "vite-plugin-svgr": "^5.2.0",
     "vitest": "^4.1.0",
     "vitest-browser-react": "^2.2.0"

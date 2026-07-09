@@ -56,6 +56,28 @@ import DeleteVolumeModel from './delete-volume-model';
 import IndexerVolumeTable from './indexer-volume-table';
 import ModifyVolume from './modify-volume/modify-volume';
 
+type SoapContentResponse = {
+  Body?: {
+    response?: {
+      content?: string;
+    };
+  };
+};
+
+function normalizeAdvancedVolume(volume: Volume): Volume {
+  return {
+    ...volume,
+    bucketConfigurationId: volume.bucketConfigurationId ?? volume.uuid,
+    compressBlobs: volume.compressBlobs ?? String(volume.compressed ?? false),
+    compressionThreshold: volume.compressionThreshold ?? String(volume.threshold ?? ''),
+    rootpath: volume.rootpath ?? volume.path,
+  };
+}
+
+function normalizeAdvancedVolumeList(volumes: Array<Volume> | undefined): Array<Volume> {
+  return volumes?.map(normalizeAdvancedVolume) ?? [];
+}
+
 const VolumeListTable: FC<{
   volumes: Array<Volume>;
   selectedRows: Array<string>;
@@ -139,6 +161,15 @@ const VolumeListTable: FC<{
               {v?.compressed ? YES : NO}
             </ds-text>
           </Row>,
+          <Row key={v?.id} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+            <button
+              type="button"
+              onClick={(): void => { onClick(i); }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 0px 0px 14px', display: 'inline-flex', alignItems: 'center' }}
+            >
+              <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
+            </button>
+          </Row>
         ];
 
         return {
@@ -172,11 +203,11 @@ const VolumeListTable: FC<{
 };
 
 const VolumesDetailPanel: FC = () => {
-  const { server } = useParams();
+  const { server = '' } = useParams<{ server: string }>();
   const [t] = useTranslation();
   const context = useContext(VolumeContext);
   const { setVolumeDetail } = context;
-  const { isVolumeAllDetail, selectedServerName } = useBucketVolumeStore((state) => state);
+  const { isVolumeAllDetail } = useBucketVolumeStore((state) => state);
   const isAdvanced = useIsAdvanced();
   const volIndexerHeaders = useMemo(() => indexerHeaders(t, isAdvanced), [t, isAdvanced]);
   const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t, isAdvanced), [t, isAdvanced]);
@@ -218,37 +249,25 @@ const VolumesDetailPanel: FC = () => {
     setOpen(false);
   };
 
-  const mapAdvancedVolume = useCallback((vol: any): Volume => {
-    const volumeTypeMap: Record<string, number> = {
-      primary: 1,
-      secondary: 2,
-      index: 10,
-    };
-    return {
-      ...vol,
-      rootpath: vol?.path ?? vol?.rootpath,
-      path: vol?.path,
-      type: volumeTypeMap[vol?.volumeType] ?? vol?.type,
-      compressBlobs: vol?.compressed ?? vol?.compressBlobs,
-      compressionThreshold: vol?.threshold ?? vol?.compressionThreshold,
-      compressed: vol?.compressed,
-      bucketConfigurationId: vol?.uuid ?? vol?.bucketConfigurationId,
-    };
-  }, []);
-
   const getAllVolumesRequest = useCallback((): void => {
     if (isAdvanced) {
       fetchSoap('zextras', {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
         action: 'getAllVolumes',
-      }, selectedServerId)
+        targetServers: server,
+      })
         .then((res) => {
           const result = JSON.parse(res?.Body?.response?.content);
-          if (result?.ok) {
-            const primaries = (result?.response?.primaries ?? []).map(mapAdvancedVolume);
-            const secondaries = (result?.response?.secondaries ?? []).map(mapAdvancedVolume);
-            const indexes = (result?.response?.indexes ?? []).map(mapAdvancedVolume);
+          const getAllVolResponse = Object.keys(result?.response).map(
+            (key) => result?.response[key],
+          )[0];
+          if (getAllVolResponse?.ok) {
+            const primaries = normalizeAdvancedVolumeList(getAllVolResponse?.response?.primaries);
+            const secondaries = normalizeAdvancedVolumeList(
+              getAllVolResponse?.response?.secondaries,
+            );
+            const indexes = normalizeAdvancedVolumeList(getAllVolResponse?.response?.indexes);
             setVolumeList({
               primaries,
               indexes,
@@ -307,7 +326,7 @@ const VolumesDetailPanel: FC = () => {
           });
         });
     }
-  }, [isAdvanced, selectedServerId, createSnackbar, t, mapAdvancedVolume]);
+  }, [isAdvanced, server, createSnackbar, t, selectedServerId]);
 
   const deleteHandler = async (data: Volume | undefined): Promise<void> => {
     if (!data) {
@@ -318,11 +337,12 @@ const VolumesDetailPanel: FC = () => {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
         action: 'doDeleteVolume',
-        targetServers: selectedServerName,
+        targetServers: server,
         volumeName: data?.name,
       })
         .then((res) => {
-          const result = JSON.parse(res?.Body?.response?.content);
+          const typedRes = res as SoapContentResponse;
+          const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
           const deleteResponse = Object.keys(result?.response).map(
             (key) => result?.response[key],
           )[0];
@@ -428,7 +448,7 @@ const VolumesDetailPanel: FC = () => {
     obj._jsns = ZIMBRA_ADMIN_URN;
     obj.module = 'ZxPowerstore';
     obj.action = 'doCreateVolume';
-    obj.targetServers = selectedServerName;
+    obj.targetServers = server;
     obj.volumeName = attr?.volumeName;
     obj.volumeType = attr?.volumeType;
     obj.storeType = attr?.storeType;
@@ -498,9 +518,10 @@ const VolumesDetailPanel: FC = () => {
 
     await fetchSoap('zextras', obj)
       .then(async (res) => {
-        const result = JSON.parse(res?.Body?.response?.content);
+        const typedRes = res as SoapContentResponse;
+        const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
         if (result?.ok) {
-          if (result?.response[selectedServerName]?.ok) {
+          if (result?.response[server]?.ok) {
             getAllVolumesRequest();
             createSnackbar({
               key: '1',
@@ -515,7 +536,7 @@ const VolumesDetailPanel: FC = () => {
               key: '1',
               severity: 'error',
               label: t('label.volume_detail_error', '{{message}}', {
-                message: result?.response[selectedServerName]?.error?.message,
+                message: result?.response[server]?.error?.message,
               }),
             });
           }
@@ -528,7 +549,7 @@ const VolumesDetailPanel: FC = () => {
             }),
           });
         }
-        return res;
+        return typedRes;
       })
       .catch((error) => {
         createSnackbar({
@@ -560,7 +581,7 @@ const VolumesDetailPanel: FC = () => {
           _jsns: ZIMBRA_ADMIN_URN,
           module: 'ZxPowerstore',
           action: 'doCreateVolume',
-          targetServers: selectedServerName,
+          targetServers: server,
           volumeName: attr?.name,
           volumeType: volType,
           storeType: 'FILE_BLOB',
@@ -695,14 +716,13 @@ const VolumesDetailPanel: FC = () => {
   };
 
   useEffect(() => {
-    if (serverList && serverList?.length > 0) {
-      const lookupName = server || selectedServerName;
-      const serverData = serverList?.find((s: { name?: string }) => s?.name === lookupName);
+    if (serverList && serverList?.length > 0 && server) {
+      const serverData = serverList?.find((s: { name?: string }) => s?.name === server);
       if (serverData && serverData?.id) {
         setSelectedServerId(serverData?.id);
       }
     }
-  }, [serverList, server, selectedServerName]);
+  }, [serverList, server]);
 
   return (
     <>
@@ -711,7 +731,7 @@ const VolumesDetailPanel: FC = () => {
           <CreateMailstoresVolume
             setToggleWizardExternal={setToggleWizardExternal}
             setToggleWizardLocal={setToggleWizardLocal}
-            volName={selectedServerName}
+            volName={server}
             CreateAdvancedRequest={CreateAdvancedRequest}
           />
         </ModalOverlay>
@@ -721,7 +741,7 @@ const VolumesDetailPanel: FC = () => {
           <NewVolume
             setToggleWizardLocal={setToggleWizardLocal}
             setToggleWizardExternal={setToggleWizardExternal}
-            volName={selectedServerName}
+            volName={server}
             CreateVolumeRequest={CreateVolumeRequest}
             isLoading={isLoading}
           />
@@ -758,7 +778,7 @@ const VolumesDetailPanel: FC = () => {
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
           <ds-text as="h2" weight="bold">
             {t('volume.serverName_volumes', '{{serverName}} Volumes', {
-              serverName: selectedServerName,
+              serverName: server,
             })}
           </ds-text>
         </Row>
@@ -780,7 +800,6 @@ const VolumesDetailPanel: FC = () => {
               style={{ gap: '1rem' }}
             >
               <Button
-                type="outlined"
                 label={t('label.new_volume_button', 'NEW VOLUME')}
                 icon="PlusOutline"
                 color="primary"

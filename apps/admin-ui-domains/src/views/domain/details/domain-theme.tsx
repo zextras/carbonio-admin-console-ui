@@ -3,15 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
-import { flushCache, useAllConfig, useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { domainByIdKey, flushCache, getDomainInformation, useAllConfig, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, isEqual, reduce } from 'lodash-es';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { themeConfigStore } from '../../../../types/domain';
 import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
-import { getDomainInformation } from '../../../services/domain-information-service';
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidHexColor } from '../../utility/utils';
@@ -24,10 +26,12 @@ const DomainTheme: FC = () => {
   const [domainTheme, setDomainTheme] = useState<themeConfigStore>({});
   const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
   const { data: configInformation = [] } = useAllConfig();
-  const domainInformation = useDomainStore((state) => state.domainWithoutConfig?.a);
-  const setDomain = useDomainStore((state) => state.setDomain);
-  const setDomainWioutConfig = useDomainStore((state) => state.setDomainWioutConfig);
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domainWithoutConfig } = useSelectedDomain(0);
+  const domainInformation = domainWithoutConfig?.a;
+  const { data: selectedDomain } = useSelectedDomain();
+  const domainName = selectedDomain?.name;
+  const queryClient = useQueryClient();
+  const { domainId } = useParams();
   const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
   const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
   const [isValidated, setIsValidated] = useState<boolean>(true);
@@ -89,11 +93,11 @@ const DomainTheme: FC = () => {
         }
         const domain: any = data?.domain[0];
         if (domain) {
-          setDomain(domain);
+          queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
           getDomainInformation(domain.id, 0).then((res) => {
             const domainData = res?.domain[0];
             if (domainData) {
-              setDomainWioutConfig(domainData);
+              queryClient.setQueryData(domainByIdKey(domainId, 0), domainData);
             }
           });
         }

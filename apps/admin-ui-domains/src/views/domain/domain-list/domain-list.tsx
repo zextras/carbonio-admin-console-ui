@@ -3,18 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  Input,
-  Paging,
-  Row,
-  Table,
-  TrackNumberPerPage,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
+import { Container, CustomHeaderFactory, HoverableRowFactory, Input, Paging, Row, Table, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
+import { replaceHistory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -60,8 +50,6 @@ type ZimbraDomainEntry = {
 
 const DomainList: FC = () => {
   const [t] = useTranslation();
-  const setDomain = useDomainStore((state) => state.setDomain);
-  const setDomainView = useDomainStore((state) => state.setDomainView);
   const [hasError, setHasError] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
   const [isTableTooTall, setIsTableTooTall] = useState(false);
@@ -137,14 +125,9 @@ const DomainList: FC = () => {
 
   const onDomainSelect = useCallback(
     (domain: ZimbraDomainEntry) => {
-      setDomain({
-        a: domain?.a,
-        id: domain?.id,
-        name: domain?.name,
-      });
-      setDomainView(GENERAL_SETTINGS);
+      replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
     },
-    [setDomain, setDomainView],
+    [],
   );
 
   const getAllDomainList = useCallback((): void => {

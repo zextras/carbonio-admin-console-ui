@@ -4,15 +4,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/ui-shared';
-import { setupBrowserTest, worker } from 'admin-ui-test-utils';
+import { domainByIdKey } from '@zextras/ui-shared';
+import { getQueryClient, setupBrowserTest as _setupBrowserTest, worker } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { type ReactElement } from 'react';
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
+import { type RenderResult } from 'vitest-browser-react';
 
 import ActiveSync from '../active-sync';
 
+const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
+
+function setupBrowserTest(ui: ReactElement): Promise<RenderResult> {
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+        id: DOMAIN_ID,
+        name: DOMAIN_NAME,
+        a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
+    });
+    return _setupBrowserTest(ui, {
+        queryClient,
+        withDomainIdRoute: true,
+        initialRouterEntry: `/${DOMAIN_ID}`,
+    });
+}
 
 type MobileDevice = {
     accountEmail: string;
@@ -149,25 +166,7 @@ function setupZextrasInterceptor(
     );
 }
 
-function setupDomainStore(): void {
-    useDomainStore.setState({
-        domain: {
-            name: DOMAIN_NAME,
-            id: 'test-domain-id',
-            a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
-        },
-    });
-}
-
 describe('ActiveSync (browser)', () => {
-    beforeEach(() => {
-        setupDomainStore();
-    });
-
-    afterEach(() => {
-        useDomainStore.setState({});
-    });
-
     describe('Rendering', () => {
         it('should render the ActiveSync title', async () => {
             setupZextrasInterceptor();

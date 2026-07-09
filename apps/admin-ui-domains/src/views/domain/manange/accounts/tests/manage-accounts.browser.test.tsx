@@ -4,18 +4,36 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/ui-shared';
+import { domainByIdKey } from '@zextras/ui-shared';
 import {
     advancedSupportedApiForBrowser,
     createBrowserSoapAPIInterceptor,
-    setupBrowserTest,
+    getQueryClient,
+    setupBrowserTest as _setupBrowserTest,
 } from 'admin-ui-test-utils';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { type ReactElement } from 'react';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
+import { type RenderResult } from 'vitest-browser-react';
 
 import ManageAccounts from '../manage-accounts';
 
+const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
+
+function setupBrowserTest(ui: ReactElement): Promise<RenderResult> {
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+        id: DOMAIN_ID,
+        name: DOMAIN_NAME,
+        a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
+    });
+    return _setupBrowserTest(ui, {
+        queryClient,
+        withDomainIdRoute: true,
+        initialRouterEntry: `/${DOMAIN_ID}`,
+    });
+}
 
 type AccountEntry = {
     name: string;
@@ -93,24 +111,9 @@ function setupCountAccountInterceptor(totalAccounts = 3): Promise<unknown> {
     });
 }
 
-function setupDomainStore(): void {
-    useDomainStore.setState({
-        domain: {
-            name: DOMAIN_NAME,
-            id: 'test-domain-id',
-            a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
-        },
-    });
-}
-
 describe('ManageAccounts (browser)', () => {
     beforeEach(async () => {
-        setupDomainStore();
         await advancedSupportedApiForBrowser.withAdvancedNotSupported();
-    });
-
-    afterEach(() => {
-        useDomainStore.setState({});
     });
 
     describe('Rendering', () => {

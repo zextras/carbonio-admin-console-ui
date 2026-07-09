@@ -82,6 +82,15 @@ const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selectedRows
               {v?.isCurrent ? YES : NO}
             </ds-text>
           </Row>,
+          <Row key={v?.id} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+            <button
+              type="button"
+              onClick={(): void => { onClick(i); }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 0px 0px 14px', display: 'inline-flex', alignItems: 'center' }}
+            >
+              <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
+            </button>
+          </Row>
         ];
 
         return {

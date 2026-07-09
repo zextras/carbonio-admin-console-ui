@@ -49,6 +49,14 @@ describe('NotificationsDetailPanel', () => {
 		resetMockWorker();
 	});
 
+  it('should render the notification list view on the index route', async () => {
+		setupGetAllNotificationsInterceptor();
+		await setupBrowserTest(<NotificationsDetailPanel />, {
+			initialRouterEntry: '/',
+		});
+		await expect.element(page.getByText('ALL')).toBeVisible();
+	});
+
 	it('should render the notification tabs when on list route', async () => {
 		setupGetAllNotificationsInterceptor();
 		await setupBrowserTest(<NotificationsDetailPanel />, {

@@ -1,3 +1,93 @@
+## [0.14.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.6...v0.14.7) (2026-07-08)
+
+### Other changes
+
+* **admin-ui-backup:** improve routing ([#1285](https://github.com/zextras/carbonio-admin-console-ui/issues/1285)) ([07fa9f7](https://github.com/zextras/carbonio-admin-console-ui/commit/07fa9f760321ecbfcb7b962e0c564407aef48242))
+
+## [0.14.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.5...v0.14.6) (2026-07-08)
+
+### Other changes
+
+* **admin-ui-notifications:** improve routing ([#1284](https://github.com/zextras/carbonio-admin-console-ui/issues/1284)) ([f422793](https://github.com/zextras/carbonio-admin-console-ui/commit/f422793fbe803070c00b9722cc80ee62aaeb939d))
+
+## [0.14.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.4...v0.14.5) (2026-07-08)
+
+### Other changes
+
+* **admin-ui-storage:** improve routing ([#1283](https://github.com/zextras/carbonio-admin-console-ui/issues/1283)) ([3e20bdf](https://github.com/zextras/carbonio-admin-console-ui/commit/3e20bdfdde2d526748bfe9addb261375c0b1ff6c))
+
+## [0.14.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.3...v0.14.4) (2026-07-07)
+
+### Other changes
+
+* **mta/mta-detail-panel:** flatten router routes ([#1282](https://github.com/zextras/carbonio-admin-console-ui/issues/1282)) ([6fdb52d](https://github.com/zextras/carbonio-admin-console-ui/commit/6fdb52d625e66121549ecb06be5f7f95deac4580))
+
+## [0.14.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.2...v0.14.3) (2026-07-07)
+
+### Other changes
+
+* **admin-ui-operations:** improve routing ([#1280](https://github.com/zextras/carbonio-admin-console-ui/issues/1280)) ([030a123](https://github.com/zextras/carbonio-admin-console-ui/commit/030a123c2073468065850ec6001fe165a4373a6c))
+
+## [0.14.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.1...v0.14.2) (2026-07-06)
+
+### Other changes
+
+* improve routing for admin UI domains ([#1276](https://github.com/zextras/carbonio-admin-console-ui/issues/1276)) ([73943a8](https://github.com/zextras/carbonio-admin-console-ui/commit/73943a8023f977eb508b9a63f14cd0d98ce78d2c))
+
+## [0.14.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.0...v0.14.1) (2026-07-06)
+
+### Bug Fixes
+
+* **ci:** cap turbo concurrency to prevent OOM in Jenkins CI ([#1279](https://github.com/zextras/carbonio-admin-console-ui/issues/1279)) ([a7958b2](https://github.com/zextras/carbonio-admin-console-ui/commit/a7958b2564c39ec3ba473228e0cba9ca4acbeb32))
+
+## [0.14.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.18...v0.14.0) (2026-07-01)
+
+### Features
+
+* add details section to subscription module ([62e4aee](https://github.com/zextras/carbonio-admin-console-ui/commit/62e4aee6087916c2a34747f619f54ba676fbe2b3))
+
+## [0.13.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.17...v0.13.18) (2026-07-01)
+
+### Bug Fixes
+
+* **deps:** update dependency posthog-js to ^1.396.3 ([fdf0163](https://github.com/zextras/carbonio-admin-console-ui/commit/fdf0163b9185b0174c10dd675c055236297e730b))
+
+## [0.13.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.16...v0.13.17) (2026-06-30)
+
+### Bug Fixes
+
+* **deps:** update react ([7464293](https://github.com/zextras/carbonio-admin-console-ui/commit/7464293a72a9a2b463c6665296b52855125d1c45))
+
+## [0.13.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.15...v0.13.16) (2026-06-26)
+
+### Other changes
+
+* **.github/renovate:** enable dependency dashboard and set automerge to branch ([#1270](https://github.com/zextras/carbonio-admin-console-ui/issues/1270)) ([27c2cf3](https://github.com/zextras/carbonio-admin-console-ui/commit/27c2cf357bd180738188c1e0f1573ffbedf7b59a))
+
+## [0.13.15](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.14...v0.13.15) (2026-06-26)
+
+### Bug Fixes
+
+* **deps:** update dependency @fontsource/roboto to ^5.2.10 ([#1238](https://github.com/zextras/carbonio-admin-console-ui/issues/1238)) ([44dd40a](https://github.com/zextras/carbonio-admin-console-ui/commit/44dd40ac468de08215949ca3e74ea10b6ab0fcd7))
+
+## [0.13.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.13...v0.13.14) (2026-06-25)
+
+### Bug Fixes
+
+* **deps:** update dependency @posthog/react to ^1.10.3 ([#1252](https://github.com/zextras/carbonio-admin-console-ui/issues/1252)) ([4188235](https://github.com/zextras/carbonio-admin-console-ui/commit/4188235f1c54a575c4e8a354bd6e74196b0f7be9))
+
+## [0.13.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.12...v0.13.13) (2026-06-24)
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to ^26.3.1 ([#1241](https://github.com/zextras/carbonio-admin-console-ui/issues/1241)) ([84af5dd](https://github.com/zextras/carbonio-admin-console-ui/commit/84af5ddc9f340c3d5fc2c53af7ae417141e0cb48))
+
+## [0.13.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.11...v0.13.12) (2026-06-23)
+
+### Bug Fixes
+
+* **deps:** update dependency zustand to ^5.0.14 ([#1237](https://github.com/zextras/carbonio-admin-console-ui/issues/1237)) ([850def7](https://github.com/zextras/carbonio-admin-console-ui/commit/850def7e72dab594f23402125f994943ba79ed45))
+
 ## [0.13.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.10...v0.13.11) (2026-06-19)
 
 ### Bug Fixes

@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useDomainStore } from '@zextras/ui-shared';
-import { createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { domainByIdKey } from '@zextras/ui-shared';
+import { createBrowserSoapAPIInterceptor, getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import DomainGeneralSettings from '../domain-general-settings';
@@ -41,74 +41,82 @@ function buildDomainAttributes(
   return [...filtered, ...overrides];
 }
 
-function setupDomainStore(attributeOverrides: Array<{ n: string; _content: string }> = []): void {
+function setupDomainStore(
+  attributeOverrides: Array<{ n: string; _content: string }> = [],
+): ReturnType<typeof getQueryClient> {
   const domainAttributes = buildDomainAttributes(attributeOverrides);
-  useDomainStore.setState({
-    domain: {
-      name: DOMAIN_NAME,
-      id: DOMAIN_ID,
-      a: domainAttributes,
-    },
-    cosList: [
-      { id: 'cos-default-id', name: 'default' },
-      { id: 'cos-professional-id', name: 'professional' },
+  createBrowserSoapAPIInterceptor('GetDomain', {
+    domain: [
+      {
+        name: DOMAIN_NAME,
+        id: DOMAIN_ID,
+        a: domainAttributes,
+      },
     ],
   });
+  const queryClient = getQueryClient();
+  queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+    id: DOMAIN_ID,
+    name: DOMAIN_NAME,
+    a: domainAttributes,
+  });
+  return queryClient;
 }
 
 describe('DomainGeneralSettings (browser)', () => {
-  beforeEach(() => {
-    setupDomainStore();
-  });
+  let queryClient: ReturnType<typeof getQueryClient>;
 
-  afterEach(() => {
-    useDomainStore.setState({
-      domain: {},
-      cosList: [],
+  beforeEach(() => {
+    queryClient = setupDomainStore();
+    createBrowserSoapAPIInterceptor('SearchDirectory', {
+      cos: [
+        { id: 'cos-default-id', name: 'default' },
+        { id: 'cos-professional-id', name: 'professional' },
+      ],
     });
   });
 
   describe('Rendering', () => {
     it('should render the General Settings header', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       await expect.element(page.getByText('General Settings')).toBeVisible();
     });
 
     it('should render the domain name input', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       const nameInput = page.getByText('Name', { exact: true });
       await expect.element(nameInput).toBeVisible();
     });
 
     it('should render the domain ID input', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       const idInput = page.getByText('Id', { exact: true });
       await expect.element(idInput).toBeVisible();
     });
 
     it('should render the Domain System Notifications section', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       await expect.element(page.getByText('Domain System Notifications')).toBeVisible();
     });
 
     it('should render the Notification Sender input with pre-filled value', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       await expect.element(page.getByText('Notification Sender')).toBeVisible();
     });
 
     it('should render the Delete Domain button', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       await expect.element(page.getByRole('button', { name: /delete domain/i })).toBeVisible();
     });
 
     it('should not show Save and Cancel buttons when no changes are made', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       await expect.element(page.getByText('General Settings')).toBeVisible();
       await expect.element(page.getByRole('button', { name: /save/i })).not.toBeInTheDocument();
@@ -118,7 +126,7 @@ describe('DomainGeneralSettings (browser)', () => {
 
   describe('Editing fields', () => {
     it('should show Save and Cancel buttons when description is changed', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       const descriptionInput = page.getByLabelText(/description/i);
       await userEvent.clear(descriptionInput);
@@ -129,7 +137,7 @@ describe('DomainGeneralSettings (browser)', () => {
     });
 
     it('should revert changes when Cancel is clicked', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       const descriptionInput = page.getByLabelText(/description/i);
       await userEvent.clear(descriptionInput);
@@ -154,7 +162,7 @@ describe('DomainGeneralSettings (browser)', () => {
         ],
       });
 
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       const descriptionInput = page.getByLabelText(/description/i);
       await userEvent.clear(descriptionInput);
@@ -172,7 +180,7 @@ describe('DomainGeneralSettings (browser)', () => {
     });
 
     it('should show error when notification sender has invalid email', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       const senderInput = page.getByLabelText(/notification sender/i);
       await userEvent.clear(senderInput);
@@ -187,7 +195,7 @@ describe('DomainGeneralSettings (browser)', () => {
 
   describe('Notification Recipients', () => {
     it('should render the Send notifications to chip input', async () => {
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       await expect.element(page.getByText('Send notifications to...')).toBeVisible();
     });
@@ -206,7 +214,7 @@ describe('DomainGeneralSettings (browser)', () => {
 
       createBrowserSoapAPIInterceptor('DeleteDomain', {});
 
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       const deleteButton = page.getByRole('button', { name: /delete domain/i });
       await deleteButton.click();
@@ -236,7 +244,7 @@ describe('DomainGeneralSettings (browser)', () => {
         calresource: [],
       });
 
-      setupBrowserTest(<DomainGeneralSettings />);
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       const deleteButton = page.getByRole('button', { name: /delete domain/i });
       await deleteButton.click();

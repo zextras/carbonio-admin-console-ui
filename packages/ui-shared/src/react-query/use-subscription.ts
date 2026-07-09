@@ -11,12 +11,16 @@ import { useTranslation } from 'react-i18next';
 import { ZIMBRA_ADMIN_URN } from '../constants';
 import { useSnackbar } from '../hooks/useSnackbar';
 import { fetchSoap } from '../services/subscription-service';
-
 export type LicenseType = 'ISP' | 'Purchased' | 'None';
 
 export type LicenseSubType = 'PERPETUAL' | 'REGULAR' | 'TRIAL';
 
 export type MaintenanceStatus = 'active' | 'expired' | 'expiring' | 'invalid';
+
+type Edition = {
+  name: string;
+  quantity: string;
+};
 
 export type Feature = {
   name: string;
@@ -53,6 +57,7 @@ export type LicenseInfo = {
   serverID?: string;
   withinSilentWarningInterval?: boolean;
   ispLegacy?: boolean;
+  editions?: Array<Edition>;
   features: Array<Feature>;
 };
 
@@ -142,6 +147,8 @@ export function invalidateLicenseQuery(queryClient: ReturnType<typeof useQueryCl
 }
 
 export const useActivateLicense = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async ({ token, renewal = false }: { token: string; renewal?: boolean }) => {
       const result = await activateLicense(token, renewal);
@@ -149,6 +156,9 @@ export const useActivateLicense = () => {
         throw new Error(result.message || 'Activation failed');
       }
       return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.license() });
     },
   });
 };

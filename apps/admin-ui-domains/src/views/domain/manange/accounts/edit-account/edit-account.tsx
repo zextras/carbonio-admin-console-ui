@@ -3,28 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  DefaultTabBarItem,
-  Modal,
-  Padding,
-  Row,
-  TabBar,
-  useSnackbar,
-} from '@zextras/ui-components';
-import {
-  flushCache,
-  resetFileQuotaLimitById,
-  setCoreAttributes,
-  setFileQuotaLimitById,
-  useCurrentUserRights,
-  useDomainStore,
-  useIsAdvanced,
-  useTotalQuotaActive,
-  useUserSettings,
-} from '@zextras/ui-shared';
+import { Button, Container, DefaultTabBarItem, Modal, Padding, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
+import { flushCache, resetFileQuotaLimitById, setCoreAttributes, setFileQuotaLimitById, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive, useUserSettings } from '@zextras/ui-shared';
 import { differenceBy, find, isEqual, reduce, remove } from 'lodash-es';
 import { FC, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -60,11 +40,9 @@ import { getDelegateAuthRequest } from '../../../../../services/get-delegate-aut
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
-import { getDomainList } from '../../../../../services/search-domain-service';
 import { setAccountQuota } from '../../../../../services/set-account-quota';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
-import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
@@ -110,7 +88,6 @@ const EditAccount: FC<{
   const { t } = useTranslation();
   const isTotalQuotaActive = useTotalQuotaActive();
   const createSnackbar = useSnackbar();
-  const domainList = useDomainStore((state) => state.domainList);
   const [change, setChange] = useState(defaultTab);
   const [isLoading, setIsLoading] = useState(false);
   const context = useContext(AccountContext);
@@ -123,7 +100,6 @@ const EditAccount: FC<{
     setDefaultCOS,
     cosDetail,
   } = context;
-  const setDomainListStore = useDomainStore((state) => state.setDomainList);
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
@@ -146,36 +122,6 @@ const EditAccount: FC<{
   const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [hasQuotaError, setHasQuotaError] = useState<boolean>(false);
-
-  const getDomainLists = useCallback(
-    (offset: number): any => {
-      getDomainList('', offset)
-        .then((data) => {
-          const searchResponse: any = data;
-          if (!!searchResponse && searchResponse?.searchTotal > 0) {
-            if (searchResponse?.domain?.length) {
-              setDomainListStore([...domainList, ...searchResponse.domain]);
-              if (searchResponse?.more) {
-                getDomainLists(offset + 50);
-              }
-            }
-          } else {
-            setDomainListStore([]);
-          }
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, domainList, setDomainListStore, t],
-  );
-
-  useEffect(() => {
-    if (!domainList?.length) {
-      getDomainLists(0);
-    }
-  }, [domainList, getDomainLists]);
 
   useEffect(() => {
     if (initAccountDetail?.zimbraId && !isEqual(accountDetail, initAccountDetail)) {

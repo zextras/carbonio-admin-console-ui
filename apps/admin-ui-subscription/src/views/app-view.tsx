@@ -9,8 +9,9 @@ import {
   useLocalStorage,
   usePrimaryBarState,
 } from '@zextras/ui-shared';
-import { type ReactNode, useEffect } from 'react';
+import { type CSSProperties, type ReactNode, useEffect } from 'react';
 
+import styles from './app-view.module.css';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { ActivateSubscription } from './subscription/activate-subscription';
 import { MeteredSubscription } from './subscription/metered-subscription';
@@ -19,26 +20,15 @@ import { RegularSubscription } from './subscription/regular-subscription';
 import { Subscription } from './subscription/subscription';
 import { TrialSubscription } from './subscription/trial-subscription';
 
-const baseStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  boxSizing: 'border-box',
-} as const;
-
 function getMaxWidth(breakpoint: string, isSidebarOpen = false): string {
   if (['2xl', 'xl'].includes(breakpoint)) return '1125px';
   if (breakpoint === 'lg' && !isSidebarOpen) return '1125px';
   return '981px';
 }
 
-function getContainerStyle(breakpoint: string, isSidebarOpen = false) {
+function getContainerStyle(breakpoint: string, isSidebarOpen = false): CSSProperties {
   return {
-    width: '100%',
     maxWidth: getMaxWidth(breakpoint, isSidebarOpen),
-    transition: 'max-width 300ms',
-    padding: '0 clamp(0.5rem, 2vw, 2rem)',
-    boxSizing: 'border-box' as const,
   };
 }
 
@@ -64,10 +54,10 @@ function getSubscriptionView(
   if (subscriptionType === 'Purchased' && subType === 'TRIAL') {
     return <TrialSubscription />;
   }
-  if (subscriptionType === 'ISP') {
+  if (subscriptionType === 'Purchased' && subType === 'METERED') {
     return <MeteredSubscription />;
   }
-  return <></>;
+  return null;
 }
 
 export const AppView = () => {
@@ -77,7 +67,8 @@ export const AppView = () => {
     'new_subscription_feature_flag',
     null,
   );
-  const { data: licenseData, isFetching } = useLicenseInfo();
+
+  const { data: licenseData, isLoading } = useLicenseInfo();
   const subscriptionType = licenseData?.response?.type;
   const subType = licenseData?.response?.subType;
 
@@ -86,11 +77,16 @@ export const AppView = () => {
   }, [featureFlag, setFeatureFlag]);
 
   return (
-    <div style={{ ...baseStyle, height: 'fit-content', width: '100%' }}>
+    <div className={styles.root}>
       <Breadcrumb />
-      {!isFetching && (
-        <div style={{ ...baseStyle, ...getContainerStyle(breakpoint, isPrimaryBarExpanded) }}>
-          {getSubscriptionView(subscriptionType, subType, featureFlag)}
+      {!isLoading && (
+        <div className={styles.detailWrapper}>
+          <div
+            className={styles.detailContent}
+            style={getContainerStyle(breakpoint, isPrimaryBarExpanded)}
+          >
+            {getSubscriptionView(subscriptionType, subType, featureFlag)}
+          </div>
         </div>
       )}
     </div>

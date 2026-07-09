@@ -3,9 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
 import { Button, Input } from '@zextras/ui-components';
-import { invalidateLicenseQuery, useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
+import { useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -32,7 +31,6 @@ export const ActivateSubscription = (): React.JSX.Element => {
   const [showResult, setShowResult] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const activateLicenseMutation = useActivateLicense();
   const breakpoint = useBreakpoint();
   const isLargeViewport = breakpoint === 'xl' || breakpoint === '2xl';
@@ -65,9 +63,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
     setShowResult(true);
   }, []);
 
-  const handleSuccessComplete = useCallback((): void => {
-    invalidateLicenseQuery(queryClient);
-  }, [queryClient]);
+  const handleSuccessComplete = useCallback((): void => {}, []);
 
   return (
     <div className={styles.outer}>
@@ -76,7 +72,6 @@ export const ActivateSubscription = (): React.JSX.Element => {
           {t('label.subscriptions', 'Subscriptions')}
         </ds-text>
       </div>
-      <ds-divider></ds-divider>
       <div className={styles.content}>
         <ds-text as="label" weight="bold">
           {t('subscription.activate.activation_token', 'Activation token')}
@@ -85,7 +80,6 @@ export const ActivateSubscription = (): React.JSX.Element => {
           <div className={styles.inputField}>
             <Input
               label={t('subscription.activate.insert_token', 'Insert here the activation token')}
-              autoFocus
               trimOnPaste
               backgroundColor="gray5"
               hasError={validationError !== null}
@@ -137,7 +131,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
         isSuccess={showResult && activateLicenseMutation.isSuccess}
         onComplete={handleSuccessComplete}
       />
-      <ActivationError isError={showResult && activateLicenseMutation.isError} />
+      {showResult && activateLicenseMutation.isError && <ActivationError />}
     </div>
   );
 };

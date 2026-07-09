@@ -13,9 +13,11 @@ import {
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
 import React from 'react';
+import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { DATA_VOLUMES } from '../../../../../constants';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
 import { VolumeContext } from '../create-volume/volume-context';
 import VolumesDetailPanel from '../volumes-list';
@@ -34,6 +36,7 @@ const PRIMARIES = [
 		availableSpace: 19308,
 		storeType: 'LOCAL',
 		isCurrent: true,
+		type: 1,
 		volumeType: 'primary',
 	},
 ];
@@ -49,6 +52,7 @@ const SECONDARIES = [
 		availableSpace: 19308,
 		storeType: 'LOCAL',
 		isCurrent: false,
+		type: 2,
 		volumeType: 'secondary',
 	},
 ];
@@ -64,9 +68,26 @@ const INDEXES = [
 		availableSpace: 19308,
 		storeType: 'LOCAL',
 		isCurrent: true,
+		type: 10,
 		volumeType: 'index',
 	},
 ];
+
+function buildAdvancedVolumesSoapContent(
+	primaries: Array<Record<string, unknown>> = PRIMARIES,
+	secondaries: Array<Record<string, unknown>> = SECONDARIES,
+	indexes: Array<Record<string, unknown>> = INDEXES,
+): string {
+	return JSON.stringify({
+		ok: true,
+		response: {
+			[SERVER_NAME]: {
+				ok: true,
+				response: { primaries, secondaries, indexes },
+			},
+		},
+	});
+}
 
 function setupAllServersInterceptor(): Promise<unknown> {
 	return createBrowserSoapAPIInterceptor('GetAllServers', {
@@ -101,10 +122,7 @@ function setupGetAllVolumesAdvanced(
 				return HttpResponse.json({
 					Body: {
 						response: {
-							content: JSON.stringify({
-								response: { primaries, secondaries, indexes },
-								ok: true,
-							}),
+							content: buildAdvancedVolumesSoapContent(primaries, secondaries, indexes),
 						},
 					},
 				});
@@ -131,10 +149,7 @@ function setupEmptyVolumesAdvanced(): void {
 				return HttpResponse.json({
 					Body: {
 						response: {
-							content: JSON.stringify({
-								response: { primaries: [], secondaries: [], indexes: [] },
-								ok: true,
-							}),
+							content: buildAdvancedVolumesSoapContent([], [], []),
 						},
 					},
 				});
@@ -160,23 +175,28 @@ function renderWithContext(): React.ReactElement {
 	};
 
 	return (
-		<VolumeContext.Provider value={volumeContext}>
-			<VolumesDetailPanel />
-		</VolumeContext.Provider>
+		<Routes>
+			<Route
+				path={`/:server/${DATA_VOLUMES}`}
+				element={
+					<VolumeContext.Provider value={volumeContext}>
+						<VolumesDetailPanel />
+					</VolumeContext.Provider>
+				}
+			/>
+		</Routes>
 	);
 }
 
 describe('VolumesDetailPanel (browser)', () => {
 	beforeEach(() => {
 		useBucketVolumeStore.setState({
-			selectedServerName: SERVER_NAME,
 			isVolumeAllDetail: [],
 		});
 	});
 
 	afterEach(() => {
 		useBucketVolumeStore.setState({
-			selectedServerName: '',
 			isVolumeAllDetail: [],
 		});
 	});

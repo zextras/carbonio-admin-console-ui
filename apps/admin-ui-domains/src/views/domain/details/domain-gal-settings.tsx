@@ -3,26 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  Dropdown,
-  DropdownItem,
-  HoverableRowFactory,
-  Input,
-  LabeledValue,
-  ListRow,
-  Padding,
-  Row,
-  Select,
-  Switch,
-  Table,
-  Tooltip,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, useDomainStore, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button, Container, CustomHeaderFactory, Dropdown, DropdownItem, HoverableRowFactory, Input, LabeledValue, ListRow, Padding, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
+import { domainByIdKey, flushCache, getDomainInformation, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -46,9 +29,9 @@ import {
   ZIMBRA,
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { createGalSyncAccount } from '../../../services/create-gal-sync-service';
 import { destroyAccount } from '../../../services/destroy-account-service';
-import { getDomainInformation } from '../../../services/domain-information-service';
 import { getAccount } from '../../../services/get-account-service';
 import { getDatasource } from '../../../services/get-datasource-service';
 import { modifyAccountRequest } from '../../../services/modify-account';
@@ -146,14 +129,19 @@ const DomainGalSettings: FC = () => {
   const [t] = useTranslation();
   const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
   const createSnackbar = useSnackbar();
-  const domain: { name?: string } = useDomainStore((state) => state.domain);
+  const { data: selectedDomain } = useSelectedDomain();
+  const domain: { name?: string } = selectedDomain ?? {};
   const { data: allMailstoreList = [] } = useMailstoreServers();
   const { domainId } = useParams();
+  const queryClient = useQueryClient();
 
   const [open, setOpen] = useState<boolean>(false);
-  const [domainInformation, setDomainInformation] = useState(
-    useDomainStore((state) => state.domain?.a),
-  );
+  const [domainInformation, setDomainInformation] = useState(selectedDomain?.a);
+  useEffect(() => {
+    if (selectedDomain?.a) {
+      setDomainInformation(selectedDomain.a);
+    }
+  }, [selectedDomain]);
 
   const onClose = useCallback(() => {
     setOpen(false);
@@ -220,7 +208,6 @@ const DomainGalSettings: FC = () => {
   const [pollingIntervalType, setPollingIntervalType] = useState<IntervalType | undefined>(
     rangeItems[0],
   );
-  const setDomain = useDomainStore((state) => state.setDomain);
   const [measureUnitSelection, setMeasureUnitSelection] = useState<any>('');
 
   const [zimbraGalAccountIdArray, setZimbraGalAccountIdArray] = useState<
@@ -634,7 +621,7 @@ const DomainGalSettings: FC = () => {
           name: string;
         } = results[0]?.domain[0];
         if (response) {
-          setDomain(response);
+          queryClient.setQueryData(domainByIdKey(domainId, 1), response);
           updateDomainInformation(response?.a);
         }
         setIsDirty(false);
@@ -892,7 +879,7 @@ const DomainGalSettings: FC = () => {
 
           .catch(() => {}),
       );
-      Promise.all(result).then((results) => {
+      Promise.all(result ?? []).then((results) => {
         getAllTableList(results);
       });
     },
@@ -905,14 +892,14 @@ const DomainGalSettings: FC = () => {
         getDomainInformation(id, 1).then((data) => {
           const domainList = data?.domain[0];
           if (domainList) {
-            setDomain(domainList);
+            queryClient.setQueryData(domainByIdKey(domainId, 1), domainList);
             setDomainInformation(domainList?.a);
             getDomainWithGAlSyncList(domainList?.a);
           }
         });
       });
     },
-    [getDomainWithGAlSyncList, setDomain],
+    [getDomainWithGAlSyncList, queryClient, domainId],
   );
 
   const createHandler = (

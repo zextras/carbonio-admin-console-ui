@@ -3,23 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  Input,
-  ListRow,
-  Paging,
-  Row,
-  Table,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { getSoapFetchRequest, useDomainStore } from '@zextras/ui-shared';
+import { Container, CustomHeaderFactory, HoverableRowFactory, Input, ListRow, Paging, Row, Table, useSnackbar, } from '@zextras/ui-components';
+import { getSoapFetchRequest } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { getFormatedShortDate } from '../../../utility/utils';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
@@ -29,7 +19,8 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
   const [accountRows, setAccountRows] = useState<Array<any>>([]);
   const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
   const [accountOffset, setAccountOffset] = useState<number>(0);
-  const domainName = useDomainStore((state) => state.domain?.name);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
   const createSnackbar = useSnackbar();
   const context = useContext(RestoreDeleteAccountContext);
   const { setRestoreAccountDetail } = context;

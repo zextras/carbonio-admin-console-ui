@@ -84,6 +84,8 @@ import { queryClient, ReactQueryProvider } from './providers/react-query-provide
 import { useUserAccount, useUserAccounts, useUserSettings } from './react-query/use-account';
 import { useBackupServers } from './react-query/use-backup-servers';
 import { useAllConfig, useConfigAttribute } from './react-query/use-config';
+import { useCosList } from './react-query/use-cos-list';
+import { domainByIdKey, useDomainById } from './react-query/use-domain-by-id';
 import { useDomainInformation } from './react-query/use-domain-information';
 import { useGlobalCarbonioSendAnalytics } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
@@ -125,6 +127,7 @@ import {
   getCoreAttributes,
   type GetCoreAttributesResponse,
 } from './services/get-core-attributes';
+import { getDomainInformation } from './services/get-domain-information';
 import {
   type FileQuotaResponse,
   getFileQuotaById,
@@ -151,9 +154,9 @@ import { useI18nStore } from './store/i18n/store';
 import { useActions } from './store/integrations/hooks';
 import { useIntegrationsStore } from './store/integrations/store';
 import { useLoginConfigStore } from './store/login/store';
-import { useDomainStore } from './store/shared/domains';
 import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
+import { isUnlimitedQuantity } from './utils/quantity';
 import { isValidDecimalInput } from './utils/validators';
 
 // Default fallback pkg for when app context cannot be determined
@@ -206,6 +209,7 @@ export {
   CARBONIO_LOGO_URL,
   CONFIG,
   CONTENT,
+  domainByIdKey,
   fetchAccountSettings,
   fetchExternalSoap,
   flushCache,
@@ -217,12 +221,14 @@ export {
   getCoreAttributes,
   getCosGeneralInformation,
   getCosList,
+  getDomainInformation,
   getFileQuotaById,
   getLocale,
   getRights,
   getShell,
   getSoapFetchRequest,
   invalidateLicenseQuery,
+  isUnlimitedQuantity,
   isValidDecimalInput,
   LOCAL_STORAGE_LAST_PRIMARY_KEY,
   LOGIN_V3_CONFIG_PATH,
@@ -262,10 +268,11 @@ export {
   useBridge,
   useConfigAttribute,
   useContextBridge,
+  useCosList,
   useCurrentRoute,
   useCurrentUserRights,
+  useDomainById,
   useDomainInformation,
-  useDomainStore,
   useGlobalCarbonioSendAnalytics,
   useHasAllRights,
   useI18nStore,

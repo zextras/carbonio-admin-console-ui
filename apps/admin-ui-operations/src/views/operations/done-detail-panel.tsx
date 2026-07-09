@@ -5,94 +5,61 @@
  */
 
 import { Container, Input, ModalOverlay, Paging, Row, useSnackbar } from '@zextras/ui-components';
-import { useMailstoreServers } from '@zextras/ui-shared';
-import { find, map } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { getAllDoneOperations } from '../../services/get-all-done-operation';
-import { useOperationStore } from '../../store/operation/store';
+import { useDoneOperations } from '../../services/use-done-operations';
 import { type Operation } from '../../types/operations';
 import { OperationsDoneHeader } from '../utility/utils';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 
+const FunnelSearchIcon = () => (
+  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
+
 const DoneDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const { data: allServersList = [] } = useMailstoreServers();
-  const { doneData, setDoneData } = useOperationStore((state) => state);
+  const { data: doneData = [], isError } = useDoneOperations();
   const operationsDoneHeader = useMemo(() => OperationsDoneHeader(t), [t]);
   const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
   const [selectedData, setSelectedData] = useState<Operation | undefined>();
   const [isSelectedRow, setIsSelectedRow] = useState<Array<string>>([]);
-  const [doneOffset, setDoneOffset] = useState<number>(10);
-  const [totalData, setTotalData] = useState<number>(0);
-  const [doneOperationPaginationData, setDoneOperationPaginationData] = useState<Array<Operation>>(
-    [],
-  );
-  const [filteredOperationData, setFilteredOperationData] = useState(doneData);
+  const [doneOffset, setDoneOffset] = useState<number>(0);
   const [searchOperation, setSearchOperation] = useState<string>('');
 
   const limit = 10;
-  const getDoneOperationAPICallHandler = useCallback(() => {
-    getAllDoneOperations()
-      .then((response) => {
-        const res = JSON.parse(response?.Body?.response?.content);
-        if (res?.ok) {
-          const result = res?.response?.operationList;
-          const updatedData = map(result, (item1) => {
-            const matchingItem2 = find(allServersList, { id: item1.serverId });
-            if (matchingItem2) {
-              return { ...item1, serverName: matchingItem2.name };
-            }
-            return item1;
-          });
-          setSearchOperation('');
-          setTotalData(updatedData?.length);
-          setDoneData(updatedData);
-        }
-      })
-      .catch((err) => {
-        createSnackbar({
-          key: '1',
-          severity: 'error',
-          label: t('label.operation.get_done_operation_error', '{{name}}', {
-            name: err,
-          }),
-        });
+
+  useEffect(() => {
+    if (isError) {
+      createSnackbar({
+        key: '1',
+        severity: 'error',
+        label: t('label.operation.get_done_operation_error', '{{name}}', {
+          name: '',
+        }),
       });
-  }, [allServersList, createSnackbar, setDoneData, t]);
+    }
+  }, [createSnackbar, isError, t]);
+
+  const searchText = searchOperation?.toLocaleLowerCase();
+  const filteredOperationData = doneData.filter(
+    (item) =>
+      item?.name?.toLowerCase().includes(searchText) ||
+      item?.serverName?.toLowerCase().includes(searchText) ||
+      item.parameters?.requesterAddress?.toLowerCase().includes(searchText),
+  );
+  const totalData = filteredOperationData.length;
+  const startIndex = doneOffset;
+  const endIndex = startIndex + limit;
+  const doneOperationPaginationData = filteredOperationData.slice(startIndex, endIndex);
 
   const handleClick = (i: number): void => {
     const volumeObject = doneOperationPaginationData?.find((s, index: number) => index === i);
     setSelectedData(volumeObject);
     setWizardDetailToggle(true);
   };
-
-  useEffect(() => {
-    getDoneOperationAPICallHandler();
-  }, [getDoneOperationAPICallHandler]);
-
-  useEffect(() => {
-    const startIndex = doneOffset * 1;
-    const endIndex = startIndex + limit;
-    const paginatedData = filteredOperationData.slice(startIndex, endIndex);
-    setDoneOperationPaginationData(paginatedData);
-    setTotalData(filteredOperationData?.length);
-  }, [doneOffset, filteredOperationData, limit, totalData]);
-
-  useEffect(() => {
-    const searchText = searchOperation?.toLocaleLowerCase();
-    const filterList = doneData.filter(
-      (item) =>
-        item?.name?.toLowerCase().includes(searchText) ||
-        item?.serverName?.toLowerCase().includes(searchText) ||
-        item.parameters?.requesterAddress?.toLowerCase().includes(searchText),
-    );
-
-    setFilteredOperationData(filterList);
-  }, [doneData, searchOperation]);
 
   return (
     <>
@@ -102,6 +69,7 @@ const DoneDetailPanel: FC = () => {
             setWizardDetailToggle={setWizardDetailToggle}
             setOpen={() => {}}
             selectedData={selectedData}
+            allowStop={false}
           />
         </ModalOverlay>
       )}
@@ -139,12 +107,10 @@ const DoneDetailPanel: FC = () => {
                 )}
                 value={searchOperation}
                 backgroundColor="gray5"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   setSearchOperation(e.target.value);
                 }}
-                CustomIcon={(): React.ReactElement => (
-                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                )}
+                CustomIcon={FunnelSearchIcon}
               />
             </Container>
           </Row>

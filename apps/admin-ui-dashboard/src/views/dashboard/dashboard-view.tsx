@@ -9,7 +9,6 @@ import {
   getRights,
   useCurrentUserRights,
   useDomainInformation,
-  useDomainStore,
   useHasAllRights,
   useIsAdvanced,
   useUserAccounts,
@@ -43,7 +42,6 @@ const Dashboard: FC = () => {
   const [userName, setUserName] = useState<string>('');
   const { serverVersion } = useServerVersion();
 
-  const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
   const isAdvanced = useIsAdvanced();
 
   const { data: domainInformation } = useDomainInformation();
@@ -54,24 +52,14 @@ const Dashboard: FC = () => {
   const openOperationView = useCallback(
     (operation: string) => {
       if (domainInformation && domainInformation?.id) {
-        setDomain({
-          a: domainInformation?.a,
-          id: domainInformation?.id,
-          name: domainInformation?.name,
-        });
-        setIsQuickAccess(true);
         if (operation === 'account') {
-          setDomainView(ACCOUNTS);
-          setDomainView(ACCOUNTS);
           navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${ACCOUNTS}`);
         } else if (operation === 'malinglist') {
-          setDomainView(DISTRIBUTION_LIST);
-          setDomainView(DISTRIBUTION_LIST);
           navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${DISTRIBUTION_LIST}`);
         }
       }
     },
-    [domainInformation, setDomain, setIsQuickAccess, setDomainView, navigate],
+    [domainInformation, navigate],
   );
 
   useEffect(() => {

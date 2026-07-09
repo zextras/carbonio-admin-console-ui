@@ -5,7 +5,9 @@
     "github>zextras/infra-renovate-config:docker",
     "github>zextras/infra-renovate-config:javascript"
   ],
-  "automergeType": "pr",
+  "dependencyDashboard": true,
+  "dependencyDashboardApproval": true,
+  "automergeType": "branch",
   "automergeStrategy": "auto",
   "packageRules": [
     {

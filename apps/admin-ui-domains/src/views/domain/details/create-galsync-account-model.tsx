@@ -12,9 +12,10 @@ import {
 	Padding,
 	Row,
 } from '@zextras/ui-components';
-import { useDomainStore } from '@zextras/ui-shared';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 
 const CreateGalsyncAccountModel: FC<{
 	open: boolean;
@@ -30,7 +31,7 @@ const CreateGalsyncAccountModel: FC<{
 	accountData: any;
 }> = ({ open, closeHandler, saveHandler, accountData }) => {
 	const [t] = useTranslation();
-	const domain: { name?: string } = useDomainStore((state) => state.domain);
+	const { data: domain } = useSelectedDomain();
 
 	const [galDomainName, setGalDomainName] = useState('');
 	return (

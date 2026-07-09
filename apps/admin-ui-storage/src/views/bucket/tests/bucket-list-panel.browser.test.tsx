@@ -4,15 +4,37 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+vi.mock('@zextras/ui-shared', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
+	return { ...actual, replaceHistory: vi.fn() };
+});
+
+import { replaceHistory } from '@zextras/ui-shared';
 import {
 	advancedSupportedApiForBrowser,
 	createBrowserSoapAPIInterceptor,
+	getGetInfoResponseMock,
+	getQueryClient,
+	grantUserConfigRights,
+	resetMockWorker,
 	setupBrowserTest,
 } from 'admin-ui-test-utils';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
+import {
+	DATA_VOLUMES,
+	HSM_SETTINGS,
+	MANAGE_APP_ID,
+	S3CONNECTOR_LIST,
+	SERVERS_LIST,
+	STORAGES_ROUTE_ID,
+} from '../../../constants';
 import BucketListPanel from '../bucket-list-panel';
+
+const mockedReplaceHistory = vi.mocked(replaceHistory);
+
+const STORAGE_BASE = `/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`;
 
 const SERVERS = [
 	{
@@ -131,12 +153,12 @@ describe('BucketListPanel (browser)', () => {
 		});
 
 		describe('Rendering', () => {
-			it('should render the Bucket List item in advanced mode', async () => {
+			it('should render the S3 connectors item in advanced mode', async () => {
 				setupGetAllServersInterceptor();
 				setupAllConfigInterceptor();
 				await setupBrowserTest(<BucketListPanel />);
 				await expect
-					.element(page.getByText('Bucket List', { exact: true }))
+					.element(page.getByText('S3 connectors', { exact: true }))
 					.toBeVisible();
 			});
 
@@ -169,7 +191,7 @@ describe('BucketListPanel (browser)', () => {
 					.element(page.getByText('Servers List', { exact: true }))
 					.toBeVisible();
 				await expect
-					.element(page.getByText('Bucket List', { exact: true }))
+					.element(page.getByText('S3 connectors', { exact: true }))
 					.toBeVisible();
 				await expect
 					.element(page.getByText('Data Volumes', { exact: true }))
@@ -179,5 +201,120 @@ describe('BucketListPanel (browser)', () => {
 					.toBeInTheDocument();
 			});
 		});
+	});
+});
+
+describe('BucketListPanel navigation', () => {
+	let queryClient: ReturnType<typeof getQueryClient>;
+
+	beforeEach(async () => {
+		localStorage.clear();
+		queryClient = getQueryClient();
+		await grantUserConfigRights(queryClient);
+		await advancedSupportedApiForBrowser.withAdvancedSupported();
+		setupGetAllServersInterceptor();
+		setupAllConfigInterceptor();
+		createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+	});
+
+	afterEach(() => {
+		resetMockWorker();
+		mockedReplaceHistory.mockClear();
+	});
+
+	it('navigates to /s3connector_list when clicking the S3 connectors item', async () => {
+		await setupBrowserTest(<BucketListPanel />, {
+			initialRouterEntry: `${STORAGE_BASE}/${SERVERS_LIST}`,
+			queryClient,
+		});
+
+		await page.getByText('S3 connectors').click();
+
+		expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${S3CONNECTOR_LIST}`);
+	});
+
+	it('navigates to /servers_list when clicking the Servers List item', async () => {
+		await setupBrowserTest(<BucketListPanel />, {
+			initialRouterEntry: `${STORAGE_BASE}/${S3CONNECTOR_LIST}`,
+			queryClient,
+		});
+
+		await page.getByText('Servers List').click();
+
+		expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${SERVERS_LIST}`);
+	});
+
+	it('navigates to server data volumes route when selecting a server from the dropdown', async () => {
+		await setupBrowserTest(<BucketListPanel />, {
+			initialRouterEntry: `${STORAGE_BASE}/${SERVERS_LIST}`,
+			queryClient,
+		});
+
+		const input = page.getByPlaceholder('Select a Server');
+		await input.click();
+		await input.fill('mailstore1');
+
+		await page.getByText('mailstore1.test.com').click();
+
+		expect(mockedReplaceHistory).toHaveBeenCalledWith(
+			`/mailstore1.test.com/${DATA_VOLUMES}`,
+		);
+	});
+
+	it('navigates back to servers_list when clearing the server search', async () => {
+		await setupBrowserTest(<BucketListPanel />, {
+			initialRouterEntry: `${STORAGE_BASE}/mailstore1.test.com/${DATA_VOLUMES}`,
+			queryClient,
+		});
+
+		await page.getByTestId('icon: CloseOutline').click();
+
+		expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${SERVERS_LIST}`);
+	});
+
+	it('navigates to hsm_settings when clicking HSM Settings under a server route', async () => {
+		await setupBrowserTest(<BucketListPanel />, {
+			initialRouterEntry: `${STORAGE_BASE}/mailstore1.test.com/${DATA_VOLUMES}`,
+			queryClient,
+		});
+
+		await page.getByText('HSM Settings').click();
+
+		expect(mockedReplaceHistory).toHaveBeenCalledWith(
+			`/mailstore1.test.com/${HSM_SETTINGS}`,
+		);
+	});
+
+	it('shows error message when server search has no matching results', async () => {
+		await setupBrowserTest(<BucketListPanel />, {
+			initialRouterEntry: `${STORAGE_BASE}/${SERVERS_LIST}`,
+			queryClient,
+		});
+
+		const input = page.getByPlaceholder('Select a Server');
+		await input.click();
+		await input.fill('xyznomatch');
+
+		await expect.element(page.getByText(/Not found/i)).toBeVisible();
+	});
+
+	it('keeps the current server route on refresh without redirecting to servers_list', async () => {
+		await setupBrowserTest(<BucketListPanel />, {
+			initialRouterEntry: `${STORAGE_BASE}/mailstore1.test.com/${HSM_SETTINGS}`,
+			queryClient,
+		});
+
+		expect(mockedReplaceHistory).not.toHaveBeenCalledWith(`/${SERVERS_LIST}`);
+	});
+
+	it('populates the server search field from the URL on a server-specific route', async () => {
+		await setupBrowserTest(<BucketListPanel />, {
+			initialRouterEntry: `${STORAGE_BASE}/mailstore1.test.com/${HSM_SETTINGS}`,
+			queryClient,
+		});
+
+		await expect
+			.element(page.getByPlaceholder('Select a Server'))
+			.toHaveValue('mailstore1.test.com');
 	});
 });
