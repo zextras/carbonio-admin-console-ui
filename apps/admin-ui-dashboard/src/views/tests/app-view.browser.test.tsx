@@ -56,8 +56,8 @@ describe('AppView', () => {
       domain: [
         {
           id: 'domain-1',
-          name: 'test.com',
-          a: [{ n: 'zimbraDomainName', _content: 'test.com' }],
+          name: 'example.com',
+          a: [{ n: 'zimbraDomainName', _content: 'example.com' }],
         },
       ],
     });
@@ -167,7 +167,7 @@ describe('AppView', () => {
       await setupAppViewTest(undefined, <LocationDisplay />);
 
       // Wait for the domain info to load (Quick Access shows the domain name).
-      await expect.element(page.getByText(/Quick Access to test\.com/i)).toBeVisible();
+      await expect.element(page.getByText(/Quick Access to example\.com/i)).toBeVisible();
 
       await page.getByText('Open').first().click();
 
@@ -179,7 +179,7 @@ describe('AppView', () => {
     it('navigates to the distribution list route when the Distribution List quick access is opened', async () => {
       await setupAppViewTest(undefined, <LocationDisplay />);
 
-      await expect.element(page.getByText(/Quick Access to test\.com/i)).toBeVisible();
+      await expect.element(page.getByText(/Quick Access to example\.com/i)).toBeVisible();
 
       await page.getByText('Open').nth(1).click();
 
