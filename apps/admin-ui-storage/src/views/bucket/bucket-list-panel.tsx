@@ -12,7 +12,7 @@ import {
   Row,
 } from '@zextras/ui-components';
 import { replaceHistory, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
 
@@ -74,12 +74,9 @@ const BucketListPanel: FC = () => {
     }
   }, [isServerSelect]);
 
-  const filteredServers = useMemo(
-    () => volumeList.filter((item) => item.name?.includes(searchVolumeName)),
-    [volumeList, searchVolumeName],
-  );
+  const filteredServers = volumeList.filter((item) => item.name?.includes(searchVolumeName));
 
-  const addServerToList = useCallback((list: typeof volumeList) => {
+  const addServerToList = (list: typeof volumeList) => {
     const data = list.map((volume) => ({
       id: volume.id,
       label: volume.name,
@@ -103,7 +100,7 @@ const BucketListPanel: FC = () => {
       ),
     }));
     setItemsVolume(data);
-  }, []);
+  };
 
   useEffect(() => {
     if (isError || isLoading) {
@@ -117,55 +114,41 @@ const BucketListPanel: FC = () => {
     }
   }, [searchVolumeName, addServerToList, volumeList, filteredServers, isError, isLoading]);
 
-  const globalServerOption = useMemo(
-    () => [
-      {
-        id: SERVERS_LIST,
-        name: t('label.servers_list', 'Servers List'),
-        isSelected: true,
-      },
-      {
-        id: S3CONNECTOR_LIST,
-        name: t('storages.s3Connectors.title', 'S3 connectors'),
-        isSelected: true,
-      },
-    ],
-    [t],
-  );
+  const globalServerOption = [
+    {
+      id: SERVERS_LIST,
+      name: t('label.servers_list', 'Servers List'),
+      isSelected: true,
+    },
+    {
+      id: S3CONNECTOR_LIST,
+      name: t('storages.s3Connectors.title', 'S3 connectors'),
+      isSelected: true,
+    },
+  ];
 
-  const globalOptions = useMemo(
-    () =>
-      !isAdvanced
-        ? globalServerOption.filter((item) => item.id !== S3CONNECTOR_LIST)
-        : globalServerOption,
-    [isAdvanced, globalServerOption],
-  );
+  const globalOptions = !isAdvanced
+    ? globalServerOption.filter((item) => item.id !== S3CONNECTOR_LIST)
+    : globalServerOption;
 
-  const serverSpecificOption = useMemo(
-    () => [
-      {
-        id: DATA_VOLUMES,
-        name: t('label.data_volumes', 'Data Volumes'),
-        isSelected: isServerSelect,
-      },
-      {
-        id: HSM_SETTINGS,
-        name: t('label.hsm_settings', 'HSM Settings'),
-        isSelected: isServerSelect,
-      },
-    ],
-    [t, isServerSelect],
-  );
+  const serverSpecificOption = [
+    {
+      id: DATA_VOLUMES,
+      name: t('label.data_volumes', 'Data Volumes'),
+      isSelected: isServerSelect,
+    },
+    {
+      id: HSM_SETTINGS,
+      name: t('label.hsm_settings', 'HSM Settings'),
+      isSelected: isServerSelect,
+    },
+  ];
 
-  const serverOptions = useMemo(
-    () =>
-      !isAdvanced
-        ? serverSpecificOption.filter((item) => item.id !== HSM_SETTINGS)
-        : serverSpecificOption,
-    [isAdvanced, serverSpecificOption],
-  );
+  const serverOptions = !isAdvanced
+    ? serverSpecificOption.filter((item) => item.id !== HSM_SETTINGS)
+    : serverSpecificOption;
 
-  const toggleServer = useCallback((): void => {
+  const toggleServer = (): void => {
     setIsServerListExpand((prev) => {
       const next = !prev;
       if (next) {
@@ -175,9 +158,9 @@ const BucketListPanel: FC = () => {
       }
       return next;
     });
-  }, []);
+  };
 
-  const toggleServerSpecific = useCallback((): void => {
+  const toggleServerSpecific = (): void => {
     setIsServerSpecificListExpand((prev) => {
       const next = !prev;
       if (next) {
@@ -187,39 +170,33 @@ const BucketListPanel: FC = () => {
       }
       return next;
     });
-  }, []);
+  };
 
-  const handleInputChange = useCallback((ev: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleInputChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
     setIsShowError(false);
     setSearchVolumeName(ev.target.value);
-  }, []);
+  };
 
-  const handleCustomIconClick = useCallback((): void => {
+  const handleCustomIconClick = (): void => {
     setIsShowError(false);
     if (searchVolumeName !== '') {
       setSearchVolumeName('');
       replaceHistory(`/${SERVERS_LIST}`);
     }
-  }, [searchVolumeName]);
+  };
 
-  const customIconDetail = useMemo(
-    () => ({
-      icon: searchVolumeName === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
-      onClick: handleCustomIconClick,
-    }),
-    [searchVolumeName, handleCustomIconClick],
-  );
+  const customIconDetail = {
+    icon: searchVolumeName === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
+    onClick: handleCustomIconClick,
+  };
 
-  const handleSelectOperation = useCallback(
-    (id: string): void => {
-      if (id === DATA_VOLUMES || id === HSM_SETTINGS) {
-        replaceHistory(`/${selectedServer}/${id}`);
-      } else {
-        replaceHistory(`/${id}`);
-      }
-    },
-    [selectedServer],
-  );
+  const handleSelectOperation = (id: string): void => {
+    if (id === DATA_VOLUMES || id === HSM_SETTINGS) {
+      replaceHistory(`/${selectedServer}/${id}`);
+    } else {
+      replaceHistory(`/${id}`);
+    }
+  };
 
   useEffect(() => {
     const storedServerValue = localStorage.getItem(IS_SERVER_LIST_EXPANDED);

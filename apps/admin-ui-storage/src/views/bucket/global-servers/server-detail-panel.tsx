@@ -14,7 +14,7 @@ import {
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
-import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -33,125 +33,117 @@ const ServersListTable: FC<{
   t: TFunction;
   isRequestInProgress: boolean;
 }> = ({ volumes, headers, isAdvanced, t, isRequestInProgress }) => {
-  const tableRowsAdvance = useMemo(
-    () =>
-      volumes.map((v, i) => ({
-        id: i?.toString(),
-        columns: [
-          <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-            <ds-text as="span" size="small" weight="regular">
-              {v?.name}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{
-              textAlign: 'left',
-              justifyContent: 'flex-start',
-              textTransform: 'capitalize',
-            }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v?.primaries}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{
-              textAlign: 'left',
-              justifyContent: 'flex-start',
-              textTransform: 'capitalize',
-            }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v?.secondaries}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{
-              textAlign: 'left',
-              justifyContent: 'flex-start',
-              textTransform: 'capitalize',
-            }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v?.indexes}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{
-              textAlign: 'left',
-              justifyContent: 'flex-start',
-              textTransform: 'capitalize',
-            }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v?.hsmScheduled
-                ? t('label.scheduled', 'Scheduled')
-                : t('label.disabled', 'Disabled')}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{
-              textAlign: 'left',
-              justifyContent: 'flex-start',
-              textTransform: 'capitalize',
-            }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v.indexer?.running === true
-                ? t('volume.running', 'Running')
-                : t('volume.not_running', 'Not Running')}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{
-              textAlign: 'left',
-              justifyContent: 'flex-start',
-              textTransform: 'capitalize',
-            }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v?.description}
-            </ds-text>
-          </Row>,
-        ],
-        clickable: true,
-      })),
-    [volumes, t],
-  );
+  const tableRowsAdvance = volumes.map((v, i) => ({
+    id: i?.toString(),
+    columns: [
+      <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
+        <ds-text as="span" size="small" weight="regular">
+          {v?.name}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        style={{
+          textAlign: 'left',
+          justifyContent: 'flex-start',
+          textTransform: 'capitalize',
+        }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v?.primaries}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        style={{
+          textAlign: 'left',
+          justifyContent: 'flex-start',
+          textTransform: 'capitalize',
+        }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v?.secondaries}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        style={{
+          textAlign: 'left',
+          justifyContent: 'flex-start',
+          textTransform: 'capitalize',
+        }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v?.indexes}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        style={{
+          textAlign: 'left',
+          justifyContent: 'flex-start',
+          textTransform: 'capitalize',
+        }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v?.hsmScheduled
+            ? t('label.scheduled', 'Scheduled')
+            : t('label.disabled', 'Disabled')}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        style={{
+          textAlign: 'left',
+          justifyContent: 'flex-start',
+          textTransform: 'capitalize',
+        }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v.indexer?.running === true
+            ? t('volume.running', 'Running')
+            : t('volume.not_running', 'Not Running')}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        style={{
+          textAlign: 'left',
+          justifyContent: 'flex-start',
+          textTransform: 'capitalize',
+        }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v?.description}
+        </ds-text>
+      </Row>,
+    ],
+    clickable: true,
+  }));
 
-  const tableRowCe = useMemo(
-    () =>
-      volumes.map((v, i) => ({
-        id: i?.toString(),
-        columns: [
-          <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-            <ds-text as="span" size="small" weight="regular">
-              {v?.name}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            style={{
-              textAlign: 'left',
-              justifyContent: 'flex-start',
-              textTransform: 'capitalize',
-            }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v?.description}
-            </ds-text>
-          </Row>,
-        ],
-        clickable: true,
-      })),
-    [volumes],
-  );
+  const tableRowCe = volumes.map((v, i) => ({
+    id: i?.toString(),
+    columns: [
+      <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
+        <ds-text as="span" size="small" weight="regular">
+          {v?.name}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        style={{
+          textAlign: 'left',
+          justifyContent: 'flex-start',
+          textTransform: 'capitalize',
+        }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v?.description}
+        </ds-text>
+      </Row>,
+    ],
+    clickable: true,
+  }));
 
   return (
     <Container crossAlignment="flex-start">
@@ -188,11 +180,11 @@ const ServerDetailPanel: FC = () => {
   const isAdvanced = useIsAdvanced();
   const [serversList, setServersList] = useState<any>([]);
   const [serverListAll, setServerListAll] = useState<any>([]);
-  const serverHeaderAdvanced = useMemo(() => headerAdvanced(t), [t]);
+  const serverHeaderAdvanced = headerAdvanced(t);
   const [searchServer, setSearchServer] = useState<string>('');
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
-  const getServersListType = useCallback((): void => {
+  const getServersListType = (): void => {
     if (isAdvanced) {
       setIsRequestInProgress(true);
       fetchSoap('zextras', {
@@ -287,31 +279,28 @@ const ServerDetailPanel: FC = () => {
         setServerListAll(serverList);
       }
     }
-  }, [allServersList, isAdvanced]);
+  };
 
   useEffect(() => {
     getServersListType();
   }, [getServersListType]);
 
-  const headerCE: any[] = useMemo(
-    () => [
-      {
-        id: 'Server',
-        label: t('volume.server_list_header.server', 'Server'),
-        i18nAllLabel: 'All',
-        width: '60%',
-        bold: true,
-      },
-      {
-        id: 'Description',
-        label: t('volume.server_list_header.description', 'Description'),
-        i18nAllLabel: 'All',
-        width: '30%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
+  const headerCE: any[] = [
+    {
+      id: 'Server',
+      label: t('volume.server_list_header.server', 'Server'),
+      i18nAllLabel: 'All',
+      width: '60%',
+      bold: true,
+    },
+    {
+      id: 'Description',
+      label: t('volume.server_list_header.description', 'Description'),
+      i18nAllLabel: 'All',
+      width: '30%',
+      bold: true,
+    },
+  ];
 
   useEffect(() => {
     const fildterdServer = serverListAll.filter((item: any) => item.name.includes(searchServer));

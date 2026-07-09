@@ -5,7 +5,7 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
-import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
+import { type FC, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { volumeTypeList } from '../../../../../utility/utils';
@@ -42,7 +42,7 @@ const CreateMailstoresVolume: FC<{
   CreateAdvancedRequest: any;
 }> = ({ setToggleWizardExternal, setToggleWizardLocal, volName, CreateAdvancedRequest }) => {
   const { t } = useTranslation();
-  const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+  const volTypeList = volumeTypeList(t);
   const [isAllocationToggle, setIsAllocationToggle] = useState(false);
 
   const form = useForm({
@@ -182,7 +182,7 @@ const CreateMailstoresVolume: FC<{
     },
   ];
 
-  const onComplete = useCallback(() => {
+  const onComplete = () => {
     const v = form.state.values;
     const volumeType = volTypeList
       ?.filter((item) => item?.value === v.volumeMain)[0]
@@ -198,7 +198,7 @@ const CreateMailstoresVolume: FC<{
       useInfrequentAccess: v.useInfrequentAccess,
       useIntelligentTiering: v.useIntelligentTiering,
     });
-  }, [CreateAdvancedRequest, form, volTypeList]);
+  };
 
   return (
     <AdvancedVolumeContext.Provider value={{ form, isAllocationToggle, setIsAllocationToggle }}>

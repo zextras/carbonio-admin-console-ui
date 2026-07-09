@@ -21,7 +21,7 @@ import {
   useAllServers,
   useIsAdvanced,
 } from '@zextras/ui-shared';
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -87,9 +87,7 @@ const VolumeListTable: FC<{
   isAdvanced: boolean;
 }> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
   const [t] = useTranslation();
-  const tableRows = useMemo(
-    () =>
-      volumes.map((v, i) => {
+  const tableRows = volumes.map((v, i) => {
         const columns = [
           <Row
             key={i}
@@ -177,10 +175,7 @@ const VolumeListTable: FC<{
           columns: columns.filter((column) => column !== false), // Changed filter condition to remove false instead of null
           clickable: true,
         };
-      }),
-    [onClick, t, volumes, isAdvanced],
-  );
-
+      });
   return (
     <Container crossAlignment="flex-start">
       <Table
@@ -208,8 +203,8 @@ const VolumesDetailPanel: FC = () => {
   const { form } = useContext(VolumeContext);
   const { data: isVolumeAllDetail = [] } = useListS3Connectors();
   const isAdvanced = useIsAdvanced();
-  const volIndexerHeaders = useMemo(() => indexerHeaders(t, isAdvanced), [t, isAdvanced]);
-  const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t, isAdvanced), [t, isAdvanced]);
+  const volIndexerHeaders = indexerHeaders(t, isAdvanced);
+  const volPrimarySecondaryHeaders = volTableHeader(t, isAdvanced);
   const [priamryVolumeSelection, setPriamryVolumeSelection] = useState<string[]>([]);
   const [secondaryVolumeSelection, setSecondaryVolumeSelection] = useState<string[]>([]);
   const [indexerVolumeSelection, setIndexerVolumeSelection] = useState<string[]>([]);
@@ -248,7 +243,7 @@ const VolumesDetailPanel: FC = () => {
     setOpen(false);
   };
 
-  const getAllVolumesRequest = useCallback((): void => {
+  const getAllVolumesRequest = (): void => {
     if (isAdvanced) {
       fetchSoap('zextras', {
         _jsns: ZIMBRA_ADMIN_URN,
@@ -325,7 +320,7 @@ const VolumesDetailPanel: FC = () => {
           });
         });
     }
-  }, [isAdvanced, server, createSnackbar, t, selectedServerId]);
+  };
 
   const deleteHandler = async (data: Volume | undefined): Promise<void> => {
     if (!data) {

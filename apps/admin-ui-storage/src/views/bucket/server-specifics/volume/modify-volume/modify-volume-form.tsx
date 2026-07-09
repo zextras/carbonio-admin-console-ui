@@ -24,7 +24,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
-import React, { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { type FC, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -123,8 +123,8 @@ export const ModifyVolumeForm: FC<ModifyVolumeFormProps> = ({
 }) => {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
-  const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
-  const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
+  const volAllocationList = volumeAllocationList(t);
+  const bucketTypeItems = BucketTypeItems(t);
   const isCurrentRef = useRef<HTMLDivElement>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -139,69 +139,56 @@ export const ModifyVolumeForm: FC<ModifyVolumeFormProps> = ({
     10: INDEX,
   };
 
-  const getBucketTypeLabel = useCallback(
-    (storeTypeValue: string | undefined): string | undefined =>
-      bucketTypeItems?.find(
-        (item) => item?.value?.toLowerCase() === storeTypeValue?.toLowerCase(),
-      )?.label,
-    [bucketTypeItems],
-  );
+  const getBucketTypeLabel = (
+    storeTypeValue: string | undefined,
+  ): string | undefined =>
+    bucketTypeItems?.find(
+      (item) => item?.value?.toLowerCase() === storeTypeValue?.toLowerCase(),
+    )?.label;
 
   const currentBucketId = getVolumeBucketConfigurationId(externalVolDetail);
 
-  const { backupUnusedBucketList, isVolumeAllDetail, selectedBucket } = useMemo(() => {
-    if (!isExternal || isEmpty(s3Connectors)) {
-      return {
-        backupUnusedBucketList: [] as Array<BucketOption>,
-        isVolumeAllDetail: [] as Array<BucketVolume>,
-        selectedBucket: undefined as BucketOption | undefined,
-      };
-    }
+  const connectors: Array<BucketVolume> = isExternal && !isEmpty(s3Connectors)
+    ? s3Connectors.map((items) => ({
+        uuid: items.uuid,
+        label: items.label || '',
+        bucketName: items.bucketName || '',
+        storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
+        tieringSupported:
+          (items as unknown as { tieringSupported?: boolean }).tieringSupported ?? false,
+        [USAGE_IN_EXTERNAL_BACKUP]:
+          (items as unknown as { 'usage in external backup'?: string | Array<string> })[
+            'usage in external backup'
+          ] ?? UNUSED,
+      }))
+    : [];
 
-    const connectors: Array<BucketVolume> = s3Connectors.map((items) => ({
-      uuid: items.uuid,
-      label: items.label || '',
-      bucketName: items.bucketName || '',
-      storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
-      tieringSupported:
-        (items as unknown as { tieringSupported?: boolean }).tieringSupported ?? false,
-      [USAGE_IN_EXTERNAL_BACKUP]:
-        (items as unknown as { 'usage in external backup'?: string | Array<string> })[
-          'usage in external backup'
-        ] ?? UNUSED,
-    }));
+  const selectedConnector = connectors.find((bucket) => bucket?.uuid === currentBucketId);
 
-    const selectedConnector = connectors.find((bucket) => bucket?.uuid === currentBucketId);
+  const unusedConnectors = connectors.filter(
+    (items) => !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
+  );
+  const selectableConnectors =
+    currentBucketId && !unusedConnectors.some((item) => item.uuid === currentBucketId)
+      ? [...unusedConnectors, ...(selectedConnector ? [selectedConnector] : [])]
+      : unusedConnectors;
 
-    const unusedConnectors = connectors.filter(
-      (items) => !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
-    );
-    const selectableConnectors =
-      currentBucketId && !unusedConnectors.some((item) => item.uuid === currentBucketId)
-        ? [...unusedConnectors, ...(selectedConnector ? [selectedConnector] : [])]
-        : unusedConnectors;
+  const backupUnusedBucketList = buildBucketSelectItems(selectableConnectors, getBucketTypeLabel);
+  const selectedBucket = backupUnusedBucketList.find((item) => item.value === currentBucketId);
+  const isVolumeAllDetail = selectableConnectors;
 
-    const volUnusedBucketList = buildBucketSelectItems(selectableConnectors, getBucketTypeLabel);
-    const currentBucketOption = volUnusedBucketList.find((item) => item.value === currentBucketId);
-
-    return {
-      backupUnusedBucketList: volUnusedBucketList,
-      isVolumeAllDetail: selectableConnectors,
-      selectedBucket: currentBucketOption,
-    };
-  }, [isExternal, s3Connectors, currentBucketId, getBucketTypeLabel]);
+  const connectorsInitialized = useRef(false);
 
   useEffect(() => {
-    if (!isExternal || isEmpty(isVolumeAllDetail)) return;
-    const selectedConnector = isVolumeAllDetail.find(
-      (item: BucketVolume) => item?.uuid === currentBucketId,
-    );
-    if (selectedConnector) {
-      setBucketName(selectedConnector.bucketName ?? '');
-      setStoreType(selectedConnector.storeType ?? '');
-      setTieringSupported(selectedConnector.tieringSupported === true);
+    if (connectorsInitialized.current || !isExternal || isEmpty(s3Connectors)) return;
+    const connector = selectedConnector;
+    if (connector) {
+      setBucketName(connector.bucketName ?? '');
+      setStoreType(connector.storeType ?? '');
+      setTieringSupported(connector.tieringSupported === true);
+      connectorsInitialized.current = true;
     }
-  }, [isExternal, isVolumeAllDetail, currentBucketId]);
+  });
 
   const typeValue = volumeType;
   const id = String(volumeDetail.id ?? volumeId);
@@ -297,28 +284,25 @@ export const ModifyVolumeForm: FC<ModifyVolumeFormProps> = ({
 
   const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
 
-  const onUnusedBucketListChange = useCallback(
-    (value: unknown): void => {
-      if (typeof value !== 'string') return;
+  const onUnusedBucketListChange = (value: unknown): void => {
+    if (typeof value !== 'string') return;
 
-      const selectedBucketDetail = isVolumeAllDetail?.find(
-        (item: BucketVolume) => item?.uuid === value,
-      );
+    const selectedBucketDetail = isVolumeAllDetail?.find(
+      (item: BucketVolume) => item?.uuid === value,
+    );
 
-      setBucketName(selectedBucketDetail?.bucketName ?? '');
-      setStoreType(selectedBucketDetail?.storeType ?? '');
-      form.setFieldValue('bucketConfigurationId', selectedBucketDetail?.uuid ?? '');
+    setBucketName(selectedBucketDetail?.bucketName ?? '');
+    setStoreType(selectedBucketDetail?.storeType ?? '');
+    form.setFieldValue('bucketConfigurationId', selectedBucketDetail?.uuid ?? '');
 
-      const supportsTiering = selectedBucketDetail?.tieringSupported === true;
-      setTieringSupported(supportsTiering);
-      if (!supportsTiering) {
-        form.setFieldValue('useInfrequentAccess', false);
-        form.setFieldValue('useIntelligentTiering', false);
-        form.setFieldValue('infrequentAccessThreshold', '');
-      }
-    },
-    [isVolumeAllDetail, form],
-  );
+    const supportsTiering = selectedBucketDetail?.tieringSupported === true;
+    setTieringSupported(supportsTiering);
+    if (!supportsTiering) {
+      form.setFieldValue('useInfrequentAccess', false);
+      form.setFieldValue('useIntelligentTiering', false);
+      form.setFieldValue('infrequentAccessThreshold', '');
+    }
+  };
 
   const buttons = [
     {

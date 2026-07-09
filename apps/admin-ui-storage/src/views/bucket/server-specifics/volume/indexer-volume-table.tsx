@@ -11,7 +11,7 @@ import {
   Row,
   Table,
 } from '@zextras/ui-components';
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { IndexerVolumeTableProps } from '../../../../../types';
@@ -19,9 +19,7 @@ import { FLEX_START, LOCAL_VALUE, NO, YES } from '../../../../constants';
 
 const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
   const [t] = useTranslation();
-  const tableRows = useMemo(
-    () =>
-      volumes.map((v, i) => {
+  const tableRows = volumes.map((v, i) => {
         const columns = [
           <Row
             key={i}
@@ -98,10 +96,7 @@ const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selectedRows
           columns: columns.filter((column) => column !== false),
           clickable: true,
         };
-      }),
-    [isAdvanced, onClick, t, volumes],
-  );
-
+      });
   return (
     <Container crossAlignment="flex-start">
       <Table

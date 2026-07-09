@@ -15,7 +15,7 @@ import {
   type THeader,
   type TRow,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, type ReactElement, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, type FC, type ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
@@ -50,40 +50,27 @@ export const EditBucketUsageTable: FC<EditBucketUsageTableProps> = ({
   const [offset, setOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredRows = useMemo(() => {
-    const normalizedSearch = searchValue.trim().toLowerCase();
+  const normalizedSearch = searchValue.trim().toLowerCase();
+  const filteredRows =
+    normalizedSearch === ''
+      ? rows
+      : rows.filter((row) =>
+          columnKeys.some((key) => row[key]?.toLowerCase().includes(normalizedSearch)),
+        );
 
-    if (normalizedSearch === '') {
-      return rows;
-    }
+  const pagedRows = filteredRows.slice(offset, offset + PAGE_SIZE);
 
-    return rows.filter((row) =>
-      columnKeys.some((key) => row[key]?.toLowerCase().includes(normalizedSearch)),
-    );
-  }, [columnKeys, rows, searchValue]);
-
-  const pagedRows = useMemo(() => {
-    const start = offset;
-    const end = offset + PAGE_SIZE;
-
-    return filteredRows.slice(start, end);
-  }, [filteredRows, offset]);
-
-  const tableRows: Array<TRow> = useMemo(
-    () =>
-      pagedRows.map((row, index) => ({
-        id: `${row[columnKeys[0]] ?? 'row'}-${index}`,
-        columns: columnKeys.map((key) => (
-          <Row key={`${row[columnKeys[0]] ?? 'row'}-${key}`} mainAlignment="flex-start">
-            <ds-text as="span" size="small" weight="light">
-              {row[key]}
-            </ds-text>
-          </Row>
-        )),
-        clickable: false,
-      })),
-    [columnKeys, pagedRows],
-  );
+  const tableRows: Array<TRow> = pagedRows.map((row, index) => ({
+    id: `${row[columnKeys[0]] ?? 'row'}-${index}`,
+    columns: columnKeys.map((key) => (
+      <Row key={`${row[columnKeys[0]] ?? 'row'}-${key}`} mainAlignment="flex-start">
+        <ds-text as="span" size="small" weight="light">
+          {row[key]}
+        </ds-text>
+      </Row>
+    )),
+    clickable: false,
+  }));
 
   useEffect(() => {
     setOffset(0);

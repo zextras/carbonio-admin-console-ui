@@ -12,7 +12,7 @@ import {
   Row,
   useSnackbar,
 } from '@zextras/ui-components';
-import { FC, useCallback } from 'react';
+import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { DeleteHsmPolicyProps, HsmPolicyFromServer } from '../../../../../types';
@@ -28,35 +28,32 @@ const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
 }) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const getHSMType = useCallback(
-    (query: string): string => {
-      const hsmType = policies.find((item: HsmPolicyFromServer) => item?.hsmQuery === query)?.hsmType ?? [];
-      let hsmTypeString = '';
-      if (hsmType && hsmType?.length > 0) {
-        if (hsmType.length === 4) {
-          hsmTypeString = 'document,message,contact,appointment:';
-        } else {
-          const item: string[] = [];
-          hsmType.forEach((element: number) => {
-            if (element === 5) {
-              item.push(MESSAGE);
-            } else if (element === 8) {
-              item.push(DOCUMENT);
-            } else if (element === 11) {
-              item.push(APPOINTMENT);
-            } else if (element === 6) {
-              item.push(CONTACT);
-            }
-          });
-          hsmTypeString = `${item.join()}:`;
-        }
+  const getHSMType = (query: string): string => {
+    const hsmType = policies.find((item: HsmPolicyFromServer) => item?.hsmQuery === query)?.hsmType ?? [];
+    let hsmTypeString = '';
+    if (hsmType && hsmType?.length > 0) {
+      if (hsmType.length === 4) {
+        hsmTypeString = 'document,message,contact,appointment:';
+      } else {
+        const item: string[] = [];
+        hsmType.forEach((element: number) => {
+          if (element === 5) {
+            item.push(MESSAGE);
+          } else if (element === 8) {
+            item.push(DOCUMENT);
+          } else if (element === 11) {
+            item.push(APPOINTMENT);
+          } else if (element === 6) {
+            item.push(CONTACT);
+          }
+        });
+        hsmTypeString = `${item.join()}:`;
       }
-      return hsmTypeString;
-    },
-    [policies],
-  );
+    }
+    return hsmTypeString;
+  };
 
-  const copyToClipboard = useCallback(() => {
+  const copyToClipboard = () => {
     if (navigator) {
       navigator.clipboard.writeText(`${getHSMType(selectedPolicies)}${selectedPolicies}`);
       createSnackbar({
@@ -66,15 +63,15 @@ const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
         actionLabel: '',
       });
     }
-  }, [createSnackbar, selectedPolicies, t, getHSMType]);
+  };
 
-  const closeHandler = useCallback(() => {
+  const closeHandler = () => {
     setShowDeletePolicyView(false);
-  }, [setShowDeletePolicyView]);
+  };
 
-  const onDelete = useCallback(() => {
+  const onDelete = () => {
     onDeletePolicy();
-  }, [onDeletePolicy]);
+  };
 
   return (
     <Modal

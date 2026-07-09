@@ -17,7 +17,7 @@ import {
   Switch,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { type ChangeEvent, type FC, useContext, useEffect, useMemo } from 'react';
+import { type ChangeEvent, type FC, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -39,8 +39,8 @@ const MailstoresCreate: FC<{
   const { t } = useTranslation();
 
   const isAdvanced = useIsAdvanced();
-  const volTypeList = useMemo(() => volumeTypeList(t, isAdvanced), [t, isAdvanced]);
-  const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
+  const volTypeList = volumeTypeList(t, isAdvanced);
+  const volAllocationList = volumeAllocationList(t);
   const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
   const isFormValid = useSelector(form.store, (s) => s.isValid);
   const volumeMain = useSelector(form.store, (s) => s.values.volumeMain);

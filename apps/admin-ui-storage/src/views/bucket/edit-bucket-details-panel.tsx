@@ -22,7 +22,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, type ReactElement, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, type FC, type ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -136,11 +136,12 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const initialInsecureHttps = String(bucketDetail?.insecureHttps ?? true) === 'true';
   const initialRegionValue = bucketDetail?.region ?? '';
 
-  const computedRegionValue = useMemo(() => {
-    if (!initialRegionValue) return NO_REGION_VALUE;
-    if (baseRegions.some((item) => item.value === initialRegionValue)) return initialRegionValue;
-    return CUSTOM_REGION_VALUE;
-  }, [baseRegions, initialRegionValue]);
+  const computedRegionValue =
+    !initialRegionValue
+      ? NO_REGION_VALUE
+      : baseRegions.some((item) => item.value === initialRegionValue)
+        ? initialRegionValue
+        : CUSTOM_REGION_VALUE;
 
   const form = useForm({
     defaultValues: {
@@ -174,93 +175,71 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const isCustomRegion = regionValue === CUSTOM_REGION_VALUE;
   const isEndpointUrlRequired = isCustomRegion || regionValue === NO_REGION_VALUE;
 
-  const regionSelection = useMemo(() => {
+  const regionSelection = (() => {
     const regionItems = [
       { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
       { label: t('label.region_set_custom', 'Set custom'), value: CUSTOM_REGION_VALUE },
       ...baseRegions,
     ];
     return regionItems.find((item) => item.value === regionValue) ?? { value: '', label: '' };
-  }, [baseRegions, regionValue, t]);
+  })();
 
-  const volumeUsageRows = useMemo(
-    () =>
-      parseVolumeUsage(bucketDetail?.['usage in powerstore volumes']).map((row) => ({
-        server: row.server,
-        volume: row.volume,
-      })),
-    [bucketDetail],
-  );
+  const volumeUsageRows = parseVolumeUsage(bucketDetail?.['usage in powerstore volumes']).map((row) => ({
+    server: row.server,
+    volume: row.volume,
+  }));
 
-  const backupUsageRows = useMemo(
-    () =>
-      parseBackupUsage(bucketDetail?.['usage in external backup']).map((row) => ({
-        server: row.server,
-      })),
-    [bucketDetail],
-  );
+  const backupUsageRows = parseBackupUsage(bucketDetail?.['usage in external backup']).map((row) => ({
+    server: row.server,
+  }));
 
-  const volumeHeaders = useMemo(
-    () => [
-      { id: 'server', label: t('label.server', 'Server'), bold: true, width: '50%' },
-      { id: 'volume', label: t('label.volume', 'Volume'), bold: true, width: '50%' },
-    ],
-    [t],
-  );
+  const volumeHeaders = [
+    { id: 'server', label: t('label.server', 'Server'), bold: true, width: '50%' },
+    { id: 'volume', label: t('label.volume', 'Volume'), bold: true, width: '50%' },
+  ];
 
-  const backupHeaders = useMemo(
-    () => [{ id: 'server', label: t('label.server_name', 'Server name'), bold: true, width: '100%' }],
-    [t],
-  );
+  const backupHeaders = [
+    { id: 'server', label: t('label.server_name', 'Server name'), bold: true, width: '100%' },
+  ];
 
-  const tabItems = useMemo(
-    () => [
-      { id: GENERAL_TAB, label: t('label.general', 'GENERAL').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
-      { id: VOLUMES_TAB, label: t('label.volumes', 'VOLUMES').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
-      { id: BACKUP_TAB, label: t('label.backup', 'BACKUP').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
-    ],
-    [t],
-  );
+  const tabItems = [
+    { id: GENERAL_TAB, label: t('label.general', 'GENERAL').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
+    { id: VOLUMES_TAB, label: t('label.volumes', 'VOLUMES').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
+    { id: BACKUP_TAB, label: t('label.backup', 'BACKUP').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
+  ];
 
   const currentRegionValue = isCustomRegion ? values.customRegion : regionValue;
 
-  const changedFields = useMemo(() => {
-    const fields: Array<{ label: string; value: string }> = [];
-
-    if (values.bucketLabel !== (bucketDetail?.label ?? '')) {
-      fields.push({ label: t('label.descriptive_name', 'Descriptive name'), value: values.bucketLabel.trim() || '-' });
-    }
-    if (values.url !== (bucketDetail?.url ?? '')) {
-      fields.push({ label: t('label.endpoint_url', 'Endpoint URL'), value: values.url.trim() || '-' });
-    }
-    if (currentRegionValue !== initialRegionValue) {
-      let regionLabel: string;
-      if (regionValue === NO_REGION_VALUE) {
-        regionLabel = t('label.region_none', 'None');
-      } else if (isCustomRegion) {
-        regionLabel = values.customRegion.trim() || '-';
-      } else {
-        regionLabel = String(regionSelection?.label ?? regionValue ?? '-');
-      }
-      fields.push({ label: t('label.region', 'Region'), value: regionLabel });
-    }
-    if (values.bucketName !== (bucketDetail?.bucketName ?? '')) {
-      fields.push({ label: t('label.bucket_name', 'Bucket name'), value: values.bucketName.trim() || '-' });
-    }
-    if (values.accessKey !== (bucketDetail?.accessKey ?? '')) {
-      fields.push({ label: t('label.access_key', 'Access Key ID'), value: values.accessKey.trim() || '-' });
-    }
-    if (values.secretKey !== (bucketDetail?.secret ?? '')) {
-      fields.push({ label: t('label.secret_key', 'Secret Access Key'), value: '********' });
-    }
-    if (values.acceptUntrustedSSL !== initialInsecureHttps) {
-      fields.push({
-        label: t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates'),
-        value: values.acceptUntrustedSSL ? t('label.yes', 'Yes') : t('label.no', 'No'),
-      });
-    }
-    return fields;
-  }, [values, bucketDetail, currentRegionValue, initialRegionValue, regionValue, isCustomRegion, regionSelection, initialInsecureHttps, t]);
+  const changedFields: Array<{ label: string; value: string }> = [];
+  if (values.bucketLabel !== (bucketDetail?.label ?? '')) {
+    changedFields.push({ label: t('label.descriptive_name', 'Descriptive name'), value: values.bucketLabel.trim() || '-' });
+  }
+  if (values.url !== (bucketDetail?.url ?? '')) {
+    changedFields.push({ label: t('label.endpoint_url', 'Endpoint URL'), value: values.url.trim() || '-' });
+  }
+  if (currentRegionValue !== initialRegionValue) {
+    const regionLabel = regionValue === NO_REGION_VALUE
+      ? t('label.region_none', 'None')
+      : isCustomRegion
+        ? (values.customRegion.trim() || '-')
+        : String(regionSelection?.label ?? regionValue ?? '-');
+    changedFields.push({ label: t('label.region', 'Region'), value: regionLabel });
+  }
+  if (values.bucketName !== (bucketDetail?.bucketName ?? '')) {
+    changedFields.push({ label: t('label.bucket_name', 'Bucket name'), value: values.bucketName.trim() || '-' });
+  }
+  if (values.accessKey !== (bucketDetail?.accessKey ?? '')) {
+    changedFields.push({ label: t('label.access_key', 'Access Key ID'), value: values.accessKey.trim() || '-' });
+  }
+  if (values.secretKey !== (bucketDetail?.secret ?? '')) {
+    changedFields.push({ label: t('label.secret_key', 'Secret Access Key'), value: '********' });
+  }
+  if (values.acceptUntrustedSSL !== initialInsecureHttps) {
+    changedFields.push({
+      label: t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates'),
+      value: values.acceptUntrustedSSL ? t('label.yes', 'Yes') : t('label.no', 'No'),
+    });
+  }
 
   const showDeleteConnector = isBucketUnused(bucketDetail);
 

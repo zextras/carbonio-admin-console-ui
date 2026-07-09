@@ -5,7 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, Input, LabeledValue, Padding, Row, Select } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, type FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type {
@@ -38,8 +38,8 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   const { form: volumeForm } = useContext(VolumeContext);
   const { form, setIsAllocationToggle } = useContext(AdvancedVolumeContext);
   const [isVolumeAllDetail, setIsVolumeAllDetail] = useState<Array<BucketVolume>>([]);
-  const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
-  const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
+  const volAllocationList = volumeAllocationList(t);
+  const bucketTypeItems = BucketTypeItems(t);
   const [allocation, setAllocation] = useState<VolumeAllocationItem>();
   const [unusedType, setUnusedType] = useState<{ label: string; value: string } | undefined>();
   const [errName, setErrName] = useState(true);
@@ -53,38 +53,32 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   const unusedBucketType = useSelector(form.store, (s) => s.values.unusedBucketType);
   const basicVolumeAllocation = useSelector(volumeForm.store, (s) => s.values.volumeAllocation);
 
-  const changeVolName = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      volumeForm.setFieldValue('volumeName', e?.target?.value);
-      form.setFieldValue('volumeName', e?.target?.value);
-      if (e?.target?.value === '') {
-        setErrName(false);
-      } else {
-        setErrName(true);
-      }
-    },
-    [form, volumeForm],
-  );
+  const changeVolName = (e: ChangeEvent<HTMLInputElement>) => {
+    volumeForm.setFieldValue('volumeName', e?.target?.value);
+    form.setFieldValue('volumeName', e?.target?.value);
+    if (e?.target?.value === '') {
+      setErrName(false);
+    } else {
+      setErrName(true);
+    }
+  };
 
-  const onVolAllocationChange = useCallback(
-    (v: unknown): void => {
-      if (typeof v !== 'number') {
-        return;
-      }
+  const onVolAllocationChange = (v: unknown): void => {
+    if (typeof v !== 'number') {
+      return;
+    }
 
-      volumeForm.setFieldValue('volumeAllocation', v);
-      const volumeTypeObject = volAllocationList?.find(
-        (item: VolumeAllocationItem) => item?.value === v,
-      )?.label;
-      form.setFieldValue('volumeAllocation', volumeTypeObject ?? '');
-      if (v === LOCAL_TYPE_VALUE) {
-        setToggleNextBtn(true);
-      } else {
-        setToggleNextBtn(false);
-      }
-    },
-    [form, setToggleNextBtn, volumeForm, volAllocationList],
-  );
+    volumeForm.setFieldValue('volumeAllocation', v);
+    const volumeTypeObject = volAllocationList?.find(
+      (item: VolumeAllocationItem) => item?.value === v,
+    )?.label;
+    form.setFieldValue('volumeAllocation', volumeTypeObject ?? '');
+    if (v === LOCAL_TYPE_VALUE) {
+      setToggleNextBtn(true);
+    } else {
+      setToggleNextBtn(false);
+    }
+  };
 
   useEffect(() => {
     if (form.state.values.volumeAllocation) {
@@ -97,24 +91,21 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
     }
   }, [onVolAllocationChange, volAllocationList, volumeAllocation]);
 
-  const onUnusedBucketListChange = useCallback(
-    (e: unknown): void => {
-      if (typeof e !== 'string') {
-        return;
-      }
+  const onUnusedBucketListChange = (e: unknown): void => {
+    if (typeof e !== 'string') {
+      return;
+    }
 
-      const selectedBucketDetail = isVolumeAllDetail?.find((item: BucketVolume) => item?.uuid === e);
-      form.setFieldValue('bucketName', selectedBucketDetail?.bucketName ?? '');
-      form.setFieldValue('unusedBucketType', selectedBucketDetail?.storeType ?? '');
-      form.setFieldValue('bucketId', selectedBucketDetail?.uuid ?? '');
-      form.setFieldValue('tieringSupported', selectedBucketDetail?.tieringSupported ?? false);
-      if (!selectedBucketDetail?.tieringSupported) {
-        form.setFieldValue('useInfrequentAccess', false);
-        form.setFieldValue('useIntelligentTiering', false);
-      }
-    },
-    [form, isVolumeAllDetail],
-  );
+    const selectedBucketDetail = isVolumeAllDetail?.find((item: BucketVolume) => item?.uuid === e);
+    form.setFieldValue('bucketName', selectedBucketDetail?.bucketName ?? '');
+    form.setFieldValue('unusedBucketType', selectedBucketDetail?.storeType ?? '');
+    form.setFieldValue('bucketId', selectedBucketDetail?.uuid ?? '');
+    form.setFieldValue('tieringSupported', selectedBucketDetail?.tieringSupported ?? false);
+    if (!selectedBucketDetail?.tieringSupported) {
+      form.setFieldValue('useInfrequentAccess', false);
+      form.setFieldValue('useIntelligentTiering', false);
+    }
+  };
 
   useEffect(() => {
     if (basicVolumeAllocation !== EXTERNAL_TYPE_VALUE) {
@@ -141,7 +132,7 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
       ?.label;
   }
 
-  const getBucketListType = useCallback((): void => {
+  const getBucketListType = (): void => {
     listS3Connector().then((values) => {
       const connectors: Array<BucketVolume> = values.map((items) => ({
         uuid: items.uuid,
@@ -174,7 +165,7 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
       setIsVolumeAllDetail(allData);
       setBackupUnusedBucketList(volUnusedBucketList);
     });
-  }, [getBucketTypeLabel, setIsVolumeAllDetail]);
+  };
 
   useEffect(() => {
     const volumeTypeObject = volAllocationList?.find(

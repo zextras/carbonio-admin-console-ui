@@ -20,7 +20,7 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -43,87 +43,75 @@ const HSMpolicySettings: FC = () => {
   const [value, setValue] = useState<string>();
   const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
 
-  const options: Array<SelectOption> = useMemo(
-    () => [
-      {
-        label: t('hsm.after_date', 'After (Date)'),
-        value: 'after',
-      },
-      {
-        label: t('hsm.before_date', 'Before (Date)'),
-        value: 'before',
-      },
-      {
-        label: t('hsm.larger_size', 'Larger (Size)'),
-        value: 'larger',
-      },
-      {
-        label: t('hsm.smaller_size', 'Smaller (Size)'),
-        value: 'smaller',
-      },
-    ],
-    [t],
-  );
+  const options: Array<SelectOption> = [
+    {
+      label: t('hsm.after_date', 'After (Date)'),
+      value: 'after',
+    },
+    {
+      label: t('hsm.before_date', 'Before (Date)'),
+      value: 'before',
+    },
+    {
+      label: t('hsm.larger_size', 'Larger (Size)'),
+      value: 'larger',
+    },
+    {
+      label: t('hsm.smaller_size', 'Smaller (Size)'),
+      value: 'smaller',
+    },
+  ];
 
-  const dateScaleOption: Array<SelectOption> = useMemo(
-    () => [
-      {
-        label: t('hsm.minutes', 'Minutes'),
-        value: 'minutes',
-      },
-      {
-        label: t('hsm.hours', 'Hours'),
-        value: 'hours',
-      },
-      {
-        label: t('hsm.days', 'Days'),
-        value: 'days',
-      },
-      {
-        label: t('hsm.months', 'Months'),
-        value: 'months',
-      },
-      {
-        label: t('hsm.years', 'Years'),
-        value: 'years',
-      },
-    ],
-    [t],
-  );
+  const dateScaleOption: Array<SelectOption> = [
+    {
+      label: t('hsm.minutes', 'Minutes'),
+      value: 'minutes',
+    },
+    {
+      label: t('hsm.hours', 'Hours'),
+      value: 'hours',
+    },
+    {
+      label: t('hsm.days', 'Days'),
+      value: 'days',
+    },
+    {
+      label: t('hsm.months', 'Months'),
+      value: 'months',
+    },
+    {
+      label: t('hsm.years', 'Years'),
+      value: 'years',
+    },
+  ];
 
-  const scaleOptions: Array<SelectOption> = useMemo(
-    () => [
-      {
-        label: t('hsm.bytes', 'Byte (B)'),
-        value: 'byte',
-      },
-      {
-        label: t('hsm.kb', 'KB'),
-        value: 'kb',
-      },
-      {
-        label: t('hsm.mb', 'MB'),
-        value: 'mb',
-      },
-      {
-        label: t('hsm.gb', 'GB'),
-        value: 'gb',
-      },
-    ],
-    [t],
-  );
+  const scaleOptions: Array<SelectOption> = [
+    {
+      label: t('hsm.bytes', 'Byte (B)'),
+      value: 'byte',
+    },
+    {
+      label: t('hsm.kb', 'KB'),
+      value: 'kb',
+    },
+    {
+      label: t('hsm.mb', 'MB'),
+      value: 'mb',
+    },
+    {
+      label: t('hsm.gb', 'GB'),
+      value: 'gb',
+    },
+  ];
 
-  const headers = useMemo(
-    () => [
-      {
-        id: 'name',
-        label: t('hsm.policy_criteria', 'Policy Criteria'),
-        width: '100%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
+  const headers = [
+    {
+      id: 'name',
+      label: t('hsm.policy_criteria', 'Policy Criteria'),
+      width: '100%',
+      bold: true,
+    },
+  ];
 
   const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>(options[0]);
 
@@ -147,48 +135,42 @@ const HSMpolicySettings: FC = () => {
     form.state.values.sourceVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
   );
   const createSnackbar = useSnackbar();
-  const header = useMemo(
-    () => [
-      {
-        id: 'name',
-        label: t('hsm.name', 'Name'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'allocation',
-        label: t('hsm.allocation', 'Allocation'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'type',
-        label: t('hsm.type', 'Type'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'current',
-        label: t('hsm.current', 'Current'),
-        width: '25%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
-
-  const getVoumeType = useCallback(
-    (type: number | undefined): string => {
-      if (type === 1) {
-        return t('hsm.primary', 'Primary');
-      }
-      if (type === 2) {
-        return t('hsm.secondary', 'Secondary');
-      }
-      return t('hsm.indexes', 'Indexes');
+  const header = [
+    {
+      id: 'name',
+      label: t('hsm.name', 'Name'),
+      width: '25%',
+      bold: true,
     },
-    [t],
-  );
+    {
+      id: 'allocation',
+      label: t('hsm.allocation', 'Allocation'),
+      width: '25%',
+      bold: true,
+    },
+    {
+      id: 'type',
+      label: t('hsm.type', 'Type'),
+      width: '25%',
+      bold: true,
+    },
+    {
+      id: 'current',
+      label: t('hsm.current', 'Current'),
+      width: '25%',
+      bold: true,
+    },
+  ];
+
+  const getVoumeType = (type: number | undefined): string => {
+    if (type === 1) {
+      return t('hsm.primary', 'Primary');
+    }
+    if (type === 2) {
+      return t('hsm.secondary', 'Secondary');
+    }
+    return t('hsm.indexes', 'Indexes');
+  };
 
   useEffect(() => {
     if (allVolumes && allVolumes.length > 0) {
@@ -263,7 +245,7 @@ const HSMpolicySettings: FC = () => {
 
   const [policyCriteria, setPolicyCriteria] = useState<Array<PolicyCriteriaItem>>(form.state.values.policyCriteria);
 
-  const onAdd = useCallback(() => {
+  const onAdd = () => {
     setPolicyCriteria((prev) => [
       ...prev,
       {
@@ -272,7 +254,7 @@ const HSMpolicySettings: FC = () => {
         dateScale: value ?? '',
       },
     ]);
-  }, [selectedOption?.value, selectedScale?.value, value]);
+  };
 
   useEffect(() => {
     form.setFieldValue('policyCriteria', policyCriteria);
@@ -310,21 +292,18 @@ const HSMpolicySettings: FC = () => {
     }
   }, [policyCriteria, t]);
 
-  const onClickAll = useCallback(
-    (check: boolean) => {
-      setAll(check);
-      form.setFieldValue('isAllEnabled', check);
-      form.setFieldValue('isMessageEnabled', check);
-      form.setFieldValue('isEventEnabled', check);
-      form.setFieldValue('isContactEnabled', check);
-      form.setFieldValue('isDocumentEnabled', check);
-      setIsDocument(check);
-      setIsContactEnable(check);
-      setIsMessageEnable(check);
-      setIsEventEnable(check);
-    },
-    [form],
-  );
+  const onClickAll = (check: boolean) => {
+    setAll(check);
+    form.setFieldValue('isAllEnabled', check);
+    form.setFieldValue('isMessageEnabled', check);
+    form.setFieldValue('isEventEnabled', check);
+    form.setFieldValue('isContactEnabled', check);
+    form.setFieldValue('isDocumentEnabled', check);
+    setIsDocument(check);
+    setIsContactEnable(check);
+    setIsMessageEnable(check);
+    setIsEventEnable(check);
+  };
 
   useEffect(() => {
     if (!isDocument || !isContactEnable || !isMessageEnable || !isEventEnable) {
@@ -336,13 +315,13 @@ const HSMpolicySettings: FC = () => {
     }
   }, [isDocument, isContactEnable, isMessageEnable, isEventEnable, form]);
 
-  const onDeletePolicy = useCallback(() => {
+  const onDeletePolicy = () => {
     const reducedArr = policyCriteria.filter(
       (item, itemIndex) => itemIndex !== Number(selectedPolicies[0]),
     );
     setPolicyCriteria(reducedArr);
     setSelectedPolicies([]);
-  }, [selectedPolicies, policyCriteria]);
+  };
 
   return (
     <Container

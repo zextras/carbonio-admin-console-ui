@@ -6,7 +6,7 @@
 
 import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { type FC, useCallback, useContext } from 'react';
+import { type FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import MailstoresCreate from './mailstores-create';
@@ -110,7 +110,7 @@ const NewVolume: FC<{
     },
   ];
 
-  const onComplete = useCallback(() => {
+  const onComplete = () => {
     const values = form.state.values;
     CreateVolumeRequest({
       id: values.id,
@@ -121,7 +121,7 @@ const NewVolume: FC<{
       compressionThreshold: values.isCompression ? values.compressionThreshold : 0,
       isCurrent: values.isCurrent ? 1 : 0,
     });
-  }, [form, CreateVolumeRequest]);
+  };
 
   return (
     <>

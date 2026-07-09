@@ -20,7 +20,7 @@ import {
 } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 import { filter } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -99,57 +99,52 @@ const BucketListTable: FC<{
     id: string;
     columns: Array<string | React.ReactElement>;
     clickable: boolean;
-  }> =
-    useMemo(
-    () =>
-      volumes.map((v, i) => ({
-        id: v.uuid,
-        columns: [
-          <Tooltip placement="bottom" label={v.uuid} key={`${v.uuid}-id`}>
-            <Row
-              onDoubleClick={(): void => { onDoubleClick(i); }}
-              onClick={(): void => { onClick(i); }}
-              style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-            >
-              <ds-text as="span" size="small" weight="light">
-                {v.uuid}
-              </ds-text>
-            </Row>
-          </Tooltip>,
-          <Row
-            key={`${v.uuid}-label`}
-            onDoubleClick={(): void => { onDoubleClick(i); }}
-            onClick={(): void => { onClick(i); }}
-            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-          >
-            <ds-text as="span" size="small" weight="regular">
-              {v.label}
-            </ds-text>
-          </Row>,
-          <Row
-            key={`${v.uuid}-bucket`}
-            onDoubleClick={(): void => { onDoubleClick(i); }}
-            onClick={(): void => { onClick(i); }}
-            style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v.bucketName}
-            </ds-text>
-          </Row>,
-          <Row key={`${v.uuid}-actions`} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
-            <button
-              type="button"
-              onClick={(): void => { onClick(i); }}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 0px 0px 14px', display: 'inline-flex', alignItems: 'center' }}
-            >
-              <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
-            </button>
-          </Row>,
-        ],
-        clickable: true,
-      })),
-    [onClick, onDoubleClick, volumes],
-  );
+  }> = volumes.map((v, i) => ({
+    id: v.uuid,
+    columns: [
+      <Tooltip placement="bottom" label={v.uuid} key={`${v.uuid}-id`}>
+        <Row
+          onDoubleClick={(): void => { onDoubleClick(i); }}
+          onClick={(): void => { onClick(i); }}
+          style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+        >
+          <ds-text as="span" size="small" weight="light">
+            {v.uuid}
+          </ds-text>
+        </Row>
+      </Tooltip>,
+      <Row
+        key={`${v.uuid}-label`}
+        onDoubleClick={(): void => { onDoubleClick(i); }}
+        onClick={(): void => { onClick(i); }}
+        style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+      >
+        <ds-text as="span" size="small" weight="regular">
+          {v.label}
+        </ds-text>
+      </Row>,
+      <Row
+        key={`${v.uuid}-bucket`}
+        onDoubleClick={(): void => { onDoubleClick(i); }}
+        onClick={(): void => { onClick(i); }}
+        style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v.bucketName}
+        </ds-text>
+      </Row>,
+      <Row key={`${v.uuid}-actions`} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+        <button
+          type="button"
+          onClick={(): void => { onClick(i); }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 0px 0px 14px', display: 'inline-flex', alignItems: 'center' }}
+        >
+          <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
+        </button>
+      </Row>,
+    ],
+    clickable: true,
+  }));
 
   return (
     <Container mainAlignment="flex-start" crossAlignment="flex-start">
@@ -221,7 +216,7 @@ const BucketDetailPanel: FC = () => {
     setShowDetails(false);
   };
 
-  const getBucketListType = useCallback((): void => {
+  const getBucketListType = (): void => {
     listS3Connector()
       .then((connectors) => {
         const mappedConnectors: Array<BucketConnectorRow> = connectors.map((connector: S3Connector) => ({
@@ -249,9 +244,9 @@ const BucketDetailPanel: FC = () => {
         setBucketList([]);
         setAllBucketList([]);
       });
-  }, []);
+  };
 
-  const deleteHandler = useCallback(() => {
+  const deleteHandler = () => {
     // delete  api call here
     setOpen(false);
     const objectToSendDeleteBucket: DeleteS3ConnectorRequest = {
@@ -292,13 +287,7 @@ const BucketDetailPanel: FC = () => {
         });
       }
     });
-  }, [
-    bucketDeleteName?.uuid,
-    bucketDeleteName?.bucketName,
-    getBucketListType,
-    createSnackbar,
-    t,
-  ]);
+  };
   const handleClick = (i: number): void => {
     const volumeObject = bucketList.find((s, index) => index === i);
     setConnectionData(volumeObject);

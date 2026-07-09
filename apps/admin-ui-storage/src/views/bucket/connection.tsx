@@ -18,7 +18,7 @@ import {
   Switch,
   Tooltip,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, type FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CreateS3ConnectorRequest } from '../../../types';
@@ -54,14 +54,11 @@ const Connection: FC<{
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);
   const [isVerifyError, setIsVerifyError] = useState(false);
 
-  const regionItems = useMemo(
-    () => [
-      { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
-      { label: t('label.region_set_custom', 'Set custom'), value: CUSTOM_REGION_VALUE },
-      ...bucketRegions,
-    ],
-    [bucketRegions, t],
-  );
+  const regionItems = [
+    { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
+    { label: t('label.region_set_custom', 'Set custom'), value: CUSTOM_REGION_VALUE },
+    ...bucketRegions,
+  ];
 
   const form = useForm({
     defaultValues: {
@@ -136,10 +133,7 @@ const Connection: FC<{
   const isCustomRegion = regionValue === CUSTOM_REGION_VALUE;
   const isEndpointUrlRequired = isCustomRegion || regionValue === NO_REGION_VALUE;
 
-  const regionSelection = useMemo(
-    () => regionItems.find((item) => item.value === regionValue) ?? EMPTY_REGION,
-    [regionItems, regionValue],
-  );
+  const regionSelection = regionItems.find((item) => item.value === regionValue) ?? EMPTY_REGION;
 
   useEffect(() => {
     listS3Regions()
@@ -156,14 +150,14 @@ const Connection: FC<{
       });
   }, []);
 
-  const handleProgressComplete = useCallback((): void => {
+  const handleProgressComplete = (): void => {
     setShowVerifyResult(true);
-  }, []);
+  };
 
-  const handleSuccessComplete = useCallback((): void => {
+  const handleSuccessComplete = (): void => {
     setShowVerifyResult(false);
     onCancel?.();
-  }, [onCancel]);
+  };
 
   return (
     <Container

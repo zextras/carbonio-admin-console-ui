@@ -15,7 +15,7 @@ import {
   TabBar,
   useSnackbar,
 } from '@zextras/ui-components';
-import { FC, ReactElement, useCallback, useEffect, useState } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { EditHsmPolicyProps, HsmPolicyFromServer, TabBarItem } from '../../../../../types';
@@ -101,21 +101,18 @@ const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
     },
   ] as Array<TabBarItem>;
 
-  const showSnackbar = useCallback(
-    (msg: string) => {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label: msg,
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    },
-    [createSnackbar],
-  );
+  const showSnackbar = (msg: string) => {
+    createSnackbar({
+      key: 'error',
+      severity: 'error',
+      label: msg,
+      autoHideTimeout: 3000,
+      hideButton: true,
+      replace: true,
+    });
+  };
 
-  const onSave = useCallback(() => {
+  const onSave = () => {
     const values = form.state.values;
     if (
       values.isContactEnabled === false &&
@@ -131,7 +128,7 @@ const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
       return;
     }
     onEditSave({ ...values, allVolumes: volumeList });
-  }, [form, onEditSave, showSnackbar, t, volumeList]);
+  };
 
   return (
     <Container

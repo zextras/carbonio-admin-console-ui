@@ -14,7 +14,7 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { HsmPolicyFromServer } from '../../../../../types';
@@ -34,48 +34,42 @@ const EditHsmPolicyVolumesSection: FC<{
   const [isVolumeLoaded, setIsVolumeLoaded] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
 
-  const headers = useMemo(
-    () => [
-      {
-        id: 'name',
-        label: t('hsm.name', 'Name'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'allocation',
-        label: t('hsm.allocation', 'Allocation'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'type',
-        label: t('hsm.type', 'Type'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'current',
-        label: t('hsm.current', 'Current'),
-        width: '25%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
-
-  const getVoumeType = useCallback(
-    (type: number | undefined): string => {
-      if (type === 1) {
-        return t('hsm.primary', 'Primary');
-      }
-      if (type === 2) {
-        return t('hsm.secondary', 'Secondary');
-      }
-      return t('hsm.indexes', 'Indexes');
+  const headers = [
+    {
+      id: 'name',
+      label: t('hsm.name', 'Name'),
+      width: '25%',
+      bold: true,
     },
-    [t],
-  );
+    {
+      id: 'allocation',
+      label: t('hsm.allocation', 'Allocation'),
+      width: '25%',
+      bold: true,
+    },
+    {
+      id: 'type',
+      label: t('hsm.type', 'Type'),
+      width: '25%',
+      bold: true,
+    },
+    {
+      id: 'current',
+      label: t('hsm.current', 'Current'),
+      width: '25%',
+      bold: true,
+    },
+  ];
+
+  const getVoumeType = (type: number | undefined): string => {
+    if (type === 1) {
+      return t('hsm.primary', 'Primary');
+    }
+    if (type === 2) {
+      return t('hsm.secondary', 'Secondary');
+    }
+    return t('hsm.indexes', 'Indexes');
+  };
 
   useEffect(() => {
     if (allVolumes && allVolumes.length > 0) {

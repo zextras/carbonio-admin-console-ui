@@ -5,7 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, LabeledValue, ListRow, Row } from '@zextras/ui-components';
-import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../../../constants';
@@ -18,7 +18,7 @@ const AdvancedMailstoresCreate: FC<{
 }> = ({ externalData, setCompleteLoading }) => {
   const { form } = useContext(AdvancedVolumeContext);
   const { t } = useTranslation();
-  const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+  const volTypeList = volumeTypeList(t);
   const [volumeType, setVolumeType] = useState<string>('');
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
