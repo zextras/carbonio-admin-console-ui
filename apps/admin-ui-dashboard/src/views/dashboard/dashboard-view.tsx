@@ -53,7 +53,7 @@ const Dashboard: FC = () => {
       if (domainInformation && domainInformation?.id) {
         if (operation === 'account') {
           navigate(buildPath(DOMAINS_ROUTE_ID, domainInformation?.id, ACCOUNTS));
-        } else if (operation === 'malinglist') {
+        } else if (operation === 'mailinglist') {
           navigate(buildPath(DOMAINS_ROUTE_ID, domainInformation?.id, DISTRIBUTION_LIST));
         }
       }

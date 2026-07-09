@@ -12,7 +12,7 @@ import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
     <Container height={'fit'}>
@@ -46,4 +46,3 @@ const AppView: FC = () => {
   );
 };
 
-export default AppView;

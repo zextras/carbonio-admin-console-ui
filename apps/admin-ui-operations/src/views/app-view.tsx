@@ -11,10 +11,10 @@ import { DONE_ROUTE_ID, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID } from '../constants';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import DoneDetailPanel from './operations/done-detail-panel';
 import OperationsLayout from './operations/operations-layout';
-import QuededDetailPanel from './operations/queued-detail-panel';
+import QueuedDetailPanel from './operations/queued-detail-panel';
 import RunningDetailPanel from './operations/running-detail-panel';
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <Breadcrumb />
@@ -22,7 +22,7 @@ const AppView: FC = () => {
         <Route index element={<Navigate to={RUNNING_ROUTE_ID} replace />} />
         <Route element={<OperationsLayout />}>
           <Route path={RUNNING_ROUTE_ID} element={<RunningDetailPanel />} />
-          <Route path={QUEUED_ROUTE_ID} element={<QuededDetailPanel />} />
+          <Route path={QUEUED_ROUTE_ID} element={<QueuedDetailPanel />} />
           <Route path={DONE_ROUTE_ID} element={<DoneDetailPanel />} />
           <Route path="*" element={<Navigate to={RUNNING_ROUTE_ID} replace />} />
         </Route>
@@ -31,4 +31,3 @@ const AppView: FC = () => {
   );
 };
 
-export default AppView;

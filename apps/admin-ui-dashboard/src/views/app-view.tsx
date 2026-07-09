@@ -17,7 +17,7 @@ const DashboardComponent = () => (
   </Container>
 );
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <Breadcrumb />
@@ -26,4 +26,3 @@ const AppView: FC = () => {
   );
 };
 
-export default AppView;

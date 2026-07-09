@@ -12,7 +12,7 @@ import { Breadcrumb } from './breadcrumb/breadcrumb';
 import DomainListPanel from './domain/domain-list-panel';
 import { DomainContentPanel } from './domain-content-panel';
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
 
   return (
@@ -34,4 +34,3 @@ const AppView: FC = () => {
   );
 };
 
-export default AppView;

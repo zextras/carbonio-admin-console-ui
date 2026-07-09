@@ -126,10 +126,11 @@ All list panels now use `useRelativePathname()` + react-router's `matchPath`, re
       → extracted to a shared `useDetailViewMaxWidth()` hook in `@zextras/ui-shared`; removed the
       per-app `getContainerStyle`/ternary. Subscription's breakpoint-based variant left as-is
       (genuinely different responsive logic). +2 hook unit tests. *(done)*
-- [ ] **AppView export inconsistency**: cos & subscription use named exports; the other 9 use
-      default → unify.
+- [x] **AppView export inconsistency**: unified all 11 apps to **named exports**
+      (`export const AppView`) — converted the 9 that used `export default` + updated all
+      importers (9 `app.tsx` + 6 tests). Aligns with AGENTS.md ("named exports, avoid default"). *(done)*
 - [ ] **React Compiler violations** (`useMemo`/`useCallback`, per AGENTS.md) in legalhold (incl.
       a `useMemo`-for-side-effects bug at `legal-hold-panel.tsx:305`), subscription, dashboard.
-- [ ] **Typos**: `QuededDetailPanel` filename (operations) should be `Queued`;
-      `'malinglist'` (dashboard-view.tsx:57) should be `mailinglist`.
+- [x] **Typos**: `QuededDetailPanel` → `QueuedDetailPanel` (component identifier across 3 files;
+      filename was already correct); `'malinglist'` → `'mailinglist'` (2 dashboard files). *(done)*
 - [ ] **Indentation**: operations app uses tabs while siblings use spaces.

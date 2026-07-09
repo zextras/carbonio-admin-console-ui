@@ -20,7 +20,7 @@ import {
   MANAGE_APP_ID,
   PRIMARY_BAR_DOMAINS,
 } from './constants';
-import AppView from './views/app-view';
+import { AppView } from './views/app-view';
 
 const App: FC = () => {
   const [t] = useTranslation();

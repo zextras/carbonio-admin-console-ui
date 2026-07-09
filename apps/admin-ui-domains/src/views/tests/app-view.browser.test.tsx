@@ -17,7 +17,7 @@ import { HttpResponse } from 'msw';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import AppView from '../app-view';
+import { AppView } from '../app-view';
 
 function interceptApis(): void {
   createBrowserSoapAPIInterceptor('SearchDirectory', { domain: [], searchTotal: 0, more: false });

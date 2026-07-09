@@ -15,7 +15,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { DASHBOARD } from '../../constants';
-import AppView from '../app-view';
+import { AppView } from '../app-view';
 
 describe('AppView', () => {
   let queryClient: ReturnType<typeof getQueryClient>;

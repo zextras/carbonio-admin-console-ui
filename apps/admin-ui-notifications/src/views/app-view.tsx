@@ -12,7 +12,7 @@ import { Breadcrumb } from './breadcrumb/breadcrumb';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
     <Container height={'fit'}>
@@ -43,4 +43,3 @@ const AppView: FC = () => {
   );
 };
 
-export default AppView;

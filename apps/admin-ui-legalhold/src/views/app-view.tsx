@@ -9,7 +9,7 @@ import { FC, Suspense } from 'react';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <Breadcrumb />
@@ -28,4 +28,3 @@ const AppView: FC = () => {
   );
 };
 
-export default AppView;

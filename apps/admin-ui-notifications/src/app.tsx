@@ -9,7 +9,7 @@ import { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID, PRIMARY_BAR_NOTIFICATIONS } from './constants';
-import AppView from './views/app-view';
+import { AppView } from './views/app-view';
 import { NotificationsTooltipView } from './views/notifications-tooltip-view';
 
 const App: FC = () => {

@@ -12,7 +12,7 @@ import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { MTADetailPanel } from './mta/mta-detail-panel';
 import MTAListPanel from './mta/mta-list-panel';
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
     <Container height={'fit'}>
@@ -44,4 +44,3 @@ const AppView: FC = () => {
   );
 };
 
-export default AppView;

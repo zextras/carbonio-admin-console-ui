@@ -10,7 +10,7 @@ import { FC, Suspense } from 'react';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import PrivacyView from './privacy/privacy-view';
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
     <Container height={'fit'}>
@@ -28,4 +28,3 @@ const AppView: FC = () => {
   );
 };
 
-export default AppView;

@@ -20,7 +20,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { DATA_VOLUMES, S3CONNECTOR_LIST, SERVERS_LIST } from '../../constants';
-import AppView from '../app-view';
+import { AppView } from '../app-view';
 
 const SERVER_NAME = 'mailstore1.test.com';
 const SERVER_ID = 'server-1';
