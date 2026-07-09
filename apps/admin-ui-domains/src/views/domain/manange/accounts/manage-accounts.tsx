@@ -22,7 +22,6 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import {
-  type CosAttribute,
   getCoreAttributes,
   getCosGeneralInformation,
   type GetCosResponse,
@@ -210,6 +209,50 @@ type CreateColumnsParams = {
   statusColorMap: StatusColorMap;
   getAccountType: (item: Record<string, unknown>) => string;
 };
+
+const createOtpTableRow = (
+  item: OtpItem,
+  t: (key: string, fallback: string) => string,
+): OtpTableRow => ({
+  id: item?.id,
+  columns: [
+    <ds-text as="span" size="medium" key={item?.id} color="gray0">
+      {item?.label || ' '}
+    </ds-text>,
+    <ds-text as="span" size="medium" key={item?.id} color="gray0">
+      {item?.enabled ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+    </ds-text>,
+    <ds-text as="span" size="medium" key={item?.id}>
+      {item?.failed_attempts}
+    </ds-text>,
+    <ds-text as="span" size="medium" key={item?.id}>
+      {format(new Date(item?.created), 'dd/MMM/yyyy')}
+    </ds-text>,
+    <ds-text as="span" size="medium" key={item?.id} color="gray0">
+      {item?.description || <>&nbsp;</>}
+    </ds-text>,
+  ],
+  item,
+  clickable: true,
+});
+
+const parseAttributesToObject = (
+  attributes: Array<Attribute> | undefined,
+): Record<string, string> => {
+  const obj: Record<string, string> = {};
+  attributes?.forEach((ele: Attribute) => {
+    if (obj[ele.n]) {
+      obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
+    } else {
+      obj[ele.n] = ele._content;
+    }
+  });
+  return obj;
+};
+
+const SearchInputIcon: FC = () => (
+  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
 
 const createAccountTableColumns = ({
   account,
@@ -553,15 +596,7 @@ const ManageAccounts: FC = () => {
   }, []);
   const getAccountSpecificDetail = useCallback((id: string): void => {
     getAccountRequest(id, '', 0).then((res: GetAccountResponse) => {
-      const accountObj: Record<string, string> = {};
-
-      res?.account?.[0]?.a?.forEach((ele: Attribute) => {
-        if (accountObj[ele.n]) {
-          accountObj[ele.n] = `${accountObj[ele.n]}, ${ele._content}`;
-        } else {
-          accountObj[ele.n] = ele._content;
-        }
-      });
+      const accountObj = parseAttributesToObject(res?.account?.[0]?.a);
       if (accountObj.zimbraIsAdminAccount === undefined) {
         accountObj.zimbraIsAdminAccount = 'FALSE';
       }
@@ -573,21 +608,11 @@ const ManageAccounts: FC = () => {
   }, []);
   const getCosDetail = useCallback((id: string): void => {
     getCosGeneralInformation(id).then((data: GetCosResponse) => {
-      const obj: Record<string, string> = {};
-      data?.cos?.[0]?.a?.forEach((ele: CosAttribute) => {
-        if (obj[ele.n]) {
-          obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
-        } else {
-          obj[ele.n] = ele._content;
-        }
-      });
-      obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
-        ? obj.zimbraPrefMailForwardingAddress
-        : '';
-      obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
-        ? obj.zimbraPrefCalendarForwardInvitesTo
-        : '';
-
+      const obj = parseAttributesToObject(
+        data?.cos?.[0]?.a as unknown as Array<Attribute> | undefined,
+      );
+      obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress ?? '';
+      obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo ?? '';
       setCosDetail({ ...obj });
     });
   }, []);
@@ -599,40 +624,12 @@ const ManageAccounts: FC = () => {
         action: 'list_totp_command',
         account: `${id}`,
       }).then((res) => {
-        if (res?.ok) {
-          const response = (res as { response?: { list?: Array<OtpItem> } }).response;
-          const otpListResponse = response?.list;
-          if (otpListResponse && Array.isArray(otpListResponse)) {
-            const otpListArr: Array<OtpTableRow> = [];
-            otpListResponse.forEach((item) => {
-              otpListArr.push({
-                id: item?.id,
-                columns: [
-                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
-                    {item?.label || ' '}
-                  </ds-text>,
-                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
-                    {item?.enabled
-                      ? t('label.enabled', 'Enabled')
-                      : t('label.disabled', 'Disabled')}
-                  </ds-text>,
-                  <ds-text as="span" size="medium" key={item?.id}>
-                    {item?.failed_attempts}
-                  </ds-text>,
-                  <ds-text as="span" size="medium" key={item?.id}>
-                    {format(new Date(item?.created), 'dd/MMM/yyyy')}
-                  </ds-text>,
-                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
-                    {item?.description || <>&nbsp;</>}
-                  </ds-text>,
-                ],
-                item,
-                clickable: true,
-              });
-            });
-            setOtpList(otpListArr);
-          }
-        }
+        if (!res?.ok) return;
+        const response = (res as { response?: { list?: Array<OtpItem> } }).response;
+        const otpListResponse = response?.list;
+        if (!otpListResponse || !Array.isArray(otpListResponse)) return;
+        const otpListArr = otpListResponse.map((item) => createOtpTableRow(item, t));
+        setOtpList(otpListArr);
       });
     },
     [t],
@@ -779,40 +776,17 @@ const ManageAccounts: FC = () => {
     (id: string): void => {
       getAccountRequest(id, '', 1)
         .then((data: GetAccountResponse) => {
-          const obj: Record<string, string> = {};
-
-          data?.account?.[0]?.a?.forEach((ele: Attribute) => {
-            if (obj[ele.n]) {
-              obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
-            } else {
-              obj[ele.n] = ele._content;
-            }
-          });
-          if (obj.userPassword) {
-            obj.password = '******';
-            obj.repeatPassword = '******';
-          } else {
-            obj.password = '';
-            obj.repeatPassword = '';
-          }
-          obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
-            ? obj.zimbraPrefMailForwardingAddress
-            : '';
-          obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
-            ? obj.zimbraPrefCalendarForwardInvitesTo
-            : '';
-
+          const obj = parseAttributesToObject(data?.account?.[0]?.a);
+          obj.password = obj.userPassword ? '******' : '';
+          obj.repeatPassword = obj.userPassword ? '******' : '';
+          obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress ?? '';
+          obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo ?? '';
           obj.name = data?.account?.[0]?.name;
           obj.domainName = data?.account?.[0]?.name.split('@')[1];
-          if (obj.zimbraIsAdminAccount === undefined) {
-            obj.zimbraIsAdminAccount = 'FALSE';
-          }
-          if (obj.zimbraIsDelegatedAdminAccount === undefined) {
-            obj.zimbraIsDelegatedAdminAccount = 'FALSE';
-          }
-          if (!obj.zimbraId) {
-            obj.zimbraId = id;
-          }
+          obj.zimbraIsAdminAccount = obj.zimbraIsAdminAccount ?? 'FALSE';
+          obj.zimbraIsDelegatedAdminAccount = obj.zimbraIsDelegatedAdminAccount ?? 'FALSE';
+          obj.zimbraId = obj.zimbraId || id;
+
           setInitAccountDetail({ ...obj });
           setSelectedAccount({ ...obj, id });
           setAccountDetail({ ...obj });
@@ -820,28 +794,23 @@ const ManageAccounts: FC = () => {
           getAccountSpecificDetail(id);
           setDefaultCOS(!obj.zimbraCOSId);
           getMailboxQuotaUsed(id);
-          if (isAdvanced) {
-            if (isTotalQuotaActive) {
-              retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
-            }
-            getListOtp(data?.account?.[0]?.name);
-            getCredentialList(data?.account?.[0]?.name);
-            getABQStatus(id);
-            getFileQuotaByAccId(id);
-            setTimeout(() => {
-              getFileQuotaByCosId(obj.zimbraCOSId);
-            }, 2000);
-          }
-        })
 
+          if (!isAdvanced) return;
+          if (isTotalQuotaActive) {
+            retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
+          }
+          getListOtp(data?.account?.[0]?.name);
+          getCredentialList(data?.account?.[0]?.name);
+          getABQStatus(id);
+          getFileQuotaByAccId(id);
+          setTimeout(() => getFileQuotaByCosId(obj.zimbraCOSId), 2000);
+        })
         .catch((error: Error) => {
           setShowEditAccountView(false);
           createSnackbar({
             key: 'error',
             severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+            label: error?.message ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
@@ -1371,9 +1340,7 @@ const ManageAccounts: FC = () => {
                   value={searchString}
                   backgroundColor="gray5"
                   onChange={handleInputChange}
-                  CustomIcon={(): ReactElement => (
-                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                  )}
+                  CustomIcon={SearchInputIcon}
                 />
               </Container>
             </Row>
