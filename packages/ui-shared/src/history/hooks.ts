@@ -5,7 +5,6 @@
  */
 
 import { find, replace, startsWith, trim } from 'lodash-es';
-import { useMemo } from 'react';
 import { type To, useLocation } from 'react-router';
 
 import { AppRoute, HistoryParams } from '../../types';
@@ -15,11 +14,9 @@ import { useContextBridge } from '../store/context-bridge';
 export const useCurrentRoute = (): AppRoute | undefined => {
   const location = useLocation();
   const routes = useAppRoutes();
-  return useMemo(
-    () => find(routes, (r) => startsWith(trim(location.pathname, '/'), r.path)),
-    [location.pathname, routes],
-  );
+  return find(routes, (r) => startsWith(trim(location.pathname, '/'), r.path));
 };
+
 const getCurrentRoute = (): AppRoute | undefined => {
   const history = useContextBridge.getState().functions.getHistory?.();
   const routes = getRoutes();
