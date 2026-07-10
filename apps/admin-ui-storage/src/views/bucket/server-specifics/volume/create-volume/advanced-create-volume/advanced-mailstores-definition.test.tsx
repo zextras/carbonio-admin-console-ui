@@ -250,6 +250,7 @@ describe('AdvancedMailstoresDefinition', () => {
         setCompleteLoading={setCompleteLoading}
         initialFormValues={{ volumeName: 'Volume A' }}
       />,
+      { wrapper: createWrapper() },
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Object Storage' }));
