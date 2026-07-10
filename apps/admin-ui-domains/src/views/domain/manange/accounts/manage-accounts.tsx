@@ -250,6 +250,24 @@ const parseAttributesToObject = (
   return obj;
 };
 
+const buildFilterQuery = (items: Array<FilterOption>): string => {
+  if (items.length === 0) return '';
+  const query = items.map((item) => item.value).join('');
+  return items.length > 1 ? `(|${query})` : query;
+};
+
+const countAccountsFromCoses = (
+  coses: Record<string, { name: string; _content: string }>,
+): number => {
+  let counter = 0;
+  for (const cos in coses) {
+    if (coses[cos].name !== 'defaultExternal') {
+      counter += Number(coses[cos]._content);
+    }
+  }
+  return counter;
+};
+
 const SearchInputIcon: FC = () => (
   <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
 );
@@ -465,18 +483,7 @@ const ManageAccounts: FC = () => {
         ] as [FilterOption, ...Array<FilterOption>],
 
         onChange: (e: Array<FilterOption>) => {
-          if (e?.length > 0) {
-            let typeQuery = '';
-            e.forEach((item: FilterOption) => {
-              typeQuery += item.value;
-            });
-            if (e?.length > 1) {
-              typeQuery = `(|${typeQuery})`;
-            }
-            setTypeFilter(typeQuery);
-          } else {
-            setTypeFilter('');
-          }
+          setTypeFilter(buildFilterQuery(e ?? []));
         },
       },
       {
@@ -495,18 +502,7 @@ const ManageAccounts: FC = () => {
         ] as [FilterOption, ...Array<FilterOption>],
 
         onChange: (e: Array<FilterOption>) => {
-          if (e?.length > 0) {
-            let statusQuery = '';
-            e.forEach((item: FilterOption) => {
-              statusQuery += item.value;
-            });
-            if (e?.length > 1) {
-              statusQuery = `(|${statusQuery})`;
-            }
-            setStatusFilter(statusQuery);
-          } else {
-            setStatusFilter('');
-          }
+          setStatusFilter(buildFilterQuery(e ?? []));
         },
       },
       {
@@ -965,14 +961,15 @@ const ManageAccounts: FC = () => {
     const sessionTypes: Array<string> = ['admin', 'imap', 'soap'];
     setUserSessionList([]);
     setAllUserSessionList([]);
-    sessionTypes.forEach((sessionType: string) => {
-      getSessions(sessionType, acc).then((resp: GetSessionsResponse) => {
-        const sessions = extractSessionsFromResponse(resp, acc);
-        if (sessions.length > 0) {
-          setUserSessionList((prev) => [...prev, ...sessions]);
-          setAllUserSessionList((prev) => [...prev, ...sessions]);
-        }
-      });
+    const sessionPromises = sessionTypes.map((sessionType) =>
+      getSessions(sessionType, acc).then((resp: GetSessionsResponse) =>
+        extractSessionsFromResponse(resp, acc),
+      ),
+    );
+    Promise.all(sessionPromises).then((results) => {
+      const allSessions = results.flat().filter((s) => s);
+      setUserSessionList(allSessions);
+      setAllUserSessionList(allSessions);
     });
   }, []);
 
@@ -1001,26 +998,18 @@ const ManageAccounts: FC = () => {
   };
 
   const getTotalFilteredUser = useCallback((): void => {
-    if (domainName) {
-      countAccount(domainName)
-        .then((res) => {
-          if (res) {
-            const coses = res?.cos;
-            let counter = 0;
-            for (const cos in coses) {
-              if (coses[cos].name != 'defaultExternal') {
-                counter = counter + Number(coses[cos]._content);
-              }
-            }
-            setTotalAccountCreated(counter);
-          }
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-          setHasError(true);
-        });
-    }
+    if (!domainName) return;
+    countAccount(domainName)
+      .then((res) => {
+        if (res?.cos) {
+          setTotalAccountCreated(countAccountsFromCoses(res.cos));
+        }
+      })
+      .catch((error) => {
+        const snackbarConfig = generateSnackbarFromError(error, t);
+        createSnackbar(snackbarConfig);
+        setHasError(true);
+      });
   }, [domainName, t, createSnackbar]);
 
   const getAccountList = useCallback((): void => {
