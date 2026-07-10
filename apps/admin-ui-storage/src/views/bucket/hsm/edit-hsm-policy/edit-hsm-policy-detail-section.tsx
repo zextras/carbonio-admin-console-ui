@@ -39,7 +39,6 @@ const EditHsmPolicyDetailSection: FC<{
   const [isEventEnable, setIsEventEnable] = useState<boolean>(false);
   const [isContactEnable, setIsContactEnable] = useState<boolean>(false);
   const [isDocument, setIsDocument] = useState<boolean>(false);
-  const [policyCriteriaRows, setPolicyCriteriaRows] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>();
   const [policyCriteria, setPolicyCriteria] = useState<Array<PolicyCriteriaItem>>([]);
   const [isShowDateScale, setIsShowDateScale] = useState<boolean>(true);
   const [value, setValue] = useState<string>();
@@ -265,37 +264,33 @@ const EditHsmPolicyDetailSection: FC<{
     setIsEventEnable(check);
   };
 
-  useEffect(() => {
-    if (policyCriteria.length > 0) {
-      let displayPolicy = '';
-      const allRows = policyCriteria.map((item: PolicyCriteriaItem, index: number) => {
-        if (item?.option === 'before' || item?.option === 'after') {
-          displayPolicy = `${item?.option} ${item?.dateScale} ${item?.scale}`;
-        } else if (item?.option === 'larger' || item?.option === 'smaller') {
-          displayPolicy = `${item?.option}  ${item?.dateScale} ${item?.scale}`;
-        }
-        return {
-          id: String(index),
-          columns: [
-            <ds-text
-              as="span"
-              size="small"
-              weight="regular"
-              key={index}
-              onClick={(): void => {
-                setSelectedPolicies([String(index)]);
-              }}
-            >
-              {displayPolicy}
-            </ds-text>,
-          ],
-        };
-      });
-      setPolicyCriteriaRows(allRows);
-    } else if (policyCriteria.length === 0) {
-      setPolicyCriteriaRows([]);
-    }
-  }, [policyCriteria, t]);
+  const policyCriteriaRows =
+    policyCriteria.length > 0
+      ? policyCriteria.map((item: PolicyCriteriaItem, index: number) => {
+          let displayPolicy = '';
+          if (item?.option === 'before' || item?.option === 'after') {
+            displayPolicy = `${item?.option} ${item?.dateScale} ${item?.scale}`;
+          } else if (item?.option === 'larger' || item?.option === 'smaller') {
+            displayPolicy = `${item?.option}  ${item?.dateScale} ${item?.scale}`;
+          }
+          return {
+            id: String(index),
+            columns: [
+              <ds-text
+                as="span"
+                size="small"
+                weight="regular"
+                key={index}
+                onClick={(): void => {
+                  setSelectedPolicies([String(index)]);
+                }}
+              >
+                {displayPolicy}
+              </ds-text>,
+            ],
+          };
+        })
+      : [];
 
   const onAdd = () => {
     const data: PolicyCriteriaItem = {
