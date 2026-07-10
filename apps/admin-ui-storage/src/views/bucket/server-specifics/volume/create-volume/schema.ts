@@ -38,13 +38,11 @@ export const volumeCreateSchema = volumeCreateBase.superRefine((val, ctx) => {
     });
   }
   if (val.isCompression) {
-    if (!val.compressionThreshold || val.compressionThreshold === '') {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['compressionThreshold'],
-        message: 'storage.validation.compression_threshold_required',
-      });
-    } else if (!/^[0-9]*$/.test(String(val.compressionThreshold))) {
+    if (
+      !val.compressionThreshold ||
+      val.compressionThreshold === '' ||
+      !/^\d*$/.test(String(val.compressionThreshold))
+    ) {
       ctx.addIssue({
         code: 'custom',
         path: ['compressionThreshold'],
