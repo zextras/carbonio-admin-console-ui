@@ -34,11 +34,11 @@ const HSMpolicySettings: FC = () => {
   const [t] = useTranslation();
   const context = useContext(HSMContext);
   const { form, allVolumes } = context;
-  const [all, setAll] = useState<boolean>(form.state.values.isAllEnabled);
   const [isMessageEnable, setIsMessageEnable] = useState<boolean>(form.state.values.isMessageEnabled);
   const [isEventEnable, setIsEventEnable] = useState<boolean>(form.state.values.isEventEnabled);
   const [isContactEnable, setIsContactEnable] = useState<boolean>(form.state.values.isContactEnabled);
   const [isDocument, setIsDocument] = useState<boolean>(form.state.values.isDocumentEnabled);
+  const all = isDocument && isContactEnable && isMessageEnable && isEventEnable;
   const [value, setValue] = useState<string>();
   const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
 
@@ -283,7 +283,6 @@ const HSMpolicySettings: FC = () => {
       : [];
 
   const onClickAll = (check: boolean) => {
-    setAll(check);
     form.setFieldValue('isAllEnabled', check);
     form.setFieldValue('isMessageEnabled', check);
     form.setFieldValue('isEventEnabled', check);
@@ -294,16 +293,6 @@ const HSMpolicySettings: FC = () => {
     setIsMessageEnable(check);
     setIsEventEnable(check);
   };
-
-  useEffect(() => {
-    if (!isDocument || !isContactEnable || !isMessageEnable || !isEventEnable) {
-      setAll(false);
-      form.setFieldValue('isAllEnabled', false);
-    } else if (isDocument && isContactEnable && isMessageEnable && isEventEnable) {
-      setAll(true);
-      form.setFieldValue('isAllEnabled', true);
-    }
-  }, [isDocument, isContactEnable, isMessageEnable, isEventEnable, form]);
 
   const onDeletePolicy = () => {
     const reducedArr = policyCriteria.filter(
@@ -352,8 +341,10 @@ const HSMpolicySettings: FC = () => {
             label={t('hsm.message', 'Message')}
             value={isMessageEnable}
             onClick={(): void => {
-              setIsMessageEnable(!isMessageEnable);
-              form.setFieldValue('isMessageEnabled', !isMessageEnable);
+              const newValue = !isMessageEnable;
+              setIsMessageEnable(newValue);
+              form.setFieldValue('isMessageEnabled', newValue);
+              form.setFieldValue('isAllEnabled', newValue && isContactEnable && isEventEnable && isDocument);
             }}
           />
         </Container>
@@ -364,8 +355,10 @@ const HSMpolicySettings: FC = () => {
             label={t('hsm.document', 'Document')}
             value={isDocument}
             onClick={(): void => {
-              setIsDocument(!isDocument);
-              form.setFieldValue('isDocumentEnabled', !isDocument);
+              const newValue = !isDocument;
+              setIsDocument(newValue);
+              form.setFieldValue('isDocumentEnabled', newValue);
+              form.setFieldValue('isAllEnabled', isMessageEnable && isContactEnable && isEventEnable && newValue);
             }}
           />
         </Container>
@@ -376,8 +369,10 @@ const HSMpolicySettings: FC = () => {
             label={t('hsm.event', 'Event')}
             value={isEventEnable}
             onClick={(): void => {
-              setIsEventEnable(!isEventEnable);
-              form.setFieldValue('isEventEnabled', !isEventEnable);
+              const newValue = !isEventEnable;
+              setIsEventEnable(newValue);
+              form.setFieldValue('isEventEnabled', newValue);
+              form.setFieldValue('isAllEnabled', isMessageEnable && isContactEnable && newValue && isDocument);
             }}
           />
         </Container>
@@ -388,8 +383,10 @@ const HSMpolicySettings: FC = () => {
             label={t('hsm.contact', 'Contact')}
             value={isContactEnable}
             onClick={(): void => {
-              setIsContactEnable(!isContactEnable);
-              form.setFieldValue('isContactEnabled', !isContactEnable);
+              const newValue = !isContactEnable;
+              setIsContactEnable(newValue);
+              form.setFieldValue('isContactEnabled', newValue);
+              form.setFieldValue('isAllEnabled', isMessageEnable && newValue && isEventEnable && isDocument);
             }}
           />
         </Container>
