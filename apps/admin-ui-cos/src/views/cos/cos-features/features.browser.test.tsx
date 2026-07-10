@@ -159,6 +159,14 @@ describe('FeaturesForm (browser)', () => {
       .toBeVisible();
   });
 
+  it('should render General section with Active Sync Access', async () => {
+    await setupTest(<TestWrapper isAdvanced />);
+    await expect.element(page.getByText('General')).toBeVisible();
+    await expect
+      .element(page.getByRole('switch', { name: 'Active Sync Access' }))
+      .toBeVisible();
+  });
+
   it('should render all feature sections', async () => {
     await setupTest();
     await expect.element(page.getByText('Mail', { exact: true })).toBeVisible();
