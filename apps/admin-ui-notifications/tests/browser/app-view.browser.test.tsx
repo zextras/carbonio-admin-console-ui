@@ -16,7 +16,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { type ZextrasRequestBody } from '../../src/types/notifications';
-import AppView from '../../src/views/app-view';
+import { AppView } from '../../src/views/app-view';
 
 function setupGetAllNotificationsInterceptor(): void {
   worker.use(

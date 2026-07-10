@@ -7,7 +7,7 @@ import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../basic/button/Button';
-import { RouteLeavingGuard } from '../utilities/route-leaving-guard';
+import { RouteLeavingGuard } from '../navigation/route-leaving-guard';
 import styles from './form-page-layout.module.css';
 
 type FormPageLayoutProps = {
@@ -58,19 +58,7 @@ export const FormPageLayout = ({
         <ds-divider></ds-divider>
       </div>
       <div className={styles.content}>{children}</div>
-      {onSave && (
-        <RouteLeavingGuard when={unsavedChanges} onSave={onSave}>
-          <ds-text as="p">
-            {t(
-              'label.unsaved_changes_line1',
-              'Are you sure you want to leave this page without saving?',
-            )}
-          </ds-text>
-          <ds-text as="p">
-            {t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}
-          </ds-text>
-        </RouteLeavingGuard>
-      )}
+      {onSave && <RouteLeavingGuard when={unsavedChanges} onSave={onSave} />}
     </form>
   );
 };

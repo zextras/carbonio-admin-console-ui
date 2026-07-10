@@ -11,39 +11,24 @@ import {
   Padding,
   Row,
 } from '@zextras/ui-components';
-import { replaceHistory, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
+import { replaceHistory, useIsAdvanced, useMailstoreServers, useRelativePathname } from '@zextras/ui-shared';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { matchPath, useLocation } from 'react-router';
+import { matchPath } from 'react-router';
 
 import {
   DATA_VOLUMES,
   HSM_SETTINGS,
   IS_SERVER_LIST_EXPANDED,
   IS_SERVER_SPECIFIC_LIST_EXPANDED,
-  MANAGE_APP_ID,
   S3CONNECTOR_LIST,
   SERVERS_LIST,
-  STORAGES_ROUTE_ID,
 } from '../../constants';
-
-function getRelativePathname(pathname: string, base: string): string {
-  if (!pathname.startsWith(base)) {
-    return pathname;
-  }
-  const stripped = pathname.slice(base.length);
-  if (stripped === '') {
-    return '/';
-  }
-  return stripped;
-}
 
 const BucketListPanel: FC = () => {
   const [t] = useTranslation();
 
-  const locationService = useLocation();
-  const storageBase = `/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`;
-  const relativePathname = getRelativePathname(locationService.pathname, storageBase);
+  const relativePathname = useRelativePathname();
   const serverMatch = matchPath(`/:server/:operation`, relativePathname);
   const opMatch = serverMatch ? null : matchPath(`/:operation`, relativePathname);
   const selectedOperationItem =

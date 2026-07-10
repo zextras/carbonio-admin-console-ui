@@ -5,6 +5,7 @@
  */
 
 import { type QueryClient } from '@tanstack/react-query';
+import { useAppStore } from '@zextras/ui-shared';
 import { clone, cloneDeep, map } from 'lodash-es';
 import { type ReactElement } from 'react';
 import { useLocation } from 'react-router';
@@ -19,6 +20,23 @@ export const LocationDisplay = () => {
   const location = useLocation();
   return <div data-testid="location">{location.pathname}</div>;
 };
+
+/**
+ * Registers a route in the shared app store so registry-based hooks
+ * (e.g. `useRelativePathname`, `buildPath`) resolve the correct prefixed path
+ * during isolated component tests, mirroring how the shell registers routes
+ * at boot in production.
+ *
+ * @param routeId  The un-prefixed route id (e.g. 'storage').
+ * @param sectionId Optional primary-bar section id used as the URL prefix
+ *                  (e.g. 'manage' -> 'manage/storage').
+ */
+export function registerAppRoute(routeId: string, sectionId?: string): void {
+  const path = sectionId ? `${sectionId}/${routeId}` : routeId;
+  useAppStore.setState((state) => ({
+    routes: { ...state.routes, [routeId]: { id: routeId, route: routeId, path, app: routeId } },
+  }));
+}
 
 type GrantRights = 'cos' | 'config';
 

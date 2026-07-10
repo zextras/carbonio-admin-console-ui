@@ -5,10 +5,10 @@
  */
 
 import { Container, ListItems } from '@zextras/ui-components';
-import { replaceHistory } from '@zextras/ui-shared';
+import { replaceHistory, useRelativePathname } from '@zextras/ui-shared';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { matchPath } from 'react-router';
 
 import { DONE_ROUTE_ID, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID } from '../../constants';
 import { type ManageOption } from '../../types/operations';
@@ -17,13 +17,13 @@ const VALID_TABS = new Set([RUNNING_ROUTE_ID, QUEUED_ROUTE_ID, DONE_ROUTE_ID]);
 
 const OperationsListPanel: FC = () => {
 	const [t] = useTranslation();
-	const { pathname } = useLocation();
+	const relativePathname = useRelativePathname();
 
 	const selectedOperationItem = useMemo(() => {
-		const segments = pathname.replace(/\/+$/, '').split('/');
-		const last = segments.at(-1) ?? '';
-		return VALID_TABS.has(last) ? last : RUNNING_ROUTE_ID;
-	}, [pathname]);
+		const match = matchPath('/:operation', relativePathname);
+		const op = match?.params.operation;
+		return op && VALID_TABS.has(op) ? op : RUNNING_ROUTE_ID;
+	}, [relativePathname]);
 
 	const manageOptions = useMemo<Array<ManageOption>>(
 		() => [

@@ -7,6 +7,7 @@ import { Button, Container, Modal, Padding } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { Trans, useTranslation } from 'react-i18next';
 
+import { COS_LIST } from '../../../constants';
 import { useDeleteCos } from '../../../services/use-delete-cos';
 
 type DeleteCosModalProps = {
@@ -31,7 +32,7 @@ export const DeleteCosModal = ({
       {
         onSuccess: () => {
           onClose();
-          replaceHistory(`/cos_list`);
+          replaceHistory(`/${COS_LIST}`);
         },
       },
     );

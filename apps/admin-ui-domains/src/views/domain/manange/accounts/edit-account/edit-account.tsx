@@ -1072,17 +1072,7 @@ const EditAccount: FC<{
           {/* </Container> */}
         </Container>
       </Container>
-      <RouteLeavingGuard when={isDirty} onSave={modifyAccountReq}>
-        <ds-text as="p">
-          {t(
-            'label.unsaved_changes_line1',
-            'Are you sure you want to leave this page without saving?',
-          )}
-        </ds-text>
-        <ds-text as="p">
-          {t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}
-        </ds-text>
-      </RouteLeavingGuard>
+      <RouteLeavingGuard when={isDirty} onSave={modifyAccountReq} />
       <Modal
         size="small"
         title={t('label.hey_there_are_unsaved_changes_here', 'Hey! There are unsaved changes here')}

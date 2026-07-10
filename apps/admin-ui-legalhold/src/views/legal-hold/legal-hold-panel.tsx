@@ -19,11 +19,12 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { getSoapFetchRequest, useDomainInformation } from '@zextras/ui-shared';
+import { getSoapFetchRequest, replaceHistory, useDomainInformation, useRelativePathname } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { debounce } from 'lodash-es';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { matchPath } from 'react-router';
 
 import {
   ApiError,
@@ -69,11 +70,18 @@ const LegalHoldPanel: FC = () => {
   const [backupAccountList, setBackupAccountList] = useState<Array<BackupAccountItem>>([]);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [selectedAccountRows, setSelectedAccountRows] = useState<Array<BackupAccountItem>>([]);
-  const [isShowRestoreView, setIsShowRestoreView] = useState<boolean>(false);
   const [accountRows, setAccountRows] = useState<Array<TableRow>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isShowError, setIsShowError] = useState(false);
   const [searchAccountName, setSearchAccountName] = useState<string>('');
+
+  // The restore view is URL-driven: /services/legal_hold/restore/:accountId.
+  // The account object is looked up from the loaded list.
+  const relativePathname = useRelativePathname();
+  const restoreMatch = matchPath('/restore/:accountId', relativePathname);
+  const restoreAccount = restoreMatch?.params.accountId
+    ? backupAccountList.find((item) => item.id === restoreMatch?.params.accountId) ?? null
+    : null;
   const [legalHoldOperationLabel, setLegalHoldOperationLabel] = useState<string>(
     t('legal_hold.set_legal_hold', 'Set legal hold'),
   );
@@ -586,7 +594,9 @@ const LegalHoldPanel: FC = () => {
       );
       return;
     }
-    setIsShowRestoreView(true);
+    if (selectedItem?.id) {
+      replaceHistory(`/restore/${selectedItem.id}`);
+    }
   }, [selectedAccountRows, showSnackbar, t]);
 
   return (
@@ -646,7 +656,7 @@ const LegalHoldPanel: FC = () => {
                         setIsShowOnlyLegalHoldAccount(newValue);
                         setAccountOffset(0);
                         setDisableSwitch(!disableSwitch);
-                        setIsShowRestoreView(false);
+                        replaceHistory('/');
                         setIsEnableLegalHold(false);
                         setSelectedAccountRows([]);
                       }}
@@ -786,7 +796,7 @@ const LegalHoldPanel: FC = () => {
                             onPageChange={(val: number): void => {
                               setAccountOffset(val - 1);
                               setSelectedAccountRows([]);
-                              setIsShowRestoreView(false);
+                              replaceHistory('/');
                             }}
                           />
                         </Padding>
@@ -799,11 +809,8 @@ const LegalHoldPanel: FC = () => {
           </Row>
         </Container>
       </Row>
-      {isShowRestoreView && (
-        <RestoreAccountView
-          legalHoldAccount={selectedAccountRows[0]}
-          setIsShowRestoreView={setIsShowRestoreView}
-        />
+      {restoreMatch && (
+        <RestoreAccountView legalHoldAccount={restoreAccount} onBack={() => replaceHistory('/')} />
       )}
     </Container>
   );

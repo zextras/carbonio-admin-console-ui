@@ -44,8 +44,8 @@ import { formatedErrorMessage } from '../../utility/utils';
 
 const RestoreAccountView: FC<{
   legalHoldAccount: BackupAccountItem | null;
-  setIsShowRestoreView: (value: boolean) => void;
-}> = ({ legalHoldAccount, setIsShowRestoreView }) => {
+  onBack: () => void;
+}> = ({ legalHoldAccount, onBack }) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [searchAccount, setSearchAccount] = useState<string>('');
@@ -378,7 +378,7 @@ const RestoreAccountView: FC<{
             t('legal_hold.account_successful_restored', 'Account successfully restored'),
           );
           if (tableRows.length === 0) {
-            setIsShowRestoreView(false);
+            onBack();
           } else {
             soapFetch(`GetAccount`, {
               _jsns: ZIMBRA_ADMIN_URN,
@@ -411,7 +411,7 @@ const RestoreAccountView: FC<{
     fixDate,
     fromDate,
     legalHoldPrefix,
-    setIsShowRestoreView,
+    onBack,
     showSnackbar,
     t,
     tableRows.length,
@@ -461,7 +461,7 @@ const RestoreAccountView: FC<{
               size="medium"
               icon="CloseOutline"
               onClick={(): void => {
-                setIsShowRestoreView(false);
+                onBack();
               }}
             />
           </Row>

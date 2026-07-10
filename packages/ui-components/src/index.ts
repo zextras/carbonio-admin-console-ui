@@ -55,6 +55,7 @@ export * from './components/inputs/Switch';
 export * from './components/inputs/TextArea';
 
 /** navigation components */
+export * from './components/navigation/route-leaving-guard';
 export * from './components/navigation/TabBar';
 
 /** custom components */
@@ -109,7 +110,6 @@ export * from './components/feedback/snackbar/Snackbar';
 export * from './components/custom/hwizard';
 export * from './components/utilities/Collapse';
 export * from './components/utilities/ModalManager';
-export * from './components/utilities/route-leaving-guard';
 export * from './components/utilities/SnackbarManager';
 export * from './hooks/usewizard';
 export * from './theme/theme-utils';

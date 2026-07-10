@@ -15,7 +15,7 @@ const FirstAppRedirect = () => {
   const routes = useAppRoutes();
   const location = useLocation();
   const mainRoute = useMemo(
-    () => find(routes, (r) => apps[0]?.name === r.app)?.route,
+    () => find(routes, (r) => apps[0]?.name === r.app)?.path,
     [apps, routes],
   );
   return mainRoute && location?.pathname === '/' ? <Navigate to={`/${mainRoute}`} replace /> : null;
@@ -26,7 +26,7 @@ export default function AppViewContainer() {
   const routes = useMemo(
     () => [
       ...map(appViews, (view) => (
-        <Route key={view.id} path={`/${view.route}/*`} element={<view.component />} />
+        <Route key={view.id} path={`/${view.path}/*`} element={<view.component />} />
       )),
     ],
     [appViews],
