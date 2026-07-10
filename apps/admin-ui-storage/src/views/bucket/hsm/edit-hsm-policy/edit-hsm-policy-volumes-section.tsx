@@ -28,7 +28,6 @@ const EditHsmPolicyVolumesSection: FC<{
   const { form, allVolumes } = context;
   const [showSourceVolume, setShowSourceVolume] = useState<boolean>(false);
   const [showDestinationVolume, setShowDestinationVolume] = useState<boolean>(false);
-  const [volumeRows, setVolumeRows] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>([]);
   const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<string>>([]);
   const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<string>>([]);
   const [isVolumeLoaded, setIsVolumeLoaded] = useState<boolean>(false);
@@ -71,36 +70,32 @@ const EditHsmPolicyVolumesSection: FC<{
     return t('hsm.indexes', 'Indexes');
   };
 
-  useEffect(() => {
-    if (allVolumes && allVolumes.length > 0) {
-      const allRows = allVolumes.map((item) => ({
-        id: String(item?.id ?? ''),
-        columns: [
-          <ds-text as="span" size="small" weight="regular" key={item?.id}>
-            {item?.name}
-          </ds-text>,
-          <ds-text as="span" size="small" weight="light" key={item?.id}>
-            {''}
-          </ds-text>,
-          <ds-text as="span" size="small" weight="light" key={item?.id}>
-            {getVoumeType(item?.type)}
-          </ds-text>,
-          <ds-text
-            as="span"
-            size="small"
-            weight="light"
-            key={item?.id}
-            color={item?.isCurrent ? 'gray0' : '#D74942'}
-          >
-            {item?.isCurrent ? t('hsm.yes', 'Yes') : t('hsm.no', 'No')}
-          </ds-text>,
-        ],
-      }));
-      setVolumeRows(allRows);
-    } else {
-      setVolumeRows([]);
-    }
-  }, [allVolumes, getVoumeType, t]);
+  const volumeRows =
+    allVolumes && allVolumes.length > 0
+      ? allVolumes.map((item) => ({
+          id: String(item?.id ?? ''),
+          columns: [
+            <ds-text as="span" size="small" weight="regular" key={item?.id}>
+              {item?.name}
+            </ds-text>,
+            <ds-text as="span" size="small" weight="light" key={item?.id}>
+              {''}
+            </ds-text>,
+            <ds-text as="span" size="small" weight="light" key={item?.id}>
+              {getVoumeType(item?.type)}
+            </ds-text>,
+            <ds-text
+              as="span"
+              size="small"
+              weight="light"
+              key={item?.id}
+              color={item?.isCurrent ? 'gray0' : '#D74942'}
+            >
+              {item?.isCurrent ? t('hsm.yes', 'Yes') : t('hsm.no', 'No')}
+            </ds-text>,
+          ],
+        }))
+      : [];
 
   useEffect(() => {
     const sourceVol = allVolumes?.filter((item) =>
