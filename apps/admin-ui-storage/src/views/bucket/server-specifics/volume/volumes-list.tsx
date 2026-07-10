@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Container,
@@ -21,7 +22,7 @@ import {
   useAllServers,
   useIsAdvanced,
 } from '@zextras/ui-shared';
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -45,8 +46,10 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../../../constants';
 import { fetchSoap } from '../../../../services/bucket-service';
+import { bucketVolumeQueryKeys } from '../../../../services/bucket-volume-query-keys';
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
+import { useAllVolumes } from '../../../../services/use-all-volumes';
 import { useListS3Connectors } from '../../../../services/use-list-s3-connectors';
 import { indexerHeaders, volTableHeader } from '../../../utility/utils';
 import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
@@ -63,20 +66,6 @@ type SoapContentResponse = {
     };
   };
 };
-
-function normalizeAdvancedVolume(volume: Volume): Volume {
-  return {
-    ...volume,
-    bucketConfigurationId: volume.bucketConfigurationId ?? volume.uuid,
-    compressBlobs: volume.compressBlobs ?? String(volume.compressed ?? false),
-    compressionThreshold: volume.compressionThreshold ?? String(volume.threshold ?? ''),
-    rootpath: volume.rootpath ?? volume.path,
-  };
-}
-
-function normalizeAdvancedVolumeList(volumes: Array<Volume> | undefined): Array<Volume> {
-  return volumes?.map(normalizeAdvancedVolume) ?? [];
-}
 
 const VolumeListTable: FC<{
   volumes: Array<Volume>;
@@ -229,98 +218,19 @@ const VolumesDetailPanel: FC = () => {
     type: 0,
   });
   const [open, setOpen] = useState<boolean>(false);
-  const [volumeList, setVolumeList] = useState<{
-    primaries: Volume[];
-    indexes: Volume[];
-    secondaries: Volume[];
-  }>({
-    primaries: [],
-    indexes: [],
-    secondaries: [],
-  });
+  const queryClient = useQueryClient();
+  const { data: volumeList = { primaries: [], indexes: [], secondaries: [] } } = useAllVolumes(
+    server,
+    selectedServerId,
+    isAdvanced,
+  );
+  const invalidateVolumes = (): void => {
+    void queryClient.invalidateQueries({ queryKey: bucketVolumeQueryKeys.allVolumes(selectedServerId) });
+  };
   const createSnackbar = useSnackbar();
 
   const closeHandler = (): void => {
     setOpen(false);
-  };
-
-  const getAllVolumesRequest = (): void => {
-    if (isAdvanced) {
-      fetchSoap('zextras', {
-        _jsns: ZIMBRA_ADMIN_URN,
-        module: 'ZxPowerstore',
-        action: 'getAllVolumes',
-        targetServers: server,
-      })
-        .then((res) => {
-          const result = JSON.parse(res?.Body?.response?.content);
-          const getAllVolResponse = Object.keys(result?.response).map(
-            (key) => result?.response[key],
-          )[0];
-          if (getAllVolResponse?.ok) {
-            const primaries = normalizeAdvancedVolumeList(getAllVolResponse?.response?.primaries);
-            const secondaries = normalizeAdvancedVolumeList(
-              getAllVolResponse?.response?.secondaries,
-            );
-            const indexes = normalizeAdvancedVolumeList(getAllVolResponse?.response?.indexes);
-            setVolumeList({
-              primaries,
-              indexes,
-              secondaries,
-            });
-          } else {
-            createSnackbar({
-              key: '1',
-              severity: 'error',
-
-              label: t('label.volume_detail_error', '{{message}}', {
-                message: 'Something went wrong, please try again',
-              }),
-            });
-          }
-        })
-        .catch(() => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.volume_detail_error', '{{message}}', {
-              message: 'Something went wrong, please try again',
-            }),
-            autoHideTimeout: 5000,
-          });
-        });
-    } else {
-      soapFetch(
-        'GetAllVolumes',
-        {
-          _jsns: ZIMBRA_ADMIN_URN,
-        },
-        {
-          targetServer: selectedServerId,
-        },
-      )
-        .then((response) => {
-          const typedResponse = response as { volume: Volume[]; _jsns: string };
-          const primaries = typedResponse?.volume?.filter((item: Volume) => item?.type === 1);
-          const secondaries = typedResponse?.volume?.filter((item: Volume) => item?.type === 2);
-          const indexes = typedResponse?.volume?.filter((item: Volume) => item?.type === 10);
-          setVolumeList({
-            primaries,
-            indexes,
-            secondaries,
-          });
-        })
-        .catch(() => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.volume_detail_error', '{{message}}', {
-              message: 'Something went wrong, please try again',
-            }),
-            autoHideTimeout: 5000,
-          });
-        });
-    }
   };
 
   const deleteHandler = async (data: Volume | undefined): Promise<void> => {
@@ -347,7 +257,7 @@ const VolumesDetailPanel: FC = () => {
               severity: 'success',
               label: t('label.volume_deleted', 'Volume deleted successfully'),
             });
-            getAllVolumesRequest();
+            invalidateVolumes();
             setmodifyVolumeToggle(false);
             setOpen(false);
           } else {
@@ -370,7 +280,7 @@ const VolumesDetailPanel: FC = () => {
             }),
             autoHideTimeout: 5000,
           });
-          getAllVolumesRequest();
+          invalidateVolumes();
           setOpen(false);
         });
     } else {
@@ -396,7 +306,7 @@ const VolumesDetailPanel: FC = () => {
               label: t('label.volume_deleted', 'Volume deleted successfully'),
             });
           }
-          getAllVolumesRequest();
+          invalidateVolumes();
           setmodifyVolumeToggle(false);
           setOpen(false);
         })
@@ -423,17 +333,11 @@ const VolumesDetailPanel: FC = () => {
             type: 0,
           });
           setmodifyVolumeToggle(false);
-          getAllVolumesRequest();
+          invalidateVolumes();
           setOpen(false);
         });
     }
   };
-
-  useEffect(() => {
-    if (selectedServerId) {
-      getAllVolumesRequest();
-    }
-  }, [selectedServerId, getAllVolumesRequest]);
 
   const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
     const bucketDetails = isVolumeAllDetail?.filter(
@@ -517,7 +421,7 @@ const VolumesDetailPanel: FC = () => {
         const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
         if (result?.ok) {
           if (result?.response[server]?.ok) {
-            getAllVolumesRequest();
+            invalidateVolumes();
             createSnackbar({
               key: '1',
               severity: 'success',
@@ -624,7 +528,7 @@ const VolumesDetailPanel: FC = () => {
                 });
               });
           }
-          getAllVolumesRequest();
+          invalidateVolumes();
           createSnackbar({
             key: '1',
             severity: 'success',
@@ -675,7 +579,7 @@ const VolumesDetailPanel: FC = () => {
               }
             }
           }
-          getAllVolumesRequest();
+          invalidateVolumes();
           createSnackbar({
             key: '1',
             severity: 'success',
@@ -739,7 +643,7 @@ const VolumesDetailPanel: FC = () => {
             volumeId={volume?.id ?? 0}
             setOpen={setOpen}
             setmodifyVolumeToggle={setmodifyVolumeToggle}
-            getAllVolumesRequest={getAllVolumesRequest}
+            getAllVolumesRequest={invalidateVolumes}
             selectedServerId={selectedServerId}
             volumeList={volumeList}
           />

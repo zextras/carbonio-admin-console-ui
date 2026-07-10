@@ -5,6 +5,7 @@
  */
 
 import { useForm } from '@tanstack/react-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import {
   Button,
@@ -20,22 +21,26 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { getSoapFetchRequest, setCoreAttributes, soapFetch, useAllServers } from '@zextras/ui-shared';
+import { setCoreAttributes, useAllServers } from '@zextras/ui-shared';
 import { FC, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import type { HsmPolicyEditDetail, HsmPolicyFromServer, Volume } from '../../../../types';
+import type { HsmPolicyEditDetail, HsmPolicyFromServer } from '../../../../types';
 import {
   APPOINTMENT,
   CONTACT,
   DOCUMENT,
   MESSAGE,
   SERVER,
-  VOLUME_INDEX_TYPE,
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
+import { bucketVolumeQueryKeys } from '../../../services/bucket-volume-query-keys';
+import { type PowerstoreAttributes } from '../../../services/hsm-service';
+import { useHsmPolicyList } from '../../../services/use-hsm-policy-list';
+import { useHsmVolumes } from '../../../services/use-hsm-volumes';
+import { useZxPowerStoreServerAttributes } from '../../../services/use-zxpowerstore-server-attributes';
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
 import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
@@ -46,11 +51,19 @@ type Timeout = ReturnType<typeof setTimeout>;
 const HSMsettingPanel: FC = () => {
   const { server } = useParams() as { server: string };
   const [t] = useTranslation();
-  const [policies, setPolicies] = useState<Array<HsmPolicyFromServer>>([]);
+  const queryClient = useQueryClient();
+  const { data: policies = [] } = useHsmPolicyList(server);
   const [showCreateHsmPolicyView, setShowCreateHsmPolicyView] = useState<boolean>(false);
   const [showEditHsmPolicyView, setShowEditHsmPolicyView] = useState<boolean>(false);
   const [showDeletePolicyView, setShowDeletePolicyView] = useState<boolean>(false);
   const { data: serverList = [] } = useAllServers();
+  const serverListEntry = serverList.find((item: { name?: string }) => item?.name === server);
+  const serverId = serverListEntry?.id ?? '';
+  const { data: volumeList = [], isFetching: isVolumeInProgress } = useHsmVolumes(
+    serverId,
+    !!serverId,
+  );
+  const { data: serverAttrs } = useZxPowerStoreServerAttributes(server);
   const form = useForm({
     defaultValues: {
       isZxPowerstoreMoveSchedulingEnabled: false,
@@ -77,11 +90,9 @@ const HSMsettingPanel: FC = () => {
     form.store,
     (s) => s.values.deduplicateAfterScheduledMoveBlobs,
   );
-  const [volumeList, setVolumeList] = useState<Array<Volume>>([]);
   const createSnackbar = useSnackbar();
   const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const [isVolumeInProgress, setIsVolumeInProgress] = useState<boolean>(false);
   const [isEditSaveInProgress, setIsEditSaveInProgress] = useState<boolean>(false);
   const timer = useRef<Timeout | undefined>(undefined);
   const storageNotLicenced = t(
@@ -116,32 +127,6 @@ const HSMsettingPanel: FC = () => {
       replace: true,
     });
   };
-
-  const getHSMPolicyList = () => {
-    fetchSoap('zextras', {
-      _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxPowerstore',
-      action: 'getHSMPolicy',
-      targetServers: server,
-    }).then((res) => {
-      if (res?.Body?.response?.content) {
-        const content = JSON.parse(res?.Body?.response?.content);
-        if (
-          content?.response?.[server]?.response?.policies &&
-          Array.isArray(content?.response?.[server]?.response?.policies) &&
-          content?.response?.[server]?.response?.policies?.length > 0
-        ) {
-          setPolicies(content?.response?.[server]?.response?.policies);
-        } else {
-          setPolicies([]);
-        }
-      }
-    });
-  };
-
-  useEffect(() => {
-    getHSMPolicyList();
-  }, [server, getHSMPolicyList]);
 
   const getHSMType = (hsmType: Array<number>): string => {
     let hsmTypeString = '';
@@ -207,7 +192,7 @@ const HSMsettingPanel: FC = () => {
       : [];
 
   const setValuesFromAttributes = (
-    attributes: Record<string, { value: unknown }> | undefined,
+    attributes: PowerstoreAttributes,
   ) => {
     if (!attributes) return;
     const newValues = { ...form.state.values };
@@ -232,53 +217,11 @@ const HSMsettingPanel: FC = () => {
     form.reset(newValues);
   };
 
-  const getZxPowerStoreServers = () => {
-    getSoapFetchRequest(
-      `/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`,
-    ).then((data: unknown) => {
-      const serv = (data as { servers?: Array<Record<string, Record<string, unknown>>> })?.servers;
-      if (serv && serv.length > 0) {
-        const object = Object.values(serv).map((i) => Object.values(i)[0]) as Array<Record<string, unknown>>;
-        const selectedServer = object.find((sItem) => (sItem as { name?: string }).name === server) as Record<string, unknown> | undefined;
-        if (selectedServer) {
-          const values = selectedServer;
-          if (values) {
-            const attributes = (values?.ZxPowerstore as { attributes?: Record<string, { value: unknown }> })?.attributes;
-            setValuesFromAttributes(attributes);
-          }
-        }
-      }
-    });
-  };
-
-  const getAllVolumes = () => {
-    const serverId = serverList.find((item: { name?: string }) => item?.name === server);
-    setIsVolumeInProgress(true);
-    setVolumeList([]);
-    if (serverId) {
-      (soapFetch(
-        'GetAllVolumes',
-        {
-          _jsns: ZIMBRA_ADMIN_URN,
-        },
-        {
-          targetServer: serverId.id,
-        },
-      ) as Promise<{ volume?: Array<Volume> }>).then((response) => {
-        setIsVolumeInProgress(false);
-        if (response?.volume && response?.volume.length > 0) {
-          setVolumeList(response?.volume.filter((item: Volume) => item.type !== VOLUME_INDEX_TYPE));
-        }
-      });
-    }
-  };
-
   useEffect(() => {
-    if (server && serverList && serverList.length > 0) {
-      getZxPowerStoreServers();
-      getAllVolumes();
+    if (serverAttrs) {
+      setValuesFromAttributes(serverAttrs);
     }
-  }, [server, getZxPowerStoreServers, serverList, getAllVolumes]);
+  }, [serverAttrs]);
 
   const onCancel = () => {
     form.reset();
@@ -355,7 +298,7 @@ const HSMsettingPanel: FC = () => {
           setIsRequestInProgress(false);
           if (res?.Body?.response?.content) {
             const info = JSON.parse(res?.Body?.response?.content);
-            getHSMPolicyList();
+            void queryClient.invalidateQueries({ queryKey: bucketVolumeQueryKeys.hsmPolicies(server) });
             if (info?.response?.[server]?.ok) {
               setSelectedPolicies([]);
               setShowDeletePolicyView(false);
@@ -394,7 +337,7 @@ const HSMsettingPanel: FC = () => {
         onDeletePolicy(isEditSave);
       } else {
         setShowCreateHsmPolicyView(false);
-        getHSMPolicyList();
+        void queryClient.invalidateQueries({ queryKey: bucketVolumeQueryKeys.hsmPolicies(server) });
         if (isRunOperation) {
           showSnackbar(
             'success',

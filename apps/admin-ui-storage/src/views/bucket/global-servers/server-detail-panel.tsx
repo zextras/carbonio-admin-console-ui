@@ -12,18 +12,12 @@ import {
   Row,
   Table,
 } from '@zextras/ui-components';
-import { getSoapFetchRequest, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
+import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
-import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  DESCRIPTION,
-  HSM_SCHEDULED_KEY,
-  INDEXER_MANAGER_KEY,
-  ZIMBRA_ADMIN_URN,
-} from '../../../constants';
-import { fetchSoap } from '../../../services/bucket-service';
+import { useServerVolumeSummary } from '../../../services/use-server-volume-summary';
 import { headerAdvanced } from '../../utility/utils';
 
 const ServersListTable: FC<{
@@ -178,109 +172,14 @@ const ServerDetailPanel: FC = () => {
   const [t] = useTranslation();
   const { data: allServersList = [] } = useMailstoreServers();
   const isAdvanced = useIsAdvanced();
-  const [serverListAll, setServerListAll] = useState<any>([]);
+  const { data: serverListAll = [], isLoading: isRequestInProgress } = useServerVolumeSummary(
+    isAdvanced,
+    allServersList,
+  );
   const serverHeaderAdvanced = headerAdvanced(t);
   const [searchServer, setSearchServer] = useState<string>('');
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
-  const getServersListType = (): void => {
-    if (isAdvanced) {
-      setIsRequestInProgress(true);
-      fetchSoap('zextras', {
-        _jsns: ZIMBRA_ADMIN_URN,
-        module: 'ZxPowerstore',
-        action: 'getAllVolumes',
-        targetServers: 'all_servers',
-      })
-        .then((res: any) => {
-          setIsRequestInProgress(true);
-          getSoapFetchRequest(
-            `/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`,
-          )
-            .then((powerStoreData: any) => {
-              setIsRequestInProgress(false);
-              const powerStoreServer = powerStoreData?.servers.map((s: any) => Object.values(s)[0]);
-              const responseData = JSON.parse(res?.Body?.response?.content);
-
-              if (responseData && responseData.ok) {
-                if (allServersList.length > 0) {
-                  const serverList = allServersList.map((item) => {
-                    let primaries = '';
-                    let secondaries = '';
-                    let indexes = '';
-                    let description = '';
-                    let indexer = '';
-                    let hsmScheduled = '';
-                    const findPowerStoreServer = powerStoreServer?.find(
-                      (s: any) => s.name === item?.name,
-                    );
-                    if (findPowerStoreServer) {
-                      indexer = findPowerStoreServer?.ZxPowerstore?.services?.[INDEXER_MANAGER_KEY];
-                      hsmScheduled =
-                        findPowerStoreServer?.ZxPowerstore?.attributes?.powerstoreMoveScheduler
-                          ?.value?.[HSM_SCHEDULED_KEY];
-                    }
-                    if (
-                      responseData &&
-                      responseData?.response &&
-                      item.name &&
-                      responseData?.response[item.name]
-                    ) {
-                      const data = responseData?.response[item.name]?.response;
-                      if (data) {
-                        primaries = data?.primaries.length;
-                        secondaries = data?.secondaries.length;
-                        indexes = data?.indexes.length;
-                        const descriptionData = item?.a?.filter(
-                          (items: any) => items?.n === DESCRIPTION,
-                        );
-                        if (descriptionData && descriptionData.length > 0) {
-                          description = descriptionData[0]?._content || '';
-                        }
-                      }
-                    }
-                    return {
-                      name: item.name,
-                      primaries,
-                      secondaries,
-                      indexes,
-                      hsmScheduled,
-                      indexer,
-                      description,
-                    };
-                  });
-                  setServerListAll(serverList);
-                }
-              }
-            })
-            .catch(() => {
-              setIsRequestInProgress(false);
-            });
-        })
-        .catch(() => {
-          setIsRequestInProgress(false);
-        });
-    } else if (!isAdvanced) {
-      if (allServersList.length > 0) {
-        const serverList = allServersList.map((item) => {
-          let description = '';
-          const descriptionData = item?.a?.filter((items: any) => items?.n === DESCRIPTION);
-          if (descriptionData && descriptionData.length > 0) {
-            description = descriptionData[0]?._content || '';
-          }
-          return {
-            name: item.name,
-            description,
-          };
-        });
-        setServerListAll(serverList);
-      }
-    }
-  };
-
-  useEffect(() => {
-    getServersListType();
-  }, [getServersListType]);
+  const serversList = serverListAll.filter((item: any) => item.name?.includes(searchServer));
 
   const headerCE: any[] = [
     {
@@ -298,8 +197,6 @@ const ServerDetailPanel: FC = () => {
       bold: true,
     },
   ];
-
-  const serversList = serverListAll.filter((item: any) => item.name.includes(searchServer));
 
   return (
     <>
