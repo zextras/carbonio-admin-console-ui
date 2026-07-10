@@ -283,24 +283,23 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
     return { ok: false, errorDetails };
   }
 
-  function onVerifyAndSaveChanges(): void {
-    void form.handleSubmit();
-  }
-
-  useEffect(() => {
-    if (form.state.submissionAttempts > 0 && form.state.isValid && isDirty && changedFields.length > 0) {
-      setIsVerifyModalOpen(true);
-    } else if (form.state.submissionAttempts > 0 && form.state.isValid && !isDirty) {
-      createSnackbar({
-        key: 'no-changes',
-        severity: 'info',
-        label: t('label.no_changes_have_been_made', 'No changes have been made'),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
+  async function onVerifyAndSaveChanges(): Promise<void> {
+    await form.handleSubmit();
+    if (form.state.isValid) {
+      if (isDirty && changedFields.length > 0) {
+        setIsVerifyModalOpen(true);
+      } else if (!isDirty) {
+        createSnackbar({
+          key: 'no-changes',
+          severity: 'info',
+          label: t('label.no_changes_have_been_made', 'No changes have been made'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+      }
     }
-  }, [form.state.submissionAttempts, form.state.isValid, isDirty, changedFields.length, createSnackbar, t]);
+  }
 
   async function onApplyChanges(): Promise<void> {
     setIsVerifyModalOpen(false);

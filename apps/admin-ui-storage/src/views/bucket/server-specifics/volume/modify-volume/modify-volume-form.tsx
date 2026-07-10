@@ -24,7 +24,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
-import React, { type FC, useEffect, useRef, useState } from 'react';
+import React, { type FC, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -177,18 +177,18 @@ export const ModifyVolumeForm: FC<ModifyVolumeFormProps> = ({
   const selectedBucket = backupUnusedBucketList.find((item) => item.value === currentBucketId);
   const isVolumeAllDetail = selectableConnectors;
 
-  const connectorsInitialized = useRef(false);
-
-  useEffect(() => {
-    if (connectorsInitialized.current || !isExternal || isEmpty(s3Connectors)) return;
-    const connector = selectedConnector;
-    if (connector) {
-      setBucketName(connector.bucketName ?? '');
-      setStoreType(connector.storeType ?? '');
-      setTieringSupported(connector.tieringSupported === true);
-      connectorsInitialized.current = true;
-    }
-  });
+  const [prevConnectorUuid, setPrevConnectorUuid] = useState<string | undefined>();
+  if (
+    isExternal &&
+    !isEmpty(s3Connectors) &&
+    selectedConnector &&
+    selectedConnector.uuid !== prevConnectorUuid
+  ) {
+    setPrevConnectorUuid(selectedConnector.uuid);
+    setBucketName(selectedConnector.bucketName ?? '');
+    setStoreType(selectedConnector.storeType ?? '');
+    setTieringSupported(selectedConnector.tieringSupported === true);
+  }
 
   const typeValue = volumeType;
   const id = String(volumeDetail.id ?? volumeId);

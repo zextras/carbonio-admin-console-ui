@@ -15,7 +15,7 @@ import {
   type THeader,
   type TRow,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, type ReactElement, useEffect, useState } from 'react';
+import { type ChangeEvent, type FC, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
@@ -49,6 +49,15 @@ export const EditBucketUsageTable: FC<EditBucketUsageTableProps> = ({
   const [searchValue, setSearchValue] = useState('');
   const [offset, setOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [prevSearchValue, setPrevSearchValue] = useState(searchValue);
+  const [prevRows, setPrevRows] = useState(rows);
+
+  if (searchValue !== prevSearchValue || rows !== prevRows) {
+    setPrevSearchValue(searchValue);
+    setPrevRows(rows);
+    setOffset(0);
+    setCurrentPage(1);
+  }
 
   const normalizedSearch = searchValue.trim().toLowerCase();
   const filteredRows =
@@ -71,11 +80,6 @@ export const EditBucketUsageTable: FC<EditBucketUsageTableProps> = ({
     )),
     clickable: false,
   }));
-
-  useEffect(() => {
-    setOffset(0);
-    setCurrentPage(1);
-  }, [searchValue, rows]);
 
   return (
     <Container
