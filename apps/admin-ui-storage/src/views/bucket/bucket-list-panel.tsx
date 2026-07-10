@@ -54,13 +54,13 @@ const BucketListPanel: FC = () => {
   const { data: volumeList = [], isError, isLoading } = useMailstoreServers();
   const isAdvanced = useIsAdvanced();
 
-  const [isServerListExpand, setIsServerListExpand] = useState(true);
-  const [isServerSpecificListExpand, setIsServerSpecificListExpand] = useState(true);
+  const [isServerListExpand, setIsServerListExpand] = useState(
+    () => localStorage.getItem(IS_SERVER_LIST_EXPANDED) !== 'false',
+  );
+  const [isServerSpecificListExpand, setIsServerSpecificListExpand] = useState(
+    () => localStorage.getItem(IS_SERVER_SPECIFIC_LIST_EXPANDED) !== 'false',
+  );
   const [searchVolumeName, setSearchVolumeName] = useState(selectedServer);
-  const [itemsVolume, setItemsVolume] = useState<
-    Array<{ id: string | undefined; label: string | undefined; customComponent: React.ReactElement }>
-  >([]);
-  const [isShowError, setIsShowError] = useState(false);
 
   useEffect(() => {
     if (selectedServer) {
@@ -76,43 +76,35 @@ const BucketListPanel: FC = () => {
 
   const filteredServers = volumeList.filter((item) => item.name?.includes(searchVolumeName));
 
-  const addServerToList = (list: typeof volumeList) => {
-    const data = list.map((volume) => ({
-      id: volume.id,
-      label: volume.name,
-      customComponent: (
-        <Row
-          style={{
-            display: 'block',
-            textAlign: 'left',
-            height: 'inherit',
-            padding: '3px',
-            width: 'inherit',
-          }}
-          onClick={(): void => {
-            const serverName = volume.name || '';
-            setSearchVolumeName(serverName);
-            replaceHistory(`/${serverName}/${DATA_VOLUMES}`);
-          }}
-        >
-          {volume.name}
-        </Row>
-      ),
-    }));
-    setItemsVolume(data);
-  };
+  const itemsVolume = filteredServers.map((volume) => ({
+    id: volume.id,
+    label: volume.name,
+    customComponent: (
+      <Row
+        style={{
+          display: 'block',
+          textAlign: 'left',
+          height: 'inherit',
+          padding: '3px',
+          width: 'inherit',
+        }}
+        onClick={(): void => {
+          const serverName = volume.name || '';
+          setSearchVolumeName(serverName);
+          replaceHistory(`/${serverName}/${DATA_VOLUMES}`);
+        }}
+      >
+        {volume.name}
+      </Row>
+    ),
+  }));
 
-  useEffect(() => {
-    if (isError || isLoading) {
-      return;
-    }
-    addServerToList(filteredServers);
-    if (volumeList.length > 0 && filteredServers.length === 0 && searchVolumeName !== '') {
-      setIsShowError(true);
-    } else {
-      setIsShowError(false);
-    }
-  }, [searchVolumeName, addServerToList, volumeList, filteredServers, isError, isLoading]);
+  const isShowError =
+    !isError &&
+    !isLoading &&
+    volumeList.length > 0 &&
+    filteredServers.length === 0 &&
+    searchVolumeName !== '';
 
   const globalServerOption = [
     {
@@ -173,12 +165,10 @@ const BucketListPanel: FC = () => {
   };
 
   const handleInputChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-    setIsShowError(false);
     setSearchVolumeName(ev.target.value);
   };
 
   const handleCustomIconClick = (): void => {
-    setIsShowError(false);
     if (searchVolumeName !== '') {
       setSearchVolumeName('');
       replaceHistory(`/${SERVERS_LIST}`);
@@ -197,14 +187,6 @@ const BucketListPanel: FC = () => {
       replaceHistory(`/${id}`);
     }
   };
-
-  useEffect(() => {
-    const storedServerValue = localStorage.getItem(IS_SERVER_LIST_EXPANDED);
-    setIsServerListExpand(storedServerValue !== 'false');
-
-    const storedValue = localStorage.getItem(IS_SERVER_SPECIFIC_LIST_EXPANDED);
-    setIsServerSpecificListExpand(storedValue !== 'false');
-  }, []);
 
   return (
     <Container
