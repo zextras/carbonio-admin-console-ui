@@ -31,7 +31,8 @@ import {
   type UpdateS3ConnectorRequest,
 } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
-import { listS3Regions, testS3Connector, updateS3Connector } from '../../services/bucket-service';
+import { testS3Connector, updateS3Connector } from '../../services/bucket-service';
+import { useListS3Regions } from '../../services/use-list-s3-regions';
 import { EditBucketUsageTable } from './parts/edit-bucket-usage-table';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
@@ -118,7 +119,11 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
 }) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [baseRegions, setBaseRegions] = useState<Array<SelectItem<string>>>([]);
+  const { data: rawRegions = [] } = useListS3Regions();
+  const baseRegions: Array<SelectItem<string>> = rawRegions.map((region) => ({
+    value: region.id,
+    label: `${region.description}, [${region.id}]`,
+  }));
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
   const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [showVerifyResult, setShowVerifyResult] = useState(false);
@@ -236,21 +241,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   }
 
   const showDeleteConnector = isBucketUnused(bucketDetail);
-
-  useEffect(() => {
-    listS3Regions()
-      .then((regions) => {
-        setBaseRegions(
-          regions.map((region) => ({
-            value: region.id,
-            label: `${region.description}, [${region.id}]`,
-          })),
-        );
-      })
-      .catch(() => {
-        setBaseRegions([]);
-      });
-  }, []);
 
   async function saveChanges(): Promise<{ ok: boolean; errorDetails?: CheckResult }> {
     const v = form.state.values;

@@ -7,4 +7,5 @@
 export const bucketVolumeQueryKeys = {
   all: ['bucket-volume'] as const,
   s3Connectors: () => [...bucketVolumeQueryKeys.all, 's3-connectors'] as const,
+  s3Regions: () => [...bucketVolumeQueryKeys.all, 's3-regions'] as const,
 } as const;

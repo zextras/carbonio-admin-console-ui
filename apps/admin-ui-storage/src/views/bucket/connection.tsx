@@ -18,12 +18,13 @@ import {
   Switch,
   Tooltip,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, useEffect, useState } from 'react';
+import { type ChangeEvent, type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CreateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
-import { createS3Connector, listS3Regions } from '../../services/bucket-service';
+import { createS3Connector } from '../../services/bucket-service';
+import { useListS3Regions } from '../../services/use-list-s3-regions';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
 import { VerifySuccess } from './parts/verify/verify-success';
@@ -47,7 +48,11 @@ const Connection: FC<{
   onCancel?: () => void;
 }> = ({ onCancel }) => {
   const [t] = useTranslation();
-  const [bucketRegions, setBucketRegions] = useState<Array<{ value: string; label: string }>>([]);
+  const { data: rawRegions = [] } = useListS3Regions();
+  const bucketRegions = rawRegions.map((region) => ({
+    value: region.id,
+    label: `${region.description}, [${region.id}]`,
+  }));
   const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [showVerifyResult, setShowVerifyResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
@@ -134,21 +139,6 @@ const Connection: FC<{
   const isEndpointUrlRequired = isCustomRegion || regionValue === NO_REGION_VALUE;
 
   const regionSelection = regionItems.find((item) => item.value === regionValue) ?? EMPTY_REGION;
-
-  useEffect(() => {
-    listS3Regions()
-      .then((regions) => {
-        setBucketRegions(
-          regions.map((region) => ({
-            value: region.id,
-            label: `${region.description}, [${region.id}]`,
-          })),
-        );
-      })
-      .catch(() => {
-        setBucketRegions([]);
-      });
-  }, []);
 
   const handleProgressComplete = (): void => {
     setShowVerifyResult(true);
