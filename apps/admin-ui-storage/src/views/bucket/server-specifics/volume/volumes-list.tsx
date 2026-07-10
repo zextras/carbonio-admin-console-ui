@@ -212,7 +212,8 @@ const VolumesDetailPanel: FC = () => {
   const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
   const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
   const { data: serverList = [] } = useAllServers();
-  const [selectedServerId, setSelectedServerId] = useState<string>('');
+  const selectedServerId =
+    serverList?.find((s: { name?: string }) => s?.name === server)?.id ?? '';
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [volume, setVolume] = useState<Volume | undefined>({
     compressBlobs: '',
@@ -708,15 +709,6 @@ const VolumesDetailPanel: FC = () => {
     setVolume(typeVol);
     setmodifyVolumeToggle(true);
   };
-
-  useEffect(() => {
-    if (serverList && serverList?.length > 0 && server) {
-      const serverData = serverList?.find((s: { name?: string }) => s?.name === server);
-      if (serverData && serverData?.id) {
-        setSelectedServerId(serverData?.id);
-      }
-    }
-  }, [serverList, server]);
 
   return (
     <>
