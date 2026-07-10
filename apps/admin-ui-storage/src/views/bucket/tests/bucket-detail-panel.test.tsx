@@ -4,12 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { type ChangeEvent, type ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { type BucketConnectorRow } from '../../../../types';
 import BucketDetailPanel, { resolveSelectedBucketConnector } from '../bucket-detail-panel';
+
+function createWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0, staleTime: 0 } },
+  });
+  const Wrapper: React.FC<{ children: ReactNode }> = ({ children }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+  return Wrapper;
+}
 
 const mockListS3Connector = vi.hoisted(() => vi.fn());
 const mockDeleteS3Connector = vi.hoisted(() => vi.fn());
@@ -250,7 +261,7 @@ describe('BucketDetailPanel', () => {
   });
 
   it('should render fetched connectors and open edit view on row click', async () => {
-    render(<BucketDetailPanel />);
+    render(<BucketDetailPanel />, { wrapper: createWrapper() });
 
     await waitFor(() => {
       expect(screen.getByText('Main connector')).toBeTruthy();
@@ -262,7 +273,7 @@ describe('BucketDetailPanel', () => {
   });
 
   it('should filter the list and restore full list when filter is cleared', async () => {
-    render(<BucketDetailPanel />);
+    render(<BucketDetailPanel />, { wrapper: createWrapper() });
 
     const filterInput = await screen.findByLabelText('Filter S3 List');
 
@@ -278,7 +289,7 @@ describe('BucketDetailPanel', () => {
   });
 
   it('should handle invalid selection index without crashing', async () => {
-    render(<BucketDetailPanel />);
+    render(<BucketDetailPanel />, { wrapper: createWrapper() });
 
     await waitFor(() => {
       expect(screen.getByText('Main connector')).toBeTruthy();
@@ -290,7 +301,7 @@ describe('BucketDetailPanel', () => {
   });
 
   it('should open new bucket modal when create button is clicked', async () => {
-    render(<BucketDetailPanel />);
+    render(<BucketDetailPanel />, { wrapper: createWrapper() });
 
     await waitFor(() => {
       expect(screen.getByText('Main connector')).toBeTruthy();
@@ -302,9 +313,9 @@ describe('BucketDetailPanel', () => {
   });
 
   it('should show empty state and disable filter input when list call fails', async () => {
-    mockListS3Connector.mockRejectedValueOnce(new Error('network failure'));
+    mockListS3Connector.mockRejectedValue(new Error('network failure'));
 
-    render(<BucketDetailPanel />);
+    render(<BucketDetailPanel />, { wrapper: createWrapper() });
 
     await waitFor(() => {
       expect(screen.getByText(/haven't setup a bucket type/i)).toBeTruthy();
@@ -314,7 +325,7 @@ describe('BucketDetailPanel', () => {
   });
 
   it('should delete connector successfully and show success snackbar', async () => {
-    render(<BucketDetailPanel />);
+    render(<BucketDetailPanel />, { wrapper: createWrapper() });
 
     await waitFor(() => {
       expect(screen.getByText('Main connector')).toBeTruthy();
@@ -339,7 +350,9 @@ describe('BucketDetailPanel', () => {
         severity: 'success',
       }),
     );
-    expect(mockListS3Connector).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      expect(mockListS3Connector).toHaveBeenCalledTimes(2);
+    });
   });
 
   it('should show error snackbar when delete returns failure', async () => {
@@ -348,7 +361,7 @@ describe('BucketDetailPanel', () => {
       error: { message: 'Delete denied' },
     });
 
-    render(<BucketDetailPanel />);
+    render(<BucketDetailPanel />, { wrapper: createWrapper() });
 
     await waitFor(() => {
       expect(screen.getByText('Main connector')).toBeTruthy();

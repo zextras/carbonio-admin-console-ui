@@ -18,7 +18,7 @@ import {
   UNUSED,
   USAGE_IN_EXTERNAL_BACKUP,
 } from '../../../../../../constants';
-import { listS3Connector } from '../../../../../../services/bucket-service';
+import { useListS3Connectors } from '../../../../../../services/use-list-s3-connectors';
 import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
 import { VolumeContext } from '../volume-context';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
@@ -37,13 +37,44 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   const { t } = useTranslation();
   const { form: volumeForm } = useContext(VolumeContext);
   const { form, setIsAllocationToggle } = useContext(AdvancedVolumeContext);
-  const [isVolumeAllDetail, setIsVolumeAllDetail] = useState<Array<BucketVolume>>([]);
+  const { data: connectors = [] } = useListS3Connectors();
   const volAllocationList = volumeAllocationList(t);
   const bucketTypeItems = BucketTypeItems(t);
   const [errName, setErrName] = useState(true);
-  const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<
-    Array<{ label: string; value: string }>
-  >([]);
+
+  const isVolumeAllDetail: Array<BucketVolume> = connectors
+    .map((items) => ({
+      uuid: items.uuid,
+      label: items.label || '',
+      bucketName: items.bucketName || '',
+      storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
+      notes: items.notes || '',
+      tieringSupported:
+        (items as unknown as { tieringSupported?: boolean }).tieringSupported ?? false,
+      [USAGE_IN_EXTERNAL_BACKUP]:
+        (items as unknown as { 'usage in external backup'?: string | Array<string> })[
+          'usage in external backup'
+        ] ?? UNUSED,
+    }))
+    .filter(
+      (items: BucketVolume) =>
+        !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
+    );
+
+  function getBucketTypeLabel(storeType: string | undefined): string | undefined {
+    return bucketTypeItems?.find((item) => item?.value?.toLowerCase() === storeType?.toLowerCase())
+      ?.label;
+  }
+
+  const backupUnusedBucketList: Array<{ label: string; value: string }> = isVolumeAllDetail.map(
+    (items: BucketVolume) => {
+      const volumeObject = getBucketTypeLabel(items?.storeType);
+      return {
+        label: `${volumeObject} | ${items?.label}`,
+        value: items?.uuid ?? '',
+      };
+    },
+  );
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
   const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);
@@ -130,46 +161,6 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
     basicVolumeAllocation,
   ]);
 
-  function getBucketTypeLabel(storeType: string | undefined): string | undefined {
-    return bucketTypeItems?.find((item) => item?.value?.toLowerCase() === storeType?.toLowerCase())
-      ?.label;
-  }
-
-  const getBucketListType = (): void => {
-    listS3Connector().then((values) => {
-      const connectors: Array<BucketVolume> = values.map((items) => ({
-        uuid: items.uuid,
-        label: items.label || '',
-        bucketName: items.bucketName || '',
-        storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
-        notes: items.notes || '',
-        tieringSupported:
-          (items as unknown as { tieringSupported?: boolean }).tieringSupported ?? false,
-        [USAGE_IN_EXTERNAL_BACKUP]:
-          (items as unknown as { 'usage in external backup'?: string | Array<string> })[
-            'usage in external backup'
-          ] ?? UNUSED,
-      }));
-
-      const allData = connectors.filter(
-        (items: BucketVolume) =>
-          !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
-      );
-
-      const volUnusedBucketList: Array<{ label: string; value: string }> = allData.map(
-        (items: BucketVolume) => {
-          const volumeObject = getBucketTypeLabel(items?.storeType);
-          return {
-            label: `${volumeObject} | ${items?.label}`,
-            value: items?.uuid ?? '',
-          };
-        },
-      );
-      setIsVolumeAllDetail(allData);
-      setBackupUnusedBucketList(volUnusedBucketList);
-    });
-  };
-
   useEffect(() => {
     if (volumeName && basicVolumeAllocation) {
       if (basicVolumeAllocation === LOCAL_TYPE_VALUE) {
@@ -194,10 +185,6 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
     setIsAllocationToggle,
     volumeName,
   ]);
-
-  useEffect(() => {
-    getBucketListType();
-  }, []);
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>

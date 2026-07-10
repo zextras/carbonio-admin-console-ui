@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Container,
@@ -19,8 +20,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
-import { filter } from 'lodash-es';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -30,7 +30,9 @@ import {
 } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
-import { deleteS3Connector, listS3Connector } from '../../services/bucket-service';
+import { deleteS3Connector } from '../../services/bucket-service';
+import { bucketVolumeQueryKeys } from '../../services/bucket-volume-query-keys';
+import { useListS3Connectors } from '../../services/use-list-s3-connectors';
 import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import NewBucket from './new-bucket';
@@ -199,9 +201,26 @@ const BucketDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
-  const [bucketList, setBucketList] = useState<Array<BucketConnectorRow>>([]);
+  const queryClient = useQueryClient();
+  const { data: connectors = [] } = useListS3Connectors();
+  const bucketList: Array<BucketConnectorRow> = connectors.map((connector: S3Connector) => ({
+    uuid: connector.uuid,
+    id: connector.uuid,
+    label: connector.label || '',
+    bucketName: connector.bucketName || '',
+    region: connector.region || '',
+    url: connector.url || '',
+    accessKey: connector.accessKey || '',
+    prefix: connector.prefix || '',
+    insecureHttps: String(connector.insecureHttps ?? false),
+    notes: connector.notes || '',
+    storeType: ((connector as unknown as { storeType?: string }).storeType || 'S3'),
+    'usage in external backup': connector['usage in external backup'] ?? '',
+    'usage in powerstore volumes': connector['usage in powerstore volumes'] ?? '',
+    'usage in powerstore volume': connector['usage in powerstore volume'] ?? '',
+    usage: connector.usage ?? '',
+  }));
   const [bucketDeleteName, setBucketDeleteName] = useState<BucketConnectorRow | undefined>();
-  const [allBucketList, setAllBucketList] = useState<Array<BucketConnectorRow>>([]);
   const [selectedUuid, setSelectedUuid] = useState<string | undefined>();
   const [toggleWizardSection, setToggleWizardSection] = useState(false);
   const [open, setOpen] = useState(false);
@@ -209,39 +228,18 @@ const BucketDetailPanel: FC = () => {
   const [searchBucket, setSearchBucket] = useState('');
   const [showEditDetailView, setShowEditDetailView] = useState(false);
 
+  const filteredBucketList =
+    searchBucket === ''
+      ? bucketList
+      : bucketList.filter(
+          (o) =>
+            o.bucketName.toLowerCase().includes(searchBucket.toLowerCase()) ||
+            o.label.toLowerCase().includes(searchBucket.toLowerCase()),
+        );
+
   const closeHandler = (): void => {
     setOpen(false);
     setShowDetails(false);
-  };
-
-  const getBucketListType = (): void => {
-    listS3Connector()
-      .then((connectors) => {
-        const mappedConnectors: Array<BucketConnectorRow> = connectors.map((connector: S3Connector) => ({
-          uuid: connector.uuid,
-          id: connector.uuid,
-          label: connector.label || '',
-          bucketName: connector.bucketName || '',
-          region: connector.region || '',
-          url: connector.url || '',
-          accessKey: connector.accessKey || '',
-          prefix: connector.prefix || '',
-          insecureHttps: String(connector.insecureHttps ?? false),
-          notes: connector.notes || '',
-          storeType: ((connector as unknown as { storeType?: string }).storeType || 'S3'),
-          'usage in external backup': connector['usage in external backup'] ?? '',
-          'usage in powerstore volumes': connector['usage in powerstore volumes'] ?? '',
-          'usage in powerstore volume': connector['usage in powerstore volume'] ?? '',
-          usage: connector.usage ?? '',
-
-        }));
-        setBucketList(mappedConnectors);
-        setAllBucketList(mappedConnectors);
-      })
-      .catch(() => {
-        setBucketList([]);
-        setAllBucketList([]);
-      });
   };
 
   const deleteHandler = () => {
@@ -257,7 +255,7 @@ const BucketDetailPanel: FC = () => {
 
     deleteS3Connector(objectToSendDeleteBucket).then((response) => {
       if (response.ok) {
-        getBucketListType();
+        void queryClient.invalidateQueries({ queryKey: bucketVolumeQueryKeys.s3Connectors() });
         createSnackbar({
           key: '1',
           severity: 'success',
@@ -291,30 +289,14 @@ const BucketDetailPanel: FC = () => {
     : undefined;
 
   const handleClick = (i: number): void => {
-    const volumeObject = bucketList.find((s, index) => index === i);
+    const volumeObject = filteredBucketList.find((s, index) => index === i);
     setSelectedUuid(volumeObject?.uuid);
     setShowEditDetailView(true);
     setShowDetails(true);
   };
 
-  useEffect(() => {
-    getBucketListType();
-  }, [toggleWizardSection]);
-
   const filterBucketList = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchBucket(e.target.value);
-    if (e.target.value !== '') {
-      setBucketList(
-        filter(
-          bucketList,
-          (o) =>
-            o.bucketName.toLowerCase().includes(e.target.value) ||
-            o.label.toLowerCase().includes(e.target.value),
-        ),
-      );
-    } else {
-      setBucketList(allBucketList);
-    }
   };
 
   return (
@@ -336,7 +318,9 @@ const BucketDetailPanel: FC = () => {
             setShowEditDetailView={setShowEditDetailView}
             title="S3 details"
             bucketDetail={connectionData}
-            getBucketListType={getBucketListType}
+            getBucketListType={(): void => {
+              void queryClient.invalidateQueries({ queryKey: bucketVolumeQueryKeys.s3Connectors() });
+            }}
           />
         </ModalOverlay>
       )}
@@ -393,7 +377,7 @@ const BucketDetailPanel: FC = () => {
 
         <Row style={{ padding: '0 0.875rem 0 0.875rem' }} width="100%">
           <BucketListTable
-            volumes={bucketList}
+            volumes={filteredBucketList}
             selectedRows={bucketselection}
             onSelectionChange={(selected: string[]): void => {
               const [firstSelected] = selected;
@@ -401,7 +385,7 @@ const BucketDetailPanel: FC = () => {
                 firstSelected === undefined ? [] : [firstSelected];
               setBucketselection(nextSelection);
 
-              const volumeObject = resolveSelectedBucketConnector(bucketList, firstSelected);
+              const volumeObject = resolveSelectedBucketConnector(filteredBucketList, firstSelected);
               setShowDetails(false);
               setBucketDeleteName(volumeObject);
             }}

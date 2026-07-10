@@ -5,9 +5,10 @@
  */
 
 import { useForm } from '@tanstack/react-form';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { AdvancedVolumeWizardDetail } from '../../../../../../../types';
@@ -16,6 +17,16 @@ import { VolumeContext } from '../volume-context';
 import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import type { AdvancedVolumeFormValues } from './types';
+
+function createWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0, staleTime: 0 } },
+  });
+  const Wrapper: React.FC<{ children: ReactNode }> = ({ children }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+  return Wrapper;
+}
 
 const mockListS3Connector = vi.hoisted(() => vi.fn());
 const setIsAllocationToggleSpy = vi.hoisted(() => vi.fn());
@@ -172,6 +183,7 @@ describe('AdvancedMailstoresDefinition', () => {
 
     render(
       <TestHarness setToggleNextBtn={setToggleNextBtn} setCompleteLoading={setCompleteLoading} />,
+      { wrapper: createWrapper() },
     );
 
     fireEvent.change(screen.getByLabelText('Volume Name'), { target: { value: 'Volume A' } });
@@ -195,6 +207,7 @@ describe('AdvancedMailstoresDefinition', () => {
         setCompleteLoading={setCompleteLoading}
         initialFormValues={{ volumeName: 'Volume A' }}
       />,
+      { wrapper: createWrapper() },
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Local Block Device' }));
@@ -217,6 +230,7 @@ describe('AdvancedMailstoresDefinition', () => {
         setCompleteLoading={setCompleteLoading}
         initialFormValues={{ volumeName: 'Volume A' }}
       />,
+      { wrapper: createWrapper() },
     );
 
     await waitFor(() => {
@@ -267,6 +281,7 @@ describe('AdvancedMailstoresDefinition', () => {
         setCompleteLoading={setCompleteLoading}
         initialFormValues={{ volumeName: 'Volume A' }}
       />,
+      { wrapper: createWrapper() },
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Object Storage' }));
