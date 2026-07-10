@@ -185,7 +185,7 @@ const CreateMailstoresVolume: FC<{
   const onComplete = () => {
     const v = form.state.values;
     const volumeType = volTypeList
-      ?.filter((item) => item?.value === v.volumeMain)[0]
+      ?.find((item) => item?.value === v.volumeMain)
       ?.label?.toLowerCase();
     CreateAdvancedRequest({
       volumeName: v.volumeName,
