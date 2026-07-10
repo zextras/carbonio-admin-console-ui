@@ -210,5 +210,103 @@ describe('EditAccountQuotaInputsLegacy', () => {
       expect(setFocusableMailboxQuota).toHaveBeenCalledWith(false);
       expect(setHighlightMailboxQuota).toHaveBeenCalledWith(false);
     });
+
+    it('should call setFocusableFileQuota on blur', async () => {
+      const setFocusableFileQuota = vi.fn();
+      const setHighlightFileQuota = vi.fn();
+
+      const queryClient = getQueryClient();
+      queryClient.setQueryData(['advanced-supported'], { supported: true });
+
+      setupBrowserTest(
+        <AccountContext.Provider value={baseMockContext as any}>
+          <EditAccountQuotaInputsLegacy
+            {...defaultProps}
+            setFocusableFileQuota={setFocusableFileQuota}
+            setHighlightFileQuota={setHighlightFileQuota}
+          />
+        </AccountContext.Provider>,
+        { queryClient },
+      );
+
+      const inputs = page.getByRole('textbox');
+      const fileInput = inputs.nth(1);
+      await userEvent.click(fileInput);
+      await userEvent.tab();
+
+      expect(setFocusableFileQuota).toHaveBeenCalledWith(false);
+      expect(setHighlightFileQuota).toHaveBeenCalledWith(false);
+    });
+  });
+
+  describe('Input validation', () => {
+    it('should not update value for invalid input', async () => {
+      const setAccountDetail = vi.fn();
+      setupAdvancedTest({ setAccountDetail });
+
+      const input = page.getByRole('textbox').first();
+      await userEvent.clear(input);
+      await userEvent.type(input, 'abc');
+
+      // setAccountDetail should only be called for clear, not for invalid chars
+      const callsAfterClear = setAccountDetail.mock.calls.filter(
+        (call) => call[0] !== undefined,
+      );
+      expect(callsAfterClear.length).toBeLessThanOrEqual(1);
+    });
+
+    it('should show error for file quota with more than 3 decimal places', async () => {
+      setupAdvancedTest();
+
+      const inputs = page.getByRole('textbox');
+      const fileInput = inputs.nth(1);
+      await userEvent.clear(fileInput);
+      await userEvent.type(fileInput, '5.1234');
+
+      await expect
+        .element(page.getByText('Maximum 3 digits allowed after the decimal point'))
+        .toBeVisible();
+    });
+  });
+
+  describe('Unlimited quota handling', () => {
+    it('should display 0.00 for unlimited file quota', async () => {
+      setupAdvancedTest({
+        initAccountDetail: {
+          zimbraMailQuota: 10737418240,
+          filesQuotaLimit: 9223372036854776000, // Max value = unlimited
+        },
+        accountDetail: {
+          zimbraMailQuota: 10737418240,
+          filesQuotaLimit: 9223372036854776000,
+        },
+      });
+
+      const inputs = page.getByRole('textbox');
+      const fileInput = inputs.nth(1);
+      await expect.element(fileInput).toHaveValue('0.00');
+    });
+
+    it('should display 0.00 for inherited unlimited file quota', async () => {
+      setupAdvancedTest({
+        cosDetail: {
+          zimbraMailQuota: 5368709120,
+          filesQuotaLimit: 9223372036854776000, // Unlimited
+        },
+        initAccountDetail: {
+          zimbraMailQuota: 10737418240,
+          filesQuotaLimit: 9223372036854776000,
+        },
+        accountDetail: {
+          zimbraMailQuota: 10737418240,
+          filesQuotaLimit: 9223372036854776000,
+        },
+      });
+
+      // File quota input should show 0.00 for unlimited
+      const inputs = page.getByRole('textbox');
+      const fileInput = inputs.nth(1);
+      await expect.element(fileInput).toHaveValue('0.00');
+    });
   });
 });
