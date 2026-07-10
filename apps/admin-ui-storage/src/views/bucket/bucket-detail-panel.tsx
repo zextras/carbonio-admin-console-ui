@@ -202,14 +202,12 @@ const BucketDetailPanel: FC = () => {
   const [bucketList, setBucketList] = useState<Array<BucketConnectorRow>>([]);
   const [bucketDeleteName, setBucketDeleteName] = useState<BucketConnectorRow | undefined>();
   const [allBucketList, setAllBucketList] = useState<Array<BucketConnectorRow>>([]);
-  const [connectionData, setConnectionData] = useState<BucketConnectorRow | undefined>();
+  const [selectedUuid, setSelectedUuid] = useState<string | undefined>();
   const [toggleWizardSection, setToggleWizardSection] = useState(false);
   const [open, setOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [searchBucket, setSearchBucket] = useState('');
   const [showEditDetailView, setShowEditDetailView] = useState(false);
-  const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<BucketConnectorRow>();
 
   const closeHandler = (): void => {
     setOpen(false);
@@ -288,20 +286,16 @@ const BucketDetailPanel: FC = () => {
       }
     });
   };
+  const connectionData = selectedUuid
+    ? bucketList.find((b) => b.uuid === selectedUuid)
+    : undefined;
+
   const handleClick = (i: number): void => {
     const volumeObject = bucketList.find((s, index) => index === i);
-    setConnectionData(volumeObject);
+    setSelectedUuid(volumeObject?.uuid);
     setShowEditDetailView(true);
     setShowDetails(true);
   };
-
-  useEffect(() => {
-    if (selectedRow !== undefined) {
-      const getIndex = bucketList.findIndex((data) => data.uuid === selectedRow.uuid);
-      const volumeObject = bucketList.find((s, index) => index === getIndex);
-      setConnectionData(volumeObject);
-    }
-  }, [bucketList, toggleForGetAPICall]);
 
   useEffect(() => {
     getBucketListType();
@@ -330,7 +324,7 @@ const BucketDetailPanel: FC = () => {
           <NewBucket
             setToggleWizardSection={setToggleWizardSection}
             setDetailsBucket={setShowEditDetailView}
-            setConnectionData={setConnectionData as (data: unknown) => void}
+            setConnectionData={(): void => setSelectedUuid(undefined)}
           />
         </ModalOverlay>
       )}
@@ -343,9 +337,6 @@ const BucketDetailPanel: FC = () => {
             title="S3 details"
             bucketDetail={connectionData}
             getBucketListType={getBucketListType}
-            setSelectedRow={setSelectedRow}
-            setToggleForGetAPICall={setToggleForGetAPICall}
-            toggleForGetAPICall={toggleForGetAPICall}
           />
         </ModalOverlay>
       )}

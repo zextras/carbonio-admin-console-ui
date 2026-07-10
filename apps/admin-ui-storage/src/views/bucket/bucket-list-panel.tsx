@@ -12,7 +12,7 @@ import {
   Row,
 } from '@zextras/ui-components';
 import { replaceHistory, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
 
@@ -62,17 +62,11 @@ const BucketListPanel: FC = () => {
   );
   const [searchVolumeName, setSearchVolumeName] = useState(selectedServer);
 
-  useEffect(() => {
-    if (selectedServer) {
-      setSearchVolumeName(selectedServer);
-    }
-  }, [selectedServer]);
-
-  useEffect(() => {
-    if (!isServerSelect) {
-      setSearchVolumeName('');
-    }
-  }, [isServerSelect]);
+  const [prevSelectedServer, setPrevSelectedServer] = useState(selectedServer);
+  if (selectedServer !== prevSelectedServer) {
+    setPrevSelectedServer(selectedServer);
+    setSearchVolumeName(isServerSelect ? selectedServer : '');
+  }
 
   const filteredServers = volumeList.filter((item) => item.name?.includes(searchVolumeName));
 

@@ -106,9 +106,6 @@ type EditBucketDetailPanelProps = {
   bucketDetail: BucketConnectorRow | undefined;
   setOpen: (value: boolean) => void;
   getBucketListType: () => void;
-  setSelectedRow: (value: BucketConnectorRow | undefined) => void;
-  setToggleForGetAPICall: (value: boolean) => void;
-  toggleForGetAPICall: boolean;
 };
 
 const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
@@ -118,9 +115,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   setBucketDeleteName,
   setOpen,
   getBucketListType,
-  setSelectedRow,
-  setToggleForGetAPICall,
-  toggleForGetAPICall,
 }) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -244,10 +238,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const showDeleteConnector = isBucketUnused(bucketDetail);
 
   useEffect(() => {
-    setSelectedRow(bucketDetail);
-  }, [bucketDetail, setSelectedRow]);
-
-  useEffect(() => {
     listS3Regions()
       .then((regions) => {
         setBaseRegions(
@@ -285,7 +275,6 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
 
     if (updateResData?.ok) {
       getBucketListType();
-      setToggleForGetAPICall(!toggleForGetAPICall);
       return { ok: true };
     }
 

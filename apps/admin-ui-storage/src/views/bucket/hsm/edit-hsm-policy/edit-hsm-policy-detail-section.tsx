@@ -283,7 +283,7 @@ const EditHsmPolicyDetailSection: FC<{
                 weight="regular"
                 key={index}
                 onClick={(): void => {
-                  setSelectedPolicies([String(index)]);
+                  onCriteriaSelected([String(index)]);
                 }}
               >
                 {displayPolicy}
@@ -307,13 +307,14 @@ const EditHsmPolicyDetailSection: FC<{
       (item, itemIndex) => itemIndex !== Number(selectedPolicies[0]),
     );
     updatePolicyCriteria(reducedArr);
-    setSelectedPolicies([]);
+    onCriteriaSelected([]);
   };
 
-  useEffect(() => {
-    if (selectedPolicies.length > 0) {
+  const onCriteriaSelected = (selectedIndices: Array<string>): void => {
+    setSelectedPolicies(selectedIndices);
+    if (selectedIndices.length > 0) {
       setIsUpdatePolicyCriteria(true);
-      const policy = policyCriteria[Number(selectedPolicies[0])];
+      const policy = policyCriteria[Number(selectedIndices[0])];
       const it = options.find((item) => item.value === policy?.option);
       setSelectedOption(it);
       if (policy) {
@@ -330,7 +331,7 @@ const EditHsmPolicyDetailSection: FC<{
       setValue('');
       setIsUpdatePolicyCriteria(false);
     }
-  }, [selectedPolicies, policyCriteria, onScaleChange, onDateScaleChange, options]);
+  };
 
   const onUpdate = () => {
     const data: PolicyCriteriaItem = {
@@ -343,7 +344,7 @@ const EditHsmPolicyDetailSection: FC<{
     updatePolicyCriteria(_policy);
     setIsUpdatePolicyCriteria(false);
     setValue('');
-    setSelectedPolicies([]);
+    onCriteriaSelected([]);
   };
 
   return (
@@ -552,7 +553,7 @@ const EditHsmPolicyDetailSection: FC<{
             showCheckbox
             multiSelect={false}
             selectedRows={selectedPolicies as [] | [string]}
-            onSelectionChange={(selected): void => setSelectedPolicies(selected.map(String))}
+            onSelectionChange={(selected): void => onCriteriaSelected(selected.map(String))}
             RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />

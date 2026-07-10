@@ -118,7 +118,6 @@ function createBucketDetail(overrides: Partial<BucketDetail> = {}): BucketDetail
 
 type RenderOverrides = {
 	bucketDetail?: BucketDetail;
-	toggleForGetAPICall?: boolean;
 };
 
 function renderEditBucketPanel(overrides: RenderOverrides = {}) {
@@ -126,10 +125,7 @@ function renderEditBucketPanel(overrides: RenderOverrides = {}) {
 	const setBucketDeleteName = vi.fn();
 	const setOpen = vi.fn();
 	const getBucketListType = vi.fn();
-	const setSelectedRow = vi.fn();
-	const setToggleForGetAPICall = vi.fn();
 	const bucketDetail = overrides.bucketDetail ?? createBucketDetail();
-	const toggleForGetAPICall = overrides.toggleForGetAPICall ?? false;
 
 	const view = (
 		<EditBucketDetailPanel
@@ -139,9 +135,6 @@ function renderEditBucketPanel(overrides: RenderOverrides = {}) {
 			bucketDetail={bucketDetail as unknown as BucketConnectorRow}
 			setOpen={setOpen}
 			getBucketListType={getBucketListType}
-			setSelectedRow={setSelectedRow}
-			setToggleForGetAPICall={setToggleForGetAPICall}
-			toggleForGetAPICall={toggleForGetAPICall}
 		/>
 	);
 
@@ -150,8 +143,6 @@ function renderEditBucketPanel(overrides: RenderOverrides = {}) {
 		setBucketDeleteName,
 		setOpen,
 		getBucketListType,
-		setSelectedRow,
-		setToggleForGetAPICall,
 		bucketDetail,
 	};
 }
@@ -170,7 +161,7 @@ describe('EditBucketDetailPanel (browser)', () => {
 	});
 
 	it('should show delete connector action for an unused bucket and open delete modal', async () => {
-		const { view, setBucketDeleteName, setOpen, setSelectedRow, bucketDetail } =
+		const { view, setBucketDeleteName, setOpen, bucketDetail } =
 			renderEditBucketPanel();
 
 		await setupBrowserTest(view);
@@ -182,7 +173,6 @@ describe('EditBucketDetailPanel (browser)', () => {
 
 		expect(setBucketDeleteName).toHaveBeenCalledWith(bucketDetail);
 		expect(setOpen).toHaveBeenCalledWith(true);
-		expect(setSelectedRow).toHaveBeenCalledWith(bucketDetail);
 	});
 
 	it('should disable delete connector action when bucket is used', async () => {
@@ -214,9 +204,8 @@ describe('EditBucketDetailPanel (browser)', () => {
 		const {
 			view,
 			getBucketListType,
-			setToggleForGetAPICall,
 			bucketDetail,
-		} = renderEditBucketPanel({ toggleForGetAPICall: false });
+		} = renderEditBucketPanel();
 
 		await setupBrowserTest(view);
 		await page.getByLabelText('Descriptive name*').fill('Updated bucket name');
@@ -237,7 +226,6 @@ describe('EditBucketDetailPanel (browser)', () => {
 			}),
 		);
 		expect(getBucketListType).toHaveBeenCalledTimes(1);
-		expect(setToggleForGetAPICall).toHaveBeenCalledWith(true);
 		await expect.element(page.getByText('verify-success')).toBeInTheDocument();
 	});
 
