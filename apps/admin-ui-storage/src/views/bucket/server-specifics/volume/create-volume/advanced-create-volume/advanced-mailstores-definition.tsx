@@ -40,8 +40,6 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   const [isVolumeAllDetail, setIsVolumeAllDetail] = useState<Array<BucketVolume>>([]);
   const volAllocationList = volumeAllocationList(t);
   const bucketTypeItems = BucketTypeItems(t);
-  const [allocation, setAllocation] = useState<VolumeAllocationItem>();
-  const [unusedType, setUnusedType] = useState<{ label: string; value: string } | undefined>();
   const [errName, setErrName] = useState(true);
   const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<
     Array<{ label: string; value: string }>
@@ -52,6 +50,11 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   const bucketId = useSelector(form.store, (s) => s.values.bucketId);
   const unusedBucketType = useSelector(form.store, (s) => s.values.unusedBucketType);
   const basicVolumeAllocation = useSelector(volumeForm.store, (s) => s.values.volumeAllocation);
+
+  const allocation = volAllocationList?.find(
+    (item: VolumeAllocationItem) => item?.value === basicVolumeAllocation,
+  );
+  const unusedType = backupUnusedBucketList?.find((item) => item?.value === bucketId);
 
   const changeVolName = (e: ChangeEvent<HTMLInputElement>) => {
     volumeForm.setFieldValue('volumeName', e?.target?.value);
@@ -168,13 +171,6 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   };
 
   useEffect(() => {
-    const volumeTypeObject = volAllocationList?.find(
-      (item: VolumeAllocationItem) => item?.value === basicVolumeAllocation,
-    );
-    setAllocation(volumeTypeObject);
-  }, [volAllocationList, basicVolumeAllocation]);
-
-  useEffect(() => {
     if (volumeName && basicVolumeAllocation) {
       if (basicVolumeAllocation === LOCAL_TYPE_VALUE) {
         setCompleteLoading(true);
@@ -197,18 +193,6 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
     setCompleteLoading,
     setIsAllocationToggle,
     volumeName,
-  ]);
-
-  useEffect(() => {
-    const volumeTypeObject = backupUnusedBucketList?.find(
-      (item) => item?.value === bucketId,
-    );
-    setUnusedType(volumeTypeObject);
-  }, [
-    backupUnusedBucketList,
-    unusedBucketType,
-    bucketId,
-    isVolumeAllDetail,
   ]);
 
   useEffect(() => {
