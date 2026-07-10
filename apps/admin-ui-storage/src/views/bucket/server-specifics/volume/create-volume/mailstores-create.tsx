@@ -31,7 +31,6 @@ import { VOLUME_CREATE_VALIDATION_MESSAGES } from './schema';
 import { VolumeContext } from './volume-context';
 
 const MailstoresCreate: FC<{
-  onSelection?: any;
   externalData: string;
   setCompleteLoading: any;
 }> = ({ externalData, setCompleteLoading }) => {
@@ -72,7 +71,7 @@ const MailstoresCreate: FC<{
             background="gray5"
             label={t('label.volume_type', 'Volume Type')}
             defaultSelection={
-              volTypeList?.filter((items) => items?.value === form.state.values.volumeMain)[0]
+              volTypeList?.find((items) => items?.value === form.state.values.volumeMain)
             }
             showCheckbox={false}
             onChange={(v: any): void => form.setFieldValue('volumeMain', v)}
@@ -215,7 +214,7 @@ const MailstoresCreate: FC<{
                     backgroundColor="gray5"
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                      if (/^[0-9]*$/.test(e.target.value)) {
+                      if (/^\d*$/.test(e.target.value)) {
                         field.handleChange(e.target.value);
                       }
                     }}
