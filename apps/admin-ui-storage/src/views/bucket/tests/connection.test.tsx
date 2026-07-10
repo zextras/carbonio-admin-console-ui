@@ -4,11 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import React, { act, ChangeEvent, useEffect, useRef } from 'react';
+import React, { act, ChangeEvent, type ReactNode,useEffect, useRef } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import Connection from '../connection';
+
+function createWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0, staleTime: 0 } },
+  });
+  const Wrapper: React.FC<{ children: ReactNode }> = ({ children }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+  return Wrapper;
+}
 
 const mockCreateS3Connector = vi.hoisted(() => vi.fn());
 const mockListS3Regions = vi.hoisted(() => vi.fn());
@@ -211,7 +222,7 @@ describe('Connection', () => {
   });
 
   it('should validate required fields and not call verify when mandatory values are missing', async () => {
-    render(<Connection onCancel={vi.fn()} />);
+    render(<Connection onCancel={vi.fn()} />, { wrapper: createWrapper() });
 
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
@@ -222,7 +233,7 @@ describe('Connection', () => {
   });
 
   it('should call createS3Connector and show success on successful verify', async () => {
-    render(<Connection onCancel={vi.fn()} />);
+    render(<Connection onCancel={vi.fn()} />, { wrapper: createWrapper() });
     await fillRequiredFields();
 
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
@@ -254,7 +265,7 @@ describe('Connection', () => {
       error: 'Connector verification failed',
     });
 
-    render(<Connection onCancel={vi.fn()} />);
+    render(<Connection onCancel={vi.fn()} />, { wrapper: createWrapper() });
     await fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
@@ -266,7 +277,7 @@ describe('Connection', () => {
   it('should show fallback error message when verify request throws', async () => {
     mockCreateS3Connector.mockRejectedValue(new Error('network down'));
 
-    render(<Connection onCancel={vi.fn()} />);
+    render(<Connection onCancel={vi.fn()} />, { wrapper: createWrapper() });
     await fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
@@ -281,7 +292,7 @@ describe('Connection', () => {
       error: 'Connector verification failed',
     });
 
-    render(<Connection onCancel={vi.fn()} />);
+    render(<Connection onCancel={vi.fn()} />, { wrapper: createWrapper() });
     await fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
@@ -297,7 +308,7 @@ describe('Connection', () => {
   });
 
   it('should include trimmed endpoint URL and prefix in payload when provided', async () => {
-    render(<Connection onCancel={vi.fn()} />);
+    render(<Connection onCancel={vi.fn()} />, { wrapper: createWrapper() });
     await fillRequiredFields();
 
     fireEvent.change(screen.getByLabelText('Endpoint URL'), {
@@ -322,7 +333,7 @@ describe('Connection', () => {
   });
 
   it('should require custom region and submit selected custom value', async () => {
-    render(<Connection onCancel={vi.fn()} />);
+    render(<Connection onCancel={vi.fn()} />, { wrapper: createWrapper() });
     await fillRequiredFields();
 
     fireEvent.change(screen.getByLabelText('Region'), {
@@ -365,7 +376,7 @@ describe('Connection', () => {
       },
     });
 
-    render(<Connection onCancel={vi.fn()} />);
+    render(<Connection onCancel={vi.fn()} />, { wrapper: createWrapper() });
     await fillRequiredFields();
     fireEvent.click(screen.getByRole('button', { name: /verify & create connector/i }));
 
