@@ -178,7 +178,6 @@ const ServerDetailPanel: FC = () => {
   const [t] = useTranslation();
   const { data: allServersList = [] } = useMailstoreServers();
   const isAdvanced = useIsAdvanced();
-  const [serversList, setServersList] = useState<any>([]);
   const [serverListAll, setServerListAll] = useState<any>([]);
   const serverHeaderAdvanced = headerAdvanced(t);
   const [searchServer, setSearchServer] = useState<string>('');
@@ -250,7 +249,6 @@ const ServerDetailPanel: FC = () => {
                       description,
                     };
                   });
-                  setServersList(serverList);
                   setServerListAll(serverList);
                 }
               }
@@ -275,7 +273,6 @@ const ServerDetailPanel: FC = () => {
             description,
           };
         });
-        setServersList(serverList);
         setServerListAll(serverList);
       }
     }
@@ -302,10 +299,7 @@ const ServerDetailPanel: FC = () => {
     },
   ];
 
-  useEffect(() => {
-    const fildterdServer = serverListAll.filter((item: any) => item.name.includes(searchServer));
-    setServersList(fildterdServer);
-  }, [searchServer, serverListAll]);
+  const serversList = serverListAll.filter((item: any) => item.name.includes(searchServer));
 
   return (
     <>
