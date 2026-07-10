@@ -30,6 +30,12 @@ import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils'
 import { VOLUME_CREATE_VALIDATION_MESSAGES } from './schema';
 import { VolumeContext } from './volume-context';
 
+const CompressionThresholdIcon: FC = () => (
+  <ds-text as="span" color="secondary">
+    {COMPRESSION_THRESHOLD_UNIT}
+  </ds-text>
+);
+
 const MailstoresCreate: FC<{
   externalData: string;
   setCompleteLoading: any;
@@ -221,11 +227,7 @@ const MailstoresCreate: FC<{
                     hasError={error.hasError}
                     description={error.description}
                     disabled={!isCompression}
-                    CustomIcon={(): any => (
-                      <ds-text as="span" color="secondary">
-                        {COMPRESSION_THRESHOLD_UNIT}
-                      </ds-text>
-                    )}
+                    CustomIcon={CompressionThresholdIcon}
                   />
                 );
               }}
