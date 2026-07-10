@@ -8,6 +8,7 @@ import { Button, Container, HorizontalWizard, Section } from '@zextras/ui-compon
 import { type FC, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { type RestoreAccountRequestParams } from './restore-delete-account';
 import RestoreAccountConfigSection from './restore-delete-account-config-section';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreSelectAccountSection from './restore-delete-account-select-section';
@@ -33,7 +34,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 
 const RestoreDeleteAccountWizard: FC<{
   setShowRestoreAccountWizard: any;
-  restoreAccountRequest: any;
+  restoreAccountRequest: (params: RestoreAccountRequestParams) => void;
   isRequestWorkInProgress: any;
   onReset: () => void;
 }> = ({ setShowRestoreAccountWizard, restoreAccountRequest, isRequestWorkInProgress, onReset }) => {
@@ -71,21 +72,17 @@ const RestoreDeleteAccountWizard: FC<{
   });
 
   const onRestoreAccount = useCallback(() => {
-    restoreAccountRequest(
-      restoreAccountDetail?.name,
-      restoreAccountDetail?.id,
-      restoreAccountDetail?.createDate,
-      restoreAccountDetail?.status,
-      restoreAccountDetail?.copyAccount,
-      restoreAccountDetail?.dateTime,
-      restoreAccountDetail?.lastAvailableStatus,
-      restoreAccountDetail?.hsmApply,
-      restoreAccountDetail?.dataSource,
-      restoreAccountDetail?.notificationReceiver,
-      restoreAccountDetail?.isEmailNotificationEnable,
-      restoreAccountDetail?.copyDomain,
-      restoreAccountDetail?.serverName,
-    );
+    restoreAccountRequest({
+      id: restoreAccountDetail?.id,
+      createDate: restoreAccountDetail?.createDate,
+      copyAccount: restoreAccountDetail?.copyAccount,
+      dateTime: restoreAccountDetail?.dateTime,
+      hsmApply: restoreAccountDetail?.hsmApply,
+      notificationReceiver: restoreAccountDetail?.notificationReceiver,
+      isEmailNotificationEnable: restoreAccountDetail?.isEmailNotificationEnable,
+      copyDomain: restoreAccountDetail?.copyDomain,
+      serverName: restoreAccountDetail?.serverName,
+    });
   }, [restoreAccountDetail, restoreAccountRequest]);
 
   useEffect(() => {

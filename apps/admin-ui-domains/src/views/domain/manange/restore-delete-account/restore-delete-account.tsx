@@ -12,6 +12,18 @@ import { useTranslation } from 'react-i18next';
 import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
 import RestoreAccountWizard from './restore-delete-account-wizard';
 
+export type RestoreAccountRequestParams = {
+  id: string;
+  createDate: string;
+  copyAccount: string;
+  dateTime: string | null;
+  hsmApply: boolean;
+  notificationReceiver: string;
+  isEmailNotificationEnable: boolean;
+  copyDomain: string;
+  serverName: string;
+};
+
 const RestoreDeleteAccount: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -33,17 +45,18 @@ const RestoreDeleteAccount: FC = () => {
   }, [isSuccess, resetWizard]);
 
   const restoreAccountRequest = useCallback(
-    (
-      id: string,
-      createDate: string,
-      copyAccount: string,
-      dateTime: string | null,
-      hsmApply: boolean,
-      notificationReceiver: string,
-      isEmailNotificationEnable: boolean,
-      copyDomain: string,
-      serverName: string,
-    ) => {
+    (params: RestoreAccountRequestParams) => {
+      const {
+        id,
+        createDate,
+        copyAccount,
+        dateTime,
+        hsmApply,
+        notificationReceiver,
+        isEmailNotificationEnable,
+        copyDomain,
+        serverName,
+      } = params;
       const body: any = {
         srcAccountName: id,
         obeyHSM: hsmApply,

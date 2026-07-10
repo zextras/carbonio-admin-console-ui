@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 
 import {
   ADVANCED,
@@ -33,7 +33,7 @@ export const CosDetailPanel = () => (
     background="gray6"
   >
     <Routes>
-      <Route index element={<CosList />} />
+      <Route index element={<Navigate to={COS_LIST} replace />} />
       <Route path={`:cosId/${GENERAL_INFORMATION}`} element={<CosGeneralInformation />} />
       <Route path={`:cosId/${FEATURES}`} element={<CosFeatures />} />
       <Route path={`:cosId/${WSC}`} element={<WscCosSettings />} />
