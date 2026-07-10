@@ -109,6 +109,34 @@ type EditBucketDetailPanelProps = {
   getBucketListType: () => void;
 };
 
+function computeRegionValue(
+  initialRegionValue: string,
+  baseRegions: Array<SelectItem<string>>,
+): string {
+  if (!initialRegionValue) {
+    return NO_REGION_VALUE;
+  }
+  if (baseRegions.some((item) => item.value === initialRegionValue)) {
+    return initialRegionValue;
+  }
+  return CUSTOM_REGION_VALUE;
+}
+
+function buildRegionLabel(
+  regionValue: string,
+  isCustomRegion: boolean,
+  customRegionValue: string,
+  regionLabel: string | undefined,
+): string {
+  if (regionValue === NO_REGION_VALUE) {
+    return '';
+  }
+  if (isCustomRegion) {
+    return customRegionValue.trim() || '-';
+  }
+  return String(regionLabel ?? regionValue ?? '-');
+}
+
 const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   setShowEditDetailView,
   title,
@@ -135,12 +163,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   const initialInsecureHttps = String(bucketDetail?.insecureHttps ?? true) === 'true';
   const initialRegionValue = bucketDetail?.region ?? '';
 
-  const computedRegionValue =
-    !initialRegionValue
-      ? NO_REGION_VALUE
-      : baseRegions.some((item) => item.value === initialRegionValue)
-        ? initialRegionValue
-        : CUSTOM_REGION_VALUE;
+  const computedRegionValue = computeRegionValue(initialRegionValue, baseRegions);
 
   const form = useForm({
     defaultValues: {
@@ -219,9 +242,7 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   if (currentRegionValue !== initialRegionValue) {
     const regionLabel = regionValue === NO_REGION_VALUE
       ? t('label.region_none', 'None')
-      : isCustomRegion
-        ? (values.customRegion.trim() || '-')
-        : String(regionSelection?.label ?? regionValue ?? '-');
+      : buildRegionLabel(regionValue, isCustomRegion, values.customRegion, regionSelection?.label);
     changedFields.push({ label: t('label.region', 'Region'), value: regionLabel });
   }
   if (values.bucketName !== (bucketDetail?.bucketName ?? '')) {
