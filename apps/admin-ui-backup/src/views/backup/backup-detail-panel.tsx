@@ -6,7 +6,7 @@
 import { Container, Padding, Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 
 import {
   ADVANCED,
@@ -51,6 +51,7 @@ const BackupDetailPanel: FC = () => {
     }
     return (
       <Routes>
+        <Route index element={<Navigate to={SERVERS_LIST} replace />} />
         <Route path={SERVER_CONFIG} element={<BackupServerConfig />} />
         <Route path={ADVANCED} element={<BackupAdvanced />} />
         <Route path={SERVERS_LIST} element={<ServersList />} />
