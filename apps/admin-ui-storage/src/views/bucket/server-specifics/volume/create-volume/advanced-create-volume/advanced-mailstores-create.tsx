@@ -5,7 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, LabeledValue, ListRow, Row } from '@zextras/ui-components';
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../../../constants';
@@ -19,7 +19,6 @@ const AdvancedMailstoresCreate: FC<{
   const { form } = useContext(AdvancedVolumeContext);
   const { t } = useTranslation();
   const volTypeList = volumeTypeList(t);
-  const [volumeType, setVolumeType] = useState<string>('');
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
   const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);
@@ -35,6 +34,9 @@ const AdvancedMailstoresCreate: FC<{
   const centralized = useSelector(form.store, (s) => s.values.centralized);
 
   const showTieringSettings = unusedBucketType === S3 && tieringSupported === true;
+  const volumeType = volTypeList?.find(
+    (item: { label?: string; value?: number }) => item?.value === volumeMain,
+  )?.label ?? '';
 
   useEffect(() => {
     if (volumeAllocation && volumeName && unusedBucketType && volumeType) {
@@ -43,13 +45,6 @@ const AdvancedMailstoresCreate: FC<{
       setCompleteLoading(false);
     }
   }, [volumeAllocation, volumeName, unusedBucketType, volumeType, setCompleteLoading]);
-
-  useEffect(() => {
-    const volumeTypeObject = volTypeList?.find(
-      (item: { label?: string; value?: number }) => item?.value === volumeMain,
-    )?.label;
-    setVolumeType(volumeTypeObject ?? '');
-  }, [volumeMain, volTypeList]);
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
