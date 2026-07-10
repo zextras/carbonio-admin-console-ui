@@ -514,7 +514,7 @@ export const ModifyVolumeForm: FC<ModifyVolumeFormProps> = ({
                         value={field.state.value}
                         backgroundColor="gray6"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                          if (/^[0-9]*$/.test(e.target.value)) {
+                          if (/^\d*$/.test(e.target.value)) {
                             field.handleChange(e.target.value);
                           }
                         }}
