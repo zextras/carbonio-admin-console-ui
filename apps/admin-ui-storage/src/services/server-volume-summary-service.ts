@@ -46,7 +46,7 @@ export const getServerVolumeSummaryAdvanced = async (
     ? JSON.parse(res.Body.response.content)
     : null;
 
-  if (!responseData || !responseData.ok || allServersList.length === 0) {
+  if (!responseData?.ok || allServersList.length === 0) {
     return [];
   }
 
