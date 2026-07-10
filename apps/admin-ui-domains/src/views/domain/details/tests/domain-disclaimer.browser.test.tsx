@@ -156,6 +156,8 @@ describe('DomainDisclaimer', () => {
     await userEvent.clear(textArea);
     await userEvent.type(textArea, 'New disclaimer');
 
+    await expect.element(textArea).toHaveValue('New disclaimer');
+
     const saveButton = page.getByRole('button', { name: /save/i });
     await saveButton.click();
 
