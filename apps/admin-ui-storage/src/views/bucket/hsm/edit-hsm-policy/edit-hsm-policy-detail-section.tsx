@@ -44,9 +44,26 @@ const EditHsmPolicyDetailSection: FC<{
   const [value, setValue] = useState<string>();
   const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
   const [isUpdatePolicyCriteria, setIsUpdatePolicyCriteria] = useState<boolean>(false);
-  const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<string>>([]);
-  const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<string>>([]);
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
+
+  const updateSourceVolumeSelection = (selectedIds: Array<string>): void => {
+    const sourceVol = allVolumes?.filter(
+      (item) => item?.id != null && selectedIds.includes(String(item.id)),
+    );
+    form.setFieldValue('sourceVolume', sourceVol ?? []);
+  };
+
+  const updateDestinationVolumeSelection = (selectedIds: Array<string>): void => {
+    const destVol = Array.isArray(allVolumes)
+      ? allVolumes.filter((item) => item?.id != null && selectedIds.includes(String(item.id)))
+      : [];
+    form.setFieldValue('destinationVolume', destVol);
+  };
+
+  const updatePolicyCriteria = (newCriteria: Array<PolicyCriteriaItem>): void => {
+    setPolicyCriteria(newCriteria);
+    form.setFieldValue('policyCriteria', newCriteria);
+  };
 
   const setHsmPolicyType = () => {
     if (currentPolicy?.hsmType) {
@@ -83,35 +100,34 @@ const EditHsmPolicyDetailSection: FC<{
     if (currentPolicy?.hsmQuery) {
       const queries = currentPolicy?.hsmQuery.split(' ');
       if (queries && queries.length > 0 && isDataLoaded === false) {
+        const parsedCriteria: Array<PolicyCriteriaItem> = [];
         queries.forEach((element: string) => {
           if (!element.startsWith('source') && !element.startsWith('destination')) {
             const option = element.match(/after|before|larger|small/g)?.join('');
             const scale = element.match(/minutes|hours|days|months|years/g)?.join('');
             const valueItem = element.match(/\d/g)?.join('');
             if (valueItem) {
-              setPolicyCriteria((prev) => [
-                ...prev,
-                {
-                  option: option ?? '',
-                  scale: scale ?? '',
-                  dateScale: valueItem,
-                },
-              ]);
+              parsedCriteria.push({
+                option: option ?? '',
+                scale: scale ?? '',
+                dateScale: valueItem,
+              });
             }
           }
         });
+        updatePolicyCriteria([...policyCriteria, ...parsedCriteria]);
       } else {
-        setPolicyCriteria(form.state.values.policyCriteria);
+        updatePolicyCriteria(form.state.values.policyCriteria);
       }
     }
   };
 
   const setSourceAndDestinationValues = (option: string, valueItem: string) => {
     if (option.startsWith('source')) {
-      setSelectedSourceVolume(valueItem.split(','));
+      updateSourceVolumeSelection(valueItem.split(','));
     }
     if (option.startsWith('destination')) {
-      setSelectedDestinationVolume(valueItem.split(','));
+      updateDestinationVolumeSelection(valueItem.split(','));
     }
   };
 
@@ -141,10 +157,6 @@ const EditHsmPolicyDetailSection: FC<{
       setIsDataLoaded(true);
     }
   }, [currentPolicy, setHSMPolicyQuerySourceAndDestination, setHSMQuery, setHsmPolicyType]);
-
-  useEffect(() => {
-    form.setFieldValue('policyCriteria', policyCriteria);
-  }, [policyCriteria, form]);
 
   const options: Array<SelectOption> = [
     {
@@ -287,14 +299,14 @@ const EditHsmPolicyDetailSection: FC<{
       scale: selectedScale?.value ?? '',
       dateScale: value ?? '',
     };
-    setPolicyCriteria((prev) => [...prev, data]);
+    updatePolicyCriteria([...policyCriteria, data]);
   };
 
   const onDeletePolicy = () => {
     const reducedArr = policyCriteria.filter(
       (item, itemIndex) => itemIndex !== Number(selectedPolicies[0]),
     );
-    setPolicyCriteria(reducedArr);
+    updatePolicyCriteria(reducedArr);
     setSelectedPolicies([]);
   };
 
@@ -321,7 +333,6 @@ const EditHsmPolicyDetailSection: FC<{
   }, [selectedPolicies, policyCriteria, onScaleChange, onDateScaleChange, options]);
 
   const onUpdate = () => {
-    setPolicyCriteria([]);
     const data: PolicyCriteriaItem = {
       option: selectedOption?.value ?? '',
       scale: selectedScale?.value ?? '',
@@ -329,35 +340,11 @@ const EditHsmPolicyDetailSection: FC<{
     };
     const _policy = cloneDeep(policyCriteria);
     _policy[Number(selectedPolicies[0])] = data;
-    setPolicyCriteria(_policy);
+    updatePolicyCriteria(_policy);
     setIsUpdatePolicyCriteria(false);
     setValue('');
     setSelectedPolicies([]);
   };
-
-  useEffect(() => {
-    const sourceVol = allVolumes?.filter((item) =>
-      item?.id != null && selectedSourceVolume?.includes(String(item.id)),
-    );
-    if (sourceVol && sourceVol.length > 0) {
-      form.setFieldValue('sourceVolume', sourceVol);
-    } else {
-      form.setFieldValue('sourceVolume', []);
-    }
-  }, [selectedSourceVolume, allVolumes, form]);
-
-  useEffect(() => {
-    if (Array.isArray(allVolumes)) {
-      const destVol = allVolumes?.filter((item) =>
-        item?.id != null && selectedDestinationVolume?.includes(String(item.id)),
-      );
-      if (destVol && destVol.length > 0) {
-        form.setFieldValue('destinationVolume', destVol);
-      } else {
-        form.setFieldValue('destinationVolume', []);
-      }
-    }
-  }, [allVolumes, selectedDestinationVolume, form]);
 
   return (
     <Container
