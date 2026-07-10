@@ -967,7 +967,7 @@ const ManageAccounts: FC = () => {
       ),
     );
     Promise.all(sessionPromises).then((results) => {
-      const allSessions = results.flat().filter((s) => s);
+      const allSessions = results.flat().filter(Boolean);
       setUserSessionList(allSessions);
       setAllUserSessionList(allSessions);
     });
