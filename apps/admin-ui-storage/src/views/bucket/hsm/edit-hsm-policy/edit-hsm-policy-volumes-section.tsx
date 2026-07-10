@@ -33,6 +33,22 @@ const EditHsmPolicyVolumesSection: FC<{
   const [isVolumeLoaded, setIsVolumeLoaded] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
 
+  const updateSourceVolumeSelection = (selectedIds: Array<string>): void => {
+    setSelectedSourceVolume(selectedIds);
+    const sourceVol = allVolumes?.filter(
+      (item) => item?.id != null && selectedIds.includes(String(item.id)),
+    );
+    form.setFieldValue('sourceVolume', sourceVol ?? []);
+  };
+
+  const updateDestinationVolumeSelection = (selectedIds: Array<string>): void => {
+    setSelectedDestinationVolume(selectedIds);
+    const destVol = Array.isArray(allVolumes)
+      ? allVolumes.filter((item) => item?.id != null && selectedIds.includes(String(item.id)))
+      : [];
+    form.setFieldValue('destinationVolume', destVol);
+  };
+
   const headers = [
     {
       id: 'name',
@@ -98,30 +114,6 @@ const EditHsmPolicyVolumesSection: FC<{
       : [];
 
   useEffect(() => {
-    const sourceVol = allVolumes?.filter((item) =>
-      item?.id != null && selectedSourceVolume?.includes(String(item.id)),
-    );
-    if (sourceVol && sourceVol.length > 0) {
-      form.setFieldValue('sourceVolume', sourceVol);
-    } else {
-      form.setFieldValue('sourceVolume', []);
-    }
-  }, [selectedSourceVolume, allVolumes, form]);
-
-  useEffect(() => {
-    if (Array.isArray(allVolumes)) {
-      const destVol = allVolumes?.filter((item) =>
-        item?.id != null && selectedDestinationVolume?.includes(String(item.id)),
-      );
-      if (destVol && destVol.length > 0) {
-        form.setFieldValue('destinationVolume', destVol);
-      } else {
-        form.setFieldValue('destinationVolume', []);
-      }
-    }
-  }, [allVolumes, selectedDestinationVolume, form]);
-
-  useEffect(() => {
     if (currentPolicy && currentPolicy?.hsmQuery && isVolumeLoaded === false) {
       const queries = currentPolicy?.hsmQuery.split(' ');
       if (queries && queries.length > 0) {
@@ -134,11 +126,11 @@ const EditHsmPolicyVolumesSection: FC<{
             const option = element.split(':')[0];
             const valueItem = element.split(':')[1];
             if (option.startsWith('source')) {
-              setSelectedSourceVolume(valueItem.split(','));
+              updateSourceVolumeSelection(valueItem.split(','));
               setShowSourceVolume(true);
             }
             if (option.startsWith('destination')) {
-              setSelectedDestinationVolume(valueItem.split(','));
+              updateDestinationVolumeSelection(valueItem.split(','));
               setShowDestinationVolume(true);
             }
           }
@@ -209,7 +201,7 @@ const EditHsmPolicyVolumesSection: FC<{
                     replace: true,
                   });
                 } else {
-                  setSelectedSourceVolume(selected.map(String));
+                  updateSourceVolumeSelection(selected.map(String));
                 }
               }}
               RowFactory={HoverableRowFactory}
@@ -277,7 +269,7 @@ const EditHsmPolicyVolumesSection: FC<{
                     replace: true,
                   });
                 } else {
-                  setSelectedDestinationVolume(selected.map(String));
+                  updateDestinationVolumeSelection(selected.map(String));
                 }
               }}
               RowFactory={HoverableRowFactory}
