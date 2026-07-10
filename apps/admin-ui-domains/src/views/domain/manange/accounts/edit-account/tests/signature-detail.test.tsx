@@ -33,7 +33,17 @@ vi.mock('../../../../../../services/create-signature-service', () => ({
   createSignature: vi.fn(),
 }));
 
+vi.mock('../../../../../../services/delete-signature-service', () => ({
+  deleteSignature: vi.fn(),
+}));
+
+vi.mock('../../../../../../services/modify-signature-service', () => ({
+  modifySignature: vi.fn(),
+}));
+
 import { createSignature } from '../../../../../../services/create-signature-service';
+import { deleteSignature } from '../../../../../../services/delete-signature-service';
+import { modifySignature } from '../../../../../../services/modify-signature-service';
 import { SignatureDetail } from '../signature-detail';
 
 const defaultProps = {
@@ -190,5 +200,249 @@ describe('SignatureDetail - Create signature API', () => {
 
     // createSignature should NOT be called when no accountId
     expect(createSignature).not.toHaveBeenCalled();
+  });
+});
+
+describe('SignatureDetail - Delete signature', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should call deleteSignature API when deleting with accountId', async () => {
+    const setSignatureList = vi.fn();
+    const setSignatureItems = vi.fn();
+    const existingSignature = {
+      id: 'sig-1',
+      name: 'Existing Signature',
+      content: [{ type: 'text/plain', _content: 'Content' }],
+    };
+
+    vi.mocked(deleteSignature).mockResolvedValue({});
+
+    const { user } = setupTest(
+      <SignatureDetail
+        {...defaultProps}
+        signatureList={[existingSignature]}
+        signatureItems={[{ label: 'Existing Signature', value: 'sig-1' }]}
+        setSignatureList={setSignatureList}
+        setSignatureItems={setSignatureItems}
+      />,
+    );
+
+    // Click on signature row to select it
+    const signatureRow = screen.getByText('Existing Signature');
+    await user.click(signatureRow);
+
+    // Click delete button
+    await user.click(screen.getByRole('button', { name: /Delete/i }));
+
+    await waitFor(() => {
+      expect(deleteSignature).toHaveBeenCalledWith('test-account-id', 'sig-1');
+    });
+  });
+
+  it('should delete signature locally when no accountId', async () => {
+    const setSignatureList = vi.fn();
+    const setSignatureItems = vi.fn();
+    const existingSignature = {
+      id: 'sig-1',
+      name: 'Local Signature',
+      content: [{ type: 'text/plain', _content: 'Content' }],
+    };
+
+    const { user } = setupTest(
+      <SignatureDetail
+        {...defaultProps}
+        accountId={undefined}
+        signatureList={[existingSignature]}
+        signatureItems={[{ label: 'Local Signature', value: 'sig-1' }]}
+        setSignatureList={setSignatureList}
+        setSignatureItems={setSignatureItems}
+      />,
+    );
+
+    // Click on signature row to select it
+    const signatureRow = screen.getByText('Local Signature');
+    await user.click(signatureRow);
+
+    // Click delete button
+    await user.click(screen.getByRole('button', { name: /Delete/i }));
+
+    await waitFor(() => {
+      expect(setSignatureList).toHaveBeenCalled();
+      expect(setSignatureItems).toHaveBeenCalled();
+    });
+
+    // deleteSignature should NOT be called when no accountId
+    expect(deleteSignature).not.toHaveBeenCalled();
+  });
+});
+
+describe('SignatureDetail - Modify signature', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should call modifySignature API when editing with accountId', async () => {
+    const setSignatureList = vi.fn();
+    const setSignatureItems = vi.fn();
+    const existingSignature = {
+      id: 'sig-1',
+      name: 'Original Name',
+      content: [{ type: 'text/plain', _content: 'Original content' }],
+    };
+
+    vi.mocked(modifySignature).mockResolvedValue({
+      Body: { ModifySignatureResponse: {} },
+    });
+
+    const { user } = setupTest(
+      <SignatureDetail
+        {...defaultProps}
+        signatureList={[existingSignature]}
+        signatureItems={[{ label: 'Original Name', value: 'sig-1' }]}
+        setSignatureList={setSignatureList}
+        setSignatureItems={setSignatureItems}
+      />,
+    );
+
+    // Click on signature row to select it
+    const signatureRow = screen.getByText('Original Name');
+    await user.click(signatureRow);
+
+    // Click edit button
+    await user.click(screen.getByRole('button', { name: /Edit/i }));
+
+    // Modify signature name
+    const nameInput = screen.getByRole('textbox', { name: /Name of Signature/i });
+    await user.clear(nameInput);
+    await user.type(nameInput, 'Modified Name');
+
+    // Submit
+    await user.click(screen.getByRole('button', { name: /Add to the list/i }));
+
+    await waitFor(() => {
+      expect(modifySignature).toHaveBeenCalled();
+    });
+  });
+
+  it('should modify signature locally when no accountId', async () => {
+    const setSignatureList = vi.fn();
+    const setSignatureItems = vi.fn();
+    const existingSignature = {
+      id: 'sig-1',
+      name: 'Original Name',
+      content: [{ type: 'text/plain', _content: 'Original content' }],
+    };
+
+    const { user } = setupTest(
+      <SignatureDetail
+        {...defaultProps}
+        accountId={undefined}
+        signatureList={[existingSignature]}
+        signatureItems={[{ label: 'Original Name', value: 'sig-1' }]}
+        setSignatureList={setSignatureList}
+        setSignatureItems={setSignatureItems}
+      />,
+    );
+
+    // Click on signature row to select it
+    const signatureRow = screen.getByText('Original Name');
+    await user.click(signatureRow);
+
+    // Click edit button
+    await user.click(screen.getByRole('button', { name: /Edit/i }));
+
+    // Modify signature name
+    const nameInput = screen.getByRole('textbox', { name: /Name of Signature/i });
+    await user.clear(nameInput);
+    await user.type(nameInput, 'Modified Name');
+
+    // Submit
+    await user.click(screen.getByRole('button', { name: /Add to the list/i }));
+
+    await waitFor(() => {
+      expect(setSignatureList).toHaveBeenCalled();
+    });
+
+    // modifySignature should NOT be called when no accountId
+    expect(modifySignature).not.toHaveBeenCalled();
+  });
+});
+
+describe('SignatureDetail - UI states', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should show empty state when signature list is empty', async () => {
+    setupTest(<SignatureDetail {...defaultProps} signatureList={[]} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('This list is empty.')).toBeTruthy();
+    });
+  });
+
+  it('should disable edit button when no signature selected', async () => {
+    setupTest(<SignatureDetail {...defaultProps} signatureList={[]} />);
+
+    const editButton = screen.getByRole('button', { name: /Edit/i });
+    expect(editButton).toHaveProperty('disabled', true);
+  });
+
+  it('should disable delete button when no signature selected', async () => {
+    setupTest(<SignatureDetail {...defaultProps} signatureList={[]} />);
+
+    const deleteButton = screen.getByRole('button', { name: /Delete/i });
+    expect(deleteButton).toHaveProperty('disabled', true);
+  });
+
+  it('should filter signatures based on search input', async () => {
+    const signature1 = {
+      id: 'sig-1',
+      name: 'Work Signature',
+      content: [{ type: 'text/plain', _content: 'Work content' }],
+    };
+    const signature2 = {
+      id: 'sig-2',
+      name: 'Personal Signature',
+      content: [{ type: 'text/plain', _content: 'Personal content' }],
+    };
+    const setSignatureList = vi.fn();
+
+    const { user } = setupTest(
+      <SignatureDetail
+        {...defaultProps}
+        signatureList={[signature1, signature2]}
+        setSignatureList={setSignatureList}
+      />,
+    );
+
+    // Type in search box
+    const searchInput = screen.getByRole('textbox', { name: /Search for a signature/i });
+    await user.type(searchInput, 'Work');
+
+    // setSignatureList should be called to filter
+    await waitFor(() => {
+      expect(setSignatureList).toHaveBeenCalled();
+    });
+  });
+
+  it('should close modal when cancel is clicked', async () => {
+    const { user } = setupTest(<SignatureDetail {...defaultProps} />);
+
+    // Open add dialog
+    await user.click(screen.getByRole('button', { name: /Add/i }));
+
+    // Verify modal is open
+    expect(screen.getByRole('textbox', { name: /Name of Signature/i })).toBeTruthy();
+
+    // Click cancel
+    await user.click(screen.getByRole('button', { name: /Cancel/i }));
+
+    // Modal should be closed
+    await waitFor(() => {
+      expect(screen.queryByRole('textbox', { name: /Name of Signature/i })).toBeNull();
+    });
   });
 });

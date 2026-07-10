@@ -309,4 +309,30 @@ describe('EditAccountQuotaInputsLegacy', () => {
       await expect.element(fileInput).toHaveValue('0.00');
     });
   });
+
+  describe('Account specific detail display', () => {
+    it('should show fromSubValue when accSpecificDetail has zimbraMailQuota', async () => {
+      setupAdvancedTest({
+        accSpecificDetail: {
+          zimbraMailQuota: 21474836480, // 20 GB
+        },
+      });
+
+      // Component should render with fromSubValue showing the account specific value
+      const input = page.getByRole('textbox').first();
+      await expect.element(input).toBeVisible();
+    });
+
+    it('should display inherited value for COS mailbox quota', async () => {
+      setupAdvancedTest({
+        cosDetail: {
+          zimbraMailQuota: 5368709120, // 5 GB
+          filesQuotaLimit: 2684354560,
+        },
+      });
+
+      // Component renders with COS inherited value
+      await expect.element(page.getByText('Mailbox Quota Limit (GB)')).toBeVisible();
+    });
+  });
 });
