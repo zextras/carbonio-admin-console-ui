@@ -18,6 +18,30 @@ import {
 } from './constants';
 import { AppView } from './views/app-view';
 
+const StorageTooltipView: FC = () => {
+  const [t] = useTranslation();
+  return (
+    <PrimaryBarTooltip>
+      <p>
+        <Trans
+          i18nKey="label.storage_lbl"
+          defaults="<bold>Storage</bold>"
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </p>
+      <p>
+        <Trans
+          i18nKey="label.storage_primarybar_tooltip"
+          defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You'll also be able to <bold>connect buckets</bold>."
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </p>
+    </PrimaryBarTooltip>
+  );
+};
+
 const App: FC = () => {
   const [t] = useTranslation();
 
@@ -35,27 +59,6 @@ const App: FC = () => {
     position: 3,
   };
 
-  const StorageTooltipView: FC = () => (
-    <PrimaryBarTooltip>
-      <p>
-        <Trans
-          i18nKey="label.storage_lbl"
-          defaults="<bold>Storage</bold>"
-          components={{ bold: <strong /> }}
-          t={t}
-        />
-      </p>
-      <p>
-        <Trans
-          i18nKey="label.storage_primarybar_tooltip"
-          defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>."
-          components={{ bold: <strong /> }}
-          t={t}
-        />
-      </p>
-    </PrimaryBarTooltip>
-  );
-
   useEffect(() => {
     if (hasListServerRights) {
       addRoute({
@@ -70,7 +73,7 @@ const App: FC = () => {
         trackerLabel: PRIMARY_BAR_STORAGE,
       });
     }
-  }, [StorageTooltipView, hasListServerRights, managementSection, t]);
+  }, [hasListServerRights, managementSection, t]);
 
   return null;
 };
