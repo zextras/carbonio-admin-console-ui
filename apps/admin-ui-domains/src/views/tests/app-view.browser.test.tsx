@@ -13,8 +13,9 @@ import {
   getQueryClient,
   resetMockWorker,
   setupBrowserTest,
+  worker,
 } from 'admin-ui-test-utils';
-import { HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -225,5 +226,131 @@ describe('AppView - restore account view', () => {
       )
       .toBeVisible();
     await expect.element(page.getByLabelText('Search')).not.toBeInTheDocument();
+  });
+});
+
+describe('AppView - global 2FA view', () => {
+  // Both listPolicies and setPolicy POST to the same zextras endpoint and are
+  // distinguished by the `action` field. The component reads the JSON string at
+  // res.Body.response.content, so responses mirror that envelope.
+  type PolicyEntry = Record<string, { trustedDevice?: number; trustedIpRange: string[] }>;
+
+  const POLICY_VALUES: PolicyEntry[] = [
+    { WebAdminUI: { trustedDevice: 1, trustedIpRange: [] } },
+    { WebUI: { trustedDevice: 2, trustedIpRange: [] } },
+  ];
+
+  function zextrasEnvelope(content: unknown): object {
+    return { Body: { response: { content: JSON.stringify(content) } } };
+  }
+
+  type Setup2faOptions = {
+    values?: PolicyEntry[];
+    setPolicyResult?: { ok: boolean; message?: string; error?: string };
+  };
+
+  function interceptZextras(options: Setup2faOptions = {}): void {
+    const values = options.values ?? POLICY_VALUES;
+    const setPolicyResult = options.setPolicyResult ?? { ok: true, message: 'ok' };
+
+    worker.use(
+      http.post('/service/admin/soap/zextras', async ({ request }) => {
+        const requestBody = (await request.json()) as any;
+        const action = requestBody?.Body?.zextras?.action;
+        if (action === 'setPolicy') {
+          return HttpResponse.json(zextrasEnvelope(setPolicyResult));
+        }
+        // listPolicies
+        return HttpResponse.json(zextrasEnvelope({ response: { values } }));
+      }),
+    );
+  }
+
+  // Renders the whole AppView at the global 2FA route so the real page, its
+  // config child and the list/set services run together.
+  function setup2faRoute(options: Setup2faOptions = {}): ReturnType<typeof setupBrowserTest> {
+    interceptApis();
+    interceptZextras(options);
+
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(['all-config'], getAllConfigResponseMock().a);
+
+    return setupBrowserTest(<AppView />, {
+      initialRouterEntry: `/global/2-factor-authentication`,
+      queryClient,
+      grantRights: 'config',
+    });
+  }
+
+  afterEach(() => {
+    resetMockWorker();
+  });
+
+  it('renders the configuration section and its help text', async () => {
+    await setup2faRoute();
+
+    await expect
+      .element(page.getByText('Configuration', { exact: true }))
+      .toBeVisible();
+    await expect
+      .element(
+        page.getByText(
+          /Setup the networks or the devices \(IPs\) that will not require the 2FA authentication/i,
+        ),
+      )
+      .toBeVisible();
+  });
+
+  it('renders a row per service policy', async () => {
+    await setup2faRoute();
+
+    await expect.element(page.getByText('Admin API', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('WebUI', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('ActiveSync', { exact: true })).toBeVisible();
+  });
+
+  it('hides Save and Cancel until a change is made', async () => {
+    await setup2faRoute();
+
+    // Wait for the page to settle on the config section.
+    await expect.element(page.getByText('Configuration', { exact: true })).toBeVisible();
+
+    await expect.element(page.getByRole('button', { name: /^save$/i })).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: /^cancel$/i })).not.toBeInTheDocument();
+
+    await page.getByRole('button', { name: /apply to all services/i }).click();
+
+    await expect.element(page.getByRole('button', { name: /^save$/i })).toBeVisible();
+    await expect.element(page.getByRole('button', { name: /^cancel$/i })).toBeVisible();
+  });
+
+  it('saves changed policies and shows the success snackbar', async () => {
+    await setup2faRoute();
+
+    await page.getByRole('button', { name: /apply to all services/i }).click();
+    const saveButton = page.getByRole('button', { name: /^save$/i });
+    await expect.element(saveButton).toBeVisible();
+
+    await saveButton.click();
+
+    await expect
+      .element(page.getByText('The settings have been applied to all services'))
+      .toBeVisible();
+    // On success the form is no longer dirty, so the actions disappear.
+    await expect.element(page.getByRole('button', { name: /^save$/i })).not.toBeInTheDocument();
+  });
+
+  it('shows an error snackbar when saving a policy fails', async () => {
+    await setup2faRoute({
+      setPolicyResult: { ok: false, error: 'Policy could not be saved' },
+    });
+
+    await page.getByRole('button', { name: /apply to all services/i }).click();
+    const saveButton = page.getByRole('button', { name: /^save$/i });
+    await expect.element(saveButton).toBeVisible();
+
+    await saveButton.click();
+
+    await expect.element(page.getByText('Policy could not be saved')).toBeVisible();
   });
 });
