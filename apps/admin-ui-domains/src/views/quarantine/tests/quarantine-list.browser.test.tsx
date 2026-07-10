@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { QueryClient } from '@tanstack/react-query';
 import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
-import { QueryClient } from '@tanstack/react-query';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import QuarantineList from '../quarantine-list';
