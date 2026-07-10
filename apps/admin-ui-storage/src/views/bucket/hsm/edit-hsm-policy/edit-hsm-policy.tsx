@@ -15,7 +15,7 @@ import {
   TabBar,
   useSnackbar,
 } from '@zextras/ui-components';
-import { FC, ReactElement, useEffect, useState } from 'react';
+import { FC, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { EditHsmPolicyProps, HsmPolicyFromServer, TabBarItem } from '../../../../../types';
@@ -35,7 +35,9 @@ const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const [change, setChange] = useState('details');
-  const [currentPolicy, setCurrentPolicy] = useState<HsmPolicyFromServer>();
+  const currentPolicy = policies.find(
+    (item: HsmPolicyFromServer) => item?.hsmQuery === selectedPolicies,
+  );
   const form = useForm({
     defaultValues: {
       isAllEnabled: false,
@@ -49,13 +51,6 @@ const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
     } as HsmPolicyFormValues,
   });
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
-
-  useEffect(() => {
-    const policy = policies.find((item: HsmPolicyFromServer) => item?.hsmQuery === selectedPolicies);
-    if (policy) {
-      setCurrentPolicy(policy);
-    }
-  }, [selectedPolicies, policies]);
 
   const ReusedDefaultTabBar: FC<{
     item: TabBarItem;
