@@ -47,7 +47,6 @@ const HSMsettingPanel: FC = () => {
   const { server } = useParams() as { server: string };
   const [t] = useTranslation();
   const [policies, setPolicies] = useState<Array<HsmPolicyFromServer>>([]);
-  const [policiesRow, setPoliciesRow] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>([]);
   const [showCreateHsmPolicyView, setShowCreateHsmPolicyView] = useState<boolean>(false);
   const [showEditHsmPolicyView, setShowEditHsmPolicyView] = useState<boolean>(false);
   const [showDeletePolicyView, setShowDeletePolicyView] = useState<boolean>(false);
@@ -184,32 +183,28 @@ const HSMsettingPanel: FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (policies.length > 0) {
-      const allRows = policies.map((item: HsmPolicyFromServer) => ({
-        id: item?.hsmQuery,
-        columns: [
-          <ds-text
-            as="span"
-            size="small"
-            weight="regular"
-            key={item?.hsmQuery}
-            onClick={(e: React.MouseEvent): void => {
-              e.stopPropagation();
-              setSelectedPolicies([item?.hsmQuery]);
-              handleClick(e);
-            }}
-          >
-            {getHSMType(item?.hsmType)}
-            {item?.hsmQuery}
-          </ds-text>,
-        ],
-      }));
-      setPoliciesRow(allRows);
-    } else {
-      setPoliciesRow([]);
-    }
-  }, [handleClick, policies]);
+  const policiesRow =
+    policies.length > 0
+      ? policies.map((item: HsmPolicyFromServer) => ({
+          id: item?.hsmQuery,
+          columns: [
+            <ds-text
+              as="span"
+              size="small"
+              weight="regular"
+              key={item?.hsmQuery}
+              onClick={(e: React.MouseEvent): void => {
+                e.stopPropagation();
+                setSelectedPolicies([item?.hsmQuery]);
+                handleClick(e);
+              }}
+            >
+              {getHSMType(item?.hsmType)}
+              {item?.hsmQuery}
+            </ds-text>,
+          ],
+        }))
+      : [];
 
   const setValuesFromAttributes = (
     attributes: Record<string, { value: unknown }> | undefined,
