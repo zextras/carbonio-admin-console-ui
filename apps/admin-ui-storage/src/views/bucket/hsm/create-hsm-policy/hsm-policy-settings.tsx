@@ -39,7 +39,6 @@ const HSMpolicySettings: FC = () => {
   const [isEventEnable, setIsEventEnable] = useState<boolean>(form.state.values.isEventEnabled);
   const [isContactEnable, setIsContactEnable] = useState<boolean>(form.state.values.isContactEnabled);
   const [isDocument, setIsDocument] = useState<boolean>(form.state.values.isDocumentEnabled);
-  const [policyCriteriaRows, setPolicyCriteriaRows] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>();
   const [value, setValue] = useState<string>();
   const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
 
@@ -127,7 +126,6 @@ const HSMpolicySettings: FC = () => {
     form.state.values.destinationVolume.length > 0,
   );
 
-  const [volumeRows, setVolumeRows] = useState<Array<{ id: string; columns: Array<React.ReactElement> }>>([]);
   const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<string>>(
     form.state.values.destinationVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
   );
@@ -172,36 +170,32 @@ const HSMpolicySettings: FC = () => {
     return t('hsm.indexes', 'Indexes');
   };
 
-  useEffect(() => {
-    if (allVolumes && allVolumes.length > 0) {
-      const allRows = allVolumes.map((item) => ({
-        id: String(item?.id ?? ''),
-        columns: [
-          <ds-text as="span" size="small" weight="regular" key={item?.id}>
-            {item?.name}
-          </ds-text>,
-          <ds-text as="span" size="small" weight="light" key={item?.id}>
-            {''}
-          </ds-text>,
-          <ds-text as="span" size="small" weight="light" key={item?.id}>
-            {getVoumeType(item?.type)}
-          </ds-text>,
-          <ds-text
-            as="span"
-            size="small"
-            weight="light"
-            key={item?.id}
-            color={item?.isCurrent ? 'gray0' : '#D74942'}
-          >
-            {item?.isCurrent ? t('hsm.yes', 'Yes') : t('hsm.no', 'No')}
-          </ds-text>,
-        ],
-      }));
-      setVolumeRows(allRows);
-    } else {
-      setVolumeRows([]);
-    }
-  }, [allVolumes, getVoumeType, t]);
+  const volumeRows =
+    allVolumes && allVolumes.length > 0
+      ? allVolumes.map((item) => ({
+          id: String(item?.id ?? ''),
+          columns: [
+            <ds-text as="span" size="small" weight="regular" key={item?.id}>
+              {item?.name}
+            </ds-text>,
+            <ds-text as="span" size="small" weight="light" key={item?.id}>
+              {''}
+            </ds-text>,
+            <ds-text as="span" size="small" weight="light" key={item?.id}>
+              {getVoumeType(item?.type)}
+            </ds-text>,
+            <ds-text
+              as="span"
+              size="small"
+              weight="light"
+              key={item?.id}
+              color={item?.isCurrent ? 'gray0' : '#D74942'}
+            >
+              {item?.isCurrent ? t('hsm.yes', 'Yes') : t('hsm.no', 'No')}
+            </ds-text>,
+          ],
+        }))
+      : [];
 
   useEffect(() => {
     if (Array.isArray(allVolumes)) {
@@ -260,37 +254,33 @@ const HSMpolicySettings: FC = () => {
     form.setFieldValue('policyCriteria', policyCriteria);
   }, [policyCriteria, form]);
 
-  useEffect(() => {
-    if (policyCriteria.length > 0) {
-      let displayPolicy = '';
-      const allRows = policyCriteria.map((item: PolicyCriteriaItem, index: number) => {
-        if (item?.option === 'before' || item?.option === 'after') {
-          displayPolicy = `${item?.option} ${item?.dateScale} ${item?.scale}`;
-        } else if (item?.option === 'larger' || item?.option === 'smaller') {
-          displayPolicy = `${item?.option}  ${item?.dateScale} ${item?.scale}`;
-        }
-        return {
-          id: String(index),
-          columns: [
-            <ds-text
-              as="span"
-              size="small"
-              weight="regular"
-              key={index}
-              onClick={(): void => {
-                setSelectedPolicies([String(index)]);
-              }}
-            >
-              {displayPolicy}
-            </ds-text>,
-          ],
-        };
-      });
-      setPolicyCriteriaRows(allRows);
-    } else if (policyCriteria.length === 0) {
-      setPolicyCriteriaRows([]);
-    }
-  }, [policyCriteria, t]);
+  const policyCriteriaRows =
+    policyCriteria.length > 0
+      ? policyCriteria.map((item: PolicyCriteriaItem, index: number) => {
+          let displayPolicy = '';
+          if (item?.option === 'before' || item?.option === 'after') {
+            displayPolicy = `${item?.option} ${item?.dateScale} ${item?.scale}`;
+          } else if (item?.option === 'larger' || item?.option === 'smaller') {
+            displayPolicy = `${item?.option}  ${item?.dateScale} ${item?.scale}`;
+          }
+          return {
+            id: String(index),
+            columns: [
+              <ds-text
+                as="span"
+                size="small"
+                weight="regular"
+                key={index}
+                onClick={(): void => {
+                  setSelectedPolicies([String(index)]);
+                }}
+              >
+                {displayPolicy}
+              </ds-text>,
+            ],
+          };
+        })
+      : [];
 
   const onClickAll = (check: boolean) => {
     setAll(check);
