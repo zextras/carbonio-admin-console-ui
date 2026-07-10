@@ -33,7 +33,7 @@ export const modifyVolumeSchema = modifyVolumeBase.superRefine((val, ctx) => {
       message: 'storage.validation.volume_name_required',
     });
   }
-  if (val.compressBlobs && val.compressionThreshold && !/^[0-9]*$/.test(val.compressionThreshold)) {
+  if (val.compressBlobs && val.compressionThreshold && !/^\d*$/.test(val.compressionThreshold)) {
     ctx.addIssue({
       code: 'custom',
       path: ['compressionThreshold'],
