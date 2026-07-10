@@ -6,7 +6,7 @@
 
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, getRights, useCurrentUserRights } from '@zextras/ui-shared';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -22,7 +22,12 @@ const App: FC = () => {
   const [t] = useTranslation();
 
   const { data: rights } = useCurrentUserRights();
-  const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
+  const hasListServerRights =
+    !!rights &&
+    rights.length > 0 &&
+    getRights(rights, SERVER).some(
+      (item: Record<string, string>) => item?.n && item?.n === LIST_SERVER,
+    );
 
   const managementSection = {
     id: MANAGE_APP_ID,
@@ -50,20 +55,6 @@ const App: FC = () => {
       </p>
     </PrimaryBarTooltip>
   );
-
-  useEffect(() => {
-    if (rights && rights.length > 0) {
-      const right = getRights(rights, SERVER);
-      if (right.length > 0) {
-        const findServerRight = right.find(
-          (item: Record<string, string>) => item?.n && item?.n === LIST_SERVER,
-        );
-        if (findServerRight) {
-          sethasListServerRights(true);
-        }
-      }
-    }
-  }, [rights]);
 
   useEffect(() => {
     if (hasListServerRights) {
