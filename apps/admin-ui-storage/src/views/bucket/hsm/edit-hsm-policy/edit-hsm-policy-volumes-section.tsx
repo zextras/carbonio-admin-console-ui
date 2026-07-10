@@ -114,7 +114,7 @@ const EditHsmPolicyVolumesSection: FC<{
       : [];
 
   useEffect(() => {
-    if (currentPolicy && currentPolicy?.hsmQuery && isVolumeLoaded === false) {
+    if (currentPolicy?.hsmQuery && isVolumeLoaded === false) {
       const queries = currentPolicy?.hsmQuery.split(' ');
       if (queries && queries.length > 0) {
         setIsVolumeLoaded(true);
