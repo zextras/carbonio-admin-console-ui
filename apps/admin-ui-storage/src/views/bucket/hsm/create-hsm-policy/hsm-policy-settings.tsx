@@ -20,7 +20,7 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -133,6 +133,28 @@ const HSMpolicySettings: FC = () => {
     form.state.values.sourceVolume.map((item) => String(item?.id)).filter((id) => id !== 'undefined'),
   );
   const createSnackbar = useSnackbar();
+
+  const updateSourceVolumeSelection = (selectedIds: Array<string>): void => {
+    setSelectedSourceVolume(selectedIds);
+    const sourceVol = Array.isArray(allVolumes)
+      ? allVolumes.filter((item) => item?.id != null && selectedIds.includes(String(item.id)))
+      : [];
+    form.setFieldValue('sourceVolume', sourceVol);
+  };
+
+  const updateDestinationVolumeSelection = (selectedIds: Array<string>): void => {
+    setSelectedDestinationVolume(selectedIds);
+    const destVol = Array.isArray(allVolumes)
+      ? allVolumes.filter((item) => item?.id != null && selectedIds.includes(String(item.id)))
+      : [];
+    form.setFieldValue('destinationVolume', destVol);
+  };
+
+  const updatePolicyCriteria = (newCriteria: Array<PolicyCriteriaItem>): void => {
+    setPolicyCriteria(newCriteria);
+    form.setFieldValue('policyCriteria', newCriteria);
+  };
+
   const header = [
     {
       id: 'name',
@@ -197,24 +219,6 @@ const HSMpolicySettings: FC = () => {
         }))
       : [];
 
-  useEffect(() => {
-    if (Array.isArray(allVolumes)) {
-      const sourceVol = allVolumes.filter((item) =>
-        item?.id != null && selectedSourceVolume.includes(String(item.id)),
-      );
-      form.setFieldValue('sourceVolume', sourceVol);
-    }
-  }, [allVolumes, selectedSourceVolume, form]);
-
-  useEffect(() => {
-    if (Array.isArray(allVolumes)) {
-      const destVol = allVolumes.filter((item) =>
-        item?.id != null && selectedDestinationVolume.includes(String(item.id)),
-      );
-      form.setFieldValue('destinationVolume', destVol);
-    }
-  }, [allVolumes, selectedDestinationVolume, form]);
-
   const onOptionChange = (v: string | null): void => {
     const it = options.find((item) => item.value === v);
     setSelectedOption(it);
@@ -240,19 +244,16 @@ const HSMpolicySettings: FC = () => {
   const [policyCriteria, setPolicyCriteria] = useState<Array<PolicyCriteriaItem>>(form.state.values.policyCriteria);
 
   const onAdd = () => {
-    setPolicyCriteria((prev) => [
-      ...prev,
+    const newCriteria = [
+      ...policyCriteria,
       {
         option: selectedOption?.value ?? '',
         scale: selectedScale?.value ?? '',
         dateScale: value ?? '',
       },
-    ]);
+    ];
+    updatePolicyCriteria(newCriteria);
   };
-
-  useEffect(() => {
-    form.setFieldValue('policyCriteria', policyCriteria);
-  }, [policyCriteria, form]);
 
   const policyCriteriaRows =
     policyCriteria.length > 0
@@ -298,7 +299,7 @@ const HSMpolicySettings: FC = () => {
     const reducedArr = policyCriteria.filter(
       (item, itemIndex) => itemIndex !== Number(selectedPolicies[0]),
     );
-    setPolicyCriteria(reducedArr);
+    updatePolicyCriteria(reducedArr);
     setSelectedPolicies([]);
   };
 
@@ -600,7 +601,7 @@ const HSMpolicySettings: FC = () => {
                       replace: true,
                     });
                   } else {
-                    setSelectedSourceVolume(selected.map(String));
+                    updateSourceVolumeSelection(selected.map(String));
                   }
                 }}
                 RowFactory={HoverableRowFactory}
@@ -668,7 +669,7 @@ const HSMpolicySettings: FC = () => {
                       replace: true,
                     });
                   } else {
-                    setSelectedDestinationVolume(selected.map(String));
+                    updateDestinationVolumeSelection(selected.map(String));
                   }
                 }}
                 RowFactory={HoverableRowFactory}
