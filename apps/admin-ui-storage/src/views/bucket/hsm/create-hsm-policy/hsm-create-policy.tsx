@@ -5,7 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, LabeledValue, ListRow, Padding, Tooltip } from '@zextras/ui-components';
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { Volume } from '../../../../../types';
@@ -17,24 +17,11 @@ const HSMcreatePolicy: FC = () => {
   const context = useContext(HSMContext);
   const { form } = context;
   const formValues = useSelector(form.store, (s) => s.values);
-  const [hsmQuery, setHsmQuery] = useState<string>('');
-  const [sourceVolumeNames, setSourceVolumeNames] = useState<string>('');
-  const [destinationVolumeNames, setDestinationVolumeNames] = useState<string>('');
-  useEffect(() => {
-    setHsmQuery(asQueryString(formValues));
-  }, [formValues]);
-
-  useEffect(() => {
-    if (formValues.sourceVolume.length > 0) {
-      setSourceVolumeNames(formValues.sourceVolume.map((item: Volume) => item.name).join());
-    }
-  }, [formValues.sourceVolume]);
-
-  useEffect(() => {
-    if (formValues.destinationVolume.length > 0) {
-      setDestinationVolumeNames(formValues.destinationVolume.map((item: Volume) => item.name).join());
-    }
-  }, [formValues.destinationVolume]);
+  const hsmQuery = asQueryString(formValues);
+  const sourceVolumeNames = formValues.sourceVolume.map((item: Volume) => item.name).join();
+  const destinationVolumeNames = formValues.destinationVolume
+    .map((item: Volume) => item.name)
+    .join();
 
   return (
     <Container
