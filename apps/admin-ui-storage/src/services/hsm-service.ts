@@ -59,11 +59,11 @@ export const getZxPowerStoreServerAttributes = async (
 };
 
 export const getAllVolumesForHsm = async (serverId: string): Promise<Array<Volume>> => {
-  const response = (await soapFetch(
+  const response = await soapFetch<{ _jsns: string }, { volume?: Array<Volume> }>(
     'GetAllVolumes',
     { _jsns: ZIMBRA_ADMIN_URN },
     { targetServer: serverId },
-  )) as { volume?: Array<Volume> };
+  );
 
   if (!response?.volume || response.volume.length === 0) {
     return [];

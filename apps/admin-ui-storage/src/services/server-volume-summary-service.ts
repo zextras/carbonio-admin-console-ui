@@ -67,13 +67,11 @@ export const getServerVolumeSummaryAdvanced = async (
           ZxPowerstore?: { services?: Record<string, string> };
         }
       ).ZxPowerstore?.services?.[INDEXER_MANAGER_KEY] ?? '';
-      hsmScheduled = (
-        (findPowerStoreServer as {
-          ZxPowerstore?: {
-            attributes?: { powerstoreMoveScheduler?: { value?: Record<string, string> } };
-          };
-        }).ZxPowerstore?.attributes?.powerstoreMoveScheduler?.value ?? {}
-      )[HSM_SCHEDULED_KEY];
+      hsmScheduled = (findPowerStoreServer as {
+        ZxPowerstore?: {
+          attributes?: { powerstoreMoveScheduler?: { value?: Record<string, string> } };
+        };
+      }).ZxPowerstore?.attributes?.powerstoreMoveScheduler?.value?.[HSM_SCHEDULED_KEY] ?? '';
     }
 
     if (responseData?.response && item.name && responseData.response[item.name]) {

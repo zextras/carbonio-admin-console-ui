@@ -59,11 +59,11 @@ export const getAllVolumesForServer = async (
     throw new Error('Failed to fetch volumes');
   }
 
-  const response = (await soapFetch(
+  const response = await soapFetch<{ _jsns: string }, { volume?: Array<Volume> }>(
     'GetAllVolumes',
     { _jsns: ZIMBRA_ADMIN_URN },
     { targetServer: selectedServerId },
-  )) as { volume?: Array<Volume> };
+  );
 
   const allVolumes = response?.volume ?? [];
 
