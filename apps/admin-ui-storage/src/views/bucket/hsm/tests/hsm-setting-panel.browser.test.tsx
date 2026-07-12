@@ -116,11 +116,11 @@ function renderPanel(): React.ReactElement {
 describe('HSMsettingPanel (browser)', () => {
 	beforeEach(async () => {
 		await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+		setupAllInterceptors();
 	});
 
 	describe('Rendering', () => {
 		it('should render the server name in the title', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -130,7 +130,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the Scheduling section label', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -140,7 +139,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the Enable Scheduler switch', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -150,7 +148,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the Schedule input with example', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -160,7 +157,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the Apply Deduplication switch', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -170,7 +166,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the HSM Policies List section', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -180,7 +175,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the New button', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -190,7 +184,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the Run All button', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -200,7 +193,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the Delete button', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -210,7 +202,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the Minimum Space Threshold input', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -220,7 +211,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the default policy warning message', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -236,7 +226,6 @@ describe('HSMsettingPanel (browser)', () => {
 
 	describe('Policy list display', () => {
 		it('should display policy data in the table when policies exist', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -253,7 +242,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should render the Policy Name table header', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -263,7 +251,7 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should not display policy rows when no policies exist', async () => {
-			setupAllInterceptors([]);
+			setupGetHSMPolicyInterceptor([]);
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -273,7 +261,7 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should disable Run All button when no policies exist', async () => {
-			setupAllInterceptors([]);
+			setupGetHSMPolicyInterceptor([]);
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -283,7 +271,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should disable Delete button when no policy is selected', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -295,7 +282,6 @@ describe('HSMsettingPanel (browser)', () => {
 
 	describe('Button states', () => {
 		it('should enable Run All button when policies exist', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
@@ -305,7 +291,6 @@ describe('HSMsettingPanel (browser)', () => {
 		});
 
 		it('should enable New button', async () => {
-			setupAllInterceptors();
 			await setupBrowserTest(renderPanel(), {
 				initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
 			});
