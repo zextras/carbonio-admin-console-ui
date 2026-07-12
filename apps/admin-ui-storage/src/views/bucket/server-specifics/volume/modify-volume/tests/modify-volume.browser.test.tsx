@@ -225,7 +225,7 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 					bucketName: 'tiering-bucket',
 					storeType: 'S3',
 					tieringSupported: true,
-					'usage in external backup': 'UNUSED',
+					'usage in external backup': 'unused',
 				},
 			]);
 		});
@@ -316,7 +316,7 @@ describe('external volume - disabled radios', () => {
 				bucketName: 'tiering-bucket',
 				storeType: 'S3',
 				tieringSupported: true,
-				'usage in external backup': 'UNUSED',
+				'usage in external backup': 'unused',
 			},
 		]);
 	});
@@ -367,7 +367,7 @@ describe('tiering switches not rendered', () => {
 				bucketName: 's3-bucket',
 				storeType: 'S3',
 				tieringSupported: false,
-				'usage in external backup': 'UNUSED',
+				'usage in external backup': 'unused',
 			},
 		]);
 
@@ -414,7 +414,7 @@ describe('tiering switches not rendered', () => {
 				bucketName: 's3-bucket',
 				storeType: 'S3',
 				tieringSupported: false,
-				'usage in external backup': 'UNUSED',
+				'usage in external backup': 'unused',
 			},
 		]);
 
@@ -466,7 +466,7 @@ describe('tiering hidden on bucket change', () => {
 				bucketName: 'tiering-bucket',
 				storeType: 'S3',
 				tieringSupported: true,
-				'usage in external backup': 'UNUSED',
+				'usage in external backup': 'unused',
 			},
 			{
 				uuid: 'bucket-no-tiering',
@@ -474,7 +474,7 @@ describe('tiering hidden on bucket change', () => {
 				bucketName: 'non-tiering-bucket',
 				storeType: 'Ceph',
 				tieringSupported: false,
-				'usage in external backup': 'UNUSED',
+				'usage in external backup': 'unused',
 			},
 		]);
 	});
