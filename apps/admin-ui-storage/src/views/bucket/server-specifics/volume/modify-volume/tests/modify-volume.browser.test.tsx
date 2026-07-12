@@ -6,6 +6,7 @@
 
 import {
 	advancedSupportedApiForBrowser,
+	createBrowserAPIInterceptor,
 	createBrowserZextrasActionInterceptor,
 	setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -245,4 +246,420 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 				.toBeVisible();
 		});
 	});
+});
+
+describe('GetVolume failure (non-advanced mode)', () => {
+	beforeEach(async () => {
+		await advancedSupportedApiForBrowser.withAdvancedNotSupported();
+	});
+
+	it('should show error snackbar and refresh volume list when GetVolume fails', async () => {
+		await createBrowserAPIInterceptor('post', '/service/admin/soap/GetVolumeRequest', () =>
+			HttpResponse.json({ Body: { Fault: { Code: 'Error', Reason: { Text: 'fail' } } } }),
+		);
+
+		const setmodifyVolumeToggle = vi.fn();
+		const getAllVolumesRequest = vi.fn();
+
+		await setupBrowserTest(
+			renderModifyVolume(42, { primaries: [], secondaries: [], indexes: [] }, {
+				setmodifyVolumeToggle,
+				getAllVolumesRequest,
+			}),
+			{ initialRouterEntry: VOLUME_ROUTE_ENTRY },
+		);
+
+		// soapFetch retries 3 times (~7s of backoff) before the error propagates
+		await vi.waitFor(
+			() => {
+				expect(getAllVolumesRequest).toHaveBeenCalled();
+			},
+			{ timeout: 15_000 },
+		);
+
+		await expect
+			.element(page.getByText('Something went wrong, please try again'))
+			.toBeVisible();
+		expect(setmodifyVolumeToggle).not.toHaveBeenCalledWith(true);
+	}, 25_000);
+});
+
+describe('external volume - disabled radios', () => {
+	const EXTERNAL_S3_VOLUME: Volume = {
+		id: 9,
+		name: 's3primary',
+		uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
+		tieringSupported: true,
+		useInfrequentAccess: false,
+		infrequentAccessThreshold: 65536,
+		useIntelligentTiering: false,
+		volumePrefix: '',
+		storeType: 'S3',
+		isCurrent: false,
+		volumeType: 'primary',
+	};
+
+	const EXTERNAL_VOLUME_LIST = {
+		primaries: [EXTERNAL_S3_VOLUME],
+		secondaries: [],
+		indexes: [],
+	};
+
+	let listS3ConnectorInterceptor: ReturnType<typeof setupListS3ConnectorInterceptor>;
+
+	beforeEach(async () => {
+		await advancedSupportedApiForBrowser.withAdvancedSupported();
+		listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+			{
+				uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
+				label: 'Tiering S3 connector',
+				bucketName: 'tiering-bucket',
+				storeType: 'S3',
+				tieringSupported: true,
+				'usage in external backup': 'UNUSED',
+			},
+		]);
+	});
+
+	it('should disable primary and secondary volume type radios for external volumes', async () => {
+		await setupBrowserTest(
+			renderModifyVolume(EXTERNAL_S3_VOLUME.id as number, EXTERNAL_VOLUME_LIST),
+			{ initialRouterEntry: VOLUME_ROUTE_ENTRY },
+		);
+
+		await vi.waitFor(() => {
+			expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+		});
+
+		await expect
+			.element(page.getByRole('radio', { name: /this is a primary volume/i }))
+			.toBeDisabled();
+		await expect
+			.element(page.getByRole('radio', { name: /this is a secondary volume/i }))
+			.toBeDisabled();
+	});
+});
+
+describe('tiering switches not rendered', () => {
+	beforeEach(async () => {
+		await advancedSupportedApiForBrowser.withAdvancedSupported();
+	});
+
+	it('should not render tiering switches when volume tieringSupported is false', async () => {
+		const NON_TIERING_VOLUME: Volume = {
+			id: 6,
+			name: 'cephprimary',
+			uuid: '09dd7b71-23f0-47f2-b580-5593f3aaabe8',
+			tieringSupported: false,
+			useInfrequentAccess: false,
+			infrequentAccessThreshold: 65536,
+			useIntelligentTiering: false,
+			volumePrefix: '',
+			storeType: 'S3',
+			isCurrent: false,
+			volumeType: 'primary',
+		};
+
+		const listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+			{
+				uuid: '09dd7b71-23f0-47f2-b580-5593f3aaabe8',
+				label: 'S3 connector',
+				bucketName: 's3-bucket',
+				storeType: 'S3',
+				tieringSupported: false,
+				'usage in external backup': 'UNUSED',
+			},
+		]);
+
+		await setupBrowserTest(
+			renderModifyVolume(NON_TIERING_VOLUME.id as number, {
+				primaries: [NON_TIERING_VOLUME],
+				secondaries: [],
+				indexes: [],
+			}),
+			{ initialRouterEntry: VOLUME_ROUTE_ENTRY },
+		);
+
+		await vi.waitFor(() => {
+			expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+		});
+
+		expect(
+			page.getByText('Use infrequent access', { exact: true }).elements(),
+		).toHaveLength(0);
+		expect(
+			page.getByText('Use intelligent tiering', { exact: true }).elements(),
+		).toHaveLength(0);
+	});
+
+	it('should not render tiering switches when connector does not support tiering', async () => {
+		const TIERING_VOLUME: Volume = {
+			id: 9,
+			name: 's3primary',
+			uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
+			tieringSupported: true,
+			useInfrequentAccess: false,
+			infrequentAccessThreshold: 65536,
+			useIntelligentTiering: false,
+			volumePrefix: '',
+			storeType: 'S3',
+			isCurrent: false,
+			volumeType: 'primary',
+		};
+
+		const listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+			{
+				uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
+				label: 'S3 connector',
+				bucketName: 's3-bucket',
+				storeType: 'S3',
+				tieringSupported: false,
+				'usage in external backup': 'UNUSED',
+			},
+		]);
+
+		await setupBrowserTest(
+			renderModifyVolume(TIERING_VOLUME.id as number, {
+				primaries: [TIERING_VOLUME],
+				secondaries: [],
+				indexes: [],
+			}),
+			{ initialRouterEntry: VOLUME_ROUTE_ENTRY },
+		);
+
+		await vi.waitFor(() => {
+			expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+		});
+
+		expect(
+			page.getByText('Use infrequent access', { exact: true }).elements(),
+		).toHaveLength(0);
+		expect(
+			page.getByText('Use intelligent tiering', { exact: true }).elements(),
+		).toHaveLength(0);
+	});
+});
+
+describe('tiering hidden on bucket change', () => {
+	const TIERING_VOLUME: Volume = {
+		id: 100,
+		name: 'external-volume',
+		uuid: 'bucket-tiering',
+		tieringSupported: true,
+		useInfrequentAccess: false,
+		infrequentAccessThreshold: 65536,
+		useIntelligentTiering: false,
+		volumePrefix: '',
+		storeType: 'S3',
+		isCurrent: false,
+		volumeType: 'primary',
+	};
+
+	let listS3ConnectorInterceptor: ReturnType<typeof setupListS3ConnectorInterceptor>;
+
+	beforeEach(async () => {
+		await advancedSupportedApiForBrowser.withAdvancedSupported();
+		listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+			{
+				uuid: 'bucket-tiering',
+				label: 'Tiering connector',
+				bucketName: 'tiering-bucket',
+				storeType: 'S3',
+				tieringSupported: true,
+				'usage in external backup': 'UNUSED',
+			},
+			{
+				uuid: 'bucket-no-tiering',
+				label: 'Non-tiering connector',
+				bucketName: 'non-tiering-bucket',
+				storeType: 'Ceph',
+				tieringSupported: false,
+				'usage in external backup': 'UNUSED',
+			},
+		]);
+	});
+
+	it('should hide tiering switches when bucket changes to non-tiering connector', async () => {
+		await setupBrowserTest(
+			renderModifyVolume(TIERING_VOLUME.id as number, {
+				primaries: [TIERING_VOLUME],
+				secondaries: [],
+				indexes: [],
+			}),
+			{ initialRouterEntry: VOLUME_ROUTE_ENTRY },
+		);
+
+		await vi.waitFor(() => {
+			expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+		});
+
+		// Verify tiering switches are initially visible
+		await expect
+			.element(page.getByText('Use infrequent access', { exact: true }))
+			.toBeVisible();
+
+		// Open the bucket select dropdown via DOM (custom web-component select)
+		const selectTrigger = Array.from(
+			document.querySelectorAll('div[tabindex="0"]'),
+		).find((el) => el.textContent?.includes('Available Buckets List')) as
+			| HTMLElement
+			| undefined;
+		expect(selectTrigger).toBeTruthy();
+		selectTrigger?.click();
+
+		// Wait for the dropdown item to appear, then click the non-tiering option
+		await vi.waitFor(() => {
+			const items = document.querySelectorAll('[data-testid="dropdown-item"]');
+			expect(items.length).toBeGreaterThan(0);
+		});
+		const dropdownItems = Array.from(
+			document.querySelectorAll('[data-testid="dropdown-item"]'),
+		);
+		const nonTieringItem = dropdownItems.find((el) =>
+			el.textContent?.includes('Non-tiering connector'),
+		) as HTMLElement | undefined;
+		nonTieringItem?.click();
+
+		// Verify tiering switches are no longer visible
+		await vi.waitFor(() => {
+			expect(
+				page.getByText('Use infrequent access', { exact: true }).elements(),
+			).toHaveLength(0);
+		});
+		expect(
+			page.getByText('Use intelligent tiering', { exact: true }).elements(),
+		).toHaveLength(0);
+	});
+});
+
+describe('advanced save', () => {
+	const ADVANCED_LOCAL_VOLUME: Volume = {
+		id: 5,
+		name: 'primary-local',
+		path: '/opt/zextras/store',
+		type: 1,
+		compressBlobs: 'true',
+		compressionThreshold: '4096',
+		isCurrent: true,
+		volumeType: 'primary',
+	};
+
+	const ADVANCED_VOLUME_LIST = {
+		primaries: [ADVANCED_LOCAL_VOLUME],
+		secondaries: [],
+		indexes: [],
+	};
+
+	beforeEach(async () => {
+		await advancedSupportedApiForBrowser.withAdvancedSupported();
+	});
+
+	it('should call doUpdateVolume and show success snackbar on successful save', async () => {
+		const doUpdateVolumeInterceptor = createBrowserZextrasActionInterceptor(
+			'doUpdateVolume',
+			() =>
+				HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({
+								ok: true,
+								response: { [SERVER_NAME]: { ok: true } },
+							}),
+						},
+					},
+				}),
+		);
+
+		const setmodifyVolumeToggle = vi.fn();
+		const getAllVolumesRequest = vi.fn();
+
+		await setupBrowserTest(
+			renderModifyVolume(ADVANCED_LOCAL_VOLUME.id as number, ADVANCED_VOLUME_LIST, {
+				setmodifyVolumeToggle,
+				getAllVolumesRequest,
+			}),
+			{ initialRouterEntry: VOLUME_ROUTE_ENTRY },
+		);
+
+		// Make the form dirty by changing the volume name
+		await page.getByRole('textbox', { name: /volume name/i }).fill('primary-local-updated');
+
+		// Click Save
+		await page.getByRole('button', { name: /^save$/i }).click();
+
+		await vi.waitFor(() => {
+			expect(doUpdateVolumeInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+		});
+
+		await expect
+			.element(page.getByText('All changes have been saved successfully'))
+			.toBeVisible();
+		expect(getAllVolumesRequest).toHaveBeenCalled();
+		expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
+	});
+
+	it('should show error snackbar when advanced update response is not ok', async () => {
+		createBrowserZextrasActionInterceptor('doUpdateVolume', () =>
+			HttpResponse.json({
+				Body: {
+					response: {
+						content: JSON.stringify({
+							ok: true,
+							response: { [SERVER_NAME]: { ok: false } },
+						}),
+					},
+				},
+			}),
+		);
+
+		const setmodifyVolumeToggle = vi.fn();
+
+		await setupBrowserTest(
+			renderModifyVolume(ADVANCED_LOCAL_VOLUME.id as number, ADVANCED_VOLUME_LIST, {
+				setmodifyVolumeToggle,
+			}),
+			{ initialRouterEntry: VOLUME_ROUTE_ENTRY },
+		);
+
+		await page.getByRole('textbox', { name: /volume name/i }).fill('primary-local-updated');
+		await page.getByRole('button', { name: /^save$/i }).click();
+
+		await expect
+			.element(page.getByText('Something went wrong, please try again'))
+			.toBeVisible();
+		expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
+	});
+
+	it('should show error snackbar when fetchSoap throws during advanced save', async () => {
+		createBrowserZextrasActionInterceptor('doUpdateVolume', () =>
+			HttpResponse.json({
+				Body: {
+					Fault: { Code: 'Error', Reason: { Text: 'network error' } },
+				},
+			}),
+		);
+
+		const setmodifyVolumeToggle = vi.fn();
+
+		await setupBrowserTest(
+			renderModifyVolume(ADVANCED_LOCAL_VOLUME.id as number, ADVANCED_VOLUME_LIST, {
+				setmodifyVolumeToggle,
+			}),
+			{ initialRouterEntry: VOLUME_ROUTE_ENTRY },
+		);
+
+		await page.getByRole('textbox', { name: /volume name/i }).fill('primary-local-updated');
+		await page.getByRole('button', { name: /^save$/i }).click();
+
+		// fetchSoap retries 3 times (~7s of backoff) before the error propagates
+		await vi.waitFor(
+			() => {
+				expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
+			},
+			{ timeout: 15_000 },
+		);
+		await expect
+			.element(page.getByText('Something went wrong, please try again'))
+			.toBeVisible();
+	}, 25_000);
 });
