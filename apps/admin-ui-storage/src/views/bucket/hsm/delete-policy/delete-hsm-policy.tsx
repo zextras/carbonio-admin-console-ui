@@ -12,11 +12,20 @@ import {
   Row,
   useSnackbar,
 } from '@zextras/ui-components';
-import { FC } from 'react';
+import { createContext, type FC, useContext } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { DeleteHsmPolicyProps, HsmPolicyFromServer } from '../../../../../types';
 import { APPOINTMENT, CONTACT, DOCUMENT, MESSAGE } from '../../../../constants';
+
+const CopyActionContext = createContext<{ onCopy: () => void }>({ onCopy: () => {} });
+
+const CopyPolicyIcon: FC = () => {
+	const { onCopy } = useContext(CopyActionContext);
+	return (
+		<Button type="ghost" color={'grey'} icon="CopyOutline" size="large" onClick={onCopy} />
+	);
+};
 
 const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
   showDeletePolicyView,
@@ -123,20 +132,14 @@ const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
         </Container>
 
         <Container padding={{ top: 'small', bottom: 'small' }}>
-          <LabeledValue
-            backgroundColor="gray5"
-            label={t('hsm.hsm_policy', 'HSM Policy')}
-            value={`${getHSMType(selectedPolicies)}${selectedPolicies}`}
-            CustomIcon={() => (
-              <Button
-                type="ghost"
-                color={'grey'}
-                icon="CopyOutline"
-                size="large"
-                onClick={copyToClipboard}
-              />
-            )}
-          />
+          <CopyActionContext.Provider value={{ onCopy: copyToClipboard }}>
+            <LabeledValue
+              backgroundColor="gray5"
+              label={t('hsm.hsm_policy', 'HSM Policy')}
+              value={`${getHSMType(selectedPolicies)}${selectedPolicies}`}
+              CustomIcon={CopyPolicyIcon}
+            />
+          </CopyActionContext.Provider>
         </Container>
       </Container>
     </Modal>
