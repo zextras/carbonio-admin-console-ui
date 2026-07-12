@@ -6,11 +6,16 @@
 
 import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { type FC, useContext } from 'react';
+import { type ComponentProps, type FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
+
+type WizardStepButtonProps = ComponentProps<typeof Button> & {
+	completeLoading?: boolean;
+	setCompleteLoading?: (value: boolean) => void;
+};
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
 	const { t } = useTranslation();
@@ -72,14 +77,13 @@ const NewVolume: FC<{
           onClick={(): void => setToggleWizardLocal(false)}
         />
       ),
-      PrevButton: (props: any): any =>
+      PrevButton: ({ completeLoading }: WizardStepButtonProps) =>
         isAdvanced ? (
           <Button
-            {...props}
             label={t('label.volume_back_button', 'BACK')}
             icon={'ChevronLeftOutline'}
             iconPlacement="left"
-            disable={props?.completeLoading}
+            disabled={completeLoading}
             color="secondary"
             onClick={(): void => {
               setToggleWizardLocal(false);

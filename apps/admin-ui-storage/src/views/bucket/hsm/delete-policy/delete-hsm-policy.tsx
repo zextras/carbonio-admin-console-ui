@@ -127,7 +127,7 @@ const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
             backgroundColor="gray5"
             label={t('hsm.hsm_policy', 'HSM Policy')}
             value={`${getHSMType(selectedPolicies)}${selectedPolicies}`}
-            CustomIcon={(): any => (
+            CustomIcon={() => (
               <Button
                 type="ghost"
                 color={'grey'}
