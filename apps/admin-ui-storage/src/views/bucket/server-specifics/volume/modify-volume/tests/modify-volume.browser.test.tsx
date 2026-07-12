@@ -7,6 +7,7 @@
 import {
 	advancedSupportedApiForBrowser,
 	createBrowserAPIInterceptor,
+	createBrowserSoapAPIInterceptor,
 	createBrowserZextrasActionInterceptor,
 	setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -119,6 +120,21 @@ function renderModifyVolume(
 		</Routes>
 	);
 }
+
+beforeEach(() => {
+	setupListS3ConnectorInterceptor([]);
+	createBrowserSoapAPIInterceptor('GetVolume', { volume: [] });
+	createBrowserSoapAPIInterceptor('GetAllVolumes', { volume: [], _jsns: 'urn:zimbraAdmin' });
+	createBrowserSoapAPIInterceptor('GetAllServers', {
+		server: [
+			{
+				id: 'server-1',
+				name: 'mailstore1.test.com',
+				a: [{ n: 'zimbraServiceHostname', _content: 'mailstore1.test.com' }],
+			},
+		],
+	});
+});
 
 describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 	describe('advanced mode: loads volume data from volumeList without API call', () => {
