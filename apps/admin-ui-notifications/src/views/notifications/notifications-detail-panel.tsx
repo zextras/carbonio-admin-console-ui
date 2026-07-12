@@ -6,7 +6,7 @@
 
 import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 
 import { LIST } from '../../constants';
 import NotificationListView from './notification-list-view';
@@ -21,8 +21,8 @@ const NotificationsDetailPanel: FC = () => {
       background="gray6"
     >
       <Routes>
-        <Route index element={<NotificationListView />} />
-        <Route path={`/${LIST}`} element={<NotificationListView />} />
+        <Route index element={<Navigate to={LIST} replace />} />
+        <Route path={LIST} element={<NotificationListView />} />
         <Route path="*" element={null} />
       </Routes>
     </Container>

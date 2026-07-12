@@ -102,7 +102,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
   useEffect(() => {
     setRoutes((r) =>
       primaryBarViews.reduce((acc, v) => {
-        acc[v?.id] = v.route;
+        acc[v?.id] = v.path;
         return acc;
       }, r),
     );

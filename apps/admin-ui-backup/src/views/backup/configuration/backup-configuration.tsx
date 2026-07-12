@@ -11,6 +11,7 @@ import {
   LabeledValue,
   ListRow,
   Padding,
+  RouteLeavingGuard,
   Row,
   Select,
   Switch,
@@ -56,7 +57,6 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const BackupConfiguration: FC = () => {
   const { server } = useParams();
@@ -1587,15 +1587,7 @@ const BackupConfiguration: FC = () => {
             </ListRow>
           </Container>
         </Container>
-        <RouteLeavingGuard when={isDirty} onSave={onSave}>
-          <ds-text as="p">
-            {t(
-              'label.unsaved_changes_line1',
-              'Are you sure you want to leave this page without saving?',
-            )}
-          </ds-text>
-          <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
-        </RouteLeavingGuard>
+        <RouteLeavingGuard when={isDirty} onSave={onSave} />
       </Container>
     </>
   );

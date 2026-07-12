@@ -11,7 +11,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import { DASHBOARD, PRIMARY_BAR_DASHBOARD } from './constants';
-import AppView from './views/app-view';
+import { AppView } from './views/app-view';
 
 const App: FC = () => {
   const [t] = useTranslation();

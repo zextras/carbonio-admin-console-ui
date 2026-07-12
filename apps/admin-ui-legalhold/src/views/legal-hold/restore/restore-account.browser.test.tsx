@@ -5,7 +5,7 @@
  */
 
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import type { BackupAccountItem } from '../../../../types';
@@ -21,7 +21,7 @@ const mockLegalHoldAccount: BackupAccountItem = {
   deletedTimestamp: undefined,
 };
 
-const mockSetIsShowRestoreView = () => {};
+const mockOnBack = vi.fn();
 
 describe('RestoreAccountView (browser)', () => {
   describe('DatePicker', () => {
@@ -29,7 +29,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -40,7 +40,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -51,7 +51,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -64,7 +64,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -78,7 +78,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -91,7 +91,7 @@ describe('RestoreAccountView (browser)', () => {
       setupBrowserTest(
         <RestoreAccountView
           legalHoldAccount={mockLegalHoldAccount}
-          setIsShowRestoreView={mockSetIsShowRestoreView}
+          onBack={mockOnBack}
         />,
       );
 
@@ -99,6 +99,18 @@ describe('RestoreAccountView (browser)', () => {
 
       const clearButton = page.getByRole('button', { name: 'Clear' });
       await expect.element(clearButton).toBeVisible();
+    });
+  });
+
+  describe('close', () => {
+    it('should call onBack when the close button is clicked', async () => {
+      setupBrowserTest(
+        <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
+      );
+
+      await page.getByTestId('icon: CloseOutline').click();
+
+      expect(mockOnBack).toHaveBeenCalledTimes(1);
     });
   });
 });

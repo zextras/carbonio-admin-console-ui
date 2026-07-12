@@ -10,7 +10,7 @@ import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MANAGE_APP_ID, MTA_ROUTE_ID, PRIMARY_BAR_MTA } from './constants';
-import AppView from './views/app-view';
+import { AppView } from './views/app-view';
 
 const App: FC = () => {
   const [t] = useTranslation();

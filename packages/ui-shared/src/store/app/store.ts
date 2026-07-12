@@ -69,11 +69,14 @@ export const useAppStore = create<AppState>((set) => ({
     addRoute: (routeData: AppRouteDescriptor): string => {
       set(
         produce((state: AppState) => {
+          // `path` is the full prefixed URL (e.g. 'manage/storage'); `route` stays raw.
+          const path = routeData.primarybarSection
+            ? `${routeData.primarybarSection.id}/${routeData.route}`
+            : routeData.route;
           state.routes[routeData.id] = {
             ...routeData,
-            route: routeData.primarybarSection
-              ? `${routeData.primarybarSection.id}/${routeData.route}`
-              : routeData.route,
+            route: routeData.route,
+            path,
           };
           if (routeData.primaryBar) {
             state.views.primaryBar = sortBy(
@@ -82,9 +85,8 @@ export const useAppStore = create<AppState>((set) => ({
                   {
                     app: routeData.app,
                     id: routeData.id,
-                    route: routeData.primarybarSection
-                      ? `${routeData.primarybarSection.id}/${routeData.route}`
-                      : routeData.route,
+                    route: routeData.route,
+                    path,
                     component: routeData.primaryBar,
                     badge: routeData.badge,
                     position: routeData.position,
@@ -124,9 +126,8 @@ export const useAppStore = create<AppState>((set) => ({
                 {
                   app: routeData.app,
                   id: routeData.id,
-                  route: routeData.primarybarSection
-                    ? `${routeData.primarybarSection.id}/${routeData.route}`
-                    : routeData.route,
+                  route: routeData.route,
+                  path,
                   component: routeData.appView,
                 },
               ],

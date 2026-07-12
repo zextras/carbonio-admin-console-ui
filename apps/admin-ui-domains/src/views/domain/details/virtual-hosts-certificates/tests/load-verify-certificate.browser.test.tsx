@@ -16,6 +16,15 @@ vi.mock('../../../../../services/modify-domain-service', () => ({
 	modifyDomain: vi.fn(() => Promise.resolve({ domain: [] })),
 }));
 
+vi.mock('@zextras/ui-shared', async () => {
+	const actual = await vi.importActual<typeof import('@zextras/ui-shared')>('@zextras/ui-shared');
+	return {
+		...actual,
+		soapFetch: vi.fn(() => new Promise(() => {})),
+		flushCache: vi.fn(() => Promise.resolve()),
+	};
+});
+
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
 
