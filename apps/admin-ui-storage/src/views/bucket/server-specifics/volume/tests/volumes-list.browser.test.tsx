@@ -129,6 +129,18 @@ function setupGetAllVolumesAdvanced(
 					},
 				});
 			}
+			if (zextrasBody?.action === 'listS3Connector') {
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({
+								ok: true,
+								response: { values: [] },
+							}),
+						},
+					},
+				});
+			}
 			return HttpResponse.json({ Body: {} });
 		}),
 	);
@@ -139,6 +151,20 @@ function setupEmptyVolumesCE(): void {
 		volume: [],
 		_jsns: 'urn:zimbraAdmin',
 	});
+}
+
+function setupGetAllVolumesFaultCE(): void {
+	worker.use(
+		http.post('/service/admin/soap/GetAllVolumesRequest', () =>
+			HttpResponse.json({
+				Body: {
+					Fault: {
+						Reason: { Text: 'Service unavailable' },
+					},
+				},
+			}),
+		),
+	);
 }
 
 function setupEmptyVolumesAdvanced(): void {
@@ -152,6 +178,18 @@ function setupEmptyVolumesAdvanced(): void {
 					Body: {
 						response: {
 							content: buildAdvancedVolumesSoapContent([], [], []),
+						},
+					},
+				});
+			}
+			if (zextrasBody?.action === 'listS3Connector') {
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({
+								ok: true,
+								response: { values: [] },
+							}),
 						},
 					},
 				});
@@ -320,6 +358,8 @@ describe('VolumesDetailPanel (browser)', () => {
 	describe('Advanced mode', () => {
 		beforeEach(async () => {
 			await advancedSupportedApiForBrowser.withAdvancedSupported();
+			setupAllServersInterceptor();
+			setupEmptyVolumesCE();
 		});
 
 		describe('Rendering', () => {
@@ -378,6 +418,10 @@ describe('VolumesDetailPanel (browser)', () => {
 		});
 
 		describe('mapAdvancedVolume field mapping', () => {
+			beforeEach(() => {
+				setupGetAllVolumesFaultCE();
+			});
+
 			function createPreSeededQueryClient() {
 				const qc = getQueryClient();
 				qc.setQueryData(['all-servers'], [
