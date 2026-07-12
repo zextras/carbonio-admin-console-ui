@@ -21,7 +21,7 @@ import {
 import { useListS3Connectors } from '../../../../../../services/use-list-s3-connectors';
 import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
 import { VolumeContext } from '../volume-context';
-import { AdvancedVolumeContext } from './create-advanced-volume-context';
+import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 
 type AdvancedMailstoresDefinitionProps = {
   externalData: string;
@@ -36,7 +36,7 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
 }) => {
   const { t } = useTranslation();
   const { form: volumeForm } = useContext(VolumeContext);
-  const { form, setIsAllocationToggle } = useContext(AdvancedVolumeContext);
+  const { form, setIsAllocationToggle } = useAdvancedVolumeContext();
   const { data: connectors = [] } = useListS3Connectors();
   const volAllocationList = volumeAllocationList(t);
   const bucketTypeItems = BucketTypeItems(t);

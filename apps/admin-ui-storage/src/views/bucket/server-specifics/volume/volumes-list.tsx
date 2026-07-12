@@ -16,12 +16,7 @@ import {
   THeader,
   useSnackbar,
 } from '@zextras/ui-components';
-import {
-  postSoapFetchRequest,
-  soapFetch,
-  useAllServers,
-  useIsAdvanced,
-} from '@zextras/ui-shared';
+import { postSoapFetchRequest, soapFetch, useAllServers, useIsAdvanced } from '@zextras/ui-shared';
 import { FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -52,7 +47,7 @@ import { setCurrentVolumeRequest } from '../../../../services/set-current-volume
 import { useAllVolumes } from '../../../../services/use-all-volumes';
 import { useListS3Connectors } from '../../../../services/use-list-s3-connectors';
 import { indexerHeaders, volTableHeader } from '../../../utility/utils';
-import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
+import { CreateMailstoresVolume } from './create-volume/advanced-create-volume/create-mailstores-volume';
 import NewVolume from './create-volume/new-volume';
 import { VolumeContext } from './create-volume/volume-context';
 import DeleteVolumeModel from './delete-volume-model';
@@ -77,94 +72,103 @@ const VolumeListTable: FC<{
 }> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
   const [t] = useTranslation();
   const tableRows = volumes.map((v, i) => {
-        const columns = [
-          <Row
-            key={i}
-            onClick={(): void => {
-              onClick(i);
-            }}
-            style={{ textAlign: 'left', justifyContent: FLEX_START }}
-          >
-            <ds-text as="span" size="small" weight="regular">
-              {v?.id}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            onClick={(): void => {
-              onClick(i);
-            }}
-            style={{ textAlign: 'left', justifyContent: FLEX_START }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v?.name}
-            </ds-text>
-          </Row>,
-          isAdvanced && (
-            <Row
-              key={i}
-              onClick={(): void => {
-                onClick(i);
-              }}
-              style={{ textAlign: 'left', justifyContent: FLEX_START }}
-            >
-              <ds-text as="span" size="small" weight="light">
-                {v?.storeType === LOCAL_VALUE
-                  ? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
-                  : t('volume.volume_allocation_list.object_storage', 'Object Storage')}
-              </ds-text>
-            </Row>
-          ),
-          <Row
-            key={i}
-            onClick={(): void => {
-              onClick(i);
-            }}
-            style={{ textAlign: 'left', justifyContent: FLEX_START }}
-          >
-            <ds-text as="span" size="small" weight="light">
-              {v?.storeType === LOCAL_VALUE ? v?.path : v?.rootpath}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            onClick={(): void => {
-              onClick(i);
-            }}
-            style={{ textAlign: 'left', justifyContent: FLEX_START }}
-          >
-            <ds-text as="span" color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
-              {v?.isCurrent ? YES : NO}
-            </ds-text>
-          </Row>,
-          <Row
-            key={i}
-            onClick={(): void => {
-              onClick(i);
-            }}
-            style={{ textAlign: 'left', justifyContent: FLEX_START }}
-          >
-            <ds-text as="span" color={v?.compressed ? 'text' : 'error'} size="small" weight="light">
-              {v?.compressed ? YES : NO}
-            </ds-text>
-          </Row>,
-          <Row key={v?.id} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
-            <button
-              type="button"
-              onClick={(): void => { onClick(i); }}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 0px 0px 14px', display: 'inline-flex', alignItems: 'center' }}
-            >
-              <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
-            </button>
-          </Row>
-        ];
+    const columns = [
+      <Row
+        key={i}
+        onClick={(): void => {
+          onClick(i);
+        }}
+        style={{ textAlign: 'left', justifyContent: FLEX_START }}
+      >
+        <ds-text as="span" size="small" weight="regular">
+          {v?.id}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        onClick={(): void => {
+          onClick(i);
+        }}
+        style={{ textAlign: 'left', justifyContent: FLEX_START }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v?.name}
+        </ds-text>
+      </Row>,
+      isAdvanced && (
+        <Row
+          key={i}
+          onClick={(): void => {
+            onClick(i);
+          }}
+          style={{ textAlign: 'left', justifyContent: FLEX_START }}
+        >
+          <ds-text as="span" size="small" weight="light">
+            {v?.storeType === LOCAL_VALUE
+              ? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
+              : t('volume.volume_allocation_list.object_storage', 'Object Storage')}
+          </ds-text>
+        </Row>
+      ),
+      <Row
+        key={i}
+        onClick={(): void => {
+          onClick(i);
+        }}
+        style={{ textAlign: 'left', justifyContent: FLEX_START }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v?.storeType === LOCAL_VALUE ? v?.path : v?.rootpath}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        onClick={(): void => {
+          onClick(i);
+        }}
+        style={{ textAlign: 'left', justifyContent: FLEX_START }}
+      >
+        <ds-text as="span" color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
+          {v?.isCurrent ? YES : NO}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        onClick={(): void => {
+          onClick(i);
+        }}
+        style={{ textAlign: 'left', justifyContent: FLEX_START }}
+      >
+        <ds-text as="span" color={v?.compressed ? 'text' : 'error'} size="small" weight="light">
+          {v?.compressed ? YES : NO}
+        </ds-text>
+      </Row>,
+      <Row key={v?.id} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+        <button
+          type="button"
+          onClick={(): void => {
+            onClick(i);
+          }}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '14px 0px 0px 14px',
+            display: 'inline-flex',
+            alignItems: 'center',
+          }}
+        >
+          <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
+        </button>
+      </Row>,
+    ];
 
-        return {
-          id: String(v?.id ?? ''),
-          columns: columns.filter((column) => column !== false), // Changed filter condition to remove false instead of null
-          clickable: true,
-        };
-      });
+    return {
+      id: String(v?.id ?? ''),
+      columns: columns.filter((column) => column !== false), // Changed filter condition to remove false instead of null
+      clickable: true,
+    };
+  });
   return (
     <Container crossAlignment="flex-start">
       <Table
@@ -201,8 +205,7 @@ const VolumesDetailPanel: FC = () => {
   const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
   const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
   const { data: serverList = [] } = useAllServers();
-  const selectedServerId =
-    serverList?.find((s: { name?: string }) => s?.name === server)?.id ?? '';
+  const selectedServerId = serverList?.find((s: { name?: string }) => s?.name === server)?.id ?? '';
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [volume, setVolume] = useState<Volume | undefined>({
     compressBlobs: '',
@@ -225,7 +228,9 @@ const VolumesDetailPanel: FC = () => {
     isAdvanced,
   );
   const invalidateVolumes = (): void => {
-    void queryClient.invalidateQueries({ queryKey: bucketVolumeQueryKeys.allVolumes(selectedServerId) });
+    void queryClient.invalidateQueries({
+      queryKey: bucketVolumeQueryKeys.allVolumes(selectedServerId),
+    });
   };
   const createSnackbar = useSnackbar();
 
@@ -457,8 +462,8 @@ const VolumesDetailPanel: FC = () => {
           label: error?.message
             ? error?.message
             : t('label.volume_detail_error', '{{message}}', {
-              message: 'Something went wrong, please try again',
-            }),
+                message: 'Something went wrong, please try again',
+              }),
           autoHideTimeout: 5000,
         });
         return error;
@@ -597,8 +602,8 @@ const VolumesDetailPanel: FC = () => {
             label: error?.message
               ? error?.message
               : t('label.volume_detail_error', '{{message}}', {
-                message: 'Something went wrong, please try again',
-              }),
+                  message: 'Something went wrong, please try again',
+                }),
             autoHideTimeout: 5000,
           });
           setIsLoading(false);
@@ -608,7 +613,7 @@ const VolumesDetailPanel: FC = () => {
   };
 
   const handleClick = (i: number, data: Volume[]): void => {
-    const volumeObject = data?.find((s: Volume, index: number) => index === i);
+    const volumeObject = data?.find((_volume: Volume, index: number) => index === i);
     const typeVol = volumeObject as Volume;
     setVolume(typeVol);
     setmodifyVolumeToggle(true);

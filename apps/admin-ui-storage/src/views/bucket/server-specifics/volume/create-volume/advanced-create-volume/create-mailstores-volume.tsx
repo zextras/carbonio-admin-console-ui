@@ -5,17 +5,18 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
-import { type FC, type ReactElement, useState } from 'react';
+import { type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { CreateMailstoresVolumeProps } from '../../../../../../../types';
 import { volumeTypeList } from '../../../../../utility/utils';
-import AdvancedMailstoresConfig from './advanced-mailstores-config';
+import { AdvancedMailstoresConfig } from './advanced-mailstores-config';
 import AdvancedMailstoresCreate from './advanced-mailstores-create';
 import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import type { AdvancedVolumeFormValues } from './types';
 
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
+const WizardInSection = ({ wizard, wizardFooter, setToggleWizardSection, externalData }: any) => {
   const { t } = useTranslation();
   return (
     <Section
@@ -33,14 +34,12 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
   );
 };
 
-
-
-const CreateMailstoresVolume: FC<{
-  setToggleWizardExternal: any;
-  setToggleWizardLocal: any;
-  volName: any;
-  CreateAdvancedRequest: any;
-}> = ({ setToggleWizardExternal, setToggleWizardLocal, volName, CreateAdvancedRequest }) => {
+export const CreateMailstoresVolume = ({
+  setToggleWizardExternal,
+  setToggleWizardLocal,
+  volName,
+  CreateAdvancedRequest,
+}: CreateMailstoresVolumeProps) => {
   const { t } = useTranslation();
   const volTypeList = volumeTypeList(t);
   const [isAllocationToggle, setIsAllocationToggle] = useState(false);
@@ -196,6 +195,7 @@ const CreateMailstoresVolume: FC<{
       centralized: v.centralized,
       isCurrent: v.isCurrent ? 1 : 0,
       useInfrequentAccess: v.useInfrequentAccess,
+      infrequentAccessThreshold: v.infrequentAccessThreshold,
       useIntelligentTiering: v.useIntelligentTiering,
     });
   };

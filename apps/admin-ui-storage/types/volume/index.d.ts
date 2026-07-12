@@ -22,7 +22,7 @@ export type Volume = {
 	compressed?: boolean;
 	uuid?: string;
 	tieringSupported?: boolean;
-	infrequentAccessThreshold?: number;
+	infrequentAccessThreshold?: number | string;
 	isDrivePrimary?: boolean;
 	path?: string;
 	storeType?: string;
@@ -270,6 +270,24 @@ export type CreateVolumeResponse = {
 	_jsns?: string;
 };
 
+/**
+ * Payload built from the advanced create-volume wizard form and forwarded to
+ * the parent's `CreateAdvancedRequest` callback (which enriches it with bucket
+ * credentials and posts the SOAP `doCreateVolume` request).
+ */
+export type CreateAdvancedVolumePayload = {
+	volumeName: string;
+	volumeType: string | undefined;
+	storeType: string;
+	bucketConfigurationId: string;
+	volumePrefix: string;
+	centralized: boolean;
+	isCurrent: 0 | 1;
+	useInfrequentAccess: boolean;
+	infrequentAccessThreshold: string;
+	useIntelligentTiering: boolean;
+};
+
 export type SetCurrentVolumeRequest = {
 	_jsns: string;
 	id: number | string;
@@ -348,7 +366,7 @@ export type CreateMailstoresVolumeProps = {
 	setToggleWizardExternal: (v: boolean) => void;
 	setToggleWizardLocal: (v: boolean) => void;
 	volName: string;
-	CreateAdvancedRequest: (params: Record<string, unknown>) => void;
+	CreateAdvancedRequest: (payload: CreateAdvancedVolumePayload) => void;
 };
 
 /**

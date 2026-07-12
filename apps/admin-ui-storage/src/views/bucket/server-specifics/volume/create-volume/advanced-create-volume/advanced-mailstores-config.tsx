@@ -15,7 +15,7 @@ import {
   Row,
   Switch,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, useContext, useEffect } from 'react';
+import { type ChangeEvent, type FC, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { AdvancedMailstoresConfigProps } from '../../../../../../../types';
@@ -26,10 +26,14 @@ import {
   S3,
   SECONDARY_TYPE_VALUE,
 } from '../../../../../../constants';
-import { AdvancedVolumeContext } from './create-advanced-volume-context';
+import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 
-const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelection, externalData, setCompleteLoading }) => {
-  const { form, setIsAllocationToggle } = useContext(AdvancedVolumeContext);
+export const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({
+  onSelection,
+  externalData,
+  setCompleteLoading,
+}) => {
+  const { form, setIsAllocationToggle } = useAdvancedVolumeContext();
   const { t } = useTranslation();
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
@@ -42,7 +46,10 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
   const volumeMain = useSelector(form.store, (s) => s.values.volumeMain);
   const useInfrequentAccess = useSelector(form.store, (s) => s.values.useInfrequentAccess);
   const useIntelligentTiering = useSelector(form.store, (s) => s.values.useIntelligentTiering);
-  const infrequentAccessThreshold = useSelector(form.store, (s) => s.values.infrequentAccessThreshold);
+  const infrequentAccessThreshold = useSelector(
+    form.store,
+    (s) => s.values.infrequentAccessThreshold,
+  );
   const isCurrent = useSelector(form.store, (s) => s.values.isCurrent);
   const centralized = useSelector(form.store, (s) => s.values.centralized);
 
@@ -124,11 +131,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
           crossAlignment="flex-start"
           padding={{ top: 'large' }}
         >
-          <LabeledValue
-            label={t('label.ID', 'ID')}
-            backgroundColor="gray6"
-            value={bucketId}
-          />
+          <LabeledValue label={t('label.ID', 'ID')} backgroundColor="gray6" value={bucketId} />
         </Container>
       </ListRow>
       <Row
@@ -144,8 +147,14 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
             value={PRIMARY_TYPE_VALUE.toString()}
             checked={volumeMain === PRIMARY_TYPE_VALUE}
             onClick={(): void => {
-              form.setFieldValue('volumeMain', volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE);
-              onSelection({ volumeMain: volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE }, true);
+              form.setFieldValue(
+                'volumeMain',
+                volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE,
+              );
+              onSelection(
+                { volumeMain: volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE },
+                true,
+              );
             }}
             iconColor="primary"
           />
@@ -156,8 +165,14 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
             value={SECONDARY_TYPE_VALUE}
             checked={volumeMain === SECONDARY_TYPE_VALUE}
             onClick={(): void => {
-              form.setFieldValue('volumeMain', volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE);
-              onSelection({ volumeMain: volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE }, true);
+              form.setFieldValue(
+                'volumeMain',
+                volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE,
+              );
+              onSelection(
+                { volumeMain: volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE },
+                true,
+              );
             }}
             iconColor="primary"
           />
@@ -166,10 +181,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
       <Row padding={{ top: 'large' }} width="100%">
         <Input
           inputName="prefix"
-          label={t(
-            'label.prefix_name',
-            'Prefix - all objects will have this prefix in their name',
-          )}
+          label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
           value={prefix}
           backgroundColor="gray5"
           onChange={changeVolDetail}
@@ -304,7 +316,12 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
             />
           </Row>
           <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-            <ds-text as="p" color="secondary" style={{ whiteSpace: 'pre-line', width: '100%' }} overflow="break-word">
+            <ds-text
+              as="p"
+              color="secondary"
+              style={{ whiteSpace: 'pre-line', width: '100%' }}
+              overflow="break-word"
+            >
               <Trans
                 i18nKey="label.storage_centralized_helpertext"
                 defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
@@ -317,5 +334,3 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
     </Container>
   );
 };
-
-export default AdvancedMailstoresConfig;
