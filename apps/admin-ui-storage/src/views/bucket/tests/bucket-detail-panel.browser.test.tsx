@@ -6,10 +6,11 @@
 
 import { setupBrowserTest, worker } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import BucketDetailPanel from '../bucket-detail-panel';
+import type { BucketConnectorRow } from '../../../../types';
+import BucketDetailPanel, { resolveSelectedBucketConnector } from '../bucket-detail-panel';
 
 type BucketEntry = {
 	label: string;
@@ -79,6 +80,110 @@ function setupListS3ConnectorInterceptor(buckets: Array<BucketEntry> = BUCKETS):
 							content: JSON.stringify({
 								ok: true,
 								response: { values },
+							}),
+						},
+					},
+				});
+			}
+
+			return HttpResponse.json({ Body: {} });
+		}),
+	);
+}
+
+function setupDeleteFlowInterceptors(options?: {
+	buckets?: Array<BucketEntry>;
+	deleteResponse?: Record<string, unknown>;
+}): {
+	getListCalls: () => number;
+	getDeleteCalls: () => number;
+} {
+	let listCalls = 0;
+	let deleteCalls = 0;
+
+	worker.use(
+		http.post('/service/admin/soap/zextras', async ({ request }) => {
+			const body = (await request.json()) as any;
+			const zextrasBody = body?.Body?.zextras;
+
+			if (zextrasBody?.action === 'listS3Connector') {
+				listCalls += 1;
+				const values = (options?.buckets ?? BUCKETS).map((bucket) => ({
+					...bucket,
+					id: bucket.uuid,
+				}));
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({
+								ok: true,
+								response: { values },
+							}),
+						},
+					},
+				});
+			}
+
+			if (zextrasBody?.action === 'deleteS3Connector') {
+				deleteCalls += 1;
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify(options?.deleteResponse ?? { ok: true, response: {} }),
+						},
+					},
+				});
+			}
+
+			if (zextrasBody?.action === 'listS3Regions') {
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({
+								ok: true,
+								response: { values: [] },
+							}),
+						},
+					},
+				});
+			}
+
+			return HttpResponse.json({ Body: {} });
+		}),
+	);
+
+	return {
+		getListCalls: () => listCalls,
+		getDeleteCalls: () => deleteCalls,
+	};
+}
+
+function setupListErrorInterceptor(): void {
+	worker.use(
+		http.post('/service/admin/soap/zextras', async ({ request }) => {
+			const body = (await request.json()) as any;
+			const zextrasBody = body?.Body?.zextras;
+
+			if (zextrasBody?.action === 'listS3Connector') {
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({
+								ok: false,
+								error: 'Failed to list S3 connectors',
+							}),
+						},
+					},
+				});
+			}
+
+			if (zextrasBody?.action === 'listS3Regions') {
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({
+								ok: true,
+								response: { values: [] },
 							}),
 						},
 					},
@@ -248,5 +353,109 @@ describe('BucketDetailPanel (browser)', () => {
 			const filterInput = page.getByLabelText('Filter S3 List');
 			await expect.element(filterInput).toHaveAttribute('disabled');
 		});
+	});
+});
+
+describe('resolveSelectedBucketConnector', () => {
+	const bucketList: Array<BucketConnectorRow> = [
+		{
+			uuid: 'uuid-1',
+			id: 'uuid-1',
+			label: 'Main connector',
+			bucketName: 'main-bucket',
+		} as BucketConnectorRow,
+		{
+			uuid: 'uuid-2',
+			id: 'uuid-2',
+			label: 'Backup connector',
+			bucketName: 'backup-bucket',
+		} as BucketConnectorRow,
+	];
+
+	it('should resolve the selected connector by uuid/id', () => {
+		const result = resolveSelectedBucketConnector(bucketList, 'uuid-2');
+		expect(result?.uuid).toBe('uuid-2');
+	});
+
+	it('should return undefined when the id does not match any connector', () => {
+		const result = resolveSelectedBucketConnector(bucketList, 'missing');
+		expect(result).toBeUndefined();
+	});
+
+	it('should return undefined when selectedValue is undefined', () => {
+		const result = resolveSelectedBucketConnector(bucketList, undefined);
+		expect(result).toBeUndefined();
+	});
+
+	it('should resolve by numeric index when the value is a valid index', () => {
+		const result = resolveSelectedBucketConnector(bucketList, '0');
+		expect(result?.uuid).toBe('uuid-1');
+	});
+});
+
+describe('Delete connector flow (browser)', () => {
+	it('should delete connector successfully and show success snackbar', async () => {
+		const interceptors = setupDeleteFlowInterceptors();
+		await setupBrowserTest(<BucketDetailPanel />);
+
+		await page.getByText('Production S3', { exact: true }).click();
+		await expect
+			.element(page.getByText('S3 details', { exact: true }))
+			.toBeVisible();
+
+		await page.getByRole('button', { name: /delete connector/i }).click();
+
+		await page
+			.getByRole('checkbox', { name: /i am sure i want to delete this connector/i })
+			.click();
+
+		await page.getByRole('button', { name: /proceed with deletion/i }).click();
+
+		await expect
+			.element(page.getByText('The prod-bucket has been removed'))
+			.toBeVisible();
+
+		await vi.waitFor(
+			() => {
+				expect(interceptors.getListCalls()).toBeGreaterThanOrEqual(2);
+			},
+			{ timeout: 5000 },
+		);
+	});
+
+	it('should show error snackbar when delete returns failure', async () => {
+		setupDeleteFlowInterceptors({
+			deleteResponse: { ok: false, error: { message: 'Delete denied' } },
+		});
+		await setupBrowserTest(<BucketDetailPanel />);
+
+		await page.getByText('Production S3', { exact: true }).click();
+		await expect
+			.element(page.getByText('S3 details', { exact: true }))
+			.toBeVisible();
+
+		await page.getByRole('button', { name: /delete connector/i }).click();
+
+		await page
+			.getByRole('checkbox', { name: /i am sure i want to delete this connector/i })
+			.click();
+
+		await page.getByRole('button', { name: /proceed with deletion/i }).click();
+
+		await expect.element(page.getByText('Delete denied')).toBeVisible();
+	});
+});
+
+describe('Error state (browser)', () => {
+	it('should show empty state and disable filter when list call fails', async () => {
+		setupListErrorInterceptor();
+		await setupBrowserTest(<BucketDetailPanel />);
+
+		await expect
+			.element(page.getByText(/haven't setup a bucket type/i))
+			.toBeInTheDocument();
+
+		const filterInput = page.getByLabelText('Filter S3 List');
+		await expect.element(filterInput).toHaveAttribute('disabled');
 	});
 });
