@@ -80,9 +80,7 @@ const ServersListTable: FC<{
         }}
       >
         <ds-text as="span" size="small" weight="light">
-          {v?.hsmScheduled
-            ? t('label.scheduled', 'Scheduled')
-            : t('label.disabled', 'Disabled')}
+          {v?.hsmScheduled ? t('label.scheduled', 'Scheduled') : t('label.disabled', 'Disabled')}
         </ds-text>
       </Row>,
       <Row
@@ -168,6 +166,10 @@ const ServersListTable: FC<{
   );
 };
 
+const FunnelFilterIcon: FC = () => (
+	<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
+
 const ServerDetailPanel: FC = () => {
   const [t] = useTranslation();
   const { data: allServersList = [] } = useMailstoreServers();
@@ -181,7 +183,7 @@ const ServerDetailPanel: FC = () => {
 
   const serversList = serverListAll.filter((item: any) => item.name?.includes(searchServer));
 
-  const headerCE: any[] = [
+  const headerCE = [
     {
       id: 'Server',
       label: t('volume.server_list_header.server', 'Server'),
@@ -199,66 +201,62 @@ const ServerDetailPanel: FC = () => {
   ];
 
   return (
-    <>
+    <Container
+      orientation="column"
+      crossAlignment="flex-start"
+      mainAlignment="flex-start"
+      style={{ overflowY: 'auto', position: 'relative' }}
+      background="white"
+    >
+      <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
+        <ds-text as="h2" weight="bold">
+          {t('buckets.servers_list', 'Servers List')}
+        </ds-text>
+      </Row>
+      <ds-divider></ds-divider>
       <Container
         orientation="column"
         crossAlignment="flex-start"
         mainAlignment="flex-start"
-        style={{ overflowY: 'auto', position: 'relative' }}
-        background="white"
+        width="100%"
+        height="calc(100vh - 200px)"
+        padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
       >
-        <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <ds-text as="h2" weight="bold">
-            {t('buckets.servers_list', 'Servers List')}
-          </ds-text>
+        <Row mainAlignment="flex-start" width="100%">
+          <Container height="fit" crossAlignment="flex-start" background="gray6">
+            <Row
+              orientation="horizontal"
+              mainAlignment="space-between"
+              crossAlignment="flex-start"
+              width="fill"
+              padding={{ top: 'small', bottom: 'large' }}
+            >
+              <Container>
+                <Input
+                  disabled={serversList.length === 0 && searchServer.length === 0}
+                  label={t('label.search_for_a_Server', `Search for a Server`)}
+                  backgroundColor="gray5"
+                  CustomIcon={FunnelFilterIcon}
+                  value={searchServer}
+                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                    setSearchServer(e.target.value);
+                  }}
+                />
+              </Container>
+            </Row>
+          </Container>
         </Row>
-        <ds-divider></ds-divider>
-        <Container
-          orientation="column"
-          crossAlignment="flex-start"
-          mainAlignment="flex-start"
-          width="100%"
-          height="calc(100vh - 200px)"
-          padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
-        >
-          <Row mainAlignment="flex-start" width="100%">
-            <Container height="fit" crossAlignment="flex-start" background="gray6">
-              <Row
-                orientation="horizontal"
-                mainAlignment="space-between"
-                crossAlignment="flex-start"
-                width="fill"
-                padding={{ top: 'small', bottom: 'large' }}
-              >
-                <Container>
-                  <Input
-                    disabled={serversList.length === 0 && searchServer.length === 0}
-                    label={t('label.search_for_a_Server', `Search for a Server`)}
-                    backgroundColor="gray5"
-                    CustomIcon={() => (
-                      <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                    )}
-                    value={searchServer}
-                    onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                      setSearchServer(e.target.value);
-                    }}
-                  />
-                </Container>
-              </Row>
-            </Container>
-          </Row>
-          <Row width="100%">
-            <ServersListTable
-              volumes={serversList}
-              headers={isAdvanced ? serverHeaderAdvanced : headerCE}
-              isAdvanced={isAdvanced}
-              t={t}
-              isRequestInProgress={isRequestInProgress}
-            />
-          </Row>
-        </Container>
+        <Row width="100%">
+          <ServersListTable
+            volumes={serversList}
+            headers={isAdvanced ? serverHeaderAdvanced : headerCE}
+            isAdvanced={isAdvanced}
+            t={t}
+            isRequestInProgress={isRequestInProgress}
+          />
+        </Row>
       </Container>
-    </>
+    </Container>
   );
 };
 
