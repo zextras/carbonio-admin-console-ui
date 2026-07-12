@@ -6,7 +6,7 @@
 
 import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { type ComponentProps, type FC, useContext } from 'react';
+import { type ComponentProps, createContext, type FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import MailstoresCreate from './mailstores-create';
@@ -14,7 +14,75 @@ import { VolumeContext } from './volume-context';
 
 type WizardStepButtonProps = ComponentProps<typeof Button> & {
 	completeLoading?: boolean;
-	setCompleteLoading?: (value: boolean) => void;
+};
+
+type NewVolumeActions = {
+	isAdvanced: boolean;
+	onCancel: () => void;
+	onPrev: () => void;
+};
+
+const NewVolumeActionsContext = createContext<NewVolumeActions>({
+	isAdvanced: false,
+	onCancel: () => {},
+	onPrev: () => {},
+});
+
+const NewVolumeCancelButton: FC<WizardStepButtonProps> = (props) => {
+	const { t } = useTranslation();
+	const { onCancel } = useContext(NewVolumeActionsContext);
+	return (
+		<Button
+			{...props}
+			type="outlined"
+			key="wizard-cancel"
+			label={t('label.volume_cancel_button', 'CANCEL')}
+			icon={'CloseOutline'}
+			iconPlacement="right"
+			color="secondary"
+			onClick={onCancel}
+		/>
+	);
+};
+
+const NewVolumePrevButton: FC<WizardStepButtonProps> = ({ completeLoading }) => {
+	const { t } = useTranslation();
+	const { isAdvanced, onPrev } = useContext(NewVolumeActionsContext);
+	if (!isAdvanced) {
+		return <></>;
+	}
+	return (
+		<Button
+			label={t('label.volume_back_button', 'BACK')}
+			icon={'ChevronLeftOutline'}
+			iconPlacement="left"
+			disabled={completeLoading}
+			color="secondary"
+			onClick={onPrev}
+		/>
+	);
+};
+
+const NewVolumeNextButton: FC<WizardStepButtonProps> = (props) => {
+	const { t } = useTranslation();
+	const { isAdvanced } = useContext(NewVolumeActionsContext);
+	return isAdvanced ? (
+		<Button
+			{...props}
+			label={t('label.volume_create', 'CREATE')}
+			icon={'PowerOutline'}
+			iconPlacement="right"
+			disabled={props?.completeLoading}
+		/>
+	) : (
+		<Button
+			{...props}
+			label={t('label.volume_create', 'CREATE')}
+			icon={'ChevronRightOutline'}
+			iconPlacement="right"
+			disabled={props?.completeLoading}
+		/>
+	);
 };
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
@@ -65,52 +133,9 @@ const NewVolume: FC<{
       label: t('label.new_volume_create', 'CREATE'),
       icon: 'CubeOutline',
       view: MailstoresCreate,
-      CancelButton: (props: any) => (
-        <Button
-          {...props}
-          type="outlined"
-          key="wizard-cancel"
-          label={t('label.volume_cancel_button', 'CANCEL')}
-          icon={'CloseOutline'}
-          iconPlacement="right"
-          color="secondary"
-          onClick={(): void => setToggleWizardLocal(false)}
-        />
-      ),
-      PrevButton: ({ completeLoading }: WizardStepButtonProps) =>
-        isAdvanced ? (
-          <Button
-            label={t('label.volume_back_button', 'BACK')}
-            icon={'ChevronLeftOutline'}
-            iconPlacement="left"
-            disabled={completeLoading}
-            color="secondary"
-            onClick={(): void => {
-              setToggleWizardLocal(false);
-              setToggleWizardExternal(true);
-            }}
-          />
-        ) : (
-          <></>
-        ),
-      NextButton: (props: any) =>
-        isAdvanced ? (
-          <Button
-            {...props}
-            label={t('label.volume_create', 'CREATE')}
-            icon={'PowerOutline'}
-            iconPlacement="right"
-            disable={props?.completeLoading}
-          />
-        ) : (
-          <Button
-            {...props}
-            label={t('label.volume_create', 'CREATE')}
-            icon={'ChevronRightOutline'}
-            iconPlacement="right"
-            disable={props?.completeLoading}
-          />
-        ),
+      CancelButton: NewVolumeCancelButton,
+      PrevButton: NewVolumePrevButton,
+      NextButton: NewVolumeNextButton,
     },
   ];
 
@@ -131,13 +156,24 @@ const NewVolume: FC<{
     <>
       {isLoading && <ds-spinner></ds-spinner>}
 
-      <HorizontalWizard
-        steps={wizardSteps}
-        Wrapper={WizardInSection}
-        onComplete={onComplete}
-        setToggleWizardSection={setToggleWizardLocal}
-        externalData={volName}
-      />
+      <NewVolumeActionsContext.Provider
+        value={{
+          isAdvanced,
+          onCancel: (): void => setToggleWizardLocal(false),
+          onPrev: (): void => {
+            setToggleWizardLocal(false);
+            setToggleWizardExternal(true);
+          },
+        }}
+      >
+        <HorizontalWizard
+          steps={wizardSteps}
+          Wrapper={WizardInSection}
+          onComplete={onComplete}
+          setToggleWizardSection={setToggleWizardLocal}
+          externalData={volName}
+        />
+      </NewVolumeActionsContext.Provider>
     </>
   );
 };
