@@ -4,17 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { FC, Suspense } from 'react';
 import { Outlet } from 'react-router';
 
 import BucketListPanel from './bucket/bucket-list-panel';
 
-export const StorageLayout: FC = () => (
+export const StorageLayout = () => (
   <Container orientation="horizontal" mainAlignment="flex-start">
     <Container style={{ maxWidth: '265px' }}>
-      <Suspense fallback={<ds-spinner />}>
-        <BucketListPanel />
-      </Suspense>
+      <BucketListPanel />
     </Container>
     <Container style={{ maxWidth: '100%' }}>
       <Container
@@ -24,9 +21,7 @@ export const StorageLayout: FC = () => (
         style={{ overflowY: 'hidden' }}
         background="gray6"
       >
-        <Suspense fallback={<ds-spinner />}>
-          <Outlet />
-        </Suspense>
+        <Outlet />
       </Container>
     </Container>
   </Container>

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
 import { DATA_VOLUMES, HSM_SETTINGS, S3CONNECTOR_LIST, SERVERS_LIST } from '../constants';
@@ -15,7 +14,7 @@ import { HSMsettingPanel } from './bucket/hsm/hsm-setting-panel';
 import { VolumesDetailRoute } from './bucket/volumes-detail-route';
 import { StorageLayout } from './storage-layout';
 
-export const AppView: FC = () => {
+export const AppView = () => {
   return (
     <Container>
       <Breadcrumb />
