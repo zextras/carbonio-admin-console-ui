@@ -17,9 +17,10 @@ import {
 	getQueryClient,
 	grantUserConfigRights,
 	registerAppRoute,
-	resetMockWorker,
 	setupBrowserTest,
+	worker,
 } from 'admin-ui-test-utils';
+import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -69,6 +70,46 @@ function setupAllConfigInterceptor(): Promise<unknown> {
 		a: [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }],
 	});
 }
+
+beforeEach(() => {
+	worker.use(
+		http.post('/service/admin/soap/zextras', async ({ request }) => {
+			const body = (await request.json()) as {
+				Body?: { zextras?: { action?: string } };
+			};
+			const action = body?.Body?.zextras?.action;
+			const withContent = (payload: unknown) =>
+				HttpResponse.json({
+					Body: { response: { content: JSON.stringify(payload) } },
+				});
+			if (action === 'getLicenseInfo') {
+				return withContent({ ok: true, response: { type: 'None', features: [] } });
+			}
+			if (action === 'getVersion') {
+				return withContent({ ok: true, response: { version: '0.0.0' } });
+			}
+			if (action === 'listS3Connector') {
+				return withContent({ ok: true, response: { values: [] } });
+			}
+			if (action === 'getHSMPolicy') {
+				return withContent({ ok: true, response: { values: [] } });
+			}
+			if (action === 'getAllVolumes') {
+				return withContent({ ok: true, response: { volumes: [] } });
+			}
+			return HttpResponse.json({ Body: {} });
+		}),
+		http.get('/service/extension/zextras_admin/core/getAllServers', () =>
+			HttpResponse.json({ items: [] }),
+		),
+		http.get('/services/catalog/services', () => HttpResponse.json({ items: [] })),
+		http.post('/service/admin/soap/GetAllServersRequest', () =>
+			HttpResponse.json({
+				Body: { GetAllServersResponse: { server: SERVERS } },
+			}),
+		),
+	);
+});
 
 describe('BucketListPanel (browser)', () => {
 	beforeEach(() => {
@@ -223,7 +264,6 @@ describe('BucketListPanel navigation', () => {
 	});
 
 	afterEach(() => {
-		resetMockWorker();
 		mockedReplaceHistory.mockClear();
 	});
 
