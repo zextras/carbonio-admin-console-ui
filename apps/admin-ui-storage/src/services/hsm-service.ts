@@ -10,7 +10,7 @@ import type { HsmPolicyFromServer, Volume } from '../../types';
 import { VOLUME_INDEX_TYPE, ZIMBRA_ADMIN_URN } from '../constants';
 import { fetchSoap } from './bucket-service';
 
-export type PowerstoreAttributes = Record<string, { value: unknown }> | undefined;
+export type PowerstoreAttributes = Record<string, { value: unknown }>;
 
 export const getHsmPolicyList = async (server: string): Promise<Array<HsmPolicyFromServer>> => {
   const res = await fetchSoap('zextras', {
@@ -44,7 +44,7 @@ export const getZxPowerStoreServerAttributes = async (
   const serv = (data as { servers?: Array<Record<string, Record<string, unknown>>> })?.servers;
 
   if (!serv || serv.length === 0) {
-    return undefined;
+    return {};
   }
 
   const allServers = Object.values(serv).map((i) => Object.values(i)[0]) as Array<
@@ -55,7 +55,7 @@ export const getZxPowerStoreServerAttributes = async (
     (sItem) => (sItem as { name?: string }).name === server,
   ) as { ZxPowerstore?: { attributes?: PowerstoreAttributes } } | undefined;
 
-  return selectedServer?.ZxPowerstore?.attributes;
+  return selectedServer?.ZxPowerstore?.attributes ?? {};
 };
 
 export const getAllVolumesForHsm = async (serverId: string): Promise<Array<Volume>> => {
