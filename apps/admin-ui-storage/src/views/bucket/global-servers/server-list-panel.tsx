@@ -12,11 +12,12 @@ import {
   Row,
   Table,
 } from '@zextras/ui-components';
-import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
+import { replaceHistory, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { DATA_VOLUMES } from '../../../constants';
 import { useServerVolumeSummary } from '../../../services/use-server-volume-summary';
 import { headerAdvanced } from '../../utility/utils';
 
@@ -137,6 +138,16 @@ const ServersListTable: FC<{
     clickable: true,
   }));
 
+  function onSelectionChange(ids: string[]) {
+    if (ids.length > 0) {
+      const selectedIndex = parseInt(ids[0], 10);
+      const server = volumes[selectedIndex];
+      if (server?.name) {
+        replaceHistory(`/${server.name}/${DATA_VOLUMES}`);
+      }
+    }
+  }
+
   return (
     <Container crossAlignment="flex-start">
       <Table
@@ -146,6 +157,7 @@ const ServersListTable: FC<{
         multiSelect={false}
         RowFactory={HoverableRowFactory}
         HeaderFactory={CustomHeaderFactory}
+        onSelectionChange={onSelectionChange}
       />
       {isRequestInProgress && (
         <Container
