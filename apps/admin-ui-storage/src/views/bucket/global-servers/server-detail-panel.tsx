@@ -167,10 +167,10 @@ const ServersListTable: FC<{
 };
 
 const FunnelFilterIcon: FC = () => (
-	<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
 );
 
-const ServerDetailPanel: FC = () => {
+export const ServerDetailPanel: FC = () => {
   const [t] = useTranslation();
   const { data: allServersList = [] } = useMailstoreServers();
   const isAdvanced = useIsAdvanced();
@@ -259,5 +259,3 @@ const ServerDetailPanel: FC = () => {
     </Container>
   );
 };
-
-export default ServerDetailPanel;

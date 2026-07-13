@@ -17,7 +17,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { HSM_SETTINGS } from '../../../../constants';
-import HSMsettingPanel from '../hsm-setting-panel';
+import { HSMsettingPanel } from '../hsm-setting-panel';
 
 const SERVER_NAME = 'mailstore1.test.com';
 const SERVER_ID = 'server-1';

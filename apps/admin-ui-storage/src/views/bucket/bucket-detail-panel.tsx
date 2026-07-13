@@ -23,11 +23,7 @@ import { TFunction } from 'i18next';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  BucketConnectorRow,
-  DeleteS3ConnectorRequest,
-  S3Connector,
-} from '../../../types';
+import { BucketConnectorRow, DeleteS3ConnectorRequest, S3Connector } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { deleteS3Connector } from '../../services/bucket-service';
@@ -106,8 +102,12 @@ const BucketListTable: FC<{
     columns: [
       <Tooltip placement="bottom" label={v.uuid} key={`${v.uuid}-id`}>
         <Row
-          onDoubleClick={(): void => { onDoubleClick(i); }}
-          onClick={(): void => { onClick(i); }}
+          onDoubleClick={(): void => {
+            onDoubleClick(i);
+          }}
+          onClick={(): void => {
+            onClick(i);
+          }}
           style={{ textAlign: 'left', justifyContent: 'flex-start' }}
         >
           <ds-text as="span" size="small" weight="light">
@@ -117,8 +117,12 @@ const BucketListTable: FC<{
       </Tooltip>,
       <Row
         key={`${v.uuid}-label`}
-        onDoubleClick={(): void => { onDoubleClick(i); }}
-        onClick={(): void => { onClick(i); }}
+        onDoubleClick={(): void => {
+          onDoubleClick(i);
+        }}
+        onClick={(): void => {
+          onClick(i);
+        }}
         style={{ textAlign: 'left', justifyContent: 'flex-start' }}
       >
         <ds-text as="span" size="small" weight="regular">
@@ -127,19 +131,37 @@ const BucketListTable: FC<{
       </Row>,
       <Row
         key={`${v.uuid}-bucket`}
-        onDoubleClick={(): void => { onDoubleClick(i); }}
-        onClick={(): void => { onClick(i); }}
+        onDoubleClick={(): void => {
+          onDoubleClick(i);
+        }}
+        onClick={(): void => {
+          onClick(i);
+        }}
         style={{ textAlign: 'left', justifyContent: 'flex-start' }}
       >
         <ds-text as="span" size="small" weight="light">
           {v.bucketName}
         </ds-text>
       </Row>,
-      <Row key={`${v.uuid}-actions`} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+      <Row
+        key={`${v.uuid}-actions`}
+        orientation="vertical"
+        mainAlignment="center"
+        crossAlignment="flex-start"
+      >
         <button
           type="button"
-          onClick={(): void => { onClick(i); }}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 0px 0px 14px', display: 'inline-flex', alignItems: 'center' }}
+          onClick={(): void => {
+            onClick(i);
+          }}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '14px 0px 0px 14px',
+            display: 'inline-flex',
+            alignItems: 'center',
+          }}
         >
           <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
         </button>
@@ -197,7 +219,7 @@ const BucketListTable: FC<{
   );
 };
 
-const BucketDetailPanel: FC = () => {
+export const BucketDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
@@ -214,7 +236,7 @@ const BucketDetailPanel: FC = () => {
     prefix: connector.prefix || '',
     insecureHttps: String(connector.insecureHttps ?? false),
     notes: connector.notes || '',
-    storeType: ((connector as unknown as { storeType?: string }).storeType || 'S3'),
+    storeType: (connector as unknown as { storeType?: string }).storeType || 'S3',
     'usage in external backup': connector['usage in external backup'] ?? '',
     'usage in powerstore volumes': connector['usage in powerstore volumes'] ?? '',
     'usage in powerstore volume': connector['usage in powerstore volume'] ?? '',
@@ -267,9 +289,7 @@ const BucketDetailPanel: FC = () => {
         setShowEditDetailView(false);
       } else {
         const errorMessage =
-          typeof response?.error === 'string'
-            ? response.error
-            : response?.error?.message;
+          typeof response?.error === 'string' ? response.error : response?.error?.message;
 
         createSnackbar({
           key: '1',
@@ -284,9 +304,7 @@ const BucketDetailPanel: FC = () => {
       }
     });
   };
-  const connectionData = selectedUuid
-    ? bucketList.find((b) => b.uuid === selectedUuid)
-    : undefined;
+  const connectionData = selectedUuid ? bucketList.find((b) => b.uuid === selectedUuid) : undefined;
 
   const handleClick = (i: number): void => {
     const volumeObject = filteredBucketList.find((s, index) => index === i);
@@ -319,7 +337,9 @@ const BucketDetailPanel: FC = () => {
             title="S3 details"
             bucketDetail={connectionData}
             getBucketListType={(): void => {
-              void queryClient.invalidateQueries({ queryKey: bucketVolumeQueryKeys.s3Connectors() });
+              void queryClient.invalidateQueries({
+                queryKey: bucketVolumeQueryKeys.s3Connectors(),
+              });
             }}
           />
         </ModalOverlay>
@@ -385,7 +405,10 @@ const BucketDetailPanel: FC = () => {
                 firstSelected === undefined ? [] : [firstSelected];
               setBucketselection(nextSelection);
 
-              const volumeObject = resolveSelectedBucketConnector(filteredBucketList, firstSelected);
+              const volumeObject = resolveSelectedBucketConnector(
+                filteredBucketList,
+                firstSelected,
+              );
               setShowDetails(false);
               setBucketDeleteName(volumeObject);
             }}
@@ -401,5 +424,3 @@ const BucketDetailPanel: FC = () => {
     </>
   );
 };
-
-export default BucketDetailPanel;
