@@ -5,6 +5,7 @@
  */
 import 'vitest-browser-react';
 
+import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
 // IMPORTANT: Stub globals BEFORE importing anything that might use them
@@ -14,8 +15,56 @@ import {
   resetMockWorker,
   startMockWorker,
   stopMockWorker,
+  worker,
 } from './packages/test-utils/src/browser/worker';
 import { suppressLitDevModeWarning } from './packages/test-utils/src/browser/utils/lit';
+
+function setupBrowserCatchAllHandlers(): void {
+	worker.use(
+		http.post('/service/admin/soap/zextras', async ({ request }) => {
+			const body = (await request.json()) as {
+				Body?: { zextras?: { action?: string } };
+			};
+			const action = body?.Body?.zextras?.action;
+
+			if (action === 'listS3Connector' || action === 'getHSMPolicy') {
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({ ok: true, response: { values: [] } }),
+						},
+					},
+				});
+			}
+
+			if (action === 'getAllVolumes') {
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({ ok: true, response: {} }),
+						},
+					},
+				});
+			}
+
+			return HttpResponse.json({ Body: {} });
+		}),
+		http.get(
+			'/service/extension/zextras_admin/core/getAllServers',
+			() => HttpResponse.json({ items: [] }),
+		),
+		http.get('/services/catalog/services', () => HttpResponse.json({ items: [] })),
+		http.post('/service/admin/soap/GetAllServersRequest', () =>
+			HttpResponse.json({ Body: { GetAllServersResponse: { server: [] } } }),
+		),
+		http.post('/service/admin/soap/GetInfoRequest', () =>
+			HttpResponse.json({ Body: { GetInfoResponse: {} } }),
+		),
+		http.post('/service/admin/soap/GetAllConfigRequest', () =>
+			HttpResponse.json({ Body: { GetAllConfigResponse: {} } }),
+		),
+	);
+}
 
 suppressLitDevModeWarning();
 
@@ -62,15 +111,18 @@ beforeAll(async () => {
 
 beforeEach(() => {
   resetMockWorker();
+  setupBrowserCatchAllHandlers();
 });
 
 afterAll(() => {
   stopMockWorker();
   vi.clearAllMocks();
   resetMockWorker();
+  setupBrowserCatchAllHandlers();
 });
 
 afterEach(() => {
   vi.unstubAllGlobals();
   resetMockWorker();
+  setupBrowserCatchAllHandlers();
 });
