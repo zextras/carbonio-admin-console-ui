@@ -14,7 +14,7 @@ import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { ServerDetailPanel } from '../server-detail-panel';
+import { ServerListPanel } from '../server-list-panel';
 
 const SERVERS = [
   {
@@ -105,13 +105,13 @@ describe('ServerDetailPanel (browser)', () => {
     describe('Rendering', () => {
       it('should render the Servers List title', async () => {
         setupGetAllServersInterceptor();
-        await setupBrowserTest(<ServerDetailPanel />);
+        await setupBrowserTest(<ServerListPanel />);
         await expect.element(page.getByText('Servers List', { exact: true })).toBeVisible();
       });
 
       it('should render the search input', async () => {
         setupGetAllServersInterceptor();
-        await setupBrowserTest(<ServerDetailPanel />);
+        await setupBrowserTest(<ServerListPanel />);
         await expect.element(page.getByLabelText('Search for a Server')).toBeInTheDocument();
       });
     });
@@ -119,13 +119,13 @@ describe('ServerDetailPanel (browser)', () => {
     describe('Table headers', () => {
       it('should render the Server column header', async () => {
         setupGetAllServersInterceptor();
-        await setupBrowserTest(<ServerDetailPanel />);
+        await setupBrowserTest(<ServerListPanel />);
         await expect.element(page.getByText('Server', { exact: true })).toBeInTheDocument();
       });
 
       it('should render the Description column header', async () => {
         setupGetAllServersInterceptor();
-        await setupBrowserTest(<ServerDetailPanel />);
+        await setupBrowserTest(<ServerListPanel />);
         await expect
           .element(page.getByText('Description', { exact: true }).first())
           .toBeInTheDocument();
@@ -133,7 +133,7 @@ describe('ServerDetailPanel (browser)', () => {
 
       it('should not render advanced-only column headers', async () => {
         setupGetAllServersInterceptor();
-        await setupBrowserTest(<ServerDetailPanel />);
+        await setupBrowserTest(<ServerListPanel />);
         await expect.element(page.getByText('Servers List', { exact: true })).toBeVisible();
         expect(page.getByText('Primary', { exact: true }).elements()).toHaveLength(0);
         expect(page.getByText('Secondary', { exact: true }).elements()).toHaveLength(0);
@@ -146,14 +146,14 @@ describe('ServerDetailPanel (browser)', () => {
     describe('Server list with data', () => {
       it('should display server names', async () => {
         setupGetAllServersInterceptor();
-        await setupBrowserTest(<ServerDetailPanel />);
+        await setupBrowserTest(<ServerListPanel />);
         await expect.element(page.getByText('mailstore1.test.com')).toBeInTheDocument();
         await expect.element(page.getByText('mailstore2.test.com')).toBeInTheDocument();
       });
 
       it('should display server descriptions', async () => {
         setupGetAllServersInterceptor();
-        await setupBrowserTest(<ServerDetailPanel />);
+        await setupBrowserTest(<ServerListPanel />);
         await expect.element(page.getByText('Primary mailstore')).toBeInTheDocument();
         await expect.element(page.getByText('Secondary mailstore')).toBeInTheDocument();
       });
@@ -162,7 +162,7 @@ describe('ServerDetailPanel (browser)', () => {
     describe('Empty state', () => {
       it('should show empty list message when no servers exist', async () => {
         setupGetAllServersInterceptor([]);
-        await setupBrowserTest(<ServerDetailPanel />);
+        await setupBrowserTest(<ServerListPanel />);
         await expect.element(page.getByText('This list is empty.')).toBeInTheDocument();
       });
     });
@@ -177,7 +177,7 @@ describe('ServerDetailPanel (browser)', () => {
       it('should render all advanced column headers', async () => {
         setupGetAllServersInterceptor();
         setupZextrasInterceptor();
-        await setupBrowserTest(<ServerDetailPanel />);
+        await setupBrowserTest(<ServerListPanel />);
         await expect.element(page.getByText('Server', { exact: true })).toBeInTheDocument();
         await expect.element(page.getByText('Primary', { exact: true })).toBeInTheDocument();
         await expect.element(page.getByText('Secondary', { exact: true })).toBeInTheDocument();
@@ -194,7 +194,7 @@ describe('ServerDetailPanel (browser)', () => {
       it('should display server names in advanced mode', async () => {
         setupGetAllServersInterceptor();
         setupZextrasInterceptor();
-        await setupBrowserTest(<ServerDetailPanel />);
+        await setupBrowserTest(<ServerListPanel />);
         await expect.element(page.getByText('mailstore1.test.com')).toBeInTheDocument();
         await expect.element(page.getByText('mailstore2.test.com')).toBeInTheDocument();
       });

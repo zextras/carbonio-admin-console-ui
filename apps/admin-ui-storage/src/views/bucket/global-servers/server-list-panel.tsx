@@ -170,7 +170,7 @@ const FunnelFilterIcon = () => (
   <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
 );
 
-export const ServerDetailPanel = () => {
+export const ServerListPanel = () => {
   const [t] = useTranslation();
   const { data: allServersList = [] } = useMailstoreServers();
   const isAdvanced = useIsAdvanced();
