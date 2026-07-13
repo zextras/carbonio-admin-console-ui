@@ -4,6 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+vi.mock('@zextras/ui-shared', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
+  return { ...actual, replaceHistory: vi.fn() };
+});
+
+import { replaceHistory } from '@zextras/ui-shared';
 import {
   advancedSupportedApiForBrowser,
   createBrowserSoapAPIInterceptor,
@@ -11,10 +17,13 @@ import {
   worker,
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { DATA_VOLUMES } from '../../../../constants';
 import { ServerListPanel } from '../server-list-panel';
+
+const mockedReplaceHistory = vi.mocked(replaceHistory);
 
 const SERVERS = [
   {
@@ -166,6 +175,30 @@ describe('ServerDetailPanel (browser)', () => {
         await expect.element(page.getByText('This list is empty.')).toBeInTheDocument();
       });
     });
+
+    describe('Server row click navigation', () => {
+      afterEach(() => {
+        mockedReplaceHistory.mockClear();
+      });
+
+      it('should navigate to data volumes when clicking the first server row', async () => {
+        setupGetAllServersInterceptor();
+        await setupBrowserTest(<ServerListPanel />);
+
+        await page.getByText('mailstore1.test.com').click();
+
+        expect(mockedReplaceHistory).toHaveBeenCalledWith(`/mailstore1.test.com/${DATA_VOLUMES}`);
+      });
+
+      it('should navigate to data volumes when clicking the second server row', async () => {
+        setupGetAllServersInterceptor();
+        await setupBrowserTest(<ServerListPanel />);
+
+        await page.getByText('mailstore2.test.com').click();
+
+        expect(mockedReplaceHistory).toHaveBeenCalledWith(`/mailstore2.test.com/${DATA_VOLUMES}`);
+      });
+    });
   });
 
   describe('Advanced mode', () => {
@@ -197,6 +230,22 @@ describe('ServerDetailPanel (browser)', () => {
         await setupBrowserTest(<ServerListPanel />);
         await expect.element(page.getByText('mailstore1.test.com')).toBeInTheDocument();
         await expect.element(page.getByText('mailstore2.test.com')).toBeInTheDocument();
+      });
+    });
+
+    describe('Server row click navigation', () => {
+      afterEach(() => {
+        mockedReplaceHistory.mockClear();
+      });
+
+      it('should navigate to data volumes when clicking a server row in advanced mode', async () => {
+        setupGetAllServersInterceptor();
+        setupZextrasInterceptor();
+        await setupBrowserTest(<ServerListPanel />);
+
+        await page.getByText('mailstore1.test.com').click();
+
+        expect(mockedReplaceHistory).toHaveBeenCalledWith(`/mailstore1.test.com/${DATA_VOLUMES}`);
       });
     });
   });
