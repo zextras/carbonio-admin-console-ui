@@ -11,8 +11,13 @@ import {
   Padding,
   Row,
 } from '@zextras/ui-components';
-import { replaceHistory, useIsAdvanced, useMailstoreServers, useRelativePathname } from '@zextras/ui-shared';
-import React, { FC, useState } from 'react';
+import {
+  replaceHistory,
+  useIsAdvanced,
+  useMailstoreServers,
+  useRelativePathname,
+} from '@zextras/ui-shared';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 
@@ -25,14 +30,13 @@ import {
   SERVERS_LIST,
 } from '../../constants';
 
-const BucketListPanel: FC = () => {
+export const StorageSidebar = () => {
   const [t] = useTranslation();
 
   const relativePathname = useRelativePathname();
   const serverMatch = matchPath(`/:server/:operation`, relativePathname);
   const opMatch = serverMatch ? null : matchPath(`/:operation`, relativePathname);
-  const selectedOperationItem =
-    serverMatch?.params.operation ?? opMatch?.params.operation ?? null;
+  const selectedOperationItem = serverMatch?.params.operation ?? opMatch?.params.operation ?? null;
   const selectedServer = serverMatch?.params.server ?? '';
   const isServerSelect = !!serverMatch;
 
@@ -230,4 +234,3 @@ const BucketListPanel: FC = () => {
     </Container>
   );
 };
-export default BucketListPanel;

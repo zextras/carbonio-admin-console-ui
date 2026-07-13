@@ -7,7 +7,7 @@ import { Container } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { Outlet } from 'react-router';
 
-import BucketListPanel from './bucket/bucket-list-panel';
+import { StorageSidebar } from './bucket/storage-sidebar';
 
 export const StorageLayout = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
@@ -15,7 +15,7 @@ export const StorageLayout = () => {
   return (
     <Container orientation="horizontal" mainAlignment="flex-start">
       <Container style={{ maxWidth: '265px' }}>
-        <BucketListPanel />
+        <StorageSidebar />
       </Container>
       <Container style={{ maxWidth: '100%' }}>
         <Container
