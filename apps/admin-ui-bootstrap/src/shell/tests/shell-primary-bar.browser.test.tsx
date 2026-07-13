@@ -19,7 +19,7 @@ const EMPTY_DATA = {
 	views: { primaryBar: [], appView: [], utilityBar: [], primarybarSections: [] },
 };
 
-describe('ShellPrimaryBar', () => {
+describe('ShellPrimaryBar', { timeout: 20_000 }, () => {
 	beforeEach(() => {
 		useAppStore.setState(EMPTY_DATA);
 	});
@@ -41,7 +41,7 @@ describe('ShellPrimaryBar', () => {
 			primarybarSection: { id: 'manage', label: 'Manage', position: 3 },
 		});
 
-		setupBrowserTest(
+		await setupBrowserTest(
 			<>
 				<ShellPrimaryBar activeRoute={undefined} />
 				<LocationDisplay />

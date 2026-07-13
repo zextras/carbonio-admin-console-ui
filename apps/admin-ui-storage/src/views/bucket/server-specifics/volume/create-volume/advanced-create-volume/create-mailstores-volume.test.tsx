@@ -8,7 +8,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CreateMailstoresVolume } from './create-mailstores-volume';
+import { CreateMailstoresVolume, WizardActionsContext } from './create-mailstores-volume';
 
 const wizardProps = vi.hoisted(() => ({
   steps: [] as Array<{
@@ -157,7 +157,13 @@ describe('CreateMailstoresVolume', () => {
   it('cancel button (step 0) calls setToggleWizardExternal(false)', () => {
     renderComponent();
     const CancelButton = wizardProps.steps[0].CancelButton;
-    const { container } = render(<CancelButton onCancel={() => setToggleWizardExternal(false)} />);
+    const { container } = render(
+      <WizardActionsContext.Provider
+        value={{ onCancel: () => setToggleWizardExternal(false), onNextLocal: () => {} }}
+      >
+        <CancelButton onCancel={() => {}} />
+      </WizardActionsContext.Provider>,
+    );
     fireEvent.click(container.querySelector('button')!);
     expect(setToggleWizardExternal).toHaveBeenCalledWith(false);
   });
@@ -165,7 +171,13 @@ describe('CreateMailstoresVolume', () => {
   it('step 0 NextButton with toggleNextBtn=true triggers setToggleWizardLocal', () => {
     renderComponent();
     const NextButton = wizardProps.steps[0].NextButton;
-    const { container } = render(<NextButton toggleNextBtn={true} onClick={() => {}} />);
+    const { container } = render(
+      <WizardActionsContext.Provider
+        value={{ onCancel: () => {}, onNextLocal: () => setToggleWizardLocal(true) }}
+      >
+        <NextButton toggleNextBtn={true} onClick={() => {}} />
+      </WizardActionsContext.Provider>,
+    );
     fireEvent.click(container.querySelector('button')!);
     expect(setToggleWizardLocal).toHaveBeenCalledWith(true);
   });

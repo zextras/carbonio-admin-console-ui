@@ -19,36 +19,44 @@ import {
 } from './packages/test-utils/src/browser/worker';
 import { suppressLitDevModeWarning } from './packages/test-utils/src/browser/utils/lit';
 
+const zextrasContentResponse = (payload: unknown): HttpResponse =>
+		HttpResponse.json({
+			Body: {
+				response: {
+					content: JSON.stringify(payload),
+				},
+			},
+		});
+
+const zextrasSoapHandler = async ({ request }: { request: Request }): Promise<HttpResponse> => {
+		const body = (await request.json()) as {
+			Body?: { zextras?: { action?: string } };
+		};
+		const action = body?.Body?.zextras?.action;
+
+		if (
+			action === 'listS3Connector' ||
+			action === 'getHSMPolicy' ||
+			action === 'listBuckets'
+		) {
+			return zextrasContentResponse({ ok: true, response: { values: [] } });
+		}
+
+		if (action === 'getAllVolumes') {
+			return zextrasContentResponse({ ok: true, response: {} });
+		}
+
+		if (action === 'get_global_config') {
+			return zextrasContentResponse({ ok: true, response: { values: [] } });
+		}
+
+		return HttpResponse.json({ Body: {} });
+	};
+
 function setupBrowserCatchAllHandlers(): void {
 	worker.use(
-		http.post('/service/admin/soap/zextras', async ({ request }) => {
-			const body = (await request.json()) as {
-				Body?: { zextras?: { action?: string } };
-			};
-			const action = body?.Body?.zextras?.action;
-
-			if (action === 'listS3Connector' || action === 'getHSMPolicy') {
-				return HttpResponse.json({
-					Body: {
-						response: {
-							content: JSON.stringify({ ok: true, response: { values: [] } }),
-						},
-					},
-				});
-			}
-
-			if (action === 'getAllVolumes') {
-				return HttpResponse.json({
-					Body: {
-						response: {
-							content: JSON.stringify({ ok: true, response: {} }),
-						},
-					},
-				});
-			}
-
-			return HttpResponse.json({ Body: {} });
-		}),
+		http.post('/service/admin/soap/zextras', zextrasSoapHandler),
+		http.post('/service/admin/soap', zextrasSoapHandler),
 		http.get(
 			'/service/extension/zextras_admin/core/getAllServers',
 			() => HttpResponse.json({ items: [] }),
@@ -63,6 +71,7 @@ function setupBrowserCatchAllHandlers(): void {
 		http.post('/service/admin/soap/GetAllConfigRequest', () =>
 			HttpResponse.json({ Body: { GetAllConfigResponse: {} } }),
 		),
+		http.post('/service/admin/soap/:api', () => HttpResponse.json({ Body: {} })),
 	);
 }
 

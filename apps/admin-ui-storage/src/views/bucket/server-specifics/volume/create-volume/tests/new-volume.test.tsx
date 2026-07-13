@@ -26,7 +26,7 @@ vi.mock('@zextras/ui-shared', () => ({
   useIsAdvanced: () => mockAdvancedMode.value,
 }));
 
-vi.mock('./mailstores-create', () => ({
+vi.mock('../mailstores-create', () => ({
   default: () => <div>mailstores-create-view</div>,
 }));
 
