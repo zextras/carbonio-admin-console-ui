@@ -4,14 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { Outlet } from 'react-router';
 
 import { StorageSidebar } from './bucket/storage-sidebar';
 
 export const StorageLayout = () => {
-  const detailViewMaxWidth = useDetailViewMaxWidth();
-
   return (
     <Container orientation="horizontal" mainAlignment="flex-start">
       <Container style={{ maxWidth: '265px' }}>
@@ -22,7 +19,7 @@ export const StorageLayout = () => {
           orientation="column"
           crossAlignment="center"
           mainAlignment="flex-start"
-          style={{ maxWidth: detailViewMaxWidth, transition: 'width 300ms', overflowY: 'hidden' }}
+          style={{ transition: 'width 300ms', overflowY: 'hidden' }}
           background="gray6"
         >
           <Outlet />
