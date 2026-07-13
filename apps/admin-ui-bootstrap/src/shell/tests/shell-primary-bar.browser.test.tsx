@@ -19,7 +19,7 @@ const EMPTY_DATA = {
 	views: { primaryBar: [], appView: [], utilityBar: [], primarybarSections: [] },
 };
 
-describe('ShellPrimaryBar', { timeout: 20_000 }, () => {
+describe('ShellPrimaryBar', () => {
 	beforeEach(() => {
 		useAppStore.setState(EMPTY_DATA);
 	});
