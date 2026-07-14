@@ -31,13 +31,13 @@ const ServersListTable: FC<{
   const tableRowsAdvance = volumes.map((v, i) => ({
     id: i?.toString(),
     columns: [
-      <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
+      <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={`${v?.name}-name`}>
         <ds-text as="span" size="small" weight="regular">
           {v?.name}
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`${v?.name}-primaries`}
         style={{
           textAlign: 'left',
           justifyContent: 'flex-start',
@@ -49,7 +49,7 @@ const ServersListTable: FC<{
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`${v?.name}-secondaries`}
         style={{
           textAlign: 'left',
           justifyContent: 'flex-start',
@@ -61,7 +61,7 @@ const ServersListTable: FC<{
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`${v?.name}-indexes`}
         style={{
           textAlign: 'left',
           justifyContent: 'flex-start',
@@ -73,7 +73,7 @@ const ServersListTable: FC<{
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`${v?.name}-hsm`}
         style={{
           textAlign: 'left',
           justifyContent: 'flex-start',
@@ -85,7 +85,7 @@ const ServersListTable: FC<{
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`${v?.name}-indexer`}
         style={{
           textAlign: 'left',
           justifyContent: 'flex-start',
@@ -99,7 +99,7 @@ const ServersListTable: FC<{
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`${v?.name}-description`}
         style={{
           textAlign: 'left',
           justifyContent: 'flex-start',
@@ -117,13 +117,13 @@ const ServersListTable: FC<{
   const tableRowCe = volumes.map((v, i) => ({
     id: i?.toString(),
     columns: [
-      <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
+      <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={`${v?.name}-name`}>
         <ds-text as="span" size="small" weight="regular">
           {v?.name}
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`${v?.name}-description`}
         style={{
           textAlign: 'left',
           justifyContent: 'flex-start',
@@ -140,7 +140,7 @@ const ServersListTable: FC<{
 
   function onSelectionChange(ids: string[]) {
     if (ids.length > 0) {
-      const selectedIndex = parseInt(ids[0], 10);
+      const selectedIndex = Number.parseInt(ids[0], 10);
       const server = volumes[selectedIndex];
       if (server?.name) {
         replaceHistory(`/${server.name}/${DATA_VOLUMES}`);
