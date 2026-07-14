@@ -134,6 +134,7 @@ export type S3Connector = {
  	label: string;
  	bucketName: string;
  	region: string;
+ 	storeType?: string;
  	url?: string;
  	accessKey?: string;
  	secret?: string;

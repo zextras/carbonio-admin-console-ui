@@ -1,11 +1,12 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { useQueryClient } from '@tanstack/react-query';
 import {
+  Banner,
   Button,
   Container,
   CustomHeaderFactory,
@@ -41,6 +42,28 @@ type TableHeader = {
 };
 
 type SingleSelection = [] | [string];
+
+type TextColumnConfig = {
+  key: string;
+  getValue: (volume: BucketConnectorRow) => string;
+  weight: 'light' | 'regular';
+  hasTooltip?: boolean;
+};
+
+const TEXT_COLUMNS: Array<TextColumnConfig> = [
+  { key: 'id', getValue: (v) => v.uuid, weight: 'light', hasTooltip: true },
+  { key: 'label', getValue: (v) => v.label, weight: 'regular' },
+  { key: 'bucket', getValue: (v) => v.bucketName, weight: 'light' },
+];
+
+const ACTION_BUTTON_STYLE: React.CSSProperties = {
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  padding: '14px 0px 0px 14px',
+  display: 'inline-flex',
+  alignItems: 'center',
+};
 
 export function resolveSelectedBucketConnector(
   bucketList: Array<BucketConnectorRow>,
@@ -85,6 +108,44 @@ const headers = (t: TFunction): Array<TableHeader> => [
   },
 ];
 
+function renderTextCell(
+  config: TextColumnConfig,
+  volume: BucketConnectorRow,
+  index: number,
+  onClick: (i: number) => void,
+  onDoubleClick: (i: number) => void,
+): React.ReactElement {
+  const value = config.getValue(volume);
+  const cellKey = `${volume.uuid}-${config.key}`;
+
+  const row = (
+    <Row
+      key={cellKey}
+      onDoubleClick={(): void => {
+        onDoubleClick(index);
+      }}
+      onClick={(): void => {
+        onClick(index);
+      }}
+      style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+    >
+      <ds-text as="span" size="small" weight={config.weight}>
+        {value}
+      </ds-text>
+    </Row>
+  );
+
+  if (config.hasTooltip) {
+    return (
+      <Tooltip placement="bottom" label={value} key={`${cellKey}-tip`}>
+        {row}
+      </Tooltip>
+    );
+  }
+
+  return row;
+}
+
 const BucketListTable: FC<{
   volumes: Array<BucketConnectorRow>;
   selectedRows: SingleSelection;
@@ -93,6 +154,7 @@ const BucketListTable: FC<{
   onClick: (i: number) => void;
 }> = ({ volumes, selectedRows, onSelectionChange, onDoubleClick, onClick }) => {
   const [t] = useTranslation();
+
   const tableRows: Array<{
     id: string;
     columns: Array<string | React.ReactElement>;
@@ -100,49 +162,7 @@ const BucketListTable: FC<{
   }> = volumes.map((v, i) => ({
     id: v.uuid,
     columns: [
-      <Tooltip placement="bottom" label={v.uuid} key={`${v.uuid}-id`}>
-        <Row
-          onDoubleClick={(): void => {
-            onDoubleClick(i);
-          }}
-          onClick={(): void => {
-            onClick(i);
-          }}
-          style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-        >
-          <ds-text as="span" size="small" weight="light">
-            {v.uuid}
-          </ds-text>
-        </Row>
-      </Tooltip>,
-      <Row
-        key={`${v.uuid}-label`}
-        onDoubleClick={(): void => {
-          onDoubleClick(i);
-        }}
-        onClick={(): void => {
-          onClick(i);
-        }}
-        style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-      >
-        <ds-text as="span" size="small" weight="regular">
-          {v.label}
-        </ds-text>
-      </Row>,
-      <Row
-        key={`${v.uuid}-bucket`}
-        onDoubleClick={(): void => {
-          onDoubleClick(i);
-        }}
-        onClick={(): void => {
-          onClick(i);
-        }}
-        style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-      >
-        <ds-text as="span" size="small" weight="light">
-          {v.bucketName}
-        </ds-text>
-      </Row>,
+      ...TEXT_COLUMNS.map((config) => renderTextCell(config, v, i, onClick, onDoubleClick)),
       <Row
         key={`${v.uuid}-actions`}
         orientation="vertical"
@@ -154,14 +174,7 @@ const BucketListTable: FC<{
           onClick={(): void => {
             onClick(i);
           }}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '14px 0px 0px 14px',
-            display: 'inline-flex',
-            alignItems: 'center',
-          }}
+          style={ACTION_BUTTON_STYLE}
         >
           <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
         </button>
@@ -195,9 +208,7 @@ const BucketListTable: FC<{
       </ListRow>
       {tableRows.length === 0 && (
         <Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '4rem' }}>
-          <ds-text as="p" overflow="break-word" weight="regular" size="large">
-            <img src={logo} alt="logo" />
-          </ds-text>
+          <img src={logo} alt="logo" />
           <Padding all="medium" width="30.875rem">
             <ds-text
               as="p"
@@ -219,12 +230,19 @@ const BucketListTable: FC<{
   );
 };
 
-export const BucketDetailPanel: FC = () => {
+export const S3ConnectorListPanel = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
   const queryClient = useQueryClient();
-  const { data: connectors = [] } = useListS3Connectors();
+  const { data: connectors = [], isLoading, isError } = useListS3Connectors();
+  const [bucketselection, setBucketselection] = useState<SingleSelection>([]);
+  const [bucketDeleteName, setBucketDeleteName] = useState<BucketConnectorRow | undefined>();
+  const [selectedUuid, setSelectedUuid] = useState<string | undefined>();
+  const [toggleWizardSection, setToggleWizardSection] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [searchBucket, setSearchBucket] = useState('');
+  const [showEditDetailView, setShowEditDetailView] = useState(false);
+
   const bucketList: Array<BucketConnectorRow> = connectors.map((connector: S3Connector) => ({
     uuid: connector.uuid,
     id: connector.uuid,
@@ -236,36 +254,28 @@ export const BucketDetailPanel: FC = () => {
     prefix: connector.prefix || '',
     insecureHttps: String(connector.insecureHttps ?? false),
     notes: connector.notes || '',
-    storeType: (connector as unknown as { storeType?: string }).storeType || 'S3',
+    storeType: connector.storeType || 'S3',
     'usage in external backup': connector['usage in external backup'] ?? '',
     'usage in powerstore volumes': connector['usage in powerstore volumes'] ?? '',
     'usage in powerstore volume': connector['usage in powerstore volume'] ?? '',
     usage: connector.usage ?? '',
   }));
-  const [bucketDeleteName, setBucketDeleteName] = useState<BucketConnectorRow | undefined>();
-  const [selectedUuid, setSelectedUuid] = useState<string | undefined>();
-  const [toggleWizardSection, setToggleWizardSection] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const [searchBucket, setSearchBucket] = useState('');
-  const [showEditDetailView, setShowEditDetailView] = useState(false);
 
+  const lowerSearch = searchBucket.toLowerCase();
   const filteredBucketList =
     searchBucket === ''
       ? bucketList
       : bucketList.filter(
           (o) =>
-            o.bucketName.toLowerCase().includes(searchBucket.toLowerCase()) ||
-            o.label.toLowerCase().includes(searchBucket.toLowerCase()),
+            o.bucketName.toLowerCase().includes(lowerSearch) ||
+            o.label.toLowerCase().includes(lowerSearch),
         );
 
   const closeHandler = (): void => {
     setOpen(false);
-    setShowDetails(false);
   };
 
-  const deleteHandler = () => {
-    // delete  api call here
+  const deleteHandler = async (): Promise<void> => {
     setOpen(false);
     const objectToSendDeleteBucket: DeleteS3ConnectorRequest = {
       _jsns: ZIMBRA_ADMIN_URN,
@@ -275,7 +285,8 @@ export const BucketDetailPanel: FC = () => {
       iAmSure: true,
     };
 
-    deleteS3Connector(objectToSendDeleteBucket).then((response) => {
+    try {
+      const response = await deleteS3Connector(objectToSendDeleteBucket);
       if (response.ok) {
         void queryClient.invalidateQueries({ queryKey: bucketVolumeQueryKeys.s3Connectors() });
         createSnackbar({
@@ -302,20 +313,35 @@ export const BucketDetailPanel: FC = () => {
           autoHideTimeout: 2000,
         });
       }
-    });
+    } catch (err) {
+      createSnackbar({
+        key: '1',
+        severity: 'error',
+        label:
+          (err instanceof Error ? err.message : undefined) ||
+          t('label.delete_bucket_fail', 'The {{name}} has not been removed', {
+            name: bucketDeleteName?.bucketName,
+          }),
+        autoHideTimeout: 2000,
+      });
+    }
   };
+
   const connectionData = selectedUuid ? bucketList.find((b) => b.uuid === selectedUuid) : undefined;
 
   const handleClick = (i: number): void => {
     const volumeObject = filteredBucketList.find((s, index) => index === i);
     setSelectedUuid(volumeObject?.uuid);
     setShowEditDetailView(true);
-    setShowDetails(true);
   };
 
   const filterBucketList = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchBucket(e.target.value);
   };
+
+  if (isLoading) {
+    return <ds-page-shimmer />;
+  }
 
   return (
     <>
@@ -334,7 +360,7 @@ export const BucketDetailPanel: FC = () => {
             setBucketDeleteName={setBucketDeleteName}
             setOpen={setOpen}
             setShowEditDetailView={setShowEditDetailView}
-            title="S3 details"
+            title={t('storages.s3Connectors.detailsTitle', 'S3 details')}
             bucketDetail={connectionData}
             getBucketListType={(): void => {
               void queryClient.invalidateQueries({
@@ -371,7 +397,6 @@ export const BucketDetailPanel: FC = () => {
             color="primary"
             onClick={(): void => {
               setToggleWizardSection(!toggleWizardSection);
-              if (showDetails) setShowDetails(!showDetails);
             }}
           />
         </Row>
@@ -383,43 +408,56 @@ export const BucketDetailPanel: FC = () => {
             connectorName={bucketDeleteName.label}
           />
         )}
-        <Row width="100%" padding={{ all: 'large' }}>
-          <Input
-            disabled={bucketList.length === 0 && searchBucket.length === 0}
-            backgroundColor="gray5"
-            label={t('storages.s3Connectors.filterS3List', 'Filter S3 List')}
-            CustomIcon={(): React.ReactElement => (
-              <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-            )}
-            onChange={filterBucketList}
-          />
-        </Row>
+        {isError ? (
+          <Row width="100%" padding={{ all: 'large' }}>
+            <Banner
+              severity="error"
+              description={t(
+                'storages.s3Connectors.loadError',
+                'Failed to load S3 connectors. Please try again later.',
+              )}
+            />
+          </Row>
+        ) : (
+          <>
+            <Row width="100%" padding={{ all: 'large' }}>
+              <Input
+                disabled={bucketList.length === 0 && searchBucket.length === 0}
+                backgroundColor="gray5"
+                label={t('storages.s3Connectors.filterS3List', 'Filter S3 List')}
+                CustomIcon={(): React.ReactElement => (
+                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+                )}
+                onChange={filterBucketList}
+              />
+            </Row>
 
-        <Row style={{ padding: '0 0.875rem 0 0.875rem' }} width="100%">
-          <BucketListTable
-            volumes={filteredBucketList}
-            selectedRows={bucketselection}
-            onSelectionChange={(selected: string[]): void => {
-              const [firstSelected] = selected;
-              const nextSelection: SingleSelection =
-                firstSelected === undefined ? [] : [firstSelected];
-              setBucketselection(nextSelection);
+            <Row style={{ padding: '0 0.875rem 0 0.875rem' }} width="100%">
+              <BucketListTable
+                volumes={filteredBucketList}
+                selectedRows={bucketselection}
+                onSelectionChange={(selected: string[]): void => {
+                  const [firstSelected] = selected;
+                  const nextSelection: SingleSelection =
+                    firstSelected === undefined ? [] : [firstSelected];
+                  setBucketselection(nextSelection);
 
-              const volumeObject = resolveSelectedBucketConnector(
-                filteredBucketList,
-                firstSelected,
-              );
-              setShowDetails(false);
-              setBucketDeleteName(volumeObject);
-            }}
-            onDoubleClick={(i: number): void => {
-              handleClick(i);
-            }}
-            onClick={(i: number): void => {
-              handleClick(i);
-            }}
-          />
-        </Row>
+                  const volumeObject = resolveSelectedBucketConnector(
+                    filteredBucketList,
+                    firstSelected,
+                  );
+                  setBucketDeleteName(volumeObject);
+                }}
+                onDoubleClick={(i: number): void => {
+                  handleClick(i);
+                }}
+                onClick={(i: number): void => {
+                  handleClick(i);
+                }}
+              />
+            </Row>
+          </>
+        )}
       </Container>
     </>
   );

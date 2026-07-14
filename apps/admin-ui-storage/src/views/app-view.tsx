@@ -8,9 +8,9 @@ import { Navigate, Route, Routes } from 'react-router';
 
 import { DATA_VOLUMES, HSM_SETTINGS, S3CONNECTOR_LIST, SERVERS_LIST } from '../constants';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
-import { BucketDetailPanel } from './bucket/bucket-detail-panel';
 import { ServerListPanel } from './bucket/global-servers/server-list-panel';
 import { HSMsettingPanel } from './bucket/hsm/hsm-setting-panel';
+import { S3ConnectorListPanel } from './bucket/s3-connector-list-panel';
 import { VolumesDetailRoute } from './bucket/volumes-detail-route';
 import { StorageLayout } from './storage-layout';
 
@@ -22,7 +22,7 @@ export const AppView = () => {
         <Route element={<StorageLayout />}>
           <Route index element={<Navigate to={SERVERS_LIST} replace />} />
           <Route path={SERVERS_LIST} element={<ServerListPanel />} />
-          <Route path={S3CONNECTOR_LIST} element={<BucketDetailPanel />} />
+          <Route path={S3CONNECTOR_LIST} element={<S3ConnectorListPanel />} />
           <Route path={`:server/${DATA_VOLUMES}`} element={<VolumesDetailRoute />} />
           <Route path={`:server/${HSM_SETTINGS}`} element={<HSMsettingPanel />} />
           <Route path="*" element={null} />
