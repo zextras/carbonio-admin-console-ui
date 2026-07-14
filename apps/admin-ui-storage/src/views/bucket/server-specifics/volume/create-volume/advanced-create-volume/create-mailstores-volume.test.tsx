@@ -75,13 +75,13 @@ vi.mock('@zextras/ui-components', () => ({
 }));
 
 vi.mock('./advanced-mailstores-definition', () => ({
-  default: () => <div data-testid="step-definition" />,
+  AdvancedMailstoresDefinition: () => <div data-testid="step-definition" />,
 }));
 vi.mock('./advanced-mailstores-config', () => ({
   AdvancedMailstoresConfig: () => <div data-testid="step-config" />,
 }));
 vi.mock('./advanced-mailstores-create', () => ({
-  default: () => <div data-testid="step-create" />,
+  AdvancedMailstoresCreate: () => <div data-testid="step-create" />,
 }));
 
 vi.mock('../../../../../utility/utils', () => ({
