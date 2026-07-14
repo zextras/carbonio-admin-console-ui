@@ -17,7 +17,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { postSoapFetchRequest, soapFetch, useAllServers, useIsAdvanced } from '@zextras/ui-shared';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -49,7 +49,6 @@ import { useListS3Connectors } from '../../../../services/use-list-s3-connectors
 import { indexerHeaders, volTableHeader } from '../../../utility/utils';
 import { CreateMailstoresVolume } from './create-volume/advanced-create-volume/create-mailstores-volume';
 import { NewVolume } from './create-volume/new-volume';
-import { VolumeContext } from './create-volume/volume-context';
 import { DeleteVolumeModel } from './delete-volume-model';
 import { IndexerVolumeTable } from './indexer-volume-table';
 import { ModifyVolume } from './modify-volume/modify-volume';
@@ -200,7 +199,6 @@ function VolumeListTable({
 export function VolumesDetailPanel() {
   const { server = '' } = useParams<{ server: string }>();
   const [t] = useTranslation();
-  const { form } = useContext(VolumeContext);
   const { data: isVolumeAllDetail = [] } = useListS3Connectors();
   const isAdvanced = useIsAdvanced();
   const volIndexerHeaders = indexerHeaders(t, isAdvanced);
@@ -706,7 +704,6 @@ export function VolumesDetailPanel() {
                 icon="PlusOutline"
                 color="primary"
                 onClick={(): void => {
-                  form.reset();
                   if (isAdvanced) {
                     setToggleWizardExternal(!toggleWizardExternal);
                   } else {

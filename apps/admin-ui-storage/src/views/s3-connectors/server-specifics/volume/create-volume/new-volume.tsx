@@ -4,12 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
 import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { type ComponentProps, createContext, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MailstoresCreate } from './mailstores-create';
+import { volumeCreateSchema } from './schema';
+import type { VolumeCreateFormValues } from './types';
 import { VolumeContext } from './volume-context';
 
 type WizardStepButtonProps = ComponentProps<typeof Button> & {
@@ -123,7 +126,22 @@ export function NewVolume({
   isLoading: boolean;
 }) {
   const { t } = useTranslation();
-  const { form } = useContext(VolumeContext);
+  const form = useForm({
+    defaultValues: {
+      id: '',
+      volumeName: '',
+      volumeMain: 1,
+      path: '',
+      isCurrent: false,
+      isCompression: false,
+      compressionThreshold: '',
+      volumeAllocation: 0,
+    } as VolumeCreateFormValues,
+    validators: {
+      onChange: volumeCreateSchema,
+    },
+    onSubmit: async () => {},
+  });
 
   const isAdvanced = useIsAdvanced();
 
@@ -166,13 +184,15 @@ export function NewVolume({
           },
         }}
       >
-        <HorizontalWizard
-          steps={wizardSteps}
-          Wrapper={WizardInSection}
-          onComplete={onComplete}
-          setToggleWizardSection={setToggleWizardLocal}
-          externalData={volName}
-        />
+        <VolumeContext.Provider value={{ form }}>
+          <HorizontalWizard
+            steps={wizardSteps}
+            Wrapper={WizardInSection}
+            onComplete={onComplete}
+            setToggleWizardSection={setToggleWizardLocal}
+            externalData={volName}
+          />
+        </VolumeContext.Provider>
       </NewVolumeActionsContext.Provider>
     </>
   );

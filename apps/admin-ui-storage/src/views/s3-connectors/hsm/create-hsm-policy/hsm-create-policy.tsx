@@ -14,8 +14,7 @@ import { asQueryString } from '../hsm-policy-detail';
 
 export function HSMcreatePolicy() {
   const [t] = useTranslation();
-  const context = useContext(HSMContext);
-  const { form } = context;
+  const { form } = useContext(HSMContext);
   const formValues = useSelector(form.store, (s) => s.values);
   const hsmQuery = asQueryString(formValues);
   const sourceVolumeNames = formValues.sourceVolume.map((item: Volume) => item.name).join();

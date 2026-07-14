@@ -10,6 +10,9 @@ import { useTranslation } from 'react-i18next';
 
 import type { CreateMailstoresVolumeProps, WizardInSectionProps } from '../../../../../../../types';
 import { volumeTypeList } from '../../../../../utility/utils';
+import { volumeCreateSchema } from '../schema';
+import type { VolumeCreateFormValues } from '../types';
+import { VolumeContext } from '../volume-context';
 import { AdvancedMailstoresConfig } from './advanced-mailstores-config';
 import { AdvancedMailstoresCreate } from './advanced-mailstores-create';
 import { AdvancedMailstoresDefinition } from './advanced-mailstores-definition';
@@ -139,6 +142,23 @@ export const CreateMailstoresVolume = ({
 	const volTypeList = volumeTypeList(t);
 	const [isAllocationToggle, setIsAllocationToggle] = useState(false);
 
+	const volumeForm = useForm({
+		defaultValues: {
+			id: '',
+			volumeName: '',
+			volumeMain: 1,
+			path: '',
+			isCurrent: false,
+			isCompression: false,
+			compressionThreshold: '',
+			volumeAllocation: 0,
+		} as VolumeCreateFormValues,
+		validators: {
+			onChange: volumeCreateSchema,
+		},
+		onSubmit: async () => {},
+	});
+
 	const form = useForm({
 		defaultValues: {
 			volumeName: '',
@@ -220,13 +240,15 @@ export const CreateMailstoresVolume = ({
 			}}
 		>
 			<AdvancedVolumeContext.Provider value={{ form, isAllocationToggle, setIsAllocationToggle }}>
-				<HorizontalWizard
-					steps={wizardSteps}
-					Wrapper={WizardInSection}
-					onComplete={onComplete}
-					setToggleWizardSection={setToggleWizardExternal}
-					externalData={volName}
-				/>
+				<VolumeContext.Provider value={{ form: volumeForm }}>
+					<HorizontalWizard
+						steps={wizardSteps}
+						Wrapper={WizardInSection}
+						onComplete={onComplete}
+						setToggleWizardSection={setToggleWizardExternal}
+						externalData={volName}
+					/>
+				</VolumeContext.Provider>
 			</AdvancedVolumeContext.Provider>
 		</WizardActionsContext.Provider>
 	);

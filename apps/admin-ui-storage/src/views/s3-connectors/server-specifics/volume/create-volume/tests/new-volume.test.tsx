@@ -4,16 +4,35 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useForm } from '@tanstack/react-form';
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { NewVolume } from '../new-volume';
-import { volumeCreateSchema } from '../schema';
-import { VolumeContext } from '../volume-context';
 
 const mockAdvancedMode = vi.hoisted(() => ({ value: false }));
+
+const mockFormValues = vi.hoisted(() => ({
+  value: {
+    id: 7,
+    volumeName: 'primary-volume',
+    volumeMain: 1,
+    path: '/opt/zextras/store',
+    isCurrent: true,
+    isCompression: true,
+    compressionThreshold: 4096,
+    volumeAllocation: 0,
+  } as Record<string, unknown>,
+}));
+
+vi.mock('@tanstack/react-form', () => ({
+  useForm: () => ({
+    state: { values: mockFormValues.value },
+    reset: vi.fn(),
+    setFieldValue: vi.fn(),
+    store: {},
+  }),
+}));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -105,74 +124,40 @@ vi.mock('@zextras/ui-components', () => ({
   ),
 }));
 
-type VolumeDetailValue = {
-  id?: number | string;
-  volumeName?: string;
-  path?: string;
-  volumeMain?: number;
-  isCompression?: boolean;
-  compressionThreshold?: number | string;
-  isCurrent?: boolean;
-};
-
-function VolumeProvider({
-  children,
-  initialFormValues,
-}: {
-  children: React.ReactNode;
-  initialFormValues: Record<string, unknown>;
-}): React.JSX.Element {
-  const form = useForm({
-    defaultValues: {
-      id: '',
-      volumeName: '',
-      volumeMain: 1,
-      path: '',
-      isCurrent: false,
-      isCompression: false,
-      compressionThreshold: '',
-      volumeAllocation: 0,
-      ...initialFormValues,
-    },
-    validators: { onChange: volumeCreateSchema },
-    onSubmit: async () => {},
-  });
-
-  return <VolumeContext.Provider value={{ form }}>{children}</VolumeContext.Provider>;
-}
-
 function renderComponent(options?: {
   isAdvanced?: boolean;
   isLoading?: boolean;
-  volumeDetail?: VolumeDetailValue;
+  volumeDetail?: Record<string, unknown>;
 }) {
   mockAdvancedMode.value = options?.isAdvanced ?? false;
+
+  if (options?.volumeDetail) {
+    mockFormValues.value = { ...mockFormValues.value, ...options.volumeDetail };
+  } else {
+    mockFormValues.value = {
+      id: 7,
+      volumeName: 'primary-volume',
+      volumeMain: 1,
+      path: '/opt/zextras/store',
+      isCurrent: true,
+      isCompression: true,
+      compressionThreshold: 4096,
+      volumeAllocation: 0,
+    };
+  }
 
   const setToggleWizardLocal = vi.fn();
   const setToggleWizardExternal = vi.fn();
   const CreateVolumeRequest = vi.fn();
 
   render(
-    <VolumeProvider
-      initialFormValues={{
-        id: 7,
-        volumeName: 'primary-volume',
-        path: '/opt/zextras/store',
-        volumeMain: 1,
-        isCompression: true,
-        compressionThreshold: 4096,
-        isCurrent: true,
-        ...options?.volumeDetail,
-      }}
-    >
-      <NewVolume
-        setToggleWizardLocal={setToggleWizardLocal}
-        setToggleWizardExternal={setToggleWizardExternal}
-        volName="mailstore1.example.com"
-        CreateVolumeRequest={CreateVolumeRequest}
-        isLoading={options?.isLoading ?? false}
-      />
-    </VolumeProvider>,
+    <NewVolume
+      setToggleWizardLocal={setToggleWizardLocal}
+      setToggleWizardExternal={setToggleWizardExternal}
+      volName="mailstore1.example.com"
+      CreateVolumeRequest={CreateVolumeRequest}
+      isLoading={options?.isLoading ?? false}
+    />,
   );
 
   return {
@@ -186,6 +171,16 @@ describe('NewVolume', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAdvancedMode.value = false;
+    mockFormValues.value = {
+      id: 7,
+      volumeName: 'primary-volume',
+      volumeMain: 1,
+      path: '/opt/zextras/store',
+      isCurrent: true,
+      isCompression: true,
+      compressionThreshold: 4096,
+      volumeAllocation: 0,
+    };
   });
 
   it('should call CreateVolumeRequest with mapped wizard values on completion', () => {
