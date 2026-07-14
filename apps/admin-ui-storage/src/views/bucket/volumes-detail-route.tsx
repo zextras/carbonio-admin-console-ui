@@ -5,14 +5,13 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { Container } from '@zextras/ui-components';
-import { FC } from 'react';
 
 import { volumeCreateSchema } from './server-specifics/volume/create-volume/schema';
 import type { VolumeCreateFormValues } from './server-specifics/volume/create-volume/types';
 import { VolumeContext } from './server-specifics/volume/create-volume/volume-context';
 import { VolumesDetailPanel } from './server-specifics/volume/volumes-list';
 
-export const VolumesDetailRoute: FC = () => {
+export function VolumesDetailRoute() {
   const form = useForm({
     defaultValues: {
       id: '',
@@ -37,4 +36,4 @@ export const VolumesDetailRoute: FC = () => {
       </VolumeContext.Provider>
     </Container>
   );
-};
+}

@@ -5,7 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, Input, LabeledValue, Padding, Row, Select } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, useContext, useEffect, useState } from 'react';
+import { type ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type {
@@ -29,11 +29,11 @@ type AdvancedMailstoresDefinitionProps = {
   setToggleNextBtn: (newValue: boolean) => void;
 };
 
-export const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
+export function AdvancedMailstoresDefinition({
   externalData,
   setToggleNextBtn,
   setCompleteLoading,
-}) => {
+}: AdvancedMailstoresDefinitionProps) {
   const { t } = useTranslation();
   const { form: volumeForm } = useContext(VolumeContext);
   const { form, setIsAllocationToggle } = useAdvancedVolumeContext();
@@ -240,6 +240,5 @@ export const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps>
         )}
     </Container>
   );
-};
-
+}
 

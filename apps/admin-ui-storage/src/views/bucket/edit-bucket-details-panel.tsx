@@ -22,7 +22,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, type ReactElement, useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -76,12 +76,13 @@ type ReusedDefaultTabBarProps = {
   onClick: () => void;
 };
 
-const ReusedDefaultTabBar: FC<ReusedDefaultTabBarProps> = ({
+function ReusedDefaultTabBar({
   item,
   index,
   selected,
   onClick,
-}): ReactElement => (
+}: ReusedDefaultTabBarProps) {
+  return (
   <DefaultTabBarItem
     item={item}
     tabIndex={index}
@@ -98,7 +99,8 @@ const ReusedDefaultTabBar: FC<ReusedDefaultTabBarProps> = ({
       </ds-text>
     </Row>
   </DefaultTabBarItem>
-);
+  );
+}
 
 type EditBucketDetailPanelProps = {
   setShowEditDetailView: (value: boolean) => void;
@@ -137,14 +139,14 @@ function buildRegionLabel(
   return String(regionLabel ?? regionValue ?? '-');
 }
 
-export const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
+export function EditBucketDetailPanel({
   setShowEditDetailView,
   title,
   bucketDetail,
   setBucketDeleteName,
   setOpen,
   getBucketListType,
-}) => {
+}: EditBucketDetailPanelProps) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { data: rawRegions = [] } = useListS3Regions();
@@ -719,6 +721,6 @@ export const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
       />
     </>
   );
-};
+}
 
 

@@ -6,7 +6,7 @@
 
 import { Container, useSnackbar } from '@zextras/ui-components';
 import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/ui-shared';
-import { type FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -63,7 +63,14 @@ function findExternalVolumeData(
   return { externalVolDetail: {}, isExternal: false };
 }
 
-export const ModifyVolume: FC<{
+export function ModifyVolume({
+  volumeId,
+  setmodifyVolumeToggle,
+  getAllVolumesRequest,
+  selectedServerId,
+  volumeList,
+  setOpen,
+}: {
   volumeId: any;
   setmodifyVolumeToggle: (newValue: boolean) => void;
   getAllVolumesRequest: () => void;
@@ -74,14 +81,7 @@ export const ModifyVolume: FC<{
     secondaries: Volume[];
   };
   setOpen: (newValue: boolean) => void;
-}> = ({
-  volumeId,
-  setmodifyVolumeToggle,
-  getAllVolumesRequest,
-  selectedServerId,
-  volumeList,
-  setOpen,
-}) => {
+}) {
   const { t } = useTranslation();
   const isAdvanced = useIsAdvanced();
   const createSnackbar = useSnackbar();
@@ -204,6 +204,5 @@ export const ModifyVolume: FC<{
       setIsSticky={setIsSticky}
     />
   );
-};
-
+}
 

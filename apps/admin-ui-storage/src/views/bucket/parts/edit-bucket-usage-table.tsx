@@ -15,22 +15,18 @@ import {
   type THeader,
   type TRow,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, type ReactElement, useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 
 const PAGE_SIZE = 10;
 
-type SearchFilterInputIconProps = {
-  hasError: boolean;
-  hasFocus: boolean;
-  disabled: boolean;
-};
-
-const SearchFilterInputIcon: FC<SearchFilterInputIconProps> = (): ReactElement => (
-  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-);
+function SearchFilterInputIcon() {
+  return (
+    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+  );
+}
 
 type EditBucketUsageTableProps = {
   rows: Array<Record<string, string>>;
@@ -39,12 +35,12 @@ type EditBucketUsageTableProps = {
   searchLabel: string;
 };
 
-export const EditBucketUsageTable: FC<EditBucketUsageTableProps> = ({
+export function EditBucketUsageTable({
   rows,
   columnKeys,
   headers,
   searchLabel,
-}) => {
+}: EditBucketUsageTableProps) {
   const [t] = useTranslation();
   const [searchValue, setSearchValue] = useState('');
   const [offset, setOffset] = useState(0);
@@ -147,4 +143,4 @@ export const EditBucketUsageTable: FC<EditBucketUsageTableProps> = ({
       )}
     </Container>
   );
-};
+}

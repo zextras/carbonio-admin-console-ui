@@ -5,7 +5,6 @@
  */
 
 import { Button, Container, Row } from '@zextras/ui-components';
-import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { objectType } from '../../../types';
@@ -17,11 +16,11 @@ type NewBucketProps = {
   setConnectionData: (value: objectType | undefined) => void;
 };
 
-export const NewBucket: FC<NewBucketProps> = ({
+export function NewBucket({
   setToggleWizardSection,
   setDetailsBucket,
   setConnectionData,
-}) => {
+}: NewBucketProps) {
   const { t } = useTranslation();
 
   return (
@@ -61,5 +60,5 @@ export const NewBucket: FC<NewBucketProps> = ({
       />
     </Container>
   );
-};
+}
 

@@ -15,7 +15,7 @@ import {
   Row,
   Switch,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, useEffect } from 'react';
+import { type ChangeEvent, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { AdvancedMailstoresConfigProps } from '../../../../../../../types';
@@ -28,11 +28,11 @@ import {
 } from '../../../../../../constants';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 
-export const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({
+export function AdvancedMailstoresConfig({
   onSelection,
   externalData,
   setCompleteLoading,
-}) => {
+}: AdvancedMailstoresConfigProps) {
   const { form, setIsAllocationToggle } = useAdvancedVolumeContext();
   const { t } = useTranslation();
 
@@ -333,4 +333,4 @@ export const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({
       )}
     </Container>
   );
-};
+}

@@ -5,14 +5,14 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, LabeledValue, ListRow, Padding, Tooltip } from '@zextras/ui-components';
-import { FC, useContext } from 'react';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { Volume } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 import { asQueryString } from '../hsm-policy-detail';
 
-export const HSMcreatePolicy: FC = () => {
+export function HSMcreatePolicy() {
   const [t] = useTranslation();
   const context = useContext(HSMContext);
   const { form } = context;
@@ -80,4 +80,4 @@ export const HSMcreatePolicy: FC = () => {
       </ListRow>
     </Container>
   );
-};
+}

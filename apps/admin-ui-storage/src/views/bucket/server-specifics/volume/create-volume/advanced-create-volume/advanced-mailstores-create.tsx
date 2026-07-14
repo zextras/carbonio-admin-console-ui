@@ -5,17 +5,20 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, LabeledValue, ListRow, Row } from '@zextras/ui-components';
-import { FC, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../../../constants';
 import { volumeTypeList } from '../../../../../utility/utils';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 
-export const AdvancedMailstoresCreate: FC<{
+export function AdvancedMailstoresCreate({
+  externalData,
+  setCompleteLoading,
+}: {
   externalData: string;
   setCompleteLoading: (v: boolean) => void;
-}> = ({ externalData, setCompleteLoading }) => {
+}) {
   const { form } = useAdvancedVolumeContext();
   const { t } = useTranslation();
   const volTypeList = volumeTypeList(t);
@@ -155,6 +158,5 @@ export const AdvancedMailstoresCreate: FC<{
       </Row>
     </Container>
   );
-};
-
+}
 

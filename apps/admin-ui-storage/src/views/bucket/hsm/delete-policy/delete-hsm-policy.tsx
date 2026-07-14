@@ -12,7 +12,7 @@ import {
   Row,
   useSnackbar,
 } from '@zextras/ui-components';
-import { createContext, type FC, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { DeleteHsmPolicyProps, HsmPolicyFromServer } from '../../../../../types';
@@ -20,21 +20,21 @@ import { APPOINTMENT, CONTACT, DOCUMENT, MESSAGE } from '../../../../constants';
 
 const CopyActionContext = createContext<{ onCopy: () => void }>({ onCopy: () => {} });
 
-const CopyPolicyIcon: FC = () => {
+function CopyPolicyIcon() {
 	const { onCopy } = useContext(CopyActionContext);
 	return (
 		<Button type="ghost" color={'grey'} icon="CopyOutline" size="large" onClick={onCopy} />
 	);
-};
+}
 
-export const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
+export function DeleteHsmPolicy({
   showDeletePolicyView,
   setShowDeletePolicyView,
   selectedPolicies,
   onDeletePolicy,
   isRequestInProgress,
   policies,
-}) => {
+}: DeleteHsmPolicyProps) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const getHSMType = (query: string): string => {
@@ -144,4 +144,4 @@ export const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
       </Container>
     </Modal>
   );
-};
+}

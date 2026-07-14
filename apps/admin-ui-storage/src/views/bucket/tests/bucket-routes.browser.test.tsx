@@ -5,7 +5,6 @@
  */
 
 import { resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
-import { FC } from 'react';
 import { Navigate, Outlet, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
@@ -17,20 +16,24 @@ import {
   SERVERS_LIST,
 } from '../../../constants';
 
-const TestLayout: FC = () => <Outlet />;
+function TestLayout() {
+  return <Outlet />;
+}
 
-const StorageRoutes: FC = () => (
-  <Routes>
-    <Route element={<TestLayout />}>
-      <Route index element={<Navigate to={SERVERS_LIST} replace />} />
-      <Route path={SERVERS_LIST} element={<div>VIEW:servers-list</div>} />
-      <Route path={S3CONNECTOR_LIST} element={<div>VIEW:s3connector-list</div>} />
-      <Route path={`:server/${DATA_VOLUMES}`} element={<div>VIEW:data-volumes</div>} />
-      <Route path={`:server/${HSM_SETTINGS}`} element={<div>VIEW:hsm-settings</div>} />
-      <Route path="*" element={null} />
-    </Route>
-  </Routes>
-);
+function StorageRoutes() {
+  return (
+    <Routes>
+      <Route element={<TestLayout />}>
+        <Route index element={<Navigate to={SERVERS_LIST} replace />} />
+        <Route path={SERVERS_LIST} element={<div>VIEW:servers-list</div>} />
+        <Route path={S3CONNECTOR_LIST} element={<div>VIEW:s3connector-list</div>} />
+        <Route path={`:server/${DATA_VOLUMES}`} element={<div>VIEW:data-volumes</div>} />
+        <Route path={`:server/${HSM_SETTINGS}`} element={<div>VIEW:hsm-settings</div>} />
+        <Route path="*" element={null} />
+      </Route>
+    </Routes>
+  );
+}
 
 const globalOpRoutes: Array<[string, string]> = [
   [SERVERS_LIST, 'VIEW:servers-list'],

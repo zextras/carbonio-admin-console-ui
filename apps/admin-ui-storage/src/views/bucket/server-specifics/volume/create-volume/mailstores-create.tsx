@@ -17,7 +17,7 @@ import {
   Switch,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { type ChangeEvent, type FC, useContext, useEffect } from 'react';
+import { type ChangeEvent, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -30,16 +30,21 @@ import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils'
 import { VOLUME_CREATE_VALIDATION_MESSAGES } from './schema';
 import { VolumeContext } from './volume-context';
 
-const CompressionThresholdIcon: FC = () => (
-  <ds-text as="span" color="secondary">
-    {COMPRESSION_THRESHOLD_UNIT}
-  </ds-text>
-);
+function CompressionThresholdIcon() {
+  return (
+    <ds-text as="span" color="secondary">
+      {COMPRESSION_THRESHOLD_UNIT}
+    </ds-text>
+  );
+}
 
-export const MailstoresCreate: FC<{
+export function MailstoresCreate({
+  externalData,
+  setCompleteLoading,
+}: {
   externalData: string;
   setCompleteLoading: any;
-}> = ({ externalData, setCompleteLoading }) => {
+}) {
   const { form } = useContext(VolumeContext);
   const { t } = useTranslation();
 
@@ -257,6 +262,5 @@ export const MailstoresCreate: FC<{
       </Row>
     </Container>
   );
-};
-
+}
 

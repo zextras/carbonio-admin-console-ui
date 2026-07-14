@@ -4,17 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button } from '@zextras/ui-components';
-import { FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './delete-bucket-model.module.css';
 
-export const DeleteBucketModel: FC<{
+export function DeleteBucketModel({
+	open,
+	closeHandler,
+	saveHandler,
+	connectorName = '',
+}: {
 	open: boolean;
 	closeHandler: () => void;
 	saveHandler: () => void;
 	connectorName?: string;
-}> = ({ open, closeHandler, saveHandler, connectorName = '' }) => {
+}) {
 	const [t] = useTranslation();
 	const [isConfirmed, setIsConfirmed] = useState(false);
 	const popoverRef = useRef<HTMLDivElement>(null);
@@ -102,6 +107,6 @@ export const DeleteBucketModel: FC<{
 			</div>
 		</div>
 	);
-};
+}
 
 

@@ -5,7 +5,7 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
-import { createContext, type FC, type ReactElement, useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { CreateMailstoresVolumeProps, WizardInSectionProps } from '../../../../../../../types';
@@ -49,7 +49,7 @@ const WizardInSection = ({
 	);
 };
 
-const WizardCancelButton: FC<WizardButtonRenderProps> = () => {
+function WizardCancelButton() {
 	const { t } = useTranslation();
 	const { onCancel } = useContext(WizardActionsContext);
 	return (
@@ -63,11 +63,13 @@ const WizardCancelButton: FC<WizardButtonRenderProps> = () => {
 			onClick={onCancel}
 		/>
 	);
-};
+}
 
-const EmptyPrevButton: FC<WizardButtonRenderProps> = (): ReactElement => <></>;
+function EmptyPrevButton() {
+	return <></>;
+}
 
-const DefinitionNextButton: FC<WizardButtonRenderProps> = ({ onClick, toggleNextBtn }) => {
+function DefinitionNextButton({ onClick, toggleNextBtn }: WizardButtonRenderProps) {
 	const { t } = useTranslation();
 	const { onNextLocal } = useContext(WizardActionsContext);
 	return toggleNextBtn ? (
@@ -85,9 +87,9 @@ const DefinitionNextButton: FC<WizardButtonRenderProps> = ({ onClick, toggleNext
 			iconPlacement="right"
 		/>
 	);
-};
+}
 
-const WizardPrevButton: FC<WizardButtonRenderProps> = ({ onClick, completeLoading }) => {
+function WizardPrevButton({ onClick, completeLoading }: WizardButtonRenderProps) {
 	const { t } = useTranslation();
 	return (
 		<Button
@@ -99,9 +101,9 @@ const WizardPrevButton: FC<WizardButtonRenderProps> = ({ onClick, completeLoadin
 			color="secondary"
 		/>
 	);
-};
+}
 
-const ConfigNextButton: FC<WizardButtonRenderProps> = ({ onClick, completeLoading }) => {
+function ConfigNextButton({ onClick, completeLoading }: WizardButtonRenderProps) {
 	const { t } = useTranslation();
 	return (
 		<Button
@@ -112,9 +114,9 @@ const ConfigNextButton: FC<WizardButtonRenderProps> = ({ onClick, completeLoadin
 			disabled={completeLoading}
 		/>
 	);
-};
+}
 
-const CreateNextButton: FC<WizardButtonRenderProps> = ({ onClick, completeLoading }) => {
+function CreateNextButton({ onClick, completeLoading }: WizardButtonRenderProps) {
 	const { t } = useTranslation();
 	return (
 		<Button
@@ -125,7 +127,7 @@ const CreateNextButton: FC<WizardButtonRenderProps> = ({ onClick, completeLoadin
 			disabled={completeLoading}
 		/>
 	);
-};
+}
 
 export const CreateMailstoresVolume = ({
 	setToggleWizardExternal,

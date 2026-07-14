@@ -18,7 +18,7 @@ import {
   Table,
 } from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
-import { FC, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -27,9 +27,11 @@ import { HSMContext } from '../hsm-context/hsm-context';
 
 type SelectOption = { label: string; value: string };
 
-export const EditHsmPolicyDetailSection: FC<{
+export function EditHsmPolicyDetailSection({
+  currentPolicy,
+}: {
   currentPolicy: HsmPolicyFromServer | undefined;
-}> = ({ currentPolicy }) => {
+}) {
   const { server } = useParams();
   const [t] = useTranslation();
   const context = useContext(HSMContext);
@@ -561,4 +563,4 @@ export const EditHsmPolicyDetailSection: FC<{
       </ListRow>
     </Container>
   );
-};
+}

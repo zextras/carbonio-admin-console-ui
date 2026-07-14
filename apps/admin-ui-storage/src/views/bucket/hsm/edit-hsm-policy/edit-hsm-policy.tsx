@@ -15,7 +15,7 @@ import {
   TabBar,
   useSnackbar,
 } from '@zextras/ui-components';
-import { FC, ReactElement, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { EditHsmPolicyProps, HsmPolicyFromServer, TabBarItem } from '../../../../../types';
@@ -24,14 +24,14 @@ import type { HsmPolicyFormValues } from '../types';
 import { EditHsmPolicyDetailSection } from './edit-hsm-policy-detail-section';
 import { EditHsmPolicyVolumesSection } from './edit-hsm-policy-volumes-section';
 
-export const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
+export function EditHsmPolicy({
   setShowEditHsmPolicyView,
   policies,
   selectedPolicies,
   volumeList,
   onEditSave,
   isEditSaveInProgress,
-}) => {
+}: EditHsmPolicyProps) {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const [change, setChange] = useState('details');
@@ -52,35 +52,41 @@ export const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
   });
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
-  const ReusedDefaultTabBar: FC<{
+  function ReusedDefaultTabBar({
+    item,
+    selected,
+    onClick,
+  }: {
     item: TabBarItem;
     index: number;
     selected: boolean;
     onClick: () => void;
-  }> = ({ item, selected, onClick }): ReactElement => (
-    <DefaultTabBarItem
-      item={item as unknown as { id: string; label: string }}
-      selected={selected}
-      onClick={onClick}
-      orientation="horizontal"
-      background={'transparent'}
-      underlineColor={'primary'}
-      forceWidthEquallyDistributed={false}
-    >
-      <Row padding="small">
-        <Padding horizontal="small">
-          <ds-icon
-            size="medium"
-            color={selected ? 'primary' : 'gray'}
-            icon={item.icon as 'InfoOutline' | 'OptionsOutline'}
-          ></ds-icon>
-        </Padding>
-        <ds-text as="span" size="small" color={selected ? 'primary' : 'gray'}>
-          {item.label}
-        </ds-text>
-      </Row>
-    </DefaultTabBarItem>
-  );
+  }) {
+    return (
+      <DefaultTabBarItem
+        item={item as unknown as { id: string; label: string }}
+        selected={selected}
+        onClick={onClick}
+        orientation="horizontal"
+        background={'transparent'}
+        underlineColor={'primary'}
+        forceWidthEquallyDistributed={false}
+      >
+        <Row padding="small">
+          <Padding horizontal="small">
+            <ds-icon
+              size="medium"
+              color={selected ? 'primary' : 'gray'}
+              icon={item.icon as 'InfoOutline' | 'OptionsOutline'}
+            ></ds-icon>
+          </Padding>
+          <ds-text as="span" size="small" color={selected ? 'primary' : 'gray'}>
+            {item.label}
+          </ds-text>
+        </Row>
+      </DefaultTabBarItem>
+    );
+  }
   const items = [
     {
       id: 'details',
@@ -226,4 +232,4 @@ export const EditHsmPolicy: FC<EditHsmPolicyProps> = ({
       </Container>
     </Container>
   );
-};
+}

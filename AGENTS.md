@@ -63,14 +63,16 @@ Year is auto-updated by eslint. The header is required in all files except:
 - Example: `type Items = Array<Item>` not `type Items = Item[]`
 
 ### Function Definitions
-- Use arrow functions only when returning JSX
-- Use regular function declaration otherwise
+- Use function declarations for React components (not arrow functions)
+- Use regular function declarations for all other logic
 - Example:
   ```typescript
-  // Arrow for JSX return
-  const MyComponent: FC = () => <div>...</div>;
+  // Component
+  function MyComponent({ title }: MyComponentProps) {
+    return <div>{title}</div>;
+  }
 
-  // Function for logic
+  // Logic
   function calculateTotal(items: Array<Item>): number {
     return items.reduce((sum, item) => sum + item.price, 0);
   }
@@ -83,7 +85,8 @@ Year is auto-updated by eslint. The header is required in all files except:
 
 ### React Components
 - Use named exports only, no default exports
-- Type components with `FC` from 'react': `const ComponentName: FC = () => {}`
+- Do not use `FC` — use plain function declarations with an explicit props type
+- Example: `function ComponentName(props: ComponentNameProps) { ... }`
 
 ### Testing
 - Always add timeout instruction when running tests: `testTimeout: 10_000` (default) or `20_000` for CI

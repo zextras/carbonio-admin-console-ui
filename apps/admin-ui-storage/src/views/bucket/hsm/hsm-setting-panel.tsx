@@ -22,7 +22,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { setCoreAttributes, useAllServers } from '@zextras/ui-shared';
-import { FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -48,7 +48,7 @@ import { asQueryString } from './hsm-policy-detail';
 
 type Timeout = ReturnType<typeof setTimeout>;
 
-export const HSMsettingPanel: FC = () => {
+export function HSMsettingPanel() {
   const { server } = useParams() as { server: string };
   const [t] = useTranslation();
   const queryClient = useQueryClient();
@@ -700,4 +700,4 @@ export const HSMsettingPanel: FC = () => {
       )}
     </Container>
   );
-};
+}

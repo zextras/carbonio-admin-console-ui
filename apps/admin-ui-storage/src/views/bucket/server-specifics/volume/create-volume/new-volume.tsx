@@ -6,7 +6,7 @@
 
 import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { type ComponentProps, createContext, type FC, useContext } from 'react';
+import { type ComponentProps, createContext, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MailstoresCreate } from './mailstores-create';
@@ -28,7 +28,7 @@ const NewVolumeActionsContext = createContext<NewVolumeActions>({
 	onPrev: () => {},
 });
 
-const NewVolumeCancelButton: FC<WizardStepButtonProps> = (props) => {
+function NewVolumeCancelButton(props: WizardStepButtonProps) {
 	const { t } = useTranslation();
 	const { onCancel } = useContext(NewVolumeActionsContext);
 	return (
@@ -43,9 +43,9 @@ const NewVolumeCancelButton: FC<WizardStepButtonProps> = (props) => {
 			onClick={onCancel}
 		/>
 	);
-};
+}
 
-const NewVolumePrevButton: FC<WizardStepButtonProps> = ({ completeLoading }) => {
+function NewVolumePrevButton({ completeLoading }: WizardStepButtonProps) {
 	const { t } = useTranslation();
 	const { isAdvanced, onPrev } = useContext(NewVolumeActionsContext);
 	if (!isAdvanced) {
@@ -61,9 +61,9 @@ const NewVolumePrevButton: FC<WizardStepButtonProps> = ({ completeLoading }) => 
 			onClick={onPrev}
 		/>
 	);
-};
+}
 
-const NewVolumeNextButton: FC<WizardStepButtonProps> = (props) => {
+function NewVolumeNextButton(props: WizardStepButtonProps) {
 	const { t } = useTranslation();
 	const { isAdvanced } = useContext(NewVolumeActionsContext);
 	return isAdvanced ? (
@@ -83,9 +83,9 @@ const NewVolumeNextButton: FC<WizardStepButtonProps> = (props) => {
 			disabled={props?.completeLoading}
 		/>
 	);
-};
+}
 
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
+function WizardInSection({ wizard, wizardFooter, setToggleWizardSection, externalData }: any) {
 	const { t } = useTranslation();
 	return (
 		<Section
@@ -107,21 +107,21 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 			{wizard}
 		</Section>
 	);
-};
+}
 
-export const NewVolume: FC<{
-  setToggleWizardLocal: any;
-  setToggleWizardExternal: any;
-  volName: any;
-  CreateVolumeRequest: any;
-  isLoading: boolean;
-}> = ({
+export function NewVolume({
   setToggleWizardLocal,
   setToggleWizardExternal,
   volName,
   CreateVolumeRequest,
   isLoading,
-}) => {
+}: {
+  setToggleWizardLocal: any;
+  setToggleWizardExternal: any;
+  volName: any;
+  CreateVolumeRequest: any;
+  isLoading: boolean;
+}) {
   const { t } = useTranslation();
   const { form } = useContext(VolumeContext);
 
@@ -176,6 +176,5 @@ export const NewVolume: FC<{
       </NewVolumeActionsContext.Provider>
     </>
   );
-};
-
+}
 

@@ -17,7 +17,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { postSoapFetchRequest, soapFetch, useAllServers, useIsAdvanced } from '@zextras/ui-shared';
-import { FC, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -62,14 +62,21 @@ type SoapContentResponse = {
   };
 };
 
-const VolumeListTable: FC<{
+function VolumeListTable({
+  volumes,
+  selectedRows,
+  onSelectionChange,
+  headers,
+  onClick,
+  isAdvanced,
+}: {
   volumes: Array<Volume>;
   selectedRows: Array<string>;
   onSelectionChange: (selected: string[]) => void;
   headers: THeader[];
   onClick: (i: number) => void;
   isAdvanced: boolean;
-}> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
+}) {
   const [t] = useTranslation();
   const tableRows = volumes.map((v, i) => {
     const columns = [
@@ -188,9 +195,9 @@ const VolumeListTable: FC<{
       )}
     </Container>
   );
-};
+}
 
-export const VolumesDetailPanel: FC = () => {
+export function VolumesDetailPanel() {
   const { server = '' } = useParams<{ server: string }>();
   const [t] = useTranslation();
   const { form } = useContext(VolumeContext);
@@ -794,6 +801,5 @@ export const VolumesDetailPanel: FC = () => {
       </Container>
     </>
   );
-};
-
+}
 

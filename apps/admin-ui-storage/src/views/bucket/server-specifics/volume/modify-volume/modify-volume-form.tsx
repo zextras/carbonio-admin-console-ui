@@ -24,7 +24,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
-import React, { type FC, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -105,7 +105,7 @@ export type ModifyVolumeFormProps = {
   setIsSticky: (value: boolean) => void;
 };
 
-export const ModifyVolumeForm: FC<ModifyVolumeFormProps> = ({
+export function ModifyVolumeForm({
   volumeDetail,
   externalVolDetail,
   isExternal,
@@ -120,7 +120,7 @@ export const ModifyVolumeForm: FC<ModifyVolumeFormProps> = ({
   setOpen,
   isSticky,
   setIsSticky,
-}) => {
+}: ModifyVolumeFormProps) {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const volAllocationList = volumeAllocationList(t);
@@ -853,4 +853,4 @@ export const ModifyVolumeForm: FC<ModifyVolumeFormProps> = ({
       </Container>
     </>
   );
-};
+}

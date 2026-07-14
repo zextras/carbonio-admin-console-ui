@@ -6,7 +6,7 @@
 
 import { useForm } from '@tanstack/react-form';
 import { Button, type ButtonProps, Container, HorizontalWizard, Padding, Section } from '@zextras/ui-components';
-import { type FC, type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -20,7 +20,7 @@ export type HsmDetailObj = HsmPolicyEditDetail;
 
 type WizardButtonProps = Partial<ButtonProps> & { onClick?: ButtonProps['onClick'] };
 
-const WizardInSection: FC<{ wizard: ReactElement; wizardFooter: ReactElement; setToggleWizardSection: (v: boolean) => void }> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
+function WizardInSection({ wizard, wizardFooter, setToggleWizardSection }: { wizard: ReactElement; wizardFooter: ReactElement; setToggleWizardSection: (v: boolean) => void }) {
   const { t } = useTranslation();
   const { server } = useParams();
 
@@ -38,9 +38,9 @@ const WizardInSection: FC<{ wizard: ReactElement; wizardFooter: ReactElement; se
       {wizard}
     </Section>
   );
-};
+}
 
-export const CreateHsmPolicy: FC<CreateHsmPolicyProps> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy, runCustomHSMpolicy }) => {
+export function CreateHsmPolicy({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy, runCustomHSMpolicy }: CreateHsmPolicyProps) {
   const { t } = useTranslation();
 
   const form = useForm({
@@ -168,4 +168,4 @@ export const CreateHsmPolicy: FC<CreateHsmPolicyProps> = ({ setShowCreateHsmPoli
       </HSMContext.Provider>
     </Container>
   );
-};
+}

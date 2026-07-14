@@ -11,13 +11,12 @@ import {
   Row,
   Table,
 } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { IndexerVolumeTableProps } from '../../../../../types';
 import { FLEX_START, LOCAL_VALUE, NO, YES } from '../../../../constants';
 
-export const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
+export function IndexerVolumeTable({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }: IndexerVolumeTableProps) {
   const [t] = useTranslation();
   const tableRows = volumes.map((v, i) => {
         const columns = [
@@ -116,6 +115,5 @@ export const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selec
       )}
     </Container>
   );
-};
-
+}
 

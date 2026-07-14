@@ -6,7 +6,7 @@
 
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, getRights, useCurrentUserRights } from '@zextras/ui-shared';
-import { FC, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -18,7 +18,7 @@ import {
 } from './constants';
 import { AppView } from './views/app-view';
 
-const StorageTooltipView: FC = () => {
+function StorageTooltipView() {
   const [t] = useTranslation();
   return (
     <PrimaryBarTooltip>
@@ -40,9 +40,9 @@ const StorageTooltipView: FC = () => {
       </p>
     </PrimaryBarTooltip>
   );
-};
+}
 
-const App: FC = () => {
+function App() {
   const [t] = useTranslation();
 
   const { data: rights } = useCurrentUserRights();
@@ -76,6 +76,6 @@ const App: FC = () => {
   }, [hasListServerRights, managementSection, t]);
 
   return null;
-};
+}
 
 export default App;

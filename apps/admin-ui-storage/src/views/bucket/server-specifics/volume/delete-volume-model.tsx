@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Modal, Row } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { DeleteVolumeModelProps } from '../../../../../types';
 
-export const DeleteVolumeModel: FC<DeleteVolumeModelProps> = ({ open, closeHandler, deleteHandler, volumeDetail }) => {
+export function DeleteVolumeModel({ open, closeHandler, deleteHandler, volumeDetail }: DeleteVolumeModelProps) {
 	const [t] = useTranslation();
 	return (
 		<>
@@ -75,6 +74,5 @@ export const DeleteVolumeModel: FC<DeleteVolumeModelProps> = ({ open, closeHandl
 			</Modal>
 		</>
 	);
-};
-
+}
 

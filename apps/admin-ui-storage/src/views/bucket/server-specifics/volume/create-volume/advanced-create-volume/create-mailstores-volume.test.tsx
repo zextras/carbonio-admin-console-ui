@@ -14,11 +14,11 @@ const wizardProps = vi.hoisted(() => ({
   steps: [] as Array<{
     name: string;
     label: string;
-    view: React.FC<unknown>;
+    view: React.ComponentType<unknown>;
     canGoNext: () => boolean;
-    CancelButton: React.FC<{ onCancel: () => void }>;
-    PrevButton: React.FC<unknown>;
-    NextButton: React.FC<{ toggleNextBtn?: boolean; onClick?: () => void }>;
+    CancelButton: React.ComponentType<{ onCancel: () => void }>;
+    PrevButton: React.ComponentType<unknown>;
+    NextButton: React.ComponentType<{ toggleNextBtn?: boolean; onClick?: () => void }>;
   }>,
   onComplete: null as (() => void) | null,
 }));

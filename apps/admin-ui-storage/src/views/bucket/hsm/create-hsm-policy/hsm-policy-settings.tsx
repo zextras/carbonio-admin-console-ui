@@ -20,7 +20,7 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { FC, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -29,7 +29,7 @@ import { HSMContext } from '../hsm-context/hsm-context';
 
 type SelectOption = { label: string; value: string };
 
-export const HSMpolicySettings: FC = () => {
+export function HSMpolicySettings() {
   const { server } = useParams();
   const [t] = useTranslation();
   const context = useContext(HSMContext);
@@ -681,4 +681,4 @@ export const HSMpolicySettings: FC = () => {
       </Container>
     </Container>
   );
-};
+}

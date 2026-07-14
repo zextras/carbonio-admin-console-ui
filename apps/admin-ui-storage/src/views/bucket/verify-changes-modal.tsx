@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Checkbox } from '@zextras/ui-components';
-import { FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './verify-changes-modal.module.css';
@@ -21,12 +21,12 @@ type VerifyChangesModalProps = {
   applyHandler: () => Promise<void>;
 };
 
-export const VerifyChangesModal: FC<VerifyChangesModalProps> = ({
+export function VerifyChangesModal({
   open,
   changedFields,
   closeHandler,
   applyHandler,
-}) => {
+}: VerifyChangesModalProps) {
   const [t] = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -126,4 +126,4 @@ export const VerifyChangesModal: FC<VerifyChangesModalProps> = ({
       </div>
     </div>
   );
-};
+}

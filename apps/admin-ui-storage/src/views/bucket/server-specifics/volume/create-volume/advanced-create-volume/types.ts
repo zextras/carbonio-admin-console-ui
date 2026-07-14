@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
-import type { ComponentType, FC } from 'react';
+import type { ComponentType } from 'react';
 
 export type AdvancedVolumeFormValues = {
 	volumeName: string;
@@ -41,7 +41,7 @@ export type AdvancedVolumeFormApi = ReactFormExtendedApi<
 /**
  * Props injected by HorizontalWizard into each step's CancelButton / PrevButton
  * / NextButton render functions. Reconstructed from the runtime contract since
- * HorizontalWizard is typed as FC<any> with no exported prop types.
+ * HorizontalWizard is typed as ComponentType<any> with no exported prop types.
  */
 export type WizardButtonRenderProps = {
 	label?: string;
@@ -77,7 +77,7 @@ export type WizardViewProps = {
  * Shape of a single entry in HorizontalWizard's `steps` array.
  *
  * `view` is typed as `ComponentType<any>` because HorizontalWizard itself is
- * `FC<any>` with no exported prop types, and the underlying view components
+ * `ComponentType<any>` with no exported prop types, and the underlying view components
  * each declare only the subset of WizardViewProps they consume. The
  * WizardViewProps type above documents the runtime contract.
  */
@@ -89,7 +89,7 @@ export type WizardStep = {
 	view: ComponentType<any>;
 	canGoNext: () => boolean;
 	clickDisabled?: boolean;
-	CancelButton?: FC<WizardButtonRenderProps>;
-	PrevButton?: FC<WizardButtonRenderProps>;
-	NextButton?: FC<WizardButtonRenderProps>;
+	CancelButton?: ComponentType<WizardButtonRenderProps>;
+	PrevButton?: ComponentType<WizardButtonRenderProps>;
+	NextButton?: ComponentType<WizardButtonRenderProps>;
 };

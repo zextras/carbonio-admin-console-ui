@@ -18,7 +18,7 @@ import {
   Switch,
   Tooltip,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type FC, useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CreateS3ConnectorRequest } from '../../../types';
@@ -44,9 +44,11 @@ type S3ConnectorError = {
 
 const EMPTY_REGION: UISelectItem<string> = { value: '', label: '' };
 
-export const Connection: FC<{
+export function Connection({
+  onCancel,
+}: {
   onCancel?: () => void;
-}> = ({ onCancel }) => {
+}) {
   const [t] = useTranslation();
   const { data: rawRegions = [] } = useListS3Regions();
   const bucketRegions = rawRegions.map((region) => ({
@@ -475,6 +477,6 @@ export const Connection: FC<{
       />
     </Container>
   );
-};
+}
 
 

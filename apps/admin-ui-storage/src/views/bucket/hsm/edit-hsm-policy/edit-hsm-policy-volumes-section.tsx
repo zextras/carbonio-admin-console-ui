@@ -14,15 +14,17 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { FC, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { HsmPolicyFromServer } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 
-export const EditHsmPolicyVolumesSection: FC<{
+export function EditHsmPolicyVolumesSection({
+  currentPolicy,
+}: {
   currentPolicy: HsmPolicyFromServer | undefined;
-}> = ({ currentPolicy }) => {
+}) {
   const [t] = useTranslation();
   const context = useContext(HSMContext);
   const { form, allVolumes } = context;
@@ -280,4 +282,4 @@ export const EditHsmPolicyVolumesSection: FC<{
       </ListRow>
     </Container>
   );
-};
+}
