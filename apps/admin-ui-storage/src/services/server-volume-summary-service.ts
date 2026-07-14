@@ -11,12 +11,12 @@ import { fetchSoap } from './bucket-service';
 
 export type ServerVolumeSummaryItem = {
   name: string;
-  primaries?: string;
-  secondaries?: string;
-  indexes?: string;
-  hsmScheduled?: string;
-  indexer?: string;
   description: string;
+  primaries?: number;
+  secondaries?: number;
+  indexes?: number;
+  hsmScheduled?: boolean;
+  indexer?: { running: boolean };
 };
 
 type MailstoreServer = {
@@ -51,12 +51,12 @@ export const getServerVolumeSummaryAdvanced = async (
   }
 
   return allServersList.map((item) => {
-    let primaries = '';
-    let secondaries = '';
-    let indexes = '';
+    let primaries: number | undefined;
+    let secondaries: number | undefined;
+    let indexes: number | undefined;
     let description = '';
-    let indexer = '';
-    let hsmScheduled = '';
+    let indexer: { running: boolean } | undefined;
+    let hsmScheduled: boolean | undefined;
 
     const findPowerStoreServer = powerStoreServers.find(
       (s) => (s as { name?: string }).name === item?.name,
@@ -64,14 +64,14 @@ export const getServerVolumeSummaryAdvanced = async (
     if (findPowerStoreServer) {
       indexer = (
         findPowerStoreServer as {
-          ZxPowerstore?: { services?: Record<string, string> };
+          ZxPowerstore?: { services?: Record<string, { running: boolean }> };
         }
-      ).ZxPowerstore?.services?.[INDEXER_MANAGER_KEY] ?? '';
+      ).ZxPowerstore?.services?.[INDEXER_MANAGER_KEY];
       hsmScheduled = (findPowerStoreServer as {
         ZxPowerstore?: {
-          attributes?: { powerstoreMoveScheduler?: { value?: Record<string, string> } };
+          attributes?: { powerstoreMoveScheduler?: { value?: Record<string, boolean> } };
         };
-      }).ZxPowerstore?.attributes?.powerstoreMoveScheduler?.value?.[HSM_SCHEDULED_KEY] ?? '';
+      }).ZxPowerstore?.attributes?.powerstoreMoveScheduler?.value?.[HSM_SCHEDULED_KEY];
     }
 
     if (responseData?.response && item.name && responseData.response[item.name]) {
@@ -93,7 +93,7 @@ export const getServerVolumeSummaryAdvanced = async (
 
 export const getServerVolumeSummaryCE = (
   allServersList: Array<MailstoreServer>,
-): Array<{ name: string; description: string }> => {
+): Array<ServerVolumeSummaryItem> => {
   if (allServersList.length === 0) return [];
 
   return allServersList.map((item) => {

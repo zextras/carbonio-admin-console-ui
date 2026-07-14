@@ -1,186 +1,17 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  Input,
-  Row,
-  Table,
-} from '@zextras/ui-components';
-import { replaceHistory, useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
-import { TFunction } from 'i18next';
-import { ChangeEvent, FC, useState } from 'react';
+import { Container, Input, Row, type THeader } from '@zextras/ui-components';
+import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
+import { type ChangeEvent, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { DATA_VOLUMES } from '../../../constants';
 import { useServerVolumeSummary } from '../../../services/use-server-volume-summary';
 import { headerAdvanced } from '../../utility/utils';
-
-const ServersListTable: FC<{
-  volumes: Array<any>;
-  headers: any;
-  isAdvanced: any;
-  t: TFunction;
-  isRequestInProgress: boolean;
-}> = ({ volumes, headers, isAdvanced, t, isRequestInProgress }) => {
-  const tableRowsAdvance = volumes.map((v, i) => ({
-    id: i?.toString(),
-    columns: [
-      <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={`${v?.name}-name`}>
-        <ds-text as="span" size="small" weight="regular">
-          {v?.name}
-        </ds-text>
-      </Row>,
-      <Row
-        key={`${v?.name}-primaries`}
-        style={{
-          textAlign: 'left',
-          justifyContent: 'flex-start',
-          textTransform: 'capitalize',
-        }}
-      >
-        <ds-text as="span" size="small" weight="light">
-          {v?.primaries}
-        </ds-text>
-      </Row>,
-      <Row
-        key={`${v?.name}-secondaries`}
-        style={{
-          textAlign: 'left',
-          justifyContent: 'flex-start',
-          textTransform: 'capitalize',
-        }}
-      >
-        <ds-text as="span" size="small" weight="light">
-          {v?.secondaries}
-        </ds-text>
-      </Row>,
-      <Row
-        key={`${v?.name}-indexes`}
-        style={{
-          textAlign: 'left',
-          justifyContent: 'flex-start',
-          textTransform: 'capitalize',
-        }}
-      >
-        <ds-text as="span" size="small" weight="light">
-          {v?.indexes}
-        </ds-text>
-      </Row>,
-      <Row
-        key={`${v?.name}-hsm`}
-        style={{
-          textAlign: 'left',
-          justifyContent: 'flex-start',
-          textTransform: 'capitalize',
-        }}
-      >
-        <ds-text as="span" size="small" weight="light">
-          {v?.hsmScheduled ? t('label.scheduled', 'Scheduled') : t('label.disabled', 'Disabled')}
-        </ds-text>
-      </Row>,
-      <Row
-        key={`${v?.name}-indexer`}
-        style={{
-          textAlign: 'left',
-          justifyContent: 'flex-start',
-          textTransform: 'capitalize',
-        }}
-      >
-        <ds-text as="span" size="small" weight="light">
-          {v.indexer?.running === true
-            ? t('volume.running', 'Running')
-            : t('volume.not_running', 'Not Running')}
-        </ds-text>
-      </Row>,
-      <Row
-        key={`${v?.name}-description`}
-        style={{
-          textAlign: 'left',
-          justifyContent: 'flex-start',
-          textTransform: 'capitalize',
-        }}
-      >
-        <ds-text as="span" size="small" weight="light">
-          {v?.description}
-        </ds-text>
-      </Row>,
-    ],
-    clickable: true,
-  }));
-
-  const tableRowCe = volumes.map((v, i) => ({
-    id: i?.toString(),
-    columns: [
-      <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={`${v?.name}-name`}>
-        <ds-text as="span" size="small" weight="regular">
-          {v?.name}
-        </ds-text>
-      </Row>,
-      <Row
-        key={`${v?.name}-description`}
-        style={{
-          textAlign: 'left',
-          justifyContent: 'flex-start',
-          textTransform: 'capitalize',
-        }}
-      >
-        <ds-text as="span" size="small" weight="light">
-          {v?.description}
-        </ds-text>
-      </Row>,
-    ],
-    clickable: true,
-  }));
-
-  function onSelectionChange(ids: string[]) {
-    if (ids.length > 0) {
-      const selectedIndex = Number.parseInt(ids[0], 10);
-      const server = volumes[selectedIndex];
-      if (server?.name) {
-        replaceHistory(`/${server.name}/${DATA_VOLUMES}`);
-      }
-    }
-  }
-
-  return (
-    <Container crossAlignment="flex-start">
-      <Table
-        headers={headers}
-        rows={isAdvanced ? tableRowsAdvance : tableRowCe}
-        showCheckbox={false}
-        multiSelect={false}
-        RowFactory={HoverableRowFactory}
-        HeaderFactory={CustomHeaderFactory}
-        onSelectionChange={onSelectionChange}
-      />
-      {isRequestInProgress && (
-        <Container
-          crossAlignment="center"
-          mainAlignment="center"
-          height="fit"
-          padding={{ top: 'medium' }}
-        >
-          <ds-spinner></ds-spinner>
-        </Container>
-      )}
-      {(tableRowsAdvance.length === 0 || tableRowCe.length === 0) && !isRequestInProgress && (
-        <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-          <ds-text as="p">{t('label.this_list_is_empty', 'This list is empty.')}</ds-text>
-        </Row>
-      )}
-    </Container>
-  );
-};
-
-const FunnelFilterIcon = () => (
-  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-);
+import { ServersListTable } from './server-list-table';
 
 export const ServerListPanel = () => {
   const [t] = useTranslation();
@@ -193,9 +24,9 @@ export const ServerListPanel = () => {
   const serverHeaderAdvanced = headerAdvanced(t);
   const [searchServer, setSearchServer] = useState<string>('');
 
-  const serversList = serverListAll.filter((item: any) => item.name?.includes(searchServer));
+  const serversList = serverListAll.filter((item) => item.name.includes(searchServer));
 
-  const headerCE = [
+  const headerCE: Array<THeader> = [
     {
       id: 'Server',
       label: t('volume.server_list_header.server', 'Server'),
@@ -248,7 +79,9 @@ export const ServerListPanel = () => {
                   disabled={serversList.length === 0 && searchServer.length === 0}
                   label={t('label.search_for_a_Server', `Search for a Server`)}
                   backgroundColor="gray5"
-                  CustomIcon={FunnelFilterIcon}
+                  CustomIcon={(): ReactElement => (
+                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+                  )}
                   value={searchServer}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     setSearchServer(e.target.value);

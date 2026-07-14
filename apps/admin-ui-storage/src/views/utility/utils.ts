@@ -201,15 +201,7 @@ export const volumeAllocationList = (t: TFunction): Array<{ label: string; value
 	}
 ];
 
-export const headerAdvanced = (
-	t: TFunction
-): Array<{
-	id: string;
-	label: string;
-	width: string;
-	bold: boolean;
-	i18nAllLabel: string;
-}> => [
+export const headerAdvanced = (t: TFunction): Array<THeader> => [
 	{
 		id: 'Server',
 		label: t('volume.server_list_header.server', 'Server'),
