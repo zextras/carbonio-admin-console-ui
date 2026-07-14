@@ -9,8 +9,8 @@ import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { type ChangeEvent, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useServerVolumeSummary } from '../../../services/use-server-volume-summary';
-import { headerAdvanced } from '../../utility/utils';
+import { useServerVolumeSummary } from '../../services/use-server-volume-summary';
+import { headerAdvanced } from '../utility/utils';
 import styles from './server-list-panel.module.css';
 import { ServersListTable } from './server-list-table';
 

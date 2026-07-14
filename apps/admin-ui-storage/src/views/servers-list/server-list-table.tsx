@@ -16,8 +16,8 @@ import {
 import { replaceHistory, useIsAdvanced } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
-import { DATA_VOLUMES } from '../../../constants';
-import { type ServerVolumeSummaryItem } from '../../../services/server-volume-summary-service';
+import { DATA_VOLUMES } from '../../constants';
+import { type ServerVolumeSummaryItem } from '../../services/server-volume-summary-service';
 import { ServerListCell } from './server-list-cell';
 
 type ServersListTableProps = {

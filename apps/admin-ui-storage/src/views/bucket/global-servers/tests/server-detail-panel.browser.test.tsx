@@ -21,7 +21,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { DATA_VOLUMES } from '../../../../constants';
-import { ServerListPanel } from '../server-list-panel';
+import { ServerListPanel } from '../../../servers-list/server-list-panel';
 
 const mockedReplaceHistory = vi.mocked(replaceHistory);
 

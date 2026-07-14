@@ -8,10 +8,10 @@ import { Navigate, Route, Routes } from 'react-router';
 
 import { DATA_VOLUMES, HSM_SETTINGS, S3CONNECTOR_LIST, SERVERS_LIST } from '../constants';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
-import { ServerListPanel } from './bucket/global-servers/server-list-panel';
 import { HSMsettingPanel } from './bucket/hsm/hsm-setting-panel';
 import { S3ConnectorListPanel } from './bucket/s3-connector-list-panel';
 import { VolumesDetailRoute } from './bucket/volumes-detail-route';
+import { ServerListPanel } from './servers-list/server-list-panel';
 import { StorageLayout } from './storage-layout';
 
 export const AppView = () => {
