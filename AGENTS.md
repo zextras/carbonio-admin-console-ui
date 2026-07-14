@@ -58,9 +58,11 @@ Year is auto-updated by eslint. The header is required in all files except:
 - Use named exports, avoid default exports in React components
 
 ### TypeScript Types
-- Use `type` annotation instead of `interface` for all type definitions
+- Use `type` for component Props and State (more constrained, prevents accidental extension)
+- Use `interface` for public API definitions where consumers may need declaration merging
 - Use `Array<SomeType>` instead of `SomeType[]` for array types
 - Example: `type Items = Array<Item>` not `type Items = Item[]`
+- Avoid empty interface `{}` and `Object` — they accept any non-nullish value; use `Record<string, never>` for truly empty objects
 
 ### Function Definitions
 - Use function declarations for React components (not arrow functions)
@@ -86,7 +88,68 @@ Year is auto-updated by eslint. The header is required in all files except:
 ### React Components
 - Use named exports only, no default exports
 - Do not use `FC` — use plain function declarations with an explicit props type
-- Example: `function ComponentName(props: ComponentNameProps) { ... }`
+- Return type is inferred; do not annotate it explicitly
+- Example: `function ComponentName({ title }: ComponentNameProps) { ... }`
+
+#### Typing Component Props
+- `children?: React.ReactNode` — accepts everything React can render (preferred over `JSX.Element`)
+- `style?: React.CSSProperties` — for style props
+- Function props: `onClick: () => void` or `onChange: (id: number) => void`
+- Event handler props: `onChange?: React.ChangeEventHandler<HTMLInputElement>`
+- State setter as prop: `setState: React.Dispatch<React.SetStateAction<number>>`
+- Component as prop: `view: React.ComponentType<SomeProps>`
+- Optional props use `?:` suffix (e.g. `disabled?: boolean`)
+
+#### Hooks Typing
+- `useState`: type inference works for simple values; use explicit generic for nullable state:
+  ```typescript
+  const [user, setUser] = useState<User | null>(null);
+  ```
+- `useRef` for DOM elements: `useRef<HTMLDivElement>(null)` — be specific with element type
+- `useRef` for mutable values: `useRef<number | null>(null)`
+- `useReducer`: use discriminated unions for action types:
+  ```typescript
+  type Action = { type: 'increment'; payload: number } | { type: 'reset' };
+  ```
+- Custom hooks returning arrays: use `as const` to get tuple types instead of union arrays
+- **Do not use `useMemo` or `useCallback`** — the React Compiler handles memoization
+
+#### Context
+- Create context with `null` default when there's no meaningful default:
+  ```typescript
+  const UserContext = createContext<User | null>(null);
+  ```
+- Provide a custom hook that throws if context is missing (prefer runtime checks over type assertions):
+  ```typescript
+  function useUser(): User {
+    const ctx = useContext(UserContext);
+    if (!ctx) throw new Error('useUser must be used within <UserProvider>');
+    return ctx;
+  }
+  ```
+
+#### Forms & Events
+- Prefer inline handlers — TypeScript infers event types automatically:
+  ```typescript
+  <input onChange={(e) => { /* e is typed */ }} />
+  ```
+- For extracted handlers, use: `React.ChangeEvent<HTMLInputElement>`, `React.MouseEvent<HTMLButtonElement>`, `React.KeyboardEvent<HTMLInputElement>`, etc.
+- `React.ReactNode` is the return value of a component; `React.JSX.Element` is the return value of `React.createElement`
+
+#### Refs (React 19+)
+- `ref` is a regular prop — no `forwardRef` needed
+- Inherit all native element props (including ref): `React.ComponentPropsWithRef<'input'>`
+- Or explicit ref typing: `ref?: React.Ref<HTMLDivElement>`
+
+#### Component Patterns
+- **Extract props from existing component:** `type Props = React.ComponentProps<typeof Button>`
+- **Wrap/mirror HTML elements:** extend `React.ComponentPropsWithoutRef<'button'>`
+- **Generic components:**
+  ```typescript
+  function List<T>({ items, renderItem }: { items: Array<T>; renderItem: (item: T) => React.ReactNode }) { ... }
+  ```
+- **Conditional props** (one or the other, not both): use `never` — `{ foo: string; bar?: never } | { bar: string; foo?: never }`
+- **Discriminated unions** for props that vary by type: `{ type: 'button'; onClick: () => void } | { type: 'link'; href: string }`
 
 ### Testing
 - Always add timeout instruction when running tests: `testTimeout: 10_000` (default) or `20_000` for CI
