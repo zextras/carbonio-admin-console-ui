@@ -5,7 +5,7 @@
  */
 
 import { Row } from '@zextras/ui-components';
-import { type FC, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 const nameCellStyle = {
   textAlign: 'left',
@@ -18,7 +18,7 @@ const detailCellStyle = {
   textTransform: 'capitalize',
 } as const;
 
-export const ServerListCell: FC<{ children: ReactNode; name?: boolean }> = ({ children, name }) => (
+export const ServerListCell = ({ children, name }: { children: ReactNode; name?: boolean }) => (
   <Row style={name ? nameCellStyle : detailCellStyle}>
     <ds-text as="span" size="small" weight={name ? 'regular' : 'light'}>
       {children}

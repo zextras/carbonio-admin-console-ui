@@ -15,7 +15,6 @@ import {
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
-import { type FC } from 'react';
 
 import { DATA_VOLUMES } from '../../../constants';
 import { type ServerVolumeSummaryItem } from '../../../services/server-volume-summary-service';
@@ -29,13 +28,13 @@ type ServersListTableProps = {
   isRequestInProgress: boolean;
 };
 
-export const ServersListTable: FC<ServersListTableProps> = ({
+export const ServersListTable = ({
   volumes,
   headers,
   isAdvanced,
   t,
   isRequestInProgress,
-}) => {
+}: ServersListTableProps) => {
   const tableRows: Array<TRow> = volumes.map((v) => ({
     id: v.name,
     clickable: true,
