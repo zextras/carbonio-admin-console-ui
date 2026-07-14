@@ -12,7 +12,7 @@ import { page } from 'vitest/browser';
 
 import type { Volume } from '../../../../../../types';
 import { HSMContext } from '../../hsm-context/hsm-context';
-import HSMpolicySettings from '../hsm-policy-settings';
+import { HSMpolicySettings } from '../hsm-policy-settings';
 
 const SAMPLE_VOLUMES: Array<Volume> = [
 	{ id: 1, name: 'Primary Volume', type: 1, isCurrent: true },

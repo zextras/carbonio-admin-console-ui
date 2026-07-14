@@ -18,7 +18,7 @@ import { page } from 'vitest/browser';
 
 import { volumeCreateSchema } from '../../schema';
 import { VolumeContext } from '../../volume-context';
-import AdvancedMailstoresDefinition from '../advanced-mailstores-definition';
+import { AdvancedMailstoresDefinition } from '../advanced-mailstores-definition';
 import { AdvancedVolumeContext } from '../create-advanced-volume-context';
 import type { AdvancedVolumeFormValues } from '../types';
 

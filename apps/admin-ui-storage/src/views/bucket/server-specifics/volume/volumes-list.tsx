@@ -48,11 +48,11 @@ import { useAllVolumes } from '../../../../services/use-all-volumes';
 import { useListS3Connectors } from '../../../../services/use-list-s3-connectors';
 import { indexerHeaders, volTableHeader } from '../../../utility/utils';
 import { CreateMailstoresVolume } from './create-volume/advanced-create-volume/create-mailstores-volume';
-import NewVolume from './create-volume/new-volume';
+import { NewVolume } from './create-volume/new-volume';
 import { VolumeContext } from './create-volume/volume-context';
-import DeleteVolumeModel from './delete-volume-model';
-import IndexerVolumeTable from './indexer-volume-table';
-import ModifyVolume from './modify-volume/modify-volume';
+import { DeleteVolumeModel } from './delete-volume-model';
+import { IndexerVolumeTable } from './indexer-volume-table';
+import { ModifyVolume } from './modify-volume/modify-volume';
 
 type SoapContentResponse = {
   Body?: {
@@ -190,7 +190,7 @@ const VolumeListTable: FC<{
   );
 };
 
-const VolumesDetailPanel: FC = () => {
+export const VolumesDetailPanel: FC = () => {
   const { server = '' } = useParams<{ server: string }>();
   const [t] = useTranslation();
   const { form } = useContext(VolumeContext);
@@ -796,4 +796,4 @@ const VolumesDetailPanel: FC = () => {
   );
 };
 
-export default VolumesDetailPanel;
+

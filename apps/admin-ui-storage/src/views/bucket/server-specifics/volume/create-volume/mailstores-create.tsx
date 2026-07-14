@@ -36,7 +36,7 @@ const CompressionThresholdIcon: FC = () => (
   </ds-text>
 );
 
-const MailstoresCreate: FC<{
+export const MailstoresCreate: FC<{
   externalData: string;
   setCompleteLoading: any;
 }> = ({ externalData, setCompleteLoading }) => {
@@ -259,4 +259,4 @@ const MailstoresCreate: FC<{
   );
 };
 
-export default MailstoresCreate;
+

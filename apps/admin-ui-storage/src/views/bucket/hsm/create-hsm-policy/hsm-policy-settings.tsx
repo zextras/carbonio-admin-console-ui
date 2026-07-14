@@ -29,7 +29,7 @@ import { HSMContext } from '../hsm-context/hsm-context';
 
 type SelectOption = { label: string; value: string };
 
-const HSMpolicySettings: FC = () => {
+export const HSMpolicySettings: FC = () => {
   const { server } = useParams();
   const [t] = useTranslation();
   const context = useContext(HSMContext);
@@ -682,5 +682,3 @@ const HSMpolicySettings: FC = () => {
     </Container>
   );
 };
-
-export default HSMpolicySettings;

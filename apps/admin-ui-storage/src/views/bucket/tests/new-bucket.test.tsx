@@ -8,7 +8,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import NewBucket from '../new-bucket';
+import { NewBucket } from '../new-bucket';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -35,7 +35,7 @@ vi.mock('@zextras/ui-components', () => ({
 }));
 
 vi.mock('../connection', () => ({
-  default: ({ onCancel }: { onCancel: () => void }) => (
+  Connection: ({ onCancel }: { onCancel: () => void }) => (
     <button type="button" onClick={onCancel}>
       Cancel from connection
     </button>

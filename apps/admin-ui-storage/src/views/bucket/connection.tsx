@@ -44,7 +44,7 @@ type S3ConnectorError = {
 
 const EMPTY_REGION: UISelectItem<string> = { value: '', label: '' };
 
-const Connection: FC<{
+export const Connection: FC<{
   onCancel?: () => void;
 }> = ({ onCancel }) => {
   const [t] = useTranslation();
@@ -477,4 +477,4 @@ const Connection: FC<{
   );
 };
 
-export default Connection;
+

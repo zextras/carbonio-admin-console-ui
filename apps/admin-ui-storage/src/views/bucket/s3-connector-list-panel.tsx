@@ -24,9 +24,9 @@ import { deleteS3Connector } from '../../services/bucket-service';
 import { bucketVolumeQueryKeys } from '../../services/bucket-volume-query-keys';
 import { useListS3Connectors } from '../../services/use-list-s3-connectors';
 import { BucketListTable, type SingleSelection } from './bucket-list-table';
-import BucketDeleteModel from './delete-bucket-model';
-import EditBucketDetailPanel from './edit-bucket-details-panel';
-import NewBucket from './new-bucket';
+import { DeleteBucketModel as BucketDeleteModel } from './delete-bucket-model';
+import { EditBucketDetailPanel } from './edit-bucket-details-panel';
+import { NewBucket } from './new-bucket';
 
 export function resolveSelectedBucketConnector(
   bucketList: Array<BucketConnectorRow>,

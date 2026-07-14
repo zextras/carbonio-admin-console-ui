@@ -13,8 +13,8 @@ import { useParams } from 'react-router';
 import type { CreateHsmPolicyProps, HsmPolicyEditDetail } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 import type { HsmPolicyFormValues } from '../types';
-import HSMcreatePolicy from './hsm-create-policy';
-import HSMpolicySettings from './hsm-policy-settings';
+import { HSMcreatePolicy } from './hsm-create-policy';
+import { HSMpolicySettings } from './hsm-policy-settings';
 
 export type HsmDetailObj = HsmPolicyEditDetail;
 
@@ -40,7 +40,7 @@ const WizardInSection: FC<{ wizard: ReactElement; wizardFooter: ReactElement; se
   );
 };
 
-const CreateHsmPolicy: FC<CreateHsmPolicyProps> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy, runCustomHSMpolicy }) => {
+export const CreateHsmPolicy: FC<CreateHsmPolicyProps> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy, runCustomHSMpolicy }) => {
   const { t } = useTranslation();
 
   const form = useForm({
@@ -169,4 +169,3 @@ const CreateHsmPolicy: FC<CreateHsmPolicyProps> = ({ setShowCreateHsmPolicyView,
     </Container>
   );
 };
-export default CreateHsmPolicy;

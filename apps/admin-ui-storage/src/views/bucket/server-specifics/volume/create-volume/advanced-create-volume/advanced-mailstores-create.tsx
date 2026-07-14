@@ -12,7 +12,7 @@ import { DISABLED, ENABLED, NO, S3, YES } from '../../../../../../constants';
 import { volumeTypeList } from '../../../../../utility/utils';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 
-const AdvancedMailstoresCreate: FC<{
+export const AdvancedMailstoresCreate: FC<{
   externalData: string;
   setCompleteLoading: (v: boolean) => void;
 }> = ({ externalData, setCompleteLoading }) => {
@@ -157,4 +157,4 @@ const AdvancedMailstoresCreate: FC<{
   );
 };
 
-export default AdvancedMailstoresCreate;
+

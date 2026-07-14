@@ -27,7 +27,7 @@ import { HSMContext } from '../hsm-context/hsm-context';
 
 type SelectOption = { label: string; value: string };
 
-const EditHsmPolicyDetailSection: FC<{
+export const EditHsmPolicyDetailSection: FC<{
   currentPolicy: HsmPolicyFromServer | undefined;
 }> = ({ currentPolicy }) => {
   const { server } = useParams();
@@ -562,5 +562,3 @@ const EditHsmPolicyDetailSection: FC<{
     </Container>
   );
 };
-
-export default EditHsmPolicyDetailSection;

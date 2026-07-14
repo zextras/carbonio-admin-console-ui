@@ -10,7 +10,7 @@ import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import MailstoresCreate from '../mailstores-create';
+import { MailstoresCreate } from '../mailstores-create';
 import { volumeCreateSchema } from '../schema';
 import { VolumeContext } from '../volume-context';
 

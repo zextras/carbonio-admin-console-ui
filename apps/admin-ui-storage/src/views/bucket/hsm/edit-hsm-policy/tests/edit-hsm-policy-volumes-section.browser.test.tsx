@@ -12,7 +12,7 @@ import { page } from 'vitest/browser';
 
 import type { HsmPolicyFromServer, PolicyCriteriaItem, Volume } from '../../../../../../types';
 import { HSMContext } from '../../hsm-context/hsm-context';
-import EditHsmPolicyVolumesSection from '../edit-hsm-policy-volumes-section';
+import { EditHsmPolicyVolumesSection } from '../edit-hsm-policy-volumes-section';
 
 const SAMPLE_VOLUMES: Array<Volume> = [
 	{ id: 1, name: 'Primary Volume', type: 1, isCurrent: true },

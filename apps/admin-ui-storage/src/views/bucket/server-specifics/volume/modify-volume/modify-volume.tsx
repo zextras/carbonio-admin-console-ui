@@ -63,7 +63,7 @@ function findExternalVolumeData(
   return { externalVolDetail: {}, isExternal: false };
 }
 
-const ModifyVolume: FC<{
+export const ModifyVolume: FC<{
   volumeId: any;
   setmodifyVolumeToggle: (newValue: boolean) => void;
   getAllVolumesRequest: () => void;
@@ -206,4 +206,4 @@ const ModifyVolume: FC<{
   );
 };
 
-export default ModifyVolume;
+

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './delete-bucket-model.module.css';
 
-const DeleteBucketModel: FC<{
+export const DeleteBucketModel: FC<{
 	open: boolean;
 	closeHandler: () => void;
 	saveHandler: () => void;
@@ -104,4 +104,4 @@ const DeleteBucketModel: FC<{
 	);
 };
 
-export default DeleteBucketModel;
+

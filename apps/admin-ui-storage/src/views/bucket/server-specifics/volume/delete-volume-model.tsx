@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { DeleteVolumeModelProps } from '../../../../../types';
 
-const DeleteVolumeModel: FC<DeleteVolumeModelProps> = ({ open, closeHandler, deleteHandler, volumeDetail }) => {
+export const DeleteVolumeModel: FC<DeleteVolumeModelProps> = ({ open, closeHandler, deleteHandler, volumeDetail }) => {
 	const [t] = useTranslation();
 	return (
 		<>
@@ -77,4 +77,4 @@ const DeleteVolumeModel: FC<DeleteVolumeModelProps> = ({ open, closeHandler, del
 	);
 };
 
-export default DeleteVolumeModel;
+

@@ -15,7 +15,7 @@ import { page } from 'vitest/browser';
 import type { HsmPolicyFromServer } from '../../../../../../types';
 import { HSMContext } from '../../hsm-context/hsm-context';
 import type { HsmFormApi } from '../../types';
-import EditHsmPolicyDetailSection from '../edit-hsm-policy-detail-section';
+import { EditHsmPolicyDetailSection } from '../edit-hsm-policy-detail-section';
 
 const SERVER_NAME = 'mailstore1.test.com';
 

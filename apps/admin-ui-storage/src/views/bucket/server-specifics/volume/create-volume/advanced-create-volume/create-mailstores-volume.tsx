@@ -11,8 +11,8 @@ import { useTranslation } from 'react-i18next';
 import type { CreateMailstoresVolumeProps, WizardInSectionProps } from '../../../../../../../types';
 import { volumeTypeList } from '../../../../../utility/utils';
 import { AdvancedMailstoresConfig } from './advanced-mailstores-config';
-import AdvancedMailstoresCreate from './advanced-mailstores-create';
-import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
+import { AdvancedMailstoresCreate } from './advanced-mailstores-create';
+import { AdvancedMailstoresDefinition } from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import type { AdvancedVolumeFormValues, WizardButtonRenderProps, WizardStep } from './types';
 
@@ -230,4 +230,4 @@ export const CreateMailstoresVolume = ({
 	);
 };
 
-export default CreateMailstoresVolume;
+

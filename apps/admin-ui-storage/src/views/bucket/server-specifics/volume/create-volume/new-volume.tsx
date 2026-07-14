@@ -9,7 +9,7 @@ import { useIsAdvanced } from '@zextras/ui-shared';
 import { type ComponentProps, createContext, type FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import MailstoresCreate from './mailstores-create';
+import { MailstoresCreate } from './mailstores-create';
 import { VolumeContext } from './volume-context';
 
 type WizardStepButtonProps = ComponentProps<typeof Button> & {
@@ -109,7 +109,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	);
 };
 
-const NewVolume: FC<{
+export const NewVolume: FC<{
   setToggleWizardLocal: any;
   setToggleWizardExternal: any;
   volName: any;
@@ -178,4 +178,4 @@ const NewVolume: FC<{
   );
 };
 
-export default NewVolume;
+

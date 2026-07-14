@@ -41,9 +41,9 @@ import { type PowerstoreAttributes } from '../../../services/hsm-service';
 import { useHsmPolicyList } from '../../../services/use-hsm-policy-list';
 import { useHsmVolumes } from '../../../services/use-hsm-volumes';
 import { useZxPowerStoreServerAttributes } from '../../../services/use-zxpowerstore-server-attributes';
-import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
-import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
-import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
+import { CreateHsmPolicy } from './create-hsm-policy/create-hsm-policy';
+import { DeleteHsmPolicy } from './delete-policy/delete-hsm-policy';
+import { EditHsmPolicy } from './edit-hsm-policy/edit-hsm-policy';
 import { asQueryString } from './hsm-policy-detail';
 
 type Timeout = ReturnType<typeof setTimeout>;

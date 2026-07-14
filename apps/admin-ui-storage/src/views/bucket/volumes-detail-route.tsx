@@ -10,7 +10,7 @@ import { FC } from 'react';
 import { volumeCreateSchema } from './server-specifics/volume/create-volume/schema';
 import type { VolumeCreateFormValues } from './server-specifics/volume/create-volume/types';
 import { VolumeContext } from './server-specifics/volume/create-volume/volume-context';
-import VolumesDetailPanel from './server-specifics/volume/volumes-list';
+import { VolumesDetailPanel } from './server-specifics/volume/volumes-list';
 
 export const VolumesDetailRoute: FC = () => {
   const form = useForm({

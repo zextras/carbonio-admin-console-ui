@@ -12,7 +12,7 @@ import type { Volume } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 import { asQueryString } from '../hsm-policy-detail';
 
-const HSMcreatePolicy: FC = () => {
+export const HSMcreatePolicy: FC = () => {
   const [t] = useTranslation();
   const context = useContext(HSMContext);
   const { form } = context;
@@ -81,5 +81,3 @@ const HSMcreatePolicy: FC = () => {
     </Container>
   );
 };
-
-export default HSMcreatePolicy;

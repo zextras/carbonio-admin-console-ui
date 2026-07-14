@@ -9,7 +9,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import NewVolume from '../new-volume';
+import { NewVolume } from '../new-volume';
 import { volumeCreateSchema } from '../schema';
 import { VolumeContext } from '../volume-context';
 
@@ -27,7 +27,7 @@ vi.mock('@zextras/ui-shared', () => ({
 }));
 
 vi.mock('../mailstores-create', () => ({
-  default: () => <div>mailstores-create-view</div>,
+  MailstoresCreate: () => <div>mailstores-create-view</div>,
 }));
 
 vi.mock('@zextras/ui-components', () => ({

@@ -137,7 +137,7 @@ function buildRegionLabel(
   return String(regionLabel ?? regionValue ?? '-');
 }
 
-const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
+export const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   setShowEditDetailView,
   title,
   bucketDetail,
@@ -721,4 +721,4 @@ const EditBucketDetailPanel: FC<EditBucketDetailPanelProps> = ({
   );
 };
 
-export default EditBucketDetailPanel;
+

@@ -22,7 +22,7 @@ import { page } from 'vitest/browser';
 import { DATA_VOLUMES } from '../../../../../constants';
 import { volumeCreateSchema } from '../create-volume/schema';
 import { VolumeContext } from '../create-volume/volume-context';
-import VolumesDetailPanel from '../volumes-list';
+import { VolumesDetailPanel } from '../volumes-list';
 
 const SERVER_NAME = 'mailstore1.test.com';
 const SERVER_ID = 'server-1';

@@ -9,7 +9,7 @@ import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import Connection from '../connection';
+import { Connection } from '../connection';
 
 const REGIONS = [
 	{ id: 'us-east-1', description: 'US East 1' },

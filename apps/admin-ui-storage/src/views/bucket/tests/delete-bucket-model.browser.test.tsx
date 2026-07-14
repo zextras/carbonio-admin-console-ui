@@ -8,7 +8,7 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import DeleteBucketModel from '../delete-bucket-model';
+import { DeleteBucketModel } from '../delete-bucket-model';
 
 describe('DeleteBucketModel (browser)', () => {
 	it('should call showPopover when opened', async () => {

@@ -9,7 +9,7 @@ import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { objectType } from '../../../types';
-import Connection from './connection';
+import { Connection } from './connection';
 
 type NewBucketProps = {
   setToggleWizardSection: (value: boolean) => void;
@@ -17,7 +17,7 @@ type NewBucketProps = {
   setConnectionData: (value: objectType | undefined) => void;
 };
 
-const NewBucket: FC<NewBucketProps> = ({
+export const NewBucket: FC<NewBucketProps> = ({
   setToggleWizardSection,
   setDetailsBucket,
   setConnectionData,
@@ -62,4 +62,4 @@ const NewBucket: FC<NewBucketProps> = ({
     </Container>
   );
 };
-export default NewBucket;
+

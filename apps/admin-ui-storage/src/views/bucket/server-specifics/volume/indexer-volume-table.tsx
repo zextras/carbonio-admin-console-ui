@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import type { IndexerVolumeTableProps } from '../../../../../types';
 import { FLEX_START, LOCAL_VALUE, NO, YES } from '../../../../constants';
 
-const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
+export const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
   const [t] = useTranslation();
   const tableRows = volumes.map((v, i) => {
         const columns = [
@@ -118,4 +118,4 @@ const IndexerVolumeTable: FC<IndexerVolumeTableProps> = ({ volumes, selectedRows
   );
 };
 
-export default IndexerVolumeTable;
+

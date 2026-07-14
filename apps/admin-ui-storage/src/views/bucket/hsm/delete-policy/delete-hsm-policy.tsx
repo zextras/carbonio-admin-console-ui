@@ -27,7 +27,7 @@ const CopyPolicyIcon: FC = () => {
 	);
 };
 
-const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
+export const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
   showDeletePolicyView,
   setShowDeletePolicyView,
   selectedPolicies,
@@ -145,5 +145,3 @@ const DeleteHsmPolicy: FC<DeleteHsmPolicyProps> = ({
     </Modal>
   );
 };
-
-export default DeleteHsmPolicy;

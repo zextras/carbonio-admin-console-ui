@@ -29,7 +29,7 @@ type AdvancedMailstoresDefinitionProps = {
   setToggleNextBtn: (newValue: boolean) => void;
 };
 
-const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
+export const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   externalData,
   setToggleNextBtn,
   setCompleteLoading,
@@ -242,4 +242,4 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   );
 };
 
-export default AdvancedMailstoresDefinition;
+

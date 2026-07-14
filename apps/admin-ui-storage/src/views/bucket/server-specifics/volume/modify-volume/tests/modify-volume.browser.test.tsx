@@ -18,7 +18,7 @@ import { page } from 'vitest/browser';
 
 import { Volume } from '../../../../../../../types';
 import { DATA_VOLUMES } from '../../../../../../constants';
-import ModifyVolume from '../modify-volume';
+import { ModifyVolume } from '../modify-volume';
 
 const SERVER_NAME = 'mailstore1.test.com';
 const SERVER_ID = 'server-1';

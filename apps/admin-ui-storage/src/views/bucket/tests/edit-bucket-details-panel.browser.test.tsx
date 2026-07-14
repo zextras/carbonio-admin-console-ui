@@ -10,7 +10,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import type { BucketConnectorRow } from '../../../../types';
-import EditBucketDetailPanel from '../edit-bucket-details-panel';
+import { EditBucketDetailPanel } from '../edit-bucket-details-panel';
 
 const mockSnackbar = vi.hoisted(() => vi.fn());
 const mockListS3Regions = vi.hoisted(() => vi.fn());

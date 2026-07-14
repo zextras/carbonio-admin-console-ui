@@ -20,7 +20,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import type { HsmPolicyFromServer } from '../../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 
-const EditHsmPolicyVolumesSection: FC<{
+export const EditHsmPolicyVolumesSection: FC<{
   currentPolicy: HsmPolicyFromServer | undefined;
 }> = ({ currentPolicy }) => {
   const [t] = useTranslation();
@@ -281,5 +281,3 @@ const EditHsmPolicyVolumesSection: FC<{
     </Container>
   );
 };
-
-export default EditHsmPolicyVolumesSection;

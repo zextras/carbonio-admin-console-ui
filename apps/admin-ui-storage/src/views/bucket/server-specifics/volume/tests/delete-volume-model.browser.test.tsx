@@ -8,7 +8,7 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import DeleteVolumeModel from '../delete-volume-model';
+import { DeleteVolumeModel } from '../delete-volume-model';
 
 function createVolumeDetail(overrides?: Partial<{ name: string; isCurrent: boolean }>) {
 	return {
