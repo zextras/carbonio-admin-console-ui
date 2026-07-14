@@ -32,7 +32,7 @@ import {
   SERVERS_LIST,
   STORAGES_ROUTE_ID,
 } from '../../../constants';
-import { StorageSidebar } from '../storage-sidebar';
+import { StorageSidebar } from '../../sidebar/storage-sidebar';
 
 const mockedReplaceHistory = vi.mocked(replaceHistory);
 

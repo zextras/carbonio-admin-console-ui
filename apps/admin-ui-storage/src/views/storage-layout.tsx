@@ -6,7 +6,7 @@
 import { Container } from '@zextras/ui-components';
 import { Outlet } from 'react-router';
 
-import { StorageSidebar } from './bucket/storage-sidebar';
+import { StorageSidebar } from './sidebar/storage-sidebar';
 
 export const StorageLayout = () => {
   return (
