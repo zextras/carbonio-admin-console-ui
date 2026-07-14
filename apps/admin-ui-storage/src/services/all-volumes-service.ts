@@ -8,7 +8,7 @@ import { soapFetch } from '@zextras/ui-shared';
 
 import type { Volume } from '../../types';
 import { ZIMBRA_ADMIN_URN } from '../constants';
-import { fetchSoap } from './bucket-service';
+import { fetchSoap } from './s3-connector-service';
 
 export type VolumeBuckets = {
   primaries: Array<Volume>;

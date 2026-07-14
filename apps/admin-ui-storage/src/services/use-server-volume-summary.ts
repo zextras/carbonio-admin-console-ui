@@ -6,7 +6,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import { bucketVolumeQueryKeys } from './bucket-volume-query-keys';
+import { s3ConnectorVolumeQueryKeys } from './s3-connector-volume-query-keys';
 import {
   getServerVolumeSummaryAdvanced,
   getServerVolumeSummaryCE,
@@ -17,7 +17,7 @@ export const useServerVolumeSummary = (
   allServersList: Array<{ name?: string; a?: Array<{ n?: string; _content?: string }> }>,
 ) =>
   useQuery({
-    queryKey: [...bucketVolumeQueryKeys.serverVolumeSummary(isAdvanced), allServersList.length],
+    queryKey: [...s3ConnectorVolumeQueryKeys.serverVolumeSummary(isAdvanced), allServersList.length],
     queryFn: async () => {
       if (isAdvanced) {
         return getServerVolumeSummaryAdvanced(

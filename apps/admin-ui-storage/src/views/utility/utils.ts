@@ -6,7 +6,7 @@
 import { type THeader } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 
-import { CheckResult } from '../bucket/parts/verify/verify-error';
+import { CheckResult } from '../s3-connectors/parts/verify/verify-error';
 
 type S3ConnectorError = {
   error?: string | { message: string; details?: CheckResult };
@@ -14,7 +14,7 @@ type S3ConnectorError = {
   details?: CheckResult;
 };
 
-export const BucketTypeItems = (t: TFunction): Array<{ value: string; label: string }> => [
+export const S3ConnectorTypeItems = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('buckets.s3_types.alibaba_cloud_s3', 'Alibaba Cloud S3'),
 		value: 'Alibaba'
@@ -253,7 +253,7 @@ export const headerAdvanced = (t: TFunction): Array<THeader> => [
 	}
 ];
 
-export const BucketRegions = (t: TFunction): Array<{ value: string; label: string }> => [
+export const S3ConnectorRegions = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('buckets.amazon_regions.af_south_1', 'Africa (Cape Town)'),
 		value: 'AF_SOUTH_1'
@@ -356,7 +356,7 @@ export const BucketRegions = (t: TFunction): Array<{ value: string; label: strin
 	}
 ];
 
-export const BucketRegionsInAlibaba = (t: TFunction): Array<{ value: string; label: string }> => [
+export const S3ConnectorRegionsInAlibaba = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('buckets.alibaba_regions.cn_hangzhou', 'China (Hangzhou)'),
 		value: 'oss-cn-hangzhou'

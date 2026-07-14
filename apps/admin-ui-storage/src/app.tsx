@@ -33,7 +33,7 @@ function StorageTooltipView() {
       <p>
         <Trans
           i18nKey="label.storage_primarybar_tooltip"
-          defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You'll also be able to <bold>connect buckets</bold>."
+          defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You'll also be able to <bold>connect S3 connectors</bold>."
           components={{ bold: <strong /> }}
           t={t}
         />

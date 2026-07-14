@@ -7,12 +7,12 @@
 import { useQuery } from '@tanstack/react-query';
 
 import type { HsmPolicyFromServer } from '../../types';
-import { bucketVolumeQueryKeys } from './bucket-volume-query-keys';
 import { getHsmPolicyList } from './hsm-service';
+import { s3ConnectorVolumeQueryKeys } from './s3-connector-volume-query-keys';
 
 export const useHsmPolicyList = (server: string) =>
   useQuery({
-    queryKey: bucketVolumeQueryKeys.hsmPolicies(server),
+    queryKey: s3ConnectorVolumeQueryKeys.hsmPolicies(server),
     queryFn: async (): Promise<Array<HsmPolicyFromServer>> => getHsmPolicyList(server),
     staleTime: 30_000,
     retry: 1,

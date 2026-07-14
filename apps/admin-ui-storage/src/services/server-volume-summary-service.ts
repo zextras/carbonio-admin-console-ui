@@ -7,7 +7,7 @@
 import { getSoapFetchRequest } from '@zextras/ui-shared';
 
 import { DESCRIPTION, HSM_SCHEDULED_KEY, INDEXER_MANAGER_KEY, ZIMBRA_ADMIN_URN } from '../constants';
-import { fetchSoap } from './bucket-service';
+import { fetchSoap } from './s3-connector-service';
 
 export type ServerVolumeSummaryItem = {
   name: string;

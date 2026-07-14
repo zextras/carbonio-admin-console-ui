@@ -7,12 +7,12 @@
 import { useQuery } from '@tanstack/react-query';
 
 import type { S3Region } from '../../types';
-import { listS3Regions } from './bucket-service';
-import { bucketVolumeQueryKeys } from './bucket-volume-query-keys';
+import { listS3Regions } from './s3-connector-service';
+import { s3ConnectorVolumeQueryKeys } from './s3-connector-volume-query-keys';
 
 export const useListS3Regions = () =>
   useQuery({
-    queryKey: bucketVolumeQueryKeys.s3Regions(),
+    queryKey: s3ConnectorVolumeQueryKeys.s3Regions(),
     queryFn: async (): Promise<Array<S3Region>> => listS3Regions(),
     staleTime: 30_000,
     retry: 1,

@@ -7,12 +7,12 @@
 import { useQuery } from '@tanstack/react-query';
 
 import type { S3Connector } from '../../types';
-import { listS3Connector } from './bucket-service';
-import { bucketVolumeQueryKeys } from './bucket-volume-query-keys';
+import { listS3Connector } from './s3-connector-service';
+import { s3ConnectorVolumeQueryKeys } from './s3-connector-volume-query-keys';
 
 export const useListS3Connectors = () =>
   useQuery({
-    queryKey: bucketVolumeQueryKeys.s3Connectors(),
+    queryKey: s3ConnectorVolumeQueryKeys.s3Connectors(),
     queryFn: async (): Promise<Array<S3Connector>> => listS3Connector(),
     staleTime: 30_000,
     retry: 1,

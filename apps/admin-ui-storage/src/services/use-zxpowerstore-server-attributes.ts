@@ -6,12 +6,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import { bucketVolumeQueryKeys } from './bucket-volume-query-keys';
 import { getZxPowerStoreServerAttributes, type PowerstoreAttributes } from './hsm-service';
+import { s3ConnectorVolumeQueryKeys } from './s3-connector-volume-query-keys';
 
 export const useZxPowerStoreServerAttributes = (server: string) =>
   useQuery({
-    queryKey: bucketVolumeQueryKeys.powerstoreAttrs(server),
+    queryKey: s3ConnectorVolumeQueryKeys.powerstoreAttrs(server),
     queryFn: async (): Promise<PowerstoreAttributes> => getZxPowerStoreServerAttributes(server),
     staleTime: 30_000,
     retry: 1,

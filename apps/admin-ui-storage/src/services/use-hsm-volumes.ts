@@ -7,12 +7,12 @@
 import { useQuery } from '@tanstack/react-query';
 
 import type { Volume } from '../../types';
-import { bucketVolumeQueryKeys } from './bucket-volume-query-keys';
 import { getAllVolumesForHsm } from './hsm-service';
+import { s3ConnectorVolumeQueryKeys } from './s3-connector-volume-query-keys';
 
 export const useHsmVolumes = (serverId: string, enabled: boolean) =>
   useQuery({
-    queryKey: bucketVolumeQueryKeys.hsmVolumes(serverId),
+    queryKey: s3ConnectorVolumeQueryKeys.hsmVolumes(serverId),
     queryFn: async (): Promise<Array<Volume>> => getAllVolumesForHsm(serverId),
     enabled,
     staleTime: 30_000,

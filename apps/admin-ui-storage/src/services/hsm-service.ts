@@ -8,7 +8,7 @@ import { getSoapFetchRequest, soapFetch } from '@zextras/ui-shared';
 
 import type { HsmPolicyFromServer, Volume } from '../../types';
 import { VOLUME_INDEX_TYPE, ZIMBRA_ADMIN_URN } from '../constants';
-import { fetchSoap } from './bucket-service';
+import { fetchSoap } from './s3-connector-service';
 
 export type PowerstoreAttributes = Record<string, { value: unknown }>;
 

@@ -56,7 +56,7 @@ export type VolumeType =
 	}
 	| undefined;
 
-export type BucketVolume = {
+export type S3ConnectorVolume = {
 	bucketName?: string;
 	protocol?: string;
 	storeType?: string;
@@ -161,7 +161,7 @@ export type S3ConnectorUsageValue =
 	| Array<{ server?: string; volume?: string } | Record<string, string>>
 	| Array<unknown>;
 
-export type BucketConnectorRow = {
+export type S3ConnectorRow = {
 	uuid: string;
 	id: string;
 	label: string;

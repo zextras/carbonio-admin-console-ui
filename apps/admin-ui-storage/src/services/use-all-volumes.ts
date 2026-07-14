@@ -7,7 +7,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { getAllVolumesForServer, type VolumeBuckets } from './all-volumes-service';
-import { bucketVolumeQueryKeys } from './bucket-volume-query-keys';
+import { s3ConnectorVolumeQueryKeys } from './s3-connector-volume-query-keys';
 
 export const useAllVolumes = (
   server: string,
@@ -15,7 +15,7 @@ export const useAllVolumes = (
   isAdvanced: boolean,
 ) =>
   useQuery({
-    queryKey: bucketVolumeQueryKeys.allVolumes(selectedServerId),
+    queryKey: s3ConnectorVolumeQueryKeys.allVolumes(selectedServerId),
     queryFn: async (): Promise<VolumeBuckets> =>
       getAllVolumesForServer(server, selectedServerId, isAdvanced),
     enabled: !!selectedServerId,

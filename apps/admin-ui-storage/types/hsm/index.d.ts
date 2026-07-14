@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { HsmPolicyDetail, PolicyCriteriaItem, VolumeItem } from '../../src/views/bucket/hsm/hsm-policy-detail';
+import type { HsmPolicyDetail, PolicyCriteriaItem, VolumeItem } from '../../src/views/s3-connectors/hsm/hsm-policy-detail';
 import type { Volume } from '../volume';
 
 export type { HsmPolicyDetail, PolicyCriteriaItem, VolumeItem };

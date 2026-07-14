@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 export * from './attribute';
-export * from './bucket';
 export * from './hsm';
+export * from './s3-connector';
 export * from './soap';
 export * from './volume';
