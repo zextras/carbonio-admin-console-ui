@@ -17,7 +17,7 @@ export const ServerListPanel = () => {
   const [t] = useTranslation();
   const { data: allServersList = [] } = useMailstoreServers();
   const isAdvanced = useIsAdvanced();
-  const { data: serverListAll = [], isLoading: isRequestInProgress } = useServerVolumeSummary(
+  const { data: serverListAll = [], isLoading } = useServerVolumeSummary(
     isAdvanced,
     allServersList,
   );
@@ -42,6 +42,8 @@ export const ServerListPanel = () => {
       bold: true,
     },
   ];
+
+  if (isLoading) return <ds-page-shimmer></ds-page-shimmer>;
 
   return (
     <Container
@@ -95,9 +97,6 @@ export const ServerListPanel = () => {
           <ServersListTable
             volumes={serversList}
             headers={isAdvanced ? serverHeaderAdvanced : headerCE}
-            isAdvanced={isAdvanced}
-            t={t}
-            isRequestInProgress={isRequestInProgress}
           />
         </Row>
       </Container>

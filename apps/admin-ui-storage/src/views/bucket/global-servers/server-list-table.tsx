@@ -13,8 +13,8 @@ import {
   type THeader,
   type TRow,
 } from '@zextras/ui-components';
-import { replaceHistory } from '@zextras/ui-shared';
-import { TFunction } from 'i18next';
+import { replaceHistory, useIsAdvanced } from '@zextras/ui-shared';
+import { useTranslation } from 'react-i18next';
 
 import { DATA_VOLUMES } from '../../../constants';
 import { type ServerVolumeSummaryItem } from '../../../services/server-volume-summary-service';
@@ -23,18 +23,11 @@ import { ServerListCell } from './server-list-cell';
 type ServersListTableProps = {
   volumes: Array<ServerVolumeSummaryItem>;
   headers: Array<THeader>;
-  isAdvanced: boolean;
-  t: TFunction;
-  isRequestInProgress: boolean;
 };
 
-export const ServersListTable = ({
-  volumes,
-  headers,
-  isAdvanced,
-  t,
-  isRequestInProgress,
-}: ServersListTableProps) => {
+export const ServersListTable = ({ volumes, headers }: ServersListTableProps) => {
+  const isAdvanced = useIsAdvanced();
+  const [t] = useTranslation();
   const tableRows: Array<TRow> = volumes.map((v) => ({
     id: v.name,
     clickable: true,
@@ -84,17 +77,7 @@ export const ServersListTable = ({
         HeaderFactory={CustomHeaderFactory}
         onSelectionChange={onSelectionChange}
       />
-      {isRequestInProgress && (
-        <Container
-          crossAlignment="center"
-          mainAlignment="center"
-          height="fit"
-          padding={{ top: 'medium' }}
-        >
-          <ds-spinner></ds-spinner>
-        </Container>
-      )}
-      {volumes.length === 0 && !isRequestInProgress && (
+      {volumes.length === 0 && (
         <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
           <ds-text as="p">{t('label.this_list_is_empty', 'This list is empty.')}</ds-text>
         </Row>
