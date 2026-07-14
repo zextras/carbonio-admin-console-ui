@@ -44,12 +44,12 @@ export type AdvancedVolumeFormApi = ReactFormExtendedApi<
  * HorizontalWizard is typed as ComponentType<any> with no exported prop types.
  */
 export type WizardButtonRenderProps = {
-	label?: string;
-	onClick: () => void;
-	setCompleteLoading?: (value: boolean) => void;
-	completeLoading?: boolean;
-	disabled?: boolean;
-	toggleNextBtn?: boolean;
+	readonly label?: string;
+	readonly onClick: () => void;
+	readonly setCompleteLoading?: (value: boolean) => void;
+	readonly completeLoading?: boolean;
+	readonly disabled?: boolean;
+	readonly toggleNextBtn?: boolean;
 };
 
 /**

@@ -14,6 +14,12 @@ import { headerAdvanced } from '../utility/utils';
 import styles from './server-list-panel.module.css';
 import { ServersListTable } from './server-list-table';
 
+function SearchFilterIcon(): ReactElement {
+  return (
+    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+  );
+}
+
 export const ServerListPanel = () => {
   const [t] = useTranslation();
   const { data: allServersList = [] } = useMailstoreServers();
@@ -60,9 +66,7 @@ export const ServerListPanel = () => {
             disabled={serversList.length === 0 && searchServer.length === 0}
             label={t('label.search_for_a_Server', `Search for a Server`)}
             backgroundColor="gray5"
-            CustomIcon={(): ReactElement => (
-              <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-            )}
+            CustomIcon={SearchFilterIcon}
             value={searchServer}
             onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               setSearchServer(e.target.value);

@@ -6,7 +6,7 @@
 
 import { useForm } from '@tanstack/react-form';
 import { Button, type ButtonProps, Container, HorizontalWizard, Padding, Section } from '@zextras/ui-components';
-import { type ReactElement } from 'react';
+import { createContext, type ReactElement, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -20,7 +20,17 @@ export type HsmDetailObj = HsmPolicyEditDetail;
 
 type WizardButtonProps = Partial<ButtonProps> & { onClick?: ButtonProps['onClick'] };
 
-function WizardInSection({ wizard, wizardFooter, setToggleWizardSection }: { wizard: ReactElement; wizardFooter: ReactElement; setToggleWizardSection: (v: boolean) => void }) {
+type HsmWizardActions = {
+  onRunCustomPolicy: () => void;
+  onCreate: () => void;
+};
+
+const HsmWizardActionsContext = createContext<HsmWizardActions>({
+  onRunCustomPolicy: () => {},
+  onCreate: () => {},
+});
+
+function WizardInSection({ wizard, wizardFooter, setToggleWizardSection }: Readonly<{ wizard: ReactElement; wizardFooter: ReactElement; setToggleWizardSection: (v: boolean) => void }>) {
   const { t } = useTranslation();
   const { server } = useParams();
 
@@ -37,6 +47,68 @@ function WizardInSection({ wizard, wizardFooter, setToggleWizardSection }: { wiz
     >
       {wizard}
     </Section>
+  );
+}
+
+function HsmWizardCancelButton({ onClick }: Readonly<WizardButtonProps>): ReactElement {
+  const { t } = useTranslation();
+  return (
+    <Button
+      onClick={onClick!}
+      type="outlined"
+      key="wizard-cancel"
+      label={t('label.cancel', 'Cancel')}
+      color="secondary"
+      icon="CloseOutline"
+      iconPlacement="right"
+    />
+  );
+}
+
+function HsmWizardNextButton({ onClick }: Readonly<WizardButtonProps>): ReactElement {
+  const { t } = useTranslation();
+  return (
+    <Button
+      onClick={onClick!}
+      label={t('label.next', 'NEXT')}
+      icon="ChevronRightOutline"
+      iconPlacement="right"
+    />
+  );
+}
+
+function HsmWizardPrevButton({ onClick }: Readonly<WizardButtonProps>): ReactElement {
+  const { t } = useTranslation();
+  return (
+    <Button
+      onClick={onClick!}
+      label={t('label.back', 'BACK')}
+      icon="ChevronLeftOutline"
+      color="secondary"
+      iconPlacement="left"
+    />
+  );
+}
+
+function HsmWizardCreateNextButton(): React.ReactElement {
+  const { t } = useTranslation();
+  const { onRunCustomPolicy, onCreate } = useContext(HsmWizardActionsContext);
+  return (
+    <>
+      <Padding right="medium">
+        <Button
+          label={t('label.run_only', 'RUN ONLY (SKIP CREATE)')}
+          iconPlacement="left"
+          onClick={onRunCustomPolicy}
+        />
+      </Padding>
+      <Button
+        label={t('label.create', 'CREATE')}
+        icon="PowerOutline"
+        iconPlacement="right"
+        onClick={onCreate}
+      />
+    </>
   );
 }
 
@@ -73,69 +145,18 @@ export function CreateHsmPolicy({ setShowCreateHsmPolicyView, volumeList, create
       label: t('hsm.policy_settings', 'Policy Settings'),
       icon: 'OptionsOutline',
       view: HSMpolicySettings,
-      CancelButton: ({ ...rest }: WizardButtonProps): ReactElement => (
-        <Button
-          onClick={rest.onClick!}
-          type="outlined"
-          key="wizard-cancel"
-          label={t('label.cancel', 'Cancel')}
-          color="secondary"
-          icon="CloseOutline"
-          iconPlacement="right"
-        />
-      ),
+      CancelButton: HsmWizardCancelButton,
       PrevButton: () => null,
-      NextButton: ({ ...rest }: WizardButtonProps) => (
-        <Button
-          onClick={rest.onClick!}
-          label={t('label.next', 'NEXT')}
-          icon="ChevronRightOutline"
-          iconPlacement="right"
-        />
-      ),
+      NextButton: HsmWizardNextButton,
     },
     {
       name: 'hsm-create-policy',
       label: t('hsm.create_policy', 'Create Policy'),
       icon: 'PowerOutline',
       view: HSMcreatePolicy,
-      CancelButton: ({ ...rest }: WizardButtonProps): ReactElement => (
-        <Button
-          onClick={rest.onClick!}
-          type="outlined"
-          key="wizard-cancel"
-          label={t('label.cancel', 'Cancel')}
-          color="secondary"
-          icon="CloseOutline"
-          iconPlacement="right"
-        />
-      ),
-      PrevButton: ({ ...rest }: WizardButtonProps) => (
-        <Button
-          onClick={rest.onClick!}
-          label={t('label.back', 'BACK')}
-          icon="ChevronLeftOutline"
-          color="secondary"
-          iconPlacement="left"
-        />
-      ),
-      NextButton: (): React.ReactElement => (
-        <>
-          <Padding right="medium">
-            <Button
-              label={t('label.run_only', 'RUN ONLY (SKIP CREATE)')}
-              iconPlacement="left"
-              onClick={onRunCustomPolicy}
-            />
-          </Padding>
-          <Button
-            label={t('label.create', 'CREATE')}
-            icon="PowerOutline"
-            iconPlacement="right"
-            onClick={onCreate}
-          />
-        </>
-      ),
+      CancelButton: HsmWizardCancelButton,
+      PrevButton: HsmWizardPrevButton,
+      NextButton: HsmWizardCreateNextButton,
     },
   ];
 
@@ -159,12 +180,14 @@ export function CreateHsmPolicy({ setShowCreateHsmPolicyView, volumeList, create
       }}
     >
       <HSMContext.Provider value={{ form, allVolumes: volumeList }}>
-        <HorizontalWizard
-          steps={standardHsmPolicyWizardStep}
-          Wrapper={WizardInSection}
-          onComplete={onComplete}
-          setToggleWizardSection={setShowCreateHsmPolicyView}
-        />
+        <HsmWizardActionsContext.Provider value={{ onRunCustomPolicy, onCreate }}>
+          <HorizontalWizard
+            steps={standardHsmPolicyWizardStep}
+            Wrapper={WizardInSection}
+            onComplete={onComplete}
+            setToggleWizardSection={setShowCreateHsmPolicyView}
+          />
+        </HsmWizardActionsContext.Provider>
       </HSMContext.Provider>
     </Container>
   );

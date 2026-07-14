@@ -68,14 +68,14 @@ function VolumeListTable({
   headers,
   onClick,
   isAdvanced,
-}: {
+}: Readonly<{
   volumes: Array<Volume>;
   selectedRows: Array<string>;
   onSelectionChange: (selected: string[]) => void;
   headers: THeader[];
   onClick: (i: number) => void;
   isAdvanced: boolean;
-}) {
+}>) {
   const [t] = useTranslation();
   const tableRows = volumes.map((v, i) => {
     const columns = [

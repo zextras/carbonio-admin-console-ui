@@ -24,9 +24,9 @@ import { VolumeContext } from '../volume-context';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 
 type AdvancedMailstoresDefinitionProps = {
-  externalData: string;
-  setCompleteLoading: (newValue: boolean) => void;
-  setToggleNextBtn: (newValue: boolean) => void;
+  readonly externalData: string;
+  readonly setCompleteLoading: (newValue: boolean) => void;
+  readonly setToggleNextBtn: (newValue: boolean) => void;
 };
 
 export function AdvancedMailstoresDefinition({

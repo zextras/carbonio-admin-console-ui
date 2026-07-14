@@ -15,10 +15,10 @@ import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 export function AdvancedMailstoresCreate({
   externalData,
   setCompleteLoading,
-}: {
+}: Readonly<{
   externalData: string;
   setCompleteLoading: (v: boolean) => void;
-}) {
+}>) {
   const { form } = useAdvancedVolumeContext();
   const { t } = useTranslation();
   const volTypeList = volumeTypeList(t);

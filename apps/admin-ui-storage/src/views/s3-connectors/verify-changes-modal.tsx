@@ -15,10 +15,10 @@ type ChangedField = {
 };
 
 type VerifyChangesModalProps = {
-  open: boolean;
-  changedFields: Array<ChangedField>;
-  closeHandler: () => void;
-  applyHandler: () => Promise<void>;
+  readonly open: boolean;
+  readonly changedFields: Array<ChangedField>;
+  readonly closeHandler: () => void;
+  readonly applyHandler: () => Promise<void>;
 };
 
 export function VerifyChangesModal({

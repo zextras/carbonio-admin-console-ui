@@ -394,22 +394,22 @@ export type MailstoresCreateProps = {
  * Props for IndexerVolumeTable
  */
 export type IndexerVolumeTableProps = {
-	volumes: Array<Volume>;
-	selectedRows: Array<string>;
-	onSelectionChange: (selected: Array<string>) => void;
-	headers: Array<{ id: string; label: string; width: string; bold?: boolean }>;
-	onClick: (index: number) => void;
-	isAdvanced: boolean;
+	readonly volumes: Array<Volume>;
+	readonly selectedRows: Array<string>;
+	readonly onSelectionChange: (selected: Array<string>) => void;
+	readonly headers: Array<{ id: string; label: string; width: string; bold?: boolean }>;
+	readonly onClick: (index: number) => void;
+	readonly isAdvanced: boolean;
 };
 
 /**
  * Props for DeleteVolumeModel
  */
 export type DeleteVolumeModelProps = {
-	open: boolean;
-	closeHandler: () => void;
-	deleteHandler: (data: Volume | undefined) => void;
-	volumeDetail: Volume | undefined;
+	readonly open: boolean;
+	readonly closeHandler: () => void;
+	readonly deleteHandler: (data: Volume | undefined) => void;
+	readonly volumeDetail: Volume | undefined;
 };
 
 /**
@@ -432,9 +432,9 @@ export type ModifyVolumeProps = {
  * Props for AdvancedMailstoresConfig step
  */
 export type AdvancedMailstoresConfigProps = {
-	onSelection: (data: Record<string, unknown>, flag: boolean) => void;
-	externalData: string;
-	setCompleteLoading: (v: boolean) => void;
+	readonly onSelection: (data: Record<string, unknown>, flag: boolean) => void;
+	readonly externalData: string;
+	readonly setCompleteLoading: (v: boolean) => void;
 };
 
 /**

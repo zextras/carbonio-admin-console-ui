@@ -11,9 +11,9 @@ import { objectType } from '../../../types';
 import { Connection } from './connection';
 
 type NewS3ConnectorProps = {
-  setToggleWizardSection: (value: boolean) => void;
-  setDetailsConnector: (value: boolean) => void;
-  setConnectionData: (value: objectType | undefined) => void;
+  readonly setToggleWizardSection: (value: boolean) => void;
+  readonly setDetailsConnector: (value: boolean) => void;
+  readonly setConnectionData: (value: objectType | undefined) => void;
 };
 
 export function NewS3Connector({

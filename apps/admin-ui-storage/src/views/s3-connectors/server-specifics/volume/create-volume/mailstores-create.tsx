@@ -41,10 +41,10 @@ function CompressionThresholdIcon() {
 export function MailstoresCreate({
   externalData,
   setCompleteLoading,
-}: {
+}: Readonly<{
   externalData: string;
   setCompleteLoading: any;
-}) {
+}>) {
   const { form } = useContext(VolumeContext);
   const { t } = useTranslation();
 

@@ -14,12 +14,12 @@ export function DeleteS3ConnectorModal({
 	closeHandler,
 	saveHandler,
 	connectorName = '',
-}: {
+}: Readonly<{
 	open: boolean;
 	closeHandler: () => void;
 	saveHandler: () => void;
 	connectorName?: string;
-}) {
+}>) {
 	const [t] = useTranslation();
 	const [isConfirmed, setIsConfirmed] = useState(false);
 	const popoverRef = useRef<HTMLDivElement>(null);

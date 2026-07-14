@@ -46,9 +46,9 @@ const EMPTY_REGION: UISelectItem<string> = { value: '', label: '' };
 
 export function Connection({
   onCancel,
-}: {
+}: Readonly<{
   onCancel?: () => void;
-}) {
+}>) {
   const [t] = useTranslation();
   const { data: rawRegions = [] } = useListS3Regions();
   const connectorRegions = rawRegions.map((region) => ({

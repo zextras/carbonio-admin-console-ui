@@ -28,6 +28,12 @@ import { EditS3ConnectorDetailPanel } from './edit-s3-connector-details-panel';
 import { NewS3Connector } from './new-s3-connector';
 import { S3ConnectorListTable, type SingleSelection } from './s3-connector-list-table';
 
+function SearchFilterIcon(): React.ReactElement {
+  return (
+    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+  );
+}
+
 export function resolveSelectedS3Connector(
   connectorList: Array<S3ConnectorRow>,
   selectedValue?: string,
@@ -239,9 +245,7 @@ export const S3ConnectorListPanel = () => {
                 disabled={connectorList.length === 0 && searchConnector.length === 0}
                 backgroundColor="gray5"
                 label={t('storages.s3Connectors.filterS3List', 'Filter S3 List')}
-                CustomIcon={(): React.ReactElement => (
-                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                )}
+                CustomIcon={SearchFilterIcon}
                 onChange={filterConnectorList}
               />
             </Row>

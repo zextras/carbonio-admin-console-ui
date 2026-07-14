@@ -70,7 +70,7 @@ export function ModifyVolume({
   selectedServerId,
   volumeList,
   setOpen,
-}: {
+}: Readonly<{
   volumeId: any;
   setmodifyVolumeToggle: (newValue: boolean) => void;
   getAllVolumesRequest: () => void;
@@ -81,7 +81,7 @@ export function ModifyVolume({
     secondaries: Volume[];
   };
   setOpen: (newValue: boolean) => void;
-}) {
+}>) {
   const { t } = useTranslation();
   const isAdvanced = useIsAdvanced();
   const createSnackbar = useSnackbar();

@@ -29,10 +29,10 @@ function SearchFilterInputIcon() {
 }
 
 type EditS3ConnectorUsageTableProps = {
-  rows: Array<Record<string, string>>;
-  columnKeys: Array<string>;
-  headers: Array<THeader>;
-  searchLabel: string;
+  readonly rows: Array<Record<string, string>>;
+  readonly columnKeys: Array<string>;
+  readonly headers: Array<THeader>;
+  readonly searchLabel: string;
 };
 
 export function EditS3ConnectorUsageTable({

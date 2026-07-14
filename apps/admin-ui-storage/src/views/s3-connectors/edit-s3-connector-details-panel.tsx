@@ -70,10 +70,10 @@ function isConnectorUnused(connectorDetail: S3ConnectorRow | undefined): boolean
 }
 
 type ReusedDefaultTabBarProps = {
-  item: { id: string; label: string };
-  index: number;
-  selected: boolean;
-  onClick: () => void;
+  readonly item: { id: string; label: string };
+  readonly index: number;
+  readonly selected: boolean;
+  readonly onClick: () => void;
 };
 
 function ReusedDefaultTabBar({
@@ -103,12 +103,12 @@ function ReusedDefaultTabBar({
 }
 
 type EditS3ConnectorDetailPanelProps = {
-  setShowEditDetailView: (value: boolean) => void;
-  title: string;
-  setConnectorDeleteName: (value: S3ConnectorRow | undefined) => void;
-  connectorDetail: S3ConnectorRow | undefined;
-  setOpen: (value: boolean) => void;
-  getConnectorListType: () => void;
+  readonly setShowEditDetailView: (value: boolean) => void;
+  readonly title: string;
+  readonly setConnectorDeleteName: (value: S3ConnectorRow | undefined) => void;
+  readonly connectorDetail: S3ConnectorRow | undefined;
+  readonly setOpen: (value: boolean) => void;
+  readonly getConnectorListType: () => void;
 };
 
 function computeRegionValue(

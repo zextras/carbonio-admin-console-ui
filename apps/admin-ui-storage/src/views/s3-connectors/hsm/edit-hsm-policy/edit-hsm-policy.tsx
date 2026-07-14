@@ -24,6 +24,43 @@ import type { HsmPolicyFormValues } from '../types';
 import { EditHsmPolicyDetailSection } from './edit-hsm-policy-detail-section';
 import { EditHsmPolicyVolumesSection } from './edit-hsm-policy-volumes-section';
 
+type ReusedDefaultTabBarProps = {
+  readonly item: TabBarItem;
+  readonly selected: boolean;
+  readonly onClick: () => void;
+};
+
+function ReusedDefaultTabBar({
+  item,
+  selected,
+  onClick,
+}: ReusedDefaultTabBarProps) {
+  return (
+    <DefaultTabBarItem
+      item={item as unknown as { id: string; label: string }}
+      selected={selected}
+      onClick={onClick}
+      orientation="horizontal"
+      background={'transparent'}
+      underlineColor={'primary'}
+      forceWidthEquallyDistributed={false}
+    >
+      <Row padding="small">
+        <Padding horizontal="small">
+          <ds-icon
+            size="medium"
+            color={selected ? 'primary' : 'gray'}
+            icon={item.icon as 'InfoOutline' | 'OptionsOutline'}
+          ></ds-icon>
+        </Padding>
+        <ds-text as="span" size="small" color={selected ? 'primary' : 'gray'}>
+          {item.label}
+        </ds-text>
+      </Row>
+    </DefaultTabBarItem>
+  );
+}
+
 export function EditHsmPolicy({
   setShowEditHsmPolicyView,
   policies,
@@ -52,41 +89,6 @@ export function EditHsmPolicy({
   });
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
-  function ReusedDefaultTabBar({
-    item,
-    selected,
-    onClick,
-  }: {
-    item: TabBarItem;
-    index: number;
-    selected: boolean;
-    onClick: () => void;
-  }) {
-    return (
-      <DefaultTabBarItem
-        item={item as unknown as { id: string; label: string }}
-        selected={selected}
-        onClick={onClick}
-        orientation="horizontal"
-        background={'transparent'}
-        underlineColor={'primary'}
-        forceWidthEquallyDistributed={false}
-      >
-        <Row padding="small">
-          <Padding horizontal="small">
-            <ds-icon
-              size="medium"
-              color={selected ? 'primary' : 'gray'}
-              icon={item.icon as 'InfoOutline' | 'OptionsOutline'}
-            ></ds-icon>
-          </Padding>
-          <ds-text as="span" size="small" color={selected ? 'primary' : 'gray'}>
-            {item.label}
-          </ds-text>
-        </Row>
-      </DefaultTabBarItem>
-    );
-  }
   const items = [
     {
       id: 'details',
@@ -214,9 +216,7 @@ export function EditHsmPolicy({
               setChange(selectedId);
             }}
             width={540}
-            onClick={(): void => {
-              // console.log('__');
-            }}
+            onClick={(): void => {}}
             background="gray6"
           />
         </Row>

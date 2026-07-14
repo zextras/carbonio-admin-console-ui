@@ -102,9 +102,9 @@ export const StorageSidebar = () => {
     },
   ];
 
-  const globalOptions = !isAdvanced
-    ? globalServerOption.filter((item) => item.id !== S3CONNECTOR_LIST)
-    : globalServerOption;
+  const globalOptions = isAdvanced
+    ? globalServerOption
+    : globalServerOption.filter((item) => item.id !== S3CONNECTOR_LIST);
 
   const serverSpecificOption = [
     {
@@ -119,9 +119,9 @@ export const StorageSidebar = () => {
     },
   ];
 
-  const serverOptions = !isAdvanced
-    ? serverSpecificOption.filter((item) => item.id !== HSM_SETTINGS)
-    : serverSpecificOption;
+  const serverOptions = isAdvanced
+    ? serverSpecificOption
+    : serverSpecificOption.filter((item) => item.id !== HSM_SETTINGS);
 
   const toggleServer = (): void => {
     setIsServerListExpand((prev) => {

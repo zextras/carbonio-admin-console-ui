@@ -61,12 +61,12 @@ export function AdvancedMailstoresConfig({
   };
 
   useEffect(() => {
-    if (volumeMain !== 0) {
-      setCompleteLoading(true);
-      setIsAllocationToggle(false);
-    } else {
+    if (volumeMain === 0) {
       setCompleteLoading(false);
       setIsAllocationToggle(true);
+    } else {
+      setCompleteLoading(true);
+      setIsAllocationToggle(false);
     }
   }, [prefix, volumeMain, setCompleteLoading, setIsAllocationToggle]);
 

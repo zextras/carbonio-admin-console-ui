@@ -22,9 +22,9 @@ import { HSMContext } from '../hsm-context/hsm-context';
 
 export function EditHsmPolicyVolumesSection({
   currentPolicy,
-}: {
+}: Readonly<{
   currentPolicy: HsmPolicyFromServer | undefined;
-}) {
+}>) {
   const [t] = useTranslation();
   const context = useContext(HSMContext);
   const { form, allVolumes } = context;

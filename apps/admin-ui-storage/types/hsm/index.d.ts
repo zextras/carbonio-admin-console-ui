@@ -61,32 +61,32 @@ export type HsmPolicyFromServer = {
  * Props for EditHsmPolicy component.
  */
 export type EditHsmPolicyProps = {
-    setShowEditHsmPolicyView: (show: boolean) => void;
-    policies: Array<HsmPolicyFromServer>;
-    selectedPolicies: string;
-    volumeList: Array<Volume>;
-    onEditSave: (detail: HsmPolicyEditDetail) => void;
-    isEditSaveInProgress: boolean;
+    readonly setShowEditHsmPolicyView: (show: boolean) => void;
+    readonly policies: Array<HsmPolicyFromServer>;
+    readonly selectedPolicies: string;
+    readonly volumeList: Array<Volume>;
+    readonly onEditSave: (detail: HsmPolicyEditDetail) => void;
+    readonly isEditSaveInProgress: boolean;
 };
 
 /**
  * Props for CreateHsmPolicy component.
  */
 export type CreateHsmPolicyProps = {
-    setShowCreateHsmPolicyView: (show: boolean) => void;
-    volumeList: Array<Volume>;
-    createHSMpolicy: (detail: HsmPolicyEditDetail, isEditSave?: boolean) => void;
-    runCustomHSMpolicy: (detail: HsmPolicyEditDetail) => void;
+    readonly setShowCreateHsmPolicyView: (show: boolean) => void;
+    readonly volumeList: Array<Volume>;
+    readonly createHSMpolicy: (detail: HsmPolicyEditDetail, isEditSave?: boolean) => void;
+    readonly runCustomHSMpolicy: (detail: HsmPolicyEditDetail) => void;
 };
 
 /**
  * Props for DeleteHsmPolicy component.
  */
 export type DeleteHsmPolicyProps = {
-    showDeletePolicyView: boolean;
-    setShowDeletePolicyView: (show: boolean) => void;
-    selectedPolicies: string;
-    onDeletePolicy: (isEditSave?: boolean) => void;
-    isRequestInProgress: boolean;
-    policies: Array<HsmPolicyFromServer>;
+    readonly showDeletePolicyView: boolean;
+    readonly setShowDeletePolicyView: (show: boolean) => void;
+    readonly selectedPolicies: string;
+    readonly onDeletePolicy: (isEditSave?: boolean) => void;
+    readonly isRequestInProgress: boolean;
+    readonly policies: Array<HsmPolicyFromServer>;
 };

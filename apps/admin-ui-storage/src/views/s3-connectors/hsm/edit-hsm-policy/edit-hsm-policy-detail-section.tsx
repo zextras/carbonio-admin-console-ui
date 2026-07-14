@@ -29,9 +29,9 @@ type SelectOption = { label: string; value: string };
 
 export function EditHsmPolicyDetailSection({
   currentPolicy,
-}: {
+}: Readonly<{
   currentPolicy: HsmPolicyFromServer | undefined;
-}) {
+}>) {
   const { server } = useParams();
   const [t] = useTranslation();
   const context = useContext(HSMContext);
@@ -283,7 +283,7 @@ export function EditHsmPolicyDetailSection({
                 as="span"
                 size="small"
                 weight="regular"
-                key={index}
+                key={displayPolicy}
                 onClick={(): void => {
                   onCriteriaSelected([String(index)]);
                 }}
