@@ -7,21 +7,18 @@
 import {
   Button,
   Container,
-  Displayer,
   Input,
-  LabeledValue,
   Link,
   ListRow,
   Modal,
   Padding,
-  Radio,
   Row,
   Select,
   Switch,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/ui-shared';
+import { soapFetch, useIsAdvanced } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -39,16 +36,15 @@ import {
   INDEX,
   LOCAL_VALUE,
   PRIMARY,
-  PRIMARY_TYPE_VALUE,
   SECONDARY,
-  SECONDARY_TYPE_VALUE,
   UNUSED,
   USAGE_IN_EXTERNAL_BACKUP,
   ZIMBRA_ADMIN_URN,
 } from '../../../../../constants';
 import { fetchSoap, listS3Connector } from '../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
-import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
+import { BucketTypeItems, volumeTypeList } from '../../../../utility/utils';
+import styles from './modify-volume.module.css';
 import {
   buildAdvancedUpdatePayload,
   isS3StoreType,
@@ -201,7 +197,6 @@ const ModifyVolume: FC<{
   const isAdvanced = useIsAdvanced();
   const volTypeList = useMemo(() => volumeTypeList(t, isAdvanced), [t, isAdvanced]);
   const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
-  const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
   const [isDirty, setIsDirty] = useState(false);
   const [volumeDetail, setVolumeDetail] = useState<{
     name: string;
@@ -236,7 +231,6 @@ const ModifyVolume: FC<{
     Array<{ label: string; value: string }>
   >([]);
   const [selectedBucket, setSelectedBucket] = useState<{ label: string; value: string } | undefined>();
-  const [allocation, setAllocation] = useState<VolumeAllocationItem>();
   const [bucketName, setBucketName] = useState('');
   const [storeType, setStoreType] = useState<string | undefined>('');
   const [bucketConfigurationId, setBucketConfigurationId] = useState<string | undefined>();
@@ -259,8 +253,6 @@ const ModifyVolume: FC<{
   const createSnackbar = useSnackbar();
   const { server } = useParams<{ server: string }>();
   const { isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore((state) => state);
-  const { isSticky, setIsSticky } = useStickyBarStore();
-
   const showTieringSettings = isS3StoreType(storeType) && tieringSupported;
 
   const labelMap: Record<number | string, string> = {
@@ -449,34 +441,6 @@ const ModifyVolume: FC<{
     setUseIntelligentTiering(undoState.useIntelligentTiering);
     setIsDirty(false);
   };
-
-  const onVolumeTypeChange = useCallback(
-    (typeValue: number | null): void => {
-      const volumeObject: VolumeAllocationItem | undefined = volTypeList?.find(
-        (item: VolumeType): boolean => item?.value === typeValue,
-      ) as VolumeAllocationItem | undefined;
-      setType(volumeObject);
-    },
-    [volTypeList],
-  );
-  const buttons = [
-    {
-      align: 'right' as const,
-      color: 'error',
-      label: t('label.delete', 'delete'),
-      loading: !volumeDetail?.id,
-      onClick: (): void => {
-        setOpen(true);
-      },
-    },
-    {
-      align: 'left' as const,
-      icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
-      onClick: (): void => {
-        setIsSticky(!isSticky);
-      },
-    },
-  ];
 
   const getAllBuckets = useCallback(() => {
     listS3Connector().then((values) => {
@@ -701,24 +665,20 @@ const ModifyVolume: FC<{
     volumeDetail?.id,
   ]);
 
-  useEffect(() => {
-    const volumeTypeObject = volAllocationList?.find(
-      (item: VolumeType) => item?.value === volumeDetail?.type,
-    );
-    setAllocation(volumeTypeObject);
-  }, [volAllocationList, volumeDetail?.type]);
-
   // Maps volumeType (from advanced API) to numeric type value (1, 2, 10)
-  function getNormalizedVolumeType(volData: Volume): number {
-    if (isAdvanced && volData?.volumeType) {
-      const volumeTypeStr = volData.volumeType?.toLowerCase();
-      if (volumeTypeStr === 'primary') return 1;
-      if (volumeTypeStr === 'secondary') return 2;
-      if (volumeTypeStr === 'index') return 10;
-    }
-    // CE version returns type as numeric value
-    return volData?.type ?? 0;
-  }
+  const getNormalizedVolumeType = useCallback(
+    (volData: Volume): number => {
+      if (isAdvanced && volData?.volumeType) {
+        const volumeTypeStr = volData.volumeType?.toLowerCase();
+        if (volumeTypeStr === 'primary') return 1;
+        if (volumeTypeStr === 'secondary') return 2;
+        if (volumeTypeStr === 'index') return 10;
+      }
+      // CE version returns type as numeric value
+      return volData?.type ?? 0;
+    },
+    [isAdvanced],
+  );
 
   const getVolumeDetailData = useCallback(
     (volId: string): void => {
@@ -792,8 +752,29 @@ const ModifyVolume: FC<{
       t,
       getAllVolumesRequest,
       selectedServerId,
+      getNormalizedVolumeType,
     ],
   );
+
+  const roleBadge = labelMap[volumeDetail?.type]?.toUpperCase();
+  const volumeRoleLabel =
+    type?.value === 1
+      ? t('label.primary_volume_role', 'Primary Volume')
+      : type?.value === 2
+      ? t('label.secondary_volume_role', 'Secondary Volume')
+      : type?.value === 10
+      ? t('label.index_volume_role', 'Index Volume')
+      : labelMap[volumeDetail?.type];
+  const isExternal = Object.keys(externalVolDetail).length > 0;
+  const isObjectStorage = !(
+    storeType?.toUpperCase() === LOCAL_VALUE || (!storeType && !isExternal)
+  );
+  const storageTypeLabel =
+    !isObjectStorage
+      ? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
+      : getBucketTypeLabel(storeType) ?? storeType ?? '';
+  const isLocalBlockDevice = !isObjectStorage;
+  const showOptionsSection = Object.keys(externalVolDetail)?.length > 0 || volumeDetail?.type !== 10;
 
   useEffect(() => {
     if (volumeId) getVolumeDetailData(String(volumeId));
@@ -806,19 +787,21 @@ const ModifyVolume: FC<{
         background="gray6"
         mainAlignment="flex-start"
         orientation="vertical"
-        style={{ overflowY: 'auto' }}
       >
-        <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="4.15rem">
-          <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
+        <Row mainAlignment="space-between" crossAlignment="center" width="100%" height="4.15rem">
+          <Row mainAlignment="flex-start" crossAlignment="center" padding={{ all: 'large' }} takeAvailableSpace>
             <ds-text as="h2" weight="bold">
-              {t('label.volume_detail_page_title', '{{message}} Details', {
-                message: volumeDetail?.name,
-              })}
+              {t('label.volume_details', 'Volume details')}
             </ds-text>
+            {roleBadge && (
+              <Padding left="small">
+                <div className={styles.roleBadge}>{roleBadge}</div>
+              </Padding>
+            )}
           </Row>
           <Row
             padding={{ all: 'small' }}
-            width="50%"
+            // width="50%"
             mainAlignment="flex-end"
             crossAlignment="flex-end"
           >
@@ -830,239 +813,86 @@ const ModifyVolume: FC<{
             {isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
           </Row>
           <Row padding={{ horizontal: 'small' }}>
+            {!isDirty && (
+              <Button
+                type="outlined"
+                color="error"
+                label={t('label.delete', 'Delete')}
+                icon="Trash2Outline"
+                onClick={(): void => setOpen(true)}
+                style={{ marginRight: '0.5rem' }}
+              />
+            )}
             <Button
               type="ghost"
-              color={'text'}
+              color="text"
               icon="CloseOutline"
               onClick={(): void => setmodifyVolumeToggle(false)}
             />
           </Row>
         </Row>
         <ds-divider></ds-divider>
-        <Displayer buttons={buttons} pinIcon={isSticky} />
-        {Object.keys(externalVolDetail)?.length === 0 ? (
+        <Container
+          background="gray6"
+          mainAlignment="flex-start"
+          orientation="vertical"
+          style={{ overflowY: 'auto' }}
+        >
+          <div className={styles.sectionHeader}>
+            <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+              {t('label.general', 'GENERAL')}
+            </ds-text>
+            <ds-divider className={styles.sectionDivider}></ds-divider>
+          </div>
           <Container
-            padding={{ horizontal: 'large', bottom: 'large' }}
+            padding={{ horizontal: 'large' }}
             mainAlignment="flex-start"
             crossAlignment="flex-start"
+            height="auto"
           >
-            <Row padding={{ top: 'small' }} width="100%">
-              <Input
-                label={t('label.volume_name', 'Volume Name')}
-                value={name}
-                backgroundColor="gray5"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                  setName(e?.target?.value)
-                }
-              />
-            </Row>
-            {volumeDetail?.type !== 10 && (
-              <Row
-                padding={{ top: 'large' }}
-                width="100%"
-                mainAlignment="center"
-                crossAlignment="center"
-                background="gray6"
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large', right: 'large', left: 'small' }}
               >
-                <Row width={isAdvanced ? '48%' : '100%'}>
-                  <Radio
-                    label={t('label.primary_volume', 'This is a Primary Volume')}
-                    value={PRIMARY_TYPE_VALUE}
-                    checked={type?.value === 1}
-                    onClick={(): void => onVolumeTypeChange(1)}
-                    iconColor="primary"
-                    disabled
-                  />
-                </Row>
-                {isAdvanced && (
-                  <Row width="48%">
-                    <Radio
-                      label={t('label.secondary_volume', 'This is a Secondary Volume')}
-                      value={SECONDARY_TYPE_VALUE}
-                      checked={type?.value === 2}
-                      onClick={(): void => onVolumeTypeChange(2)}
-                      iconColor="primary"
-                      disabled
-                    />
-                  </Row>
-                )}
-              </Row>
-            )}
-            <Row padding={{ top: 'large' }} width="100%">
-              <Input
-                label={t('label.volume_id', 'Volume ID')}
-                value={id}
-                backgroundColor="gray6"
-                disabled
-                onChange={(): void => {}}
-              />
-            </Row>
-            <Row padding={{ top: 'large' }} width="100%">
-              <Input
-                label={t('label.path', 'Path')}
-                value={rootpath}
-                backgroundColor="gray5"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                  setRootpath(e?.target?.value)
-                }
-              />
-            </Row>
-            <Padding top="extrasmall">
-              <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                {t(
-                  'the_change_will_not_move_the_data',
-
-                  'The change will not move the data',
-                )}
-              </ds-text>
-            </Padding>
-            <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
-              {volumeDetail?.type !== 10 && (
-                <>
-                  <Row width="48%" mainAlignment="flex-start">
-                    <Switch
-                      value={compressBlobs}
-                      label={t('label.enable_compression', 'Enable Compression')}
-                      onClick={(): void => setCompressBlobs(!compressBlobs)}
-                      iconColor="primary"
-                    />
-                    <Padding top="extrasmall">
-                      <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                        {t(
-                          'this_will_not_affect_data_already_stored',
-                          'This will not affect data already stored',
-                        )}
-                      </ds-text>
-                    </Padding>
-                  </Row>
-                  <Padding horizontal="small" />
-                </>
-              )}
-              <Row width="48%" mainAlignment="flex-start">
-                <Tooltip
-                  placement="top"
-                  label={t(
-                    'warning.is_current',
-                    'Firstly, you have to set another volume as the current one.',
-                  )}
-                  maxWidth="auto"
-                  disabled={!isCurrent}
-                >
-                  <Switch
-                    ref={isCurrentRef}
-                    value={isCurrent}
-                    label={t('label.set_as_current', 'Set as Current')}
-                    onClick={(): void => {
-                      !isCurrent && setIsCurrentToggle(true);
-                    }}
-                    iconColor="primary"
-                  />
-                </Tooltip>
-              </Row>
-            </Row>
-            {volumeDetail?.type !== 10 && Object.keys(externalVolDetail)?.length === 0 && (
-              <>
-                <Row padding={{ top: 'small' }} width="50%">
-                  <Input
-                    label={t('label.compression_threshold', 'Compression Threshold')}
-                    value={compressionThreshold}
-                    backgroundColor="gray6"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                      setCompressionThreshold(e?.target?.value)
-                    }
-                    color="secondary"
-                  />
-                </Row>
-                <Padding top="extrasmall">
-                  <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                    {t(
-                      'this_will_not_affect_data_already_stored',
-                      'This will not affect data already stored',
-                    )}
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('label.volume_id', 'Volume ID')}
                   </ds-text>
-                </Padding>
-              </>
-            )}
-          </Container>
-        ) : (
-          <Container
-            padding={{ horizontal: 'large', bottom: 'large' }}
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-          >
-            <Row padding={{ top: 'small' }} width="100%">
-              <LabeledValue
-                label={t('label.volume_server_name', 'Server')}
-                value={server ?? ''}
-                backgroundColor="gray5"
-              />
-            </Row>
-            <Row padding={{ top: 'large' }} width="100%">
-              <Select
-                items={volAllocationList}
-                background="gray5"
-                label={t('label.storage_type', 'Storage Type')}
-                showCheckbox={false}
-                defaultSelection={allocation}
-                disabled
-                onChange={(): void => {
-                  // console.log('__');
-                }}
-              />
-            </Row>
-            <Row padding={{ top: 'large' }} width="100%">
-              <Input
-                label={t('label.volume_name', 'Volume Name')}
-                value={name}
-                backgroundColor="gray6"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                  setName(e?.target?.value)
-                }
-              />
-            </Row>
-            {backupUnusedBucketList?.length !== 0 && (
-              <>
-                <Row padding={{ top: 'large' }} width="100%">
-                  <Select
-                    items={backupUnusedBucketList}
-                    background="gray5"
-                    label={t(
-                      'label.volume_available_unused_Buckets_list_in_backup',
-                      'Available Buckets List (that are not in use in the backup)',
-                    )}
-                    showCheckbox={false}
-                    selection={selectedBucket ?? backupUnusedBucketList[0]}
-                    onChange={onUnusedBucketListChange}
-                  />
-                </Row>
-                <Padding top="extrasmall">
-                  <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                    {t('the_change_will_not_move_the_data', 'The change will not move the data')}
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} size='small'>{id}</ds-text>
+                  </div>
+                </div>
+              </Container>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large' }}
+              >
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('label.server', 'Server')}
                   </ds-text>
-                </Padding>
-              </>
-            )}
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} size='small'>{server ?? ''}</ds-text>
+                  </div>
+                </div>
+              </Container>
+            </ListRow>
             <ListRow>
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
                 padding={{ top: 'large', right: 'large' }}
               >
-                <LabeledValue
-                  label={t('label.bucket_name', 'Bucket Name')}
+                <Input
+                  label={t('label.volume_name', 'Volume name')}
+                  value={name}
                   backgroundColor="gray6"
-                  value={bucketName}
-                />
-              </Container>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                padding={{ top: 'large', right: 'large' }}
-              >
-                <LabeledValue
-                  label={t('label.type', 'Type')}
-                  backgroundColor="gray6"
-                  value={storeType}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                    setName(e?.target?.value)
+                  }
                 />
               </Container>
               <Container
@@ -1070,66 +900,152 @@ const ModifyVolume: FC<{
                 crossAlignment="flex-start"
                 padding={{ top: 'large' }}
               >
-                <LabeledValue
-                  label={t('label.ID', 'ID')}
-                  backgroundColor="gray6"
-                  value={bucketConfigurationId}
-                />
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('label.storage_type', 'Storage type')}
+                  </ds-text>
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} size='small'>{storageTypeLabel}</ds-text>
+                  </div>
+                </div>
               </Container>
             </ListRow>
-            {volumeDetail?.type !== 10 && (
-              <Row
-                padding={{ top: 'large' }}
-                width="100%"
-                mainAlignment="center"
-                crossAlignment="center"
-                background="gray6"
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large', right: 'large', left: 'small' }}
               >
-                <Row width={isAdvanced ? '48%' : '100%'}>
-                  <Radio
-                    label={t('label.primary_volume', 'This is a Primary Volume')}
-                    value={PRIMARY_TYPE_VALUE}
-                    checked={type?.value === 1}
-                    onClick={(): void => onVolumeTypeChange(1)}
-                    iconColor="primary"
-                    disabled
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('label.volume_role', 'Volume role')}
+                  </ds-text>
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} size='small'>{volumeRoleLabel}</ds-text>
+                  </div>
+                </div>
+              </Container>
+              {isLocalBlockDevice && (
+                <Container
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                  padding={{ top: 'large' }}
+                >
+                  <Input
+                    label={t('label.path', 'Path')}
+                    value={rootpath}
+                    backgroundColor="gray6"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                      setRootpath(e?.target?.value)
+                    }
                   />
+                </Container>
+              )}
+            </ListRow>
+          </Container>
+          {isObjectStorage && (
+            <>
+              <div className={styles.sectionHeader}>
+                <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+                  {t('label.bucket', 'BUCKET')}
+                </ds-text>
+                <ds-divider className={styles.sectionDivider}></ds-divider>
+              </div>
+              <Container
+                padding={{ horizontal: 'large' }}
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+              >
+                <ListRow>
+                  <Container
+                    mainAlignment="flex-start"
+                    crossAlignment="flex-start"
+                    padding={{ top: 'large', right: 'large', left: 'small' }}
+                  >
+                    <div className={styles.detailItem}>
+                      <ds-text size="small" color="gray1">
+                        {t('label.bucket_name', 'Bucket name')}
+                      </ds-text>
+                      <div className={styles.detailValueRow}>
+                        <ds-text className={styles.detailValue} size="small">{bucketName}</ds-text>
+                      </div>
+                    </div>
+                  </Container>
+                  <Container
+                    mainAlignment="flex-start"
+                    crossAlignment="flex-start"
+                    padding={{ top: 'large' }}
+                  >
+                    <div className={styles.detailItem}>
+                      <ds-text size="small" color="gray1">
+                        {t('label.type', 'Type')}
+                      </ds-text>
+                      <div className={styles.detailValueRow}>
+                        <ds-text className={styles.detailValue} size='small'>{storageTypeLabel}</ds-text>
+                      </div>
+                    </div>
+                  </Container>
+                </ListRow>
+                <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small'}} width="100%">
+                  <div className={styles.detailItem}>
+                    <ds-text size="small" color="gray1">
+                      {t('label.bucket_id', 'Bucket ID')}
+                    </ds-text>
+                    <div className={styles.detailValueRow}>
+                      <ds-text className={styles.detailValue} size='small'>{bucketConfigurationId ?? ''}</ds-text>
+                    </div>
+                  </div>
                 </Row>
-                {isAdvanced && (
-                  <Row width="48%">
-                    <Radio
-                      label={t('label.secondary_volume', 'This is a Secondary Volume')}
-                      value={SECONDARY_TYPE_VALUE}
-                      checked={type?.value === 2}
-                      onClick={(): void => onVolumeTypeChange(2)}
-                      iconColor="primary"
-                      disabled
+                <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+                  <Input
+                    inputName="prefix"
+                    label={t(
+                      'label.prefix_name',
+                      'Prefix - all objects will have this prefix in their name',
+                    )}
+                    value={volumePrefix}
+                    backgroundColor="gray5"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                      setVolumePrefix(e?.target?.value)
+                    }
+                  />
+                  <Padding top="extrasmall">
+                    <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
+                      {t('the_change_will_not_move_the_data', 'The change will not move the data')}
+                    </ds-text>
+                  </Padding>
+                </Row>
+                {backupUnusedBucketList?.length !== 0 && (
+                  <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+                    <Select
+                      items={backupUnusedBucketList}
+                      background="gray5"
+                      label={t(
+                        'label.volume_available_unused_Buckets_list_in_backup',
+                        'Available Buckets List (that are not in use in the backup)',
+                      )}
+                      showCheckbox={false}
+                      selection={selectedBucket ?? backupUnusedBucketList[0]}
+                      onChange={onUnusedBucketListChange}
                     />
                   </Row>
                 )}
-              </Row>
-            )}
-            <Row padding={{ top: 'large' }} width="100%">
-              <Input
-                inputName="prefix"
-                label={t(
-                  'label.prefix_name',
-                  'Prefix - all objects will have this prefix in their name',
-                )}
-                value={volumePrefix}
-                backgroundColor="gray5"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                  setVolumePrefix(e?.target?.value)
-                }
-              />
-            </Row>
-            <Padding top="extrasmall">
-              <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                {t('the_change_will_not_move_the_data', 'The change will not move the data')}
-              </ds-text>
-            </Padding>
-            {showTieringSettings && (
-              <>
+              </Container>
+            </>
+          )}
+          {isObjectStorage && showTieringSettings && (
+            <>
+              <div className={styles.sectionHeader}>
+                <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+                  {t('label.configuration', 'CONFIGURATION')}
+                </ds-text>
+                <ds-divider className={styles.sectionDivider}></ds-divider>
+              </div>
+              <Container
+                padding={{ horizontal: 'large', left: 'large' }}
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+              >
                 <Row
                   padding={{ top: 'large' }}
                   mainAlignment="flex-start"
@@ -1197,39 +1113,127 @@ const ModifyVolume: FC<{
                     />
                   </Link>
                 </Row>
-              </>
-            )}
-            <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-              <Tooltip
-                placement="top"
-                label={t(
-                  'warning.is_current',
-                  'Firstly, you have to set another volume as the current one.',
-                )}
-                maxWidth="auto"
-                disabled={!isCurrent}
-              >
-                <Switch
-                  ref={isCurrentRef}
-                  value={isCurrent}
-                  label={t('label.set_as_current', 'Set as Current')}
-                  onClick={(): void => {
-                    !isCurrent && setIsCurrentToggle(true);
-                  }}
-                  iconColor="primary"
-                />
-              </Tooltip>
-            </Row>
-            <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-              <ds-text as="p" color="secondary">
-                {t(
-                  'label.enable_current_helptext',
-                  'Enabling this option will disable the current active volume.',
-                )}
-              </ds-text>
-            </Row>
-          </Container>
-        )}
+              </Container>
+            </>
+          )}
+          {showOptionsSection && (
+            <>
+              <div className={styles.sectionHeader}>
+                <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+                  {t('label.options', 'OPTIONS')}
+                </ds-text>
+                <ds-divider className={styles.sectionDivider}></ds-divider>
+              </div>
+              {/* Options: Set as Current first, then Enable Compression and Threshold */}
+              {Object.keys(externalVolDetail)?.length === 0 ? (
+                <Container
+                  padding={{ horizontal: 'large' }}
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                >
+                  {volumeDetail?.type !== 10 && (
+                    <>
+                      <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+                        <Tooltip
+                          placement="top"
+                          label={t(
+                            'warning.is_current',
+                            'Firstly, you have to set another volume as the current one.',
+                          )}
+                          maxWidth="auto"
+                          disabled={!isCurrent}
+                        >
+                          <Switch
+                            ref={isCurrentRef}
+                            value={isCurrent}
+                            label={t('label.set_as_current', 'Set as Current')}
+                            onClick={(): void => {
+                              if (!isCurrent) {
+                                setIsCurrentToggle(true);
+                              }
+                            }}
+                            iconColor="primary"
+                          />
+                        </Tooltip>
+                      </Row>
+                      <Row
+                        padding={{ top: 'large', left: 'small' }}
+                        width="100%"
+                        mainAlignment="flex-start"
+                        background="gray6"
+                      >
+                        <Row mainAlignment="flex-start" width={isAdvanced ? '50%' : '100%'}>
+                          <Switch
+                            value={compressBlobs}
+                            label={t('label.enable_compression', 'Enable Compression')}
+                            onClick={(): void => setCompressBlobs(!compressBlobs)}
+                            iconColor="primary"
+                          />
+                          <Padding top="extrasmall" left="2rem">
+                            <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
+                              {t(
+                                'this_will_not_affect_data_already_stored',
+                                'This will not affect data already stored',
+                              )}
+                            </ds-text>
+                          </Padding>
+                        </Row>
+                        {/* {isAdvanced && <Padding horizontal="small" />} */}
+                        <Row mainAlignment="flex-start" width={'48%'}>
+                          <Row padding={{ top: 'small' }} width="100%">
+                            <Input
+                              label={t('label.compression_threshold', 'Compression Threshold')}
+                              value={compressionThreshold}
+                              backgroundColor="gray6"
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                                setCompressionThreshold(e?.target?.value)
+                              }
+                              color="secondary"
+                            />
+                          </Row>
+                          <Padding top="extrasmall">
+                            <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
+                              {t(
+                                'this_will_not_affect_data_already_stored',
+                                'This will not affect data already stored',
+                              )}
+                            </ds-text>
+                          </Padding>
+                        </Row>
+                      </Row>
+                    </>
+                  )}
+                </Container>
+              ) : (
+                <Container padding={{ horizontal: 'large', bottom: 'large' }}>
+                  <Row padding={{ top: 'large', left: 'small' }} mainAlignment="flex-start" width="100%">
+                    <Tooltip
+                      placement="top"
+                      label={t(
+                        'warning.is_current',
+                        'Firstly, you have to set another volume as the current one.',
+                      )}
+                      maxWidth="auto"
+                      disabled={!isCurrent}
+                    >
+                      <Switch
+                        ref={isCurrentRef}
+                        value={isCurrent}
+                        label={t('label.set_as_current', 'Set as Current')}
+                        onClick={(): void => {
+                          if (!isCurrent) {
+                            setIsCurrentToggle(true);
+                          }
+                        }}
+                        iconColor="primary"
+                      />
+                    </Tooltip>
+                  </Row>
+                </Container>
+              )}
+            </>
+          )}
+        </Container>
         <Modal
           open={isCurrentToggle && !isCurrent}
           title={t(

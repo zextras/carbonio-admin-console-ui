@@ -1,0 +1,60 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+ 
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem 0.5rem;
+  border-radius: 11px;
+  background: var(--color-gray4-regular);
+  color: var(--color-gray0-regular);
+  font-size: 0.75rem;
+  font-weight: 600;
+  height: 1.25rem;
+  text-transform: uppercase;
+  border: 1px solid #E2E5EA;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: calc(100% - 3rem);
+  margin: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.sectionHeaderLabel {
+  letter-spacing: 0.06em;
+  color: var(--color-gray5-regular);
+}
+
+.sectionDivider {
+  margin-top: 0.75rem;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.detailLabel {
+  color: var(--color-gray1-regular);
+}
+
+.detailValueRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.detailValue {
+  color: var(--color-text-regular);
+  font-weight: 500;
+}
