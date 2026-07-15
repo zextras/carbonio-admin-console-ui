@@ -63,7 +63,9 @@ function isConnectorUnused(connectorDetail: S3ConnectorRow | undefined): boolean
     if (Array.isArray(value)) return value.length === 0;
     if (typeof value === 'string') {
       const normalized = value.trim().toLowerCase();
-      return normalized === '' || normalized === 'unused' || normalized === '-' || normalized === 'none';
+      return (
+        normalized === '' || normalized === 'unused' || normalized === '-' || normalized === 'none'
+      );
     }
     return !value;
   });
@@ -76,29 +78,24 @@ type ReusedDefaultTabBarProps = {
   readonly onClick: () => void;
 };
 
-function ReusedDefaultTabBar({
-  item,
-  index,
-  selected,
-  onClick,
-}: ReusedDefaultTabBarProps) {
+function ReusedDefaultTabBar({ item, index, selected, onClick }: ReusedDefaultTabBarProps) {
   return (
-  <DefaultTabBarItem
-    item={item}
-    tabIndex={index}
-    selected={selected}
-    onClick={onClick}
-    orientation="horizontal"
-    background="gray6"
-    underlineColor="primary"
-    forceWidthEquallyDistributed={false}
-  >
-    <Row padding="small">
-      <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
-        {item.label}
-      </ds-text>
-    </Row>
-  </DefaultTabBarItem>
+    <DefaultTabBarItem
+      item={item}
+      tabIndex={index}
+      selected={selected}
+      onClick={onClick}
+      orientation="horizontal"
+      background="gray6"
+      underlineColor="primary"
+      forceWidthEquallyDistributed={false}
+    >
+      <Row padding="small">
+        <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
+          {item.label}
+        </ds-text>
+      </Row>
+    </DefaultTabBarItem>
   );
 }
 
@@ -175,8 +172,7 @@ export function EditS3ConnectorDetailPanel({
       secretKey: connectorDetail?.secret ?? '',
       url: connectorDetail?.url ?? '',
       prefix: connectorDetail?.prefix ?? '',
-      customRegion:
-        computedRegionValue === CUSTOM_REGION_VALUE ? initialRegionValue : '',
+      customRegion: computedRegionValue === CUSTOM_REGION_VALUE ? initialRegionValue : '',
       regionValue: computedRegionValue,
       acceptUntrustedSSL: initialInsecureHttps,
     } as S3ConnectorFormValues,
@@ -208,14 +204,18 @@ export function EditS3ConnectorDetailPanel({
     return regionItems.find((item) => item.value === regionValue) ?? { value: '', label: '' };
   })();
 
-  const volumeUsageRows = parseVolumeUsage(connectorDetail?.['usage in powerstore volumes']).map((row) => ({
-    server: row.server,
-    volume: row.volume,
-  }));
+  const volumeUsageRows = parseVolumeUsage(connectorDetail?.['usage in powerstore volumes']).map(
+    (row) => ({
+      server: row.server,
+      volume: row.volume,
+    }),
+  );
 
-  const backupUsageRows = parseBackupUsage(connectorDetail?.['usage in external backup']).map((row) => ({
-    server: row.server,
-  }));
+  const backupUsageRows = parseBackupUsage(connectorDetail?.['usage in external backup']).map(
+    (row) => ({
+      server: row.server,
+    }),
+  );
 
   const volumeHeaders = [
     { id: 'server', label: t('label.server', 'Server'), bold: true, width: '50%' },
@@ -227,31 +227,61 @@ export function EditS3ConnectorDetailPanel({
   ];
 
   const tabItems = [
-    { id: GENERAL_TAB, label: t('label.general', 'GENERAL').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
-    { id: VOLUMES_TAB, label: t('label.volumes', 'VOLUMES').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
-    { id: BACKUP_TAB, label: t('label.backup', 'BACKUP').toUpperCase(), CustomComponent: ReusedDefaultTabBar },
+    {
+      id: GENERAL_TAB,
+      label: t('label.general', 'GENERAL').toUpperCase(),
+      CustomComponent: ReusedDefaultTabBar,
+    },
+    {
+      id: VOLUMES_TAB,
+      label: t('label.volumes', 'VOLUMES').toUpperCase(),
+      CustomComponent: ReusedDefaultTabBar,
+    },
+    {
+      id: BACKUP_TAB,
+      label: t('label.backup', 'BACKUP').toUpperCase(),
+      CustomComponent: ReusedDefaultTabBar,
+    },
   ];
 
   const currentRegionValue = isCustomRegion ? values.customRegion : regionValue;
 
   const changedFields: Array<{ label: string; value: string }> = [];
   if (values.bucketLabel !== (connectorDetail?.label ?? '')) {
-    changedFields.push({ label: t('label.descriptive_name', 'Descriptive name'), value: values.bucketLabel.trim() || '-' });
+    changedFields.push({
+      label: t('label.descriptive_name', 'Descriptive name'),
+      value: values.bucketLabel.trim() || '-',
+    });
   }
   if (values.url !== (connectorDetail?.url ?? '')) {
-    changedFields.push({ label: t('label.endpoint_url', 'Endpoint URL'), value: values.url.trim() || '-' });
+    changedFields.push({
+      label: t('label.endpoint_url', 'Endpoint URL'),
+      value: values.url.trim() || '-',
+    });
   }
   if (currentRegionValue !== initialRegionValue) {
-    const regionLabel = regionValue === NO_REGION_VALUE
-      ? t('label.region_none', 'None')
-      : buildRegionLabel(regionValue, isCustomRegion, values.customRegion, regionSelection?.label);
+    const regionLabel =
+      regionValue === NO_REGION_VALUE
+        ? t('label.region_none', 'None')
+        : buildRegionLabel(
+            regionValue,
+            isCustomRegion,
+            values.customRegion,
+            regionSelection?.label,
+          );
     changedFields.push({ label: t('label.region', 'Region'), value: regionLabel });
   }
   if (values.bucketName !== (connectorDetail?.bucketName ?? '')) {
-    changedFields.push({ label: t('label.bucket_name', 'Bucket name'), value: values.bucketName.trim() || '-' });
+    changedFields.push({
+      label: t('label.bucket_name', 'Bucket name'),
+      value: values.bucketName.trim() || '-',
+    });
   }
   if (values.accessKey !== (connectorDetail?.accessKey ?? '')) {
-    changedFields.push({ label: t('label.access_key', 'Access Key ID'), value: values.accessKey.trim() || '-' });
+    changedFields.push({
+      label: t('label.access_key', 'Access Key ID'),
+      value: values.accessKey.trim() || '-',
+    });
   }
   if (values.secretKey !== (connectorDetail?.secret ?? '')) {
     changedFields.push({ label: t('label.secret_key', 'Secret Access Key'), value: '********' });
@@ -298,19 +328,17 @@ export function EditS3ConnectorDetailPanel({
 
   async function onVerifyAndSaveChanges(): Promise<void> {
     await form.handleSubmit();
-    if (form.state.isValid) {
-      if (isDirty && changedFields.length > 0) {
-        setIsVerifyModalOpen(true);
-      } else if (!isDirty) {
-        createSnackbar({
-          key: 'no-changes',
-          severity: 'info',
-          label: t('label.no_changes_have_been_made', 'No changes have been made'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      }
+    if (isDirty && changedFields.length > 0) {
+      setIsVerifyModalOpen(true);
+    } else if (!isDirty) {
+      createSnackbar({
+        key: 'no-changes',
+        severity: 'info',
+        label: t('label.no_changes_have_been_made', 'No changes have been made'),
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
+      });
     }
   }
 
@@ -361,7 +389,9 @@ export function EditS3ConnectorDetailPanel({
         setIsVerifySuccess(true);
       } else {
         const errorDetails =
-          typeof response?.error === 'string' ? undefined : (response?.error?.details as CheckResult | undefined);
+          typeof response?.error === 'string'
+            ? undefined
+            : (response?.error?.details as CheckResult | undefined);
         setCheckDetails(errorDetails);
         setIsVerifyError(true);
       }
@@ -454,13 +484,20 @@ export function EditS3ConnectorDetailPanel({
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                 <form.Field name="bucketLabel">
                   {(field) => {
-                    const error = getFieldErrorProps(field, isSubmitted, t, S3_CONNECTOR_VALIDATION_MESSAGES);
+                    const error = getFieldErrorProps(
+                      field,
+                      isSubmitted,
+                      t,
+                      S3_CONNECTOR_VALIDATION_MESSAGES,
+                    );
                     return (
                       <Input
                         backgroundColor="gray5"
                         label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
                         value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
                         hasError={error.hasError}
                         description={error.description}
                       />
@@ -472,13 +509,20 @@ export function EditS3ConnectorDetailPanel({
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                 <form.Field name="bucketName">
                   {(field) => {
-                    const error = getFieldErrorProps(field, isSubmitted, t, S3_CONNECTOR_VALIDATION_MESSAGES);
+                    const error = getFieldErrorProps(
+                      field,
+                      isSubmitted,
+                      t,
+                      S3_CONNECTOR_VALIDATION_MESSAGES,
+                    );
                     return (
                       <Input
                         backgroundColor="gray5"
                         label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
                         value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
                         hasError={error.hasError}
                         description={error.description}
                       />
@@ -488,27 +532,39 @@ export function EditS3ConnectorDetailPanel({
               </Row>
 
               <Row width="100%" padding={{ top: 'large' }}>
-                <Row width="48%" mainAlignment="flex-start" style={{ display: 'inline', height: '100%' }}>
+                <Row
+                  width="48%"
+                  mainAlignment="flex-start"
+                  style={{ display: 'inline', height: '100%' }}
+                >
                   <form.Field name="accessKey">
                     {(field) => (
                       <Input
                         backgroundColor="gray5"
                         label={t('label.access_key', 'Access Key ID*')}
                         value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
                       />
                     )}
                   </form.Field>
                 </Row>
                 <Padding horizontal="small" />
-                <Row width="48%" mainAlignment="flex-end" style={{ display: 'inline', height: '100%' }}>
+                <Row
+                  width="48%"
+                  mainAlignment="flex-end"
+                  style={{ display: 'inline', height: '100%' }}
+                >
                   <form.Field name="secretKey">
                     {(field) => (
                       <PasswordInput
                         backgroundColor="gray5"
                         label={t('label.secret_key', 'Secret Access Key*')}
                         value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
                       />
                     )}
                   </form.Field>
@@ -521,14 +577,19 @@ export function EditS3ConnectorDetailPanel({
                     <Select
                       items={[
                         { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
-                        { label: t('label.region_set_custom', 'Set custom'), value: CUSTOM_REGION_VALUE },
+                        {
+                          label: t('label.region_set_custom', 'Set custom'),
+                          value: CUSTOM_REGION_VALUE,
+                        },
                         ...baseRegions,
                       ]}
                       background="gray5"
                       label={t('label.region', 'Region')}
                       selection={regionSelection}
                       showCheckbox={false}
-                      onChange={(e: string | null): void => field.handleChange(e ?? NO_REGION_VALUE)}
+                      onChange={(e: string | null): void =>
+                        field.handleChange(e ?? NO_REGION_VALUE)
+                      }
                     />
                   )}
                 </form.Field>
@@ -538,13 +599,20 @@ export function EditS3ConnectorDetailPanel({
                 <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                   <form.Field name="customRegion">
                     {(field) => {
-                      const error = getFieldErrorProps(field, isSubmitted, t, S3_CONNECTOR_VALIDATION_MESSAGES);
+                      const error = getFieldErrorProps(
+                        field,
+                        isSubmitted,
+                        t,
+                        S3_CONNECTOR_VALIDATION_MESSAGES,
+                      );
                       return (
                         <Input
                           backgroundColor="gray5"
                           label={t('label.custom_region', 'Custom region')}
                           value={field.state.value}
-                          onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                            field.handleChange(e.target.value)
+                          }
                           hasError={error.hasError}
                           description={error.description}
                         />
@@ -557,7 +625,12 @@ export function EditS3ConnectorDetailPanel({
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                 <form.Field name="url">
                   {(field) => {
-                    const error = getFieldErrorProps(field, isSubmitted, t, S3_CONNECTOR_VALIDATION_MESSAGES);
+                    const error = getFieldErrorProps(
+                      field,
+                      isSubmitted,
+                      t,
+                      S3_CONNECTOR_VALIDATION_MESSAGES,
+                    );
                     return (
                       <Input
                         backgroundColor="gray5"
@@ -567,7 +640,9 @@ export function EditS3ConnectorDetailPanel({
                             : t('label.endpoint_url', 'Endpoint URL')
                         }
                         value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void => field.handleChange(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
                         hasError={error.hasError}
                         description={error.description}
                       />
@@ -604,7 +679,10 @@ export function EditS3ConnectorDetailPanel({
                   <form.Field name="acceptUntrustedSSL">
                     {(field) => (
                       <Switch
-                        label={t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates')}
+                        label={t(
+                          'buckets.accept_untrusted_ssl',
+                          'Accept untrusted SSL certificates',
+                        )}
                         value={field.state.value}
                         onClick={(): void => field.handleChange(!field.state.value)}
                         iconColor="primary"
@@ -626,7 +704,11 @@ export function EditS3ConnectorDetailPanel({
                   </Tooltip>
                 </Row>
               </Row>
-              <Row width="100%" padding={{ top: 'extrasmall', left: '2rem' }} mainAlignment="flex-start">
+              <Row
+                width="100%"
+                padding={{ top: 'extrasmall', left: '2rem' }}
+                mainAlignment="flex-start"
+              >
                 <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
                   {t(
                     'buckets.untrusted_ssl_hint',
@@ -713,7 +795,10 @@ export function EditS3ConnectorDetailPanel({
         applyHandler={onApplyChanges}
       />
       <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
-      <VerifySuccess isSuccess={showVerifyResult && isVerifySuccess} onComplete={handleSuccessComplete} />
+      <VerifySuccess
+        isSuccess={showVerifyResult && isVerifySuccess}
+        onComplete={handleSuccessComplete}
+      />
       <VerifyError
         isError={showVerifyResult && isVerifyError}
         checkDetails={checkDetails}
@@ -722,4 +807,3 @@ export function EditS3ConnectorDetailPanel({
     </>
   );
 }
-
