@@ -61,6 +61,11 @@ export * from './components/navigation/TabBar';
 /** custom components */
 export * from './components/custom/box-layout';
 export * from './components/custom/breadcrumb';
+export {
+  type ClickableRow,
+  ClickableRowFactory,
+  type ClickableRowFactoryProps,
+} from './components/custom/clickable-row-factory';
 export * from './components/custom/custom-table-header-factory';
 export * from './components/custom/custom-text-area';
 export * from './components/custom/displayer';

@@ -4,31 +4,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Checkbox } from '@zextras/ui-components';
 import {
-  FunctionComponent,
-  ReactElement,
-  ReactEventHandler,
+  type FunctionComponent,
+  type ReactElement,
+  type ReactEventHandler,
+  type ReactNode,
   useCallback,
   useMemo,
   useRef,
   useState,
 } from 'react';
 
-import styles from './cos-row-factory.module.css';
+import { Checkbox } from '../inputs/Checkbox';
+import styles from './clickable-row-factory.module.css';
 
-export type CosRow = {
+export type ClickableRow = {
   id: string;
-  columns: Array<string | ReactElement>;
+  columns: Array<ReactElement | string>;
   highlight?: boolean;
   clickable?: boolean;
   onClick?: ReactEventHandler;
   index?: number;
 };
 
-export interface CosRowFactoryProps {
+export interface ClickableRowFactoryProps {
   index: number;
-  row: CosRow;
+  row: ClickableRow;
   onChange: (id: string) => void;
   selected: boolean;
   selectionMode: boolean;
@@ -36,8 +37,8 @@ export interface CosRowFactoryProps {
   showCheckbox: boolean;
   showCheckboxOnHover?: boolean;
   hoverDelay?: number;
-  renderIndex?: (index: number) => React.ReactNode;
-  CheckboxComponent?: FunctionComponent<any>;
+  renderIndex?: (index: number) => ReactNode;
+  CheckboxComponent?: FunctionComponent<Record<string, unknown>>;
   rowClassName?: string;
   cellClassName?: string | ((colIndex: number) => string);
 }
@@ -78,7 +79,7 @@ function getTableCellClassName(
   return defaultClassName;
 }
 
-export const CosRowFactory = ({
+export const ClickableRowFactory = ({
   index,
   row,
   onChange,
@@ -92,7 +93,7 @@ export const CosRowFactory = ({
   CheckboxComponent,
   rowClassName,
   cellClassName,
-}: CosRowFactoryProps): React.JSX.Element => {
+}: ClickableRowFactoryProps) => {
   const ckbRef = useRef<HTMLDivElement>(null);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showCkb, setShowCkb] = useState<boolean>(selected || selectionMode);
@@ -138,11 +139,14 @@ export const CosRowFactory = ({
   const rowData = useMemo(
     () =>
       row.columns.map((column, i) => (
-        <td className={getTableCellClassName(styles.tableRowCell, cellClassName, i)} key={`${row.id}-col-${i}`}>
+        <td
+          className={getTableCellClassName(styles.tableRowCell, cellClassName, i)}
+          key={`${row.id}-col-${i}`}
+        >
           {typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}
         </td>
       )),
-    [row.columns, cellClassName],
+    [row.columns, cellClassName, row.id],
   );
 
   const CheckboxComponentToRender = CheckboxComponent || Checkbox;

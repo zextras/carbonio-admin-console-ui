@@ -8,8 +8,16 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { vi } from 'vitest';
 
-vi.mock('@zextras/ui-components', () => ({
-  Checkbox: ({ value, onClick, 'aria-label': ariaLabel }: any) => (
+vi.mock('../inputs/Checkbox', () => ({
+  Checkbox: ({
+    value,
+    onClick,
+    'aria-label': ariaLabel,
+  }: {
+    value: boolean;
+    onClick: () => void;
+    'aria-label': string;
+  }) => (
     <input
       type="checkbox"
       checked={value}
@@ -20,10 +28,12 @@ vi.mock('@zextras/ui-components', () => ({
   ),
 }));
 
-import { CosRowFactory, type CosRowFactoryProps } from '../cos-row-factory';
+import { ClickableRowFactory, type ClickableRowFactoryProps } from '../clickable-row-factory';
 
-function renderRow(overrides: Partial<CosRowFactoryProps> = {}): ReturnType<typeof render> {
-  const defaultProps: CosRowFactoryProps = {
+function renderRow(
+  overrides: Partial<ClickableRowFactoryProps> = {},
+): ReturnType<typeof render> {
+  const defaultProps: ClickableRowFactoryProps = {
     index: 0,
     row: { id: 'row-1', columns: ['Column A', 'Column B'] },
     onChange: vi.fn(),
@@ -33,10 +43,10 @@ function renderRow(overrides: Partial<CosRowFactoryProps> = {}): ReturnType<type
     showCheckbox: false,
     ...overrides,
   };
-  return render(<CosRowFactory {...defaultProps} />);
+  return render(<ClickableRowFactory {...defaultProps} />);
 }
 
-describe('CosRowFactory', () => {
+describe('ClickableRowFactory', () => {
   describe('Rendering', () => {
     it('should render a table row', () => {
       const { container } = renderRow();
