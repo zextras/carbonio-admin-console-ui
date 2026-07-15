@@ -7,9 +7,9 @@
 import {
   Button,
   Checkbox,
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  HoverableRowFactory,
   Input,
   LabeledValue,
   ListRow,
@@ -498,7 +498,7 @@ export function HSMpolicySettings() {
             showCheckbox={false}
             multiSelect={false}
             selectedRows={selectedPolicies as [] | [string]}
-            RowFactory={HoverableRowFactory}
+            RowFactory={ClickableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>
@@ -604,7 +604,7 @@ export function HSMpolicySettings() {
                     updateSourceVolumeSelection(selected.map(String));
                   }
                 }}
-                RowFactory={HoverableRowFactory}
+                RowFactory={ClickableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
             )}
@@ -672,7 +672,7 @@ export function HSMpolicySettings() {
                     updateDestinationVolumeSelection(selected.map(String));
                   }
                 }}
-                RowFactory={HoverableRowFactory}
+                RowFactory={ClickableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
             )}

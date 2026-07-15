@@ -5,9 +5,9 @@
  */
 
 import {
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  HoverableRowFactory,
   Input,
   Paging,
   Row,
@@ -103,7 +103,7 @@ export function EditS3ConnectorUsageTable({
             rows={tableRows}
             showCheckbox={false}
             multiSelect={false}
-            RowFactory={HoverableRowFactory}
+            RowFactory={ClickableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
           {filteredRows.length === 0 && (

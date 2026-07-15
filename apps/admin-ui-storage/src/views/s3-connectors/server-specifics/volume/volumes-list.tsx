@@ -7,9 +7,9 @@
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  HoverableRowFactory,
   ModalOverlay,
   Row,
   Table,
@@ -184,7 +184,7 @@ function VolumeListTable({
         multiSelect={false}
         selectedRows={selectedRows as [] | [string]}
         onSelectionChange={onSelectionChange}
-        RowFactory={HoverableRowFactory}
+        RowFactory={ClickableRowFactory}
         HeaderFactory={CustomHeaderFactory}
       />
       {tableRows?.length === 0 && (

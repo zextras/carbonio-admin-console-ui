@@ -7,9 +7,9 @@
 import {
   Button,
   Checkbox,
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  HoverableRowFactory,
   Input,
   LabeledValue,
   ListRow,
@@ -556,7 +556,7 @@ export function EditHsmPolicyDetailSection({
             multiSelect={false}
             selectedRows={selectedPolicies as [] | [string]}
             onSelectionChange={(selected): void => onCriteriaSelected(selected.map(String))}
-            RowFactory={HoverableRowFactory}
+            RowFactory={ClickableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Padding>

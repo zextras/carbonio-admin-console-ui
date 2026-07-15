@@ -5,9 +5,9 @@
  */
 
 import {
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  HoverableRowFactory,
   Row,
   Table,
   type THeader,
@@ -73,7 +73,7 @@ export const ServersListTable = ({ volumes, headers }: ServersListTableProps) =>
         rows={tableRows}
         showCheckbox={false}
         multiSelect={false}
-        RowFactory={HoverableRowFactory}
+        RowFactory={ClickableRowFactory}
         HeaderFactory={CustomHeaderFactory}
         onSelectionChange={onSelectionChange}
       />

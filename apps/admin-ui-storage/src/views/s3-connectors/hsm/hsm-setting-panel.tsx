@@ -9,9 +9,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import {
   Button,
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  HoverableRowFactory,
   Input,
   ListRow,
   ModalOverlay,
@@ -652,7 +652,7 @@ export function HSMsettingPanel() {
             multiSelect={false}
             selectedRows={selectedPolicies as [] | [string]}
             HeaderFactory={CustomHeaderFactory}
-            RowFactory={HoverableRowFactory}
+            RowFactory={ClickableRowFactory}
           />
         </ListRow>
         <ListRow>

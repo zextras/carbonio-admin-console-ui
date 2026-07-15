@@ -5,9 +5,9 @@
  */
 
 import {
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  HoverableRowFactory,
   ListRow,
   Padding,
   Row,
@@ -180,7 +180,7 @@ export const S3ConnectorListTable = ({
             multiSelect={false}
             selectedRows={selectedRows}
             onSelectionChange={onSelectionChange}
-            RowFactory={HoverableRowFactory}
+            RowFactory={ClickableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>

@@ -5,9 +5,9 @@
  */
 
 import {
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  HoverableRowFactory,
   Row,
   Table,
 } from '@zextras/ui-components';
@@ -105,7 +105,7 @@ export function IndexerVolumeTable({ volumes, selectedRows, onSelectionChange, h
         multiSelect={false}
         selectedRows={selectedRows as [] | [string]}
         onSelectionChange={onSelectionChange}
-        RowFactory={HoverableRowFactory}
+        RowFactory={ClickableRowFactory}
         HeaderFactory={CustomHeaderFactory}
       />
       {tableRows?.length === 0 && (

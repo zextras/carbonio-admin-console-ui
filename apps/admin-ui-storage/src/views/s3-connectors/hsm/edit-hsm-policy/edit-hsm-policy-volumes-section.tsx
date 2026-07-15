@@ -5,9 +5,9 @@
  */
 
 import {
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  HoverableRowFactory,
   ListRow,
   Padding,
   Switch,
@@ -206,7 +206,7 @@ export function EditHsmPolicyVolumesSection({
                   updateSourceVolumeSelection(selected.map(String));
                 }
               }}
-              RowFactory={HoverableRowFactory}
+              RowFactory={ClickableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           )}
@@ -274,7 +274,7 @@ export function EditHsmPolicyVolumesSection({
                   updateDestinationVolumeSelection(selected.map(String));
                 }
               }}
-              RowFactory={HoverableRowFactory}
+              RowFactory={ClickableRowFactory}
               HeaderFactory={CustomHeaderFactory}
             />
           )}
