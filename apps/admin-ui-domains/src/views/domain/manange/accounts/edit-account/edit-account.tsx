@@ -96,7 +96,6 @@ const EditAccount: FC<{
     initAccountDetail,
     setInitAccountDetail,
     deleteAdministrationRights,
-    setDefaultCOS,
     cosDetail,
   } = context;
   const isAdvanced = useIsAdvanced();
@@ -764,7 +763,6 @@ const EditAccount: FC<{
   ]);
   const onUndo = (): void => {
     setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
-    setDefaultCOS(!initAccountDetail.zimbraCOSId);
     setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
   };
   const onViewMail = useCallback(() => {
