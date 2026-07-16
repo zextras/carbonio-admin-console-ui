@@ -1,3 +1,9 @@
+## [0.15.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.7...v0.15.0) (2026-07-16)
+
+### Features
+
+* **routing:** browser refresh keeps you in the same view ([ca337f2](https://github.com/zextras/carbonio-admin-console-ui/commit/ca337f2ffa8bbd0653456948bae9eacfeea7d400))
+
 ## [0.14.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.6...v0.14.7) (2026-07-08)
 
 ### Other changes
