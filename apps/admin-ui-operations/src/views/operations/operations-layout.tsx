@@ -5,15 +5,14 @@
  */
 
 import { Container } from '@zextras/ui-components';
-import { usePrimaryBarState } from '@zextras/ui-shared';
+import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { Outlet } from 'react-router';
 
 import OperationsListPanel from './operations-list-panel';
 
 const OperationsLayout: FC = () => {
-	const isPrimaryBarExpanded = usePrimaryBarState();
-	const detailViewMaxWidth = isPrimaryBarExpanded ? 981 : 1125;
+	const detailViewMaxWidth = useDetailViewMaxWidth();
 
 	return (
 		<Container orientation="horizontal" mainAlignment="flex-start">
@@ -24,7 +23,7 @@ const OperationsLayout: FC = () => {
 			</Container>
 			<Container style={{ maxWidth: '100%' }}>
 				<Container
-					style={{ maxWidth: `${detailViewMaxWidth}px`, transition: 'max-width 300ms' }}
+					style={{ maxWidth: detailViewMaxWidth, transition: 'max-width 300ms' }}
 				>
 					<Suspense fallback={<ds-spinner />}>
 						<Outlet />

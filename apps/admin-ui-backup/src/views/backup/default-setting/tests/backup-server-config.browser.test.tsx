@@ -13,7 +13,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { useBackupStore } from '../../../../store/backup/store';
+import { backupQueryKeys } from '../../../../services/backup-query-keys';
 import BackupServerConfig from '../backup-server-config';
 
 const GLOBAL_CONFIG = {
@@ -60,12 +60,12 @@ describe('BackupServerConfig', () => {
     beforeEach(async () => {
         queryClient = getQueryClient();
         await grantUserConfigRights(queryClient);
-        useBackupStore.setState({ globalConfig: { ...GLOBAL_CONFIG } });
+        queryClient.setQueryData(backupQueryKeys.globalConfig(), { ...GLOBAL_CONFIG });
     });
 
     afterEach(() => {
         resetMockWorker();
-        useBackupStore.setState({ globalConfig: {}, selectedServer: '' });
+        queryClient.removeQueries({ queryKey: backupQueryKeys.all });
     });
 
     describe('Rendering', () => {

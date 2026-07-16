@@ -5,13 +5,13 @@
  */
 
 import { Button, Container, ListRow, Row } from '@zextras/ui-components';
-import { useModuleLicenseInfo } from '@zextras/ui-shared';
+import { buildPath, useModuleLicenseInfo } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
+import { SUBSCRIPTIONS_ROUTE_ID } from '../../constants';
 
 
 type licenseBannerProps = {
@@ -169,7 +169,7 @@ export const LicenseBanner: FC<licenseBannerProps> = ({ redirectButtonHasToAppea
             backgroundColor="transparent"
             color="gray6"
             label={detailsButton}
-            onClick={() => navigate(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`)}
+            onClick={() => navigate(buildPath(SUBSCRIPTIONS_ROUTE_ID))}
           />
         )}
       </Container>

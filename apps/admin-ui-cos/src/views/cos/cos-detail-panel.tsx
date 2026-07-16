@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 
 import {
   ADVANCED,
+  COS_LIST,
   CREATE_NEW_COS_ROUTE_ID,
   FEATURES,
   GENERAL_INFORMATION,
@@ -32,15 +33,15 @@ export const CosDetailPanel = () => (
     background="gray6"
   >
     <Routes>
-      <Route index element={<CosList />} />
-      <Route path={`/:cosId/${GENERAL_INFORMATION}`} element={<CosGeneralInformation />} />
-      <Route path={`/:cosId/${FEATURES}`} element={<CosFeatures />} />
-      <Route path={`/:cosId/${WSC}`} element={<WscCosSettings />} />
-      <Route path={`/:cosId/${PREFERENCES}`} element={<COSPreferences />} />
-      <Route path={`/:cosId/${ADVANCED}`} element={<CosAdvanced />} />
-      <Route path={`/:cosId/${SERVER_POOLS}`} element={<CosServerPools />} />
-      <Route path={`/${CREATE_NEW_COS_ROUTE_ID}`} element={<CreateCos />} />
-      <Route path={'/cos_list'} element={<CosList />} />
+      <Route index element={<Navigate to={COS_LIST} replace />} />
+      <Route path={`:cosId/${GENERAL_INFORMATION}`} element={<CosGeneralInformation />} />
+      <Route path={`:cosId/${FEATURES}`} element={<CosFeatures />} />
+      <Route path={`:cosId/${WSC}`} element={<WscCosSettings />} />
+      <Route path={`:cosId/${PREFERENCES}`} element={<COSPreferences />} />
+      <Route path={`:cosId/${ADVANCED}`} element={<CosAdvanced />} />
+      <Route path={`:cosId/${SERVER_POOLS}`} element={<CosServerPools />} />
+      <Route path={CREATE_NEW_COS_ROUTE_ID} element={<CreateCos />} />
+      <Route path={COS_LIST} element={<CosList />} />
     </Routes>
   </Container>
 );

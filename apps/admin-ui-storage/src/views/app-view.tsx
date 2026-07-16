@@ -24,7 +24,7 @@ const DetailContainer: FC<{ children: ReactNode }> = ({ children }) => (
   <Container style={{ transition: 'max-width 300ms' }}>{children}</Container>
 );
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   return (
     <Container>
       <Breadcrumb />
@@ -63,4 +63,3 @@ const AppView: FC = () => {
   );
 };
 
-export default AppView;

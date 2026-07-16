@@ -54,6 +54,7 @@ export * from './components/inputs/Switch';
 export * from './components/inputs/TextArea';
 
 /** navigation components */
+export * from './components/navigation/route-leaving-guard';
 export * from './components/navigation/TabBar';
 
 /** custom components */

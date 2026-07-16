@@ -153,8 +153,7 @@ describe('DomainDisclaimer', () => {
     await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
 
     const textArea = page.getByRole('textbox');
-    await userEvent.clear(textArea);
-    await userEvent.type(textArea, 'New disclaimer');
+    await userEvent.fill(textArea, 'New disclaimer');
 
     const saveButton = page.getByRole('button', { name: /save/i });
     await saveButton.click();

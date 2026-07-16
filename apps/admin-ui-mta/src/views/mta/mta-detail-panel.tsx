@@ -49,14 +49,14 @@ export const MTADetailPanel: FC = () => (
     <Routes>
       <Route index element={<EmptyState />} />
 
-      <Route path={`/${INBOUND_FLOW_SECURITY}`} element={<MTAInboundFlowSecurity />} />
-      <Route path={`/${POSTSCREEN_TUNING}`} element={<MTAPostScreenTuning />} />
-      <Route path={`/${OUTBOUND_FLOW}`} element={<MTAOutBoundFlow />} />
-      <Route path={`/${ANTIVIRUS_AND_ANTISPAM}`} element={<MTAAntiVirusAndAntiSpam />} />
-      <Route path={`/${ADVANCED}`} element={<MTAAdvanced />} />
-      <Route path={`/${QUEUE}`} element={<MTAStats />} />
+      <Route path={INBOUND_FLOW_SECURITY} element={<MTAInboundFlowSecurity />} />
+      <Route path={POSTSCREEN_TUNING} element={<MTAPostScreenTuning />} />
+      <Route path={OUTBOUND_FLOW} element={<MTAOutBoundFlow />} />
+      <Route path={ANTIVIRUS_AND_ANTISPAM} element={<MTAAntiVirusAndAntiSpam />} />
+      <Route path={ADVANCED} element={<MTAAdvanced />} />
+      <Route path={QUEUE} element={<MTAStats />} />
 
-      <Route path={`/:server/${MTA_SERVER_GENERAL}`} element={<MTAServerGeneral />} />
+      <Route path={`:server/${MTA_SERVER_GENERAL}`} element={<MTAServerGeneral />} />
 
       <Route path="*" element={null} />
     </Routes>
