@@ -266,9 +266,6 @@ export const S3ConnectorListPanel = () => {
                   );
                   setConnectorDeleteName(volumeObject);
                 }}
-                onDoubleClick={(i: number): void => {
-                  handleClick(i);
-                }}
                 onClick={(i: number): void => {
                   handleClick(i);
                 }}

@@ -43,15 +43,6 @@ const TEXT_COLUMNS: Array<TextColumnConfig> = [
   { key: 'bucket', getValue: (v) => v.bucketName, weight: 'light' },
 ];
 
-const ACTION_BUTTON_STYLE: React.CSSProperties = {
-  background: 'none',
-  border: 'none',
-  cursor: 'pointer',
-  padding: '14px 0px 0px 14px',
-  display: 'inline-flex',
-  alignItems: 'center',
-};
-
 const headers = (t: TFunction): Array<TableHeader> => [
   {
     id: 'id',
@@ -79,49 +70,31 @@ const headers = (t: TFunction): Array<TableHeader> => [
   },
 ];
 
-function renderTextCell(
-  config: TextColumnConfig,
-  volume: S3ConnectorRow,
-  index: number,
-  onClick: (i: number) => void,
-  onDoubleClick: (i: number) => void,
-) {
+function renderTextCell(config: TextColumnConfig, volume: S3ConnectorRow) {
   const value = config.getValue(volume);
   const cellKey = `${volume.uuid}-${config.key}`;
 
-  const row = (
-    <Row
-      key={cellKey}
-      onDoubleClick={(): void => {
-        onDoubleClick(index);
-      }}
-      onClick={(): void => {
-        onClick(index);
-      }}
-      style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-    >
-      <ds-text as="span" size="small" weight={config.weight}>
-        {value}
-      </ds-text>
-    </Row>
+  const content = (
+    <ds-text as="span" size="small" weight={config.weight} key={cellKey}>
+      {value}
+    </ds-text>
   );
 
   if (config.hasTooltip) {
     return (
       <Tooltip placement="bottom" label={value} key={`${cellKey}-tip`}>
-        {row}
+        {content}
       </Tooltip>
     );
   }
 
-  return row;
+  return content;
 }
 
 type S3ConnectorListTable = {
   volumes: Array<S3ConnectorRow>;
   selectedRows: SingleSelection;
   onSelectionChange: (selected: string[]) => void;
-  onDoubleClick: (i: number) => void;
   onClick: (i: number) => void;
 };
 
@@ -129,7 +102,6 @@ export const S3ConnectorListTable = ({
   volumes,
   selectedRows,
   onSelectionChange,
-  onDoubleClick,
   onClick,
 }: S3ConnectorListTable) => {
   const [t] = useTranslation();
@@ -138,28 +110,22 @@ export const S3ConnectorListTable = ({
     id: string;
     columns: Array<string | React.ReactElement>;
     clickable: boolean;
-  }> = volumes.map((v, i) => ({
-    id: v.uuid,
+    onClick: () => void;
+  }> = volumes.map((value, index) => ({
+    id: value.uuid,
     columns: [
-      ...TEXT_COLUMNS.map((config) => renderTextCell(config, v, i, onClick, onDoubleClick)),
+      ...TEXT_COLUMNS.map((config) => renderTextCell(config, value)),
       <Row
-        key={`${v.uuid}-actions`}
+        key={`${value.uuid}-actions`}
         orientation="vertical"
         mainAlignment="center"
         crossAlignment="flex-start"
       >
-        <button
-          type="button"
-          onClick={(): void => {
-            onClick(i);
-          }}
-          style={ACTION_BUTTON_STYLE}
-        >
-          <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
-        </button>
+        <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
       </Row>,
     ],
     clickable: true,
+    onClick: () => onClick(index),
   }));
 
   return (
