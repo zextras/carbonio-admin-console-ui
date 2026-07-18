@@ -17,7 +17,7 @@
     "lint:fix": "eslint --fix --quiet --cache",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
-    "test:ci": "vitest run --coverage"
+    "test:ci": "vitest run --coverage --pool-options.forks.maxForks=2"
   },
   "dependencies": {
     "@fontsource/roboto": "^5.2.10",
