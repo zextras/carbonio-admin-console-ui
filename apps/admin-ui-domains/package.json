@@ -18,7 +18,7 @@
     "lint:fix": "eslint --fix --quiet --cache",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
-    "test:ci": "vitest run --coverage --pool-options.forks.maxForks=2"
+    "test:ci": "vitest run --coverage"
   },
   "dependencies": {
     "@posthog/react": "^1.10.3",
