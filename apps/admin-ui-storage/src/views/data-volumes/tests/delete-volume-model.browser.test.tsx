@@ -121,4 +121,64 @@ describe('DeleteVolumeModel (browser)', () => {
 
 		expect(closeHandler).toHaveBeenCalledTimes(1);
 	});
+
+	it('should render the modal title with an empty name when volumeDetail is undefined', async () => {
+		await setupBrowserTest(
+			<DeleteVolumeModel
+				open
+				closeHandler={vi.fn()}
+				deleteHandler={vi.fn()}
+				volumeDetail={undefined}
+			/>,
+		);
+
+		await expect.element(page.getByText('Delete  ?', { exact: true })).toBeVisible();
+		// Undefined isCurrent is falsy → NO/DELETE branch
+		await expect.element(page.getByRole('button', { name: 'NO' })).toBeVisible();
+		await expect.element(page.getByRole('button', { name: 'DELETE' })).toBeVisible();
+	});
+
+	it('should render only the OK button when volumeDetail is current and name is missing', async () => {
+		await setupBrowserTest(
+			<DeleteVolumeModel
+				open
+				closeHandler={vi.fn()}
+				deleteHandler={vi.fn()}
+				volumeDetail={{ id: 1, name: undefined, isCurrent: true }}
+			/>,
+		);
+
+		await expect.element(page.getByRole('button', { name: 'OK, I GOT IT' })).toBeVisible();
+		expect(page.getByRole('button', { name: 'DELETE' }).elements()).toHaveLength(0);
+	});
+
+	it('should render neither the NO/DELETE buttons when open is false', async () => {
+		await setupBrowserTest(
+			<DeleteVolumeModel
+				open={false}
+				closeHandler={vi.fn()}
+				deleteHandler={vi.fn()}
+				volumeDetail={createVolumeDetail()}
+			/>,
+		);
+
+		expect(page.getByRole('button', { name: 'NO' }).elements()).toHaveLength(0);
+		expect(page.getByRole('button', { name: 'DELETE' }).elements()).toHaveLength(0);
+	});
+
+	it('should call deleteHandler with undefined when volumeDetail is undefined and DELETE is clicked', async () => {
+		const deleteHandler = vi.fn();
+		await setupBrowserTest(
+			<DeleteVolumeModel
+				open
+				closeHandler={vi.fn()}
+				deleteHandler={deleteHandler}
+				volumeDetail={undefined}
+			/>,
+		);
+
+		await page.getByRole('button', { name: 'DELETE' }).click();
+		expect(deleteHandler).toHaveBeenCalledTimes(1);
+		expect(deleteHandler).toHaveBeenCalledWith(undefined);
+	});
 });
