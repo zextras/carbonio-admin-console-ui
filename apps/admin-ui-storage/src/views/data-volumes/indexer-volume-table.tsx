@@ -28,7 +28,7 @@ export function IndexerVolumeTable({
   const tableRows = volumes.map((v, i) => {
     const columns = [
       <Row
-        key={i}
+        key={`${v?.id}-id`}
         onClick={(): void => {
           onClick(i);
         }}
@@ -39,7 +39,7 @@ export function IndexerVolumeTable({
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`${v?.id}-name`}
         onClick={(): void => {
           onClick(i);
         }}
@@ -51,7 +51,7 @@ export function IndexerVolumeTable({
       </Row>,
       isAdvanced && (
         <Row
-          key={i}
+          key={`${v?.id}-storeType`}
           onClick={(): void => {
             onClick(i);
           }}
@@ -65,7 +65,7 @@ export function IndexerVolumeTable({
         </Row>
       ),
       <Row
-        key={i}
+        key={`${v?.id}-path`}
         onClick={(): void => {
           onClick(i);
         }}
@@ -76,7 +76,7 @@ export function IndexerVolumeTable({
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`${v?.id}-isCurrent`}
         onClick={(): void => {
           onClick(i);
         }}

@@ -6,14 +6,6 @@
 import { type THeader } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
 
-import { CheckResult } from '../s3-connectors/parts/verify/verify-error';
-
-type S3ConnectorError = {
-  error?: string | { message: string; details?: CheckResult };
-  message?: string;
-  details?: CheckResult;
-};
-
 export const S3ConnectorTypeItems = (t: TFunction): Array<{ value: string; label: string }> => [
   {
     label: t('buckets.s3_types.alibaba_cloud_s3', 'Alibaba Cloud S3'),

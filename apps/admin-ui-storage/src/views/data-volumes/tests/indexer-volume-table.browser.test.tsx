@@ -100,7 +100,7 @@ describe('IndexerVolumeTable (browser)', () => {
         onClick,
       });
       const buttons = page.getByRole('button').elements();
-      await buttons[buttons.length - 1]!.click();
+      await (buttons[buttons.length - 1] as HTMLElement).click();
       expect(onClick).toHaveBeenCalledWith(1);
     });
 
@@ -108,8 +108,8 @@ describe('IndexerVolumeTable (browser)', () => {
       const onClick = vi.fn();
       await renderTable({ volumes: [LOCAL_VOLUME], isAdvanced: false, onClick });
       // The last button in the row is the arrow forward icon button
-      const buttons = page.getByRole('button').elements() as any;
-      await buttons[0]!.click();
+      const buttons = page.getByRole('button').elements();
+      await (buttons[0] as HTMLElement).click();
       expect(onClick).toHaveBeenCalledWith(0);
     });
   });
