@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Checkbox,
@@ -18,147 +19,35 @@ import {
   Table,
 } from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import type { HsmPolicyFromServer, PolicyCriteriaItem } from '../../../../types';
+import type { PolicyCriteriaItem } from '../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 
 type SelectOption = { label: string; value: string };
 
-export function EditHsmPolicyDetailSection({
-  currentPolicy,
-}: Readonly<{
-  currentPolicy: HsmPolicyFromServer | undefined;
-}>) {
+export function EditHsmPolicyDetailSection() {
   const { server } = useParams();
   const [t] = useTranslation();
   const context = useContext(HSMContext);
-  const { form, allVolumes } = context;
-  const [isMessageEnable, setIsMessageEnable] = useState<boolean>(false);
-  const [isEventEnable, setIsEventEnable] = useState<boolean>(false);
-  const [isContactEnable, setIsContactEnable] = useState<boolean>(false);
-  const [isDocument, setIsDocument] = useState<boolean>(false);
+  const { form } = context;
+  const formValues = useSelector(form.store, (s) => s.values);
+  const isMessageEnable = formValues.isMessageEnabled;
+  const isEventEnable = formValues.isEventEnabled;
+  const isContactEnable = formValues.isContactEnabled;
+  const isDocument = formValues.isDocumentEnabled;
   const all = isDocument && isContactEnable && isMessageEnable && isEventEnable;
-  const [policyCriteria, setPolicyCriteria] = useState<Array<PolicyCriteriaItem>>([]);
+  const policyCriteria = formValues.policyCriteria;
   const [isShowDateScale, setIsShowDateScale] = useState<boolean>(true);
   const [value, setValue] = useState<string>();
   const [selectedPolicies, setSelectedPolicies] = useState<Array<string>>([]);
   const [isUpdatePolicyCriteria, setIsUpdatePolicyCriteria] = useState<boolean>(false);
-  const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
-
-  const updateSourceVolumeSelection = (selectedIds: Array<string>): void => {
-    const sourceVol = allVolumes?.filter(
-      (item) => item?.id != null && selectedIds.includes(String(item.id)),
-    );
-    form.setFieldValue('sourceVolume', sourceVol ?? []);
-  };
-
-  const updateDestinationVolumeSelection = (selectedIds: Array<string>): void => {
-    const destVol = Array.isArray(allVolumes)
-      ? allVolumes.filter((item) => item?.id != null && selectedIds.includes(String(item.id)))
-      : [];
-    form.setFieldValue('destinationVolume', destVol);
-  };
 
   const updatePolicyCriteria = (newCriteria: Array<PolicyCriteriaItem>): void => {
-    setPolicyCriteria(newCriteria);
     form.setFieldValue('policyCriteria', newCriteria);
   };
-
-  const setHsmPolicyType = () => {
-    if (currentPolicy?.hsmType) {
-      if (currentPolicy?.hsmType.length === 4) {
-        setIsDocument(true);
-        setIsContactEnable(true);
-        setIsMessageEnable(true);
-        setIsEventEnable(true);
-        form.setFieldValue('isMessageEnabled', true);
-        form.setFieldValue('isDocumentEnabled', true);
-        form.setFieldValue('isEventEnabled', true);
-        form.setFieldValue('isContactEnabled', true);
-      } else {
-        currentPolicy?.hsmType.forEach((element: number) => {
-          if (element === 5) {
-            setIsMessageEnable(true);
-            form.setFieldValue('isMessageEnabled', true);
-          } else if (element === 8) {
-            setIsDocument(true);
-            form.setFieldValue('isDocumentEnabled', true);
-          } else if (element === 11) {
-            setIsEventEnable(true);
-            form.setFieldValue('isEventEnabled', true);
-          } else if (element === 6) {
-            setIsContactEnable(true);
-            form.setFieldValue('isContactEnabled', true);
-          }
-        });
-      }
-    }
-  };
-
-  const setHSMQuery = () => {
-    if (currentPolicy?.hsmQuery) {
-      const queries = currentPolicy?.hsmQuery.split(' ');
-      if (queries && queries.length > 0 && isDataLoaded === false) {
-        const parsedCriteria: Array<PolicyCriteriaItem> = [];
-        queries.forEach((element: string) => {
-          if (!element.startsWith('source') && !element.startsWith('destination')) {
-            const option = element.match(/after|before|larger|small/g)?.join('');
-            const scale = element.match(/minutes|hours|days|months|years/g)?.join('');
-            const valueItem = element.match(/\d/g)?.join('');
-            if (valueItem) {
-              parsedCriteria.push({
-                option: option ?? '',
-                scale: scale ?? '',
-                dateScale: valueItem,
-              });
-            }
-          }
-        });
-        updatePolicyCriteria([...policyCriteria, ...parsedCriteria]);
-      } else {
-        updatePolicyCriteria(form.state.values.policyCriteria);
-      }
-    }
-  };
-
-  const setSourceAndDestinationValues = (option: string, valueItem: string) => {
-    if (option.startsWith('source')) {
-      updateSourceVolumeSelection(valueItem.split(','));
-    }
-    if (option.startsWith('destination')) {
-      updateDestinationVolumeSelection(valueItem.split(','));
-    }
-  };
-
-  const setHSMPolicyQuerySourceAndDestination = () => {
-    if (currentPolicy?.hsmQuery) {
-      const queries = currentPolicy?.hsmQuery.split(' ');
-      if (queries && queries.length > 0 && isDataLoaded === false) {
-        queries.forEach((element: string) => {
-          if (
-            element !== '' &&
-            (element.startsWith('source') || element.startsWith('destination'))
-          ) {
-            const option = element.split(':')[0];
-            const valueItem = element.split(':')[1];
-            setSourceAndDestinationValues(option, valueItem);
-          }
-        });
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (currentPolicy) {
-      setHsmPolicyType();
-      setHSMQuery();
-      setHSMPolicyQuerySourceAndDestination();
-      setIsDataLoaded(true);
-    }
-  }, [currentPolicy, setHSMPolicyQuerySourceAndDestination, setHSMQuery, setHsmPolicyType]);
 
   const options: Array<SelectOption> = [
     {
@@ -261,10 +150,6 @@ export function EditHsmPolicyDetailSection({
     form.setFieldValue('isEventEnabled', check);
     form.setFieldValue('isContactEnabled', check);
     form.setFieldValue('isDocumentEnabled', check);
-    setIsDocument(check);
-    setIsContactEnable(check);
-    setIsMessageEnable(check);
-    setIsEventEnable(check);
   };
 
   const policyCriteriaRows =
@@ -389,9 +274,11 @@ export function EditHsmPolicyDetailSection({
             value={isMessageEnable}
             onClick={(): void => {
               const newValue = !isMessageEnable;
-              setIsMessageEnable(newValue);
               form.setFieldValue('isMessageEnabled', newValue);
-              form.setFieldValue('isAllEnabled', newValue && isContactEnable && isEventEnable && isDocument);
+              form.setFieldValue(
+                'isAllEnabled',
+                newValue && isContactEnable && isEventEnable && isDocument,
+              );
             }}
           />
         </Container>
@@ -403,9 +290,11 @@ export function EditHsmPolicyDetailSection({
             value={isDocument}
             onClick={(): void => {
               const newValue = !isDocument;
-              setIsDocument(newValue);
               form.setFieldValue('isDocumentEnabled', newValue);
-              form.setFieldValue('isAllEnabled', isMessageEnable && isContactEnable && isEventEnable && newValue);
+              form.setFieldValue(
+                'isAllEnabled',
+                isMessageEnable && isContactEnable && isEventEnable && newValue,
+              );
             }}
           />
         </Container>
@@ -417,9 +306,11 @@ export function EditHsmPolicyDetailSection({
             value={isEventEnable}
             onClick={(): void => {
               const newValue = !isEventEnable;
-              setIsEventEnable(newValue);
               form.setFieldValue('isEventEnabled', newValue);
-              form.setFieldValue('isAllEnabled', isMessageEnable && isContactEnable && newValue && isDocument);
+              form.setFieldValue(
+                'isAllEnabled',
+                isMessageEnable && isContactEnable && newValue && isDocument,
+              );
             }}
           />
         </Container>
@@ -431,9 +322,11 @@ export function EditHsmPolicyDetailSection({
             value={isContactEnable}
             onClick={(): void => {
               const newValue = !isContactEnable;
-              setIsContactEnable(newValue);
               form.setFieldValue('isContactEnabled', newValue);
-              form.setFieldValue('isAllEnabled', isMessageEnable && newValue && isEventEnable && isDocument);
+              form.setFieldValue(
+                'isAllEnabled',
+                isMessageEnable && newValue && isEventEnable && isDocument,
+              );
             }}
           />
         </Container>

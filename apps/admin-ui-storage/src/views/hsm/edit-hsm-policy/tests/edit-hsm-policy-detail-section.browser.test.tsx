@@ -16,6 +16,7 @@ import type { HsmPolicyFromServer } from '../../../../../types';
 import { HSMContext } from '../../hsm-context/hsm-context';
 import type { HsmFormApi } from '../../types';
 import { EditHsmPolicyDetailSection } from '../edit-hsm-policy-detail-section';
+import { parseHsmQueryCriteria, parseHsmQueryVolumes, parseHsmType } from '../parse-hsm-policy';
 
 const SERVER_NAME = 'mailstore1.test.com';
 
@@ -40,16 +41,25 @@ function TestWrapper({
 }: {
   currentPolicy?: HsmPolicyFromServer;
 }): React.JSX.Element {
+  const parsedTypes = parseHsmType(currentPolicy?.hsmType);
+  const parsedCriteria = parseHsmQueryCriteria(currentPolicy?.hsmQuery);
+  const parsedVolumes = parseHsmQueryVolumes(currentPolicy?.hsmQuery);
+  const initialSourceVolume = SAMPLE_VOLUMES.filter(
+    (v) => v?.id != null && parsedVolumes.sourceVolumeIds.includes(String(v.id)),
+  );
+  const initialDestinationVolume = SAMPLE_VOLUMES.filter(
+    (v) => v?.id != null && parsedVolumes.destinationVolumeIds.includes(String(v.id)),
+  );
   const form = useForm({
     defaultValues: {
       isAllEnabled: false,
-      isMessageEnabled: false,
-      isDocumentEnabled: false,
-      isEventEnabled: false,
-      isContactEnabled: false,
-      policyCriteria: [],
-      sourceVolume: [],
-      destinationVolume: [],
+      isMessageEnabled: parsedTypes.isMessageEnabled,
+      isDocumentEnabled: parsedTypes.isDocumentEnabled,
+      isEventEnabled: parsedTypes.isEventEnabled,
+      isContactEnabled: parsedTypes.isContactEnabled,
+      policyCriteria: parsedCriteria,
+      sourceVolume: initialSourceVolume,
+      destinationVolume: initialDestinationVolume,
     },
     onSubmit: async () => {},
   });
@@ -60,7 +70,7 @@ function TestWrapper({
     <HSMContext.Provider
       value={{ form: form as unknown as HsmFormApi, allVolumes: SAMPLE_VOLUMES }}
     >
-      <EditHsmPolicyDetailSection currentPolicy={currentPolicy} />
+      <EditHsmPolicyDetailSection />
       <div data-testid="form-state" style={{ position: 'absolute', left: '-9999px' }}>
         {JSON.stringify({
           isAllEnabled: formValues.isAllEnabled,

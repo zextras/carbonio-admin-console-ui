@@ -13,6 +13,7 @@ import { page } from 'vitest/browser';
 import type { HsmPolicyFromServer, PolicyCriteriaItem, Volume } from '../../../../../types';
 import { HSMContext } from '../../hsm-context/hsm-context';
 import { EditHsmPolicyVolumesSection } from '../edit-hsm-policy-volumes-section';
+import { parseHsmQueryVolumes, parseHsmType } from '../parse-hsm-policy';
 
 const SAMPLE_VOLUMES: Array<Volume> = [
 	{ id: 1, name: 'Primary Volume', type: 1, isCurrent: true },
@@ -25,23 +26,34 @@ function TestWrapper({
 }: {
 	currentPolicy?: HsmPolicyFromServer;
 }): React.JSX.Element {
+	const parsedTypes = parseHsmType(currentPolicy?.hsmType);
+	const parsedVolumes = parseHsmQueryVolumes(currentPolicy?.hsmQuery);
+	const initialSourceVolume = SAMPLE_VOLUMES.filter(
+		(v) => v?.id != null && parsedVolumes.sourceVolumeIds.includes(String(v.id)),
+	);
+	const initialDestinationVolume = SAMPLE_VOLUMES.filter(
+		(v) => v?.id != null && parsedVolumes.destinationVolumeIds.includes(String(v.id)),
+	);
 	const form = useForm({
 		defaultValues: {
 			isAllEnabled: false,
-			isMessageEnabled: false,
-			isDocumentEnabled: false,
-			isEventEnabled: false,
-			isContactEnabled: false,
+			isMessageEnabled: parsedTypes.isMessageEnabled,
+			isDocumentEnabled: parsedTypes.isDocumentEnabled,
+			isEventEnabled: parsedTypes.isEventEnabled,
+			isContactEnabled: parsedTypes.isContactEnabled,
 			policyCriteria: [] as Array<PolicyCriteriaItem>,
-			sourceVolume: [] as Array<Volume>,
-			destinationVolume: [] as Array<Volume>,
+			sourceVolume: initialSourceVolume,
+			destinationVolume: initialDestinationVolume,
 		},
 		onSubmit: async () => {},
 	});
 
 	return (
 		<HSMContext.Provider value={{ form, allVolumes: SAMPLE_VOLUMES }}>
-			<EditHsmPolicyVolumesSection currentPolicy={currentPolicy} />
+			<EditHsmPolicyVolumesSection
+				initialShowSource={parsedVolumes.hasSource}
+				initialShowDestination={parsedVolumes.hasDestination}
+			/>
 		</HSMContext.Provider>
 	);
 }

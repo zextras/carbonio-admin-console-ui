@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import {
   ClickableRowFactory,
   Container,
@@ -14,29 +15,36 @@ import {
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import type { HsmPolicyFromServer } from '../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 
+type EditHsmPolicyVolumesSectionProps = {
+  initialShowSource: boolean;
+  initialShowDestination: boolean;
+};
+
 export function EditHsmPolicyVolumesSection({
-  currentPolicy,
-}: Readonly<{
-  currentPolicy: HsmPolicyFromServer | undefined;
-}>) {
+  initialShowSource,
+  initialShowDestination,
+}: Readonly<EditHsmPolicyVolumesSectionProps>) {
   const [t] = useTranslation();
   const context = useContext(HSMContext);
   const { form, allVolumes } = context;
-  const [showSourceVolume, setShowSourceVolume] = useState<boolean>(false);
-  const [showDestinationVolume, setShowDestinationVolume] = useState<boolean>(false);
-  const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<string>>([]);
-  const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<string>>([]);
-  const [isVolumeLoaded, setIsVolumeLoaded] = useState<boolean>(false);
+  const formValues = useSelector(form.store, (s) => s.values);
+  const selectedSourceVolume = formValues.sourceVolume
+    .map((v) => String(v.id ?? ''))
+    .filter((id) => id !== '');
+  const selectedDestinationVolume = formValues.destinationVolume
+    .map((v) => String(v.id ?? ''))
+    .filter((id) => id !== '');
+  const [showSourceVolume, setShowSourceVolume] = useState<boolean>(initialShowSource);
+  const [showDestinationVolume, setShowDestinationVolume] =
+    useState<boolean>(initialShowDestination);
   const createSnackbar = useSnackbar();
 
   const updateSourceVolumeSelection = (selectedIds: Array<string>): void => {
-    setSelectedSourceVolume(selectedIds);
     const sourceVol = allVolumes?.filter(
       (item) => item?.id != null && selectedIds.includes(String(item.id)),
     );
@@ -44,7 +52,6 @@ export function EditHsmPolicyVolumesSection({
   };
 
   const updateDestinationVolumeSelection = (selectedIds: Array<string>): void => {
-    setSelectedDestinationVolume(selectedIds);
     const destVol = Array.isArray(allVolumes)
       ? allVolumes.filter((item) => item?.id != null && selectedIds.includes(String(item.id)))
       : [];
@@ -114,32 +121,6 @@ export function EditHsmPolicyVolumesSection({
           ],
         }))
       : [];
-
-  useEffect(() => {
-    if (currentPolicy?.hsmQuery && isVolumeLoaded === false) {
-      const queries = currentPolicy?.hsmQuery.split(' ');
-      if (queries && queries.length > 0) {
-        setIsVolumeLoaded(true);
-        queries.forEach((element: string) => {
-          if (
-            element !== '' &&
-            (element.startsWith('source') || element.startsWith('destination'))
-          ) {
-            const option = element.split(':')[0];
-            const valueItem = element.split(':')[1];
-            if (option.startsWith('source')) {
-              updateSourceVolumeSelection(valueItem.split(','));
-              setShowSourceVolume(true);
-            }
-            if (option.startsWith('destination')) {
-              updateDestinationVolumeSelection(valueItem.split(','));
-              setShowDestinationVolume(true);
-            }
-          }
-        });
-      }
-    }
-  }, [currentPolicy, isVolumeLoaded]);
 
   return (
     <Container

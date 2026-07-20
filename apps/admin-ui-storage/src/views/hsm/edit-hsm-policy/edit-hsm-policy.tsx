@@ -18,11 +18,12 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { EditHsmPolicyProps, HsmPolicyFromServer, TabBarItem } from '../../../../types';
+import type { EditHsmPolicyProps, HsmPolicyFromServer, TabBarItem, Volume } from '../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 import type { HsmPolicyFormValues } from '../types';
 import { EditHsmPolicyDetailSection } from './edit-hsm-policy-detail-section';
 import { EditHsmPolicyVolumesSection } from './edit-hsm-policy-volumes-section';
+import { parseHsmQueryCriteria, parseHsmQueryVolumes, parseHsmType } from './parse-hsm-policy';
 
 type ReusedDefaultTabBarProps = {
   readonly item: TabBarItem;
@@ -75,19 +76,31 @@ export function EditHsmPolicy({
   const currentPolicy = policies.find(
     (item: HsmPolicyFromServer) => item?.hsmQuery === selectedPolicies,
   );
+  const parsedTypes = parseHsmType(currentPolicy?.hsmType);
+  const parsedCriteria = parseHsmQueryCriteria(currentPolicy?.hsmQuery);
+  const parsedVolumes = parseHsmQueryVolumes(currentPolicy?.hsmQuery);
+  const initialSourceVolume = (volumeList ?? []).filter(
+    (item: Volume) =>
+      item?.id != null && parsedVolumes.sourceVolumeIds.includes(String(item.id)),
+  );
+  const initialDestinationVolume = (volumeList ?? []).filter(
+    (item: Volume) =>
+      item?.id != null && parsedVolumes.destinationVolumeIds.includes(String(item.id)),
+  );
   const form = useForm({
     defaultValues: {
       isAllEnabled: false,
-      isMessageEnabled: false,
-      isEventEnabled: false,
-      isContactEnabled: false,
-      isDocumentEnabled: false,
-      policyCriteria: [],
-      sourceVolume: [],
-      destinationVolume: [],
+      isMessageEnabled: parsedTypes.isMessageEnabled,
+      isEventEnabled: parsedTypes.isEventEnabled,
+      isContactEnabled: parsedTypes.isContactEnabled,
+      isDocumentEnabled: parsedTypes.isDocumentEnabled,
+      policyCriteria: parsedCriteria,
+      sourceVolume: initialSourceVolume,
+      destinationVolume: initialDestinationVolume,
     } as HsmPolicyFormValues,
   });
-  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const isFormDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const isDirty = currentPolicy !== undefined || isFormDirty;
 
   const items = [
     {
@@ -225,8 +238,13 @@ export function EditHsmPolicy({
         </Row>
         <HSMContext.Provider value={{ form, allVolumes: volumeList }}>
           <Container crossAlignment="flex-start" padding={{ all: '0rem' }}>
-            {change === 'details' && <EditHsmPolicyDetailSection currentPolicy={currentPolicy} />}
-            {change === 'volumes' && <EditHsmPolicyVolumesSection currentPolicy={currentPolicy} />}
+            {change === 'details' && <EditHsmPolicyDetailSection />}
+            {change === 'volumes' && (
+              <EditHsmPolicyVolumesSection
+                initialShowSource={parsedVolumes.hasSource}
+                initialShowDestination={parsedVolumes.hasDestination}
+              />
+            )}
           </Container>
         </HSMContext.Provider>
       </Container>
