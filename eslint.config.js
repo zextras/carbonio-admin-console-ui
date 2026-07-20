@@ -89,7 +89,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['apps/admin-ui-subscription/**/*,apps/admin-ui-storage/**/*'],
+    files: ['apps/admin-ui-subscription/**/*', 'apps/admin-ui-storage/**/*'],
     plugins: {
       'react-compiler': reactCompiler,
       'jsx-a11y': jsxA11y,
