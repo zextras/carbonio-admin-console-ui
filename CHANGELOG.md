@@ -1,3 +1,9 @@
+## [0.15.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.2...v0.15.3) (2026-07-20)
+
+### Bug Fixes
+
+* **ci:** cap vitest forks to 2 to prevent k8s CPU saturation ([#1302](https://github.com/zextras/carbonio-admin-console-ui/issues/1302)) ([1419b2a](https://github.com/zextras/carbonio-admin-console-ui/commit/1419b2a89cd58642e3290fd04ec8f13cb0c4033e))
+
 ## [0.15.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.1...v0.15.2) (2026-07-20)
 
 ### Bug Fixes
