@@ -22,7 +22,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { setCoreAttributes, useAllServers } from '@zextras/ui-shared';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -35,7 +35,6 @@ import {
   SERVER,
   ZIMBRA_ADMIN_URN,
 } from '../../constants';
-import { type PowerstoreAttributes } from '../../services/hsm-service';
 import { fetchSoap } from '../../services/s3-connector-service';
 import { s3ConnectorVolumeQueryKeys } from '../../services/s3-connector-volume-query-keys';
 import { useHsmPolicyList } from '../../services/use-hsm-policy-list';
@@ -66,10 +65,15 @@ export function HSMsettingPanel() {
   const { data: serverAttrs } = useZxPowerStoreServerAttributes(server);
   const form = useForm({
     defaultValues: {
-      isZxPowerstoreMoveSchedulingEnabled: false,
-      powerstoreMoveSchedulerValue: '',
-      powerstoreSpaceThreshold: 0,
-      deduplicateAfterScheduledMoveBlobs: false,
+      isZxPowerstoreMoveSchedulingEnabled:
+        serverAttrs?.ZxPowerstore_MoveSchedulingEnabled?.value === true,
+      powerstoreMoveSchedulerValue:
+        (serverAttrs?.powerstoreMoveScheduler?.value as Record<string, string> | undefined)?.[
+          'cron-pattern'
+        ] || '',
+      powerstoreSpaceThreshold: (serverAttrs?.ZxPowerstore_SpaceThreshold?.value as number) || 0,
+      deduplicateAfterScheduledMoveBlobs:
+        serverAttrs?.deduplicateAfterScheduledMoveBlobs?.value === true,
     },
     onSubmit: async () => {},
   });
@@ -190,36 +194,6 @@ export function HSMsettingPanel() {
           ],
         }))
       : [];
-
-  const setValuesFromAttributes = (attributes: PowerstoreAttributes) => {
-    if (!attributes) return;
-    const newValues = { ...form.state.values };
-    if (attributes?.powerstoreMoveScheduler) {
-      const schedulePattern = (
-        attributes?.powerstoreMoveScheduler?.value as Record<string, string> | undefined
-      )?.['cron-pattern'];
-      newValues.powerstoreMoveSchedulerValue = schedulePattern || '';
-    }
-    if (attributes?.ZxPowerstore_SpaceThreshold) {
-      const spaceThreshold = attributes?.ZxPowerstore_SpaceThreshold?.value;
-      newValues.powerstoreSpaceThreshold = (spaceThreshold as number) || 0;
-    }
-    if (attributes?.deduplicateAfterScheduledMoveBlobs) {
-      const duplicate = attributes?.deduplicateAfterScheduledMoveBlobs;
-      newValues.deduplicateAfterScheduledMoveBlobs = !!duplicate?.value;
-    }
-    if (attributes?.ZxPowerstore_MoveSchedulingEnabled) {
-      const moveScheduling = attributes?.ZxPowerstore_MoveSchedulingEnabled?.value;
-      newValues.isZxPowerstoreMoveSchedulingEnabled = moveScheduling === true;
-    }
-    form.reset(newValues);
-  };
-
-  useEffect(() => {
-    if (serverAttrs) {
-      setValuesFromAttributes(serverAttrs);
-    }
-  }, [serverAttrs]);
 
   const onCancel = () => {
     form.reset();
