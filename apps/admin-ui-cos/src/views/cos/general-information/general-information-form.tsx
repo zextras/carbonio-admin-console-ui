@@ -426,7 +426,10 @@ export const GeneralInformationForm = ({
           width="fill"
           style={{ width: '100%' }}
           disabled={canDeleteCOS || readonlyCOS}
-          onClick={() => setOpenDeleteCOSConfirmDialog(true)}
+          onClick={(e) => {
+            e.preventDefault();
+            setOpenDeleteCOSConfirmDialog(true);
+          }}
         />
       </Row>
       <DeleteCosModal
