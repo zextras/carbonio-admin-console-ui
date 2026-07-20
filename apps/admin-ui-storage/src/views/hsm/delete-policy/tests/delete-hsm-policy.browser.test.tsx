@@ -8,7 +8,7 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import type { DeleteHsmPolicyProps, HsmPolicyFromServer } from '../../../../../../types';
+import type { DeleteHsmPolicyProps, HsmPolicyFromServer } from '../../../../../types';
 import { DeleteHsmPolicy } from '../delete-hsm-policy';
 
 const POLICIES: Array<HsmPolicyFromServer> = [

@@ -26,7 +26,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import type { HsmPolicyEditDetail, HsmPolicyFromServer } from '../../../../types';
+import type { HsmPolicyEditDetail, HsmPolicyFromServer } from '../../../types';
 import {
   APPOINTMENT,
   CONTACT,
@@ -34,13 +34,13 @@ import {
   MESSAGE,
   SERVER,
   ZIMBRA_ADMIN_URN,
-} from '../../../constants';
-import { type PowerstoreAttributes } from '../../../services/hsm-service';
-import { fetchSoap } from '../../../services/s3-connector-service';
-import { s3ConnectorVolumeQueryKeys } from '../../../services/s3-connector-volume-query-keys';
-import { useHsmPolicyList } from '../../../services/use-hsm-policy-list';
-import { useHsmVolumes } from '../../../services/use-hsm-volumes';
-import { useZxPowerStoreServerAttributes } from '../../../services/use-zxpowerstore-server-attributes';
+} from '../../constants';
+import { type PowerstoreAttributes } from '../../services/hsm-service';
+import { fetchSoap } from '../../services/s3-connector-service';
+import { s3ConnectorVolumeQueryKeys } from '../../services/s3-connector-volume-query-keys';
+import { useHsmPolicyList } from '../../services/use-hsm-policy-list';
+import { useHsmVolumes } from '../../services/use-hsm-volumes';
+import { useZxPowerStoreServerAttributes } from '../../services/use-zxpowerstore-server-attributes';
 import { CreateHsmPolicy } from './create-hsm-policy/create-hsm-policy';
 import { DeleteHsmPolicy } from './delete-policy/delete-hsm-policy';
 import { EditHsmPolicy } from './edit-hsm-policy/edit-hsm-policy';

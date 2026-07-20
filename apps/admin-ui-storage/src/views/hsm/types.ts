@@ -5,7 +5,8 @@
  */
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
 
-import type { PolicyCriteriaItem, Volume } from '../../../../types';
+import { PolicyCriteriaItem } from '../../../types/hsm';
+import { Volume } from '../../../types/volume';
 
 export type HsmPolicyFormValues = {
   isAllEnabled: boolean;
@@ -18,7 +19,6 @@ export type HsmPolicyFormValues = {
   destinationVolume: Array<Volume>;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type HsmFormApi = ReactFormExtendedApi<
   HsmPolicyFormValues,
   any,

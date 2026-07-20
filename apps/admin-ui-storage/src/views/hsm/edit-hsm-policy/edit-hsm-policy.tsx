@@ -18,7 +18,7 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { EditHsmPolicyProps, HsmPolicyFromServer, TabBarItem } from '../../../../../types';
+import type { EditHsmPolicyProps, HsmPolicyFromServer, TabBarItem } from '../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 import type { HsmPolicyFormValues } from '../types';
 import { EditHsmPolicyDetailSection } from './edit-hsm-policy-detail-section';

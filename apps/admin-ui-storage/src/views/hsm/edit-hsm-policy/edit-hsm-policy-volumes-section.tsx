@@ -17,7 +17,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import type { HsmPolicyFromServer } from '../../../../../types';
+import type { HsmPolicyFromServer } from '../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 
 export function EditHsmPolicyVolumesSection({

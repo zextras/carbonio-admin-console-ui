@@ -5,7 +5,7 @@
  */
 import { createContext } from 'react';
 
-import type { Volume } from '../../../../../types';
+import type { Volume } from '../../../../types';
 import type { HsmFormApi } from '../types';
 
 type HSMContextType = {

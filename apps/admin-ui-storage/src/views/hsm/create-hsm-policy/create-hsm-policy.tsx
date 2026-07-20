@@ -10,7 +10,7 @@ import { createContext, type ReactElement, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import type { CreateHsmPolicyProps, HsmPolicyEditDetail } from '../../../../../types';
+import type { CreateHsmPolicyProps, HsmPolicyEditDetail } from '../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 import type { HsmPolicyFormValues } from '../types';
 import { HSMcreatePolicy } from './hsm-create-policy';

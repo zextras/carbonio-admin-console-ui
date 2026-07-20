@@ -8,7 +8,7 @@ import { Container, LabeledValue, ListRow, Padding, Tooltip } from '@zextras/ui-
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { Volume } from '../../../../../types';
+import type { Volume } from '../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 import { asQueryString } from '../hsm-policy-detail';
 

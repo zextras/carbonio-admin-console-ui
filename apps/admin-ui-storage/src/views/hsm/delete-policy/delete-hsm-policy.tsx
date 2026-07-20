@@ -15,8 +15,8 @@ import {
 import { createContext, useContext } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import type { DeleteHsmPolicyProps, HsmPolicyFromServer } from '../../../../../types';
-import { APPOINTMENT, CONTACT, DOCUMENT, MESSAGE } from '../../../../constants';
+import type { DeleteHsmPolicyProps, HsmPolicyFromServer } from '../../../../types';
+import { APPOINTMENT, CONTACT, DOCUMENT, MESSAGE } from '../../../constants';
 
 const CopyActionContext = createContext<{ onCopy: () => void }>({ onCopy: () => {} });
 

@@ -12,7 +12,7 @@ import { Route, Routes } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import type { HsmPolicyFromServer } from '../../../../../../types';
+import type { HsmPolicyFromServer } from '../../../../../types';
 import { HSMContext } from '../../hsm-context/hsm-context';
 import type { HsmFormApi } from '../../types';
 import { EditHsmPolicyDetailSection } from '../edit-hsm-policy-detail-section';

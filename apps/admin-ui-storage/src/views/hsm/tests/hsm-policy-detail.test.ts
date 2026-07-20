@@ -5,7 +5,7 @@
  */
 import { describe, expect,it } from 'vitest';
 
-import { asQueryString, type HsmPolicyDetail } from './hsm-policy-detail';
+import { asQueryString, type HsmPolicyDetail } from '../../hsm/hsm-policy-detail';
 
 describe('asQueryString - Exhaustive Test Suite', () => {
   const createBaseDetail = (overrides: Partial<HsmPolicyDetail> = {}): HsmPolicyDetail => ({

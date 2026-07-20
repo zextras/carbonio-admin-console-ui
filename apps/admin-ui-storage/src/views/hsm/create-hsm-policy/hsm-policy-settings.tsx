@@ -24,7 +24,7 @@ import { useContext, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import type { PolicyCriteriaItem } from '../../../../../types';
+import type { PolicyCriteriaItem } from '../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 
 type SelectOption = { label: string; value: string };

@@ -10,7 +10,7 @@ import React from 'react';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import type { Volume } from '../../../../../../types';
+import type { Volume } from '../../../../../types';
 import { HSMContext } from '../../hsm-context/hsm-context';
 import { HSMpolicySettings } from '../hsm-policy-settings';
 

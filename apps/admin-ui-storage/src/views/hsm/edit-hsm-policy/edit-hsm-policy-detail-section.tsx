@@ -22,7 +22,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import type { HsmPolicyFromServer, PolicyCriteriaItem } from '../../../../../types';
+import type { HsmPolicyFromServer, PolicyCriteriaItem } from '../../../../types';
 import { HSMContext } from '../hsm-context/hsm-context';
 
 type SelectOption = { label: string; value: string };
