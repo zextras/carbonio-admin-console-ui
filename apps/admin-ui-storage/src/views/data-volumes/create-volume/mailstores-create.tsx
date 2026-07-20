@@ -25,8 +25,8 @@ import {
   INDEX_TYPE_VALUE,
   PRIMARY_TYPE_VALUE,
   SECONDARY_TYPE_VALUE,
-} from '../../../../../constants';
-import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
+} from '../../../constants';
+import { volumeAllocationList, volumeTypeList } from '../../utility/utils';
 import { VOLUME_CREATE_VALIDATION_MESSAGES } from './schema';
 import { VolumeContext } from './volume-context';
 
@@ -81,9 +81,9 @@ export function MailstoresCreate({
             items={volTypeList}
             background="gray5"
             label={t('label.volume_type', 'Volume Type')}
-            defaultSelection={
-              volTypeList?.find((items) => items?.value === form.state.values.volumeMain)
-            }
+            defaultSelection={volTypeList?.find(
+              (items) => items?.value === form.state.values.volumeMain,
+            )}
             showCheckbox={false}
             onChange={(v: any): void => form.setFieldValue('volumeMain', v)}
           />
@@ -120,9 +120,7 @@ export function MailstoresCreate({
                 label={t('label.volume_name', 'Volume Name')}
                 backgroundColor="gray5"
                 value={field.state.value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  field.handleChange(e.target.value)
-                }
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                 hasError={error.hasError}
                 description={error.description}
               />
@@ -178,9 +176,7 @@ export function MailstoresCreate({
                 label={t('label.volume_path', 'Volume path')}
                 backgroundColor="gray5"
                 value={field.state.value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  field.handleChange(e.target.value)
-                }
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                 hasError={error.hasError}
                 description={error.description}
               />
@@ -263,4 +259,3 @@ export function MailstoresCreate({
     </Container>
   );
 }
-

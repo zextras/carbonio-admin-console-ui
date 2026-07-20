@@ -10,9 +10,9 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import type { S3ConnectorVolume, Volume } from '../../../../../../types';
-import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
-import { useListS3Connectors } from '../../../../../services/use-list-s3-connectors';
+import type { S3ConnectorVolume, Volume } from '../../../../types';
+import { ZIMBRA_ADMIN_URN } from '../../../constants';
+import { useListS3Connectors } from '../../../services/use-list-s3-connectors';
 import { ModifyVolumeForm } from './modify-volume-form';
 
 type VolumeDetailSnapshot = {
@@ -50,11 +50,7 @@ function findExternalVolumeData(
   volumeList: { primaries: Volume[]; secondaries: Volume[]; indexes: Volume[] },
   volumeDetail: VolumeDetailSnapshot,
 ): { externalVolDetail: Volume; isExternal: boolean } {
-  const allVolumes = [
-    ...volumeList.primaries,
-    ...volumeList.secondaries,
-    ...volumeList.indexes,
-  ];
+  const allVolumes = [...volumeList.primaries, ...volumeList.secondaries, ...volumeList.indexes];
   const volData = allVolumes.find((v: Volume) => v?.id === volumeDetail.id);
 
   if (volData && isExternalVolume(volData)) {
@@ -205,4 +201,3 @@ export function ModifyVolume({
     />
   );
 }
-

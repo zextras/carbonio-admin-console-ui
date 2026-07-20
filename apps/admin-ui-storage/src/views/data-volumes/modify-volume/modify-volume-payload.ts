@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Volume } from '../../../../../../types';
+import { Volume } from '../../../../types';
 import {
   ALIBABA,
   CEPH,
@@ -18,7 +18,7 @@ import {
   SCALITYS3,
   SWIFT,
   ZIMBRA_ADMIN_URN,
-} from '../../../../../constants';
+} from '../../../constants';
 
 export type AdvancedUpdateVolumePayload = {
   [key: string]: string | boolean | number | undefined;

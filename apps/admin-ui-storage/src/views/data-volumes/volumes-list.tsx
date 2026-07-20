@@ -21,7 +21,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { Volume } from '../../../../../types';
+import { Volume } from '../../../types';
 import {
   ALIBABA,
   CENTRALIZED,
@@ -39,14 +39,14 @@ import {
   SWIFT,
   YES,
   ZIMBRA_ADMIN_URN,
-} from '../../../../constants';
-import { createVoume } from '../../../../services/create-volume-service';
-import { fetchSoap } from '../../../../services/s3-connector-service';
-import { s3ConnectorVolumeQueryKeys } from '../../../../services/s3-connector-volume-query-keys';
-import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
-import { useAllVolumes } from '../../../../services/use-all-volumes';
-import { useListS3Connectors } from '../../../../services/use-list-s3-connectors';
-import { indexerHeaders, volTableHeader } from '../../../utility/utils';
+} from '../../constants';
+import { createVoume } from '../../services/create-volume-service';
+import { fetchSoap } from '../../services/s3-connector-service';
+import { s3ConnectorVolumeQueryKeys } from '../../services/s3-connector-volume-query-keys';
+import { setCurrentVolumeRequest } from '../../services/set-current-volume-service';
+import { useAllVolumes } from '../../services/use-all-volumes';
+import { useListS3Connectors } from '../../services/use-list-s3-connectors';
+import { indexerHeaders, volTableHeader } from '../utility/utils';
 import { CreateMailstoresVolume } from './create-volume/advanced-create-volume/create-mailstores-volume';
 import { NewVolume } from './create-volume/new-volume';
 import { DeleteVolumeModel } from './delete-volume-model';
@@ -799,4 +799,3 @@ export function VolumesDetailPanel() {
     </>
   );
 }
-

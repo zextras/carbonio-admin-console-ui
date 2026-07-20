@@ -8,9 +8,9 @@ import { Navigate, Route, Routes } from 'react-router';
 
 import { DATA_VOLUMES, HSM_SETTINGS, S3CONNECTOR_LIST, SERVERS_LIST } from '../constants';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
+import { VolumesDetailRoute } from './data-volumes/volumes-detail-route';
 import { HSMsettingPanel } from './hsm/hsm-setting-panel';
 import { S3ConnectorListPanel } from './s3-connectors/s3-connector-list-panel';
-import { VolumesDetailRoute } from './s3-connectors/volumes-detail-route';
 import { ServerListPanel } from './servers-list/server-list-panel';
 import { StorageLayout } from './storage-layout';
 

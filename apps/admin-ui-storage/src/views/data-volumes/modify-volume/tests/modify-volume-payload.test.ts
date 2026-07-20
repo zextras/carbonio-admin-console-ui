@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { PRIMARY, SECONDARY } from '../../../../../../constants';
+import { PRIMARY, SECONDARY } from '../../../../constants';
 import {
   type AdvancedUpdateVolumeFormState,
   buildAdvancedUpdatePayload,

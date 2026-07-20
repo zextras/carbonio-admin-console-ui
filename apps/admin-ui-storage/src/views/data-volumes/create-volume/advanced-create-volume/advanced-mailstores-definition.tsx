@@ -8,18 +8,15 @@ import { Container, Input, LabeledValue, Padding, Row, Select } from '@zextras/u
 import { type ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type {
-  S3ConnectorVolume,
-  VolumeAllocationItem,
-} from '../../../../../../../types';
+import type { S3ConnectorVolume, VolumeAllocationItem } from '../../../../../types';
 import {
   EXTERNAL_TYPE_VALUE,
   LOCAL_TYPE_VALUE,
   UNUSED,
   USAGE_IN_EXTERNAL_BACKUP,
-} from '../../../../../../constants';
-import { useListS3Connectors } from '../../../../../../services/use-list-s3-connectors';
-import { S3ConnectorTypeItems, volumeAllocationList } from '../../../../../utility/utils';
+} from '../../../../constants';
+import { useListS3Connectors } from '../../../../services/use-list-s3-connectors';
+import { S3ConnectorTypeItems, volumeAllocationList } from '../../../utility/utils';
 import { VolumeContext } from '../volume-context';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 
@@ -62,8 +59,9 @@ export function AdvancedMailstoresDefinition({
     );
 
   function getConnectorTypeLabel(storeType: string | undefined): string | undefined {
-    return connectorTypeItems?.find((item) => item?.value?.toLowerCase() === storeType?.toLowerCase())
-      ?.label;
+    return connectorTypeItems?.find(
+      (item) => item?.value?.toLowerCase() === storeType?.toLowerCase(),
+    )?.label;
   }
 
   const backupUnusedConnectorList: Array<{ label: string; value: string }> = isVolumeAllDetail.map(
@@ -130,7 +128,9 @@ export function AdvancedMailstoresDefinition({
       return;
     }
 
-    const selectedConnectorDetail = isVolumeAllDetail?.find((item: S3ConnectorVolume) => item?.uuid === e);
+    const selectedConnectorDetail = isVolumeAllDetail?.find(
+      (item: S3ConnectorVolume) => item?.uuid === e,
+    );
     form.setFieldValue('bucketName', selectedConnectorDetail?.bucketName ?? '');
     form.setFieldValue('unusedBucketType', selectedConnectorDetail?.storeType ?? '');
     form.setFieldValue('bucketId', selectedConnectorDetail?.uuid ?? '');
@@ -154,12 +154,7 @@ export function AdvancedMailstoresDefinition({
     if (typeof defaultConnector === 'string' && defaultConnector !== '') {
       onUnusedConnectorListChange(defaultConnector);
     }
-  }, [
-    bucketId,
-    backupUnusedConnectorList,
-    onUnusedConnectorListChange,
-    basicVolumeAllocation,
-  ]);
+  }, [bucketId, backupUnusedConnectorList, onUnusedConnectorListChange, basicVolumeAllocation]);
 
   useEffect(() => {
     if (volumeName && basicVolumeAllocation) {
@@ -222,23 +217,21 @@ export function AdvancedMailstoresDefinition({
           onChange={onVolAllocationChange}
         />
       </Row>
-      {basicVolumeAllocation === EXTERNAL_TYPE_VALUE &&
-        backupUnusedConnectorList?.length !== 0 && (
-          <Row padding={{ top: 'large' }} width="100%">
-            <Select
-              items={backupUnusedConnectorList}
-              background="gray5"
-              label={t(
-                'label.volume_available_unused_Buckets_list_in_backup',
-                'Available Buckets List (that are not in use in the backup)',
-              )}
-              showCheckbox={false}
-              selection={unusedType || backupUnusedConnectorList[0]}
-              onChange={onUnusedConnectorListChange}
-            />
-          </Row>
-        )}
+      {basicVolumeAllocation === EXTERNAL_TYPE_VALUE && backupUnusedConnectorList?.length !== 0 && (
+        <Row padding={{ top: 'large' }} width="100%">
+          <Select
+            items={backupUnusedConnectorList}
+            background="gray5"
+            label={t(
+              'label.volume_available_unused_Buckets_list_in_backup',
+              'Available Buckets List (that are not in use in the backup)',
+            )}
+            showCheckbox={false}
+            selection={unusedType || backupUnusedConnectorList[0]}
+            onChange={onUnusedConnectorListChange}
+          />
+        </Row>
+      )}
     </Container>
   );
 }
-

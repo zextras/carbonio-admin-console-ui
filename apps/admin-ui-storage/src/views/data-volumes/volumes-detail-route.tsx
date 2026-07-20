@@ -5,7 +5,7 @@
  */
 import { Container } from '@zextras/ui-components';
 
-import { VolumesDetailPanel } from './server-specifics/volume/volumes-list';
+import { VolumesDetailPanel } from './volumes-list';
 
 export function VolumesDetailRoute() {
   return (

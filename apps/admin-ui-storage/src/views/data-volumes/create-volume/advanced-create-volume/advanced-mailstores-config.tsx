@@ -18,14 +18,14 @@ import {
 import { type ChangeEvent, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import type { AdvancedMailstoresConfigProps } from '../../../../../../../types';
+import type { AdvancedMailstoresConfigProps } from '../../../../../types';
 import {
   AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
   AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
   PRIMARY_TYPE_VALUE,
   S3,
   SECONDARY_TYPE_VALUE,
-} from '../../../../../../constants';
+} from '../../../../constants';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 
 export function AdvancedMailstoresConfig({

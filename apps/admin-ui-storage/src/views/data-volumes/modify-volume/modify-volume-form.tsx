@@ -32,7 +32,7 @@ import {
   type Volume,
   type VolumeAllocationItem,
   type VolumeType,
-} from '../../../../../../types';
+} from '../../../../types';
 import {
   AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
   AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
@@ -43,13 +43,10 @@ import {
   SECONDARY_TYPE_VALUE,
   UNUSED,
   USAGE_IN_EXTERNAL_BACKUP,
-} from '../../../../../constants';
-import { fetchSoap } from '../../../../../services/s3-connector-service';
-import { S3ConnectorTypeItems, volumeAllocationList } from '../../../../utility/utils';
-import {
-  buildAdvancedUpdatePayload,
-  isS3StoreType,
-} from './modify-volume-payload';
+} from '../../../constants';
+import { fetchSoap } from '../../../services/s3-connector-service';
+import { S3ConnectorTypeItems, volumeAllocationList } from '../../utility/utils';
+import { buildAdvancedUpdatePayload, isS3StoreType } from './modify-volume-payload';
 import {
   handleAdvancedUpdateResponse,
   saveCeVolume,
@@ -139,29 +136,27 @@ export function ModifyVolumeForm({
     10: INDEX,
   };
 
-  const getConnectorTypeLabel = (
-    storeTypeValue: string | undefined,
-  ): string | undefined =>
-    connectorTypeItems?.find(
-      (item) => item?.value?.toLowerCase() === storeTypeValue?.toLowerCase(),
-    )?.label;
+  const getConnectorTypeLabel = (storeTypeValue: string | undefined): string | undefined =>
+    connectorTypeItems?.find((item) => item?.value?.toLowerCase() === storeTypeValue?.toLowerCase())
+      ?.label;
 
   const currentConnectorId = getVolumeConnectorConfigurationId(externalVolDetail);
 
-  const connectors: Array<S3ConnectorVolume> = isExternal && !isEmpty(s3Connectors)
-    ? s3Connectors.map((items) => ({
-        uuid: items.uuid,
-        label: items.label || '',
-        bucketName: items.bucketName || '',
-        storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
-        tieringSupported:
-          (items as unknown as { tieringSupported?: boolean }).tieringSupported ?? false,
-        [USAGE_IN_EXTERNAL_BACKUP]:
-          (items as unknown as { 'usage in external backup'?: string | Array<string> })[
-            'usage in external backup'
-          ] ?? UNUSED,
-      }))
-    : [];
+  const connectors: Array<S3ConnectorVolume> =
+    isExternal && !isEmpty(s3Connectors)
+      ? s3Connectors.map((items) => ({
+          uuid: items.uuid,
+          label: items.label || '',
+          bucketName: items.bucketName || '',
+          storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
+          tieringSupported:
+            (items as unknown as { tieringSupported?: boolean }).tieringSupported ?? false,
+          [USAGE_IN_EXTERNAL_BACKUP]:
+            (items as unknown as { 'usage in external backup'?: string | Array<string> })[
+              'usage in external backup'
+            ] ?? UNUSED,
+        }))
+      : [];
 
   const selectedConnector = connectors.find((connector) => connector?.uuid === currentConnectorId);
 
@@ -173,8 +168,13 @@ export function ModifyVolumeForm({
       ? [...unusedConnectors, ...(selectedConnector ? [selectedConnector] : [])]
       : unusedConnectors;
 
-  const backupUnusedConnectorList = buildConnectorSelectItems(selectableConnectors, getConnectorTypeLabel);
-  const selectedConnectorOption = backupUnusedConnectorList.find((item) => item.value === currentConnectorId);
+  const backupUnusedConnectorList = buildConnectorSelectItems(
+    selectableConnectors,
+    getConnectorTypeLabel,
+  );
+  const selectedConnectorOption = backupUnusedConnectorList.find(
+    (item) => item.value === currentConnectorId,
+  );
   const isVolumeAllDetail = selectableConnectors;
 
   const [prevConnectorUuid, setPrevConnectorUuid] = useState<string | undefined>();
@@ -355,7 +355,9 @@ export function ModifyVolumeForm({
               <Button
                 label={t('label.save', 'Save')}
                 color="primary"
-                onClick={(): void => { void form.handleSubmit(); }}
+                onClick={(): void => {
+                  void form.handleSubmit();
+                }}
               />
             )}
           </Row>
@@ -780,10 +782,10 @@ export function ModifyVolumeForm({
                         value={field.state.value}
                         label={t('label.set_as_current', 'Set as Current')}
                         onClick={(): void => {
-                      if (!field.state.value) {
-                        setIsCurrentToggle(true);
-                      }
-                    }}
+                          if (!field.state.value) {
+                            setIsCurrentToggle(true);
+                          }
+                        }}
                         iconColor="primary"
                       />
                     )}

@@ -7,7 +7,7 @@
 import { soapFetch } from '@zextras/ui-shared';
 import type { TFunction } from 'i18next';
 
-import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
+import { ZIMBRA_ADMIN_URN } from '../../../constants';
 
 type SoapContentResponse = {
   Body?: {
