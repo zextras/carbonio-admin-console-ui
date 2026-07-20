@@ -222,9 +222,9 @@ export function HSMsettingPanel() {
       },
     };
     setCoreAttributes<{ errors?: Array<{ error: string }>; error?: string }>(body)
-      .then((data) => {
-        setIsRequestInProgress(false);
+      .then(async (data) => {
         if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
+          setIsRequestInProgress(false);
           let errMessage = errorMessage;
           if (data?.errors && Array.isArray(data?.errors) && data?.errors[0]?.error) {
             errMessage = data?.errors[0]?.error;
@@ -234,9 +234,10 @@ export function HSMsettingPanel() {
           showSnackbar('error', 'error', errMessage);
         } else {
           form.reset(values, { keepDefaultValues: true });
-          void queryClient.invalidateQueries({
+          await queryClient.invalidateQueries({
             queryKey: s3ConnectorVolumeQueryKeys.powerstoreAttrs(server),
           });
+          setIsRequestInProgress(false);
           showSnackbar(
             'success',
             'success',
