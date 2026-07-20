@@ -9,12 +9,7 @@ import { Navigate, Outlet, Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import {
-  DATA_VOLUMES,
-  HSM_SETTINGS,
-  S3CONNECTOR_LIST,
-  SERVERS_LIST,
-} from '../../../constants';
+import { DATA_VOLUMES, HSM_SETTINGS, S3CONNECTOR_LIST, SERVERS_LIST } from '../../../constants';
 
 function TestLayout() {
   return <Outlet />;
@@ -61,7 +56,7 @@ describe('Storage S3 connector routes', () => {
     });
   });
 
-  it(`renders VolumesDetailRoute for /:server/${DATA_VOLUMES}`, async () => {
+  it(`renders VolumesDetail for /:server/${DATA_VOLUMES}`, async () => {
     await setupBrowserTest(<StorageRoutes />, {
       initialRouterEntry: `/${SERVER_ID}/${DATA_VOLUMES}`,
     });
