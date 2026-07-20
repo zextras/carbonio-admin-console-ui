@@ -195,14 +195,13 @@ export function EditS3ConnectorDetailPanel({
   const isCustomRegion = regionValue === CUSTOM_REGION_VALUE;
   const isEndpointUrlRequired = isCustomRegion || regionValue === NO_REGION_VALUE;
 
-  const regionSelection = (() => {
-    const regionItems = [
-      { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
-      { label: t('label.region_set_custom', 'Set custom'), value: CUSTOM_REGION_VALUE },
-      ...baseRegions,
-    ];
-    return regionItems.find((item) => item.value === regionValue) ?? { value: '', label: '' };
-  })();
+  const regionItems = [
+    { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
+    { label: t('label.region_set_custom', 'Set custom'), value: CUSTOM_REGION_VALUE },
+    ...baseRegions,
+  ];
+  const regionSelection =
+    regionItems.find((item) => item.value === regionValue) ?? { value: '', label: '' };
 
   const volumeUsageRows = parseVolumeUsage(connectorDetail?.['usage in powerstore volumes']).map(
     (row) => ({
