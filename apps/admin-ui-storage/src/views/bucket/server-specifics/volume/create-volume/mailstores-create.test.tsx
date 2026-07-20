@@ -217,7 +217,7 @@ describe('MailstoresCreate', () => {
     fireEvent.change(screen.getByLabelText('Volume path'), {
       target: { value: '/opt/zextras/secondary' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'This is a Secondary Volume' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Secondary Volume' }));
 
     await waitFor(() => {
       expect(onSelection).toHaveBeenCalledWith({ volumeMain: 2 }, true);

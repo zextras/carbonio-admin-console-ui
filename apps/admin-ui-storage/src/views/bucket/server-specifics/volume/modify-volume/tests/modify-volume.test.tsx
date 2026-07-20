@@ -260,7 +260,7 @@ describe('ModifyVolume', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Available Buckets List (that are not in use in the backup)'),
+        screen.getByText('Available S3 Connectors List (that are not in use in the backup)'),
       ).toBeTruthy();
     });
 
@@ -330,15 +330,15 @@ describe('ModifyVolume', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Available Buckets List (that are not in use in the backup)'),
+        screen.getByText('Available S3 Connectors List (that are not in use in the backup)'),
       ).toBeTruthy();
     });
 
-    expect(screen.getByRole('button', { name: 'This is a Primary Volume' }).hasAttribute('disabled')).toBe(
+    expect(screen.getByRole('button', { name: 'Primary Volume' }).hasAttribute('disabled')).toBe(
       true,
     );
     expect(
-      screen.getByRole('button', { name: 'This is a Secondary Volume' }).hasAttribute('disabled'),
+      screen.getByRole('button', { name: 'Secondary Volume' }).hasAttribute('disabled'),
     ).toBe(true);
   });
 
@@ -448,7 +448,7 @@ describe('ModifyVolume', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Available Buckets List (that are not in use in the backup)'),
+        screen.getByText('Available S3 Connectors List (that are not in use in the backup)'),
       ).toBeTruthy();
     });
 
@@ -482,7 +482,7 @@ describe('ModifyVolume', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Available Buckets List (that are not in use in the backup)'),
+        screen.getByText('Available S3 Connectors List (that are not in use in the backup)'),
       ).toBeTruthy();
     });
 
@@ -498,7 +498,7 @@ describe('ModifyVolume', () => {
     });
 
     fireEvent.change(
-      screen.getByLabelText('Available Buckets List (that are not in use in the backup)'),
+      screen.getByLabelText('Available S3 Connectors List (that are not in use in the backup)'),
       { target: { value: 'bucket-2' } },
     );
 

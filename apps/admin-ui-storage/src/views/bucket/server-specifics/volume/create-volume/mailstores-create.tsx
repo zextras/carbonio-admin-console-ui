@@ -257,7 +257,7 @@ const MailstoresCreate: FC<{
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
             <Row width="48%" mainAlignment="flex-start">
               <Radio
-                label={t('label.primary_volume', 'This is a Primary Volume')}
+                label={t('label.primary_volume', 'Primary Volume')}
                 value={PRIMARY_TYPE_VALUE}
                 checked={primaryRadio}
                 onClick={(): any => {
@@ -270,7 +270,7 @@ const MailstoresCreate: FC<{
             </Row>
             <Row width="48%" mainAlignment="flex-start">
               <Radio
-                label={t('label.secondary_volume', 'This is a Secondary Volume')}
+                label={t('label.secondary_volume', 'Secondary Volume')}
                 value={SECONDARY_TYPE_VALUE}
                 checked={secondaryRadio}
                 onClick={(): any => {
@@ -284,7 +284,7 @@ const MailstoresCreate: FC<{
           </Row>
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
             <Radio
-              label={t('label.index_volume', 'This is a Index Volume')}
+              label={t('label.index_volume', 'Index Volume')}
               value={INDEX_TYPE_VALUE}
               checked={indexRadio}
               onClick={(): any => {
@@ -314,7 +314,7 @@ const MailstoresCreate: FC<{
           </Padding>
         )}
       </Row>
-      {!toggleIndexer && (
+      {!toggleIndexer && !indexRadio && (
         <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
           <Row width="32%" mainAlignment="flex-start">
             <Switch

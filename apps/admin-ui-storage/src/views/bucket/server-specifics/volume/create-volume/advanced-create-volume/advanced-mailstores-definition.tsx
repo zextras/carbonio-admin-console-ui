@@ -21,7 +21,7 @@ import {
 } from '../../../../../../constants';
 import { listS3Connector } from '../../../../../../services/bucket-service';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
-import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
+import { volumeAllocationList } from '../../../../../utility/utils';
 import { VolumeContext } from '../volume-context';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 
@@ -45,7 +45,6 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
     (state) => state,
   );
   const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
-  const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
   const [allocation, setAllocation] = useState<VolumeAllocationItem>();
   const [unusedType, setUnusedType] = useState<{ label: string; value: string } | undefined>();
   const [errName, setErrName] = useState(true);
@@ -147,11 +146,6 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
     volumeDetail?.volumeAllocation,
   ]);
 
-  function getBucketTypeLabel(storeType: string | undefined): string | undefined {
-    return bucketTypeItems?.find((item) => item?.value?.toLowerCase() === storeType?.toLowerCase())
-      ?.label;
-  }
-
   const getBucketListType = useCallback((): void => {
     listS3Connector().then((values) => {
       const connectors: Array<BucketVolume> = values.map((items) => ({
@@ -175,9 +169,8 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
 
       const volUnusedBucketList: Array<{ label: string; value: string }> = allData.map(
         (items: BucketVolume) => {
-          const volumeObject = getBucketTypeLabel(items?.storeType);
           return {
-            label: `${volumeObject} | ${items?.label}`,
+            label: items?.label ?? '',
             value: items?.uuid ?? '',
           };
         },
@@ -185,7 +178,7 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
       setIsVolumeAllDetail(allData);
       setBackupUnusedBucketList(volUnusedBucketList);
     });
-  }, [getBucketTypeLabel, setIsVolumeAllDetail]);
+  }, [setIsVolumeAllDetail]);
 
   useEffect(() => {
     const volumeTypeObject = volAllocationList?.find(
@@ -281,8 +274,8 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
               items={backupUnusedBucketList}
               background="gray5"
               label={t(
-                'label.volume_available_unused_Buckets_list_in_backup',
-                'Available Buckets List (that are not in use in the backup)',
+                'storage.dataVolumes.availableS3ConnectorsList',
+                'Available S3 Connectors List (that are not in use in the backup)',
               )}
               showCheckbox={false}
               selection={unusedType || backupUnusedBucketList[0]}

@@ -58,12 +58,10 @@ import {
 
 function buildBucketSelectItems(
   buckets: Array<BucketVolume>,
-  getBucketTypeLabel: (storeTypeValue: string | undefined) => string | undefined,
 ): Array<{ label: string; value: string }> {
   return buckets.map((items) => {
-    const volumeObject = getBucketTypeLabel(items?.storeType);
     return {
-      label: `${volumeObject} | ${items?.label}`,
+      label: items?.label ?? '',
       value: items?.uuid ?? '',
     };
   });
@@ -235,7 +233,6 @@ const ModifyVolume: FC<{
   const [storeType, setStoreType] = useState<string | undefined>('');
   const [bucketConfigurationId, setBucketConfigurationId] = useState<string | undefined>();
   const [tieringSupported, setTieringSupported] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [volumePrefix, setVolumePrefix] = useState<string | undefined>(
     externalVolDetail?.volumePrefix,
   );
@@ -294,7 +291,6 @@ const ModifyVolume: FC<{
         (item: BucketVolume) => item?.uuid === value,
       );
       const bucketOption = backupUnusedBucketList.find((item) => item.value === value);
-
       setSelectedBucket(bucketOption);
       setBucketName(selectedBucketDetail?.bucketName ?? '');
       setStoreType(selectedBucketDetail?.storeType ?? '');
@@ -358,19 +354,15 @@ const ModifyVolume: FC<{
   };
 
   const onSave = async (): Promise<void> => {
-    setIsLoading(true);
-
     const finishSaveSuccess = (): void => {
       showVolumeSaveSuccess(createSnackbar, t);
       getAllVolumesRequest();
       setmodifyVolumeToggle(false);
-      setIsLoading(false);
     };
 
     const finishSaveError = (): void => {
       showVolumeSaveError(createSnackbar, t);
       setmodifyVolumeToggle(false);
-      setIsLoading(false);
     };
 
     try {
@@ -413,7 +405,7 @@ const ModifyVolume: FC<{
           {
             onSuccess: finishSaveSuccess,
             onModifyError: finishSaveError,
-            onSetCurrentError: (): void => setIsLoading(false),
+            onSetCurrentError: (): void => {},
           },
         );
       }
@@ -480,7 +472,7 @@ const ModifyVolume: FC<{
               ...(selectedConnector ? [selectedConnector] : []),
             ]
           : unusedConnectors;
-      const volUnusedBucketList = buildBucketSelectItems(selectableConnectors, getBucketTypeLabel);
+      const volUnusedBucketList = buildBucketSelectItems(selectableConnectors);
       const currentBucketOption = volUnusedBucketList.find((item) => item.value === currentBucketId);
 
       setIsVolumeAllDetail(selectableConnectors);
@@ -703,7 +695,6 @@ const ModifyVolume: FC<{
         }
         return;
       }
-      setIsLoading(true);
       soapFetch(
         'GetVolume',
         {
@@ -728,7 +719,6 @@ const ModifyVolume: FC<{
             compressionThreshold: String(volData?.compressionThreshold ?? ''),
           });
           setmodifyVolumeToggle(true);
-          setIsLoading(false);
         })
         .catch(() => {
           createSnackbar({
@@ -740,7 +730,6 @@ const ModifyVolume: FC<{
             autoHideTimeout: 5000,
           });
           getAllVolumesRequest();
-          setIsLoading(false);
         });
     },
     [
@@ -782,7 +771,6 @@ const ModifyVolume: FC<{
 
   return (
     <>
-      {isLoading && <ds-spinner></ds-spinner>}
       <Container
         background="gray6"
         mainAlignment="flex-start"
@@ -884,16 +872,16 @@ const ModifyVolume: FC<{
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
-                padding={{ top: 'large', right: 'large' }}
+                padding={{ top: 'large', right: 'large', left: 'small' }}
               >
-                <Input
-                  label={t('label.volume_name', 'Volume name')}
-                  value={name}
-                  backgroundColor="gray6"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                    setName(e?.target?.value)
-                  }
-                />
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('label.volume_role', 'Volume role')}
+                  </ds-text>
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} size='small'>{volumeRoleLabel}</ds-text>
+                  </div>
+                </div>
               </Container>
               <Container
                 mainAlignment="flex-start"
@@ -914,16 +902,16 @@ const ModifyVolume: FC<{
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
-                padding={{ top: 'large', right: 'large', left: 'small' }}
+                padding={{ top: 'large', right: 'large' }}
               >
-                <div className={styles.detailItem}>
-                  <ds-text size="small" color="gray1">
-                    {t('label.volume_role', 'Volume role')}
-                  </ds-text>
-                  <div className={styles.detailValueRow}>
-                    <ds-text className={styles.detailValue} size='small'>{volumeRoleLabel}</ds-text>
-                  </div>
-                </div>
+                <Input
+                  label={t('label.volume_name', 'Volume name')}
+                  value={name}
+                  backgroundColor="gray6"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                    setName(e?.target?.value)
+                  }
+                />
               </Container>
               {isLocalBlockDevice && (
                 <Container
@@ -955,6 +943,7 @@ const ModifyVolume: FC<{
                 padding={{ horizontal: 'large' }}
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
+                height="auto"
               >
                 <ListRow>
                   <Container
@@ -978,24 +967,14 @@ const ModifyVolume: FC<{
                   >
                     <div className={styles.detailItem}>
                       <ds-text size="small" color="gray1">
-                        {t('label.type', 'Type')}
+                        {t('storage.dataVolume.s3ConnectorId', 'S3 Connector ID')}
                       </ds-text>
                       <div className={styles.detailValueRow}>
-                        <ds-text className={styles.detailValue} size='small'>{storageTypeLabel}</ds-text>
+                        <ds-text className={styles.detailValue} size='small'>{bucketConfigurationId ?? ''}</ds-text>
                       </div>
                     </div>
                   </Container>
                 </ListRow>
-                <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small'}} width="100%">
-                  <div className={styles.detailItem}>
-                    <ds-text size="small" color="gray1">
-                      {t('label.bucket_id', 'Bucket ID')}
-                    </ds-text>
-                    <div className={styles.detailValueRow}>
-                      <ds-text className={styles.detailValue} size='small'>{bucketConfigurationId ?? ''}</ds-text>
-                    </div>
-                  </div>
-                </Row>
                 <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
                   <Input
                     inputName="prefix"
@@ -1021,8 +1000,8 @@ const ModifyVolume: FC<{
                       items={backupUnusedBucketList}
                       background="gray5"
                       label={t(
-                        'label.volume_available_unused_Buckets_list_in_backup',
-                        'Available Buckets List (that are not in use in the backup)',
+                        'storage.dataVolumes.availableS3ConnectorsList',
+                        'Available S3 Connectors List (that are not in use in the backup)',
                       )}
                       showCheckbox={false}
                       selection={selectedBucket ?? backupUnusedBucketList[0]}
@@ -1045,6 +1024,7 @@ const ModifyVolume: FC<{
                 padding={{ horizontal: 'large', left: 'large' }}
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
+                height="auto"
               >
                 <Row
                   padding={{ top: 'large' }}
@@ -1124,12 +1104,12 @@ const ModifyVolume: FC<{
                 </ds-text>
                 <ds-divider className={styles.sectionDivider}></ds-divider>
               </div>
-              {/* Options: Set as Current first, then Enable Compression and Threshold */}
               {Object.keys(externalVolDetail)?.length === 0 ? (
                 <Container
                   padding={{ horizontal: 'large' }}
                   mainAlignment="flex-start"
                   crossAlignment="flex-start"
+                  height="auto"
                 >
                   {volumeDetail?.type !== 10 && (
                     <>
@@ -1189,6 +1169,7 @@ const ModifyVolume: FC<{
                                 setCompressionThreshold(e?.target?.value)
                               }
                               color="secondary"
+                              disabled={!compressBlobs}
                             />
                           </Row>
                           <Padding top="extrasmall">
@@ -1205,7 +1186,7 @@ const ModifyVolume: FC<{
                   )}
                 </Container>
               ) : (
-                <Container padding={{ horizontal: 'large', bottom: 'large' }}>
+                <Container padding={{ horizontal: 'large', bottom: 'large' }} height="auto">
                   <Row padding={{ top: 'large', left: 'small' }} mainAlignment="flex-start" width="100%">
                     <Tooltip
                       placement="top"
