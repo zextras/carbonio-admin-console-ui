@@ -210,7 +210,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
       >
         <Row width="48%">
           <Radio
-            label={t('label.primary_volume', 'Primary Volume')}
+            label={t('storage.dataVolume.primaryVolume', 'Primary Volume')}
             value={PRIMARY_TYPE_VALUE.toString()}
             checked={primaryRadio}
             onClick={(): void => {
@@ -222,7 +222,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({ onSelecti
         </Row>
         <Row width="48%">
           <Radio
-            label={t('label.secondary_volume', 'Secondary Volume')}
+            label={t('storage.dataVolume.secondaryVolume', 'Secondary Volume')}
             value={SECONDARY_TYPE_VALUE}
             checked={secondaryRadio}
             onClick={(): void => {

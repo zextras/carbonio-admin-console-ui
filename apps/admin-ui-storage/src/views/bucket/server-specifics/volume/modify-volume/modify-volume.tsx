@@ -55,6 +55,7 @@ import {
   showVolumeSaveError,
   showVolumeSaveSuccess,
 } from './modify-volume-save-handlers';
+import { VerifyVolumeChangesModal } from './verify-volume-changes-modal';
 
 function buildBucketSelectItems(
   buckets: Array<BucketVolume>,
@@ -247,6 +248,8 @@ const ModifyVolume: FC<{
   >(externalVolDetail?.infrequentAccessThreshold);
   const [isCurrentToggle, setIsCurrentToggle] = useState<boolean>(false);
   const [currentVolume, setCurrentVolume] = useState<Volume>();
+  const [showVerifyModal, setShowVerifyModal] = useState<boolean>(false);
+  const [changedFields, setChangedFields] = useState<Array<{ label: string; value: string }>>([]);
   const createSnackbar = useSnackbar();
   const { server } = useParams<{ server: string }>();
   const { isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore((state) => state);
@@ -353,7 +356,33 @@ const ModifyVolume: FC<{
     setIsDirty(false);
   };
 
-  const onSave = async (): Promise<void> => {
+  function getChangedFields(): Array<{ label: string; value: string }> {
+    const fields: Array<{ label: string; value: string }> = [];
+
+    if (externalVolDetail?.volumePrefix !== volumePrefix && volumePrefix !== undefined) {
+      fields.push({
+        label: t('label.prefix_name', 'Prefix'),
+        value: volumePrefix || t('label.not_set', 'Not set'),
+      });
+    }
+
+    if (
+      getVolumeBucketConfigurationId(externalVolDetail) !== bucketConfigurationId &&
+      bucketConfigurationId !== undefined
+    ) {
+      fields.push({
+        label: t(
+          'storage.dataVolumes.availableS3ConnectorsList',
+          'Available S3 Connectors List',
+        ),
+        value: selectedBucket?.label || bucketConfigurationId || t('label.not_set', 'Not set'),
+      });
+    }
+
+    return fields;
+  }
+
+  const performSave = async (): Promise<void> => {
     const finishSaveSuccess = (): void => {
       showVolumeSaveSuccess(createSnackbar, t);
       getAllVolumesRequest();
@@ -414,6 +443,18 @@ const ModifyVolume: FC<{
     }
 
     updatePreviousDetail();
+  };
+
+  const onSave = async (): Promise<void> => {
+    const fields = getChangedFields();
+
+    if (fields.length > 0) {
+      setChangedFields(fields);
+      setShowVerifyModal(true);
+      return;
+    }
+
+    await performSave();
   };
 
   const onUndo = (): void => {
@@ -769,8 +810,24 @@ const ModifyVolume: FC<{
     if (volumeId) getVolumeDetailData(String(volumeId));
   }, [volumeId, getVolumeDetailData]);
 
+  const onVerifyModalClose = (): void => {
+    setShowVerifyModal(false);
+    setChangedFields([]);
+  };
+
+  const onVerifyModalApply = async (): Promise<void> => {
+    await performSave();
+    onVerifyModalClose();
+  };
+
   return (
     <>
+      <VerifyVolumeChangesModal
+        open={showVerifyModal}
+        changedFields={changedFields}
+        closeHandler={onVerifyModalClose}
+        applyHandler={onVerifyModalApply}
+      />
       <Container
         background="gray6"
         mainAlignment="flex-start"
