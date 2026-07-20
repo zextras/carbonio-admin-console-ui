@@ -181,5 +181,108 @@ describe('DeleteHsmPolicy (browser)', () => {
 				.element(page.getByText('before:-10d', { exact: true }))
 				.toBeVisible();
 		});
+
+		it('should display message: prefix for hsmType=[5]', async () => {
+			const policies: Array<HsmPolicyFromServer> = [
+				{ hsmQuery: 'before:-30d', hsmType: [5] },
+			];
+			await setupBrowserTest(
+				<DeleteHsmPolicy
+					{...makeProps({ policies, selectedPolicies: 'before:-30d' })}
+				/>,
+			);
+			await expect
+				.element(page.getByText('message:before:-30d', { exact: true }))
+				.toBeVisible();
+		});
+
+		it('should display contact: prefix for hsmType=[6]', async () => {
+			const policies: Array<HsmPolicyFromServer> = [
+				{ hsmQuery: 'before:-30d', hsmType: [6] },
+			];
+			await setupBrowserTest(
+				<DeleteHsmPolicy
+					{...makeProps({ policies, selectedPolicies: 'before:-30d' })}
+				/>,
+			);
+			await expect
+				.element(page.getByText('contact:before:-30d', { exact: true }))
+				.toBeVisible();
+		});
+
+		it('should display appointment: prefix for hsmType=[11]', async () => {
+			const policies: Array<HsmPolicyFromServer> = [
+				{ hsmQuery: 'before:-30d', hsmType: [11] },
+			];
+			await setupBrowserTest(
+				<DeleteHsmPolicy
+					{...makeProps({ policies, selectedPolicies: 'before:-30d' })}
+				/>,
+			);
+			await expect
+				.element(page.getByText('appointment:before:-30d', { exact: true }))
+				.toBeVisible();
+		});
+
+		it('should display comma-joined types for a mixed partial hsmType', async () => {
+			const policies: Array<HsmPolicyFromServer> = [
+				{ hsmQuery: 'before:-30d', hsmType: [5, 8] },
+			];
+			await setupBrowserTest(
+				<DeleteHsmPolicy
+					{...makeProps({ policies, selectedPolicies: 'before:-30d' })}
+				/>,
+			);
+			await expect
+				.element(page.getByText('message,document:before:-30d', { exact: true }))
+				.toBeVisible();
+		});
+
+		it('should render a no-prefix value when the selected policy is not in the list', async () => {
+			await setupBrowserTest(
+				<DeleteHsmPolicy
+					{...makeProps({ selectedPolicies: 'nonexistent-policy' })}
+				/>,
+			);
+			await expect
+				.element(page.getByText('nonexistent-policy', { exact: true }))
+				.toBeVisible();
+		});
+	});
+
+	describe('Close behavior', () => {
+		it('should call setShowDeletePolicyView(false) via the Modal close icon', async () => {
+			const mockSetShow = vi.fn();
+			await setupBrowserTest(
+				<DeleteHsmPolicy {...makeProps({ setShowDeletePolicyView: mockSetShow })} />,
+			);
+			const closeIcon = document.querySelector('ds-icon[icon="Close"]');
+			const closeBtn = closeIcon?.closest('button');
+			closeBtn?.click();
+			await vi.waitFor(() => {
+				expect(mockSetShow).toHaveBeenCalledWith(false);
+			});
+		});
+	});
+
+	describe('Copy to clipboard', () => {
+		it('should call navigator.clipboard.writeText with the policy string when the copy icon is clicked', async () => {
+			const writeTextSpy = vi.fn().mockResolvedValue(undefined);
+			vi.stubGlobal('navigator', {
+				...navigator,
+				clipboard: { writeText: writeTextSpy },
+			});
+			try {
+				await setupBrowserTest(<DeleteHsmPolicy {...makeProps()} />);
+				const copyIcon = document.querySelector('ds-icon[icon="CopyOutline"]');
+				const copyBtn = copyIcon?.closest('button');
+				copyBtn?.click();
+				await vi.waitFor(() => {
+					expect(writeTextSpy).toHaveBeenCalledWith('message:before:-30d');
+				});
+			} finally {
+				vi.unstubAllGlobals();
+			}
+		});
 	});
 });

@@ -31,6 +31,8 @@ type FormStateSnapshot = {
   isEventEnabled: boolean;
   isContactEnabled: boolean;
   policyCriteriaLength: number;
+  sourceVolumeLength: number;
+  destinationVolumeLength: number;
 };
 
 function TestWrapper({
@@ -67,6 +69,8 @@ function TestWrapper({
           isEventEnabled: formValues.isEventEnabled,
           isContactEnabled: formValues.isContactEnabled,
           policyCriteriaLength: formValues.policyCriteria.length,
+          sourceVolumeLength: formValues.sourceVolume.length,
+          destinationVolumeLength: formValues.destinationVolume.length,
         })}
       </div>
     </HSMContext.Provider>
@@ -276,6 +280,68 @@ describe('EditHsmPolicyDetailSection (browser)', () => {
 
       await vi.waitFor(() => {
         expect(getFormState().policyCriteriaLength).toBe(2);
+      });
+    });
+  });
+
+  describe('Criteria add/delete interactions', () => {
+    it('adds a criteria when the Add button is clicked', async () => {
+      await setupBrowserTest(renderComponent(), {
+        initialRouterEntry: `/${SERVER_NAME}/hsm-settings`,
+      });
+      await vi.waitFor(() => {
+        expect(getFormState().policyCriteriaLength).toBe(0);
+      });
+      await page.getByRole('button', { name: /^add$/i }).click();
+      await vi.waitFor(() => {
+        expect(getFormState().policyCriteriaLength).toBe(1);
+      });
+    });
+
+    it('parses source and destination volumes from hsmQuery', async () => {
+      await setupBrowserTest(
+        renderComponent({
+          hsmType: [5],
+          hsmQuery: 'before:-30d source:1 destination:2',
+        }),
+        { initialRouterEntry: `/${SERVER_NAME}/hsm-settings` },
+      );
+      await vi.waitFor(() => {
+        const state = getFormState();
+        expect(state.sourceVolumeLength).toBe(1);
+        expect(state.destinationVolumeLength).toBe(1);
+      });
+    });
+  });
+
+  describe('Individual item type toggles', () => {
+    it('toggles Document type on via checkbox click', async () => {
+      await setupBrowserTest(renderComponent(), {
+        initialRouterEntry: `/${SERVER_NAME}/hsm-settings`,
+      });
+      await page.getByText('Document', { exact: true }).click();
+      await vi.waitFor(() => {
+        expect(getFormState().isDocumentEnabled).toBe(true);
+      });
+    });
+
+    it('toggles Contact type on via checkbox click', async () => {
+      await setupBrowserTest(renderComponent(), {
+        initialRouterEntry: `/${SERVER_NAME}/hsm-settings`,
+      });
+      await page.getByText('Contact', { exact: true }).click();
+      await vi.waitFor(() => {
+        expect(getFormState().isContactEnabled).toBe(true);
+      });
+    });
+
+    it('toggles Event type on via checkbox click', async () => {
+      await setupBrowserTest(renderComponent(), {
+        initialRouterEntry: `/${SERVER_NAME}/hsm-settings`,
+      });
+      await page.getByText('Event', { exact: true }).click();
+      await vi.waitFor(() => {
+        expect(getFormState().isEventEnabled).toBe(true);
       });
     });
   });

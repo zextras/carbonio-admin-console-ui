@@ -267,4 +267,125 @@ describe('HSMsettingPanel (browser)', () => {
       await expect.element(page.getByRole('button', { name: /^new$/i })).toBeEnabled();
     });
   });
+
+  describe('Form dirty state', () => {
+    it('shows Save and Cancel buttons after toggling the Enable Scheduler switch', async () => {
+      await setupBrowserTest(renderPanel(), {
+        initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
+      });
+      await page.getByText('Enable Scheduler', { exact: true }).click();
+      await expect
+        .element(page.getByRole('button', { name: /^save$/i }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('button', { name: /^cancel$/i }))
+        .toBeVisible();
+    });
+
+    it('hides Save and Cancel after clicking Cancel (form reset)', async () => {
+      await setupBrowserTest(renderPanel(), {
+        initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
+      });
+      await page.getByText('Enable Scheduler', { exact: true }).click();
+      await page.getByRole('button', { name: /^cancel$/i }).click();
+      await vi.waitFor(() => {
+        expect(
+          page.getByRole('button', { name: /^save$/i }).elements().length,
+        ).toBe(0);
+      });
+    });
+
+    it('shows Save and Cancel after toggling the Deduplication switch', async () => {
+      await setupBrowserTest(renderPanel(), {
+        initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
+      });
+      await page
+        .getByText('Apply Deduplication after scheduled HSM', { exact: true })
+        .click();
+      await expect
+        .element(page.getByRole('button', { name: /^save$/i }))
+        .toBeVisible();
+    });
+  });
+
+  describe('Policy row selection', () => {
+    it('enables the Delete button after a policy row is clicked', async () => {
+      await setupBrowserTest(renderPanel(), {
+        initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
+      });
+      await expect.element(page.getByText('message:before:-30d', { exact: true })).toBeVisible();
+      await page.getByText('message:before:-30d', { exact: true }).click();
+      await expect
+        .element(page.getByRole('button', { name: /^delete$/i }))
+        .toBeEnabled();
+    });
+
+    it('opens the Delete modal when the Delete button is clicked after selecting a policy', async () => {
+      await setupBrowserTest(renderPanel(), {
+        initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
+      });
+      await page.getByText('message:before:-30d', { exact: true }).click();
+      await page.getByRole('button', { name: /^delete$/i }).click();
+      await expect
+        .element(page.getByText('Delete HSM Policy?', { exact: true }))
+        .toBeVisible();
+    });
+  });
+
+  describe('Policy type rendering', () => {
+    it('renders the document: prefix for hsmType=[8]', async () => {
+      setupGetHSMPolicyInterceptor([{ hsmQuery: 'before:-10d', hsmType: [8] }]);
+      await setupBrowserTest(renderPanel(), {
+        initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
+      });
+      await expect
+        .element(page.getByText('document:before:-10d', { exact: true }))
+        .toBeVisible();
+    });
+
+    it('renders the contact: prefix for hsmType=[6]', async () => {
+      setupGetHSMPolicyInterceptor([{ hsmQuery: 'before:-10d', hsmType: [6] }]);
+      await setupBrowserTest(renderPanel(), {
+        initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
+      });
+      await expect
+        .element(page.getByText('contact:before:-10d', { exact: true }))
+        .toBeVisible();
+    });
+
+    it('renders the appointment: prefix for hsmType=[11]', async () => {
+      setupGetHSMPolicyInterceptor([{ hsmQuery: 'before:-10d', hsmType: [11] }]);
+      await setupBrowserTest(renderPanel(), {
+        initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
+      });
+      await expect
+        .element(page.getByText('appointment:before:-10d', { exact: true }))
+        .toBeVisible();
+    });
+
+    it('renders all four types in order for hsmType=[5,8,6,11]', async () => {
+      await setupBrowserTest(renderPanel(), {
+        initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
+      });
+      await expect
+        .element(
+          page.getByText('document,message,contact,appointment:before:-90d', {
+            exact: true,
+          }),
+        )
+        .toBeVisible();
+    });
+  });
+
+  describe('New button action', () => {
+    it('opens the Create Policy wizard when New is clicked', async () => {
+      await setupBrowserTest(renderPanel(), {
+        initialRouterEntry: `/${SERVER_NAME}/${HSM_SETTINGS}`,
+      });
+      await page.getByRole('button', { name: /^new$/i }).click();
+      await expect
+        .element(page.getByText('Policy Settings', { exact: true }).first())
+        .toBeVisible();
+    });
+  });
 });
