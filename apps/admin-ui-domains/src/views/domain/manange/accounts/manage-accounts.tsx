@@ -793,6 +793,7 @@ const ManageAccounts: FC = () => {
 
   const openDetailView = useCallback(
     (acc: any): void => {
+      setAccountDetail({});
       setShowEditAccountView(true);
       getAccountDetail(acc?.id);
       getSignatureDetail(acc?.id);
