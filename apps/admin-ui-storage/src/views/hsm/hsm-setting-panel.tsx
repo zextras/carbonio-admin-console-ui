@@ -27,14 +27,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import type { HsmPolicyEditDetail, HsmPolicyFromServer } from '../../../types';
-import {
-  APPOINTMENT,
-  CONTACT,
-  DOCUMENT,
-  MESSAGE,
-  SERVER,
-  ZIMBRA_ADMIN_URN,
-} from '../../constants';
+import { APPOINTMENT, CONTACT, DOCUMENT, MESSAGE, SERVER, ZIMBRA_ADMIN_URN } from '../../constants';
 import { fetchSoap } from '../../services/s3-connector-service';
 import { s3ConnectorVolumeQueryKeys } from '../../services/s3-connector-volume-query-keys';
 import { useHsmPolicyList } from '../../services/use-hsm-policy-list';
@@ -77,6 +70,7 @@ export function HSMsettingPanel() {
     },
     onSubmit: async () => {},
   });
+
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
   const isZxPowerstoreMoveSchedulingEnabled = useSelector(
     form.store,
@@ -240,6 +234,9 @@ export function HSMsettingPanel() {
           showSnackbar('error', 'error', errMessage);
         } else {
           form.reset(values, { keepDefaultValues: true });
+          void queryClient.invalidateQueries({
+            queryKey: s3ConnectorVolumeQueryKeys.powerstoreAttrs(server),
+          });
           showSnackbar(
             'success',
             'success',
@@ -317,7 +314,9 @@ export function HSMsettingPanel() {
         onDeletePolicy(isEditSave);
       } else {
         setShowCreateHsmPolicyView(false);
-        void queryClient.invalidateQueries({ queryKey: s3ConnectorVolumeQueryKeys.hsmPolicies(server) });
+        void queryClient.invalidateQueries({
+          queryKey: s3ConnectorVolumeQueryKeys.hsmPolicies(server),
+        });
         if (isRunOperation) {
           showSnackbar(
             'success',
