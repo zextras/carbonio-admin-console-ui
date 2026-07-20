@@ -1,3 +1,9 @@
+## [0.15.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.0...v0.15.1) (2026-07-20)
+
+### Bug Fixes
+
+* fixed event bubbling during cos delete ([#1299](https://github.com/zextras/carbonio-admin-console-ui/issues/1299)) ([0705547](https://github.com/zextras/carbonio-admin-console-ui/commit/0705547acdae1a3ec5a1ae93f161596a72facebd))
+
 ## [0.15.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.7...v0.15.0) (2026-07-16)
 
 ### Features
