@@ -18,4 +18,6 @@ export const s3ConnectorVolumeQueryKeys = {
     [...s3ConnectorVolumeQueryKeys.all, 'server-volume-summary', String(isAdvanced)] as const,
   allVolumes: (serverId: string) =>
     [...s3ConnectorVolumeQueryKeys.all, 'all-volumes', serverId] as const,
+  getVolume: (volumeId: string, serverId: string) =>
+    [...s3ConnectorVolumeQueryKeys.all, 'get-volume', volumeId, serverId] as const,
 } as const;

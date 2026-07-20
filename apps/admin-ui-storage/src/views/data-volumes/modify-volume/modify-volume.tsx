@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, useSnackbar } from '@zextras/ui-components';
-import { soapFetch, useIsAdvanced, useStickyBarStore } from '@zextras/ui-shared';
-import { useEffect, useState } from 'react';
+import { Container } from '@zextras/ui-components';
+import { useIsAdvanced, useStickyBarStore } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import type { S3ConnectorVolume, Volume } from '../../../../types';
-import { ZIMBRA_ADMIN_URN } from '../../../constants';
+import { useGetVolume } from '../../../services/use-get-volume';
 import { useListS3Connectors } from '../../../services/use-list-s3-connectors';
+import { useShowErrorSnackbar } from '../../../services/use-show-error-snackbar';
 import { ModifyVolumeForm } from './modify-volume-form';
 
 type VolumeDetailSnapshot = {
@@ -46,17 +46,25 @@ function getNormalizedVolumeType(volData: Volume, isAdvanced: boolean): number {
   return volData?.type ?? 0;
 }
 
-function findExternalVolumeData(
-  volumeList: { primaries: Volume[]; secondaries: Volume[]; indexes: Volume[] },
-  volumeDetail: VolumeDetailSnapshot,
-): { externalVolDetail: Volume; isExternal: boolean } {
-  const allVolumes = [...volumeList.primaries, ...volumeList.secondaries, ...volumeList.indexes];
-  const volData = allVolumes.find((v: Volume) => v?.id === volumeDetail.id);
-
-  if (volData && isExternalVolume(volData)) {
-    return { externalVolDetail: volData, isExternal: true };
-  }
-  return { externalVolDetail: {}, isExternal: false };
+function buildVolumeDetail(
+  volData: Volume,
+  isAdvanced: boolean,
+): VolumeDetailSnapshot {
+  return {
+    name: volData.name ?? '',
+    id: volData.id ?? 0,
+    type: getNormalizedVolumeType(volData, isAdvanced),
+    compressBlobs: isAdvanced
+      ? volData.compressBlobs === 'true' || volData.compressBlobs === '1'
+      : Boolean(volData.compressBlobs),
+    isCurrent: isAdvanced
+      ? volData.isCurrent === true || volData.isCurrent === 1
+      : Boolean(volData.isCurrent),
+    rootpath: isAdvanced ? (volData.path ?? '') : (volData.rootpath ?? ''),
+    compressionThreshold: isAdvanced
+      ? (volData.compressionThreshold ?? '')
+      : String(volData.compressionThreshold ?? ''),
+  };
 }
 
 export function ModifyVolume({
@@ -78,101 +86,41 @@ export function ModifyVolume({
   };
   setOpen: (newValue: boolean) => void;
 }>) {
-  const { t } = useTranslation();
+  const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
-  const createSnackbar = useSnackbar();
   const { server } = useParams<{ server: string }>();
   const { isSticky, setIsSticky } = useStickyBarStore();
 
-  const [volumeDetail, setVolumeDetail] = useState<VolumeDetailSnapshot | undefined>();
-  const [externalVolDetail, setExternalVolDetail] = useState<Volume>({});
-  const [isExternal, setIsExternal] = useState(false);
-
   const { data: s3Connectors = [] } = useListS3Connectors();
 
-  useEffect(() => {
-    if (!volumeId) return;
+  const getVolumeQuery = useGetVolume(
+    String(volumeId ?? ''),
+    String(selectedServerId ?? ''),
+    !isAdvanced && Boolean(volumeId),
+  );
 
-    if (isAdvanced) {
-      const allVolumes = [
+  useShowErrorSnackbar(getVolumeQuery, {
+    label: t('label.volume_detail_error', '{{message}}', {
+      message: 'Something went wrong, please try again',
+    }),
+    onAction: getAllVolumesRequest,
+  });
+
+  const volData: Volume | undefined = isAdvanced
+    ? [
         ...volumeList.primaries,
         ...volumeList.secondaries,
         ...volumeList.indexes,
-      ];
-      const volData = allVolumes.find((v: Volume) => v?.id === Number(volumeId));
-      if (volData) {
-        const detail: VolumeDetailSnapshot = {
-          name: volData.name ?? '',
-          id: volData.id ?? 0,
-          type: getNormalizedVolumeType(volData, true),
-          compressBlobs: volData.compressBlobs === 'true' || volData.compressBlobs === '1',
-          isCurrent: volData.isCurrent === true || volData.isCurrent === 1,
-          rootpath: volData.path ?? '',
-          compressionThreshold: volData.compressionThreshold ?? '',
-        };
-        setVolumeDetail(detail);
-        const { externalVolDetail: extVol, isExternal: isExt } = findExternalVolumeData(
-          volumeList,
-          detail,
-        );
-        setExternalVolDetail(extVol);
-        setIsExternal(isExt);
-        setmodifyVolumeToggle(true);
-      }
-      return;
-    }
+      ].find((v: Volume) => v?.id === Number(volumeId))
+    : getVolumeQuery.data?.volume?.[0];
 
-    soapFetch(
-      'GetVolume',
-      {
-        _jsns: ZIMBRA_ADMIN_URN,
-        module: 'ZxPowerstore',
-        id: String(volumeId),
-      },
-      {
-        targetServer: selectedServerId,
-      },
-    )
-      .then((response) => {
-        const typedResponse = response as { volume: Volume[]; _jsns: string };
-        const volData = typedResponse?.volume[0];
-        if (!volData) return;
+  const volumeDetail: VolumeDetailSnapshot | undefined = volData
+    ? buildVolumeDetail(volData, isAdvanced)
+    : undefined;
 
-        const detail: VolumeDetailSnapshot = {
-          name: volData.name ?? '',
-          id: volData.id ?? 0,
-          type: getNormalizedVolumeType(volData, false),
-          compressBlobs: Boolean(volData.compressBlobs),
-          isCurrent: Boolean(volData.isCurrent),
-          rootpath: volData.rootpath ?? '',
-          compressionThreshold: String(volData.compressionThreshold ?? ''),
-        };
-        setVolumeDetail(detail);
-        setIsExternal(isExternalVolume(volData));
-        setExternalVolDetail(isExternalVolume(volData) ? volData : {});
-        setmodifyVolumeToggle(true);
-      })
-      .catch(() => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: t('label.volume_detail_error', '{{message}}', {
-            message: 'Something went wrong, please try again',
-          }),
-          autoHideTimeout: 5000,
-        });
-        getAllVolumesRequest();
-      });
-  }, [
-    volumeId,
-    isAdvanced,
-    volumeList,
-    selectedServerId,
-    setmodifyVolumeToggle,
-    createSnackbar,
-    t,
-    getAllVolumesRequest,
-  ]);
+  const isExt = volData ? isExternalVolume(volData) : false;
+  const externalVolDetail: Volume = isExt && volData ? volData : {};
+  const isExternal = isExt;
 
   if (!volumeDetail) {
     return (
