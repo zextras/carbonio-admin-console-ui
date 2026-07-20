@@ -58,7 +58,7 @@
     "babel-plugin-i18next-extract": "^1.1.0",
     "cjs-module-lexer": "^2.2.0",
     "clsx": "^2.1.1",
-    "eslint": "^9.39.4",
+    "eslint": "^9.39.5",
     "eslint-plugin-css-modules": "^2.12.0",
     "jsdom": "^29.1.1",
     "msw": "^2.14.6",
