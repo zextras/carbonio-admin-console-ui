@@ -216,11 +216,11 @@ describe('AdvancedMailstoresDefinition', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Local Block Device' }));
 
-    expect(setToggleNextBtn).toHaveBeenCalledWith(true);
+    expect(setToggleNextBtn).toHaveBeenCalledWith(false);
 
     await waitFor(() => {
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
-      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(true);
+      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(false);
     });
   });
 
@@ -237,9 +237,9 @@ describe('AdvancedMailstoresDefinition', () => {
     );
 
     await waitFor(() => {
-      expect(setToggleNextBtn).toHaveBeenCalledWith(true);
+      expect(setToggleNextBtn).toHaveBeenCalledWith(false);
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
-      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(true);
+      expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(false);
     });
   });
 
@@ -260,15 +260,16 @@ describe('AdvancedMailstoresDefinition', () => {
     expect(setToggleNextBtn).toHaveBeenCalledWith(false);
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'S3 | Unused connector' })).toBeTruthy();
+      expect(screen.getByRole('button', { name: 'Unused connector' })).toBeTruthy();
     });
 
     await waitFor(() => {
+      expect(screen.getByTestId('advanced-state').textContent).toContain('unused-bucket');
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
       expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(false);
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'S3 | Unused connector' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Unused connector' }));
 
     expect(screen.getByTestId('advanced-state').textContent).toContain('unused-bucket');
     expect(screen.getByTestId('advanced-state').textContent).toContain('conn-unused');
@@ -290,11 +291,10 @@ describe('AdvancedMailstoresDefinition', () => {
 
     await waitFor(() => {
       expect(setToggleNextBtn).toHaveBeenCalledWith(false);
+      expect(screen.getByTestId('advanced-state').textContent).toContain('unused-bucket');
+      expect(screen.getByTestId('advanced-state').textContent).toContain('conn-unused');
       expect(setCompleteLoading).toHaveBeenCalledWith(true);
       expect(mockStore.setIsAllocationToggle).toHaveBeenCalledWith(false);
     });
-
-    expect(screen.getByTestId('advanced-state').textContent).toContain('unused-bucket');
-    expect(screen.getByTestId('advanced-state').textContent).toContain('conn-unused');
   });
 });

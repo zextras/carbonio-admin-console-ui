@@ -34,14 +34,14 @@ export const VerifyVolumeChangesModal: FC<VerifyVolumeChangesModalProps> = ({
   useEffect(() => {
     if (open) {
       setIsConfirmed(false);
-      popoverRef.current?.showPopover();
+      popoverRef.current?.showPopover?.();
     } else {
-      popoverRef.current?.hidePopover();
+      popoverRef.current?.hidePopover?.();
     }
   }, [open]);
 
   const onClose = (): void => {
-    popoverRef.current?.hidePopover();
+    popoverRef.current?.hidePopover?.();
     closeHandler();
   };
 

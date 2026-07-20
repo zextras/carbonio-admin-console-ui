@@ -132,31 +132,28 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
 			await advancedSupportedApiForBrowser.withAdvancedSupported();
 		});
 
-		it('should display primary volume name when volumeId matches a primary volume', async () => {
+		it('should display volume details when volumeId matches a primary volume', async () => {
 			await setupBrowserTest(renderModifyVolume(PRIMARY_VOLUME.id as number), {
 				initialRouterEntry: VOLUME_ROUTE_ENTRY,
 			});
-			await expect
-				.element(page.getByText(`${PRIMARY_VOLUME.name} Details`, { exact: true }))
-				.toBeVisible();
+			await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
+			await expect.element(page.getByText('PRIMARY', { exact: true })).toBeVisible();
 		});
 
-		it('should display secondary volume name when volumeId matches a secondary volume', async () => {
+		it('should display volume details when volumeId matches a secondary volume', async () => {
 			await setupBrowserTest(renderModifyVolume(SECONDARY_VOLUME.id as number), {
 				initialRouterEntry: VOLUME_ROUTE_ENTRY,
 			});
-			await expect
-				.element(page.getByText(`${SECONDARY_VOLUME.name} Details`, { exact: true }))
-				.toBeVisible();
+			await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
+			await expect.element(page.getByText('SECONDARY', { exact: true })).toBeVisible();
 		});
 
-		it('should display index volume name when volumeId matches an index volume', async () => {
+		it('should display volume details when volumeId matches an index volume', async () => {
 			await setupBrowserTest(renderModifyVolume(INDEX_VOLUME.id as number), {
 				initialRouterEntry: VOLUME_ROUTE_ENTRY,
 			});
-			await expect
-				.element(page.getByText(`${INDEX_VOLUME.name} Details`, { exact: true }))
-				.toBeVisible();
+			await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
+			await expect.element(page.getByText('INDEX', { exact: true })).toBeVisible();
 		});
 
 		it('should display the volume path for a matched primary volume', async () => {

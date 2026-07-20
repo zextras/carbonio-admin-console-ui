@@ -33,16 +33,14 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
   );
 };
 
-
-
 const CreateMailstoresVolume: FC<{
-  setToggleWizardExternal: any;
-  setToggleWizardLocal: any;
-  volName: any;
-  CreateAdvancedRequest: any;
-}> = ({ setToggleWizardExternal, setToggleWizardLocal, volName, CreateAdvancedRequest }) => {
+  setToggleWizardExternal: (value: boolean) => void;
+  volName: string;
+  CreateAdvancedRequest: (attr: Record<string, unknown>) => void;
+  CreateVolumeRequest: (attr: Record<string, unknown>) => void;
+}> = ({ setToggleWizardExternal, volName, CreateAdvancedRequest, CreateVolumeRequest }) => {
   const { t } = useTranslation();
-  const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+  const volTypeList = useMemo(() => volumeTypeList(t, true), [t]);
   const isAllocationToggle = useBucketVolumeStore((state) => state?.isAllocationToggle);
   const [advancedVolumeDetail, setAdvancedVolumeDetail] = useState<AdvancedVolumeWizardDetail>({
     volumeName: '',
@@ -54,11 +52,16 @@ const CreateMailstoresVolume: FC<{
     tieringSupported: false,
     bucketId: '',
     prefix: '',
+    path: '',
+    isCompression: false,
+    compressionThreshold: '',
     centralized: false,
     useInfrequentAccess: false,
     infrequentAccessThreshold: '',
     useIntelligentTiering: false,
   });
+
+  const isLocalBlockDevice = advancedVolumeDetail?.volumeAllocation === 'Local Block Device';
 
   const wizardSteps = [
     {
@@ -80,23 +83,14 @@ const CreateMailstoresVolume: FC<{
         />
       ),
       PrevButton: (): any => '',
-      NextButton: (props: any): ReactElement =>
-        !props.toggleNextBtn ? (
-          <Button
-            {...props}
-            label={t('label.volume_next_step_button', 'NEXT STEP')}
-            icon={'ChevronRightOutline'}
-            iconPlacement="right"
-          />
-        ) : (
-          <Button
-            {...props}
-            label={t('label.volume_next_step_button', 'NEXT STEP')}
-            icon={'ChevronRightOutline'}
-            iconPlacement="right"
-            onClick={(): void => setToggleWizardLocal(true)}
-          />
-        ),
+      NextButton: (props: any): ReactElement => (
+        <Button
+          {...props}
+          label={t('label.volume_next_step_button', 'NEXT STEP')}
+          icon={'ChevronRightOutline'}
+          iconPlacement="right"
+        />
+      ),
     },
     {
       name: 'config',
@@ -104,7 +98,7 @@ const CreateMailstoresVolume: FC<{
       icon: 'Options2Outline',
       view: AdvancedMailstoresConfig,
       canGoNext: (): any => true,
-      clickDisabled: !!isAllocationToggle,
+      clickDisabled: !isLocalBlockDevice && !!isAllocationToggle,
       CancelButton: (props: any) => (
         <Button
           {...props}
@@ -143,7 +137,7 @@ const CreateMailstoresVolume: FC<{
       icon: 'CubeOutline',
       view: AdvancedMailstoresCreate,
       canGoNext: (): any => true,
-      clickDisabled: !!isAllocationToggle,
+      clickDisabled: !isLocalBlockDevice && !!isAllocationToggle,
       CancelButton: (props: any) => (
         <Button
           {...props}
@@ -179,6 +173,21 @@ const CreateMailstoresVolume: FC<{
   ];
 
   const onComplete = useCallback(() => {
+    if (isLocalBlockDevice) {
+      CreateVolumeRequest({
+        id: advancedVolumeDetail?.id,
+        name: advancedVolumeDetail?.volumeName,
+        rootpath: advancedVolumeDetail?.path,
+        type: advancedVolumeDetail?.volumeMain,
+        compressBlobs: advancedVolumeDetail?.isCompression ? 1 : 0,
+        compressionThreshold: advancedVolumeDetail?.isCompression
+          ? advancedVolumeDetail?.compressionThreshold
+          : 0,
+        isCurrent: advancedVolumeDetail?.isCurrent ? 1 : 0,
+      });
+      return;
+    }
+
     const volumeType = volTypeList
       ?.filter((item) => item?.value === advancedVolumeDetail?.volumeMain)[0]
       ?.label?.toLowerCase();
@@ -192,8 +201,15 @@ const CreateMailstoresVolume: FC<{
       isCurrent: advancedVolumeDetail?.isCurrent ? 1 : 0,
       useInfrequentAccess: advancedVolumeDetail?.useInfrequentAccess,
       useIntelligentTiering: advancedVolumeDetail?.useIntelligentTiering,
+      infrequentAccessThreshold: advancedVolumeDetail?.infrequentAccessThreshold,
     });
-  }, [CreateAdvancedRequest, advancedVolumeDetail, volTypeList]);
+  }, [
+    CreateAdvancedRequest,
+    CreateVolumeRequest,
+    advancedVolumeDetail,
+    isLocalBlockDevice,
+    volTypeList,
+  ]);
 
   return (
     <AdvancedVolumeContext.Provider value={{ advancedVolumeDetail, setAdvancedVolumeDetail }}>

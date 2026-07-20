@@ -116,6 +116,20 @@ vi.mock('@zextras/ui-components', () => ({
       {label}
     </button>
   ),
+  Checkbox: ({
+    label,
+    value,
+    onClick,
+  }: {
+    label: string;
+    value?: boolean;
+    onClick?: () => void;
+  }) => (
+    <label>
+      <input type="checkbox" checked={Boolean(value)} onChange={onClick} aria-label={label} />
+      {label}
+    </label>
+  ),
   Tooltip: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
   useSnackbar: () => mockCreateSnackbar,
 }));
@@ -325,21 +339,16 @@ describe('ModifyVolume', () => {
     );
   }
 
-  it('should disable primary and secondary volume type radios for external volumes', async () => {
+  it('should show volume role as read-only for external volumes', async () => {
     renderExternalS3Volume();
 
     await waitFor(() => {
-      expect(
-        screen.getByText('Available S3 Connectors List (that are not in use in the backup)'),
-      ).toBeTruthy();
+      expect(screen.getByText('Volume role')).toBeTruthy();
+      expect(screen.getByText('Primary Volume')).toBeTruthy();
     });
 
-    expect(screen.getByRole('button', { name: 'Primary Volume' }).hasAttribute('disabled')).toBe(
-      true,
-    );
-    expect(
-      screen.getByRole('button', { name: 'Secondary Volume' }).hasAttribute('disabled'),
-    ).toBe(true);
+    expect(screen.queryByRole('button', { name: 'Primary Volume' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Secondary Volume' })).toBeNull();
   });
 
   it('should render tiering switches for external S3 volume when connector supports tiering', async () => {
@@ -581,10 +590,10 @@ describe('ModifyVolume', () => {
 
   async function makeLocalVolumeDirtyAndSave(): Promise<void> {
     await waitFor(() => {
-      expect((screen.getByLabelText('Volume Name') as HTMLInputElement).value).toBe('primary-local');
+      expect((screen.getByLabelText('Volume name') as HTMLInputElement).value).toBe('primary-local');
     });
 
-    fireEvent.change(screen.getByLabelText('Volume Name'), {
+    fireEvent.change(screen.getByLabelText('Volume name'), {
       target: { value: 'primary-local-updated' },
     });
 

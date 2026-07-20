@@ -82,11 +82,8 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
         ...prev,
         volumeAllocation: volumeTypeObject,
       }));
-      if (v === LOCAL_TYPE_VALUE) {
-        setToggleNextBtn(true);
-      } else {
-        setToggleNextBtn(false);
-      }
+      // Keep DEFINITION → CONFIG → CREATE in one wizard for both storage types
+      setToggleNextBtn(false);
     },
     [setAdvancedVolumeDetail, setToggleNextBtn, setVolumeDetail, volAllocationList],
   );
@@ -191,7 +188,7 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
     if (volumeDetail?.volumeName && volumeDetail?.volumeAllocation) {
       if (volumeDetail?.volumeAllocation === LOCAL_TYPE_VALUE) {
         setCompleteLoading(true);
-        setIsAllocationToggle(true);
+        setIsAllocationToggle(false);
       } else if (advancedVolumeDetail?.unusedBucketType && backupUnusedBucketList?.length !== 0) {
         setCompleteLoading(true);
         setIsAllocationToggle(false);
