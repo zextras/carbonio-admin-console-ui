@@ -12,9 +12,10 @@ import type { CosFeaturesFormApi } from '../../types';
 type GeneralSectionProps = {
   form: CosFeaturesFormApi;
   readonlyCOS: boolean;
+  isAdvanced: boolean;
 };
 
-export const GeneralSection = ({ form, readonlyCOS }: GeneralSectionProps) => {
+export const GeneralSection = ({ form, readonlyCOS, isAdvanced }: GeneralSectionProps) => {
   const [t] = useTranslation();
 
   return (
@@ -42,6 +43,16 @@ export const GeneralSection = ({ form, readonlyCOS }: GeneralSectionProps) => {
             disabled={readonlyCOS}
           />
         </Row>
+        {isAdvanced && (
+          <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+            <FeatureSwitchField
+              form={form}
+              name="zimbraFeatureMobileSyncEnabled"
+              label={t('cos.features.active_sync_access', 'Active Sync Access')}
+              disabled={readonlyCOS}
+            />
+          </Row>
+        )}
       </Container>
     </Row>
   );

@@ -975,6 +975,7 @@ const ManageAccounts: FC = () => {
 
   const openDetailView = useCallback(
     (acc: SoapEntity): void => {
+      setAccountDetail({});
       setShowEditAccountView(true);
       getAccountDetail(acc?.id);
       getSignatureDetail(acc?.id);

@@ -382,6 +382,26 @@ describe('CosGeneralInformation', () => {
       await expect.element(page.getByRole('button', { name: 'Yes, Delete' })).toBeVisible();
     });
 
+    it('should not send ModifyCos when DELETE is clicked', async () => {
+      await setupGeneralInfoTest();
+
+      const modifyCosPromise = createBrowserSoapAPIInterceptor('ModifyCos', {});
+
+      await page.getByRole('button', { name: 'DELETE' }).click();
+
+      await expect
+        .element(page.getByText('Are you sure you want to delete this Class of Service?'))
+        .toBeVisible();
+
+      const settled = await Promise.race([
+        modifyCosPromise.then(() => true),
+        new Promise<boolean>((resolve) => {
+          setTimeout(() => resolve(false), 2000);
+        }),
+      ]);
+      expect(settled).toBe(false);
+    });
+
     it('should close modal when No, Go Back is clicked', async () => {
       await setupGeneralInfoTest();
 

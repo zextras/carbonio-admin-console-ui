@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, CustomHeaderFactory, Dropdown, DropdownItem, HoverableRowFactory, Input, LabeledValue, ListRow, Padding, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, CustomHeaderFactory, Dropdown, DropdownItem, HoverableRowFactory, Input, LabeledValue, ListRow, Padding, RouteLeavingGuard, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, getDomainInformation, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
 import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +38,6 @@ import { modifyAccountRequest } from '../../../services/modify-account';
 import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
 import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
@@ -1461,15 +1460,7 @@ const DomainGalSettings: FC = () => {
           </>
         )}
       </Container>
-      <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <ds-text as="p">
-          {t(
-            'label.unsaved_changes_line1',
-            'Are you sure you want to leave this page without saving?',
-          )}
-        </ds-text>
-        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
-      </RouteLeavingGuard>
+      <RouteLeavingGuard when={isDirty} onSave={onSave} />
     </Container>
   );
 };

@@ -15,6 +15,7 @@ import {
   getGetInfoResponseMock,
   getQueryClient,
   grantUserConfigRights,
+  registerAppRoute,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -58,6 +59,7 @@ describe('MTAListPanel navigation', () => {
     queryClient = getQueryClient();
     await grantUserConfigRights(queryClient);
     setupInterceptors();
+    registerAppRoute(MTA_ROUTE_ID, MANAGE_APP_ID);
   });
 
   afterEach(() => {

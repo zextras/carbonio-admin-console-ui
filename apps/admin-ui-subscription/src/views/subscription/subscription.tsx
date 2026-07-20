@@ -25,7 +25,6 @@ import { format } from 'date-fns';
 import { find } from 'lodash-es';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Navigate } from 'react-router';
 
 import { CONFIG } from '../../constants';
 import { LicenseBanner } from '../dashboard/license-banner';
@@ -209,10 +208,6 @@ export const Subscription = (): React.JSX.Element => {
 
   if (isFetching) {
     return <ds-spinner></ds-spinner>;
-  }
-
-  if (!licenseData) {
-    return <Navigate to="activate" replace />;
   }
 
   return (

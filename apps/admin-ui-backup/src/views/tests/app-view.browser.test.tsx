@@ -17,7 +17,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { backupQueryKeys } from '../../services/backup-query-keys';
-import AppView from '../app-view';
+import { AppView } from '../app-view';
 
 function buildLicenseData(
 	features: Array<{ name: string; quantity: string; enabled: boolean }>,

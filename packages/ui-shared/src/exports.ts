@@ -38,6 +38,8 @@ export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext, registerApp } from './apps/loader';
+
+export * from './constants/route-ids';
 import {
   ACTION_TYPES,
   BASENAME,
@@ -59,7 +61,7 @@ import {
   TRUE,
   ZIMBRA_ADMIN_URN,
 } from './constants';
-import { replaceHistory, useCurrentRoute } from './history/hooks';
+import { buildPath, replaceHistory, useCurrentRoute, useRelativePathname } from './history/hooks';
 import { useBreakpoint } from './hooks/use-breakpoint';
 import { useLocalStorage } from './hooks/use-local-storage';
 import { useMediaQuery } from './hooks/use-media-query';
@@ -144,7 +146,7 @@ import {
 } from './services/search-directory-service';
 import { setCoreAttributes } from './services/set-core-attributes';
 import { setFileQuotaLimitById } from './services/set-file-quota-limit';
-import { usePrimaryBarState } from './shell/hooks';
+import { useDetailViewMaxWidth, usePrimaryBarState } from './shell/hooks';
 import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
 import { useAppStore } from './store/app/store';
 import { normalizeRoute } from './store/app/utils';
@@ -193,6 +195,16 @@ function getCallerPkg(): Pick<CarbonioModule, 'name' | 'priority' | 'icon'> {
   return defaultPkg;
 }
 
+/**
+ * Registers an app route.
+ *
+ * `route` is the raw, app-declared segment (e.g. `'storage'`). The store derives the full URL
+ * `path` by prefixing it with `primarybarSection.id` when a section is provided — so
+ * `primarybarSection.id` is BOTH the primary-bar grouping key AND the URL prefix
+ * (e.g. section `'manage'` + route `'storage'` → mounted at `/manage/storage`).
+ *
+ * See {@link AppRoute} for the stored shape (`route` raw + `path` prefixed).
+ */
 const addRoute = (route: Partial<AppRouteDescriptor>) =>
   useAppStore.getState().setters.addRoute(normalizeRoute(route, getCallerPkg()));
 const removeRoute = (routeId: string) => useAppStore.getState().setters.removeRoute(routeId);
@@ -202,6 +214,7 @@ export {
   ACTION_TYPES,
   addRoute,
   BASENAME,
+  buildPath,
   CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
   CARBONIO_HELP_ADMIN_URL,
@@ -271,6 +284,7 @@ export {
   useCosList,
   useCurrentRoute,
   useCurrentUserRights,
+  useDetailViewMaxWidth,
   useDomainById,
   useDomainInformation,
   useGlobalCarbonioSendAnalytics,
@@ -287,6 +301,7 @@ export {
   useModuleLicenseInfo,
   useMtaServers,
   usePrimaryBarState,
+  useRelativePathname,
   useRemoveLicense,
   useServerVersion,
   useSnackbar,
