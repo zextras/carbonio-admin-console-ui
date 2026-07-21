@@ -480,6 +480,12 @@ export function ModifyVolumeForm({
                 </Padding>
               </>
             )}
+            <div className={styles.sectionHeader}>
+              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+                {t('label.bucket', 'BUCKET')}
+              </ds-text>
+              <ds-divider className={styles.sectionDivider}></ds-divider>
+            </div>
             <ListRow>
               <Container
                 mainAlignment="flex-start"
@@ -547,6 +553,12 @@ export function ModifyVolumeForm({
                 )}
               </Row>
             )}
+            <div className={styles.sectionHeader}>
+              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+                {t('label.configuration', 'CONFIGURATION')}
+              </ds-text>
+              <ds-divider className={styles.sectionDivider}></ds-divider>
+            </div>
             <Row padding={{ top: 'large' }} width="100%">
               <form.Field name="volumePrefix">
                 {(field) => (
@@ -772,6 +784,12 @@ export function ModifyVolumeForm({
                 onChange={(): void => {}}
               />
             </Row>
+            <div className={styles.sectionHeader}>
+              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+                {t('label.options', 'OPTIONS')}
+              </ds-text>
+              <ds-divider className={styles.sectionDivider}></ds-divider>
+            </div>
             <Row padding={{ top: 'large' }} width="100%">
               <form.Field name="rootpath">
                 {(field) => (
