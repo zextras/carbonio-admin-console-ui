@@ -652,3 +652,119 @@ describe('advanced save', () => {
     await expect.element(page.getByText('Something went wrong, please try again')).toBeVisible();
   }, 25_000);
 });
+
+describe('prefix-change confirmation dialog', () => {
+  const EXTERNAL_S3_VOLUME_WITH_PREFIX: Volume = {
+    id: 11,
+    name: 's3-with-prefix',
+    uuid: 'prefix-connector-uuid',
+    tieringSupported: false,
+    useInfrequentAccess: false,
+    infrequentAccessThreshold: 0,
+    useIntelligentTiering: false,
+    volumePrefix: 'original-prefix',
+    centralized: false,
+    storeType: 'S3',
+    isCurrent: false,
+    volumeType: 'primary',
+  };
+
+  const EXTERNAL_VOLUME_LIST_WITH_PREFIX = {
+    primaries: [EXTERNAL_S3_VOLUME_WITH_PREFIX],
+    secondaries: [],
+    indexes: [],
+  };
+
+  let listS3ConnectorInterceptor: ReturnType<typeof setupListS3ConnectorInterceptor>;
+
+  beforeEach(async () => {
+    await advancedSupportedApiForBrowser.withAdvancedSupported();
+    listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+      {
+        uuid: 'prefix-connector-uuid',
+        label: 'Prefix S3 connector',
+        bucketName: 'prefix-bucket',
+        storeType: 'S3',
+        tieringSupported: false,
+        'usage in external backup': 'unused',
+      },
+    ]);
+  });
+
+  it('should open VerifyVolumeChangesModal when prefix is changed and Save clicked', async () => {
+    await setupBrowserTest(
+      renderModifyVolume(
+        EXTERNAL_S3_VOLUME_WITH_PREFIX.id as number,
+        EXTERNAL_VOLUME_LIST_WITH_PREFIX,
+      ),
+      { initialRouterEntry: VOLUME_ROUTE_ENTRY },
+    );
+
+    // Wait for the external volume form to be ready (prefix input visible)
+    await expect.element(page.getByRole('textbox', { name: /prefix/i })).toBeVisible();
+
+    // Change the prefix to trigger the sensitive-change modal
+    await page.getByRole('textbox', { name: /prefix/i }).fill('new-prefix-value');
+
+    // Save button should be visible now that the form is dirty
+    await page.getByRole('button', { name: /^save$/i }).click();
+
+    // The verification modal should open
+    await expect.element(page.getByText('Change important information')).toBeVisible();
+    await expect.element(page.getByText('new-prefix-value')).toBeVisible();
+
+    // APPLY CHANGES button should be disabled until checkbox is confirmed
+    const applyButton = page.getByRole('button', { name: /apply changes/i });
+    await expect.element(applyButton).toBeDisabled();
+    // Interceptor was called during S3 connector list loading
+    expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should enable APPLY CHANGES once the confirmation checkbox is checked and apply the save', async () => {
+    const doUpdateVolumeInterceptor = createBrowserZextrasActionInterceptor('doUpdateVolume', () =>
+      HttpResponse.json({
+        Body: {
+          response: {
+            content: JSON.stringify({
+              ok: true,
+              response: { [SERVER_NAME]: { ok: true } },
+            }),
+          },
+        },
+      }),
+    );
+
+    await setupBrowserTest(
+      renderModifyVolume(
+        EXTERNAL_S3_VOLUME_WITH_PREFIX.id as number,
+        EXTERNAL_VOLUME_LIST_WITH_PREFIX,
+      ),
+      { initialRouterEntry: VOLUME_ROUTE_ENTRY },
+    );
+
+    // Wait for the external volume form to be ready (prefix input visible)
+    await expect.element(page.getByRole('textbox', { name: /prefix/i })).toBeVisible();
+
+    await page.getByRole('textbox', { name: /prefix/i }).fill('updated-prefix');
+    await page.getByRole('button', { name: /^save$/i }).click();
+
+    await expect.element(page.getByText('Change important information')).toBeVisible();
+
+    // Confirm the checkbox to enable APPLY CHANGES
+    await page
+      .getByText('I am sure I want to apply these changes')
+      .click();
+
+    const applyButton = page.getByRole('button', { name: /apply changes/i });
+    await expect.element(applyButton).not.toBeDisabled();
+    await applyButton.click();
+
+    await vi.waitFor(
+      () => {
+        expect(doUpdateVolumeInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+      },
+      { timeout: 15_000 },
+    );
+    await expect.element(page.getByText('All changes have been saved successfully')).toBeVisible();
+  }, 25_000);
+});

@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../constants';
 import { volumeTypeList } from '../../../utility/utils';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
+import styles from './create-volume.module.css';
 
 export function AdvancedMailstoresCreate({
   externalData,
@@ -39,105 +40,158 @@ export function AdvancedMailstoresCreate({
       ?.label ?? '';
 
   return (
-    <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.volume_server_name', 'Server')}
-          backgroundColor="gray6"
-          value={externalData}
-        />
-      </Row>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.volume_allocation', 'Allocation')}
-          backgroundColor="gray6"
-          value={volumeAllocation}
-        />
-      </Row>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.volume_name', 'Volume Name')}
-          value={volumeName}
-          backgroundColor="gray6"
-        />
-      </Row>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ top: 'large', right: 'large' }}
-        >
-          <LabeledValue
-            label={t('label.bucket_name', 'Bucket Name')}
-            backgroundColor="gray6"
-            value={bucketName}
-          />
-        </Container>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ top: 'large', right: 'large' }}
-        >
-          <LabeledValue
-            label={t('label.type', 'Type')}
-            backgroundColor="gray6"
-            value={unusedBucketType}
-          />
-        </Container>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ top: 'large' }}
-        >
-          <LabeledValue label={t('label.ID', 'ID')} backgroundColor="gray6" value={bucketId} />
-        </Container>
-      </ListRow>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.type_of_volume', 'Type of Volume')}
-          value={volumeType}
-          backgroundColor="gray6"
-        />
-      </Row>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
-          value={prefix}
-          backgroundColor="gray6"
-        />
-      </Row>
-      {showTieringSettings && (
-        <>
+    <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ horizontal: 'large' }}>
+      <ds-text as="h2" weight="bold" size="medium" className={styles.reviewTitle}>
+        {t('label.review_your_selections', 'Review your selections')}
+      </ds-text>
+
+      <div className={styles.reviewCard}>
+        <div className={styles.reviewCardHeader}>
+          <ds-text as="span" weight="bold" size="small" color="gray0">
+            {t('label.definition', 'DEFINITION')}
+          </ds-text>
+        </div>
+        <div className={styles.reviewCardBody}>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large', right: 'large' }}
+            >
+              <LabeledValue
+                label={t('label.volume_server_name', 'Server')}
+                backgroundColor="gray6"
+                value={externalData}
+              />
+            </Container>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large' }}
+            >
+              <LabeledValue
+                label={t('label.volume_name', 'Volume Name')}
+                value={volumeName}
+                backgroundColor="gray6"
+              />
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large', right: 'large' }}
+            >
+              <LabeledValue
+                label={t('label.volume_allocation', 'Allocation')}
+                backgroundColor="gray6"
+                value={volumeAllocation}
+              />
+            </Container>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large' }}
+            >
+              <LabeledValue
+                label={t('label.type_of_volume', 'Type of Volume')}
+                value={volumeType}
+                backgroundColor="gray6"
+              />
+            </Container>
+          </ListRow>
+        </div>
+      </div>
+
+      <div className={styles.reviewCard}>
+        <div className={styles.reviewCardHeader}>
+          <ds-text as="span" weight="bold" size="small" color="gray0">
+            {t('label.bucket', 'BUCKET')}
+          </ds-text>
+        </div>
+        <div className={styles.reviewCardBody}>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large', right: 'large' }}
+            >
+              <LabeledValue
+                label={t('label.bucket_name', 'Bucket Name')}
+                backgroundColor="gray6"
+                value={bucketName}
+              />
+            </Container>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large', right: 'large' }}
+            >
+              <LabeledValue
+                label={t('label.type', 'Type')}
+                backgroundColor="gray6"
+                value={unusedBucketType}
+              />
+            </Container>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large' }}
+            >
+              <LabeledValue label={t('label.ID', 'ID')} backgroundColor="gray6" value={bucketId} />
+            </Container>
+          </ListRow>
+        </div>
+      </div>
+
+      <div className={styles.reviewCard}>
+        <div className={styles.reviewCardHeader}>
+          <ds-text as="span" weight="bold" size="small" color="gray0">
+            {t('label.configuration', 'CONFIGURATION')}
+          </ds-text>
+        </div>
+        <div className={styles.reviewCardBody}>
           <Row padding={{ top: 'large' }} width="100%">
             <LabeledValue
-              label={t('label.infrequent_access', 'Infrequent access')}
-              value={useInfrequentAccess ? ENABLED : DISABLED}
+              label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
+              value={prefix}
+              backgroundColor="gray6"
+            />
+          </Row>
+          {showTieringSettings && (
+            <>
+              <Row padding={{ top: 'large' }} width="100%">
+                <LabeledValue
+                  label={t('label.infrequent_access', 'Infrequent access')}
+                  value={useInfrequentAccess ? ENABLED : DISABLED}
+                  backgroundColor="gray6"
+                />
+              </Row>
+              <Row padding={{ top: 'large' }} width="100%">
+                <LabeledValue
+                  label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
+                  value={useIntelligentTiering ? ENABLED : DISABLED}
+                  backgroundColor="gray6"
+                />
+              </Row>
+            </>
+          )}
+          <Row padding={{ top: 'large' }} width="100%">
+            <LabeledValue
+              label={t('label.volume_as_current', 'Volum as current')}
+              value={isCurrent ? YES : NO}
               backgroundColor="gray6"
             />
           </Row>
           <Row padding={{ top: 'large' }} width="100%">
             <LabeledValue
-              label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
-              value={useIntelligentTiering ? ENABLED : DISABLED}
+              label={t('label.centralized', 'Centralized')}
+              value={centralized ? YES : NO}
               backgroundColor="gray6"
             />
           </Row>
-        </>
-      )}
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.volume_as_current', 'Volum as current')}
-          value={isCurrent ? YES : NO}
-          backgroundColor="gray6"
-        />
-      </Row>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.centralized', 'Centralized')}
-          value={centralized ? YES : NO}
-          backgroundColor="gray6"
-        />
-      </Row>
+        </div>
+      </div>
     </Container>
   );
 }

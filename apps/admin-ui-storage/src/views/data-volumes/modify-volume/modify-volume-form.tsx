@@ -46,6 +46,7 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/s3-connector-service';
 import { S3ConnectorTypeItems, volumeAllocationList } from '../../utility/utils';
+import styles from './modify-volume.module.css';
 import { buildAdvancedUpdatePayload, isS3StoreType } from './modify-volume-payload';
 import {
   handleAdvancedUpdateResponse,
@@ -55,6 +56,7 @@ import {
 } from './modify-volume-save-handlers';
 import { modifyVolumeSchema } from './schema';
 import type { ModifyVolumeFormValues } from './types';
+import { VerifyVolumeChangesModal } from './verify-volume-changes-modal';
 
 type VolumeDetailSnapshot = {
   name: string;
@@ -129,6 +131,7 @@ export function ModifyVolumeForm({
   const [connectorName, setConnectorName] = useState('');
   const [storeType, setStoreType] = useState<string | undefined>('');
   const [tieringSupported, setTieringSupported] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
 
   const labelMap: Record<number | string, string> = {
     1: PRIMARY,
@@ -193,6 +196,7 @@ export function ModifyVolumeForm({
   const typeValue = volumeType;
   const id = String(volumeDetail.id ?? volumeId);
   const showTieringSettings = isS3StoreType(storeType) && tieringSupported;
+  const roleBadge = labelMap[volumeDetail.type] ?? '';
 
   const form = useForm({
     defaultValues: {
@@ -304,6 +308,32 @@ export function ModifyVolumeForm({
     }
   };
 
+  const changedFields: Array<{ label: string; value: string }> = [];
+  const initialVolumePrefix = externalVolDetail?.volumePrefix ?? '';
+  const initialBucketConfigId = currentConnectorId ?? '';
+
+  if (form.state.values.volumePrefix !== initialVolumePrefix) {
+    changedFields.push({
+      label: t('label.prefix_name', 'Prefix'),
+      value: form.state.values.volumePrefix || t('label.not_set', 'Not set'),
+    });
+  }
+  if (form.state.values.bucketConfigurationId !== initialBucketConfigId) {
+    const selectedConnectorOption = backupUnusedConnectorList.find(
+      (item) => item.value === form.state.values.bucketConfigurationId,
+    );
+    changedFields.push({
+      label: t(
+        'storage.dataVolumes.availableS3ConnectorsList',
+        'Available S3 Connectors List',
+      ),
+      value:
+        selectedConnectorOption?.label ||
+        form.state.values.bucketConfigurationId ||
+        t('label.not_set', 'Not set'),
+    });
+  }
+
   const buttons = [
     {
       align: 'right' as const,
@@ -335,6 +365,11 @@ export function ModifyVolumeForm({
                 message: volumeDetail?.name,
               })}
             </ds-text>
+            {roleBadge && (
+              <Padding left="small">
+                <div className={styles.roleBadge}>{roleBadge}</div>
+              </Padding>
+            )}
           </Row>
           <Row
             padding={{ all: 'small' }}
@@ -356,7 +391,11 @@ export function ModifyVolumeForm({
                 label={t('label.save', 'Save')}
                 color="primary"
                 onClick={(): void => {
-                  void form.handleSubmit();
+                  if (changedFields.length > 0) {
+                    setShowVerifyModal(true);
+                  } else {
+                    void form.handleSubmit();
+                  }
                 }}
               />
             )}
@@ -373,11 +412,18 @@ export function ModifyVolumeForm({
         <ds-divider></ds-divider>
         <Displayer buttons={buttons} pinIcon={isSticky} />
         {isExternal ? (
-          <Container
-            padding={{ horizontal: 'large', bottom: 'large' }}
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-          >
+          <>
+            <div className={styles.sectionHeader}>
+              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+                {t('label.general', 'GENERAL')}
+              </ds-text>
+              <ds-divider className={styles.sectionDivider}></ds-divider>
+            </div>
+            <Container
+              padding={{ horizontal: 'large', bottom: 'large' }}
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+            >
             <Row padding={{ top: 'small' }} width="100%">
               <LabeledValue
                 label={t('label.volume_server_name', 'Server')}
@@ -659,12 +705,20 @@ export function ModifyVolumeForm({
               </ds-text>
             </Row>
           </Container>
+          </>
         ) : (
-          <Container
-            padding={{ horizontal: 'large', bottom: 'large' }}
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-          >
+          <>
+            <div className={styles.sectionHeader}>
+              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+                {t('label.general', 'GENERAL')}
+              </ds-text>
+              <ds-divider className={styles.sectionDivider}></ds-divider>
+            </div>
+            <Container
+              padding={{ horizontal: 'large', bottom: 'large' }}
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+            >
             <Row padding={{ top: 'small' }} width="100%">
               <form.Field name="name">
                 {(field) => (
@@ -823,6 +877,7 @@ export function ModifyVolumeForm({
               </>
             )}
           </Container>
+          </>
         )}
         <Modal
           open={isCurrentToggle && !form.state.values.isCurrent}
@@ -853,6 +908,15 @@ export function ModifyVolumeForm({
           </Padding>
         </Modal>
       </Container>
+      <VerifyVolumeChangesModal
+        open={showVerifyModal}
+        changedFields={changedFields}
+        closeHandler={(): void => setShowVerifyModal(false)}
+        applyHandler={async (): Promise<void> => {
+          setShowVerifyModal(false);
+          await form.handleSubmit();
+        }}
+      />
     </>
   );
 }

@@ -27,6 +27,7 @@ import {
   SECONDARY_TYPE_VALUE,
 } from '../../../../constants';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
+import styles from './create-volume.module.css';
 
 export function AdvancedMailstoresConfig({
   onSelection,
@@ -71,6 +72,12 @@ export function AdvancedMailstoresConfig({
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
+      <div className={styles.sectionHeader}>
+        <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+          {t('label.general', 'GENERAL')}
+        </ds-text>
+        <ds-divider className={styles.sectionDivider}></ds-divider>
+      </div>
       <Row padding={{ top: 'large' }} width="100%">
         <LabeledValue
           label={t('label.volume_server_name', 'Server')}
