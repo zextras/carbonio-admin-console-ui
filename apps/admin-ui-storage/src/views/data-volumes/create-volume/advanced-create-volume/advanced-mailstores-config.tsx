@@ -7,7 +7,6 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Container,
   Input,
-  LabeledValue,
   Link,
   ListRow,
   Padding,
@@ -71,11 +70,7 @@ export function AdvancedMailstoresConfig({
 
   const changeVolDetail = (e: ChangeEvent<HTMLInputElement>): void => {
     form.setFieldValue(
-      e.target.name as
-        | 'prefix'
-        | 'infrequentAccessThreshold'
-        | 'path'
-        | 'compressionThreshold',
+      e.target.name as 'prefix' | 'infrequentAccessThreshold' | 'path' | 'compressionThreshold',
       e.target.value,
     );
   };
@@ -92,33 +87,168 @@ export function AdvancedMailstoresConfig({
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
+      <Container
+        mainAlignment="flex-start"
+        crossAlignment="flex-start"
+        padding={{ top: 'large', right: 'large' }}
+      >
+        <div className={styles.detailItem}>
+          <ds-text size="small" color="gray1">
+            {t('label.volume_server_name', 'Server')}
+          </ds-text>
+          <div className={styles.detailValueRow}>
+            <ds-text className={styles.detailValue} weight="bold" size="small">
+              {externalData}
+            </ds-text>
+          </div>
+        </div>
+      </Container>
+      <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ top: 'large' }}>
+        <div className={styles.detailItem}>
+          <ds-text size="small" color="gray1">
+            {t('label.storage_type', 'Storage Type')}
+          </ds-text>
+          <div className={styles.detailValueRow}>
+            <ds-text className={styles.detailValue} weight="bold" size="small">
+              {volumeAllocation}
+            </ds-text>
+          </div>
+        </div>
+      </Container>
+      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+        <div className={styles.detailItem}>
+          <ds-text size="small" color="gray1">
+            {t('label.volume_name', 'Volume Name')}
+          </ds-text>
+          <div className={styles.detailValueRow}>
+            <ds-text className={styles.detailValue} weight="bold" size="small">
+              {volumeName}
+            </ds-text>
+          </div>
+        </div>
+      </Row>
+      {!isLocalBlockDevice && (
+        <ListRow>
+          <Container
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            padding={{ top: 'large', right: 'large' }}
+          >
+            <div className={styles.detailItem}>
+              <ds-text size="small" color="gray1">
+                {t('label.bucket_name', 'Bucket Name')}
+              </ds-text>
+              <div className={styles.detailValueRow}>
+                <ds-text className={styles.detailValue} weight="bold" size="small">
+                  {bucketName}
+                </ds-text>
+              </div>
+            </div>
+          </Container>
+          <Container
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            padding={{ top: 'large', right: 'large' }}
+          >
+            <div className={styles.detailItem}>
+              <ds-text size="small" color="gray1">
+                {t('label.type', 'Type')}
+              </ds-text>
+              <div className={styles.detailValueRow}>
+                <ds-text className={styles.detailValue} weight="bold" size="small">
+                  {unusedBucketType}
+                </ds-text>
+              </div>
+            </div>
+          </Container>
+          <Container
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            padding={{ top: 'large' }}
+          >
+            <div className={styles.detailItem}>
+              <ds-text size="small" color="gray1">
+                {t('label.ID', 'ID')}
+              </ds-text>
+              <div className={styles.detailValueRow}>
+                <ds-text className={styles.detailValue} weight="bold" size="small">
+                  {bucketId}
+                </ds-text>
+              </div>
+            </div>
+          </Container>
+        </ListRow>
+      )}
+
       <div className={styles.sectionHeader}>
         <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
-          {t('label.general', 'GENERAL')}
+          {t('label.volume_type', 'Volume Type')}
         </ds-text>
         <ds-divider className={styles.sectionDivider}></ds-divider>
       </div>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.volume_server_name', 'Server')}
-          backgroundColor="gray6"
-          value={externalData}
+      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+        <Radio
+          label={t('label.primary_volume', 'This is a Primary Volume')}
+          value={PRIMARY_TYPE_VALUE.toString()}
+          checked={volumeMain === PRIMARY_TYPE_VALUE}
+          onClick={(): void => {
+            form.setFieldValue(
+              'volumeMain',
+              volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE,
+            );
+            onSelection(
+              { volumeMain: volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE },
+              true,
+            );
+          }}
+          iconColor="primary"
         />
       </Row>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.storage_type', 'Storage Type')}
-          backgroundColor="gray6"
-          value={volumeAllocation}
+      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+        <Radio
+          label={t('label.secondary_volume', 'This is a Secondary Volume')}
+          value={SECONDARY_TYPE_VALUE}
+          checked={volumeMain === SECONDARY_TYPE_VALUE}
+          onClick={(): void => {
+            form.setFieldValue(
+              'volumeMain',
+              volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE,
+            );
+            onSelection(
+              { volumeMain: volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE },
+              true,
+            );
+          }}
+          iconColor="primary"
         />
       </Row>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.volume_name', 'Volume Name')}
-          value={volumeName}
-          backgroundColor="gray6"
-        />
-      </Row>
+      {isLocalBlockDevice && (
+        <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+          <Radio
+            label={t('label.index_volume', 'This is an Index Volume')}
+            value={INDEX_TYPE_VALUE}
+            checked={volumeMain === INDEX_TYPE_VALUE}
+            onClick={(): void => {
+              form.setFieldValue(
+                'volumeMain',
+                volumeMain === INDEX_TYPE_VALUE ? 0 : INDEX_TYPE_VALUE,
+              );
+              onSelection(
+                { volumeMain: volumeMain === INDEX_TYPE_VALUE ? 0 : INDEX_TYPE_VALUE },
+                true,
+              );
+            }}
+            iconColor="primary"
+          />
+        </Row>
+      )}
+
+      <div className={styles.sectionHeader}>
+        <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+          {t('label.volume_options', 'Volume Options')}
+        </ds-text>
+        <ds-divider className={styles.sectionDivider}></ds-divider>
+      </div>
       {isLocalBlockDevice ? (
         <>
           <Row padding={{ top: 'large' }} width="100%">
@@ -128,50 +258,6 @@ export function AdvancedMailstoresConfig({
               value={path}
               backgroundColor="gray5"
               onChange={changeVolDetail}
-            />
-          </Row>
-          <Row
-            padding={{ top: 'large' }}
-            width="100%"
-            mainAlignment="center"
-            crossAlignment="center"
-            background="gray6"
-          >
-            <Row width="48%">
-              <Radio
-                label={t('label.primary_volume', 'This is a Primary Volume')}
-                value={PRIMARY_TYPE_VALUE.toString()}
-                checked={volumeMain === PRIMARY_TYPE_VALUE}
-                onClick={(): void => {
-                  form.setFieldValue('volumeMain', PRIMARY_TYPE_VALUE);
-                  onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
-                }}
-                iconColor="primary"
-              />
-            </Row>
-            <Row width="48%">
-              <Radio
-                label={t('label.secondary_volume', 'This is a Secondary Volume')}
-                value={SECONDARY_TYPE_VALUE}
-                checked={volumeMain === SECONDARY_TYPE_VALUE}
-                onClick={(): void => {
-                  form.setFieldValue('volumeMain', SECONDARY_TYPE_VALUE);
-                  onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
-                }}
-                iconColor="primary"
-              />
-            </Row>
-          </Row>
-          <Row padding={{ top: 'large' }} width="100%">
-            <Radio
-              label={t('label.index_volume', 'This is an Index Volume')}
-              value={INDEX_TYPE_VALUE}
-              checked={volumeMain === INDEX_TYPE_VALUE}
-              onClick={(): void => {
-                form.setFieldValue('volumeMain', INDEX_TYPE_VALUE);
-                onSelection({ volumeMain: INDEX_TYPE_VALUE }, true);
-              }}
-              iconColor="primary"
             />
           </Row>
           {volumeMain !== INDEX_TYPE_VALUE && (
@@ -211,91 +297,22 @@ export function AdvancedMailstoresConfig({
           )}
           <Padding top="extrasmall">
             <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-              {t('this_will_not_affect_data_already_stored', 'This will not affect data already stored')}
+              {t(
+                'this_will_not_affect_data_already_stored',
+                'This will not affect data already stored',
+              )}
             </ds-text>
           </Padding>
         </>
       ) : (
         <>
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large', right: 'large' }}
-            >
-              <LabeledValue
-                label={t('label.bucket_name', 'Bucket Name')}
-                backgroundColor="gray6"
-                value={bucketName}
-              />
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large', right: 'large' }}
-            >
-              <LabeledValue
-                label={t('label.type', 'Type')}
-                backgroundColor="gray6"
-                value={unusedBucketType}
-              />
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large' }}
-            >
-              <LabeledValue label={t('label.ID', 'ID')} backgroundColor="gray6" value={bucketId} />
-            </Container>
-          </ListRow>
-          <Row
-            padding={{ top: 'large' }}
-            width="100%"
-            mainAlignment="center"
-            crossAlignment="center"
-            background="gray6"
-          >
-            <Row width="48%">
-              <Radio
-                label={t('label.primary_volume', 'This is a Primary Volume')}
-                value={PRIMARY_TYPE_VALUE.toString()}
-                checked={volumeMain === PRIMARY_TYPE_VALUE}
-                onClick={(): void => {
-                  form.setFieldValue(
-                    'volumeMain',
-                    volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE,
-                  );
-                  onSelection(
-                    { volumeMain: volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE },
-                    true,
-                  );
-                }}
-                iconColor="primary"
-              />
-            </Row>
-            <Row width="48%">
-              <Radio
-                label={t('label.secondary_volume', 'This is a Secondary Volume')}
-                value={SECONDARY_TYPE_VALUE}
-                checked={volumeMain === SECONDARY_TYPE_VALUE}
-                onClick={(): void => {
-                  form.setFieldValue(
-                    'volumeMain',
-                    volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE,
-                  );
-                  onSelection(
-                    { volumeMain: volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE },
-                    true,
-                  );
-                }}
-                iconColor="primary"
-              />
-            </Row>
-          </Row>
           <Row padding={{ top: 'large' }} width="100%">
             <Input
               inputName="prefix"
-              label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
+              label={t(
+                'label.prefix_name',
+                'Prefix - all objects will have this prefix in their name',
+              )}
               value={prefix}
               backgroundColor="gray5"
               onChange={changeVolDetail}
@@ -395,6 +412,30 @@ export function AdvancedMailstoresConfig({
               </Row>
             </>
           )}
+        </>
+      )}
+      <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+        <Switch
+          value={isCurrent}
+          label={t('label.set_as_current', 'Set as Current')}
+          onClick={(): void => {
+            const newValue = !isCurrent;
+            form.setFieldValue('isCurrent', newValue);
+            onSelection({ isCurrent: newValue }, true);
+          }}
+          iconColor="primary"
+        />
+      </Row>
+      <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+        <ds-text as="p" color="secondary">
+          {t(
+            'label.enable_current_helptext',
+            'Enabling this option will disable the current active volume.',
+          )}
+        </ds-text>
+      </Row>
+      {!isLocalBlockDevice && (
+        <>
           <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
             <Switch
               value={centralized}
@@ -423,26 +464,6 @@ export function AdvancedMailstoresConfig({
           </Row>
         </>
       )}
-      <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-        <Switch
-          value={isCurrent}
-          label={t('label.set_as_current', 'Set as Current')}
-          onClick={(): void => {
-            const newValue = !isCurrent;
-            form.setFieldValue('isCurrent', newValue);
-            onSelection({ isCurrent: newValue }, true);
-          }}
-          iconColor="primary"
-        />
-      </Row>
-      <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-        <ds-text as="p" color="secondary">
-          {t(
-            'label.enable_current_helptext',
-            'Enabling this option will disable the current active volume.',
-          )}
-        </ds-text>
-      </Row>
     </Container>
   );
 }

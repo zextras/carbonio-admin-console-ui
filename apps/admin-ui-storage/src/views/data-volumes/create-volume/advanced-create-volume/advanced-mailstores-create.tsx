@@ -4,13 +4,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, LabeledValue, ListRow, Row } from '@zextras/ui-components';
+import { Container, ListRow, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../constants';
 import { volumeTypeList } from '../../../utility/utils';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 import styles from './create-volume.module.css';
+
+type DetailFieldProps = {
+  label: string;
+  value?: string | number | null;
+};
+
+function DetailField({ label, value }: DetailFieldProps) {
+  return (
+    <div className={styles.detailItem}>
+      <ds-text size="small" color="gray1">
+        {label}
+      </ds-text>
+      <div className={styles.detailValueRow}>
+        <ds-text className={styles.detailValue} size="small" weight="bold">
+          {value ?? ''}
+        </ds-text>
+      </div>
+    </div>
+  );
+}
 
 export function AdvancedMailstoresCreate({
   externalData,
@@ -62,22 +82,14 @@ export function AdvancedMailstoresCreate({
               crossAlignment="flex-start"
               padding={{ top: 'large', right: 'large' }}
             >
-              <LabeledValue
-                label={t('label.volume_server_name', 'Server')}
-                backgroundColor="gray6"
-                value={externalData}
-              />
+              <DetailField label={t('label.volume_server_name', 'Server')} value={externalData} />
             </Container>
             <Container
               mainAlignment="flex-start"
               crossAlignment="flex-start"
               padding={{ top: 'large' }}
             >
-              <LabeledValue
-                label={t('label.volume_name', 'Volume Name')}
-                value={volumeName}
-                backgroundColor="gray6"
-              />
+              <DetailField label={t('label.volume_name', 'Volume Name')} value={volumeName} />
             </Container>
           </ListRow>
           <ListRow>
@@ -86,9 +98,8 @@ export function AdvancedMailstoresCreate({
               crossAlignment="flex-start"
               padding={{ top: 'large', right: 'large' }}
             >
-              <LabeledValue
+              <DetailField
                 label={t('label.volume_allocation', 'Allocation')}
-                backgroundColor="gray6"
                 value={volumeAllocation}
               />
             </Container>
@@ -97,11 +108,7 @@ export function AdvancedMailstoresCreate({
               crossAlignment="flex-start"
               padding={{ top: 'large' }}
             >
-              <LabeledValue
-                label={t('label.type_of_volume', 'Type of Volume')}
-                value={volumeType}
-                backgroundColor="gray6"
-              />
+              <DetailField label={t('label.type_of_volume', 'Type of Volume')} value={volumeType} />
             </Container>
           </ListRow>
         </div>
@@ -121,29 +128,21 @@ export function AdvancedMailstoresCreate({
                 crossAlignment="flex-start"
                 padding={{ top: 'large', right: 'large' }}
               >
-                <LabeledValue
-                  label={t('label.bucket_name', 'Bucket Name')}
-                  backgroundColor="gray6"
-                  value={bucketName}
-                />
+                <DetailField label={t('label.bucket_name', 'Bucket Name')} value={bucketName} />
               </Container>
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
                 padding={{ top: 'large', right: 'large' }}
               >
-                <LabeledValue
-                  label={t('label.type', 'Type')}
-                  backgroundColor="gray6"
-                  value={unusedBucketType}
-                />
+                <DetailField label={t('label.type', 'Type')} value={unusedBucketType} />
               </Container>
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
                 padding={{ top: 'large' }}
               >
-                <LabeledValue label={t('label.ID', 'ID')} backgroundColor="gray6" value={bucketId} />
+                <DetailField label={t('label.ID', 'ID')} value={bucketId} />
               </Container>
             </ListRow>
           </div>
@@ -160,25 +159,19 @@ export function AdvancedMailstoresCreate({
           {isLocalBlockDevice ? (
             <>
               <Row padding={{ top: 'large' }} width="100%">
-                <LabeledValue
-                  label={t('label.path', 'Path')}
-                  value={path}
-                  backgroundColor="gray6"
-                />
+                <DetailField label={t('label.path', 'Path')} value={path} />
               </Row>
               <Row padding={{ top: 'large' }} width="100%">
-                <LabeledValue
+                <DetailField
                   label={t('label.enable_compression', 'Enable Compression')}
                   value={isCompression ? ENABLED : DISABLED}
-                  backgroundColor="gray6"
                 />
               </Row>
               {isCompression && (
                 <Row padding={{ top: 'large' }} width="100%">
-                  <LabeledValue
+                  <DetailField
                     label={t('label.compression_threshold', 'Compression Threshold')}
                     value={compressionThreshold}
-                    backgroundColor="gray6"
                   />
                 </Row>
               )}
@@ -186,44 +179,39 @@ export function AdvancedMailstoresCreate({
           ) : (
             <>
               <Row padding={{ top: 'large' }} width="100%">
-                <LabeledValue
+                <DetailField
                   label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
                   value={prefix}
-                  backgroundColor="gray6"
                 />
               </Row>
               {showTieringSettings && (
                 <>
                   <Row padding={{ top: 'large' }} width="100%">
-                    <LabeledValue
+                    <DetailField
                       label={t('label.infrequent_access', 'Infrequent access')}
                       value={useInfrequentAccess ? ENABLED : DISABLED}
-                      backgroundColor="gray6"
                     />
                   </Row>
                   <Row padding={{ top: 'large' }} width="100%">
-                    <LabeledValue
+                    <DetailField
                       label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
                       value={useIntelligentTiering ? ENABLED : DISABLED}
-                      backgroundColor="gray6"
                     />
                   </Row>
                 </>
               )}
               <Row padding={{ top: 'large' }} width="100%">
-                <LabeledValue
+                <DetailField
                   label={t('label.centralized', 'Centralized')}
                   value={centralized ? YES : NO}
-                  backgroundColor="gray6"
                 />
               </Row>
             </>
           )}
           <Row padding={{ top: 'large' }} width="100%">
-            <LabeledValue
+            <DetailField
               label={t('label.volume_as_current', 'Volum as current')}
               value={isCurrent ? YES : NO}
-              backgroundColor="gray6"
             />
           </Row>
         </div>
