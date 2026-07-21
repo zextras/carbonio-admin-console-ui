@@ -101,10 +101,9 @@ describe('AdvancedMailstoresConfig (browser)', () => {
     await expect.element(page.getByText('Volume Name', { exact: true }).first()).toBeVisible();
   });
 
-  it('should render Bucket Name, Type, and ID labeled values', async () => {
+  it('should render Bucket Name and ID labeled values', async () => {
     await renderHarness().render();
     await expect.element(page.getByText('Bucket Name', { exact: true }).first()).toBeVisible();
-    await expect.element(page.getByText('Type', { exact: true }).first()).toBeVisible();
     await expect.element(page.getByText('ID', { exact: true }).first()).toBeVisible();
     await expect.element(page.getByText('bucket-a', { exact: true })).toBeVisible();
     await expect.element(page.getByText('bucket-1', { exact: true })).toBeVisible();
@@ -112,9 +111,9 @@ describe('AdvancedMailstoresConfig (browser)', () => {
 
   it('should render Primary and Secondary radio buttons', async () => {
     await renderHarness().render();
-    await expect.element(page.getByText('This is a Primary Volume', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('Primary Volume', { exact: true })).toBeVisible();
     await expect
-      .element(page.getByText('This is a Secondary Volume', { exact: true }))
+      .element(page.getByText('Secondary Volume', { exact: true }))
       .toBeVisible();
   });
 
@@ -132,7 +131,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: { volumeMain: 1 },
     }).render();
 
-    await page.getByText('This is a Primary Volume', { exact: true }).click();
+    await page.getByText('Primary Volume', { exact: true }).click();
     await vi.waitFor(() => {
       expect(onSelection).toHaveBeenCalledWith({ volumeMain: 0 }, true);
     });
@@ -141,7 +140,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
   it('should toggle Secondary radio on and call onSelection with SECONDARY_TYPE_VALUE', async () => {
     const onSelection = vi.fn();
     await renderHarness({ onSelection }).render();
-    await page.getByText('This is a Secondary Volume', { exact: true }).click();
+    await page.getByText('Secondary Volume', { exact: true }).click();
     await vi.waitFor(() => {
       expect(onSelection).toHaveBeenCalledWith({ volumeMain: 2 }, true);
     });

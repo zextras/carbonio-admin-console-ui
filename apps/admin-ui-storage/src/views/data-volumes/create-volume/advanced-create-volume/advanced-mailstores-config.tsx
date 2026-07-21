@@ -128,56 +128,40 @@ export function AdvancedMailstoresConfig({
         </div>
       </Row>
       {!isLocalBlockDevice && (
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'large', right: 'large' }}
-          >
-            <div className={styles.detailItem}>
-              <ds-text size="small" color="gray1">
-                {t('label.bucket_name', 'Bucket Name')}
-              </ds-text>
-              <div className={styles.detailValueRow}>
-                <ds-text className={styles.detailValue} weight="bold" size="small">
-                  {bucketName}
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large', right: 'large' }}
+            >
+              <div className={styles.detailItem}>
+                <ds-text size="small" color="gray1">
+                  {t('label.bucket_name', 'Bucket Name')}
                 </ds-text>
+                <div className={styles.detailValueRow}>
+                  <ds-text className={styles.detailValue} weight="bold" size="small">
+                    {bucketName}
+                  </ds-text>
+                </div>
               </div>
-            </div>
-          </Container>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'large', right: 'large' }}
-          >
-            <div className={styles.detailItem}>
-              <ds-text size="small" color="gray1">
-                {t('label.type', 'Type')}
-              </ds-text>
-              <div className={styles.detailValueRow}>
-                <ds-text className={styles.detailValue} weight="bold" size="small">
-                  {unusedBucketType}
+            </Container>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large' }}
+            >
+              <div className={styles.detailItem}>
+                <ds-text size="small" color="gray1">
+                  {t('label.ID', 'ID')}
                 </ds-text>
+                <div className={styles.detailValueRow}>
+                  <ds-text className={styles.detailValue} weight="bold" size="small">
+                    {bucketId}
+                  </ds-text>
+                </div>
               </div>
-            </div>
-          </Container>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'large' }}
-          >
-            <div className={styles.detailItem}>
-              <ds-text size="small" color="gray1">
-                {t('label.ID', 'ID')}
-              </ds-text>
-              <div className={styles.detailValueRow}>
-                <ds-text className={styles.detailValue} weight="bold" size="small">
-                  {bucketId}
-                </ds-text>
-              </div>
-            </div>
-          </Container>
-        </ListRow>
+            </Container>
+          </ListRow>
       )}
 
       <div className={styles.sectionHeader}>
@@ -188,7 +172,7 @@ export function AdvancedMailstoresConfig({
       </div>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
         <Radio
-          label={t('label.primary_volume', 'This is a Primary Volume')}
+          label={t('storage.dataVolume.primaryVolume', 'Primary Volume')}
           value={PRIMARY_TYPE_VALUE.toString()}
           checked={volumeMain === PRIMARY_TYPE_VALUE}
           onClick={(): void => {
@@ -206,7 +190,7 @@ export function AdvancedMailstoresConfig({
       </Row>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
         <Radio
-          label={t('label.secondary_volume', 'This is a Secondary Volume')}
+          label={t('storage.dataVolume.secondaryVolume', 'Secondary Volume')}
           value={SECONDARY_TYPE_VALUE}
           checked={volumeMain === SECONDARY_TYPE_VALUE}
           onClick={(): void => {
@@ -225,7 +209,7 @@ export function AdvancedMailstoresConfig({
       {isLocalBlockDevice && (
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
           <Radio
-            label={t('label.index_volume', 'This is an Index Volume')}
+            label={t('storage.dataVolume.indexVolume', 'Index Volume')}
             value={INDEX_TYPE_VALUE}
             checked={volumeMain === INDEX_TYPE_VALUE}
             onClick={(): void => {
@@ -254,7 +238,7 @@ export function AdvancedMailstoresConfig({
           <Row padding={{ top: 'large' }} width="100%">
             <Input
               inputName="path"
-              label={t('label.path', 'Path')}
+              label={t('label.volume_path', 'Volume path')}
               value={path}
               backgroundColor="gray5"
               onChange={changeVolDetail}
@@ -281,7 +265,7 @@ export function AdvancedMailstoresConfig({
               <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="65%">
                 <Input
                   inputName="compressionThreshold"
-                  label={t('label.compression_threshold', 'Compression Threshold')}
+                  label={t('label.volume_compression_thresold', 'Compression Threshold')}
                   value={compressionThreshold}
                   backgroundColor="gray5"
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {

@@ -99,7 +99,7 @@ export function AdvancedMailstoresCreate({
               padding={{ top: 'large', right: 'large' }}
             >
               <DetailField
-                label={t('label.volume_allocation', 'Allocation')}
+                label={t('label.storage_type', 'Storage Type')}
                 value={volumeAllocation}
               />
             </Container>
@@ -159,22 +159,20 @@ export function AdvancedMailstoresCreate({
           {isLocalBlockDevice ? (
             <>
               <Row padding={{ top: 'large' }} width="100%">
-                <DetailField label={t('label.path', 'Path')} value={path} />
+                <DetailField label={t('label.volume_path', 'Volume path')} value={path} />
               </Row>
               <Row padding={{ top: 'large' }} width="100%">
                 <DetailField
                   label={t('label.enable_compression', 'Enable Compression')}
-                  value={isCompression ? ENABLED : DISABLED}
+                  value={isCompression ? YES : NO}
                 />
               </Row>
-              {isCompression && (
-                <Row padding={{ top: 'large' }} width="100%">
-                  <DetailField
-                    label={t('label.compression_threshold', 'Compression Threshold')}
-                    value={compressionThreshold}
-                  />
-                </Row>
-              )}
+              <Row padding={{ top: 'large' }} width="100%">
+                <DetailField
+                  label={t('label.volume_compression_thresold', 'Compression Threshold')}
+                  value={isCompression ? compressionThreshold : DISABLED}
+                />
+              </Row>
             </>
           ) : (
             <>

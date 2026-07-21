@@ -83,10 +83,10 @@ function renderHarness(options: HarnessOptions = {}) {
 }
 
 describe('AdvancedMailstoresCreate (browser)', () => {
-  it('should render Server, Allocation, and Volume Name labeled values', async () => {
+  it('should render Server, Storage Type, and Volume Name labeled values', async () => {
     await renderHarness().render();
     await expect.element(page.getByText('Server', { exact: true }).first()).toBeVisible();
-    await expect.element(page.getByText('Allocation', { exact: true }).first()).toBeVisible();
+    await expect.element(page.getByText('Storage Type', { exact: true }).first()).toBeVisible();
     await expect.element(page.getByText('Volume Name', { exact: true }).first()).toBeVisible();
   });
 
