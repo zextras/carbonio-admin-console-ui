@@ -73,8 +73,7 @@ vi.mock('../parts/verify/verify-progress', () => ({
 }));
 
 vi.mock('../parts/verify/verify-success', () => ({
-	VerifySuccess: ({ isSuccess }: { isSuccess: boolean }) =>
-		isSuccess ? <div>verify-success</div> : null,
+	VerifySuccess: () => <div>verify-success</div>,
 }));
 
 vi.mock('../parts/verify/verify-error', () => ({

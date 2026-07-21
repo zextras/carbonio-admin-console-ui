@@ -47,7 +47,7 @@ describe('VerifySuccess', () => {
   it('should open popover and auto-close calling onComplete after timeout', () => {
     const onComplete = vi.fn();
 
-    render(<VerifySuccess isSuccess onComplete={onComplete} />);
+    render(<VerifySuccess onComplete={onComplete} />);
 
     expect(showPopoverSpy).toHaveBeenCalledTimes(1);
 
@@ -63,9 +63,9 @@ describe('VerifySuccess', () => {
     const firstOnComplete = vi.fn();
     const latestOnComplete = vi.fn();
 
-    const { rerender } = render(<VerifySuccess isSuccess onComplete={firstOnComplete} />);
+    const { rerender } = render(<VerifySuccess onComplete={firstOnComplete} />);
 
-    rerender(<VerifySuccess isSuccess onComplete={latestOnComplete} />);
+    rerender(<VerifySuccess onComplete={latestOnComplete} />);
 
     act(() => {
       vi.advanceTimersByTime(VERIFY_SUCCESS_AUTO_CLOSE_MS);
@@ -78,7 +78,7 @@ describe('VerifySuccess', () => {
   it('should cancel the auto-close timeout when component unmounts before it fires', () => {
     const onComplete = vi.fn();
 
-    const { unmount } = render(<VerifySuccess isSuccess onComplete={onComplete} />);
+    const { unmount } = render(<VerifySuccess onComplete={onComplete} />);
 
     unmount();
 
@@ -93,7 +93,7 @@ describe('VerifySuccess', () => {
   it('should close immediately and call onComplete when close button is clicked', () => {
     const onComplete = vi.fn();
 
-    render(<VerifySuccess isSuccess onComplete={onComplete} />);
+    render(<VerifySuccess onComplete={onComplete} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Close', hidden: true }));
 
@@ -104,7 +104,7 @@ describe('VerifySuccess', () => {
   it('should cancel the auto-close timeout when close button is clicked before it fires', () => {
     const onComplete = vi.fn();
 
-    render(<VerifySuccess isSuccess onComplete={onComplete} />);
+    render(<VerifySuccess onComplete={onComplete} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Close', hidden: true }));
 
@@ -115,19 +115,5 @@ describe('VerifySuccess', () => {
     // onComplete and hidePopover each called exactly once (from handleClose), not again from timer
     expect(onComplete).toHaveBeenCalledTimes(1);
     expect(hidePopoverSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it('should not open popover or set timeout when isSuccess is false', () => {
-    const onComplete = vi.fn();
-
-    render(<VerifySuccess isSuccess={false} onComplete={onComplete} />);
-
-    act(() => {
-      vi.advanceTimersByTime(VERIFY_SUCCESS_AUTO_CLOSE_MS + 1);
-    });
-
-    expect(showPopoverSpy).not.toHaveBeenCalled();
-    expect(hidePopoverSpy).not.toHaveBeenCalled();
-    expect(onComplete).not.toHaveBeenCalled();
   });
 });

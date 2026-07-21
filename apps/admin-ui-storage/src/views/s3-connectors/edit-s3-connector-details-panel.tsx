@@ -794,10 +794,9 @@ export function EditS3ConnectorDetailPanel({
         applyHandler={onApplyChanges}
       />
       <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
-      <VerifySuccess
-        isSuccess={showVerifyResult && isVerifySuccess}
-        onComplete={handleSuccessComplete}
-      />
+      {showVerifyResult && isVerifySuccess && (
+        <VerifySuccess onComplete={handleSuccessComplete} />
+      )}
       {showVerifyResult && isVerifyError && (
         <VerifyError
           checkDetails={checkDetails}

@@ -466,10 +466,9 @@ export function Connection({
         </Row>
       </Container>
       <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
-      <VerifySuccess
-        isSuccess={showVerifyResult && isVerifySuccess}
-        onComplete={handleSuccessComplete}
-      />
+      {showVerifyResult && isVerifySuccess && (
+        <VerifySuccess onComplete={handleSuccessComplete} />
+      )}
       {showVerifyResult && isVerifyError && (
         <VerifyError
           checkDetails={checkDetails}

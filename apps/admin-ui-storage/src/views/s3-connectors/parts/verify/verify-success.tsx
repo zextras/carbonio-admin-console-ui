@@ -10,12 +10,10 @@ import { VERIFY_SUCCESS_AUTO_CLOSE_MS } from '../../../../constants';
 import styles from './verify-success.module.css';
 
 type VerifySuccessProps = {
-  isSuccess: boolean;
   onComplete?: () => void;
 };
 
 export const VerifySuccess = ({
-  isSuccess,
   onComplete,
 }: VerifySuccessProps): React.JSX.Element => {
   const { t } = useTranslation();
@@ -25,20 +23,18 @@ export const VerifySuccess = ({
   onCompleteRef.current = onComplete;
 
   useEffect(() => {
-    if (isSuccess) {
-      popoverRef.current?.showPopover();
-      timeoutRef.current = setTimeout(() => {
-        popoverRef.current?.hidePopover();
-        onCompleteRef.current?.();
-      }, VERIFY_SUCCESS_AUTO_CLOSE_MS);
-    }
+    popoverRef.current?.showPopover();
+    timeoutRef.current = setTimeout(() => {
+      popoverRef.current?.hidePopover();
+      onCompleteRef.current?.();
+    }, VERIFY_SUCCESS_AUTO_CLOSE_MS);
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
     };
-  }, [isSuccess]);
+  }, []);
 
   function handleClose(): void {
     if (timeoutRef.current) {
