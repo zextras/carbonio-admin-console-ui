@@ -10,7 +10,7 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { S3 } from '../../../../../constants';
+import { INDEX_TYPE_VALUE, PRIMARY_TYPE_VALUE, S3 } from '../../../../../constants';
 import { volumeCreateSchema } from '../../schema';
 import { VolumeContext } from '../../volume-context';
 import { AdvancedMailstoresConfig } from '../advanced-mailstores-config';
@@ -336,5 +336,56 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       expect(onSelection).toHaveBeenCalledWith({ useIntelligentTiering: true }, true);
       expect(onSelection).toHaveBeenCalledWith({ useInfrequentAccess: false }, true);
     });
+  });
+
+  it('should show index radio and path input for local block device', async () => {
+    await renderHarness({
+      initialAdvanced: { volumeAllocation: 'Local Block Device' },
+    }).render();
+
+    await expect.element(page.getByText('Index Volume', { exact: true })).toBeVisible();
+    await expect
+      .element(page.getByText('Volume Type', { exact: true }).first())
+      .toBeVisible();
+    await expect
+      .element(page.getByText('Volume Options', { exact: true }).first())
+      .toBeVisible();
+    await expect.element(page.getByPlaceholder('Volume path')).toBeVisible();
+  });
+
+  it('should toggle compression and accept only numeric thresholds for local block device', async () => {
+    const onSelection = vi.fn();
+    await renderHarness({
+      onSelection,
+      initialAdvanced: {
+        volumeAllocation: 'Local Block Device',
+        volumeMain: PRIMARY_TYPE_VALUE,
+      },
+    }).render();
+
+    const compressionSwitch = page.getByRole('switch', { name: 'Enable Compression' });
+    await expect.element(compressionSwitch).toBeVisible();
+
+    await compressionSwitch.click();
+    await vi.waitFor(() => {
+      expect(onSelection).toHaveBeenCalledWith({ isCompression: true }, true);
+    });
+
+    const thresholdInput = page.getByPlaceholder('Compression Threshold');
+    await expect.element(thresholdInput).not.toBeDisabled();
+
+    await thresholdInput.fill('4096');
+    await expect.element(thresholdInput).toHaveValue('4096');
+  });
+
+  it('should hide compression controls when index volume is selected for local block device', async () => {
+    await renderHarness({
+      initialAdvanced: {
+        volumeAllocation: 'Local Block Device',
+        volumeMain: INDEX_TYPE_VALUE,
+      },
+    }).render();
+
+    expect(page.getByRole('switch', { name: 'Enable Compression' }).elements()).toHaveLength(0);
   });
 });

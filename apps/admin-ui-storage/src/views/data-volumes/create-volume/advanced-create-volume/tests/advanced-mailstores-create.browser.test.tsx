@@ -193,4 +193,42 @@ describe('AdvancedMailstoresCreate (browser)', () => {
     await renderHarness({ initialAdvanced: { centralized: false } }).render();
     expect(page.getByText(NO, { exact: true }).elements().length).toBeGreaterThan(0);
   });
+
+  it('should render local block device review with path and compression fields', async () => {
+    await renderHarness({
+      initialAdvanced: {
+        volumeAllocation: 'Local Block Device',
+        volumeMain: 1,
+        volumeName: 'local-vol',
+        path: '/opt/zextras/store',
+        isCompression: true,
+        compressionThreshold: '4096',
+        isCurrent: true,
+      },
+    }).render();
+
+    await expect.element(page.getByText('Volume path', { exact: true })).toBeVisible();
+    await expect
+      .element(page.getByText('/opt/zextras/store', { exact: true }))
+      .toBeVisible();
+    await expect.element(page.getByText('Enable Compression', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('Compression Threshold', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('4096', { exact: true })).toBeVisible();
+    expect(page.getByText('BUCKET', { exact: true }).elements()).toHaveLength(0);
+  });
+
+  it('should show DISABLED for compression threshold when compression is off for local block device', async () => {
+    await renderHarness({
+      initialAdvanced: {
+        volumeAllocation: 'Local Block Device',
+        volumeMain: 1,
+        path: '/opt/zextras/store',
+        isCompression: false,
+        compressionThreshold: '',
+      },
+    }).render();
+
+    expect(page.getByText(NO, { exact: true }).elements().length).toBeGreaterThan(0);
+    await expect.element(page.getByText(DISABLED, { exact: true }).first()).toBeVisible();
+  });
 });
