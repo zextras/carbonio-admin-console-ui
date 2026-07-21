@@ -6,7 +6,7 @@
 import { useSelector } from '@tanstack/react-store';
 import { Container, Input, Padding } from '@zextras/ui-components';
 import { isValidDecimalInput } from '@zextras/ui-shared';
-import { ChangeEvent, FC, useRef, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BytesToGB, GbToBytes } from '../../../utility/utils';
@@ -103,18 +103,18 @@ const QuotaGBFieldController = ({
   onBlur,
 }: QuotaGBFieldControllerProps) => {
   const [t] = useTranslation();
-  const initialValue = useRef(fieldValue);
-  const lastEmitted = useRef(fieldValue);
+  const [initialValue] = useState(fieldValue);
+  const [lastEmitted, setLastEmitted] = useState(fieldValue);
   const [rawGB, setRawGB] = useState(() => gbFromBytes(fieldValue));
   const [showMaxDigitsMsg, setShowMaxDigitsMsg] = useState(false);
 
-  if (fieldValue !== lastEmitted.current) {
-    lastEmitted.current = fieldValue;
+  if (fieldValue !== lastEmitted) {
+    setLastEmitted(fieldValue);
     setRawGB(gbFromBytes(fieldValue));
     setShowMaxDigitsMsg(false);
   }
 
-  const showRevert = fieldValue !== initialValue.current;
+  const showRevert = fieldValue !== initialValue;
   const revertLabel = t('cos_quota.click_to_revert', 'Click to revert to the inherited value');
 
   const onChange = (gb: string) => {
@@ -126,15 +126,15 @@ const QuotaGBFieldController = ({
     setShowMaxDigitsMsg(false);
     setRawGB(gb);
     const bytes = gb ? String(Math.round(GbToBytes(gb))) : '';
-    lastEmitted.current = bytes;
+    setLastEmitted(bytes);
     handleChange(bytes);
   };
 
   const onRevert = () => {
-    const bytes = initialValue.current ?? '';
-    lastEmitted.current = bytes;
+    const bytes = initialValue ?? '';
+    setLastEmitted(bytes);
     handleChange(bytes);
-    setRawGB(gbFromBytes(initialValue.current));
+    setRawGB(gbFromBytes(initialValue));
     setShowMaxDigitsMsg(false);
   };
 
