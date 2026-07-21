@@ -885,14 +885,6 @@ export function ModifyVolumeForm({
                     </form.Field>
                   </Tooltip>
                 </Row>
-                <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-                  <ds-text as="p" color="secondary">
-                    {t(
-                      'label.enable_current_helptext',
-                      'Enabling this option will disable the current active volume.',
-                    )}
-                  </ds-text>
-                </Row>
               </Container>
             )}
           </>
