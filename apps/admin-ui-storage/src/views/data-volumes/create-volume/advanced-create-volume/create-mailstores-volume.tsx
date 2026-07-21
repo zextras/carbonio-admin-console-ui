@@ -60,6 +60,15 @@ type WizardButtonProps = {
   toggleNextBtn?: boolean;
 };
 
+type PrevButtonProps = {
+  readonly onClick: () => void;
+};
+
+type NextButtonProps = {
+  readonly onClick: () => void;
+  readonly disabled?: boolean;
+};
+
 function WizardCancelButton() {
   const { t } = useTranslation();
   const { onCancel } = useContext(WizardActionsContext);
@@ -102,7 +111,7 @@ function DefinitionNextButton({ onClick, disabled, toggleNextBtn }: WizardButton
   );
 }
 
-function WizardPrevButton({ onClick }: WizardButtonProps) {
+function WizardPrevButton({ onClick }: PrevButtonProps) {
   const { t } = useTranslation();
   return (
     <Button
@@ -115,7 +124,7 @@ function WizardPrevButton({ onClick }: WizardButtonProps) {
   );
 }
 
-function ConfigNextButton({ onClick, disabled }: WizardButtonProps) {
+function ConfigNextButton({ onClick, disabled }: NextButtonProps) {
   const { t } = useTranslation();
   return (
     <Button
@@ -128,7 +137,7 @@ function ConfigNextButton({ onClick, disabled }: WizardButtonProps) {
   );
 }
 
-function CreateNextButton({ onClick, disabled }: WizardButtonProps) {
+function CreateNextButton({ onClick, disabled }: NextButtonProps) {
   const { t } = useTranslation();
   return (
     <Button
