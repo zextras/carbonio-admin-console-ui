@@ -337,20 +337,25 @@ export function ModifyVolumeForm({
         background="gray6"
         mainAlignment="flex-start"
         orientation="vertical"
-        style={{ overflowY: 'auto' }}
       >
-        <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="4.15rem">
-          <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <ds-text as="h2" weight="bold">
-                {t('label.volume_details', 'Volume details')}
-              </ds-text>
-              {roleBadge && <div className={styles.roleBadge}>{roleBadge}</div>}
-            </div>
+        <Row mainAlignment="space-between" crossAlignment="center" width="100%" height="4.15rem">
+          <Row
+            mainAlignment="flex-start"
+            crossAlignment="center"
+            padding={{ all: 'large' }}
+            takeAvailableSpace
+          >
+            <ds-text as="h2" weight="bold">
+              {t('label.volume_details', 'Volume details')}
+            </ds-text>
+            {roleBadge && (
+              <Padding left="small">
+                <div className={styles.roleBadge}>{roleBadge}</div>
+              </Padding>
+            )}
           </Row>
           <Row
             padding={{ all: 'small' }}
-            width="50%"
             mainAlignment="flex-end"
             crossAlignment="flex-end"
           >
@@ -390,13 +395,19 @@ export function ModifyVolumeForm({
             )}
             <Button
               type="ghost"
-              color={'text'}
+              color="text"
               icon="CloseOutline"
               onClick={(): void => setmodifyVolumeToggle(false)}
             />
           </Row>
         </Row>
         <ds-divider></ds-divider>
+        <Container
+          background="gray6"
+          mainAlignment="flex-start"
+          orientation="vertical"
+          style={{ overflowY: 'auto' }}
+        >
 
         {/* GENERAL section - always shown */}
         <div className={styles.sectionHeader}>
@@ -889,6 +900,7 @@ export function ModifyVolumeForm({
             )}
           </>
         )}
+        </Container>
 
         <Modal
           open={isCurrentToggle && !form.state.values.isCurrent}
