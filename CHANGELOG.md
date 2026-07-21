@@ -1,3 +1,33 @@
+## [0.15.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.2...v0.15.3) (2026-07-20)
+
+### Bug Fixes
+
+* **ci:** cap vitest forks to 2 to prevent k8s CPU saturation ([#1302](https://github.com/zextras/carbonio-admin-console-ui/issues/1302)) ([1419b2a](https://github.com/zextras/carbonio-admin-console-ui/commit/1419b2a89cd58642e3290fd04ec8f13cb0c4033e))
+
+## [0.15.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.1...v0.15.2) (2026-07-20)
+
+### Bug Fixes
+
+* fixed default cos enable switch issue ([#1296](https://github.com/zextras/carbonio-admin-console-ui/issues/1296)) ([815d48e](https://github.com/zextras/carbonio-admin-console-ui/commit/815d48e5250491caa51ff87ce145e310c93b67af))
+
+## [0.15.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.0...v0.15.1) (2026-07-20)
+
+### Bug Fixes
+
+* fixed event bubbling during cos delete ([#1299](https://github.com/zextras/carbonio-admin-console-ui/issues/1299)) ([0705547](https://github.com/zextras/carbonio-admin-console-ui/commit/0705547acdae1a3ec5a1ae93f161596a72facebd))
+
+## [0.15.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.7...v0.15.0) (2026-07-16)
+
+### Features
+
+* **routing:** browser refresh keeps you in the same view ([ca337f2](https://github.com/zextras/carbonio-admin-console-ui/commit/ca337f2ffa8bbd0653456948bae9eacfeea7d400))
+
+## [0.14.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.6...v0.14.7) (2026-07-08)
+
+### Other changes
+
+* **admin-ui-backup:** improve routing ([#1285](https://github.com/zextras/carbonio-admin-console-ui/issues/1285)) ([07fa9f7](https://github.com/zextras/carbonio-admin-console-ui/commit/07fa9f760321ecbfcb7b962e0c564407aef48242))
+
 ## [0.14.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.5...v0.14.6) (2026-07-08)
 
 ### Other changes

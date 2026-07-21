@@ -3,14 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Padding, Row, Switch } from '@zextras/ui-components';
+import { Container, Input, ListRow, Padding, RouteLeavingGuard, Row, Switch } from '@zextras/ui-components';
 import { useModuleLicenseInfo } from '@zextras/ui-shared';
 import { FC, useEffect, useState } from 'react';
 
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
-import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 
 const BackupServerConfig: FC = () => {
   const {
@@ -285,7 +284,7 @@ const BackupServerConfig: FC = () => {
         </Container>
       )}
 
-      <BackupRouteLeavingGuard isDirty={isDirty} onSave={onSave} t={t} />
+      <RouteLeavingGuard when={isDirty} onSave={onSave} />
     </>
   );
 };

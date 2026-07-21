@@ -3,14 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
+import { Container, Input, ListRow, RouteLeavingGuard, Row, Select, Switch } from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 
 import type { GlobalConfig } from '../../../../types';
 import { useBackupConfig } from '../../../hooks/useBackupConfig';
-import { useBackupStore } from '../../../store/backup/store';
+import { useGlobalConfig } from '../../../services/use-global-config';
 import BackupConfigHeader from '../components/backup/BackupConfigHeader';
-import BackupRouteLeavingGuard from '../components/backup/BackupRouteLeavingGuard';
 
 const BackupAdvanced: FC = () => {
   const {
@@ -25,7 +24,7 @@ const BackupAdvanced: FC = () => {
     t,
   } = useBackupConfig();
 
-  const globalConfig = useBackupStore((state) => state.globalConfig);
+  const { data: globalConfig } = useGlobalConfig();
 
   const compressLevelItems = useMemo(
     () => [
@@ -316,7 +315,7 @@ const BackupAdvanced: FC = () => {
           </Container>
         </Container>
       </Container>
-      <BackupRouteLeavingGuard isDirty={isDirty} onSave={onSave} t={t} />
+      <RouteLeavingGuard when={isDirty} onSave={onSave} />
     </>
   );
 };

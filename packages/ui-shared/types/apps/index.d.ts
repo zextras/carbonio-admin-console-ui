@@ -18,10 +18,24 @@ export type CarbonioModule = {
   js_entrypoint: string;
 };
 
+/**
+ * A registered route, as stored in the app store.
+ *
+ * - `route` is the raw, app-declared route segment (e.g. `'storage'`).
+ * - `path` is the full URL path used for mounting/matching/navigation. It is derived by the
+ *   store as `${primarybarSection.id}/${route}` when the route belongs to a primary-bar
+ *   section, otherwise just `route` (e.g. `'manage/storage'` or `'dashboard'`).
+ *
+ * Note: `primarybarSection.id` therefore serves double duty — it is both the URL prefix and the
+ * primary-bar grouping key. `route` is never mutated; `path` is the computed, prefixed value.
+ */
 export type AppRoute = {
   // persist?: boolean;
   id: string;
+  /** Raw app-declared route segment (e.g. `'storage'`). */
   route: string;
+  /** Full prefixed URL path used for mounting/matching (e.g. `'manage/storage'`). */
+  path: string;
   app: string;
 };
 
@@ -78,6 +92,8 @@ export type PrimaryBarView = Omit<CarbonioView<PrimaryBarComponentProps>, 'compo
   visible: boolean;
   label: string;
   section?: PrimarybarSection;
+  /** Full prefixed URL path (e.g. `'manage/storage'`); `route` is the raw segment. */
+  path: string;
 
   tooltip?: ComponentType<{}>;
   trackerLabel?: string;
@@ -85,7 +101,10 @@ export type PrimaryBarView = Omit<CarbonioView<PrimaryBarComponentProps>, 'compo
 
 export type SecondaryBarView = CarbonioView<SecondaryBarComponentProps>;
 
-export type AppView = CarbonioView<AppViewComponentProps>;
+export type AppView = CarbonioView<AppViewComponentProps> & {
+  /** Full prefixed URL path used to mount the view (e.g. `'manage/storage'`). */
+  path: string;
+};
 
 export type UtilityView = CarbonioAccessoryView<UtilityBarComponentProps> & {
   button: string | ComponentType<UtilityBarComponentProps>;
@@ -108,8 +127,13 @@ export type PrimaryAccessoryView = CarbonioAccessoryView<PrimaryAccessoryViewPro
 
 export type SecondaryAccessoryView = CarbonioAccessoryView<SecondaryAccessoryViewProps>;
 
+/**
+ * Descriptor passed to `addRoute`. This is the *input* shape: `route` is the raw app-declared
+ * segment (e.g. `'storage'`). The store derives the full URL `path` from it (see {@link AppRoute}).
+ */
 export type AppRouteDescriptor = {
   id: string;
+  /** Raw route segment (e.g. `'storage'`). The store prefixes it with `primarybarSection.id`. */
   route: string;
   app: string;
   primaryBar: string | ComponentType<PrimaryBarComponentProps>;
@@ -142,6 +166,13 @@ export type AppState = {
   shell: CarbonioModule;
 };
 
+/**
+ * A primary-bar grouping section.
+ *
+ * NOTE: `id` serves double duty — it is both the grouping key for the primary bar AND the URL
+ * prefix for every route that belongs to this section (e.g. `id: 'manage'` → `/manage/storage`).
+ * See {@link AppRoute.path}.
+ */
 export type PrimarybarSection = {
   id: string;
   label: string;

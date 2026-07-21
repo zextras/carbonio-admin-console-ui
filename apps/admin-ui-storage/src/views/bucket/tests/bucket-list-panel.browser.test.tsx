@@ -16,6 +16,7 @@ import {
 	getGetInfoResponseMock,
 	getQueryClient,
 	grantUserConfigRights,
+	registerAppRoute,
 	resetMockWorker,
 	setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -70,6 +71,10 @@ function setupAllConfigInterceptor(): Promise<unknown> {
 }
 
 describe('BucketListPanel (browser)', () => {
+	beforeEach(() => {
+		registerAppRoute(STORAGES_ROUTE_ID, MANAGE_APP_ID);
+	});
+
 	describe('CE mode', () => {
 		beforeEach(async () => {
 			await advancedSupportedApiForBrowser.withAdvancedNotSupported();

@@ -19,7 +19,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('../views/app-view', () => ({
-  default: () => <div data-testid="app-view" />,
+  AppView: () => <div data-testid="app-view" />,
 }));
 
 import { addRoute, removeRoute, useIsAdvanced } from '@zextras/ui-shared';

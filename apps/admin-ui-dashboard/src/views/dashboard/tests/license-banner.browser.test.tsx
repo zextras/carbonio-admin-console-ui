@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useAppStore } from '@zextras/ui-shared';
 import { getQueryClient, LocationDisplay, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { MANAGE_APP_ID, SUBSCRIPTIONS_ROUTE_ID } from '../../../constants';
+import { SUBSCRIPTIONS_ROUTE_ID } from '../../../constants';
 import { LicenseBanner } from '../license-banner';
 
 describe('LicenseBanner', () => {
@@ -34,6 +35,19 @@ describe('LicenseBanner', () => {
   ) {
     const queryClient = getQueryClient();
     queryClient.setQueryData(['subscription', 'license'], createLicenseData(maintenanceStatus));
+
+    // Register the subscriptions route so buildPath resolves the prefixed
+    // path (/manage/subscriptions), mirroring how the shell bootstraps routes.
+    useAppStore.setState({
+      routes: {
+        [SUBSCRIPTIONS_ROUTE_ID]: {
+          id: SUBSCRIPTIONS_ROUTE_ID,
+          route: SUBSCRIPTIONS_ROUTE_ID,
+          path: `manage/${SUBSCRIPTIONS_ROUTE_ID}`,
+          app: 'carbonio-admin-ui-subscription',
+        },
+      },
+    });
 
     return await setupBrowserTest(component, { queryClient });
   }
@@ -105,6 +119,6 @@ describe('LicenseBanner', () => {
     const button = page.getByRole('button', { name: 'View Subscription Details' });
     await button.click();
     const location = page.getByTestId('location');
-    await expect.element(location).toHaveTextContent(`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`);
+    await expect.element(location).toHaveTextContent(`/manage/${SUBSCRIPTIONS_ROUTE_ID}`);
   });
 });

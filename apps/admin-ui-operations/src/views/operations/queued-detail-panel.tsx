@@ -17,7 +17,7 @@ import DeleteOpearationsModel from './delete-operations-model';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 
-const QuededDetailPanel: FC = () => {
+const QueuedDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const { data: queuedData = [], isError } = useAllOperations({
@@ -120,4 +120,4 @@ const QuededDetailPanel: FC = () => {
 	);
 };
 
-export default QuededDetailPanel;
+export default QueuedDetailPanel;
