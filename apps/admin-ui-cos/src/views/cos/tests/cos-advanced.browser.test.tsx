@@ -681,6 +681,17 @@ describe('CosAdvanced', () => {
       await userEvent.fill(input, '5');
       await expect.element(page.getByRole('img', { name: REVERT_LABEL })).toBeVisible();
     });
+
+    it('restores the initial value when the revert icon is clicked', async () => {
+      await setupCosAdvancedTest();
+      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
+      await userEvent.fill(input, '5');
+      await userEvent.click(page.getByRole('img', { name: REVERT_LABEL }));
+      await expect.element(input).toHaveValue('1.00');
+      await expect
+        .element(page.getByRole('button', { name: 'Save' }))
+        .not.toBeInTheDocument();
+    });
   });
 
   describe('Total Quota section', () => {
