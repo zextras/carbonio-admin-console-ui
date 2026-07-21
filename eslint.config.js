@@ -88,8 +88,10 @@ export default tseslint.config(
       'notice/notice': 'off',
     },
   },
+  // this is the stricter eslint config we should be enforcing for all apps and packages
+  // once all of them will be here, we can remove the ovrerrides and make the strict config default
   {
-    files: ['apps/admin-ui-subscription/**/*'],
+    files: ['apps/admin-ui-subscription/**/*', 'apps/admin-ui-cos/**/*'],
     plugins: {
       'react-compiler': reactCompiler,
       'jsx-a11y': jsxA11y,
@@ -100,18 +102,6 @@ export default tseslint.config(
       'react-hooks/exhaustive-deps': 'warn',
       ...jsxA11y.configs.recommended.rules,
       ...reactYouMightNotNeedAnEffect.configs.strict.rules,
-    },
-  },
-  {
-    files: ['apps/admin-ui-cos/**/*'],
-    plugins: {
-      'react-compiler': reactCompiler,
-      'jsx-a11y': jsxA11y,
-    },
-    rules: {
-      'react-compiler/react-compiler': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
-      ...jsxA11y.configs.recommended.rules,
     },
   },
 );
