@@ -25,7 +25,10 @@ export const VerifyProgress = ({
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   const [prevIsPending, setPrevIsPending] = useState(isPending);
   if (isPending !== prevIsPending) {
