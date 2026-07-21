@@ -6,7 +6,7 @@
 import { useSelector } from '@tanstack/react-store';
 import { Container, getFieldErrorProps, Input, Padding } from '@zextras/ui-components';
 import { isValidDecimalInput } from '@zextras/ui-shared';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BytesToGB, GbToBytes } from '../../../utility/utils';
@@ -14,79 +14,53 @@ import { COS_VALIDATION_MESSAGES } from '../schema';
 import { CosAdvancedFormValues, CosFormApi } from '../types';
 import { QuotaRevertIcon } from './quota-revert-icon';
 
+function gbFromBytes(bytes: string | undefined): string {
+  return bytes ? BytesToGB(bytes).toFixed(2) : '';
+}
+
 type QuotaGBFieldInnerProps = {
-  fieldState: {
-    value: string | undefined;
-    handleChange: (value: string) => void;
-  };
+  value: string;
   label: string;
   maximumDigitsLabel: string;
   disabled: boolean;
   hasError: boolean;
   description?: string;
+  showMsg: boolean;
+  showRevert: boolean;
+  revertLabel: string;
+  onChange: (gb: string) => void;
+  onRevert: () => void;
   onBlur: () => void;
 };
 
-const QuotaGBFieldInner = ({
-  fieldState,
+const QuotaGBFieldInner: FC<QuotaGBFieldInnerProps> = ({
+  value,
   label,
   maximumDigitsLabel,
   disabled,
   hasError,
   description,
+  showMsg,
+  showRevert,
+  revertLabel,
+  onChange,
+  onRevert,
   onBlur,
-}: QuotaGBFieldInnerProps) => {
-  const [rawGB, setRawGB] = useState(
-    () => (fieldState.value ? BytesToGB(fieldState.value).toFixed(2) : ''),
-  );
-  const [showMsg, setShowMsg] = useState(false);
-  const isUserEditing = useRef(false);
-  const initialValue = useRef(fieldState.value);
-  const [t] = useTranslation();
-
-  useEffect(() => {
-    if (isUserEditing.current) {
-      isUserEditing.current = false;
-      return;
-    }
-    setRawGB(fieldState.value ? BytesToGB(fieldState.value).toFixed(2) : '');
-    setShowMsg(false);
-  }, [fieldState.value]);
-
-  const showRevert = fieldState.value !== initialValue.current;
-
-  const handleRevert = () => {
-    const bytes = initialValue.current;
-    fieldState.handleChange(bytes ?? '');
-    setRawGB(bytes ? BytesToGB(bytes).toFixed(2) : '');
-    setShowMsg(false);
-  };
-
-  const revertLabel = t('cos_quota.click_to_revert', 'Click to revert to the inherited value');
+}) => {
   const RevertIcon = showRevert
-    ? () => <QuotaRevertIcon label={revertLabel} onClick={handleRevert} />
+    ? () => <QuotaRevertIcon label={revertLabel} onClick={onRevert} />
     : undefined;
 
   return (
     <>
       <Input
         label={label}
-        value={rawGB}
+        value={value}
         backgroundColor="gray5"
         inputName="zimbraMailQuota"
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
           if (!isValidDecimalInput(e.target.value)) return;
-          const dp = e.target.value?.split('.')[1];
-          if (dp && dp.length > 3) {
-            setShowMsg(true);
-            return;
-          }
-          setShowMsg(false);
-          isUserEditing.current = true;
-          setRawGB(e.target.value);
-          fieldState.handleChange(
-            e.target.value ? String(Math.round(GbToBytes(e.target.value))) : '',
-          );
+          onChange(e.target.value);
         }}
         onBlur={onBlur}
         hasError={hasError}
@@ -104,6 +78,81 @@ const QuotaGBFieldInner = ({
         </Container>
       )}
     </>
+  );
+};
+
+type QuotaGBFieldControllerProps = {
+  fieldValue: string | undefined;
+  handleChange: (value: string) => void;
+  label: string;
+  maximumDigitsLabel: string;
+  disabled: boolean;
+  hasError: boolean;
+  description?: string;
+  onBlur: () => void;
+};
+
+const QuotaGBFieldController = ({
+  fieldValue,
+  handleChange,
+  label,
+  maximumDigitsLabel,
+  disabled,
+  hasError,
+  description,
+  onBlur,
+}: QuotaGBFieldControllerProps) => {
+  const [t] = useTranslation();
+  const [initialValue] = useState(fieldValue);
+  const [lastEmitted, setLastEmitted] = useState(fieldValue);
+  const [rawGB, setRawGB] = useState(() => gbFromBytes(fieldValue));
+  const [showMaxDigitsMsg, setShowMaxDigitsMsg] = useState(false);
+
+  if (fieldValue !== lastEmitted) {
+    setLastEmitted(fieldValue);
+    setRawGB(gbFromBytes(fieldValue));
+    setShowMaxDigitsMsg(false);
+  }
+
+  const showRevert = fieldValue !== initialValue;
+  const revertLabel = t('cos_quota.click_to_revert', 'Click to revert to the inherited value');
+
+  const onChange = (gb: string) => {
+    const dp = gb?.split('.')[1];
+    if (dp && dp.length > 3) {
+      setShowMaxDigitsMsg(true);
+      return;
+    }
+    setShowMaxDigitsMsg(false);
+    setRawGB(gb);
+    const bytes = gb ? String(Math.round(GbToBytes(gb))) : '';
+    setLastEmitted(bytes);
+    handleChange(bytes);
+  };
+
+  const onRevert = () => {
+    const bytes = initialValue ?? '';
+    setLastEmitted(bytes);
+    handleChange(bytes);
+    setRawGB(gbFromBytes(initialValue));
+    setShowMaxDigitsMsg(false);
+  };
+
+  return (
+    <QuotaGBFieldInner
+      value={rawGB}
+      label={label}
+      maximumDigitsLabel={maximumDigitsLabel}
+      disabled={disabled}
+      hasError={hasError}
+      description={description}
+      showMsg={showMaxDigitsMsg}
+      showRevert={showRevert}
+      revertLabel={revertLabel}
+      onChange={onChange}
+      onRevert={onRevert}
+      onBlur={onBlur}
+    />
   );
 };
 
@@ -129,11 +178,9 @@ export const QuotaGBField = ({
       {(field) => {
         const error = getFieldErrorProps(field, isSubmitted, t, COS_VALIDATION_MESSAGES);
         return (
-          <QuotaGBFieldInner
-            fieldState={{
-              value: field.state.value as string | undefined,
-              handleChange: field.handleChange,
-            }}
+          <QuotaGBFieldController
+            fieldValue={field.state.value as string | undefined}
+            handleChange={field.handleChange}
             label={label}
             maximumDigitsLabel={maximumDigitsLabel}
             disabled={disabled}

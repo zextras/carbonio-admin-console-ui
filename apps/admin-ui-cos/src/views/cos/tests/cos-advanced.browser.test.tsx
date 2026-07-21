@@ -635,6 +635,65 @@ describe('CosAdvanced', () => {
     });
   });
 
+  describe('Quotas section — Mails Account quota', () => {
+    const MAIL_QUOTA_LABEL = 'Mails Account quota (GB)';
+    const MAX_DIGITS_MSG = 'Maximum 3 digits allowed after the decimal point';
+    const REVERT_LABEL = 'Click to revert to the inherited value';
+
+    it('renders the mail quota input with the value converted to GB (1 GB → "1.00")', async () => {
+      await setupCosAdvancedTest();
+      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
+      await expect.element(input).toHaveValue('1.00');
+    });
+
+    it('shows dirty state when editing the mail quota', async () => {
+      await setupCosAdvancedTest();
+      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
+      await userEvent.fill(input, '5');
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+
+    it('shows the max-digits message when typing more than 3 decimal places', async () => {
+      await setupCosAdvancedTest();
+      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
+      await userEvent.fill(input, '1.1234');
+      await expect.element(page.getByText(MAX_DIGITS_MSG)).toBeVisible();
+    });
+
+    it('hides the max-digits message after typing a valid value', async () => {
+      await setupCosAdvancedTest();
+      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
+      await userEvent.fill(input, '1.1234');
+      await userEvent.fill(input, '1.5');
+      await expect.element(page.getByText(MAX_DIGITS_MSG)).not.toBeInTheDocument();
+    });
+
+    it('blocks non-decimal input and keeps the previous value', async () => {
+      await setupCosAdvancedTest();
+      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
+      await userEvent.fill(input, 'abc');
+      await expect.element(input).toHaveValue('1.00');
+    });
+
+    it('shows the revert icon after changing the value', async () => {
+      await setupCosAdvancedTest();
+      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
+      await userEvent.fill(input, '5');
+      await expect.element(page.getByRole('img', { name: REVERT_LABEL })).toBeVisible();
+    });
+
+    it('restores the initial value when the revert icon is clicked', async () => {
+      await setupCosAdvancedTest();
+      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
+      await userEvent.fill(input, '5');
+      await userEvent.click(page.getByRole('img', { name: REVERT_LABEL }));
+      await expect.element(input).toHaveValue('1.00');
+      await expect
+        .element(page.getByRole('button', { name: 'Save' }))
+        .not.toBeInTheDocument();
+    });
+  });
+
   describe('Total Quota section', () => {
     beforeEach(() => {
       useLoginConfigStore.setState({ featureFlags: { totalQuota: true } });
