@@ -58,6 +58,7 @@ export function Connection({
   const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [showVerifyResult, setShowVerifyResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
+  const [isProgressActive, setIsProgressActive] = useState(false);
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);
   const [isVerifyError, setIsVerifyError] = useState(false);
 
@@ -85,6 +86,7 @@ export function Connection({
       setIsVerifySuccess(false);
       setIsVerifyError(false);
       setIsVerifyPending(true);
+      setIsProgressActive(true);
 
       const selectedRegion =
         value.regionValue === CUSTOM_REGION_VALUE
@@ -144,6 +146,7 @@ export function Connection({
 
   const handleProgressComplete = (): void => {
     setShowVerifyResult(true);
+    setIsProgressActive(false);
   };
 
   const handleSuccessComplete = (): void => {
@@ -465,7 +468,9 @@ export function Connection({
           </Row>
         </Row>
       </Container>
-      <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
+      {isProgressActive && (
+        <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
+      )}
       {showVerifyResult && isVerifySuccess && (
         <VerifySuccess onComplete={handleSuccessComplete} />
       )}

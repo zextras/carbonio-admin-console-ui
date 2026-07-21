@@ -155,6 +155,7 @@ export function EditS3ConnectorDetailPanel({
   const [checkDetails, setCheckDetails] = useState<CheckResult | undefined>(undefined);
   const [showVerifyResult, setShowVerifyResult] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
+  const [isProgressActive, setIsProgressActive] = useState(false);
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);
   const [isVerifyError, setIsVerifyError] = useState(false);
   const [selectedTab, setSelectedTab] = useState(GENERAL_TAB);
@@ -347,6 +348,7 @@ export function EditS3ConnectorDetailPanel({
     setIsVerifySuccess(false);
     setIsVerifyError(false);
     setIsVerifyPending(true);
+    setIsProgressActive(true);
 
     const { ok, errorDetails } = await saveChanges();
 
@@ -365,6 +367,7 @@ export function EditS3ConnectorDetailPanel({
     setIsVerifySuccess(false);
     setIsVerifyError(false);
     setIsVerifyPending(true);
+    setIsProgressActive(true);
 
     try {
       const v = form.state.values;
@@ -405,6 +408,7 @@ export function EditS3ConnectorDetailPanel({
 
   function handleProgressComplete(): void {
     setShowVerifyResult(true);
+    setIsProgressActive(false);
   }
 
   function handleSuccessComplete(): void {
@@ -793,7 +797,9 @@ export function EditS3ConnectorDetailPanel({
         closeHandler={(): void => setIsVerifyModalOpen(false)}
         applyHandler={onApplyChanges}
       />
-      <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
+      {isProgressActive && (
+        <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
+      )}
       {showVerifyResult && isVerifySuccess && (
         <VerifySuccess onComplete={handleSuccessComplete} />
       )}
