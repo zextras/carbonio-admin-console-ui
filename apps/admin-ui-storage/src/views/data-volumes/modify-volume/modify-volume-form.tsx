@@ -196,6 +196,14 @@ export function ModifyVolumeForm({
   const id = String(volumeDetail.id ?? volumeId);
   const showTieringSettings = isS3StoreType(storeType) && tieringSupported;
   const roleBadge = labelMap[volumeDetail.type] ?? '';
+  const volumeRoleLabel =
+    volumeDetail.type === 1
+      ? t('label.primary_volume_role', 'Primary Volume')
+      : volumeDetail.type === 2
+        ? t('label.secondary_volume_role', 'Secondary Volume')
+        : volumeDetail.type === 10
+          ? t('label.index_volume_role', 'Index Volume')
+          : '';
 
   const form = useForm({
     defaultValues: {
@@ -429,6 +437,18 @@ export function ModifyVolumeForm({
                 <div className={styles.detailValueRow}>
                   <ds-text className={styles.detailValue} weight="bold" size="small">
                     {server ?? ''}
+                  </ds-text>
+                </div>
+              </div>
+            </Row>
+            <Row padding={{ top: 'large' }} width="100%">
+              <div className={styles.detailItem}>
+                <ds-text size="small" color="gray1">
+                  {t('label.volume_role', 'Volume role')}
+                </ds-text>
+                <div className={styles.detailValueRow}>
+                  <ds-text className={styles.detailValue} weight="bold" size="small">
+                    {volumeRoleLabel}
                   </ds-text>
                 </div>
               </div>

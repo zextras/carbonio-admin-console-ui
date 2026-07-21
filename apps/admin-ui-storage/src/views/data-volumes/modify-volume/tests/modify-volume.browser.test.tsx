@@ -762,3 +762,111 @@ describe('prefix-change confirmation dialog', () => {
     await expect.element(page.getByText('All changes have been saved successfully')).toBeVisible();
   }, 25_000);
 });
+
+describe('external volume bucket data loading', () => {
+  const EXTERNAL_VOLUME_WITH_BUCKET_CONFIG: Volume = {
+    id: 12,
+    name: 's3-bucket-volume',
+    type: 1,
+    bucketConfigurationId: 'bucket-1',
+    volumePrefix: 'mail',
+    storeType: 'S3',
+    isCurrent: false,
+    volumeType: 'primary',
+  };
+
+  const VOLUME_LIST_WITH_BUCKET_CONFIG = {
+    primaries: [EXTERNAL_VOLUME_WITH_BUCKET_CONFIG],
+    secondaries: [],
+    indexes: [],
+  };
+
+  let listS3ConnectorInterceptor: ReturnType<typeof setupListS3ConnectorInterceptor>;
+
+  beforeEach(async () => {
+    await advancedSupportedApiForBrowser.withAdvancedSupported();
+  });
+
+  it('should set unused bucket data when external advanced volume loads connectors', async () => {
+    listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+      {
+        uuid: 'bucket-1',
+        label: 'Primary connector',
+        bucketName: 'primary-bucket',
+        storeType: 'S3',
+        'usage in external backup': 'unused',
+      },
+      {
+        uuid: 'bucket-2',
+        label: 'Secondary connector',
+        bucketName: 'secondary-bucket',
+        storeType: 'Ceph',
+        'usage in external backup': 'unused',
+      },
+    ]);
+
+    await setupBrowserTest(
+      renderModifyVolume(
+        EXTERNAL_VOLUME_WITH_BUCKET_CONFIG.id as number,
+        VOLUME_LIST_WITH_BUCKET_CONFIG,
+      ),
+      { initialRouterEntry: VOLUME_ROUTE_ENTRY },
+    );
+
+    await vi.waitFor(() => {
+      expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+    });
+
+    await expect.element(page.getByText('primary-bucket', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('bucket-1', { exact: true })).toBeVisible();
+  });
+
+  it('should render tiering switches when volume uses uuid from getAllVolumes API shape', async () => {
+    const UUID_VOLUME: Volume = {
+      id: 13,
+      name: 's3-uuid-volume',
+      type: 1,
+      uuid: 'tiering-connector-uuid',
+      tieringSupported: true,
+      useInfrequentAccess: false,
+      infrequentAccessThreshold: 65536,
+      useIntelligentTiering: false,
+      volumePrefix: '',
+      centralized: false,
+      storeType: 'S3',
+      isCurrent: false,
+      volumeType: 'primary',
+    };
+
+    const UUID_VOLUME_LIST = {
+      primaries: [UUID_VOLUME],
+      secondaries: [],
+      indexes: [],
+    };
+
+    listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+      {
+        uuid: 'tiering-connector-uuid',
+        label: 'Tiering connector',
+        bucketName: 'tiering-bucket',
+        storeType: 'S3',
+        tieringSupported: true,
+        'usage in external backup': 'unused',
+      },
+    ]);
+
+    await setupBrowserTest(
+      renderModifyVolume(UUID_VOLUME.id as number, UUID_VOLUME_LIST),
+      { initialRouterEntry: VOLUME_ROUTE_ENTRY },
+    );
+
+    await vi.waitFor(() => {
+      expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+    });
+
+    await expect.element(page.getByText('Use infrequent access', { exact: true })).toBeVisible();
+    await expect
+      .element(page.getByText('Use intelligent tiering', { exact: true }))
+      .toBeVisible();
+  });
+});
