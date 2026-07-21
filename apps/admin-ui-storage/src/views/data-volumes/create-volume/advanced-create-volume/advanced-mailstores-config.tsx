@@ -295,14 +295,6 @@ export function AdvancedMailstoresConfig({
               </Row>
             </Row>
           )}
-          <Padding top="extrasmall">
-            <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-              {t(
-                'this_will_not_affect_data_already_stored',
-                'This will not affect data already stored',
-              )}
-            </ds-text>
-          </Padding>
         </>
       ) : (
         <>
