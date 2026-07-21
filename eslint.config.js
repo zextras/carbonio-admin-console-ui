@@ -91,8 +91,11 @@ export default tseslint.config(
   // this is the stricter eslint config we should be enforcing for all apps and packages
   // once all of them will be here, we can remove the ovrerrides and make the strict config default
   {
-    files: ['apps/admin-ui-subscription/**/*', 'apps/admin-ui-storage/**/*'],
-    files: ['apps/admin-ui-subscription/**/*', 'apps/admin-ui-cos/**/*'],
+    files: [
+      'apps/admin-ui-subscription/**/*',
+      'apps/admin-ui-storage/**/*',
+      'apps/admin-ui-cos/**/*',
+    ],
     plugins: {
       'react-compiler': reactCompiler,
       'jsx-a11y': jsxA11y,
