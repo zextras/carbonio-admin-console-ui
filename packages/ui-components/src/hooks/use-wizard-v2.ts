@@ -77,7 +77,7 @@ export const useWizardV2 = ({
 				dataRef.current = newState;
 				setInnerData(newState);
 			}
-			onChange && onChange(newState);
+			onChange?.(newState);
 		},
 		[uncontrolledMode, currentStep, onChange],
 	);
@@ -89,7 +89,7 @@ export const useWizardV2 = ({
 			setInnerData(newState);
 			setCurrentStep(steps[0].name);
 		}
-		onChange && onChange(newState);
+		onChange?.(newState);
 	}, [uncontrolledMode, onChange, steps]);
 
 	const goToStep = useCallback(
@@ -104,7 +104,7 @@ export const useWizardV2 = ({
 				setInnerData(newState);
 				setCurrentStep(stepName);
 			}
-			onChange && onChange(newState);
+			onChange?.(newState);
 		},
 		[stepKeys, uncontrolledMode, onChange],
 	);
@@ -138,10 +138,10 @@ export const useWizardV2 = ({
 	const canGoNext = useCallback(() => canGoToStep(currentStep), [canGoToStep, currentStep]);
 
 	useEffect(() => {
-		const sectionTop = sectionRef.current && sectionRef.current.getBoundingClientRect().top;
-		const activeTop = activeRef.current && activeRef.current.getBoundingClientRect().top;
-		const sectionBottom = sectionRef.current && sectionRef.current.getBoundingClientRect().bottom;
-		const activeBottom = activeRef.current && activeRef.current.getBoundingClientRect().bottom;
+		const sectionTop = sectionRef.current?.getBoundingClientRect().top;
+		const activeTop = activeRef.current?.getBoundingClientRect().top;
+		const sectionBottom = sectionRef.current?.getBoundingClientRect().bottom;
+		const activeBottom = activeRef.current?.getBoundingClientRect().bottom;
 		const offset = activeTop - sectionTop - 16;
 		if (activeTop < sectionTop || activeBottom > sectionBottom) {
 			if (sectionRef.current && activeRef.current) {

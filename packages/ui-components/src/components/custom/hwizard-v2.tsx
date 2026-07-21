@@ -15,9 +15,6 @@ type Props = {
 	steps: Array<WizardStepV2>;
 	onChange?: any;
 	onComplete: (data: unknown) => void | Promise<void>;
-	nextI18nLabel?: string;
-	backI18nLabel?: string;
-	cancelI18nLabel?: string;
 	Wrapper: any;
 	title?: string;
 	currentStep?: any;
@@ -33,9 +30,6 @@ const WizardV2: React.FC<Props> = ({
 	steps,
 	onChange,
 	onComplete,
-	nextI18nLabel,
-	backI18nLabel,
-	cancelI18nLabel,
 	Wrapper,
 	title,
 	setToggleWizardSection,
@@ -58,10 +52,6 @@ const WizardV2: React.FC<Props> = ({
 	return (
 		<HorizontalWizardLayoutV2
 			Wrapper={Wrapper}
-			nextI18nLabel={nextI18nLabel}
-			backI18nLabel={backI18nLabel}
-			cancelI18nLabel={cancelI18nLabel}
-			sectionRef={sectionRef}
 			activeRef={activeRef}
 			setToggleWizardSection={setToggleWizardSection}
 			{...useWizardAnswer}

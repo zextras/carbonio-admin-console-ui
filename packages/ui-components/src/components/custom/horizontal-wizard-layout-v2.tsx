@@ -23,11 +23,7 @@ const StepNavigator: React.FC<{
 	isLastStep: boolean;
 	onClick: any;
 	stepIndex: any;
-	goToStep: any;
-	goNext: any;
 	currentStepIndex: any;
-	canGoToStep: any;
-	isFirstStep: any;
 }> = ({ step, isDone, isActive, isLastStep, onClick, stepIndex, currentStepIndex, steps }) => {
 	const color = useMemo(() => {
 		if (isActive) return 'primary';
@@ -82,7 +78,6 @@ const DefaultWrapper: React.FC<{ wizard: any; wizardFooter: any }> = ({ wizard, 
 );
 
 type Refs = {
-	sectionRef: React.RefObject<HTMLDivElement>;
 	activeRef: React.RefObject<HTMLDivElement>;
 };
 
@@ -97,14 +92,9 @@ type Props = {
 	getData: any;
 	isComplete: boolean;
 	isSubmitting: boolean;
-	resetWizard: any;
 	canGoToStep: any;
 	canGoNext: any;
-	isFirstStep: any;
 	Wrapper: any;
-	nextI18nLabel: any;
-	backI18nLabel: any;
-	cancelI18nLabel: any;
 	title: string;
 	onComplete: any;
 	setToggleWizardSection: (val: boolean) => void;
@@ -126,7 +116,6 @@ export const HorizontalWizardLayoutV2 = ({
 	goBack,
 	goNext,
 	goToStep,
-	isFirstStep,
 	Wrapper = DefaultWrapper,
 	title,
 	setToggleWizardSection,
@@ -170,12 +159,8 @@ export const HorizontalWizardLayoutV2 = ({
 								!isActive &&
 								(isDone ? goToStep(step.name) : (canGoNext() && goNext()) || goToStep(step.name))
 							}
-							goToStep={goToStep}
-							goNext={goNext}
-							canGoToStep={canGoToStep}
 							stepIndex={stepIndex}
 							currentStepIndex={currentStepIndex}
-							isFirstStep={isFirstStep}
 							steps={steps}
 						/>
 					</Row>
