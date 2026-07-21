@@ -226,47 +226,45 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ top: 'large', right: 'large' }}
-        >
-          <div className={styles.detailItem}>
-            <ds-text size="small" color="gray1">
-              {t('label.volume_server_name', 'Server')}
+      <Container
+        mainAlignment="flex-start"
+        crossAlignment="flex-start"
+        padding={{ top: 'large', right: 'large' }}
+      >
+        <div className={styles.detailItem}>
+          <ds-text size="small" color="gray1">
+            {t('label.volume_server_name', 'Server')}
+          </ds-text>
+          <div className={styles.detailValueRow}>
+            <ds-text className={styles.detailValue} weight='bold' size="small">
+              {externalData}
             </ds-text>
-            <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue} size="small">
-                {externalData}
-              </ds-text>
-            </div>
           </div>
-        </Container>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ top: 'large' }}
-        >
-          <div className={styles.detailItem}>
-            <ds-text size="small" color="gray1">
-              {t('label.storage_type', 'Storage Type')}
+        </div>
+      </Container>
+      <Container
+        mainAlignment="flex-start"
+        crossAlignment="flex-start"
+        padding={{ top: 'large' }}
+      >
+        <div className={styles.detailItem}>
+          <ds-text size="small" color="gray1">
+            {t('label.storage_type', 'Storage Type')}
+          </ds-text>
+          <div className={styles.detailValueRow}>
+            <ds-text className={styles.detailValue} weight='bold' size="small">
+              {advancedVolumeDetail?.volumeAllocation}
             </ds-text>
-            <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue} size="small">
-                {advancedVolumeDetail?.volumeAllocation}
-              </ds-text>
-            </div>
           </div>
-        </Container>
-      </ListRow>
+        </div>
+      </Container>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
         <div className={styles.detailItem}>
           <ds-text size="small" color="gray1">
             {t('label.volume_name', 'Volume Name')}
           </ds-text>
           <div className={styles.detailValueRow}>
-            <ds-text className={styles.detailValue} size="small">
+            <ds-text className={styles.detailValue} weight='bold' size="small">
               {advancedVolumeDetail?.volumeName}
             </ds-text>
           </div>

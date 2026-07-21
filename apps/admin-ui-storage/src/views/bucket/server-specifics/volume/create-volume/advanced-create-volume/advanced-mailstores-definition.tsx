@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, LabeledValue, Padding, Row, Select } from '@zextras/ui-components';
+import { Container, Input, Padding, Row, Select } from '@zextras/ui-components';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,6 +24,7 @@ import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/stor
 import { volumeAllocationList } from '../../../../../utility/utils';
 import { VolumeContext } from '../volume-context';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
+import styles from './create-volume.module.css';
 
 type AdvancedMailstoresDefinitionProps = {
   externalData: string;
@@ -229,12 +230,15 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.volume_server_name', 'Server')}
-          backgroundColor="gray6"
-          value={externalData}
-        />
+      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start" crossAlignment="flex-start">
+        <div className={styles.detailItem}>
+          <ds-text size="small" color="gray1">
+            {t('label.volume_server_name', 'Server')}
+          </ds-text>
+          <div className={styles.detailValueRow}>
+            <ds-text className={styles.detailValue} weight='bold' size='small'>{externalData ?? ''}</ds-text>
+          </div>
+        </div>
       </Row>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
         <Input
