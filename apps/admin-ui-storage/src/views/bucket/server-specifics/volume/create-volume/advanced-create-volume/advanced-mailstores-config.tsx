@@ -295,24 +295,8 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({
                   {t('label.bucket_name', 'Bucket Name')}
                 </ds-text>
                 <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} size="small">
+                  <ds-text className={styles.detailValue} weight='bold' size="small">
                     {advancedVolumeDetail?.bucketName}
-                  </ds-text>
-                </div>
-              </div>
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large' }}
-            >
-              <div className={styles.detailItem}>
-                <ds-text size="small" color="gray1">
-                  {t('label.type', 'Type')}
-                </ds-text>
-                <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} size="small">
-                    {advancedVolumeDetail?.unusedBucketType}
                   </ds-text>
                 </div>
               </div>
@@ -324,7 +308,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({
                 {t('label.ID', 'ID')}
               </ds-text>
               <div className={styles.detailValueRow}>
-                <ds-text className={styles.detailValue} size="small">
+                <ds-text className={styles.detailValue} weight='bold' size="small">
                   {advancedVolumeDetail?.bucketId}
                 </ds-text>
               </div>
