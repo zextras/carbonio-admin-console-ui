@@ -11,7 +11,6 @@ import {
   Container,
   Displayer,
   Input,
-  LabeledValue,
   Link,
   ListRow,
   Modal,
@@ -423,11 +422,16 @@ export function ModifyVolumeForm({
               crossAlignment="flex-start"
             >
             <Row padding={{ top: 'small' }} width="100%">
-              <LabeledValue
-                label={t('label.server', 'Server')}
-                value={server ?? ''}
-                backgroundColor="gray5"
-              />
+              <div className={styles.detailItem}>
+                <ds-text size="small" color="gray1">
+                  {t('label.server', 'Server')}
+                </ds-text>
+                <div className={styles.detailValueRow}>
+                  <ds-text className={styles.detailValue} weight="bold" size="small">
+                    {server ?? ''}
+                  </ds-text>
+                </div>
+              </div>
             </Row>
             <Row padding={{ top: 'large' }} width="100%">
               <Select
@@ -492,33 +496,32 @@ export function ModifyVolumeForm({
                 crossAlignment="flex-start"
                 padding={{ top: 'large', right: 'large' }}
               >
-                <LabeledValue
-                  label={t('label.bucket_name', 'Bucket name')}
-                  backgroundColor="gray6"
-                  value={connectorName}
-                />
-              </Container>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                padding={{ top: 'large', right: 'large' }}
-              >
-                <LabeledValue
-                  label={t('label.type', 'Type')}
-                  backgroundColor="gray6"
-                  value={storeType}
-                />
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('label.bucket_name', 'Bucket name')}
+                  </ds-text>
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} weight="bold" size="small">
+                      {connectorName}
+                    </ds-text>
+                  </div>
+                </div>
               </Container>
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
                 padding={{ top: 'large' }}
               >
-                <LabeledValue
-                  label={t('storage.dataVolume.s3ConnectorId', 'S3 Connector ID')}
-                  backgroundColor="gray6"
-                  value={form.state.values.bucketConfigurationId}
-                />
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('storage.dataVolume.s3ConnectorId', 'S3 Connector ID')}
+                  </ds-text>
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} weight="bold" size="small">
+                      {form.state.values.bucketConfigurationId}
+                    </ds-text>
+                  </div>
+                </div>
               </Container>
             </ListRow>
             {volumeDetail?.type !== 10 && (
