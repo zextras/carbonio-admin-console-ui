@@ -63,15 +63,11 @@ type ConnectorOption = { label: string; value: string };
 
 function buildConnectorSelectItems(
   connectors: Array<S3ConnectorVolume>,
-  getConnectorTypeLabel: (storeTypeValue: string | undefined) => string | undefined,
 ): Array<ConnectorOption> {
-  return connectors.map((items) => {
-    const volumeObject = getConnectorTypeLabel(items?.storeType);
-    return {
-      label: `${volumeObject} | ${items?.label}`,
-      value: items?.uuid ?? '',
-    };
-  });
+  return connectors.map((items) => ({
+    label: items?.label ?? '',
+    value: items?.uuid ?? '',
+  }));
 }
 
 function getVolumeConnectorConfigurationId(volume: Volume | undefined): string | undefined {
@@ -159,10 +155,7 @@ export function ModifyVolumeForm({
       ? [...unusedConnectors, ...(selectedConnector ? [selectedConnector] : [])]
       : unusedConnectors;
 
-  const backupUnusedConnectorList = buildConnectorSelectItems(
-    selectableConnectors,
-    getConnectorTypeLabel,
-  );
+  const backupUnusedConnectorList = buildConnectorSelectItems(selectableConnectors);
   const selectedConnectorOption = backupUnusedConnectorList.find(
     (item) => item.value === currentConnectorId,
   );
