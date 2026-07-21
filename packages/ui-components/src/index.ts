@@ -113,9 +113,11 @@ export * from './components/feedback/snackbar/Snackbar';
 
 /** Utilities components */
 export * from './components/custom/hwizard';
+export * from './components/custom/hwizard-v2';
 export * from './components/utilities/Collapse';
 export * from './components/utilities/ModalManager';
 export * from './components/utilities/SnackbarManager';
+export * from './hooks/use-wizard-v2';
 export * from './hooks/usewizard';
 export * from './theme/theme-utils';
 export type { AnyColor } from './types/utils';
