@@ -186,21 +186,14 @@ const AdvancedMailstoresDefinition: FC<AdvancedMailstoresDefinitionProps> = ({
   }, [volAllocationList, volumeDetail?.volumeAllocation]);
 
   useEffect(() => {
-    if (volumeDetail?.volumeName && volumeDetail?.volumeAllocation) {
-      if (volumeDetail?.volumeAllocation === LOCAL_TYPE_VALUE) {
-        setCompleteLoading(true);
-        setIsAllocationToggle(false);
-      } else if (advancedVolumeDetail?.unusedBucketType && backupUnusedBucketList?.length !== 0) {
-        setCompleteLoading(true);
-        setIsAllocationToggle(false);
-      } else {
-        setCompleteLoading(false);
-        setIsAllocationToggle(true);
-      }
-    } else {
-      setCompleteLoading(false);
-      setIsAllocationToggle(true);
-    }
+    const hasRequiredFields = !!(volumeDetail?.volumeName && volumeDetail?.volumeAllocation);
+    const isLocalComplete = volumeDetail?.volumeAllocation === LOCAL_TYPE_VALUE;
+    const isExternalComplete =
+      !!advancedVolumeDetail?.unusedBucketType && backupUnusedBucketList?.length !== 0;
+    const isComplete = hasRequiredFields && (isLocalComplete || isExternalComplete);
+
+    setCompleteLoading(isComplete);
+    setIsAllocationToggle(!isComplete);
   }, [
     advancedVolumeDetail?.unusedBucketType,
     advancedVolumeDetail.volumeAllocation,

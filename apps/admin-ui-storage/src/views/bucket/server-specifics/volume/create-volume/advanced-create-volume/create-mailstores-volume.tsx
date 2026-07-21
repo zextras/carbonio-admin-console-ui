@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
+import { Button, type ButtonProps, HorizontalWizard, Section } from '@zextras/ui-components';
 import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,22 @@ import AdvancedMailstoresConfig from './advanced-mailstores-config';
 import AdvancedMailstoresCreate from './advanced-mailstores-create';
 import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
+
+type WizardStepButtonProps = Partial<ButtonProps> & {
+  completeLoading?: boolean;
+};
+
+const DefinitionNextButton: FC<WizardStepButtonProps> = (props): ReactElement => {
+  const { t } = useTranslation();
+  return (
+    <Button
+      {...props}
+      label={t('label.volume_next_step_button', 'NEXT STEP')}
+      icon="ChevronRightOutline"
+      iconPlacement="right"
+    />
+  );
+};
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection, externalData }) => {
   const { t } = useTranslation();
@@ -83,14 +99,7 @@ const CreateMailstoresVolume: FC<{
         />
       ),
       PrevButton: (): any => '',
-      NextButton: (props: any): ReactElement => (
-        <Button
-          {...props}
-          label={t('label.volume_next_step_button', 'NEXT STEP')}
-          icon={'ChevronRightOutline'}
-          iconPlacement="right"
-        />
-      ),
+      NextButton: DefinitionNextButton,
     },
     {
       name: 'config',

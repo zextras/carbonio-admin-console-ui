@@ -13,7 +13,7 @@ import {
   Row,
   Switch,
 } from '@zextras/ui-components';
-import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { AdvancedMailstoresConfigProps } from '../../../../../../../types';
@@ -30,6 +30,18 @@ import {
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import styles from './create-volume.module.css';
+
+type CompressionThresholdUnitIconProps = {
+  hasError: boolean;
+  hasFocus: boolean;
+  disabled: boolean;
+};
+
+const CompressionThresholdUnitIcon: FC<CompressionThresholdUnitIconProps> = (): ReactElement => (
+  <ds-text as="span" color="secondary">
+    {COMPRESSION_THRESHOLD_UNIT}
+  </ds-text>
+);
 
 const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({
   onSelection,
@@ -415,11 +427,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({
                   onChange={changeVolCompThreshold}
                   hasError={!errCompressionThreshold}
                   disabled={!advancedVolumeDetail?.isCompression}
-                  CustomIcon={(): any => (
-                    <ds-text as="span" color="secondary">
-                      {COMPRESSION_THRESHOLD_UNIT}
-                    </ds-text>
-                  )}
+                  CustomIcon={CompressionThresholdUnitIcon}
                 />
                 {!errCompressionThreshold && (
                   <Padding top="extrasmall">
