@@ -78,11 +78,7 @@ vi.mock('../parts/verify/verify-success', () => ({
 }));
 
 vi.mock('../parts/verify/verify-error', () => ({
-	VerifyError: ({
-		isError,
-	}: {
-		isError: boolean;
-	}) => (isError ? <div>verify-error</div> : null),
+	VerifyError: () => <div>verify-error</div>,
 }));
 
 type S3ConnectorDetail = {

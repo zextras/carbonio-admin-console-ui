@@ -470,11 +470,13 @@ export function Connection({
         isSuccess={showVerifyResult && isVerifySuccess}
         onComplete={handleSuccessComplete}
       />
-      <VerifyError
-        isError={showVerifyResult && isVerifyError}
-        checkDetails={checkDetails}
-        onRetry={() => setShowVerifyResult(false)}
-      />
+      {showVerifyResult && isVerifyError && (
+        <VerifyError
+          checkDetails={checkDetails}
+          onClose={(): void => setShowVerifyResult(false)}
+          onRetry={(): void => setShowVerifyResult(false)}
+        />
+      )}
     </Container>
   );
 }

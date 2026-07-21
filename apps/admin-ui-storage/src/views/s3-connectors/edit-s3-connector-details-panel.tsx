@@ -798,11 +798,13 @@ export function EditS3ConnectorDetailPanel({
         isSuccess={showVerifyResult && isVerifySuccess}
         onComplete={handleSuccessComplete}
       />
-      <VerifyError
-        isError={showVerifyResult && isVerifyError}
-        checkDetails={checkDetails}
-        onRetry={(): void => setShowVerifyResult(false)}
-      />
+      {showVerifyResult && isVerifyError && (
+        <VerifyError
+          checkDetails={checkDetails}
+          onClose={(): void => setShowVerifyResult(false)}
+          onRetry={(): void => setShowVerifyResult(false)}
+        />
+      )}
     </>
   );
 }

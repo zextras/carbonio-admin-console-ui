@@ -25,8 +25,8 @@ export type CheckResult = {
 };
 
 type VerifyErrorProps = {
-  isError: boolean;
   checkDetails?: CheckResult;
+  onClose?: () => void;
   onRetry?: () => void;
 };
 
@@ -61,24 +61,19 @@ function buildDisplayedChecks(
   }));
 }
 
-export const VerifyError = ({ isError, checkDetails, onRetry }: VerifyErrorProps): React.JSX.Element => {
+export const VerifyError = ({ checkDetails, onClose, onRetry }: VerifyErrorProps): React.JSX.Element => {
   const { t } = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler -- HTML popover API is imperative; showPopover()/hidePopover() have no declarative React equivalent. Same pattern as use-show-error-snackbar.ts.
-    if (isError) {
-      popoverRef.current?.showPopover();
-      return;
-    }
-
-    popoverRef.current?.hidePopover();
-  }, [isError]);
+    popoverRef.current?.showPopover();
+  }, []);
 
   function handleClose(): void {
     setIsDetailsVisible(false);
     popoverRef.current?.hidePopover();
+    onClose?.();
   }
 
   function handleRetry(): void {

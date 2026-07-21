@@ -11,12 +11,11 @@ import { page } from 'vitest/browser';
 import { VerifyError } from '../parts/verify/verify-error';
 
 describe('VerifyError (browser)', () => {
-	it('should call showPopover when error is true', async () => {
+	it('should call showPopover on mount', async () => {
 		const showPopoverSpy = vi.spyOn(HTMLElement.prototype, 'showPopover');
 
 		await setupBrowserTest(
 			<VerifyError
-				isError
 				onRetry={vi.fn()}
 			/>,
 		);
@@ -27,7 +26,6 @@ describe('VerifyError (browser)', () => {
 	it('should render error title and default description', async () => {
 		await setupBrowserTest(
 			<VerifyError
-				isError
 				onRetry={vi.fn()}
 			/>,
 		);
@@ -45,7 +43,6 @@ describe('VerifyError (browser)', () => {
 
 		await setupBrowserTest(
 			<VerifyError
-				isError
 				onRetry={vi.fn()}
 			/>,
 		);
@@ -61,7 +58,6 @@ describe('VerifyError (browser)', () => {
 
 		await setupBrowserTest(
 			<VerifyError
-				isError
 				onRetry={onRetry}
 			/>,
 		);
@@ -77,7 +73,6 @@ describe('VerifyError (browser)', () => {
 
 		await setupBrowserTest(
 			<VerifyError
-				isError
 				onRetry={onRetry}
 			/>,
 		);
@@ -90,7 +85,6 @@ describe('VerifyError (browser)', () => {
 	it('should render check results only after clicking show details', async () => {
 		await setupBrowserTest(
 			<VerifyError
-				isError
 				checkDetails={{
 					connectionOk: 'true',
 					bucketExists: 'false',
@@ -114,7 +108,6 @@ describe('VerifyError (browser)', () => {
 	it('should hide details again after clicking hide details', async () => {
 		await setupBrowserTest(
 			<VerifyError
-				isError
 				checkDetails={{ connectionOk: 'true' }}
 				onRetry={vi.fn()}
 			/>,
@@ -133,7 +126,6 @@ describe('VerifyError (browser)', () => {
 	it('should not render details toggle when details are missing', async () => {
 		await setupBrowserTest(
 			<VerifyError
-				isError
 				onRetry={vi.fn()}
 			/>,
 		);
