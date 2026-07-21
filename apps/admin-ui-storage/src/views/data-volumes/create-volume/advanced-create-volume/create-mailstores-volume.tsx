@@ -23,12 +23,10 @@ import type { AdvancedVolumeFormValues } from './types';
 
 type WizardActions = {
   onCancel: () => void;
-  onNextLocal: () => void;
 };
 
 export const WizardActionsContext = createContext<WizardActions>({
   onCancel: () => {},
-  onNextLocal: () => {},
 });
 
 const WizardInSection = ({
@@ -57,7 +55,6 @@ const WizardInSection = ({
 type WizardButtonProps = {
   onClick: () => void;
   disabled?: boolean;
-  toggleNextBtn?: boolean;
 };
 
 type PrevButtonProps = {
@@ -89,18 +86,9 @@ function EmptyPrevButton() {
   return <></>;
 }
 
-function DefinitionNextButton({ onClick, disabled, toggleNextBtn }: WizardButtonProps) {
+function DefinitionNextButton({ onClick, disabled }: WizardButtonProps) {
   const { t } = useTranslation();
-  const { onNextLocal } = useContext(WizardActionsContext);
-  return toggleNextBtn ? (
-    <Button
-      onClick={onNextLocal}
-      disabled={disabled}
-      label={t('label.volume_next_step_button', 'NEXT STEP')}
-      icon={'ChevronRightOutline'}
-      iconPlacement="right"
-    />
-  ) : (
+  return (
     <Button
       onClick={onClick}
       disabled={disabled}
@@ -152,9 +140,9 @@ function CreateNextButton({ onClick, disabled }: NextButtonProps) {
 
 export const CreateMailstoresVolume = ({
   setToggleWizardExternal,
-  setToggleWizardLocal,
   volName,
   CreateAdvancedRequest,
+  CreateVolumeRequest,
 }: CreateMailstoresVolumeProps) => {
   const { t } = useTranslation();
   const volTypeList = volumeTypeList(t);
@@ -191,6 +179,9 @@ export const CreateMailstoresVolume = ({
       useInfrequentAccess: false,
       infrequentAccessThreshold: '',
       useIntelligentTiering: false,
+      path: '',
+      isCompression: false,
+      compressionThreshold: '',
     } as AdvancedVolumeFormValues,
     onSubmit: async () => {},
   });
@@ -201,6 +192,9 @@ export const CreateMailstoresVolume = ({
   const volumeMain = useSelector(form.store, (s) => s.values.volumeMain);
   const advVolumeName = useSelector(form.store, (s) => s.values.volumeName);
   const advVolumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);
+  const advPath = useSelector(form.store, (s) => s.values.path);
+
+  const isLocalBlockDevice = basicVolumeAllocation === LOCAL_TYPE_VALUE;
 
   const volumeType =
     volTypeList?.find((item) => item?.value === volumeMain)?.label ?? '';
@@ -208,14 +202,12 @@ export const CreateMailstoresVolume = ({
   const step1IsComplete =
     !!step1VolumeName &&
     !!basicVolumeAllocation &&
-    (basicVolumeAllocation === LOCAL_TYPE_VALUE || !!unusedBucketType);
-  const step1ToggleNextBtn = basicVolumeAllocation === LOCAL_TYPE_VALUE;
-  const step2IsComplete = volumeMain !== 0;
-  const step3IsComplete = !!(advVolumeAllocation && advVolumeName && unusedBucketType && volumeType);
-  const isAllocationToggle =
-    !step1IsComplete ||
-    basicVolumeAllocation === LOCAL_TYPE_VALUE ||
-    volumeMain === 0;
+    (isLocalBlockDevice || !!unusedBucketType);
+  const step2IsComplete = isLocalBlockDevice ? !!(volumeMain && advPath) : volumeMain !== 0;
+  const step3IsComplete = isLocalBlockDevice
+    ? !!(advVolumeAllocation && advVolumeName && volumeType && advPath)
+    : !!(advVolumeAllocation && advVolumeName && unusedBucketType && volumeType);
+  const isAllocationToggle = !step1IsComplete || volumeMain === 0;
 
   const wizardSteps = [
     {
@@ -225,7 +217,6 @@ export const CreateMailstoresVolume = ({
       view: AdvancedMailstoresDefinition,
       canGoNext: () => true,
       isComplete: step1IsComplete,
-      toggleNextBtn: step1ToggleNextBtn,
       CancelButton: WizardCancelButton,
       PrevButton: EmptyPrevButton,
       NextButton: DefinitionNextButton,
@@ -236,7 +227,7 @@ export const CreateMailstoresVolume = ({
       icon: 'Options2Outline',
       view: AdvancedMailstoresConfig,
       canGoNext: () => true,
-      clickDisabled: isAllocationToggle,
+      clickDisabled: !isLocalBlockDevice && isAllocationToggle,
       isComplete: step2IsComplete,
       CancelButton: WizardCancelButton,
       PrevButton: WizardPrevButton,
@@ -248,7 +239,7 @@ export const CreateMailstoresVolume = ({
       icon: 'CubeOutline',
       view: AdvancedMailstoresCreate,
       canGoNext: () => true,
-      clickDisabled: isAllocationToggle,
+      clickDisabled: !isLocalBlockDevice && isAllocationToggle,
       isComplete: step3IsComplete,
       CancelButton: WizardCancelButton,
       PrevButton: WizardPrevButton,
@@ -258,6 +249,18 @@ export const CreateMailstoresVolume = ({
 
   const onComplete = () => {
     const v = form.state.values;
+    if (isLocalBlockDevice) {
+      CreateVolumeRequest({
+        name: v.volumeName,
+        rootpath: v.path,
+        type: v.volumeMain,
+        compressBlobs: v.isCompression ? '1' : '0',
+        compressionThreshold: v.isCompression ? v.compressionThreshold : '',
+        isCurrent: v.isCurrent ? 1 : 0,
+      });
+      return;
+    }
+
     const volType = volTypeList
       ?.find((item) => item?.value === v.volumeMain)
       ?.label?.toLowerCase();
@@ -279,7 +282,6 @@ export const CreateMailstoresVolume = ({
     <WizardActionsContext.Provider
       value={{
         onCancel: () => setToggleWizardExternal(false),
-        onNextLocal: () => setToggleWizardLocal(true),
       }}
     >
       <AdvancedVolumeContext.Provider value={{ form }}>

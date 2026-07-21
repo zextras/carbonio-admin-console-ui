@@ -630,9 +630,9 @@ export function VolumesDetailPanel() {
         <ModalOverlay open={toggleWizardExternal}>
           <CreateMailstoresVolume
             setToggleWizardExternal={setToggleWizardExternal}
-            setToggleWizardLocal={setToggleWizardLocal}
             volName={server}
             CreateAdvancedRequest={CreateAdvancedRequest}
+            CreateVolumeRequest={CreateVolumeRequest}
           />
         </ModalOverlay>
       )}

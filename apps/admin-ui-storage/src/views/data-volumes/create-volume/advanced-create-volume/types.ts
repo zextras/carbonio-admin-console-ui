@@ -20,6 +20,9 @@ export type AdvancedVolumeFormValues = {
 	useInfrequentAccess: boolean;
 	infrequentAccessThreshold: string;
 	useIntelligentTiering: boolean;
+	path: string;
+	isCompression: boolean;
+	compressionThreshold: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -344,9 +344,9 @@ export type WizardInSectionProps = {
  */
 export type CreateMailstoresVolumeProps = {
   setToggleWizardExternal: (v: boolean) => void;
-  setToggleWizardLocal: (v: boolean) => void;
   volName: string;
   CreateAdvancedRequest: (payload: CreateAdvancedVolumePayload) => void;
+  CreateVolumeRequest: (attr: Partial<Volume>) => void;
 };
 
 /**

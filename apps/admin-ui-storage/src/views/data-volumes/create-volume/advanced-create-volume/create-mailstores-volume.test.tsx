@@ -17,17 +17,16 @@ const wizardProps = vi.hoisted(() => ({
     view: React.ComponentType<unknown>;
     canGoNext: () => boolean;
     isComplete?: boolean;
-    toggleNextBtn?: boolean;
     CancelButton: React.ComponentType<{ onCancel: () => void }>;
     PrevButton: React.ComponentType<unknown>;
-    NextButton: React.ComponentType<{ toggleNextBtn?: boolean; onClick?: () => void; disabled?: boolean }>;
+    NextButton: React.ComponentType<{ onClick?: () => void; disabled?: boolean }>;
   }>,
   onComplete: null as (() => void) | null,
 }));
 
 const mockCreateAdvancedRequest = vi.hoisted(() => vi.fn());
+const mockCreateVolumeRequest = vi.hoisted(() => vi.fn());
 const setToggleWizardExternal = vi.hoisted(() => vi.fn());
-const setToggleWizardLocal = vi.hoisted(() => vi.fn());
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -59,7 +58,6 @@ vi.mock('@zextras/ui-components', () => ({
         })}
         <NextButton
           disabled={!step0.isComplete}
-          toggleNextBtn={step0.toggleNextBtn}
           onClick={() => {}}
         />
       </div>
@@ -114,9 +112,9 @@ function renderComponent(
 ): ReturnType<typeof render> {
   const props: CreateMailstoresVolumeProps = {
     setToggleWizardExternal,
-    setToggleWizardLocal,
     volName: 'server-a',
     CreateAdvancedRequest: mockCreateAdvancedRequest,
+    CreateVolumeRequest: mockCreateVolumeRequest,
     ...overrides,
   };
   return render(<CreateMailstoresVolume {...props} />);
@@ -175,7 +173,7 @@ describe('CreateMailstoresVolume', () => {
     const CancelButton = wizardProps.steps[0].CancelButton;
     const { container } = render(
       <WizardActionsContext.Provider
-        value={{ onCancel: () => setToggleWizardExternal(false), onNextLocal: () => {} }}
+        value={{ onCancel: () => setToggleWizardExternal(false) }}
       >
         <CancelButton onCancel={() => {}} />
       </WizardActionsContext.Provider>,
@@ -184,27 +182,12 @@ describe('CreateMailstoresVolume', () => {
     expect(setToggleWizardExternal).toHaveBeenCalledWith(false);
   });
 
-  it('step 0 NextButton with toggleNextBtn=true triggers setToggleWizardLocal', () => {
-    renderComponent();
-    const NextButton = wizardProps.steps[0].NextButton;
-    const { container } = render(
-      <WizardActionsContext.Provider
-        value={{ onCancel: () => {}, onNextLocal: () => setToggleWizardLocal(true) }}
-      >
-        <NextButton toggleNextBtn={true} onClick={() => {}} />
-      </WizardActionsContext.Provider>,
-    );
-    fireEvent.click(container.querySelector('button')!);
-    expect(setToggleWizardLocal).toHaveBeenCalledWith(true);
-  });
-
-  it('step 0 NextButton without toggleNextBtn falls through to the wizard-injected onClick', () => {
+  it('step 0 NextButton calls the wizard-injected onClick', () => {
     renderComponent();
     const injectedOnClick = vi.fn();
     const NextButton = wizardProps.steps[0].NextButton;
-    const { container } = render(<NextButton toggleNextBtn={false} onClick={injectedOnClick} />);
+    const { container } = render(<NextButton onClick={injectedOnClick} />);
     fireEvent.click(container.querySelector('button')!);
-    expect(setToggleWizardLocal).not.toHaveBeenCalled();
     expect(injectedOnClick).toHaveBeenCalled();
   });
 

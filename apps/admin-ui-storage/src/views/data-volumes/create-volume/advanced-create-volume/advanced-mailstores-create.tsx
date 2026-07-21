@@ -33,7 +33,11 @@ export function AdvancedMailstoresCreate({
   const useIntelligentTiering = useSelector(form.store, (s) => s.values.useIntelligentTiering);
   const isCurrent = useSelector(form.store, (s) => s.values.isCurrent);
   const centralized = useSelector(form.store, (s) => s.values.centralized);
+  const path = useSelector(form.store, (s) => s.values.path);
+  const isCompression = useSelector(form.store, (s) => s.values.isCompression);
+  const compressionThreshold = useSelector(form.store, (s) => s.values.compressionThreshold);
 
+  const isLocalBlockDevice = volumeAllocation === 'Local Block Device';
   const showTieringSettings = unusedBucketType === S3 && tieringSupported === true;
   const volumeType =
     volTypeList?.find((item: { label?: string; value?: number }) => item?.value === volumeMain)
@@ -103,46 +107,48 @@ export function AdvancedMailstoresCreate({
         </div>
       </div>
 
-      <div className={styles.reviewCard}>
-        <div className={styles.reviewCardHeader}>
-          <ds-text as="span" weight="bold" size="small" color="gray0">
-            {t('label.bucket', 'BUCKET')}
-          </ds-text>
+      {!isLocalBlockDevice && (
+        <div className={styles.reviewCard}>
+          <div className={styles.reviewCardHeader}>
+            <ds-text as="span" weight="bold" size="small" color="gray0">
+              {t('label.bucket', 'BUCKET')}
+            </ds-text>
+          </div>
+          <div className={styles.reviewCardBody}>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large', right: 'large' }}
+              >
+                <LabeledValue
+                  label={t('label.bucket_name', 'Bucket Name')}
+                  backgroundColor="gray6"
+                  value={bucketName}
+                />
+              </Container>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large', right: 'large' }}
+              >
+                <LabeledValue
+                  label={t('label.type', 'Type')}
+                  backgroundColor="gray6"
+                  value={unusedBucketType}
+                />
+              </Container>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large' }}
+              >
+                <LabeledValue label={t('label.ID', 'ID')} backgroundColor="gray6" value={bucketId} />
+              </Container>
+            </ListRow>
+          </div>
         </div>
-        <div className={styles.reviewCardBody}>
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large', right: 'large' }}
-            >
-              <LabeledValue
-                label={t('label.bucket_name', 'Bucket Name')}
-                backgroundColor="gray6"
-                value={bucketName}
-              />
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large', right: 'large' }}
-            >
-              <LabeledValue
-                label={t('label.type', 'Type')}
-                backgroundColor="gray6"
-                value={unusedBucketType}
-              />
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large' }}
-            >
-              <LabeledValue label={t('label.ID', 'ID')} backgroundColor="gray6" value={bucketId} />
-            </Container>
-          </ListRow>
-        </div>
-      </div>
+      )}
 
       <div className={styles.reviewCard}>
         <div className={styles.reviewCardHeader}>
@@ -151,26 +157,63 @@ export function AdvancedMailstoresCreate({
           </ds-text>
         </div>
         <div className={styles.reviewCardBody}>
-          <Row padding={{ top: 'large' }} width="100%">
-            <LabeledValue
-              label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
-              value={prefix}
-              backgroundColor="gray6"
-            />
-          </Row>
-          {showTieringSettings && (
+          {isLocalBlockDevice ? (
             <>
               <Row padding={{ top: 'large' }} width="100%">
                 <LabeledValue
-                  label={t('label.infrequent_access', 'Infrequent access')}
-                  value={useInfrequentAccess ? ENABLED : DISABLED}
+                  label={t('label.path', 'Path')}
+                  value={path}
                   backgroundColor="gray6"
                 />
               </Row>
               <Row padding={{ top: 'large' }} width="100%">
                 <LabeledValue
-                  label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
-                  value={useIntelligentTiering ? ENABLED : DISABLED}
+                  label={t('label.enable_compression', 'Enable Compression')}
+                  value={isCompression ? ENABLED : DISABLED}
+                  backgroundColor="gray6"
+                />
+              </Row>
+              {isCompression && (
+                <Row padding={{ top: 'large' }} width="100%">
+                  <LabeledValue
+                    label={t('label.compression_threshold', 'Compression Threshold')}
+                    value={compressionThreshold}
+                    backgroundColor="gray6"
+                  />
+                </Row>
+              )}
+            </>
+          ) : (
+            <>
+              <Row padding={{ top: 'large' }} width="100%">
+                <LabeledValue
+                  label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
+                  value={prefix}
+                  backgroundColor="gray6"
+                />
+              </Row>
+              {showTieringSettings && (
+                <>
+                  <Row padding={{ top: 'large' }} width="100%">
+                    <LabeledValue
+                      label={t('label.infrequent_access', 'Infrequent access')}
+                      value={useInfrequentAccess ? ENABLED : DISABLED}
+                      backgroundColor="gray6"
+                    />
+                  </Row>
+                  <Row padding={{ top: 'large' }} width="100%">
+                    <LabeledValue
+                      label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
+                      value={useIntelligentTiering ? ENABLED : DISABLED}
+                      backgroundColor="gray6"
+                    />
+                  </Row>
+                </>
+              )}
+              <Row padding={{ top: 'large' }} width="100%">
+                <LabeledValue
+                  label={t('label.centralized', 'Centralized')}
+                  value={centralized ? YES : NO}
                   backgroundColor="gray6"
                 />
               </Row>
@@ -180,13 +223,6 @@ export function AdvancedMailstoresCreate({
             <LabeledValue
               label={t('label.volume_as_current', 'Volum as current')}
               value={isCurrent ? YES : NO}
-              backgroundColor="gray6"
-            />
-          </Row>
-          <Row padding={{ top: 'large' }} width="100%">
-            <LabeledValue
-              label={t('label.centralized', 'Centralized')}
-              value={centralized ? YES : NO}
               backgroundColor="gray6"
             />
           </Row>

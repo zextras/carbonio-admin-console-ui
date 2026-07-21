@@ -22,12 +22,22 @@ import type { AdvancedMailstoresConfigProps } from '../../../../../types';
 import {
   AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
   AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
+  COMPRESSION_THRESHOLD_UNIT,
+  INDEX_TYPE_VALUE,
   PRIMARY_TYPE_VALUE,
   S3,
   SECONDARY_TYPE_VALUE,
 } from '../../../../constants';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 import styles from './create-volume.module.css';
+
+function CompressionThresholdIcon() {
+  return (
+    <ds-text as="span" color="secondary">
+      {COMPRESSION_THRESHOLD_UNIT}
+    </ds-text>
+  );
+}
 
 export function AdvancedMailstoresConfig({
   onSelection,
@@ -52,12 +62,22 @@ export function AdvancedMailstoresConfig({
   );
   const isCurrent = useSelector(form.store, (s) => s.values.isCurrent);
   const centralized = useSelector(form.store, (s) => s.values.centralized);
+  const path = useSelector(form.store, (s) => s.values.path);
+  const isCompression = useSelector(form.store, (s) => s.values.isCompression);
+  const compressionThreshold = useSelector(form.store, (s) => s.values.compressionThreshold);
 
   const isLocalBlockDevice = volumeAllocation === 'Local Block Device';
   const showTieringSettings = unusedBucketType === S3 && tieringSupported === true;
 
   const changeVolDetail = (e: ChangeEvent<HTMLInputElement>): void => {
-    form.setFieldValue(e.target.name as 'prefix' | 'infrequentAccessThreshold', e.target.value);
+    form.setFieldValue(
+      e.target.name as
+        | 'prefix'
+        | 'infrequentAccessThreshold'
+        | 'path'
+        | 'compressionThreshold',
+      e.target.value,
+    );
   };
 
   useEffect(() => {
@@ -99,117 +119,261 @@ export function AdvancedMailstoresConfig({
           backgroundColor="gray6"
         />
       </Row>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ top: 'large', right: 'large' }}
-        >
-          <LabeledValue
-            label={t('label.bucket_name', 'Bucket Name')}
-            backgroundColor="gray6"
-            value={bucketName}
-          />
-        </Container>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ top: 'large', right: 'large' }}
-        >
-          <LabeledValue
-            label={t('label.type', 'Type')}
-            backgroundColor="gray6"
-            value={unusedBucketType}
-          />
-        </Container>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ top: 'large' }}
-        >
-          <LabeledValue label={t('label.ID', 'ID')} backgroundColor="gray6" value={bucketId} />
-        </Container>
-      </ListRow>
-      <Row
-        padding={{ top: 'large' }}
-        width="100%"
-        mainAlignment="center"
-        crossAlignment="center"
-        background="gray6"
-      >
-        <Row width="48%">
-          <Radio
-            label={t('label.primary_volume', 'This is a Primary Volume')}
-            value={PRIMARY_TYPE_VALUE.toString()}
-            checked={volumeMain === PRIMARY_TYPE_VALUE}
-            onClick={(): void => {
-              form.setFieldValue(
-                'volumeMain',
-                volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE,
-              );
-              onSelection(
-                { volumeMain: volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE },
-                true,
-              );
-            }}
-            iconColor="primary"
-          />
-        </Row>
-        <Row width="48%">
-          <Radio
-            label={t('label.secondary_volume', 'This is a Secondary Volume')}
-            value={SECONDARY_TYPE_VALUE}
-            checked={volumeMain === SECONDARY_TYPE_VALUE}
-            onClick={(): void => {
-              form.setFieldValue(
-                'volumeMain',
-                volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE,
-              );
-              onSelection(
-                { volumeMain: volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE },
-                true,
-              );
-            }}
-            iconColor="primary"
-          />
-        </Row>
-      </Row>
-      <Row padding={{ top: 'large' }} width="100%">
-        <Input
-          inputName="prefix"
-          label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
-          value={prefix}
-          backgroundColor="gray5"
-          onChange={changeVolDetail}
-        />
-      </Row>
-      {showTieringSettings && !isLocalBlockDevice && (
+      {isLocalBlockDevice ? (
         <>
+          <Row padding={{ top: 'large' }} width="100%">
+            <Input
+              inputName="path"
+              label={t('label.path', 'Path')}
+              value={path}
+              backgroundColor="gray5"
+              onChange={changeVolDetail}
+            />
+          </Row>
           <Row
             padding={{ top: 'large' }}
-            mainAlignment="flex-start"
             width="100%"
+            mainAlignment="center"
+            crossAlignment="center"
             background="gray6"
           >
-            <Row width="48.5%" mainAlignment="flex-start">
-              <Row mainAlignment="flex-start" width="100%">
+            <Row width="48%">
+              <Radio
+                label={t('label.primary_volume', 'This is a Primary Volume')}
+                value={PRIMARY_TYPE_VALUE.toString()}
+                checked={volumeMain === PRIMARY_TYPE_VALUE}
+                onClick={(): void => {
+                  form.setFieldValue('volumeMain', PRIMARY_TYPE_VALUE);
+                  onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
+                }}
+                iconColor="primary"
+              />
+            </Row>
+            <Row width="48%">
+              <Radio
+                label={t('label.secondary_volume', 'This is a Secondary Volume')}
+                value={SECONDARY_TYPE_VALUE}
+                checked={volumeMain === SECONDARY_TYPE_VALUE}
+                onClick={(): void => {
+                  form.setFieldValue('volumeMain', SECONDARY_TYPE_VALUE);
+                  onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
+                }}
+                iconColor="primary"
+              />
+            </Row>
+          </Row>
+          <Row padding={{ top: 'large' }} width="100%">
+            <Radio
+              label={t('label.index_volume', 'This is an Index Volume')}
+              value={INDEX_TYPE_VALUE}
+              checked={volumeMain === INDEX_TYPE_VALUE}
+              onClick={(): void => {
+                form.setFieldValue('volumeMain', INDEX_TYPE_VALUE);
+                onSelection({ volumeMain: INDEX_TYPE_VALUE }, true);
+              }}
+              iconColor="primary"
+            />
+          </Row>
+          {volumeMain !== INDEX_TYPE_VALUE && (
+            <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
+              <Row width="32%" mainAlignment="flex-start">
                 <Switch
-                  value={useInfrequentAccess}
-                  label={t('label.use_infraquent_access', 'Use infrequent access')}
+                  value={isCompression}
+                  label={t('label.enable_compression', 'Enable Compression')}
                   onClick={(): void => {
-                    const newValue = !useInfrequentAccess;
-                    form.setFieldValue('useInfrequentAccess', newValue);
-                    if (newValue) {
-                      form.setFieldValue('useIntelligentTiering', false);
-                    } else {
-                      form.setFieldValue('infrequentAccessThreshold', '');
-                    }
-                    onSelection({ useInfrequentAccess: newValue }, true);
-                    if (newValue) {
-                      onSelection({ useIntelligentTiering: false }, true);
-                    }
+                    const newValue = !isCompression;
+                    form.setFieldValue('isCompression', newValue);
                     if (!newValue) {
-                      onSelection({ infrequentAccessThreshold: '' }, true);
+                      form.setFieldValue('compressionThreshold', '');
+                    }
+                    onSelection({ isCompression: newValue }, true);
+                  }}
+                  iconColor="primary"
+                />
+              </Row>
+              <Padding horizontal="small" />
+              <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="65%">
+                <Input
+                  inputName="compressionThreshold"
+                  label={t('label.compression_threshold', 'Compression Threshold')}
+                  value={compressionThreshold}
+                  backgroundColor="gray5"
+                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                    if (/^\d*$/.test(e.target.value)) {
+                      form.setFieldValue('compressionThreshold', e.target.value);
+                    }
+                  }}
+                  disabled={!isCompression}
+                  CustomIcon={CompressionThresholdIcon}
+                />
+              </Row>
+            </Row>
+          )}
+          <Padding top="extrasmall">
+            <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
+              {t('this_will_not_affect_data_already_stored', 'This will not affect data already stored')}
+            </ds-text>
+          </Padding>
+        </>
+      ) : (
+        <>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large', right: 'large' }}
+            >
+              <LabeledValue
+                label={t('label.bucket_name', 'Bucket Name')}
+                backgroundColor="gray6"
+                value={bucketName}
+              />
+            </Container>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large', right: 'large' }}
+            >
+              <LabeledValue
+                label={t('label.type', 'Type')}
+                backgroundColor="gray6"
+                value={unusedBucketType}
+              />
+            </Container>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large' }}
+            >
+              <LabeledValue label={t('label.ID', 'ID')} backgroundColor="gray6" value={bucketId} />
+            </Container>
+          </ListRow>
+          <Row
+            padding={{ top: 'large' }}
+            width="100%"
+            mainAlignment="center"
+            crossAlignment="center"
+            background="gray6"
+          >
+            <Row width="48%">
+              <Radio
+                label={t('label.primary_volume', 'This is a Primary Volume')}
+                value={PRIMARY_TYPE_VALUE.toString()}
+                checked={volumeMain === PRIMARY_TYPE_VALUE}
+                onClick={(): void => {
+                  form.setFieldValue(
+                    'volumeMain',
+                    volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE,
+                  );
+                  onSelection(
+                    { volumeMain: volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE },
+                    true,
+                  );
+                }}
+                iconColor="primary"
+              />
+            </Row>
+            <Row width="48%">
+              <Radio
+                label={t('label.secondary_volume', 'This is a Secondary Volume')}
+                value={SECONDARY_TYPE_VALUE}
+                checked={volumeMain === SECONDARY_TYPE_VALUE}
+                onClick={(): void => {
+                  form.setFieldValue(
+                    'volumeMain',
+                    volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE,
+                  );
+                  onSelection(
+                    { volumeMain: volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE },
+                    true,
+                  );
+                }}
+                iconColor="primary"
+              />
+            </Row>
+          </Row>
+          <Row padding={{ top: 'large' }} width="100%">
+            <Input
+              inputName="prefix"
+              label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
+              value={prefix}
+              backgroundColor="gray5"
+              onChange={changeVolDetail}
+            />
+          </Row>
+          {showTieringSettings && (
+            <>
+              <Row
+                padding={{ top: 'large' }}
+                mainAlignment="flex-start"
+                width="100%"
+                background="gray6"
+              >
+                <Row width="48.5%" mainAlignment="flex-start">
+                  <Row mainAlignment="flex-start" width="100%">
+                    <Switch
+                      value={useInfrequentAccess}
+                      label={t('label.use_infraquent_access', 'Use infrequent access')}
+                      onClick={(): void => {
+                        const newValue = !useInfrequentAccess;
+                        form.setFieldValue('useInfrequentAccess', newValue);
+                        if (newValue) {
+                          form.setFieldValue('useIntelligentTiering', false);
+                        } else {
+                          form.setFieldValue('infrequentAccessThreshold', '');
+                        }
+                        onSelection({ useInfrequentAccess: newValue }, true);
+                        if (newValue) {
+                          onSelection({ useIntelligentTiering: false }, true);
+                        }
+                        if (!newValue) {
+                          onSelection({ infrequentAccessThreshold: '' }, true);
+                        }
+                      }}
+                      iconColor="primary"
+                    />
+                  </Row>
+                  <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+                    <Link
+                      color="secondary"
+                      href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Trans
+                        i18nKey="label.use_infraquent_access_helptext"
+                        defaults="<underline>Amazon Storage Class Documentation</underline>"
+                        components={{ underline: <u /> }}
+                      />
+                    </Link>
+                  </Row>
+                </Row>
+                <Padding horizontal="small" />
+                <Row width="48.5%" mainAlignment="flex-start">
+                  <Input
+                    inputName="infrequentAccessThreshold"
+                    label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
+                    type="number"
+                    value={infrequentAccessThreshold || ''}
+                    backgroundColor="gray5"
+                    onChange={changeVolDetail}
+                    disabled={!useInfrequentAccess}
+                  />
+                </Row>
+              </Row>
+              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+                <Switch
+                  value={useIntelligentTiering}
+                  label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
+                  onClick={(): void => {
+                    const newValue = !useIntelligentTiering;
+                    form.setFieldValue('useIntelligentTiering', newValue);
+                    if (newValue) {
+                      form.setFieldValue('useInfrequentAccess', false);
+                    }
+                    onSelection({ useIntelligentTiering: newValue }, true);
+                    if (newValue) {
+                      onSelection({ useInfrequentAccess: false }, true);
                     }
                   }}
                   iconColor="primary"
@@ -218,87 +382,19 @@ export function AdvancedMailstoresConfig({
               <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
                 <Link
                   color="secondary"
-                  href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
+                  href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <Trans
-                    i18nKey="label.use_infraquent_access_helptext"
-                    defaults="<underline>Amazon Storage Class Documentation</underline>"
+                    i18nKey="label.use_intelligent_tiering_helptext"
+                    defaults="<underline>Amazon Tiering Documentation</underline>"
                     components={{ underline: <u /> }}
                   />
                 </Link>
               </Row>
-            </Row>
-            <Padding horizontal="small" />
-            <Row width="48.5%" mainAlignment="flex-start">
-              <Input
-                inputName="infrequentAccessThreshold"
-                label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
-                type="number"
-                value={infrequentAccessThreshold || ''}
-                backgroundColor="gray5"
-                onChange={changeVolDetail}
-                disabled={!useInfrequentAccess}
-              />
-            </Row>
-          </Row>
-          <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-            <Switch
-              value={useIntelligentTiering}
-              label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
-              onClick={(): void => {
-                const newValue = !useIntelligentTiering;
-                form.setFieldValue('useIntelligentTiering', newValue);
-                if (newValue) {
-                  form.setFieldValue('useInfrequentAccess', false);
-                }
-                onSelection({ useIntelligentTiering: newValue }, true);
-                if (newValue) {
-                  onSelection({ useInfrequentAccess: false }, true);
-                }
-              }}
-              iconColor="primary"
-            />
-          </Row>
-          <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-            <Link
-              color="secondary"
-              href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Trans
-                i18nKey="label.use_intelligent_tiering_helptext"
-                defaults="<underline>Amazon Tiering Documentation</underline>"
-                components={{ underline: <u /> }}
-              />
-            </Link>
-          </Row>
-        </>
-      )}
-      <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-        <Switch
-          value={isCurrent}
-          label={t('label.set_as_current', 'Set as Current')}
-          onClick={(): void => {
-            const newValue = !isCurrent;
-            form.setFieldValue('isCurrent', newValue);
-            onSelection({ isCurrent: newValue }, true);
-          }}
-          iconColor="primary"
-        />
-      </Row>
-      <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-        <ds-text as="p" color="secondary">
-          {t(
-            'label.enable_current_helptext',
-            'Enabling this option will disable the current active volume.',
+            </>
           )}
-        </ds-text>
-      </Row>
-      {!isLocalBlockDevice && (
-        <>
           <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
             <Switch
               value={centralized}
@@ -327,6 +423,26 @@ export function AdvancedMailstoresConfig({
           </Row>
         </>
       )}
+      <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+        <Switch
+          value={isCurrent}
+          label={t('label.set_as_current', 'Set as Current')}
+          onClick={(): void => {
+            const newValue = !isCurrent;
+            form.setFieldValue('isCurrent', newValue);
+            onSelection({ isCurrent: newValue }, true);
+          }}
+          iconColor="primary"
+        />
+      </Row>
+      <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+        <ds-text as="p" color="secondary">
+          {t(
+            'label.enable_current_helptext',
+            'Enabling this option will disable the current active volume.',
+          )}
+        </ds-text>
+      </Row>
     </Container>
   );
 }
