@@ -154,7 +154,9 @@ export function AdvancedMailstoresDefinition({
       </Row>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
         <Input
+          className={styles.requiredAsteriskError}
           inputName="volumeName"
+          isRequired
           label={t('label.volume_name', 'Volume Name')}
           backgroundColor="gray5"
           value={volumeName}
@@ -172,6 +174,7 @@ export function AdvancedMailstoresDefinition({
       <Row padding={{ top: 'large' }} width="100%">
         <Select
           items={volAllocationList}
+          isRequired
           background="gray5"
           label={t('label.storage_type', 'Storage Type')}
           showCheckbox={false}
@@ -183,6 +186,7 @@ export function AdvancedMailstoresDefinition({
         <Row padding={{ top: 'large' }} width="100%">
           <Select
             items={backupUnusedConnectorList}
+            isRequired
             background="gray5"
             label={t(
               'storage.dataVolumes.availableS3ConnectorsList',
