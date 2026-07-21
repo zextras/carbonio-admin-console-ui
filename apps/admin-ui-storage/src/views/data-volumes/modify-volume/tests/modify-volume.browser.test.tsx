@@ -293,7 +293,7 @@ describe('GetVolume failure (non-advanced mode)', () => {
   }, 25_000);
 });
 
-describe('external volume - disabled radios', () => {
+describe('external volume - object storage detection', () => {
   const EXTERNAL_S3_VOLUME: Volume = {
     id: 9,
     name: 's3primary',
@@ -330,7 +330,7 @@ describe('external volume - disabled radios', () => {
     ]);
   });
 
-  it('should disable primary and secondary volume type radios for external volumes', async () => {
+  it('should show storage type label for object storage volumes', async () => {
     await setupBrowserTest(
       renderModifyVolume(EXTERNAL_S3_VOLUME.id as number, EXTERNAL_VOLUME_LIST),
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
@@ -340,12 +340,7 @@ describe('external volume - disabled radios', () => {
       expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
     });
 
-    await expect
-      .element(page.getByRole('radio', { name: /^primary volume$/i }))
-      .toBeDisabled();
-    await expect
-      .element(page.getByRole('radio', { name: /^secondary volume$/i }))
-      .toBeDisabled();
+    await expect.element(page.getByText('S3', { exact: true })).toBeVisible();
   });
 });
 
@@ -499,7 +494,7 @@ describe('tiering hidden on bucket change', () => {
 
     // Open the bucket select dropdown via DOM (custom web-component select)
     const selectTrigger = Array.from(document.querySelectorAll('div[tabindex="0"]')).find((el) =>
-      el.textContent?.includes('Available Buckets List'),
+      el.textContent?.includes('Available S3 Connectors List'),
     ) as HTMLElement | undefined;
     expect(selectTrigger).toBeTruthy();
     selectTrigger?.click();
@@ -645,6 +640,86 @@ describe('advanced save', () => {
     );
     await expect.element(page.getByText('Something went wrong, please try again')).toBeVisible();
   }, 25_000);
+});
+
+describe('compression threshold disabled state', () => {
+  const LOCAL_VOLUME: Volume = {
+    id: 5,
+    name: 'primary-local',
+    path: '/opt/zextras/store',
+    type: 1,
+    compressBlobs: 'false',
+    compressionThreshold: '4096',
+    isCurrent: true,
+    volumeType: 'primary',
+  };
+
+  beforeEach(async () => {
+    await advancedSupportedApiForBrowser.withAdvancedSupported();
+  });
+
+  it('should disable compression threshold when compression is off', async () => {
+    await setupBrowserTest(
+      renderModifyVolume(LOCAL_VOLUME.id as number, {
+        primaries: [LOCAL_VOLUME],
+        secondaries: [],
+        indexes: [],
+      }),
+      { initialRouterEntry: VOLUME_ROUTE_ENTRY },
+    );
+
+    await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
+
+    const thresholdInput = page.getByRole('textbox', { name: /compression threshold/i });
+    await expect.element(thresholdInput).toBeDisabled();
+  });
+
+  it('should enable compression threshold when compression is toggled on', async () => {
+    const COMPRESSED_VOLUME = { ...LOCAL_VOLUME, compressBlobs: 'true' };
+    await setupBrowserTest(
+      renderModifyVolume(COMPRESSED_VOLUME.id as number, {
+        primaries: [COMPRESSED_VOLUME],
+        secondaries: [],
+        indexes: [],
+      }),
+      { initialRouterEntry: VOLUME_ROUTE_ENTRY },
+    );
+
+    await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
+
+    const thresholdInput = page.getByRole('textbox', { name: /compression threshold/i });
+    await expect.element(thresholdInput).not.toBeDisabled();
+  });
+});
+
+describe('local block device detection', () => {
+  beforeEach(async () => {
+    await advancedSupportedApiForBrowser.withAdvancedSupported();
+  });
+
+  it('should show Local Block Device as storage type for local volumes', async () => {
+    const LOCAL_VOL: Volume = {
+      id: 5,
+      name: 'primary-local',
+      path: '/opt/zextras/store',
+      type: 1,
+      compressBlobs: 'true',
+      compressionThreshold: '4096',
+      isCurrent: true,
+      volumeType: 'primary',
+    };
+
+    await setupBrowserTest(
+      renderModifyVolume(LOCAL_VOL.id as number, {
+        primaries: [LOCAL_VOL],
+        secondaries: [],
+        indexes: [],
+      }),
+      { initialRouterEntry: VOLUME_ROUTE_ENTRY },
+    );
+
+    await expect.element(page.getByText('Local Block Device')).toBeVisible();
+  });
 });
 
 describe('prefix-change confirmation dialog', () => {

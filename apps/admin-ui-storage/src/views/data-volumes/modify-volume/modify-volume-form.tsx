@@ -14,7 +14,6 @@ import {
   ListRow,
   Modal,
   Padding,
-  Radio,
   Row,
   Select,
   Switch,
@@ -25,25 +24,19 @@ import { isEmpty } from 'lodash-es';
 import React, { useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import {
-  type S3ConnectorVolume,
-  type Volume,
-  type VolumeAllocationItem,
-  type VolumeType,
-} from '../../../../types';
+import { type S3ConnectorVolume, type Volume } from '../../../../types';
 import {
   AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
   AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
   INDEX,
+  LOCAL_VALUE,
   PRIMARY,
-  PRIMARY_TYPE_VALUE,
   SECONDARY,
-  SECONDARY_TYPE_VALUE,
   UNUSED,
   USAGE_IN_EXTERNAL_BACKUP,
 } from '../../../constants';
 import { fetchSoap } from '../../../services/s3-connector-service';
-import { S3ConnectorTypeItems, volumeAllocationList } from '../../utility/utils';
+import { S3ConnectorTypeItems } from '../../utility/utils';
 import styles from './modify-volume.module.css';
 import { buildAdvancedUpdatePayload, isS3StoreType } from './modify-volume-payload';
 import {
@@ -95,11 +88,10 @@ export type ModifyVolumeFormProps = {
   readonly s3Connectors: Array<S3ConnectorVolume>;
   readonly volumeType: number;
   readonly volumeId: string;
+  readonly currentVolumeName?: string;
   readonly setmodifyVolumeToggle: (newValue: boolean) => void;
   readonly getAllVolumesRequest: () => void;
   readonly setOpen: (newValue: boolean) => void;
-  readonly isSticky: boolean;
-  readonly setIsSticky: (value: boolean) => void;
 };
 
 export function ModifyVolumeForm({
@@ -112,15 +104,13 @@ export function ModifyVolumeForm({
   s3Connectors,
   volumeType,
   volumeId,
+  currentVolumeName,
   setmodifyVolumeToggle,
   getAllVolumesRequest,
   setOpen,
-  isSticky,
-  setIsSticky,
 }: ModifyVolumeFormProps) {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
-  const volAllocationList = volumeAllocationList(t);
   const connectorTypeItems = S3ConnectorTypeItems(t);
   const isCurrentRef = useRef<HTMLDivElement>(null);
 
@@ -204,6 +194,16 @@ export function ModifyVolumeForm({
       ? t('label.index_volume_role', 'Index Volume')
       : '';
 
+  const isObjectStorage = !(
+    storeType?.toUpperCase() === LOCAL_VALUE || (!storeType && !isExternal)
+  );
+  const isLocalBlockDevice = !isObjectStorage;
+  const storageTypeLabel = isObjectStorage
+    ? (getConnectorTypeLabel(storeType) ?? storeType ?? '')
+    : t('volume.volume_allocation_list.local_block_device', 'Local Block Device');
+  const showOptionsSection =
+    Object.keys(externalVolDetail)?.length > 0 || volumeDetail?.type !== 10;
+
   const form = useForm({
     defaultValues: {
       name: volumeDetail.name ?? '',
@@ -258,7 +258,7 @@ export function ModifyVolumeForm({
           handleAdvancedUpdateResponse(res, server ?? '', {
             onSuccess: () => {
               finishSaveSuccess();
-              form.reset(value, { keepDefaultValues: true });
+              form.reset(value);
             },
             onError: finishSaveError,
           });
@@ -279,7 +279,7 @@ export function ModifyVolumeForm({
             {
               onSuccess: () => {
                 finishSaveSuccess();
-                form.reset(value, { keepDefaultValues: true });
+                form.reset(value);
               },
               onModifyError: finishSaveError,
               onSetCurrentError: (): void => setIsLoading(false),
@@ -336,14 +336,6 @@ export function ModifyVolumeForm({
         t('label.not_set', 'Not set'),
     });
   }
-
-  const buttons = [
-    {
-      align: 'left' as const,
-      icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
-      onClick: (): void => setIsSticky(!isSticky),
-    },
-  ];
 
   return (
     <>
@@ -412,63 +404,117 @@ export function ModifyVolumeForm({
           </Row>
         </Row>
         <ds-divider></ds-divider>
-        {isExternal ? (
-          <>
-            <div className={styles.sectionHeader}>
-              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
-                {t('label.general', 'GENERAL')}
-              </ds-text>
-              <ds-divider className={styles.sectionDivider}></ds-divider>
-            </div>
+
+        {/* GENERAL section - always shown */}
+        <div className={styles.sectionHeader}>
+          <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+            {t('label.general', 'GENERAL')}
+          </ds-text>
+          <ds-divider className={styles.sectionDivider}></ds-divider>
+        </div>
+        <Container
+          padding={{ horizontal: 'large' }}
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          height="auto"
+        >
+          <ListRow>
             <Container
-              padding={{ horizontal: 'large', bottom: 'large' }}
               mainAlignment="flex-start"
               crossAlignment="flex-start"
+              padding={{ top: 'large', right: 'large', left: 'small' }}
             >
-              <Row padding={{ top: 'small' }} width="100%">
-                <div className={styles.detailItem}>
-                  <ds-text size="small" color="gray1">
-                    {t('label.server', 'Server')}
+              <div className={styles.detailItem}>
+                <ds-text size="small" color="gray1">
+                  {t('label.volume_id', 'Volume ID')}
+                </ds-text>
+                <div className={styles.detailValueRow}>
+                  <ds-text className={styles.detailValue} size="small">
+                    {id}
                   </ds-text>
-                  <div className={styles.detailValueRow}>
-                    <ds-text className={styles.detailValue} weight="bold" size="small">
-                      {server ?? ''}
-                    </ds-text>
-                  </div>
                 </div>
-              </Row>
-              <Row padding={{ top: 'large' }} width="100%">
-                <div className={styles.detailItem}>
-                  <ds-text size="small" color="gray1">
-                    {t('label.volume_role', 'Volume role')}
+              </div>
+            </Container>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large' }}
+            >
+              <div className={styles.detailItem}>
+                <ds-text size="small" color="gray1">
+                  {t('label.server', 'Server')}
+                </ds-text>
+                <div className={styles.detailValueRow}>
+                  <ds-text className={styles.detailValue} size="small">
+                    {server ?? ''}
                   </ds-text>
-                  <div className={styles.detailValueRow}>
-                    <ds-text className={styles.detailValue} weight="bold" size="small">
-                      {volumeRoleLabel}
-                    </ds-text>
-                  </div>
                 </div>
-              </Row>
-              <Row padding={{ top: 'large' }} width="100%">
-                <Select
-                  items={volAllocationList}
-                  background="gray5"
-                  label={t('label.storage_type', 'Storage type')}
-                  showCheckbox={false}
-                  defaultSelection={
-                    volAllocationList?.find(
-                      (item: VolumeType) => item?.value === volumeDetail?.type,
-                    ) as VolumeAllocationItem | undefined
-                  }
-                  disabled
-                  onChange={(): void => {}}
-                />
-              </Row>
-              <Row padding={{ top: 'large' }} width="100%">
-                <form.Field name="name">
+              </div>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large', right: 'large', left: 'small' }}
+            >
+              <div className={styles.detailItem}>
+                <ds-text size="small" color="gray1">
+                  {t('label.volume_role', 'Volume role')}
+                </ds-text>
+                <div className={styles.detailValueRow}>
+                  <ds-text className={styles.detailValue} size="small">
+                    {volumeRoleLabel}
+                  </ds-text>
+                </div>
+              </div>
+            </Container>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large' }}
+            >
+              <div className={styles.detailItem}>
+                <ds-text size="small" color="gray1">
+                  {t('label.storage_type', 'Storage type')}
+                </ds-text>
+                <div className={styles.detailValueRow}>
+                  <ds-text className={styles.detailValue} size="small">
+                    {storageTypeLabel}
+                  </ds-text>
+                </div>
+              </div>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              padding={{ top: 'large', right: 'large' }}
+            >
+              <form.Field name="name">
+                {(field) => (
+                  <Input
+                    label={t('label.volume_name', 'Volume name')}
+                    value={field.state.value}
+                    backgroundColor="gray6"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                      field.handleChange(e.target.value)
+                    }
+                  />
+                )}
+              </form.Field>
+            </Container>
+            {isLocalBlockDevice && (
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large' }}
+              >
+                <form.Field name="rootpath">
                   {(field) => (
                     <Input
-                      label={t('label.volume_name', 'Volume name')}
+                      label={t('label.path', 'Path')}
                       value={field.state.value}
                       backgroundColor="gray6"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -477,30 +523,14 @@ export function ModifyVolumeForm({
                     />
                   )}
                 </form.Field>
-              </Row>
-              {backupUnusedConnectorList?.length !== 0 && (
-                <>
-                  <Row padding={{ top: 'large' }} width="100%">
-                    <Select
-                      items={backupUnusedConnectorList}
-                      background="gray5"
-                      label={t(
-                        'label.volume_available_unused_Buckets_list_in_backup',
-                        'Available Buckets List (that are not in use in the backup)',
-                      )}
-                      showCheckbox={false}
-                      selection={selectedConnectorOption ?? backupUnusedConnectorList[0]}
-                      onChange={onUnusedConnectorListChange}
-                    />
-                  </Row>
-                  <Padding top="extrasmall">
-                    <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                      {t('the_change_will_not_move_the_data', 'The change will not move the data')}
-                    </ds-text>
-                  </Padding>
-                </>
-              )}
-            </Container>
+              </Container>
+            )}
+          </ListRow>
+        </Container>
+
+        {/* BUCKET section - only for object storage */}
+        {isObjectStorage && (
+          <>
             <div className={styles.sectionHeader}>
               <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
                 {t('label.bucket', 'BUCKET')}
@@ -508,22 +538,23 @@ export function ModifyVolumeForm({
               <ds-divider className={styles.sectionDivider}></ds-divider>
             </div>
             <Container
-              padding={{ horizontal: 'large', bottom: 'large' }}
+              padding={{ horizontal: 'large' }}
               mainAlignment="flex-start"
               crossAlignment="flex-start"
+              height="auto"
             >
               <ListRow>
                 <Container
                   mainAlignment="flex-start"
                   crossAlignment="flex-start"
-                  padding={{ top: 'large', right: 'large' }}
+                  padding={{ top: 'large', right: 'large', left: 'small' }}
                 >
                   <div className={styles.detailItem}>
                     <ds-text size="small" color="gray1">
                       {t('label.bucket_name', 'Bucket name')}
                     </ds-text>
                     <div className={styles.detailValueRow}>
-                      <ds-text className={styles.detailValue} weight="bold" size="small">
+                      <ds-text className={styles.detailValue} size="small">
                         {connectorName}
                       </ds-text>
                     </div>
@@ -539,58 +570,18 @@ export function ModifyVolumeForm({
                       {t('storage.dataVolume.s3ConnectorId', 'S3 Connector ID')}
                     </ds-text>
                     <div className={styles.detailValueRow}>
-                      <ds-text className={styles.detailValue} weight="bold" size="small">
+                      <ds-text className={styles.detailValue} size="small">
                         {form.state.values.bucketConfigurationId}
                       </ds-text>
                     </div>
                   </div>
                 </Container>
               </ListRow>
-              {volumeDetail?.type !== 10 && (
-                <Row
-                  padding={{ top: 'large' }}
-                  width="100%"
-                  mainAlignment="center"
-                  crossAlignment="center"
-                  background="gray6"
-                >
-                  <Row width={isAdvanced ? '48%' : '100%'}>
-                    <Radio
-                      label={t('label.primary_volume_role', 'Primary Volume')}
-                      value={PRIMARY_TYPE_VALUE}
-                      checked={typeValue === 1}
-                      onClick={(): void => {}}
-                      iconColor="primary"
-                      disabled
-                    />
-                  </Row>
-                  {isAdvanced && (
-                    <Row width="48%">
-                      <Radio
-                        label={t('label.secondary_volume_role', 'Secondary Volume')}
-                        value={SECONDARY_TYPE_VALUE}
-                        checked={typeValue === 2}
-                        onClick={(): void => {}}
-                        iconColor="primary"
-                        disabled
-                      />
-                    </Row>
-                  )}
-                </Row>
-              )}
-            </Container>
-            <div className={styles.sectionHeader}>
-              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
-                {t('label.configuration', 'CONFIGURATION')}
-              </ds-text>
-              <ds-divider className={styles.sectionDivider}></ds-divider>
-            </div>
-            <Container
-              padding={{ horizontal: 'large', bottom: 'large' }}
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-            >
-              <Row padding={{ top: 'large' }} width="100%">
+              <Row
+                mainAlignment="flex-start"
+                padding={{ top: 'large', left: 'small' }}
+                width="100%"
+              >
                 <form.Field name="volumePrefix">
                   {(field) => (
                     <Input
@@ -607,86 +598,70 @@ export function ModifyVolumeForm({
                     />
                   )}
                 </form.Field>
+                <Padding top="extrasmall">
+                  <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
+                    {t('the_change_will_not_move_the_data', 'The change will not move the data')}
+                  </ds-text>
+                </Padding>
               </Row>
-              <Padding top="extrasmall">
-                <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                  {t('the_change_will_not_move_the_data', 'The change will not move the data')}
-                </ds-text>
-              </Padding>
-              {showTieringSettings && (
-                <>
-                  <Row
-                    padding={{ top: 'large' }}
-                    mainAlignment="flex-start"
-                    width="100%"
-                    background="gray6"
-                  >
-                    <Row width="48.5%" mainAlignment="flex-start">
-                      <Row mainAlignment="flex-start" width="100%">
-                        <form.Field name="useInfrequentAccess">
-                          {(field) => (
-                            <Switch
-                              value={field.state.value}
-                              label={t('label.use_infraquent_access', 'Use infrequent access')}
-                              onClick={(): void => {
-                                const newValue = !field.state.value;
-                                field.handleChange(newValue);
-                                if (newValue) {
-                                  form.setFieldValue('useIntelligentTiering', false);
-                                } else {
-                                  form.setFieldValue('infrequentAccessThreshold', '');
-                                }
-                              }}
-                              iconColor="primary"
-                            />
-                          )}
-                        </form.Field>
-                      </Row>
-                      <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-                        <Link
-                          color="secondary"
-                          href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Trans
-                            i18nKey="label.use_infraquent_access_helptext"
-                            defaults="<underline>Amazon Storage Class Documentation</underline>"
-                            components={{ underline: <u /> }}
-                          />
-                        </Link>
-                      </Row>
-                    </Row>
-                    <Padding horizontal="small" />
-                    <Row width="48.5%" mainAlignment="flex-start">
-                      <form.Field name="infrequentAccessThreshold">
-                        {(field) => (
-                          <Input
-                            inputName="infrequentAccessThreshold"
-                            label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
-                            type="number"
-                            backgroundColor="gray5"
-                            value={field.state.value}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                              field.handleChange(e.target.value)
-                            }
-                            disabled={!form.state.values.useInfrequentAccess}
-                          />
-                        )}
-                      </form.Field>
-                    </Row>
-                  </Row>
-                  <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-                    <form.Field name="useIntelligentTiering">
+              {backupUnusedConnectorList?.length !== 0 && (
+                <Row
+                  mainAlignment="flex-start"
+                  padding={{ top: 'large', left: 'small' }}
+                  width="100%"
+                >
+                  <Select
+                    items={backupUnusedConnectorList}
+                    background="gray5"
+                    label={t(
+                      'storage.dataVolumes.availableS3ConnectorsList',
+                      'Available S3 Connectors List (that are not in use in the backup)',
+                    )}
+                    showCheckbox={false}
+                    selection={selectedConnectorOption ?? backupUnusedConnectorList[0]}
+                    onChange={onUnusedConnectorListChange}
+                  />
+                </Row>
+              )}
+            </Container>
+          </>
+        )}
+
+        {/* CONFIGURATION section - only for object storage with tiering support */}
+        {isObjectStorage && showTieringSettings && (
+          <>
+            <div className={styles.sectionHeader}>
+              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+                {t('label.configuration', 'CONFIGURATION')}
+              </ds-text>
+              <ds-divider className={styles.sectionDivider}></ds-divider>
+            </div>
+            <Container
+              padding={{ horizontal: 'large', left: 'large' }}
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              height="auto"
+            >
+              <Row
+                padding={{ top: 'large' }}
+                mainAlignment="flex-start"
+                width="100%"
+                background="gray6"
+              >
+                <Row width="48.5%" mainAlignment="flex-start">
+                  <Row mainAlignment="flex-start" width="100%">
+                    <form.Field name="useInfrequentAccess">
                       {(field) => (
                         <Switch
                           value={field.state.value}
-                          label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
+                          label={t('label.use_infraquent_access', 'Use infrequent access')}
                           onClick={(): void => {
                             const newValue = !field.state.value;
                             field.handleChange(newValue);
                             if (newValue) {
-                              form.setFieldValue('useInfrequentAccess', false);
+                              form.setFieldValue('useIntelligentTiering', false);
+                            } else {
+                              form.setFieldValue('infrequentAccessThreshold', '');
                             }
                           }}
                           iconColor="primary"
@@ -697,182 +672,200 @@ export function ModifyVolumeForm({
                   <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
                     <Link
                       color="secondary"
-                      href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
+                      href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <Trans
-                        i18nKey="label.use_intelligent_tiering_helptext"
-                        defaults="<underline>Amazon Tiering Documentation</underline>"
+                        i18nKey="label.use_infraquent_access_helptext"
+                        defaults="<underline>Amazon Storage Class Documentation</underline>"
                         components={{ underline: <u /> }}
                       />
                     </Link>
                   </Row>
-                </>
-              )}
-              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-                <Tooltip
-                  placement="top"
-                  label={t(
-                    'warning.is_current',
-                    'Firstly, you have to set another volume as the current one.',
-                  )}
-                  maxWidth="auto"
-                  disabled={form.state.values.isCurrent}
-                >
-                  <form.Field name="isCurrent">
+                </Row>
+                <Padding horizontal="small" />
+                <Row width="48.5%" mainAlignment="flex-start">
+                  <form.Field name="infrequentAccessThreshold">
                     {(field) => (
-                      <Switch
-                        ref={isCurrentRef}
+                      <Input
+                        inputName="infrequentAccessThreshold"
+                        label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
+                        type="number"
+                        backgroundColor="gray5"
                         value={field.state.value}
-                        label={t('label.set_as_current', 'Set as Current')}
-                        onClick={(): void => {
-                          if (!field.state.value) {
-                            setIsCurrentToggle(true);
-                          }
-                        }}
-                        iconColor="primary"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
+                        disabled={!form.state.values.useInfrequentAccess}
                       />
                     )}
                   </form.Field>
-                </Tooltip>
+                </Row>
               </Row>
-              <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-                <ds-text as="p" color="secondary">
-                  {t(
-                    'label.enable_current_helptext',
-                    'Enabling this option will disable the current active volume.',
-                  )}
-                </ds-text>
-              </Row>
-            </Container>
-          </>
-        ) : (
-          <>
-            <div className={styles.sectionHeader}>
-              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
-                {t('label.general', 'GENERAL')}
-              </ds-text>
-              <ds-divider className={styles.sectionDivider}></ds-divider>
-            </div>
-            <Container
-              padding={{ horizontal: 'large', bottom: 'large' }}
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-            >
-              <Row padding={{ top: 'small' }} width="100%">
-                <form.Field name="name">
+              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+                <form.Field name="useIntelligentTiering">
                   {(field) => (
-                    <Input
-                      label={t('label.volume_name', 'Volume name')}
+                    <Switch
                       value={field.state.value}
-                      backgroundColor="gray5"
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                        field.handleChange(e.target.value)
-                      }
+                      label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
+                      onClick={(): void => {
+                        const newValue = !field.state.value;
+                        field.handleChange(newValue);
+                        if (newValue) {
+                          form.setFieldValue('useInfrequentAccess', false);
+                        }
+                      }}
+                      iconColor="primary"
                     />
                   )}
                 </form.Field>
               </Row>
-              {volumeDetail?.type !== 10 && (
-                <Row
-                  padding={{ top: 'large' }}
-                  width="100%"
-                  mainAlignment="center"
-                  crossAlignment="center"
-                  background="gray6"
+              <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+                <Link
+                  color="secondary"
+                  href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  <Row width={isAdvanced ? '48%' : '100%'}>
-                    <Radio
-                      label={t('label.primary_volume_role', 'Primary Volume')}
-                      value={PRIMARY_TYPE_VALUE}
-                      checked={typeValue === 1}
-                      onClick={(): void => {}}
-                      iconColor="primary"
-                      disabled
-                    />
-                  </Row>
-                  {isAdvanced && (
-                    <Row width="48%">
-                      <Radio
-                        label={t('label.secondary_volume_role', 'Secondary Volume')}
-                        value={SECONDARY_TYPE_VALUE}
-                        checked={typeValue === 2}
-                        onClick={(): void => {}}
-                        iconColor="primary"
-                        disabled
-                      />
-                    </Row>
-                  )}
-                </Row>
-              )}
-              <Row padding={{ top: 'large' }} width="100%">
-                <Input
-                  label={t('label.volume_id', 'Volume ID')}
-                  value={id}
-                  backgroundColor="gray6"
-                  disabled
-                  onChange={(): void => {}}
-                />
+                  <Trans
+                    i18nKey="label.use_intelligent_tiering_helptext"
+                    defaults="<underline>Amazon Tiering Documentation</underline>"
+                    components={{ underline: <u /> }}
+                  />
+                </Link>
               </Row>
             </Container>
+          </>
+        )}
+
+        {/* OPTIONS section - conditional */}
+        {showOptionsSection && (
+          <>
             <div className={styles.sectionHeader}>
               <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
                 {t('label.options', 'OPTIONS')}
               </ds-text>
               <ds-divider className={styles.sectionDivider}></ds-divider>
             </div>
-            <Container
-              padding={{ horizontal: 'large', bottom: 'large' }}
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-            >
-              <Row padding={{ top: 'large' }} width="100%">
-                <form.Field name="rootpath">
-                  {(field) => (
-                    <Input
-                      label={t('label.path', 'Path')}
-                      value={field.state.value}
-                      backgroundColor="gray5"
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                        field.handleChange(e.target.value)
-                      }
-                    />
-                  )}
-                </form.Field>
-              </Row>
-              <Padding top="extrasmall">
-                <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                  {t('the_change_will_not_move_the_data', 'The change will not move the data')}
-                </ds-text>
-              </Padding>
-              <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
+            {isLocalBlockDevice ? (
+              <Container
+                padding={{ horizontal: 'large' }}
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                height="auto"
+              >
                 {volumeDetail?.type !== 10 && (
                   <>
-                    <Row width="48%" mainAlignment="flex-start">
-                      <form.Field name="compressBlobs">
-                        {(field) => (
-                          <Switch
-                            value={field.state.value}
-                            label={t('label.enable_compression', 'Enable Compression')}
-                            onClick={(): void => field.handleChange(!field.state.value)}
-                            iconColor="primary"
-                          />
+                    <Row
+                      mainAlignment="flex-start"
+                      padding={{ top: 'large', left: 'small' }}
+                      width="100%"
+                    >
+                      <Tooltip
+                        placement="top"
+                        label={t(
+                          'warning.is_current',
+                          'Firstly, you have to set another volume as the current one.',
                         )}
-                      </form.Field>
-                      <Padding top="extrasmall">
-                        <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                          {t(
-                            'this_will_not_affect_data_already_stored',
-                            'This will not affect data already stored',
+                        maxWidth="auto"
+                        disabled={form.state.values.isCurrent}
+                      >
+                        <form.Field name="isCurrent">
+                          {(field) => (
+                            <Switch
+                              ref={isCurrentRef}
+                              value={field.state.value}
+                              label={t('label.set_as_current', 'Set as Current')}
+                              onClick={(): void => {
+                                if (!field.state.value) {
+                                  setIsCurrentToggle(true);
+                                }
+                              }}
+                              iconColor="primary"
+                            />
                           )}
-                        </ds-text>
-                      </Padding>
+                        </form.Field>
+                      </Tooltip>
                     </Row>
-                    <Padding horizontal="small" />
+                    <Row
+                      padding={{ top: 'large', left: 'small' }}
+                      width="100%"
+                      mainAlignment="flex-start"
+                      background="gray6"
+                    >
+                      <Row mainAlignment="flex-start" width={isAdvanced ? '50%' : '100%'}>
+                        <form.Field name="compressBlobs">
+                          {(field) => (
+                            <Switch
+                              value={field.state.value}
+                              label={t('label.enable_compression', 'Enable Compression')}
+                              onClick={(): void => field.handleChange(!field.state.value)}
+                              iconColor="primary"
+                            />
+                          )}
+                        </form.Field>
+                        <Padding top="extrasmall" left="2rem">
+                          <ds-text
+                            as="p"
+                            color="secondary"
+                            overflow="break-word"
+                            size="extrasmall"
+                          >
+                            {t(
+                              'this_will_not_affect_data_already_stored',
+                              'This will not affect data already stored',
+                            )}
+                          </ds-text>
+                        </Padding>
+                      </Row>
+                      <Row mainAlignment="flex-start" width="48%">
+                        <Row padding={{ top: 'small' }} width="100%">
+                          <form.Field name="compressionThreshold">
+                            {(field) => (
+                              <Input
+                                label={t(
+                                  'label.compression_threshold',
+                                  'Compression Threshold',
+                                )}
+                                value={field.state.value}
+                                backgroundColor="gray6"
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                  if (/^\d*$/.test(e.target.value)) {
+                                    field.handleChange(e.target.value);
+                                  }
+                                }}
+                                color="secondary"
+                                disabled={!form.state.values.compressBlobs}
+                              />
+                            )}
+                          </form.Field>
+                        </Row>
+                        <Padding top="extrasmall">
+                          <ds-text
+                            as="p"
+                            color="secondary"
+                            overflow="break-word"
+                            size="extrasmall"
+                          >
+                            {t(
+                              'this_will_not_affect_data_already_stored',
+                              'This will not affect data already stored',
+                            )}
+                          </ds-text>
+                        </Padding>
+                      </Row>
+                    </Row>
                   </>
                 )}
-                <Row width="48%" mainAlignment="flex-start">
+              </Container>
+            ) : (
+              <Container padding={{ horizontal: 'large', bottom: 'large' }} height="auto">
+                <Row
+                  padding={{ top: 'large', left: 'small' }}
+                  mainAlignment="flex-start"
+                  width="100%"
+                >
                   <Tooltip
                     placement="top"
                     label={t(
@@ -899,39 +892,19 @@ export function ModifyVolumeForm({
                     </form.Field>
                   </Tooltip>
                 </Row>
-              </Row>
-              {volumeDetail?.type !== 10 && !isExternal && (
-                <>
-                  <Row padding={{ top: 'small' }} width="50%">
-                    <form.Field name="compressionThreshold">
-                      {(field) => (
-                        <Input
-                          label={t('label.compression_threshold', 'Compression Threshold')}
-                          value={field.state.value}
-                          backgroundColor="gray6"
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                            if (/^\d*$/.test(e.target.value)) {
-                              field.handleChange(e.target.value);
-                            }
-                          }}
-                          color="secondary"
-                        />
-                      )}
-                    </form.Field>
-                  </Row>
-                  <Padding top="extrasmall">
-                    <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                      {t(
-                        'this_will_not_affect_data_already_stored',
-                        'This will not affect data already stored',
-                      )}
-                    </ds-text>
-                  </Padding>
-                </>
-              )}
-            </Container>
+                <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+                  <ds-text as="p" color="secondary">
+                    {t(
+                      'label.enable_current_helptext',
+                      'Enabling this option will disable the current active volume.',
+                    )}
+                  </ds-text>
+                </Row>
+              </Container>
+            )}
           </>
         )}
+
         <Modal
           open={isCurrentToggle && !form.state.values.isCurrent}
           title={t(
@@ -955,7 +928,10 @@ export function ModifyVolumeForm({
                 i18nKey="modal.iscurrent_confirm.body_message"
                 defaults="The {{currentVolumeName}} is the current volume.<br />Are you sure you want to <strong>set {{name}} as current one</strong>?"
                 components={{ break: <br />, bold: <strong /> }}
-                values={{ name: form.state.values.name }}
+                values={{
+                  name: form.state.values.name,
+                  currentVolumeName: currentVolumeName ?? '',
+                }}
               />
             </ds-text>
           </Padding>

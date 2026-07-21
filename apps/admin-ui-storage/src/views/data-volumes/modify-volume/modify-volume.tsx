@@ -5,7 +5,7 @@
  */
 
 import { Container } from '@zextras/ui-components';
-import { useIsAdvanced, useStickyBarStore } from '@zextras/ui-shared';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -89,7 +89,6 @@ export function ModifyVolume({
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
   const { server } = useParams<{ server: string }>();
-  const { isSticky, setIsSticky } = useStickyBarStore();
 
   const { data: s3Connectors = [] } = useListS3Connectors();
 
@@ -122,6 +121,18 @@ export function ModifyVolume({
   const externalVolDetail: Volume = isExt && volData ? volData : {};
   const isExternal = isExt;
 
+  const sameTypeVolumes =
+    volumeDetail?.type === 1
+      ? volumeList.primaries
+      : volumeDetail?.type === 2
+        ? volumeList.secondaries
+        : volumeDetail?.type === 10
+          ? volumeList.indexes
+          : [];
+  const currentVolumeName = sameTypeVolumes.find(
+    (v) => v?.isCurrent === true || v?.isCurrent === 1,
+  )?.name;
+
   if (!volumeDetail) {
     return (
       <Container background="gray6" mainAlignment="center" orientation="vertical">
@@ -130,7 +141,7 @@ export function ModifyVolume({
     );
   }
 
-  return (
+    return (
     <ModifyVolumeForm
       volumeDetail={volumeDetail}
       externalVolDetail={externalVolDetail}
@@ -141,11 +152,10 @@ export function ModifyVolume({
       s3Connectors={s3Connectors as Array<S3ConnectorVolume>}
       volumeType={volumeDetail.type}
       volumeId={String(volumeId)}
+      currentVolumeName={currentVolumeName}
       setmodifyVolumeToggle={setmodifyVolumeToggle}
       getAllVolumesRequest={getAllVolumesRequest}
       setOpen={setOpen}
-      isSticky={isSticky}
-      setIsSticky={setIsSticky}
     />
   );
 }
