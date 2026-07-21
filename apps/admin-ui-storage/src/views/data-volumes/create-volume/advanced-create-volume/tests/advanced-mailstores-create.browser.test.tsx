@@ -7,8 +7,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { useState } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../../constants';
@@ -20,11 +19,10 @@ import type { AdvancedVolumeFormValues } from '../types';
 
 type HarnessOptions = {
   initialAdvanced?: Partial<AdvancedVolumeFormValues>;
-  setCompleteLoading?: (value: boolean) => void;
   externalData?: string;
 };
 
-function Harness({ initialAdvanced, setCompleteLoading, externalData }: HarnessOptions) {
+function Harness({ initialAdvanced, externalData }: HarnessOptions) {
   const volumeForm = useForm({
     defaultValues: {
       id: '',
@@ -39,8 +37,6 @@ function Harness({ initialAdvanced, setCompleteLoading, externalData }: HarnessO
     validators: { onChange: volumeCreateSchema },
     onSubmit: async () => {},
   });
-
-  const [isAllocationToggle, setIsAllocationToggle] = useState(false);
 
   const advancedForm = useForm({
     defaultValues: {
@@ -66,13 +62,8 @@ function Harness({ initialAdvanced, setCompleteLoading, externalData }: HarnessO
 
   return (
     <VolumeContext.Provider value={{ form: volumeForm }}>
-      <AdvancedVolumeContext.Provider
-        value={{ form: advancedForm, isAllocationToggle, setIsAllocationToggle }}
-      >
-        <AdvancedMailstoresCreate
-          externalData={externalData ?? 'server-a'}
-          setCompleteLoading={setCompleteLoading ?? vi.fn()}
-        />
+      <AdvancedVolumeContext.Provider value={{ form: advancedForm }}>
+        <AdvancedMailstoresCreate externalData={externalData ?? 'server-a'} />
         <div data-testid="advanced-state">{JSON.stringify(advancedValues)}</div>
       </AdvancedVolumeContext.Provider>
     </VolumeContext.Provider>
@@ -80,14 +71,11 @@ function Harness({ initialAdvanced, setCompleteLoading, externalData }: HarnessO
 }
 
 function renderHarness(options: HarnessOptions = {}) {
-  const setCompleteLoading = options.setCompleteLoading ?? vi.fn();
   return {
-    setCompleteLoading,
     render: () =>
       setupBrowserTest(
         <Harness
           initialAdvanced={options.initialAdvanced}
-          setCompleteLoading={setCompleteLoading}
           externalData={options.externalData}
         />,
       ),
@@ -120,40 +108,6 @@ describe('AdvancedMailstoresCreate (browser)', () => {
     await expect
       .element(page.getByText('Prefix - all objects will have this prefix in their name'))
       .toBeVisible();
-  });
-
-  it('should call setCompleteLoading(true) when allocation, name, type are all truthy', async () => {
-    const setCompleteLoading = vi.fn();
-    await renderHarness({
-      setCompleteLoading,
-      initialAdvanced: {
-        volumeName: 'volume-a',
-        volumeAllocation: 'Object Storage',
-        unusedBucketType: 'Ceph',
-        volumeMain: 1,
-      },
-    }).render();
-
-    await vi.waitFor(() => {
-      expect(setCompleteLoading).toHaveBeenCalledWith(true);
-    });
-  });
-
-  it('should call setCompleteLoading(false) when any required value is missing', async () => {
-    const setCompleteLoading = vi.fn();
-    await renderHarness({
-      setCompleteLoading,
-      initialAdvanced: {
-        volumeName: 'volume-a',
-        volumeAllocation: 'Object Storage',
-        unusedBucketType: '',
-        volumeMain: 1,
-      },
-    }).render();
-
-    await vi.waitFor(() => {
-      expect(setCompleteLoading).toHaveBeenCalledWith(false);
-    });
   });
 
   it('should show empty Type of Volume when volumeMain has no match in volumeTypeList', async () => {
@@ -211,7 +165,6 @@ describe('AdvancedMailstoresCreate (browser)', () => {
 
     const intelligentValues = page.getByText('Use Intelligent Tiering', { exact: true });
     await expect.element(intelligentValues.first()).toBeVisible();
-    // ENABLED appears as the value of the Intelligent Tiering LabeledValue
     expect(page.getByText(ENABLED, { exact: true }).elements().length).toBeGreaterThan(0);
   });
 

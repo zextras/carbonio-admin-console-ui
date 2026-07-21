@@ -30,10 +30,16 @@ export function VerifyChangesModal({
   const [t] = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) {
+      setIsConfirmed(false);
+    }
+  }
 
   useEffect(() => {
     if (open) {
-      setIsConfirmed(false);
       popoverRef.current?.showPopover();
     } else {
       popoverRef.current?.hidePopover();

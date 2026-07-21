@@ -5,7 +5,6 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, LabeledValue, ListRow, Row } from '@zextras/ui-components';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../constants';
@@ -14,10 +13,8 @@ import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 
 export function AdvancedMailstoresCreate({
   externalData,
-  setCompleteLoading,
 }: Readonly<{
   externalData: string;
-  setCompleteLoading: (v: boolean) => void;
 }>) {
   const { form } = useAdvancedVolumeContext();
   const { t } = useTranslation();
@@ -40,14 +37,6 @@ export function AdvancedMailstoresCreate({
   const volumeType =
     volTypeList?.find((item: { label?: string; value?: number }) => item?.value === volumeMain)
       ?.label ?? '';
-
-  useEffect(() => {
-    if (volumeAllocation && volumeName && unusedBucketType && volumeType) {
-      setCompleteLoading(true);
-    } else {
-      setCompleteLoading(false);
-    }
-  }, [volumeAllocation, volumeName, unusedBucketType, volumeType, setCompleteLoading]);
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>

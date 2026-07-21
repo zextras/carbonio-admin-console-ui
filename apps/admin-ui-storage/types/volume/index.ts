@@ -413,7 +413,6 @@ export type ModifyVolumeProps = {
 export type AdvancedMailstoresConfigProps = {
   readonly onSelection: (data: Record<string, unknown>, flag: boolean) => void;
   readonly externalData: string;
-  readonly setCompleteLoading: (v: boolean) => void;
 };
 
 /**

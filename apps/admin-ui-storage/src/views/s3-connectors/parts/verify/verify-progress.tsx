@@ -27,9 +27,16 @@ export const VerifyProgress = ({
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
+  const [prevIsPending, setPrevIsPending] = useState(isPending);
+  if (isPending !== prevIsPending) {
+    setPrevIsPending(isPending);
+    if (isPending) {
+      setProgress(0);
+    }
+  }
+
   useEffect(() => {
     if (isPending && intervalRef.current === null) {
-      setProgress(0);
       popoverRef.current?.showPopover();
       openedAtRef.current = Date.now();
       let current = 0;

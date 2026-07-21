@@ -17,7 +17,7 @@ import {
   Switch,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { type ChangeEvent, useContext, useEffect } from 'react';
+import { type ChangeEvent, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -40,10 +40,8 @@ function CompressionThresholdIcon() {
 
 export function MailstoresCreate({
   externalData,
-  setCompleteLoading,
 }: Readonly<{
   externalData: string;
-  setCompleteLoading: any;
 }>) {
   const { form } = useContext(VolumeContext);
   const { t } = useTranslation();
@@ -52,19 +50,10 @@ export function MailstoresCreate({
   const volTypeList = volumeTypeList(t, isAdvanced);
   const volAllocationList = volumeAllocationList(t);
   const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
-  const isFormValid = useSelector(form.store, (s) => s.isValid);
   const volumeMain = useSelector(form.store, (s) => s.values.volumeMain);
   const isCompression = useSelector(form.store, (s) => s.values.isCompression);
 
   const isIndexVolume = volumeMain === INDEX_TYPE_VALUE;
-
-  useEffect(() => {
-    if (isAdvanced) {
-      setCompleteLoading(isFormValid && !!volumeMain);
-    } else {
-      setCompleteLoading(isFormValid);
-    }
-  }, [isFormValid, isAdvanced, volumeMain, setCompleteLoading]);
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>

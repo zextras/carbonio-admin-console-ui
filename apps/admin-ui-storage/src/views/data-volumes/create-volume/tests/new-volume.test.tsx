@@ -12,6 +12,12 @@ import { NewVolume } from '../new-volume';
 
 const mockAdvancedMode = vi.hoisted(() => ({ value: false }));
 
+const mockIsValid = vi.hoisted(() => ({ value: true }));
+
+const wizardProps = vi.hoisted(() => ({
+  steps: [] as Array<{ isComplete?: boolean }>,
+}));
+
 const mockFormValues = vi.hoisted(() => ({
   value: {
     id: 7,
@@ -32,6 +38,11 @@ vi.mock('@tanstack/react-form', () => ({
     setFieldValue: vi.fn(),
     store: {},
   }),
+}));
+
+vi.mock('@tanstack/react-store', () => ({
+  useSelector: (_store: unknown, selector: (s: unknown) => unknown) =>
+    selector({ isValid: mockIsValid.value, values: mockFormValues.value, submissionAttempts: 0 }),
 }));
 
 vi.mock('react-i18next', () => ({
@@ -55,7 +66,7 @@ vi.mock('@zextras/ui-components', () => ({
       {label ?? 'button'}
     </button>
   ),
-  HorizontalWizard: ({
+  HorizontalWizardV2: ({
     steps,
     Wrapper,
     onComplete,
@@ -64,9 +75,10 @@ vi.mock('@zextras/ui-components', () => ({
   }: {
     steps: Array<{
       view: React.ComponentType;
-      CancelButton: React.ComponentType<{ completeLoading?: boolean }>;
-      PrevButton: React.ComponentType<{ completeLoading?: boolean }>;
-      NextButton: React.ComponentType<{ completeLoading?: boolean }>;
+      isComplete?: boolean;
+      CancelButton: React.ComponentType<Record<string, unknown>>;
+      PrevButton: React.ComponentType<Record<string, unknown>>;
+      NextButton: React.ComponentType<Record<string, unknown>>;
     }>;
     Wrapper: React.ComponentType<{
       wizard: React.ReactNode;
@@ -78,6 +90,7 @@ vi.mock('@zextras/ui-components', () => ({
     setToggleWizardSection: (value: boolean) => void;
     externalData: string;
   }) => {
+    wizardProps.steps = steps;
     const step = steps[0];
     const StepView = step.view;
     const CancelButton = step.CancelButton;
@@ -89,9 +102,9 @@ vi.mock('@zextras/ui-components', () => ({
         wizard={<StepView />}
         wizardFooter={
           <div>
-            <CancelButton completeLoading={false} />
-            <PrevButton completeLoading={false} />
-            <NextButton completeLoading={false} />
+            <CancelButton />
+            <PrevButton />
+            <NextButton />
             <button type="button" onClick={onComplete}>
               Complete wizard
             </button>
@@ -246,5 +259,21 @@ describe('NewVolume', () => {
         isCurrent: 0,
       }),
     );
+  });
+
+  it('should set isComplete=false when required fields are empty even if isValid is true', () => {
+    mockIsValid.value = true;
+    renderComponent({
+      volumeDetail: {
+        id: '',
+        volumeName: '',
+        path: '',
+        isCurrent: false,
+        isCompression: false,
+        compressionThreshold: '',
+      },
+    });
+
+    expect(wizardProps.steps[0]?.isComplete).toBe(false);
   });
 });

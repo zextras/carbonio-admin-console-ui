@@ -16,9 +16,11 @@ const wizardProps = vi.hoisted(() => ({
     label: string;
     view: React.ComponentType<unknown>;
     canGoNext: () => boolean;
+    isComplete?: boolean;
+    toggleNextBtn?: boolean;
     CancelButton: React.ComponentType<{ onCancel: () => void }>;
     PrevButton: React.ComponentType<unknown>;
-    NextButton: React.ComponentType<{ toggleNextBtn?: boolean; onClick?: () => void }>;
+    NextButton: React.ComponentType<{ toggleNextBtn?: boolean; onClick?: () => void; disabled?: boolean }>;
   }>,
   onComplete: null as (() => void) | null,
 }));
@@ -34,7 +36,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('@zextras/ui-components', () => ({
-  HorizontalWizard: ({
+  HorizontalWizardV2: ({
     steps,
     onComplete,
   }: {
@@ -43,6 +45,8 @@ vi.mock('@zextras/ui-components', () => ({
   }) => {
     wizardProps.steps = steps;
     wizardProps.onComplete = onComplete;
+    const step0 = steps[0];
+    const NextButton = step0.NextButton;
     return (
       <div data-testid="wizard">
         {steps.map((s, i) => {
@@ -53,6 +57,11 @@ vi.mock('@zextras/ui-components', () => ({
             </div>
           );
         })}
+        <NextButton
+          disabled={!step0.isComplete}
+          toggleNextBtn={step0.toggleNextBtn}
+          onClick={() => {}}
+        />
       </div>
     );
   },
@@ -61,13 +70,20 @@ vi.mock('@zextras/ui-components', () => ({
     onClick,
     label,
     type,
+    disabled,
   }: {
     children?: React.ReactNode;
     onClick?: () => void;
     label?: string;
     type?: 'button' | 'reset' | 'submit';
+    disabled?: boolean;
   }) => (
-    <button type={type ?? 'button'} onClick={onClick} data-testid={`btn-${label}`}>
+    <button
+      type={type ?? 'button'}
+      onClick={onClick}
+      disabled={disabled}
+      data-testid={`btn-${label}`}
+    >
       {children ?? label}
     </button>
   ),
@@ -190,5 +206,11 @@ describe('CreateMailstoresVolume', () => {
     fireEvent.click(container.querySelector('button')!);
     expect(setToggleWizardLocal).not.toHaveBeenCalled();
     expect(injectedOnClick).toHaveBeenCalled();
+  });
+
+  it('should disable NEXT STEP button when step 1 fields are empty', () => {
+    renderComponent();
+    const btn = screen.getByTestId('btn-NEXT STEP') as HTMLButtonElement;
+    expect(btn.disabled).toBe(true);
   });
 });

@@ -22,8 +22,6 @@ describe('useAdvancedVolumeContext', () => {
   it('does not throw when used inside an AdvancedVolumeContext.Provider', () => {
     const provided: AdvancedVolumeContextType = {
       form: { store: {} } as unknown as AdvancedVolumeContextType['form'],
-      isAllocationToggle: true,
-      setIsAllocationToggle: vi.fn(),
     };
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

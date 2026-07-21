@@ -67,6 +67,7 @@ export const VerifyError = ({ isError, checkDetails, onRetry }: VerifyErrorProps
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler -- HTML popover API is imperative; showPopover()/hidePopover() have no declarative React equivalent. Same pattern as use-show-error-snackbar.ts.
     if (isError) {
       popoverRef.current?.showPopover();
       return;

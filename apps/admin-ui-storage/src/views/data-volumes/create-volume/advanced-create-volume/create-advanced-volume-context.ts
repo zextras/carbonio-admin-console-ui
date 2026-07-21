@@ -9,8 +9,6 @@ import type { AdvancedVolumeFormApi } from './types';
 
 export type AdvancedVolumeContextType = {
   form: AdvancedVolumeFormApi;
-  isAllocationToggle: boolean;
-  setIsAllocationToggle: (value: boolean) => void;
 };
 
 export const AdvancedVolumeContext = createContext<AdvancedVolumeContextType | undefined>(

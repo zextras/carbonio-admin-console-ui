@@ -5,7 +5,8 @@
  */
 
 import { useForm } from '@tanstack/react-form';
-import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
+import { useSelector } from '@tanstack/react-store';
+import { Button, HorizontalWizardV2, Section } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { type ComponentProps, createContext, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,9 +16,7 @@ import { volumeCreateSchema } from './schema';
 import type { VolumeCreateFormValues } from './types';
 import { VolumeContext } from './volume-context';
 
-type WizardStepButtonProps = ComponentProps<typeof Button> & {
-	completeLoading?: boolean;
-};
+type WizardStepButtonProps = ComponentProps<typeof Button>;
 
 type NewVolumeActions = {
 	isAdvanced: boolean;
@@ -48,7 +47,7 @@ function NewVolumeCancelButton(props: WizardStepButtonProps) {
 	);
 }
 
-function NewVolumePrevButton({ completeLoading }: WizardStepButtonProps) {
+function NewVolumePrevButton() {
 	const { t } = useTranslation();
 	const { isAdvanced, onPrev } = useContext(NewVolumeActionsContext);
 	if (!isAdvanced) {
@@ -59,7 +58,6 @@ function NewVolumePrevButton({ completeLoading }: WizardStepButtonProps) {
 			label={t('label.volume_back_button', 'BACK')}
 			icon={'ChevronLeftOutline'}
 			iconPlacement="left"
-			disabled={completeLoading}
 			color="secondary"
 			onClick={onPrev}
 		/>
@@ -75,7 +73,6 @@ function NewVolumeNextButton(props: WizardStepButtonProps) {
 			label={t('label.volume_create', 'CREATE')}
 			icon={'PowerOutline'}
 			iconPlacement="right"
-			disabled={props?.completeLoading}
 		/>
 	) : (
 		<Button
@@ -83,7 +80,6 @@ function NewVolumeNextButton(props: WizardStepButtonProps) {
 			label={t('label.volume_create', 'CREATE')}
 			icon={'ChevronRightOutline'}
 			iconPlacement="right"
-			disabled={props?.completeLoading}
 		/>
 	);
 }
@@ -144,6 +140,10 @@ export function NewVolume({
   });
 
   const isAdvanced = useIsAdvanced();
+  const isFormValid = useSelector(form.store, (s) => s.isValid);
+  const volumeName = useSelector(form.store, (s) => s.values.volumeName);
+  const path = useSelector(form.store, (s) => s.values.path);
+  const isComplete = !!volumeName && !!path && isFormValid;
 
   const wizardSteps = [
     {
@@ -151,6 +151,7 @@ export function NewVolume({
       label: t('label.new_volume_create', 'CREATE'),
       icon: 'CubeOutline',
       view: MailstoresCreate,
+      isComplete,
       CancelButton: NewVolumeCancelButton,
       PrevButton: NewVolumePrevButton,
       NextButton: NewVolumeNextButton,
@@ -185,7 +186,7 @@ export function NewVolume({
         }}
       >
         <VolumeContext.Provider value={{ form }}>
-          <HorizontalWizard
+          <HorizontalWizardV2
             steps={wizardSteps}
             Wrapper={WizardInSection}
             onComplete={onComplete}

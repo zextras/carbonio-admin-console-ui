@@ -4,11 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useForm } from '@tanstack/react-form';
-import { Button, HorizontalWizard, Section } from '@zextras/ui-components';
-import { createContext, useContext, useState } from 'react';
+import { useSelector } from '@tanstack/react-store';
+import { Button, HorizontalWizardV2, Section } from '@zextras/ui-components';
+import { createContext, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { CreateMailstoresVolumeProps, WizardInSectionProps } from '../../../../../types';
+import { LOCAL_TYPE_VALUE } from '../../../../constants';
 import { volumeTypeList } from '../../../utility/utils';
 import { volumeCreateSchema } from '../schema';
 import type { VolumeCreateFormValues } from '../types';
@@ -17,7 +19,7 @@ import { AdvancedMailstoresConfig } from './advanced-mailstores-config';
 import { AdvancedMailstoresCreate } from './advanced-mailstores-create';
 import { AdvancedMailstoresDefinition } from './advanced-mailstores-definition';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
-import type { AdvancedVolumeFormValues, WizardButtonRenderProps, WizardStep } from './types';
+import type { AdvancedVolumeFormValues } from './types';
 
 type WizardActions = {
   onCancel: () => void;
@@ -52,6 +54,12 @@ const WizardInSection = ({
   );
 };
 
+type WizardButtonProps = {
+  onClick: () => void;
+  disabled?: boolean;
+  toggleNextBtn?: boolean;
+};
+
 function WizardCancelButton() {
   const { t } = useTranslation();
   const { onCancel } = useContext(WizardActionsContext);
@@ -72,12 +80,13 @@ function EmptyPrevButton() {
   return <></>;
 }
 
-function DefinitionNextButton({ onClick, toggleNextBtn }: WizardButtonRenderProps) {
+function DefinitionNextButton({ onClick, disabled, toggleNextBtn }: WizardButtonProps) {
   const { t } = useTranslation();
   const { onNextLocal } = useContext(WizardActionsContext);
   return toggleNextBtn ? (
     <Button
       onClick={onNextLocal}
+      disabled={disabled}
       label={t('label.volume_next_step_button', 'NEXT STEP')}
       icon={'ChevronRightOutline'}
       iconPlacement="right"
@@ -85,6 +94,7 @@ function DefinitionNextButton({ onClick, toggleNextBtn }: WizardButtonRenderProp
   ) : (
     <Button
       onClick={onClick}
+      disabled={disabled}
       label={t('label.volume_next_step_button', 'NEXT STEP')}
       icon={'ChevronRightOutline'}
       iconPlacement="right"
@@ -92,7 +102,7 @@ function DefinitionNextButton({ onClick, toggleNextBtn }: WizardButtonRenderProp
   );
 }
 
-function WizardPrevButton({ onClick, completeLoading }: WizardButtonRenderProps) {
+function WizardPrevButton({ onClick }: WizardButtonProps) {
   const { t } = useTranslation();
   return (
     <Button
@@ -100,13 +110,12 @@ function WizardPrevButton({ onClick, completeLoading }: WizardButtonRenderProps)
       label={t('label.volume_back_button', 'BACK')}
       icon={'ChevronLeftOutline'}
       iconPlacement="left"
-      disabled={completeLoading}
       color="secondary"
     />
   );
 }
 
-function ConfigNextButton({ onClick, completeLoading }: WizardButtonRenderProps) {
+function ConfigNextButton({ onClick, disabled }: WizardButtonProps) {
   const { t } = useTranslation();
   return (
     <Button
@@ -114,12 +123,12 @@ function ConfigNextButton({ onClick, completeLoading }: WizardButtonRenderProps)
       label={t('label.volume_next_button', 'NEXT')}
       icon={'ChevronRightOutline'}
       iconPlacement="right"
-      disabled={completeLoading}
+      disabled={disabled}
     />
   );
 }
 
-function CreateNextButton({ onClick, completeLoading }: WizardButtonRenderProps) {
+function CreateNextButton({ onClick, disabled }: WizardButtonProps) {
   const { t } = useTranslation();
   return (
     <Button
@@ -127,7 +136,7 @@ function CreateNextButton({ onClick, completeLoading }: WizardButtonRenderProps)
       label={t('label.volume_create', 'CREATE')}
       icon={'PowerOutline'}
       iconPlacement="right"
-      disabled={completeLoading}
+      disabled={disabled}
     />
   );
 }
@@ -140,7 +149,6 @@ export const CreateMailstoresVolume = ({
 }: CreateMailstoresVolumeProps) => {
   const { t } = useTranslation();
   const volTypeList = volumeTypeList(t);
-  const [isAllocationToggle, setIsAllocationToggle] = useState(false);
 
   const volumeForm = useForm({
     defaultValues: {
@@ -178,13 +186,37 @@ export const CreateMailstoresVolume = ({
     onSubmit: async () => {},
   });
 
-  const wizardSteps: Array<WizardStep> = [
+  const step1VolumeName = useSelector(volumeForm.store, (s) => s.values.volumeName);
+  const basicVolumeAllocation = useSelector(volumeForm.store, (s) => s.values.volumeAllocation);
+  const unusedBucketType = useSelector(form.store, (s) => s.values.unusedBucketType);
+  const volumeMain = useSelector(form.store, (s) => s.values.volumeMain);
+  const advVolumeName = useSelector(form.store, (s) => s.values.volumeName);
+  const advVolumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);
+
+  const volumeType =
+    volTypeList?.find((item) => item?.value === volumeMain)?.label ?? '';
+
+  const step1IsComplete =
+    !!step1VolumeName &&
+    !!basicVolumeAllocation &&
+    (basicVolumeAllocation === LOCAL_TYPE_VALUE || !!unusedBucketType);
+  const step1ToggleNextBtn = basicVolumeAllocation === LOCAL_TYPE_VALUE;
+  const step2IsComplete = volumeMain !== 0;
+  const step3IsComplete = !!(advVolumeAllocation && advVolumeName && unusedBucketType && volumeType);
+  const isAllocationToggle =
+    !step1IsComplete ||
+    basicVolumeAllocation === LOCAL_TYPE_VALUE ||
+    volumeMain === 0;
+
+  const wizardSteps = [
     {
       name: 'volume',
       label: t('label.volume_definition', 'DEFINITION'),
       icon: 'CubeOutline',
       view: AdvancedMailstoresDefinition,
       canGoNext: () => true,
+      isComplete: step1IsComplete,
+      toggleNextBtn: step1ToggleNextBtn,
       CancelButton: WizardCancelButton,
       PrevButton: EmptyPrevButton,
       NextButton: DefinitionNextButton,
@@ -195,7 +227,8 @@ export const CreateMailstoresVolume = ({
       icon: 'Options2Outline',
       view: AdvancedMailstoresConfig,
       canGoNext: () => true,
-      clickDisabled: !!isAllocationToggle,
+      clickDisabled: isAllocationToggle,
+      isComplete: step2IsComplete,
       CancelButton: WizardCancelButton,
       PrevButton: WizardPrevButton,
       NextButton: ConfigNextButton,
@@ -206,7 +239,8 @@ export const CreateMailstoresVolume = ({
       icon: 'CubeOutline',
       view: AdvancedMailstoresCreate,
       canGoNext: () => true,
-      clickDisabled: !!isAllocationToggle,
+      clickDisabled: isAllocationToggle,
+      isComplete: step3IsComplete,
       CancelButton: WizardCancelButton,
       PrevButton: WizardPrevButton,
       NextButton: CreateNextButton,
@@ -215,12 +249,12 @@ export const CreateMailstoresVolume = ({
 
   const onComplete = () => {
     const v = form.state.values;
-    const volumeType = volTypeList
+    const volType = volTypeList
       ?.find((item) => item?.value === v.volumeMain)
       ?.label?.toLowerCase();
     CreateAdvancedRequest({
       volumeName: v.volumeName,
-      volumeType,
+      volumeType: volType,
       storeType: v.unusedBucketType,
       bucketConfigurationId: v.bucketId,
       volumePrefix: v.prefix,
@@ -239,9 +273,9 @@ export const CreateMailstoresVolume = ({
         onNextLocal: () => setToggleWizardLocal(true),
       }}
     >
-      <AdvancedVolumeContext.Provider value={{ form, isAllocationToggle, setIsAllocationToggle }}>
+      <AdvancedVolumeContext.Provider value={{ form }}>
         <VolumeContext.Provider value={{ form: volumeForm }}>
-          <HorizontalWizard
+          <HorizontalWizardV2
             steps={wizardSteps}
             Wrapper={WizardInSection}
             onComplete={onComplete}

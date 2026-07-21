@@ -31,9 +31,8 @@ import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 export function AdvancedMailstoresConfig({
   onSelection,
   externalData,
-  setCompleteLoading,
 }: AdvancedMailstoresConfigProps) {
-  const { form, setIsAllocationToggle } = useAdvancedVolumeContext();
+  const { form } = useAdvancedVolumeContext();
   const { t } = useTranslation();
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
@@ -59,16 +58,6 @@ export function AdvancedMailstoresConfig({
   const changeVolDetail = (e: ChangeEvent<HTMLInputElement>): void => {
     form.setFieldValue(e.target.name as 'prefix' | 'infrequentAccessThreshold', e.target.value);
   };
-
-  useEffect(() => {
-    if (volumeMain === 0) {
-      setCompleteLoading(false);
-      setIsAllocationToggle(true);
-    } else {
-      setCompleteLoading(true);
-      setIsAllocationToggle(false);
-    }
-  }, [prefix, volumeMain, setCompleteLoading, setIsAllocationToggle]);
 
   useEffect(() => {
     if (showTieringSettings) {

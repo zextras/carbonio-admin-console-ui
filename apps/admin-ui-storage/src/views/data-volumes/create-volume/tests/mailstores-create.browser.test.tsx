@@ -7,7 +7,7 @@
 import { useForm } from '@tanstack/react-form';
 import { advancedSupportedApiForBrowser, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { MailstoresCreate } from '../mailstores-create';
@@ -33,15 +33,10 @@ function VolumeProvider({ children }: { children: React.ReactNode }): React.JSX.
   return <VolumeContext.Provider value={{ form }}>{children}</VolumeContext.Provider>;
 }
 
-function renderMailstoresCreate(
-  setCompleteLoading: (value: boolean) => void = vi.fn(),
-): React.ReactElement {
+function renderMailstoresCreate(): React.ReactElement {
   return (
     <VolumeProvider>
-      <MailstoresCreate
-        externalData="mailstore1.example.com"
-        setCompleteLoading={setCompleteLoading}
-      />
+      <MailstoresCreate externalData="mailstore1.example.com" />
     </VolumeProvider>
   );
 }
@@ -49,19 +44,6 @@ function renderMailstoresCreate(
 describe('MailstoresCreate (browser)', () => {
   beforeEach(async () => {
     await advancedSupportedApiForBrowser.withAdvancedNotSupported();
-  });
-
-  it('should enable completion when name and path are filled without compression', async () => {
-    const setCompleteLoading = vi.fn();
-
-    await setupBrowserTest(renderMailstoresCreate(setCompleteLoading));
-
-    await page.getByLabelText('Volume Name').fill('primary-volume');
-    await page.getByLabelText('Volume path').fill('/opt/zextras/store');
-
-    await vi.waitFor(() => {
-      expect(setCompleteLoading).toHaveBeenCalledWith(true);
-    });
   });
 
   it('should hide compression controls when index volume is selected', async () => {
@@ -78,34 +60,15 @@ describe('MailstoresCreate (browser)', () => {
     });
   });
 
-  it('should keep completion disabled when compression is enabled without threshold', async () => {
-    const setCompleteLoading = vi.fn();
-
-    await setupBrowserTest(renderMailstoresCreate(setCompleteLoading));
-
-    await page.getByLabelText('Volume Name').fill('primary-volume');
-    await page.getByLabelText('Volume path').fill('/opt/zextras/store');
-    await page.getByRole('switch', { name: 'Enable Compression' }).click();
-
-    await vi.waitFor(() => {
-      expect(setCompleteLoading).toHaveBeenCalledWith(false);
-    });
-  });
-
-  it('should show radio buttons and enable completion in advanced mode', async () => {
+  it('should show radio buttons in advanced mode', async () => {
     await advancedSupportedApiForBrowser.withAdvancedSupported();
-    const setCompleteLoading = vi.fn();
 
-    await setupBrowserTest(renderMailstoresCreate(setCompleteLoading));
+    await setupBrowserTest(renderMailstoresCreate());
 
     await page.getByLabelText('Volume Name').fill('secondary-volume');
     await page.getByLabelText('Volume path').fill('/opt/zextras/secondary');
 
     await expect.element(page.getByText('This is a Primary Volume', { exact: true })).toBeVisible();
     await page.getByText('This is a Secondary Volume', { exact: true }).click();
-
-    await vi.waitFor(() => {
-      expect(setCompleteLoading).toHaveBeenCalledWith(true);
-    });
   });
 });

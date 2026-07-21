@@ -7,7 +7,6 @@
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -21,14 +20,12 @@ import type { AdvancedVolumeFormValues } from '../types';
 type HarnessOptions = {
   initialAdvanced?: Partial<AdvancedVolumeFormValues>;
   onSelection?: (data: Record<string, unknown>, flag: boolean) => void;
-  setCompleteLoading?: (value: boolean) => void;
   externalData?: string;
 };
 
 function Harness({
   initialAdvanced,
   onSelection,
-  setCompleteLoading,
   externalData,
 }: HarnessOptions) {
   const volumeForm = useForm({
@@ -45,8 +42,6 @@ function Harness({
     validators: { onChange: volumeCreateSchema },
     onSubmit: async () => {},
   });
-
-  const [isAllocationToggle, setIsAllocationToggle] = useState(false);
 
   const advancedForm = useForm({
     defaultValues: {
@@ -72,13 +67,10 @@ function Harness({
 
   return (
     <VolumeContext.Provider value={{ form: volumeForm }}>
-      <AdvancedVolumeContext.Provider
-        value={{ form: advancedForm, isAllocationToggle, setIsAllocationToggle }}
-      >
+      <AdvancedVolumeContext.Provider value={{ form: advancedForm }}>
         <AdvancedMailstoresConfig
           externalData={externalData ?? 'server-a'}
           onSelection={onSelection ?? vi.fn()}
-          setCompleteLoading={setCompleteLoading ?? vi.fn()}
         />
         <div data-testid="advanced-state">{JSON.stringify(advancedValues)}</div>
       </AdvancedVolumeContext.Provider>
@@ -88,16 +80,13 @@ function Harness({
 
 function renderHarness(options: HarnessOptions = {}) {
   const onSelection = options.onSelection ?? vi.fn();
-  const setCompleteLoading = options.setCompleteLoading ?? vi.fn();
   return {
     onSelection,
-    setCompleteLoading,
     render: () =>
       setupBrowserTest(
         <Harness
           initialAdvanced={options.initialAdvanced}
           onSelection={onSelection}
-          setCompleteLoading={setCompleteLoading}
           externalData={options.externalData}
         />,
       ),
@@ -134,26 +123,6 @@ describe('AdvancedMailstoresConfig (browser)', () => {
     await expect
       .element(page.getByPlaceholder('Prefix - all objects will have this prefix in their name'))
       .toBeVisible();
-  });
-
-  it('should call setCompleteLoading(false) on mount when volumeMain is 0', async () => {
-    const setCompleteLoading = vi.fn();
-    await renderHarness({ setCompleteLoading }).render();
-    await vi.waitFor(() => {
-      expect(setCompleteLoading).toHaveBeenCalledWith(false);
-    });
-  });
-
-  it('should call setCompleteLoading(true) when Primary radio is selected', async () => {
-    const setCompleteLoading = vi.fn();
-    await renderHarness({ setCompleteLoading }).render();
-    await vi.waitFor(() => {
-      expect(setCompleteLoading).toHaveBeenCalledWith(false);
-    });
-    await page.getByText('This is a Primary Volume', { exact: true }).click();
-    await vi.waitFor(() => {
-      expect(setCompleteLoading).toHaveBeenCalledWith(true);
-    });
   });
 
   it('should toggle Primary radio off when clicked twice (volumeMain back to 0)', async () => {
@@ -320,7 +289,6 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       },
     }).render();
 
-    // Click "Use infrequent access" switch to toggle it off
     await page.getByRole('switch', { name: 'Use infrequent access' }).click();
 
     await vi.waitFor(() => {

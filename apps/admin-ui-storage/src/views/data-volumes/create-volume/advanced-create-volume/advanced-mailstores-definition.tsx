@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 import type { S3ConnectorVolume, VolumeAllocationItem } from '../../../../../types';
 import {
   EXTERNAL_TYPE_VALUE,
-  LOCAL_TYPE_VALUE,
   UNUSED,
   USAGE_IN_EXTERNAL_BACKUP,
 } from '../../../../constants';
@@ -22,18 +21,14 @@ import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 
 type AdvancedMailstoresDefinitionProps = {
   readonly externalData: string;
-  readonly setCompleteLoading: (newValue: boolean) => void;
-  readonly setToggleNextBtn: (newValue: boolean) => void;
 };
 
 export function AdvancedMailstoresDefinition({
   externalData,
-  setToggleNextBtn,
-  setCompleteLoading,
 }: AdvancedMailstoresDefinitionProps) {
   const { t } = useTranslation();
   const { form: volumeForm } = useContext(VolumeContext);
-  const { form, setIsAllocationToggle } = useAdvancedVolumeContext();
+  const { form } = useAdvancedVolumeContext();
   const { data: connectors = [] } = useListS3Connectors();
   const volAllocationList = volumeAllocationList(t);
   const connectorTypeItems = S3ConnectorTypeItems(t);
@@ -77,7 +72,6 @@ export function AdvancedMailstoresDefinition({
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
   const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);
   const bucketId = useSelector(form.store, (s) => s.values.bucketId);
-  const unusedBucketType = useSelector(form.store, (s) => s.values.unusedBucketType);
   const basicVolumeAllocation = useSelector(volumeForm.store, (s) => s.values.volumeAllocation);
 
   const allocation = volAllocationList?.find(
@@ -105,11 +99,6 @@ export function AdvancedMailstoresDefinition({
       (item: VolumeAllocationItem) => item?.value === v,
     )?.label;
     form.setFieldValue('volumeAllocation', volumeTypeObject ?? '');
-    if (v === LOCAL_TYPE_VALUE) {
-      setToggleNextBtn(true);
-    } else {
-      setToggleNextBtn(false);
-    }
   };
 
   useEffect(() => {
@@ -155,31 +144,6 @@ export function AdvancedMailstoresDefinition({
       onUnusedConnectorListChange(defaultConnector);
     }
   }, [bucketId, backupUnusedConnectorList, onUnusedConnectorListChange, basicVolumeAllocation]);
-
-  useEffect(() => {
-    if (volumeName && basicVolumeAllocation) {
-      if (basicVolumeAllocation === LOCAL_TYPE_VALUE) {
-        setCompleteLoading(true);
-        setIsAllocationToggle(true);
-      } else if (unusedBucketType && backupUnusedConnectorList?.length !== 0) {
-        setCompleteLoading(true);
-        setIsAllocationToggle(false);
-      } else {
-        setCompleteLoading(false);
-        setIsAllocationToggle(true);
-      }
-    } else {
-      setCompleteLoading(false);
-      setIsAllocationToggle(true);
-    }
-  }, [
-    unusedBucketType,
-    basicVolumeAllocation,
-    backupUnusedConnectorList?.length,
-    setCompleteLoading,
-    setIsAllocationToggle,
-    volumeName,
-  ]);
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
