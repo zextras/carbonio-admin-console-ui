@@ -128,6 +128,7 @@ export function AdvancedMailstoresConfig({
         </div>
       </Row>
       {!isLocalBlockDevice && (
+        <>
           <ListRow>
             <Container
               mainAlignment="flex-start"
@@ -145,23 +146,20 @@ export function AdvancedMailstoresConfig({
                 </div>
               </div>
             </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large' }}
-            >
-              <div className={styles.detailItem}>
-                <ds-text size="small" color="gray1">
-                  {t('label.ID', 'ID')}
-                </ds-text>
-                <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} weight="bold" size="small">
-                    {bucketId}
-                  </ds-text>
-                </div>
-              </div>
-            </Container>
           </ListRow>
+          <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+            <div className={styles.detailItem}>
+              <ds-text size="small" color="gray1">
+                {t('label.ID', 'ID')}
+              </ds-text>
+              <div className={styles.detailValueRow}>
+                <ds-text className={styles.detailValue} weight="bold" size="small">
+                  {bucketId}
+                </ds-text>
+              </div>
+            </div>
+          </Row>
+        </>
       )}
 
       <div className={styles.sectionHeader}>

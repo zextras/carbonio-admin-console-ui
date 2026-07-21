@@ -158,60 +158,94 @@ export function AdvancedMailstoresCreate({
         <div className={styles.reviewCardBody}>
           {isLocalBlockDevice ? (
             <>
-              <Row padding={{ top: 'large' }} width="100%">
+              <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
                 <DetailField label={t('label.volume_path', 'Volume path')} value={path} />
               </Row>
-              <Row padding={{ top: 'large' }} width="100%">
+              <ListRow>
+                <Container
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                  padding={{ top: 'large', right: 'large' }}
+                >
+                  <DetailField
+                    label={t('label.enable_compression', 'Enable Compression')}
+                    value={isCompression ? YES : NO}
+                  />
+                </Container>
+                <Container
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                  padding={{ top: 'large' }}
+                >
+                  <DetailField
+                    label={t('label.volume_compression_thresold', 'Compression Threshold')}
+                    value={isCompression ? compressionThreshold : DISABLED}
+                  />
+                </Container>
+              </ListRow>
+              <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
                 <DetailField
-                  label={t('label.enable_compression', 'Enable Compression')}
-                  value={isCompression ? YES : NO}
-                />
-              </Row>
-              <Row padding={{ top: 'large' }} width="100%">
-                <DetailField
-                  label={t('label.volume_compression_thresold', 'Compression Threshold')}
-                  value={isCompression ? compressionThreshold : DISABLED}
+                  label={t('label.volume_as_current', 'Volum as current')}
+                  value={isCurrent ? YES : NO}
                 />
               </Row>
             </>
           ) : (
             <>
-              <Row padding={{ top: 'large' }} width="100%">
+              <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
                 <DetailField
                   label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
                   value={prefix}
                 />
               </Row>
               {showTieringSettings && (
-                <>
-                  <Row padding={{ top: 'large' }} width="100%">
+                <ListRow>
+                  <Container
+                    mainAlignment="flex-start"
+                    crossAlignment="flex-start"
+                    padding={{ top: 'large', right: 'large' }}
+                  >
                     <DetailField
                       label={t('label.infrequent_access', 'Infrequent access')}
                       value={useInfrequentAccess ? ENABLED : DISABLED}
                     />
-                  </Row>
-                  <Row padding={{ top: 'large' }} width="100%">
+                  </Container>
+                  <Container
+                    mainAlignment="flex-start"
+                    crossAlignment="flex-start"
+                    padding={{ top: 'large' }}
+                  >
                     <DetailField
                       label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
                       value={useIntelligentTiering ? ENABLED : DISABLED}
                     />
-                  </Row>
-                </>
+                  </Container>
+                </ListRow>
               )}
-              <Row padding={{ top: 'large' }} width="100%">
-                <DetailField
-                  label={t('label.centralized', 'Centralized')}
-                  value={centralized ? YES : NO}
-                />
-              </Row>
+              <ListRow>
+                <Container
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                  padding={{ top: 'large', right: 'large' }}
+                >
+                  <DetailField
+                    label={t('label.volume_as_current', 'Volum as current')}
+                    value={isCurrent ? YES : NO}
+                  />
+                </Container>
+                <Container
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                  padding={{ top: 'large' }}
+                >
+                  <DetailField
+                    label={t('label.centralized', 'Centralized')}
+                    value={centralized ? YES : NO}
+                  />
+                </Container>
+              </ListRow>
             </>
           )}
-          <Row padding={{ top: 'large' }} width="100%">
-            <DetailField
-              label={t('label.volume_as_current', 'Volum as current')}
-              value={isCurrent ? YES : NO}
-            />
-          </Row>
         </div>
       </div>
     </Container>
