@@ -1,3 +1,9 @@
+## [0.15.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.3...v0.15.4) (2026-07-21)
+
+### Other changes
+
+* **admin-ui-cos:** remove side effects ([#1305](https://github.com/zextras/carbonio-admin-console-ui/issues/1305)) ([f4574a8](https://github.com/zextras/carbonio-admin-console-ui/commit/f4574a8827679d78423853f8e68d028589573da9))
+
 ## [0.15.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.2...v0.15.3) (2026-07-20)
 
 ### Bug Fixes
