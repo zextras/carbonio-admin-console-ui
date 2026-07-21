@@ -787,22 +787,21 @@ const ModifyVolume: FC<{
   );
 
   const roleBadge = labelMap[volumeDetail?.type]?.toUpperCase();
-  const volumeRoleLabel =
-    type?.value === 1
-      ? t('label.primary_volume_role', 'Primary Volume')
-      : type?.value === 2
-      ? t('label.secondary_volume_role', 'Secondary Volume')
-      : type?.value === 10
-      ? t('label.index_volume_role', 'Index Volume')
-      : labelMap[volumeDetail?.type];
+  let volumeRoleLabel = labelMap[volumeDetail?.type];
+  if (type?.value === 1) {
+    volumeRoleLabel = t('label.primary_volume_role', 'Primary Volume');
+  } else if (type?.value === 2) {
+    volumeRoleLabel = t('label.secondary_volume_role', 'Secondary Volume');
+  } else if (type?.value === 10) {
+    volumeRoleLabel = t('label.index_volume_role', 'Index Volume');
+  }
   const isExternal = Object.keys(externalVolDetail).length > 0;
   const isObjectStorage = !(
     storeType?.toUpperCase() === LOCAL_VALUE || (!storeType && !isExternal)
   );
-  const storageTypeLabel =
-    !isObjectStorage
-      ? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
-      : getBucketTypeLabel(storeType) ?? storeType ?? '';
+  const storageTypeLabel = isObjectStorage
+    ? (getBucketTypeLabel(storeType) ?? storeType ?? '')
+    : t('volume.volume_allocation_list.local_block_device', 'Local Block Device');
   const isLocalBlockDevice = !isObjectStorage;
   const showOptionsSection = Object.keys(externalVolDetail)?.length > 0 || volumeDetail?.type !== 10;
 
@@ -1215,7 +1214,6 @@ const ModifyVolume: FC<{
                             </ds-text>
                           </Padding>
                         </Row>
-                        {/* {isAdvanced && <Padding horizontal="small" />} */}
                         <Row mainAlignment="flex-start" width={'48%'}>
                           <Row padding={{ top: 'small' }} width="100%">
                             <Input

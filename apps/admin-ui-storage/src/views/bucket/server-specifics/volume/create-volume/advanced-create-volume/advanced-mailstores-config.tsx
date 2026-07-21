@@ -81,7 +81,7 @@ const AdvancedMailstoresConfig: FC<AdvancedMailstoresConfigProps> = ({
 
   const changeVolCompThreshold = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const regex = /^[0-9]*$/;
+      const regex = /^\d*$/;
       if (!regex.test(e?.target?.value)) {
         return;
       }
