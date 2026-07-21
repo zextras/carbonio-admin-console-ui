@@ -146,27 +146,21 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
       await setupBrowserTest(renderModifyVolume(PRIMARY_VOLUME.id as number), {
         initialRouterEntry: VOLUME_ROUTE_ENTRY,
       });
-      await expect
-        .element(page.getByText(`${PRIMARY_VOLUME.name} Details`, { exact: true }))
-        .toBeVisible();
+      await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
     });
 
     it('should display secondary volume name when volumeId matches a secondary volume', async () => {
       await setupBrowserTest(renderModifyVolume(SECONDARY_VOLUME.id as number), {
         initialRouterEntry: VOLUME_ROUTE_ENTRY,
       });
-      await expect
-        .element(page.getByText(`${SECONDARY_VOLUME.name} Details`, { exact: true }))
-        .toBeVisible();
+      await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
     });
 
     it('should display index volume name when volumeId matches an index volume', async () => {
       await setupBrowserTest(renderModifyVolume(INDEX_VOLUME.id as number), {
         initialRouterEntry: VOLUME_ROUTE_ENTRY,
       });
-      await expect
-        .element(page.getByText(`${INDEX_VOLUME.name} Details`, { exact: true }))
-        .toBeVisible();
+      await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
     });
 
     it('should display the volume path for a matched primary volume', async () => {
@@ -347,10 +341,10 @@ describe('external volume - disabled radios', () => {
     });
 
     await expect
-      .element(page.getByRole('radio', { name: /this is a primary volume/i }))
+      .element(page.getByRole('radio', { name: /^primary volume$/i }))
       .toBeDisabled();
     await expect
-      .element(page.getByRole('radio', { name: /this is a secondary volume/i }))
+      .element(page.getByRole('radio', { name: /^secondary volume$/i }))
       .toBeDisabled();
   });
 });

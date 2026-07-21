@@ -338,7 +338,7 @@ export function ModifyVolumeForm({
     {
       align: 'right' as const,
       color: 'error',
-      label: t('label.delete', 'delete'),
+      label: t('label.delete', 'Delete'),
       loading: !volumeDetail?.id,
       onClick: (): void => setOpen(true),
     },
@@ -361,9 +361,7 @@ export function ModifyVolumeForm({
         <Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="4.15rem">
           <Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
             <ds-text as="h2" weight="bold">
-              {t('label.volume_detail_page_title', '{{message}} Details', {
-                message: volumeDetail?.name,
-              })}
+              {t('label.volume_details', 'Volume details')}
             </ds-text>
             {roleBadge && (
               <Padding left="small">
@@ -426,7 +424,7 @@ export function ModifyVolumeForm({
             >
             <Row padding={{ top: 'small' }} width="100%">
               <LabeledValue
-                label={t('label.volume_server_name', 'Server')}
+                label={t('label.server', 'Server')}
                 value={server ?? ''}
                 backgroundColor="gray5"
               />
@@ -435,7 +433,7 @@ export function ModifyVolumeForm({
               <Select
                 items={volAllocationList}
                 background="gray5"
-                label={t('label.storage_type', 'Storage Type')}
+                label={t('label.storage_type', 'Storage type')}
                 showCheckbox={false}
                 defaultSelection={
                   volAllocationList?.find(
@@ -450,7 +448,7 @@ export function ModifyVolumeForm({
               <form.Field name="name">
                 {(field) => (
                   <Input
-                    label={t('label.volume_name', 'Volume Name')}
+                    label={t('label.volume_name', 'Volume name')}
                     value={field.state.value}
                     backgroundColor="gray6"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -489,7 +487,7 @@ export function ModifyVolumeForm({
                 padding={{ top: 'large', right: 'large' }}
               >
                 <LabeledValue
-                  label={t('label.bucket_name', 'Bucket Name')}
+                  label={t('label.bucket_name', 'Bucket name')}
                   backgroundColor="gray6"
                   value={connectorName}
                 />
@@ -511,7 +509,7 @@ export function ModifyVolumeForm({
                 padding={{ top: 'large' }}
               >
                 <LabeledValue
-                  label={t('label.ID', 'ID')}
+                  label={t('storage.dataVolume.s3ConnectorId', 'S3 Connector ID')}
                   backgroundColor="gray6"
                   value={form.state.values.bucketConfigurationId}
                 />
@@ -527,7 +525,7 @@ export function ModifyVolumeForm({
               >
                 <Row width={isAdvanced ? '48%' : '100%'}>
                   <Radio
-                    label={t('label.primary_volume', 'This is a Primary Volume')}
+                    label={t('label.primary_volume_role', 'Primary Volume')}
                     value={PRIMARY_TYPE_VALUE}
                     checked={typeValue === 1}
                     onClick={(): void => {}}
@@ -538,7 +536,7 @@ export function ModifyVolumeForm({
                 {isAdvanced && (
                   <Row width="48%">
                     <Radio
-                      label={t('label.secondary_volume', 'This is a Secondary Volume')}
+                      label={t('label.secondary_volume_role', 'Secondary Volume')}
                       value={SECONDARY_TYPE_VALUE}
                       checked={typeValue === 2}
                       onClick={(): void => {}}
@@ -723,7 +721,7 @@ export function ModifyVolumeForm({
               <form.Field name="name">
                 {(field) => (
                   <Input
-                    label={t('label.volume_name', 'Volume Name')}
+                    label={t('label.volume_name', 'Volume name')}
                     value={field.state.value}
                     backgroundColor="gray5"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -743,7 +741,7 @@ export function ModifyVolumeForm({
               >
                 <Row width={isAdvanced ? '48%' : '100%'}>
                   <Radio
-                    label={t('label.primary_volume', 'This is a Primary Volume')}
+                    label={t('label.primary_volume_role', 'Primary Volume')}
                     value={PRIMARY_TYPE_VALUE}
                     checked={typeValue === 1}
                     onClick={(): void => {}}
@@ -754,7 +752,7 @@ export function ModifyVolumeForm({
                 {isAdvanced && (
                   <Row width="48%">
                     <Radio
-                      label={t('label.secondary_volume', 'This is a Secondary Volume')}
+                      label={t('label.secondary_volume_role', 'Secondary Volume')}
                       value={SECONDARY_TYPE_VALUE}
                       checked={typeValue === 2}
                       onClick={(): void => {}}
