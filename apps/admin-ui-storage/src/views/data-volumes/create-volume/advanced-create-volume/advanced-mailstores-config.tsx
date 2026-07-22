@@ -46,7 +46,7 @@ export function AdvancedMailstoresConfig({
   const { t } = useTranslation();
 
   const openDocumentation = useCallback((url: string): void => {
-    if (typeof globalThis.window === 'undefined') {
+    if (globalThis.window === undefined) {
       return;
     }
     globalThis.window.open(url, '_blank', 'noopener,noreferrer');
