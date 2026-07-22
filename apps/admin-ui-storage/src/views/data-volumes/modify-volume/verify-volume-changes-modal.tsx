@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Checkbox, Container, Modal, Row } from '@zextras/ui-components';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './verify-volume-changes-modal.module.css';
@@ -29,12 +29,6 @@ export const VerifyVolumeChangesModal: FC<VerifyVolumeChangesModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isConfirmed, setIsConfirmed] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      setIsConfirmed(false);
-    }
-  }, [open]);
 
   const onClose = (): void => {
     closeHandler();

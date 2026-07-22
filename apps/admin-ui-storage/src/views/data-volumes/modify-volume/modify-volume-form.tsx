@@ -647,15 +647,17 @@ export function ModifyVolumeForm({
           </Padding>
         </Modal>
       </Container>
-      <VerifyVolumeChangesModal
-        open={showVerifyModal}
-        changedFields={changedFields}
-        closeHandler={(): void => setShowVerifyModal(false)}
-        applyHandler={async (): Promise<void> => {
-          setShowVerifyModal(false);
-          await form.handleSubmit();
-        }}
-      />
+      {showVerifyModal && (
+        <VerifyVolumeChangesModal
+          open={showVerifyModal}
+          changedFields={changedFields}
+          closeHandler={(): void => setShowVerifyModal(false)}
+          applyHandler={async (): Promise<void> => {
+            setShowVerifyModal(false);
+            await form.handleSubmit();
+          }}
+        />
+      )}
     </>
   );
 }
