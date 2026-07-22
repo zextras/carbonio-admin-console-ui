@@ -46,10 +46,10 @@ export function AdvancedMailstoresConfig({
   const { t } = useTranslation();
 
   const openDocumentation = useCallback((url: string): void => {
-    if (typeof window === 'undefined') {
+    if (typeof globalThis.window === 'undefined') {
       return;
     }
-    window.open(url, '_blank', 'noopener,noreferrer');
+    globalThis.window.open(url, '_blank', 'noopener,noreferrer');
   }, []);
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
