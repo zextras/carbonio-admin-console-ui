@@ -17,7 +17,7 @@ type DetailFieldProps = {
   value?: string | number | null;
 };
 
-function DetailField({ label, value }: DetailFieldProps) {
+function DetailField({ label, value }: Readonly<DetailFieldProps>) {
   return (
     <div className={styles.detailItem}>
       <ds-text size="small" color="gray1">
