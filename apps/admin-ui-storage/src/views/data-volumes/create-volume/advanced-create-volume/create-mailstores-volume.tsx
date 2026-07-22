@@ -86,7 +86,7 @@ function EmptyPrevButton() {
   return <></>;
 }
 
-function DefinitionNextButton({ onClick, disabled }: WizardButtonProps) {
+function DefinitionNextButton({ onClick, disabled }: Readonly<WizardButtonProps>) {
   const { t } = useTranslation();
   return (
     <Button
