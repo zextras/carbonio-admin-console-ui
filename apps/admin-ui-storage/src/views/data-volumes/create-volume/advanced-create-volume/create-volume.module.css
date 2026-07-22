@@ -102,3 +102,13 @@
 .requiredAsteriskError input:required ~ label::after {
   color: var(--color-error-regular);
 }
+
+.tieringDocIconButton {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin-left: 0.375rem;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}

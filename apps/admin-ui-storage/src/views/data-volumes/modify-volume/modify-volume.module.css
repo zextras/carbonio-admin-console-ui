@@ -58,3 +58,13 @@
   color: var(--color-text-regular);
   font-weight: 500;
 }
+
+.tieringDocIconButton {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin-left: 0.375rem;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
