@@ -12,7 +12,7 @@
   },
   "engines": {
     "node": "v22",
-    "npm": "v10"
+    "npm": "12.0.1"
   },
   "scripts": {
     "reset": "pnpm exec tsx ../../scripts/reset.ts",
