@@ -184,14 +184,12 @@ export function ModifyVolumeForm({
   const id = String(volumeDetail.id ?? volumeId);
   const showTieringSettings = isS3StoreType(storeType) && tieringSupported;
   const roleBadge = labelMap[volumeDetail.type]?.toUpperCase() ?? '';
-  const volumeRoleLabel =
-    volumeDetail.type === 1
-      ? t('label.primary_volume_role', 'Primary Volume')
-      : volumeDetail.type === 2
-      ? t('label.secondary_volume_role', 'Secondary Volume')
-      : volumeDetail.type === 10
-      ? t('label.index_volume_role', 'Index Volume')
-      : '';
+  const volumeRoleLabelByType: Record<number, string> = {
+    1: t('label.primary_volume_role', 'Primary Volume'),
+    2: t('label.secondary_volume_role', 'Secondary Volume'),
+    10: t('label.index_volume_role', 'Index Volume'),
+  };
+  const volumeRoleLabel = volumeRoleLabelByType[Number(volumeDetail.type)] ?? '';
 
   const isObjectStorage = !(
     storeType?.toUpperCase() === LOCAL_VALUE || (!storeType && !isExternal)
@@ -910,13 +908,26 @@ export function ModifyVolumeForm({
             { name: form.state.values.name },
           )}
           onClose={(): void => setIsCurrentToggle(false)}
-          onConfirm={(): void => {
-            form.setFieldValue('isCurrent', true);
-            setIsCurrentToggle(false);
-          }}
-          confirmLabel={t('modal.iscurrent_confirm.confirm_label', 'YES, PROCEED')}
-          onSecondaryAction={(): void => setIsCurrentToggle(false)}
-          secondaryActionLabel={t('modal.iscurrent_confirm.secondary_label', 'NO, GO BACK')}
+          customFooter={
+            <Container orientation="horizontal" mainAlignment="flex-end">
+              <Row style={{ gap: '0.5rem' }}>
+                <Button
+                  label={t('modal.iscurrent_confirm.secondary_label', 'NO, GO BACK')}
+                  color="primary"
+                  type="outlined"
+                  onClick={(): void => setIsCurrentToggle(false)}
+                />
+                <Button
+                  label={t('modal.iscurrent_confirm.confirm_label', 'YES, PROCEED')}
+                  color="primary"
+                  onClick={(): void => {
+                    form.setFieldValue('isCurrent', true);
+                    setIsCurrentToggle(false);
+                  }}
+                />
+              </Row>
+            </Container>
+          }
           showCloseIcon
         >
           <Padding vertical="small">
