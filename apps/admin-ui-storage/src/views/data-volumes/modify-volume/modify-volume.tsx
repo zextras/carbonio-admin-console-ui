@@ -121,14 +121,12 @@ export function ModifyVolume({
   const externalVolDetail: Volume = isExt && volData ? volData : {};
   const isExternal = isExt;
 
-  const sameTypeVolumes =
-    volumeDetail?.type === 1
-      ? volumeList.primaries
-      : volumeDetail?.type === 2
-        ? volumeList.secondaries
-        : volumeDetail?.type === 10
-          ? volumeList.indexes
-          : [];
+  const sameTypeVolumesByType: Record<number, Array<Volume>> = {
+    1: volumeList.primaries,
+    2: volumeList.secondaries,
+    10: volumeList.indexes,
+  };
+  const sameTypeVolumes = sameTypeVolumesByType[Number(volumeDetail?.type)] ?? [];
   const currentVolumeName = sameTypeVolumes.find(
     (v) => v?.isCurrent === true || v?.isCurrent === 1,
   )?.name;
