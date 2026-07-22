@@ -172,6 +172,11 @@ export function MailstoresCreate({
             );
           }}
         </form.Field>
+        <Padding top="extrasmall">
+          <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+            {t('storage.dataVolumes.volumePathMustExistHint', 'The volume must already exist')}
+          </ds-text>
+        </Padding>
       </Row>
       {!isIndexVolume && (
         <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">

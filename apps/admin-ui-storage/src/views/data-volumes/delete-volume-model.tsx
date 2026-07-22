@@ -57,7 +57,7 @@ export function DeleteVolumeModel({
         as="p"
         size={'extralarge'}
         overflow="break-word"
-        style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
+        style={{ whiteSpace: 'pre-line', textAlign: 'left', padding: '2rem 0' }}
       >
         {volumeDetail?.isCurrent
           ? t(

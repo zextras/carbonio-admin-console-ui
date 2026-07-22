@@ -247,6 +247,11 @@ export function AdvancedMailstoresConfig({
               backgroundColor="gray5"
               onChange={changeVolDetail}
             />
+            <Padding top="extrasmall">
+              <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+                {t('storage.dataVolumes.volumePathMustExistHint', 'The volume must already exist')}
+              </ds-text>
+            </Padding>
           </Row>
           {volumeMain !== INDEX_TYPE_VALUE && (
             <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">

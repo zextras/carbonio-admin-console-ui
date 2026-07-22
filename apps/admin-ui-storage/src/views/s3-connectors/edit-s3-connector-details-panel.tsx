@@ -358,7 +358,6 @@ export function EditS3ConnectorDetailPanel({
       setCheckDetails(errorDetails);
       setIsVerifyError(true);
     }
-    setShowVerifyResult(true);
     setIsVerifyPending(false);
   }
 
@@ -401,7 +400,6 @@ export function EditS3ConnectorDetailPanel({
       setCheckDetails(undefined);
       setIsVerifyError(true);
     } finally {
-      setShowVerifyResult(true);
       setIsVerifyPending(false);
     }
   }
@@ -750,25 +748,24 @@ export function EditS3ConnectorDetailPanel({
           <Row width="auto" mainAlignment="flex-start">
             <Tooltip
               placement="top"
-              label={
-                showDeleteConnector
-                  ? ''
-                  : t(
-                      'label.delete_connector_disabled_tooltip',
-                      'S3 connector is in use and cannot be deleted',
-                    )
-              }
+              disabled={showDeleteConnector}
+              label={t(
+                'storages.s3Connectors.deleteConnectorInUseTooltip',
+                'S3 connector is in use and cannot be deleted',
+              )}
             >
-              <Button
-                type="ghost"
-                color="error"
-                label={t('label.delete_connector', 'DELETE CONNECTOR')}
-                onClick={(): void => {
-                  setConnectorDeleteName(connectorDetail);
-                  setOpen(true);
-                }}
-                disabled={!showDeleteConnector}
-              />
+              <span>
+                <Button
+                  type="ghost"
+                  color="error"
+                  label={t('label.delete_connector', 'DELETE CONNECTOR')}
+                  onClick={(): void => {
+                    setConnectorDeleteName(connectorDetail);
+                    setOpen(true);
+                  }}
+                  disabled={!showDeleteConnector}
+                />
+              </span>
             </Tooltip>
           </Row>
           <Row width="auto" mainAlignment="flex-end">

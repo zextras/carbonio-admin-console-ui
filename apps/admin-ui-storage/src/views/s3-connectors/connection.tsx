@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useForm } from '@tanstack/react-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import {
   Button,
@@ -24,6 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { CreateS3ConnectorRequest } from '../../../types';
 import { ZIMBRA_ADMIN_URN } from '../../constants';
 import { createS3Connector } from '../../services/s3-connector-service';
+import { s3ConnectorVolumeQueryKeys } from '../../services/s3-connector-volume-query-keys';
 import { useListS3Regions } from '../../services/use-list-s3-regions';
 import { CheckResult, VerifyError } from './parts/verify/verify-error';
 import { VerifyProgress } from './parts/verify/verify-progress';
@@ -50,6 +52,7 @@ export function Connection({
   onCancel?: () => void;
 }>) {
   const [t] = useTranslation();
+  const queryClient = useQueryClient();
   const { data: rawRegions = [] } = useListS3Regions();
   const connectorRegions = rawRegions.map((region) => ({
     value: region.id,
@@ -132,7 +135,6 @@ export function Connection({
         })
         .finally(() => {
           setIsVerifyPending(false);
-          setShowVerifyResult(true);
         });
     },
   });
@@ -151,6 +153,7 @@ export function Connection({
 
   const handleSuccessComplete = (): void => {
     setShowVerifyResult(false);
+    void queryClient.invalidateQueries({ queryKey: s3ConnectorVolumeQueryKeys.s3Connectors() });
     onCancel?.();
   };
 
@@ -386,6 +389,14 @@ export function Connection({
               {t(
                 'storages.s3Connectors.prefixHint',
                 'Optional. Limits access to a specific path within the bucket (e.g. mydomains/folder)',
+              )}
+            </ds-text>
+          </Padding>
+          <Padding top="extrasmall">
+            <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+              {t(
+                'storages.s3Connectors.prefixImmutableHint',
+                "This prefix can't be changed after creation",
               )}
             </ds-text>
           </Padding>

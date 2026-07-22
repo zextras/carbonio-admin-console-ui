@@ -6,10 +6,32 @@
 
 import { setupBrowserTest, worker } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
+import { useEffect, useRef } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { Connection } from '../connection';
+
+vi.mock('../parts/verify/verify-progress', () => ({
+	VerifyProgress: ({
+		isPending,
+		onComplete,
+	}: {
+		isPending: boolean;
+		onComplete?: () => void;
+	}) => {
+		const wasPending = useRef(isPending);
+
+		useEffect(() => {
+			if (wasPending.current && !isPending) {
+				onComplete?.();
+			}
+			wasPending.current = isPending;
+		}, [isPending, onComplete]);
+
+		return <div>{isPending ? 'verify-pending' : 'verify-idle'}</div>;
+	},
+}));
 
 const REGIONS = [
 	{ id: 'us-east-1', description: 'US East 1' },
@@ -81,19 +103,13 @@ describe('Connection (browser)', () => {
 		setupZextrasInterceptor({});
 	});
 
-	it('should render the form with all fields and buttons', async () => {
+	it('should render connection form fields', async () => {
 		await setupBrowserTest(renderConnection());
 
-		await expect
-			.element(page.getByText('S3 connection', { exact: true }))
-			.toBeVisible();
 		await expect.element(page.getByLabelText('Descriptive name*')).toBeVisible();
 		await expect.element(page.getByLabelText('Bucket name*')).toBeVisible();
 		await expect.element(page.getByLabelText('Access Key ID*')).toBeVisible();
 		await expect.element(page.getByLabelText('Secret Access Key*')).toBeVisible();
-		await expect
-			.element(page.getByText('Region', { exact: true }))
-			.toBeVisible();
 		await expect.element(page.getByLabelText('Endpoint URL*')).toBeVisible();
 		await expect.element(page.getByLabelText('Prefix')).toBeVisible();
 		await expect

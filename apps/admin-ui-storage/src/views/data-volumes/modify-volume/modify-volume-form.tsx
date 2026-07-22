@@ -211,9 +211,6 @@ export function ModifyVolumeForm({
   );
 
   const backupUnusedConnectorList = buildConnectorSelectItems(selectableConnectors);
-  const selectedConnectorOption = backupUnusedConnectorList.find(
-    (item) => item.value === currentConnectorId,
-  );
   const isVolumeAllDetail = selectableConnectors;
 
   const [prevConnectorUuid, setPrevConnectorUuid] = useState<string | undefined>();
@@ -339,6 +336,13 @@ export function ModifyVolumeForm({
   });
 
   const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+  const selectedBucketConfigurationId = useSelector(
+    form.store,
+    (state) => state.values.bucketConfigurationId,
+  );
+  const selectedConnectorOption = backupUnusedConnectorList.find(
+    (item) => item.value === selectedBucketConfigurationId,
+  );
 
   const onUnusedConnectorListChange = (value: unknown): void => {
     if (typeof value !== 'string') return;
@@ -565,6 +569,14 @@ export function ModifyVolumeForm({
                     />
                   )}
                 </form.Field>
+                <Padding top="extrasmall">
+                  <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+                    {t(
+                      'storage.dataVolumes.volumePathMustExistHint',
+                      'The volume must already exist',
+                    )}
+                  </ds-text>
+                </Padding>
               </Container>
             )}
           </ListRow>
