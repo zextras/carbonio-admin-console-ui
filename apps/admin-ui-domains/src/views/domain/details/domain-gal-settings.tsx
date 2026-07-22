@@ -834,13 +834,13 @@ const DomainGalSettings: FC = () => {
         const obj: AccountDataType = {};
         const matchingData = data.find(
           (galAccount: { accountData: { _content: string }[] }) =>
-            listItems.name === galAccount?.accountData[0]?._content,
+            listItems.name === galAccount?.accountData?.[0]?._content,
         );
         obj.name = listItems?.name;
         obj.id = listItems?.id;
         obj.galAccount = matchingData
           ? {
-              server: matchingData?.accountData[0]?._content,
+              server: matchingData?.accountData?.[0]?._content,
               name: matchingData?.name,
               id: matchingData?.id,
             }

@@ -7,7 +7,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
-import { Container, useSnackbar } from '@zextras/ui-components';
+import { Container, FormPageLayout, useSnackbar } from '@zextras/ui-components';
 import { type GetCoreAttributesResponse, setCoreAttributes } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -24,7 +24,6 @@ import { cosQueryKeys } from '../../../services/cos-query-keys';
 import { type ComputedLimit, type QuotaSource } from '../../../services/get-cos-quota';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
-import { FormPageLayout } from '../../form-page-layout';
 import { useCosQuotaState } from './hooks/use-cos-quota-state';
 import { cosAdvancedSchema } from './schema';
 import { COSEmailRetentionPolicy } from './sections/email-retention-policy';

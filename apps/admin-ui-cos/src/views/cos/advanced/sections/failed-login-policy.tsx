@@ -4,13 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
+import {
+  Container,
+  getFieldErrorProps,
+  Input,
+  ListRow,
+  Row,
+  Select,
+  Switch,
+} from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TimeItems } from '../../../../../types/general';
-import { getFieldErrorProps } from '../fields/field-error';
 import { CosValidatedInput } from '../fields/validated-input';
+import { COS_VALIDATION_MESSAGES } from '../schema';
 import { CosFormApi } from '../types';
 
 type FailedLoginPolicyProps = {
@@ -112,7 +120,7 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 								const hasUnit = raw.length >= 2;
 								const num = hasUnit ? raw.slice(0, -1) : '';
 								const unit = hasUnit ? raw.slice(-1) : '';
-								const error = getFieldErrorProps(field, isSubmitted, t);
+								const error = getFieldErrorProps(field, isSubmitted, t, COS_VALIDATION_MESSAGES);
 								return (
 									<>
 										<Container width="72%" padding={{ right: 'small' }}>
@@ -153,7 +161,7 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 								const hasUnit = raw.length >= 2;
 								const num = hasUnit ? raw.slice(0, -1) : '';
 								const unit = hasUnit ? raw.slice(-1) : '';
-								const error = getFieldErrorProps(field, isSubmitted, t);
+								const error = getFieldErrorProps(field, isSubmitted, t, COS_VALIDATION_MESSAGES);
 								return (
 									<>
 										<Container width="72%" padding={{ left: 'small', right: 'small' }}>

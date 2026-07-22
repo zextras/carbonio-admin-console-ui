@@ -5,7 +5,15 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { Button, Container, Padding, Row, Tooltip, type TRow } from '@zextras/ui-components';
+import {
+  Button,
+  Container,
+  FormPageLayout,
+  Padding,
+  Row,
+  Tooltip,
+  type TRow,
+} from '@zextras/ui-components';
 import type { DirectoryEntry } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +29,6 @@ import { useModifyCos } from '../../../services/use-modify-cos';
 import { useRenameCos } from '../../../services/use-rename-cos';
 import { useTotalAccounts } from '../../../services/use-total-accounts';
 import { useTotalDomains } from '../../../services/use-total-domains';
-import { FormPageLayout } from '../../form-page-layout';
 import { getDateFromStr, getFormatedDate } from '../../utility/utils';
 import { CosInfoFields, type GeneralInfoFormValues } from './cos-info-fields';
 import { DeleteCosModal } from './delete-cos-modal';

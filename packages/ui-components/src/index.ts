@@ -20,6 +20,7 @@ export * from './components/basic/Link';
 
 /** Layout components */
 export * from './components/layout/Container';
+export * from './components/layout/form-page-layout';
 export * from './components/layout/Padding';
 export * from './components/layout/Row';
 export {
@@ -60,6 +61,11 @@ export * from './components/navigation/TabBar';
 /** custom components */
 export * from './components/custom/box-layout';
 export * from './components/custom/breadcrumb';
+export {
+  type ClickableRow,
+  ClickableRowFactory,
+  type ClickableRowFactoryProps,
+} from './components/custom/clickable-row-factory';
 export * from './components/custom/custom-table-header-factory';
 export * from './components/custom/custom-text-area';
 export * from './components/custom/displayer';
@@ -107,12 +113,15 @@ export * from './components/feedback/snackbar/Snackbar';
 
 /** Utilities components */
 export * from './components/custom/hwizard';
+export * from './components/custom/hwizard-v2';
 export * from './components/utilities/Collapse';
 export * from './components/utilities/ModalManager';
 export * from './components/utilities/SnackbarManager';
+export * from './hooks/use-wizard-v2';
 export * from './hooks/usewizard';
 export * from './theme/theme-utils';
 export type { AnyColor } from './types/utils';
+export { getFieldErrorProps } from './utils/field-error';
 export {
   type CloseSnackbarFn,
   type CreateSnackbarFn,
