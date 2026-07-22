@@ -32,6 +32,138 @@ function DetailField({ label, value }: Readonly<DetailFieldProps>) {
   );
 }
 
+type LocalBlockConfigDetailsProps = {
+  path?: string;
+  isCompression?: boolean;
+  compressionThreshold?: string | number | null;
+  isCurrent?: boolean;
+};
+
+function LocalBlockConfigDetails({
+  path,
+  isCompression,
+  compressionThreshold,
+  isCurrent,
+}: Readonly<LocalBlockConfigDetailsProps>) {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+        <DetailField label={t('label.volume_path', 'Volume path')} value={path} />
+      </Row>
+      <ListRow>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ top: 'large', right: 'large' }}
+        >
+          <DetailField
+            label={t('label.enable_compression', 'Enable Compression')}
+            value={isCompression ? YES : NO}
+          />
+        </Container>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ top: 'large' }}
+        >
+          <DetailField
+            label={t('label.volume_compression_thresold', 'Compression Threshold')}
+            value={isCompression ? compressionThreshold : DISABLED}
+          />
+        </Container>
+      </ListRow>
+      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+        <DetailField
+          label={t('label.volume_as_current', 'Volum as current')}
+          value={isCurrent ? YES : NO}
+        />
+      </Row>
+    </>
+  );
+}
+
+type ObjectStorageConfigDetailsProps = {
+  prefix?: string;
+  showTieringSettings: boolean;
+  useInfrequentAccess?: boolean;
+  useIntelligentTiering?: boolean;
+  isCurrent?: boolean;
+  centralized?: boolean;
+};
+
+function ObjectStorageConfigDetails({
+  prefix,
+  showTieringSettings,
+  useInfrequentAccess,
+  useIntelligentTiering,
+  isCurrent,
+  centralized,
+}: Readonly<ObjectStorageConfigDetailsProps>) {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+        <DetailField
+          label={t(
+            'label.prefix_name',
+            'Prefix - all objects will have this prefix in their name',
+          )}
+          value={prefix}
+        />
+      </Row>
+      {showTieringSettings && (
+        <ListRow>
+          <Container
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            padding={{ top: 'large', right: 'large' }}
+          >
+            <DetailField
+              label={t('label.infrequent_access', 'Infrequent access')}
+              value={useInfrequentAccess ? ENABLED : DISABLED}
+            />
+          </Container>
+          <Container
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            padding={{ top: 'large' }}
+          >
+            <DetailField
+              label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
+              value={useIntelligentTiering ? ENABLED : DISABLED}
+            />
+          </Container>
+        </ListRow>
+      )}
+      <ListRow>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ top: 'large', right: 'large' }}
+        >
+          <DetailField
+            label={t('label.volume_as_current', 'Volum as current')}
+            value={isCurrent ? YES : NO}
+          />
+        </Container>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ top: 'large' }}
+        >
+          <DetailField
+            label={t('label.centralized', 'Centralized')}
+            value={centralized ? YES : NO}
+          />
+        </Container>
+      </ListRow>
+    </>
+  );
+}
+
 export function AdvancedMailstoresCreate({
   externalData,
 }: Readonly<{
@@ -157,94 +289,21 @@ export function AdvancedMailstoresCreate({
         </div>
         <div className={styles.reviewCardBody}>
           {isLocalBlockDevice ? (
-            <>
-              <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-                <DetailField label={t('label.volume_path', 'Volume path')} value={path} />
-              </Row>
-              <ListRow>
-                <Container
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  padding={{ top: 'large', right: 'large' }}
-                >
-                  <DetailField
-                    label={t('label.enable_compression', 'Enable Compression')}
-                    value={isCompression ? YES : NO}
-                  />
-                </Container>
-                <Container
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  padding={{ top: 'large' }}
-                >
-                  <DetailField
-                    label={t('label.volume_compression_thresold', 'Compression Threshold')}
-                    value={isCompression ? compressionThreshold : DISABLED}
-                  />
-                </Container>
-              </ListRow>
-              <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-                <DetailField
-                  label={t('label.volume_as_current', 'Volum as current')}
-                  value={isCurrent ? YES : NO}
-                />
-              </Row>
-            </>
+            <LocalBlockConfigDetails
+              path={path}
+              isCompression={isCompression}
+              compressionThreshold={compressionThreshold}
+              isCurrent={isCurrent}
+            />
           ) : (
-            <>
-              <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-                <DetailField
-                  label={t('label.prefix_name', 'Prefix - all objects will have this prefix in their name')}
-                  value={prefix}
-                />
-              </Row>
-              {showTieringSettings && (
-                <ListRow>
-                  <Container
-                    mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                    padding={{ top: 'large', right: 'large' }}
-                  >
-                    <DetailField
-                      label={t('label.infrequent_access', 'Infrequent access')}
-                      value={useInfrequentAccess ? ENABLED : DISABLED}
-                    />
-                  </Container>
-                  <Container
-                    mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                    padding={{ top: 'large' }}
-                  >
-                    <DetailField
-                      label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
-                      value={useIntelligentTiering ? ENABLED : DISABLED}
-                    />
-                  </Container>
-                </ListRow>
-              )}
-              <ListRow>
-                <Container
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  padding={{ top: 'large', right: 'large' }}
-                >
-                  <DetailField
-                    label={t('label.volume_as_current', 'Volum as current')}
-                    value={isCurrent ? YES : NO}
-                  />
-                </Container>
-                <Container
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  padding={{ top: 'large' }}
-                >
-                  <DetailField
-                    label={t('label.centralized', 'Centralized')}
-                    value={centralized ? YES : NO}
-                  />
-                </Container>
-              </ListRow>
-            </>
+            <ObjectStorageConfigDetails
+              prefix={prefix}
+              showTieringSettings={showTieringSettings}
+              useInfrequentAccess={useInfrequentAccess}
+              useIntelligentTiering={useIntelligentTiering}
+              isCurrent={isCurrent}
+              centralized={centralized}
+            />
           )}
         </div>
       </div>

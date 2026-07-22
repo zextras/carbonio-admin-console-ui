@@ -14,9 +14,6 @@ import {
   Modal,
   Padding,
   Row,
-  Select,
-  Switch,
-  Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
@@ -25,8 +22,6 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { type S3ConnectorVolume, type Volume } from '../../../../types';
 import {
-  AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
-  AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
   INDEX,
   LOCAL_VALUE,
   PRIMARY,
@@ -37,6 +32,11 @@ import {
 import { fetchSoap } from '../../../services/s3-connector-service';
 import { S3ConnectorTypeItems } from '../../utility/utils';
 import styles from './modify-volume.module.css';
+import {
+  ModifyVolumeBucketSection,
+  ModifyVolumeOptionsSection,
+  ModifyVolumeTieringSection,
+} from './modify-volume-form-sections';
 import { buildAdvancedUpdatePayload, isS3StoreType } from './modify-volume-payload';
 import {
   handleAdvancedUpdateResponse,
@@ -45,7 +45,7 @@ import {
   showVolumeSaveSuccess,
 } from './modify-volume-save-handlers';
 import { modifyVolumeSchema } from './schema';
-import type { ModifyVolumeFormValues } from './types';
+import type { ModifyVolumeFormApi, ModifyVolumeFormValues } from './types';
 import { VerifyVolumeChangesModal } from './verify-volume-changes-modal';
 
 type VolumeDetailSnapshot = {
@@ -71,6 +71,71 @@ function buildConnectorSelectItems(
 
 function getVolumeConnectorConfigurationId(volume: Volume | undefined): string | undefined {
   return volume?.bucketConfigurationId ?? volume?.uuid;
+}
+
+function mapS3Connectors(s3Connectors: Array<S3ConnectorVolume>): Array<S3ConnectorVolume> {
+  return s3Connectors.map((items) => ({
+    uuid: items.uuid,
+    label: items.label || '',
+    bucketName: items.bucketName || '',
+    storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
+    tieringSupported:
+      (items as unknown as { tieringSupported?: boolean }).tieringSupported ?? false,
+    [USAGE_IN_EXTERNAL_BACKUP]:
+      (items as unknown as { 'usage in external backup'?: string | Array<string> })[
+        'usage in external backup'
+      ] ?? UNUSED,
+  }));
+}
+
+function getSelectableConnectors(
+  connectors: Array<S3ConnectorVolume>,
+  currentConnectorId: string | undefined,
+  selectedConnector: S3ConnectorVolume | undefined,
+): Array<S3ConnectorVolume> {
+  const unusedConnectors = connectors.filter(
+    (items) => !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
+  );
+
+  if (
+    currentConnectorId &&
+    !unusedConnectors.some((item) => item.uuid === currentConnectorId) &&
+    selectedConnector
+  ) {
+    return [...unusedConnectors, selectedConnector];
+  }
+
+  return unusedConnectors;
+}
+
+function buildChangedFields(
+  t: (key: string, fallback: string) => string,
+  values: ModifyVolumeFormValues,
+  initialVolumePrefix: string,
+  initialBucketConfigId: string,
+  backupUnusedConnectorList: Array<ConnectorOption>,
+): Array<{ label: string; value: string }> {
+  const changedFields: Array<{ label: string; value: string }> = [];
+
+  if (values.volumePrefix !== initialVolumePrefix) {
+    changedFields.push({
+      label: t('label.prefix_name', 'Prefix'),
+      value: values.volumePrefix || t('label.not_set', 'Not set'),
+    });
+  }
+
+  if (values.bucketConfigurationId !== initialBucketConfigId) {
+    const selectedOption = backupUnusedConnectorList.find(
+      (item) => item.value === values.bucketConfigurationId,
+    );
+    changedFields.push({
+      label: t('storage.dataVolumes.availableS3ConnectorsList', 'Available S3 Connectors List'),
+      value:
+        selectedOption?.label || values.bucketConfigurationId || t('label.not_set', 'Not set'),
+    });
+  }
+
+  return changedFields;
 }
 
 export type ModifyVolumeFormProps = {
@@ -103,7 +168,7 @@ export function ModifyVolumeForm({
   setmodifyVolumeToggle,
   getAllVolumesRequest,
   setOpen,
-}: ModifyVolumeFormProps) {
+}: Readonly<ModifyVolumeFormProps>) {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const connectorTypeItems = S3ConnectorTypeItems(t);
@@ -127,7 +192,7 @@ export function ModifyVolumeForm({
       ?.label;
 
   const openDocumentation = useCallback((url: string): void => {
-    if (typeof globalThis.window === 'undefined') {
+    if (globalThis.window === undefined) {
       return;
     }
     globalThis.window.open(url, '_blank', 'noopener,noreferrer');
@@ -136,30 +201,14 @@ export function ModifyVolumeForm({
   const currentConnectorId = getVolumeConnectorConfigurationId(externalVolDetail);
 
   const connectors: Array<S3ConnectorVolume> =
-    isExternal && !isEmpty(s3Connectors)
-      ? s3Connectors.map((items) => ({
-          uuid: items.uuid,
-          label: items.label || '',
-          bucketName: items.bucketName || '',
-          storeType: (items as unknown as { storeType?: string }).storeType || 'S3',
-          tieringSupported:
-            (items as unknown as { tieringSupported?: boolean }).tieringSupported ?? false,
-          [USAGE_IN_EXTERNAL_BACKUP]:
-            (items as unknown as { 'usage in external backup'?: string | Array<string> })[
-              'usage in external backup'
-            ] ?? UNUSED,
-        }))
-      : [];
+    isExternal && !isEmpty(s3Connectors) ? mapS3Connectors(s3Connectors) : [];
 
   const selectedConnector = connectors.find((connector) => connector?.uuid === currentConnectorId);
-
-  const unusedConnectors = connectors.filter(
-    (items) => !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
+  const selectableConnectors = getSelectableConnectors(
+    connectors,
+    currentConnectorId,
+    selectedConnector,
   );
-  const selectableConnectors =
-    currentConnectorId && !unusedConnectors.some((item) => item.uuid === currentConnectorId)
-      ? [...unusedConnectors, ...(selectedConnector ? [selectedConnector] : [])]
-      : unusedConnectors;
 
   const backupUnusedConnectorList = buildConnectorSelectItems(selectableConnectors);
   const selectedConnectorOption = backupUnusedConnectorList.find(
@@ -311,28 +360,13 @@ export function ModifyVolumeForm({
     }
   };
 
-  const changedFields: Array<{ label: string; value: string }> = [];
-  const initialVolumePrefix = externalVolDetail?.volumePrefix ?? '';
-  const initialBucketConfigId = currentConnectorId ?? '';
-
-  if (form.state.values.volumePrefix !== initialVolumePrefix) {
-    changedFields.push({
-      label: t('label.prefix_name', 'Prefix'),
-      value: form.state.values.volumePrefix || t('label.not_set', 'Not set'),
-    });
-  }
-  if (form.state.values.bucketConfigurationId !== initialBucketConfigId) {
-    const selectedConnectorOption = backupUnusedConnectorList.find(
-      (item) => item.value === form.state.values.bucketConfigurationId,
-    );
-    changedFields.push({
-      label: t('storage.dataVolumes.availableS3ConnectorsList', 'Available S3 Connectors List'),
-      value:
-        selectedConnectorOption?.label ||
-        form.state.values.bucketConfigurationId ||
-        t('label.not_set', 'Not set'),
-    });
-  }
+  const changedFields = buildChangedFields(
+    t,
+    form.state.values,
+    externalVolDetail?.volumePrefix ?? '',
+    currentConnectorId ?? '',
+    backupUnusedConnectorList,
+  );
 
   return (
     <>
@@ -538,365 +572,33 @@ export function ModifyVolumeForm({
 
         {/* BUCKET section - only for object storage */}
         {isObjectStorage && (
-          <>
-            <div className={styles.sectionHeader}>
-              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
-                {t('label.bucket', 'BUCKET')}
-              </ds-text>
-              <ds-divider className={styles.sectionDivider}></ds-divider>
-            </div>
-            <Container
-              padding={{ horizontal: 'large' }}
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              height="auto"
-            >
-              <ListRow>
-                <Container
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  padding={{ top: 'large', right: 'large', left: 'small' }}
-                >
-                  <div className={styles.detailItem}>
-                    <ds-text size="small" color="gray1">
-                      {t('label.bucket_name', 'Bucket name')}
-                    </ds-text>
-                    <div className={styles.detailValueRow}>
-                      <ds-text className={styles.detailValue} weight='bold' size="small">
-                        {connectorName}
-                      </ds-text>
-                    </div>
-                  </div>
-                </Container>
-                <Container
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  padding={{ top: 'large' }}
-                >
-                  <div className={styles.detailItem}>
-                    <ds-text size="small" color="gray1">
-                      {t('storage.dataVolume.s3ConnectorId', 'S3 Connector ID')}
-                    </ds-text>
-                    <div className={styles.detailValueRow}>
-                      <ds-text className={styles.detailValue} weight='bold' size="small">
-                        {form.state.values.bucketConfigurationId}
-                      </ds-text>
-                    </div>
-                  </div>
-                </Container>
-              </ListRow>
-              <Row
-                mainAlignment="flex-start"
-                padding={{ top: 'large', left: 'small' }}
-                width="100%"
-              >
-                <form.Field name="volumePrefix">
-                  {(field) => (
-                    <Input
-                      inputName="prefix"
-                      label={t(
-                        'label.prefix_name',
-                        'Prefix - all objects will have this prefix in their name',
-                      )}
-                      value={field.state.value}
-                      backgroundColor="gray5"
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                        field.handleChange(e.target.value)
-                      }
-                    />
-                  )}
-                </form.Field>
-                <Padding top="extrasmall">
-                  <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                    {t('the_change_will_not_move_the_data', 'The change will not move the data')}
-                  </ds-text>
-                </Padding>
-              </Row>
-              {backupUnusedConnectorList?.length !== 0 && (
-                <Row
-                  mainAlignment="flex-start"
-                  padding={{ top: 'large', left: 'small' }}
-                  width="100%"
-                >
-                  <Select
-                    items={backupUnusedConnectorList}
-                    background="gray5"
-                    label={t(
-                      'storage.dataVolumes.availableS3ConnectorsList',
-                      'Available S3 Connectors List (that are not in use in the backup)',
-                    )}
-                    showCheckbox={false}
-                    selection={selectedConnectorOption ?? backupUnusedConnectorList[0]}
-                    onChange={onUnusedConnectorListChange}
-                  />
-                </Row>
-              )}
-            </Container>
-          </>
+          <ModifyVolumeBucketSection
+            form={form as ModifyVolumeFormApi}
+            connectorName={connectorName}
+            backupUnusedConnectorList={backupUnusedConnectorList}
+            selectedConnectorOption={selectedConnectorOption}
+            onUnusedConnectorListChange={onUnusedConnectorListChange}
+          />
         )}
 
         {/* CONFIGURATION section - only for object storage with tiering support */}
         {isObjectStorage && showTieringSettings && (
-          <>
-            <div className={styles.sectionHeader}>
-              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
-                {t('label.configuration', 'CONFIGURATION')}
-              </ds-text>
-              <ds-divider className={styles.sectionDivider}></ds-divider>
-            </div>
-            <Container
-              padding={{ horizontal: 'large', left: 'large' }}
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              height="auto"
-            >
-              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-                <Row width="100%" mainAlignment="flex-start" crossAlignment="center">
-                  <form.Field name="useInfrequentAccess">
-                    {(field) => (
-                      <Switch
-                        value={field.state.value}
-                        label={t('label.use_infraquent_access', 'Use infrequent access')}
-                        onClick={(): void => {
-                          const newValue = !field.state.value;
-                          field.handleChange(newValue);
-                          if (newValue) {
-                            form.setFieldValue('useIntelligentTiering', false);
-                          } else {
-                            form.setFieldValue('infrequentAccessThreshold', '');
-                          }
-                        }}
-                        iconColor="primary"
-                      />
-                    )}
-                  </form.Field>
-                  <Tooltip placement="top" label={t('storage.dataVolumes.amazonStorageDocumentation', 'Amazon Storage Class Documentation')}>
-                    <button
-                      type="button"
-                      className={styles.tieringDocIconButton}
-                      aria-label={t(
-                        'label.use_infraquent_access_helptext',
-                        'Open Amazon Storage Class Documentation',
-                      )}
-                      onClick={(): void => openDocumentation(AMAZON_USERGUIDE_STORAGE_CLASS_LINK)}
-                    >
-                      <ds-icon icon="ExternalLinkOutline" size="medium" color="primary" />
-                    </button>
-                  </Tooltip>
-                </Row>
-              </Row>
-              <Row padding={{ top: 'small', left: 'small' }} width="100%" mainAlignment="flex-start">
-                <Row width="52%" mainAlignment="flex-start" padding={{ left: 'extralarge' }}>
-                  <form.Field name="infrequentAccessThreshold">
-                    {(field) => (
-                      <Input
-                        inputName="infrequentAccessThreshold"
-                        label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
-                        type="number"
-                        backgroundColor="gray5"
-                        value={field.state.value}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                          field.handleChange(e.target.value)
-                        }
-                        disabled={!form.state.values.useInfrequentAccess}
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Row>
-              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-                <Row width="100%" mainAlignment="flex-start" crossAlignment="center">
-                  <form.Field name="useIntelligentTiering">
-                    {(field) => (
-                      <Switch
-                        value={field.state.value}
-                        label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
-                        onClick={(): void => {
-                          const newValue = !field.state.value;
-                          field.handleChange(newValue);
-                          if (newValue) {
-                            form.setFieldValue('useInfrequentAccess', false);
-                          }
-                        }}
-                        iconColor="primary"
-                      />
-                    )}
-                  </form.Field>
-                  <Tooltip placement="top" label={t('storage.dataVolumes.amazonTieringDocumentation', 'Amazon Tiering Documentation')}>
-                    <button
-                      type="button"
-                      className={styles.tieringDocIconButton}
-                      aria-label={t(
-                        'label.use_intelligent_tiering_helptext',
-                        'Open Amazon Tiering Documentation',
-                      )}
-                      onClick={(): void => openDocumentation(AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK)}
-                    >
-                      <ds-icon icon="ExternalLinkOutline" size="medium" color="primary" />
-                    </button>
-                  </Tooltip>
-                </Row>
-              </Row>
-            </Container>
-          </>
+          <ModifyVolumeTieringSection
+            form={form as ModifyVolumeFormApi}
+            openDocumentation={openDocumentation}
+          />
         )}
 
         {/* OPTIONS section - conditional */}
         {showOptionsSection && (
-          <>
-            <div className={styles.sectionHeader}>
-              <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
-                {t('label.options', 'OPTIONS')}
-              </ds-text>
-              <ds-divider className={styles.sectionDivider}></ds-divider>
-            </div>
-            {isLocalBlockDevice ? (
-              <Container
-                padding={{ horizontal: 'large' }}
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                height="auto"
-              >
-                {volumeDetail?.type !== 10 && (
-                  <>
-                    <Row
-                      mainAlignment="flex-start"
-                      padding={{ top: 'large', left: 'small' }}
-                      width="100%"
-                    >
-                      <Tooltip
-                        placement="top"
-                        label={t(
-                          'warning.is_current',
-                          'Firstly, you have to set another volume as the current one.',
-                        )}
-                        maxWidth="auto"
-                        disabled={form.state.values.isCurrent}
-                      >
-                        <form.Field name="isCurrent">
-                          {(field) => (
-                            <Switch
-                              ref={isCurrentRef}
-                              value={field.state.value}
-                              label={t('label.set_as_current', 'Set as Current')}
-                              onClick={(): void => {
-                                if (!field.state.value) {
-                                  setIsCurrentToggle(true);
-                                }
-                              }}
-                              iconColor="primary"
-                            />
-                          )}
-                        </form.Field>
-                      </Tooltip>
-                    </Row>
-                    <Row
-                      padding={{ top: 'large', left: 'small' }}
-                      width="100%"
-                      mainAlignment="flex-start"
-                      background="gray6"
-                    >
-                      <Row mainAlignment="flex-start" width={isAdvanced ? '50%' : '100%'}>
-                        <form.Field name="compressBlobs">
-                          {(field) => (
-                            <Switch
-                              value={field.state.value}
-                              label={t('label.enable_compression', 'Enable Compression')}
-                              onClick={(): void => field.handleChange(!field.state.value)}
-                              iconColor="primary"
-                            />
-                          )}
-                        </form.Field>
-                        <Padding top="extrasmall" left="2rem">
-                          <ds-text
-                            as="p"
-                            color="secondary"
-                            overflow="break-word"
-                            size="extrasmall"
-                          >
-                            {t(
-                              'this_will_not_affect_data_already_stored',
-                              'This will not affect data already stored',
-                            )}
-                          </ds-text>
-                        </Padding>
-                      </Row>
-                      <Row mainAlignment="flex-start" width="48%">
-                        <Row padding={{ top: 'small' }} width="100%">
-                          <form.Field name="compressionThreshold">
-                            {(field) => (
-                              <Input
-                                label={t(
-                                  'label.compression_threshold',
-                                  'Compression Threshold',
-                                )}
-                                value={field.state.value}
-                                backgroundColor="gray6"
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                                  if (/^\d*$/.test(e.target.value)) {
-                                    field.handleChange(e.target.value);
-                                  }
-                                }}
-                                color="secondary"
-                                disabled={!form.state.values.compressBlobs}
-                              />
-                            )}
-                          </form.Field>
-                        </Row>
-                        <Padding top="extrasmall">
-                          <ds-text
-                            as="p"
-                            color="secondary"
-                            overflow="break-word"
-                            size="extrasmall"
-                          >
-                            {t(
-                              'this_will_not_affect_data_already_stored',
-                              'This will not affect data already stored',
-                            )}
-                          </ds-text>
-                        </Padding>
-                      </Row>
-                    </Row>
-                  </>
-                )}
-              </Container>
-            ) : (
-              <Container padding={{ horizontal: 'large', bottom: 'large' }} height="auto">
-                <Row
-                  padding={{ top: 'large', left: 'small' }}
-                  mainAlignment="flex-start"
-                  width="100%"
-                >
-                  <Tooltip
-                    placement="top"
-                    label={t(
-                      'warning.is_current',
-                      'Firstly, you have to set another volume as the current one.',
-                    )}
-                    maxWidth="auto"
-                    disabled={form.state.values.isCurrent}
-                  >
-                    <form.Field name="isCurrent">
-                      {(field) => (
-                        <Switch
-                          ref={isCurrentRef}
-                          value={field.state.value}
-                          label={t('label.set_as_current', 'Set as Current')}
-                          onClick={(): void => {
-                            if (!field.state.value) {
-                              setIsCurrentToggle(true);
-                            }
-                          }}
-                          iconColor="primary"
-                        />
-                      )}
-                    </form.Field>
-                  </Tooltip>
-                </Row>
-              </Container>
-            )}
-          </>
+          <ModifyVolumeOptionsSection
+            form={form as ModifyVolumeFormApi}
+            isLocalBlockDevice={isLocalBlockDevice}
+            volumeType={volumeDetail.type}
+            isAdvanced={isAdvanced}
+            isCurrentRef={isCurrentRef}
+            setIsCurrentToggle={setIsCurrentToggle}
+          />
         )}
         </Container>
 
