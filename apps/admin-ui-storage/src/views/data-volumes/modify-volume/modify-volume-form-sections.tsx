@@ -292,17 +292,17 @@ export function ModifyVolumeOptionsSection({
         </div>
         <Container padding={{ horizontal: 'large', bottom: 'large' }} height="auto">
           <Row padding={{ top: 'large', left: 'small' }} mainAlignment="flex-start" width="100%">
-            <Tooltip
-              placement="top"
-              label={t(
-                'warning.is_current',
-                'Firstly, you have to set another volume as the current one.',
-              )}
-              maxWidth="auto"
-              disabled={form.state.values.isCurrent}
-            >
-              <form.Field name="isCurrent">
-                {(field) => (
+            <form.Field name="isCurrent">
+              {(field) => (
+                <Tooltip
+                  placement="top"
+                  label={t(
+                    'warning.is_current',
+                    'Firstly, you have to set another volume as the current one.',
+                  )}
+                  maxWidth="auto"
+                  disabled={!field.state.value}
+                >
                   <Switch
                     ref={isCurrentRef}
                     value={field.state.value}
@@ -313,10 +313,11 @@ export function ModifyVolumeOptionsSection({
                       }
                     }}
                     iconColor="primary"
+                    disabled={field.state.value}
                   />
-                )}
-              </form.Field>
-            </Tooltip>
+                </Tooltip>
+              )}
+            </form.Field>
           </Row>
         </Container>
       </>
@@ -340,17 +341,17 @@ export function ModifyVolumeOptionsSection({
         {volumeType !== 10 && (
           <>
             <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
-              <Tooltip
-                placement="top"
-                label={t(
-                  'warning.is_current',
-                  'Firstly, you have to set another volume as the current one.',
-                )}
-                maxWidth="auto"
-                disabled={form.state.values.isCurrent}
-              >
-                <form.Field name="isCurrent">
-                  {(field) => (
+              <form.Field name="isCurrent">
+                {(field) => (
+                  <Tooltip
+                    placement="top"
+                    label={t(
+                      'warning.is_current',
+                      'Firstly, you have to set another volume as the current one.',
+                    )}
+                    maxWidth="auto"
+                    disabled={!field.state.value}
+                  >
                     <Switch
                       ref={isCurrentRef}
                       value={field.state.value}
@@ -361,10 +362,11 @@ export function ModifyVolumeOptionsSection({
                         }
                       }}
                       iconColor="primary"
+                      disabled={field.state.value}
                     />
-                  )}
-                </form.Field>
-              </Tooltip>
+                  </Tooltip>
+                )}
+              </form.Field>
             </Row>
             <Row
               padding={{ top: 'large', left: 'small' }}
