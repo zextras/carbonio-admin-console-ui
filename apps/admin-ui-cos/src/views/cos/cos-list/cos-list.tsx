@@ -5,6 +5,7 @@
  */
 
 import {
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
   Input,
@@ -23,7 +24,6 @@ import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { ScrollComponent } from '../../components/scroll-component';
 import { FunnelSearchIcon } from '../cos-server-pools/funnel-search-icon';
-import { CosRowFactory } from './cos-row-factory';
 
 type ZimbraCosAttribute = {
   n: string;
@@ -257,7 +257,7 @@ export const CosList = () => {
                   overflow: 'auto',
                   height: cosList.length === 0 ? '50%' : '100%',
                 }}
-                RowFactory={CosRowFactory}
+                RowFactory={ClickableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
               {isError && (

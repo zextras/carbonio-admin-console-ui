@@ -1,0 +1,801 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  Button,
+  ClickableRowFactory,
+  Container,
+  CustomHeaderFactory,
+  ModalOverlay,
+  Row,
+  Table,
+  THeader,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { postSoapFetchRequest, soapFetch, useAllServers, useIsAdvanced } from '@zextras/ui-shared';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
+
+import { Volume } from '../../../types';
+import {
+  ALIBABA,
+  CENTRALIZED,
+  CEPH,
+  CLOUDIAN,
+  CUSTOM_S3,
+  EMC,
+  FILEBLOB,
+  FLEX_START,
+  LOCAL_VALUE,
+  NO,
+  OPENIO,
+  S3,
+  SCALITYS3,
+  SWIFT,
+  YES,
+  ZIMBRA_ADMIN_URN,
+} from '../../constants';
+import { createVoume } from '../../services/create-volume-service';
+import { fetchSoap } from '../../services/s3-connector-service';
+import { s3ConnectorVolumeQueryKeys } from '../../services/s3-connector-volume-query-keys';
+import { setCurrentVolumeRequest } from '../../services/set-current-volume-service';
+import { useAllVolumes } from '../../services/use-all-volumes';
+import { useListS3Connectors } from '../../services/use-list-s3-connectors';
+import { indexerHeaders, volTableHeader } from '../utility/utils';
+import { CreateMailstoresVolume } from './create-volume/advanced-create-volume/create-mailstores-volume';
+import { NewVolume } from './create-volume/new-volume';
+import { DeleteVolumeModel } from './delete-volume-model';
+import { IndexerVolumeTable } from './indexer-volume-table';
+import { ModifyVolume } from './modify-volume/modify-volume';
+
+type SoapContentResponse = {
+  Body?: {
+    response?: {
+      content?: string;
+    };
+  };
+};
+
+function VolumeListTable({
+  volumes,
+  selectedRows,
+  onSelectionChange,
+  headers,
+  onClick,
+  isAdvanced,
+}: Readonly<{
+  volumes: Array<Volume>;
+  selectedRows: Array<string>;
+  onSelectionChange: (selected: string[]) => void;
+  headers: THeader[];
+  onClick: (i: number) => void;
+  isAdvanced: boolean;
+}>) {
+  const [t] = useTranslation();
+  const tableRows = volumes.map((v, i) => {
+    const columns = [
+      <Row
+        key={i}
+        onClick={(): void => {
+          onClick(i);
+        }}
+        style={{ textAlign: 'left', justifyContent: FLEX_START }}
+      >
+        <ds-text as="span" size="small" weight="regular">
+          {v?.id}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        onClick={(): void => {
+          onClick(i);
+        }}
+        style={{ textAlign: 'left', justifyContent: FLEX_START }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v?.name}
+        </ds-text>
+      </Row>,
+      isAdvanced && (
+        <Row
+          key={i}
+          onClick={(): void => {
+            onClick(i);
+          }}
+          style={{ textAlign: 'left', justifyContent: FLEX_START }}
+        >
+          <ds-text as="span" size="small" weight="light">
+            {v?.storeType === LOCAL_VALUE
+              ? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
+              : t('volume.volume_allocation_list.object_storage', 'Object Storage')}
+          </ds-text>
+        </Row>
+      ),
+      <Row
+        key={i}
+        onClick={(): void => {
+          onClick(i);
+        }}
+        style={{ textAlign: 'left', justifyContent: FLEX_START }}
+      >
+        <ds-text as="span" size="small" weight="light">
+          {v?.storeType === LOCAL_VALUE ? v?.path : v?.rootpath}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        onClick={(): void => {
+          onClick(i);
+        }}
+        style={{ textAlign: 'left', justifyContent: FLEX_START }}
+      >
+        <ds-text as="span" color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
+          {v?.isCurrent ? YES : NO}
+        </ds-text>
+      </Row>,
+      <Row
+        key={i}
+        onClick={(): void => {
+          onClick(i);
+        }}
+        style={{ textAlign: 'left', justifyContent: FLEX_START }}
+      >
+        <ds-text as="span" color={v?.compressed ? 'text' : 'error'} size="small" weight="light">
+          {v?.compressed ? YES : NO}
+        </ds-text>
+      </Row>,
+      <Row key={v?.id} orientation="vertical" mainAlignment="center" crossAlignment="flex-start">
+        <button
+          type="button"
+          onClick={(): void => {
+            onClick(i);
+          }}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '14px 0px 0px 14px',
+            display: 'inline-flex',
+            alignItems: 'center',
+          }}
+        >
+          <ds-icon icon="ArrowForwardOutline" size="18px" color="primary" />
+        </button>
+      </Row>,
+    ];
+
+    return {
+      id: String(v?.id ?? ''),
+      columns: columns.filter((column) => column !== false), // Changed filter condition to remove false instead of null
+      clickable: true,
+    };
+  });
+  return (
+    <Container crossAlignment="flex-start">
+      <Table
+        headers={headers}
+        rows={tableRows}
+        showCheckbox={false}
+        multiSelect={false}
+        selectedRows={selectedRows as [] | [string]}
+        onSelectionChange={onSelectionChange}
+        RowFactory={ClickableRowFactory}
+        HeaderFactory={CustomHeaderFactory}
+      />
+      {tableRows?.length === 0 && (
+        <Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
+          <ds-text as="p">{t('label.empty_table', 'Empty Table')}</ds-text>
+        </Row>
+      )}
+    </Container>
+  );
+}
+
+export function VolumesDetailPanel() {
+  const { server = '' } = useParams<{ server: string }>();
+  const [t] = useTranslation();
+  const { data: isVolumeAllDetail = [] } = useListS3Connectors();
+  const isAdvanced = useIsAdvanced();
+  const volIndexerHeaders = indexerHeaders(t, isAdvanced);
+  const volPrimarySecondaryHeaders = volTableHeader(t, isAdvanced);
+  const [priamryVolumeSelection, setPriamryVolumeSelection] = useState<string[]>([]);
+  const [secondaryVolumeSelection, setSecondaryVolumeSelection] = useState<string[]>([]);
+  const [indexerVolumeSelection, setIndexerVolumeSelection] = useState<string[]>([]);
+  const [toggleWizardLocal, setToggleWizardLocal] = useState(false);
+  const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
+  const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
+  const { data: serverList = [] } = useAllServers();
+  const selectedServerId = serverList?.find((s: { name?: string }) => s?.name === server)?.id ?? '';
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [volume, setVolume] = useState<Volume | undefined>({
+    compressBlobs: '',
+    compressionThreshold: '',
+    fbits: 0,
+    fgbits: 0,
+    id: 0,
+    isCurrent: true,
+    mbits: 0,
+    mgbits: 0,
+    name: '',
+    rootpath: '',
+    type: 0,
+  });
+  const [open, setOpen] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const { data: volumeList = { primaries: [], indexes: [], secondaries: [] } } = useAllVolumes(
+    server,
+    selectedServerId,
+    isAdvanced,
+  );
+  const invalidateVolumes = (): void => {
+    void queryClient.invalidateQueries({
+      queryKey: s3ConnectorVolumeQueryKeys.allVolumes(selectedServerId),
+    });
+  };
+  const createSnackbar = useSnackbar();
+
+  const closeHandler = (): void => {
+    setOpen(false);
+  };
+
+  const deleteHandler = async (data: Volume | undefined): Promise<void> => {
+    if (!data) {
+      return;
+    }
+    if (isAdvanced) {
+      await fetchSoap('zextras', {
+        _jsns: ZIMBRA_ADMIN_URN,
+        module: 'ZxPowerstore',
+        action: 'doDeleteVolume',
+        targetServers: server,
+        volumeName: data?.name,
+      })
+        .then((res) => {
+          const typedRes = res as SoapContentResponse;
+          const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
+          const deleteResponse = Object.keys(result?.response).map(
+            (key) => result?.response[key],
+          )[0];
+          if (deleteResponse?.ok) {
+            createSnackbar({
+              key: '1',
+              severity: 'success',
+              label: t('label.volume_deleted', 'Volume deleted successfully'),
+            });
+            invalidateVolumes();
+            setmodifyVolumeToggle(false);
+            setOpen(false);
+          } else {
+            createSnackbar({
+              key: '1',
+              severity: 'error',
+              label: t('label.volume_detail_error', '{{message}}', {
+                message: 'Something went wrong, please try again',
+              }),
+            });
+            setOpen(false);
+          }
+        })
+        .catch(() => {
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: t('label.volume_detail_error', '{{message}}', {
+              message: 'Something went wrong, please try again',
+            }),
+            autoHideTimeout: 5000,
+          });
+          invalidateVolumes();
+          setOpen(false);
+        });
+    } else {
+      const { id } = data;
+      await soapFetch(
+        'DeleteVolume',
+        {
+          _jsns: ZIMBRA_ADMIN_URN,
+          module: 'ZxCore',
+          action: 'DeleteVolumeRequest',
+          id,
+        },
+        {
+          targetServer: selectedServerId,
+        },
+      )
+        .then((res) => {
+          const typeResponse = res as { _jsns: string };
+          if (typeResponse?._jsns === ZIMBRA_ADMIN_URN) {
+            createSnackbar({
+              key: '1',
+              severity: 'success',
+              label: t('label.volume_deleted', 'Volume deleted successfully'),
+            });
+          }
+          invalidateVolumes();
+          setmodifyVolumeToggle(false);
+          setOpen(false);
+        })
+        .catch(() => {
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: t('label.volume_detail_error', '{{message}}', {
+              message: 'Something went wrong, please try again',
+            }),
+            autoHideTimeout: 5000,
+          });
+          setVolume({
+            compressBlobs: '',
+            compressionThreshold: '',
+            fbits: 0,
+            fgbits: 0,
+            id: 0,
+            isCurrent: true,
+            mbits: 0,
+            mgbits: 0,
+            name: '',
+            rootpath: '',
+            type: 0,
+          });
+          setmodifyVolumeToggle(false);
+          invalidateVolumes();
+          setOpen(false);
+        });
+    }
+  };
+
+  const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
+    const connectorDetails = isVolumeAllDetail?.filter(
+      (items) => items?.uuid === attr?.bucketConfigurationId,
+    );
+    const obj: { [key: string]: string | boolean | number | undefined } = {};
+    obj._jsns = ZIMBRA_ADMIN_URN;
+    obj.module = 'ZxPowerstore';
+    obj.action = 'doCreateVolume';
+    obj.targetServers = server;
+    obj.volumeName = attr?.volumeName;
+    obj.volumeType = attr?.volumeType;
+    obj.storeType = attr?.storeType;
+    obj.isCurrent = attr?.isCurrent === 1;
+    obj.accessKey = connectorDetails[0]?.accessKey;
+    obj.secret = connectorDetails[0]?.secret;
+    obj.bucketName = connectorDetails[0]?.bucketName;
+    obj.url = connectorDetails[0]?.url;
+
+    if (
+      attr?.storeType?.toUpperCase() === ALIBABA?.toUpperCase() ||
+      attr?.storeType?.toUpperCase() === CEPH?.toUpperCase() ||
+      attr?.storeType?.toUpperCase() === CLOUDIAN?.toUpperCase() ||
+      attr?.storeType?.toUpperCase() === EMC?.toUpperCase() ||
+      attr?.storeType?.toUpperCase() === SCALITYS3?.toUpperCase() ||
+      attr?.storeType?.toUpperCase() === CUSTOM_S3?.toUpperCase()
+    ) {
+      obj.bucketConfigurationId = attr?.bucketConfigurationId;
+      obj.volumePrefix = attr?.volumePrefix;
+      obj.centralized = attr?.centralized;
+    }
+    if (attr?.storeType?.toUpperCase() === S3?.toUpperCase()) {
+      obj.bucketConfigurationId = attr?.bucketConfigurationId;
+      obj.volumePrefix = attr?.volumePrefix;
+      obj.centralized = attr?.centralized;
+      obj.useInfrequentAccess = attr?.useInfrequentAccess;
+      obj.infrequentAccessThreshold = attr?.infrequentAccessThreshold;
+      obj.useIntelligentTiering = attr?.useIntelligentTiering;
+    }
+    // TODO : Fileblob, Centeralized, Open IO, Swift Mocks needs to be provided this is for future reference only
+    if (attr?.storeType?.toUpperCase() === FILEBLOB?.toUpperCase()) {
+      obj.volumePath = '';
+      obj.volumeCompressed = false;
+      obj.volumeThreshold = 4096;
+    }
+    if (attr?.storeType?.toUpperCase() === CENTRALIZED?.toUpperCase()) {
+      obj.serverName = attr?.serverName;
+    }
+    if (attr?.storeType?.toUpperCase() === OPENIO?.toUpperCase()) {
+      obj.url = '';
+      obj.account = '';
+      obj.namespace = '';
+      obj.proxyPort = 1;
+      obj.accountPort = 1;
+      obj.ecd = '';
+      obj.centralized = attr?.centralized;
+    }
+    if (attr?.storeType?.toUpperCase() === SWIFT?.toUpperCase()) {
+      obj.url = '';
+      obj.username = '';
+      obj.password = '';
+      obj.authenticationMethod = '';
+      obj.authenticationMethodScope = '';
+      obj.tenantId = '';
+      obj.tenantName = '';
+      obj.domain = '';
+      obj.proxyHost = '';
+      obj.proxyPort = 0;
+      obj.proxyUsername = '';
+      obj.proxyPassword = '';
+      obj.publicHost = '';
+      obj.privateHost = '';
+      obj.region = '';
+      obj.maxDeleteObjectsCount = 10;
+      obj.centralized = attr?.centralized;
+    }
+
+    await fetchSoap('zextras', obj)
+      .then(async (res) => {
+        const typedRes = res as SoapContentResponse;
+        const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
+        if (result?.ok) {
+          if (result?.response[server]?.ok) {
+            invalidateVolumes();
+            createSnackbar({
+              key: '1',
+              severity: 'success',
+
+              label: t('label.volume_created_msg', 'The volume has been created successfully'),
+            });
+            setToggleWizardLocal(false);
+            setToggleWizardExternal(false);
+          } else {
+            createSnackbar({
+              key: '1',
+              severity: 'error',
+              label: t('label.volume_detail_error', '{{message}}', {
+                message: result?.response[server]?.error?.message,
+              }),
+            });
+          }
+        } else {
+          createSnackbar({
+            key: '1',
+            severity: 'error',
+            label: t('label.volume_detail_error', '{{message}}', {
+              message: 'Something went wrong, please try again',
+            }),
+          });
+        }
+        return typedRes;
+      })
+      .catch((error) => {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: error?.message
+            ? error?.message
+            : t('label.volume_detail_error', '{{message}}', {
+                message: 'Something went wrong, please try again',
+              }),
+          autoHideTimeout: 5000,
+        });
+        return error;
+      });
+  };
+
+  const CreateVolumeRequest = async (attr: Volume): Promise<void> => {
+    setIsLoading(true);
+    if (isAdvanced) {
+      let volType = 'primary';
+      if (attr?.type === 2) {
+        volType = 'secondary';
+      } else if (attr?.type === 10) {
+        volType = 'index';
+      }
+      postSoapFetchRequest(
+        `/service/admin/soap/zextras`,
+        {
+          _jsns: ZIMBRA_ADMIN_URN,
+          module: 'ZxPowerstore',
+          action: 'doCreateVolume',
+          targetServers: server,
+          volumeName: attr?.name,
+          volumeType: volType,
+          storeType: 'FILE_BLOB',
+          volumePath: attr?.rootpath,
+          volumeCompressed: attr?.compressBlobs,
+          volumeThreshold: attr?.compressionThreshold,
+          isCurrent: attr?.isCurrent === 1,
+        },
+        'zextras',
+        // @ts-expect-error - needs a fix
+      ).then(async (res: { Body: { response: { content: string } } }): Promise<void> => {
+        const result = JSON.parse(res?.Body?.response?.content);
+        const responseData = Object.values(result?.response)[0];
+        const typeRes = responseData as { ok: boolean; error: string };
+        if (typeRes && typeRes?.ok === true) {
+          if (attr?.isCurrent) {
+            await postSoapFetchRequest(
+              `/service/admin/soap/zextras`,
+              {
+                _jsns: ZIMBRA_ADMIN_URN,
+                module: 'ZxPowerstore',
+                action: 'doUpdateVolume',
+                currentVolumeName: attr?.name,
+                volumeCurrent: true,
+              },
+              'zextras',
+            )
+              .then(() => {
+                createSnackbar({
+                  key: '1',
+                  severity: 'success',
+                  label: t('label.volume_active', '{{volumeName}} is Currently active', {
+                    volumeName: attr?.name,
+                  }),
+                });
+              })
+              .catch(() => {
+                createSnackbar({
+                  key: 'error',
+                  severity: 'error',
+                  label: t('label.volume_detail_error', '{{message}}', {
+                    message: 'Something went wrong, please try again',
+                  }),
+                  autoHideTimeout: 5000,
+                });
+              });
+          }
+          invalidateVolumes();
+          createSnackbar({
+            key: '1',
+            severity: 'success',
+            label: t('label.volume_created_msg', 'The volume has been created successfully'),
+          });
+          setToggleWizardLocal(false);
+          setToggleWizardExternal(false);
+        } else if (typeRes && typeRes?.ok === false && typeRes?.error) {
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: t('label.volume_detail_error', '{{message}}', {
+              message: 'Something went wrong, please try again',
+            }),
+            autoHideTimeout: 5000,
+          });
+        }
+        setIsLoading(false);
+      });
+    } else {
+      await createVoume(attr)
+        .then(async (res) => {
+          if (res?.volume && Array.isArray(res?.volume)) {
+            const vol = res?.volume[0];
+
+            if (vol && vol?.id) {
+              if (attr?.isCurrent === 1) {
+                await setCurrentVolumeRequest(vol?.id, vol?.type)
+                  .then(() => {
+                    createSnackbar({
+                      key: '1',
+                      severity: 'success',
+                      label: t('label.volume_active', '{{volumeName}} is Currently active', {
+                        volumeName: attr?.name,
+                      }),
+                    });
+                  })
+                  .catch(() => {
+                    createSnackbar({
+                      key: 'error',
+                      severity: 'error',
+                      label: t('label.volume_detail_error', '{{message}}', {
+                        message: 'Something went wrong, please try again',
+                      }),
+                      autoHideTimeout: 5000,
+                    });
+                  });
+              }
+            }
+          }
+          invalidateVolumes();
+          createSnackbar({
+            key: '1',
+            severity: 'success',
+            label: t('label.volume_created_msg', 'The volume has been created successfully'),
+          });
+          setToggleWizardLocal(false);
+          setToggleWizardExternal(false);
+          setIsLoading(false);
+          return res;
+        })
+        .catch((error) => {
+          createSnackbar({
+            key: 'error',
+            severity: 'error',
+            label: error?.message
+              ? error?.message
+              : t('label.volume_detail_error', '{{message}}', {
+                  message: 'Something went wrong, please try again',
+                }),
+            autoHideTimeout: 5000,
+          });
+          setIsLoading(false);
+          return error;
+        });
+    }
+  };
+
+  const handleClick = (i: number, data: Volume[]): void => {
+    const volumeObject = data?.find((_volume: Volume, index: number) => index === i);
+    const typeVol = volumeObject as Volume;
+    setVolume(typeVol);
+    setmodifyVolumeToggle(true);
+  };
+
+  return (
+    <>
+      {toggleWizardExternal && (
+        <ModalOverlay open={toggleWizardExternal}>
+          <CreateMailstoresVolume
+            setToggleWizardExternal={setToggleWizardExternal}
+            setToggleWizardLocal={setToggleWizardLocal}
+            volName={server}
+            CreateAdvancedRequest={CreateAdvancedRequest}
+          />
+        </ModalOverlay>
+      )}
+      {toggleWizardLocal && (
+        <ModalOverlay open={toggleWizardLocal}>
+          <NewVolume
+            setToggleWizardLocal={setToggleWizardLocal}
+            setToggleWizardExternal={setToggleWizardExternal}
+            volName={server}
+            CreateVolumeRequest={CreateVolumeRequest}
+            isLoading={isLoading}
+          />
+        </ModalOverlay>
+      )}
+      {modifyVolumeToggle && volume && (
+        <ModalOverlay open={modifyVolumeToggle}>
+          <ModifyVolume
+            volumeId={volume?.id ?? 0}
+            setOpen={setOpen}
+            setmodifyVolumeToggle={setmodifyVolumeToggle}
+            getAllVolumesRequest={invalidateVolumes}
+            selectedServerId={selectedServerId}
+            volumeList={volumeList}
+          />
+        </ModalOverlay>
+      )}
+
+      <Container
+        orientation="column"
+        crossAlignment="flex-start"
+        mainAlignment="flex-start"
+        style={{ overflowY: 'auto', position: 'relative' }}
+        background="white"
+      >
+        {open && (
+          <DeleteVolumeModel
+            open={open}
+            closeHandler={closeHandler}
+            deleteHandler={deleteHandler}
+            volumeDetail={volume}
+          />
+        )}
+        <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
+          <ds-text as="h2" weight="bold">
+            {t('volume.serverName_volumes', '{{serverName}} Volumes', {
+              serverName: server,
+            })}
+          </ds-text>
+        </Row>
+        <ds-divider></ds-divider>
+        <Container
+          orientation="column"
+          crossAlignment="flex-start"
+          mainAlignment="flex-start"
+          width="100%"
+          height="calc(100vh - 12.5rem)"
+          padding={{ top: 'extralarge', bottom: 'large' }}
+        >
+          <Container height="fit" crossAlignment="flex-start" background="gray6">
+            <Row
+              width="100%"
+              mainAlignment="flex-end"
+              orientation="horizontal"
+              padding={{ top: 'small', right: 'large', left: 'large' }}
+              style={{ gap: '1rem' }}
+            >
+              <Button
+                label={t('label.new_volume_button', 'NEW VOLUME')}
+                icon="PlusOutline"
+                color="primary"
+                onClick={(): void => {
+                  if (isAdvanced) {
+                    setToggleWizardExternal(!toggleWizardExternal);
+                  } else {
+                    setToggleWizardLocal(!toggleWizardLocal);
+                  }
+                }}
+              />
+            </Row>
+            <Row
+              width="100%"
+              mainAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ horizontal: 'large', top: 'large', bottom: 'large' }}
+            >
+              <ds-text as="h3">{t('volume.primary_helperText', 'Primary')}</ds-text>
+            </Row>
+            <Row padding={{ horizontal: 'large', bottom: 'extralarge' }} width="100%">
+              <VolumeListTable
+                volumes={volumeList?.primaries}
+                headers={volPrimarySecondaryHeaders}
+                selectedRows={priamryVolumeSelection}
+                onSelectionChange={(selected: string[]): void => {
+                  setPriamryVolumeSelection(selected);
+                }}
+                onClick={(i: number): void => {
+                  handleClick(i, volumeList?.primaries);
+                }}
+                isAdvanced={isAdvanced}
+              />
+            </Row>
+            {isAdvanced && (
+              <>
+                <Row
+                  width="100%"
+                  mainAlignment="flex-start"
+                  orientation="horizontal"
+                  padding={{
+                    horizontal: 'large',
+                    bottom: 'large',
+                    top: 'small',
+                  }}
+                >
+                  <ds-text as="h3">{t('volume.secondary_helperText', 'Secondary')}</ds-text>
+                </Row>
+                <Row padding={{ horizontal: 'large', bottom: 'extralarge' }} width="100%">
+                  <VolumeListTable
+                    volumes={volumeList?.secondaries}
+                    headers={volPrimarySecondaryHeaders}
+                    selectedRows={secondaryVolumeSelection}
+                    onSelectionChange={(selected: string[]): void => {
+                      setSecondaryVolumeSelection(selected);
+                    }}
+                    onClick={(i: number): void => {
+                      handleClick(i, volumeList?.secondaries);
+                    }}
+                    isAdvanced={isAdvanced}
+                  />
+                </Row>
+              </>
+            )}
+
+            <Row
+              width="100%"
+              mainAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ horizontal: 'large', bottom: 'large' }}
+            >
+              <ds-text as="h3">{t('volume.indexer_helperText', 'Indexer')}</ds-text>
+            </Row>
+            <Row
+              padding={{
+                horizontal: 'large',
+                bottom: 'extralarge',
+              }}
+              width="100%"
+            >
+              <IndexerVolumeTable
+                volumes={volumeList?.indexes}
+                headers={volIndexerHeaders}
+                selectedRows={indexerVolumeSelection}
+                onSelectionChange={(selected: string[]): void => {
+                  setIndexerVolumeSelection(selected);
+                }}
+                onClick={(i: number): void => {
+                  handleClick(i, volumeList?.indexes);
+                }}
+                isAdvanced={isAdvanced}
+              />
+            </Row>
+          </Container>
+        </Container>
+      </Container>
+    </>
+  );
+}

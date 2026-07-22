@@ -10,7 +10,6 @@ import { Account, ErrorSoapResponse, SoapResponse, SuccessSoapResponse } from '.
 import { queryClient } from '../providers/react-query-provider';
 import { goToLogin } from './go-to-login';
 import { userAgent } from './user-agent';
-import { retry } from './utils';
 
 const getAccountDataFromCache = (): { account?: Account; zimbraVersion: string } => {
   const account = queryClient.getQueryData<Account>(['account', 'info']);
@@ -115,7 +114,7 @@ export const soapFetch = <Request, Response>(
         throw e;
       });
 
-  return retry(fetchFn);
+  return fetchFn();
 };
 
 const handleSoapResponse = (res: any): any => {
@@ -180,10 +179,10 @@ export const getSoapFetchRequest = <Response>(apiURL: string): Promise<Response>
       .catch((e) => {
         throw e;
       });
-  return retry(fetchFn);
+  return fetchFn();
 };
 
-export const postSoapFetchRequest = <Request, Response>(
+export const postSoapFetchRequest = async <Request, Response>(
   apiURL: string,
   body: Request,
   api?: string,
@@ -200,36 +199,33 @@ export const postSoapFetchRequest = <Request, Response>(
     bodyItem = body;
   }
 
-  const fetchFn = (): Promise<Response> =>
-    fetch(`${apiURL}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  const res = await fetch(`${apiURL}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      Body: {
+        ...bodyItem,
       },
-      body: JSON.stringify({
-        Body: {
-          ...bodyItem,
-        },
-        Header: {
-          context: {
-            _jsns: 'urn:zimbra',
-            account: fetchAccount(account as Account, otherAccount),
-            userAgent: {
-              name: userAgent,
-              version: zimbraVersion,
-            },
-            targetServer: targetServer ?? undefined,
+      Header: {
+        context: {
+          _jsns: 'urn:zimbra',
+          account: fetchAccount(account as Account, otherAccount),
+          userAgent: {
+            name: userAgent,
+            version: zimbraVersion,
           },
+          targetServer: targetServer ?? undefined,
         },
-      }),
-    })
-      .then((res) => res?.json())
-      .then((res: SoapResponse<Response>) => handleSoapResponse(res));
-
-  return retry(fetchFn);
+      },
+    }),
+  });
+  const res_1 = await res?.json();
+  return handleSoapResponse(res_1);
 };
 
-export const fetchExternalSoap = <Request, Response>(
+export const fetchExternalSoap = async <Request, Response>(
   apiURL: string,
   body: Request,
   api?: string,
@@ -244,24 +240,21 @@ export const fetchExternalSoap = <Request, Response>(
     bodyItem = body;
   }
 
-  const fetchFn = (): Promise<Response> =>
-    fetch(`${apiURL}`, {
-      method: method || 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: isArray(bodyItem)
-        ? JSON.stringify(bodyItem)
-        : JSON.stringify({
-            ...bodyItem,
-          }),
-    })
-      .then((res) =>
-        res?.headers?.get('content-length') === null &&
-        !res?.headers?.get('content-type')?.includes('application/json')
-          ? res
-          : res?.json(),
-      )
-      .then((res: any) => handleSoapResponse(res));
-  return retry(fetchFn);
+  const res = await fetch(`${apiURL}`, {
+    method: method || 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: isArray(bodyItem)
+      ? JSON.stringify(bodyItem)
+      : JSON.stringify({
+          ...bodyItem,
+        }),
+  });
+  const res_1 =
+    res?.headers?.get('content-length') === null &&
+    !res?.headers?.get('content-type')?.includes('application/json')
+      ? res
+      : res?.json();
+  return handleSoapResponse(res_1);
 };
