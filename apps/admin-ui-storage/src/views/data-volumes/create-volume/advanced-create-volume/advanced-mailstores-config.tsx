@@ -7,14 +7,14 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Container,
   Input,
-  Link,
   ListRow,
   Padding,
   Radio,
   Row,
   Switch,
+  Tooltip,
 } from '@zextras/ui-components';
-import { type ChangeEvent, useEffect } from 'react';
+import { type ChangeEvent, useCallback, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { AdvancedMailstoresConfigProps } from '../../../../../types';
@@ -44,6 +44,13 @@ export function AdvancedMailstoresConfig({
 }: AdvancedMailstoresConfigProps) {
   const { form } = useAdvancedVolumeContext();
   const { t } = useTranslation();
+
+  const openDocumentation = useCallback((url: string): void => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, []);
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
   const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);
@@ -293,53 +300,46 @@ export function AdvancedMailstoresConfig({
           </Row>
           {showTieringSettings && (
             <>
-              <Row
-                padding={{ top: 'large' }}
-                mainAlignment="flex-start"
-                width="100%"
-                background="gray6"
-              >
-                <Row width="48.5%" mainAlignment="flex-start">
-                  <Row mainAlignment="flex-start" width="100%">
-                    <Switch
-                      value={useInfrequentAccess}
-                      label={t('label.use_infraquent_access', 'Use infrequent access')}
-                      onClick={(): void => {
-                        const newValue = !useInfrequentAccess;
-                        form.setFieldValue('useInfrequentAccess', newValue);
-                        if (newValue) {
-                          form.setFieldValue('useIntelligentTiering', false);
-                        } else {
-                          form.setFieldValue('infrequentAccessThreshold', '');
-                        }
-                        onSelection({ useInfrequentAccess: newValue }, true);
-                        if (newValue) {
-                          onSelection({ useIntelligentTiering: false }, true);
-                        }
-                        if (!newValue) {
-                          onSelection({ infrequentAccessThreshold: '' }, true);
-                        }
-                      }}
-                      iconColor="primary"
-                    />
-                  </Row>
-                  <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-                    <Link
-                      color="secondary"
-                      href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
-                      target="_blank"
-                      rel="noopener noreferrer"
+              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+                <Row width="100%" mainAlignment="flex-start" crossAlignment="center">
+                  <Switch
+                    value={useInfrequentAccess}
+                    label={t('label.use_infraquent_access', 'Use infrequent access')}
+                    onClick={(): void => {
+                      const newValue = !useInfrequentAccess;
+                      form.setFieldValue('useInfrequentAccess', newValue);
+                      if (newValue) {
+                        form.setFieldValue('useIntelligentTiering', false);
+                      } else {
+                        form.setFieldValue('infrequentAccessThreshold', '');
+                      }
+                      onSelection({ useInfrequentAccess: newValue }, true);
+                      if (newValue) {
+                        onSelection({ useIntelligentTiering: false }, true);
+                      }
+                      if (!newValue) {
+                        onSelection({ infrequentAccessThreshold: '' }, true);
+                      }
+                    }}
+                    iconColor="primary"
+                  />
+                  <Tooltip placement="top" label={t('storage.dataVolumes.amazonStorageDocumentation', 'Amazon Storage Class Documentation')}>
+                    <button
+                      type="button"
+                      className={styles.tieringDocIconButton}
+                      aria-label={t(
+                        'label.use_infraquent_access_helptext',
+                        'Open Amazon Storage Class Documentation',
+                      )}
+                      onClick={(): void => openDocumentation(AMAZON_USERGUIDE_STORAGE_CLASS_LINK)}
                     >
-                      <Trans
-                        i18nKey="label.use_infraquent_access_helptext"
-                        defaults="<underline>Amazon Storage Class Documentation</underline>"
-                        components={{ underline: <u /> }}
-                      />
-                    </Link>
-                  </Row>
+                      <ds-icon icon="ExternalLinkOutline" size="medium" color="primary" />
+                    </button>
+                  </Tooltip>
                 </Row>
-                <Padding horizontal="small" />
-                <Row width="48.5%" mainAlignment="flex-start">
+              </Row>
+              <Row padding={{ top: 'small', left: 'small' }} width="100%" mainAlignment="flex-start">
+                <Row width="52%" mainAlignment="flex-start" padding={{ left: 'extralarge' }}>
                   <Input
                     inputName="infrequentAccessThreshold"
                     label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
@@ -351,7 +351,7 @@ export function AdvancedMailstoresConfig({
                   />
                 </Row>
               </Row>
-              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%" crossAlignment="center">
                 <Switch
                   value={useIntelligentTiering}
                   label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
@@ -368,20 +368,19 @@ export function AdvancedMailstoresConfig({
                   }}
                   iconColor="primary"
                 />
-              </Row>
-              <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-                <Link
-                  color="secondary"
-                  href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Trans
-                    i18nKey="label.use_intelligent_tiering_helptext"
-                    defaults="<underline>Amazon Tiering Documentation</underline>"
-                    components={{ underline: <u /> }}
-                  />
-                </Link>
+                <Tooltip placement="top" label={t('storage.dataVolumes.amazonTieringDocumentation', 'Amazon Tiering Documentation')}>
+                  <button
+                    type="button"
+                    className={styles.tieringDocIconButton}
+                    aria-label={t(
+                      'label.use_intelligent_tiering_helptext',
+                      'Open Amazon Tiering Documentation',
+                    )}
+                    onClick={(): void => openDocumentation(AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK)}
+                  >
+                    <ds-icon icon="ExternalLinkOutline" size="medium" color="primary" />
+                  </button>
+                </Tooltip>
               </Row>
             </>
           )}
@@ -399,7 +398,7 @@ export function AdvancedMailstoresConfig({
           iconColor="primary"
         />
       </Row>
-      <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+      <Row mainAlignment="flex-start" width="100%" padding={{ left: '2rem' }}>
         <ds-text as="p" color="secondary">
           {t(
             'label.enable_current_helptext',
@@ -421,7 +420,7 @@ export function AdvancedMailstoresConfig({
               iconColor="primary"
             />
           </Row>
-          <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+          <Row mainAlignment="flex-start" width="100%" padding={{ left: '2rem' }}>
             <ds-text
               as="p"
               color="secondary"

@@ -10,7 +10,6 @@ import {
   Button,
   Container,
   Input,
-  Link,
   ListRow,
   Modal,
   Padding,
@@ -21,7 +20,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { type S3ConnectorVolume, type Volume } from '../../../../types';
@@ -126,6 +125,13 @@ export function ModifyVolumeForm({
   const getConnectorTypeLabel = (storeTypeValue: string | undefined): string | undefined =>
     connectorTypeItems?.find((item) => item?.value?.toLowerCase() === storeTypeValue?.toLowerCase())
       ?.label;
+
+  const openDocumentation = useCallback((url: string): void => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, []);
 
   const currentConnectorId = getVolumeConnectorConfigurationId(externalVolDetail);
 
@@ -433,7 +439,7 @@ export function ModifyVolumeForm({
                   {t('label.volume_id', 'Volume ID')}
                 </ds-text>
                 <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} size="small">
+                  <ds-text className={styles.detailValue} weight='bold' size="small">
                     {id}
                   </ds-text>
                 </div>
@@ -449,7 +455,7 @@ export function ModifyVolumeForm({
                   {t('label.server', 'Server')}
                 </ds-text>
                 <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} size="small">
+                  <ds-text className={styles.detailValue} weight='bold' size="small">
                     {server ?? ''}
                   </ds-text>
                 </div>
@@ -467,7 +473,7 @@ export function ModifyVolumeForm({
                   {t('label.volume_role', 'Volume role')}
                 </ds-text>
                 <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} size="small">
+                  <ds-text className={styles.detailValue} weight='bold' size="small">
                     {volumeRoleLabel}
                   </ds-text>
                 </div>
@@ -483,7 +489,7 @@ export function ModifyVolumeForm({
                   {t('label.storage_type', 'Storage type')}
                 </ds-text>
                 <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} size="small">
+                  <ds-text className={styles.detailValue} weight='bold' size="small">
                     {storageTypeLabel}
                   </ds-text>
                 </div>
@@ -558,7 +564,7 @@ export function ModifyVolumeForm({
                       {t('label.bucket_name', 'Bucket name')}
                     </ds-text>
                     <div className={styles.detailValueRow}>
-                      <ds-text className={styles.detailValue} size="small">
+                      <ds-text className={styles.detailValue} weight='bold' size="small">
                         {connectorName}
                       </ds-text>
                     </div>
@@ -574,7 +580,7 @@ export function ModifyVolumeForm({
                       {t('storage.dataVolume.s3ConnectorId', 'S3 Connector ID')}
                     </ds-text>
                     <div className={styles.detailValueRow}>
-                      <ds-text className={styles.detailValue} size="small">
+                      <ds-text className={styles.detailValue} weight='bold' size="small">
                         {form.state.values.bucketConfigurationId}
                       </ds-text>
                     </div>
@@ -646,50 +652,43 @@ export function ModifyVolumeForm({
               crossAlignment="flex-start"
               height="auto"
             >
-              <Row
-                padding={{ top: 'large' }}
-                mainAlignment="flex-start"
-                width="100%"
-                background="gray6"
-              >
-                <Row width="48.5%" mainAlignment="flex-start">
-                  <Row mainAlignment="flex-start" width="100%">
-                    <form.Field name="useInfrequentAccess">
-                      {(field) => (
-                        <Switch
-                          value={field.state.value}
-                          label={t('label.use_infraquent_access', 'Use infrequent access')}
-                          onClick={(): void => {
-                            const newValue = !field.state.value;
-                            field.handleChange(newValue);
-                            if (newValue) {
-                              form.setFieldValue('useIntelligentTiering', false);
-                            } else {
-                              form.setFieldValue('infrequentAccessThreshold', '');
-                            }
-                          }}
-                          iconColor="primary"
-                        />
-                      )}
-                    </form.Field>
-                  </Row>
-                  <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-                    <Link
-                      color="secondary"
-                      href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Trans
-                        i18nKey="label.use_infraquent_access_helptext"
-                        defaults="<underline>Amazon Storage Class Documentation</underline>"
-                        components={{ underline: <u /> }}
+              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+                <Row width="100%" mainAlignment="flex-start" crossAlignment="center">
+                  <form.Field name="useInfrequentAccess">
+                    {(field) => (
+                      <Switch
+                        value={field.state.value}
+                        label={t('label.use_infraquent_access', 'Use infrequent access')}
+                        onClick={(): void => {
+                          const newValue = !field.state.value;
+                          field.handleChange(newValue);
+                          if (newValue) {
+                            form.setFieldValue('useIntelligentTiering', false);
+                          } else {
+                            form.setFieldValue('infrequentAccessThreshold', '');
+                          }
+                        }}
+                        iconColor="primary"
                       />
-                    </Link>
-                  </Row>
+                    )}
+                  </form.Field>
+                  <Tooltip placement="top" label={t('storage.dataVolumes.amazonStorageDocumentation', 'Amazon Storage Class Documentation')}>
+                    <button
+                      type="button"
+                      className={styles.tieringDocIconButton}
+                      aria-label={t(
+                        'label.use_infraquent_access_helptext',
+                        'Open Amazon Storage Class Documentation',
+                      )}
+                      onClick={(): void => openDocumentation(AMAZON_USERGUIDE_STORAGE_CLASS_LINK)}
+                    >
+                      <ds-icon icon="ExternalLinkOutline" size="medium" color="primary" />
+                    </button>
+                  </Tooltip>
                 </Row>
-                <Padding horizontal="small" />
-                <Row width="48.5%" mainAlignment="flex-start">
+              </Row>
+              <Row padding={{ top: 'small', left: 'small' }} width="100%" mainAlignment="flex-start">
+                <Row width="52%" mainAlignment="flex-start" padding={{ left: 'extralarge' }}>
                   <form.Field name="infrequentAccessThreshold">
                     {(field) => (
                       <Input
@@ -708,36 +707,37 @@ export function ModifyVolumeForm({
                 </Row>
               </Row>
               <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-                <form.Field name="useIntelligentTiering">
-                  {(field) => (
-                    <Switch
-                      value={field.state.value}
-                      label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
-                      onClick={(): void => {
-                        const newValue = !field.state.value;
-                        field.handleChange(newValue);
-                        if (newValue) {
-                          form.setFieldValue('useInfrequentAccess', false);
-                        }
-                      }}
-                      iconColor="primary"
-                    />
-                  )}
-                </form.Field>
-              </Row>
-              <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-                <Link
-                  color="secondary"
-                  href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Trans
-                    i18nKey="label.use_intelligent_tiering_helptext"
-                    defaults="<underline>Amazon Tiering Documentation</underline>"
-                    components={{ underline: <u /> }}
-                  />
-                </Link>
+                <Row width="100%" mainAlignment="flex-start" crossAlignment="center">
+                  <form.Field name="useIntelligentTiering">
+                    {(field) => (
+                      <Switch
+                        value={field.state.value}
+                        label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
+                        onClick={(): void => {
+                          const newValue = !field.state.value;
+                          field.handleChange(newValue);
+                          if (newValue) {
+                            form.setFieldValue('useInfrequentAccess', false);
+                          }
+                        }}
+                        iconColor="primary"
+                      />
+                    )}
+                  </form.Field>
+                  <Tooltip placement="top" label={t('storage.dataVolumes.amazonTieringDocumentation', 'Amazon Tiering Documentation')}>
+                    <button
+                      type="button"
+                      className={styles.tieringDocIconButton}
+                      aria-label={t(
+                        'label.use_intelligent_tiering_helptext',
+                        'Open Amazon Tiering Documentation',
+                      )}
+                      onClick={(): void => openDocumentation(AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK)}
+                    >
+                      <ds-icon icon="ExternalLinkOutline" size="medium" color="primary" />
+                    </button>
+                  </Tooltip>
+                </Row>
               </Row>
             </Container>
           </>
