@@ -1,0 +1,85 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { fireEvent, render, screen } from '@testing-library/react';
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
+
+import { NewS3Connector } from '../new-s3-connector';
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (_key: string, fallback?: string) => fallback ?? _key,
+  }),
+}));
+
+vi.mock('@zextras/ui-components', () => ({
+  Container: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  Row: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  Button: ({
+    label,
+    icon,
+    onClick,
+  }: {
+    label?: string;
+    icon?: string;
+    onClick?: () => void;
+  }) => (
+    <button type="button" onClick={onClick} aria-label={label ?? icon ?? 'button'}>
+      {label ?? icon ?? 'button'}
+    </button>
+  ),
+}));
+
+vi.mock('../connection', () => ({
+  Connection: ({ onCancel }: { onCancel: () => void }) => (
+    <button type="button" onClick={onCancel}>
+      Cancel from connection
+    </button>
+  ),
+}));
+
+describe('NewS3Connector', () => {
+  it('should close the wizard when close button is clicked', () => {
+    const setToggleWizardSection = vi.fn();
+    const setDetailsConnector = vi.fn();
+    const setConnectionData = vi.fn();
+
+    render(
+      <NewS3Connector
+        setToggleWizardSection={setToggleWizardSection}
+        setDetailsConnector={setDetailsConnector}
+        setConnectionData={setConnectionData}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'CloseOutline' }));
+
+    expect(setToggleWizardSection).toHaveBeenCalledWith(false);
+    expect(setDetailsConnector).toHaveBeenCalledWith(false);
+    expect(setConnectionData).toHaveBeenCalledWith(undefined);
+  });
+
+  it('should close wizard and details when connection cancel is triggered', () => {
+    const setToggleWizardSection = vi.fn();
+    const setDetailsConnector = vi.fn();
+    const setConnectionData = vi.fn();
+
+    render(
+      <NewS3Connector
+        setToggleWizardSection={setToggleWizardSection}
+        setDetailsConnector={setDetailsConnector}
+        setConnectionData={setConnectionData}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel from connection' }));
+
+    expect(setToggleWizardSection).toHaveBeenCalledWith(false);
+    expect(setDetailsConnector).toHaveBeenCalledWith(false);
+    expect(setConnectionData).not.toHaveBeenCalled();
+  });
+});

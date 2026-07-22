@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Input } from '@zextras/ui-components';
+import { getFieldErrorProps, Input } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../../../../types/account';
+import { COS_VALIDATION_MESSAGES } from '../schema';
 import { CosFormApi } from '../types';
-import { getFieldErrorProps } from './field-error';
 
 type CosValidatedInputProps = {
   form: CosFormApi;
@@ -31,7 +31,7 @@ export const CosValidatedInput = ({
   return (
     <form.Field name={name}>
       {(field) => {
-        const error = getFieldErrorProps(field, isSubmitted, t);
+        const error = getFieldErrorProps(field, isSubmitted, t, COS_VALIDATION_MESSAGES);
         return (
           <Input
             label={label}

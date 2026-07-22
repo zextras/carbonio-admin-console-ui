@@ -37,6 +37,11 @@ export function getOptimizeDepsInclude() {
     'date-fns/locale/vi',
     'date-fns/locale/bs',
     'date-fns/locale/sl',
+    'lit',
+    'lit/decorators.js',
+    'lit/directives/repeat.js',
+    'lit/directives/style-map.js',
+    'lit/directives/unsafe-svg.js',
     'msw',
     'msw/browser',
   ];

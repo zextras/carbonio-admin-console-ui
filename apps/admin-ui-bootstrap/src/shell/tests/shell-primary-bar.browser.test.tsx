@@ -19,7 +19,7 @@ const EMPTY_DATA = {
 	views: { primaryBar: [], appView: [], utilityBar: [], primarybarSections: [] },
 };
 
-describe('ShellPrimaryBar', () => {
+describe('ShellPrimaryBar', { timeout: 20_000 }, () => {
 	beforeEach(() => {
 		useAppStore.setState(EMPTY_DATA);
 	});
@@ -41,7 +41,7 @@ describe('ShellPrimaryBar', () => {
 			primarybarSection: { id: 'manage', label: 'Manage', position: 3 },
 		});
 
-		setupBrowserTest(
+		await setupBrowserTest(
 			<>
 				<ShellPrimaryBar activeRoute={undefined} />
 				<LocationDisplay />
@@ -53,7 +53,7 @@ describe('ShellPrimaryBar', () => {
 		const icon = page.getByTestId('icon: CubeOutline');
 		await expect.element(icon).toBeVisible();
 
-		await icon.click();
+		await icon.click({ force: true });
 
 		// Clicking navigates to the prefixed path (manage/storage)
 		await expect

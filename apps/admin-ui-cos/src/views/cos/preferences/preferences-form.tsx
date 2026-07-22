@@ -5,7 +5,7 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { Container } from '@zextras/ui-components';
+import { Container, FormPageLayout } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -14,7 +14,6 @@ import { CosAttributes, CosPrefAttributes } from '../../../../types/cos';
 import { ZIMBRA_ADMIN_URN } from '../../../constants';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
-import { FormPageLayout } from '../../form-page-layout';
 import { localeList } from '../../utility/utils';
 import { DEFAULT_COS_PREF_ATTRIBUTES } from '../constants';
 import { CalendarOptions } from './sections/calendar-options';

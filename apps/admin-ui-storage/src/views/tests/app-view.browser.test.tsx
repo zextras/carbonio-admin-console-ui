@@ -15,7 +15,7 @@ import {
   setupBrowserTest,
   worker,
 } from 'admin-ui-test-utils';
-import { http,HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -87,14 +87,49 @@ const VOLUME_INDEXES = [
 ];
 
 function setupInterceptors(): void {
-  createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-  createBrowserSoapAPIInterceptor('GetAllConfig', {
-    a: [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }],
-  });
-  createBrowserSoapAPIInterceptor('GetAllServers', { server: SERVERS });
-  createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
-    HttpResponse.json({ items: [] }),
-  );
+	createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+	createBrowserSoapAPIInterceptor('GetAllConfig', {
+		a: [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }],
+	});
+	createBrowserSoapAPIInterceptor('GetAllServers', { server: SERVERS });
+	createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+		HttpResponse.json({ items: [] }),
+	);
+
+	worker.use(
+		http.post('/service/admin/soap/zextras', async ({ request }) => {
+			const body = (await request.json()) as {
+				Body?: { zextras?: { action?: string } };
+			};
+			const action = body?.Body?.zextras?.action;
+
+			if (action === 'listS3Connector' || action === 'getHSMPolicy') {
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({ ok: true, response: { values: [] } }),
+						},
+					},
+				});
+			}
+
+			if (action === 'getAllVolumes') {
+				return HttpResponse.json({
+					Body: {
+						response: {
+							content: JSON.stringify({ ok: true, response: {} }),
+						},
+					},
+				});
+			}
+
+			return HttpResponse.json({ Body: {} });
+		}),
+		http.get(
+			'/service/extension/zextras_admin/core/getAllServers',
+			() => HttpResponse.json({ items: [] }),
+		),
+	);
 }
 
 function setupListS3ConnectorInterceptor(): void {
