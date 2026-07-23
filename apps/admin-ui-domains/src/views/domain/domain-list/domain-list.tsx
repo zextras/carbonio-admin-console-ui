@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  HoverableRowFactory,
   Input,
   Paging,
   Row,
@@ -107,6 +107,7 @@ export const DomainList = () => {
       columns: ReactElement[];
       item: ZimbraDomainEntry;
       clickable: boolean;
+      onClick: () => void;
     } => {
       const domainItem: ZimbraDomainEntry = {
         name: item.name,
@@ -141,9 +142,6 @@ export const DomainList = () => {
             key={`${item?.id}-name`}
             color="gray0"
             weight="regular"
-            onClick={(): void => {
-              onDomainSelect(domainItem);
-            }}
           >
             {item?.name || ' '}
           </ds-text>,
@@ -154,15 +152,15 @@ export const DomainList = () => {
             weight="light"
             key={`${item?.id}-status`}
             color={statusColor}
-            onClick={(): void => {
-              onDomainSelect(domainItem);
-            }}
           >
             {statusLabel}
           </ds-text>,
         ],
         item: domainItem,
         clickable: true,
+        onClick: (): void => {
+          onDomainSelect(domainItem);
+        },
       };
     },
   );
@@ -247,7 +245,7 @@ export const DomainList = () => {
                   overflow: 'auto',
                   height: domainList.length === 0 ? '50%' : '100%',
                 }}
-                RowFactory={HoverableRowFactory}
+                RowFactory={ClickableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
               {domainList.length === 0 && !isFetching && (
