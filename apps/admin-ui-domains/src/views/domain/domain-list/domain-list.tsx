@@ -128,10 +128,6 @@ export const DomainList = () => {
     }
   }, [isError, error, createSnackbar, t]);
 
-  useEffect(() => {
-    setOffset(0);
-  }, [debouncedSearch]);
-
   const onDomainSelect = (domain: ZimbraDomainEntry): void => {
     replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
   };
@@ -281,6 +277,7 @@ export const DomainList = () => {
                   backgroundColor="gray5"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     setSearchString(e.target.value);
+                    setOffset(0);
                   }}
                   CustomIcon={(): React.ReactElement => (
                     <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
@@ -381,7 +378,7 @@ export const DomainList = () => {
                     height="auto"
                   >
                     <Container crossAlignment="flex-start">
-                      <Paging totalItem={totalDomain} setOffset={setOffset} pageSize={limit} />
+                      <Paging key={debouncedSearch} totalItem={totalDomain} setOffset={setOffset} pageSize={limit} />
                     </Container>
                     <Container
                       crossAlignment="flex-end"
