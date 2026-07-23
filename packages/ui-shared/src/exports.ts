@@ -63,6 +63,7 @@ import {
 } from './constants';
 import { buildPath, replaceHistory, useCurrentRoute, useRelativePathname } from './history/hooks';
 import { useBreakpoint } from './hooks/use-breakpoint';
+import { useDebouncedValue } from './hooks/use-debounced-value';
 import { useLocalStorage } from './hooks/use-local-storage';
 import { useMediaQuery } from './hooks/use-media-query';
 import { useTotalQuotaActive } from './hooks/use-total-quota-active';
@@ -89,6 +90,7 @@ import { useAllConfig, useConfigAttribute } from './react-query/use-config';
 import { useCosList } from './react-query/use-cos-list';
 import { domainByIdKey, useDomainById } from './react-query/use-domain-by-id';
 import { useDomainInformation } from './react-query/use-domain-information';
+import { useDomainSearch } from './react-query/use-domain-search';
 import { useGlobalCarbonioSendAnalytics } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
@@ -284,9 +286,11 @@ export {
   useCosList,
   useCurrentRoute,
   useCurrentUserRights,
+  useDebouncedValue,
   useDetailViewMaxWidth,
   useDomainById,
   useDomainInformation,
+  useDomainSearch,
   useGlobalCarbonioSendAnalytics,
   useHasAllRights,
   useI18nStore,

@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { useEffect, useState } from 'react';
 
 function useDebouncedValue<T>(value: T, delay = 700): T {

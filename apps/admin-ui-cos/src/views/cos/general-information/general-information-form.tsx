@@ -14,14 +14,13 @@ import {
   Tooltip,
   type TRow,
 } from '@zextras/ui-components';
-import type { DirectoryEntry } from '@zextras/ui-shared';
+import { type DirectoryEntry, useDebouncedValue } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { Attribute } from '../../../../types/attribute';
 import { DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../../constants';
-import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosAccounts } from '../../../services/use-cos-accounts';
 import { useCosDomains } from '../../../services/use-cos-domains';

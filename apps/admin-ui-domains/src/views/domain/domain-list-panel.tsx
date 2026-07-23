@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, DropDownInput, ListItems, type ListItemType, ListPanelItem, Padding, Row, useSnackbar, } from '@zextras/ui-components';
-import { getAllRights, replaceHistory, useAllConfig, useBackupServers, useCurrentUserRights, useDomainById, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
+import { getAllRights, replaceHistory, useAllConfig, useBackupServers, useCurrentUserRights, useDebouncedValue, useDomainById, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
@@ -44,7 +44,6 @@ import {
 	WHITELABEL_SETTINGS,
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../constants';
-import { useDebouncedValue } from '../../hooks/use-debounced-value';
 import { useDomainSearch } from '../../services/use-domain-search';
 import type { Domain } from '../../store/types';
 import GlobalListPanel from './global-list-panel';

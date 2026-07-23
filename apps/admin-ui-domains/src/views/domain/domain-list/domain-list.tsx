@@ -14,13 +14,12 @@ import {
   TrackNumberPerPage,
   useSnackbar,
 } from '@zextras/ui-components';
-import { replaceHistory } from '@zextras/ui-shared';
+import { replaceHistory, useDebouncedValue } from '@zextras/ui-shared';
 import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
-import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { buildDomainRow, type ZimbraDomain, type ZimbraDomainEntry } from './domain-list-row';
