@@ -23,6 +23,7 @@ import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { useDomainSearch } from '../../../services/use-domain-search';
+import { parseDomainAttributes } from '../../../utils/attributes';
 import { getStatusDisplay } from '../../../utils/status';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 
@@ -109,26 +110,13 @@ export const DomainList = () => {
       clickable: boolean;
       onClick: () => void;
     } => {
+      const parsed = parseDomainAttributes(item.a ?? []);
       const domainItem: ZimbraDomainEntry = {
         name: item.name,
         id: item.id,
-        zimbraDomainType: '',
-        zimbraDomainStatus: 'active',
-        zimbraDomainName: '',
-        zimbraId: '',
         a: item.a,
+        ...parsed,
       };
-      item?.a?.forEach((ele: Attribute) => {
-        if (ele.n === 'zimbraDomainType') {
-          domainItem.zimbraDomainType = ele._content;
-        } else if (ele.n === 'zimbraDomainStatus') {
-          domainItem.zimbraDomainStatus = ele._content;
-        } else if (ele.n === 'zimbraDomainName') {
-          domainItem.zimbraDomainName = ele._content;
-        } else if (ele.n === 'zimbraId') {
-          domainItem.zimbraId = ele._content;
-        }
-      });
       const { color: statusColor, label: statusLabel } = getStatusDisplay(
         domainItem.zimbraDomainStatus,
         t,
