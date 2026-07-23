@@ -3,8 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useField } from '@tanstack/react-form';
-import { Container, Row, Switch } from '@zextras/ui-components';
+import { Container, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { FeatureSwitchField } from '../../fields/feature-switch-field';
@@ -17,9 +16,7 @@ type FilesTasksSectionProps = {
 
 export const FilesTasksSection = ({ form, readonlyCOS }: FilesTasksSectionProps) => {
   const [t] = useTranslation();
-  const field = useField({ form, name: 'carbonioFeatureFilesAppEnabled' });
-  const filesEnabledField = useField({ form, name: 'carbonioFeatureFilesEnabled' });
-
+  
   return (
     <Row
       mainAlignment="flex-start"
@@ -43,15 +40,6 @@ export const FilesTasksSection = ({ form, readonlyCOS }: FilesTasksSectionProps)
             name="carbonioFeatureFilesEnabled"
             label={t('label.web_feature', 'Web Feature')}
             disabled={readonlyCOS}
-          />
-        </Row>
-        <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-          <Switch
-            value={field.state.value === 'TRUE'}
-            onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
-            label={t('label.mobile_app', 'Mobile App')}
-            iconColor="primary"
-            disabled={filesEnabledField.state.value !== 'TRUE' || readonlyCOS}
           />
         </Row>
       </Container>
