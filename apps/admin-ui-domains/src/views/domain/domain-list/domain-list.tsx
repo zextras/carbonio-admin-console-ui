@@ -19,6 +19,7 @@ import { debounce } from 'lodash-es';
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import { Attribute } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
@@ -31,15 +32,11 @@ type StatusTypes = {
     [key: string]: string;
   };
 };
-type ZimbraDomainAttribute = {
-  n: string;
-  _content: string;
-};
 
 type ZimbraDomain = {
   name: string;
   id: string;
-  a: ZimbraDomainAttribute[];
+  a: Attribute[];
 };
 
 export type ZimbraDomainResponse = {
@@ -52,7 +49,7 @@ export type ZimbraDomainResponse = {
 type ZimbraDomainEntry = {
   name: string;
   id: string;
-  a: ZimbraDomainAttribute[];
+  a: Attribute[];
   zimbraDomainType: string;
   zimbraDomainStatus: string;
   zimbraDomainName: string;
@@ -158,7 +155,7 @@ const DomainList = () => {
         zimbraId: '',
         a: item.a,
       };
-      item?.a?.forEach((ele: ZimbraDomainAttribute) => {
+      item?.a?.forEach((ele: Attribute) => {
         if (ele.n === 'zimbraDomainType') {
           domainIteam.zimbraDomainType = ele._content;
         } else if (ele.n === 'zimbraDomainStatus') {
