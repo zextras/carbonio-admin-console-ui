@@ -105,10 +105,10 @@ export const DomainList = () => {
     ): {
       id: string;
       columns: ReactElement[];
-      iteam: ZimbraDomainEntry;
+      item: ZimbraDomainEntry;
       clickable: boolean;
     } => {
-      const domainIteam: ZimbraDomainEntry = {
+      const domainItem: ZimbraDomainEntry = {
         name: item.name,
         id: item.id,
         zimbraDomainType: '',
@@ -119,17 +119,17 @@ export const DomainList = () => {
       };
       item?.a?.forEach((ele: Attribute) => {
         if (ele.n === 'zimbraDomainType') {
-          domainIteam.zimbraDomainType = ele._content;
+          domainItem.zimbraDomainType = ele._content;
         } else if (ele.n === 'zimbraDomainStatus') {
-          domainIteam.zimbraDomainStatus = ele._content;
+          domainItem.zimbraDomainStatus = ele._content;
         } else if (ele.n === 'zimbraDomainName') {
-          domainIteam.zimbraDomainName = ele._content;
+          domainItem.zimbraDomainName = ele._content;
         } else if (ele.n === 'zimbraId') {
-          domainIteam.zimbraId = ele._content;
+          domainItem.zimbraId = ele._content;
         }
       });
       const { color: statusColor, label: statusLabel } = getStatusDisplay(
-        domainIteam.zimbraDomainStatus,
+        domainItem.zimbraDomainStatus,
         t,
       );
       return {
@@ -142,7 +142,7 @@ export const DomainList = () => {
             color="gray0"
             weight="regular"
             onClick={(): void => {
-              onDomainSelect(domainIteam);
+              onDomainSelect(domainItem);
             }}
           >
             {item?.name || ' '}
@@ -155,13 +155,13 @@ export const DomainList = () => {
             key={item?.id}
             color={statusColor}
             onClick={(): void => {
-              onDomainSelect(domainIteam);
+              onDomainSelect(domainItem);
             }}
           >
             {statusLabel}
           </ds-text>,
         ],
-        iteam: domainIteam,
+        item: domainItem,
         clickable: true,
       };
     },
