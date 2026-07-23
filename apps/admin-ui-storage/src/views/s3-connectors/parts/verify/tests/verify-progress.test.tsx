@@ -115,7 +115,7 @@ describe('VerifyProgress', () => {
   it('should close instantly when minDisplayMs is 0', () => {
     const onComplete = vi.fn();
 
-    const { container } = render(
+    const { container, rerender } = render(
       <VerifyProgress isPending onComplete={onComplete} minDisplayMs={0} />,
     );
 
@@ -130,7 +130,7 @@ describe('VerifyProgress', () => {
 
     expect(progressFill.style.width).toBe('0%');
 
-    render(<VerifyProgress isPending={false} onComplete={onComplete} minDisplayMs={0} />);
+    rerender(<VerifyProgress isPending={false} onComplete={onComplete} minDisplayMs={0} />);
 
     act(() => {
       vi.advanceTimersByTime(1);
@@ -150,13 +150,13 @@ describe('VerifyProgress', () => {
     const customDelay = 2000;
     const onComplete = vi.fn();
 
-    const { container } = render(
+    const { container, rerender } = render(
       <VerifyProgress isPending onComplete={onComplete} minDisplayMs={customDelay} />,
     );
 
     expect(HTMLElement.prototype.showPopover).toHaveBeenCalledTimes(1);
 
-    render(<VerifyProgress isPending={false} onComplete={onComplete} minDisplayMs={customDelay} />);
+    rerender(<VerifyProgress isPending={false} onComplete={onComplete} minDisplayMs={customDelay} />);
 
     act(() => {
       vi.advanceTimersByTime(customDelay - 1);
