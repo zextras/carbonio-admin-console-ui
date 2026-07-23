@@ -14,6 +14,7 @@ import { CosListPanel } from './cos/cos-list-panel';
 
 export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
+
   const { pathname } = useLocation();
   const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);
   return (

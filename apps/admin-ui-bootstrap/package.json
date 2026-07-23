@@ -3,10 +3,6 @@
   "version": "0.9.36",
   "description": "The Zextras Carbonio web admin",
   "private": true,
-  "engines": {
-    "node": "v22",
-    "npm": "v10"
-  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
