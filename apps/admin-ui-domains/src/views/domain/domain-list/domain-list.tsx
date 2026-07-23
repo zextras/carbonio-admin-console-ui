@@ -138,7 +138,7 @@ export const DomainList = () => {
           <ds-text
             as="span"
             size="small"
-            key={item?.id}
+            key={`${item?.id}-name`}
             color="gray0"
             weight="regular"
             onClick={(): void => {
@@ -152,7 +152,7 @@ export const DomainList = () => {
             as="span"
             size="small"
             weight="light"
-            key={item?.id}
+            key={`${item?.id}-status`}
             color={statusColor}
             onClick={(): void => {
               onDomainSelect(domainItem);
