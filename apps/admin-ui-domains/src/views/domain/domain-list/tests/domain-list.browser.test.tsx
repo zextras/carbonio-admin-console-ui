@@ -20,7 +20,7 @@ import { type ReactElement } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import DomainList from '../domain-list';
+import { DomainList } from '../domain-list';
 
 const mockedReplaceHistory = vi.mocked(replaceHistory);
 

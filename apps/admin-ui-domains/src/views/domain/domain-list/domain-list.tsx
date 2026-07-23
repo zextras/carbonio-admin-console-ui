@@ -56,7 +56,7 @@ type ZimbraDomainEntry = {
   zimbraId: string;
 };
 
-const DomainList = () => {
+export const DomainList = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [isTableTooTall, setIsTableTooTall] = useState(false);
@@ -402,4 +402,3 @@ const DomainList = () => {
   );
 };
 
-export default DomainList;
