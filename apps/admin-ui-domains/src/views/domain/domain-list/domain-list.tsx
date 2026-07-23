@@ -15,7 +15,6 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { debounce } from 'lodash-es';
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -24,7 +23,6 @@ import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { useDomainSearch } from '../../../services/use-domain-search';
-import ScrollContainer from '../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 
 type StatusTypes = {
@@ -59,7 +57,6 @@ type ZimbraDomainEntry = {
 export const DomainList = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [isTableTooTall, setIsTableTooTall] = useState(false);
 
   const tableRef = useRef<HTMLDivElement | null>(null);
 
@@ -81,7 +78,6 @@ export const DomainList = () => {
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [searchString, setSearchString] = useState<string>('');
-  const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   const debouncedSearch = useDebouncedValue(searchString, 700);
 
@@ -199,31 +195,6 @@ export const DomainList = () => {
     },
   );
 
-  useEffect(() => {
-    const table = tableRef.current;
-
-    const handleResize = debounce((): void => {
-      if (table) {
-        const tableHeight = table.clientHeight + 375;
-        const viewportHeight = window.innerHeight;
-        setIsTableTooTall(tableHeight > viewportHeight);
-      }
-    }, 100);
-
-    if (table && !resizeObserverRef.current) {
-      const observer = new ResizeObserver(handleResize);
-      resizeObserverRef.current = observer;
-      observer.observe(table);
-    }
-
-    return () => {
-      if (resizeObserverRef.current) {
-        resizeObserverRef.current.disconnect();
-        resizeObserverRef.current = null;
-      }
-    };
-  }, []);
-
   return (
     <Container
       padding={{ top: 'large', left: 'large', right: 'large' }}
@@ -328,13 +299,7 @@ export const DomainList = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <ds-text
-                      as="p"
-                      weight="light"
-                      color="gray1"
-                      size="large"
-                      overflow="break-word"
-                    >
+                    <ds-text as="p" weight="light" color="gray1" size="large" overflow="break-word">
                       {t('label.this_list_is_empty', 'This list is empty.')}
                     </ds-text>
                   </Row>
@@ -345,13 +310,7 @@ export const DomainList = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <ds-text
-                      as="p"
-                      weight="light"
-                      color="gray1"
-                      size="large"
-                      overflow="break-word"
-                    >
+                    <ds-text as="p" weight="light" color="gray1" size="large" overflow="break-word">
                       <Trans
                         i18nKey="label.create_domain_list_msg"
                         defaults="You can create a new Domain by clicking on <bold>Create</bold> button on header menu"
@@ -365,10 +324,9 @@ export const DomainList = () => {
                 <Container
                   style={{
                     position: 'sticky',
-                    bottom: isTableTooTall ? '0' : '-4rem',
+                    bottom: '-4rem',
                   }}
                 >
-                  <ScrollContainer isVisible={isTableTooTall} />
                   <Container
                     orientation="horizontal"
                     mainAlignment="space-between"
@@ -378,7 +336,12 @@ export const DomainList = () => {
                     height="auto"
                   >
                     <Container crossAlignment="flex-start">
-                      <Paging key={debouncedSearch} totalItem={totalDomain} setOffset={setOffset} pageSize={limit} />
+                      <Paging
+                        key={debouncedSearch}
+                        totalItem={totalDomain}
+                        setOffset={setOffset}
+                        pageSize={limit}
+                      />
                     </Container>
                     <Container
                       crossAlignment="flex-end"
@@ -398,4 +361,3 @@ export const DomainList = () => {
     </Container>
   );
 };
-
