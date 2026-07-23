@@ -15,23 +15,15 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Attribute } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { useDomainSearch } from '../../../services/use-domain-search';
-import { parseDomainAttributes } from '../../../utils/attributes';
-import { getStatusDisplay } from '../../../utils/status';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-
-type ZimbraDomain = {
-  name: string;
-  id: string;
-  a: Attribute[];
-};
+import { buildDomainRow, type ZimbraDomain, type ZimbraDomainEntry } from './domain-list-row';
 
 export type ZimbraDomainResponse = {
   domain: ZimbraDomain[];
@@ -40,15 +32,22 @@ export type ZimbraDomainResponse = {
   _jsns: string;
 };
 
-type ZimbraDomainEntry = {
-  name: string;
-  id: string;
-  a: Attribute[];
-  zimbraDomainType: string;
-  zimbraDomainStatus: string;
-  zimbraDomainName: string;
-  zimbraId: string;
-};
+const DOMAIN_LIST_HEADERS = [
+  {
+    id: 'name',
+    labelKey: 'label.domain_name',
+    labelDefault: 'Domain Name',
+    width: '25%',
+    bold: true,
+  },
+  {
+    id: 'status',
+    labelKey: 'label.status',
+    labelDefault: 'Status',
+    width: '75%',
+    bold: true,
+  },
+] as const;
 
 export const DomainList = () => {
   const [t] = useTranslation();
@@ -56,20 +55,12 @@ export const DomainList = () => {
 
   const tableRef = useRef<HTMLDivElement | null>(null);
 
-  const headers = [
-    {
-      id: 'name',
-      label: t('label.domain_name', 'Domain Name'),
-      width: '25%',
-      bold: true,
-    },
-    {
-      id: 'status',
-      label: t('label.status', 'Status'),
-      width: '75%',
-      bold: true,
-    },
-  ];
+  const headers = DOMAIN_LIST_HEADERS.map((header) => ({
+    id: header.id,
+    label: t(header.labelKey, header.labelDefault),
+    width: header.width,
+    bold: header.bold,
+  }));
 
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
@@ -100,58 +91,7 @@ export const DomainList = () => {
   const rawDomains: ZimbraDomain[] = data?.domain ?? [];
   const totalDomain = data?.searchTotal ?? 0;
 
-  const domainList = rawDomains.map(
-    (
-      item,
-    ): {
-      id: string;
-      columns: ReactElement[];
-      item: ZimbraDomainEntry;
-      clickable: boolean;
-      onClick: () => void;
-    } => {
-      const parsed = parseDomainAttributes(item.a ?? []);
-      const domainItem: ZimbraDomainEntry = {
-        name: item.name,
-        id: item.id,
-        a: item.a,
-        ...parsed,
-      };
-      const { color: statusColor, label: statusLabel } = getStatusDisplay(
-        domainItem.zimbraDomainStatus,
-        t,
-      );
-      return {
-        id: item?.id,
-        columns: [
-          <ds-text
-            as="span"
-            size="small"
-            key={`${item?.id}-name`}
-            color="gray0"
-            weight="regular"
-          >
-            {item?.name || ' '}
-          </ds-text>,
-
-          <ds-text
-            as="span"
-            size="small"
-            weight="light"
-            key={`${item?.id}-status`}
-            color={statusColor}
-          >
-            {statusLabel}
-          </ds-text>,
-        ],
-        item: domainItem,
-        clickable: true,
-        onClick: (): void => {
-          onDomainSelect(domainItem);
-        },
-      };
-    },
-  );
+  const domainList = rawDomains.map((item) => buildDomainRow(item, t, onDomainSelect));
 
   return (
     <Container
