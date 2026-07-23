@@ -6,6 +6,7 @@
 import type { ReactElement } from 'react';
 
 import type { Attribute } from '../../../../types';
+import { SoapEntity } from '../../../services/search-domain-service';
 import { parseDomainAttributes } from '../../../utils/attributes';
 import { getStatusDisplay } from '../../../utils/status';
 
@@ -30,18 +31,18 @@ export type ZimbraDomainEntry = {
 export type DomainRow = {
   id: string;
   columns: Array<ReactElement>;
-  item: ZimbraDomainEntry;
+  item: SoapEntity;
   clickable: boolean;
   onClick: () => void;
 };
 
 export function buildDomainRow(
-  item: ZimbraDomain,
+  item: SoapEntity,
   t: TFunc,
-  onSelect: (domain: ZimbraDomainEntry) => void,
+  onSelect: (domain: SoapEntity) => void,
 ): DomainRow {
   const parsed = parseDomainAttributes(item.a ?? []);
-  const domainItem: ZimbraDomainEntry = {
+  const domainItem = {
     name: item.name,
     id: item.id,
     a: item.a,
@@ -54,23 +55,11 @@ export function buildDomainRow(
   return {
     id: item.id,
     columns: [
-      <ds-text
-        as="span"
-        size="small"
-        key={`${item.id}-name`}
-        color="gray0"
-        weight="regular"
-      >
+      <ds-text as="span" size="small" key={`${item.id}-name`} color="gray0" weight="regular">
         {item.name || ' '}
       </ds-text>,
 
-      <ds-text
-        as="span"
-        size="small"
-        weight="light"
-        key={`${item.id}-status`}
-        color={statusColor}
-      >
+      <ds-text as="span" size="small" weight="light" key={`${item.id}-status`} color={statusColor}>
         {statusLabel}
       </ds-text>,
     ],

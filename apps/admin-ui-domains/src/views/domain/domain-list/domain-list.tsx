@@ -20,9 +20,10 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { SoapEntity } from '../../../services/search-domain-service';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-import { buildDomainRow, type ZimbraDomain, type ZimbraDomainEntry } from './domain-list-row';
+import { buildDomainRow, type ZimbraDomain } from './domain-list-row';
 
 export type ZimbraDomainResponse = {
   domain: ZimbraDomain[];
@@ -83,11 +84,11 @@ export const DomainList = () => {
     return <ds-page-shimmer></ds-page-shimmer>;
   }
 
-  const onDomainSelect = (domain: ZimbraDomainEntry): void => {
+  const onDomainSelect = (domain: SoapEntity): void => {
     replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
   };
 
-  const rawDomains: ZimbraDomain[] = data?.domain ?? [];
+  const rawDomains = data?.domain ?? [];
   const totalDomain = data?.searchTotal ?? 0;
 
   const domainList = rawDomains.map((item) => buildDomainRow(item, t, onDomainSelect));

@@ -5,25 +5,25 @@
  */
 import { useDomainSearch as useDomainSearchQuery } from '@zextras/ui-shared';
 
-import { getDomainList } from './search-domain-service';
+import { getDomainListNew } from './search-domain-service';
 
 type UseDomainSearchOptions = {
-	searchQuery: string;
-	limit: number;
-	offset: number;
-	enabled?: boolean;
+  searchQuery: string;
+  limit: number;
+  offset: number;
+  enabled?: boolean;
 };
 
 export const useDomainSearch = ({
-	searchQuery,
-	limit,
-	offset,
-	enabled = true,
+  searchQuery,
+  limit,
+  offset,
+  enabled = true,
 }: UseDomainSearchOptions) =>
-	useDomainSearchQuery({
-		searchQuery,
-		limit,
-		offset,
-		enabled,
-		queryFn: () => getDomainList(searchQuery || undefined, offset, limit),
-	});
+  useDomainSearchQuery({
+    searchQuery,
+    limit,
+    offset,
+    enabled,
+    queryFn: () => getDomainListNew(searchQuery || undefined, offset, limit),
+  });
