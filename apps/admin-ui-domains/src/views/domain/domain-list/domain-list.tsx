@@ -61,7 +61,7 @@ const DomainList = () => {
   const createSnackbar = useSnackbar();
   const [isTableTooTall, setIsTableTooTall] = useState(false);
 
-  const tableRef = useRef(null);
+  const tableRef = useRef<HTMLDivElement | null>(null);
 
   const headers = [
     {
@@ -140,7 +140,9 @@ const DomainList = () => {
   const totalDomain = data?.searchTotal ?? 0;
 
   const domainList = rawDomains.map(
-    (item): {
+    (
+      item,
+    ): {
       id: string;
       columns: ReactElement[];
       iteam: ZimbraDomainEntry;
@@ -202,7 +204,7 @@ const DomainList = () => {
   );
 
   useEffect(() => {
-    const table: any = tableRef.current;
+    const table = tableRef.current;
 
     const handleResize = debounce((): void => {
       if (table) {
