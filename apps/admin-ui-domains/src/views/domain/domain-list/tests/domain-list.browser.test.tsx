@@ -3,13 +3,26 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { createBrowserSoapAPIInterceptor, setupBrowserTest, worker } from 'admin-ui-test-utils';
+vi.mock('@zextras/ui-shared', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
+	return { ...actual, replaceHistory: vi.fn() };
+});
+
+import { replaceHistory } from '@zextras/ui-shared';
+import {
+	createBrowserSoapAPIInterceptor,
+	resetMockWorker,
+	setupBrowserTest,
+	worker,
+} from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
 import { type ReactElement } from 'react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import DomainList from '../domain-list';
+
+const mockedReplaceHistory = vi.mocked(replaceHistory);
 
 type DomainAttr = { n: string; _content: string };
 type DomainItem = { name: string; id: string; a: DomainAttr[] };
@@ -39,6 +52,30 @@ function interceptDomains(domains: DomainItem[] = [], searchTotal = domains.leng
 	});
 }
 
+type SearchDirectoryParams = {
+	query?: { _content?: string };
+	offset?: number;
+	limit?: number;
+};
+
+function interceptDynamicDomains(
+	handler: (params: SearchDirectoryParams) => {
+		domain: DomainItem[];
+		searchTotal: number;
+		more: boolean;
+	},
+): void {
+	worker.use(
+		http.post('/service/admin/soap/SearchDirectoryRequest', async ({ request }) => {
+			const body = await request.clone().json();
+			const params = body?.Body?.SearchDirectoryRequest ?? {};
+			return HttpResponse.json({
+				Body: { SearchDirectoryResponse: handler(params as SearchDirectoryParams) },
+			});
+		}),
+	);
+}
+
 const SAMPLE_DOMAINS: DomainItem[] = [
 	buildDomain('example.com', 'domain-1', 'active'),
 	buildDomain('test.org', 'domain-2', 'closed'),
@@ -49,6 +86,11 @@ function setup(ui: ReactElement) {
 }
 
 describe('DomainList (browser)', () => {
+	afterEach(() => {
+		resetMockWorker();
+		mockedReplaceHistory.mockClear();
+	});
+
 	describe('Rendering', () => {
 		it('renders the Domains List header', async () => {
 			interceptDomains([]);
@@ -93,6 +135,28 @@ describe('DomainList (browser)', () => {
 		});
 	});
 
+	describe('Domain statuses', () => {
+		it.each([
+			['maintenance', 'In maintenance'],
+			['locked', 'Locked'],
+			['pending', 'Pending'],
+			['lockout', 'Lockout'],
+			['suspended', 'Suspended'],
+		])('displays %s status as "%s"', async (status, expectedLabel) => {
+			interceptDomains([buildDomain('status-test.com', 'domain-st', status)]);
+			setup(<DomainList />);
+
+			await expect.element(page.getByText(expectedLabel, { exact: true })).toBeVisible();
+		});
+
+		it('defaults to Active when domain has no zimbraDomainStatus attribute', async () => {
+			interceptDomains([{ name: 'fallback.com', id: 'domain-fb', a: [] }]);
+			setup(<DomainList />);
+
+			await expect.element(page.getByText('Active', { exact: true })).toBeVisible();
+		});
+	});
+
 	describe('Empty state', () => {
 		it('shows the empty state message when no domains exist', async () => {
 			interceptDomains([], 0);
@@ -116,5 +180,110 @@ describe('DomainList (browser)', () => {
 
 			await expect.element(page.getByTestId('snackbar')).toBeVisible();
 		});
+	});
+
+	describe('Search', () => {
+		it(
+			'filters domains based on search input after debounce',
+			async () => {
+				interceptDynamicDomains((params) => {
+					const queryContent = params?.query?._content ?? '';
+					if (queryContent.includes('exam')) {
+						return {
+							domain: [buildDomain('example.com', 'domain-1', 'active')],
+							searchTotal: 1,
+							more: false,
+						};
+					}
+					return { domain: SAMPLE_DOMAINS, searchTotal: 2, more: false };
+				});
+				setup(<DomainList />);
+
+				await expect.element(page.getByText('example.com')).toBeVisible();
+				await expect.element(page.getByText('test.org')).toBeVisible();
+
+				const searchInput = page.getByLabelText(`I'm looking for this domain…`);
+				await searchInput.fill('exam');
+
+				await expect.element(page.getByText('example.com')).toBeVisible();
+				await expect
+					.poll(() => page.getByText('test.org').elements(), { timeout: 5000 })
+					.toHaveLength(0);
+			},
+			15_000,
+		);
+
+		it(
+			'shows empty state when search returns no matches',
+			async () => {
+				interceptDynamicDomains((params) => {
+					const queryContent = params?.query?._content ?? '';
+					if (queryContent && queryContent !== '') {
+						return { domain: [], searchTotal: 0, more: false };
+					}
+					return { domain: SAMPLE_DOMAINS, searchTotal: 2, more: false };
+				});
+				setup(<DomainList />);
+
+				await expect.element(page.getByText('example.com')).toBeVisible();
+
+				const searchInput = page.getByLabelText(`I'm looking for this domain…`);
+				await searchInput.fill('xyznomatch');
+
+				await expect.element(page.getByText('This list is empty.')).toBeVisible();
+			},
+			15_000,
+		);
+	});
+
+	describe('Navigation', () => {
+		it('navigates to domain details when clicking a domain row', async () => {
+			interceptDomains(SAMPLE_DOMAINS, 2);
+			setup(<DomainList />);
+
+			await expect.element(page.getByText('example.com')).toBeVisible();
+
+			await page.getByText('example.com').click();
+
+			expect(mockedReplaceHistory).toHaveBeenCalledWith('/domain-1/general_settings');
+		});
+	});
+
+	describe('Pagination', () => {
+		it('shows pagination footer when domains exist', async () => {
+			interceptDomains(SAMPLE_DOMAINS, 2);
+			setup(<DomainList />);
+
+			await expect.element(page.getByText('example.com')).toBeVisible();
+			await expect.element(page.getByTestId('next-page')).toBeInTheDocument();
+		});
+
+		it(
+			'loads next page of domains when clicking next page',
+			async () => {
+				const page1Domains = Array.from({ length: 10 }, (_, i) =>
+					buildDomain(`alpha-${i + 1}.com`, `p1-${i + 1}`),
+				);
+				const page2Domains = Array.from({ length: 10 }, (_, i) =>
+					buildDomain(`beta-${i + 11}.com`, `p2-${i + 11}`),
+				);
+
+				interceptDynamicDomains((params) => {
+					const offset = params?.offset ?? 0;
+					if (offset === 0) {
+						return { domain: page1Domains, searchTotal: 25, more: true };
+					}
+					return { domain: page2Domains, searchTotal: 25, more: false };
+				});
+				setup(<DomainList />);
+
+				await expect.element(page.getByText('alpha-1.com')).toBeVisible();
+
+				await page.getByTestId('next-page').click();
+
+				await expect.element(page.getByText('beta-11.com')).toBeVisible();
+			},
+			15_000,
+		);
 	});
 });
