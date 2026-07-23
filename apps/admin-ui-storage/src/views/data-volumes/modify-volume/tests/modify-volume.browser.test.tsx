@@ -98,9 +98,30 @@ function renderModifyVolume(
     setOpen: (v: boolean) => void;
   }>,
 ) {
+  const selectedVolume = [...volumeList.primaries, ...volumeList.secondaries, ...volumeList.indexes]
+    .find((volume) => volume.id === volumeId);
+
   const setmodifyVolumeToggle = overrides?.setmodifyVolumeToggle ?? vi.fn();
   const getAllVolumesRequest = overrides?.getAllVolumesRequest ?? vi.fn();
   const setOpen = overrides?.setOpen ?? vi.fn();
+
+  createBrowserZextrasActionInterceptor('getVolume', () =>
+    HttpResponse.json({
+      Body: {
+        response: {
+          content: JSON.stringify({
+            ok: true,
+            response: {
+              [SERVER_NAME]: {
+                ok: true,
+                response: selectedVolume ?? {},
+              },
+            },
+          }),
+        },
+      },
+    }),
+  );
 
   return (
     <Routes>
@@ -109,6 +130,7 @@ function renderModifyVolume(
         element={
           <ModifyVolume
             volumeId={volumeId}
+            volumeName={selectedVolume?.name ?? ''}
             setmodifyVolumeToggle={setmodifyVolumeToggle}
             getAllVolumesRequest={getAllVolumesRequest}
             selectedServerId={SERVER_ID}
@@ -137,7 +159,7 @@ beforeEach(() => {
 });
 
 describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
-  describe('advanced mode: loads volume data from volumeList without API call', () => {
+  describe('advanced mode: loads volume detail using getVolume', () => {
     beforeEach(async () => {
       await advancedSupportedApiForBrowser.withAdvancedSupported();
     });
@@ -147,6 +169,54 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
         initialRouterEntry: VOLUME_ROUTE_ENTRY,
       });
       await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
+    });
+
+    it('should disable Delete button when volume is in use', async () => {
+      const inUseVolume: Volume = {
+        ...PRIMARY_VOLUME,
+        inUse: true,
+      };
+
+      await setupBrowserTest(
+        renderModifyVolume(inUseVolume.id as number, {
+          primaries: [inUseVolume],
+          secondaries: [SECONDARY_VOLUME],
+          indexes: [INDEX_VOLUME],
+        }),
+        {
+          initialRouterEntry: VOLUME_ROUTE_ENTRY,
+        },
+      );
+
+      await expect.element(page.getByRole('button', { name: /^delete$/i })).toBeDisabled();
+    });
+
+    it('should call getVolume zextras action in advanced mode', async () => {
+      const getVolumeInterceptor = createBrowserZextrasActionInterceptor('getVolume', () =>
+        HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({
+                ok: true,
+                response: {
+                  [SERVER_NAME]: {
+                    ok: true,
+                    response: PRIMARY_VOLUME,
+                  },
+                },
+              }),
+            },
+          },
+        }),
+      );
+
+      await setupBrowserTest(renderModifyVolume(PRIMARY_VOLUME.id as number), {
+        initialRouterEntry: VOLUME_ROUTE_ENTRY,
+      });
+
+      await vi.waitFor(() => {
+        expect(getVolumeInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
+      });
     });
 
     it('should display secondary volume name when volumeId matches a secondary volume', async () => {

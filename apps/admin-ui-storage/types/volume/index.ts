@@ -16,6 +16,7 @@ export type Volume = {
   fgbits?: number;
   fbits?: number;
   isCurrent?: boolean | number;
+  inUse?: boolean | number | string;
   availableSpace?: number;
   bucketConfigurationId?: string;
   centralized?: boolean;

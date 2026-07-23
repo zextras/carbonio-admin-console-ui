@@ -14,6 +14,7 @@ import {
   Modal,
   Padding,
   Row,
+  Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
@@ -149,6 +150,7 @@ export type ModifyVolumeFormProps = {
   readonly s3Connectors: Array<S3ConnectorVolume>;
   readonly volumeType: number;
   readonly volumeId: string;
+  readonly volumeInUse: boolean;
   readonly currentVolumeName?: string;
   readonly setmodifyVolumeToggle: (newValue: boolean) => void;
   readonly getAllVolumesRequest: () => void;
@@ -165,6 +167,7 @@ export function ModifyVolumeForm({
   s3Connectors,
   volumeType,
   volumeId,
+  volumeInUse,
   currentVolumeName,
   setmodifyVolumeToggle,
   getAllVolumesRequest,
@@ -427,14 +430,24 @@ export function ModifyVolumeForm({
           </Row>
           <Row padding={{ horizontal: 'small' }}>
             {!isDirty && (
-              <Button
-                type="outlined"
-                color="error"
-                label={t('label.delete', 'Delete')}
-                icon="Trash2Outline"
-                onClick={(): void => setOpen(true)}
-                style={{ marginRight: '0.5rem' }}
-              />
+              <Tooltip
+                placement="top"
+                disabled={!volumeInUse}
+                label={t(
+                  'storages.volumeData.deleteVolumeInUseTooltip',
+                  'Volume is in use and cannot be deleted',
+                )}
+              >
+                <Button
+                  type="outlined"
+                  color="error"
+                  label={t('label.delete', 'Delete')}
+                  icon="Trash2Outline"
+                  disabled={volumeInUse}
+                  onClick={(): void => setOpen(true)}
+                  style={{ marginRight: '0.5rem' }}
+                />
+              </Tooltip>
             )}
             <Button
               type="ghost"

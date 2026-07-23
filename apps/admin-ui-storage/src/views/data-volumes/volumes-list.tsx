@@ -652,6 +652,7 @@ export function VolumesDetailPanel() {
         <ModalOverlay open={modifyVolumeToggle}>
           <ModifyVolume
             volumeId={volume?.id ?? 0}
+            volumeName={volume?.name ?? ''}
             setOpen={setOpen}
             setmodifyVolumeToggle={setmodifyVolumeToggle}
             getAllVolumesRequest={invalidateVolumes}

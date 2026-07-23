@@ -11,6 +11,7 @@ import { useParams } from 'react-router';
 
 import type { S3ConnectorVolume, Volume } from '../../../../types';
 import { useGetVolume } from '../../../services/use-get-volume';
+import { useGetVolumeAdvanced } from '../../../services/use-get-volume-advanced';
 import { useListS3Connectors } from '../../../services/use-list-s3-connectors';
 import { useShowErrorSnackbar } from '../../../services/use-show-error-snackbar';
 import { ModifyVolumeForm } from './modify-volume-form';
@@ -67,18 +68,25 @@ function buildVolumeDetail(
   };
 }
 
+function isVolumeInUse(volume: Volume | undefined): boolean {
+  const value = volume?.inUse;
+  return value === true || value === 1 || value === '1' || value === 'true';
+}
+
 export function ModifyVolume({
   volumeId,
+  volumeName,
   setmodifyVolumeToggle,
   getAllVolumesRequest,
   selectedServerId,
   volumeList,
   setOpen,
 }: Readonly<{
-  volumeId: any;
+  volumeId: string | number | undefined;
+  volumeName?: string;
   setmodifyVolumeToggle: (newValue: boolean) => void;
   getAllVolumesRequest: () => void;
-  selectedServerId: any;
+  selectedServerId: string | number | undefined;
   volumeList: {
     primaries: Volume[];
     indexes: Volume[];
@@ -92,13 +100,29 @@ export function ModifyVolume({
 
   const { data: s3Connectors = [] } = useListS3Connectors();
 
+  const selectedVolumeFromList: Volume | undefined = [
+    ...volumeList.primaries,
+    ...volumeList.secondaries,
+    ...volumeList.indexes,
+  ].find((v: Volume) => v?.id === Number(volumeId));
+
+  const selectedVolumeName = volumeName ?? selectedVolumeFromList?.name ?? '';
+
   const getVolumeQuery = useGetVolume(
     String(volumeId ?? ''),
     String(selectedServerId ?? ''),
     !isAdvanced && Boolean(volumeId),
   );
 
-  useShowErrorSnackbar(getVolumeQuery, {
+  const getAdvancedVolumeQuery = useGetVolumeAdvanced(
+    String(selectedVolumeName ?? ''),
+    String(server ?? ''),
+    isAdvanced && Boolean(selectedVolumeName) && Boolean(server),
+  );
+
+  const activeVolumeQuery = isAdvanced ? getAdvancedVolumeQuery : getVolumeQuery;
+
+  useShowErrorSnackbar(activeVolumeQuery, {
     label: t('label.volume_detail_error', '{{message}}', {
       message: 'Something went wrong, please try again',
     }),
@@ -106,11 +130,7 @@ export function ModifyVolume({
   });
 
   const volData: Volume | undefined = isAdvanced
-    ? [
-        ...volumeList.primaries,
-        ...volumeList.secondaries,
-        ...volumeList.indexes,
-      ].find((v: Volume) => v?.id === Number(volumeId))
+    ? getAdvancedVolumeQuery.data ?? selectedVolumeFromList
     : getVolumeQuery.data?.volume?.[0];
 
   const volumeDetail: VolumeDetailSnapshot | undefined = volData
@@ -120,6 +140,7 @@ export function ModifyVolume({
   const isExt = volData ? isExternalVolume(volData) : false;
   const externalVolDetail: Volume = isExt && volData ? volData : {};
   const isExternal = isExt;
+  const volumeInUse = isVolumeInUse(volData);
 
   const sameTypeVolumesByType: Record<number, Array<Volume>> = {
     1: volumeList.primaries,
@@ -150,6 +171,7 @@ export function ModifyVolume({
       s3Connectors={s3Connectors as Array<S3ConnectorVolume>}
       volumeType={volumeDetail.type}
       volumeId={String(volumeId)}
+      volumeInUse={volumeInUse}
       currentVolumeName={currentVolumeName}
       setmodifyVolumeToggle={setmodifyVolumeToggle}
       getAllVolumesRequest={getAllVolumesRequest}
