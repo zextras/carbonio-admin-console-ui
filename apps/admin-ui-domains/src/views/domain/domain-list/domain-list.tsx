@@ -81,7 +81,7 @@ export const DomainList = () => {
 
   const debouncedSearch = useDebouncedValue(searchString, 700);
 
-  const { data, isFetching, isError, error } = useDomainSearch({
+  const { data, isFetching, isPending, isError, error } = useDomainSearch({
     searchQuery: debouncedSearch,
     limit,
     offset,
@@ -123,6 +123,10 @@ export const DomainList = () => {
       createSnackbar(generateSnackbarFromError(error, t));
     }
   }, [isError, error, createSnackbar, t]);
+
+  if (isPending) {
+    return <ds-page-shimmer></ds-page-shimmer>;
+  }
 
   const onDomainSelect = (domain: ZimbraDomainEntry): void => {
     replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
@@ -278,16 +282,6 @@ export const DomainList = () => {
                 RowFactory={HoverableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
-              {isFetching && (
-                <Container
-                  crossAlignment="center"
-                  mainAlignment="center"
-                  height="auto"
-                  padding={{ top: 'medium' }}
-                >
-                  <ds-spinner></ds-spinner>
-                </Container>
-              )}
               {domainList.length === 0 && !isFetching && (
                 <Container orientation="column" crossAlignment="center" mainAlignment="center">
                   <Row>
