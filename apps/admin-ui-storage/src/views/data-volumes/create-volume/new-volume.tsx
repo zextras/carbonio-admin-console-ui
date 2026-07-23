@@ -113,13 +113,11 @@ export function NewVolume({
   setToggleWizardExternal,
   volName,
   CreateVolumeRequest,
-  isLoading,
 }: Readonly<{
   setToggleWizardLocal: any;
   setToggleWizardExternal: any;
   volName: any;
   CreateVolumeRequest: any;
-  isLoading: boolean;
 }>) {
   const { t } = useTranslation();
   const form = useForm({
@@ -173,8 +171,6 @@ export function NewVolume({
 
   return (
     <>
-      {isLoading && <ds-spinner></ds-spinner>}
-
       <NewVolumeActionsContext.Provider
         value={{
           isAdvanced,

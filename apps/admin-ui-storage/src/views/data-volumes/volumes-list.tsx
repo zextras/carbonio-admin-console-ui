@@ -46,6 +46,7 @@ import { s3ConnectorVolumeQueryKeys } from '../../services/s3-connector-volume-q
 import { setCurrentVolumeRequest } from '../../services/set-current-volume-service';
 import { useAllVolumes } from '../../services/use-all-volumes';
 import { useListS3Connectors } from '../../services/use-list-s3-connectors';
+import { VerifyProgress } from '../s3-connectors/parts/verify/verify-progress';
 import { indexerHeaders, volTableHeader } from '../utility/utils';
 import { CreateMailstoresVolume } from './create-volume/advanced-create-volume/create-mailstores-volume';
 import { NewVolume } from './create-volume/new-volume';
@@ -211,7 +212,7 @@ export function VolumesDetailPanel() {
   const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
   const { data: serverList = [] } = useAllServers();
   const selectedServerId = serverList?.find((s: { name?: string }) => s?.name === server)?.id ?? '';
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isPendingProgress, setIsPendingProgress] = useState<boolean>(false);
   const [volume, setVolume] = useState<Volume | undefined>({
     compressBlobs: '',
     compressionThreshold: '',
@@ -476,7 +477,7 @@ export function VolumesDetailPanel() {
   };
 
   const CreateVolumeRequest = async (attr: Volume): Promise<void> => {
-    setIsLoading(true);
+    setIsPendingProgress(true);
     if (isAdvanced) {
       let volType = 'primary';
       if (attr?.type === 2) {
@@ -556,7 +557,7 @@ export function VolumesDetailPanel() {
             autoHideTimeout: 5000,
           });
         }
-        setIsLoading(false);
+        setIsPendingProgress(false);
       });
     } else {
       await createVoume(attr)
@@ -597,7 +598,7 @@ export function VolumesDetailPanel() {
           });
           setToggleWizardLocal(false);
           setToggleWizardExternal(false);
-          setIsLoading(false);
+          setIsPendingProgress(false);
           return res;
         })
         .catch((error) => {
@@ -611,7 +612,7 @@ export function VolumesDetailPanel() {
                 }),
             autoHideTimeout: 5000,
           });
-          setIsLoading(false);
+          setIsPendingProgress(false);
           return error;
         });
     }
@@ -626,6 +627,7 @@ export function VolumesDetailPanel() {
 
   return (
     <>
+      <VerifyProgress isPending={isPendingProgress} minDisplayMs={0} />
       {toggleWizardExternal && (
         <ModalOverlay open={toggleWizardExternal}>
           <CreateMailstoresVolume
@@ -643,7 +645,6 @@ export function VolumesDetailPanel() {
             setToggleWizardExternal={setToggleWizardExternal}
             volName={server}
             CreateVolumeRequest={CreateVolumeRequest}
-            isLoading={isLoading}
           />
         </ModalOverlay>
       )}

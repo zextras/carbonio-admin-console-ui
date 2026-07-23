@@ -111,4 +111,71 @@ describe('VerifyProgress', () => {
     expect(HTMLElement.prototype.hidePopover).not.toHaveBeenCalled();
     expect(onComplete).not.toHaveBeenCalled();
   });
+
+  it('should close instantly when minDisplayMs is 0', () => {
+    const onComplete = vi.fn();
+
+    const { container } = render(
+      <VerifyProgress isPending onComplete={onComplete} minDisplayMs={0} />,
+    );
+
+    expect(HTMLElement.prototype.showPopover).toHaveBeenCalledTimes(1);
+
+    const progressFill = getProgressFill(container);
+    expect(progressFill.style.width).toBe('0%');
+
+    act(() => {
+      vi.advanceTimersByTime(50);
+    });
+
+    expect(progressFill.style.width).toBe('0%');
+
+    render(<VerifyProgress isPending={false} onComplete={onComplete} minDisplayMs={0} />);
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    expect(progressFill.style.width).toBe('100%');
+
+    act(() => {
+      vi.advanceTimersByTime(VERIFY_PROGRESS_COMPLETE_DELAY_MS);
+    });
+
+    expect(HTMLElement.prototype.hidePopover).toHaveBeenCalledTimes(1);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it('should use custom minDisplayMs delay instead of constant', () => {
+    const customDelay = 2000;
+    const onComplete = vi.fn();
+
+    const { container } = render(
+      <VerifyProgress isPending onComplete={onComplete} minDisplayMs={customDelay} />,
+    );
+
+    expect(HTMLElement.prototype.showPopover).toHaveBeenCalledTimes(1);
+
+    render(<VerifyProgress isPending={false} onComplete={onComplete} minDisplayMs={customDelay} />);
+
+    act(() => {
+      vi.advanceTimersByTime(customDelay - 1);
+    });
+
+    expect(HTMLElement.prototype.hidePopover).not.toHaveBeenCalled();
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    const progressFill = getProgressFill(container);
+    expect(progressFill.style.width).toBe('100%');
+
+    act(() => {
+      vi.advanceTimersByTime(VERIFY_PROGRESS_COMPLETE_DELAY_MS);
+    });
+
+    expect(HTMLElement.prototype.hidePopover).toHaveBeenCalledTimes(1);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
 });

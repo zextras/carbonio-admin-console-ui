@@ -30,6 +30,7 @@ import {
   USAGE_IN_EXTERNAL_BACKUP,
 } from '../../../constants';
 import { fetchSoap } from '../../../services/s3-connector-service';
+import { VerifyProgress } from '../../s3-connectors/parts/verify/verify-progress';
 import { S3ConnectorTypeItems } from '../../utility/utils';
 import styles from './modify-volume.module.css';
 import {
@@ -174,7 +175,7 @@ export function ModifyVolumeForm({
   const connectorTypeItems = S3ConnectorTypeItems(t);
   const isCurrentRef = useRef<HTMLDivElement>(null);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPendingProgress, setIsPendingProgress] = useState(false);
   const [isCurrentToggle, setIsCurrentToggle] = useState(false);
   const [connectorName, setConnectorName] = useState('');
   const [storeType, setStoreType] = useState<string | undefined>('');
@@ -264,19 +265,19 @@ export function ModifyVolumeForm({
       onChange: modifyVolumeSchema,
     },
     onSubmit: async ({ value }) => {
-      setIsLoading(true);
+      setIsPendingProgress(true);
 
       const finishSaveSuccess = (): void => {
         showVolumeSaveSuccess(createSnackbar, t);
         getAllVolumesRequest();
         setmodifyVolumeToggle(false);
-        setIsLoading(false);
+        setIsPendingProgress(false);
       };
 
       const finishSaveError = (): void => {
         showVolumeSaveError(createSnackbar, t);
         setmodifyVolumeToggle(false);
-        setIsLoading(false);
+        setIsPendingProgress(false);
       };
 
       try {
@@ -325,7 +326,7 @@ export function ModifyVolumeForm({
                 form.reset(value);
               },
               onModifyError: finishSaveError,
-              onSetCurrentError: (): void => setIsLoading(false),
+              onSetCurrentError: (): void => {setIsPendingProgress(false);},
             },
           );
         }
@@ -374,7 +375,7 @@ export function ModifyVolumeForm({
 
   return (
     <>
-      {isLoading && <ds-spinner></ds-spinner>}
+      <VerifyProgress isPending={isPendingProgress} minDisplayMs={0} />
       <Container
         background="gray6"
         mainAlignment="flex-start"
