@@ -93,31 +93,31 @@ export const DomainList = () => {
 
   const STATUS_COLOR: StatusTypes = {
     active: {
-      color: '#8BC34A',
+      color: 'success',
       label: t('label.active', 'Active'),
     },
     maintenance: {
-      color: '#2196D3',
+      color: 'info',
       label: t('label.in_maintenance', 'In maintenance'),
     },
     locked: {
-      color: '#D74942',
+      color: 'error',
       label: t('label.locked', 'Locked'),
     },
     closed: {
-      color: '#828282',
+      color: 'gray1',
       label: t('label.closed', 'Closed'),
     },
     pending: {
-      color: '#828282',
+      color: 'gray1',
       label: t('label.pending', 'Pending'),
     },
     lockout: {
-      color: '#D74942',
+      color: 'error',
       label: t('label.lockout', 'Lockout'),
     },
     suspended: {
-      color: '#D74942',
+      color: 'error',
       label: t('label.suspended', 'Suspended'),
     },
   };
@@ -334,7 +334,7 @@ export const DomainList = () => {
                     <ds-text
                       as="p"
                       weight="light"
-                      color="#828282"
+                      color="gray1"
                       size="large"
                       overflow="break-word"
                     >
@@ -351,7 +351,7 @@ export const DomainList = () => {
                     <ds-text
                       as="p"
                       weight="light"
-                      color="#828282"
+                      color="gray1"
                       size="large"
                       overflow="break-word"
                     >
