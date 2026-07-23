@@ -23,13 +23,8 @@ import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { useDomainSearch } from '../../../services/use-domain-search';
+import { getStatusDisplay } from '../../../utils/status';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-
-type StatusTypes = {
-  [key: string]: {
-    [key: string]: string;
-  };
-};
 
 type ZimbraDomain = {
   name: string;
@@ -87,37 +82,6 @@ export const DomainList = () => {
     offset,
   });
 
-  const STATUS_COLOR: StatusTypes = {
-    active: {
-      color: 'success',
-      label: t('label.active', 'Active'),
-    },
-    maintenance: {
-      color: 'info',
-      label: t('label.in_maintenance', 'In maintenance'),
-    },
-    locked: {
-      color: 'error',
-      label: t('label.locked', 'Locked'),
-    },
-    closed: {
-      color: 'gray1',
-      label: t('label.closed', 'Closed'),
-    },
-    pending: {
-      color: 'gray1',
-      label: t('label.pending', 'Pending'),
-    },
-    lockout: {
-      color: 'error',
-      label: t('label.lockout', 'Lockout'),
-    },
-    suspended: {
-      color: 'error',
-      label: t('label.suspended', 'Suspended'),
-    },
-  };
-
   useEffect(() => {
     if (isError && error) {
       createSnackbar(generateSnackbarFromError(error, t));
@@ -164,6 +128,10 @@ export const DomainList = () => {
           domainIteam.zimbraId = ele._content;
         }
       });
+      const { color: statusColor, label: statusLabel } = getStatusDisplay(
+        domainIteam.zimbraDomainStatus,
+        t,
+      );
       return {
         id: item?.id,
         columns: [
@@ -185,12 +153,12 @@ export const DomainList = () => {
             size="small"
             weight="light"
             key={item?.id}
-            color={STATUS_COLOR[domainIteam.zimbraDomainStatus].color}
+            color={statusColor}
             onClick={(): void => {
               onDomainSelect(domainIteam);
             }}
           >
-            {STATUS_COLOR[domainIteam.zimbraDomainStatus].label}
+            {statusLabel}
           </ds-text>,
         ],
         iteam: domainIteam,

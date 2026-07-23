@@ -153,6 +153,14 @@ describe('DomainList (browser)', () => {
 
       await expect.element(page.getByText('Active', { exact: true })).toBeVisible();
     });
+
+    it('falls back to Active for an unknown status without crashing', async () => {
+      interceptDomains([buildDomain('weird.com', 'domain-x', 'totally-unknown-status')]);
+      setup(<DomainList />);
+
+      await expect.element(page.getByText('weird.com')).toBeVisible();
+      await expect.element(page.getByText('Active', { exact: true })).toBeVisible();
+    });
   });
 
   describe('Empty state', () => {
