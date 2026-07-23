@@ -10,10 +10,6 @@
       "default": "./src/index.ts"
     }
   },
-  "engines": {
-    "node": ">=20.0.0 <21.0.0",
-    "pnpm": ">=10.15.0"
-  },
   "scripts": {
     "type-check": "tsc --build",
     "lint": "eslint --cache --quiet",
