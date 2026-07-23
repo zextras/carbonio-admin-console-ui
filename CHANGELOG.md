@@ -1,3 +1,9 @@
+## [0.15.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.4...v0.15.5) (2026-07-23)
+
+### Other changes
+
+* **admin-ui-storage:** modernize form handling ([#1287](https://github.com/zextras/carbonio-admin-console-ui/issues/1287)) ([94e089f](https://github.com/zextras/carbonio-admin-console-ui/commit/94e089fa753eaabe092cedddd4302714b05ee16f))
+
 ## [0.15.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.3...v0.15.4) (2026-07-21)
 
 ### Other changes
