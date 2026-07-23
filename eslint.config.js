@@ -95,6 +95,7 @@ export default tseslint.config(
       'apps/admin-ui-subscription/**/*',
       'apps/admin-ui-storage/**/*',
       'apps/admin-ui-cos/**/*',
+      'apps/admin-ui-domains/src/views/domain/domain-list/*',
     ],
     plugins: {
       'react-compiler': reactCompiler,
