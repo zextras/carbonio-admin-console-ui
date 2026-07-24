@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
@@ -22,45 +21,48 @@ type BreadcrumbProps = {
   lastLoginTimestamp?: string;
 };
 
+function buildSplitRoutes(
+  pathname: string,
+  dashboardRoute: string,
+  t: ReturnType<typeof useTranslation>[0],
+): Array<BreadcrumbItem> {
+  if (!pathname) return [];
+  const currentRoute = pathname.substring(1);
+  const splitRoute = currentRoute?.split('/');
+  const result: Array<BreadcrumbItem> = [];
+  splitRoute.forEach((item: string, index: number) => {
+    if (index === 0) {
+      result.push({
+        label: t('label.home', 'Home'),
+        path: `/${item}`,
+        homePath: `/${dashboardRoute}`,
+      });
+    } else {
+      const prevPath = result[index - 1]?.path ?? '';
+      result.push({
+        /* i18next-extract-disable-next-line */
+        label: t(`label.${item}`, item.charAt(0).toUpperCase() + item.slice(1)),
+        path: `${prevPath}/${item}`,
+        homePath: `/${dashboardRoute}`,
+      });
+    }
+  });
+
+  if (splitRoute.length === 1) {
+    result.push({
+      label: t('label.dashboard', 'Dashboard'),
+      path: `/${splitRoute[0]}/dashboard`,
+      homePath: `/${dashboardRoute}`,
+    });
+  }
+
+  return result;
+}
+
 export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: BreadcrumbProps) => {
   const [t] = useTranslation();
   const location = useLocation();
-  const [splitRoutes, setSplitRoutes] = useState<Array<BreadcrumbItem>>([]);
-
-  useEffect(() => {
-    if (location?.pathname) {
-      const currentRoute = location?.pathname.substring(1);
-      const splitRoute = currentRoute?.split('/');
-      const _storeTempRoute: Array<BreadcrumbItem> = [];
-      splitRoute.forEach((item: string, index: number) => {
-        if (index === 0) {
-          _storeTempRoute.push({
-            label: t('label.home', 'Home'),
-            path: `/${item}`,
-            homePath: `/${dashboardRoute}`,
-          });
-        } else {
-          const path = _storeTempRoute.map((i) => i?.path);
-          _storeTempRoute.push({
-            /* i18next-extract-disable-next-line */
-            label: t(`label.${item}`, item.charAt(0).toUpperCase() + item.slice(1)),
-            path: `${path[index - 1]}/${item}`,
-            homePath: `/${dashboardRoute}`,
-          });
-        }
-      });
-
-      if (splitRoute.length === 1) {
-        _storeTempRoute.push({
-          label: t('label.dashboard', 'Dashboard'),
-          path: `/${splitRoute[0]}/dashboard`,
-          homePath: `/${dashboardRoute}`,
-        });
-      }
-
-      setSplitRoutes(_storeTempRoute);
-    }
-  }, [location, t, dashboardRoute]);
+  const splitRoutes = buildSplitRoutes(location?.pathname ?? '', dashboardRoute, t);
 
   const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
 
