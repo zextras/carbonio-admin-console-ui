@@ -14,14 +14,13 @@ import {
   Table,
   TrackNumberPerPage,
 } from '@zextras/ui-components';
-import { replaceHistory, useCosList } from '@zextras/ui-shared';
+import { replaceHistory, useCosList, useDebouncedValue } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../../constants';
-import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { ScrollComponent } from '../../components/scroll-component';
 import { FunnelSearchIcon } from '../cos-server-pools/funnel-search-icon';
 

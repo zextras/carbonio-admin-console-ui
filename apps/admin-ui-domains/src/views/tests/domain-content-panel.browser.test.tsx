@@ -95,7 +95,7 @@ vi.mock('../domain/global/global-theme', () => ({ default: MockGlobalTheme }));
 vi.mock('../domain/global/global-two-factor-auth', () => ({ default: MockGlobalTwoFactorAuth }));
 vi.mock('../domain/global/global-active-sync', () => ({ default: MockGlobalActiveSync }));
 vi.mock('../domain/global-delegates', () => ({ default: MockGlobalDelegates }));
-vi.mock('../domain/domain-list/domain-list', () => ({ default: MockDomainList }));
+vi.mock('../domain/domain-list/domain-list', () => ({ DomainList: MockDomainList }));
 vi.mock('../quarantine/quarantine-list', () => ({ default: MockQuarantineList }));
 vi.mock('../domain/details/domain-general-settings', () => ({
   default: MockDomainGeneralSettings,
