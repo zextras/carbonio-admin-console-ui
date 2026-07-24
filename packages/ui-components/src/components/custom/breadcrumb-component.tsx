@@ -6,9 +6,7 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
-import { Container } from '../layout/Container';
-import { Padding } from '../layout/Padding';
-import { Row } from '../layout/Row';
+import styles from './breadcrumb-component.module.css';
 
 type BreadcrumbItem = {
   label: string | React.ReactNode;
@@ -67,17 +65,10 @@ export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: Brea
   const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
 
   return (
-    <Container height="fit" crossAlignment="baseline" mainAlignment="baseline">
-      <Container
-        orientation="horizontal"
-        background="gray5"
-        crossAlignment="center"
-        mainAlignment="flex-start"
-        height="44px"
-        padding={{ left: 'large', right: 'large' }}
-      >
+    <div className={styles.breadcrumb}>
+      <div className={styles.bar}>
         {splitRoutes.map((item: BreadcrumbItem, index) => (
-          <Row key={item?.path}>
+          <div className={styles.item} key={item?.path}>
             {isLast(index) ? (
               <ds-text
                 as="span"
@@ -94,28 +85,22 @@ export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: Brea
             )}
 
             {index !== splitRoutes.length - 1 && (
-              <Padding left="extrasmall" right="extrasmall">
+              <div className={styles.separator}>
                 <ds-text as="span" size="medium" weight="regular" color="#cccccc">
                   &nbsp;/&nbsp;
                 </ds-text>
-              </Padding>
+              </div>
             )}
-          </Row>
+          </div>
         ))}
         {lastLoginTimestamp && (
-          <Container
-            mainAlignment="center"
-            crossAlignment="flex-end"
-            width="50%"
-            padding={{ right: 'small' }}
-            margin={{ left: 'auto' }}
-          >
+          <div className={styles.lastAccess}>
             <ds-text as="span" color="secondary" overflow="break-word" weight="light">
               {t('label.last_access', 'Last access')} {lastLoginTimestamp}
             </ds-text>
-          </Container>
+          </div>
         )}
-      </Container>
-    </Container>
+      </div>
+    </div>
   );
 };
