@@ -12,23 +12,19 @@ import logo from '../assets/ninja_robo.svg';
 import {
   ACCOUNTS,
   ACTIVE_SYNC,
-  ADMINISTRATORS,
   AUTHENTICATION,
   CREATE_NEW_DOMAIN_ROUTE_ID,
   DELEGATES_DOMAIN_ADMINS,
   DISCLAIMER,
   DISTRIBUTION_LIST,
-  DOMAINS,
   GAL,
   GENERAL_INFORMATION,
   GENERAL_SETTINGS,
   GLOBAL_ROUTE,
   MAILBOX_QUOTA,
-  QUARANTINE,
   RESOURCES,
   RESTORE_ACCOUNT,
   SAML,
-  SETTINGS,
   TWO_FACTOR_AUTHENTICATION,
   VIRTUAL_HOSTS,
   WHITELABEL_SETTINGS,
@@ -44,20 +40,14 @@ import DomainSaml from './domain/details/domain-saml';
 import DomainTheme from './domain/details/domain-theme';
 import { DomainVirtualHosts } from './domain/details/virtual-hosts-certificates/domain-virtual-hosts';
 import { DomainDetailPanel } from './domain/domain-detail-panel';
-import { DomainList } from './domain/domain-list/domain-list';
 import { DomainOperationsLayout } from './domain/domain-operations-layout';
-import GlobalActiveSync from './domain/global/global-active-sync';
-import GlobalDetailPanel from './domain/global/global-detail-panel';
-import GlobalTheme from './domain/global/global-theme';
-import GlobalTwoFactorAuthentcation from './domain/global/global-two-factor-auth';
-import GlobalDelegates from './domain/global-delegates';
 import ManageAccounts from './domain/manange/accounts/manage-accounts';
 import ActiveSync from './domain/manange/active-sync/active-sync';
 import ManageDelegates from './domain/manange/delegates/manage-delegates';
 import DomainMailingList from './domain/manange/mailing-list/domain-mailing-list';
 import DomainResources from './domain/manange/resources/domain-resources';
 import RestoreAccount from './domain/manange/restore-delete-account/restore-delete-account';
-import QuarantineList from './quarantine/quarantine-list';
+import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
 
 const EmptyState: FC = () => {
   const [t] = useTranslation();
@@ -109,17 +99,13 @@ const GeneralInformation: FC = () => {
 export const DomainContentPanel = () => (
   <Suspense fallback={<ds-spinner />}>
     <Routes>
-      <Route path={GLOBAL_ROUTE} element={<GlobalDetailPanel />} />
-      <Route path={`${GLOBAL_ROUTE}/${WHITELABEL_SETTINGS}`} element={<GlobalTheme />} />
-      <Route
-        path={`${GLOBAL_ROUTE}/${TWO_FACTOR_AUTHENTICATION}`}
-        element={<GlobalTwoFactorAuthentcation />}
-      />
-      <Route path={`${GLOBAL_ROUTE}/${QUARANTINE}`} element={<QuarantineList />} />
-      <Route path={`${GLOBAL_ROUTE}/${DOMAINS}`} element={<DomainList />} />
-      <Route path={`${GLOBAL_ROUTE}/${ADMINISTRATORS}`} element={<GlobalDelegates />} />
-      <Route path={`${GLOBAL_ROUTE}/${SETTINGS}`} element={<GlobalDetailPanel />} />
-      <Route path={`${GLOBAL_ROUTE}/${ACTIVE_SYNC}`} element={<GlobalActiveSync />} />
+      {GLOBAL_SECTION_ROUTES.map(({ id, Component }) =>
+        id === '' ? (
+          <Route key={GLOBAL_ROUTE} path={GLOBAL_ROUTE} element={<Component />} />
+        ) : (
+          <Route key={id} path={`${GLOBAL_ROUTE}/${id}`} element={<Component />} />
+        ),
+      )}
       <Route path=":domainId" element={<DomainOperationsLayout />}>
         <Route path={GENERAL_INFORMATION} element={<GeneralInformation />} />
         <Route path={GENERAL_SETTINGS} element={<DomainGeneralSettings />} />

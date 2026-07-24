@@ -9,20 +9,10 @@ import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  ACTIVE_SYNC,
-  ADMINISTRATORS,
-  DOMAINS,
-  DOMAINS_ROUTE_ID,
-  GLOBAL_ROUTE,
-  MANAGE,
-  QUARANTINE,
-  SETTINGS,
-  TWO_FACTOR_AUTHENTICATION,
-  WHITELABEL_SETTINGS,
-} from '../constants';
+import { DOMAINS_ROUTE_ID, GLOBAL_ROUTE, MANAGE } from '../constants';
 import DomainListPanel from './domain/domain-list-panel';
 import { DomainContentPanel } from './domain-content-panel';
+import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
 
 export const AppView: FC = () => {
   const [t] = useTranslation();
@@ -30,26 +20,14 @@ export const AppView: FC = () => {
 
   const domainsAppPath = `/${MANAGE}/${DOMAINS_ROUTE_ID}`;
   const globalBase = `${domainsAppPath}/${GLOBAL_ROUTE}`;
+  const globalSections: Array<CrumbMenuItem> = GLOBAL_SECTION_ROUTES.map(
+    ({ id, labelKey, labelDefault }) => ({
+      path: id === '' ? globalBase : `${globalBase}/${id}`,
+      label: t(labelKey, labelDefault),
+    }),
+  );
   const crumbMenus: Record<string, Array<CrumbMenuItem>> = {
-    [domainsAppPath]: [
-      { path: globalBase, label: t('label.global', 'Global') },
-      { path: `${globalBase}/${DOMAINS}`, label: t('label.domains', 'Domains') },
-      { path: `${globalBase}/${SETTINGS}`, label: t('label.settings', 'Settings') },
-      {
-        path: `${globalBase}/${ADMINISTRATORS}`,
-        label: t('label.administrators', 'Administrators'),
-      },
-      { path: `${globalBase}/${QUARANTINE}`, label: t('label.quarantine', 'Quarantine') },
-      {
-        path: `${globalBase}/${WHITELABEL_SETTINGS}`,
-        label: t('label.whitelabel_settings', 'Whitelabel Settings'),
-      },
-      {
-        path: `${globalBase}/${TWO_FACTOR_AUTHENTICATION}`,
-        label: t('label.two_factor_authentication', '2-Factor Authentication'),
-      },
-      { path: `${globalBase}/${ACTIVE_SYNC}`, label: t('label.active_sync', 'Active Sync') },
-    ],
+    [domainsAppPath]: globalSections,
   };
 
   return (

@@ -44,7 +44,7 @@ function buildSplitRoutes(
 ): Array<BreadcrumbItem> {
   if (!pathname) return [];
 
-  const segments = pathname.split('/').filter(Boolean);
+  const segments = pathname.substring(1).split('/');
 
   const items = segments.map((segment, index) => {
     const path = `/${segments.slice(0, index + 1).join('/')}`;
