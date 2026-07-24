@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { render, screen } from '@testing-library/react';
+import { useLastLoginTimestamp } from '@zextras/ui-shared';
 import i18next from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router';
@@ -38,8 +39,6 @@ function createI18nInstance(resources?: Record<string, string>) {
   return instance;
 }
 
-const dashboardRoute = 'dashboard';
-
 type RenderOptions = {
   path?: string;
   lastLoginTimestamp?: string;
@@ -51,14 +50,12 @@ function renderBreadcrumb({
   lastLoginTimestamp,
   translations,
 }: RenderOptions = {}) {
+  vi.mocked(useLastLoginTimestamp).mockReturnValue({ data: lastLoginTimestamp } as never);
   const i18n = createI18nInstance(translations);
   return render(
     <MemoryRouter initialEntries={[path]}>
       <I18nextProvider i18n={i18n}>
-        <BreadcrumbComponent
-          dashboardRoute={dashboardRoute}
-          lastLoginTimestamp={lastLoginTimestamp}
-        />
+        <BreadcrumbComponent />
       </I18nextProvider>
     </MemoryRouter>,
   );

@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { DASHBOARD_ROUTE_ID, useLastLoginTimestamp, useUserSettings } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
@@ -14,14 +15,8 @@ type BreadcrumbItem = {
   homePath: string;
 };
 
-type BreadcrumbProps = {
-  dashboardRoute: string;
-  lastLoginTimestamp?: string;
-};
-
 function buildSplitRoutes(
   pathname: string,
-  dashboardRoute: string,
   t: ReturnType<typeof useTranslation>[0],
 ): Array<BreadcrumbItem> {
   if (!pathname) return [];
@@ -33,7 +28,7 @@ function buildSplitRoutes(
       result.push({
         label: t('label.home', 'Home'),
         path: `/${item}`,
-        homePath: `/${dashboardRoute}`,
+        homePath: `/${DASHBOARD_ROUTE_ID}`,
       });
     } else {
       const prevPath = result[index - 1]?.path ?? '';
@@ -41,7 +36,7 @@ function buildSplitRoutes(
         /* i18next-extract-disable-next-line */
         label: t(`label.${item}`, item.charAt(0).toUpperCase() + item.slice(1)),
         path: `${prevPath}/${item}`,
-        homePath: `/${dashboardRoute}`,
+        homePath: `/${DASHBOARD_ROUTE_ID}`,
       });
     }
   });
@@ -50,17 +45,22 @@ function buildSplitRoutes(
     result.push({
       label: t('label.dashboard', 'Dashboard'),
       path: `/${splitRoute[0]}/dashboard`,
-      homePath: `/${dashboardRoute}`,
+      homePath: `/${DASHBOARD_ROUTE_ID}`,
     });
   }
 
   return result;
 }
 
-export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: BreadcrumbProps) => {
+export const BreadcrumbComponent = () => {
   const [t] = useTranslation();
   const location = useLocation();
-  const splitRoutes = buildSplitRoutes(location?.pathname ?? '', dashboardRoute, t);
+  const userSetting = useUserSettings();
+  const { data: lastLoginTimestamp } = useLastLoginTimestamp({
+    accountId: userSetting?.attrs?.zimbraId?.toString(),
+    enabled: Boolean(userSetting?.attrs?.zimbraId),
+  });
+  const splitRoutes = buildSplitRoutes(location?.pathname ?? '', t);
 
   const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
 
@@ -77,8 +77,7 @@ export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: Brea
             >
               {item?.label}
             </ds-text>
-
-            {index !== splitRoutes.length - 1 && (
+            {!isLast(index) && (
               <div className={styles.separator}>
                 <ds-text as="span" size="medium" weight="regular" color="#cccccc">
                   &nbsp;/&nbsp;
