@@ -4,11 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container } from '@zextras/ui-components';
+import { BreadcrumbComponent, Container } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 
-import { Breadcrumb } from './breadcrumb/breadcrumb';
 import DomainListPanel from './domain/domain-list-panel';
 import { DomainContentPanel } from './domain-content-panel';
 
@@ -17,7 +16,7 @@ export const AppView: FC = () => {
 
   return (
     <Container height={'fit'}>
-      <Breadcrumb />
+      <BreadcrumbComponent />
       <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
         <Container style={{ maxWidth: '265px' }}>
           <Suspense fallback={<ds-spinner />}>

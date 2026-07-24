@@ -13,12 +13,14 @@ export {
 } from '@zextras/ui-shared';
 
 export const useDomainInformation = vi.fn();
+export const DASHBOARD_ROUTE_ID = 'dashboard';
 export const addRoute = vi.fn();
 export const removeRoute = vi.fn();
 export const registerActions = vi.fn();
 export const useUserAccount = vi.fn();
 export const useUserAccounts = vi.fn();
 export const useUserSettings = vi.fn();
+export const useLastLoginTimestamp = vi.fn(() => ({ data: undefined }));
 export const getIntegratedFunction = vi.fn();
 export const usePrimaryBarState = vi.fn();
 export const useAllConfig = vi.fn();

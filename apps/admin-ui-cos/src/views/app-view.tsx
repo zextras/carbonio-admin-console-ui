@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { BreadcrumbComponent } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
 import { Route, Routes, useLocation } from 'react-router';
 
 import { CREATE_NEW_COS_ROUTE_ID } from '../constants';
 import styles from './app-view.module.css';
-import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosListPanel } from './cos/cos-list-panel';
 
@@ -19,7 +19,7 @@ export const AppView = () => {
   const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);
   return (
     <div className={styles.root}>
-      <Breadcrumb />
+      <BreadcrumbComponent />
       <Routes>
         <Route
           path={'/*'}
