@@ -61,6 +61,17 @@
 	color: var(--color-gray0-disabled);
 }
 
+.caret {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: var(--padding-size-extrasmall);
+	padding: 0;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+}
+
 .lastAccess {
 	display: flex;
 	flex-direction: column;

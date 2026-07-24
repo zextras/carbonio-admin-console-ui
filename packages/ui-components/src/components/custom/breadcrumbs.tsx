@@ -7,12 +7,22 @@ import { DASHBOARD_ROUTE_ID, useLastLoginTimestamp, useUserSettings } from '@zex
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
+import { Dropdown } from '../display/Dropdown';
 import styles from './breadcrumb-component.module.css';
 
 type BreadcrumbItem = {
   label: string;
   path: string;
   homePath: string;
+};
+
+export type CrumbMenuItem = {
+  path: string;
+  label: string;
+};
+
+export type BreadcrumbsProps = {
+  crumbMenus?: Record<string, Array<CrumbMenuItem>>;
 };
 
 const HOME_PATH = `/${DASHBOARD_ROUTE_ID}`;
@@ -54,7 +64,7 @@ function buildSplitRoutes(
   return segments.length === 1 ? [...items, dashboardCrumb(segments[0], t)] : items;
 }
 
-export function Breadcrumbs() {
+export function Breadcrumbs({ crumbMenus }: BreadcrumbsProps) {
   const [t] = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -73,6 +83,7 @@ export function Breadcrumbs() {
         <ol className={styles.list}>
           {splitRoutes.map((item: BreadcrumbItem, index) => {
             const target = index === 0 ? item.homePath : item.path;
+            const menu = crumbMenus?.[item.path];
             const interactive: React.HTMLAttributes<HTMLElement> = isLast(index)
               ? {}
               : {
@@ -99,6 +110,26 @@ export function Breadcrumbs() {
                 >
                   {item.label}
                 </ds-text>
+                {menu && menu.length > 0 ? (
+                  <Dropdown
+                    items={menu.map((mi) => ({
+                      id: mi.path,
+                      label: mi.label,
+                      selected: mi.path === location.pathname,
+                      onClick: () => navigate(mi.path),
+                    }))}
+                    placement="bottom-start"
+                  >
+                    <button
+                      aria-haspopup="menu"
+                      aria-label={t('label.show_sections', 'Show sections')}
+                      className={styles.caret}
+                      type="button"
+                    >
+                      <ds-icon color="gray1" icon="ChevronDown" size="small" />
+                    </button>
+                  </Dropdown>
+                ) : null}
                 {!isLast(index) && (
                   <div aria-hidden="true" className={styles.separator}>
                     <ds-text as="span" size="medium" weight="regular">

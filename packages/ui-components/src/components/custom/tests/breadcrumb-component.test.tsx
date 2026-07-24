@@ -10,7 +10,7 @@ import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter, useLocation } from 'react-router';
 
 import styles from '../breadcrumb-component.module.css';
-import { Breadcrumbs } from '../breadcrumbs';
+import { Breadcrumbs, type CrumbMenuItem } from '../breadcrumbs';
 
 const TRANSLATIONS: Record<string, string> = {
   home: 'Home',
@@ -43,19 +43,21 @@ type RenderOptions = {
   path?: string;
   lastLoginTimestamp?: string;
   translations?: Record<string, string>;
+  crumbMenus?: Record<string, Array<CrumbMenuItem>>;
 };
 
 function renderBreadcrumb({
   path = '/dashboard',
   lastLoginTimestamp,
   translations,
+  crumbMenus,
 }: RenderOptions = {}) {
   vi.mocked(useLastLoginTimestamp).mockReturnValue({ data: lastLoginTimestamp } as never);
   const i18n = createI18nInstance(translations);
   return render(
     <MemoryRouter initialEntries={[path]}>
       <I18nextProvider i18n={i18n}>
-        <Breadcrumbs />
+        <Breadcrumbs crumbMenus={crumbMenus} />
         <LocationProbe />
       </I18nextProvider>
     </MemoryRouter>,
@@ -249,6 +251,59 @@ describe('BreadcrumbComponent', () => {
       const domains = screen.getByText('Domains').closest('ds-text') as HTMLElement;
       fireEvent.keyDown(domains, { key: 'Enter' });
       expect(screen.getByTestId('location').textContent).toBe('/dashboard/domains');
+    });
+  });
+
+  describe('Section dropdown', () => {
+    const menus: Record<string, Array<CrumbMenuItem>> = {
+      '/dashboard/domains': [
+        { path: '/dashboard/domains', label: 'Domains' },
+        { path: '/dashboard/settings', label: 'Settings' },
+      ],
+    };
+
+    it('renders a dropdown caret on the crumb that has a menu', () => {
+      renderBreadcrumb({
+        path: '/dashboard/domains',
+        translations: TRANSLATIONS,
+        crumbMenus: menus,
+      });
+      expect(screen.getByRole('button', { name: 'Show sections' })).not.toBeNull();
+    });
+
+    it('renders a single caret (none on crumbs without a menu)', () => {
+      renderBreadcrumb({
+        path: '/dashboard/domains',
+        translations: TRANSLATIONS,
+        crumbMenus: menus,
+      });
+      expect(screen.getAllByRole('button')).toHaveLength(1);
+    });
+
+    it('opens the menu and highlights the current route when the caret is clicked', () => {
+      renderBreadcrumb({
+        path: '/dashboard/domains',
+        translations: TRANSLATIONS,
+        crumbMenus: menus,
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
+      const items = screen.getAllByTestId('dropdown-item');
+      expect(items).toHaveLength(2);
+      const selected = items.filter((el) => el.classList.contains('zapp-selected'));
+      expect(selected).toHaveLength(1);
+      expect(selected[0]!.textContent).toBe('Domains');
+    });
+
+    it('navigates to the selected route when a menu item is clicked', () => {
+      renderBreadcrumb({
+        path: '/dashboard/domains',
+        translations: TRANSLATIONS,
+        crumbMenus: menus,
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
+      const items = screen.getAllByTestId('dropdown-item');
+      fireEvent.click(items[1]!);
+      expect(screen.getByTestId('location').textContent).toBe('/dashboard/settings');
     });
   });
 });
