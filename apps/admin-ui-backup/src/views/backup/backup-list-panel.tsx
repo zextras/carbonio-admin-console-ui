@@ -26,10 +26,10 @@ import { matchPath } from 'react-router';
 
 import type { MailstoreServer } from '../../../types';
 import {
-  ADVANCED,
   ADVANCED_LBL,
   BACKUP_BASIC,
   CONFIGURATION_BACKUP,
+  IMPORT_EXTERNAL_BACKUP,
   IS_DEFAULT_SETTINGS_EXPANDED,
   IS_SERVER_SPECIFICS_EXPANDED,
   LIST_SERVER,
@@ -37,6 +37,7 @@ import {
   SERVER_CONFIG,
   SERVERS_LIST,
 } from '../../constants';
+import { SECTION_ROUTES } from './backup-section-routes';
 
 const BackupListPanel: FC = () => {
   const [t] = useTranslation();
@@ -70,23 +71,14 @@ const BackupListPanel: FC = () => {
   }, [moduleLicenseInfo]);
 
   const defaultSettingsOptions = useMemo(
-    () => [
-      {
-        id: SERVERS_LIST,
-        name: t('label.servers_list', 'Servers List'),
-        isSelected: !!isBackupModuleLicensed,
-      },
-      {
-        id: SERVER_CONFIG,
-        name: t('label.server_config', 'Server Config'),
-        isSelected: !!isBackupModuleLicensed,
-      },
-      {
-        id: ADVANCED,
-        name: t('label.advanced', 'Advanced'),
-        isSelected: !!isBackupModuleLicensed,
-      },
-    ],
+    () =>
+      SECTION_ROUTES.filter((route) => !route.prefix && route.id !== IMPORT_EXTERNAL_BACKUP).map(
+        ({ id, labelKey, labelDefault }) => ({
+          id,
+          name: t(labelKey, labelDefault),
+          isSelected: !!isBackupModuleLicensed,
+        }),
+      ),
     [t, isBackupModuleLicensed],
   );
 
@@ -103,18 +95,14 @@ const BackupListPanel: FC = () => {
   }, [hasListServerRights, defaultSettingsOptions]);
 
   const serverSettingsOptions = useMemo(
-    () => [
-      {
-        id: CONFIGURATION_BACKUP,
-        name: t('label.configuration_lbl', 'Configuration'),
-        isSelected: isBackupModuleLicensed ? isServerSelect : false,
-      },
-      {
-        id: ADVANCED_LBL,
-        name: t('label.advanced', 'Advanced'),
-        isSelected: isBackupModuleLicensed ? isServerSelect : false,
-      },
-    ],
+    () =>
+      SECTION_ROUTES.filter((route) => route.prefix === ':server').map(
+        ({ id, labelKey, labelDefault }) => ({
+          id,
+          name: t(labelKey, labelDefault),
+          isSelected: isBackupModuleLicensed ? isServerSelect : false,
+        }),
+      ),
     [t, isServerSelect, isBackupModuleLicensed],
   );
 

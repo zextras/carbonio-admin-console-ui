@@ -6,12 +6,9 @@
 import { Breadcrumbs, Container } from '@zextras/ui-components';
 import { Navigate, Route, Routes } from 'react-router';
 
-import { DATA_VOLUMES, HSM_SETTINGS, S3CONNECTOR_LIST, SERVERS_LIST } from '../constants';
-import { VolumesDetailPanel } from './data-volumes/volumes-list';
-import { HSMsettingPanel } from './hsm/hsm-setting-panel';
-import { S3ConnectorListPanel } from './s3-connectors/s3-connector-list-panel';
-import { ServerListPanel } from './servers-list/server-list-panel';
+import { SERVERS_LIST } from '../constants';
 import { StorageLayout } from './storage-layout';
+import { SECTION_ROUTES } from './storage-section-routes';
 
 export const AppView = () => {
   return (
@@ -20,10 +17,9 @@ export const AppView = () => {
       <Routes>
         <Route element={<StorageLayout />}>
           <Route index element={<Navigate to={SERVERS_LIST} replace />} />
-          <Route path={SERVERS_LIST} element={<ServerListPanel />} />
-          <Route path={S3CONNECTOR_LIST} element={<S3ConnectorListPanel />} />
-          <Route path={`:server/${DATA_VOLUMES}`} element={<VolumesDetailPanel />} />
-          <Route path={`:server/${HSM_SETTINGS}`} element={<HSMsettingPanel />} />
+          {SECTION_ROUTES.map(({ id, prefix, Component }) => (
+            <Route key={id} path={prefix ? `${prefix}/${id}` : id} element={<Component />} />
+          ))}
           <Route path="*" element={null} />
         </Route>
       </Routes>
