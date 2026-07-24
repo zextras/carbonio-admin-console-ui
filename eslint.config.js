@@ -91,7 +91,10 @@ export default tseslint.config(
   // this is the stricter eslint config we should be enforcing for all apps and packages
   // once all of them will be here, we can remove the ovrerrides and make the strict config default
   {
-    files: ['apps/admin-ui-domains/src/views/domain/domain-list/*'],
+    files: [
+      'apps/admin-ui-domains/src/views/domain/domain-list/*',
+      'packages/ui-components/src/components/custom/breadcrumb.tsx',
+    ],
     plugins: {
       'react-compiler': reactCompiler,
       'jsx-a11y': jsxA11y,
