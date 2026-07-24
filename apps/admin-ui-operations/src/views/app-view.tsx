@@ -3,18 +3,28 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Breadcrumbs, Container } from '@zextras/ui-components';
+import { Breadcrumbs, Container, type CrumbMenuItem } from '@zextras/ui-components';
 import { FC } from 'react';
-import { Navigate, Route, Routes } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 
 import { RUNNING_ROUTE_ID } from '../constants';
 import OperationsLayout from './operations/operations-layout';
 import { SECTION_ROUTES } from './operations/operations-section-routes';
 
 export const AppView: FC = () => {
+	const [t] = useTranslation();
+	const { pathname } = useLocation();
+	const appBase = `/${pathname.split('/').filter(Boolean).slice(0, 2).join('/')}`;
+	const crumbMenus: Record<string, Array<CrumbMenuItem>> = {
+		[appBase]: SECTION_ROUTES.filter((r) => !r.prefix).map(({ id, labelKey, labelDefault }) => ({
+			path: `${appBase}/${id}`,
+			label: t(labelKey, labelDefault),
+		})),
+	};
 	return (
 		<Container height={'fit'}>
-			<Breadcrumbs />
+			<Breadcrumbs crumbMenus={crumbMenus} />
 			<Routes>
 				<Route index element={<Navigate to={RUNNING_ROUTE_ID} replace />} />
 				<Route element={<OperationsLayout />}>

@@ -3,19 +3,30 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Breadcrumbs, Container } from '@zextras/ui-components';
+import { Breadcrumbs, Container, type CrumbMenuItem } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import { Route, Routes, useLocation } from 'react-router';
 
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
+import { SECTION_ROUTES } from './backup/backup-section-routes';
 
 export const AppView: FC = () => {
+  const [t] = useTranslation();
+  const { pathname } = useLocation();
   const detailViewMaxWidth = useDetailViewMaxWidth();
+  const appBase = `/${pathname.split('/').filter(Boolean).slice(0, 2).join('/')}`;
+  const crumbMenus: Record<string, Array<CrumbMenuItem>> = {
+    [appBase]: SECTION_ROUTES.filter((r) => !r.prefix).map(({ id, labelKey, labelDefault }) => ({
+      path: `${appBase}/${id}`,
+      label: t(labelKey, labelDefault),
+    })),
+  };
   return (
     <Container height={'fit'}>
-      <Breadcrumbs />
+      <Breadcrumbs crumbMenus={crumbMenus} />
       <Routes>
         <Route
           path={'/*'}
