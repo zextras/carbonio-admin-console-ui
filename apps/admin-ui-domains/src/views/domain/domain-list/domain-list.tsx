@@ -15,7 +15,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory, useDebouncedValue } from '@zextras/ui-shared';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
@@ -53,8 +53,6 @@ export const DomainList = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
 
-  const tableRef = useRef<HTMLDivElement | null>(null);
-
   const headers = DOMAIN_LIST_HEADERS.map((header) => ({
     id: header.id,
     label: t(header.labelKey, header.labelDefault),
@@ -80,10 +78,6 @@ export const DomainList = () => {
     }
   }, [isError, error, createSnackbar, t]);
 
-  if (isPending) {
-    return <ds-page-shimmer></ds-page-shimmer>;
-  }
-
   const onDomainSelect = (domain: SoapEntity): void => {
     replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
   };
@@ -93,6 +87,9 @@ export const DomainList = () => {
 
   const domainList = rawDomains.map((item) => buildDomainRow(item, t, onDomainSelect));
 
+  if (isPending) {
+    return <ds-page-shimmer></ds-page-shimmer>;
+  }
   return (
     <Container
       padding={{ top: 'large', left: 'large', right: 'large' }}
@@ -168,7 +165,6 @@ export const DomainList = () => {
                 headers={headers}
                 showCheckbox={false}
                 multiSelect={false}
-                ref={tableRef}
                 style={{
                   overflow: 'auto',
                   height: domainList.length === 0 ? '50%' : '100%',
