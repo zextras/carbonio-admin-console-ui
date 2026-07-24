@@ -96,6 +96,7 @@ function renderModifyVolume(
     setmodifyVolumeToggle: (v: boolean) => void;
     getAllVolumesRequest: () => void;
     setOpen: (v: boolean) => void;
+    advancedGetVolumeResponse: unknown;
   }>,
 ) {
   const selectedVolume = [...volumeList.primaries, ...volumeList.secondaries, ...volumeList.indexes]
@@ -104,6 +105,7 @@ function renderModifyVolume(
   const setmodifyVolumeToggle = overrides?.setmodifyVolumeToggle ?? vi.fn();
   const getAllVolumesRequest = overrides?.getAllVolumesRequest ?? vi.fn();
   const setOpen = overrides?.setOpen ?? vi.fn();
+  const advancedGetVolumeResponse = overrides?.advancedGetVolumeResponse ?? selectedVolume ?? {};
 
   createBrowserZextrasActionInterceptor('getVolume', () =>
     HttpResponse.json({
@@ -114,7 +116,7 @@ function renderModifyVolume(
             response: {
               [SERVER_NAME]: {
                 ok: true,
-                response: selectedVolume ?? {},
+                response: advancedGetVolumeResponse,
               },
             },
           }),
@@ -169,6 +171,41 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
         initialRouterEntry: VOLUME_ROUTE_ENTRY,
       });
       await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
+    });
+
+    it('should map the real advanced getVolume response shape into the form', async () => {
+      const realAdvancedPayload = {
+        id: 6,
+        name: 'cephprimary',
+        compressed: true,
+        uuid: '09dd7b71-23f0-47f2-b580-5593f3aaabe8',
+        tieringSupported: false,
+        useInfrequentAccess: false,
+        infrequentAccessThreshold: 65536,
+        useIntelligentTiering: false,
+        volumePrefix: 'abc',
+        centralized: false,
+        storeType: 'S3',
+        isCurrent: false,
+        volumeType: 'primary',
+        inUse: true,
+      } satisfies Record<string, unknown>;
+
+      await setupBrowserTest(
+        renderModifyVolume(SECONDARY_VOLUME.id as number, VOLUME_LIST, {
+          advancedGetVolumeResponse: realAdvancedPayload,
+        }),
+        {
+          initialRouterEntry: VOLUME_ROUTE_ENTRY,
+        },
+      );
+
+      await expect
+        .element(page.getByRole('textbox', { name: /volume name/i }))
+        .toHaveValue('cephprimary');
+      await expect.element(page.getByRole('textbox', { name: /prefix/i })).toHaveValue('abc');
+      await expect.element(page.getByText('09dd7b71-23f0-47f2-b580-5593f3aaabe8')).toBeVisible();
+      await expect.element(page.getByRole('button', { name: /^delete$/i })).toBeDisabled();
     });
 
     it('should disable Delete button when volume is in use', async () => {
