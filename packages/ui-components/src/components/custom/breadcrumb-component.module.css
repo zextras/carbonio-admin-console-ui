@@ -34,8 +34,17 @@
 	box-sizing: border-box;
 }
 
+.list {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
 .label::part(text) {
-	color: #cccccc;
+	color: var(--color-gray0-disabled);
 }
 
 .labelCurrent::part(text) {
@@ -46,6 +55,10 @@
 	width: fit-content;
 	height: fit-content;
 	padding: 0 var(--padding-size-extrasmall);
+}
+
+.separator ds-text::part(text) {
+	color: var(--color-gray0-disabled);
 }
 
 .lastAccess {

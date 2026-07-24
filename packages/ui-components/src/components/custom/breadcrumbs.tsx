@@ -15,6 +15,19 @@ type BreadcrumbItem = {
   homePath: string;
 };
 
+const HOME_PATH = `/${DASHBOARD_ROUTE_ID}`;
+
+function dashboardCrumb(
+  rootSegment: string,
+  t: ReturnType<typeof useTranslation>[0],
+): BreadcrumbItem {
+  return {
+    label: t('label.dashboard', 'Dashboard'),
+    path: `/${rootSegment}/dashboard`,
+    homePath: HOME_PATH,
+  };
+}
+
 function buildSplitRoutes(
   pathname: string,
   t: ReturnType<typeof useTranslation>[0],
@@ -34,22 +47,11 @@ function buildSplitRoutes(
               segment.charAt(0).toUpperCase() + segment.slice(1),
             ),
       path,
-      homePath: `/${DASHBOARD_ROUTE_ID}`,
+      homePath: HOME_PATH,
     };
   });
 
-  if (segments.length === 1) {
-    return [
-      ...items,
-      {
-        label: t('label.dashboard', 'Dashboard'),
-        path: `/${segments[0]}/dashboard`,
-        homePath: `/${DASHBOARD_ROUTE_ID}`,
-      },
-    ];
-  }
-
-  return items;
+  return segments.length === 1 ? [...items, dashboardCrumb(segments[0], t)] : items;
 }
 
 export function Breadcrumbs() {
@@ -65,27 +67,33 @@ export function Breadcrumbs() {
   const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
 
   return (
-    <div className={styles.breadcrumb}>
+    <nav aria-label={t('label.breadcrumb', 'Breadcrumb')} className={styles.breadcrumb}>
       <div className={styles.bar}>
-        {splitRoutes.map((item: BreadcrumbItem, index) => (
-          <div className={styles.item} key={item.path}>
-            <ds-text
-              as="span"
-              size="medium"
-              weight="regular"
-              className={isLast(index) ? styles.labelCurrent : styles.label}
+        <ol className={styles.list}>
+          {splitRoutes.map((item: BreadcrumbItem, index) => (
+            <li
+              aria-current={isLast(index) ? 'page' : undefined}
+              className={styles.item}
+              key={item.path}
             >
-              {item.label}
-            </ds-text>
-            {!isLast(index) && (
-              <div className={styles.separator}>
-                <ds-text as="span" size="medium" weight="regular" color="#cccccc">
-                  &nbsp;/&nbsp;
-                </ds-text>
-              </div>
-            )}
-          </div>
-        ))}
+              <ds-text
+                as="span"
+                size="medium"
+                weight="regular"
+                className={isLast(index) ? styles.labelCurrent : styles.label}
+              >
+                {item.label}
+              </ds-text>
+              {!isLast(index) && (
+                <div aria-hidden="true" className={styles.separator}>
+                  <ds-text as="span" size="medium" weight="regular">
+                    &nbsp;/&nbsp;
+                  </ds-text>
+                </div>
+              )}
+            </li>
+          ))}
+        </ol>
         {lastLoginTimestamp && (
           <div className={styles.lastAccess}>
             <ds-text as="span" color="secondary" overflow="break-word" weight="light">
@@ -94,6 +102,6 @@ export function Breadcrumbs() {
           </div>
         )}
       </div>
-    </div>
+    </nav>
   );
 }
