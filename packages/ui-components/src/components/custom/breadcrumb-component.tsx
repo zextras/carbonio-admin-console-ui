@@ -69,20 +69,14 @@ export const BreadcrumbComponent = ({ dashboardRoute, lastLoginTimestamp }: Brea
       <div className={styles.bar}>
         {splitRoutes.map((item: BreadcrumbItem, index) => (
           <div className={styles.item} key={item?.path}>
-            {isLast(index) ? (
-              <ds-text
-                as="span"
-                size="medium"
-                weight="regular"
-                style={{ color: 'var(--color-gray0-regular)' } as React.CSSProperties}
-              >
-                {item?.label}
-              </ds-text>
-            ) : (
-              <ds-text as="span" size="medium" weight="regular" color="#cccccc">
-                {item?.label}
-              </ds-text>
-            )}
+            <ds-text
+              as="span"
+              size="medium"
+              weight="regular"
+              className={isLast(index) ? styles.labelCurrent : styles.label}
+            >
+              {item?.label}
+            </ds-text>
 
             {index !== splitRoutes.length - 1 && (
               <div className={styles.separator}>
