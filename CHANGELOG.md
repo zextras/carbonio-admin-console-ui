@@ -1,3 +1,9 @@
+## [0.15.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.5...v0.15.6) (2026-07-24)
+
+### Other changes
+
+* **admin-ui-domains:** refactor domain-list ([fd4c2f2](https://github.com/zextras/carbonio-admin-console-ui/commit/fd4c2f2f5fc141f33bcd0aca3dfef01ed9f575a9))
+
 ## [0.15.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.4...v0.15.5) (2026-07-23)
 
 ### Other changes
