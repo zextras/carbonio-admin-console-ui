@@ -91,6 +91,27 @@ export default tseslint.config(
   // this is the stricter eslint config we should be enforcing for all apps and packages
   // once all of them will be here, we can remove the ovrerrides and make the strict config default
   {
+    files: ['apps/admin-ui-domains/src/views/domain/domain-list/*'],
+    plugins: {
+      'react-compiler': reactCompiler,
+      'jsx-a11y': jsxA11y,
+      'react-you-might-not-need-an-effect': reactYouMightNotNeedAnEffect,
+    },
+    rules: {
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/set-state-in-render': 'error',
+      'react-hooks/refs': 'error',
+      'react-hooks/immutability': 'error',
+      'react-hooks/preserve-manual-memoization': 'error',
+      'react-hooks/use-memo': 'error',
+      'react-hooks/static-components': 'error',
+      'react-hooks/exhaustive-deps': 'error',
+      'react-compiler/react-compiler': 'error',
+      ...jsxA11y.configs.recommended.rules,
+      ...reactYouMightNotNeedAnEffect.configs.strict.rules,
+    },
+  },
+  {
     files: [
       'apps/admin-ui-subscription/**/*',
       'apps/admin-ui-storage/**/*',
@@ -103,7 +124,6 @@ export default tseslint.config(
     },
     rules: {
       'react-compiler/react-compiler': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
       ...jsxA11y.configs.recommended.rules,
       ...reactYouMightNotNeedAnEffect.configs.strict.rules,
     },

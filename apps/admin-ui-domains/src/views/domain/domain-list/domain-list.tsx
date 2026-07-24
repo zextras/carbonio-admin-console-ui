@@ -3,33 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, CustomHeaderFactory, HoverableRowFactory, Input, Paging, Row, Table, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
-import { replaceHistory } from '@zextras/ui-shared';
-import { debounce } from 'lodash-es';
-import React, { FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ClickableRowFactory,
+  Container,
+  CustomHeaderFactory,
+  Input,
+  Paging,
+  Row,
+  Table,
+  TrackNumberPerPage,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { replaceHistory, useDebouncedValue } from '@zextras/ui-shared';
+import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
-import { getDomainList } from '../../../services/search-domain-service';
-import ScrollContainer from '../../components/scrollComponent';
+import { SoapEntity } from '../../../services/search-domain-service';
+import { useDomainSearch } from '../../../services/use-domain-search';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-
-type StatusTypes = {
-  [key: string]: {
-    [key: string]: string;
-  };
-};
-type ZimbraDomainAttribute = {
-  n: string;
-  _content: string;
-};
-
-type ZimbraDomain = {
-  name: string;
-  id: string;
-  a: ZimbraDomainAttribute[];
-};
+import { buildDomainRow, type ZimbraDomain } from './domain-list-row';
 
 export type ZimbraDomainResponse = {
   domain: ZimbraDomain[];
@@ -38,214 +32,64 @@ export type ZimbraDomainResponse = {
   _jsns: string;
 };
 
-type ZimbraDomainEntry = {
-  name: string;
-  id: string;
-  a: ZimbraDomainAttribute[];
-  zimbraDomainType: string;
-  zimbraDomainStatus: string;
-  zimbraDomainName: string;
-  zimbraId: string;
-};
+const DOMAIN_LIST_HEADERS = [
+  {
+    id: 'name',
+    labelKey: 'label.domain_name',
+    labelDefault: 'Domain Name',
+    width: '25%',
+    bold: true,
+  },
+  {
+    id: 'status',
+    labelKey: 'label.status',
+    labelDefault: 'Status',
+    width: '75%',
+    bold: true,
+  },
+] as const;
 
-const DomainList: FC = () => {
+export const DomainList = () => {
   const [t] = useTranslation();
-  const [hasError, setHasError] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
-  const [isTableTooTall, setIsTableTooTall] = useState(false);
 
-  const tableRef = useRef(null);
+  const headers = DOMAIN_LIST_HEADERS.map((header) => ({
+    id: header.id,
+    label: t(header.labelKey, header.labelDefault),
+    width: header.width,
+    bold: header.bold,
+  }));
 
-  const headers = useMemo(
-    () => [
-      {
-        id: 'name',
-        label: t('label.domain_name', 'Domain Name'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'status',
-        label: t('label.status', 'Status'),
-        width: '75%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
-
-  const [domainList, setDomainList] = useState<
-    {
-      id: string;
-      columns: ReactElement[];
-      iteam: ZimbraDomainEntry;
-      clickable: boolean;
-    }[]
-  >([]);
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [searchString, setSearchString] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [totalDomain, setTotalDomain] = useState<number>(0);
-  const resizeObserverRef = useRef<ResizeObserver | null>(null);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const STATUS_COLOR: StatusTypes = useMemo(
-    () => ({
-      active: {
-        color: '#8BC34A',
-        label: t('label.active', 'Active'),
-      },
-      maintenance: {
-        color: '#2196D3',
-        label: t('label.in_maintenance', 'In maintenance'),
-      },
-      locked: {
-        color: '#D74942',
-        label: t('label.locked', 'Locked'),
-      },
-      closed: {
-        color: '#828282',
-        label: t('label.closed', 'Closed'),
-      },
-      pending: {
-        color: '#828282',
-        label: t('label.pending', 'Pending'),
-      },
-      lockout: {
-        color: '#D74942',
-        label: t('label.lockout', 'Lockout'),
-      },
-      suspended: {
-        color: '#D74942',
-        label: t('label.suspended', 'Suspended'),
-      },
-    }),
-    [t],
-  );
 
-  const onDomainSelect = useCallback(
-    (domain: ZimbraDomainEntry) => {
-      replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
-    },
-    [],
-  );
+  const debouncedSearch = useDebouncedValue(searchString, 700);
 
-  const getAllDomainList = useCallback((): void => {
-    setIsRequestInProgress(true);
-    getDomainList(searchQuery, offset, limit)
-      .then((data) => {
-        const domainListResponse: ZimbraDomainResponse = data?.domain || [];
-        if (domainListResponse && Array.isArray(domainListResponse)) {
-          const domainListArr: {
-            id: string;
-            columns: ReactElement[];
-            iteam: ZimbraDomainEntry;
-            clickable: boolean;
-          }[] = [];
-          setTotalDomain(data.searchTotal || 0);
-          domainListResponse.forEach((item: ZimbraDomainEntry) => {
-            const domainIteam: ZimbraDomainEntry = {
-              name: item.name,
-              id: item.id,
-              zimbraDomainType: '',
-              zimbraDomainStatus: 'active',
-              zimbraDomainName: '',
-              zimbraId: '',
-              a: item.a,
-            };
-            item?.a?.forEach((ele: ZimbraDomainAttribute) => {
-              if (ele.n === 'zimbraDomainType') {
-                domainIteam.zimbraDomainType = ele._content;
-              } else if (ele.n === 'zimbraDomainStatus') {
-                domainIteam.zimbraDomainStatus = ele._content;
-              } else if (ele.n === 'zimbraDomainName') {
-                domainIteam.zimbraDomainName = ele._content;
-              } else if (ele.n === 'zimbraId') {
-                domainIteam.zimbraId = ele._content;
-              }
-            });
-            domainListArr.push({
-              id: item?.id,
-              columns: [
-                <ds-text
-                  as="span"
-                  size="small"
-                  key={item?.id}
-                  color="gray0"
-                  weight="regular"
-                  onClick={(): void => {
-                    onDomainSelect(domainIteam);
-                  }}
-                >
-                  {item?.name || ' '}
-                </ds-text>,
-
-                <ds-text
-                  as="span"
-                  size="small"
-                  weight="light"
-                  key={item?.id}
-                  color={STATUS_COLOR[domainIteam.zimbraDomainStatus].color}
-                  onClick={(): void => {
-                    onDomainSelect(domainIteam);
-                  }}
-                >
-                  {STATUS_COLOR[domainIteam.zimbraDomainStatus].label}
-                </ds-text>,
-              ],
-              iteam: domainIteam,
-              clickable: true,
-            });
-          });
-          setDomainList(domainListArr);
-        }
-        setIsRequestInProgress(false);
-      })
-      .catch((error) => {
-        const snackbarConfig = generateSnackbarFromError(error, t);
-        createSnackbar(snackbarConfig);
-        setHasError(true);
-      });
-  }, [searchQuery, offset, limit, STATUS_COLOR, onDomainSelect, createSnackbar, t]);
-  useEffect(() => {
-    getAllDomainList();
-  }, [getAllDomainList]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchDomainList = useCallback(
-    debounce((searchText) => {
-      setSearchQuery(searchText);
-    }, 700),
-    [debounce],
-  );
-  useEffect(() => {
-    searchDomainList(searchString);
-  }, [domainList, offset, searchDomainList, searchString]);
+  const { data, isFetching, isPending, isError, error } = useDomainSearch({
+    searchQuery: debouncedSearch,
+    limit,
+    offset,
+  });
 
   useEffect(() => {
-    const table: any = tableRef.current;
-
-    const handleResize = debounce((): void => {
-      if (table) {
-        const tableHeight = table.clientHeight + 375;
-        const viewportHeight = window.innerHeight;
-        setIsTableTooTall(tableHeight > viewportHeight);
-      }
-    }, 100);
-
-    if (table && !resizeObserverRef.current) {
-      const observer = new ResizeObserver(handleResize);
-      resizeObserverRef.current = observer;
-      observer.observe(table);
+    if (isError && error) {
+      createSnackbar(generateSnackbarFromError(error, t));
     }
+  }, [isError, error, createSnackbar, t]);
 
-    return () => {
-      if (resizeObserverRef.current) {
-        resizeObserverRef.current.disconnect();
-        resizeObserverRef.current = null;
-      }
-    };
-  }, []);
+  const onDomainSelect = (domain: SoapEntity): void => {
+    replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
+  };
 
+  const rawDomains = data?.domain ?? [];
+  const totalDomain = data?.searchTotal ?? 0;
+
+  const domainList = rawDomains.map((item) => buildDomainRow(item, t, onDomainSelect));
+
+  if (isPending) {
+    return <ds-page-shimmer></ds-page-shimmer>;
+  }
   return (
     <Container
       padding={{ top: 'large', left: 'large', right: 'large' }}
@@ -294,11 +138,12 @@ const DomainList: FC = () => {
               <Container>
                 <Input
                   label={t('label.i_am_looking_for_this_domain', `I'm looking for this domain…`)}
-                  disabled={domainList.length === 0 && searchString.length === 0 && !hasError}
+                  disabled={domainList.length === 0 && searchString.length === 0 && !isError}
                   value={searchString}
                   backgroundColor="gray5"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     setSearchString(e.target.value);
+                    setOffset(0);
                   }}
                   CustomIcon={(): React.ReactElement => (
                     <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
@@ -316,29 +161,18 @@ const DomainList: FC = () => {
               }}
             >
               <Table
-                rows={!isRequestInProgress ? domainList : []}
+                rows={domainList}
                 headers={headers}
                 showCheckbox={false}
                 multiSelect={false}
-                ref={tableRef}
                 style={{
                   overflow: 'auto',
-                  height: isRequestInProgress || domainList.length === 0 ? '50%' : '100%',
+                  height: domainList.length === 0 ? '50%' : '100%',
                 }}
-                RowFactory={HoverableRowFactory}
+                RowFactory={ClickableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
-              {isRequestInProgress && (
-                <Container
-                  crossAlignment="center"
-                  mainAlignment="center"
-                  height="auto"
-                  padding={{ top: 'medium' }}
-                >
-                  <ds-spinner></ds-spinner>
-                </Container>
-              )}
-              {domainList.length === 0 && !isRequestInProgress && (
+              {domainList.length === 0 && !isFetching && (
                 <Container orientation="column" crossAlignment="center" mainAlignment="center">
                   <Row>
                     <img src={logo} alt="logo" />
@@ -349,7 +183,7 @@ const DomainList: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="gray1" size="large" overflow="break-word">
                       {t('label.this_list_is_empty', 'This list is empty.')}
                     </ds-text>
                   </Row>
@@ -360,7 +194,7 @@ const DomainList: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text as="p" weight="light" color="gray1" size="large" overflow="break-word">
                       <Trans
                         i18nKey="label.create_domain_list_msg"
                         defaults="You can create a new Domain by clicking on <bold>Create</bold> button on header menu"
@@ -374,10 +208,9 @@ const DomainList: FC = () => {
                 <Container
                   style={{
                     position: 'sticky',
-                    bottom: isTableTooTall ? '0' : '-4rem',
+                    bottom: '-4rem',
                   }}
                 >
-                  <ScrollContainer isVisible={isTableTooTall} />
                   <Container
                     orientation="horizontal"
                     mainAlignment="space-between"
@@ -387,7 +220,12 @@ const DomainList: FC = () => {
                     height="auto"
                   >
                     <Container crossAlignment="flex-start">
-                      <Paging totalItem={totalDomain} setOffset={setOffset} pageSize={limit} />
+                      <Paging
+                        key={debouncedSearch}
+                        totalItem={totalDomain}
+                        setOffset={setOffset}
+                        pageSize={limit}
+                      />
                     </Container>
                     <Container
                       crossAlignment="flex-end"
@@ -407,5 +245,3 @@ const DomainList: FC = () => {
     </Container>
   );
 };
-
-export default DomainList;

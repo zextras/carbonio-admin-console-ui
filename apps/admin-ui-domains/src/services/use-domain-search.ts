@@ -3,32 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useDomainSearch as useDomainSearchQuery } from '@zextras/ui-shared';
 
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-
-import { domainQueryKeys } from './domain-query-keys';
-import { getDomainList } from './search-domain-service';
+import { getDomainListNew } from './search-domain-service';
 
 type UseDomainSearchOptions = {
-	searchQuery: string;
-	limit: number;
-	offset: number;
-	enabled?: boolean;
+  searchQuery: string;
+  limit: number;
+  offset: number;
+  enabled?: boolean;
 };
 
 export const useDomainSearch = ({
-	searchQuery,
-	limit,
-	offset,
-	enabled = true,
-}: UseDomainSearchOptions) => {
-	return useQuery({
-		queryKey: domainQueryKeys.searchList(searchQuery, limit, offset),
-		queryFn: () => getDomainList(searchQuery || undefined, offset, limit),
-		enabled,
-		staleTime: 30_000,
-		retry: 1,
-		refetchOnWindowFocus: false,
-		placeholderData: keepPreviousData,
-	});
-};
+  searchQuery,
+  limit,
+  offset,
+  enabled = true,
+}: UseDomainSearchOptions) =>
+  useDomainSearchQuery({
+    searchQuery,
+    limit,
+    offset,
+    enabled,
+    queryFn: () => getDomainListNew(searchQuery || undefined, offset, limit),
+  });

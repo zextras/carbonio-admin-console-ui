@@ -31,3 +31,11 @@ export const useRoutes = vi.fn(() => []);
 export const useContextBridge = vi.fn();
 export const queryClient = vi.fn();
 export const useTotalQuotaActive = vi.fn(() => false);
+export const useDebouncedValue = vi.fn((value) => value);
+export const useDomainSearch = vi.fn(() => ({
+  data: undefined,
+  isFetching: false,
+  isPending: false,
+  isError: false,
+  error: null,
+}));
