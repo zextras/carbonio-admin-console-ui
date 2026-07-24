@@ -9,6 +9,7 @@ import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router';
 
 import { BreadcrumbComponent } from '../breadcrumb-component';
+import styles from '../breadcrumb-component.module.css';
 
 const TRANSLATIONS: Record<string, string> = {
   home: 'Home',
@@ -155,13 +156,12 @@ describe('BreadcrumbComponent', () => {
   });
 
   describe('Styling', () => {
-    it('styles the last breadcrumb item with gray0 color', () => {
+    it('applies the current-item class to the last breadcrumb item', () => {
       renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
       const domainsText = screen.getByText('Domains');
       const dsText = domainsText.closest('ds-text') as HTMLElement | null;
       expect(dsText).not.toBeNull();
-      const style = dsText!.getAttribute('style') ?? '';
-      expect(style).toContain('var(--color-gray0-regular)');
+      expect(dsText!.className).toContain(styles.labelCurrent);
     });
 
     it('does not apply pointer cursor to the last breadcrumb item', () => {
@@ -172,13 +172,12 @@ describe('BreadcrumbComponent', () => {
       expect(style).not.toContain('pointer');
     });
 
-    it('styles non-last breadcrumb items with secondary color', () => {
+    it('applies the secondary color class to non-last breadcrumb items', () => {
       renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
       const homeText = screen.getByText('Home');
       const dsText = homeText.closest('ds-text') as HTMLElement | null;
       expect(dsText).not.toBeNull();
-      const color = dsText!.getAttribute('color') ?? '';
-      expect(color).toBe('#cccccc');
+      expect(dsText!.className).toContain(styles.label);
     });
 
     it('renders "/" separator between breadcrumb items', () => {
