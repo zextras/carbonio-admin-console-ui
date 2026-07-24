@@ -42,7 +42,7 @@ function extractVolumeResponse(payload: unknown): Volume | undefined {
     return undefined;
   }
 
-  const candidate = payload as {
+  const candidate = payload as Volume & {
     volume?: Volume | Array<Volume>;
     volumes?: Array<Volume>;
   };
@@ -59,7 +59,7 @@ function extractVolumeResponse(payload: unknown): Volume | undefined {
     return candidate.volumes[0];
   }
 
-  return payload as Volume;
+  return candidate;
 }
 
 export const useGetVolumeAdvanced = (
