@@ -3,11 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { useLastLoginTimestamp } from '@zextras/ui-shared';
 import i18next from 'i18next';
 import { I18nextProvider } from 'react-i18next';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, useLocation } from 'react-router';
 
 import styles from '../breadcrumb-component.module.css';
 import { Breadcrumbs } from '../breadcrumbs';
@@ -56,6 +56,7 @@ function renderBreadcrumb({
     <MemoryRouter initialEntries={[path]}>
       <I18nextProvider i18n={i18n}>
         <Breadcrumbs />
+        <LocationProbe />
       </I18nextProvider>
     </MemoryRouter>,
   );
@@ -63,6 +64,11 @@ function renderBreadcrumb({
 
 function getAllDsTexts(): Array<HTMLElement> {
   return Array.from(document.querySelectorAll('ds-text'));
+}
+
+function LocationProbe() {
+  const location = useLocation();
+  return <div data-testid="location">{location.pathname}</div>;
 }
 
 describe('BreadcrumbComponent', () => {
@@ -181,7 +187,7 @@ describe('BreadcrumbComponent', () => {
       renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
       const allDsTexts = getAllDsTexts();
       const separatorElements = allDsTexts.filter(
-        (el) => el.textContent?.includes('/') && el.getAttribute('color') === '#cccccc',
+        (el) => el.textContent?.includes('/') && el.closest('[aria-hidden="true"]') != null,
       );
       expect(separatorElements.length).toBe(1);
     });
@@ -199,9 +205,50 @@ describe('BreadcrumbComponent', () => {
       renderBreadcrumb({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
       const allDsTexts = getAllDsTexts();
       const separatorElements = allDsTexts.filter(
-        (el) => el.textContent?.includes('/') && el.getAttribute('color') === '#cccccc',
+        (el) => el.textContent?.includes('/') && el.closest('[aria-hidden="true"]') != null,
       );
       expect(separatorElements.length).toBe(2);
+    });
+
+    it('applies pointer cursor to non-last breadcrumb items', () => {
+      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      const dsText = screen.getByText('Home').closest('ds-text') as HTMLElement | null;
+      const style = dsText!.getAttribute('style') ?? '';
+      expect(style).toContain('pointer');
+    });
+
+    it('keeps the last (current) crumb non-interactive', () => {
+      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      const dsText = screen.getByText('Domains').closest('ds-text') as HTMLElement | null;
+      expect(dsText!.getAttribute('role')).toBeNull();
+      expect(dsText!.getAttribute('tabindex')).toBeNull();
+    });
+  });
+
+  describe('Navigation', () => {
+    it('navigates to the crumb path when a non-last crumb is clicked', () => {
+      renderBreadcrumb({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
+      fireEvent.click(screen.getByText('Domains'));
+      expect(screen.getByTestId('location').textContent).toBe('/dashboard/domains');
+    });
+
+    it('navigates to the dashboard (homePath) when the Home crumb is clicked', () => {
+      renderBreadcrumb({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
+      fireEvent.click(screen.getByText('Home'));
+      expect(screen.getByTestId('location').textContent).toBe('/dashboard');
+    });
+
+    it('does not navigate when the current (last) crumb is clicked', () => {
+      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      fireEvent.click(screen.getByText('Domains'));
+      expect(screen.getByTestId('location').textContent).toBe('/dashboard/domains');
+    });
+
+    it('activates navigation with the Enter key on a non-last crumb', () => {
+      renderBreadcrumb({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
+      const domains = screen.getByText('Domains').closest('ds-text') as HTMLElement;
+      fireEvent.keyDown(domains, { key: 'Enter' });
+      expect(screen.getByTestId('location').textContent).toBe('/dashboard/domains');
     });
   });
 });

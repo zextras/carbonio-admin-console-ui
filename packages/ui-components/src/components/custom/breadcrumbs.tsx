@@ -5,7 +5,7 @@
  */
 import { DASHBOARD_ROUTE_ID, useLastLoginTimestamp, useUserSettings } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 import styles from './breadcrumb-component.module.css';
 
@@ -57,6 +57,7 @@ function buildSplitRoutes(
 export function Breadcrumbs() {
   const [t] = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const userSetting = useUserSettings();
   const { data: lastLoginTimestamp } = useLastLoginTimestamp({
     accountId: userSetting?.attrs?.zimbraId?.toString(),
@@ -70,29 +71,44 @@ export function Breadcrumbs() {
     <nav aria-label={t('label.breadcrumb', 'Breadcrumb')} className={styles.breadcrumb}>
       <div className={styles.bar}>
         <ol className={styles.list}>
-          {splitRoutes.map((item: BreadcrumbItem, index) => (
-            <li
-              aria-current={isLast(index) ? 'page' : undefined}
-              className={styles.item}
-              key={item.path}
-            >
-              <ds-text
-                as="span"
-                size="medium"
-                weight="regular"
-                className={isLast(index) ? styles.labelCurrent : styles.label}
+          {splitRoutes.map((item: BreadcrumbItem, index) => {
+            const target = index === 0 ? item.homePath : item.path;
+            const interactive: React.HTMLAttributes<HTMLElement> = isLast(index)
+              ? {}
+              : {
+                  onClick: () => navigate(target),
+                  onKeyDown: (e) => {
+                    if (e.key === 'Enter') navigate(target);
+                  },
+                  role: 'link',
+                  tabIndex: 0,
+                  style: { cursor: 'pointer' },
+                };
+            return (
+              <li
+                aria-current={isLast(index) ? 'page' : undefined}
+                className={styles.item}
+                key={item.path}
               >
-                {item.label}
-              </ds-text>
-              {!isLast(index) && (
-                <div aria-hidden="true" className={styles.separator}>
-                  <ds-text as="span" size="medium" weight="regular">
-                    &nbsp;/&nbsp;
-                  </ds-text>
-                </div>
-              )}
-            </li>
-          ))}
+                <ds-text
+                  {...interactive}
+                  as="span"
+                  size="medium"
+                  weight="regular"
+                  className={isLast(index) ? styles.labelCurrent : styles.label}
+                >
+                  {item.label}
+                </ds-text>
+                {!isLast(index) && (
+                  <div aria-hidden="true" className={styles.separator}>
+                    <ds-text as="span" size="medium" weight="regular">
+                      &nbsp;/&nbsp;
+                    </ds-text>
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ol>
         {lastLoginTimestamp && (
           <div className={styles.lastAccess}>
