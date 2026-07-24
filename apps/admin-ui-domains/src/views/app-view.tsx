@@ -8,6 +8,7 @@ import { Breadcrumbs, Container, type CrumbMenuItem } from '@zextras/ui-componen
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router';
 
 import { DOMAINS_ROUTE_ID, GLOBAL_ROUTE, MANAGE } from '../constants';
 import DomainListPanel from './domain/domain-list-panel';
@@ -16,6 +17,7 @@ import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
 
 export const AppView: FC = () => {
   const [t] = useTranslation();
+  const { pathname } = useLocation();
   const detailViewMaxWidth = useDetailViewMaxWidth();
 
   const domainsAppPath = `/${MANAGE}/${DOMAINS_ROUTE_ID}`;
@@ -26,9 +28,9 @@ export const AppView: FC = () => {
       label: t(labelKey, labelDefault),
     }),
   );
-  const crumbMenus: Record<string, Array<CrumbMenuItem>> = {
-    [domainsAppPath]: globalSections,
-  };
+  const crumbMenus = globalSections.some((s) => s.path === pathname)
+    ? { [pathname]: globalSections }
+    : undefined;
 
   return (
     <Container height={'fit'}>

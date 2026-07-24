@@ -15,12 +15,15 @@ export const AppView = () => {
   const [t] = useTranslation();
   const { pathname } = useLocation();
   const appBase = `/${pathname.split('/').filter(Boolean).slice(0, 2).join('/')}`;
-  const crumbMenus: Record<string, Array<CrumbMenuItem>> = {
-    [appBase]: SECTION_ROUTES.filter((r) => !r.prefix).map(({ id, labelKey, labelDefault }) => ({
+  const sections: Array<CrumbMenuItem> = SECTION_ROUTES.filter((r) => !r.prefix).map(
+    ({ id, labelKey, labelDefault }) => ({
       path: `${appBase}/${id}`,
       label: t(labelKey, labelDefault),
-    })),
-  };
+    }),
+  );
+  const crumbMenus = sections.some((s) => s.path === pathname)
+    ? { [pathname]: sections }
+    : undefined;
   return (
     <Container>
       <Breadcrumbs crumbMenus={crumbMenus} />
