@@ -10,7 +10,7 @@ import { useLocation } from 'react-router';
 import styles from './breadcrumb-component.module.css';
 
 type BreadcrumbItem = {
-  label: string | React.ReactNode;
+  label: string;
   path: string;
   homePath: string;
 };
@@ -20,39 +20,39 @@ function buildSplitRoutes(
   t: ReturnType<typeof useTranslation>[0],
 ): Array<BreadcrumbItem> {
   if (!pathname) return [];
-  const currentRoute = pathname.substring(1);
-  const splitRoute = currentRoute?.split('/');
-  const result: Array<BreadcrumbItem> = [];
-  splitRoute.forEach((item: string, index: number) => {
-    if (index === 0) {
-      result.push({
-        label: t('label.home', 'Home'),
-        path: `/${item}`,
-        homePath: `/${DASHBOARD_ROUTE_ID}`,
-      });
-    } else {
-      const prevPath = result[index - 1]?.path ?? '';
-      result.push({
-        /* i18next-extract-disable-next-line */
-        label: t(`label.${item}`, item.charAt(0).toUpperCase() + item.slice(1)),
-        path: `${prevPath}/${item}`,
-        homePath: `/${DASHBOARD_ROUTE_ID}`,
-      });
-    }
+
+  const segments = pathname.split('/').filter(Boolean);
+
+  const items = segments.map((segment, index) => {
+    const path = `/${segments.slice(0, index + 1).join('/')}`;
+    return {
+      label:
+        index === 0
+          ? t('label.home', 'Home')
+          : /* i18next-extract-disable-next-line */ t(
+              `label.${segment}`,
+              segment.charAt(0).toUpperCase() + segment.slice(1),
+            ),
+      path,
+      homePath: `/${DASHBOARD_ROUTE_ID}`,
+    };
   });
 
-  if (splitRoute.length === 1) {
-    result.push({
-      label: t('label.dashboard', 'Dashboard'),
-      path: `/${splitRoute[0]}/dashboard`,
-      homePath: `/${DASHBOARD_ROUTE_ID}`,
-    });
+  if (segments.length === 1) {
+    return [
+      ...items,
+      {
+        label: t('label.dashboard', 'Dashboard'),
+        path: `/${segments[0]}/dashboard`,
+        homePath: `/${DASHBOARD_ROUTE_ID}`,
+      },
+    ];
   }
 
-  return result;
+  return items;
 }
 
-export const Breadcrumbs = () => {
+export function Breadcrumbs() {
   const [t] = useTranslation();
   const location = useLocation();
   const userSetting = useUserSettings();
@@ -68,14 +68,14 @@ export const Breadcrumbs = () => {
     <div className={styles.breadcrumb}>
       <div className={styles.bar}>
         {splitRoutes.map((item: BreadcrumbItem, index) => (
-          <div className={styles.item} key={item?.path}>
+          <div className={styles.item} key={item.path}>
             <ds-text
               as="span"
               size="medium"
               weight="regular"
               className={isLast(index) ? styles.labelCurrent : styles.label}
             >
-              {item?.label}
+              {item.label}
             </ds-text>
             {!isLast(index) && (
               <div className={styles.separator}>
@@ -96,4 +96,4 @@ export const Breadcrumbs = () => {
       </div>
     </div>
   );
-};
+}
