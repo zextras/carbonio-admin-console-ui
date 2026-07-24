@@ -52,7 +52,7 @@ function buildSplitRoutes(
   return result;
 }
 
-export const BreadcrumbComponent = () => {
+export const Breadcrumbs = () => {
   const [t] = useTranslation();
   const location = useLocation();
   const userSetting = useUserSettings();

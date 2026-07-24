@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { BreadcrumbComponent, Container } from '@zextras/ui-components';
+import { Breadcrumbs, Container } from '@zextras/ui-components';
 import { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
@@ -16,7 +16,7 @@ import RunningDetailPanel from './operations/running-detail-panel';
 export const AppView: FC = () => {
   return (
     <Container height={'fit'}>
-      <BreadcrumbComponent />
+      <Breadcrumbs />
       <Routes>
         <Route index element={<Navigate to={RUNNING_ROUTE_ID} replace />} />
         <Route element={<OperationsLayout />}>

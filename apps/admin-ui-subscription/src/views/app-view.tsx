@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { BreadcrumbComponent } from '@zextras/ui-components';
+import { Breadcrumbs } from '@zextras/ui-components';
 import {
   useBreakpoint,
   useLicenseInfo,
@@ -78,7 +78,7 @@ export const AppView = () => {
 
   return (
     <div className={styles.root}>
-      <BreadcrumbComponent />
+      <Breadcrumbs />
       {!isLoading && (
         <div className={styles.detailWrapper}>
           <div

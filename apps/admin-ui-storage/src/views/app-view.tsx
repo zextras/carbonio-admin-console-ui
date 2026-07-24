@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { BreadcrumbComponent, Container } from '@zextras/ui-components';
+import { Breadcrumbs, Container } from '@zextras/ui-components';
 import { Navigate, Route, Routes } from 'react-router';
 
 import { DATA_VOLUMES, HSM_SETTINGS, S3CONNECTOR_LIST, SERVERS_LIST } from '../constants';
@@ -16,7 +16,7 @@ import { StorageLayout } from './storage-layout';
 export const AppView = () => {
   return (
     <Container>
-      <BreadcrumbComponent />
+      <Breadcrumbs />
       <Routes>
         <Route element={<StorageLayout />}>
           <Route index element={<Navigate to={SERVERS_LIST} replace />} />

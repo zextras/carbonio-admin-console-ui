@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { BreadcrumbComponent } from '@zextras/ui-components';
+import { Breadcrumbs } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
 import { Route, Routes, useLocation } from 'react-router';
 
@@ -19,7 +19,7 @@ export const AppView = () => {
   const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);
   return (
     <div className={styles.root}>
-      <BreadcrumbComponent />
+      <Breadcrumbs />
       <Routes>
         <Route
           path={'/*'}
