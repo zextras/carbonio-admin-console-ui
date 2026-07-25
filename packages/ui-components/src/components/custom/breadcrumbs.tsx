@@ -117,7 +117,7 @@ export const Breadcrumbs = ({ crumbMenus }: Readonly<BreadcrumbsProps>) => {
                 >
                   {item.label}
                 </ds-text>
-                {menu && menu.length > 0 ? (
+                {menu && menu.length > 0 && (
                   <Dropdown
                     items={menu.map((mi) => ({
                       id: mi.path,
@@ -136,7 +136,7 @@ export const Breadcrumbs = ({ crumbMenus }: Readonly<BreadcrumbsProps>) => {
                       <ds-icon color="gray1" icon="ChevronDown" size="small" />
                     </button>
                   </Dropdown>
-                ) : null}
+                )}
                 {!isLast(index) && (
                   <div aria-hidden="true" className={styles.separator}>
                     <ds-text as="span" size="medium" weight="regular">
