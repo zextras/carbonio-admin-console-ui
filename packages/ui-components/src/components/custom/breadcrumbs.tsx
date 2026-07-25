@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { DASHBOARD_ROUTE_ID, useLastLoginTimestamp, useUserSettings } from '@zextras/ui-shared';
+import { DASHBOARD_ROUTE_ID, useLastLoginTimestamp, useModuleCrumbMenu, useUserSettings } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -74,6 +74,8 @@ export function Breadcrumbs({ crumbMenus }: BreadcrumbsProps) {
     enabled: Boolean(userSetting?.attrs?.zimbraId),
   });
   const splitRoutes = buildSplitRoutes(location?.pathname ?? '', t);
+  const moduleCrumbMenu = useModuleCrumbMenu(location?.pathname ?? '');
+  const mergedCrumbMenus = { ...moduleCrumbMenu, ...crumbMenus };
 
   const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
 
@@ -83,7 +85,7 @@ export function Breadcrumbs({ crumbMenus }: BreadcrumbsProps) {
         <ol className={styles.list}>
           {splitRoutes.map((item: BreadcrumbItem, index) => {
             const target = index === 0 ? item.homePath : item.path;
-            const menu = crumbMenus?.[item.path];
+            const menu = mergedCrumbMenus?.[item.path];
             const interactive: React.HTMLAttributes<HTMLElement> = isLast(index)
               ? {}
               : {
