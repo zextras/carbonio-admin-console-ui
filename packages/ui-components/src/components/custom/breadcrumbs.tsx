@@ -3,7 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { DASHBOARD_ROUTE_ID, useLastLoginTimestamp, useModuleCrumbMenu, useUserSettings } from '@zextras/ui-shared';
+import {
+  DASHBOARD_ROUTE_ID,
+  useLastLoginTimestamp,
+  useModuleCrumbMenu,
+  useUserSettings,
+} from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -64,7 +69,7 @@ function buildSplitRoutes(
   return segments.length === 1 ? [...items, dashboardCrumb(segments[0], t)] : items;
 }
 
-export function Breadcrumbs({ crumbMenus }: BreadcrumbsProps) {
+export const Breadcrumbs = ({ crumbMenus }: Readonly<BreadcrumbsProps>) => {
   const [t] = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -153,4 +158,4 @@ export function Breadcrumbs({ crumbMenus }: BreadcrumbsProps) {
       </div>
     </nav>
   );
-}
+};
