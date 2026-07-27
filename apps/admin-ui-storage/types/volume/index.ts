@@ -406,6 +406,7 @@ export type ModifyVolumeProps = {
     secondaries: Array<Volume>;
   };
   setOpen: (v: boolean) => void;
+  onShowErrorSnackbar?: (errorDetails?: unknown) => void;
 };
 
 /**

@@ -155,6 +155,7 @@ export type ModifyVolumeFormProps = {
   readonly setmodifyVolumeToggle: (newValue: boolean) => void;
   readonly getAllVolumesRequest: () => void;
   readonly setOpen: (newValue: boolean) => void;
+  readonly onShowErrorSnackbar?: (errorDetails?: unknown) => void;
 };
 
 export function ModifyVolumeForm({
@@ -172,6 +173,7 @@ export function ModifyVolumeForm({
   setmodifyVolumeToggle,
   getAllVolumesRequest,
   setOpen,
+  onShowErrorSnackbar,
 }: Readonly<ModifyVolumeFormProps>) {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
@@ -277,8 +279,12 @@ export function ModifyVolumeForm({
         setIsPendingProgress(false);
       };
 
-      const finishSaveError = (): void => {
-        showVolumeSaveError(createSnackbar, t);
+      const finishSaveError = (errorDetails?: unknown): void => {
+        if (onShowErrorSnackbar) {
+          onShowErrorSnackbar(errorDetails);
+        } else {
+          showVolumeSaveError(createSnackbar, t);
+        }
         setmodifyVolumeToggle(false);
         setIsPendingProgress(false);
       };
@@ -307,7 +313,9 @@ export function ModifyVolumeForm({
               finishSaveSuccess();
               form.reset(value);
             },
-            onError: finishSaveError,
+            onError: (errorDetails) => {
+              finishSaveError(errorDetails);
+            },
           });
         } else {
           await saveCeVolume(
@@ -328,13 +336,22 @@ export function ModifyVolumeForm({
                 finishSaveSuccess();
                 form.reset(value);
               },
-              onModifyError: finishSaveError,
-              onSetCurrentError: (): void => {setIsPendingProgress(false);},
+              onModifyError: (errorDetails): void => {
+                finishSaveError(errorDetails);
+              },
+              onSetCurrentError: (errorDetails): void => {
+                if (onShowErrorSnackbar) {
+                  onShowErrorSnackbar(errorDetails);
+                } else {
+                  showVolumeSaveError(createSnackbar, t);
+                }
+                setIsPendingProgress(false);
+              },
             },
           );
         }
-      } catch {
-        finishSaveError();
+      } catch (error) {
+        finishSaveError(error);
       }
     },
   });

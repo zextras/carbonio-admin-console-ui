@@ -81,6 +81,7 @@ export function ModifyVolume({
   selectedServerId,
   volumeList,
   setOpen,
+  onShowErrorSnackbar,
 }: Readonly<{
   volumeId: string | number | undefined;
   volumeName?: string;
@@ -93,6 +94,7 @@ export function ModifyVolume({
     secondaries: Volume[];
   };
   setOpen: (newValue: boolean) => void;
+  onShowErrorSnackbar?: (errorDetails?: unknown) => void;
 }>) {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
@@ -176,6 +178,7 @@ export function ModifyVolume({
       setmodifyVolumeToggle={setmodifyVolumeToggle}
       getAllVolumesRequest={getAllVolumesRequest}
       setOpen={setOpen}
+      onShowErrorSnackbar={onShowErrorSnackbar}
     />
   );
 }

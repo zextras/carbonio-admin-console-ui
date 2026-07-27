@@ -1,0 +1,81 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 2000;
+}
+
+.dialog {
+  position: relative;
+  border-radius: 1.5rem;
+  background: var(--color-gray6-regular, white);
+  width: min(34rem, calc(100vw - 2rem));
+  max-height: min(calc(100vh - 2rem), 32rem);
+  overflow: auto;
+  box-shadow: 0 0.25rem 1.5rem rgba(0, 0, 0, 0.08);
+  color: var(--color-gray0-regular);
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  min-height: 12rem;
+  padding: 2rem;
+}
+
+.imageCircle {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1000px;
+  border: 1px solid var(--color-error-regular);
+  flex-shrink: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.closeButton {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-gray1-regular);
+  cursor: pointer;
+  padding: 0;
+}
+
+.closeButton:hover {
+  background: var(--color-gray5-regular);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.title {
+  display: block;
+}

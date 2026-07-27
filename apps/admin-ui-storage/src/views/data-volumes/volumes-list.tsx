@@ -53,6 +53,7 @@ import { NewVolume } from './create-volume/new-volume';
 import { DeleteVolumeModel } from './delete-volume-model';
 import { IndexerVolumeTable } from './indexer-volume-table';
 import { ModifyVolume } from './modify-volume/modify-volume';
+import { VolumeErrorDetailsModal } from './volume-error-details-modal';
 
 type SoapContentResponse = {
   Body?: {
@@ -61,6 +62,54 @@ type SoapContentResponse = {
     };
   };
 };
+
+type ErrorPayload = {
+  message?: unknown;
+  details?: unknown;
+  exception?: unknown;
+};
+
+function extractErrorDetailsMessage(error: unknown, fallback: string): string {
+  if (typeof error === 'string') {
+    return error.trim() ? error : fallback;
+  }
+
+  if (!error || typeof error !== 'object') {
+    return fallback;
+  }
+
+  const payload = error as ErrorPayload;
+
+  if (typeof payload?.details === 'string' && payload.details.trim()) {
+    return payload.details;
+  }
+
+  if (payload?.details && typeof payload.details === 'object') {
+    const nestedDetails = payload.details as { details?: unknown; exception?: unknown };
+    if (typeof nestedDetails?.details === 'string' && nestedDetails.details.trim()) {
+      return nestedDetails.details;
+    }
+
+    if (typeof nestedDetails?.exception === 'string' && nestedDetails.exception.trim()) {
+      return nestedDetails.exception;
+    }
+  }
+
+  if (typeof payload?.exception === 'string' && payload.exception.trim()) {
+    return payload.exception;
+  }
+
+  if (typeof payload?.message === 'string' && payload.message.trim()) {
+    return payload.message;
+  }
+
+  if (typeof (payload as { error?: unknown })?.error === 'string') {
+    const errorMessage = (payload as { error?: string }).error;
+    return errorMessage?.trim() ? errorMessage : fallback;
+  }
+
+  return fallback;
+}
 
 function VolumeListTable({
   volumes,
@@ -227,6 +276,8 @@ export function VolumesDetailPanel() {
     type: 0,
   });
   const [open, setOpen] = useState<boolean>(false);
+  const [errorDetailsMessage, setErrorDetailsMessage] = useState<string>('');
+  const [isErrorDetailsOpen, setIsErrorDetailsOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const { data: volumeList = { primaries: [], indexes: [], secondaries: [] } } = useAllVolumes(
     server,
@@ -239,6 +290,28 @@ export function VolumesDetailPanel() {
     });
   };
   const createSnackbar = useSnackbar();
+
+  const defaultCreateErrorMessage = t('label.volume_create_error_default', 'Something went wrong, please try again');
+
+  const openErrorDetailsModal = (message?: unknown): void => {
+    setErrorDetailsMessage(extractErrorDetailsMessage(message, defaultCreateErrorMessage));
+    setIsErrorDetailsOpen(true);
+  };
+
+  const showCreateErrorSnackbar = (detailsMessage?: unknown): void => {
+    createSnackbar({
+      key: 'error',
+      severity: 'error',
+      label: t('label.volume_detail_error', '{{message}}', {
+        message: defaultCreateErrorMessage,
+      }),
+      autoHideTimeout: 5000,
+      actionLabel: t('storage.dataVolumes.details', 'Details'),
+      onActionClick: () => {
+        openErrorDetailsModal(detailsMessage);
+      },
+    });
+  };
 
   const closeHandler = (): void => {
     setOpen(false);
@@ -442,36 +515,15 @@ export function VolumesDetailPanel() {
             setToggleWizardLocal(false);
             setToggleWizardExternal(false);
           } else {
-            createSnackbar({
-              key: '1',
-              severity: 'error',
-              label: t('label.volume_detail_error', '{{message}}', {
-                message: result?.response[server]?.error?.message,
-              }),
-            });
+            showCreateErrorSnackbar(result?.response?.[server]?.error?.message);
           }
         } else {
-          createSnackbar({
-            key: '1',
-            severity: 'error',
-            label: t('label.volume_detail_error', '{{message}}', {
-              message: 'Something went wrong, please try again',
-            }),
-          });
+          showCreateErrorSnackbar();
         }
         return typedRes;
       })
       .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.volume_detail_error', '{{message}}', {
-                message: 'Something went wrong, please try again',
-              }),
-          autoHideTimeout: 5000,
-        });
+        showCreateErrorSnackbar(error?.message);
         return error;
       });
   };
@@ -505,7 +557,10 @@ export function VolumesDetailPanel() {
       ).then(async (res: { Body: { response: { content: string } } }): Promise<void> => {
         const result = JSON.parse(res?.Body?.response?.content);
         const responseData = Object.values(result?.response)[0];
-        const typeRes = responseData as { ok: boolean; error: string };
+        const typeRes = responseData as {
+          ok?: boolean;
+          error?: unknown;
+        };
         if (typeRes && typeRes?.ok === true) {
           if (attr?.isCurrent) {
             await postSoapFetchRequest(
@@ -529,14 +584,7 @@ export function VolumesDetailPanel() {
                 });
               })
               .catch(() => {
-                createSnackbar({
-                  key: 'error',
-                  severity: 'error',
-                  label: t('label.volume_detail_error', '{{message}}', {
-                    message: 'Something went wrong, please try again',
-                  }),
-                  autoHideTimeout: 5000,
-                });
+                showCreateErrorSnackbar();
               });
           }
           invalidateVolumes();
@@ -547,15 +595,8 @@ export function VolumesDetailPanel() {
           });
           setToggleWizardLocal(false);
           setToggleWizardExternal(false);
-        } else if (typeRes && typeRes?.ok === false && typeRes?.error) {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.volume_detail_error', '{{message}}', {
-              message: 'Something went wrong, please try again',
-            }),
-            autoHideTimeout: 5000,
-          });
+        } else if (typeRes && typeRes?.ok === false) {
+          showCreateErrorSnackbar(typeRes?.error);
         }
         setIsPendingProgress(false);
       });
@@ -578,14 +619,7 @@ export function VolumesDetailPanel() {
                     });
                   })
                   .catch(() => {
-                    createSnackbar({
-                      key: 'error',
-                      severity: 'error',
-                      label: t('label.volume_detail_error', '{{message}}', {
-                        message: 'Something went wrong, please try again',
-                      }),
-                      autoHideTimeout: 5000,
-                    });
+                    showCreateErrorSnackbar();
                   });
               }
             }
@@ -602,16 +636,7 @@ export function VolumesDetailPanel() {
           return res;
         })
         .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.volume_detail_error', '{{message}}', {
-                  message: 'Something went wrong, please try again',
-                }),
-            autoHideTimeout: 5000,
-          });
+          showCreateErrorSnackbar(error?.message);
           setIsPendingProgress(false);
           return error;
         });
@@ -658,9 +683,17 @@ export function VolumesDetailPanel() {
             getAllVolumesRequest={invalidateVolumes}
             selectedServerId={selectedServerId}
             volumeList={volumeList}
+            onShowErrorSnackbar={showCreateErrorSnackbar}
           />
         </ModalOverlay>
       )}
+      <VolumeErrorDetailsModal
+        open={isErrorDetailsOpen}
+        message={errorDetailsMessage}
+        onClose={(): void => {
+          setIsErrorDetailsOpen(false);
+        }}
+      />
 
       <Container
         orientation="column"
