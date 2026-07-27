@@ -34,12 +34,12 @@ export const AppView: FC = () => {
     Boolean(deeperSegment) && serverRoutes.some((r) => r.id === deeperSegment);
   const isTopLevelSection = topLevelSections.some((s) => s.path === pathname);
 
-  const sectionMenu =
+  const serverSectionMenu =
     isServerRoute && serverRoutes.length > 1
       ? buildSectionMenu(`${appBase}/${segmentAfterBase}`, serverRoutes, t)
-    : isTopLevelSection
-      ? topLevelSections
       : undefined;
+  const topLevelSectionMenu = isTopLevelSection ? topLevelSections : undefined;
+  const sectionMenu = serverSectionMenu ?? topLevelSectionMenu;
 
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
   const nonNavigableSegments =
