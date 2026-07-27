@@ -77,6 +77,7 @@ export function Connection({
       bucketName: '',
       accessKey: '',
       secretKey: '',
+      shouldChangeSecret: true,
       url: '',
       prefix: '',
       customRegion: '',

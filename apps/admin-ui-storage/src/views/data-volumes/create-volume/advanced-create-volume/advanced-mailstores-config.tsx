@@ -170,7 +170,7 @@ export function AdvancedMailstoresConfig({
       )}
       <ds-divider className={styles.sectionDivider}></ds-divider>
       <div className={styles.sectionHeader}>
-        <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+        <ds-text className={styles.sectionHeaderLabel} weight="bold" size="medium">
           {t('label.volume_type', 'Volume Type')}
         </ds-text>
       </div>

@@ -254,14 +254,91 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 				label: connectorDetail.label,
 				bucketName: connectorDetail.bucketName,
 				accessKey: connectorDetail.accessKey,
-				secret: connectorDetail.secret,
 				url: connectorDetail.url,
 				region: connectorDetail.region,
 				insecureHttps: true,
 			}),
 		);
+		expect(mockTestS3Connector.mock.calls[0]?.[0]).not.toHaveProperty('secret');
 		expect(mockTestS3Connector.mock.calls[0]?.[0]).not.toHaveProperty('iAmSure');
 		await expect.element(page.getByText('verify-success')).toBeInTheDocument();
+	});
+
+	it('should show saved secret state by default and reveal secret input only after CHANGE click', async () => {
+		const { view } = renderEditS3ConnectorPanel();
+
+		await setupBrowserTest(view);
+
+		await expect.element(page.getByText('Saved on this server')).toBeInTheDocument();
+		await expect
+			.element(
+				page.getByText(
+					"TEST CONNECTION uses the saved key - you don't need to re-enter it. For security it can't be displayed.",
+				),
+			)
+			.toBeInTheDocument();
+		await expect.element(page.getByRole('button', { name: 'CHANGE' })).toBeInTheDocument();
+		expect(page.getByLabelText('Secret Access Key*').elements()).toHaveLength(0);
+
+		await page.getByRole('button', { name: 'CHANGE' }).click();
+
+		await expect.element(page.getByLabelText('Secret Access Key*')).toBeInTheDocument();
+		await expect
+			.element(
+				page.getByText('The new key will replace the saved one when you verify and save changes.'),
+			)
+			.toBeInTheDocument();
+	});
+
+	it('should discard secret draft and return to default state when close icon is clicked', async () => {
+		const { view } = renderEditS3ConnectorPanel();
+
+		await setupBrowserTest(view);
+		await page.getByRole('button', { name: 'CHANGE' }).click();
+		await page.getByLabelText('Secret Access Key*').fill('NEW_SECRET_VALUE');
+
+		await page.getByTestId('icon: CloseOutline').nth(1).click();
+
+		await expect.element(page.getByText('Saved on this server')).toBeInTheDocument();
+		expect(page.getByLabelText('Secret Access Key*').elements()).toHaveLength(0);
+
+		await page.getByRole('button', { name: /test connection/i }).click();
+
+		await vi.waitFor(() => {
+			expect(mockTestS3Connector).toHaveBeenCalledTimes(1);
+		});
+		expect(mockTestS3Connector.mock.calls[0]?.[0]).not.toHaveProperty('secret');
+	});
+
+	it('should send new secret for test connection and update when change mode is active', async () => {
+		const { view } = renderEditS3ConnectorPanel();
+
+		await setupBrowserTest(view);
+		await page.getByRole('button', { name: 'CHANGE' }).click();
+		await page.getByLabelText('Secret Access Key*').fill('REPLACED_SECRET');
+
+		await page.getByRole('button', { name: /test connection/i }).click();
+
+		await vi.waitFor(() => {
+			expect(mockTestS3Connector).toHaveBeenCalledTimes(1);
+		});
+		expect(mockTestS3Connector).toHaveBeenCalledWith(
+			expect.objectContaining({
+				secret: 'REPLACED_SECRET',
+			}),
+		);
+
+		await page.getByRole('button', { name: /verify & save changes/i }).click();
+		await page.getByRole('button', { name: /apply changes/i }).click();
+
+		await vi.waitFor(() => {
+			expect(mockUpdateS3Connector).toHaveBeenCalledTimes(1);
+		});
+		expect(mockUpdateS3Connector).toHaveBeenCalledWith(
+			expect.objectContaining({
+				secret: 'REPLACED_SECRET',
+			}),
+		);
 	});
 
 	it('should send unsaved form values when testing connection', async () => {
