@@ -34,7 +34,7 @@ export const AppView: FC = () => {
 
   return (
     <Container height={'fit'}>
-      <Breadcrumbs crumbMenus={crumbMenus} />
+      <Breadcrumbs crumbMenus={crumbMenus} nonNavigableSegments={[GLOBAL_ROUTE]} />
       <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
         <Container style={{ maxWidth: '265px' }}>
           <Suspense fallback={<ds-spinner />}>

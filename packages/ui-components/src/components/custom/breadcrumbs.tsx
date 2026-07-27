@@ -19,6 +19,7 @@ type BreadcrumbItem = {
   label: string;
   path: string;
   homePath: string;
+  segment: string;
 };
 
 export type CrumbMenuItem = {
@@ -28,6 +29,7 @@ export type CrumbMenuItem = {
 
 export type BreadcrumbsProps = {
   crumbMenus?: Record<string, Array<CrumbMenuItem>>;
+  nonNavigableSegments?: Array<string>;
 };
 
 const HOME_PATH = `/${DASHBOARD_ROUTE_ID}`;
@@ -40,6 +42,7 @@ function dashboardCrumb(
     label: t('label.dashboard', 'Dashboard'),
     path: `/${rootSegment}/dashboard`,
     homePath: HOME_PATH,
+    segment: 'dashboard',
   };
 }
 
@@ -63,13 +66,14 @@ function buildSplitRoutes(
             ),
       path,
       homePath: HOME_PATH,
+      segment,
     };
   });
 
   return segments.length === 1 ? [...items, dashboardCrumb(segments[0], t)] : items;
 }
 
-export const Breadcrumbs = ({ crumbMenus }: Readonly<BreadcrumbsProps>) => {
+export const Breadcrumbs = ({ crumbMenus, nonNavigableSegments }: Readonly<BreadcrumbsProps>) => {
   const [t] = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -80,6 +84,7 @@ export const Breadcrumbs = ({ crumbMenus }: Readonly<BreadcrumbsProps>) => {
   });
   const splitRoutes = buildSplitRoutes(location?.pathname ?? '', t);
   const moduleMenu = useModuleCrumbMenu(location?.pathname ?? '');
+  const nonNavigableSet = new Set(nonNavigableSegments);
 
   const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
 
@@ -92,9 +97,9 @@ export const Breadcrumbs = ({ crumbMenus }: Readonly<BreadcrumbsProps>) => {
             const isModuleCrumb = index === 1;
             const menu =
               isModuleCrumb && moduleMenu.length > 0 ? moduleMenu : crumbMenus?.[item.path];
-            const interactive: React.HTMLAttributes<HTMLElement> = isLast(index)
-              ? {}
-              : {
+            const navigable = !isLast(index) && !nonNavigableSet.has(item.segment);
+            const interactive: React.HTMLAttributes<HTMLElement> = navigable
+              ? {
                   onClick: () => navigate(target),
                   onKeyDown: (e) => {
                     if (e.key === 'Enter') navigate(target);
@@ -102,7 +107,8 @@ export const Breadcrumbs = ({ crumbMenus }: Readonly<BreadcrumbsProps>) => {
                   role: 'link',
                   tabIndex: 0,
                   style: { cursor: 'pointer' },
-                };
+                }
+              : {};
             return (
               <li
                 aria-current={isLast(index) ? 'page' : undefined}
@@ -114,7 +120,7 @@ export const Breadcrumbs = ({ crumbMenus }: Readonly<BreadcrumbsProps>) => {
                   as="span"
                   size="medium"
                   weight="regular"
-                  className={isLast(index) ? styles.labelCurrent : styles.label}
+                  className={navigable ? styles.label : styles.labelCurrent}
                 >
                   {item.label}
                 </ds-text>

@@ -45,6 +45,7 @@ type RenderOptions = {
   translations?: Record<string, string>;
   crumbMenus?: Record<string, Array<CrumbMenuItem>>;
   moduleCrumbMenu?: Array<CrumbMenuItem>;
+  nonNavigableSegments?: Array<string>;
 };
 
 function renderBreadcrumb({
@@ -53,6 +54,7 @@ function renderBreadcrumb({
   translations,
   crumbMenus,
   moduleCrumbMenu = [],
+  nonNavigableSegments,
 }: RenderOptions = {}) {
   vi.mocked(useLastLoginTimestamp).mockReturnValue({ data: lastLoginTimestamp } as never);
   vi.mocked(useModuleCrumbMenu).mockReturnValue(moduleCrumbMenu as never);
@@ -60,7 +62,7 @@ function renderBreadcrumb({
   return render(
     <MemoryRouter initialEntries={[path]}>
       <I18nextProvider i18n={i18n}>
-        <Breadcrumbs crumbMenus={crumbMenus} />
+        <Breadcrumbs crumbMenus={crumbMenus} nonNavigableSegments={nonNavigableSegments} />
         <LocationProbe />
       </I18nextProvider>
     </MemoryRouter>,
@@ -381,6 +383,73 @@ describe('BreadcrumbComponent', () => {
         translations: moduleTranslations,
       });
       expect(screen.queryByRole('button', { name: 'Show sections' })).toBeNull();
+    });
+  });
+
+  describe('Non-navigable segments', () => {
+    const translations: Record<string, string> = {
+      ...TRANSLATIONS,
+      global: 'Global',
+    };
+
+    it('makes a non-navigable segment non-interactive (no role, no tabIndex, no pointer)', () => {
+      renderBreadcrumb({
+        path: '/manage/domains/global/domains',
+        translations,
+        nonNavigableSegments: ['global'],
+      });
+      const globalText = screen.getByText('Global').closest('ds-text') as HTMLElement;
+      expect(globalText.getAttribute('role')).toBeNull();
+      expect(globalText.getAttribute('tabindex')).toBeNull();
+      const style = globalText.getAttribute('style') ?? '';
+      expect(style).not.toContain('pointer');
+    });
+
+    it('applies the labelCurrent class to a non-navigable segment', () => {
+      renderBreadcrumb({
+        path: '/manage/domains/global/domains',
+        translations,
+        nonNavigableSegments: ['global'],
+      });
+      const globalText = screen.getByText('Global').closest('ds-text') as HTMLElement;
+      expect(globalText.className).toContain(styles.labelCurrent);
+    });
+
+    it('still renders the separator after a non-navigable segment', () => {
+      renderBreadcrumb({
+        path: '/manage/domains/global/domains',
+        translations,
+        nonNavigableSegments: ['global'],
+      });
+      const allDsTexts = getAllDsTexts();
+      const globalIndex = allDsTexts.findIndex((el) => el.textContent === 'Global');
+      const afterGlobal = allDsTexts.slice(globalIndex + 1);
+      const hasSeparator = afterGlobal.some(
+        (el) => el.textContent?.includes('/') && el.closest('[aria-hidden="true"]') != null,
+      );
+      expect(hasSeparator).toBe(true);
+    });
+
+    it('keeps other crumbs clickable when one is non-navigable', () => {
+      renderBreadcrumb({
+        path: '/manage/domains/global/domains',
+        translations,
+        nonNavigableSegments: ['global'],
+      });
+      const domainsText = screen.getAllByText('Domains')[0]!.closest('ds-text') as HTMLElement;
+      const style = domainsText.getAttribute('style') ?? '';
+      expect(style).toContain('pointer');
+      expect(domainsText.getAttribute('role')).toBe('link');
+    });
+
+    it('does not navigate when a non-navigable crumb is clicked', () => {
+      renderBreadcrumb({
+        path: '/manage/domains/global/domains',
+        translations,
+        nonNavigableSegments: ['global'],
+      });
+      fireEvent.click(screen.getByText('Global'));
+      expect(screen.getByTestId('location').textContent).toBe('/manage/domains/global/domains');
     });
   });
 });
