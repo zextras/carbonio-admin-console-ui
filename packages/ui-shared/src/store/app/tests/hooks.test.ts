@@ -9,6 +9,7 @@ import { type PrimaryBarView } from '../../../../types';
 import { buildModuleCrumbMenu } from '../hooks';
 
 const manageSection = { id: 'manage', label: 'Manage', position: 3 };
+const servicesSection = { id: 'services', label: 'Services', position: 1 };
 
 function makeView(overrides: Partial<PrimaryBarView> = {}): PrimaryBarView {
   return {
@@ -26,11 +27,11 @@ function makeView(overrides: Partial<PrimaryBarView> = {}): PrimaryBarView {
 }
 
 describe('buildModuleCrumbMenu', () => {
-  it('returns sibling modules for the current module section', () => {
+  it('returns all visible modules across all sections', () => {
     const primaryBar: Array<PrimaryBarView> = [
       makeView({ id: 'domains', route: 'domains', path: 'manage/domains', label: 'Domains', position: 1 }),
       makeView({ id: 'storage', route: 'storage', path: 'manage/storage', label: 'Storage', position: 2 }),
-      makeView({ id: 'cos', route: 'cos', path: 'manage/cos', label: 'COS', position: 3 }),
+      makeView({ id: 'backup', route: 'backup', path: 'services/backup', label: 'Backup', section: servicesSection, position: 3 }),
     ];
 
     const result = buildModuleCrumbMenu(primaryBar, '/manage/storage/servers_list');
@@ -38,7 +39,7 @@ describe('buildModuleCrumbMenu', () => {
     expect(result['/manage/storage']).toEqual([
       { path: '/manage/domains', label: 'Domains' },
       { path: '/manage/storage', label: 'Storage' },
-      { path: '/manage/cos', label: 'COS' },
+      { path: '/services/backup', label: 'Backup' },
     ]);
   });
 
@@ -48,14 +49,7 @@ describe('buildModuleCrumbMenu', () => {
     expect(buildModuleCrumbMenu(primaryBar, '')).toEqual({});
   });
 
-  it('returns an empty record when the current module has no section', () => {
-    const primaryBar: Array<PrimaryBarView> = [
-      makeView({ section: undefined, path: 'storage' }),
-    ];
-    expect(buildModuleCrumbMenu(primaryBar, '/storage/servers_list')).toEqual({});
-  });
-
-  it('returns an empty record when there are fewer than two siblings', () => {
+  it('returns an empty record when there are fewer than two visible modules', () => {
     const primaryBar: Array<PrimaryBarView> = [makeView()];
     expect(buildModuleCrumbMenu(primaryBar, '/manage/storage/servers_list')).toEqual({});
   });
@@ -72,28 +66,40 @@ describe('buildModuleCrumbMenu', () => {
     expect(result['/manage/storage']?.find((m) => m.label === 'Hidden')).toBeUndefined();
   });
 
-  it('excludes items from other sections', () => {
-    const servicesSection = { id: 'services', label: 'Services', position: 1 };
+  it('includes modules from different sections', () => {
     const primaryBar: Array<PrimaryBarView> = [
-      makeView({ id: 'domains', route: 'domains', path: 'manage/domains', label: 'Domains', position: 1 }),
-      makeView({ id: 'storage', route: 'storage', path: 'manage/storage', label: 'Storage', position: 2 }),
-      makeView({ id: 'backup', route: 'backup', path: 'services/backup', label: 'Backup', section: servicesSection, position: 1 }),
-    ];
-
-    const result = buildModuleCrumbMenu(primaryBar, '/manage/storage/servers_list');
-    expect(result['/manage/storage']).toHaveLength(2);
-    expect(result['/manage/storage']?.find((m) => m.label === 'Backup')).toBeUndefined();
-  });
-
-  it('sorts siblings by position', () => {
-    const primaryBar: Array<PrimaryBarView> = [
-      makeView({ id: 'cos', route: 'cos', path: 'manage/cos', label: 'COS', position: 5 }),
-      makeView({ id: 'domains', route: 'domains', path: 'manage/domains', label: 'Domains', position: 1 }),
-      makeView({ id: 'storage', route: 'storage', path: 'manage/storage', label: 'Storage', position: 3 }),
+      makeView({ id: 'storage', route: 'storage', path: 'manage/storage', label: 'Storage', position: 2, section: manageSection }),
+      makeView({ id: 'backup', route: 'backup', path: 'services/backup', label: 'Backup', position: 1, section: servicesSection }),
     ];
 
     const result = buildModuleCrumbMenu(primaryBar, '/manage/storage/servers_list');
     const labels = result['/manage/storage']?.map((m) => m.label);
-    expect(labels).toEqual(['Domains', 'Storage', 'COS']);
+    expect(labels).toContain('Storage');
+    expect(labels).toContain('Backup');
+  });
+
+  it('sorts all modules by position', () => {
+    const primaryBar: Array<PrimaryBarView> = [
+      makeView({ id: 'cos', route: 'cos', path: 'manage/cos', label: 'COS', position: 5 }),
+      makeView({ id: 'backup', route: 'backup', path: 'services/backup', label: 'Backup', position: 1, section: servicesSection }),
+      makeView({ id: 'domains', route: 'domains', path: 'manage/domains', label: 'Domains', position: 3 }),
+    ];
+
+    const result = buildModuleCrumbMenu(primaryBar, '/manage/storage/servers_list');
+    const labels = result['/manage/storage']?.map((m) => m.label);
+    expect(labels).toEqual(['Backup', 'Domains', 'COS']);
+  });
+
+  it('shows the dropdown even when the current module is not in the primary bar', () => {
+    const primaryBar: Array<PrimaryBarView> = [
+      makeView({ id: 'domains', route: 'domains', path: 'manage/domains', label: 'Domains', position: 1 }),
+      makeView({ id: 'storage', route: 'storage', path: 'manage/storage', label: 'Storage', position: 2 }),
+    ];
+
+    const result = buildModuleCrumbMenu(primaryBar, '/custom/unknown/sub_page');
+    expect(result['/custom/unknown']).toEqual([
+      { path: '/manage/domains', label: 'Domains' },
+      { path: '/manage/storage', label: 'Storage' },
+    ]);
   });
 });

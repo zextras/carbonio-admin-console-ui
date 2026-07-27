@@ -320,9 +320,10 @@ describe('BreadcrumbComponent', () => {
 
     const moduleMenus: Record<string, Array<CrumbMenuItem>> = {
       '/manage/storage': [
+        { path: '/services/backup', label: 'Backup' },
+        { path: '/manage/cos', label: 'COS' },
         { path: '/manage/domains', label: 'Domains' },
         { path: '/manage/storage', label: 'Storage' },
-        { path: '/manage/cos', label: 'COS' },
       ],
     };
 
@@ -335,7 +336,7 @@ describe('BreadcrumbComponent', () => {
       expect(screen.getByRole('button', { name: 'Show sections' })).not.toBeNull();
     });
 
-    it('opens the module menu and highlights the current module', () => {
+    it('opens the module menu showing all modules across sections', () => {
       renderBreadcrumb({
         path: '/manage/storage',
         translations: moduleTranslations,
@@ -343,13 +344,16 @@ describe('BreadcrumbComponent', () => {
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
       const items = screen.getAllByTestId('dropdown-item');
-      expect(items).toHaveLength(3);
+      expect(items).toHaveLength(4);
+      const labels = items.map((el) => el.textContent);
+      expect(labels).toContain('Backup');
+      expect(labels).toContain('Storage');
       const selected = items.filter((el) => el.classList.contains('zapp-selected'));
       expect(selected).toHaveLength(1);
       expect(selected[0]!.textContent).toBe('Storage');
     });
 
-    it('navigates to a sibling module when a menu item is clicked', () => {
+    it('navigates to a module in a different section when clicked', () => {
       renderBreadcrumb({
         path: '/manage/storage/servers_list',
         translations: moduleTranslations,
@@ -357,9 +361,9 @@ describe('BreadcrumbComponent', () => {
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
       const items = screen.getAllByTestId('dropdown-item');
-      const cosItem = items.find((el) => el.textContent === 'COS')!;
-      fireEvent.click(cosItem);
-      expect(screen.getByTestId('location').textContent).toBe('/manage/cos');
+      const backupItem = items.find((el) => el.textContent === 'Backup')!;
+      fireEvent.click(backupItem);
+      expect(screen.getByTestId('location').textContent).toBe('/services/backup');
     });
 
     it('does not render a caret when there are no sibling modules', () => {

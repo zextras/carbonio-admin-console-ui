@@ -38,17 +38,11 @@ export function buildModuleCrumbMenu(
   const segments = pathname.substring(1).split('/').filter(Boolean);
   if (segments.length < 2) return {};
 
+  const allModules = primaryBar.filter((view) => view.visible);
+  if (allModules.length < 2) return {};
+
   const modulePath = segments.slice(0, 2).join('/');
-  const currentView = primaryBar.find((view) => view.path === modulePath);
-  if (!currentView?.section) return {};
-
-  const sectionId = currentView.section.id;
-  const siblings = primaryBar.filter(
-    (view) => view.visible && view.section?.id === sectionId,
-  );
-  if (siblings.length < 2) return {};
-
-  const menu = sortBy(siblings, 'position').map((view) => ({
+  const menu = sortBy(allModules, 'position').map((view) => ({
     path: `/${view.path}`,
     label: view.label,
   }));
