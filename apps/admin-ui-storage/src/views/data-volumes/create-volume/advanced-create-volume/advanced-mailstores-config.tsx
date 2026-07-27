@@ -239,7 +239,7 @@ export function AdvancedMailstoresConfig({
       </div>
       {isLocalBlockDevice ? (
         <>
-          <Row padding={{ top: 'large' }} width="100%">
+          <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
             <Input
               inputName="path"
               label={t('label.volume_path', 'Volume path')}
@@ -249,7 +249,7 @@ export function AdvancedMailstoresConfig({
             />
             <Padding top="extrasmall">
               <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-                {t('storage.dataVolumes.volumePathMustExistHint', 'The volume must already exist')}
+                {t('storage.dataVolumes.volumePathMustExistHint', 'The volume path must already exist')}
               </ds-text>
             </Padding>
           </Row>

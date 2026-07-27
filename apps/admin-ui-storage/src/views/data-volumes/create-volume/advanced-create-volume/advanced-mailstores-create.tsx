@@ -5,6 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, ListRow, Row } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { DISABLED, ENABLED, NO, S3, YES } from '../../../../constants';
@@ -171,7 +172,8 @@ export function AdvancedMailstoresCreate({
 }>) {
   const { form } = useAdvancedVolumeContext();
   const { t } = useTranslation();
-  const volTypeList = volumeTypeList(t);
+  const isAdvanced = useIsAdvanced();
+    const volTypeList = volumeTypeList(t, isAdvanced);
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
   const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);

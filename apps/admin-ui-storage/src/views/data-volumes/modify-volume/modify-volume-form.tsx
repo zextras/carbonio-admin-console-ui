@@ -604,7 +604,7 @@ export function ModifyVolumeForm({
                   <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
                     {t(
                       'storage.dataVolumes.volumePathMustExistHint',
-                      'The volume must already exist',
+                      'The volume path must already exist',
                     )}
                   </ds-text>
                 </Padding>
