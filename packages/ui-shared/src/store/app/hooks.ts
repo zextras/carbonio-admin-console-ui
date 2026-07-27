@@ -65,7 +65,7 @@ export function buildModuleCrumbMenu(
   const currentIndex = ordered.findIndex((v) => v.path === modulePath);
   const menuViews =
     currentIndex >= 0
-      ? [ordered[currentIndex]!, ...ordered.filter((_, i) => i !== currentIndex)]
+      ? [ordered[currentIndex], ...ordered.filter((_, i) => i !== currentIndex)]
       : ordered;
 
   return menuViews.map((v) => ({
