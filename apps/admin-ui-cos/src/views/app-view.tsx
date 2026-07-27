@@ -3,7 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Breadcrumbs, type CrumbMenuItem } from '@zextras/ui-components';
+import {
+  Breadcrumbs,
+  buildSectionMenu,
+  getSegmentAfterBase,
+} from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useLocation } from 'react-router';
@@ -14,26 +18,6 @@ import styles from './app-view.module.css';
 import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosListPanel } from './cos/cos-list-panel';
 import { SECTION_ROUTES } from './cos/cos-section-routes';
-
-type SectionRoute = { id: string; labelKey: string; labelDefault: string };
-
-function buildSectionMenu(
-  basePath: string,
-  sections: Array<SectionRoute>,
-  t: ReturnType<typeof useTranslation>[0],
-): Array<CrumbMenuItem> {
-  return sections.map(({ id, labelKey, labelDefault }) => ({
-    path: `${basePath}/${id}`,
-    label: t(labelKey, labelDefault),
-  }));
-}
-
-function getSegmentAfterBase(pathname: string, basePath: string): string | undefined {
-  const prefix = `${basePath}/`;
-  return pathname.startsWith(prefix)
-    ? pathname.substring(prefix.length).split('/')[0]
-    : undefined;
-}
 
 const NON_COS_ID_SEGMENTS = new Set([CREATE_NEW_COS_ROUTE_ID, COS_LIST]);
 

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Breadcrumbs, Container, type CrumbMenuItem } from '@zextras/ui-components';
+import { Breadcrumbs, buildSectionMenu, Container } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,19 +12,6 @@ import { Route, Routes, useLocation } from 'react-router';
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import { SECTION_ROUTES } from './backup/backup-section-routes';
-
-type SectionRoute = { id: string; labelKey: string; labelDefault: string };
-
-function buildSectionMenu(
-  basePath: string,
-  sections: Array<SectionRoute>,
-  t: ReturnType<typeof useTranslation>[0],
-): Array<CrumbMenuItem> {
-  return sections.map(({ id, labelKey, labelDefault }) => ({
-    path: `${basePath}/${id}`,
-    label: t(labelKey, labelDefault),
-  }));
-}
 
 export const AppView: FC = () => {
   const [t] = useTranslation();

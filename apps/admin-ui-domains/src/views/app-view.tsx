@@ -4,7 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Breadcrumbs, Container, type CrumbMenuItem } from '@zextras/ui-components';
+import {
+  Breadcrumbs,
+  buildSectionMenu,
+  Container,
+  getSegmentAfterBase,
+  type SectionRoute,
+} from '@zextras/ui-components';
 import { useDetailViewMaxWidth, useDomainById } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,26 +40,6 @@ import {
 import DomainListPanel from './domain/domain-list-panel';
 import { DomainContentPanel } from './domain-content-panel';
 import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
-
-type SectionRoute = { id: string; labelKey: string; labelDefault: string };
-
-function buildSectionMenu(
-  basePath: string,
-  sections: Array<SectionRoute>,
-  t: ReturnType<typeof useTranslation>[0],
-): Array<CrumbMenuItem> {
-  return sections.map(({ id, labelKey, labelDefault }) => ({
-    path: id === '' ? basePath : `${basePath}/${id}`,
-    label: t(labelKey, labelDefault),
-  }));
-}
-
-function getSegmentAfterBase(pathname: string, basePath: string): string | undefined {
-  const prefix = `${basePath}/`;
-  return pathname.startsWith(prefix)
-    ? pathname.substring(prefix.length).split('/')[0]
-    : undefined;
-}
 
 const DOMAIN_DETAIL_SECTIONS: Array<SectionRoute> = [
   { id: ACCOUNTS, labelKey: 'label.accounts', labelDefault: 'Accounts' },

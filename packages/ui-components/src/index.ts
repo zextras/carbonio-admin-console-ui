@@ -60,6 +60,7 @@ export * from './components/navigation/TabBar';
 
 /** custom components */
 export * from './components/custom/box-layout';
+export * from './components/custom/breadcrumb-utils';
 export * from './components/custom/breadcrumbs';
 export {
   type ClickableRow,
