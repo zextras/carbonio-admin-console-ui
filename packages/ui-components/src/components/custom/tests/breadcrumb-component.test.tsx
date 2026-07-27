@@ -44,7 +44,7 @@ type RenderOptions = {
   lastLoginTimestamp?: string;
   translations?: Record<string, string>;
   crumbMenus?: Record<string, Array<CrumbMenuItem>>;
-  moduleCrumbMenu?: Record<string, Array<CrumbMenuItem>>;
+  moduleCrumbMenu?: Array<CrumbMenuItem>;
 };
 
 function renderBreadcrumb({
@@ -52,7 +52,7 @@ function renderBreadcrumb({
   lastLoginTimestamp,
   translations,
   crumbMenus,
-  moduleCrumbMenu = {},
+  moduleCrumbMenu = [],
 }: RenderOptions = {}) {
   vi.mocked(useLastLoginTimestamp).mockReturnValue({ data: lastLoginTimestamp } as never);
   vi.mocked(useModuleCrumbMenu).mockReturnValue(moduleCrumbMenu as never);
@@ -318,20 +318,17 @@ describe('BreadcrumbComponent', () => {
       cos: 'COS',
     };
 
-    const moduleMenus: Record<string, Array<CrumbMenuItem>> = {
-      '/manage/storage': [
-        { path: '/services/backup', label: 'Backup' },
-        { path: '/manage/cos', label: 'COS' },
-        { path: '/manage/domains', label: 'Domains' },
-        { path: '/manage/storage', label: 'Storage' },
-      ],
-    };
+    const moduleMenu: Array<CrumbMenuItem> = [
+      { path: '/manage/storage', label: 'Storage' },
+      { path: '/manage/domains', label: 'Domains' },
+      { path: '/services/backup', label: 'Backup' },
+    ];
 
     it('renders a dropdown caret on the module-level crumb', () => {
       renderBreadcrumb({
         path: '/manage/storage/servers_list',
         translations: moduleTranslations,
-        moduleCrumbMenu: moduleMenus,
+        moduleCrumbMenu: moduleMenu,
       });
       expect(screen.getByRole('button', { name: 'Show sections' })).not.toBeNull();
     });
@@ -340,11 +337,11 @@ describe('BreadcrumbComponent', () => {
       renderBreadcrumb({
         path: '/manage/storage',
         translations: moduleTranslations,
-        moduleCrumbMenu: moduleMenus,
+        moduleCrumbMenu: moduleMenu,
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
       const items = screen.getAllByTestId('dropdown-item');
-      expect(items).toHaveLength(4);
+      expect(items).toHaveLength(3);
       const labels = items.map((el) => el.textContent);
       expect(labels).toContain('Backup');
       expect(labels).toContain('Storage');
@@ -357,13 +354,25 @@ describe('BreadcrumbComponent', () => {
       renderBreadcrumb({
         path: '/manage/storage/servers_list',
         translations: moduleTranslations,
-        moduleCrumbMenu: moduleMenus,
+        moduleCrumbMenu: moduleMenu,
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
       const items = screen.getAllByTestId('dropdown-item');
       const backupItem = items.find((el) => el.textContent === 'Backup')!;
       fireEvent.click(backupItem);
       expect(screen.getByTestId('location').textContent).toBe('/services/backup');
+    });
+
+    it('shows the dropdown on the dashboard page', () => {
+      renderBreadcrumb({
+        path: '/dashboard',
+        translations: moduleTranslations,
+        moduleCrumbMenu: [
+          { path: '/dashboard', label: 'Dashboard' },
+          { path: '/manage/domains', label: 'Domains' },
+        ],
+      });
+      expect(screen.getByRole('button', { name: 'Show sections' })).not.toBeNull();
     });
 
     it('does not render a caret when there are no sibling modules', () => {

@@ -79,8 +79,7 @@ export const Breadcrumbs = ({ crumbMenus }: Readonly<BreadcrumbsProps>) => {
     enabled: Boolean(userSetting?.attrs?.zimbraId),
   });
   const splitRoutes = buildSplitRoutes(location?.pathname ?? '', t);
-  const moduleCrumbMenu = useModuleCrumbMenu(location?.pathname ?? '');
-  const mergedCrumbMenus = { ...moduleCrumbMenu, ...crumbMenus };
+  const moduleMenu = useModuleCrumbMenu(location?.pathname ?? '');
 
   const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
 
@@ -90,7 +89,9 @@ export const Breadcrumbs = ({ crumbMenus }: Readonly<BreadcrumbsProps>) => {
         <ol className={styles.list}>
           {splitRoutes.map((item: BreadcrumbItem, index) => {
             const target = index === 0 ? item.homePath : item.path;
-            const menu = mergedCrumbMenus?.[item.path];
+            const isModuleCrumb = index === 1;
+            const menu =
+              isModuleCrumb && moduleMenu.length > 0 ? moduleMenu : crumbMenus?.[item.path];
             const interactive: React.HTMLAttributes<HTMLElement> = isLast(index)
               ? {}
               : {

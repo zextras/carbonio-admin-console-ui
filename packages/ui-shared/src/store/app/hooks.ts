@@ -9,7 +9,7 @@
 import { sortBy } from 'lodash-es';
 import { useMemo } from 'react';
 
-import { AppRoute, CarbonioModule, PrimaryBarView } from '../../../types';
+import { AppRoute, CarbonioModule, PrimarybarSection,PrimaryBarView } from '../../../types';
 import { useAppStore } from './store';
 
 const useApps = (): Record<string, CarbonioModule> => useAppStore((s) => s.apps);
@@ -29,28 +29,53 @@ export type ModuleCrumbMenuItem = {
   label: string;
 };
 
-export type ModuleCrumbMenu = Record<string, Array<ModuleCrumbMenuItem>>;
+export function buildPrimaryBarOrderedViews(
+  primaryBar: Array<PrimaryBarView>,
+  sections: Array<PrimarybarSection>,
+): Array<PrimaryBarView> {
+  type Group = { position: number; views: Array<PrimaryBarView> };
+
+  const groups: Array<Group> = primaryBar
+    .filter((v) => !v.section)
+    .map((v) => ({ position: v.position, views: [v] }));
+
+  for (const section of sections) {
+    const children = primaryBar.filter((v) => v.section?.id === section.id);
+    if (children.length > 0) {
+      groups.push({ position: section.position, views: children });
+    }
+  }
+
+  return sortBy(groups, 'position').flatMap((g) => g.views);
+}
 
 export function buildModuleCrumbMenu(
   primaryBar: Array<PrimaryBarView>,
+  sections: Array<PrimarybarSection>,
   pathname: string,
-): ModuleCrumbMenu {
+): Array<ModuleCrumbMenuItem> {
+  const visibleViews = primaryBar.filter((v) => v.visible);
+  if (visibleViews.length < 2) return [];
+
   const segments = pathname.substring(1).split('/').filter(Boolean);
-  if (segments.length < 2) return {};
-
-  const allModules = primaryBar.filter((view) => view.visible);
-  if (allModules.length < 2) return {};
-
   const modulePath = segments.slice(0, 2).join('/');
-  const menu = sortBy(allModules, 'position').map((view) => ({
-    path: `/${view.path}`,
-    label: view.label,
-  }));
 
-  return { [`/${modulePath}`]: menu };
+  const ordered = buildPrimaryBarOrderedViews(visibleViews, sections);
+
+  const currentIndex = ordered.findIndex((v) => v.path === modulePath);
+  const menuViews =
+    currentIndex >= 0
+      ? [ordered[currentIndex]!, ...ordered.filter((_, i) => i !== currentIndex)]
+      : ordered;
+
+  return menuViews.map((v) => ({
+    path: `/${v.path}`,
+    label: v.label,
+  }));
 }
 
-export function useModuleCrumbMenu(pathname: string): ModuleCrumbMenu {
+export function useModuleCrumbMenu(pathname: string): Array<ModuleCrumbMenuItem> {
   const primaryBar = useAppStore((s) => s.views.primaryBar);
-  return buildModuleCrumbMenu(primaryBar, pathname);
+  const sections = useAppStore((s) => s.views.primarybarSections);
+  return buildModuleCrumbMenu(primaryBar, sections, pathname);
 }
