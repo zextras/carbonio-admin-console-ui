@@ -173,7 +173,7 @@ export function AdvancedMailstoresCreate({
   const { form } = useAdvancedVolumeContext();
   const { t } = useTranslation();
   const isAdvanced = useIsAdvanced();
-    const volTypeList = volumeTypeList(t, isAdvanced);
+  const volTypeList = volumeTypeList(t, isAdvanced);
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
   const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);

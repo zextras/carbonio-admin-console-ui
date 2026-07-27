@@ -6,6 +6,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Button, HorizontalWizardV2, Section } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import { createContext, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -145,7 +146,8 @@ export const CreateMailstoresVolume = ({
   CreateVolumeRequest,
 }: CreateMailstoresVolumeProps) => {
   const { t } = useTranslation();
-  const volTypeList = volumeTypeList(t);
+  const isAdvanced = useIsAdvanced();
+  const volTypeList = volumeTypeList(t, isAdvanced);
 
   const volumeForm = useForm({
     defaultValues: {

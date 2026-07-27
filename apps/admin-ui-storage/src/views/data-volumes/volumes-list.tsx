@@ -424,6 +424,7 @@ export function VolumesDetailPanel() {
   };
 
   const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
+    setIsPendingProgress(true);
     const connectorDetails = isVolumeAllDetail?.filter(
       (items) => items?.uuid === attr?.bucketConfigurationId,
     );
@@ -525,6 +526,9 @@ export function VolumesDetailPanel() {
       .catch((error) => {
         showCreateErrorSnackbar(error?.message);
         return error;
+      })
+      .finally(() => {
+        setIsPendingProgress(false);
       });
   };
 
