@@ -51,9 +51,10 @@ export const AppView = () => {
   const { data: cosDetail } = useCosDetail(isCosId ? segmentAfterBase : undefined);
   const cosName = cosDetail?.cos?.[0]?.name;
 
-  const sectionMenu = isCosId
-    ? buildSectionMenu(`${cosAppPath}/${segmentAfterBase}`, SECTION_ROUTES, t)
-    : undefined;
+  const sectionMenu =
+    isCosId && SECTION_ROUTES.length > 1
+      ? buildSectionMenu(`${cosAppPath}/${segmentAfterBase}`, SECTION_ROUTES, t)
+      : undefined;
 
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
   const nonNavigableSegments = isCosId && segmentAfterBase ? [segmentAfterBase] : undefined;

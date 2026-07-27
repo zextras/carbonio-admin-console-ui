@@ -106,11 +106,12 @@ export const AppView: FC = () => {
   const globalBase = `${domainsAppPath}/${GLOBAL_ROUTE}`;
   const globalSections = buildSectionMenu(globalBase, GLOBAL_SECTION_ROUTES, t);
 
-  const sectionMenu = isDomainId
-    ? buildSectionMenu(`${domainsAppPath}/${segmentAfterBase}`, DOMAIN_DETAIL_SECTIONS, t)
-    : globalSections.some((s) => s.path === pathname)
-      ? globalSections
-      : undefined;
+  const sectionMenu =
+    isDomainId && DOMAIN_DETAIL_SECTIONS.length > 1
+      ? buildSectionMenu(`${domainsAppPath}/${segmentAfterBase}`, DOMAIN_DETAIL_SECTIONS, t)
+      : globalSections.some((s) => s.path === pathname)
+        ? globalSections
+        : undefined;
 
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
   const nonNavigableSegments =

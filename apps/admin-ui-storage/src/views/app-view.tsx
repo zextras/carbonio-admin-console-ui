@@ -44,8 +44,9 @@ export const AppView = () => {
     Boolean(deeperSegment) && serverRoutes.some((r) => r.id === deeperSegment);
   const isTopLevelSection = topLevelSections.some((s) => s.path === pathname);
 
-  const sectionMenu = isServerRoute
-    ? buildSectionMenu(`${appBase}/${segmentAfterBase}`, serverRoutes, t)
+  const sectionMenu =
+    isServerRoute && serverRoutes.length > 1
+      ? buildSectionMenu(`${appBase}/${segmentAfterBase}`, serverRoutes, t)
     : isTopLevelSection
       ? topLevelSections
       : undefined;
