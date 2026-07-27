@@ -56,6 +56,16 @@ function getSegmentAfterBase(pathname: string, basePath: string): string | undef
 }
 
 const DOMAIN_DETAIL_SECTIONS: Array<SectionRoute> = [
+  { id: ACCOUNTS, labelKey: 'label.accounts', labelDefault: 'Accounts' },
+  {
+    id: DELEGATES_DOMAIN_ADMINS,
+    labelKey: 'label.delegates_domain_admins',
+    labelDefault: 'Delegated Domain Admins',
+  },
+  { id: DISTRIBUTION_LIST, labelKey: 'label.distribution_list', labelDefault: 'Distribution List' },
+  { id: RESOURCES, labelKey: 'label.resources', labelDefault: 'Resources' },
+  { id: ACTIVE_SYNC, labelKey: 'label.active_sync', labelDefault: 'ActiveSync' },
+  { id: RESTORE_ACCOUNT, labelKey: 'label.restore_account', labelDefault: 'Restore Account' },
   { id: GENERAL_SETTINGS, labelKey: 'label.general_settings', labelDefault: 'General Settings' },
   { id: GAL, labelKey: 'label.global_address_list', labelDefault: 'Global Address List' },
   { id: AUTHENTICATION, labelKey: 'label.authentication', labelDefault: 'Authentication' },
@@ -73,16 +83,6 @@ const DOMAIN_DETAIL_SECTIONS: Array<SectionRoute> = [
   },
   { id: SAML, labelKey: 'label.saml', labelDefault: 'SAML' },
   { id: DISCLAIMER, labelKey: 'label.disclaimer', labelDefault: 'Disclaimer' },
-  { id: ACCOUNTS, labelKey: 'label.accounts', labelDefault: 'Accounts' },
-  {
-    id: DELEGATES_DOMAIN_ADMINS,
-    labelKey: 'label.delegates_domain_admins',
-    labelDefault: 'Delegated Domain Admins',
-  },
-  { id: DISTRIBUTION_LIST, labelKey: 'label.distribution_list', labelDefault: 'Distribution List' },
-  { id: RESOURCES, labelKey: 'label.resources', labelDefault: 'Resources' },
-  { id: ACTIVE_SYNC, labelKey: 'label.active_sync', labelDefault: 'ActiveSync' },
-  { id: RESTORE_ACCOUNT, labelKey: 'label.restore_account', labelDefault: 'Restore Account' },
 ];
 
 const NON_DOMAIN_SEGMENTS = new Set([GLOBAL_ROUTE, CREATE_NEW_DOMAIN_ROUTE_ID]);
