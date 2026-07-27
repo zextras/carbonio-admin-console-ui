@@ -11,22 +11,52 @@ import { SERVERS_LIST } from '../constants';
 import { StorageLayout } from './storage-layout';
 import { SECTION_ROUTES } from './storage-section-routes';
 
+type SectionRoute = { id: string; labelKey: string; labelDefault: string };
+
+function buildSectionMenu(
+  basePath: string,
+  sections: Array<SectionRoute>,
+  t: ReturnType<typeof useTranslation>[0],
+): Array<CrumbMenuItem> {
+  return sections.map(({ id, labelKey, labelDefault }) => ({
+    path: `${basePath}/${id}`,
+    label: t(labelKey, labelDefault),
+  }));
+}
+
 export const AppView = () => {
   const [t] = useTranslation();
   const { pathname } = useLocation();
   const appBase = `/${pathname.split('/').filter(Boolean).slice(0, 2).join('/')}`;
-  const sections: Array<CrumbMenuItem> = SECTION_ROUTES.filter((r) => !r.prefix).map(
-    ({ id, labelKey, labelDefault }) => ({
-      path: `${appBase}/${id}`,
-      label: t(labelKey, labelDefault),
-    }),
-  );
-  const crumbMenus = sections.some((s) => s.path === pathname)
-    ? { [pathname]: sections }
-    : undefined;
+
+  const topLevelRoutes = SECTION_ROUTES.filter((r) => !r.prefix);
+  const serverRoutes = SECTION_ROUTES.filter((r) => r.prefix);
+
+  const topLevelSections = buildSectionMenu(appBase, topLevelRoutes, t);
+
+  const relativeSegments = pathname.startsWith(`${appBase}/`)
+    ? pathname.substring(appBase.length + 1).split('/')
+    : [];
+  const segmentAfterBase = relativeSegments[0] || undefined;
+  const deeperSegment = relativeSegments[1] || undefined;
+
+  const isServerRoute =
+    Boolean(deeperSegment) && serverRoutes.some((r) => r.id === deeperSegment);
+  const isTopLevelSection = topLevelSections.some((s) => s.path === pathname);
+
+  const sectionMenu = isServerRoute
+    ? buildSectionMenu(`${appBase}/${segmentAfterBase}`, serverRoutes, t)
+    : isTopLevelSection
+      ? topLevelSections
+      : undefined;
+
+  const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
+  const nonNavigableSegments =
+    isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
+
   return (
     <Container>
-      <Breadcrumbs crumbMenus={crumbMenus} />
+      <Breadcrumbs crumbMenus={crumbMenus} nonNavigableSegments={nonNavigableSegments} />
       <Routes>
         <Route element={<StorageLayout />}>
           <Route index element={<Navigate to={SERVERS_LIST} replace />} />
