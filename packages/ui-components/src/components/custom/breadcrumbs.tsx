@@ -30,6 +30,7 @@ export type CrumbMenuItem = {
 export type BreadcrumbsProps = {
   crumbMenus?: Record<string, Array<CrumbMenuItem>>;
   nonNavigableSegments?: Array<string>;
+  labelOverrides?: Record<string, string>;
 };
 
 const HOME_PATH = `/${DASHBOARD_ROUTE_ID}`;
@@ -49,6 +50,7 @@ function dashboardCrumb(
 function buildSplitRoutes(
   pathname: string,
   t: ReturnType<typeof useTranslation>[0],
+  labelOverrides?: Record<string, string>,
 ): Array<BreadcrumbItem> {
   if (!pathname) return [];
 
@@ -60,7 +62,8 @@ function buildSplitRoutes(
       label:
         index === 0
           ? t('label.home', 'Home')
-          : /* i18next-extract-disable-next-line */ t(
+          : labelOverrides?.[segment] ??
+            /* i18next-extract-disable-next-line */ t(
               `label.${segment}`,
               segment.charAt(0).toUpperCase() + segment.slice(1),
             ),
@@ -73,7 +76,11 @@ function buildSplitRoutes(
   return segments.length === 1 ? [...items, dashboardCrumb(segments[0], t)] : items;
 }
 
-export const Breadcrumbs = ({ crumbMenus, nonNavigableSegments }: Readonly<BreadcrumbsProps>) => {
+export const Breadcrumbs = ({
+  crumbMenus,
+  nonNavigableSegments,
+  labelOverrides,
+}: Readonly<BreadcrumbsProps>) => {
   const [t] = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -82,7 +89,7 @@ export const Breadcrumbs = ({ crumbMenus, nonNavigableSegments }: Readonly<Bread
     accountId: userSetting?.attrs?.zimbraId?.toString(),
     enabled: Boolean(userSetting?.attrs?.zimbraId),
   });
-  const splitRoutes = buildSplitRoutes(location?.pathname ?? '', t);
+  const splitRoutes = buildSplitRoutes(location?.pathname ?? '', t, labelOverrides);
   const moduleMenu = useModuleCrumbMenu(location?.pathname ?? '');
   const nonNavigableSet = new Set(nonNavigableSegments);
 

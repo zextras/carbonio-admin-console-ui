@@ -5,12 +5,12 @@
  */
 
 import { Breadcrumbs, Container, type CrumbMenuItem } from '@zextras/ui-components';
-import { useDetailViewMaxWidth } from '@zextras/ui-shared';
+import { useDetailViewMaxWidth, useDomainById } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
-import { DOMAINS_ROUTE_ID, GLOBAL_ROUTE, MANAGE } from '../constants';
+import { CREATE_NEW_DOMAIN_ROUTE_ID, DOMAINS_ROUTE_ID, GLOBAL_ROUTE, MANAGE } from '../constants';
 import DomainListPanel from './domain/domain-list-panel';
 import { DomainContentPanel } from './domain-content-panel';
 import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
@@ -32,9 +32,32 @@ export const AppView: FC = () => {
     ? { [pathname]: globalSections }
     : undefined;
 
+  const segmentAfterBase = pathname.startsWith(`${domainsAppPath}/`)
+    ? pathname.substring(domainsAppPath.length + 1).split('/')[0]
+    : undefined;
+  const isDomainId =
+    Boolean(segmentAfterBase) &&
+    segmentAfterBase !== GLOBAL_ROUTE &&
+    segmentAfterBase !== CREATE_NEW_DOMAIN_ROUTE_ID;
+
+  const { data: domain } = useDomainById<{ name?: string }>({
+    domainId: isDomainId ? segmentAfterBase : undefined,
+    enabled: isDomainId,
+  });
+
+  const nonNavigableSegments = isDomainId
+    ? [GLOBAL_ROUTE, segmentAfterBase!]
+    : [GLOBAL_ROUTE];
+  const labelOverrides =
+    domain?.name && segmentAfterBase ? { [segmentAfterBase]: domain.name } : undefined;
+
   return (
     <Container height={'fit'}>
-      <Breadcrumbs crumbMenus={crumbMenus} nonNavigableSegments={[GLOBAL_ROUTE]} />
+      <Breadcrumbs
+        crumbMenus={crumbMenus}
+        nonNavigableSegments={nonNavigableSegments}
+        labelOverrides={labelOverrides}
+      />
       <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
         <Container style={{ maxWidth: '265px' }}>
           <Suspense fallback={<ds-spinner />}>

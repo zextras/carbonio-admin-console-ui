@@ -46,6 +46,7 @@ type RenderOptions = {
   crumbMenus?: Record<string, Array<CrumbMenuItem>>;
   moduleCrumbMenu?: Array<CrumbMenuItem>;
   nonNavigableSegments?: Array<string>;
+  labelOverrides?: Record<string, string>;
 };
 
 function renderBreadcrumb({
@@ -55,6 +56,7 @@ function renderBreadcrumb({
   crumbMenus,
   moduleCrumbMenu = [],
   nonNavigableSegments,
+  labelOverrides,
 }: RenderOptions = {}) {
   vi.mocked(useLastLoginTimestamp).mockReturnValue({ data: lastLoginTimestamp } as never);
   vi.mocked(useModuleCrumbMenu).mockReturnValue(moduleCrumbMenu as never);
@@ -62,7 +64,11 @@ function renderBreadcrumb({
   return render(
     <MemoryRouter initialEntries={[path]}>
       <I18nextProvider i18n={i18n}>
-        <Breadcrumbs crumbMenus={crumbMenus} nonNavigableSegments={nonNavigableSegments} />
+        <Breadcrumbs
+          crumbMenus={crumbMenus}
+          nonNavigableSegments={nonNavigableSegments}
+          labelOverrides={labelOverrides}
+        />
         <LocationProbe />
       </I18nextProvider>
     </MemoryRouter>,
@@ -450,6 +456,49 @@ describe('BreadcrumbComponent', () => {
       });
       fireEvent.click(screen.getByText('Global'));
       expect(screen.getByTestId('location').textContent).toBe('/manage/domains/global/domains');
+    });
+  });
+
+  describe('Label overrides', () => {
+    const translations: Record<string, string> = {
+      ...TRANSLATIONS,
+      accounts: 'Accounts',
+    };
+    const domainId = 'cb671926-996b-4adc-95a5-6d4956dff68c';
+
+    it('replaces a UUID segment with the overridden label', () => {
+      renderBreadcrumb({
+        path: `/manage/domains/${domainId}/accounts`,
+        translations,
+        labelOverrides: { [domainId]: 'example.com' },
+        nonNavigableSegments: [domainId],
+      });
+      expect(screen.getByText('example.com')).not.toBeNull();
+      expect(screen.queryByText('Cb671926-996b-4adc-95a5-6d4956dff68c')).toBeNull();
+    });
+
+    it('does not affect other segments', () => {
+      renderBreadcrumb({
+        path: `/manage/domains/${domainId}/accounts`,
+        translations,
+        labelOverrides: { [domainId]: 'example.com' },
+        nonNavigableSegments: [domainId],
+      });
+      expect(screen.getByText('Accounts')).not.toBeNull();
+      expect(screen.getAllByText('Domains').length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('renders the overridden label as non-clickable when also in nonNavigableSegments', () => {
+      renderBreadcrumb({
+        path: `/manage/domains/${domainId}/accounts`,
+        translations,
+        labelOverrides: { [domainId]: 'example.com' },
+        nonNavigableSegments: [domainId],
+      });
+      const domainText = screen.getByText('example.com').closest('ds-text') as HTMLElement;
+      expect(domainText.getAttribute('role')).toBeNull();
+      expect(domainText.getAttribute('tabindex')).toBeNull();
+      expect(domainText.className).toContain(styles.labelCurrent);
     });
   });
 });
