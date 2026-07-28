@@ -17,7 +17,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { postSoapFetchRequest, soapFetch, useAllServers, useIsAdvanced } from '@zextras/ui-shared';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -265,6 +265,7 @@ export function VolumesDetailPanel() {
   const { data: serverList = [] } = useAllServers();
   const selectedServerId = serverList?.find((s: { name?: string }) => s?.name === server)?.id ?? '';
   const [isPendingProgress, setIsPendingProgress] = useState<boolean>(false);
+  const pendingOnCompleteRef = useRef<(() => void) | null>(null);
   const [volume, setVolume] = useState<Volume | undefined>({
     compressBlobs: '',
     compressionThreshold: '',
@@ -314,6 +315,12 @@ export function VolumesDetailPanel() {
         openErrorDetailsModal(detailsMessage);
       },
     });
+  };
+
+  const handleProgressComplete = (): void => {
+    const onComplete = pendingOnCompleteRef.current;
+    pendingOnCompleteRef.current = null;
+    onComplete?.();
   };
 
   const closeHandler = (): void => {
@@ -509,25 +516,33 @@ export function VolumesDetailPanel() {
         const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
         if (result?.ok) {
           if (result?.response[server]?.ok) {
-            invalidateVolumes();
-            createSnackbar({
-              key: '1',
-              severity: 'success',
-
-              label: t('label.volume_created_msg', 'The volume has been created successfully'),
-            });
-            setToggleWizardLocal(false);
-            setToggleWizardExternal(false);
+            pendingOnCompleteRef.current = (): void => {
+              invalidateVolumes();
+              createSnackbar({
+                key: '1',
+                severity: 'success',
+                label: t('label.volume_created_msg', 'The volume has been created successfully'),
+              });
+              setToggleWizardLocal(false);
+              setToggleWizardExternal(false);
+            };
           } else {
-            showCreateErrorSnackbar(result?.response?.[server]?.error?.message);
+            const errorDetails = result?.response?.[server]?.error?.message;
+            pendingOnCompleteRef.current = (): void => {
+              showCreateErrorSnackbar(errorDetails);
+            };
           }
         } else {
-          showCreateErrorSnackbar();
+          pendingOnCompleteRef.current = (): void => {
+            showCreateErrorSnackbar();
+          };
         }
         return typedRes;
       })
       .catch((error) => {
-        showCreateErrorSnackbar(error?.message);
+        pendingOnCompleteRef.current = (): void => {
+          showCreateErrorSnackbar(error?.message);
+        };
         return error;
       })
       .finally(() => {
@@ -569,6 +584,7 @@ export function VolumesDetailPanel() {
           error?: unknown;
         };
         if (typeRes && typeRes?.ok === true) {
+          let activateOutcome: 'success' | 'error' | null = null;
           if (attr?.isCurrent) {
             await postSoapFetchRequest(
               `/service/admin/soap/zextras`,
@@ -582,34 +598,45 @@ export function VolumesDetailPanel() {
               'zextras',
             )
               .then(() => {
-                createSnackbar({
-                  key: '1',
-                  severity: 'success',
-                  label: t('label.volume_active', '{{volumeName}} is Currently active', {
-                    volumeName: attr?.name,
-                  }),
-                });
+                activateOutcome = 'success';
               })
               .catch(() => {
-                showCreateErrorSnackbar();
+                activateOutcome = 'error';
               });
           }
-          invalidateVolumes();
-          createSnackbar({
-            key: '1',
-            severity: 'success',
-            label: t('label.volume_created_msg', 'The volume has been created successfully'),
-          });
-          setToggleWizardLocal(false);
-          setToggleWizardExternal(false);
+          pendingOnCompleteRef.current = (): void => {
+            if (activateOutcome === 'success') {
+              createSnackbar({
+                key: '1',
+                severity: 'success',
+                label: t('label.volume_active', '{{volumeName}} is Currently active', {
+                  volumeName: attr?.name,
+                }),
+              });
+            } else if (activateOutcome === 'error') {
+              showCreateErrorSnackbar();
+            }
+            invalidateVolumes();
+            createSnackbar({
+              key: '1',
+              severity: 'success',
+              label: t('label.volume_created_msg', 'The volume has been created successfully'),
+            });
+            setToggleWizardLocal(false);
+            setToggleWizardExternal(false);
+          };
         } else if (typeRes && typeRes?.ok === false) {
-          showCreateErrorSnackbar(typeRes?.error);
+          const errorDetails = typeRes?.error;
+          pendingOnCompleteRef.current = (): void => {
+            showCreateErrorSnackbar(errorDetails);
+          };
         }
         setIsPendingProgress(false);
       });
     } else {
       await createVoume(attr)
         .then(async (res) => {
+          let activateOutcome: 'success' | 'error' | null = null;
           if (res?.volume && Array.isArray(res?.volume)) {
             const vol = res?.volume[0];
 
@@ -617,33 +644,42 @@ export function VolumesDetailPanel() {
               if (attr?.isCurrent === 1) {
                 await setCurrentVolumeRequest(vol?.id, vol?.type)
                   .then(() => {
-                    createSnackbar({
-                      key: '1',
-                      severity: 'success',
-                      label: t('label.volume_active', '{{volumeName}} is Currently active', {
-                        volumeName: attr?.name,
-                      }),
-                    });
+                    activateOutcome = 'success';
                   })
                   .catch(() => {
-                    showCreateErrorSnackbar();
+                    activateOutcome = 'error';
                   });
               }
             }
           }
-          invalidateVolumes();
-          createSnackbar({
-            key: '1',
-            severity: 'success',
-            label: t('label.volume_created_msg', 'The volume has been created successfully'),
-          });
-          setToggleWizardLocal(false);
-          setToggleWizardExternal(false);
+          pendingOnCompleteRef.current = (): void => {
+            if (activateOutcome === 'success') {
+              createSnackbar({
+                key: '1',
+                severity: 'success',
+                label: t('label.volume_active', '{{volumeName}} is Currently active', {
+                  volumeName: attr?.name,
+                }),
+              });
+            } else if (activateOutcome === 'error') {
+              showCreateErrorSnackbar();
+            }
+            invalidateVolumes();
+            createSnackbar({
+              key: '1',
+              severity: 'success',
+              label: t('label.volume_created_msg', 'The volume has been created successfully'),
+            });
+            setToggleWizardLocal(false);
+            setToggleWizardExternal(false);
+          };
           setIsPendingProgress(false);
           return res;
         })
         .catch((error) => {
-          showCreateErrorSnackbar(error?.message);
+          pendingOnCompleteRef.current = (): void => {
+            showCreateErrorSnackbar(error?.message);
+          };
           setIsPendingProgress(false);
           return error;
         });
@@ -659,7 +695,11 @@ export function VolumesDetailPanel() {
 
   return (
     <>
-      <VerifyProgress isPending={isPendingProgress} minDisplayMs={0} />
+      <VerifyProgress
+        isPending={isPendingProgress}
+        minDisplayMs={0}
+        onComplete={handleProgressComplete}
+      />
       {toggleWizardExternal && (
         <ModalOverlay open={toggleWizardExternal}>
           <CreateMailstoresVolume

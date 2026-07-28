@@ -181,6 +181,7 @@ export function ModifyVolumeForm({
   const isCurrentRef = useRef<HTMLDivElement>(null);
 
   const [isPendingProgress, setIsPendingProgress] = useState(false);
+  const pendingOnCompleteRef = useRef<(() => void) | null>(null);
   const [isCurrentToggle, setIsCurrentToggle] = useState(false);
   const [connectorName, setConnectorName] = useState('');
   const [storeType, setStoreType] = useState<string | undefined>('');
@@ -272,20 +273,25 @@ export function ModifyVolumeForm({
     onSubmit: async ({ value }) => {
       setIsPendingProgress(true);
 
-      const finishSaveSuccess = (): void => {
-        showVolumeSaveSuccess(createSnackbar, t);
-        getAllVolumesRequest();
-        setmodifyVolumeToggle(false);
+      const finishSaveSuccess = (after?: () => void): void => {
+        pendingOnCompleteRef.current = (): void => {
+          showVolumeSaveSuccess(createSnackbar, t);
+          getAllVolumesRequest();
+          setmodifyVolumeToggle(false);
+          after?.();
+        };
         setIsPendingProgress(false);
       };
 
       const finishSaveError = (errorDetails?: unknown): void => {
-        if (onShowErrorSnackbar) {
-          onShowErrorSnackbar(errorDetails);
-        } else {
-          showVolumeSaveError(createSnackbar, t);
-        }
-        setmodifyVolumeToggle(false);
+        pendingOnCompleteRef.current = (): void => {
+          if (onShowErrorSnackbar) {
+            onShowErrorSnackbar(errorDetails);
+          } else {
+            showVolumeSaveError(createSnackbar, t);
+          }
+          setmodifyVolumeToggle(false);
+        };
         setIsPendingProgress(false);
       };
 
@@ -310,8 +316,9 @@ export function ModifyVolumeForm({
           const res = await fetchSoap('zextras', obj);
           handleAdvancedUpdateResponse(res, server ?? '', {
             onSuccess: () => {
-              finishSaveSuccess();
-              form.reset(value);
+              finishSaveSuccess(() => {
+                form.reset(value);
+              });
             },
             onError: (errorDetails) => {
               finishSaveError(errorDetails);
@@ -333,18 +340,21 @@ export function ModifyVolumeForm({
             t,
             {
               onSuccess: () => {
-                finishSaveSuccess();
-                form.reset(value);
+                finishSaveSuccess(() => {
+                  form.reset(value);
+                });
               },
               onModifyError: (errorDetails): void => {
                 finishSaveError(errorDetails);
               },
               onSetCurrentError: (errorDetails): void => {
-                if (onShowErrorSnackbar) {
-                  onShowErrorSnackbar(errorDetails);
-                } else {
-                  showVolumeSaveError(createSnackbar, t);
-                }
+                pendingOnCompleteRef.current = (): void => {
+                  if (onShowErrorSnackbar) {
+                    onShowErrorSnackbar(errorDetails);
+                  } else {
+                    showVolumeSaveError(createSnackbar, t);
+                  }
+                };
                 setIsPendingProgress(false);
               },
             },
@@ -355,6 +365,12 @@ export function ModifyVolumeForm({
       }
     },
   });
+
+  const handleProgressComplete = (): void => {
+    const onComplete = pendingOnCompleteRef.current;
+    pendingOnCompleteRef.current = null;
+    onComplete?.();
+  };
 
   const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
   const selectedBucketConfigurationId = useSelector(
@@ -395,7 +411,11 @@ export function ModifyVolumeForm({
 
   return (
     <>
-      <VerifyProgress isPending={isPendingProgress} minDisplayMs={0} />
+      <VerifyProgress
+        isPending={isPendingProgress}
+        minDisplayMs={0}
+        onComplete={handleProgressComplete}
+      />
       <Container
         background="gray6"
         mainAlignment="flex-start"
@@ -449,21 +469,30 @@ export function ModifyVolumeForm({
             {!isDirty && (
               <Tooltip
                 placement="top"
-                disabled={!volumeInUse}
-                label={t(
-                  'storages.volumeData.deleteVolumeInUseTooltip',
-                  'Volume is in use and cannot be deleted',
-                )}
+                disabled={!volumeInUse && !volumeDetail.isCurrent}
+                label={
+                  volumeDetail.isCurrent
+                    ? t(
+                        'storages.volumeData.deleteCurrentVolumeTooltip',
+                        'You should set a different volume as the current one before deleting it.',
+                      )
+                    : t(
+                        'storages.volumeData.deleteVolumeInUseTooltip',
+                        'Volume is in use and cannot be deleted',
+                      )
+                }
               >
-                <Button
-                  type="outlined"
-                  color="error"
-                  label={t('label.delete', 'Delete')}
-                  icon="Trash2Outline"
-                  disabled={volumeInUse}
-                  onClick={(): void => setOpen(true)}
-                  style={{ marginRight: '0.5rem' }}
-                />
+                <span>
+                  <Button
+                    type="outlined"
+                    color="error"
+                    label={t('label.delete', 'Delete')}
+                    icon="Trash2Outline"
+                    disabled={volumeInUse || Boolean(volumeDetail.isCurrent)}
+                    onClick={(): void => setOpen(true)}
+                    style={{ marginRight: '0.5rem' }}
+                  />
+                </span>
               </Tooltip>
             )}
             <Button

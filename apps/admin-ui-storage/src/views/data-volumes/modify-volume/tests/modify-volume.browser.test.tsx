@@ -12,13 +12,35 @@ import {
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
+import { useEffect, useRef } from 'react';
 import { Route, Routes } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 
 import { Volume } from '../../../../../types';
 import { DATA_VOLUMES } from '../../../../constants';
 import { ModifyVolume } from '../modify-volume';
+
+vi.mock('../../s3-connectors/parts/verify/verify-progress', () => ({
+	VerifyProgress: ({
+		isPending,
+		onComplete,
+	}: {
+		isPending: boolean;
+		onComplete?: () => void;
+	}) => {
+		const wasPending = useRef(isPending);
+
+		useEffect(() => {
+			if (wasPending.current && !isPending) {
+				onComplete?.();
+			}
+			wasPending.current = isPending;
+		}, [isPending, onComplete]);
+
+		return <div>{isPending ? 'verify-pending' : 'verify-idle'}</div>;
+	},
+}));
 
 const SERVER_NAME = 'mailstore1.test.com';
 const SERVER_ID = 'server-1';
@@ -226,6 +248,33 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
       );
 
       await expect.element(page.getByRole('button', { name: /^delete$/i })).toBeDisabled();
+    });
+
+    it('should disable Delete button and show tooltip when volume is current', async () => {
+      await setupBrowserTest(
+        renderModifyVolume(PRIMARY_VOLUME.id as number, {
+          primaries: [PRIMARY_VOLUME],
+          secondaries: [SECONDARY_VOLUME],
+          indexes: [INDEX_VOLUME],
+        }),
+        {
+          initialRouterEntry: VOLUME_ROUTE_ENTRY,
+        },
+      );
+
+      const deleteButton = page.getByRole('button', { name: /^delete$/i });
+      await expect.element(deleteButton).toBeDisabled();
+
+      await userEvent.hover(deleteButton);
+
+      await expect
+        .element(
+          page.getByText(
+            'You should set a different volume as the current one before deleting it.',
+            { exact: true },
+          ),
+        )
+        .toBeVisible();
     });
 
     it('should call getVolume zextras action in advanced mode', async () => {
