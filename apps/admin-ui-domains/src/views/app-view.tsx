@@ -5,10 +5,10 @@
  */
 
 import {
-  Breadcrumbs,
   buildSectionMenu,
   Container,
   getSegmentAfterBase,
+  PageHeader,
   type SectionRoute,
 } from '@zextras/ui-components';
 import { useDetailViewMaxWidth, useDomainById } from '@zextras/ui-shared';
@@ -109,7 +109,7 @@ export const AppView: FC = () => {
 
   return (
     <Container height={'fit'}>
-      <Breadcrumbs
+      <PageHeader
         crumbMenus={crumbMenus}
         nonNavigableSegments={nonNavigableSegments}
         labelOverrides={labelOverrides}

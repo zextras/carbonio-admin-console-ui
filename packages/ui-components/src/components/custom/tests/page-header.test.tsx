@@ -9,8 +9,8 @@ import i18next from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter, useLocation } from 'react-router';
 
-import { Breadcrumbs, type CrumbMenuItem } from '../breadcrumbs';
-import styles from '../breadcrumbs.module.css';
+import { type CrumbMenuItem,PageHeader } from '../page-header';
+import styles from '../page-header.module.css';
 
 const TRANSLATIONS: Record<string, string> = {
   home: 'Home',
@@ -49,7 +49,7 @@ type RenderOptions = {
   labelOverrides?: Record<string, string>;
 };
 
-function renderBreadcrumb({
+function renderPageHeader({
   path = '/dashboard',
   lastLoginTimestamp,
   translations,
@@ -64,7 +64,7 @@ function renderBreadcrumb({
   return render(
     <MemoryRouter initialEntries={[path]}>
       <I18nextProvider i18n={i18n}>
-        <Breadcrumbs
+        <PageHeader
           crumbMenus={crumbMenus}
           nonNavigableSegments={nonNavigableSegments}
           labelOverrides={labelOverrides}
@@ -84,45 +84,45 @@ function LocationProbe() {
   return <div data-testid="location">{location.pathname}</div>;
 }
 
-describe('BreadcrumbComponent', () => {
+describe('PageHeader', () => {
   describe('Home breadcrumb', () => {
     it('renders "Home" as the first breadcrumb for the dashboard route', () => {
-      renderBreadcrumb({ path: '/dashboard', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard', translations: TRANSLATIONS });
       expect(screen.getAllByText('Home').length).toBeGreaterThanOrEqual(1);
     });
 
     it('shows "Home" and "Dashboard" for the dashboard route', () => {
-      renderBreadcrumb({ path: '/dashboard', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard', translations: TRANSLATIONS });
       expect(screen.getByText('Home')).not.toBeNull();
       expect(screen.getByText('Dashboard')).not.toBeNull();
     });
 
     it('does not show duplicate "Home" when only a single segment exists', () => {
-      renderBreadcrumb({ path: '/dashboard', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard', translations: TRANSLATIONS });
       expect(screen.getAllByText('Home').length).toBe(1);
     });
 
     it('does not show the additional "Home" label when multiple breadcrumbs exist', () => {
-      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
       expect(screen.getAllByText('Home').length).toBe(1);
     });
   });
 
   describe('Breadcrumb trail building', () => {
     it('shows capitalized segment name when translation is unavailable', () => {
-      renderBreadcrumb({ path: '/dashboard/unknown-segment' });
+      renderPageHeader({ path: '/dashboard/unknown-segment' });
       expect(screen.getByText('Unknown-segment')).not.toBeNull();
       expect(screen.getAllByText('Home').length).toBe(1);
     });
 
     it('prefers translated label over raw segment name', () => {
-      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
       expect(screen.getByText('Home')).not.toBeNull();
       expect(screen.getByText('Domains')).not.toBeNull();
     });
 
     it('handles deep nesting with a mix of translated and untranslated segments', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/dashboard/domains/unknown/settings',
         translations: TRANSLATIONS,
       });
@@ -133,14 +133,14 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('builds incremental paths for each breadcrumb level', () => {
-      renderBreadcrumb({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
       expect(screen.getByText('Home')).not.toBeNull();
       expect(screen.getByText('Domains')).not.toBeNull();
       expect(screen.getByText('Users')).not.toBeNull();
     });
 
     it('shows capitalized segment names when no translations are available', () => {
-      renderBreadcrumb({ path: '/manage/subscriptions' });
+      renderPageHeader({ path: '/manage/subscriptions' });
       expect(screen.getByText('Home')).not.toBeNull();
       expect(screen.getByText('Subscriptions')).not.toBeNull();
     });
@@ -148,7 +148,7 @@ describe('BreadcrumbComponent', () => {
 
   describe('Last access timestamp', () => {
     it('shows "Last access" with the timestamp when lastLoginTimestamp is provided', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/dashboard',
         translations: TRANSLATIONS,
         lastLoginTimestamp: '2024-01-15 10:30',
@@ -157,12 +157,12 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('does not show "Last access" when lastLoginTimestamp is omitted', () => {
-      renderBreadcrumb({ path: '/dashboard', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard', translations: TRANSLATIONS });
       expect(screen.queryByText(/Last access/)).toBeNull();
     });
 
     it('does not show "Last access" when lastLoginTimestamp is empty string', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/dashboard',
         translations: TRANSLATIONS,
         lastLoginTimestamp: '',
@@ -173,7 +173,7 @@ describe('BreadcrumbComponent', () => {
 
   describe('Styling', () => {
     it('applies the current-item class to the last breadcrumb item', () => {
-      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
       const domainsText = screen.getByText('Domains');
       const dsText = domainsText.closest('ds-text') as HTMLElement | null;
       expect(dsText).not.toBeNull();
@@ -181,7 +181,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('does not apply pointer cursor to the last breadcrumb item', () => {
-      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
       const domainsText = screen.getByText('Domains');
       const dsText = domainsText.closest('ds-text') as HTMLElement | null;
       const style = dsText!.getAttribute('style') ?? '';
@@ -189,7 +189,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('applies the secondary color class to non-last breadcrumb items', () => {
-      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
       const homeText = screen.getByText('Home');
       const dsText = homeText.closest('ds-text') as HTMLElement | null;
       expect(dsText).not.toBeNull();
@@ -197,7 +197,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('renders "/" separator between breadcrumb items', () => {
-      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
       const allDsTexts = getAllDsTexts();
       const separatorElements = allDsTexts.filter(
         (el) => el.textContent?.includes('/') && el.closest('[aria-hidden="true"]') != null,
@@ -206,7 +206,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('does not render separator after the last breadcrumb item', () => {
-      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
       const allDsTexts = getAllDsTexts();
       const afterDomains = allDsTexts.findIndex((el) => el.textContent === 'Domains');
       const remainingTexts = allDsTexts.slice(afterDomains + 1);
@@ -215,7 +215,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('renders separators between all pairs for a 3-level breadcrumb', () => {
-      renderBreadcrumb({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
       const allDsTexts = getAllDsTexts();
       const separatorElements = allDsTexts.filter(
         (el) => el.textContent?.includes('/') && el.closest('[aria-hidden="true"]') != null,
@@ -224,14 +224,14 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('applies pointer cursor to non-last breadcrumb items', () => {
-      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
       const dsText = screen.getByText('Home').closest('ds-text') as HTMLElement | null;
       const style = dsText!.getAttribute('style') ?? '';
       expect(style).toContain('pointer');
     });
 
     it('keeps the last (current) crumb non-interactive', () => {
-      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
       const dsText = screen.getByText('Domains').closest('ds-text') as HTMLElement | null;
       expect(dsText!.getAttribute('role')).toBeNull();
       expect(dsText!.getAttribute('tabindex')).toBeNull();
@@ -240,25 +240,25 @@ describe('BreadcrumbComponent', () => {
 
   describe('Navigation', () => {
     it('navigates to the crumb path when a non-last crumb is clicked', () => {
-      renderBreadcrumb({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
       fireEvent.click(screen.getByText('Domains'));
       expect(screen.getByTestId('location').textContent).toBe('/dashboard/domains');
     });
 
     it('navigates to the dashboard (homePath) when the Home crumb is clicked', () => {
-      renderBreadcrumb({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
       fireEvent.click(screen.getByText('Home'));
       expect(screen.getByTestId('location').textContent).toBe('/dashboard');
     });
 
     it('does not navigate when the current (last) crumb is clicked', () => {
-      renderBreadcrumb({ path: '/dashboard/domains', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
       fireEvent.click(screen.getByText('Domains'));
       expect(screen.getByTestId('location').textContent).toBe('/dashboard/domains');
     });
 
     it('activates navigation with the Enter key on a non-last crumb', () => {
-      renderBreadcrumb({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
+      renderPageHeader({ path: '/dashboard/domains/users', translations: TRANSLATIONS });
       const domains = screen.getByText('Domains').closest('ds-text') as HTMLElement;
       fireEvent.keyDown(domains, { key: 'Enter' });
       expect(screen.getByTestId('location').textContent).toBe('/dashboard/domains');
@@ -274,7 +274,7 @@ describe('BreadcrumbComponent', () => {
     };
 
     it('renders a dropdown caret on the crumb that has a menu', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/dashboard/domains',
         translations: TRANSLATIONS,
         crumbMenus: menus,
@@ -283,7 +283,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('renders a single caret (none on crumbs without a menu)', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/dashboard/domains',
         translations: TRANSLATIONS,
         crumbMenus: menus,
@@ -292,7 +292,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('opens the menu and highlights the current route when the caret is clicked', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/dashboard/domains',
         translations: TRANSLATIONS,
         crumbMenus: menus,
@@ -306,7 +306,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('navigates to the selected route when a menu item is clicked', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/dashboard/domains',
         translations: TRANSLATIONS,
         crumbMenus: menus,
@@ -325,7 +325,7 @@ describe('BreadcrumbComponent', () => {
           { path: '/dashboard/domains/mango', label: 'Mango' },
         ],
       };
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/dashboard/domains',
         translations: TRANSLATIONS,
         crumbMenus: unordered,
@@ -351,7 +351,7 @@ describe('BreadcrumbComponent', () => {
     ];
 
     it('renders a dropdown caret on the module-level crumb', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/manage/storage/servers_list',
         translations: moduleTranslations,
         moduleCrumbMenu: moduleMenu,
@@ -360,7 +360,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('opens the module menu showing all modules across sections', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/manage/storage',
         translations: moduleTranslations,
         moduleCrumbMenu: moduleMenu,
@@ -377,7 +377,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('navigates to a module in a different section when clicked', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/manage/storage/servers_list',
         translations: moduleTranslations,
         moduleCrumbMenu: moduleMenu,
@@ -390,7 +390,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('highlights the current module as selected on a deep path', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/manage/domains/global/settings',
         translations: moduleTranslations,
         moduleCrumbMenu: [
@@ -406,7 +406,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('shows the dropdown on the dashboard page', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/dashboard',
         translations: moduleTranslations,
         moduleCrumbMenu: [
@@ -418,7 +418,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('does not render a caret when there are no sibling modules', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/manage/storage/servers_list',
         translations: moduleTranslations,
       });
@@ -433,7 +433,7 @@ describe('BreadcrumbComponent', () => {
     };
 
     it('makes a non-navigable segment non-interactive (no role, no tabIndex, no pointer)', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/manage/domains/global/domains',
         translations,
         nonNavigableSegments: ['global'],
@@ -446,7 +446,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('applies the labelCurrent class to a non-navigable segment', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/manage/domains/global/domains',
         translations,
         nonNavigableSegments: ['global'],
@@ -456,7 +456,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('still renders the separator after a non-navigable segment', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/manage/domains/global/domains',
         translations,
         nonNavigableSegments: ['global'],
@@ -471,7 +471,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('keeps other crumbs clickable when one is non-navigable', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/manage/domains/global/domains',
         translations,
         nonNavigableSegments: ['global'],
@@ -483,7 +483,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('does not navigate when a non-navigable crumb is clicked', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: '/manage/domains/global/domains',
         translations,
         nonNavigableSegments: ['global'],
@@ -501,7 +501,7 @@ describe('BreadcrumbComponent', () => {
     const domainId = 'cb671926-996b-4adc-95a5-6d4956dff68c';
 
     it('replaces a UUID segment with the overridden label', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: `/manage/domains/${domainId}/accounts`,
         translations,
         labelOverrides: { [domainId]: 'example.com' },
@@ -512,7 +512,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('does not affect other segments', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: `/manage/domains/${domainId}/accounts`,
         translations,
         labelOverrides: { [domainId]: 'example.com' },
@@ -523,7 +523,7 @@ describe('BreadcrumbComponent', () => {
     });
 
     it('renders the overridden label as non-clickable when also in nonNavigableSegments', () => {
-      renderBreadcrumb({
+      renderPageHeader({
         path: `/manage/domains/${domainId}/accounts`,
         translations,
         labelOverrides: { [domainId]: 'example.com' },

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Breadcrumbs, Container, type CrumbMenuItem } from '@zextras/ui-components';
+import { Container, type CrumbMenuItem,PageHeader } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
@@ -27,7 +27,7 @@ export const AppView: FC = () => {
 		: undefined;
 	return (
 		<Container height={'fit'}>
-			<Breadcrumbs crumbMenus={crumbMenus} />
+			<PageHeader crumbMenus={crumbMenus} />
 			<Routes>
 				<Route index element={<Navigate to={RUNNING_ROUTE_ID} replace />} />
 				<Route element={<OperationsLayout />}>

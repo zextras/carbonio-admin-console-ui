@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Breadcrumbs, buildSectionMenu, Container } from '@zextras/ui-components';
+import { buildSectionMenu, Container,PageHeader } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -47,7 +47,7 @@ export const AppView: FC = () => {
 
   return (
     <Container height={'fit'}>
-      <Breadcrumbs crumbMenus={crumbMenus} nonNavigableSegments={nonNavigableSegments} />
+      <PageHeader crumbMenus={crumbMenus} nonNavigableSegments={nonNavigableSegments} />
       <Routes>
         <Route
           path={'/*'}

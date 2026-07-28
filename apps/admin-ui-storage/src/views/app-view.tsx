@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Breadcrumbs, buildSectionMenu, Container } from '@zextras/ui-components';
+import { buildSectionMenu, Container,PageHeader } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
 
@@ -44,7 +44,7 @@ export const AppView = () => {
 
   return (
     <Container>
-      <Breadcrumbs crumbMenus={crumbMenus} nonNavigableSegments={nonNavigableSegments} />
+      <PageHeader crumbMenus={crumbMenus} nonNavigableSegments={nonNavigableSegments} />
       <Routes>
         <Route element={<StorageLayout />}>
           <Route index element={<Navigate to={SERVERS_LIST} replace />} />

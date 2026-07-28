@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
-  Breadcrumbs,
   buildSectionMenu,
   getSegmentAfterBase,
+  PageHeader,
 } from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
@@ -46,7 +46,7 @@ export const AppView = () => {
 
   return (
     <div className={styles.root}>
-      <Breadcrumbs
+      <PageHeader
         crumbMenus={crumbMenus}
         nonNavigableSegments={nonNavigableSegments}
         labelOverrides={labelOverrides}

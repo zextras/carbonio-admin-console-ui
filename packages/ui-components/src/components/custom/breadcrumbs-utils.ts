@@ -5,7 +5,7 @@
  */
 import type { useTranslation } from 'react-i18next';
 
-import type { CrumbMenuItem } from './breadcrumbs';
+import type { CrumbMenuItem } from './page-header';
 
 type TranslateFn = ReturnType<typeof useTranslation>[0];
 

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
 import { BreadcrumbComponent } from './breadcrumb-component';
-import styles from './breadcrumbs.module.css';
+import styles from './page-header.module.css';
 
 type BreadcrumbItem = {
   label: string;
@@ -22,7 +22,7 @@ export type CrumbMenuItem = {
   label: string;
 };
 
-export type BreadcrumbsProps = {
+export type PageHeaderProps = {
   crumbMenus?: Record<string, Array<CrumbMenuItem>>;
   nonNavigableSegments?: Array<string>;
   labelOverrides?: Record<string, string>;
@@ -71,11 +71,11 @@ function buildSplitRoutes(
   return segments.length === 1 ? [...items, dashboardCrumb(segments[0], t)] : items;
 }
 
-export const Breadcrumbs = ({
+export const PageHeader = ({
   crumbMenus,
   nonNavigableSegments,
   labelOverrides,
-}: Readonly<BreadcrumbsProps>) => {
+}: Readonly<PageHeaderProps>) => {
   const [t] = useTranslation();
   const location = useLocation();
   const userSetting = useUserSettings();

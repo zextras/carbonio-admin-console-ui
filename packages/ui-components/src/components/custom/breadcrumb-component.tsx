@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import { Dropdown } from '../display/Dropdown';
-import styles from './breadcrumbs.module.css';
+import styles from './page-header.module.css';
 
 type BreadcrumbItem = {
   label: string;

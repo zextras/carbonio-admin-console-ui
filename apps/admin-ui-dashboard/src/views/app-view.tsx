@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Breadcrumbs, Container } from '@zextras/ui-components';
+import { Container,PageHeader } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 
 import Dashboard from './dashboard/dashboard-view';
@@ -19,7 +19,7 @@ const DashboardComponent = () => (
 export const AppView: FC = () => {
   return (
     <Container height={'fit'}>
-      <Breadcrumbs />
+      <PageHeader />
       <DashboardComponent />
     </Container>
   );
