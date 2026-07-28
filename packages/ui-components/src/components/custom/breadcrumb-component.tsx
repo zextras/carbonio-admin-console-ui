@@ -133,7 +133,7 @@ export const BreadcrumbComponent = ({
             className={styles.caret}
             type="button"
           >
-            <ds-icon color="gray1" icon="IconDown" size="small" />
+            <ds-icon color="gray1" icon="IconDown" size="large" />
           </button>
         </Dropdown>
       )}
