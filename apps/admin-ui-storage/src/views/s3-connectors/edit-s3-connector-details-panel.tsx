@@ -21,7 +21,14 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { type ChangeEvent, type SyntheticEvent, useEffect, useState } from 'react';
+import {
+  type ChangeEvent,
+  createContext,
+  type SyntheticEvent,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -107,6 +114,28 @@ type SecretKeyCustomIconProps = {
   readonly onCancelSecretKeyChange: () => void;
 };
 
+type SecretKeyCustomIconRendererProps = {
+  readonly hasError?: boolean;
+  readonly hasFocus?: boolean;
+  readonly disabled?: boolean;
+};
+
+type SecretKeyCustomIconContextValue = {
+  readonly showSecretKeyValue: boolean;
+  readonly onToggleSecretVisibility: () => void;
+  readonly onCancelSecretKeyChange: () => void;
+};
+
+const secretKeyCustomIconContext = createContext<SecretKeyCustomIconContextValue | null>(null);
+
+function useSecretKeyCustomIconContext(): SecretKeyCustomIconContextValue {
+  const context = useContext(secretKeyCustomIconContext);
+  if (!context) {
+    throw new Error('SecretKeyCustomIconRenderer must be used within SecretKeyCustomIconContext');
+  }
+  return context;
+}
+
 function SecretKeyCustomIcon({
   hasError,
   hasFocus,
@@ -153,6 +182,26 @@ function SecretKeyCustomIcon({
         style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
       ></ds-icon>
     </Container>
+  );
+}
+
+function SecretKeyCustomIconRenderer({
+  hasError,
+  hasFocus,
+  disabled,
+}: SecretKeyCustomIconRendererProps) {
+  const { showSecretKeyValue, onToggleSecretVisibility, onCancelSecretKeyChange } =
+    useSecretKeyCustomIconContext();
+
+  return (
+    <SecretKeyCustomIcon
+      hasError={Boolean(hasError)}
+      hasFocus={Boolean(hasFocus)}
+      disabled={Boolean(disabled)}
+      showSecretKeyValue={showSecretKeyValue}
+      onToggleSecretVisibility={onToggleSecretVisibility}
+      onCancelSecretKeyChange={onCancelSecretKeyChange}
+    />
   );
 }
 
@@ -690,30 +739,26 @@ export function EditS3ConnectorDetailPanel({
 
                     return (
                       <Container width="fill" crossAlignment="flex-start">
-                        <Input
-                          backgroundColor="gray5"
-                          label={t('label.secret_key', 'Secret Access Key*')}
-                          value={field.state.value}
-                          type={showSecretKeyValue ? 'text' : 'password'}
-                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                            field.handleChange(e.target.value)
-                          }
-                          hasError={error.hasError}
-                          description={error.description}
-                          CustomIcon={({ hasError, hasFocus, disabled }) => {
-                            const isDisabled = Boolean(disabled);
-                            return (
-                              <SecretKeyCustomIcon
-                                hasError={Boolean(hasError)}
-                                hasFocus={Boolean(hasFocus)}
-                                disabled={isDisabled}
-                                showSecretKeyValue={showSecretKeyValue}
-                                onToggleSecretVisibility={toggleSecretKeyVisibility}
-                                onCancelSecretKeyChange={onCancelSecretKeyChange}
-                              />
-                            );
+                        <secretKeyCustomIconContext.Provider
+                          value={{
+                            showSecretKeyValue,
+                            onToggleSecretVisibility: toggleSecretKeyVisibility,
+                            onCancelSecretKeyChange,
                           }}
-                        />
+                        >
+                          <Input
+                            backgroundColor="gray5"
+                            label={t('label.secret_key', 'Secret Access Key*')}
+                            value={field.state.value}
+                            type={showSecretKeyValue ? 'text' : 'password'}
+                            onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                              field.handleChange(e.target.value)
+                            }
+                            hasError={error.hasError}
+                            description={error.description}
+                            CustomIcon={SecretKeyCustomIconRenderer}
+                          />
+                        </secretKeyCustomIconContext.Provider>
                         <Row width="100%" mainAlignment="flex-start" padding={{ top: 'extrasmall' }}>
                           <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
                             {t(
