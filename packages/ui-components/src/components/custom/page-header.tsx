@@ -93,7 +93,7 @@ export const PageHeader = ({
             <BreadcrumbComponent
               crumbMenus={crumbMenus}
               labelOverrides={labelOverrides}
-              key={index}
+              key={item.path}
               index={index}
               item={item}
               nonNavigableSegments={nonNavigableSegments}
