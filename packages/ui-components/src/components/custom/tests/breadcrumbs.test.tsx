@@ -316,6 +316,24 @@ describe('BreadcrumbComponent', () => {
       fireEvent.click(items[1]!);
       expect(screen.getByTestId('location').textContent).toBe('/dashboard/settings');
     });
+
+    it('renders section menu items in alphabetical order by label', () => {
+      const unordered: Record<string, Array<CrumbMenuItem>> = {
+        '/dashboard/domains': [
+          { path: '/dashboard/domains/zebra', label: 'Zebra' },
+          { path: '/dashboard/domains/apple', label: 'Apple' },
+          { path: '/dashboard/domains/mango', label: 'Mango' },
+        ],
+      };
+      renderBreadcrumb({
+        path: '/dashboard/domains',
+        translations: TRANSLATIONS,
+        crumbMenus: unordered,
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
+      const labels = screen.getAllByTestId('dropdown-item').map((el) => el.textContent);
+      expect(labels).toEqual(['Apple', 'Mango', 'Zebra']);
+    });
   });
 
   describe('Module dropdown', () => {

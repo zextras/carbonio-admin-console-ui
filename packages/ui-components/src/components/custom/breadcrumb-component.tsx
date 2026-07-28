@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { DASHBOARD_ROUTE_ID, useModuleCrumbMenu } from '@zextras/ui-shared';
+import { sortBy } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -88,7 +89,8 @@ export const BreadcrumbComponent = ({
 
   const target = index === 0 ? item.homePath : item.path;
   const isModuleCrumb = index === 1;
-  const menu = isModuleCrumb && moduleMenu.length > 0 ? moduleMenu : crumbMenus?.[item.path];
+  const rawMenu = isModuleCrumb && moduleMenu.length > 0 ? moduleMenu : crumbMenus?.[item.path];
+  const menu = rawMenu ? sortBy(rawMenu, (m) => m.label.toLowerCase()) : undefined;
   const navigable = !isLast(index) && !nonNavigableSet.has(item.segment);
   const interactive: React.HTMLAttributes<HTMLElement> = navigable
     ? {
