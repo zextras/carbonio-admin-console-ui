@@ -9,7 +9,7 @@
 import { sortBy } from 'lodash-es';
 import { useMemo } from 'react';
 
-import { AppRoute, CarbonioModule, PrimarybarSection,PrimaryBarView } from '../../../types';
+import { AppRoute, CarbonioModule, PrimaryBarView } from '../../../types';
 import { useAppStore } from './store';
 
 const useApps = (): Record<string, CarbonioModule> => useAppStore((s) => s.apps);
@@ -28,26 +28,6 @@ export type ModuleCrumbMenuItem = {
   path: string;
   label: string;
 };
-
-export function buildPrimaryBarOrderedViews(
-  primaryBar: Array<PrimaryBarView>,
-  sections: Array<PrimarybarSection>,
-): Array<PrimaryBarView> {
-  type Group = { position: number; views: Array<PrimaryBarView> };
-
-  const groups: Array<Group> = primaryBar
-    .filter((v) => !v.section)
-    .map((v) => ({ position: v.position, views: [v] }));
-
-  for (const section of sections) {
-    const children = primaryBar.filter((v) => v.section?.id === section.id);
-    if (children.length > 0) {
-      groups.push({ position: section.position, views: children });
-    }
-  }
-
-  return sortBy(groups, 'position').flatMap((g) => g.views);
-}
 
 export function buildModuleCrumbMenu(
   primaryBar: Array<PrimaryBarView>,
