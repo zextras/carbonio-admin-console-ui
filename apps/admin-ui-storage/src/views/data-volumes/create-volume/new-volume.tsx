@@ -146,7 +146,7 @@ export function NewVolume({
   const wizardSteps = [
     {
       name: 'create',
-      label: t('label.new_volume_create', 'CREATE'),
+      label: t('label.create', 'CREATE'),
       icon: 'CubeOutline',
       view: MailstoresCreate,
       isComplete,

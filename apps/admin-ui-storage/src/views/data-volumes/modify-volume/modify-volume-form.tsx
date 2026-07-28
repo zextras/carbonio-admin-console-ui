@@ -121,7 +121,7 @@ function buildChangedFields(
 
   if (values.volumePrefix !== initialVolumePrefix) {
     changedFields.push({
-      label: t('label.prefix_name', 'Prefix'),
+      label: t('label.prefix', 'Prefix'),
       value: values.volumePrefix || t('label.not_set', 'Not set'),
     });
   }
