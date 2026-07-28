@@ -18,14 +18,10 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  background: var(--color-gray5-regular, var(--color-gray5));
-  padding: 0 0.75rem;
-  gap: 0.125rem;
   width: 100%;
-  height: 2.75rem;
   box-sizing: border-box;
-  border-radius: 0.5rem;
-  border: 0.0625rem solid var(--breadcrumb-bar-border);
+  background: var(--color-gray5-regular, #f5f6f8);
+  padding: 0.25rem;
 }
 
 .item {
@@ -41,9 +37,14 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 0.125rem;
+  height: 2.75rem;
+  padding: 0 0.75rem;
   list-style: none;
   margin: 0;
-  padding: 0;
+  border-radius: 0.5rem;
+  border: 0.0625rem solid #e2e6ec;
+  background: var(--color-gray5-regular, #f5f6f8);
 }
 
 .label::part(text) {
