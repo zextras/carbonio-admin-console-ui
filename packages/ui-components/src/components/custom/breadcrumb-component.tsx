@@ -113,6 +113,13 @@ export const BreadcrumbComponent = ({
       key={item.path}
       ref={crumbRef}
     >
+      {index !== 0 && (
+        <div aria-hidden="true" className={styles.separator}>
+          <ds-text as="span" size="medium" weight="regular">
+            &nbsp;/&nbsp;
+          </ds-text>
+        </div>
+      )}
       <ds-text
         {...interactive}
         as="span"
@@ -136,13 +143,6 @@ export const BreadcrumbComponent = ({
           placement="bottom-start"
           triggerLabel={t('label.show_sections', 'Show sections')}
         />
-      )}
-      {!isLast(index) && (
-        <div aria-hidden="true" className={styles.separator}>
-          <ds-text as="span" size="medium" weight="regular">
-            &nbsp;/&nbsp;
-          </ds-text>
-        </div>
       )}
     </li>
   );
