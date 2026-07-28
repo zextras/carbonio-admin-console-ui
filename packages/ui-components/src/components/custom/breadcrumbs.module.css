@@ -77,13 +77,17 @@
 }
 
 .caret {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
 	justify-content: center;
+	gap: 0.125rem;
+	box-sizing: border-box;
+	height: 2.75rem;
+	padding: 0 var(--padding-size-medium);
 	margin-left: var(--padding-size-extrasmall);
-	padding: 0;
-	background: transparent;
-	border: none;
+	border-radius: 0.5rem;
+	border: 0.0625rem solid var(--color-gray3-regular);
+	background: var(--color-gray5-regular);
 	cursor: pointer;
 }
 
