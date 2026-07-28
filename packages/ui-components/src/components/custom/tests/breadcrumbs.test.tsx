@@ -389,6 +389,22 @@ describe('BreadcrumbComponent', () => {
       expect(screen.getByTestId('location').textContent).toBe('/services/backup');
     });
 
+    it('highlights the current module as selected on a deep path', () => {
+      renderBreadcrumb({
+        path: '/manage/domains/global/settings',
+        translations: moduleTranslations,
+        moduleCrumbMenu: [
+          { path: '/manage/domains', label: 'Domains' },
+          { path: '/services/backup', label: 'Backup' },
+        ],
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
+      const items = screen.getAllByTestId('dropdown-item');
+      const selected = items.filter((el) => el.classList.contains('zapp-selected'));
+      expect(selected).toHaveLength(1);
+      expect(selected[0]!.textContent).toBe('Domains');
+    });
+
     it('shows the dropdown on the dashboard page', () => {
       renderBreadcrumb({
         path: '/dashboard',

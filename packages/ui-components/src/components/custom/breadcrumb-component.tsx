@@ -120,7 +120,9 @@ export const BreadcrumbComponent = ({
           items={menu.map((menuItem) => ({
             id: menuItem.path,
             label: menuItem.label,
-            selected: menuItem.path === location.pathname,
+            selected:
+              location.pathname === menuItem.path ||
+              location.pathname.startsWith(`${menuItem.path}/`),
             onClick: () => navigate(menuItem.path),
           }))}
           placement="bottom-start"
