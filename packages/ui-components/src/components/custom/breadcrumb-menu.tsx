@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { flip, limitShift, type Placement, shift } from '@floating-ui/dom';
+import { flip, limitShift, offset, type Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
@@ -83,7 +83,7 @@ export function BreadcrumbMenu({
       if (reference) {
         return setupFloating(reference, menu, {
           placement,
-          middleware: [flip(), shift({ limiter: limitShift() })],
+          middleware: [offset(8), flip(), shift({ limiter: limitShift() })],
           strategy: 'fixed',
         });
       }
