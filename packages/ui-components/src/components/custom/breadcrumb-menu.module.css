@@ -32,15 +32,18 @@
 .menu {
   box-sizing: border-box;
   position: fixed;
+  inset: auto;
+  margin: 0;
+  border: 0.0625rem solid var(--color-gray3-regular);
+  border-radius: 0.25rem;
+  background-color: var(--color-gray6-regular);
+  box-shadow: 0 0.25rem 1rem 0 rgba(0, 0, 0, 0.12);
   width: max-content;
   min-width: 10rem;
   max-width: 18.75rem;
   max-height: 50vh;
   overflow-y: auto;
   padding: 0.25rem;
-  border-radius: 0.5rem;
-  background-color: var(--color-gray5-regular);
-  box-shadow: var(--shadow-regular);
   z-index: 999;
 }
 
