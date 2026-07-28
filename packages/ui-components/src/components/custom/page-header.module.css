@@ -48,7 +48,7 @@
 }
 
 .label::part(text) {
-  color: var(--color-gray0-disabled);
+  color: var(--color-gray0-regular);
   border: 2px solid transparent;
   border-radius: 4px;
 }
@@ -89,10 +89,15 @@
   height: 2.75rem;
   padding: 0 var(--padding-size-medium);
   margin-left: var(--padding-size-extrasmall);
+  border: none;
   border-radius: 0.5rem;
-  border: 0.0625rem solid var(--color-gray3-regular);
-  background: var(--color-gray5-regular);
+  background: transparent;
   cursor: pointer;
+}
+
+.caret:focus-visible {
+  outline: 0.125rem solid var(--color-primary-regular);
+  outline-offset: -0.125rem;
 }
 
 .lastAccess {
