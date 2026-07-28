@@ -334,6 +334,21 @@ describe('PageHeader', () => {
       const labels = screen.getAllByTestId('dropdown-item').map((el) => el.textContent);
       expect(labels).toEqual(['Apple', 'Mango', 'Zebra']);
     });
+
+    it('shows a checkmark on the selected dropdown item only', () => {
+      renderPageHeader({
+        path: '/dashboard/domains',
+        translations: TRANSLATIONS,
+        crumbMenus: menus,
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
+      const items = screen.getAllByTestId('dropdown-item');
+      const selected = items.filter((el) => el.classList.contains('zapp-selected'));
+      expect(selected).toHaveLength(1);
+      expect(selected[0]!.querySelector('ds-icon[icon="IconCheckbox"]')).not.toBeNull();
+      const unselected = items.filter((el) => !el.classList.contains('zapp-selected'));
+      expect(unselected[0]!.querySelector('ds-icon[icon="IconCheckbox"]')).toBeNull();
+    });
   });
 
   describe('Module dropdown', () => {
