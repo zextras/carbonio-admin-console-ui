@@ -5,7 +5,7 @@
  */
 import { describe, expect, it, vi } from 'vitest';
 
-import { buildSectionMenu, getSegmentAfterBase } from '../breadcrumb-utils';
+import { buildSectionMenu, getSegmentAfterBase } from '../breadcrumbs-utils';
 
 const mockT = vi.fn((key: string, defaultValue?: string) => defaultValue ?? key) as never;
 
@@ -32,15 +32,11 @@ describe('buildSectionMenu', () => {
 
     const result = buildSectionMenu('/manage/domains/global', sections, mockT);
 
-    expect(result).toEqual([
-      { path: '/manage/domains/global/domains', label: 'Domains' },
-    ]);
+    expect(result).toEqual([{ path: '/manage/domains/global/domains', label: 'Domains' }]);
   });
 
   it('passes labelKey and labelDefault to the translation function', () => {
-    const sections = [
-      { id: 'settings', labelKey: 'label.settings', labelDefault: 'Settings' },
-    ];
+    const sections = [{ id: 'settings', labelKey: 'label.settings', labelDefault: 'Settings' }];
 
     buildSectionMenu('/base', sections, mockT);
 

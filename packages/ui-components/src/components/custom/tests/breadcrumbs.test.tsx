@@ -9,8 +9,8 @@ import i18next from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter, useLocation } from 'react-router';
 
-import styles from '../breadcrumb-component.module.css';
 import { Breadcrumbs, type CrumbMenuItem } from '../breadcrumbs';
+import styles from '../breadcrumbs.module.css';
 
 const TRANSLATIONS: Record<string, string> = {
   home: 'Home',
