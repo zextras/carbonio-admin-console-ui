@@ -16,10 +16,12 @@ export function buildSectionMenu(
   sections: Array<SectionRoute>,
   t: TranslateFn,
 ): Array<CrumbMenuItem> {
-  return sections.map(({ id, labelKey, labelDefault }) => ({
-    path: id === '' ? basePath : `${basePath}/${id}`,
-    label: t(labelKey, labelDefault),
-  }));
+  return sections
+    .filter(({ id }) => id !== '')
+    .map(({ id, labelKey, labelDefault }) => ({
+      path: `${basePath}/${id}`,
+      label: t(labelKey, labelDefault),
+    }));
 }
 
 export function getSegmentAfterBase(pathname: string, basePath: string): string | undefined {

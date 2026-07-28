@@ -96,9 +96,9 @@ export const AppView: FC = () => {
     isDomainId && DOMAIN_DETAIL_SECTIONS.length > 1
       ? buildSectionMenu(`${domainsAppPath}/${segmentAfterBase}`, DOMAIN_DETAIL_SECTIONS, t)
       : undefined;
-  const globalSectionMenu = globalSections.some((s) => s.path === pathname)
-    ? globalSections
-    : undefined;
+  const isGlobalSection =
+    pathname === globalBase || globalSections.some((s) => s.path === pathname);
+  const globalSectionMenu = isGlobalSection ? globalSections : undefined;
   const sectionMenu = domainSectionMenu ?? globalSectionMenu;
 
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;

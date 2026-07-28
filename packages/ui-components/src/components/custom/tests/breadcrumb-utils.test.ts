@@ -24,12 +24,17 @@ describe('buildSectionMenu', () => {
     ]);
   });
 
-  it('uses the basePath directly when id is empty string', () => {
-    const sections = [{ id: '', labelKey: 'label.global', labelDefault: 'Global' }];
+  it('excludes entries with empty id (parent/base route)', () => {
+    const sections = [
+      { id: '', labelKey: 'label.global', labelDefault: 'Global' },
+      { id: 'domains', labelKey: 'label.domains', labelDefault: 'Domains' },
+    ];
 
     const result = buildSectionMenu('/manage/domains/global', sections, mockT);
 
-    expect(result).toEqual([{ path: '/manage/domains/global', label: 'Global' }]);
+    expect(result).toEqual([
+      { path: '/manage/domains/global/domains', label: 'Domains' },
+    ]);
   });
 
   it('passes labelKey and labelDefault to the translation function', () => {
