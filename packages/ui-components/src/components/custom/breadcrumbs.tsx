@@ -3,17 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  DASHBOARD_ROUTE_ID,
-  useLastLoginTimestamp,
-  useModuleCrumbMenu,
-  useUserSettings,
-} from '@zextras/ui-shared';
+import { DASHBOARD_ROUTE_ID, useLastLoginTimestamp, useUserSettings } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation } from 'react-router';
 
-import { Dropdown } from '../display/Dropdown';
-import styles from './breadcrumb-component.module.css';
+import { BreadcrumbComponent } from './breadcrumb-component';
+import styles from './breadcrumbs.module.css';
 
 type BreadcrumbItem = {
   label: string;
@@ -83,84 +78,27 @@ export const Breadcrumbs = ({
 }: Readonly<BreadcrumbsProps>) => {
   const [t] = useTranslation();
   const location = useLocation();
-  const navigate = useNavigate();
   const userSetting = useUserSettings();
   const { data: lastLoginTimestamp } = useLastLoginTimestamp({
     accountId: userSetting?.attrs?.zimbraId?.toString(),
     enabled: Boolean(userSetting?.attrs?.zimbraId),
   });
   const splitRoutes = buildSplitRoutes(location?.pathname ?? '', t, labelOverrides);
-  const moduleMenu = useModuleCrumbMenu(location?.pathname ?? '');
-  const nonNavigableSet = new Set(nonNavigableSegments);
-
-  const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
 
   return (
     <nav aria-label={t('label.breadcrumb', 'Breadcrumb')} className={styles.breadcrumb}>
       <div className={styles.bar}>
         <ol className={styles.list}>
-          {splitRoutes.map((item: BreadcrumbItem, index) => {
-            const target = index === 0 ? item.homePath : item.path;
-            const isModuleCrumb = index === 1;
-            const menu =
-              isModuleCrumb && moduleMenu.length > 0 ? moduleMenu : crumbMenus?.[item.path];
-            const navigable = !isLast(index) && !nonNavigableSet.has(item.segment);
-            const interactive: React.HTMLAttributes<HTMLElement> = navigable
-              ? {
-                  onClick: () => navigate(target),
-                  onKeyDown: (e) => {
-                    if (e.key === 'Enter') navigate(target);
-                  },
-                  role: 'link',
-                  tabIndex: 0,
-                  style: { cursor: 'pointer' },
-                }
-              : {};
-            return (
-              <li
-                aria-current={isLast(index) ? 'page' : undefined}
-                className={styles.item}
-                key={item.path}
-              >
-                <ds-text
-                  {...interactive}
-                  as="span"
-                  size="medium"
-                  weight="regular"
-                  className={navigable ? styles.label : styles.labelCurrent}
-                >
-                  {item.label}
-                </ds-text>
-                {menu && menu.length > 0 && (
-                  <Dropdown
-                    items={menu.map((mi) => ({
-                      id: mi.path,
-                      label: mi.label,
-                      selected: mi.path === location.pathname,
-                      onClick: () => navigate(mi.path),
-                    }))}
-                    placement="bottom-start"
-                  >
-                    <button
-                      aria-haspopup="menu"
-                      aria-label={t('label.show_sections', 'Show sections')}
-                      className={styles.caret}
-                      type="button"
-                    >
-                      <ds-icon color="gray1" icon="ChevronDown" size="small" />
-                    </button>
-                  </Dropdown>
-                )}
-                {!isLast(index) && (
-                  <div aria-hidden="true" className={styles.separator}>
-                    <ds-text as="span" size="medium" weight="regular">
-                      &nbsp;/&nbsp;
-                    </ds-text>
-                  </div>
-                )}
-              </li>
-            );
-          })}
+          {splitRoutes.map((item: BreadcrumbItem, index) => (
+            <BreadcrumbComponent
+              crumbMenus={crumbMenus}
+              labelOverrides={labelOverrides}
+              key={index}
+              index={index}
+              item={item}
+              nonNavigableSegments={nonNavigableSegments}
+            />
+          ))}
         </ol>
         {lastLoginTimestamp && (
           <div className={styles.lastAccess}>

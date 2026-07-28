@@ -45,6 +45,21 @@
 
 .label::part(text) {
 	color: var(--color-gray0-disabled);
+	border: 2px solid transparent;
+	border-radius: 4px;
+}
+
+.label:hover::part(text) {
+	color: var(--color-primary-regular);
+	text-decoration: underline;
+}
+
+.label:focus-visible {
+	outline: none;
+}
+
+.label:focus-visible::part(text) {
+	border-color: var(--color-primary-regular);
 }
 
 .labelCurrent::part(text) {
