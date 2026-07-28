@@ -613,122 +613,120 @@ export function EditS3ConnectorDetailPanel({
                 </form.Field>
               </Row>
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-                  <form.Field name="accessKey">
-                    {(field) => (
-                      <Input
-                        backgroundColor="gray5"
-                        label={t('label.access_key', 'Access Key ID*')}
-                        value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                          field.handleChange(e.target.value)
-                        }
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-                <Row
-                  width="100%"
-                  mainAlignment="flex-start"
-                  padding={{ top: 'large' }}
-                >
-                  <form.Field name="secretKey">
-                    {(field) => {
-                      const error = getFieldErrorProps(
-                        field,
-                        isSubmitted,
-                        t,
-                        S3_CONNECTOR_VALIDATION_MESSAGES,
-                      );
-
-                      if (!isSecretKeyChangeMode) {
-                        return (
-                          <Container width="fill" crossAlignment="flex-start">
-                            <Row
-                              width="100%"
-                              mainAlignment="space-between"
-                              crossAlignment="center"
-                              padding={{ bottom: 'small' }}
-                            > 
-                              <Row mainAlignment="flex-start" crossAlignment="center" width="48%">
-                                <Row
-                                  width="100%"
-                                  mainAlignment="flex-start"
-                                  padding={{ bottom: 'small' }}
-                                >
-                                  <ds-text as="span" size="extrasmall" color="secondary">
-                                    {t('label.secret_key', 'Secret Access Key*')}
-                                  </ds-text>
-                                </Row>
-                                <ds-icon icon="LockOutline" color="gray0" size="medium" style={{ marginRight: '0.25rem' }}></ds-icon>
-                                <ds-text as="span" size="small">
-                                  {t('storages.s3Connectors.secretSavedOnServer', 'Saved on this server')}
-                                </ds-text>
-                              </Row>
-                              <Button
-                                type="outlined"
-                                color="primary"
-                                label={t('label.change', 'CHANGE')}
-                                onClick={onStartSecretKeyChange}
-                                disabled={isVerifyPending}
-                              />
-                            </Row>
-                            <Row
-                              width="100%"
-                              mainAlignment="flex-start"
-                              padding={{ top: 'extrasmall' }}
-                            >
-                              <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-                                {t(
-                                  'storages.s3Connectors.savedSecretTestConnectionHelp',
-                                  "TEST CONNECTION uses the saved key - you don't need to re-enter it. For security it can't be displayed.",
-                                )}
-                              </ds-text>
-                            </Row>
-                          </Container>
-                        );
+                <form.Field name="accessKey">
+                  {(field) => (
+                    <Input
+                      backgroundColor="gray5"
+                      label={t('label.access_key', 'Access Key ID*')}
+                      value={field.state.value}
+                      onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                        field.handleChange(e.target.value)
                       }
+                    />
+                  )}
+                </form.Field>
+              </Row>
+              <Row
+                width="100%"
+                mainAlignment="flex-start"
+                padding={{ top: 'large' }}
+              >
+                <form.Field name="secretKey">
+                  {(field) => {
+                    const error = getFieldErrorProps(
+                      field,
+                      isSubmitted,
+                      t,
+                      S3_CONNECTOR_VALIDATION_MESSAGES,
+                    );
 
+                    if (!isSecretKeyChangeMode) {
                       return (
                         <Container width="fill" crossAlignment="flex-start">
-                          <Input
-                            backgroundColor="gray5"
-                            label={t('label.secret_key', 'Secret Access Key*')}
-                            value={field.state.value}
-                            type={showSecretKeyValue ? 'text' : 'password'}
-                            onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                              field.handleChange(e.target.value)
-                            }
-                            hasError={error.hasError}
-                            description={error.description}
-                            CustomIcon={({ hasError, hasFocus, disabled }) => {
-                              const isDisabled = Boolean(disabled);
-                              return (
-                                <SecretKeyCustomIcon
-                                  hasError={Boolean(hasError)}
-                                  hasFocus={Boolean(hasFocus)}
-                                  disabled={isDisabled}
-                                  showSecretKeyValue={showSecretKeyValue}
-                                  onToggleSecretVisibility={toggleSecretKeyVisibility}
-                                  onCancelSecretKeyChange={onCancelSecretKeyChange}
-                                />
-                              );
-                            }}
-                          />
-                          <Row width="100%" mainAlignment="flex-start" padding={{ top: 'extrasmall' }}>
+                          <Row
+                            width="100%"
+                            mainAlignment="space-between"
+                            crossAlignment="center"
+                            padding={{ bottom: 'small' }}
+                          > 
+                            <Row mainAlignment="flex-start" crossAlignment="center" width="48%">
+                              <Row
+                                width="100%"
+                                mainAlignment="flex-start"
+                                padding={{ bottom: 'small' }}
+                              >
+                                <ds-text as="span" size="extrasmall" color="secondary">
+                                  {t('label.secret_key', 'Secret Access Key*')}
+                                </ds-text>
+                              </Row>
+                              <ds-icon icon="LockOutline" color="gray0" size="medium" style={{ marginRight: '0.25rem' }}></ds-icon>
+                              <ds-text as="span" size="small">
+                                {t('storages.s3Connectors.secretSavedOnServer', 'Saved on this server')}
+                              </ds-text>
+                            </Row>
+                            <Button
+                              type="outlined"
+                              color="primary"
+                              label={t('label.change', 'CHANGE')}
+                              onClick={onStartSecretKeyChange}
+                              disabled={isVerifyPending}
+                            />
+                          </Row>
+                          <Row
+                            width="100%"
+                            mainAlignment="flex-start"
+                            padding={{ top: 'extrasmall' }}
+                          >
                             <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
                               {t(
-                                'storages.s3Connectors.newSecretWillReplaceHint',
-                                'The new key will replace the saved one when you verify and save changes.',
+                                'storages.s3Connectors.savedSecretTestConnectionHelp',
+                                "TEST CONNECTION uses the saved key - you don't need to re-enter it. For security it can't be displayed.",
                               )}
                             </ds-text>
                           </Row>
                         </Container>
                       );
-                    }}
-                  </form.Field>
-                </Row>
-              {/* </Row> */}
+                    }
 
+                    return (
+                      <Container width="fill" crossAlignment="flex-start">
+                        <Input
+                          backgroundColor="gray5"
+                          label={t('label.secret_key', 'Secret Access Key*')}
+                          value={field.state.value}
+                          type={showSecretKeyValue ? 'text' : 'password'}
+                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                            field.handleChange(e.target.value)
+                          }
+                          hasError={error.hasError}
+                          description={error.description}
+                          CustomIcon={({ hasError, hasFocus, disabled }) => {
+                            const isDisabled = Boolean(disabled);
+                            return (
+                              <SecretKeyCustomIcon
+                                hasError={Boolean(hasError)}
+                                hasFocus={Boolean(hasFocus)}
+                                disabled={isDisabled}
+                                showSecretKeyValue={showSecretKeyValue}
+                                onToggleSecretVisibility={toggleSecretKeyVisibility}
+                                onCancelSecretKeyChange={onCancelSecretKeyChange}
+                              />
+                            );
+                          }}
+                        />
+                        <Row width="100%" mainAlignment="flex-start" padding={{ top: 'extrasmall' }}>
+                          <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+                            {t(
+                              'storages.s3Connectors.newSecretWillReplaceHint',
+                              'The new key will replace the saved one when you verify and save changes.',
+                            )}
+                          </ds-text>
+                        </Row>
+                      </Container>
+                    );
+                  }}
+                </form.Field>
+              </Row>
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                 <form.Field name="regionValue">
                   {(field) => (

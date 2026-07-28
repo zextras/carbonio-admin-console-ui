@@ -69,46 +69,49 @@ type ErrorPayload = {
   exception?: unknown;
 };
 
+function getNonEmptyString(value: unknown): string | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+  return value.trim() ? value : undefined;
+}
+
+function getFirstNonEmptyString(values: Array<unknown>): string | undefined {
+  for (const value of values) {
+    const parsed = getNonEmptyString(value);
+    if (parsed) {
+      return parsed;
+    }
+  }
+  return undefined;
+}
+
 function extractErrorDetailsMessage(error: unknown, fallback: string): string {
-  if (typeof error === 'string') {
-    return error.trim() ? error : fallback;
+  const directError = getNonEmptyString(error);
+  if (directError) {
+    return directError;
   }
 
-  if (!error || typeof error !== 'object') {
+  if (error === null || typeof error !== 'object') {
     return fallback;
   }
 
-  const payload = error as ErrorPayload;
+  const payload = error as ErrorPayload & { error?: unknown };
+  const nestedDetails =
+    payload.details && typeof payload.details === 'object'
+      ? (payload.details as { details?: unknown; exception?: unknown })
+      : undefined;
 
-  if (typeof payload?.details === 'string' && payload.details.trim()) {
-    return payload.details;
-  }
-
-  if (payload?.details && typeof payload.details === 'object') {
-    const nestedDetails = payload.details as { details?: unknown; exception?: unknown };
-    if (typeof nestedDetails?.details === 'string' && nestedDetails.details.trim()) {
-      return nestedDetails.details;
-    }
-
-    if (typeof nestedDetails?.exception === 'string' && nestedDetails.exception.trim()) {
-      return nestedDetails.exception;
-    }
-  }
-
-  if (typeof payload?.exception === 'string' && payload.exception.trim()) {
-    return payload.exception;
-  }
-
-  if (typeof payload?.message === 'string' && payload.message.trim()) {
-    return payload.message;
-  }
-
-  if (typeof (payload as { error?: unknown })?.error === 'string') {
-    const errorMessage = (payload as { error?: string }).error;
-    return errorMessage?.trim() ? errorMessage : fallback;
-  }
-
-  return fallback;
+  return (
+    getFirstNonEmptyString([
+      payload.details,
+      nestedDetails?.details,
+      nestedDetails?.exception,
+      payload.exception,
+      payload.message,
+      payload.error,
+    ]) ?? fallback
+  );
 }
 
 function VolumeListTable({
