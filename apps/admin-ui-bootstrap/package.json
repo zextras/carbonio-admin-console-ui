@@ -66,7 +66,7 @@
     "admin-ui-test-utils": "workspace:*",
     "babel-plugin-i18next-extract": "^1.1.0",
     "clsx": "^2.1.1",
-    "eslint": "^9.39.5",
+    "eslint": "^10.8.0",
     "eslint-plugin-css-modules": "^2.12.0",
     "jsdom": "^29.1.1",
     "msw": "^2.14.6",
