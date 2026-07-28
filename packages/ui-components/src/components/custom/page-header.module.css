@@ -21,7 +21,7 @@
   width: 100%;
   box-sizing: border-box;
   background: var(--color-gray5-regular, #f5f6f8);
-  padding: 0.25rem;
+  padding: 0.5rem;
 }
 
 .list {
