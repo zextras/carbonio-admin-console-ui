@@ -59,7 +59,7 @@ export function BreadcrumbMenu({
       return;
     }
     const selectedIndex = items.findIndex((item) => item.selected);
-    setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0);
+    setActiveIndex(Math.max(selectedIndex, 0));
     setOpen(true);
   };
 
@@ -177,6 +177,7 @@ export function BreadcrumbMenu({
         popover="auto"
         ref={menuRef}
         role="menu"
+        tabIndex={-1}
       >
         {items.map((item, index) => (
           <button
