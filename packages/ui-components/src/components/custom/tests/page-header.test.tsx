@@ -344,9 +344,9 @@ describe('PageHeader', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
       const selected = screen.getAllByRole('menuitemradio', { checked: true });
       expect(selected).toHaveLength(1);
-      expect(selected[0]!.querySelector('ds-icon[icon="IconCheckbox"]')).not.toBeNull();
+      expect(selected[0]!.querySelector('ds-icon[icon="Checkmark"]')).not.toBeNull();
       const unselected = screen.getAllByRole('menuitemradio', { checked: false });
-      expect(unselected[0]!.querySelector('ds-icon[icon="IconCheckbox"]')).toBeNull();
+      expect(unselected[0]!.querySelector('ds-icon[icon="Checkmark"]')).toBeNull();
     });
   });
 

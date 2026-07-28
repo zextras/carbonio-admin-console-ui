@@ -195,7 +195,7 @@ export function BreadcrumbMenu({
             <ds-text as="span" size="medium" weight="regular">
               {item.label}
             </ds-text>
-            {item.selected && <ds-icon color="primary" icon="IconCheckbox" size="1rem" />}
+            {item.selected && <ds-icon color="primary" icon="Checkmark" size="large" />}
           </button>
         ))}
       </div>
