@@ -13,15 +13,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.125rem;
   box-sizing: border-box;
-  height: 2.75rem;
-  padding: 0 var(--padding-size-medium);
+  width: 1.75rem;
+  height: 2rem;
   margin-left: var(--padding-size-extrasmall);
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 0.25rem;
   background: transparent;
   cursor: pointer;
+}
+
+.caretOpen {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .caret:focus-visible {

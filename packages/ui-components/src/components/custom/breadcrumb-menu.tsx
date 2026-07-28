@@ -160,13 +160,13 @@ export function BreadcrumbMenu({
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label={triggerLabel}
-        className={styles.caret}
+        className={clsx(styles.caret, open && styles.caretOpen)}
         id={triggerId}
         onClick={toggle}
         ref={triggerRef}
         type="button"
       >
-        <ds-icon color="gray1" icon="IconDown" size="large" />
+        <ds-icon color="gray1" icon={open ? 'IconUp' : 'IconDown'} size="large" />
       </button>
       <div
         aria-labelledby={triggerId}
@@ -192,7 +192,7 @@ export function BreadcrumbMenu({
             tabIndex={index === activeIndex ? 0 : -1}
             type="button"
           >
-            <ds-text as="span" size="medium" weight={item.selected ? 'bold' : 'regular'}>
+            <ds-text as="span" size="medium" weight="regular">
               {item.label}
             </ds-text>
             {item.selected && <ds-icon color="primary" icon="IconCheckbox" size="1rem" />}
