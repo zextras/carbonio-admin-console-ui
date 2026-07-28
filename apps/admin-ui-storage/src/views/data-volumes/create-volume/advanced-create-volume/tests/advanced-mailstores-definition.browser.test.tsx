@@ -135,7 +135,7 @@ describe('AdvancedMailstoresDefinition (browser)', () => {
   it('should render external bucket selector after choosing Object Storage', async () => {
     await setupBrowserTest(renderHarness({ initialVolumeName: 'Volume A' }));
 
-    await page.getByText('Storage Type', { exact: true }).click();
+    await page.getByText('Local Block Device', { exact: true }).click();
     await page.getByText('Object Storage', { exact: true }).click();
 
     await vi.waitFor(() => {
@@ -151,7 +151,7 @@ describe('AdvancedMailstoresDefinition (browser)', () => {
   it('should auto-select first available bucket for object storage', async () => {
     await setupBrowserTest(renderHarness({ initialVolumeName: 'Volume A' }));
 
-    await page.getByText('Storage Type', { exact: true }).click();
+    await page.getByText('Local Block Device', { exact: true }).click();
     await page.getByText('Object Storage', { exact: true }).click();
 
     await vi.waitFor(() => {

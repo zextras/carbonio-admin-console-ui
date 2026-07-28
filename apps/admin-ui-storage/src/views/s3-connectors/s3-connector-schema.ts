@@ -23,6 +23,7 @@ const s3ConnectorBase = z.object({
   bucketName: z.string(),
   accessKey: z.string(),
   secretKey: z.string(),
+  shouldChangeSecret: z.boolean(),
   url: z.string(),
   prefix: z.string(),
   customRegion: z.string(),
@@ -40,7 +41,11 @@ export const s3ConnectorSchema = s3ConnectorBase.superRefine((val, ctx) => {
   if (!val.accessKey || !NO_WHITESPACE.test(val.accessKey)) {
     ctx.addIssue({ code: 'custom', path: ['accessKey'], message: 's3.no_whitespace' });
   }
-  if (!val.secretKey || !NO_WHITESPACE.test(val.secretKey)) {
+  if (
+    val.shouldChangeSecret &&
+    val.secretKey.trim() !== '' &&
+    !NO_WHITESPACE.test(val.secretKey)
+  ) {
     ctx.addIssue({ code: 'custom', path: ['secretKey'], message: 's3.no_whitespace' });
   }
 

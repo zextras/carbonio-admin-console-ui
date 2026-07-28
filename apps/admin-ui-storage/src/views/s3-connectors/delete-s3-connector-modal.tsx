@@ -5,7 +5,7 @@
  */
 import { Button } from '@zextras/ui-components';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 import styles from './delete-s3-connector-modal.module.css';
 
@@ -61,15 +61,20 @@ export function DeleteS3ConnectorModal({
 			<div className={styles.topDivider} />
 			<div className={styles.description}>
 				<ds-text as="p" size="medium" color="gray0" overflow="break-word">
-					{connectorName
-						? t(
-								'storages.s3Connectors.deleteConnectorWarningWithNameConfirm',
-								`You are trying to delete ${connectorName} that is a never used S3 connector.\nAre you sure you want to proceed?`,
-							)
-						: t(
-								'storages.s3Connectors.deleteConnectorWarningConfirm',
-								`You are trying to delete a never used S3 connector.\nAre you sure you want to proceed?`,
-							)}
+					{connectorName ? (
+						<Trans
+							i18nKey="storages.s3Connectors.deleteUnusedConnectorNamedConfirm"
+							defaults="You are trying to delete {{connectorName}} that is a never used S3 connector.<br />Are you sure you want to proceed?"
+							values={{ connectorName }}
+							components={{ br: <br /> }}
+						/>
+					) : (
+						<Trans
+							i18nKey="storages.s3Connectors.deleteUnusedConnectorConfirm"
+							defaults="You are trying to delete a never used S3 connector.<br />Are you sure you want to proceed?"
+							components={{ br: <br /> }}
+						/>
+					)}
 				</ds-text>
 			</div>
 			<div className={styles.checkboxContainer}>

@@ -17,7 +17,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { postSoapFetchRequest, soapFetch, useAllServers, useIsAdvanced } from '@zextras/ui-shared';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -46,12 +46,14 @@ import { s3ConnectorVolumeQueryKeys } from '../../services/s3-connector-volume-q
 import { setCurrentVolumeRequest } from '../../services/set-current-volume-service';
 import { useAllVolumes } from '../../services/use-all-volumes';
 import { useListS3Connectors } from '../../services/use-list-s3-connectors';
+import { VerifyProgress } from '../s3-connectors/parts/verify/verify-progress';
 import { indexerHeaders, volTableHeader } from '../utility/utils';
 import { CreateMailstoresVolume } from './create-volume/advanced-create-volume/create-mailstores-volume';
 import { NewVolume } from './create-volume/new-volume';
 import { DeleteVolumeModel } from './delete-volume-model';
 import { IndexerVolumeTable } from './indexer-volume-table';
 import { ModifyVolume } from './modify-volume/modify-volume';
+import { VolumeErrorDetailsModal } from './volume-error-details-modal';
 
 type SoapContentResponse = {
   Body?: {
@@ -60,6 +62,57 @@ type SoapContentResponse = {
     };
   };
 };
+
+type ErrorPayload = {
+  message?: unknown;
+  details?: unknown;
+  exception?: unknown;
+};
+
+function getNonEmptyString(value: unknown): string | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+  return value.trim() ? value : undefined;
+}
+
+function getFirstNonEmptyString(values: Array<unknown>): string | undefined {
+  for (const value of values) {
+    const parsed = getNonEmptyString(value);
+    if (parsed) {
+      return parsed;
+    }
+  }
+  return undefined;
+}
+
+function extractErrorDetailsMessage(error: unknown, fallback: string): string {
+  const directError = getNonEmptyString(error);
+  if (directError) {
+    return directError;
+  }
+
+  if (error === null || typeof error !== 'object') {
+    return fallback;
+  }
+
+  const payload = error as ErrorPayload & { error?: unknown };
+  const nestedDetails =
+    payload.details && typeof payload.details === 'object'
+      ? (payload.details as { details?: unknown; exception?: unknown })
+      : undefined;
+
+  return (
+    getFirstNonEmptyString([
+      payload.details,
+      nestedDetails?.details,
+      nestedDetails?.exception,
+      payload.exception,
+      payload.message,
+      payload.error,
+    ]) ?? fallback
+  );
+}
 
 function VolumeListTable({
   volumes,
@@ -211,7 +264,8 @@ export function VolumesDetailPanel() {
   const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
   const { data: serverList = [] } = useAllServers();
   const selectedServerId = serverList?.find((s: { name?: string }) => s?.name === server)?.id ?? '';
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isPendingProgress, setIsPendingProgress] = useState<boolean>(false);
+  const pendingOnCompleteRef = useRef<(() => void) | null>(null);
   const [volume, setVolume] = useState<Volume | undefined>({
     compressBlobs: '',
     compressionThreshold: '',
@@ -226,6 +280,8 @@ export function VolumesDetailPanel() {
     type: 0,
   });
   const [open, setOpen] = useState<boolean>(false);
+  const [errorDetailsMessage, setErrorDetailsMessage] = useState<string>('');
+  const [isErrorDetailsOpen, setIsErrorDetailsOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const { data: volumeList = { primaries: [], indexes: [], secondaries: [] } } = useAllVolumes(
     server,
@@ -238,6 +294,34 @@ export function VolumesDetailPanel() {
     });
   };
   const createSnackbar = useSnackbar();
+
+  const defaultCreateErrorMessage = t('label.volume_create_error_default', 'Something went wrong, please try again');
+
+  const openErrorDetailsModal = (message?: unknown): void => {
+    setErrorDetailsMessage(extractErrorDetailsMessage(message, defaultCreateErrorMessage));
+    setIsErrorDetailsOpen(true);
+  };
+
+  const showCreateErrorSnackbar = (detailsMessage?: unknown): void => {
+    createSnackbar({
+      key: 'error',
+      severity: 'error',
+      label: t('label.volume_detail_error', '{{message}}', {
+        message: defaultCreateErrorMessage,
+      }),
+      autoHideTimeout: 5000,
+      actionLabel: t('storage.dataVolumes.details', 'Details'),
+      onActionClick: () => {
+        openErrorDetailsModal(detailsMessage);
+      },
+    });
+  };
+
+  const handleProgressComplete = (): void => {
+    const onComplete = pendingOnCompleteRef.current;
+    pendingOnCompleteRef.current = null;
+    onComplete?.();
+  };
 
   const closeHandler = (): void => {
     setOpen(false);
@@ -350,6 +434,7 @@ export function VolumesDetailPanel() {
   };
 
   const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
+    setIsPendingProgress(true);
     const connectorDetails = isVolumeAllDetail?.filter(
       (items) => items?.uuid === attr?.bucketConfigurationId,
     );
@@ -431,52 +516,42 @@ export function VolumesDetailPanel() {
         const result = JSON.parse(typedRes?.Body?.response?.content || '{}');
         if (result?.ok) {
           if (result?.response[server]?.ok) {
-            invalidateVolumes();
-            createSnackbar({
-              key: '1',
-              severity: 'success',
-
-              label: t('label.volume_created_msg', 'The volume has been created successfully'),
-            });
-            setToggleWizardLocal(false);
-            setToggleWizardExternal(false);
+            pendingOnCompleteRef.current = (): void => {
+              invalidateVolumes();
+              createSnackbar({
+                key: '1',
+                severity: 'success',
+                label: t('label.volume_created_msg', 'The volume has been created successfully'),
+              });
+              setToggleWizardLocal(false);
+              setToggleWizardExternal(false);
+            };
           } else {
-            createSnackbar({
-              key: '1',
-              severity: 'error',
-              label: t('label.volume_detail_error', '{{message}}', {
-                message: result?.response[server]?.error?.message,
-              }),
-            });
+            const errorDetails = result?.response?.[server]?.error?.message;
+            pendingOnCompleteRef.current = (): void => {
+              showCreateErrorSnackbar(errorDetails);
+            };
           }
         } else {
-          createSnackbar({
-            key: '1',
-            severity: 'error',
-            label: t('label.volume_detail_error', '{{message}}', {
-              message: 'Something went wrong, please try again',
-            }),
-          });
+          pendingOnCompleteRef.current = (): void => {
+            showCreateErrorSnackbar();
+          };
         }
         return typedRes;
       })
       .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.volume_detail_error', '{{message}}', {
-                message: 'Something went wrong, please try again',
-              }),
-          autoHideTimeout: 5000,
-        });
+        pendingOnCompleteRef.current = (): void => {
+          showCreateErrorSnackbar(error?.message);
+        };
         return error;
+      })
+      .finally(() => {
+        setIsPendingProgress(false);
       });
   };
 
   const CreateVolumeRequest = async (attr: Volume): Promise<void> => {
-    setIsLoading(true);
+    setIsPendingProgress(true);
     if (isAdvanced) {
       let volType = 'primary';
       if (attr?.type === 2) {
@@ -504,8 +579,12 @@ export function VolumesDetailPanel() {
       ).then(async (res: { Body: { response: { content: string } } }): Promise<void> => {
         const result = JSON.parse(res?.Body?.response?.content);
         const responseData = Object.values(result?.response)[0];
-        const typeRes = responseData as { ok: boolean; error: string };
+        const typeRes = responseData as {
+          ok?: boolean;
+          error?: unknown;
+        };
         if (typeRes && typeRes?.ok === true) {
+          let activateOutcome: 'success' | 'error' | null = null;
           if (attr?.isCurrent) {
             await postSoapFetchRequest(
               `/service/admin/soap/zextras`,
@@ -519,48 +598,45 @@ export function VolumesDetailPanel() {
               'zextras',
             )
               .then(() => {
-                createSnackbar({
-                  key: '1',
-                  severity: 'success',
-                  label: t('label.volume_active', '{{volumeName}} is Currently active', {
-                    volumeName: attr?.name,
-                  }),
-                });
+                activateOutcome = 'success';
               })
               .catch(() => {
-                createSnackbar({
-                  key: 'error',
-                  severity: 'error',
-                  label: t('label.volume_detail_error', '{{message}}', {
-                    message: 'Something went wrong, please try again',
-                  }),
-                  autoHideTimeout: 5000,
-                });
+                activateOutcome = 'error';
               });
           }
-          invalidateVolumes();
-          createSnackbar({
-            key: '1',
-            severity: 'success',
-            label: t('label.volume_created_msg', 'The volume has been created successfully'),
-          });
-          setToggleWizardLocal(false);
-          setToggleWizardExternal(false);
-        } else if (typeRes && typeRes?.ok === false && typeRes?.error) {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.volume_detail_error', '{{message}}', {
-              message: 'Something went wrong, please try again',
-            }),
-            autoHideTimeout: 5000,
-          });
+          pendingOnCompleteRef.current = (): void => {
+            if (activateOutcome === 'success') {
+              createSnackbar({
+                key: '1',
+                severity: 'success',
+                label: t('label.volume_active', '{{volumeName}} is Currently active', {
+                  volumeName: attr?.name,
+                }),
+              });
+            } else if (activateOutcome === 'error') {
+              showCreateErrorSnackbar();
+            }
+            invalidateVolumes();
+            createSnackbar({
+              key: '1',
+              severity: 'success',
+              label: t('label.volume_created_msg', 'The volume has been created successfully'),
+            });
+            setToggleWizardLocal(false);
+            setToggleWizardExternal(false);
+          };
+        } else if (typeRes && typeRes?.ok === false) {
+          const errorDetails = typeRes?.error;
+          pendingOnCompleteRef.current = (): void => {
+            showCreateErrorSnackbar(errorDetails);
+          };
         }
-        setIsLoading(false);
+        setIsPendingProgress(false);
       });
     } else {
       await createVoume(attr)
         .then(async (res) => {
+          let activateOutcome: 'success' | 'error' | null = null;
           if (res?.volume && Array.isArray(res?.volume)) {
             const vol = res?.volume[0];
 
@@ -568,50 +644,43 @@ export function VolumesDetailPanel() {
               if (attr?.isCurrent === 1) {
                 await setCurrentVolumeRequest(vol?.id, vol?.type)
                   .then(() => {
-                    createSnackbar({
-                      key: '1',
-                      severity: 'success',
-                      label: t('label.volume_active', '{{volumeName}} is Currently active', {
-                        volumeName: attr?.name,
-                      }),
-                    });
+                    activateOutcome = 'success';
                   })
                   .catch(() => {
-                    createSnackbar({
-                      key: 'error',
-                      severity: 'error',
-                      label: t('label.volume_detail_error', '{{message}}', {
-                        message: 'Something went wrong, please try again',
-                      }),
-                      autoHideTimeout: 5000,
-                    });
+                    activateOutcome = 'error';
                   });
               }
             }
           }
-          invalidateVolumes();
-          createSnackbar({
-            key: '1',
-            severity: 'success',
-            label: t('label.volume_created_msg', 'The volume has been created successfully'),
-          });
-          setToggleWizardLocal(false);
-          setToggleWizardExternal(false);
-          setIsLoading(false);
+          pendingOnCompleteRef.current = (): void => {
+            if (activateOutcome === 'success') {
+              createSnackbar({
+                key: '1',
+                severity: 'success',
+                label: t('label.volume_active', '{{volumeName}} is Currently active', {
+                  volumeName: attr?.name,
+                }),
+              });
+            } else if (activateOutcome === 'error') {
+              showCreateErrorSnackbar();
+            }
+            invalidateVolumes();
+            createSnackbar({
+              key: '1',
+              severity: 'success',
+              label: t('label.volume_created_msg', 'The volume has been created successfully'),
+            });
+            setToggleWizardLocal(false);
+            setToggleWizardExternal(false);
+          };
+          setIsPendingProgress(false);
           return res;
         })
         .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.volume_detail_error', '{{message}}', {
-                  message: 'Something went wrong, please try again',
-                }),
-            autoHideTimeout: 5000,
-          });
-          setIsLoading(false);
+          pendingOnCompleteRef.current = (): void => {
+            showCreateErrorSnackbar(error?.message);
+          };
+          setIsPendingProgress(false);
           return error;
         });
     }
@@ -626,13 +695,18 @@ export function VolumesDetailPanel() {
 
   return (
     <>
+      <VerifyProgress
+        isPending={isPendingProgress}
+        minDisplayMs={0}
+        onComplete={handleProgressComplete}
+      />
       {toggleWizardExternal && (
         <ModalOverlay open={toggleWizardExternal}>
           <CreateMailstoresVolume
             setToggleWizardExternal={setToggleWizardExternal}
-            setToggleWizardLocal={setToggleWizardLocal}
             volName={server}
             CreateAdvancedRequest={CreateAdvancedRequest}
+            CreateVolumeRequest={CreateVolumeRequest}
           />
         </ModalOverlay>
       )}
@@ -643,7 +717,6 @@ export function VolumesDetailPanel() {
             setToggleWizardExternal={setToggleWizardExternal}
             volName={server}
             CreateVolumeRequest={CreateVolumeRequest}
-            isLoading={isLoading}
           />
         </ModalOverlay>
       )}
@@ -651,14 +724,23 @@ export function VolumesDetailPanel() {
         <ModalOverlay open={modifyVolumeToggle}>
           <ModifyVolume
             volumeId={volume?.id ?? 0}
+            volumeName={volume?.name ?? ''}
             setOpen={setOpen}
             setmodifyVolumeToggle={setmodifyVolumeToggle}
             getAllVolumesRequest={invalidateVolumes}
             selectedServerId={selectedServerId}
             volumeList={volumeList}
+            onShowErrorSnackbar={showCreateErrorSnackbar}
           />
         </ModalOverlay>
       )}
+      <VolumeErrorDetailsModal
+        open={isErrorDetailsOpen}
+        message={errorDetailsMessage}
+        onClose={(): void => {
+          setIsErrorDetailsOpen(false);
+        }}
+      />
 
       <Container
         orientation="column"

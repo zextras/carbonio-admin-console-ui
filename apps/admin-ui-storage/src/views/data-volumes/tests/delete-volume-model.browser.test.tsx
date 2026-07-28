@@ -19,7 +19,7 @@ function createVolumeDetail(overrides?: Partial<{ name: string; isCurrent: boole
 }
 
 describe('DeleteVolumeModel (browser)', () => {
-	it('should render delete confirmation for a non-current volume', async () => {
+	it('should render delete confirmation for a volume', async () => {
 		await setupBrowserTest(
 			<DeleteVolumeModel
 				open
@@ -42,6 +42,7 @@ describe('DeleteVolumeModel (browser)', () => {
 			.toBeVisible();
 		await expect.element(page.getByRole('button', { name: 'NO' })).toBeVisible();
 		await expect.element(page.getByRole('button', { name: 'DELETE' })).toBeVisible();
+		await expect.element(page.getByRole('button', { name: 'DELETE' })).not.toBeDisabled();
 	});
 
 	it('should call closeHandler when clicking NO', async () => {
@@ -80,7 +81,7 @@ describe('DeleteVolumeModel (browser)', () => {
 		expect(deleteHandler).toHaveBeenCalledWith(expect.objectContaining({ name: 'secondary-volume' }));
 	});
 
-	it('should render current-volume warning and only the acknowledgment action', async () => {
+	it('should keep DELETE enabled when volumeDetail is current', async () => {
 		await setupBrowserTest(
 			<DeleteVolumeModel
 				open
@@ -90,36 +91,8 @@ describe('DeleteVolumeModel (browser)', () => {
 			/>,
 		);
 
-		await expect
-			.element(
-				page.getByText(
-					"You're trying to delete primary-volume. This volume is set as current. You should set a different volume as the current one before deleting it.",
-					{ exact: true },
-				),
-			)
-			.toBeVisible();
-		await expect
-			.element(page.getByRole('button', { name: 'OK, I GOT IT' }))
-			.toBeVisible();
-		expect(page.getByRole('button', { name: 'DELETE' }).elements()).toHaveLength(0);
-		expect(page.getByRole('button', { name: 'NO' }).elements()).toHaveLength(0);
-	});
-
-	it('should call closeHandler when acknowledging current-volume warning', async () => {
-		const closeHandler = vi.fn();
-
-		await setupBrowserTest(
-			<DeleteVolumeModel
-				open
-				closeHandler={closeHandler}
-				deleteHandler={vi.fn()}
-				volumeDetail={createVolumeDetail({ isCurrent: true })}
-			/>,
-		);
-
-		await page.getByRole('button', { name: 'OK, I GOT IT' }).click();
-
-		expect(closeHandler).toHaveBeenCalledTimes(1);
+		await expect.element(page.getByRole('button', { name: 'NO' })).toBeVisible();
+		await expect.element(page.getByRole('button', { name: 'DELETE' })).not.toBeDisabled();
 	});
 
 	it('should render the modal title with an empty name when volumeDetail is undefined', async () => {
@@ -133,23 +106,9 @@ describe('DeleteVolumeModel (browser)', () => {
 		);
 
 		await expect.element(page.getByText('Delete  ?', { exact: true })).toBeVisible();
-		// Undefined isCurrent is falsy → NO/DELETE branch
 		await expect.element(page.getByRole('button', { name: 'NO' })).toBeVisible();
 		await expect.element(page.getByRole('button', { name: 'DELETE' })).toBeVisible();
-	});
-
-	it('should render only the OK button when volumeDetail is current and name is missing', async () => {
-		await setupBrowserTest(
-			<DeleteVolumeModel
-				open
-				closeHandler={vi.fn()}
-				deleteHandler={vi.fn()}
-				volumeDetail={{ id: 1, name: undefined, isCurrent: true }}
-			/>,
-		);
-
-		await expect.element(page.getByRole('button', { name: 'OK, I GOT IT' })).toBeVisible();
-		expect(page.getByRole('button', { name: 'DELETE' }).elements()).toHaveLength(0);
+		await expect.element(page.getByRole('button', { name: 'DELETE' })).not.toBeDisabled();
 	});
 
 	it('should render neither the NO/DELETE buttons when open is false', async () => {

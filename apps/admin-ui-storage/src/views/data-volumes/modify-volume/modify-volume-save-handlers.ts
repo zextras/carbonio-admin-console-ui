@@ -26,7 +26,7 @@ type SnackbarCreator = (options: {
 
 type SaveCallbacks = {
   onSuccess: () => void;
-  onError: () => void;
+  onError: (errorDetails?: unknown) => void;
 };
 
 export function showVolumeSaveError(createSnackbar: SnackbarCreator, t: TFunction): void {
@@ -62,7 +62,7 @@ export function handleAdvancedUpdateResponse(
     return;
   }
 
-  callbacks.onError();
+  callbacks.onError(updateResponse?.exception ?? updateResponse?.error);
 }
 
 export type CeVolumeFormState = {
@@ -77,38 +77,43 @@ export type CeVolumeFormState = {
 
 export type CeSaveCallbacks = {
   onSuccess: () => void;
-  onModifyError: () => void;
-  onSetCurrentError: () => void;
+  onModifyError: (errorDetails?: unknown) => void;
+  onSetCurrentError: (errorDetails?: unknown) => void;
 };
 
 export async function saveCeVolume(
   form: CeVolumeFormState,
   selectedServerId: string,
-  createSnackbar: SnackbarCreator,
-  t: TFunction,
+  _createSnackbar: SnackbarCreator,
+  _t: TFunction,
   callbacks: CeSaveCallbacks,
 ): Promise<void> {
-  await soapFetch(
-    'ModifyVolume',
-    {
-      _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'ModifyVolumeRequest',
-      id: form.id,
-      volume: {
+  try {
+    await soapFetch(
+      'ModifyVolume',
+      {
+        _jsns: ZIMBRA_ADMIN_URN,
+        module: 'ZxCore',
+        action: 'ModifyVolumeRequest',
         id: form.id,
-        name: form.name,
-        rootpath: form.rootpath,
-        type: form.typeValue,
-        compressBlobs: form.compressBlobs ? 1 : 0,
-        compressionThreshold: form.compressionThreshold,
-        isCurrent: form.isCurrent ? 1 : 0,
+        volume: {
+          id: form.id,
+          name: form.name,
+          rootpath: form.rootpath,
+          type: form.typeValue,
+          compressBlobs: form.compressBlobs ? 1 : 0,
+          compressionThreshold: form.compressionThreshold,
+          isCurrent: form.isCurrent ? 1 : 0,
+        },
       },
-    },
-    {
-      targetServer: selectedServerId,
-    },
-  );
+      {
+        targetServer: selectedServerId,
+      },
+    );
+  } catch (error) {
+    callbacks.onModifyError(error);
+    return;
+  }
 
   if (form.isCurrent) {
     void soapFetch(
@@ -123,9 +128,8 @@ export async function saveCeVolume(
       {
         targetServer: selectedServerId,
       },
-    ).catch(() => {
-      showVolumeSaveError(createSnackbar, t);
-      callbacks.onSetCurrentError();
+    ).catch((error) => {
+      callbacks.onSetCurrentError(error);
     });
   }
 

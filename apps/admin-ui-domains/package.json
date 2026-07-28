@@ -67,7 +67,7 @@
     "playwright": "^1.61.1",
     "react-dom": "^19.2.7",
     "sonarqube-scanner": "^4.3.8",
-    "tailwindcss": "^4.3.1",
+    "tailwindcss": "^4.3.3",
     "@typescript/native": "npm:typescript@^7.0.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-plugin-css-modules": "^5.2.0",

@@ -16,6 +16,7 @@ export type Volume = {
   fgbits?: number;
   fbits?: number;
   isCurrent?: boolean | number;
+  inUse?: boolean | number | string;
   availableSpace?: number;
   bucketConfigurationId?: string;
   centralized?: boolean;
@@ -344,9 +345,9 @@ export type WizardInSectionProps = {
  */
 export type CreateMailstoresVolumeProps = {
   setToggleWizardExternal: (v: boolean) => void;
-  setToggleWizardLocal: (v: boolean) => void;
   volName: string;
   CreateAdvancedRequest: (payload: CreateAdvancedVolumePayload) => void;
+  CreateVolumeRequest: (attr: Partial<Volume>) => void;
 };
 
 /**
@@ -405,6 +406,7 @@ export type ModifyVolumeProps = {
     secondaries: Array<Volume>;
   };
   setOpen: (v: boolean) => void;
+  onShowErrorSnackbar?: (errorDetails?: unknown) => void;
 };
 
 /**

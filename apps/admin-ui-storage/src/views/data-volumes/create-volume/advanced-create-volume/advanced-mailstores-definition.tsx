@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, Input, LabeledValue, Padding, Row, Select } from '@zextras/ui-components';
+import { Container, Input, Padding, Row, Select } from '@zextras/ui-components';
 import { type ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,9 +15,10 @@ import {
   USAGE_IN_EXTERNAL_BACKUP,
 } from '../../../../constants';
 import { useListS3Connectors } from '../../../../services/use-list-s3-connectors';
-import { S3ConnectorTypeItems, volumeAllocationList } from '../../../utility/utils';
+import { volumeAllocationList } from '../../../utility/utils';
 import { VolumeContext } from '../volume-context';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
+import styles from './create-volume.module.css';
 
 type AdvancedMailstoresDefinitionProps = {
   readonly externalData: string;
@@ -31,7 +32,6 @@ export function AdvancedMailstoresDefinition({
   const { form } = useAdvancedVolumeContext();
   const { data: connectors = [] } = useListS3Connectors();
   const volAllocationList = volumeAllocationList(t);
-  const connectorTypeItems = S3ConnectorTypeItems(t);
   const [errName, setErrName] = useState(true);
 
   const isVolumeAllDetail: Array<S3ConnectorVolume> = connectors
@@ -53,17 +53,10 @@ export function AdvancedMailstoresDefinition({
         !items[USAGE_IN_EXTERNAL_BACKUP] || items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED,
     );
 
-  function getConnectorTypeLabel(storeType: string | undefined): string | undefined {
-    return connectorTypeItems?.find(
-      (item) => item?.value?.toLowerCase() === storeType?.toLowerCase(),
-    )?.label;
-  }
-
   const backupUnusedConnectorList: Array<{ label: string; value: string }> = isVolumeAllDetail.map(
     (items: S3ConnectorVolume) => {
-      const volumeObject = getConnectorTypeLabel(items?.storeType);
       return {
-        label: `${volumeObject} | ${items?.label}`,
+        label: items?.label ?? '',
         value: items?.uuid ?? '',
       };
     },
@@ -147,16 +140,23 @@ export function AdvancedMailstoresDefinition({
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-      <Row padding={{ top: 'large' }} width="100%">
-        <LabeledValue
-          label={t('label.volume_server_name', 'Server')}
-          backgroundColor="gray6"
-          value={externalData}
-        />
+      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start" crossAlignment="flex-start">
+        <div className={styles.detailItem}>
+          <ds-text size="small" color="gray1">
+            {t('label.volume_server_name', 'Server')}
+          </ds-text>
+          <div className={styles.detailValueRow}>
+            <ds-text className={styles.detailValue} weight="bold" size="small">
+              {externalData}
+            </ds-text>
+          </div>
+        </div>
       </Row>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
         <Input
+          className={styles.requiredAsteriskError}
           inputName="volumeName"
+          isRequired
           label={t('label.volume_name', 'Volume Name')}
           backgroundColor="gray5"
           value={volumeName}
@@ -174,6 +174,7 @@ export function AdvancedMailstoresDefinition({
       <Row padding={{ top: 'large' }} width="100%">
         <Select
           items={volAllocationList}
+          isRequired
           background="gray5"
           label={t('label.storage_type', 'Storage Type')}
           showCheckbox={false}
@@ -185,10 +186,11 @@ export function AdvancedMailstoresDefinition({
         <Row padding={{ top: 'large' }} width="100%">
           <Select
             items={backupUnusedConnectorList}
+            isRequired
             background="gray5"
             label={t(
-              'label.volume_available_unused_Buckets_list_in_backup',
-              'Available Buckets List (that are not in use in the backup)',
+              'storage.dataVolumes.availableS3ConnectorsList',
+              'Available S3 Connectors List (that are not in use in the backup)',
             )}
             showCheckbox={false}
             selection={unusedType || backupUnusedConnectorList[0]}

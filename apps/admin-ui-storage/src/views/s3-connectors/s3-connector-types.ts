@@ -10,6 +10,7 @@ export type S3ConnectorFormValues = {
   bucketName: string;
   accessKey: string;
   secretKey: string;
+  shouldChangeSecret: boolean;
   url: string;
   prefix: string;
   customRegion: string;

@@ -12,11 +12,13 @@ import styles from './verify-progress.module.css';
 type VerifyProgressProps = {
   isPending: boolean;
   onComplete?: () => void;
+  minDisplayMs?: number;
 };
 
 export const VerifyProgress = ({
   isPending,
   onComplete,
+  minDisplayMs = VERIFY_PROGRESS_MIN_DISPLAY_MS,
 }: VerifyProgressProps): React.JSX.Element => {
   const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
@@ -57,7 +59,7 @@ export const VerifyProgress = ({
         intervalRef.current = null;
       }
       const elapsed = Date.now() - openedAtRef.current;
-      const remaining = Math.max(0, VERIFY_PROGRESS_MIN_DISPLAY_MS - elapsed);
+      const remaining = Math.max(0, minDisplayMs - elapsed);
       timeoutRef.current = setTimeout(() => {
         setProgress(100);
         timeoutRef.current = setTimeout(() => {
