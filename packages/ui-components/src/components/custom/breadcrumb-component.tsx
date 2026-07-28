@@ -5,6 +5,7 @@
  */
 import { DASHBOARD_ROUTE_ID, useModuleCrumbMenu } from '@zextras/ui-shared';
 import { sortBy } from 'lodash-es';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -81,6 +82,7 @@ export const BreadcrumbComponent = ({
   const [t] = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const crumbRef = useRef<HTMLLIElement>(null);
   const splitRoutes = buildSplitRoutes(location?.pathname ?? '', t, labelOverrides);
   const moduleMenu = useModuleCrumbMenu();
   const nonNavigableSet = new Set(nonNavigableSegments);
@@ -105,7 +107,12 @@ export const BreadcrumbComponent = ({
     : {};
 
   return (
-    <li aria-current={isLast(index) ? 'page' : undefined} className={styles.item} key={item.path}>
+    <li
+      aria-current={isLast(index) ? 'page' : undefined}
+      className={styles.item}
+      key={item.path}
+      ref={crumbRef}
+    >
       <ds-text
         {...interactive}
         as="span"
@@ -117,6 +124,7 @@ export const BreadcrumbComponent = ({
       </ds-text>
       {menu && menu.length > 0 && (
         <BreadcrumbMenu
+          anchorRef={crumbRef}
           items={menu.map((menuItem) => ({
             id: menuItem.path,
             label: menuItem.label,

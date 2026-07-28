@@ -21,6 +21,7 @@ type BreadcrumbMenuProps = {
   items: Array<BreadcrumbMenuItem>;
   triggerLabel: string;
   placement?: Placement;
+  anchorRef?: React.RefObject<HTMLElement | null>;
 };
 
 type PopoverElement = HTMLDivElement & {
@@ -32,6 +33,7 @@ export function BreadcrumbMenu({
   items,
   triggerLabel,
   placement = 'bottom-start',
+  anchorRef,
 }: Readonly<BreadcrumbMenuProps>) {
   const triggerId = useId();
   const menuId = useId();
@@ -69,7 +71,7 @@ export function BreadcrumbMenu({
   useLayoutEffect(() => {
     const menu = menuRef.current;
     if (!menu) return undefined;
-    const trigger = triggerRef.current;
+    const reference = anchorRef?.current ?? triggerRef.current;
     const supportsPopover =
       typeof menu.showPopover === 'function' && typeof menu.hidePopover === 'function';
 
@@ -78,8 +80,8 @@ export function BreadcrumbMenu({
       if (supportsPopover && !menu.matches(':popover-open')) {
         menu.showPopover?.();
       }
-      if (trigger) {
-        return setupFloating(trigger, menu, {
+      if (reference) {
+        return setupFloating(reference, menu, {
           placement,
           middleware: [flip(), shift({ limiter: limitShift() })],
           strategy: 'fixed',
