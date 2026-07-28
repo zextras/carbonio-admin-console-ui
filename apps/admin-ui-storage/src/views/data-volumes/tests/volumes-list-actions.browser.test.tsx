@@ -12,7 +12,7 @@ import {
 	setupBrowserTest,
 	worker,
 } from 'admin-ui-test-utils';
-import { http, HttpResponse } from 'msw';
+import { type DefaultBodyType, http, HttpResponse } from 'msw';
 import React, { useEffect, useRef } from 'react';
 import { Route, Routes } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -279,7 +279,7 @@ function setupGetAllVolumesAdvanced(
 	primaries: Array<Record<string, unknown>> = [CURRENT_PRIMARY, DELETABLE_PRIMARY],
 	secondaries: Array<Record<string, unknown>> = [SECONDARY],
 	indexes: Array<Record<string, unknown>> = [INDEX],
-	actionHandlers: Partial<Record<string, () => HttpResponse>> = {},
+	actionHandlers: Partial<Record<string, () => HttpResponse<DefaultBodyType>>> = {},
 ): void {
 	worker.use(
 		http.post('/service/admin/soap/zextras', async ({ request }) => {
