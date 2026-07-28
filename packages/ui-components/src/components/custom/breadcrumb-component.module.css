@@ -1,0 +1,67 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.label::part(text) {
+  color: var(--color-gray0-regular);
+  border: 2px solid transparent;
+  border-radius: 4px;
+}
+
+.label:hover::part(text) {
+  color: var(--color-primary-regular);
+  text-decoration: underline;
+}
+
+.label:focus-visible {
+  outline: none;
+}
+
+.label:focus-visible::part(text) {
+  border-color: var(--color-primary-regular);
+}
+
+.labelCurrent::part(text) {
+  color: var(--color-gray0-regular);
+}
+
+.separator {
+  width: fit-content;
+  height: fit-content;
+  padding: 0 var(--padding-size-extrasmall);
+}
+
+.separator ds-text::part(text) {
+  color: var(--color-gray0-disabled);
+}
+
+.caret {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  box-sizing: border-box;
+  height: 2.75rem;
+  padding: 0 var(--padding-size-medium);
+  margin-left: var(--padding-size-extrasmall);
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.caret:focus-visible {
+  outline: 0.125rem solid var(--color-primary-regular);
+  outline-offset: -0.125rem;
+}

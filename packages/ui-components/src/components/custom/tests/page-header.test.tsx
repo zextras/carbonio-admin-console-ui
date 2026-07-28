@@ -9,8 +9,8 @@ import i18next from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter, useLocation } from 'react-router';
 
+import breadcrumbStyles from '../breadcrumb-component.module.css';
 import { type CrumbMenuItem,PageHeader } from '../page-header';
-import styles from '../page-header.module.css';
 
 const TRANSLATIONS: Record<string, string> = {
   home: 'Home',
@@ -177,7 +177,7 @@ describe('PageHeader', () => {
       const domainsText = screen.getByText('Domains');
       const dsText = domainsText.closest('ds-text') as HTMLElement | null;
       expect(dsText).not.toBeNull();
-      expect(dsText!.className).toContain(styles.labelCurrent);
+      expect(dsText!.className).toContain(breadcrumbStyles.labelCurrent);
     });
 
     it('does not apply pointer cursor to the last breadcrumb item', () => {
@@ -193,7 +193,7 @@ describe('PageHeader', () => {
       const homeText = screen.getByText('Home');
       const dsText = homeText.closest('ds-text') as HTMLElement | null;
       expect(dsText).not.toBeNull();
-      expect(dsText!.className).toContain(styles.label);
+      expect(dsText!.className).toContain(breadcrumbStyles.label);
     });
 
     it('renders "/" separator between breadcrumb items', () => {
@@ -452,7 +452,7 @@ describe('PageHeader', () => {
         nonNavigableSegments: ['global'],
       });
       const globalText = screen.getByText('Global').closest('ds-text') as HTMLElement;
-      expect(globalText.className).toContain(styles.labelCurrent);
+      expect(globalText.className).toContain(breadcrumbStyles.labelCurrent);
     });
 
     it('still renders the separator after a non-navigable segment', () => {
@@ -532,7 +532,7 @@ describe('PageHeader', () => {
       const domainText = screen.getByText('example.com').closest('ds-text') as HTMLElement;
       expect(domainText.getAttribute('role')).toBeNull();
       expect(domainText.getAttribute('tabindex')).toBeNull();
-      expect(domainText.className).toContain(styles.labelCurrent);
+      expect(domainText.className).toContain(breadcrumbStyles.labelCurrent);
     });
   });
 });
