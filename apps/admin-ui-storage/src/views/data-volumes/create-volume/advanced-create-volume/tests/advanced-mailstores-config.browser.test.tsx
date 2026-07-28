@@ -10,7 +10,7 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { S3 } from '../../../../../constants';
+import { INDEX_TYPE_VALUE, PRIMARY_TYPE_VALUE, S3 } from '../../../../../constants';
 import { volumeCreateSchema } from '../../schema';
 import { VolumeContext } from '../../volume-context';
 import { AdvancedMailstoresConfig } from '../advanced-mailstores-config';
@@ -101,10 +101,9 @@ describe('AdvancedMailstoresConfig (browser)', () => {
     await expect.element(page.getByText('Volume Name', { exact: true }).first()).toBeVisible();
   });
 
-  it('should render Bucket Name, Type, and ID labeled values', async () => {
+  it('should render Bucket Name and ID labeled values', async () => {
     await renderHarness().render();
     await expect.element(page.getByText('Bucket Name', { exact: true }).first()).toBeVisible();
-    await expect.element(page.getByText('Type', { exact: true }).first()).toBeVisible();
     await expect.element(page.getByText('ID', { exact: true }).first()).toBeVisible();
     await expect.element(page.getByText('bucket-a', { exact: true })).toBeVisible();
     await expect.element(page.getByText('bucket-1', { exact: true })).toBeVisible();
@@ -112,9 +111,9 @@ describe('AdvancedMailstoresConfig (browser)', () => {
 
   it('should render Primary and Secondary radio buttons', async () => {
     await renderHarness().render();
-    await expect.element(page.getByText('This is a Primary Volume', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('Primary Volume', { exact: true })).toBeVisible();
     await expect
-      .element(page.getByText('This is a Secondary Volume', { exact: true }))
+      .element(page.getByText('Secondary Volume', { exact: true }))
       .toBeVisible();
   });
 
@@ -132,7 +131,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: { volumeMain: 1 },
     }).render();
 
-    await page.getByText('This is a Primary Volume', { exact: true }).click();
+    await page.getByText('Primary Volume', { exact: true }).click();
     await vi.waitFor(() => {
       expect(onSelection).toHaveBeenCalledWith({ volumeMain: 0 }, true);
     });
@@ -141,7 +140,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
   it('should toggle Secondary radio on and call onSelection with SECONDARY_TYPE_VALUE', async () => {
     const onSelection = vi.fn();
     await renderHarness({ onSelection }).render();
-    await page.getByText('This is a Secondary Volume', { exact: true }).click();
+    await page.getByText('Secondary Volume', { exact: true }).click();
     await vi.waitFor(() => {
       expect(onSelection).toHaveBeenCalledWith({ volumeMain: 2 }, true);
     });
@@ -337,5 +336,56 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       expect(onSelection).toHaveBeenCalledWith({ useIntelligentTiering: true }, true);
       expect(onSelection).toHaveBeenCalledWith({ useInfrequentAccess: false }, true);
     });
+  });
+
+  it('should show index radio and path input for local block device', async () => {
+    await renderHarness({
+      initialAdvanced: { volumeAllocation: 'Local Block Device' },
+    }).render();
+
+    await expect.element(page.getByText('Index Volume', { exact: true })).toBeVisible();
+    await expect
+      .element(page.getByText('Volume Type', { exact: true }).first())
+      .toBeVisible();
+    await expect
+      .element(page.getByText('Volume Options', { exact: true }).first())
+      .toBeVisible();
+    await expect.element(page.getByPlaceholder('Volume path')).toBeVisible();
+  });
+
+  it('should toggle compression and accept only numeric thresholds for local block device', async () => {
+    const onSelection = vi.fn();
+    await renderHarness({
+      onSelection,
+      initialAdvanced: {
+        volumeAllocation: 'Local Block Device',
+        volumeMain: PRIMARY_TYPE_VALUE,
+      },
+    }).render();
+
+    const compressionSwitch = page.getByRole('switch', { name: 'Enable Compression' });
+    await expect.element(compressionSwitch).toBeVisible();
+
+    await compressionSwitch.click();
+    await vi.waitFor(() => {
+      expect(onSelection).toHaveBeenCalledWith({ isCompression: true }, true);
+    });
+
+    const thresholdInput = page.getByPlaceholder('Compression Threshold');
+    await expect.element(thresholdInput).not.toBeDisabled();
+
+    await thresholdInput.fill('4096');
+    await expect.element(thresholdInput).toHaveValue('4096');
+  });
+
+  it('should hide compression controls when index volume is selected for local block device', async () => {
+    await renderHarness({
+      initialAdvanced: {
+        volumeAllocation: 'Local Block Device',
+        volumeMain: INDEX_TYPE_VALUE,
+      },
+    }).render();
+
+    expect(page.getByRole('switch', { name: 'Enable Compression' }).elements()).toHaveLength(0);
   });
 });

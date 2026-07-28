@@ -68,7 +68,7 @@ describe('MailstoresCreate (browser)', () => {
     await page.getByLabelText('Volume Name').fill('secondary-volume');
     await page.getByLabelText('Volume path').fill('/opt/zextras/secondary');
 
-    await expect.element(page.getByText('This is a Primary Volume', { exact: true })).toBeVisible();
-    await page.getByText('This is a Secondary Volume', { exact: true }).click();
+    await expect.element(page.getByText('Primary Volume', { exact: true })).toBeVisible();
+    await page.getByText('Secondary Volume', { exact: true }).click();
   });
 });

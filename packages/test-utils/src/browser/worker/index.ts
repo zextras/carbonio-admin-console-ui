@@ -206,7 +206,8 @@ export const createBrowserZextrasActionInterceptor = (
 				| Record<string, unknown>
 				| undefined;
 			if (zextras?.action !== action) {
-				return HttpResponse.json({ Body: {} });
+        // Let other zextras handlers process non-matching actions.
+        return;
 			}
 			calledTimes += 1;
 			requestBodies.push(body);
@@ -235,7 +236,8 @@ export const delayedBrowserZextrasActionInterceptor = (
 				| Record<string, unknown>
 				| undefined;
 			if (zextras?.action !== action) {
-				return HttpResponse.json({ Body: {} });
+        // Let other zextras handlers process non-matching actions.
+        return;
 			}
 			calledTimes += 1;
 			requests.push(request);

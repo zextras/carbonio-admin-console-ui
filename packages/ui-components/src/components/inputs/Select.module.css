@@ -43,3 +43,7 @@
 	pointer-events: none;
 	line-height: 0;
 }
+
+.requiredAsterisk {
+	color: var(--color-error-regular);
+}

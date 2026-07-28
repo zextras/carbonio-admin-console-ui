@@ -122,7 +122,7 @@ export function MailstoresCreate({
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
             <Row width="48%" mainAlignment="flex-start">
               <Radio
-                label={t('label.primary_volume', 'This is a Primary Volume')}
+                label={t('storage.dataVolume.primaryVolume', 'Primary Volume')}
                 value={PRIMARY_TYPE_VALUE}
                 checked={volumeMain === PRIMARY_TYPE_VALUE}
                 onClick={(): void => form.setFieldValue('volumeMain', PRIMARY_TYPE_VALUE)}
@@ -131,7 +131,7 @@ export function MailstoresCreate({
             </Row>
             <Row width="48%" mainAlignment="flex-start">
               <Radio
-                label={t('label.secondary_volume', 'This is a Secondary Volume')}
+                label={t('storage.dataVolume.secondaryVolume', 'Secondary Volume')}
                 value={SECONDARY_TYPE_VALUE}
                 checked={volumeMain === SECONDARY_TYPE_VALUE}
                 onClick={(): void => form.setFieldValue('volumeMain', SECONDARY_TYPE_VALUE)}
@@ -141,7 +141,7 @@ export function MailstoresCreate({
           </Row>
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
             <Radio
-              label={t('label.index_volume', 'This is a Index Volume')}
+              label={t('storage.dataVolume.indexVolume', 'Index Volume')}
               value={INDEX_TYPE_VALUE}
               checked={volumeMain === INDEX_TYPE_VALUE}
               onClick={(): void => form.setFieldValue('volumeMain', INDEX_TYPE_VALUE)}
@@ -172,6 +172,11 @@ export function MailstoresCreate({
             );
           }}
         </form.Field>
+        <Padding top="extrasmall">
+          <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+            {t('storage.dataVolumes.volumePathMustExistHint', 'The volume path must already exist')}
+          </ds-text>
+        </Padding>
       </Row>
       {!isIndexVolume && (
         <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">

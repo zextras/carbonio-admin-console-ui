@@ -169,7 +169,6 @@ function renderComponent(options?: {
       setToggleWizardExternal={setToggleWizardExternal}
       volName="mailstore1.example.com"
       CreateVolumeRequest={CreateVolumeRequest}
-      isLoading={options?.isLoading ?? false}
     />,
   );
 
@@ -212,10 +211,10 @@ describe('NewVolume', () => {
     });
   });
 
-  it('should render loading spinner and close local wizard from section close', () => {
-    const { setToggleWizardLocal } = renderComponent({ isLoading: true });
+  it('should close local wizard from section close without rendering own spinner', () => {
+    const { setToggleWizardLocal } = renderComponent();
 
-    expect(document.querySelector('ds-spinner')).toBeTruthy();
+    expect(document.querySelector('ds-spinner')).toBeNull();
     expect(screen.getByText('mailstore1.example.com | Create Mailstores Volume')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: 'Close section' }));
