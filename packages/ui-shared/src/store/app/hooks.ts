@@ -51,31 +51,17 @@ export function buildPrimaryBarOrderedViews(
 
 export function buildModuleCrumbMenu(
   primaryBar: Array<PrimaryBarView>,
-  sections: Array<PrimarybarSection>,
-  pathname: string,
 ): Array<ModuleCrumbMenuItem> {
   const visibleViews = primaryBar.filter((v) => v.visible);
   if (visibleViews.length < 2) return [];
 
-  const segments = pathname.substring(1).split('/').filter(Boolean);
-  const modulePath = segments.slice(0, 2).join('/');
-
-  const ordered = buildPrimaryBarOrderedViews(visibleViews, sections);
-
-  const currentIndex = ordered.findIndex((v) => v.path === modulePath);
-  const menuViews =
-    currentIndex >= 0
-      ? [ordered[currentIndex], ...ordered.filter((_, i) => i !== currentIndex)]
-      : ordered;
-
-  return menuViews.map((v) => ({
+  return sortBy(visibleViews, (v) => v.label.toLowerCase()).map((v) => ({
     path: `/${v.path}`,
     label: v.label,
   }));
 }
 
-export function useModuleCrumbMenu(pathname: string): Array<ModuleCrumbMenuItem> {
+export function useModuleCrumbMenu(): Array<ModuleCrumbMenuItem> {
   const primaryBar = useAppStore((s) => s.views.primaryBar);
-  const sections = useAppStore((s) => s.views.primarybarSections);
-  return buildModuleCrumbMenu(primaryBar, sections, pathname);
+  return buildModuleCrumbMenu(primaryBar);
 }

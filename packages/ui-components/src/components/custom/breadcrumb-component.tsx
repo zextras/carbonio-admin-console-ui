@@ -81,7 +81,7 @@ export const BreadcrumbComponent = ({
   const location = useLocation();
   const navigate = useNavigate();
   const splitRoutes = buildSplitRoutes(location?.pathname ?? '', t, labelOverrides);
-  const moduleMenu = useModuleCrumbMenu(location?.pathname ?? '');
+  const moduleMenu = useModuleCrumbMenu();
   const nonNavigableSet = new Set(nonNavigableSegments);
 
   const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
