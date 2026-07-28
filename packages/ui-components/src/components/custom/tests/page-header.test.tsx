@@ -298,9 +298,9 @@ describe('PageHeader', () => {
         crumbMenus: menus,
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
-      const items = screen.getAllByTestId('dropdown-item');
+      const items = screen.getAllByRole('menuitemradio');
       expect(items).toHaveLength(2);
-      const selected = items.filter((el) => el.classList.contains('zapp-selected'));
+      const selected = screen.getAllByRole('menuitemradio', { checked: true });
       expect(selected).toHaveLength(1);
       expect(selected[0]!.textContent).toBe('Domains');
     });
@@ -312,7 +312,7 @@ describe('PageHeader', () => {
         crumbMenus: menus,
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
-      const items = screen.getAllByTestId('dropdown-item');
+      const items = screen.getAllByRole('menuitemradio');
       fireEvent.click(items[1]!);
       expect(screen.getByTestId('location').textContent).toBe('/dashboard/settings');
     });
@@ -331,7 +331,7 @@ describe('PageHeader', () => {
         crumbMenus: unordered,
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
-      const labels = screen.getAllByTestId('dropdown-item').map((el) => el.textContent);
+      const labels = screen.getAllByRole('menuitemradio').map((el) => el.textContent);
       expect(labels).toEqual(['Apple', 'Mango', 'Zebra']);
     });
 
@@ -342,12 +342,10 @@ describe('PageHeader', () => {
         crumbMenus: menus,
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
-      const items = screen.getAllByTestId('dropdown-item');
-      const selected = items.filter((el) => el.classList.contains('zapp-selected'));
+      const selected = screen.getAllByRole('menuitemradio', { checked: true });
       expect(selected).toHaveLength(1);
       expect(selected[0]!.querySelector('ds-icon[icon="IconCheckbox"]')).not.toBeNull();
-      expect(selected[0]!.getAttribute('style')).toContain('Highlight-Light-Regular');
-      const unselected = items.filter((el) => !el.classList.contains('zapp-selected'));
+      const unselected = screen.getAllByRole('menuitemradio', { checked: false });
       expect(unselected[0]!.querySelector('ds-icon[icon="IconCheckbox"]')).toBeNull();
     });
   });
@@ -382,12 +380,12 @@ describe('PageHeader', () => {
         moduleCrumbMenu: moduleMenu,
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
-      const items = screen.getAllByTestId('dropdown-item');
+      const items = screen.getAllByRole('menuitemradio');
       expect(items).toHaveLength(3);
       const labels = items.map((el) => el.textContent);
       expect(labels).toContain('Backup');
       expect(labels).toContain('Storage');
-      const selected = items.filter((el) => el.classList.contains('zapp-selected'));
+      const selected = screen.getAllByRole('menuitemradio', { checked: true });
       expect(selected).toHaveLength(1);
       expect(selected[0]!.textContent).toBe('Storage');
     });
@@ -399,7 +397,7 @@ describe('PageHeader', () => {
         moduleCrumbMenu: moduleMenu,
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
-      const items = screen.getAllByTestId('dropdown-item');
+      const items = screen.getAllByRole('menuitemradio');
       const backupItem = items.find((el) => el.textContent === 'Backup')!;
       fireEvent.click(backupItem);
       expect(screen.getByTestId('location').textContent).toBe('/services/backup');
@@ -415,8 +413,7 @@ describe('PageHeader', () => {
         ],
       });
       fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
-      const items = screen.getAllByTestId('dropdown-item');
-      const selected = items.filter((el) => el.classList.contains('zapp-selected'));
+      const selected = screen.getAllByRole('menuitemradio', { checked: true });
       expect(selected).toHaveLength(1);
       expect(selected[0]!.textContent).toBe('Domains');
     });

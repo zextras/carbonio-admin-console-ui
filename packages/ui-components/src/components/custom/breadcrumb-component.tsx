@@ -8,8 +8,8 @@ import { sortBy } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
-import { Dropdown } from '../display/Dropdown';
 import styles from './breadcrumb-component.module.css';
+import { BreadcrumbMenu } from './breadcrumb-menu';
 
 type BreadcrumbItem = {
   label: string;
@@ -116,47 +116,18 @@ export const BreadcrumbComponent = ({
         {item.label}
       </ds-text>
       {menu && menu.length > 0 && (
-        <Dropdown
-          items={menu.map((menuItem) => {
-            const selected =
+        <BreadcrumbMenu
+          items={menu.map((menuItem) => ({
+            id: menuItem.path,
+            label: menuItem.label,
+            onClick: () => navigate(menuItem.path),
+            selected:
               location.pathname === menuItem.path ||
-              location.pathname.startsWith(`${menuItem.path}/`);
-            return {
-              id: menuItem.path,
-              label: menuItem.label,
-              selected,
-              onClick: () => navigate(menuItem.path),
-              style: selected
-                ? {
-                    alignSelf: 'stretch',
-                    background: 'var(--Highlight-Light-Regular, #D5E3F6)',
-                    borderRadius: '0.25rem',
-                    gap: '0.625rem',
-                    justifyContent: 'space-between',
-                    padding: '0.625rem 0.75rem',
-                  }
-                : undefined,
-              customComponent: selected ? (
-                <>
-                  <ds-text as="span" size="medium" weight="bold">
-                    {menuItem.label}
-                  </ds-text>
-                  <ds-icon color="primary" icon="IconCheckbox" size="1rem" />
-                </>
-              ) : undefined,
-            };
-          })}
+              location.pathname.startsWith(`${menuItem.path}/`),
+          }))}
           placement="bottom-start"
-        >
-          <button
-            aria-haspopup="menu"
-            aria-label={t('label.show_sections', 'Show sections')}
-            className={styles.caret}
-            type="button"
-          >
-            <ds-icon color="gray1" icon="IconDown" size="large" />
-          </button>
-        </Dropdown>
+          triggerLabel={t('label.show_sections', 'Show sections')}
+        />
       )}
       {!isLast(index) && (
         <div aria-hidden="true" className={styles.separator}>
