@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import { Dropdown } from '../display/Dropdown';
-import { Container } from '../layout/Container';
 import styles from './breadcrumb-component.module.css';
 
 type BreadcrumbItem = {
@@ -127,17 +126,23 @@ export const BreadcrumbComponent = ({
               label: menuItem.label,
               selected,
               onClick: () => navigate(menuItem.path),
+              style: selected
+                ? {
+                    alignSelf: 'stretch',
+                    background: 'var(--Highlight-Light-Regular, #D5E3F6)',
+                    borderRadius: '0.25rem',
+                    gap: '0.625rem',
+                    justifyContent: 'space-between',
+                    padding: '0.625rem 0.75rem',
+                  }
+                : undefined,
               customComponent: selected ? (
-                <Container
-                  crossAlignment="center"
-                  mainAlignment="space-between"
-                  orientation="horizontal"
-                >
+                <>
                   <ds-text as="span" size="medium" weight="bold">
                     {menuItem.label}
                   </ds-text>
-                  <ds-icon color="primary" icon="IconCheckbox" size="large" />
-                </Container>
+                  <ds-icon color="primary" icon="IconCheckbox" size="1rem" />
+                </>
               ) : undefined,
             };
           })}

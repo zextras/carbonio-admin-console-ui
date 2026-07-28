@@ -346,6 +346,7 @@ describe('PageHeader', () => {
       const selected = items.filter((el) => el.classList.contains('zapp-selected'));
       expect(selected).toHaveLength(1);
       expect(selected[0]!.querySelector('ds-icon[icon="IconCheckbox"]')).not.toBeNull();
+      expect(selected[0]!.getAttribute('style')).toContain('Highlight-Light-Regular');
       const unselected = items.filter((el) => !el.classList.contains('zapp-selected'));
       expect(unselected[0]!.querySelector('ds-icon[icon="IconCheckbox"]')).toBeNull();
     });
