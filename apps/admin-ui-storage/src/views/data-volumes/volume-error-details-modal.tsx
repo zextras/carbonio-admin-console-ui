@@ -25,8 +25,8 @@ export function VolumeErrorDetailsModal({
   }
 
   return (
-    <div className={styles.overlay} role="presentation">
-      <div className={styles.dialog} role="dialog" aria-modal="true">
+    <div className={styles.overlay}>
+      <dialog className={styles.dialog} aria-modal="true" open>
         <div className={styles.modalBody}>
           <div className={styles.header}>
             <div className={styles.imageCircle}>
@@ -77,7 +77,7 @@ export function VolumeErrorDetailsModal({
             </ds-text>
           </div>
         </div>
-      </div>
+      </dialog>
     </div>
   );
 }

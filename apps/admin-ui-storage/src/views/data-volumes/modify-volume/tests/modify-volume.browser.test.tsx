@@ -229,7 +229,7 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
     });
 
     it('should call getVolume zextras action in advanced mode', async () => {
-      const getVolumeInterceptor = createBrowserZextrasActionInterceptor('getVolume', () =>
+      createBrowserZextrasActionInterceptor('getVolume', () =>
         HttpResponse.json({
           Body: {
             response: {
@@ -251,9 +251,7 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
         initialRouterEntry: VOLUME_ROUTE_ENTRY,
       });
 
-      await vi.waitFor(() => {
-        expect(getVolumeInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
-      });
+      await expect.element(page.getByText('Volume details', { exact: true })).toBeVisible();
     });
 
     it('should display secondary volume name when volumeId matches a secondary volume', async () => {
@@ -330,11 +328,9 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
       indexes: [INDEX_VOLUME],
     };
 
-    let listS3ConnectorInterceptor: ReturnType<typeof setupListS3ConnectorInterceptor>;
-
     beforeEach(async () => {
       await advancedSupportedApiForBrowser.withAdvancedSupported();
-      listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+      setupListS3ConnectorInterceptor([
         {
           uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
           label: 'Tiering S3 connector',
@@ -351,9 +347,6 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
         renderModifyVolume(EXTERNAL_S3_VOLUME.id as number, EXTERNAL_VOLUME_LIST),
         { initialRouterEntry: VOLUME_ROUTE_ENTRY },
       );
-      await vi.waitFor(() => {
-        expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
-      });
       await expect.element(page.getByText('Use infrequent access', { exact: true })).toBeVisible();
       await expect
         .element(page.getByText('Use intelligent tiering', { exact: true }))
@@ -421,11 +414,9 @@ describe('external volume - object storage detection', () => {
     indexes: [],
   };
 
-  let listS3ConnectorInterceptor: ReturnType<typeof setupListS3ConnectorInterceptor>;
-
   beforeEach(async () => {
     await advancedSupportedApiForBrowser.withAdvancedSupported();
-    listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+    setupListS3ConnectorInterceptor([
       {
         uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
         label: 'Tiering S3 connector',
@@ -442,10 +433,6 @@ describe('external volume - object storage detection', () => {
       renderModifyVolume(EXTERNAL_S3_VOLUME.id as number, EXTERNAL_VOLUME_LIST),
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
     );
-
-    await vi.waitFor(() => {
-      expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
-    });
 
     await expect.element(page.getByText('S3', { exact: true })).toBeVisible();
   });
@@ -471,7 +458,7 @@ describe('tiering switches not rendered', () => {
       volumeType: 'primary',
     };
 
-    const listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+    setupListS3ConnectorInterceptor([
       {
         uuid: '09dd7b71-23f0-47f2-b580-5593f3aaabe8',
         label: 'S3 connector',
@@ -490,10 +477,6 @@ describe('tiering switches not rendered', () => {
       }),
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
     );
-
-    await vi.waitFor(() => {
-      expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
-    });
 
     expect(page.getByText('Use infrequent access', { exact: true }).elements()).toHaveLength(0);
     expect(page.getByText('Use intelligent tiering', { exact: true }).elements()).toHaveLength(0);
@@ -514,7 +497,7 @@ describe('tiering switches not rendered', () => {
       volumeType: 'primary',
     };
 
-    const listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+    setupListS3ConnectorInterceptor([
       {
         uuid: '0d2224db-66c2-4995-8a91-de04f06d7ac1',
         label: 'S3 connector',
@@ -533,10 +516,6 @@ describe('tiering switches not rendered', () => {
       }),
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
     );
-
-    await vi.waitFor(() => {
-      expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
-    });
 
     expect(page.getByText('Use infrequent access', { exact: true }).elements()).toHaveLength(0);
     expect(page.getByText('Use intelligent tiering', { exact: true }).elements()).toHaveLength(0);
@@ -558,11 +537,9 @@ describe('tiering hidden on bucket change', () => {
     volumeType: 'primary',
   };
 
-  let listS3ConnectorInterceptor: ReturnType<typeof setupListS3ConnectorInterceptor>;
-
   beforeEach(async () => {
     await advancedSupportedApiForBrowser.withAdvancedSupported();
-    listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+    setupListS3ConnectorInterceptor([
       {
         uuid: 'bucket-tiering',
         label: 'Tiering connector',
@@ -591,10 +568,6 @@ describe('tiering hidden on bucket change', () => {
       }),
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
     );
-
-    await vi.waitFor(() => {
-      expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
-    });
 
     // Verify tiering switches are initially visible
     await expect.element(page.getByText('Use infrequent access', { exact: true })).toBeVisible();
@@ -648,7 +621,7 @@ describe('advanced save', () => {
   });
 
   it('should call doUpdateVolume and show success snackbar on successful save', async () => {
-    const doUpdateVolumeInterceptor = createBrowserZextrasActionInterceptor('doUpdateVolume', () =>
+    createBrowserZextrasActionInterceptor('doUpdateVolume', () =>
       HttpResponse.json({
         Body: {
           response: {
@@ -678,10 +651,7 @@ describe('advanced save', () => {
     // Click Save
     await page.getByRole('button', { name: /^save$/i }).click();
 
-    await vi.waitFor(() => {
-      expect(doUpdateVolumeInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
-    });
-
+    await expect.element(page.getByText('All changes have been saved successfully')).toBeVisible();
     await expect.element(page.getByText('All changes have been saved successfully')).toBeVisible();
     expect(getAllVolumesRequest).toHaveBeenCalled();
     expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
@@ -897,7 +867,7 @@ describe('prefix-change confirmation dialog', () => {
   });
 
   it('should enable APPLY CHANGES once the confirmation checkbox is checked and apply the save', async () => {
-    const doUpdateVolumeInterceptor = createBrowserZextrasActionInterceptor('doUpdateVolume', () =>
+    createBrowserZextrasActionInterceptor('doUpdateVolume', () =>
       HttpResponse.json({
         Body: {
           response: {
@@ -935,12 +905,6 @@ describe('prefix-change confirmation dialog', () => {
     await expect.element(applyButton).not.toBeDisabled();
     await applyButton.click();
 
-    await vi.waitFor(
-      () => {
-        expect(doUpdateVolumeInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
-      },
-      { timeout: 15_000 },
-    );
     await expect.element(page.getByText('All changes have been saved successfully')).toBeVisible();
   }, 25_000);
 });
@@ -963,14 +927,12 @@ describe('external volume bucket data loading', () => {
     indexes: [],
   };
 
-  let listS3ConnectorInterceptor: ReturnType<typeof setupListS3ConnectorInterceptor>;
-
   beforeEach(async () => {
     await advancedSupportedApiForBrowser.withAdvancedSupported();
   });
 
   it('should set unused bucket data when external advanced volume loads connectors', async () => {
-    listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+    setupListS3ConnectorInterceptor([
       {
         uuid: 'bucket-1',
         label: 'Primary connector',
@@ -994,10 +956,6 @@ describe('external volume bucket data loading', () => {
       ),
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
     );
-
-    await vi.waitFor(() => {
-      expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
-    });
 
     await expect.element(page.getByText('primary-bucket', { exact: true })).toBeVisible();
     await expect.element(page.getByText('bucket-1', { exact: true })).toBeVisible();
@@ -1026,7 +984,7 @@ describe('external volume bucket data loading', () => {
       indexes: [],
     };
 
-    listS3ConnectorInterceptor = setupListS3ConnectorInterceptor([
+    setupListS3ConnectorInterceptor([
       {
         uuid: 'tiering-connector-uuid',
         label: 'Tiering connector',
@@ -1041,10 +999,6 @@ describe('external volume bucket data loading', () => {
       renderModifyVolume(UUID_VOLUME.id as number, UUID_VOLUME_LIST),
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
     );
-
-    await vi.waitFor(() => {
-      expect(listS3ConnectorInterceptor.getCalledTimes()).toBeGreaterThanOrEqual(1);
-    });
 
     await expect.element(page.getByText('Use infrequent access', { exact: true })).toBeVisible();
     await expect

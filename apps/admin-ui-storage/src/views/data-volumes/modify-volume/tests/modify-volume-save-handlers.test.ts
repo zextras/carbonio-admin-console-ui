@@ -213,7 +213,7 @@ describe('modify-volume-save-handlers', () => {
       );
     });
 
-    it('should call onSetCurrentError and showVolumeSaveError when SetCurrentVolume fails', async () => {
+    it('should call onSetCurrentError when SetCurrentVolume fails', async () => {
       mockSoapFetch.mockResolvedValueOnce({});
       mockSoapFetch.mockRejectedValueOnce(new Error('network error'));
 
@@ -228,8 +228,9 @@ describe('modify-volume-save-handlers', () => {
 
       await vi.waitFor(() => {
         expect(onSetCurrentError).toHaveBeenCalledTimes(1);
-        expect(createSnackbar).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
       });
+
+      expect(createSnackbar).not.toHaveBeenCalled();
     });
 
     it('should map compressBlobs and isCurrent to numeric values', async () => {

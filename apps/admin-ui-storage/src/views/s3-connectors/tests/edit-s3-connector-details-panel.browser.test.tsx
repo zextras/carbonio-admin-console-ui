@@ -277,10 +277,12 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 				),
 			)
 			.toBeInTheDocument();
-		await expect.element(page.getByRole('button', { name: 'CHANGE' })).toBeInTheDocument();
+		await expect
+			.element(page.getByRole('button', { name: 'CHANGE', exact: true }))
+			.toBeInTheDocument();
 		expect(page.getByLabelText('Secret Access Key*').elements()).toHaveLength(0);
 
-		await page.getByRole('button', { name: 'CHANGE' }).click();
+		await page.getByRole('button', { name: 'CHANGE', exact: true }).click();
 
 		await expect.element(page.getByLabelText('Secret Access Key*')).toBeInTheDocument();
 		await expect
@@ -294,7 +296,7 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 		const { view } = renderEditS3ConnectorPanel();
 
 		await setupBrowserTest(view);
-		await page.getByRole('button', { name: 'CHANGE' }).click();
+		await page.getByRole('button', { name: 'CHANGE', exact: true }).click();
 		await page.getByLabelText('Secret Access Key*').fill('NEW_SECRET_VALUE');
 
 		await page.getByTestId('icon: CloseOutline').nth(1).click();
@@ -314,7 +316,7 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 		const { view } = renderEditS3ConnectorPanel();
 
 		await setupBrowserTest(view);
-		await page.getByRole('button', { name: 'CHANGE' }).click();
+		await page.getByRole('button', { name: 'CHANGE', exact: true }).click();
 		await page.getByLabelText('Secret Access Key*').fill('REPLACED_SECRET');
 
 		await page.getByRole('button', { name: /test connection/i }).click();

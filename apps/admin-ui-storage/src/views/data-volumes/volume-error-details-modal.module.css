@@ -16,6 +16,9 @@
 
 .dialog {
   position: relative;
+  margin: 0;
+  border: none;
+  padding: 0;
   border-radius: 1.5rem;
   background: var(--color-gray6-regular, white);
   width: min(34rem, calc(100vw - 2rem));

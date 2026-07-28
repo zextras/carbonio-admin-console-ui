@@ -21,7 +21,7 @@ import {
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, type SyntheticEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -95,6 +95,64 @@ function ReusedDefaultTabBar({ item, index, selected, onClick }: ReusedDefaultTa
         </ds-text>
       </Row>
     </DefaultTabBarItem>
+  );
+}
+
+type SecretKeyCustomIconProps = {
+  readonly hasError: boolean;
+  readonly hasFocus: boolean;
+  readonly disabled: boolean;
+  readonly showSecretKeyValue: boolean;
+  readonly onToggleSecretVisibility: () => void;
+  readonly onCancelSecretKeyChange: () => void;
+};
+
+function SecretKeyCustomIcon({
+  hasError,
+  hasFocus,
+  disabled,
+  showSecretKeyValue,
+  onToggleSecretVisibility,
+  onCancelSecretKeyChange,
+}: SecretKeyCustomIconProps) {
+  const iconColor = (hasError && 'error') || (hasFocus && 'primary') || 'secondary';
+
+  function handleIconClick(event: SyntheticEvent, action: () => void): void {
+    event.stopPropagation();
+    if (disabled) {
+      return;
+    }
+    action();
+  }
+
+  return (
+    <Container
+      mainAlignment="flex-end"
+      crossAlignment="center"
+      style={{ flexDirection: 'row' }}
+      gap="0.5rem"
+    >
+      <ds-icon
+        icon={showSecretKeyValue ? 'EyeOutline' : 'EyeOffOutline'}
+        size="large"
+        color={iconColor}
+        disabled={disabled}
+        onClick={(event: SyntheticEvent): void => {
+          handleIconClick(event, onToggleSecretVisibility);
+        }}
+        style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+      ></ds-icon>
+      <ds-icon
+        icon="CloseOutline"
+        size="large"
+        color={iconColor}
+        disabled={disabled}
+        onClick={(event: SyntheticEvent): void => {
+          handleIconClick(event, onCancelSecretKeyChange);
+        }}
+        style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+      ></ds-icon>
+    </Container>
   );
 }
 
@@ -434,6 +492,10 @@ export function EditS3ConnectorDetailPanel({
     setShowSecretKeyValue(false);
   }
 
+  function toggleSecretKeyVisibility(): void {
+    setShowSecretKeyValue((previousValue) => !previousValue);
+  }
+
   return (
     <>
       <Container background="gray6">
@@ -638,37 +700,19 @@ export function EditS3ConnectorDetailPanel({
                             }
                             hasError={error.hasError}
                             description={error.description}
-                            CustomIcon={({ hasError, hasFocus, disabled }) => (
-                              <Container
-                                mainAlignment="flex-end"
-                                crossAlignment="center"
-                                style={{ flexDirection: 'row' }}
-                                gap="0.5rem"
-                              >
-                                <ds-icon
-                                  icon={showSecretKeyValue ? 'EyeOutline' : 'EyeOffOutline'}
-                                  size="large"
-                                  color={(hasError && 'error') || (hasFocus && 'primary') || 'secondary'}
-                                  disabled={disabled}
-                                  onClick={(ev: React.SyntheticEvent): void => {
-                                    ev.stopPropagation();
-                                    if (!disabled) setShowSecretKeyValue((prev) => !prev);
-                                  }}
-                                  style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
-                                ></ds-icon>
-                                <ds-icon
-                                  icon="CloseOutline"
-                                  size="large"
-                                  color={(hasError && 'error') || (hasFocus && 'primary') || 'secondary'}
-                                  disabled={disabled}
-                                  onClick={(ev: React.SyntheticEvent): void => {
-                                    ev.stopPropagation();
-                                    if (!disabled) onCancelSecretKeyChange();
-                                  }}
-                                  style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
-                                ></ds-icon>
-                              </Container>
-                            )}
+                            CustomIcon={({ hasError, hasFocus, disabled }) => {
+                              const isDisabled = Boolean(disabled);
+                              return (
+                                <SecretKeyCustomIcon
+                                  hasError={Boolean(hasError)}
+                                  hasFocus={Boolean(hasFocus)}
+                                  disabled={isDisabled}
+                                  showSecretKeyValue={showSecretKeyValue}
+                                  onToggleSecretVisibility={toggleSecretKeyVisibility}
+                                  onCancelSecretKeyChange={onCancelSecretKeyChange}
+                                />
+                              );
+                            }}
                           />
                           <Row width="100%" mainAlignment="flex-start" padding={{ top: 'extrasmall' }}>
                             <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
