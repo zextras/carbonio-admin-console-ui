@@ -21,8 +21,8 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
 import { cosQueryKeys } from '../../../services/cos-query-keys';
-import { type ComputedLimit, type QuotaSource } from '../../../services/get-cos-quota';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
+import { useCosQuota } from '../../../services/use-cos-quota';
 import { useModifyCos } from '../../../services/use-modify-cos';
 import { useCosQuotaState } from './hooks/use-cos-quota-state';
 import { cosAdvancedSchema } from './schema';
@@ -35,21 +35,10 @@ import { COSQuotas } from './sections/quotas';
 import { COSTimeoutPolicy } from './sections/timeout-policy';
 import { CosAdvancedFormValues } from './types';
 
-const EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE: Array<string> = [
-  'zimbraMailQuota',
-  'zimbraQuotaWarnPercent',
-  'zimbraQuotaWarnInterval',
-  'zimbraQuotaWarnMessage',
-] satisfies Array<keyof AccountType>;
-
 const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
   ['zimbraMailForwardingAddressMaxLength', ''],
   ['zimbraMailForwardingAddressMaxNumAddrs', ''],
-  ['zimbraMailQuota', ''],
   ['zimbraContactMaxNumEntries', ''],
-  ['zimbraQuotaWarnPercent', ''],
-  ['zimbraQuotaWarnInterval', ''],
-  ['zimbraQuotaWarnMessage', ''],
   ['zimbraPasswordLocked', 'FALSE'],
   ['zimbraPasswordMinLength', ''],
   ['zimbraPasswordMaxLength', ''],
@@ -101,29 +90,20 @@ function saveBackupAttributes(
   return setCoreAttributes(backupAttributes);
 }
 
-type CosQuotaData = {
-  totalComputedLimit: ComputedLimit;
-  totalQuotaSource: QuotaSource;
-};
-
 type CosAdvancedFormProps = {
   cosData: AccountType;
   cosName: string | undefined;
-  cosQuotaData: CosQuotaData | undefined;
   coreAttributesData: GetCoreAttributesResponse | undefined;
   readonlyCOS: boolean;
   isAdvanced: boolean;
-  isTotalQuotaActive: boolean;
 };
 
 export const CosAdvancedForm = ({
   cosData,
   cosName,
-  cosQuotaData,
   coreAttributesData,
   readonlyCOS,
   isAdvanced,
-  isTotalQuotaActive,
 }: CosAdvancedFormProps) => {
   const { cosId } = useParams();
   const [t] = useTranslation();
@@ -131,7 +111,8 @@ export const CosAdvancedForm = ({
   const queryClient = useQueryClient();
   const modifyCosMutation = useModifyCos(cosId);
 
-  const quotaState = useCosQuotaState({ cosData, cosQuotaData, isTotalQuotaActive, isAdvanced });
+  const { data: cosQuotaData } = useCosQuota(cosData?.zimbraId, isAdvanced);
+  const quotaState = useCosQuotaState({ cosQuotaData });
 
   const timeItems: TimeItems = [
     { label: t('label.seconds', 'Seconds'), value: 's' },
@@ -189,21 +170,13 @@ export const CosAdvancedForm = ({
       }
       await quotaState.save(zimbraId);
 
-      const cosAdvancedToSave = isTotalQuotaActive
-        ? Object.fromEntries(
-            Object.entries(value).filter(
-              ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
-            ),
-          )
-        : value;
-
-      const attributes = Object.keys(cosAdvancedToSave)
+      const attributes = Object.keys(value)
         .filter(
           (key) => ADVANCED_FIELD_KEYS.has(key as keyof AccountType) && !BACKUP_FIELD_KEYS.has(key),
         )
         .map((ele) => ({
           n: ele,
-          _content: cosAdvancedToSave[ele as keyof AccountType]?.toString() ?? '',
+          _content: value[ele as keyof AccountType]?.toString() ?? '',
         }));
 
       const body: ModifyCosBody = {
@@ -214,7 +187,6 @@ export const CosAdvancedForm = ({
 
       modifyCosMutation.mutate(body, {
         onSuccess: () => {
-          quotaState.handleSuccess(zimbraId);
           form.reset(value, { keepDefaultValues: true });
           quotaState.reset();
         },
@@ -238,14 +210,9 @@ export const CosAdvancedForm = ({
       <Container mainAlignment="flex-start" width="100%" orientation="vertical">
         {isAdvanced && <COSGeneralOptions form={form} readonlyCOS={readonlyCOS} />}
         <COSForwarding form={form} readonlyCOS={readonlyCOS} />
-        <COSQuotas
-          form={form}
-          quotaState={quotaState}
-          isTotalQuotaActive={isTotalQuotaActive}
-          isAdvanced={isAdvanced}
-          readonlyCOS={readonlyCOS}
-          timeItems={timeItems}
-        />
+        {isAdvanced && cosQuotaData && (
+          <COSQuotas form={form} quotaState={quotaState} readonlyCOS={readonlyCOS} />
+        )}
         <COSPassword form={form} readonlyCOS={readonlyCOS} />
         <COSFailedLoginPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
         <COSTimeoutPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />

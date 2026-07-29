@@ -22,7 +22,6 @@ import {
   useDebouncedValue,
   useDomainById,
   useIsAdvanced,
-  useTotalQuotaActive,
 } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -51,7 +50,6 @@ import {
   GLOBAL_WHITELABEL_SETTINGS,
   IS_DETAIL_LIST_EXPANDED,
   IS_MANAGE_LIST_EXPANDED,
-  MAILBOX_QUOTA,
   MANAGE_APP_ID,
   MAX_DOMAIN_DISPLAY,
   RESOURCES,
@@ -123,7 +121,6 @@ const DomainListPanel: FC = () => {
   }, [createSnackbar, error, t]);
 
   const isAdvanced = useIsAdvanced();
-  const isTotalQuotaActive = useTotalQuotaActive();
   const { data: backupData } = useBackupServers({
     enabled: isAdvanced,
   });
@@ -221,11 +218,6 @@ const DomainListPanel: FC = () => {
       {
         id: VIRTUAL_HOSTS,
         name: t('label.virtual_hosts_and_certificates', 'Virtual Hosts & Certificate'),
-        isSelected: isDomainSelect,
-      },
-      {
-        id: MAILBOX_QUOTA,
-        name: t('label.mailbox_quota', 'Mailbox Quota'),
         isSelected: isDomainSelect,
       },
       {
@@ -355,13 +347,10 @@ const DomainListPanel: FC = () => {
             return false;
           }
         }
-        if (isTotalQuotaActive && item?.id === MAILBOX_QUOTA) {
-          return false;
-        }
         return true;
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [detailOptions, isAdvanced, is2FAAvailable, isTotalQuotaActive],
+    [detailOptions, isAdvanced, is2FAAvailable],
   );
 
   const globalOptionsItems = useMemo(

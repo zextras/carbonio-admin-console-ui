@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, DefaultTabBarItem, Modal, Padding, RouteLeavingGuard, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
-import { flushCache, resetFileQuotaLimitById, setCoreAttributes, setFileQuotaLimitById, useCurrentUserRights, useIsAdvanced, useTotalQuotaActive, useUserSettings } from '@zextras/ui-shared';
+import { flushCache, setCoreAttributes, useCurrentUserRights, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { differenceBy, find, isEqual, reduce, remove } from 'lodash-es';
 import { FC, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -22,7 +22,6 @@ import {
   CONFIGURATION,
   DELEGATES,
   DOMAIN_NAME,
-  FILES_QUOTA_LIMIT,
   GENERAL_SECTION,
   IS_DEFAULT_USER_NAME,
   PROFILE,
@@ -85,7 +84,6 @@ const EditAccount: FC<{
   STATUS_COLOR,
 }) => {
   const { t } = useTranslation();
-  const isTotalQuotaActive = useTotalQuotaActive();
   const createSnackbar = useSnackbar();
   const [change, setChange] = useState(defaultTab);
   const [isLoading, setIsLoading] = useState(false);
@@ -96,7 +94,6 @@ const EditAccount: FC<{
     initAccountDetail,
     setInitAccountDetail,
     deleteAdministrationRights,
-    cosDetail,
   } = context;
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
@@ -470,73 +467,9 @@ const EditAccount: FC<{
     remove(modifiedKeys, (ele) => ele === 'mail');
   };
 
-  const handleFileQuotaLimitChange = useCallback(
-    (modifiedKeys: string[]) => {
-      if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
-        if (accountDetail?.filesQuotaLimit) {
-          setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
-            () => {
-              if (modifiedKeys?.length === 0) {
-                createSnackbar({
-                  key: 'success',
-                  severity: 'success',
-                  label: t(
-                    'label.the_last_changes_has_been_saved_successfully',
-                    'Changes have been saved successfully',
-                  ),
-                  autoHideTimeout: 3000,
-                  hideButton: true,
-                  replace: true,
-                });
-              }
-            },
-          );
-        } else {
-          resetFileQuotaLimitById(accountDetail?.zimbraId).then(() => {
-            if (modifiedKeys?.length === 0) {
-              createSnackbar({
-                key: 'success',
-                severity: 'success',
-                label: t(
-                  'label.the_last_changes_has_been_saved_successfully',
-                  'Changes have been saved successfully',
-                ),
-                autoHideTimeout: 3000,
-                hideButton: true,
-                replace: true,
-              });
-              setInitAccountDetail((prev: any) => ({
-                ...prev,
-                [FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit,
-              }));
-              setAccountDetail((prev: any) => ({
-                ...prev,
-                [FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit,
-              }));
-            }
-          });
-        }
-        remove(modifiedKeys, (ele) => ele === FILES_QUOTA_LIMIT);
-      }
-    },
-    [
-      accountDetail?.filesQuotaLimit,
-      accountDetail?.zimbraId,
-      cosDetail.filesQuotaLimit,
-      createSnackbar,
-      setAccountDetail,
-      setInitAccountDetail,
-      t,
-    ],
-  );
-
   const handleTotalComputedQuotaLimitChange = useCallback(
     (modifiedKeys: string[]) => {
-      if (
-        !modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) ||
-        !isTotalQuotaActive ||
-        !isAdvanced
-      ) {
+      if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) || !isAdvanced) {
         return;
       }
 
@@ -620,7 +553,6 @@ const EditAccount: FC<{
       accountDetail?.zimbraId,
       createSnackbar,
       isAdvanced,
-      isTotalQuotaActive,
       setAccountDetail,
       setInitAccountDetail,
       t,
@@ -712,8 +644,6 @@ const EditAccount: FC<{
     if (modifiedKeys.includes('mail')) {
       await handleAliasChanges(deleteAliasArr, addAliasArr, modifiedKeys);
     }
-
-    handleFileQuotaLimitChange(modifiedKeys);
 
     handleTotalComputedQuotaLimitChange(modifiedKeys);
 
