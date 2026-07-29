@@ -168,7 +168,7 @@ export function BreadcrumbMenu({
         ref={triggerRef}
         type="button"
       >
-        <ds-icon color="gray1" icon={open ? 'IconUp' : 'IconDown'} size="large" />
+        <ds-icon color="gray1" icon={open ? 'ChevronUp' : 'ChevronDown'} size="large" />
       </button>
       <div
         aria-labelledby={triggerId}
