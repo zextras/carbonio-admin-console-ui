@@ -3,57 +3,21 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { buildSectionMenu, Container,PageHeader } from '@zextras/ui-components';
+import { Container } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Route, Routes, useLocation } from 'react-router';
+import { Route, Routes } from 'react-router';
 
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
-import { SECTION_ROUTES } from './backup/backup-section-routes';
+import { BackupPageHeader } from './backup-page-header';
 
 export const AppView: FC = () => {
-  const [t] = useTranslation();
-  const { pathname } = useLocation();
   const detailViewMaxWidth = useDetailViewMaxWidth();
-  const appBase = `/${pathname.split('/').filter(Boolean).slice(0, 2).join('/')}`;
-
-  const topLevelRoutes = SECTION_ROUTES.filter((r) => !r.prefix);
-  const serverRoutes = SECTION_ROUTES.filter((r) => r.prefix);
-
-  const topLevelSections = buildSectionMenu(appBase, topLevelRoutes, t);
-
-  const relativeSegments = pathname.startsWith(`${appBase}/`)
-    ? pathname.substring(appBase.length + 1).split('/')
-    : [];
-  const segmentAfterBase = relativeSegments[0] || undefined;
-  const deeperSegment = relativeSegments[1] || undefined;
-
-  const isServerRoute =
-    Boolean(deeperSegment) && serverRoutes.some((r) => r.id === deeperSegment);
-  const isTopLevelSection = topLevelSections.some((s) => s.path === pathname);
-
-  const serverSectionMenu =
-    isServerRoute && serverRoutes.length > 1
-      ? buildSectionMenu(`${appBase}/${segmentAfterBase}`, serverRoutes, t)
-      : undefined;
-  const topLevelSectionMenu = isTopLevelSection ? topLevelSections : undefined;
-  const sectionMenu = serverSectionMenu ?? topLevelSectionMenu;
-
-  const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
-  const nonNavigableSegments =
-    isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
-  const crumbMenuHeaders =
-    isServerRoute && segmentAfterBase ? { [pathname]: segmentAfterBase } : undefined;
 
   return (
     <Container height={'fit'}>
-      <PageHeader
-        crumbMenus={crumbMenus}
-        crumbMenuHeaders={crumbMenuHeaders}
-        nonNavigableSegments={nonNavigableSegments}
-      />
+      <BackupPageHeader />
       <Routes>
         <Route
           path={'/*'}
@@ -82,4 +46,3 @@ export const AppView: FC = () => {
     </Container>
   );
 };
-

@@ -3,58 +3,23 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  buildSectionMenu,
-  getSegmentAfterBase,
-  PageHeader,
-} from '@zextras/ui-components';
 import { usePrimaryBarState } from '@zextras/ui-shared';
-import { useTranslation } from 'react-i18next';
 import { Route, Routes, useLocation } from 'react-router';
 
-import { COS_LIST, COS_ROUTE_ID, CREATE_NEW_COS_ROUTE_ID, MANAGE_APP_ID } from '../constants';
-import { useCosDetail } from '../services/use-cos-detail';
+import { CREATE_NEW_COS_ROUTE_ID } from '../constants';
 import styles from './app-view.module.css';
 import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosListPanel } from './cos/cos-list-panel';
-import { SECTION_ROUTES } from './cos/cos-section-routes';
-
-const NON_COS_ID_SEGMENTS = new Set([CREATE_NEW_COS_ROUTE_ID, COS_LIST]);
+import { CosPageHeader } from './cos-page-header';
 
 export const AppView = () => {
-  const [t] = useTranslation();
   const isPrimaryBarExpanded = usePrimaryBarState();
-
   const { pathname } = useLocation();
   const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);
 
-  const cosAppPath = `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`;
-  const segmentAfterBase = getSegmentAfterBase(pathname, cosAppPath);
-  const isCosId = Boolean(segmentAfterBase) && !NON_COS_ID_SEGMENTS.has(segmentAfterBase!);
-
-  const { data: cosDetail } = useCosDetail(isCosId ? segmentAfterBase : undefined);
-  const cosName = cosDetail?.cos?.[0]?.name;
-
-  const sectionMenu =
-    isCosId && SECTION_ROUTES.length > 1
-      ? buildSectionMenu(`${cosAppPath}/${segmentAfterBase}`, SECTION_ROUTES, t)
-      : undefined;
-
-  const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
-  const nonNavigableSegments = isCosId && segmentAfterBase ? [segmentAfterBase] : undefined;
-  const labelOverrides = cosName && segmentAfterBase ? { [segmentAfterBase]: cosName } : undefined;
-  const loading = isCosId && !cosName;
-  const crumbMenuHeaders = isCosId && cosName ? { [pathname]: cosName } : undefined;
-
   return (
     <div className={styles.root}>
-      <PageHeader
-        crumbMenus={crumbMenus}
-        crumbMenuHeaders={crumbMenuHeaders}
-        nonNavigableSegments={nonNavigableSegments}
-        labelOverrides={labelOverrides}
-        loading={loading}
-      />
+      <CosPageHeader />
       <Routes>
         <Route
           path={'/*'}
