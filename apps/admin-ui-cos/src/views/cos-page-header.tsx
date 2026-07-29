@@ -31,7 +31,8 @@ export const CosPageHeader = () => {
 
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
   const nonNavigableSegments = isCosId && segmentAfterBase ? [segmentAfterBase] : undefined;
-  const labelOverrides = cosName && segmentAfterBase ? { [segmentAfterBase]: cosName } : undefined;
+  const labelOverrides =
+    isCosId && cosName && segmentAfterBase ? { [segmentAfterBase]: cosName } : undefined;
   const loading = isCosId && !cosName;
   const crumbMenuHeaders = isCosId && cosName ? { [pathname]: cosName } : undefined;
 

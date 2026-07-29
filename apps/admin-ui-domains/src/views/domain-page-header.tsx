@@ -78,10 +78,11 @@ export const DomainPageHeader = () => {
   const isDomainId =
     Boolean(segmentAfterBase) && !NON_DOMAIN_SEGMENTS.has(segmentAfterBase!);
 
-  const { data: domain } = useDomainById<{ name?: string }>({
+  const { data: domain, isPlaceholderData } = useDomainById<{ name?: string }>({
     domainId: isDomainId ? segmentAfterBase : undefined,
     enabled: isDomainId,
   });
+  const domainName = isPlaceholderData ? undefined : domain?.name;
 
   const globalBase = `${domainsAppPath}/${GLOBAL_ROUTE}`;
   const globalSections = buildSectionMenu(globalBase, GLOBAL_SECTION_ROUTES, t);
@@ -99,9 +100,9 @@ export const DomainPageHeader = () => {
   const nonNavigableSegments =
     isDomainId && segmentAfterBase ? [GLOBAL_ROUTE, segmentAfterBase] : [GLOBAL_ROUTE];
   const labelOverrides =
-    domain?.name && segmentAfterBase ? { [segmentAfterBase]: domain.name } : undefined;
-  const loading = isDomainId && !domain?.name;
-  const crumbMenuHeaders = isDomainId && domain?.name ? { [pathname]: domain.name } : undefined;
+    domainName && segmentAfterBase ? { [segmentAfterBase]: domainName } : undefined;
+  const loading = isDomainId && !domainName;
+  const crumbMenuHeaders = isDomainId && domainName ? { [pathname]: domainName } : undefined;
 
   return (
     <PageHeader
