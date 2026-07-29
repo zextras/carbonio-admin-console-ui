@@ -106,6 +106,7 @@ export const AppView: FC = () => {
     isDomainId && segmentAfterBase ? [GLOBAL_ROUTE, segmentAfterBase] : [GLOBAL_ROUTE];
   const labelOverrides =
     domain?.name && segmentAfterBase ? { [segmentAfterBase]: domain.name } : undefined;
+  const loading = isDomainId && !domain?.name;
 
   return (
     <Container height={'fit'}>
@@ -113,6 +114,7 @@ export const AppView: FC = () => {
         crumbMenus={crumbMenus}
         nonNavigableSegments={nonNavigableSegments}
         labelOverrides={labelOverrides}
+        loading={loading}
       />
       <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
         <Container style={{ maxWidth: '265px' }}>

@@ -26,6 +26,7 @@ export type PageHeaderProps = {
   crumbMenus?: Record<string, Array<CrumbMenuItem>>;
   nonNavigableSegments?: Array<string>;
   labelOverrides?: Record<string, string>;
+  loading?: boolean;
 };
 
 const HOME_PATH = `/${DASHBOARD_ROUTE_ID}`;
@@ -75,6 +76,7 @@ export const PageHeader = ({
   crumbMenus,
   nonNavigableSegments,
   labelOverrides,
+  loading,
 }: Readonly<PageHeaderProps>) => {
   const [t] = useTranslation();
   const location = useLocation();
@@ -88,18 +90,22 @@ export const PageHeader = ({
   return (
     <nav aria-label={t('label.breadcrumb', 'Breadcrumb')} className={styles.breadcrumb}>
       <div className={styles.bar}>
-        <ol className={styles.list}>
-          {splitRoutes.map((item: BreadcrumbItem, index) => (
-            <BreadcrumbComponent
-              crumbMenus={crumbMenus}
-              labelOverrides={labelOverrides}
-              key={item.path}
-              index={index}
-              item={item}
-              nonNavigableSegments={nonNavigableSegments}
-            />
-          ))}
-        </ol>
+        {loading ? (
+          <span aria-hidden="true" className={styles.skeleton} />
+        ) : (
+          <ol className={styles.list}>
+            {splitRoutes.map((item: BreadcrumbItem, index) => (
+              <BreadcrumbComponent
+                crumbMenus={crumbMenus}
+                labelOverrides={labelOverrides}
+                key={item.path}
+                index={index}
+                item={item}
+                nonNavigableSegments={nonNavigableSegments}
+              />
+            ))}
+          </ol>
+        )}
         {lastLoginTimestamp && (
           <div className={styles.lastAccess}>
             <ds-text as="span" color="secondary" overflow="break-word" weight="light">

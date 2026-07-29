@@ -38,6 +38,26 @@
   background: var(--color-gray5-regular, #f5f6f8);
 }
 
+.skeleton {
+  display: inline-block;
+  width: 12rem;
+  height: 1rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  background: var(--color-gray4-regular);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 .lastAccess {
   display: flex;
   flex-direction: column;

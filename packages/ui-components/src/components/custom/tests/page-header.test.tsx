@@ -11,6 +11,7 @@ import { MemoryRouter, useLocation } from 'react-router';
 
 import breadcrumbStyles from '../breadcrumb-component.module.css';
 import { type CrumbMenuItem,PageHeader } from '../page-header';
+import pageHeaderStyles from '../page-header.module.css';
 
 const TRANSLATIONS: Record<string, string> = {
   home: 'Home',
@@ -47,6 +48,7 @@ type RenderOptions = {
   moduleCrumbMenu?: Array<CrumbMenuItem>;
   nonNavigableSegments?: Array<string>;
   labelOverrides?: Record<string, string>;
+  loading?: boolean;
 };
 
 function renderPageHeader({
@@ -57,6 +59,7 @@ function renderPageHeader({
   moduleCrumbMenu = [],
   nonNavigableSegments,
   labelOverrides,
+  loading,
 }: RenderOptions = {}) {
   vi.mocked(useLastLoginTimestamp).mockReturnValue({ data: lastLoginTimestamp } as never);
   vi.mocked(useModuleCrumbMenu).mockReturnValue(moduleCrumbMenu as never);
@@ -68,6 +71,7 @@ function renderPageHeader({
           crumbMenus={crumbMenus}
           nonNavigableSegments={nonNavigableSegments}
           labelOverrides={labelOverrides}
+          loading={loading}
         />
         <LocationProbe />
       </I18nextProvider>
@@ -546,6 +550,37 @@ describe('PageHeader', () => {
       expect(domainText.getAttribute('role')).toBeNull();
       expect(domainText.getAttribute('tabindex')).toBeNull();
       expect(domainText.className).toContain(breadcrumbStyles.labelCurrent);
+    });
+  });
+
+  describe('Loading state', () => {
+    const translations: Record<string, string> = {
+      ...TRANSLATIONS,
+      accounts: 'Accounts',
+    };
+    const domainId = 'cb671926-996b-4adc-95a5-6d4956dff68c';
+
+    it('renders a whole-breadcrumb skeleton and no crumb labels while loading', () => {
+      const { container } = renderPageHeader({
+        path: `/manage/domains/${domainId}/accounts`,
+        translations,
+        loading: true,
+      });
+      expect(container.querySelector(`.${pageHeaderStyles.skeleton}`)).not.toBeNull();
+      expect(screen.queryByText('Home')).toBeNull();
+      expect(screen.queryByText('Accounts')).toBeNull();
+      expect(screen.queryByText('Cb671926-996b-4adc-95a5-6d4956dff68c')).toBeNull();
+    });
+
+    it('renders the crumbs once loading is false', () => {
+      const { container } = renderPageHeader({
+        path: `/manage/domains/${domainId}/accounts`,
+        translations,
+        loading: false,
+      });
+      expect(container.querySelector(`.${pageHeaderStyles.skeleton}`)).toBeNull();
+      expect(screen.getByText('Home')).not.toBeNull();
+      expect(screen.getByText('Accounts')).not.toBeNull();
     });
   });
 });
