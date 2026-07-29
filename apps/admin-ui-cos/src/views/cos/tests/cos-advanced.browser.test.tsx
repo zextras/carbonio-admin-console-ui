@@ -56,8 +56,6 @@ function seedQueryClientData(
   cosData = mockCosData,
 ): void {
   queryClient.setQueryData(['cos', 'detail', COS_ID], cosData);
-  queryClient.setQueryData(['cos', 'cos-quota', ''], QUOTA_SEED);
-  queryClient.setQueryData(['cos', 'cos-quota', COS_ID], QUOTA_SEED);
 }
 
 function mockCoreAttributeSet(): void {

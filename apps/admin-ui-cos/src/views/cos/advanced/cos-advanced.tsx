@@ -13,7 +13,6 @@ import { Attribute } from '../../../../types/attribute';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../../constants';
 import { useCoreAttributes } from '../../../services/use-core-attributes';
 import { useCosDetail } from '../../../services/use-cos-detail';
-import { useCosQuota } from '../../../services/use-cos-quota';
 import { CosAdvancedForm } from './advanced-form';
 
 const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
@@ -66,11 +65,6 @@ export const CosAdvanced = () => {
   const isAdvanced = useIsAdvanced();
   const cosData = buildCosData(cosInformation);
 
-  const { data: cosQuotaData, isPending: isCosQuotaPending } = useCosQuota(
-    cosData?.zimbraId,
-    !!cosData?.zimbraId && isAdvanced,
-  );
-
   const coreAttributesBody =
     isAdvanced && cosName
       ? [
@@ -88,10 +82,9 @@ export const CosAdvanced = () => {
   const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
   const readonlyCOS = !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
-  const isQuotaLoading = isAdvanced && isCosQuotaPending;
   const isBackupLoading = isAdvanced && isCoreAttributesPending;
 
-  if (isPending || isQuotaLoading || isBackupLoading) {
+  if (isPending || isBackupLoading) {
     return <ds-page-shimmer></ds-page-shimmer>;
   }
 
@@ -99,7 +92,6 @@ export const CosAdvanced = () => {
     <CosAdvancedForm
       cosData={cosData}
       cosName={cosName}
-      cosQuotaData={cosQuotaData}
       coreAttributesData={coreAttributesData}
       readonlyCOS={readonlyCOS}
       isAdvanced={isAdvanced}
