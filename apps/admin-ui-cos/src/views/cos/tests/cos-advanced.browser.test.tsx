@@ -21,6 +21,7 @@ import { type ModifyCosBody } from '../../../services/modify-cos-service';
 import { CosAdvanced } from '../advanced/cos-advanced';
 
 const COS_ID = 'e00428a1-0c00-11d9-836a-000d93afea2a';
+const ONE_GB_IN_BYTES = 1024 ** 3;
 
 const mockCosData = {
   cos: [
@@ -659,7 +660,7 @@ describe('CosAdvanced', () => {
     it('should show the revert icon after changing the quota input value', async () => {
       const limitedQuotaSeed = {
         type: 'success',
-        totalComputedLimit: { type: 'limited', value: 1073741824 },
+        totalComputedLimit: { type: 'limited', value: ONE_GB_IN_BYTES },
         totalQuotaSource: 'global',
       };
       const queryClient = getQueryClient();
@@ -689,20 +690,13 @@ describe('CosAdvanced', () => {
     });
 
     it('should not show the revert icon after saving a quota change', async () => {
-      const queryClient = getQueryClient();
-      await grantUserCosRights(queryClient);
-      seedQueryClientData(queryClient);
-      mockCoreAttributeSet();
-      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
-      createBrowserSoapAPIInterceptor('ModifyCos', {});
-      createBrowserSoapAPIInterceptor('FlushCache', {});
-      createBrowserAPIInterceptor(
-        'put',
-        `/services/storages/admin/quota/config/cos/${COS_ID}`,
-        () => HttpResponse.json({}),
-      );
-
       await setupAdvancedQuotaTest();
+
+      await createBrowserAPIInterceptor('get', `/services/storages/admin/quota/cos/${COS_ID}`, () =>
+        HttpResponse.json({
+          computedLimit: { type: 'limited', value: ONE_GB_IN_BYTES, source: 'cos' },
+        }),
+      );
 
       const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
       await expect.element(unlimitedSwitch).toBeChecked();
@@ -710,12 +704,6 @@ describe('CosAdvanced', () => {
 
       await page.getByRole('button', { name: 'Save' }).click();
       await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
-
-      queryClient.setQueryData(['cos', 'cos-quota', COS_ID], {
-        type: 'success',
-        totalComputedLimit: { type: 'limited', value: 1073741824 },
-        totalQuotaSource: 'cos',
-      });
 
       await expect.element(page.getByRole('textbox', { name: 'Total quota(GB)' })).toHaveValue('1');
 
