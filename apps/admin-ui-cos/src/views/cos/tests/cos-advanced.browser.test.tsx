@@ -46,19 +46,32 @@ const mockCosData = {
   ],
 };
 
-const QUOTA_SEED = {
+type QuotaSeed = {
+  type: string;
+  totalComputedLimit: { type: string; value?: number };
+  totalQuotaSource: string;
+};
+
+const QUOTA_SEED: QuotaSeed = {
   type: 'success',
   totalComputedLimit: { type: 'unlimited' },
+  totalQuotaSource: 'global',
+};
+
+const LIMITED_QUOTA_SEED: QuotaSeed = {
+  type: 'success',
+  totalComputedLimit: { type: 'limited', value: ONE_GB_IN_BYTES },
   totalQuotaSource: 'global',
 };
 
 function seedQueryClientData(
   queryClient: ReturnType<typeof getQueryClient>,
   cosData = mockCosData,
+  quotaSeed: QuotaSeed = QUOTA_SEED,
 ): void {
   queryClient.setQueryData(['cos', 'detail', COS_ID], cosData);
-  queryClient.setQueryData(['cos', 'cos-quota', ''], QUOTA_SEED);
-  queryClient.setQueryData(['cos', 'cos-quota', COS_ID], QUOTA_SEED);
+  queryClient.setQueryData(['cos', 'cos-quota', ''], quotaSeed);
+  queryClient.setQueryData(['cos', 'cos-quota', COS_ID], quotaSeed);
 }
 
 function mockCoreAttributeSet(): void {
@@ -78,27 +91,15 @@ function mockGetCoreAttributes(): void {
   );
 }
 async function setupAdvancedQuotaTest(
-  quotaSeed: {
-    type: string;
-    totalComputedLimit: { type: string; value?: number };
-    totalQuotaSource: string;
-  } = QUOTA_SEED,
+  quotaSeed: QuotaSeed = QUOTA_SEED,
 ): Promise<ReturnType<typeof getQueryClient>> {
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
-  queryClient.setQueryData(['cos', 'detail', COS_ID], mockCosData);
-  queryClient.setQueryData(['cos', 'cos-quota', ''], quotaSeed);
-  queryClient.setQueryData(['cos', 'cos-quota', COS_ID], quotaSeed);
+  seedQueryClientData(queryClient, mockCosData, quotaSeed);
   queryClient.setQueryData(['advanced-supported'], { supported: true });
   mockCatalogServices();
   mockGetCoreAttributes();
-  mockCoreAttributeSet();
   createBrowserSoapAPIInterceptor('GetCos', mockCosData);
-  createBrowserSoapAPIInterceptor('ModifyCos', {});
-  createBrowserSoapAPIInterceptor('FlushCache', {});
-  createBrowserAPIInterceptor('put', `/services/storages/admin/quota/config/cos/${COS_ID}`, () =>
-    HttpResponse.json({}),
-  );
 
   await setupBrowserTest(
     <Routes>
@@ -108,6 +109,18 @@ async function setupAdvancedQuotaTest(
   );
   await expect.element(page.getByText('Advanced')).toBeVisible();
   return queryClient;
+}
+
+function mockQuotaSave(savedQuota: { type: string; value?: number; source: string }): void {
+  mockCoreAttributeSet();
+  createBrowserSoapAPIInterceptor('ModifyCos', {});
+  createBrowserSoapAPIInterceptor('FlushCache', {});
+  createBrowserAPIInterceptor('put', `/services/storages/admin/quota/config/cos/${COS_ID}`, () =>
+    HttpResponse.json({}),
+  );
+  createBrowserAPIInterceptor('get', `/services/storages/admin/quota/cos/${COS_ID}`, () =>
+    HttpResponse.json({ computedLimit: savedQuota }),
+  );
 }
 async function setupCosAdvancedTest(cosData = mockCosData): Promise<void> {
   const queryClient = getQueryClient();
@@ -658,26 +671,7 @@ describe('CosAdvanced', () => {
     });
 
     it('should show the revert icon after changing the quota input value', async () => {
-      const limitedQuotaSeed = {
-        type: 'success',
-        totalComputedLimit: { type: 'limited', value: ONE_GB_IN_BYTES },
-        totalQuotaSource: 'global',
-      };
-      const queryClient = getQueryClient();
-      await grantUserCosRights(queryClient);
-      queryClient.setQueryData(['cos', 'detail', COS_ID], mockCosData);
-      queryClient.setQueryData(['cos', 'cos-quota', ''], limitedQuotaSeed);
-      queryClient.setQueryData(['cos', 'cos-quota', COS_ID], limitedQuotaSeed);
-      queryClient.setQueryData(['advanced-supported'], { supported: true });
-      mockCatalogServices();
-      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
-
-      await setupBrowserTest(
-        <Routes>
-          <Route path="/:cosId/:operation" element={<CosAdvanced />} />
-        </Routes>,
-        { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
-      );
+      await setupAdvancedQuotaTest(LIMITED_QUOTA_SEED);
 
       const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
       await expect.element(input).toHaveValue('1');
@@ -691,12 +685,7 @@ describe('CosAdvanced', () => {
 
     it('should not show the revert icon after saving a quota change', async () => {
       await setupAdvancedQuotaTest();
-
-      await createBrowserAPIInterceptor('get', `/services/storages/admin/quota/cos/${COS_ID}`, () =>
-        HttpResponse.json({
-          computedLimit: { type: 'limited', value: ONE_GB_IN_BYTES, source: 'cos' },
-        }),
-      );
+      mockQuotaSave({ type: 'limited', value: ONE_GB_IN_BYTES, source: 'cos' });
 
       const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
       await expect.element(unlimitedSwitch).toBeChecked();
