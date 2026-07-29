@@ -56,6 +56,8 @@ function seedQueryClientData(
   cosData = mockCosData,
 ): void {
   queryClient.setQueryData(['cos', 'detail', COS_ID], cosData);
+  queryClient.setQueryData(['cos', 'cos-quota', ''], QUOTA_SEED);
+  queryClient.setQueryData(['cos', 'cos-quota', COS_ID], QUOTA_SEED);
 }
 
 function mockCoreAttributeSet(): void {
@@ -69,7 +71,43 @@ function mockCatalogServices(): void {
     HttpResponse.json({ items: [] }),
   );
 }
+function mockGetCoreAttributes(): void {
+  createBrowserAPIInterceptor('post', '/service/extension/zextras_admin/core/attributes/get', () =>
+    HttpResponse.json({ attributes: {} }),
+  );
+}
+async function setupAdvancedQuotaTest(
+  quotaSeed: {
+    type: string;
+    totalComputedLimit: { type: string; value?: number };
+    totalQuotaSource: string;
+  } = QUOTA_SEED,
+): Promise<ReturnType<typeof getQueryClient>> {
+  const queryClient = getQueryClient();
+  await grantUserCosRights(queryClient);
+  queryClient.setQueryData(['cos', 'detail', COS_ID], mockCosData);
+  queryClient.setQueryData(['cos', 'cos-quota', ''], quotaSeed);
+  queryClient.setQueryData(['cos', 'cos-quota', COS_ID], quotaSeed);
+  queryClient.setQueryData(['advanced-supported'], { supported: true });
+  mockCatalogServices();
+  mockGetCoreAttributes();
+  mockCoreAttributeSet();
+  createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+  createBrowserSoapAPIInterceptor('ModifyCos', {});
+  createBrowserSoapAPIInterceptor('FlushCache', {});
+  createBrowserAPIInterceptor('put', `/services/storages/admin/quota/config/cos/${COS_ID}`, () =>
+    HttpResponse.json({}),
+  );
 
+  await setupBrowserTest(
+    <Routes>
+      <Route path="/:cosId/:operation" element={<CosAdvanced />} />
+    </Routes>,
+    { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
+  );
+  await expect.element(page.getByText('Advanced')).toBeVisible();
+  return queryClient;
+}
 async function setupCosAdvancedTest(cosData = mockCosData): Promise<void> {
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
@@ -107,7 +145,7 @@ describe('CosAdvanced', () => {
       await expect.element(page.getByText('Forwarding', { exact: true })).toBeVisible();
     });
 
-    it('should not render the Quotas section when advanced is not enabled', async () => {
+    it('should not show the Quotas section in CE', async () => {
       await setupCosAdvancedTest();
       await expect.element(page.getByText('Quotas')).not.toBeInTheDocument();
     });
@@ -410,6 +448,7 @@ describe('CosAdvanced', () => {
       await grantUserCosRights(queryClient);
       seedQueryClientData(queryClient);
       queryClient.setQueryData(['advanced-supported'], { supported: true });
+      queryClient.setQueryData(['cos', 'file-quota', COS_ID], { limit: undefined });
       mockCatalogServices();
       mockGetCoreAttributes(true);
       mockCoreAttributeSet();
@@ -590,58 +629,8 @@ describe('CosAdvanced', () => {
   });
 
   describe('Total Quota section', () => {
-    // The total quota control only renders on advanced installs.
-    function mockGetCoreAttributes(): void {
-      createBrowserAPIInterceptor(
-        'post',
-        '/service/extension/zextras_admin/core/attributes/get',
-        () => HttpResponse.json({ attributes: {} }),
-      );
-    }
-
-    async function setupAdvancedQuotaTest(
-      quotaSeed: {
-        type: string;
-        totalComputedLimit: { type: string; value?: number };
-        totalQuotaSource: string;
-      } = QUOTA_SEED,
-    ): Promise<ReturnType<typeof getQueryClient>> {
-      const queryClient = getQueryClient();
-      await grantUserCosRights(queryClient);
-      queryClient.setQueryData(['cos', 'detail', COS_ID], mockCosData);
-      queryClient.setQueryData(['cos', 'cos-quota', ''], quotaSeed);
-      queryClient.setQueryData(['cos', 'cos-quota', COS_ID], quotaSeed);
-      queryClient.setQueryData(['advanced-supported'], { supported: true });
-      mockCatalogServices();
-      mockGetCoreAttributes();
-      mockCoreAttributeSet();
-      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
-      createBrowserSoapAPIInterceptor('ModifyCos', {});
-      createBrowserSoapAPIInterceptor('FlushCache', {});
-      createBrowserAPIInterceptor(
-        'put',
-        `/services/storages/admin/quota/config/cos/${COS_ID}`,
-        () => HttpResponse.json({}),
-      );
-
-      await setupBrowserTest(
-        <Routes>
-          <Route path="/:cosId/:operation" element={<CosAdvanced />} />
-        </Routes>,
-        { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
-      );
-      await expect.element(page.getByText('Advanced')).toBeVisible();
-      return queryClient;
-    }
-
-    it('should render the Quotas section when advanced is enabled', async () => {
-      await setupAdvancedQuotaTest();
-      await expect.element(page.getByText('Quotas')).toBeVisible();
-    });
-
     it('should restore the unlimited quota switch to ON after toggling it off and clicking Cancel', async () => {
       await setupAdvancedQuotaTest();
-
       const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
       await expect.element(unlimitedSwitch).toBeChecked();
 
@@ -655,7 +644,6 @@ describe('CosAdvanced', () => {
 
     it('should restore the unlimited quota switch to ON after toggling it off and clicking revert', async () => {
       await setupAdvancedQuotaTest();
-
       const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
       await expect.element(unlimitedSwitch).toBeChecked();
 
@@ -669,11 +657,25 @@ describe('CosAdvanced', () => {
     });
 
     it('should show the revert icon after changing the quota input value', async () => {
-      await setupAdvancedQuotaTest({
+      const limitedQuotaSeed = {
         type: 'success',
         totalComputedLimit: { type: 'limited', value: 1073741824 },
         totalQuotaSource: 'global',
-      });
+      };
+      const queryClient = getQueryClient();
+      await grantUserCosRights(queryClient);
+      queryClient.setQueryData(['cos', 'detail', COS_ID], mockCosData);
+      queryClient.setQueryData(['cos', 'cos-quota', ''], limitedQuotaSeed);
+      queryClient.setQueryData(['cos', 'cos-quota', COS_ID], limitedQuotaSeed);
+      mockCatalogServices();
+      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+
+      await setupBrowserTest(
+        <Routes>
+          <Route path="/:cosId/:operation" element={<CosAdvanced />} />
+        </Routes>,
+        { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
+      );
 
       const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
       await expect.element(input).toHaveValue('1');
@@ -686,7 +688,21 @@ describe('CosAdvanced', () => {
     });
 
     it('should not show the revert icon after saving a quota change', async () => {
-      const queryClient = await setupAdvancedQuotaTest();
+      const queryClient = getQueryClient();
+      await grantUserCosRights(queryClient);
+      seedQueryClientData(queryClient);
+      mockCatalogServices();
+      mockCoreAttributeSet();
+      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+      createBrowserSoapAPIInterceptor('ModifyCos', {});
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserAPIInterceptor(
+        'put',
+        `/services/storages/admin/quota/config/cos/${COS_ID}`,
+        () => HttpResponse.json({}),
+      );
+
+      await setupAdvancedQuotaTest();
 
       const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
       await expect.element(unlimitedSwitch).toBeChecked();
@@ -701,9 +717,7 @@ describe('CosAdvanced', () => {
         totalQuotaSource: 'cos',
       });
 
-      await expect
-        .element(page.getByRole('textbox', { name: 'Total quota(GB)' }))
-        .toHaveValue('1');
+      await expect.element(page.getByRole('textbox', { name: 'Total quota(GB)' })).toHaveValue('1');
 
       await expect
         .element(page.getByRole('img', { name: 'Click to revert to the inherited value' }))
