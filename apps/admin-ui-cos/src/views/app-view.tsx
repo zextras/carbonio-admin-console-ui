@@ -43,6 +43,7 @@ export const AppView = () => {
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
   const nonNavigableSegments = isCosId && segmentAfterBase ? [segmentAfterBase] : undefined;
   const labelOverrides = cosName && segmentAfterBase ? { [segmentAfterBase]: cosName } : undefined;
+  const loading = isCosId && !cosName;
 
   return (
     <div className={styles.root}>
@@ -50,6 +51,7 @@ export const AppView = () => {
         crumbMenus={crumbMenus}
         nonNavigableSegments={nonNavigableSegments}
         labelOverrides={labelOverrides}
+        loading={loading}
       />
       <Routes>
         <Route
