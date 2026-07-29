@@ -667,6 +667,7 @@ describe('CosAdvanced', () => {
       queryClient.setQueryData(['cos', 'detail', COS_ID], mockCosData);
       queryClient.setQueryData(['cos', 'cos-quota', ''], limitedQuotaSeed);
       queryClient.setQueryData(['cos', 'cos-quota', COS_ID], limitedQuotaSeed);
+      queryClient.setQueryData(['advanced-supported'], { supported: true });
       mockCatalogServices();
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
 
@@ -691,7 +692,6 @@ describe('CosAdvanced', () => {
       const queryClient = getQueryClient();
       await grantUserCosRights(queryClient);
       seedQueryClientData(queryClient);
-      mockCatalogServices();
       mockCoreAttributeSet();
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
       createBrowserSoapAPIInterceptor('ModifyCos', {});
