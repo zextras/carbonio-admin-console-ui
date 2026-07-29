@@ -5,7 +5,7 @@
  */
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, ModalOverlay, Padding, Paging, Row, Table, Tooltip, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
-import { type CosAttribute, getCoreAttributes, getCosGeneralInformation, type GetCosResponse, getFileQuotaById, postSoapFetchRequest, useIsAdvanced, useTotalQuotaActive, useUserAccount } from '@zextras/ui-shared';
+import { type CosAttribute, getCoreAttributes, getCosGeneralInformation, type GetCosResponse, postSoapFetchRequest, useIsAdvanced, useUserAccount } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { debounce, filter, flatMapDeep } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -18,10 +18,7 @@ import {
   ASC,
   BACKUP_ENABLED,
   BACKUP_SELF_UNDELETE_ALLOWED,
-  COS,
   DESC,
-  FILES_QUOTA_LIMIT,
-  FILES_QUOTA_USED,
   MAILBOX_QUOTA_USED,
   RECORD_DISPLAY_LIMIT,
   TOTAL_COMPUTED_QUOTA_LIMIT,
@@ -68,7 +65,6 @@ type CheckRightResponse = {
 type Timer = ReturnType<typeof setTimeout>;
 const ManageAccounts: FC = () => {
   const [t] = useTranslation();
-  const isTotalQuotaActive = useTotalQuotaActive();
   const createSnackbar = useSnackbar();
   const timer = useRef<Timer | undefined>(undefined);
   const { data: domain } = useSelectedDomain();
@@ -481,29 +477,6 @@ const ManageAccounts: FC = () => {
     [setAccountDetail, setInitAccountDetail],
   );
 
-  const getFileQuotaByAccId = useCallback(
-    (accId: string): Promise<void> =>
-      getFileQuotaById(accId).then((res: any) => {
-        if (res?.limit) {
-          setAccDetailValue(FILES_QUOTA_LIMIT, res?.limit);
-        }
-        if (res?.used) {
-          setAccDetailValue(FILES_QUOTA_USED, res?.used);
-        }
-      }),
-    [setAccDetailValue],
-  );
-
-  const getFileQuotaByCosId = useCallback(
-    (cosId: string): Promise<void> =>
-      getFileQuotaById(cosId, COS).then((res: any) => {
-        if (res?.limit) {
-          setCosDetail((prev: any) => ({ ...prev, [FILES_QUOTA_LIMIT]: res?.limit }));
-        }
-      }),
-    [],
-  );
-
   const getMailboxQuotaUsed = useCallback(
     (accId: string): Promise<void> =>
       getMailboxQuota(accId).then((data) => {
@@ -603,16 +576,10 @@ const ManageAccounts: FC = () => {
           setDefaultCOS(!obj.zimbraCOSId);
           getMailboxQuotaUsed(id);
           if (isAdvanced) {
-            if (isTotalQuotaActive) {
-              retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
-            }
+            retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
             getListOtp(data?.account?.[0]?.name);
             getCredentialList(data?.account?.[0]?.name);
             getABQStatus(id);
-            getFileQuotaByAccId(id);
-            setTimeout(() => {
-              getFileQuotaByCosId(obj.zimbraCOSId);
-            }, 2000);
           }
         })
 
@@ -638,8 +605,6 @@ const ManageAccounts: FC = () => {
       getListOtp,
       getCredentialList,
       getABQStatus,
-      getFileQuotaByAccId,
-      getFileQuotaByCosId,
       createSnackbar,
       t,
     ],

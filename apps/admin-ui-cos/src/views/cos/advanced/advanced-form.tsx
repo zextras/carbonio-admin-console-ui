@@ -35,21 +35,10 @@ import { COSQuotas } from './sections/quotas';
 import { COSTimeoutPolicy } from './sections/timeout-policy';
 import { CosAdvancedFormValues } from './types';
 
-const EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE: Array<string> = [
-  'zimbraMailQuota',
-  'zimbraQuotaWarnPercent',
-  'zimbraQuotaWarnInterval',
-  'zimbraQuotaWarnMessage',
-] satisfies Array<keyof AccountType>;
-
 const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
   ['zimbraMailForwardingAddressMaxLength', ''],
   ['zimbraMailForwardingAddressMaxNumAddrs', ''],
-  ['zimbraMailQuota', ''],
   ['zimbraContactMaxNumEntries', ''],
-  ['zimbraQuotaWarnPercent', ''],
-  ['zimbraQuotaWarnInterval', ''],
-  ['zimbraQuotaWarnMessage', ''],
   ['zimbraPasswordLocked', 'FALSE'],
   ['zimbraPasswordMinLength', ''],
   ['zimbraPasswordMaxLength', ''],
@@ -113,7 +102,6 @@ type CosAdvancedFormProps = {
   coreAttributesData: GetCoreAttributesResponse | undefined;
   readonlyCOS: boolean;
   isAdvanced: boolean;
-  isTotalQuotaActive: boolean;
 };
 
 export const CosAdvancedForm = ({
@@ -123,7 +111,6 @@ export const CosAdvancedForm = ({
   coreAttributesData,
   readonlyCOS,
   isAdvanced,
-  isTotalQuotaActive,
 }: CosAdvancedFormProps) => {
   const { cosId } = useParams();
   const [t] = useTranslation();
@@ -131,7 +118,7 @@ export const CosAdvancedForm = ({
   const queryClient = useQueryClient();
   const modifyCosMutation = useModifyCos(cosId);
 
-  const quotaState = useCosQuotaState({ cosData, cosQuotaData, isTotalQuotaActive, isAdvanced });
+  const quotaState = useCosQuotaState({ cosQuotaData });
 
   const timeItems: TimeItems = [
     { label: t('label.seconds', 'Seconds'), value: 's' },
@@ -189,21 +176,13 @@ export const CosAdvancedForm = ({
       }
       await quotaState.save(zimbraId);
 
-      const cosAdvancedToSave = isTotalQuotaActive
-        ? Object.fromEntries(
-            Object.entries(value).filter(
-              ([key]) => !EXCLUDED_ATTRIBUTES_WHEN_TOTAL_QUOTA_ACTIVE.includes(key),
-            ),
-          )
-        : value;
-
-      const attributes = Object.keys(cosAdvancedToSave)
+      const attributes = Object.keys(value)
         .filter(
           (key) => ADVANCED_FIELD_KEYS.has(key as keyof AccountType) && !BACKUP_FIELD_KEYS.has(key),
         )
         .map((ele) => ({
           n: ele,
-          _content: cosAdvancedToSave[ele as keyof AccountType]?.toString() ?? '',
+          _content: value[ele as keyof AccountType]?.toString() ?? '',
         }));
 
       const body: ModifyCosBody = {
@@ -214,7 +193,6 @@ export const CosAdvancedForm = ({
 
       modifyCosMutation.mutate(body, {
         onSuccess: () => {
-          quotaState.handleSuccess(zimbraId);
           form.reset(value, { keepDefaultValues: true });
           quotaState.reset();
         },
@@ -238,14 +216,7 @@ export const CosAdvancedForm = ({
       <Container mainAlignment="flex-start" width="100%" orientation="vertical">
         {isAdvanced && <COSGeneralOptions form={form} readonlyCOS={readonlyCOS} />}
         <COSForwarding form={form} readonlyCOS={readonlyCOS} />
-        <COSQuotas
-          form={form}
-          quotaState={quotaState}
-          isTotalQuotaActive={isTotalQuotaActive}
-          isAdvanced={isAdvanced}
-          readonlyCOS={readonlyCOS}
-          timeItems={timeItems}
-        />
+        <COSQuotas form={form} quotaState={quotaState} readonlyCOS={readonlyCOS} />
         <COSPassword form={form} readonlyCOS={readonlyCOS} />
         <COSFailedLoginPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
         <COSTimeoutPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />

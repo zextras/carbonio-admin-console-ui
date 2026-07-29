@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights, useIsAdvanced, useTotalQuotaActive } from '@zextras/ui-shared';
+import { useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { useParams } from 'react-router';
 
@@ -19,11 +19,7 @@ import { CosAdvancedForm } from './advanced-form';
 const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
   ['zimbraMailForwardingAddressMaxLength', ''],
   ['zimbraMailForwardingAddressMaxNumAddrs', ''],
-  ['zimbraMailQuota', ''],
   ['zimbraContactMaxNumEntries', ''],
-  ['zimbraQuotaWarnPercent', ''],
-  ['zimbraQuotaWarnInterval', ''],
-  ['zimbraQuotaWarnMessage', ''],
   ['zimbraPasswordLocked', 'FALSE'],
   ['zimbraPasswordMinLength', ''],
   ['zimbraPasswordMaxLength', ''],
@@ -68,12 +64,11 @@ export const CosAdvanced = () => {
   const cosName = cosDetailData?.cos?.[0]?.name;
   const { data: rights = [] } = useCurrentUserRights();
   const isAdvanced = useIsAdvanced();
-  const isTotalQuotaActive = useTotalQuotaActive();
   const cosData = buildCosData(cosInformation);
 
   const { data: cosQuotaData, isPending: isCosQuotaPending } = useCosQuota(
     cosData?.zimbraId,
-    !!cosData?.zimbraId && isAdvanced && isTotalQuotaActive,
+    !!cosData?.zimbraId && isAdvanced,
   );
 
   const coreAttributesBody =
@@ -93,7 +88,7 @@ export const CosAdvanced = () => {
   const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
   const readonlyCOS = !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
-  const isQuotaLoading = isTotalQuotaActive && isCosQuotaPending;
+  const isQuotaLoading = isAdvanced && isCosQuotaPending;
   const isBackupLoading = isAdvanced && isCoreAttributesPending;
 
   if (isPending || isQuotaLoading || isBackupLoading) {
@@ -108,7 +103,6 @@ export const CosAdvanced = () => {
       coreAttributesData={coreAttributesData}
       readonlyCOS={readonlyCOS}
       isAdvanced={isAdvanced}
-      isTotalQuotaActive={isTotalQuotaActive}
     />
   );
 };

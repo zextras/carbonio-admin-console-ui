@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLoginConfigStore } from '@zextras/ui-shared';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
@@ -32,9 +31,7 @@ const mockCosData = {
         { n: 'zimbraId', _content: COS_ID },
         { n: 'zimbraMailForwardingAddressMaxLength', _content: '256' },
         { n: 'zimbraMailForwardingAddressMaxNumAddrs', _content: '10' },
-        { n: 'zimbraMailQuota', _content: '1073741824' },
         { n: 'zimbraContactMaxNumEntries', _content: '100' },
-        { n: 'zimbraQuotaWarnPercent', _content: '90' },
         { n: 'zimbraPasswordLocked', _content: 'FALSE' },
         { n: 'zimbraPasswordMinLength', _content: '6' },
         { n: 'zimbraPasswordMaxLength', _content: '64' },
@@ -43,8 +40,6 @@ const mockCosData = {
         { n: 'zimbraPasswordLockoutMaxFailures', _content: '5' },
         { n: 'zimbraPasswordLockoutDuration', _content: '60m' },
         { n: 'zimbraPasswordLockoutFailureLifetime', _content: '1h' },
-        { n: 'zimbraQuotaWarnInterval', _content: '1d' },
-        { n: 'zimbraQuotaWarnMessage', _content: 'Your mailbox is almost full.' },
       ],
     },
   ],
@@ -597,112 +592,7 @@ describe('CosAdvanced', () => {
     });
   });
 
-  describe('Quotas section inputs', () => {
-    it('edits quota warn interval input and shows dirty state', async () => {
-      await setupCosAdvancedTest();
-
-      const warnIntervalInput = page.getByRole('textbox', {
-        name: 'Minimum duration of time between quota warnings',
-      });
-      await expect.element(warnIntervalInput).toHaveValue('1');
-      await userEvent.fill(warnIntervalInput, '2');
-      await expect.element(warnIntervalInput).toHaveValue('2');
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-
-    it('edits quota warning message template and shows dirty state', async () => {
-      await setupCosAdvancedTest();
-
-      const warningMessageTextarea = page.getByRole('textbox', {
-        name: 'Quota warning message template',
-      });
-      await expect.element(warningMessageTextarea).toHaveValue('Your mailbox is almost full.');
-      await userEvent.fill(warningMessageTextarea, 'Warning: quota nearly exceeded');
-      await expect.element(warningMessageTextarea).toHaveValue('Warning: quota nearly exceeded');
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-
-    it('edits quota warn percent and shows dirty state', async () => {
-      await setupCosAdvancedTest();
-
-      const warnPercentInput = page.getByRole('textbox', {
-        name: 'Percentage threshold for quota warning messages (%)',
-      });
-      await expect.element(warnPercentInput).toHaveValue('90');
-      await userEvent.fill(warnPercentInput, '85');
-      await expect.element(warnPercentInput).toHaveValue('85');
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-  });
-
-  describe('Quotas section — Mails Account quota', () => {
-    const MAIL_QUOTA_LABEL = 'Mails Account quota (GB)';
-    const MAX_DIGITS_MSG = 'Maximum 3 digits allowed after the decimal point';
-    const REVERT_LABEL = 'Click to revert to the inherited value';
-
-    it('renders the mail quota input with the value converted to GB (1 GB → "1.00")', async () => {
-      await setupCosAdvancedTest();
-      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
-      await expect.element(input).toHaveValue('1.00');
-    });
-
-    it('shows dirty state when editing the mail quota', async () => {
-      await setupCosAdvancedTest();
-      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
-      await userEvent.fill(input, '5');
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-
-    it('shows the max-digits message when typing more than 3 decimal places', async () => {
-      await setupCosAdvancedTest();
-      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
-      await userEvent.fill(input, '1.1234');
-      await expect.element(page.getByText(MAX_DIGITS_MSG)).toBeVisible();
-    });
-
-    it('hides the max-digits message after typing a valid value', async () => {
-      await setupCosAdvancedTest();
-      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
-      await userEvent.fill(input, '1.1234');
-      await userEvent.fill(input, '1.5');
-      await expect.element(page.getByText(MAX_DIGITS_MSG)).not.toBeInTheDocument();
-    });
-
-    it('blocks non-decimal input and keeps the previous value', async () => {
-      await setupCosAdvancedTest();
-      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
-      await userEvent.fill(input, 'abc');
-      await expect.element(input).toHaveValue('1.00');
-    });
-
-    it('shows the revert icon after changing the value', async () => {
-      await setupCosAdvancedTest();
-      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
-      await userEvent.fill(input, '5');
-      await expect.element(page.getByRole('img', { name: REVERT_LABEL })).toBeVisible();
-    });
-
-    it('restores the initial value when the revert icon is clicked', async () => {
-      await setupCosAdvancedTest();
-      const input = page.getByRole('textbox', { name: MAIL_QUOTA_LABEL });
-      await userEvent.fill(input, '5');
-      await userEvent.click(page.getByRole('img', { name: REVERT_LABEL }));
-      await expect.element(input).toHaveValue('1.00');
-      await expect
-        .element(page.getByRole('button', { name: 'Save' }))
-        .not.toBeInTheDocument();
-    });
-  });
-
   describe('Total Quota section', () => {
-    beforeEach(() => {
-      useLoginConfigStore.setState({ featureFlags: { totalQuota: true } });
-    });
-
-    afterEach(() => {
-      useLoginConfigStore.setState({ featureFlags: { totalQuota: false } });
-    });
-
     it('should restore the unlimited quota switch to ON after toggling it off and clicking Cancel', async () => {
       await setupCosAdvancedTest();
 
