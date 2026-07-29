@@ -196,7 +196,7 @@ export function BreadcrumbMenu({
             tabIndex={index === activeIndex ? 0 : -1}
             type="button"
           >
-            <ds-text as="span" size="medium" weight="regular">
+            <ds-text as="span" size="small" weight="regular">
               {item.label}
             </ds-text>
             {item.selected && <ds-icon color="primary" icon="Checkmark" size="large" />}
