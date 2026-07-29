@@ -83,4 +83,47 @@ describe('BreadcrumbMenu', () => {
     await page.getByRole('button', { name: 'elsewhere' }).click();
     await expect.element(trigger).toHaveAttribute('aria-expanded', 'false');
   });
+
+  it('moves focus to the previous item with ArrowUp and wraps', async () => {
+    render(<BreadcrumbMenu items={ITEMS} triggerLabel="Show sections" />);
+    await openMenu();
+
+    await expect.element(page.getByRole('menuitemradio', { name: 'Banana' })).toHaveFocus();
+    await userEvent.keyboard('{ArrowUp}');
+    await expect.element(page.getByRole('menuitemradio', { name: 'Apple' })).toHaveFocus();
+    await userEvent.keyboard('{ArrowUp}');
+    await expect.element(page.getByRole('menuitemradio', { name: 'Cherry' })).toHaveFocus();
+  });
+
+  it('activates the focused item on Space and closes the menu', async () => {
+    render(<BreadcrumbMenu items={ITEMS} triggerLabel="Show sections" />);
+    const trigger = await openMenu();
+    await userEvent.keyboard('{ArrowDown}');
+    await userEvent.keyboard(' ');
+    expect(ITEMS[2]?.onClick).toHaveBeenCalledTimes(1);
+    await expect.element(trigger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('closes the menu on Tab', async () => {
+    render(<BreadcrumbMenu items={ITEMS} triggerLabel="Show sections" />);
+    const trigger = await openMenu();
+    await userEvent.keyboard('{Tab}');
+    await expect.element(trigger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('jumps focus to the next matching label via type-ahead', async () => {
+    render(<BreadcrumbMenu items={ITEMS} triggerLabel="Show sections" />);
+    await openMenu();
+
+    await expect.element(page.getByRole('menuitemradio', { name: 'Banana' })).toHaveFocus();
+    await userEvent.keyboard('a');
+    await expect.element(page.getByRole('menuitemradio', { name: 'Apple' })).toHaveFocus();
+  });
+
+  it('closes when the trigger is clicked while open', async () => {
+    render(<BreadcrumbMenu items={ITEMS} triggerLabel="Show sections" />);
+    const trigger = await openMenu();
+    await trigger.click();
+    await expect.element(trigger).toHaveAttribute('aria-expanded', 'false');
+  });
 });
