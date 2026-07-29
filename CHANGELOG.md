@@ -1,3 +1,9 @@
+## [0.16.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.6...v0.16.0) (2026-07-29)
+
+### Features
+
+* [CO-4051] remove V1 files quota api usage ([#1316](https://github.com/zextras/carbonio-admin-console-ui/issues/1316)) ([5980544](https://github.com/zextras/carbonio-admin-console-ui/commit/598054431df1d218c459c2f6897d3d3d80460e38))
+
 ## [0.15.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.5...v0.15.6) (2026-07-24)
 
 ### Other changes
