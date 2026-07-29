@@ -13,6 +13,7 @@ import { Attribute } from '../../../../types/attribute';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../../constants';
 import { useCoreAttributes } from '../../../services/use-core-attributes';
 import { useCosDetail } from '../../../services/use-cos-detail';
+import { useCosQuota } from '../../../services/use-cos-quota';
 import { CosAdvancedForm } from './advanced-form';
 
 const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [
@@ -78,13 +79,16 @@ export const CosAdvanced = () => {
 
   const { data: coreAttributesData, isPending: isCoreAttributesPending } =
     useCoreAttributes(coreAttributesBody);
-
+  const { isPending: isCosQuotaPending } = useCosQuota(
+    cosData?.zimbraId,
+    !!cosData?.zimbraId && isAdvanced,
+  );
   const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };
   const readonlyCOS = !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
   const isBackupLoading = isAdvanced && isCoreAttributesPending;
 
-  if (isPending || isBackupLoading) {
+  if (isPending || isBackupLoading || isCosQuotaPending) {
     return <ds-page-shimmer></ds-page-shimmer>;
   }
 
