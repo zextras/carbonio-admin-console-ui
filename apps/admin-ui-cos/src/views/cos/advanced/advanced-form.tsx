@@ -9,7 +9,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, useSnackbar } from '@zextras/ui-components';
 import { type GetCoreAttributesResponse, setCoreAttributes } from '@zextras/ui-shared';
-import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -23,14 +22,16 @@ import {
 } from '../../../constants';
 import { cosQueryKeys } from '../../../services/cos-query-keys';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
+import { useCosQuota } from '../../../services/use-cos-quota';
 import { useModifyCos } from '../../../services/use-modify-cos';
+import { useCosQuotaState } from './hooks/use-cos-quota-state';
 import { cosAdvancedSchema } from './schema';
-import { type CosQuotaHandle, CosQuotaWrapper } from './sections/cos-quota-wrapper';
 import { COSEmailRetentionPolicy } from './sections/email-retention-policy';
 import { COSFailedLoginPolicy } from './sections/failed-login-policy';
 import { COSForwarding } from './sections/forwarding';
 import { COSGeneralOptions } from './sections/general-options';
 import { COSPassword } from './sections/password';
+import { COSQuotas } from './sections/quotas';
 import { COSTimeoutPolicy } from './sections/timeout-policy';
 import { CosAdvancedFormValues } from './types';
 
@@ -110,8 +111,8 @@ export const CosAdvancedForm = ({
   const queryClient = useQueryClient();
   const modifyCosMutation = useModifyCos(cosId);
 
-  const quotaRef = useRef<CosQuotaHandle>(null);
-  const [isQuotaDirty, setIsQuotaDirty] = useState(false);
+  const { data: cosQuotaData } = useCosQuota(cosData?.zimbraId, isAdvanced);
+  const quotaState = useCosQuotaState({ cosQuotaData });
 
   const timeItems: TimeItems = [
     { label: t('label.seconds', 'Seconds'), value: 's' },
@@ -167,7 +168,7 @@ export const CosAdvancedForm = ({
         });
         return;
       }
-      await quotaRef.current?.save(zimbraId);
+      await quotaState.save(zimbraId);
 
       const attributes = Object.keys(value)
         .filter(
@@ -187,14 +188,14 @@ export const CosAdvancedForm = ({
       modifyCosMutation.mutate(body, {
         onSuccess: () => {
           form.reset(value, { keepDefaultValues: true });
-          quotaRef.current?.reset();
+          quotaState.reset();
         },
       });
     },
   });
 
   const isFormDirty = useSelector(form.store, (state) => !state.isDefaultValue);
-  const isDirty = isFormDirty || isQuotaDirty;
+  const isDirty = isFormDirty || quotaState.isDirty;
 
   return (
     <FormPageLayout
@@ -202,21 +203,15 @@ export const CosAdvancedForm = ({
       onSave={() => form.handleSubmit()}
       onCancel={() => {
         form.reset();
-        quotaRef.current?.reset();
+        quotaState.reset();
       }}
       unsavedChanges={isDirty}
     >
       <Container mainAlignment="flex-start" width="100%" orientation="vertical">
         {isAdvanced && <COSGeneralOptions form={form} readonlyCOS={readonlyCOS} />}
         <COSForwarding form={form} readonlyCOS={readonlyCOS} />
-        {isAdvanced && (
-          <CosQuotaWrapper
-            ref={quotaRef}
-            cosId={cosData?.zimbraId}
-            form={form}
-            readonlyCOS={readonlyCOS}
-            onDirtyChange={setIsQuotaDirty}
-          />
+        {isAdvanced && cosQuotaData && (
+          <COSQuotas form={form} quotaState={quotaState} readonlyCOS={readonlyCOS} />
         )}
         <COSPassword form={form} readonlyCOS={readonlyCOS} />
         <COSFailedLoginPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
