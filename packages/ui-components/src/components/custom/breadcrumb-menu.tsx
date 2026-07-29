@@ -97,13 +97,12 @@ export function BreadcrumbMenu({
     }
     menu.style.display = 'none';
     return undefined;
-  }, [open, placement]);
+  }, [anchorRef, open, placement]);
 
   useEffect(() => {
     if (!open) return;
     itemRefs.current[activeIndex]?.focus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [activeIndex, open]);
 
   const handleToggle = (event: React.ToggleEvent<HTMLDivElement>) => {
     if (event.newState === 'closed') {

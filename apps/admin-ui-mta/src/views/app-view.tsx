@@ -44,10 +44,16 @@ export const AppView: FC = () => {
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
   const nonNavigableSegments =
     isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
+  const labelOverrides =
+    isServerRoute && segmentAfterBase ? { [segmentAfterBase]: segmentAfterBase } : undefined;
 
   return (
     <Container height={'fit'}>
-      <PageHeader crumbMenus={crumbMenus} nonNavigableSegments={nonNavigableSegments} />
+      <PageHeader
+        crumbMenus={crumbMenus}
+        labelOverrides={labelOverrides}
+        nonNavigableSegments={nonNavigableSegments}
+      />
       <Routes>
         <Route
           path={'/*'}

@@ -39,6 +39,8 @@ export const BackupPageHeader = () => {
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
   const nonNavigableSegments =
     isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
+  const labelOverrides =
+    isServerRoute && segmentAfterBase ? { [segmentAfterBase]: segmentAfterBase } : undefined;
   const crumbMenuHeaders =
     isServerRoute && segmentAfterBase ? { [pathname]: segmentAfterBase } : undefined;
 
@@ -46,6 +48,7 @@ export const BackupPageHeader = () => {
     <PageHeader
       crumbMenus={crumbMenus}
       crumbMenuHeaders={crumbMenuHeaders}
+      labelOverrides={labelOverrides}
       nonNavigableSegments={nonNavigableSegments}
     />
   );

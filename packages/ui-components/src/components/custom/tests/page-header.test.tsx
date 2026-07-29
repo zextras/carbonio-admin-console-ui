@@ -116,9 +116,9 @@ describe('PageHeader', () => {
   });
 
   describe('Breadcrumb trail building', () => {
-    it('shows the raw segment when translation is unavailable', () => {
+    it('shows capitalized segment name when translation is unavailable', () => {
       renderPageHeader({ path: '/dashboard/unknown-segment' });
-      expect(screen.getByText('unknown-segment')).not.toBeNull();
+      expect(screen.getByText('Unknown-segment')).not.toBeNull();
       expect(screen.getAllByText('Home').length).toBe(1);
     });
 
@@ -135,7 +135,7 @@ describe('PageHeader', () => {
       });
       expect(screen.getByText('Home')).not.toBeNull();
       expect(screen.getByText('Domains')).not.toBeNull();
-      expect(screen.getByText('unknown')).not.toBeNull();
+      expect(screen.getByText('Unknown')).not.toBeNull();
       expect(screen.getByText('Settings')).not.toBeNull();
     });
 
@@ -146,10 +146,10 @@ describe('PageHeader', () => {
       expect(screen.getByText('Users')).not.toBeNull();
     });
 
-    it('shows the raw segment names when no translations are available', () => {
+    it('shows capitalized segment names when no translations are available', () => {
       renderPageHeader({ path: '/manage/subscriptions' });
       expect(screen.getByText('Home')).not.toBeNull();
-      expect(screen.getByText('subscriptions')).not.toBeNull();
+      expect(screen.getByText('Subscriptions')).not.toBeNull();
     });
   });
 

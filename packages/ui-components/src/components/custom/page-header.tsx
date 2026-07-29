@@ -59,7 +59,11 @@ function buildSplitRoutes(
       label:
         index === 0
           ? t('label.home', 'Home')
-          : labelOverrides?.[segment] ?? t(`label.${segment}`, segment),
+          : labelOverrides?.[segment] ??
+            /* i18next-extract-disable-next-line */ t(
+              `label.${segment}`,
+              segment.charAt(0).toUpperCase() + segment.slice(1),
+            ),
       path,
       homePath: HOME_PATH,
       segment,
