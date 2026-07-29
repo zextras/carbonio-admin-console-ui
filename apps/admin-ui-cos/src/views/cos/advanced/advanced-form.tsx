@@ -216,7 +216,9 @@ export const CosAdvancedForm = ({
       <Container mainAlignment="flex-start" width="100%" orientation="vertical">
         {isAdvanced && <COSGeneralOptions form={form} readonlyCOS={readonlyCOS} />}
         <COSForwarding form={form} readonlyCOS={readonlyCOS} />
-        <COSQuotas form={form} quotaState={quotaState} readonlyCOS={readonlyCOS} />
+        {isAdvanced && (
+          <COSQuotas form={form} quotaState={quotaState} readonlyCOS={readonlyCOS} />
+        )}
         <COSPassword form={form} readonlyCOS={readonlyCOS} />
         <COSFailedLoginPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />
         <COSTimeoutPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />

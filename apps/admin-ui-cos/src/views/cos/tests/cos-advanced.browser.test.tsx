@@ -109,9 +109,9 @@ describe('CosAdvanced', () => {
       await expect.element(page.getByText('Forwarding', { exact: true })).toBeVisible();
     });
 
-    it('should render the Quotas section', async () => {
+    it('should not render the Quotas section when advanced is not enabled', async () => {
       await setupCosAdvancedTest();
-      await expect.element(page.getByText('Quotas')).toBeVisible();
+      await expect.element(page.getByText('Quotas')).not.toBeInTheDocument();
     });
 
     it('should render the Password section', async () => {
@@ -412,7 +412,6 @@ describe('CosAdvanced', () => {
       await grantUserCosRights(queryClient);
       seedQueryClientData(queryClient);
       queryClient.setQueryData(['advanced-supported'], { supported: true });
-      queryClient.setQueryData(['cos', 'file-quota', COS_ID], { limit: undefined });
       mockCatalogServices();
       mockGetCoreAttributes(true);
       mockCoreAttributeSet();
@@ -593,71 +592,30 @@ describe('CosAdvanced', () => {
   });
 
   describe('Total Quota section', () => {
-    it('should restore the unlimited quota switch to ON after toggling it off and clicking Cancel', async () => {
-      await setupCosAdvancedTest();
+    // The total quota control only renders on advanced installs.
+    function mockGetCoreAttributes(): void {
+      createBrowserAPIInterceptor(
+        'post',
+        '/service/extension/zextras_admin/core/attributes/get',
+        () => HttpResponse.json({ attributes: {} }),
+      );
+    }
 
-      const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
-      await expect.element(unlimitedSwitch).toBeChecked();
-
-      await userEvent.click(unlimitedSwitch);
-      await expect.element(unlimitedSwitch).not.toBeChecked();
-
-      await page.getByRole('button', { name: 'Cancel' }).click();
-
-      await expect.element(unlimitedSwitch).toBeChecked();
-    });
-
-    it('should restore the unlimited quota switch to ON after toggling it off and clicking revert', async () => {
-      await setupCosAdvancedTest();
-
-      const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
-      await expect.element(unlimitedSwitch).toBeChecked();
-
-      await userEvent.click(unlimitedSwitch);
-      await expect.element(unlimitedSwitch).not.toBeChecked();
-
-      const revertIcon = page.getByRole('img', { name: 'Click to revert to the inherited value' });
-      await userEvent.click(revertIcon);
-
-      await expect.element(unlimitedSwitch).toBeChecked();
-    });
-
-    it('should show the revert icon after changing the quota input value', async () => {
-      const limitedQuotaSeed = {
-        type: 'success',
-        totalComputedLimit: { type: 'limited', value: 1073741824 },
-        totalQuotaSource: 'global',
-      };
+    async function setupAdvancedQuotaTest(
+      quotaSeed: {
+        type: string;
+        totalComputedLimit: { type: string; value?: number };
+        totalQuotaSource: string;
+      } = QUOTA_SEED,
+    ): Promise<ReturnType<typeof getQueryClient>> {
       const queryClient = getQueryClient();
       await grantUserCosRights(queryClient);
       queryClient.setQueryData(['cos', 'detail', COS_ID], mockCosData);
-      queryClient.setQueryData(['cos', 'cos-quota', ''], limitedQuotaSeed);
-      queryClient.setQueryData(['cos', 'cos-quota', COS_ID], limitedQuotaSeed);
+      queryClient.setQueryData(['cos', 'cos-quota', ''], quotaSeed);
+      queryClient.setQueryData(['cos', 'cos-quota', COS_ID], quotaSeed);
+      queryClient.setQueryData(['advanced-supported'], { supported: true });
       mockCatalogServices();
-      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
-
-      await setupBrowserTest(
-        <Routes>
-          <Route path="/:cosId/:operation" element={<CosAdvanced />} />
-        </Routes>,
-        { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
-      );
-
-      const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
-      await expect.element(input).toHaveValue('1');
-
-      await userEvent.fill(input, '15');
-
-      await expect
-        .element(page.getByRole('img', { name: 'Click to revert to the inherited value' }))
-        .toBeVisible();
-    });
-
-    it('should not show the revert icon after saving a quota change', async () => {
-      const queryClient = getQueryClient();
-      await grantUserCosRights(queryClient);
-      seedQueryClientData(queryClient);
-      mockCatalogServices();
+      mockGetCoreAttributes();
       mockCoreAttributeSet();
       createBrowserSoapAPIInterceptor('GetCos', mockCosData);
       createBrowserSoapAPIInterceptor('ModifyCos', {});
@@ -674,6 +632,63 @@ describe('CosAdvanced', () => {
         </Routes>,
         { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
       );
+      await expect.element(page.getByText('Advanced')).toBeVisible();
+      return queryClient;
+    }
+
+    it('should render the Quotas section when advanced is enabled', async () => {
+      await setupAdvancedQuotaTest();
+      await expect.element(page.getByText('Quotas')).toBeVisible();
+    });
+
+    it('should restore the unlimited quota switch to ON after toggling it off and clicking Cancel', async () => {
+      await setupAdvancedQuotaTest();
+
+      const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
+      await expect.element(unlimitedSwitch).toBeChecked();
+
+      await userEvent.click(unlimitedSwitch);
+      await expect.element(unlimitedSwitch).not.toBeChecked();
+
+      await page.getByRole('button', { name: 'Cancel' }).click();
+
+      await expect.element(unlimitedSwitch).toBeChecked();
+    });
+
+    it('should restore the unlimited quota switch to ON after toggling it off and clicking revert', async () => {
+      await setupAdvancedQuotaTest();
+
+      const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
+      await expect.element(unlimitedSwitch).toBeChecked();
+
+      await userEvent.click(unlimitedSwitch);
+      await expect.element(unlimitedSwitch).not.toBeChecked();
+
+      const revertIcon = page.getByRole('img', { name: 'Click to revert to the inherited value' });
+      await userEvent.click(revertIcon);
+
+      await expect.element(unlimitedSwitch).toBeChecked();
+    });
+
+    it('should show the revert icon after changing the quota input value', async () => {
+      await setupAdvancedQuotaTest({
+        type: 'success',
+        totalComputedLimit: { type: 'limited', value: 1073741824 },
+        totalQuotaSource: 'global',
+      });
+
+      const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+      await expect.element(input).toHaveValue('1');
+
+      await userEvent.fill(input, '15');
+
+      await expect
+        .element(page.getByRole('img', { name: 'Click to revert to the inherited value' }))
+        .toBeVisible();
+    });
+
+    it('should not show the revert icon after saving a quota change', async () => {
+      const queryClient = await setupAdvancedQuotaTest();
 
       const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
       await expect.element(unlimitedSwitch).toBeChecked();
