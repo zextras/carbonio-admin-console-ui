@@ -7,6 +7,7 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Container,
   CustomTextArea,
+  getFieldErrorProps,
   Input,
   ListRow,
   Padding,
@@ -17,10 +18,10 @@ import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TimeItems } from '../../../../../types/general';
-import { getFieldErrorProps } from '../fields/field-error';
 import { QuotaGBField } from '../fields/quota-gb-field';
 import { CosValidatedInput } from '../fields/validated-input';
 import { useCosQuotaState } from '../hooks/use-cos-quota-state';
+import { COS_VALIDATION_MESSAGES } from '../schema';
 import { CosFormApi } from '../types';
 import { COSQuotasNew } from './quotas-new';
 
@@ -170,7 +171,7 @@ export const COSQuotas = ({
                   const hasUnit = raw.length >= 2;
                   const num = hasUnit ? raw.slice(0, -1) : '';
                   const unit = hasUnit ? raw.slice(-1) : '';
-                  const error = getFieldErrorProps(field, isSubmitted, t);
+                  const error = getFieldErrorProps(field, isSubmitted, t, COS_VALIDATION_MESSAGES);
                   return (
                     <>
                       <Container width="72%" padding={{ left: 'small', right: 'small' }}>

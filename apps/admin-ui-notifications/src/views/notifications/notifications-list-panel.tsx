@@ -5,60 +5,60 @@
  */
 
 import { Container, ListItems, ListPanelItem } from '@zextras/ui-components';
-import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/ui-shared';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { replaceHistory, useRelativePathname } from '@zextras/ui-shared';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { matchPath } from 'react-router';
 
 import { LIST } from '../../constants';
 import { type ManageOption } from '../../types/notifications';
 
 const NotificationsListPanel: FC = () => {
-	const [t] = useTranslation();
-	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
-	const [selectedOperationItem, setSelectedOperationItem] = useState(LIST);
-	const [isManageOptionsExpanded, setIsManageOptionsExpanded] = useState<boolean>(true);
+  const [t] = useTranslation();
+  const [isManageOptionsExpanded, setIsManageOptionsExpanded] = useState<boolean>(true);
 
-	const manageOptions = useMemo<Array<ManageOption>>(
-		() => [
-			{
-				id: LIST,
-				name: t('notification.list', 'List'),
-				isSelected: true
-			}
-		],
-		[t]
-	);
+  const relativePathname = useRelativePathname();
+  const opMatch = matchPath(`/:operation`, relativePathname);
+  const selectedOperationItem = opMatch?.params.operation ?? LIST;
 
-	const toggleManageSpecificOption = (): void => {
-		setIsManageOptionsExpanded(!isManageOptionsExpanded);
-	};
+  const manageOptions: Array<ManageOption> = [
+    {
+      id: LIST,
+      name: t('notification.list', 'List'),
+      isSelected: true,
+    },
+  ];
 
-	useEffect(() => {
-		replaceHistory(`/${selectedOperationItem}`);
-	}, [selectedOperationItem, globalCarbonioSendAnalytics]);
+  const toggleManageSpecificOption = (): void => {
+    setIsManageOptionsExpanded(!isManageOptionsExpanded);
+  };
 
-	return (
-		<Container
-			orientation="column"
-			crossAlignment="flex-start"
-			mainAlignment="flex-start"
-			background="gray5"
-			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
-		>
-			<ListPanelItem
-				title={t('notification.manage', 'Manage')}
-				isListExpanded={isManageOptionsExpanded}
-				setToggleView={toggleManageSpecificOption}
-			/>
-			{isManageOptionsExpanded && (
-				<ListItems
-					items={manageOptions}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
-				/>
-			)}
-		</Container>
-	);
+  const handleSelectOperation = (id: string): void => {
+    replaceHistory(`/${id}`);
+  };
+
+  return (
+    <Container
+      orientation="column"
+      crossAlignment="flex-start"
+      mainAlignment="flex-start"
+      background="gray5"
+      style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
+    >
+      <ListPanelItem
+        title={t('notification.manage', 'Manage')}
+        isListExpanded={isManageOptionsExpanded}
+        setToggleView={toggleManageSpecificOption}
+      />
+      {isManageOptionsExpanded && (
+        <ListItems
+          items={manageOptions}
+          selectedOperationItem={selectedOperationItem}
+          setSelectedOperationItem={handleSelectOperation}
+        />
+      )}
+    </Container>
+  );
 };
 
 export default NotificationsListPanel;

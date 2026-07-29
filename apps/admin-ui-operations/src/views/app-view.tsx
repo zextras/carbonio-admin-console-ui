@@ -4,46 +4,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { usePrimaryBarState } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
+import { FC } from 'react';
+import { Navigate, Route, Routes } from 'react-router';
 
+import { DONE_ROUTE_ID, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID } from '../constants';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
-import OperationsDetailPanel from './operations/operations-detail-panel';
-import OperationsListPanel from './operations/operations-list-panel';
+import DoneDetailPanel from './operations/done-detail-panel';
+import OperationsLayout from './operations/operations-layout';
+import QueuedDetailPanel from './operations/queued-detail-panel';
+import RunningDetailPanel from './operations/running-detail-panel';
 
-const AppView: FC = () => {
-  const isPrimaryBarExpanded = usePrimaryBarState();
-  const detailViewMaxWidth = isPrimaryBarExpanded ? 981 : 1125;
-
+export const AppView: FC = () => {
   return (
     <Container height={'fit'}>
       <Breadcrumb />
       <Routes>
-        <Route
-          path="/*"
-          element={
-            <Container orientation="horizontal" mainAlignment="flex-start">
-              <Container style={{ maxWidth: '16.563rem' }}>
-                <Suspense fallback={<ds-spinner />}>
-                  <OperationsListPanel />
-                </Suspense>
-              </Container>
-              <Container style={{ maxWidth: '100%' }}>
-                <Container
-                  style={{ maxWidth: `${detailViewMaxWidth}px`, transition: 'max-width 300ms' }}
-                >
-                  <Suspense fallback={<ds-spinner />}>
-                    <OperationsDetailPanel />
-                  </Suspense>
-                </Container>
-              </Container>
-            </Container>
-          }
-        />
+        <Route index element={<Navigate to={RUNNING_ROUTE_ID} replace />} />
+        <Route element={<OperationsLayout />}>
+          <Route path={RUNNING_ROUTE_ID} element={<RunningDetailPanel />} />
+          <Route path={QUEUED_ROUTE_ID} element={<QueuedDetailPanel />} />
+          <Route path={DONE_ROUTE_ID} element={<DoneDetailPanel />} />
+          <Route path="*" element={<Navigate to={RUNNING_ROUTE_ID} replace />} />
+        </Route>
       </Routes>
     </Container>
   );
 };
 
-export default AppView;

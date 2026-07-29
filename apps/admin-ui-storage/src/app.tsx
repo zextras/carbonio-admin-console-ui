@@ -6,7 +6,7 @@
 
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, getRights, useCurrentUserRights } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -16,60 +16,48 @@ import {
   SERVER,
   STORAGES_ROUTE_ID,
 } from './constants';
-import AppView from './views/app-view';
+import { AppView } from './views/app-view';
 
-const App: FC = () => {
+function StorageTooltipView() {
+  const [t] = useTranslation();
+  return (
+    <PrimaryBarTooltip>
+      <p>
+        <Trans
+          i18nKey="label.storage_lbl"
+          defaults="<bold>Storage</bold>"
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </p>
+      <p>
+        <Trans
+          i18nKey="label.storage_primarybar_tooltip"
+          defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You'll also be able to <bold>connect S3 connectors</bold>."
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </p>
+    </PrimaryBarTooltip>
+  );
+}
+
+function App() {
   const [t] = useTranslation();
 
   const { data: rights } = useCurrentUserRights();
-  const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
+  const hasListServerRights =
+    !!rights &&
+    rights.length > 0 &&
+    getRights(rights, SERVER).some(
+      (item: Record<string, string>) => item?.n && item?.n === LIST_SERVER,
+    );
 
-  const managementSection = useMemo(
-    () => ({
-      id: MANAGE_APP_ID,
-      label: t('label.management', 'Management'),
-      position: 3,
-    }),
-    [t],
-  );
-
-  const StorageTooltipView: FC = useCallback(
-    () => (
-      <PrimaryBarTooltip>
-        <p>
-          <Trans
-            i18nKey="label.storage_lbl"
-            defaults="<bold>Storage</bold>"
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-        <p>
-          <Trans
-            i18nKey="label.storage_primarybar_tooltip"
-            defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>."
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-      </PrimaryBarTooltip>
-    ),
-    [t],
-  );
-
-  useEffect(() => {
-    if (rights && rights.length > 0) {
-      const right = getRights(rights, SERVER);
-      if (right.length > 0) {
-        const findServerRight = right.find(
-          (item: Record<string, string>) => item?.n && item?.n === LIST_SERVER,
-        );
-        if (findServerRight) {
-          sethasListServerRights(true);
-        }
-      }
-    }
-  }, [rights]);
+  const managementSection = {
+    id: MANAGE_APP_ID,
+    label: t('label.management', 'Management'),
+    position: 3,
+  };
 
   useEffect(() => {
     if (hasListServerRights) {
@@ -85,9 +73,9 @@ const App: FC = () => {
         trackerLabel: PRIMARY_BAR_STORAGE,
       });
     }
-  }, [StorageTooltipView, hasListServerRights, managementSection, t]);
+  }, [hasListServerRights, managementSection, t]);
 
   return null;
-};
+}
 
 export default App;

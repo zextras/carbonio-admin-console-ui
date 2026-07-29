@@ -3,28 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  ChipInput,
-  Container,
-  CustomHeaderFactory,
-  CustomTextArea,
-  DropDownInput,
-  HoverableRowFactory,
-  InheritedSelect,
-  Input,
-  LabeledValue,
-  Modal,
-  Padding,
-  Paging,
-  Row,
-  Select,
-  Switch,
-  Table,
-  Tooltip,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { useDomainStore, useIsAdvanced } from '@zextras/ui-shared';
+import { Button, ChipInput, Container, CustomHeaderFactory, CustomTextArea, DropDownInput, HoverableRowFactory, InheritedSelect, Input, LabeledValue, Modal, Padding, Paging, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
+import { useCosList, useIsAdvanced } from '@zextras/ui-shared';
 import { debounce, map } from 'lodash-es';
 import React, {
   ChangeEvent,
@@ -38,7 +18,8 @@ import React, {
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../../../types';
-import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY, TRUE } from '../../../../../constants';
+import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY } from '../../../../../constants';
+import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
 import { endSession } from '../../../../../services/end-session';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
@@ -91,13 +72,13 @@ export const EditAccountGeneralSection: FC<{
     setAllUserSessionList,
     userSessionList,
     setUserSessionList,
-    defaultCOS,
-    setDefaultCOS,
     allowedDeletePassword,
   } = useContext(AccountContext);
-  const domainInformation = useDomainStore((state) => state.domain?.a);
-  const domainName = useDomainStore((state) => state.domain?.name);
-  const cosList = useDomainStore((state) => state.cosList);
+  const { data: domain } = useSelectedDomain();
+  const domainInformation = domain?.a;
+  const domainName = domain?.name;
+  const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
+  const cosList = cosData?.cos ?? [];
   const [t] = useTranslation();
   const localeZone = useMemo(() => localeList(t), [t]);
   const ACCOUNT_STATUS: Array<{ value: string; label: string }> = useMemo(
@@ -117,6 +98,8 @@ export const EditAccountGeneralSection: FC<{
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const isAdvanced = useIsAdvanced();
   const [defaultCosId, setDefaultCosId] = useState('');
+  const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
+  const [cosDefaultStateSet, setCosDefaultStateSet] = useState<boolean>(false);
 
   const sessionTableHeader: any[] = useMemo(() => {
     const accountsLabel = t('label.accounts', 'Accounts');
@@ -252,11 +235,12 @@ export const EditAccountGeneralSection: FC<{
     if (accountDetail?.zimbraCOSId) {
       const cosId = cosItems.find((item: any) => item.label === DEFAULT);
       setDefaultCosId(cosId?.value);
-      if (accountDetail?.zimbraCOSId === cosId?.value) {
-        setDefaultCOS(TRUE);
+      if (accountDetail?.zimbraCOSId === cosId?.value && !cosDefaultStateSet) {
+        setDefaultCOS(true);
+        setCosDefaultStateSet(true);
       }
     }
-  }, [accountDetail, cosItems, setDefaultCOS]);
+  }, [accountDetail, cosItems, defaultCOS, setDefaultCOS, cosDefaultStateSet]);
 
   const selection = useMemo(
     () => cosItems.find((item: any) => item.value === accountDetail?.zimbraCOSId),

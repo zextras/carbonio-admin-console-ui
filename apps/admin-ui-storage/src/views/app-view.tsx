@@ -4,37 +4,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 
+import { DATA_VOLUMES, HSM_SETTINGS, S3CONNECTOR_LIST, SERVERS_LIST } from '../constants';
 import { Breadcrumb } from './breadcrumb/breadcrumb';
-import BucketListPanel from './bucket/bucket-list-panel';
-import BucketRoutePanel from './bucket/bucket-route-panel';
+import { VolumesDetailPanel } from './data-volumes/volumes-list';
+import { HSMsettingPanel } from './hsm/hsm-setting-panel';
+import { S3ConnectorListPanel } from './s3-connectors/s3-connector-list-panel';
+import { ServerListPanel } from './servers-list/server-list-panel';
+import { StorageLayout } from './storage-layout';
 
-const BucketComponent = () => (
-  <Container orientation="horizontal" mainAlignment="flex-start">
-    <Container style={{ maxWidth: '265px' }}>
-      <Suspense fallback={<ds-spinner />}>
-        <BucketListPanel />
-      </Suspense>
-    </Container>
-    <Container style={{ maxWidth: '100%' }}>
-      <Suspense fallback={<ds-spinner />}>
-        <BucketRoutePanel />
-      </Suspense>
-    </Container>
-  </Container>
-);
-
-const AppView: FC = () => {
+export const AppView = () => {
   return (
-    <Container height={'fit'}>
+    <Container>
       <Breadcrumb />
       <Routes>
-        <Route path={`/*`} element={<BucketComponent />} />
+        <Route element={<StorageLayout />}>
+          <Route index element={<Navigate to={SERVERS_LIST} replace />} />
+          <Route path={SERVERS_LIST} element={<ServerListPanel />} />
+          <Route path={S3CONNECTOR_LIST} element={<S3ConnectorListPanel />} />
+          <Route path={`:server/${DATA_VOLUMES}`} element={<VolumesDetailPanel />} />
+          <Route path={`:server/${HSM_SETTINGS}`} element={<HSMsettingPanel />} />
+          <Route path="*" element={null} />
+        </Route>
       </Routes>
     </Container>
   );
 };
-
-export default AppView;

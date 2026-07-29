@@ -3,14 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { PrimaryBarTooltip } from '@zextras/ui-components';
-import {
-  addRoute,
-  registerActions,
-  useCurrentUserRights,
-  useDomainStore,
-} from '@zextras/ui-shared';
+import { addRoute, registerActions, useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -26,15 +20,13 @@ import {
   MANAGE_APP_ID,
   PRIMARY_BAR_DOMAINS,
 } from './constants';
-import AppView from './views/app-view';
+import { AppView } from './views/app-view';
 
 const App: FC = () => {
   const [t] = useTranslation();
   const navigate = useNavigate();
 
   const { data: rights } = useCurrentUserRights();
-  const setDomainView = useDomainStore((state) => state.setDomainView);
-  const setDomain = useDomainStore((state) => state.setDomain);
 
   const createDomainRight = useMemo(() => {
     const rightsConfig = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
@@ -100,8 +92,6 @@ const App: FC = () => {
         icon: '',
         onClick: (): void => {
           navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
-          setDomain({});
-          setDomainView(CREATE_NEW_DOMAIN_ROUTE_ID);
         },
         disabled: !createDomainRight,
         group: APP_ID,
@@ -111,7 +101,7 @@ const App: FC = () => {
       type: 'new',
     };
     registerActions(actionConfig);
-  }, [createDomainRight, navigate, setDomain, setDomainView, t]);
+  }, [createDomainRight, navigate, t]);
 
   return null;
 };

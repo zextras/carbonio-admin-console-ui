@@ -18,7 +18,7 @@
     "lint:fix": "eslint --fix --cache --quiet",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
-    "test:ci": "vitest run --coverage"
+    "test:ci": "vitest run --coverage --maxWorkers=2"
   },
   "dependencies": {
     "@posthog/react": "^1.10.3",
@@ -55,15 +55,16 @@
     "@vitest/ui": "^4.1.0",
     "admin-ui-test-utils": "workspace:*",
     "clsx": "^2.1.1",
-    "eslint": "^9.39.4",
+    "eslint": "^9.39.5",
     "eslint-plugin-css-modules": "^2.12.0",
     "jsdom": "^29.1.1",
     "msw": "^2.14.6",
     "playwright": "^1.61.1",
     "react-dom": "^19.2.7",
     "sonarqube-scanner": "^4.3.8",
-    "tailwindcss": "^4.3.1",
-    "typescript": "^6.0.3",
+    "tailwindcss": "^4.3.3",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-plugin-css-modules": "^5.2.0",
     "vitest": "^4.1.0",
     "vitest-browser-react": "^2.2.0"

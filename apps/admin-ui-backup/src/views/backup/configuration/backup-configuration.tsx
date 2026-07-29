@@ -11,6 +11,7 @@ import {
   LabeledValue,
   ListRow,
   Padding,
+  RouteLeavingGuard,
   Row,
   Select,
   Switch,
@@ -56,8 +57,6 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
-import { useBackupStore } from '../../../store/backup/store';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const BackupConfiguration: FC = () => {
   const { server } = useParams();
@@ -78,7 +77,9 @@ const BackupConfiguration: FC = () => {
   const [backupDestPath, setBackupDestPath] = useState<string>('');
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const [currentBackupValue, setCurrentBackupValue] = useState<BackupConfigurationState>({} as BackupConfigurationState);
+  const [currentBackupValue, setCurrentBackupValue] = useState<BackupConfigurationState>(
+    {} as BackupConfigurationState,
+  );
   const [backupServiceStart, setBackupServiceStart] = useState<boolean>(false);
   const [isBackupInitialized, setIsBackupInitialized] = useState<boolean>(false);
   const [isPurgeRequestRunning, setIsPurgeRequestRunning] = useState<boolean>(false);
@@ -95,18 +96,15 @@ const BackupConfiguration: FC = () => {
   );
   const [showIcon, setShowIcon] = useState(true);
   const [manageExternalVolumeType, setManageExternalVolumeType] = useState<string>('');
-  const [manageExternalVolumeConfiguration, setManageExternalVolumeConfiguration] = useState<SelectOption>(
-    {} as SelectOption,
-  );
-  const [manageExternalVolumeBucketList, setManageExternalVolumeBucketList] = useState<SelectOption>(
-    {} as SelectOption,
-  );
+  const [manageExternalVolumeConfiguration, setManageExternalVolumeConfiguration] =
+    useState<SelectOption>({} as SelectOption);
+  const [manageExternalVolumeBucketList, setManageExternalVolumeBucketList] =
+    useState<SelectOption>({} as SelectOption);
   const [manageExternalVolumeLocalMountpoint, setManageExternalVolumeLocalMountpoint] =
     useState<string>('');
   const [manageExternalVolumeNewLocalMountpoint, setManageExternalVolumeNewLocalMountpoint] =
     useState<string>('');
   const [rootVolumePath, setRootVolumePath] = useState<string>('');
-  const selectedBackupServer = useBackupStore((state) => state.selectedServer);
   const { data: rights } = useCurrentUserRights();
   const allowSetBackup = useMemo(() => {
     const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
@@ -149,7 +147,9 @@ const BackupConfiguration: FC = () => {
   );
 
   const [externalVolume, setExternalVolume] = useState<SelectOption>(externalVolumeOptions[0]);
-  const [destinationSelected, setDestinationSelected] = useState<SelectOption>(destinationOptions[0]);
+  const [destinationSelected, setDestinationSelected] = useState<SelectOption>(
+    destinationOptions[0],
+  );
   const [bucketConfiguration, setBucketConfiguration] = useState<SelectOption>({} as SelectOption);
   const [bucketListOption, setBucketListOption] = useState<Array<SelectOption>>([]);
 
@@ -443,7 +443,8 @@ const BackupConfiguration: FC = () => {
           if (data?.errors && Array.isArray(data?.errors) && data?.errors[0]?.error) {
             errorMessage = data?.errors[0]?.error;
           } else if (data?.error) {
-            errorMessage = typeof data?.error === 'string' ? data?.error : data?.error?.message ?? '';
+            errorMessage =
+              typeof data?.error === 'string' ? data?.error : data?.error?.message ?? '';
           }
           createSnackbar({
             key: 'error',
@@ -668,9 +669,12 @@ const BackupConfiguration: FC = () => {
   const doInitializeBackup = useCallback(
     (isFromInitialize?: boolean) => {
       setIsRequestInProgress(true);
-      fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(`/service/extension/zextras_admin/backup/doSmartScan`, {
-        targetServers: [server],
-      })
+      fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(
+        `/service/extension/zextras_admin/backup/doSmartScan`,
+        {
+          targetServers: [server],
+        },
+      )
         .then((res: ExternalSoapResponse) => {
           setIsRequestInProgress(false);
           if (isFromInitialize && res && res?.serverId) {
@@ -706,9 +710,12 @@ const BackupConfiguration: FC = () => {
 
   const doBackupPurge = useCallback(() => {
     setIsPurgeRequestRunning(true);
-    fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(`/service/extension/zextras_admin/backup/doPurge`, {
-      targetServers: [server],
-    })
+    fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(
+      `/service/extension/zextras_admin/backup/doPurge`,
+      {
+        targetServers: [server],
+      },
+    )
       .then((res: ExternalSoapResponse) => {
         setIsPurgeRequestRunning(false);
         if (res && res?.error && res?.error?.message) {
@@ -740,25 +747,28 @@ const BackupConfiguration: FC = () => {
   const onBackupExternalVolume = useCallback(
     (body: Record<string, unknown>) => {
       setIsExternalVolumeRequestRunning(true);
-      fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(`/service/extension/zextras_admin/backup/migrateBackupVolume`, {
-        ...body,
-      })
+      fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(
+        `/service/extension/zextras_admin/backup/migrateBackupVolume`,
+        {
+          ...body,
+        },
+      )
         .then((res: ExternalSoapResponse) => {
           setIsExternalVolumeRequestRunning(false);
           if (res?.error && res?.error?.details) {
             createSnackbar({
               key: 'error',
               severity: 'error',
-              label: res?.error?.message ?? res?.error?.details?.cause
-                ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+              label:
+                res?.error?.message ??
+                res?.error?.details?.cause ??
+                t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
               autoHideTimeout: 3000,
               hideButton: true,
               replace: true,
             });
           } else {
-            const selectedServer = allServers.find(
-              (serverItem) => serverItem?.name === server,
-            );
+            const selectedServer = allServers.find((serverItem) => serverItem?.name === server);
             getSoapFetchRequest<GetServerResponse>(
               `/service/extension/zextras_admin/core/getServer/${selectedServer?.id}?module=zxbackup`,
             ).then((data: GetServerResponse) => {
@@ -966,8 +976,7 @@ const BackupConfiguration: FC = () => {
                   crossAlignment="flex-start"
                 >
                   <ds-text as="h2" size="medium" weight="bold" color="gray0">
-                    {selectedBackupServer}{' '}
-                    {t('backup.backup_configuration', 'backup configuration')}
+                    {server} {t('backup.backup_configuration', 'backup configuration')}
                   </ds-text>
                 </Row>
                 <Row
@@ -1015,8 +1024,16 @@ const BackupConfiguration: FC = () => {
               orientation="horizontal"
             >
               <ds-text as="span">{t('backup.the_service_is', 'The service is')}</ds-text>&nbsp;
-              {!backupServiceStart && <ds-text as="span" color="error">{t('backup.stopped', 'stopped')}</ds-text>}
-              {backupServiceStart && <ds-text as="span" color="primary">{t('backup.running', 'running')}</ds-text>}
+              {!backupServiceStart && (
+                <ds-text as="span" color="error">
+                  {t('backup.stopped', 'stopped')}
+                </ds-text>
+              )}
+              {backupServiceStart && (
+                <ds-text as="span" color="primary">
+                  {t('backup.running', 'running')}
+                </ds-text>
+              )}
             </Container>
 
             <Container
@@ -1521,10 +1538,7 @@ const BackupConfiguration: FC = () => {
                 padding={{ top: 'large', right: 'large' }}
                 width="15%"
               >
-                <LabeledValue
-                  label={t('backup.range', 'Range')}
-                  value={t('label.days', 'Days')}
-                />
+                <LabeledValue label={t('backup.range', 'Range')} value={t('label.days', 'Days')} />
               </Container>
               <Container
                 mainAlignment="flex-start"
@@ -1589,15 +1603,7 @@ const BackupConfiguration: FC = () => {
             </ListRow>
           </Container>
         </Container>
-        <RouteLeavingGuard when={isDirty} onSave={onSave}>
-          <ds-text as="p">
-            {t(
-              'label.unsaved_changes_line1',
-              'Are you sure you want to leave this page without saving?',
-            )}
-          </ds-text>
-          <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
-        </RouteLeavingGuard>
+        <RouteLeavingGuard when={isDirty} onSave={onSave} />
       </Container>
     </>
   );

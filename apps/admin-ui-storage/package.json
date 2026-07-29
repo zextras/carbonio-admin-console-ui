@@ -18,10 +18,11 @@
     "lint:fix": "eslint --fix --cache --quiet",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
-    "test:ci": "vitest run --coverage"
+    "test:ci": "vitest run --coverage --maxWorkers=2"
   },
   "dependencies": {
     "@posthog/react": "^1.10.3",
+    "@tanstack/react-form": "^1.32.0",
     "@tanstack/react-query": "^5.90.5",
     "@types/react-csv": "^1.1.10",
     "@vitest/browser-preview": "^4.1.0",
@@ -37,8 +38,7 @@
     "react-csv": "^2.2.2",
     "react-i18next": "^17.0.8",
     "react-router": "^7.13.0",
-    "zod": "^4.3.6",
-    "zustand": "^5.0.14"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
@@ -56,15 +56,16 @@
     "@vitest/ui": "^4.1.0",
     "admin-ui-test-utils": "workspace:*",
     "clsx": "^2.1.1",
-    "eslint": "^9.39.4",
+    "eslint": "^9.39.5",
     "eslint-plugin-css-modules": "^2.12.0",
     "jsdom": "^29.1.1",
     "msw": "^2.14.6",
     "playwright": "^1.61.1",
     "react-dom": "^19.2.7",
     "sonarqube-scanner": "^4.3.8",
-    "tailwindcss": "^4.3.1",
-    "typescript": "^6.0.3",
+    "tailwindcss": "^4.3.3",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-plugin-css-modules": "^5.2.0",
     "vitest": "^4.1.0",
     "vitest-browser-react": "^2.2.0"

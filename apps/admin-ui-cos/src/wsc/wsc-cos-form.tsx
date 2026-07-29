@@ -6,6 +6,7 @@
 
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
+import { FormPageLayout } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -13,7 +14,6 @@ import { type AccountType } from '../../types/account';
 import { ZIMBRA_ADMIN_URN } from '../constants';
 import { type ModifyCosBody } from '../services/modify-cos-service';
 import { useModifyCos } from '../services/use-modify-cos';
-import { FormPageLayout } from '../views/form-page-layout';
 import type { WscCosFormValues } from './types';
 import { WscSettings } from './wsc-settings';
 

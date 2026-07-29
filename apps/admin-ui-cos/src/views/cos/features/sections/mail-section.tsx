@@ -37,14 +37,6 @@ export const MailSection = ({ form, readonlyCOS }: MailSectionProps) => {
         <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
           <FeatureSwitchField
             form={form}
-            name="carbonioFeatureMailsAppEnabled"
-            label={t('label.mobile_app', 'Mobile App')}
-            disabled={readonlyCOS}
-          />
-        </Row>
-        <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-          <FeatureSwitchField
-            form={form}
             name="zimbraFeatureSignaturesEnabled"
             label={t('label.mail_signatures', 'Mail Signatures')}
             disabled={readonlyCOS}

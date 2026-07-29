@@ -4,23 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { usePrimaryBarState } from '@zextras/ui-shared';
-import { CSSProperties, FC, Suspense } from 'react';
+import { useDetailViewMaxWidth } from '@zextras/ui-shared';
+import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
 import { Breadcrumb } from './breadcrumb/breadcrumb';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import NotificationsListPanel from './notifications/notifications-list-panel';
 
-function getContainerStyle(isPrimaryBarExpanded: boolean): CSSProperties {
-  return {
-    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
-    transition: 'width 300ms',
-  };
-}
-
-const AppView: FC = () => {
-  const isPrimaryBarExpanded = usePrimaryBarState();
+export const AppView: FC = () => {
+  const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
     <Container height={'fit'}>
       <Breadcrumb />
@@ -36,7 +29,7 @@ const AppView: FC = () => {
                 </Suspense>
               </Container>
               <Container style={{ maxWidth: '100%' }}>
-                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
+                <Container style={{ maxWidth: detailViewMaxWidth, transition: 'width 300ms' }}>
                   <Suspense fallback={<ds-spinner />}>
                     <NotificationsDetailPanel />
                   </Suspense>
@@ -50,4 +43,3 @@ const AppView: FC = () => {
   );
 };
 
-export default AppView;

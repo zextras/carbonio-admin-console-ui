@@ -30,7 +30,7 @@ const QuickAccess: FC<{
       operationIcon: 'DistributionListOutline' as IconName,
       bottomIcon: 'ChevronRightOutline' as IconName,
       bgColor: 'avatar-21',
-      operation: 'malinglist',
+      operation: 'mailinglist',
     },
   ];
   const handleClickedQuickAccess = (item: string): void => {

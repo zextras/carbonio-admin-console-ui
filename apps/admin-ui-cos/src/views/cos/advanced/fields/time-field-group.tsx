@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, Input, ListRow, Select } from '@zextras/ui-components';
+import { Container, getFieldErrorProps, Input, ListRow, Select } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../../../../types/account';
 import { TimeItems } from '../../../../../types/general';
+import { COS_VALIDATION_MESSAGES } from '../schema';
 import { CosFormApi } from '../types';
-import { getFieldErrorProps } from './field-error';
 
 type TimeFieldGroupProps = {
   form: CosFormApi;
@@ -40,7 +40,7 @@ export const TimeFieldGroup = ({
         const num = hasUnit ? raw.slice(0, -1) : '';
         const unit = hasUnit ? raw.slice(-1) : '';
         const isDisabled = disabled || readonlyCOS;
-        const error = getFieldErrorProps(field, isSubmitted, t);
+        const error = getFieldErrorProps(field, isSubmitted, t, COS_VALIDATION_MESSAGES);
         return (
           <ListRow>
             <Container width="83%" crossAlignment="flex-start" padding={{ right: 'small' }}>

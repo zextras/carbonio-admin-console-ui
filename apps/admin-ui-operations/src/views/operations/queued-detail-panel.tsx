@@ -5,146 +5,119 @@
  */
 
 import { Container, ModalOverlay, Row, useSnackbar } from '@zextras/ui-components';
-import { useAllServers } from '@zextras/ui-shared';
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { stopOperations } from '../../services/stop-operation';
-import { useOperationStore } from '../../store/operation/store';
+import { QUEUED } from '../../constants';
+import { useAllOperations } from '../../services/use-all-operations';
+import { useStopOperation } from '../../services/use-stop-operation';
 import { type Operation } from '../../types/operations';
 import { OperationsHeader } from '../utility/utils';
 import DeleteOpearationsModel from './delete-operations-model';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 
-const QuededDetailPanel: FC<{ getAllOperationAPICallHandler: () => void }> = ({
-  getAllOperationAPICallHandler,
-}) => {
-  const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-  const { data: serverList = [] } = useAllServers();
-  const serverName = serverList[0]?.name;
-  const { queuedData } = useOperationStore((state) => state);
-  const operationsHeader = useMemo(() => OperationsHeader(t), [t]);
-  const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [selectedData, setSelectedData] = useState<Operation | undefined>();
-  const [isSelectedRow, setIsSelectedRow] = useState<Array<string>>([]);
+const QueuedDetailPanel: FC = () => {
+	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
+	const { data: queuedData = [], isError } = useAllOperations({
+		select: (operations) => operations.filter((item) => item.state === QUEUED),
+	});
+	const operationsHeader = useMemo(() => OperationsHeader(t), [t]);
+	const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
+	const [open, setOpen] = useState(false);
+	const [selectedData, setSelectedData] = useState<Operation | undefined>();
+	const [isSelectedRow, setIsSelectedRow] = useState<Array<string>>([]);
 
-  const closeHandler = (): void => {
-    setOpen(false);
-  };
+	useEffect(() => {
+		if (isError) {
+			createSnackbar({
+				key: '1',
+				severity: 'error',
+				label: t('label.operation.get_all_operation_error', '{{name}}', {
+					name: '',
+				}),
+			});
+		}
+	}, [createSnackbar, isError, t]);
 
-  const stopHandler = (): void => {
-    if (!selectedData?.id) {
-      return;
-    }
+	const closeHandler = (): void => {
+		setOpen(false);
+	};
 
-    stopOperations(selectedData?.id)
-      .then((res) => {
-        const result = JSON.parse(res?.Body?.response?.content);
-        if (result?.response?.[`${serverName}`]?.ok) {
-          createSnackbar({
-            key: '1',
-            severity: 'success',
-            label: t(
-              'label.cancel_operation_sucess',
-              'The {{name}} operation has been canceled successfully',
-              {
-                name: selectedData?.name,
-              },
-            ),
-          });
-          setOpen(false);
-          setWizardDetailToggle(false);
-          getAllOperationAPICallHandler();
-        } else {
-          createSnackbar({
-            key: '1',
-            severity: 'error',
-            label: t('label.stop_operation_helperText', '{{message}}', {
-              message: result?.response?.[`${serverName}`]?.error?.message,
-            }),
-          });
-          setOpen(false);
-          setWizardDetailToggle(false);
-        }
-      })
-      .catch((err) => {
-        createSnackbar({
-          key: '1',
-          severity: 'error',
-          label: t('label.operation.stop_operation_error', '{{name}}', {
-            name: err,
-          }),
-        });
-      });
-  };
+	const stopHandler = useStopOperation({
+		selectedData,
+		setOpen,
+		setWizardDetailToggle,
+		successI18nKey: 'label.cancel_operation_sucess',
+		successDefault: 'The {{name}} operation has been canceled successfully',
+	});
 
-  const handleClick = (i: number): void => {
-    const volumeObject = queuedData?.find((s: Operation, index: number) => index === i);
-    setSelectedData(volumeObject);
-    setWizardDetailToggle(true);
-  };
+	const handleClick = (i: number): void => {
+		const volumeObject = queuedData?.find((s: Operation, index: number) => index === i);
+		setSelectedData(volumeObject);
+		setWizardDetailToggle(true);
+	};
 
-  return (
-    <>
-      {wizardDetailToggle && (
-        <ModalOverlay open={wizardDetailToggle}>
-          <OperationsWizardDetailPanel
-            setWizardDetailToggle={setWizardDetailToggle}
-            setOpen={setOpen}
-            selectedData={selectedData}
-          />
-        </ModalOverlay>
-      )}
-      <Container
-        orientation="column"
-        crossAlignment="flex-start"
-        mainAlignment="flex-start"
-        style={{ overflowY: 'auto', position: 'relative' }}
-        background="white"
-      >
-        <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <ds-text as="h2"  weight="bold">
-            {t('operations.queued_panel_heading', 'Queued Operations')}
-          </ds-text>
-        </Row>
-        <ds-divider></ds-divider>
-        <Container
-          orientation="column"
-          crossAlignment="flex-start"
-          mainAlignment="flex-start"
-          width="100%"
-          height="calc(100vh - 12.5rem)"
-          padding={{ all: 'large' }}
-        >
-          <DeleteOpearationsModel
-            open={open}
-            closeHandler={closeHandler}
-            saveHandler={stopHandler}
-            selectedData={selectedData}
-          />
-          <Row width="100%" padding={{ top: 'large' }}>
-            {queuedData && (
-              <OperationsTable
-                operations={queuedData}
-                headers={operationsHeader}
-                donePanel={false}
-                selectedRows={isSelectedRow}
-                onSelectionChange={(selected: Array<string>): void => {
-                  setIsSelectedRow(selected);
-                }}
-                onClick={(i: number): void => {
-                  handleClick(i);
-                }}
-              />
-            )}
-          </Row>
-        </Container>
-      </Container>
-    </>
-  );
+	return (
+		<>
+			{wizardDetailToggle && (
+				<ModalOverlay open={wizardDetailToggle}>
+				<OperationsWizardDetailPanel
+					setWizardDetailToggle={setWizardDetailToggle}
+					setOpen={setOpen}
+					selectedData={selectedData}
+					allowStop
+				/>
+				</ModalOverlay>
+			)}
+			<Container
+				orientation="column"
+				crossAlignment="flex-start"
+				mainAlignment="flex-start"
+				style={{ overflowY: 'auto', position: 'relative' }}
+				background="white"
+			>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
+					<ds-text as="h2"  weight="bold">
+						{t('operations.queued_panel_heading', 'Queued Operations')}
+					</ds-text>
+				</Row>
+				<ds-divider></ds-divider>
+				<Container
+					orientation="column"
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					width="100%"
+					height="calc(100vh - 12.5rem)"
+					padding={{ all: 'large' }}
+				>
+					<DeleteOpearationsModel
+						open={open}
+						closeHandler={closeHandler}
+						saveHandler={stopHandler}
+						selectedData={selectedData}
+					/>
+					<Row width="100%" padding={{ top: 'large' }}>
+						{queuedData && (
+							<OperationsTable
+								operations={queuedData}
+								headers={operationsHeader}
+								donePanel={false}
+								selectedRows={isSelectedRow}
+								onSelectionChange={(selected: Array<string>): void => {
+									setIsSelectedRow(selected);
+								}}
+								onClick={(i: number): void => {
+									handleClick(i);
+								}}
+							/>
+						)}
+					</Row>
+				</Container>
+			</Container>
+		</>
+	);
 };
 
-export default QuededDetailPanel;
+export default QueuedDetailPanel;
