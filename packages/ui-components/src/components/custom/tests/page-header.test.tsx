@@ -45,6 +45,7 @@ type RenderOptions = {
   lastLoginTimestamp?: string;
   translations?: Record<string, string>;
   crumbMenus?: Record<string, Array<CrumbMenuItem>>;
+  crumbMenuHeaders?: Record<string, string>;
   moduleCrumbMenu?: Array<CrumbMenuItem>;
   nonNavigableSegments?: Array<string>;
   labelOverrides?: Record<string, string>;
@@ -56,6 +57,7 @@ function renderPageHeader({
   lastLoginTimestamp,
   translations,
   crumbMenus,
+  crumbMenuHeaders,
   moduleCrumbMenu = [],
   nonNavigableSegments,
   labelOverrides,
@@ -69,6 +71,7 @@ function renderPageHeader({
       <I18nextProvider i18n={i18n}>
         <PageHeader
           crumbMenus={crumbMenus}
+          crumbMenuHeaders={crumbMenuHeaders}
           nonNavigableSegments={nonNavigableSegments}
           labelOverrides={labelOverrides}
           loading={loading}
@@ -581,6 +584,45 @@ describe('PageHeader', () => {
       expect(container.querySelector(`.${pageHeaderStyles.skeleton}`)).toBeNull();
       expect(screen.getByText('Home')).not.toBeNull();
       expect(screen.getByText('Accounts')).not.toBeNull();
+    });
+  });
+
+  describe('Crumb menu header', () => {
+    it('renders a non-selectable header at the top of the section menu', () => {
+      renderPageHeader({
+        path: '/dashboard/domains',
+        translations: TRANSLATIONS,
+        crumbMenus: {
+          '/dashboard/domains': [
+            { path: '/dashboard/domains/apple', label: 'Apple' },
+            { path: '/dashboard/domains/mango', label: 'Mango' },
+          ],
+        },
+        crumbMenuHeaders: { '/dashboard/domains': 'my-entity' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
+      const menu = screen.getByRole('menu');
+      const header = screen.getByText('my-entity');
+      // header is the first child of the menu and is a non-interactive div
+      expect(menu.firstElementChild).toBe(header);
+      expect(header.tagName).toBe('DIV');
+      expect(header.getAttribute('role')).toBeNull();
+      // it is not a selectable menu item
+      expect(header.matches('[role="menuitemradio"]')).toBe(false);
+      const items = screen.getAllByRole('menuitemradio');
+      expect(items).toHaveLength(2);
+    });
+
+    it('does not render a header when crumbMenuHeaders has no entry for the crumb', () => {
+      renderPageHeader({
+        path: '/dashboard/domains',
+        translations: TRANSLATIONS,
+        crumbMenus: {
+          '/dashboard/domains': [{ path: '/dashboard/domains/apple', label: 'Apple' }],
+        },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Show sections' }));
+      expect(screen.queryByText('my-entity')).toBeNull();
     });
   });
 });

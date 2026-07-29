@@ -75,5 +75,17 @@
 
 .menuItemSelected {
   justify-content: space-between;
-  background-color: var(--Highlight-Light-Regular, #d5e3f6);
+  background-color: var(--color-highlight-regular, #d5e3f6);
+}
+
+.menuHeader {
+  display: flex;
+  padding: 0.5rem 0.75rem 0.375rem 0.75rem;
+  align-items: flex-start;
+  align-self: stretch;
+  color: var(--color-gray1-active);
+  font-size: 0.75rem;
+  letter-spacing: 0.075rem;
+  line-height: normal;
+  text-transform: uppercase;
 }

@@ -26,6 +26,7 @@ export type CrumbMenuItem = {
 
 export type BreadcrumbsProps = {
   crumbMenus?: Record<string, Array<CrumbMenuItem>>;
+  crumbMenuHeaders?: Record<string, string>;
   nonNavigableSegments?: Array<string>;
   labelOverrides?: Record<string, string>;
   index: number;
@@ -73,6 +74,7 @@ function buildSplitRoutes(
 
 export const BreadcrumbComponent = ({
   crumbMenus,
+  crumbMenuHeaders,
   nonNavigableSegments,
   labelOverrides,
   index,
@@ -131,6 +133,7 @@ export const BreadcrumbComponent = ({
       {menu && menu.length > 0 && (
         <BreadcrumbMenu
           anchorRef={crumbRef}
+          header={crumbMenuHeaders?.[item.path]}
           items={menu.map((menuItem) => ({
             id: menuItem.path,
             label: menuItem.label,

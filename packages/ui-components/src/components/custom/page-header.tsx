@@ -24,6 +24,7 @@ export type CrumbMenuItem = {
 
 export type PageHeaderProps = {
   crumbMenus?: Record<string, Array<CrumbMenuItem>>;
+  crumbMenuHeaders?: Record<string, string>;
   nonNavigableSegments?: Array<string>;
   labelOverrides?: Record<string, string>;
   loading?: boolean;
@@ -70,6 +71,7 @@ function buildSplitRoutes(
 
 export const PageHeader = ({
   crumbMenus,
+  crumbMenuHeaders,
   nonNavigableSegments,
   labelOverrides,
   loading,
@@ -91,14 +93,15 @@ export const PageHeader = ({
         ) : (
           <ol className={styles.list}>
             {splitRoutes.map((item: BreadcrumbItem, index) => (
-              <BreadcrumbComponent
-                crumbMenus={crumbMenus}
-                labelOverrides={labelOverrides}
-                key={item.path}
-                index={index}
-                item={item}
-                nonNavigableSegments={nonNavigableSegments}
-              />
+            <BreadcrumbComponent
+              crumbMenus={crumbMenus}
+              crumbMenuHeaders={crumbMenuHeaders}
+              labelOverrides={labelOverrides}
+              key={item.path}
+              index={index}
+              item={item}
+              nonNavigableSegments={nonNavigableSegments}
+            />
             ))}
           </ol>
         )}

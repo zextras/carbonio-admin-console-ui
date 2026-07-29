@@ -22,6 +22,7 @@ type BreadcrumbMenuProps = {
   triggerLabel: string;
   placement?: Placement;
   anchorRef?: React.RefObject<HTMLElement | null>;
+  header?: string;
 };
 
 type PopoverElement = HTMLDivElement & {
@@ -34,6 +35,7 @@ export function BreadcrumbMenu({
   triggerLabel,
   placement = 'bottom-start',
   anchorRef,
+  header,
 }: Readonly<BreadcrumbMenuProps>) {
   const triggerId = useId();
   const menuId = useId();
@@ -179,6 +181,7 @@ export function BreadcrumbMenu({
         role="menu"
         tabIndex={-1}
       >
+        {header && <div className={styles.menuHeader}>{header}</div>}
         {items.map((item, index) => (
           <button
             aria-checked={item.selected ? 'true' : 'false'}

@@ -44,11 +44,13 @@ export const AppView = () => {
   const nonNavigableSegments = isCosId && segmentAfterBase ? [segmentAfterBase] : undefined;
   const labelOverrides = cosName && segmentAfterBase ? { [segmentAfterBase]: cosName } : undefined;
   const loading = isCosId && !cosName;
+  const crumbMenuHeaders = isCosId && cosName ? { [pathname]: cosName } : undefined;
 
   return (
     <div className={styles.root}>
       <PageHeader
         crumbMenus={crumbMenus}
+        crumbMenuHeaders={crumbMenuHeaders}
         nonNavigableSegments={nonNavigableSegments}
         labelOverrides={labelOverrides}
         loading={loading}

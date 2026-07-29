@@ -107,11 +107,13 @@ export const AppView: FC = () => {
   const labelOverrides =
     domain?.name && segmentAfterBase ? { [segmentAfterBase]: domain.name } : undefined;
   const loading = isDomainId && !domain?.name;
+  const crumbMenuHeaders = isDomainId && domain?.name ? { [pathname]: domain.name } : undefined;
 
   return (
     <Container height={'fit'}>
       <PageHeader
         crumbMenus={crumbMenus}
+        crumbMenuHeaders={crumbMenuHeaders}
         nonNavigableSegments={nonNavigableSegments}
         labelOverrides={labelOverrides}
         loading={loading}
