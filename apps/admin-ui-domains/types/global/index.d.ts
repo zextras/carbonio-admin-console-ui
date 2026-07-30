@@ -11,3 +11,22 @@ export type GlobalDisclaimerType = {
 	zimbraAmavisDomainDisclaimerHTML: string;
 	carbonioSearchAllDomainsByFeature: boolean;
 };
+
+export type AddressBookServiceStatus = {
+	running: boolean;
+	couldStart: boolean;
+	couldStop: boolean;
+};
+
+export type AddressBookZextrasSoapResponse = {
+	Body?: {
+		response?: {
+			content?: string;
+		};
+		Fault?: {
+			Reason?: {
+				Text?: string;
+			};
+		};
+	};
+};

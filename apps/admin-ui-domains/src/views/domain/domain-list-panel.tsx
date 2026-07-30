@@ -42,6 +42,7 @@ import {
   GENERAL_SETTINGS,
   GLOBAL_2FA_ROUTE,
   GLOBAL_ACTIVE_SYNC_ROUTE,
+  GLOBAL_ADDRESS_BOOK_ROUTE,
   GLOBAL_ADMINISTRATORS,
   GLOBAL_DOMAIN_ROUTE,
   GLOBAL_QUARANTINE_ROUTE,
@@ -315,6 +316,11 @@ const DomainListPanel: FC = () => {
       {
         id: GLOBAL_ACTIVE_SYNC_ROUTE,
         name: t('label.active_sync', 'ActiveSync'),
+        isSelected: true,
+      },
+      {
+        id: GLOBAL_ADDRESS_BOOK_ROUTE,
+        name: t('label.address_book', 'Address Book'),
         isSelected: true,
       },
     ],

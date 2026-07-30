@@ -12,6 +12,7 @@ import logo from '../assets/ninja_robo.svg';
 import {
   ACCOUNTS,
   ACTIVE_SYNC,
+  ADDRESS_BOOK,
   ADMINISTRATORS,
   AUTHENTICATION,
   CREATE_NEW_DOMAIN_ROUTE_ID,
@@ -45,6 +46,7 @@ import { DomainDetailPanel } from './domain/domain-detail-panel';
 import { DomainList } from './domain/domain-list/domain-list';
 import { DomainOperationsLayout } from './domain/domain-operations-layout';
 import GlobalActiveSync from './domain/global/global-active-sync';
+import { GlobalAddressBook } from './domain/global/global-address-book';
 import GlobalDetailPanel from './domain/global/global-detail-panel';
 import GlobalTheme from './domain/global/global-theme';
 import GlobalTwoFactorAuthentcation from './domain/global/global-two-factor-auth';
@@ -118,6 +120,7 @@ export const DomainContentPanel = () => (
       <Route path={`${GLOBAL_ROUTE}/${ADMINISTRATORS}`} element={<GlobalDelegates />} />
       <Route path={`${GLOBAL_ROUTE}/${SETTINGS}`} element={<GlobalDetailPanel />} />
       <Route path={`${GLOBAL_ROUTE}/${ACTIVE_SYNC}`} element={<GlobalActiveSync />} />
+      <Route path={`${GLOBAL_ROUTE}/${ADDRESS_BOOK}`} element={<GlobalAddressBook />} />
       <Route path=":domainId" element={<DomainOperationsLayout />}>
         <Route path={GENERAL_INFORMATION} element={<GeneralInformation />} />
         <Route path={GENERAL_SETTINGS} element={<DomainGeneralSettings />} />
