@@ -25,7 +25,6 @@ import {
   GAL,
   GENERAL_SETTINGS,
   GLOBAL_ROUTE,
-  MAILBOX_QUOTA,
   MANAGE,
   RESOURCES,
   RESTORE_ACCOUNT,
@@ -55,8 +54,11 @@ const DOMAIN_DETAIL_SECTIONS: Array<SectionRoute> = [
     labelKey: 'label.virtual_hosts_and_certificates',
     labelDefault: 'Virtual Hosts & Certificate',
   },
-  { id: MAILBOX_QUOTA, labelKey: 'label.mailbox_quota', labelDefault: 'Mailbox Quota' },
-  { id: WHITELABEL_SETTINGS, labelKey: 'label.whitelabel_settings', labelDefault: 'Whitelabel Settings' },
+  {
+    id: WHITELABEL_SETTINGS,
+    labelKey: 'label.whitelabel_settings',
+    labelDefault: 'Whitelabel Settings',
+  },
   {
     id: TWO_FACTOR_AUTHENTICATION,
     labelKey: 'label.2-factor-authentication',
@@ -75,8 +77,7 @@ export const DomainPageHeader = () => {
   const domainsAppPath = `/${MANAGE}/${DOMAINS_ROUTE_ID}`;
 
   const segmentAfterBase = getSegmentAfterBase(pathname, domainsAppPath);
-  const isDomainId =
-    Boolean(segmentAfterBase) && !NON_DOMAIN_SEGMENTS.has(segmentAfterBase!);
+  const isDomainId = Boolean(segmentAfterBase) && !NON_DOMAIN_SEGMENTS.has(segmentAfterBase!);
 
   const { data: domain, isPlaceholderData } = useDomainById<{ name?: string }>({
     domainId: isDomainId ? segmentAfterBase : undefined,
