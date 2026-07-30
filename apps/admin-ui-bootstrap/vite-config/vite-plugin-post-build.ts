@@ -8,7 +8,7 @@ import { resolve } from 'node:path';
 
 import type { Plugin } from 'vite';
 
-import { colorLog, getWorkspaceRoot } from './utils';
+import { colorLog, getWorkspaceRoot } from './utils.ts';
 
 export function postBuildPlugin(): Plugin {
   return {
