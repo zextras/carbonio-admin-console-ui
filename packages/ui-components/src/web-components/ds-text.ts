@@ -41,18 +41,18 @@ type StyleMap = ReturnType<typeof styleMap>;
 type TagRenderer = (style: StyleMap) => TemplateResult;
 
 const tagRenderers: Record<TextTag, TagRenderer> = {
-  span: (s) => html`<span style=${s}><slot></slot></span>`,
-  p: (s) => html`<p style=${s}><slot></slot></p>`,
-  h1: (s) => html`<h1 style=${s}><slot></slot></h1>`,
-  h2: (s) => html`<h2 style=${s}><slot></slot></h2>`,
-  h3: (s) => html`<h3 style=${s}><slot></slot></h3>`,
-  h4: (s) => html`<h4 style=${s}><slot></slot></h4>`,
-  h5: (s) => html`<h5 style=${s}><slot></slot></h5>`,
-  h6: (s) => html`<h6 style=${s}><slot></slot></h6>`,
-  label: (s) => html`<label style=${s}><slot></slot></label>`,
-  strong: (s) => html`<strong style=${s}><slot></slot></strong>`,
-  em: (s) => html`<em style=${s}><slot></slot></em>`,
-  small: (s) => html`<small style=${s}><slot></slot></small>`,
+  span: (s) => html`<span part="text" style=${s}><slot></slot></span>`,
+  p: (s) => html`<p part="text" style=${s}><slot></slot></p>`,
+  h1: (s) => html`<h1 part="text" style=${s}><slot></slot></h1>`,
+  h2: (s) => html`<h2 part="text" style=${s}><slot></slot></h2>`,
+  h3: (s) => html`<h3 part="text" style=${s}><slot></slot></h3>`,
+  h4: (s) => html`<h4 part="text" style=${s}><slot></slot></h4>`,
+  h5: (s) => html`<h5 part="text" style=${s}><slot></slot></h5>`,
+  h6: (s) => html`<h6 part="text" style=${s}><slot></slot></h6>`,
+  label: (s) => html`<label part="text" style=${s}><slot></slot></label>`,
+  strong: (s) => html`<strong part="text" style=${s}><slot></slot></strong>`,
+  em: (s) => html`<em part="text" style=${s}><slot></slot></em>`,
+  small: (s) => html`<small part="text" style=${s}><slot></slot></small>`,
 };
 
 export class DsText extends LitElement {

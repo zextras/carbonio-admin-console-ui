@@ -3,18 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/ui-components';
+import { Container,PageHeader } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 
-import { Breadcrumb } from './breadcrumb/breadcrumb';
 import PrivacyView from './privacy/privacy-view';
 
 export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
     <Container height={'fit'}>
-      <Breadcrumb />
+      <PageHeader />
       <Container orientation="horizontal" mainAlignment="flex-start">
         <Container style={{ maxWidth: '100%' }}>
           <Container style={{ maxWidth: detailViewMaxWidth, transition: 'width 300ms' }}>

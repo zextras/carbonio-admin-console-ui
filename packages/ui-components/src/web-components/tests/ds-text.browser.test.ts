@@ -302,6 +302,29 @@ describe('ds-text', () => {
     });
   });
 
+  describe('className / shadow part', () => {
+    it('should let a host class style the inner element via ::part(text)', async () => {
+      const style = document.createElement('style');
+      style.textContent = 'ds-text.part-test::part(text) { color: rgb(255, 0, 0); }';
+      document.head.appendChild(style);
+
+      try {
+        const el = await createDsText({ class: 'part-test', color: 'primary' }, 'Part styled');
+        const innerEl = el.shadowRoot!.firstElementChild as HTMLElement;
+        const computedColor = globalThis.getComputedStyle(innerEl).color;
+        expect(computedColor).toBe('rgb(255, 0, 0)');
+      } finally {
+        style.remove();
+      }
+    });
+
+    it('should expose a "text" part on the inner element', async () => {
+      const el = await createDsText({}, 'Parted');
+      const innerEl = el.shadowRoot!.firstElementChild as HTMLElement;
+      expect(innerEl.getAttribute('part')).toBe('text');
+    });
+  });
+
   describe('slot content projection', () => {
     it('should project slotted content inside the inner element', async () => {
       const el = await createDsText({ as: 'p' });

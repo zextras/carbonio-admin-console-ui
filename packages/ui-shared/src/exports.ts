@@ -142,7 +142,7 @@ import {
 } from './services/search-directory-service';
 import { setCoreAttributes } from './services/set-core-attributes';
 import { useDetailViewMaxWidth, usePrimaryBarState } from './shell/hooks';
-import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
+import { getApp, getShell, useAppList, useAppRoutes, useModuleCrumbMenu } from './store/app/hooks';
 import { useAppStore } from './store/app/store';
 import { normalizeRoute } from './store/app/utils';
 import { useBridge, useContextBridge } from './store/context-bridge';
@@ -292,6 +292,7 @@ export {
   useLoginConfigStore,
   useMailstoreServers,
   useMediaQuery,
+  useModuleCrumbMenu,
   useModuleLicenseInfo,
   useMtaServers,
   usePrimaryBarState,

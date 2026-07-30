@@ -3,20 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { buildSectionMenu, Container,PageHeader } from '@zextras/ui-components';
-import { useDetailViewMaxWidth } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
+import { buildSectionMenu, PageHeader } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes, useLocation } from 'react-router';
+import { useLocation } from 'react-router';
 
-import { MTADetailPanel } from './mta/mta-detail-panel';
-import MTAListPanel from './mta/mta-list-panel';
-import { SECTION_ROUTES } from './mta/mta-section-routes';
+import { SECTION_ROUTES } from './backup/backup-section-routes';
 
-export const AppView: FC = () => {
+export const BackupPageHeader = () => {
   const [t] = useTranslation();
   const { pathname } = useLocation();
-  const detailViewMaxWidth = useDetailViewMaxWidth();
   const appBase = `/${pathname.split('/').filter(Boolean).slice(0, 2).join('/')}`;
 
   const topLevelRoutes = SECTION_ROUTES.filter((r) => !r.prefix);
@@ -46,38 +41,15 @@ export const AppView: FC = () => {
     isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
   const labelOverrides =
     isServerRoute && segmentAfterBase ? { [segmentAfterBase]: segmentAfterBase } : undefined;
+  const crumbMenuHeaders =
+    isServerRoute && segmentAfterBase ? { [pathname]: segmentAfterBase } : undefined;
 
   return (
-    <Container height={'fit'}>
-      <PageHeader
-        crumbMenus={crumbMenus}
-        labelOverrides={labelOverrides}
-        nonNavigableSegments={nonNavigableSegments}
-      />
-      <Routes>
-        <Route
-          path={'/*'}
-          element={
-            <Container orientation="horizontal" mainAlignment="flex-start">
-              <Container style={{ maxWidth: '16.563rem' }}>
-                <Suspense fallback={<ds-spinner />}>
-                  <MTAListPanel />
-                </Suspense>
-              </Container>
-              <Container style={{ maxWidth: '100%' }}>
-                <Container
-                  style={{ maxWidth: detailViewMaxWidth, transition: 'max-width 300ms' }}
-                >
-                  <Suspense fallback={<ds-spinner />}>
-                    <MTADetailPanel />
-                  </Suspense>
-                </Container>
-              </Container>
-            </Container>
-          }
-        />
-      </Routes>
-    </Container>
+    <PageHeader
+      crumbMenus={crumbMenus}
+      crumbMenuHeaders={crumbMenuHeaders}
+      labelOverrides={labelOverrides}
+      nonNavigableSegments={nonNavigableSegments}
+    />
   );
 };
-
