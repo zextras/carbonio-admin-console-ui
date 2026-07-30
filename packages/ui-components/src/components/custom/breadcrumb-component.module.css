@@ -39,7 +39,7 @@
 .separator {
   width: fit-content;
   height: fit-content;
-  padding: 0 var(--padding-size-extrasmall);
+  padding: 0;
 }
 
 .separator ds-text::part(text) {
