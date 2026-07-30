@@ -1,3 +1,9 @@
+## [0.16.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.0...v0.16.1) (2026-07-30)
+
+### Other changes
+
+* **apps:** update react-router to v8.3.0 ([#1317](https://github.com/zextras/carbonio-admin-console-ui/issues/1317)) ([931ce32](https://github.com/zextras/carbonio-admin-console-ui/commit/931ce32117a581758c86a10308f925ff488928b8))
+
 ## [0.16.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.6...v0.16.0) (2026-07-29)
 
 ### Features
