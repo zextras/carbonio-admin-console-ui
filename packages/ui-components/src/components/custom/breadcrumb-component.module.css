@@ -33,7 +33,7 @@
 }
 
 .labelCurrent::part(text) {
-  color: var(--color-gray0-regular);
+  color: var(--color-secondary-active);
 }
 
 .separator {
