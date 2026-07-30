@@ -1,3 +1,9 @@
+## [0.16.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.1...v0.16.2) (2026-07-30)
+
+### Other changes
+
+* **root:** update node version to 24 and remove app-specific nvmrc files ([#1319](https://github.com/zextras/carbonio-admin-console-ui/issues/1319)) ([6554519](https://github.com/zextras/carbonio-admin-console-ui/commit/6554519f5be480b321e22c8e4c2686d632b0a18c))
+
 ## [0.16.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.0...v0.16.1) (2026-07-30)
 
 ### Other changes
