@@ -3,38 +3,63 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/ui-components';
-import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
+import { buildSectionMenu, Container,PageHeader } from '@zextras/ui-components';
+import { useTranslation } from 'react-i18next';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 
-import { Breadcrumb } from './breadcrumb/breadcrumb';
-import BucketListPanel from './bucket/bucket-list-panel';
-import BucketRoutePanel from './bucket/bucket-route-panel';
+import { SERVERS_LIST } from '../constants';
+import { StorageLayout } from './storage-layout';
+import { SECTION_ROUTES } from './storage-section-routes';
 
-const BucketComponent = () => (
-  <Container orientation="horizontal" mainAlignment="flex-start">
-    <Container style={{ maxWidth: '265px' }}>
-      <Suspense fallback={<ds-spinner />}>
-        <BucketListPanel />
-      </Suspense>
-    </Container>
-    <Container style={{ maxWidth: '100%' }}>
-      <Suspense fallback={<ds-spinner />}>
-        <BucketRoutePanel />
-      </Suspense>
-    </Container>
-  </Container>
-);
+export const AppView = () => {
+  const [t] = useTranslation();
+  const { pathname } = useLocation();
+  const appBase = `/${pathname.split('/').filter(Boolean).slice(0, 2).join('/')}`;
 
-const AppView: FC = () => {
+  const topLevelRoutes = SECTION_ROUTES.filter((r) => !r.prefix);
+  const serverRoutes = SECTION_ROUTES.filter((r) => r.prefix);
+
+  const topLevelSections = buildSectionMenu(appBase, topLevelRoutes, t);
+
+  const relativeSegments = pathname.startsWith(`${appBase}/`)
+    ? pathname.substring(appBase.length + 1).split('/')
+    : [];
+  const segmentAfterBase = relativeSegments[0] || undefined;
+  const deeperSegment = relativeSegments[1] || undefined;
+
+  const isServerRoute =
+    Boolean(deeperSegment) && serverRoutes.some((r) => r.id === deeperSegment);
+  const isTopLevelSection = topLevelSections.some((s) => s.path === pathname);
+
+  const serverSectionMenu =
+    isServerRoute && serverRoutes.length > 1
+      ? buildSectionMenu(`${appBase}/${segmentAfterBase}`, serverRoutes, t)
+      : undefined;
+  const topLevelSectionMenu = isTopLevelSection ? topLevelSections : undefined;
+  const sectionMenu = serverSectionMenu ?? topLevelSectionMenu;
+
+  const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
+  const nonNavigableSegments =
+    isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
+  const labelOverrides =
+    isServerRoute && segmentAfterBase ? { [segmentAfterBase]: segmentAfterBase } : undefined;
+
   return (
-    <Container height={'fit'}>
-      <Breadcrumb />
+    <Container>
+      <PageHeader
+        crumbMenus={crumbMenus}
+        labelOverrides={labelOverrides}
+        nonNavigableSegments={nonNavigableSegments}
+      />
       <Routes>
-        <Route path={`/*`} element={<BucketComponent />} />
+        <Route element={<StorageLayout />}>
+          <Route index element={<Navigate to={SERVERS_LIST} replace />} />
+          {SECTION_ROUTES.map(({ id, prefix, Component }) => (
+            <Route key={id} path={prefix ? `${prefix}/${id}` : id} element={<Component />} />
+          ))}
+          <Route path="*" element={null} />
+        </Route>
       </Routes>
     </Container>
   );
 };
-
-export default AppView;

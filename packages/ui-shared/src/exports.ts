@@ -38,6 +38,8 @@ export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext, registerApp } from './apps/loader';
+
+export * from './constants/route-ids';
 import {
   ACTION_TYPES,
   BASENAME,
@@ -59,11 +61,11 @@ import {
   TRUE,
   ZIMBRA_ADMIN_URN,
 } from './constants';
-import { replaceHistory, useCurrentRoute } from './history/hooks';
+import { buildPath, replaceHistory, useCurrentRoute, useRelativePathname } from './history/hooks';
 import { useBreakpoint } from './hooks/use-breakpoint';
+import { useDebouncedValue } from './hooks/use-debounced-value';
 import { useLocalStorage } from './hooks/use-local-storage';
 import { useMediaQuery } from './hooks/use-media-query';
-import { useTotalQuotaActive } from './hooks/use-total-quota-active';
 import {
   type CloseSnackbarFn,
   type CreateSnackbarFn,
@@ -84,7 +86,10 @@ import { queryClient, ReactQueryProvider } from './providers/react-query-provide
 import { useUserAccount, useUserAccounts, useUserSettings } from './react-query/use-account';
 import { useBackupServers } from './react-query/use-backup-servers';
 import { useAllConfig, useConfigAttribute } from './react-query/use-config';
+import { useCosList } from './react-query/use-cos-list';
+import { domainByIdKey, useDomainById } from './react-query/use-domain-by-id';
 import { useDomainInformation } from './react-query/use-domain-information';
+import { useDomainSearch } from './react-query/use-domain-search';
 import { useGlobalCarbonioSendAnalytics } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
@@ -125,12 +130,8 @@ import {
   getCoreAttributes,
   type GetCoreAttributesResponse,
 } from './services/get-core-attributes';
-import {
-  type FileQuotaResponse,
-  getFileQuotaById,
-} from './services/get-file-quota';
+import { getDomainInformation } from './services/get-domain-information';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
-import { resetFileQuotaLimitById } from './services/reset-file-quota-limit';
 import { getCosList } from './services/search-cos-service';
 import {
   type DirectoryAttribute,
@@ -140,9 +141,8 @@ import {
   type SearchDomainDirectories,
 } from './services/search-directory-service';
 import { setCoreAttributes } from './services/set-core-attributes';
-import { setFileQuotaLimitById } from './services/set-file-quota-limit';
-import { usePrimaryBarState } from './shell/hooks';
-import { getApp, getShell, useAppList, useAppRoutes } from './store/app/hooks';
+import { useDetailViewMaxWidth, usePrimaryBarState } from './shell/hooks';
+import { getApp, getShell, useAppList, useAppRoutes, useModuleCrumbMenu } from './store/app/hooks';
 import { useAppStore } from './store/app/store';
 import { normalizeRoute } from './store/app/utils';
 import { useBridge, useContextBridge } from './store/context-bridge';
@@ -151,9 +151,9 @@ import { useI18nStore } from './store/i18n/store';
 import { useActions } from './store/integrations/hooks';
 import { useIntegrationsStore } from './store/integrations/store';
 import { useLoginConfigStore } from './store/login/store';
-import { useDomainStore } from './store/shared/domains';
 import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
+import { isUnlimitedQuantity } from './utils/quantity';
 import { isValidDecimalInput } from './utils/validators';
 
 // Default fallback pkg for when app context cannot be determined
@@ -190,6 +190,16 @@ function getCallerPkg(): Pick<CarbonioModule, 'name' | 'priority' | 'icon'> {
   return defaultPkg;
 }
 
+/**
+ * Registers an app route.
+ *
+ * `route` is the raw, app-declared segment (e.g. `'storage'`). The store derives the full URL
+ * `path` by prefixing it with `primarybarSection.id` when a section is provided — so
+ * `primarybarSection.id` is BOTH the primary-bar grouping key AND the URL prefix
+ * (e.g. section `'manage'` + route `'storage'` → mounted at `/manage/storage`).
+ *
+ * See {@link AppRoute} for the stored shape (`route` raw + `path` prefixed).
+ */
 const addRoute = (route: Partial<AppRouteDescriptor>) =>
   useAppStore.getState().setters.addRoute(normalizeRoute(route, getCallerPkg()));
 const removeRoute = (routeId: string) => useAppStore.getState().setters.removeRoute(routeId);
@@ -199,6 +209,7 @@ export {
   ACTION_TYPES,
   addRoute,
   BASENAME,
+  buildPath,
   CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
   CARBONIO_HELP_ADMIN_URL,
@@ -206,6 +217,7 @@ export {
   CARBONIO_LOGO_URL,
   CONFIG,
   CONTENT,
+  domainByIdKey,
   fetchAccountSettings,
   fetchExternalSoap,
   flushCache,
@@ -217,12 +229,13 @@ export {
   getCoreAttributes,
   getCosGeneralInformation,
   getCosList,
-  getFileQuotaById,
+  getDomainInformation,
   getLocale,
   getRights,
   getShell,
   getSoapFetchRequest,
   invalidateLicenseQuery,
+  isUnlimitedQuantity,
   isValidDecimalInput,
   LOCAL_STORAGE_LAST_PRIMARY_KEY,
   LOGIN_V3_CONFIG_PATH,
@@ -239,13 +252,11 @@ export {
   registerApp,
   removeRoute,
   replaceHistory,
-  resetFileQuotaLimitById,
   SCALING_LIMIT,
   SCALING_OPTIONS,
   searchDirectory,
   SEND_FEEDBACK_URL,
   setCoreAttributes,
-  setFileQuotaLimitById,
   SHELL_APP_ID,
   SnackbarManagerContext,
   soapFetch,
@@ -262,10 +273,14 @@ export {
   useBridge,
   useConfigAttribute,
   useContextBridge,
+  useCosList,
   useCurrentRoute,
   useCurrentUserRights,
+  useDebouncedValue,
+  useDetailViewMaxWidth,
+  useDomainById,
   useDomainInformation,
-  useDomainStore,
+  useDomainSearch,
   useGlobalCarbonioSendAnalytics,
   useHasAllRights,
   useI18nStore,
@@ -277,14 +292,15 @@ export {
   useLoginConfigStore,
   useMailstoreServers,
   useMediaQuery,
+  useModuleCrumbMenu,
   useModuleLicenseInfo,
   useMtaServers,
   usePrimaryBarState,
+  useRelativePathname,
   useRemoveLicense,
   useServerVersion,
   useSnackbar,
   useStickyBarStore,
-  useTotalQuotaActive,
   useUserAccount,
   useUserAccounts,
   useUserSettings,
@@ -303,7 +319,6 @@ export type {
   DirectoryAttribute,
   DirectoryEntry,
   DomainDirectories,
-  FileQuotaResponse,
   GetCoreAttributesResponse,
   GetCosResponse,
   SearchDomainDirectories,

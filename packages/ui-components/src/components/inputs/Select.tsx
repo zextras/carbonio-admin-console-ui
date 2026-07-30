@@ -25,6 +25,7 @@ type SelectItem<T = string> = {
 
 type LabelFactoryProps<T = string> = {
   label: string | undefined;
+  isRequired: boolean;
   open: boolean;
   focus: boolean;
   background: string;
@@ -67,6 +68,7 @@ type ControlledSingleSelection<T> = {
 
 type SelectComponentProps<T> = {
   label?: string;
+  isRequired?: boolean;
   background?: string;
   disabled?: boolean;
   items: SelectItem<T>[];
@@ -99,6 +101,7 @@ type SelectType = <T = string>(p: SelectProps<T>) => React.ReactElement | null;
 const DefaultLabelFactory = <T,>({
   selected,
   label,
+  isRequired,
   open,
   focus,
   background,
@@ -153,6 +156,7 @@ const DefaultLabelFactory = <T,>({
           <div className={styles.label} style={labelStyle}>
             <ds-text as="label" size={hasSelection ? 'small' : 'medium'} color={labelColor}>
               {label}
+              {isRequired && <span className={styles.requiredAsterisk}> *</span>}
             </ds-text>
           </div>
         </Row>
@@ -167,6 +171,7 @@ const DefaultLabelFactory = <T,>({
 
 const SelectComponent = function SelectFn<T = string>({
   background = INPUT_BACKGROUND_COLOR,
+  isRequired = false,
   disabled = false,
   items,
   label,
@@ -313,6 +318,7 @@ const SelectComponent = function SelectFn<T = string>({
       <div onFocus={onFocus} onBlur={onBlur} tabIndex={0} className={styles.tabContainer}>
         <LabelFactory
           label={label}
+          isRequired={isRequired}
           open={open}
           focus={focus}
           background={background}

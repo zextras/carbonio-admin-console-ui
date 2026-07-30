@@ -6,7 +6,7 @@
 
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { RegularSubscription } from '../regular-subscription';
@@ -26,6 +26,8 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
     notYetValid: false,
     infrastructureId: '8b2458ac-61e5-47c0-b70b-d27701c3c68d',
     authenticationToken: 'TEST_TOKEN',
+    carbonioVersion: '24.10.0',
+    updateTime: new Date('2026-06-20T00:00:00Z').getTime(),
     endUser: 'Test End User',
     features: [
       { name: 'backup_realtime', quantity: 'unlimited', enabled: true },
@@ -33,9 +35,16 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
       { name: 'storages_basic', quantity: 'unlimited', enabled: true },
       { name: 'admins_basic', quantity: 'unlimited', enabled: true },
     ],
+    editions: [
+      { name: 'email_edition', quantity: '500' },
+      { name: 'workspace_edition', quantity: '100' },
+      { name: 'activesync_addon', quantity: '100' },
+      { name: 'replica_addon', quantity: '0' },
+    ],
+    ...(overrides.response as Record<string, unknown>),
   },
   ok: true,
-  ...overrides,
+  ...Object.fromEntries(Object.entries(overrides).filter(([key]) => key !== 'response')),
 });
 
 const setupTest = (
@@ -57,17 +66,33 @@ describe('RegularSubscription', () => {
       const mockLicenseData = createMockLicenseData();
       setupTest(<RegularSubscription />, mockLicenseData);
 
-      await expect.element(page.getByText('Subscriptions')).toBeVisible();
+      await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
     });
 
-    it('should render all four cards in the row', async () => {
+    it('should render the Update data button', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('Update data')).toBeVisible();
+    });
+
+    it('should render the last sync time when present', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText(/Last sync\s+\d{1,2}\s+\w+\s+\d{4}/)).toBeVisible();
+    });
+
+    it('should render every section of the page', async () => {
       const mockLicenseData = createMockLicenseData();
       setupTest(<RegularSubscription />, mockLicenseData);
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
-      await expect.element(page.getByText('Active edition')).toBeVisible();
-      await expect.element(page.getByText('Seat utilization')).toBeVisible();
       await expect.element(page.getByText('Expires on')).toBeVisible();
+      await expect.element(page.getByText('Active edition')).toBeVisible();
+      await expect.element(page.getByText('Add-ons')).toBeVisible();
+      await expect.element(page.getByText('Details')).toBeVisible();
+      await expect.element(page.getByText('Activation token')).toBeVisible();
     });
   });
 
@@ -83,7 +108,7 @@ describe('RegularSubscription', () => {
       const mockLicenseData = createMockLicenseData();
       setupTest(<RegularSubscription />, mockLicenseData);
 
-      await expect.element(page.getByText('ACTIVE', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('ACTIVE', { exact: true }).first()).toBeVisible();
     });
 
     it('should display the start date with Since prefix', async () => {
@@ -100,127 +125,11 @@ describe('RegularSubscription', () => {
     });
   });
 
-  describe('SubscriptionEdition card', () => {
-    it('should render the Active edition label', async () => {
-      const mockLicenseData = createMockLicenseData();
-      setupTest(<RegularSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('Active edition')).toBeVisible();
-    });
-
-    it('should display EMAIL as the edition text', async () => {
-      const mockLicenseData = createMockLicenseData();
-      setupTest(<RegularSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('EMAIL')).toBeVisible();
-    });
-
-    it('should render a CheckmarkCircle icon', async () => {
-      const mockLicenseData = createMockLicenseData();
-      const result = await setupTest(<RegularSubscription />, mockLicenseData);
-
-      const container = result.container;
-      const icon = container.querySelector('ds-icon[icon="CheckmarkCircle"]');
-      expect(icon).not.toBeNull();
-    });
-  });
-
-  describe('SeatUtilization card', () => {
-    it('should render the Seat utilization label', async () => {
-      const mockLicenseData = createMockLicenseData();
-      setupTest(<RegularSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('Seat utilization')).toBeVisible();
-    });
-
-    it('should display correct usage percentage for low usage', async () => {
-      const mockLicenseData = createMockLicenseData({
-        response: {
-          accountCount: 7,
-          licensedUsers: '99',
-        },
-      });
-      setupTest(<RegularSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('7%')).toBeVisible();
-      await expect.element(page.getByText('LOW')).toBeVisible();
-    });
-
-    it('should display account ratio as used/total', async () => {
-      const mockLicenseData = createMockLicenseData({
-        response: {
-          accountCount: 7,
-          licensedUsers: '99',
-        },
-      });
-      setupTest(<RegularSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('7/99')).toBeVisible();
-    });
-
-    it('should display MODERATE when usage is between 70% and 95%', async () => {
-      const mockLicenseData = createMockLicenseData({
-        response: {
-          accountCount: 80,
-          licensedUsers: '100',
-        },
-      });
-      setupTest(<RegularSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('80%')).toBeVisible();
-      await expect.element(page.getByText('MODERATE')).toBeVisible();
-    });
-
-    it('should display HIGH when usage is between 95% and 100%', async () => {
-      const mockLicenseData = createMockLicenseData({
-        response: {
-          accountCount: 97,
-          licensedUsers: '100',
-        },
-      });
-      setupTest(<RegularSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('97%')).toBeVisible();
-      await expect.element(page.getByText('HIGH')).toBeVisible();
-    });
-
-    it('should display FULL when usage is exactly 100%', async () => {
-      const mockLicenseData = createMockLicenseData({
-        response: {
-          accountCount: 100,
-          licensedUsers: '100',
-        },
-      });
-      setupTest(<RegularSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('100%')).toBeVisible();
-      await expect.element(page.getByText('FULL')).toBeVisible();
-    });
-
-    it('should display OVER when usage exceeds 100%', async () => {
-      const mockLicenseData = createMockLicenseData({
-        response: {
-          accountCount: 110,
-          licensedUsers: '100',
-        },
-      });
-      setupTest(<RegularSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('110%')).toBeVisible();
-      await expect.element(page.getByText('OVER')).toBeVisible();
-    });
-
-    it('should render ds-tag-icon element in the card', async () => {
-      const mockLicenseData = createMockLicenseData();
-      const result = await setupTest(<RegularSubscription />, mockLicenseData);
-
-      const container = result.container;
-      const tagIcon = container.querySelector('ds-tag-icon');
-      expect(tagIcon).not.toBeNull();
-    });
-  });
-
   describe('SubscriptionExpiry card', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
     it('should render the Expires on label', async () => {
       const mockLicenseData = createMockLicenseData();
       setupTest(<RegularSubscription />, mockLicenseData);
@@ -240,6 +149,7 @@ describe('RegularSubscription', () => {
     });
 
     it('should display days remaining text when expiry is within a year', async () => {
+      vi.useFakeTimers({ now: new Date('2026-06-01T00:00:00Z'), toFake: ['Date'] });
       const mockLicenseData = createMockLicenseData({
         response: {
           dateEnd: new Date('2026-07-01T00:00:00Z').getTime(),
@@ -258,9 +168,115 @@ describe('RegularSubscription', () => {
       });
       setupTest(<RegularSubscription />, mockLicenseData);
 
-      await expect
-        .element(page.getByText(/In\s+more\s+than\s+\d+\s+years?/))
-        .toBeVisible();
+      await expect.element(page.getByText(/In\s+more\s+than\s+\d+\s+years?/)).toBeVisible();
+    });
+  });
+
+  describe('ActiveEdition section', () => {
+    it('should render the Active edition heading', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('Active edition')).toBeVisible();
+    });
+
+    it('should render the Email and Workspace editions as active', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('Email', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Workspace', { exact: true })).toBeVisible();
+    });
+
+    it('should render a CheckmarkCircle icon for active editions', async () => {
+      const mockLicenseData = createMockLicenseData();
+      const result = await setupTest(<RegularSubscription />, mockLicenseData);
+
+      const icon = result.container.querySelector('ds-icon[icon="EmailOutline"]');
+      expect(icon).not.toBeNull();
+    });
+
+    it('should render an edition as inactive when its quantity is 0', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [
+            { name: 'email_edition', quantity: '500' },
+            { name: 'workspace_edition', quantity: '0' },
+          ],
+        },
+      });
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText(/Upgrade your subscription to unlock/)).toBeVisible();
+    });
+
+    it('should render an edition as inactive when it is absent from the license', async () => {
+      const mockLicenseData = createMockLicenseData({
+        response: {
+          editions: [{ name: 'email_edition', quantity: '500' }],
+        },
+      });
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText(/Upgrade your subscription to unlock/)).toBeVisible();
+    });
+  });
+
+  describe('Add-ons section', () => {
+    it('should render the Add-ons heading', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('Add-ons')).toBeVisible();
+    });
+
+    it('should render the ActiveSync and UserReplica add-on labels', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('ActiveSync', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('UserReplica', { exact: true })).toBeVisible();
+    });
+  });
+
+  describe('Details section', () => {
+    it('should render the Details heading', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('Details')).toBeVisible();
+    });
+
+    it('should display the company name, partner and order id', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('Test End User')).toBeVisible();
+      await expect.element(page.getByText('Test Customer')).toBeVisible();
+      await expect.element(page.getByText('8b2458ac-61e5-47c0-b70b-d27701c3c68d')).toBeVisible();
+    });
+
+    it('should display the formatted subscription type', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('Regular', { exact: true })).toBeVisible();
+    });
+  });
+
+  describe('ActivationToken section', () => {
+    it('should render the Activation token heading', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('Activation token')).toBeVisible();
+    });
+
+    it('should render the Show token control when a token is present', async () => {
+      const mockLicenseData = createMockLicenseData();
+      setupTest(<RegularSubscription />, mockLicenseData);
+
+      await expect.element(page.getByText('Show token')).toBeVisible();
     });
   });
 });

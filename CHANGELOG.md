@@ -1,3 +1,123 @@
+## [0.16.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.1...v0.16.2) (2026-07-30)
+
+### Other changes
+
+* **root:** update node version to 24 and remove app-specific nvmrc files ([#1319](https://github.com/zextras/carbonio-admin-console-ui/issues/1319)) ([6554519](https://github.com/zextras/carbonio-admin-console-ui/commit/6554519f5be480b321e22c8e4c2686d632b0a18c))
+
+## [0.16.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.0...v0.16.1) (2026-07-30)
+
+### Other changes
+
+* **apps:** update react-router to v8.3.0 ([#1317](https://github.com/zextras/carbonio-admin-console-ui/issues/1317)) ([931ce32](https://github.com/zextras/carbonio-admin-console-ui/commit/931ce32117a581758c86a10308f925ff488928b8))
+
+## [0.16.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.6...v0.16.0) (2026-07-29)
+
+### Features
+
+* [CO-4051] remove V1 files quota api usage ([#1316](https://github.com/zextras/carbonio-admin-console-ui/issues/1316)) ([5980544](https://github.com/zextras/carbonio-admin-console-ui/commit/598054431df1d218c459c2f6897d3d3d80460e38))
+
+## [0.15.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.5...v0.15.6) (2026-07-24)
+
+### Other changes
+
+* **admin-ui-domains:** refactor domain-list ([fd4c2f2](https://github.com/zextras/carbonio-admin-console-ui/commit/fd4c2f2f5fc141f33bcd0aca3dfef01ed9f575a9))
+
+## [0.15.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.4...v0.15.5) (2026-07-23)
+
+### Other changes
+
+* **admin-ui-storage:** modernize form handling ([#1287](https://github.com/zextras/carbonio-admin-console-ui/issues/1287)) ([94e089f](https://github.com/zextras/carbonio-admin-console-ui/commit/94e089fa753eaabe092cedddd4302714b05ee16f))
+
+## [0.15.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.3...v0.15.4) (2026-07-21)
+
+### Other changes
+
+* **admin-ui-cos:** remove side effects ([#1305](https://github.com/zextras/carbonio-admin-console-ui/issues/1305)) ([f4574a8](https://github.com/zextras/carbonio-admin-console-ui/commit/f4574a8827679d78423853f8e68d028589573da9))
+
+## [0.15.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.2...v0.15.3) (2026-07-20)
+
+### Bug Fixes
+
+* **ci:** cap vitest forks to 2 to prevent k8s CPU saturation ([#1302](https://github.com/zextras/carbonio-admin-console-ui/issues/1302)) ([1419b2a](https://github.com/zextras/carbonio-admin-console-ui/commit/1419b2a89cd58642e3290fd04ec8f13cb0c4033e))
+
+## [0.15.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.1...v0.15.2) (2026-07-20)
+
+### Bug Fixes
+
+* fixed default cos enable switch issue ([#1296](https://github.com/zextras/carbonio-admin-console-ui/issues/1296)) ([815d48e](https://github.com/zextras/carbonio-admin-console-ui/commit/815d48e5250491caa51ff87ce145e310c93b67af))
+
+## [0.15.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.0...v0.15.1) (2026-07-20)
+
+### Bug Fixes
+
+* fixed event bubbling during cos delete ([#1299](https://github.com/zextras/carbonio-admin-console-ui/issues/1299)) ([0705547](https://github.com/zextras/carbonio-admin-console-ui/commit/0705547acdae1a3ec5a1ae93f161596a72facebd))
+
+## [0.15.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.7...v0.15.0) (2026-07-16)
+
+### Features
+
+* **routing:** browser refresh keeps you in the same view ([ca337f2](https://github.com/zextras/carbonio-admin-console-ui/commit/ca337f2ffa8bbd0653456948bae9eacfeea7d400))
+
+## [0.14.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.6...v0.14.7) (2026-07-08)
+
+### Other changes
+
+* **admin-ui-backup:** improve routing ([#1285](https://github.com/zextras/carbonio-admin-console-ui/issues/1285)) ([07fa9f7](https://github.com/zextras/carbonio-admin-console-ui/commit/07fa9f760321ecbfcb7b962e0c564407aef48242))
+
+## [0.14.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.5...v0.14.6) (2026-07-08)
+
+### Other changes
+
+* **admin-ui-notifications:** improve routing ([#1284](https://github.com/zextras/carbonio-admin-console-ui/issues/1284)) ([f422793](https://github.com/zextras/carbonio-admin-console-ui/commit/f422793fbe803070c00b9722cc80ee62aaeb939d))
+
+## [0.14.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.4...v0.14.5) (2026-07-08)
+
+### Other changes
+
+* **admin-ui-storage:** improve routing ([#1283](https://github.com/zextras/carbonio-admin-console-ui/issues/1283)) ([3e20bdf](https://github.com/zextras/carbonio-admin-console-ui/commit/3e20bdfdde2d526748bfe9addb261375c0b1ff6c))
+
+## [0.14.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.3...v0.14.4) (2026-07-07)
+
+### Other changes
+
+* **mta/mta-detail-panel:** flatten router routes ([#1282](https://github.com/zextras/carbonio-admin-console-ui/issues/1282)) ([6fdb52d](https://github.com/zextras/carbonio-admin-console-ui/commit/6fdb52d625e66121549ecb06be5f7f95deac4580))
+
+## [0.14.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.2...v0.14.3) (2026-07-07)
+
+### Other changes
+
+* **admin-ui-operations:** improve routing ([#1280](https://github.com/zextras/carbonio-admin-console-ui/issues/1280)) ([030a123](https://github.com/zextras/carbonio-admin-console-ui/commit/030a123c2073468065850ec6001fe165a4373a6c))
+
+## [0.14.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.1...v0.14.2) (2026-07-06)
+
+### Other changes
+
+* improve routing for admin UI domains ([#1276](https://github.com/zextras/carbonio-admin-console-ui/issues/1276)) ([73943a8](https://github.com/zextras/carbonio-admin-console-ui/commit/73943a8023f977eb508b9a63f14cd0d98ce78d2c))
+
+## [0.14.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.14.0...v0.14.1) (2026-07-06)
+
+### Bug Fixes
+
+* **ci:** cap turbo concurrency to prevent OOM in Jenkins CI ([#1279](https://github.com/zextras/carbonio-admin-console-ui/issues/1279)) ([a7958b2](https://github.com/zextras/carbonio-admin-console-ui/commit/a7958b2564c39ec3ba473228e0cba9ca4acbeb32))
+
+## [0.14.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.18...v0.14.0) (2026-07-01)
+
+### Features
+
+* add details section to subscription module ([62e4aee](https://github.com/zextras/carbonio-admin-console-ui/commit/62e4aee6087916c2a34747f619f54ba676fbe2b3))
+
+## [0.13.18](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.17...v0.13.18) (2026-07-01)
+
+### Bug Fixes
+
+* **deps:** update dependency posthog-js to ^1.396.3 ([fdf0163](https://github.com/zextras/carbonio-admin-console-ui/commit/fdf0163b9185b0174c10dd675c055236297e730b))
+
+## [0.13.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.16...v0.13.17) (2026-06-30)
+
+### Bug Fixes
+
+* **deps:** update react ([7464293](https://github.com/zextras/carbonio-admin-console-ui/commit/7464293a72a9a2b463c6665296b52855125d1c45))
+
 ## [0.13.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.13.15...v0.13.16) (2026-06-26)
 
 ### Other changes

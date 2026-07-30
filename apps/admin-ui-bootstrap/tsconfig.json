@@ -2,6 +2,8 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": false,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "paths": {
       "@zextras/admin-ui-dashboard": ["./src/apps/app-modules.d.ts"],
       "@zextras/admin-ui-domains": ["./src/apps/app-modules.d.ts"],

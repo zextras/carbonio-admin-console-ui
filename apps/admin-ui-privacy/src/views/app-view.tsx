@@ -3,44 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/ui-components';
-import { usePrimaryBarState } from '@zextras/ui-shared';
+import { Container,PageHeader } from '@zextras/ui-components';
+import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
 
-import { Breadcrumb } from './breadcrumb/breadcrumb';
 import PrivacyView from './privacy/privacy-view';
 
-function getContainerStyle(isPrimaryBarExpanded: boolean) {
-  return {
-    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
-    transition: 'width 300ms',
-  };
-}
-
-const AppView: FC = () => {
-  const isPrimaryBarExpanded = usePrimaryBarState();
+export const AppView: FC = () => {
+  const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
     <Container height={'fit'}>
-      <Breadcrumb />
-      <Routes>
-        <Route
-          path={'/'}
-          element={
-            <Container orientation="horizontal" mainAlignment="flex-start">
-              <Container style={{ maxWidth: '100%' }}>
-                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
-                  <Suspense fallback={<ds-spinner />}>
-                    <PrivacyView />
-                  </Suspense>
-                </Container>
-              </Container>
-            </Container>
-          }
-        />
-      </Routes>
+      <PageHeader />
+      <Container orientation="horizontal" mainAlignment="flex-start">
+        <Container style={{ maxWidth: '100%' }}>
+          <Container style={{ maxWidth: detailViewMaxWidth, transition: 'width 300ms' }}>
+            <Suspense fallback={<ds-spinner />}>
+              <PrivacyView />
+            </Suspense>
+          </Container>
+        </Container>
+      </Container>
     </Container>
   );
 };
 
-export default AppView;

@@ -3,47 +3,41 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/ui-components';
-import { usePrimaryBarState } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
+import { Container, type CrumbMenuItem,PageHeader } from '@zextras/ui-components';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 
-import { Breadcrumb } from './breadcrumb/breadcrumb';
-import OperationsDetailPanel from './operations/operations-detail-panel';
-import OperationsListPanel from './operations/operations-list-panel';
+import { RUNNING_ROUTE_ID } from '../constants';
+import OperationsLayout from './operations/operations-layout';
+import { SECTION_ROUTES } from './operations/operations-section-routes';
 
-const AppView: FC = () => {
-  const isPrimaryBarExpanded = usePrimaryBarState();
-  const detailViewMaxWidth = isPrimaryBarExpanded ? 981 : 1125;
-
-  return (
-    <Container height={'fit'}>
-      <Breadcrumb />
-      <Routes>
-        <Route
-          path="/*"
-          element={
-            <Container orientation="horizontal" mainAlignment="flex-start">
-              <Container style={{ maxWidth: '16.563rem' }}>
-                <Suspense fallback={<ds-spinner />}>
-                  <OperationsListPanel />
-                </Suspense>
-              </Container>
-              <Container style={{ maxWidth: '100%' }}>
-                <Container
-                  style={{ maxWidth: `${detailViewMaxWidth}px`, transition: 'max-width 300ms' }}
-                >
-                  <Suspense fallback={<ds-spinner />}>
-                    <OperationsDetailPanel />
-                  </Suspense>
-                </Container>
-              </Container>
-            </Container>
-          }
-        />
-      </Routes>
-    </Container>
-  );
+export const AppView: FC = () => {
+	const [t] = useTranslation();
+	const { pathname } = useLocation();
+	const appBase = `/${pathname.split('/').filter(Boolean).slice(0, 2).join('/')}`;
+	const sections: Array<CrumbMenuItem> = SECTION_ROUTES.filter((r) => !r.prefix).map(
+		({ id, labelKey, labelDefault }) => ({
+			path: `${appBase}/${id}`,
+			label: t(labelKey, labelDefault),
+		}),
+	);
+	const crumbMenus = sections.some((s) => s.path === pathname)
+		? { [pathname]: sections }
+		: undefined;
+	return (
+		<Container height={'fit'}>
+			<PageHeader crumbMenus={crumbMenus} />
+			<Routes>
+				<Route index element={<Navigate to={RUNNING_ROUTE_ID} replace />} />
+				<Route element={<OperationsLayout />}>
+					{SECTION_ROUTES.map(({ id, Component }) => (
+						<Route key={id} path={id} element={<Component />} />
+					))}
+					<Route path="*" element={<Navigate to={RUNNING_ROUTE_ID} replace />} />
+				</Route>
+			</Routes>
+		</Container>
+	);
 };
 
-export default AppView;

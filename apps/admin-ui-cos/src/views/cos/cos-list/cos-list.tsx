@@ -5,6 +5,7 @@
  */
 
 import {
+  ClickableRowFactory,
   Container,
   CustomHeaderFactory,
   Input,
@@ -13,18 +14,15 @@ import {
   Table,
   TrackNumberPerPage,
 } from '@zextras/ui-components';
-import { replaceHistory } from '@zextras/ui-shared';
+import { replaceHistory, useCosList, useDebouncedValue } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../../constants';
-import { useDebouncedValue } from '../../../hooks/use-debounced-value';
-import { useCosList } from '../../../services/use-cos-list';
 import { ScrollComponent } from '../../components/scroll-component';
 import { FunnelSearchIcon } from '../cos-server-pools/funnel-search-icon';
-import { CosRowFactory } from './cos-row-factory';
 
 type ZimbraCosAttribute = {
   n: string;
@@ -258,7 +256,7 @@ export const CosList = () => {
                   overflow: 'auto',
                   height: cosList.length === 0 ? '50%' : '100%',
                 }}
-                RowFactory={CosRowFactory}
+                RowFactory={ClickableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
               {isError && (

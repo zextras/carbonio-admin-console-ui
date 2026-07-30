@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { QueryClient } from '@tanstack/react-query';
-import { useDomainStore } from '@zextras/ui-shared';
+import { domainByIdKey } from '@zextras/ui-shared';
 import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
@@ -13,7 +12,7 @@ import {
   worker,
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
-import { afterEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import DomainGalSettings from '../domain-gal-settings';
@@ -101,34 +100,42 @@ function setupGalApiInterceptors(): void {
   );
 }
 
-function setupDomainStore(attributeOverrides: Array<DomainAttribute> = []): void {
+function setupDomainStore(
+  attributeOverrides: Array<DomainAttribute> = [],
+): ReturnType<typeof getQueryClient> {
   const domainAttributes = buildDomainAttributes(attributeOverrides);
-  useDomainStore.setState({
-    domain: {
-      name: DOMAIN_NAME,
-      id: DOMAIN_ID,
-      a: domainAttributes,
-    },
+  createBrowserSoapAPIInterceptor('GetDomain', {
+    domain: [
+      {
+        name: DOMAIN_NAME,
+        id: DOMAIN_ID,
+        a: domainAttributes,
+      },
+    ],
   });
+  const queryClient = getQueryClient();
+  queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+    id: DOMAIN_ID,
+    name: DOMAIN_NAME,
+    a: domainAttributes,
+  });
+  return queryClient;
 }
 
 function setupAndRender(
   attributeOverrides: Array<DomainAttribute> = [],
 ): ReturnType<typeof setupBrowserTest> {
-  setupDomainStore(attributeOverrides);
+  const queryClient = setupDomainStore(attributeOverrides);
   setupGalApiInterceptors();
-  const qc: QueryClient = getQueryClient();
-  qc.setQueryData(['mailstore-servers'], MAILSTORE_SERVERS);
-  return setupBrowserTest(<DomainGalSettings />, { queryClient: qc });
+  queryClient.setQueryData(['mailstore-servers'], MAILSTORE_SERVERS);
+  return setupBrowserTest(<DomainGalSettings />, {
+    queryClient,
+    initialRouterEntry: `/${DOMAIN_ID}/gal-settings`,
+    withDomainIdRoute: true,
+  });
 }
 
 describe('DomainGalSettings (browser)', () => {
-  afterEach(() => {
-    useDomainStore.setState({
-      domain: {},
-    });
-  });
-
   describe('Rendering', () => {
     it('should render the Global Address List header', async () => {
       await setupAndRender();
@@ -333,11 +340,14 @@ describe('DomainGalSettings (browser)', () => {
 
   describe('Empty server table', () => {
     it('should show Empty Table when no servers exist', async () => {
-      setupDomainStore([{ n: 'zimbraGalAccountId', _content: '' }]);
+      const queryClient = setupDomainStore([{ n: 'zimbraGalAccountId', _content: '' }]);
       setupGalApiInterceptors();
-      const qc = getQueryClient();
-      qc.setQueryData(['mailstore-servers'], []);
-      await setupBrowserTest(<DomainGalSettings />, { queryClient: qc });
+      queryClient.setQueryData(['mailstore-servers'], []);
+      await setupBrowserTest(<DomainGalSettings />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ID}/gal-settings`,
+        withDomainIdRoute: true,
+      });
 
       await expect.element(page.getByText('Empty Table')).toBeInTheDocument();
     });

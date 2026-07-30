@@ -5,15 +5,22 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { Button, Container, Padding, Row, Tooltip, type TRow } from '@zextras/ui-components';
-import type { DirectoryEntry } from '@zextras/ui-shared';
+import {
+  Button,
+  Container,
+  FormPageLayout,
+  Padding,
+  Row,
+  Tooltip,
+  type TRow,
+} from '@zextras/ui-components';
+import { type DirectoryEntry, useDebouncedValue } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { Attribute } from '../../../../types/attribute';
 import { DEFAULT, RECORD_DISPLAY_LIMIT, ZIMBRA_ADMIN_URN } from '../../../constants';
-import { useDebouncedValue } from '../../../hooks/use-debounced-value';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useCosAccounts } from '../../../services/use-cos-accounts';
 import { useCosDomains } from '../../../services/use-cos-domains';
@@ -21,7 +28,6 @@ import { useModifyCos } from '../../../services/use-modify-cos';
 import { useRenameCos } from '../../../services/use-rename-cos';
 import { useTotalAccounts } from '../../../services/use-total-accounts';
 import { useTotalDomains } from '../../../services/use-total-domains';
-import { FormPageLayout } from '../../form-page-layout';
 import { getDateFromStr, getFormatedDate } from '../../utility/utils';
 import { CosInfoFields, type GeneralInfoFormValues } from './cos-info-fields';
 import { DeleteCosModal } from './delete-cos-modal';
@@ -419,7 +425,10 @@ export const GeneralInformationForm = ({
           width="fill"
           style={{ width: '100%' }}
           disabled={canDeleteCOS || readonlyCOS}
-          onClick={() => setOpenDeleteCOSConfirmDialog(true)}
+          onClick={(e) => {
+            e.preventDefault();
+            setOpenDeleteCOSConfirmDialog(true);
+          }}
         />
       </Row>
       <DeleteCosModal

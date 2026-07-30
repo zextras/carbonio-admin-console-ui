@@ -16,19 +16,20 @@ import {
   getRights,
   replaceHistory,
   useCurrentUserRights,
-  useGlobalCarbonioSendAnalytics,
   useMailstoreServers,
   useModuleLicenseInfo,
+  useRelativePathname,
 } from '@zextras/ui-shared';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { matchPath } from 'react-router';
 
 import type { MailstoreServer } from '../../../types';
 import {
-  ADVANCED,
   ADVANCED_LBL,
   BACKUP_BASIC,
   CONFIGURATION_BACKUP,
+  IMPORT_EXTERNAL_BACKUP,
   IS_DEFAULT_SETTINGS_EXPANDED,
   IS_SERVER_SPECIFICS_EXPANDED,
   LIST_SERVER,
@@ -36,17 +37,21 @@ import {
   SERVER_CONFIG,
   SERVERS_LIST,
 } from '../../constants';
+import { SECTION_ROUTES } from './backup-section-routes';
 
 const BackupListPanel: FC = () => {
   const [t] = useTranslation();
-  const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
-  const [selectedOperationItem, setSelectedOperationItem] = useState(SERVERS_LIST);
+  const relativePathname = useRelativePathname();
+  const serverMatch = matchPath('/:server/:operation', relativePathname);
+  const opMatch = serverMatch ? null : matchPath('/:operation', relativePathname);
+  const selectedOperationItem =
+    serverMatch?.params.operation ?? opMatch?.params.operation ?? SERVERS_LIST;
+  const selectedServer = serverMatch?.params.server ?? '';
+  const isServerSelect = !!serverMatch;
   const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
   const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
   const { data: serverList = [], isError, isLoading } = useMailstoreServers();
-  const [selectedServer, setSelectedServer] = useState<string>('');
-  const [isServerSelect, setIsServerSelect] = useState<boolean>(false);
-  const [searchServer, setSearchServer] = useState<string>('');
+  const [searchServer, setSearchServer] = useState<string>(selectedServer);
   const [serverNames, setServerNames] = useState<Array<ListItemType>>([]);
   const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
   const { moduleLicenseInfo } = useModuleLicenseInfo();
@@ -66,23 +71,14 @@ const BackupListPanel: FC = () => {
   }, [moduleLicenseInfo]);
 
   const defaultSettingsOptions = useMemo(
-    () => [
-      {
-        id: SERVERS_LIST,
-        name: t('label.servers_list', 'Servers List'),
-        isSelected: !!isBackupModuleLicensed,
-      },
-      {
-        id: SERVER_CONFIG,
-        name: t('label.server_config', 'Server Config'),
-        isSelected: !!isBackupModuleLicensed,
-      },
-      {
-        id: ADVANCED,
-        name: t('label.advanced', 'Advanced'),
-        isSelected: !!isBackupModuleLicensed,
-      },
-    ],
+    () =>
+      SECTION_ROUTES.filter((route) => !route.prefix && route.id !== IMPORT_EXTERNAL_BACKUP).map(
+        ({ id, labelKey, labelDefault }) => ({
+          id,
+          name: t(labelKey, labelDefault),
+          isSelected: !!isBackupModuleLicensed,
+        }),
+      ),
     [t, isBackupModuleLicensed],
   );
 
@@ -99,28 +95,24 @@ const BackupListPanel: FC = () => {
   }, [hasListServerRights, defaultSettingsOptions]);
 
   const serverSettingsOptions = useMemo(
-    () => [
-      {
-        id: CONFIGURATION_BACKUP,
-        name: t('label.configuration_lbl', 'Configuration'),
-        isSelected: isBackupModuleLicensed ? isServerSelect : false,
-      },
-      {
-        id: ADVANCED_LBL,
-        name: t('label.advanced', 'Advanced'),
-        isSelected: isBackupModuleLicensed ? isServerSelect : false,
-      },
-    ],
+    () =>
+      SECTION_ROUTES.filter((route) => route.prefix === ':server').map(
+        ({ id, labelKey, labelDefault }) => ({
+          id,
+          name: t(labelKey, labelDefault),
+          isSelected: isBackupModuleLicensed ? isServerSelect : false,
+        }),
+      ),
     [t, isServerSelect, isBackupModuleLicensed],
   );
 
-  useEffect(() => {
-    if (selectedOperationItem === CONFIGURATION_BACKUP || selectedOperationItem === ADVANCED_LBL) {
-      replaceHistory(`/${selectedServer}/${selectedOperationItem}`);
+  const handleSelectOperationItem = (id: string): void => {
+    if (id === CONFIGURATION_BACKUP || id === ADVANCED_LBL) {
+      replaceHistory(`/${selectedServer}/${id}`);
     } else {
-      replaceHistory(`/${selectedOperationItem}`);
+      replaceHistory(`/${id}`);
     }
-  }, [globalCarbonioSendAnalytics, selectedOperationItem, selectedServer]);
+  };
 
   const toggleDefaultSettingsView = (): void => {
     if (isDefaultSettingsExpanded) {
@@ -143,12 +135,6 @@ const BackupListPanel: FC = () => {
     setIsServerSpecificsExpanded(!isServerSpecificsExpanded);
   };
 
-  useEffect(() => {
-    if (selectedServer !== '') {
-      setIsServerSelect(true);
-    }
-  }, [selectedServer]);
-
   const addServerToList = useCallback((list: Array<MailstoreServer>) => {
     const data: Array<ListItemType> = list.map((serverItem) => ({
       id: serverItem?.id ?? '',
@@ -165,9 +151,9 @@ const BackupListPanel: FC = () => {
             width: 'inherit',
           }}
           onClick={(): void => {
-            setSelectedServer(serverItem?.name ?? '');
-            setSearchServer(serverItem?.name ?? '');
-            setSelectedOperationItem(CONFIGURATION_BACKUP);
+            const server = serverItem?.name ?? '';
+            setSearchServer(server);
+            replaceHistory(`/${server}/${CONFIGURATION_BACKUP}`);
           }}
         >
           {serverItem?.name}
@@ -208,8 +194,7 @@ const BackupListPanel: FC = () => {
       setIsShowError(false);
       if (searchServer !== '') {
         setSearchServer('');
-        setIsServerSelect(false);
-        setSelectedOperationItem(SERVER_CONFIG);
+        replaceHistory(`/${SERVER_CONFIG}`);
       }
     },
   };
@@ -246,7 +231,7 @@ const BackupListPanel: FC = () => {
         <ListItems
           items={defaultOptions}
           selectedOperationItem={selectedOperationItem}
-          setSelectedOperationItem={setSelectedOperationItem}
+          setSelectedOperationItem={handleSelectOperationItem}
         />
       )}
 
@@ -295,7 +280,7 @@ const BackupListPanel: FC = () => {
             <ListItems
               items={serverSettingsOptions}
               selectedOperationItem={selectedOperationItem}
-              setSelectedOperationItem={setSelectedOperationItem}
+              setSelectedOperationItem={handleSelectOperationItem}
             />
           )}
         </Container>

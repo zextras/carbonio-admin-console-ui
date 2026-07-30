@@ -44,7 +44,6 @@ export type Theme = {
     errorBanner: string;
     currentColor: string;
     avatar: Record<string, string>;
-    card: Record<string, string>;
   };
   icon: {
     size: {
@@ -103,6 +102,7 @@ export type Theme = {
     over: { text: string; bg: string };
   };
   trial: { box: Record<string, string> };
+  breadcrumb: { barBorder: string };
 };
 
 export const theme: Theme = {
@@ -226,7 +226,6 @@ export const theme: Theme = {
       focus: 'var(--color-transparent-focus)',
       disabled: 'var(--color-transparent-disabled)',
     },
-    card: { background: 'var(--color-card-bg)' },
     black: 'var(--color-black)',
     white: 'var(--color-white)',
     successBanner: 'var(--color-success-banner)',
@@ -361,5 +360,8 @@ export const theme: Theme = {
       bg: 'var(--trial-box-bg)',
       text: 'var(--trial-box-text)',
     },
+  },
+  breadcrumb: {
+    barBorder: 'var(--breadcrumb-bar-border)',
   },
 };

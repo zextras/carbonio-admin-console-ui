@@ -3,11 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/ui-components';
+import { Container,PageHeader } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
 
-import { Breadcrumb } from './breadcrumb/breadcrumb';
 import Dashboard from './dashboard/dashboard-view';
 
 const DashboardComponent = () => (
@@ -18,15 +16,12 @@ const DashboardComponent = () => (
   </Container>
 );
 
-const AppView: FC = () => {
+export const AppView: FC = () => {
   return (
     <Container height={'fit'}>
-      <Breadcrumb />
-      <Routes>
-        <Route path={'/*'} element={<DashboardComponent />} />
-      </Routes>
+      <PageHeader />
+      <DashboardComponent />
     </Container>
   );
 };
 
-export default AppView;

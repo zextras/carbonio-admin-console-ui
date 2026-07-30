@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLoginConfigStore } from '@zextras/ui-shared';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
@@ -22,6 +21,7 @@ import { type ModifyCosBody } from '../../../services/modify-cos-service';
 import { CosAdvanced } from '../advanced/cos-advanced';
 
 const COS_ID = 'e00428a1-0c00-11d9-836a-000d93afea2a';
+const ONE_GB_IN_BYTES = 1024 ** 3;
 
 const mockCosData = {
   cos: [
@@ -32,9 +32,7 @@ const mockCosData = {
         { n: 'zimbraId', _content: COS_ID },
         { n: 'zimbraMailForwardingAddressMaxLength', _content: '256' },
         { n: 'zimbraMailForwardingAddressMaxNumAddrs', _content: '10' },
-        { n: 'zimbraMailQuota', _content: '1073741824' },
         { n: 'zimbraContactMaxNumEntries', _content: '100' },
-        { n: 'zimbraQuotaWarnPercent', _content: '90' },
         { n: 'zimbraPasswordLocked', _content: 'FALSE' },
         { n: 'zimbraPasswordMinLength', _content: '6' },
         { n: 'zimbraPasswordMaxLength', _content: '64' },
@@ -43,26 +41,37 @@ const mockCosData = {
         { n: 'zimbraPasswordLockoutMaxFailures', _content: '5' },
         { n: 'zimbraPasswordLockoutDuration', _content: '60m' },
         { n: 'zimbraPasswordLockoutFailureLifetime', _content: '1h' },
-        { n: 'zimbraQuotaWarnInterval', _content: '1d' },
-        { n: 'zimbraQuotaWarnMessage', _content: 'Your mailbox is almost full.' },
       ],
     },
   ],
 };
 
-const QUOTA_SEED = {
+type QuotaSeed = {
+  type: string;
+  totalComputedLimit: { type: string; value?: number };
+  totalQuotaSource: string;
+};
+
+const QUOTA_SEED: QuotaSeed = {
   type: 'success',
   totalComputedLimit: { type: 'unlimited' },
+  totalQuotaSource: 'global',
+};
+
+const LIMITED_QUOTA_SEED: QuotaSeed = {
+  type: 'success',
+  totalComputedLimit: { type: 'limited', value: ONE_GB_IN_BYTES },
   totalQuotaSource: 'global',
 };
 
 function seedQueryClientData(
   queryClient: ReturnType<typeof getQueryClient>,
   cosData = mockCosData,
+  quotaSeed: QuotaSeed = QUOTA_SEED,
 ): void {
   queryClient.setQueryData(['cos', 'detail', COS_ID], cosData);
-  queryClient.setQueryData(['cos', 'cos-quota', ''], QUOTA_SEED);
-  queryClient.setQueryData(['cos', 'cos-quota', COS_ID], QUOTA_SEED);
+  queryClient.setQueryData(['cos', 'cos-quota', ''], quotaSeed);
+  queryClient.setQueryData(['cos', 'cos-quota', COS_ID], quotaSeed);
 }
 
 function mockCoreAttributeSet(): void {
@@ -76,7 +85,43 @@ function mockCatalogServices(): void {
     HttpResponse.json({ items: [] }),
   );
 }
+function mockGetCoreAttributes(): void {
+  createBrowserAPIInterceptor('post', '/service/extension/zextras_admin/core/attributes/get', () =>
+    HttpResponse.json({ attributes: {} }),
+  );
+}
+async function setupAdvancedQuotaTest(
+  quotaSeed: QuotaSeed = QUOTA_SEED,
+): Promise<ReturnType<typeof getQueryClient>> {
+  const queryClient = getQueryClient();
+  await grantUserCosRights(queryClient);
+  seedQueryClientData(queryClient, mockCosData, quotaSeed);
+  queryClient.setQueryData(['advanced-supported'], { supported: true });
+  mockCatalogServices();
+  mockGetCoreAttributes();
+  createBrowserSoapAPIInterceptor('GetCos', mockCosData);
 
+  await setupBrowserTest(
+    <Routes>
+      <Route path="/:cosId/:operation" element={<CosAdvanced />} />
+    </Routes>,
+    { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
+  );
+  await expect.element(page.getByText('Advanced')).toBeVisible();
+  return queryClient;
+}
+
+function mockQuotaSave(savedQuota: { type: string; value?: number; source: string }): void {
+  mockCoreAttributeSet();
+  createBrowserSoapAPIInterceptor('ModifyCos', {});
+  createBrowserSoapAPIInterceptor('FlushCache', {});
+  createBrowserAPIInterceptor('put', `/services/storages/admin/quota/config/cos/${COS_ID}`, () =>
+    HttpResponse.json({}),
+  );
+  createBrowserAPIInterceptor('get', `/services/storages/admin/quota/cos/${COS_ID}`, () =>
+    HttpResponse.json({ computedLimit: savedQuota }),
+  );
+}
 async function setupCosAdvancedTest(cosData = mockCosData): Promise<void> {
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
@@ -114,9 +159,9 @@ describe('CosAdvanced', () => {
       await expect.element(page.getByText('Forwarding', { exact: true })).toBeVisible();
     });
 
-    it('should render the Quotas section', async () => {
+    it('should not show the Quotas section in CE', async () => {
       await setupCosAdvancedTest();
-      await expect.element(page.getByText('Quotas')).toBeVisible();
+      await expect.element(page.getByText('Quotas')).not.toBeInTheDocument();
     });
 
     it('should render the Password section', async () => {
@@ -597,56 +642,9 @@ describe('CosAdvanced', () => {
     });
   });
 
-  describe('Quotas section inputs', () => {
-    it('edits quota warn interval input and shows dirty state', async () => {
-      await setupCosAdvancedTest();
-
-      const warnIntervalInput = page.getByRole('textbox', {
-        name: 'Minimum duration of time between quota warnings',
-      });
-      await expect.element(warnIntervalInput).toHaveValue('1');
-      await userEvent.fill(warnIntervalInput, '2');
-      await expect.element(warnIntervalInput).toHaveValue('2');
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-
-    it('edits quota warning message template and shows dirty state', async () => {
-      await setupCosAdvancedTest();
-
-      const warningMessageTextarea = page.getByRole('textbox', {
-        name: 'Quota warning message template',
-      });
-      await expect.element(warningMessageTextarea).toHaveValue('Your mailbox is almost full.');
-      await userEvent.fill(warningMessageTextarea, 'Warning: quota nearly exceeded');
-      await expect.element(warningMessageTextarea).toHaveValue('Warning: quota nearly exceeded');
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-
-    it('edits quota warn percent and shows dirty state', async () => {
-      await setupCosAdvancedTest();
-
-      const warnPercentInput = page.getByRole('textbox', {
-        name: 'Percentage threshold for quota warning messages (%)',
-      });
-      await expect.element(warnPercentInput).toHaveValue('90');
-      await userEvent.fill(warnPercentInput, '85');
-      await expect.element(warnPercentInput).toHaveValue('85');
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-  });
-
   describe('Total Quota section', () => {
-    beforeEach(() => {
-      useLoginConfigStore.setState({ featureFlags: { totalQuota: true } });
-    });
-
-    afterEach(() => {
-      useLoginConfigStore.setState({ featureFlags: { totalQuota: false } });
-    });
-
     it('should restore the unlimited quota switch to ON after toggling it off and clicking Cancel', async () => {
-      await setupCosAdvancedTest();
-
+      await setupAdvancedQuotaTest();
       const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
       await expect.element(unlimitedSwitch).toBeChecked();
 
@@ -659,8 +657,7 @@ describe('CosAdvanced', () => {
     });
 
     it('should restore the unlimited quota switch to ON after toggling it off and clicking revert', async () => {
-      await setupCosAdvancedTest();
-
+      await setupAdvancedQuotaTest();
       const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
       await expect.element(unlimitedSwitch).toBeChecked();
 
@@ -674,25 +671,7 @@ describe('CosAdvanced', () => {
     });
 
     it('should show the revert icon after changing the quota input value', async () => {
-      const limitedQuotaSeed = {
-        type: 'success',
-        totalComputedLimit: { type: 'limited', value: 1073741824 },
-        totalQuotaSource: 'global',
-      };
-      const queryClient = getQueryClient();
-      await grantUserCosRights(queryClient);
-      queryClient.setQueryData(['cos', 'detail', COS_ID], mockCosData);
-      queryClient.setQueryData(['cos', 'cos-quota', ''], limitedQuotaSeed);
-      queryClient.setQueryData(['cos', 'cos-quota', COS_ID], limitedQuotaSeed);
-      mockCatalogServices();
-      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
-
-      await setupBrowserTest(
-        <Routes>
-          <Route path="/:cosId/:operation" element={<CosAdvanced />} />
-        </Routes>,
-        { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
-      );
+      await setupAdvancedQuotaTest(LIMITED_QUOTA_SEED);
 
       const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
       await expect.element(input).toHaveValue('1');
@@ -705,26 +684,8 @@ describe('CosAdvanced', () => {
     });
 
     it('should not show the revert icon after saving a quota change', async () => {
-      const queryClient = getQueryClient();
-      await grantUserCosRights(queryClient);
-      seedQueryClientData(queryClient);
-      mockCatalogServices();
-      mockCoreAttributeSet();
-      createBrowserSoapAPIInterceptor('GetCos', mockCosData);
-      createBrowserSoapAPIInterceptor('ModifyCos', {});
-      createBrowserSoapAPIInterceptor('FlushCache', {});
-      createBrowserAPIInterceptor(
-        'put',
-        `/services/storages/admin/quota/config/cos/${COS_ID}`,
-        () => HttpResponse.json({}),
-      );
-
-      await setupBrowserTest(
-        <Routes>
-          <Route path="/:cosId/:operation" element={<CosAdvanced />} />
-        </Routes>,
-        { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
-      );
+      await setupAdvancedQuotaTest();
+      mockQuotaSave({ type: 'limited', value: ONE_GB_IN_BYTES, source: 'cos' });
 
       const unlimitedSwitch = page.getByRole('switch', { name: 'Unlimited quota' });
       await expect.element(unlimitedSwitch).toBeChecked();
@@ -733,15 +694,7 @@ describe('CosAdvanced', () => {
       await page.getByRole('button', { name: 'Save' }).click();
       await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
 
-      queryClient.setQueryData(['cos', 'cos-quota', COS_ID], {
-        type: 'success',
-        totalComputedLimit: { type: 'limited', value: 1073741824 },
-        totalQuotaSource: 'cos',
-      });
-
-      await expect
-        .element(page.getByRole('textbox', { name: 'Total quota(GB)' }))
-        .toHaveValue('1');
+      await expect.element(page.getByRole('textbox', { name: 'Total quota(GB)' })).toHaveValue('1');
 
       await expect
         .element(page.getByRole('img', { name: 'Click to revert to the inherited value' }))

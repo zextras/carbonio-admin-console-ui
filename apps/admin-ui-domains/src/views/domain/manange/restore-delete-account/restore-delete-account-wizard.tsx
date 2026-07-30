@@ -7,8 +7,8 @@
 import { Button, Container, HorizontalWizard, Section } from '@zextras/ui-components';
 import { type FC, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router';
 
+import { type RestoreAccountRequestParams } from './restore-delete-account';
 import RestoreAccountConfigSection from './restore-delete-account-config-section';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreSelectAccountSection from './restore-delete-account-select-section';
@@ -34,12 +34,11 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 
 const RestoreDeleteAccountWizard: FC<{
   setShowRestoreAccountWizard: any;
-  restoreAccountRequest: any;
+  restoreAccountRequest: (params: RestoreAccountRequestParams) => void;
   isRequestWorkInProgress: any;
-}> = ({ setShowRestoreAccountWizard, restoreAccountRequest, isRequestWorkInProgress }) => {
+  onReset: () => void;
+}> = ({ setShowRestoreAccountWizard, restoreAccountRequest, isRequestWorkInProgress, onReset }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>();
   interface AccountDetailObj {
     name: string;
@@ -73,30 +72,18 @@ const RestoreDeleteAccountWizard: FC<{
   });
 
   const onRestoreAccount = useCallback(() => {
-    restoreAccountRequest(
-      restoreAccountDetail?.name,
-      restoreAccountDetail?.id,
-      restoreAccountDetail?.createDate,
-      restoreAccountDetail?.status,
-      restoreAccountDetail?.copyAccount,
-      restoreAccountDetail?.dateTime,
-      restoreAccountDetail?.lastAvailableStatus,
-      restoreAccountDetail?.hsmApply,
-      restoreAccountDetail?.dataSource,
-      restoreAccountDetail?.notificationReceiver,
-      restoreAccountDetail?.isEmailNotificationEnable,
-      restoreAccountDetail?.copyDomain,
-      restoreAccountDetail?.serverName,
-    );
+    restoreAccountRequest({
+      id: restoreAccountDetail?.id,
+      createDate: restoreAccountDetail?.createDate,
+      copyAccount: restoreAccountDetail?.copyAccount,
+      dateTime: restoreAccountDetail?.dateTime,
+      hsmApply: restoreAccountDetail?.hsmApply,
+      notificationReceiver: restoreAccountDetail?.notificationReceiver,
+      isEmailNotificationEnable: restoreAccountDetail?.isEmailNotificationEnable,
+      copyDomain: restoreAccountDetail?.copyDomain,
+      serverName: restoreAccountDetail?.serverName,
+    });
   }, [restoreAccountDetail, restoreAccountRequest]);
-
-  const backToFirstTab = useCallback(() => {
-    const lastloc = location?.pathname;
-    navigate(lastloc.replace('/restore_account', ''));
-    setTimeout(() => {
-      navigate(lastloc);
-    }, 100);
-  }, [location, navigate]);
 
   useEffect(() => {
     if (isRequestWorkInProgress === false) {
@@ -121,7 +108,7 @@ const RestoreDeleteAccountWizard: FC<{
             color="secondary"
             icon="CloseOutline"
             iconPlacement="right"
-            onClick={backToFirstTab}
+            onClick={onReset}
           />
         ),
         PrevButton: () => <></>,
@@ -149,7 +136,7 @@ const RestoreDeleteAccountWizard: FC<{
             color="secondary"
             icon="CloseOutline"
             iconPlacement="right"
-            onClick={backToFirstTab}
+            onClick={onReset}
           />
         ),
         PrevButton: (props: any) => (
@@ -184,7 +171,7 @@ const RestoreDeleteAccountWizard: FC<{
             color="secondary"
             icon="CloseOutline"
             iconPlacement="right"
-            onClick={backToFirstTab}
+            onClick={onReset}
           />
         ),
         PrevButton: (props: any) => (
@@ -218,7 +205,7 @@ const RestoreDeleteAccountWizard: FC<{
       restoreAccountDetail?.copyAccount,
       restoreAccountDetail?.copyDomain,
       restoreAccountDetail?.name,
-      backToFirstTab,
+      onReset,
       isRequestInProgress,
     ],
   );

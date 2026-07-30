@@ -3,31 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  Container,
-  Input,
-  ListRow,
-  Padding,
-  PasswordInput,
-  Popper,
-  Row,
-  Select,
-  SelectItem,
-  Switch,
-  Tooltip as TooltipDefault,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { flushCache, useDomainStore, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button, Container, Input, ListRow, Padding, PasswordInput, Popper, RouteLeavingGuard, Row, Select, SelectItem, Switch, Tooltip as TooltipDefault, useSnackbar, } from '@zextras/ui-components';
+import { domainByIdKey, flushCache, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { Attribute, objectType } from '../../../../types';
 import { CHECK_OK, DISABLED, ENABLED, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { isValidLdapBaseUrl } from '../../utility/utils';
 
 const ZimbraAuthMethod = {
@@ -86,8 +74,10 @@ const DomainAuthentication: FC = () => {
   const [verifyAuthUserName, setVerifyAuthUserName] = useState<string>('');
   const [verifyAuthPassword, setVerifyAuthPassword] = useState<string>('');
 
-  const domainInformation = useDomainStore((state) => state.domain?.a);
-  const setDomain = useDomainStore((state) => state.setDomain);
+  const { data: domain } = useSelectedDomain();
+  const domainInformation = domain?.a;
+  const queryClient = useQueryClient();
+  const { domainId } = useParams();
 
   const [open, setOpen] = useState(false);
   const iconRef = useRef<HTMLDivElement>(null);
@@ -452,7 +442,7 @@ const DomainAuthentication: FC = () => {
         }
         const domain: objectType = data?.domain[0];
         if (domain) {
-          setDomain(domain);
+          queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
         }
       })
       .catch((error) => {
@@ -954,15 +944,7 @@ const DomainAuthentication: FC = () => {
         </Container>
       </Container>
 
-      <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <ds-text as="p">
-          {t(
-            'label.unsaved_changes_line1',
-            'Are you sure you want to leave this page without saving?',
-          )}
-        </ds-text>
-        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
-      </RouteLeavingGuard>
+      <RouteLeavingGuard when={isDirty} onSave={onSave} />
     </Container>
   );
 };

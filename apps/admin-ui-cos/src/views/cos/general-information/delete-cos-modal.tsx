@@ -7,6 +7,7 @@ import { Button, Container, Modal, Padding } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { Trans, useTranslation } from 'react-i18next';
 
+import { COS_LIST } from '../../../constants';
 import { useDeleteCos } from '../../../services/use-delete-cos';
 
 type DeleteCosModalProps = {
@@ -16,12 +17,7 @@ type DeleteCosModalProps = {
   cosId: string;
 };
 
-export const DeleteCosModal = ({
-  open,
-  onClose,
-  cosName,
-  cosId,
-}: DeleteCosModalProps) => {
+export const DeleteCosModal = ({ open, onClose, cosName, cosId }: DeleteCosModalProps) => {
   const [t] = useTranslation();
   const deleteCosMutation = useDeleteCos();
 
@@ -31,7 +27,7 @@ export const DeleteCosModal = ({
       {
         onSuccess: () => {
           onClose();
-          replaceHistory(`/cos_list`);
+          replaceHistory(`/${COS_LIST}`);
         },
       },
     );
@@ -72,7 +68,12 @@ export const DeleteCosModal = ({
         </Container>
       }
     >
-      <Container>
+      <Container
+        orientation="vertical"
+        mainAlignment="flex-start"
+        width="100%"
+        crossAlignment="flex-start"
+      >
         <Padding bottom="small" top="extralarge">
           <ds-text as="p" overflow="break-word" weight="regular">
             {t('label.you_are_deleting', {

@@ -10,6 +10,7 @@ import {
   Input,
   ListRow,
   Padding,
+  RouteLeavingGuard,
   Row,
   Switch,
   useSnackbar,
@@ -29,7 +30,6 @@ import type {
 } from '../../../../types';
 import { CONFIG, SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {
   const { server } = useParams();
@@ -974,15 +974,7 @@ const ServerAdvanced: FC = () => {
           </ListRow>
         </Container>
       </Container>
-      <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <ds-text as="p">
-          {t(
-            'label.unsaved_changes_line1',
-            'Are you sure you want to leave this page without saving?',
-          )}
-        </ds-text>
-        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
-      </RouteLeavingGuard>
+      <RouteLeavingGuard when={isDirty} onSave={onSave} />
     </Container>
   );
 };

@@ -5,44 +5,36 @@
  */
 
 import { Container, ListItems } from '@zextras/ui-components';
-import { replaceHistory, useGlobalCarbonioSendAnalytics } from '@zextras/ui-shared';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { replaceHistory, useRelativePathname } from '@zextras/ui-shared';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { matchPath } from 'react-router';
 
 import { DONE_ROUTE_ID, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID } from '../../constants';
 import { type ManageOption } from '../../types/operations';
+import { SECTION_ROUTES } from './operations-section-routes';
+
+const VALID_TABS = new Set([RUNNING_ROUTE_ID, QUEUED_ROUTE_ID, DONE_ROUTE_ID]);
 
 const OperationsListPanel: FC = () => {
 	const [t] = useTranslation();
-	const { data: globalCarbonioSendAnalytics = false } = useGlobalCarbonioSendAnalytics();
-	const [selectedOperationItem, setSelectedOperationItem] = useState(RUNNING_ROUTE_ID);
+	const relativePathname = useRelativePathname();
+
+	const selectedOperationItem = useMemo(() => {
+		const match = matchPath('/:operation', relativePathname);
+		const op = match?.params.operation;
+		return op && VALID_TABS.has(op) ? op : RUNNING_ROUTE_ID;
+	}, [relativePathname]);
 
 	const manageOptions = useMemo<Array<ManageOption>>(
-		() => [
-			{
-				id: RUNNING_ROUTE_ID,
-				name: t('label.running', 'Running'),
+		() =>
+			SECTION_ROUTES.map(({ id, labelKey, labelDefault }) => ({
+				id,
+				name: t(labelKey, labelDefault),
 				isSelected: true
-			},
-			{
-				id: QUEUED_ROUTE_ID,
-				name: t('label.queued', 'Queued'),
-				isSelected: true
-			},
-			{
-				id: DONE_ROUTE_ID,
-				name: t('label.done', 'Done'),
-				isSelected: true
-			}
-		],
+			})),
 		[t]
 	);
-
-	useEffect(() => {
-		if (selectedOperationItem) {
-			replaceHistory(`/${selectedOperationItem}`);
-		}
-	}, [selectedOperationItem, globalCarbonioSendAnalytics]);
 
 	return (
 		<Container
@@ -55,7 +47,9 @@ const OperationsListPanel: FC = () => {
 			<ListItems
 				items={manageOptions}
 				selectedOperationItem={selectedOperationItem}
-				setSelectedOperationItem={setSelectedOperationItem}
+				setSelectedOperationItem={(id: string): void => {
+					replaceHistory(`/${id}`);
+				}}
 			/>
 		</Container>
 	);

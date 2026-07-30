@@ -4,42 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Padding, Row } from '@zextras/ui-components';
-import { FC, useCallback, useEffect } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 
-import type { DumpGlobalConfigResponse } from '../../../types';
-import { dumpGlobalConfig } from '../../services/dump-global-config';
-import { useBackupStore } from '../../store/backup/store';
-import BackupDetailOperation from './backup-detail-operation';
+import { SERVERS_LIST } from '../../constants';
+import { useGlobalConfig } from '../../services/use-global-config';
+import { SECTION_ROUTES } from './backup-section-routes';
 
 const BackupDetailPanel: FC = () => {
-  const globalConfig = useBackupStore((state) => state.globalConfig);
-  const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
+  const { data: globalConfig, isLoading } = useGlobalConfig();
   const [t] = useTranslation();
-  const getGlobalConfig = useCallback((): void => {
-    dumpGlobalConfig().then((data: DumpGlobalConfigResponse) => {
-      if (data?.Body?.response?.content) {
-        const parseData = JSON.parse(data.Body.response.content);
-        if (parseData?.response) {
-          setGlobalConfig(parseData?.response);
-        }
-      }
-    });
-  }, [setGlobalConfig]);
 
-  useEffect(() => {
-    !globalConfig?.privateKeyAlgorithm && getGlobalConfig();
-  }, [getGlobalConfig, globalConfig?.privateKeyAlgorithm]);
-  return (
-    <Container
-      orientation="column"
-      crossAlignment="center"
-      mainAlignment="flex-start"
-      style={{ overflowY: 'hidden' }}
-      background="gray6"
-    >
-      {!Object.keys(globalConfig).length ? (
+  const renderContent = () => {
+    if (isLoading) {
+      return <Container />;
+    }
+    if (Object.keys(globalConfig ?? {}).length === 0) {
+      return (
         <Row background="info" width="100%" padding="small" mainAlignment="space-between">
           <Row mainAlignment="flex-start">
             <ds-icon icon="CloseCircleOutline" size="large" color="white"></ds-icon>
@@ -53,12 +35,31 @@ const BackupDetailPanel: FC = () => {
             </Padding>
           </Row>
         </Row>
-      ) : (
-        <Routes>
-          <Route path={`/:operation`} element={<BackupDetailOperation />} />
-          <Route path={`/:server/:operation`} element={<BackupDetailOperation />} />
-        </Routes>
-      )}
+      );
+    }
+    return (
+      <Routes>
+        <Route index element={<Navigate to={SERVERS_LIST} replace />} />
+        {SECTION_ROUTES.map(({ id, prefix, Component }) => (
+          <Route
+            key={prefix ? `${prefix}/${id}` : id}
+            path={prefix ? `${prefix}/${id}` : id}
+            element={<Component />}
+          />
+        ))}
+      </Routes>
+    );
+  };
+
+  return (
+    <Container
+      orientation="column"
+      crossAlignment="center"
+      mainAlignment="flex-start"
+      style={{ overflowY: 'hidden' }}
+      background="gray6"
+    >
+      {renderContent()}
     </Container>
   );
 };

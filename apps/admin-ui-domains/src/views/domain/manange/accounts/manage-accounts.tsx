@@ -3,34 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  HoverableRowFactory,
-  Input,
-  ModalOverlay,
-  Padding,
-  Paging,
-  Row,
-  Table,
-  Tooltip,
-  TrackNumberPerPage,
-  useSnackbar,
-} from '@zextras/ui-components';
-import {
-  type CosAttribute,
-  getCoreAttributes,
-  getCosGeneralInformation,
-  type GetCosResponse,
-  getFileQuotaById,
-  postSoapFetchRequest,
-  useDomainStore,
-  useIsAdvanced,
-  useTotalQuotaActive,
-  useUserAccount,
-} from '@zextras/ui-shared';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, ModalOverlay, Padding, Paging, Row, Table, Tooltip, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
+import { type CosAttribute, getCoreAttributes, getCosGeneralInformation, type GetCosResponse, postSoapFetchRequest, useIsAdvanced, useUserAccount } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { debounce, filter, flatMapDeep } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -43,10 +18,7 @@ import {
   ASC,
   BACKUP_ENABLED,
   BACKUP_SELF_UNDELETE_ALLOWED,
-  COS,
   DESC,
-  FILES_QUOTA_LIMIT,
-  FILES_QUOTA_USED,
   MAILBOX_QUOTA_USED,
   RECORD_DISPLAY_LIMIT,
   TOTAL_COMPUTED_QUOTA_LIMIT,
@@ -56,17 +28,18 @@ import {
   TOTAL_QUOTA_USED_BY_MODULE,
   ZIMBRA_ADMIN_URN,
 } from '../../../../constants';
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import {
   accountListDirectory,
   getMailboxQuota,
 } from '../../../../services/account-list-directory-service';
 import { checkRightRequest } from '../../../../services/check-right';
 import { countAccount } from '../../../../services/count-account-service';
+import { domainQueryKeys } from '../../../../services/domain-query-keys';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getAccountQuota } from '../../../../services/get-account-quota';
 import { getCosQuota } from '../../../../services/get-cos-quota';
-import { getDomainQuota } from '../../../../services/get-domain-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -92,12 +65,12 @@ type CheckRightResponse = {
 type Timer = ReturnType<typeof setTimeout>;
 const ManageAccounts: FC = () => {
   const [t] = useTranslation();
-  const isTotalQuotaActive = useTotalQuotaActive();
   const createSnackbar = useSnackbar();
   const timer = useRef<Timer | undefined>(undefined);
-  const domainName = useDomainStore((state) => state.domain?.name);
-  const domainId = useDomainStore((state) => state.domain?.id);
-  const setDomainQuota = useDomainStore((state) => state.setDomainQuota);
+  const { data: domain } = useSelectedDomain();
+  const domainName = domain?.name;
+  const domainId = domain?.id;
+  const queryClient = useQueryClient();
   const [accountDetail, setAccountDetail] = useState<AccountDetail>({});
   const [initAccountDetail, setInitAccountDetail] = useState<AccountDetail>({});
   const [cosDetail, setCosDetail] = useState<any>({});
@@ -504,29 +477,6 @@ const ManageAccounts: FC = () => {
     [setAccountDetail, setInitAccountDetail],
   );
 
-  const getFileQuotaByAccId = useCallback(
-    (accId: string): Promise<void> =>
-      getFileQuotaById(accId).then((res: any) => {
-        if (res?.limit) {
-          setAccDetailValue(FILES_QUOTA_LIMIT, res?.limit);
-        }
-        if (res?.used) {
-          setAccDetailValue(FILES_QUOTA_USED, res?.used);
-        }
-      }),
-    [setAccDetailValue],
-  );
-
-  const getFileQuotaByCosId = useCallback(
-    (cosId: string): Promise<void> =>
-      getFileQuotaById(cosId, COS).then((res: any) => {
-        if (res?.limit) {
-          setCosDetail((prev: any) => ({ ...prev, [FILES_QUOTA_LIMIT]: res?.limit }));
-        }
-      }),
-    [],
-  );
-
   const getMailboxQuotaUsed = useCallback(
     (accId: string): Promise<void> =>
       getMailboxQuota(accId).then((data) => {
@@ -574,14 +524,10 @@ const ManageAccounts: FC = () => {
         }
       });
       if (domainId) {
-        getDomainQuota(domainId).then((res) => {
-          if (res.type !== 'error') {
-            setDomainQuota(domainId, res.type === 'success' ? res.limit : 'not-set');
-          }
-        });
+        queryClient.invalidateQueries({ queryKey: domainQueryKeys.quota(domainId) });
       }
     },
-    [createSnackbar, domainId, setAccDetailValue, setDomainQuota, t],
+    [createSnackbar, domainId, setAccDetailValue, queryClient, t],
   );
 
   const getAccountDetail = useCallback(
@@ -630,16 +576,10 @@ const ManageAccounts: FC = () => {
           setDefaultCOS(!obj.zimbraCOSId);
           getMailboxQuotaUsed(id);
           if (isAdvanced) {
-            if (isTotalQuotaActive) {
-              retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
-            }
+            retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
             getListOtp(data?.account?.[0]?.name);
             getCredentialList(data?.account?.[0]?.name);
             getABQStatus(id);
-            getFileQuotaByAccId(id);
-            setTimeout(() => {
-              getFileQuotaByCosId(obj.zimbraCOSId);
-            }, 2000);
           }
         })
 
@@ -665,8 +605,6 @@ const ManageAccounts: FC = () => {
       getListOtp,
       getCredentialList,
       getABQStatus,
-      getFileQuotaByAccId,
-      getFileQuotaByCosId,
       createSnackbar,
       t,
     ],
@@ -820,6 +758,7 @@ const ManageAccounts: FC = () => {
 
   const openDetailView = useCallback(
     (acc: any): void => {
+      setAccountDetail({});
       setShowEditAccountView(true);
       getAccountDetail(acc?.id);
       getSignatureDetail(acc?.id);

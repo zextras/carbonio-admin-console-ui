@@ -8,17 +8,18 @@ import { Route, Routes, useLocation } from 'react-router';
 
 import { CREATE_NEW_COS_ROUTE_ID } from '../constants';
 import styles from './app-view.module.css';
-import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosListPanel } from './cos/cos-list-panel';
+import { CosPageHeader } from './cos-page-header';
 
 export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   const { pathname } = useLocation();
   const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);
+
   return (
     <div className={styles.root}>
-      <Breadcrumb />
+      <CosPageHeader />
       <Routes>
         <Route
           path={'/*'}

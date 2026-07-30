@@ -5,7 +5,7 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { Container } from '@zextras/ui-components';
+import { Container, FormPageLayout } from '@zextras/ui-components';
 import { type GetCoreAttributesResponse } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -20,7 +20,6 @@ import {
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
 import { useSetCoreAttributes } from '../../../services/use-set-core-attributes';
-import { FormPageLayout } from '../../form-page-layout';
 import { ContactsCalendarSection } from '../features/sections/contacts-calendar-section';
 import { FilesTasksSection } from '../features/sections/files-tasks-section';
 import { GeneralSection } from '../features/sections/general-section';
@@ -145,7 +144,7 @@ export const FeaturesForm = ({
       unsavedChanges={isDirty}
     >
       <Container mainAlignment="flex-start" width="100%" height="auto" orientation="vertical">
-        <GeneralSection form={form} readonlyCOS={readonlyCOS} />
+        <GeneralSection form={form} readonlyCOS={readonlyCOS} isAdvanced={isAdvanced} />
         <ds-divider />
         {isAdvanced && <><TwoFactorSection form={form} readonlyCOS={readonlyCOS} /><ds-divider /></>}
         <MailSection form={form} readonlyCOS={readonlyCOS} />

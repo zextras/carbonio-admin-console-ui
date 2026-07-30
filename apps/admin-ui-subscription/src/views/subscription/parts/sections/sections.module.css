@@ -1,0 +1,214 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin: 3rem 0;
+  box-sizing: border-box;
+  padding: 0 0.5rem;
+}
+
+.syncRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.sectionWrapper {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1.5rem 0;
+  box-sizing: border-box;
+}
+
+.sectionWrapper:last-child {
+  border-bottom: none;
+}
+
+/* Active edition section */
+
+.sectionHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.editionGrid {
+  display: flex;
+  gap: 24px;
+}
+
+.quotaLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.375rem;
+}
+
+.statsRow {
+  display: flex;
+  gap: 2rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+/* Details section */
+
+.detailsSection {
+  border-radius: 4px;
+  padding-left: 1rem;
+  background: var(--color-gray6-regular);
+  margin-bottom: 2rem;
+  box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.1);
+}
+
+.detailsToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.5rem 0;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: 100%;
+}
+
+.activationHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.activationMenuWrapper {
+  position: relative;
+}
+
+.menuTriggerButton {
+  border: none;
+  background: transparent;
+  color: var(--color-text-regular);
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.activationMenuList {
+  position: absolute;
+  right: 0;
+  width: max-content;
+  border-radius: 0.375rem;
+  background: var(--color-gray5-regular);
+  z-index: 4;
+  overflow: hidden;
+  box-shadow: -2px 2px 5px 0 rgba(0, 0, 0, 0.25);
+}
+
+.activationMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--color-gray0-regular);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: var(--font-family);
+}
+
+.activationMenuItem:hover {
+  background: var(--color-highlight);
+}
+
+.activationMenuDangerItem {
+  color: var(--color-error-regular);
+  border-top: 1px solid var(--color-borders);
+}
+
+.activationDetailsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 4rem;
+  padding-top: 0.75rem;
+}
+
+.showTokenButton {
+  border: none;
+  background: transparent;
+  color: var(--color-primary-regular);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 4rem;
+  padding-top: 0.75rem;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.detailLabel {
+  color: var(--color-secondary-active);
+}
+
+.labelWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.detailValueRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.detailValue {
+  color: var(--color-text-regular);
+}
+
+@media (max-width: 768px) {
+  .detailsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .activationDetailsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.addonsContainer {
+  margin-top: 1.5rem;
+}

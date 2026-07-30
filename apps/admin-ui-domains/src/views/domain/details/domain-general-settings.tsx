@@ -3,36 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  ChipInput,
-  ChipItem,
-  Container,
-  CustomTextArea,
-  Input,
-  LabeledValue,
-  ListRow,
-  Modal,
-  Padding,
-  Row,
-  Select,
-  useSnackbar,
-} from '@zextras/ui-components';
-import {
-  type DirectoryEntry,
-  type DomainDirectories,
-  flushCache,
-  replaceHistory,
-  searchDirectory,
-  useDomainStore,
-  useIsAdvanced,
-  useTotalQuotaActive,
-  useUserSettings,
-} from '@zextras/ui-shared';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button, ChipInput, ChipItem, Container, CustomTextArea, Input, LabeledValue, ListRow, Modal, Padding, RouteLeavingGuard, Row, Select, useSnackbar, } from '@zextras/ui-components';
+import { type DirectoryEntry, domainByIdKey, type DomainDirectories, flushCache, replaceHistory, searchDirectory, useCosList, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { CosMaxAccountValues, Domain, DomainsByFeature, objectType } from '../../../../types';
 import {
@@ -49,6 +26,7 @@ import {
   ZIMBRA_ADMIN_URN,
   ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS,
 } from '../../../constants';
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { batchService } from '../../../services/batch-service';
 import { deleteDomain } from '../../../services/delete-domain-service';
 import { getDomainQuota } from '../../../services/get-domain-quota';
@@ -56,7 +34,6 @@ import { modifyDomain } from '../../../services/modify-domain-service';
 import { setDomainQuota } from '../../../services/set-domain-quota';
 import { unsetDomainQuota } from '../../../services/unset-domain-quota';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import {
   BytesToGB,
   GbToBytes,
@@ -71,12 +48,13 @@ import QuotaReportDownloadButton from './quota-report-download-button';
 
 const DomainGeneralSettings: FC = () => {
   const [t] = useTranslation();
-  const isTotalQuotaActive = useTotalQuotaActive();
   const timezones = useMemo(() => timeZoneList(t), [t]);
-  const cosList = useDomainStore((state) => state.cosList);
-  const domainInformation = useDomainStore((state) => state.domain?.a);
-  const setDomain = useDomainStore((state) => state.setDomain);
-  const removeDomain = useDomainStore((state) => state.removeDomain);
+  const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
+  const cosList = cosData?.cos ?? [];
+  const { data: domain } = useSelectedDomain();
+  const domainInformation = domain?.a;
+  const queryClient = useQueryClient();
+  const { domainId } = useParams();
   const createSnackbar = useSnackbar();
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
   const userSetting = useUserSettings();
@@ -200,7 +178,7 @@ const DomainGeneralSettings: FC = () => {
   const [initDomainQuotaGB, setInitDomainQuotaGB] = useState<string>('');
 
   useEffect(() => {
-    if (isTotalQuotaActive && isAdvanced && domainData.zimbraId) {
+    if (isAdvanced && domainData.zimbraId) {
       getDomainQuota(domainData.zimbraId).then((result) => {
         if (result.type === 'success') {
           const gb = String(BytesToGB(result.limit));
@@ -209,7 +187,7 @@ const DomainGeneralSettings: FC = () => {
         }
       });
     }
-  }, [domainData.zimbraId, isAdvanced, isTotalQuotaActive]);
+  }, [domainData.zimbraId, isAdvanced]);
 
   useEffect(() => {
     if (!!cosList && cosList.length > 0) {
@@ -475,7 +453,7 @@ const DomainGeneralSettings: FC = () => {
     setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
     setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
     setZimbraDomainMaxAccounts(domainData.zimbraDomainMaxAccounts);
-    if (isTotalQuotaActive && isAdvanced) {
+    if (isAdvanced) {
       setDomainQuotaGB(initDomainQuotaGB);
     }
     const getItem = cosItems.find(
@@ -505,7 +483,7 @@ const DomainGeneralSettings: FC = () => {
     });
     const domain: Domain = data?.domain[0];
     if (domain) {
-      setDomain(domain);
+      queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
     }
     setIsLoading(false);
   };
@@ -597,7 +575,7 @@ const DomainGeneralSettings: FC = () => {
 
     modifyDomain(body).then(handleSuccess).catch(handleError);
 
-    if (isTotalQuotaActive && isAdvanced && domainQuotaGB !== initDomainQuotaGB) {
+    if (isAdvanced && domainQuotaGB !== initDomainQuotaGB) {
       const quotaPromise =
         domainQuotaGB === ''
           ? unsetDomainQuota(domainData.zimbraId)
@@ -638,11 +616,9 @@ const DomainGeneralSettings: FC = () => {
         hideButton: true,
         replace: true,
       });
-      removeDomain();
-      setDomain({});
       replaceHistory(`/`);
     });
-  }, [createSnackbar, domainData.zimbraId, removeDomain, setDomain, t]);
+  }, [createSnackbar, domainData.zimbraId, t]);
 
   const onDeleteAccountAndDomain = (): void => {
     setIsRequestInProgress(true);
@@ -805,7 +781,7 @@ const DomainGeneralSettings: FC = () => {
         }
         const domain: any = data?.domain[0];
         if (domain) {
-          setDomain(domain);
+          queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
         }
         const refDomainData = cloneDeep(domainData);
         refDomainData.zimbraDomainStatus = domainStatusItems[1].value;
@@ -1035,7 +1011,7 @@ const DomainGeneralSettings: FC = () => {
               </Container>
             </ListRow>
 
-            {isAdvanced && isTotalQuotaActive && (
+            {isAdvanced && (
               <>
                 <Row
                   mainAlignment="flex-start"
@@ -1400,17 +1376,7 @@ const DomainGeneralSettings: FC = () => {
         </Row>
       </Container>
 
-      <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <ds-text as="p">
-          {t(
-            'label.unsaved_changes_line1',
-            'Are you sure you want to leave this page without saving?',
-          )}
-        </ds-text>
-        <ds-text as="p">
-          {t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}
-        </ds-text>
-      </RouteLeavingGuard>
+      <RouteLeavingGuard when={isDirty} onSave={onSave} />
     </Container>
   );
 };

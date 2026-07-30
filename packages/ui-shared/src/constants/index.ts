@@ -57,3 +57,5 @@ export const CARBONIO_CE_ADMIN_DOCUMENTATION_URL =
 export const CONTENT = '_content';
 export const TRUE = 'TRUE';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
+
+export * from './route-ids';

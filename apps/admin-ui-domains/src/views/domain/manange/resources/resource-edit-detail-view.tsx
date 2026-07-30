@@ -3,22 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  CustomTextArea,
-  Displayer,
-  Input,
-  LabeledValue,
-  ListRow,
-  Modal,
-  Padding,
-  Row,
-  Select,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { useDomainStore, useStickyBarStore } from '@zextras/ui-shared';
+import { Button, Container, CustomTextArea, Displayer, Input, LabeledValue, ListRow, Modal, Padding, RouteLeavingGuard, Row, Select, useSnackbar, } from '@zextras/ui-components';
+import { useCosList, useStickyBarStore } from '@zextras/ui-shared';
 import { format, parse } from 'date-fns';
 import { isEqual } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -30,7 +16,6 @@ import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-r
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { setPasswordRequest } from '../../../../services/set-password-service';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { SendInviteAccounts } from './send-invite-accounts';
 
 export const RESOURCE_TYPE = {
@@ -62,7 +47,8 @@ const ResourceEditDetailView: FC<any> = ({
 }) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const cosList = useDomainStore((state) => state.cosList);
+  const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
+  const cosList = cosData?.cos ?? [];
   const [resourceInformation, setResourceInformation]: any = useState([]);
   const [resourceDetailData, setResourceDetailData]: any = useState({});
   const [sendInviteList, setSendInviteList] = useState<any[]>([]);
@@ -1197,15 +1183,7 @@ const ResourceEditDetailView: FC<any> = ({
           </Container>
         </Modal>
       )}
-      <RouteLeavingGuard when={isDirty} onSave={onSave}>
-        <ds-text as="p">
-          {t(
-            'label.unsaved_changes_line1',
-            'Are you sure you want to leave this page without saving?',
-          )}
-        </ds-text>
-        <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
-      </RouteLeavingGuard>
+      <RouteLeavingGuard when={isDirty} onSave={onSave} />
     </Container>
   );
 };

@@ -3,28 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  DefaultTabBarItem,
-  Modal,
-  Padding,
-  Row,
-  TabBar,
-  useSnackbar,
-} from '@zextras/ui-components';
-import {
-  flushCache,
-  resetFileQuotaLimitById,
-  setCoreAttributes,
-  setFileQuotaLimitById,
-  useCurrentUserRights,
-  useDomainStore,
-  useIsAdvanced,
-  useTotalQuotaActive,
-  useUserSettings,
-} from '@zextras/ui-shared';
+import { Button, Container, DefaultTabBarItem, Modal, Padding, RouteLeavingGuard, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
+import { flushCache, setCoreAttributes, useCurrentUserRights, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { differenceBy, find, isEqual, reduce, remove } from 'lodash-es';
 import { FC, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -42,7 +22,6 @@ import {
   CONFIGURATION,
   DELEGATES,
   DOMAIN_NAME,
-  FILES_QUOTA_LIMIT,
   GENERAL_SECTION,
   IS_DEFAULT_USER_NAME,
   PROFILE,
@@ -60,12 +39,9 @@ import { getDelegateAuthRequest } from '../../../../../services/get-delegate-aut
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
-import { getDomainList } from '../../../../../services/search-domain-service';
 import { setAccountQuota } from '../../../../../services/set-account-quota';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
-import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 import EditAccountAdministrationSection from './edit-account-administration-section';
@@ -108,9 +84,7 @@ const EditAccount: FC<{
   STATUS_COLOR,
 }) => {
   const { t } = useTranslation();
-  const isTotalQuotaActive = useTotalQuotaActive();
   const createSnackbar = useSnackbar();
-  const domainList = useDomainStore((state) => state.domainList);
   const [change, setChange] = useState(defaultTab);
   const [isLoading, setIsLoading] = useState(false);
   const context = useContext(AccountContext);
@@ -120,10 +94,7 @@ const EditAccount: FC<{
     initAccountDetail,
     setInitAccountDetail,
     deleteAdministrationRights,
-    setDefaultCOS,
-    cosDetail,
   } = context;
-  const setDomainListStore = useDomainStore((state) => state.setDomainList);
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
@@ -146,36 +117,6 @@ const EditAccount: FC<{
   const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [hasQuotaError, setHasQuotaError] = useState<boolean>(false);
-
-  const getDomainLists = useCallback(
-    (offset: number): any => {
-      getDomainList('', offset)
-        .then((data) => {
-          const searchResponse: any = data;
-          if (!!searchResponse && searchResponse?.searchTotal > 0) {
-            if (searchResponse?.domain?.length) {
-              setDomainListStore([...domainList, ...searchResponse.domain]);
-              if (searchResponse?.more) {
-                getDomainLists(offset + 50);
-              }
-            }
-          } else {
-            setDomainListStore([]);
-          }
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, domainList, setDomainListStore, t],
-  );
-
-  useEffect(() => {
-    if (!domainList?.length) {
-      getDomainLists(0);
-    }
-  }, [domainList, getDomainLists]);
 
   useEffect(() => {
     if (initAccountDetail?.zimbraId && !isEqual(accountDetail, initAccountDetail)) {
@@ -526,73 +467,9 @@ const EditAccount: FC<{
     remove(modifiedKeys, (ele) => ele === 'mail');
   };
 
-  const handleFileQuotaLimitChange = useCallback(
-    (modifiedKeys: string[]) => {
-      if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
-        if (accountDetail?.filesQuotaLimit) {
-          setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
-            () => {
-              if (modifiedKeys?.length === 0) {
-                createSnackbar({
-                  key: 'success',
-                  severity: 'success',
-                  label: t(
-                    'label.the_last_changes_has_been_saved_successfully',
-                    'Changes have been saved successfully',
-                  ),
-                  autoHideTimeout: 3000,
-                  hideButton: true,
-                  replace: true,
-                });
-              }
-            },
-          );
-        } else {
-          resetFileQuotaLimitById(accountDetail?.zimbraId).then(() => {
-            if (modifiedKeys?.length === 0) {
-              createSnackbar({
-                key: 'success',
-                severity: 'success',
-                label: t(
-                  'label.the_last_changes_has_been_saved_successfully',
-                  'Changes have been saved successfully',
-                ),
-                autoHideTimeout: 3000,
-                hideButton: true,
-                replace: true,
-              });
-              setInitAccountDetail((prev: any) => ({
-                ...prev,
-                [FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit,
-              }));
-              setAccountDetail((prev: any) => ({
-                ...prev,
-                [FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit,
-              }));
-            }
-          });
-        }
-        remove(modifiedKeys, (ele) => ele === FILES_QUOTA_LIMIT);
-      }
-    },
-    [
-      accountDetail?.filesQuotaLimit,
-      accountDetail?.zimbraId,
-      cosDetail.filesQuotaLimit,
-      createSnackbar,
-      setAccountDetail,
-      setInitAccountDetail,
-      t,
-    ],
-  );
-
   const handleTotalComputedQuotaLimitChange = useCallback(
     (modifiedKeys: string[]) => {
-      if (
-        !modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) ||
-        !isTotalQuotaActive ||
-        !isAdvanced
-      ) {
+      if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) || !isAdvanced) {
         return;
       }
 
@@ -676,7 +553,6 @@ const EditAccount: FC<{
       accountDetail?.zimbraId,
       createSnackbar,
       isAdvanced,
-      isTotalQuotaActive,
       setAccountDetail,
       setInitAccountDetail,
       t,
@@ -769,8 +645,6 @@ const EditAccount: FC<{
       await handleAliasChanges(deleteAliasArr, addAliasArr, modifiedKeys);
     }
 
-    handleFileQuotaLimitChange(modifiedKeys);
-
     handleTotalComputedQuotaLimitChange(modifiedKeys);
 
     modifiedKeys.forEach((ele: any) => {
@@ -819,7 +693,6 @@ const EditAccount: FC<{
   ]);
   const onUndo = (): void => {
     setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
-    setDefaultCOS(!initAccountDetail.zimbraCOSId);
     setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
   };
   const onViewMail = useCallback(() => {
@@ -1127,17 +1000,7 @@ const EditAccount: FC<{
           {/* </Container> */}
         </Container>
       </Container>
-      <RouteLeavingGuard when={isDirty} onSave={modifyAccountReq}>
-        <ds-text as="p">
-          {t(
-            'label.unsaved_changes_line1',
-            'Are you sure you want to leave this page without saving?',
-          )}
-        </ds-text>
-        <ds-text as="p">
-          {t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}
-        </ds-text>
-      </RouteLeavingGuard>
+      <RouteLeavingGuard when={isDirty} onSave={modifyAccountReq} />
       <Modal
         size="small"
         title={t('label.hey_there_are_unsaved_changes_here', 'Hey! There are unsaved changes here')}

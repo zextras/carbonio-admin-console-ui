@@ -23,17 +23,25 @@ export const ActivationProgress = ({
 }: ActivationProgressProps): React.JSX.Element => {
   const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
+  const [prevIsPending, setPrevIsPending] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const openedAtRef = useRef<number>(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const prevIsPending = useRef(false);
+  const startedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  useEffect(() => {
-    if (isPending && !prevIsPending.current) {
+  if (prevIsPending !== isPending) {
+    setPrevIsPending(isPending);
+    if (isPending) {
       setProgress(0);
+    }
+  }
+
+  useEffect(() => {
+    if (isPending) {
+      startedRef.current = true;
       popoverRef.current?.showPopover();
       openedAtRef.current = Date.now();
       let current = 0;
@@ -45,7 +53,8 @@ export const ActivationProgress = ({
           intervalRef.current = null;
         }
       }, 90);
-    } else if (!isPending && prevIsPending.current) {
+    } else if (startedRef.current) {
+      startedRef.current = false;
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
@@ -61,7 +70,6 @@ export const ActivationProgress = ({
         }, ACTIVATION_PROGRESS_COMPLETE_DELAY_MS);
       }, remaining);
     }
-    prevIsPending.current = isPending;
 
     return () => {
       if (intervalRef.current) {

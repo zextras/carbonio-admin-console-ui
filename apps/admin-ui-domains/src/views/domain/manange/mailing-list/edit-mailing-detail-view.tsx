@@ -3,17 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-import {
-  Button,
-  Container,
-  Modal,
-  Padding,
-  Row,
-  TabBar,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { useDomainStore, useUserSettings } from '@zextras/ui-shared';
+import { Button, Container, Modal, Padding, RouteLeavingGuard, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
+import { useUserSettings } from '@zextras/ui-shared';
 import { format, isValid } from 'date-fns';
 import { differenceBy, isEqual } from 'lodash';
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
@@ -31,9 +22,6 @@ import { getGrant } from '../../../../services/get-grant';
 import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
-import { getDomainList } from '../../../../services/search-domain-service';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getDateTimeFromStr } from '../../../utility/utils';
 import { GeneralTab } from './edit-mailing-detail/general-tab';
 import { MembersTab } from './edit-mailing-detail/members-tab';
@@ -81,8 +69,6 @@ const EditMailingListView: FC<any> = ({
   const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
   const [zimbraIsACLGroup, setZimbraIsACLGroup] = useState<boolean>(false);
   const [isShowSenderToError, setIsShowSenderToError] = useState<boolean>(false);
-  const domainList = useDomainStore((state) => state.domainList);
-  const setDomainListStore = useDomainStore((state) => state.setDomainList);
   const [granteeTotalRights, setGranteeTotalRights] = useState(0);
   const [targetTotalRights, setTargetTotalRights] = useState(0);
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
@@ -152,49 +138,6 @@ const EditMailingListView: FC<any> = ({
       }
     }
   }, [userSetting?.attrs]);
-
-  type DomainResponse = {
-    domain: [
-      {
-        name: string;
-        id: string;
-        a: { n: string; _content: string }[];
-      },
-    ];
-    more: boolean;
-    searchTotal: number;
-    _jsns: string;
-  };
-
-  const getDomainLists = useCallback(
-    (offset: number): void => {
-      getDomainList('', offset)
-        .then((data) => {
-          const searchResponse: DomainResponse = data;
-          if (!!searchResponse && searchResponse?.searchTotal > 0) {
-            if (searchResponse?.domain?.length) {
-              setDomainListStore([...domainList, ...searchResponse.domain]);
-              if (searchResponse?.more) {
-                getDomainLists(offset + 50);
-              }
-            }
-          } else {
-            setDomainListStore([]);
-          }
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, domainList, setDomainListStore, t],
-  );
-
-  useEffect(() => {
-    if (!domainList?.length) {
-      getDomainLists(0);
-    }
-  }, [domainList, getDomainLists]);
 
   const [previousDetail, setPreviousDetail] = useState<any>({});
 
@@ -1000,8 +943,6 @@ const EditMailingListView: FC<any> = ({
     }
   }, [previousDetail?.ownerOfList, ownerOfList]);
 
-
-
   useEffect(() => {
     if (
       previousDetail?.dlMembershipList !== undefined &&
@@ -1449,15 +1390,7 @@ const EditMailingListView: FC<any> = ({
           </Modal>
         )}
 
-        <RouteLeavingGuard when={isDirty} onSave={onSave}>
-          <ds-text as="p">
-            {t(
-              'label.unsaved_changes_line1',
-              'Are you sure you want to leave this page without saving?',
-            )}
-          </ds-text>
-          <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
-        </RouteLeavingGuard>
+        <RouteLeavingGuard when={isDirty} onSave={onSave} />
         {isOpenDeleteDialog && (
           <Modal
             size="medium"

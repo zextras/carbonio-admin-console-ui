@@ -11,23 +11,11 @@ import { ComputedLimit } from '../../../../services/get-cos-quota';
 import { useCosQuotaState } from '../hooks/use-cos-quota-state';
 import { COSQuotasNew } from '../sections/quotas-new';
 
-vi.mock('../../../../services/use-file-quota', () => ({
-  useFileQuota: () => ({ data: undefined }),
-}));
 vi.mock('../../../../services/use-invalidate-cos-quota', () => ({
   useInvalidateCosQuota: () => vi.fn(),
 }));
 vi.mock('../../../../services/set-cos-quota', () => ({ setCosQuota: vi.fn() }));
 vi.mock('../../../../services/unset-cos-quota', () => ({ unsetCosQuota: vi.fn() }));
-vi.mock('@zextras/ui-shared', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
-  return {
-    ...actual,
-    isValidDecimalInput: (v: string) => /^\d*\.?\d*$/.test(v),
-    setFileQuotaLimitById: vi.fn().mockResolvedValue(undefined),
-    resetFileQuotaLimitById: vi.fn().mockResolvedValue(undefined),
-  };
-});
 
 const limitedQuota: ComputedLimit = { type: 'limited', value: 10737418240 }; // 10 GB
 const unlimitedQuota: ComputedLimit = { type: 'unlimited' };
@@ -40,13 +28,10 @@ const QuotaWrapper = ({
   initialSource?: 'global' | 'cos';
 }) => {
   const quotaState = useCosQuotaState({
-    cosData: { zimbraId: 'cos-1', zimbraMailQuota: '' } as never,
     cosQuotaData: {
       totalComputedLimit: initialQuota,
       totalQuotaSource: initialSource,
     },
-    isTotalQuotaActive: true,
-    isAdvanced: true,
   });
 
   return (

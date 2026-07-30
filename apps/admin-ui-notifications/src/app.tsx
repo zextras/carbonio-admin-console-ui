@@ -4,50 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryBarTooltip } from '@zextras/ui-components';
-import { addRoute, useIsAdvanced } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect, useMemo } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { addRoute, removeRoute, useIsAdvanced } from '@zextras/ui-shared';
+import { FC, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID, PRIMARY_BAR_NOTIFICATIONS } from './constants';
-import AppView from './views/app-view';
+import { AppView } from './views/app-view';
+import { NotificationsTooltipView } from './views/notifications-tooltip-view';
 
 const App: FC = () => {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
 
-  const logAndQueuesSection = useMemo(
-    () => ({
-      id: LOG_AND_QUEUES,
-      label: t('label.long_and_queues', 'Log & Queues'),
-      position: 5,
-    }),
-    [t],
-  );
-
-  const NotificationTooltipView: FC = useCallback(
-    () => (
-      <PrimaryBarTooltip>
-        <p>
-          <Trans
-            i18nKey="label.notification_lbl"
-            defaults="<bold>Notifications</bold>"
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-        <p>
-          <Trans
-            i18nKey="label.notification_primarybar_tooltip"
-            defaults="View your <bold>notifications</bold>, mark them as <bold>read</bold> or <bold>copy</bold> to share them."
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-      </PrimaryBarTooltip>
-    ),
-    [t],
-  );
+  const logAndQueuesSection = {
+    id: LOG_AND_QUEUES,
+    label: t('label.long_and_queues', 'Log & Queues'),
+    position: 5,
+  };
 
   useEffect(() => {
     if (isAdvanced) {
@@ -59,11 +32,13 @@ const App: FC = () => {
         primaryBar: 'BellOutline',
         appView: AppView,
         primarybarSection: { ...logAndQueuesSection },
-        tooltip: NotificationTooltipView,
+        tooltip: NotificationsTooltipView,
         trackerLabel: PRIMARY_BAR_NOTIFICATIONS,
       });
+    } else {
+      removeRoute(NOTIFICATION_ROUTE_ID);
     }
-  }, [NotificationTooltipView, isAdvanced, logAndQueuesSection, t]);
+  }, [logAndQueuesSection, isAdvanced, t]);
 
   return null;
 };

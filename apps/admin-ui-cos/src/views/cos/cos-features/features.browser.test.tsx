@@ -88,14 +88,6 @@ describe('FeaturesForm (browser)', () => {
     resetMockWorker();
   });
 
-  it('should render Mobile App switch in Mail section and be clickable', async () => {
-    await setupTest();
-    await expect.element(page.getByText('Mail', { exact: true })).toBeVisible();
-    const mobileAppSwitch = page.getByRole('switch', { name: 'Mobile App' }).first();
-    await expect.element(mobileAppSwitch).toBeChecked();
-    await userEvent.click(mobileAppSwitch);
-    await expect.element(mobileAppSwitch).not.toBeChecked();
-  });
 
   it('should render Contacts Web Feature switch and be clickable', async () => {
     await setupTest();
@@ -129,33 +121,20 @@ describe('FeaturesForm (browser)', () => {
     await expect.element(webFeatureSwitch).not.toBeChecked();
   });
 
-  it('should disable Files Mobile App when Files Web Feature is FALSE', async () => {
-    await setupTest(
-      <TestWrapper
-        cosInformation={MOCK_COS_INFORMATION.map((a) =>
-          a.n === 'carbonioFeatureFilesEnabled' ? { ...a, _content: 'FALSE' } : a,
-        )}
-      />,
-    );
-    const filesMobileApp = page.getByRole('switch', { name: 'Mobile App' }).nth(1);
-    await expect.element(filesMobileApp).toBeDisabled();
-  });
-
-  it('should toggle Files Mobile App switch in both directions', async () => {
-    await setupTest();
-    const filesMobileApp = page.getByRole('switch', { name: 'Mobile App' }).nth(1);
-    await expect.element(filesMobileApp).toBeChecked();
-    await userEvent.click(filesMobileApp);
-    await expect.element(filesMobileApp).not.toBeChecked();
-    await userEvent.click(filesMobileApp);
-    await expect.element(filesMobileApp).toBeChecked();
-  });
 
   it('should render General section with Can access Settings', async () => {
     await setupTest();
     await expect.element(page.getByText('General')).toBeVisible();
     await expect
       .element(page.getByRole('switch', { name: 'Can access Settings' }))
+      .toBeVisible();
+  });
+
+  it('should render General section with Active Sync Access', async () => {
+    await setupTest(<TestWrapper isAdvanced />);
+    await expect.element(page.getByText('General')).toBeVisible();
+    await expect
+      .element(page.getByRole('switch', { name: 'Active Sync Access' }))
       .toBeVisible();
   });
 

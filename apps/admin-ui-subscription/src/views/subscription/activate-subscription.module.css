@@ -8,8 +8,10 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: auto;
   background: var(--color-gray6-regular);
+  padding: 1.5rem;
+  box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.1);
 }
 
 .header {
@@ -25,9 +27,8 @@
   flex-direction: column;
   align-items: flex-start;
   padding: var(--padding-size-large);
-  overflow: auto;
   width: 100%;
-  height: calc(100vh - 200px);
+  height: auto;
   box-sizing: border-box;
 }
 

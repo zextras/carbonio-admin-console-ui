@@ -5,81 +5,53 @@
  */
 
 import { Container, ModalOverlay, Row, useSnackbar } from '@zextras/ui-components';
-import { useAllServers } from '@zextras/ui-shared';
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { stopOperations } from '../../services/stop-operation';
-import { useOperationStore } from '../../store/operation/store';
+import { STARTED } from '../../constants';
+import { useAllOperations } from '../../services/use-all-operations';
+import { useStopOperation } from '../../services/use-stop-operation';
 import { type Operation } from '../../types/operations';
 import { OperationsHeader } from '../utility/utils';
 import DeleteOpearationsModel from './delete-operations-model';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 
-const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: () => void }> = ({
-  getAllOperationAPICallHandler,
-}) => {
+const RunningDetailPanel: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const { data: serverList = [] } = useAllServers();
-  const serverName = serverList[0]?.name;
-  const { runningData } = useOperationStore((state) => state);
+  const { data: runningData = [], isError } = useAllOperations({
+    select: (operations) => operations.filter((item) => item.state === STARTED),
+  });
   const operationsHeader = useMemo(() => OperationsHeader(t), [t]);
   const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<Operation | undefined>();
   const [isSelectedRow, setIsSelectedRow] = useState<Array<string>>([]);
 
+  useEffect(() => {
+    if (isError) {
+      createSnackbar({
+        key: '1',
+        severity: 'error',
+        label: t('label.operation.get_all_operation_error', '{{name}}', {
+          name: '',
+        }),
+      });
+    }
+  }, [createSnackbar, isError, t]);
+
   const closeHandler = (): void => {
     setOpen(false);
   };
 
-  const stopHandler = (): void => {
-    if (!selectedData?.id) {
-      return;
-    }
-
-    stopOperations(selectedData?.id)
-      .then((res) => {
-        const result = JSON.parse(res?.Body?.response?.content);
-        if (result?.response?.[`${serverName}`]?.ok) {
-          createSnackbar({
-            key: '1',
-            severity: 'success',
-            label: t(
-              'label.stop_operation_sucess',
-              'The {{name}} operation has been stopped successfully',
-              {
-                name: selectedData?.name,
-              },
-            ),
-          });
-          setOpen(false);
-          setWizardDetailToggle(false);
-          getAllOperationAPICallHandler();
-        } else {
-          createSnackbar({
-            key: '1',
-            severity: 'error',
-            label: t('label.stop_operation_helperText', '{{message}}', {
-              message: result?.response?.[`${serverName}`]?.error?.message,
-            }),
-          });
-          setOpen(false);
-          setWizardDetailToggle(false);
-        }
-      })
-      .catch((err) => {
-        createSnackbar({
-          key: '1',
-          severity: 'error',
-          label: t('label.operation.stop_operation_error', '{{name}}', {
-            name: err,
-          }),
-        });
-      });
-  };
+  const stopHandler = useStopOperation({
+    selectedData,
+    setOpen,
+    setWizardDetailToggle,
+    successI18nKey: 'label.stop_operation_sucess',
+    successDefault: 'The {{name}} operation has been stopped successfully',
+  });
 
   const handleClick = (i: number): void => {
     const volumeObject = runningData?.find((s: Operation, index: number) => index === i);
@@ -95,6 +67,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: () => void }> = ({
             setWizardDetailToggle={setWizardDetailToggle}
             setOpen={setOpen}
             selectedData={selectedData}
+            allowStop
           />
         </ModalOverlay>
       )}
@@ -112,7 +85,7 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: () => void }> = ({
           selectedData={selectedData}
         />
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-          <ds-text as="h2"  weight="bold">
+          <ds-text as="h2" weight="bold">
             {t('operations.running_panel_heading', 'Running Operations')}
           </ds-text>
         </Row>

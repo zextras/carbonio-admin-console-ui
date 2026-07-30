@@ -130,19 +130,6 @@ export const Features: FC<{
 					</ds-text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							subValue={featuresDetail?.carbonioFeatureMailsAppEnabled}
-							onChange={changeSwitchOption}
-							label={t('label.mobile_app', 'Mobile App')}
-							iconColor="primary"
-							inheritedValue={cosDetail?.carbonioFeatureMailsAppEnabled}
-							fromSubValue={accSpecificDetail?.carbonioFeatureMailsAppEnabled}
-							inputName={'carbonioFeatureMailsAppEnabled'}
-							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureMailsAppEnabled')}
-							disabled={readonlyFeatures}
-						/>
-					</Row>
-					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<InheritedSwitch
 							subValue={featuresDetail?.zimbraFeatureSignaturesEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.mail_signatures', 'Mail Signatures')}
@@ -253,19 +240,6 @@ export const Features: FC<{
 							inputName={'carbonioFeatureFilesEnabled'}
 							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureFilesEnabled')}
 							disabled={readonlyFeatures}
-						/>
-					</Row>
-					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<InheritedSwitch
-							subValue={featuresDetail?.carbonioFeatureFilesAppEnabled}
-							onChange={changeSwitchOption}
-							label={t('label.mobile_app', 'Mobile App')}
-							iconColor="primary"
-							inheritedValue={cosDetail?.carbonioFeatureFilesAppEnabled}
-							fromSubValue={accSpecificDetail?.carbonioFeatureFilesAppEnabled}
-							inputName={'carbonioFeatureFilesAppEnabled'}
-							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureFilesAppEnabled')}
-							disabled={featuresDetail.carbonioFeatureFilesEnabled !== 'TRUE' || readonlyFeatures}
 						/>
 					</Row>
 				</Container>

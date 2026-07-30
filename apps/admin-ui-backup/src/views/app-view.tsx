@@ -4,26 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { usePrimaryBarState } from '@zextras/ui-shared';
+import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
-import { Breadcrumb } from './breadcrumb/breadcrumb';
+import { BackupPageHeader } from './backup-page-header';
 
-function getContainerStyle(isPrimaryBarExpanded: boolean) {
-  return {
-    maxWidth: isPrimaryBarExpanded ? '981px' : '1125px',
-    transition: 'width 300ms',
-  };
-}
+export const AppView: FC = () => {
+  const detailViewMaxWidth = useDetailViewMaxWidth();
 
-const AppView: FC = () => {
-  const isPrimaryBarExpanded = usePrimaryBarState();
   return (
     <Container height={'fit'}>
-      <Breadcrumb />
+      <BackupPageHeader />
       <Routes>
         <Route
           path={'/*'}
@@ -39,7 +33,7 @@ const AppView: FC = () => {
                 </Suspense>
               </Container>
               <Container style={{ maxWidth: '100%' }}>
-                <Container style={getContainerStyle(isPrimaryBarExpanded)}>
+                <Container style={{ maxWidth: detailViewMaxWidth, transition: 'width 300ms' }}>
                   <Suspense fallback={<ds-spinner></ds-spinner>}>
                     <BackupDetailPanel />
                   </Suspense>
@@ -52,5 +46,3 @@ const AppView: FC = () => {
     </Container>
   );
 };
-
-export default AppView;

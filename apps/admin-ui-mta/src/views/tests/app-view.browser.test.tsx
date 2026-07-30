@@ -15,7 +15,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import AppView from '../app-view';
+import { AppView } from '../app-view';
 
 function getAllConfigResponse() {
   return {
