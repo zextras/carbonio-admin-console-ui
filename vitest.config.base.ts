@@ -4,23 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { playwright } from '@vitest/browser-playwright';
 import svgr from 'vite-plugin-svgr';
+import babel from '@rolldown/plugin-babel';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { getOptimizeDepsInclude } from './vitest.config.utils';
 
 const isCI = !!process.env.CI;
 
 function getPlugins() {
   return [
-    react({
-      babel: {
-        plugins: [
-          ['babel-plugin-react-compiler', { panicThreshold: 'none' }],
-          ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
-        ],
-      },
+    react(),
+    babel({
+      presets: [reactCompilerPreset({ panicThreshold: 'none' })],
+      plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
     }),
     svgr({
       svgrOptions: {

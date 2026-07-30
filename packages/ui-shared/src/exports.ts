@@ -66,7 +66,6 @@ import { useBreakpoint } from './hooks/use-breakpoint';
 import { useDebouncedValue } from './hooks/use-debounced-value';
 import { useLocalStorage } from './hooks/use-local-storage';
 import { useMediaQuery } from './hooks/use-media-query';
-import { useTotalQuotaActive } from './hooks/use-total-quota-active';
 import {
   type CloseSnackbarFn,
   type CreateSnackbarFn,
@@ -132,12 +131,7 @@ import {
   type GetCoreAttributesResponse,
 } from './services/get-core-attributes';
 import { getDomainInformation } from './services/get-domain-information';
-import {
-  type FileQuotaResponse,
-  getFileQuotaById,
-} from './services/get-file-quota';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
-import { resetFileQuotaLimitById } from './services/reset-file-quota-limit';
 import { getCosList } from './services/search-cos-service';
 import {
   type DirectoryAttribute,
@@ -147,7 +141,6 @@ import {
   type SearchDomainDirectories,
 } from './services/search-directory-service';
 import { setCoreAttributes } from './services/set-core-attributes';
-import { setFileQuotaLimitById } from './services/set-file-quota-limit';
 import { useDetailViewMaxWidth, usePrimaryBarState } from './shell/hooks';
 import { getApp, getShell, useAppList, useAppRoutes, useModuleCrumbMenu } from './store/app/hooks';
 import { useAppStore } from './store/app/store';
@@ -237,7 +230,6 @@ export {
   getCosGeneralInformation,
   getCosList,
   getDomainInformation,
-  getFileQuotaById,
   getLocale,
   getRights,
   getShell,
@@ -260,13 +252,11 @@ export {
   registerApp,
   removeRoute,
   replaceHistory,
-  resetFileQuotaLimitById,
   SCALING_LIMIT,
   SCALING_OPTIONS,
   searchDirectory,
   SEND_FEEDBACK_URL,
   setCoreAttributes,
-  setFileQuotaLimitById,
   SHELL_APP_ID,
   SnackbarManagerContext,
   soapFetch,
@@ -311,7 +301,6 @@ export {
   useServerVersion,
   useSnackbar,
   useStickyBarStore,
-  useTotalQuotaActive,
   useUserAccount,
   useUserAccounts,
   useUserSettings,
@@ -330,7 +319,6 @@ export type {
   DirectoryAttribute,
   DirectoryEntry,
   DomainDirectories,
-  FileQuotaResponse,
   GetCoreAttributesResponse,
   GetCosResponse,
   SearchDomainDirectories,

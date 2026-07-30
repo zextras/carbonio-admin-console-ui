@@ -18,7 +18,7 @@ function issuesFor(input: Record<string, unknown>): Array<{ path: string; messag
 
 describe('cosAdvancedSchema', () => {
   it('treats empty values as valid (inherit / no limit)', () => {
-    expect(issuesFor({ zimbraPasswordMinLength: '', zimbraQuotaWarnPercent: '' })).toEqual([]);
+    expect(issuesFor({ zimbraPasswordMinLength: '', zimbraContactMaxNumEntries: '' })).toEqual([]);
   });
 
   it('accepts non-negative integers', () => {
@@ -40,13 +40,6 @@ describe('cosAdvancedSchema', () => {
   it('rejects decimals on integer fields', () => {
     expect(issuesFor({ zimbraPasswordMaxLength: '1.5' })).toEqual([
       { path: 'zimbraPasswordMaxLength', message: 'cos.validation.non_negative_integer' },
-    ]);
-  });
-
-  it('enforces the 0-100 range for the quota warning percent', () => {
-    expect(issuesFor({ zimbraQuotaWarnPercent: '100' })).toEqual([]);
-    expect(issuesFor({ zimbraQuotaWarnPercent: '101' })).toEqual([
-      { path: 'zimbraQuotaWarnPercent', message: 'cos.validation.percent_range' },
     ]);
   });
 

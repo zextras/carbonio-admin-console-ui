@@ -51,9 +51,6 @@ function MockDomainGalSettings() {
 function MockDomainAuthentication() {
   return <div>VIEW:authentication</div>;
 }
-function MockDomainMailboxQuota() {
-  return <div>VIEW:mailbox_quota</div>;
-}
 function MockDomainTwoFactor() {
   return <div>VIEW:2-factor-authentication</div>;
 }
@@ -102,9 +99,6 @@ vi.mock('../domain/details/domain-general-settings', () => ({
 }));
 vi.mock('../domain/details/domain-gal-settings', () => ({ default: MockDomainGalSettings }));
 vi.mock('../domain/details/domain-authentication', () => ({ default: MockDomainAuthentication }));
-vi.mock('../domain/details/domain-mailbox-quota-settings', () => ({
-  default: MockDomainMailboxQuota,
-}));
 vi.mock('../domain/details/domain-2fa', () => ({ default: MockDomainTwoFactor }));
 vi.mock('../domain/details/domain-theme', () => ({ default: MockDomainTheme }));
 vi.mock('../domain/details/domain-saml', () => ({ default: MockDomainSaml }));
@@ -141,7 +135,6 @@ const domainOpRoutes: Array<[string, string]> = [
   ['gal', 'VIEW:gal'],
   ['authentication', 'VIEW:authentication'],
   ['virtual_hosts', 'VIEW:virtual_hosts'],
-  ['mailbox_quota', 'VIEW:mailbox_quota'],
   ['2-factor-authentication', 'VIEW:2-factor-authentication'],
   ['whitelabel_settings', 'VIEW:whitelabel_settings'],
   ['saml', 'VIEW:saml'],
