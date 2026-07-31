@@ -53,13 +53,15 @@ vi.mock('../../two-factor-authentication/2fa-config', () => ({
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
 
-function setup(ui: ReactElement) {
+function setup(ui: ReactElement, initialPolicies: unknown[] = []) {
 	const queryClient = getQueryClient();
 	queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
 		id: DOMAIN_ID,
 		name: DOMAIN_NAME,
 		a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
 	});
+	// Pre-populate 2fa policies to avoid loading state
+	queryClient.setQueryData(['2fa-policies', DOMAIN_NAME], initialPolicies);
 	return setupBrowserTest(ui, {
 		queryClient,
 		withDomainIdRoute: true,
