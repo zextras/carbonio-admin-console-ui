@@ -17,7 +17,7 @@ import {
 } from '@zextras/ui-components';
 import { searchDirectory, useMailstoreServers } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import { useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookEntry, AddressBookFolder } from '../../../../../types';

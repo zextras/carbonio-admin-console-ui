@@ -6,7 +6,7 @@
 
 import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
-import { useEffect, useState, type CSSProperties } from 'react';
+import { type CSSProperties, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookServiceStatus } from '../../../../types';
