@@ -36,7 +36,7 @@ export function assertZextrasServerOk(
 
 	const parsed = parseZextrasNestedContent(response?.Body?.response?.content);
 	const serverResult = parsed?.response?.[targetServers];
-	if (serverResult && serverResult.ok === false) {
+	if (serverResult?.ok === false) {
 		throw new Error(serverResult.message ?? fallbackMessage);
 	}
 

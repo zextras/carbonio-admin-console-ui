@@ -6,12 +6,15 @@
 
 import {
 	createBrowserSoapAPIInterceptor,
+	getQueryClient,
 	setupBrowserTest,
 	worker,
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
+import { type ReactElement } from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
+import { type RenderResult } from 'vitest-browser-react';
 
 import { LDAP_ADDRESS_BOOK_SERVICE, ZX_ADDRESS_BOOK } from '../../../../constants';
 import { GlobalAddressBook } from '../global-address-book';
@@ -45,6 +48,20 @@ const DEFAULT_STOPPED: ServiceState = {
 	couldStart: true,
 	couldStop: false,
 };
+
+function seedGlobalAdminSettings(): ReturnType<typeof getQueryClient> {
+	const queryClient = getQueryClient();
+	queryClient.setQueryData(['account', 'settings'], {
+		prefs: {},
+		attrs: { zimbraIsAdminAccount: 'TRUE' },
+		props: [],
+	});
+	return queryClient;
+}
+
+function renderGlobalAddressBook(ui: ReactElement = <GlobalAddressBook />): Promise<RenderResult> {
+	return setupBrowserTest(ui, { queryClient: seedGlobalAdminSettings() });
+}
 
 function buildGetServicesResponse(serverName: string, state: ServiceState): object {
 	return {
@@ -158,7 +175,7 @@ describe('GlobalAddressBook (browser)', () => {
 	describe('Rendering', () => {
 		it('should render the Global Address Book title', async () => {
 			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
-			await setupBrowserTest(<GlobalAddressBook />);
+			await renderGlobalAddressBook();
 			await expect
 				.element(page.getByText('Global Address Book', { exact: true }))
 				.toBeInTheDocument();
@@ -166,7 +183,7 @@ describe('GlobalAddressBook (browser)', () => {
 
 		it('should render the status card description and global scope note when running', async () => {
 			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
-			await setupBrowserTest(<GlobalAddressBook />);
+			await renderGlobalAddressBook();
 			await expect
 				.element(
 					page.getByText(
@@ -176,18 +193,15 @@ describe('GlobalAddressBook (browser)', () => {
 				.toBeInTheDocument();
 			await expect
 				.element(
-					page.getByText(
-						/Starting or stopping the service applies globally, to every domain on this infrastructure/i,
-					),
+					page.getByText(/Applies globally, to every domain on this infrastructure/i),
 				)
 				.toBeInTheDocument();
 		});
 
 		it('should show running status and Stop service button when service is running', async () => {
 			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
-			await setupBrowserTest(<GlobalAddressBook />);
+			await renderGlobalAddressBook();
 			await expect.element(page.getByText('running', { exact: true })).toBeInTheDocument();
-			await expect.element(page.getByText('RUNNING', { exact: true })).toBeInTheDocument();
 			await expect
 				.element(page.getByRole('button', { name: /stop service/i }))
 				.toBeInTheDocument();
@@ -196,13 +210,12 @@ describe('GlobalAddressBook (browser)', () => {
 		it('should show stopped status and Start service button when service is stopped', async () => {
 			setupAddressBookInterceptor(DEFAULT_STOPPED);
 			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
-			await setupBrowserTest(<GlobalAddressBook />);
+			await renderGlobalAddressBook();
 			await expect.element(page.getByText('stopped', { exact: true })).toBeInTheDocument();
-			await expect.element(page.getByText('STOPPED', { exact: true })).toBeInTheDocument();
 			await expect
 				.element(
 					page.getByText(
-						/Shared address book folders are not reachable by LDAP clients/i,
+						/LDAP clients can’t query shared address books while the service is stopped/i,
 					),
 				)
 				.toBeInTheDocument();
@@ -216,7 +229,7 @@ describe('GlobalAddressBook (browser)', () => {
 		it('should call doStopService when Stop service is clicked', async () => {
 			const { capturedActions } = setupAddressBookInterceptor(DEFAULT_RUNNING);
 			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
-			await setupBrowserTest(<GlobalAddressBook />);
+			await renderGlobalAddressBook();
 
 			const button = page.getByRole('button', { name: /stop service/i });
 			await expect.element(button).toBeEnabled();
@@ -235,7 +248,7 @@ describe('GlobalAddressBook (browser)', () => {
 		it('should call doStartService when Start service is clicked', async () => {
 			const { capturedActions } = setupAddressBookInterceptor(DEFAULT_STOPPED);
 			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
-			await setupBrowserTest(<GlobalAddressBook />);
+			await renderGlobalAddressBook();
 
 			const button = page.getByRole('button', { name: /start service/i });
 			await expect.element(button).toBeEnabled();

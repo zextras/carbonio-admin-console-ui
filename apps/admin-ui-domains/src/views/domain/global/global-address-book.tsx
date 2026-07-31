@@ -6,7 +6,7 @@
 
 import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookServiceStatus } from '../../../../types';
@@ -20,6 +20,48 @@ const DEFAULT_STATUS: AddressBookServiceStatus = {
   couldStop: false,
 };
 
+type StatusPresentation = {
+  statusColor: 'success' | 'error';
+  statusAccentBorder: string;
+  statusDotStyle: CSSProperties;
+};
+
+function getStatusPresentation(running: boolean): StatusPresentation {
+  if (running) {
+    return {
+      statusColor: 'success',
+      statusAccentBorder: '0.25rem solid var(--color-success-regular)',
+      statusDotStyle: {
+        width: '0.6875rem',
+        height: '0.6875rem',
+        borderRadius: '50%',
+        background: 'var(--color-success-regular)',
+        flexShrink: 0,
+        marginTop: '0.375rem',
+        boxShadow: '0 0 0 4px rgba(139, 195, 74, 0.15)',
+      },
+    };
+  }
+
+  return {
+    statusColor: 'error',
+    statusAccentBorder: '0.25rem solid var(--color-error-regular)',
+    statusDotStyle: {
+      width: '0.6875rem',
+      height: '0.6875rem',
+      borderRadius: '50%',
+      background: 'var(--color-error-regular)',
+      flexShrink: 0,
+      marginTop: '0.375rem',
+      boxShadow: '0 0 0 4px rgba(215, 73, 66, 0.12)',
+    },
+  };
+}
+
+function getErrorLabel(error: Error, fallback: string): string {
+  return error?.message ? error.message : fallback;
+}
+
 export function GlobalAddressBook() {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -31,10 +73,11 @@ export function GlobalAddressBook() {
   const [isRequestInProgress, setIsRequestInProgress] = useState(false);
   const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
 
-  const mailstoreNames = mailstoresList
-    .map((mailbox) => mailbox?.name)
-    .filter((name): name is string => Boolean(name));
-  const targetServer = mailstoreNames[0];
+  const targetServer = mailstoresList.find((mailbox) => Boolean(mailbox?.name))?.name;
+  const fallbackError = t(
+    'label.something_wrong_error_msg',
+    'Something went wrong. Please try again.',
+  );
 
   useEffect(() => {
     if (userSetting?.attrs?.zimbraIsAdminAccount === TRUE) {
@@ -66,9 +109,7 @@ export function GlobalAddressBook() {
         createSnackbar({
           key: 'error',
           severity: 'error',
-          label: error?.message
-            ? error.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          label: getErrorLabel(error, fallbackError),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -124,9 +165,7 @@ export function GlobalAddressBook() {
         createSnackbar({
           key: 'error',
           severity: 'error',
-          label: error?.message
-            ? error.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          label: getErrorLabel(error, fallbackError),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -144,29 +183,9 @@ export function GlobalAddressBook() {
     Boolean(targetServer) &&
     (serviceStatus.running ? serviceStatus.couldStop : serviceStatus.couldStart);
 
-  const statusColor = serviceStatus.running ? 'success' : 'error';
-  const statusAccentBorder = serviceStatus.running
-    ? '0.25rem solid var(--color-success-regular)'
-    : '0.25rem solid var(--color-error-regular)';
-  const statusDotStyle = serviceStatus.running
-    ? {
-        width: '0.6875rem',
-        height: '0.6875rem',
-        borderRadius: '50%',
-        background: 'var(--color-success-regular)',
-        flexShrink: 0,
-        marginTop: '0.375rem',
-        boxShadow: '0 0 0 4px rgba(139, 195, 74, 0.15)',
-      }
-    : {
-        width: '0.6875rem',
-        height: '0.6875rem',
-        borderRadius: '50%',
-        background: 'var(--color-error-regular)',
-        flexShrink: 0,
-        marginTop: '0.375rem',
-        boxShadow: '0 0 0 4px rgba(215, 73, 66, 0.12)',
-      };
+  const { statusColor, statusAccentBorder, statusDotStyle } = getStatusPresentation(
+    serviceStatus.running,
+  );
 
   return (
     <Container mainAlignment="flex-start" background="gray6">

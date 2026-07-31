@@ -38,7 +38,7 @@ export async function doStartStopAddressBookService(
 			ok?: boolean;
 		};
 		const serverResult = parsed?.response?.[targetServers];
-		if (serverResult && serverResult.ok === false) {
+		if (serverResult?.ok === false) {
 			throw new Error(serverResult.message ?? `${action} failed`);
 		}
 	}
