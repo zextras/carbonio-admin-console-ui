@@ -30,6 +30,7 @@ import { matchPath, useLocation } from 'react-router';
 import {
   ACCOUNTS,
   ACTIVE_SYNC,
+  ADDRESS_BOOK,
   AUTHENTICATION,
   BOOLEAN_FALSE,
   CONFIG,
@@ -270,6 +271,11 @@ const DomainListPanel: FC = () => {
       {
         id: ACTIVE_SYNC,
         name: t('label.active_sync', 'ActiveSync'),
+        isSelected: isDomainSelect,
+      },
+      {
+        id: ADDRESS_BOOK,
+        name: t('label.address_book', 'Address Book'),
         isSelected: isDomainSelect,
       },
       {

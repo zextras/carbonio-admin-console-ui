@@ -156,21 +156,28 @@ describe('GlobalAddressBook (browser)', () => {
 	});
 
 	describe('Rendering', () => {
-		it('should render the Global address book title', async () => {
+		it('should render the Global Address Book title', async () => {
 			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
 			await setupBrowserTest(<GlobalAddressBook />);
 			await expect
-				.element(page.getByText('Global address book', { exact: true }))
+				.element(page.getByText('Global Address Book', { exact: true }))
 				.toBeInTheDocument();
 		});
 
-		it('should render the service description', async () => {
+		it('should render the status card description and global scope note when running', async () => {
 			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
 			await setupBrowserTest(<GlobalAddressBook />);
 			await expect
 				.element(
 					page.getByText(
-						/Start or stop the LDAP Address Book service for this installation/i,
+						/Shared address book folders are reachable by LDAP clients on every domain/i,
+					),
+				)
+				.toBeInTheDocument();
+			await expect
+				.element(
+					page.getByText(
+						/Starting or stopping the service applies globally, to every domain on this infrastructure/i,
 					),
 				)
 				.toBeInTheDocument();
@@ -180,6 +187,7 @@ describe('GlobalAddressBook (browser)', () => {
 			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
 			await setupBrowserTest(<GlobalAddressBook />);
 			await expect.element(page.getByText('running', { exact: true })).toBeInTheDocument();
+			await expect.element(page.getByText('RUNNING', { exact: true })).toBeInTheDocument();
 			await expect
 				.element(page.getByRole('button', { name: /stop service/i }))
 				.toBeInTheDocument();
@@ -190,6 +198,14 @@ describe('GlobalAddressBook (browser)', () => {
 			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
 			await setupBrowserTest(<GlobalAddressBook />);
 			await expect.element(page.getByText('stopped', { exact: true })).toBeInTheDocument();
+			await expect.element(page.getByText('STOPPED', { exact: true })).toBeInTheDocument();
+			await expect
+				.element(
+					page.getByText(
+						/Shared address book folders are not reachable by LDAP clients/i,
+					),
+				)
+				.toBeInTheDocument();
 			await expect
 				.element(page.getByRole('button', { name: /start service/i }))
 				.toBeInTheDocument();

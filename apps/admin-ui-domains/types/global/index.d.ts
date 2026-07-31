@@ -30,3 +30,16 @@ export type AddressBookZextrasSoapResponse = {
 		};
 	};
 };
+
+export type AddressBookFolder = {
+	id: string | number;
+	name: string;
+	isShared: boolean;
+};
+
+export type AddressBookEntry = {
+	account: string;
+	accountId: string;
+	folderIds?: string;
+	folders: Array<AddressBookFolder>;
+};
