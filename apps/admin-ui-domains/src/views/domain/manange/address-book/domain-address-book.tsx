@@ -34,15 +34,85 @@ function entryMatchesSearch(entry: AddressBookEntry, query: string): boolean {
   });
 }
 
+function refreshSelectedEntry(
+  current: AddressBookEntry | null,
+  books: Array<AddressBookEntry>,
+): AddressBookEntry | null {
+  if (!current) {
+    return null;
+  }
+  return (
+    books.find(
+      (book) => book.accountId === current.accountId || book.account === current.account,
+    ) ?? null
+  );
+}
+
+type AddressBookAccountRowProps = {
+  entry: AddressBookEntry;
+  index: number;
+  onSelect: (entry: AddressBookEntry) => void;
+};
+
+function AddressBookAccountRow({
+  entry,
+  index,
+  onSelect,
+}: Readonly<AddressBookAccountRowProps>) {
+  return (
+    <Container
+      orientation="horizontal"
+      width="100%"
+      height="fit"
+      mainAlignment="flex-start"
+      crossAlignment="center"
+      padding={{ all: 'large' }}
+      gap="0.875rem"
+      background="gray6"
+      borderColor={index > 0 ? { top: 'gray3' } : undefined}
+      style={{ cursor: 'pointer' }}
+      onClick={(): void => onSelect(entry)}
+    >
+      <Container
+        width="2.125rem"
+        height="2.125rem"
+        minWidth="2.125rem"
+        mainAlignment="center"
+        crossAlignment="center"
+        background="highlight"
+        style={{
+          borderRadius: '50%',
+          flexShrink: 0,
+        }}
+      >
+        <ds-text as="span" size="small" weight="bold" color="primary">
+          {getAccountAvatarLabel(entry.account)}
+        </ds-text>
+      </Container>
+      <Container
+        width="fill"
+        height="fit"
+        mainAlignment="flex-start"
+        crossAlignment="flex-start"
+        minWidth="0"
+        flexGrow={1}
+      >
+        <ds-text as="span" size="small" weight="medium" overflow="ellipsis">
+          {entry.account}
+        </ds-text>
+      </Container>
+      <ds-icon icon="ChevronRight" size="large" color="secondary"></ds-icon>
+    </Container>
+  );
+}
+
 export function DomainAddressBook() {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name ?? '';
   const { data: mailstoresList = [] } = useMailstoreServers();
-  const targetServer = mailstoresList
-    .map((mailbox) => mailbox?.name)
-    .filter((name): name is string => Boolean(name))[0];
+  const targetServer = mailstoresList.find((mailbox) => Boolean(mailbox?.name))?.name;
 
   const [entries, setEntries] = useState<Array<AddressBookEntry>>([]);
   const [searchString, setSearchString] = useState('');
@@ -59,18 +129,7 @@ export function DomainAddressBook() {
     listAddressBooks({ domain: domainName, targetServers: targetServer })
       .then((books) => {
         setEntries(books);
-        setSelectedEntry((current) => {
-          if (!current) {
-            return null;
-          }
-          const refreshed = books.find(
-            (book) => book.accountId === current.accountId || book.account === current.account,
-          );
-          if (!refreshed) {
-            return null;
-          }
-          return refreshed;
-        });
+        setSelectedEntry((current) => refreshSelectedEntry(current, books));
       })
       .catch((error: Error) => {
         createSnackbar({
@@ -217,50 +276,12 @@ export function DomainAddressBook() {
               </Container>
             ) : (
               filteredEntries.map((entry, index) => (
-                <Container
+                <AddressBookAccountRow
                   key={entry.accountId || entry.account}
-                  orientation="horizontal"
-                  width="100%"
-                  height="fit"
-                  mainAlignment="flex-start"
-                  crossAlignment="center"
-                  padding={{ all: 'large' }}
-                  gap="0.875rem"
-                  background="gray6"
-                  borderColor={index > 0 ? { top: 'gray3' } : undefined}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(): void => openDetail(entry)}
-                >
-                  <Container
-                    width="2.125rem"
-                    height="2.125rem"
-                    minWidth="2.125rem"
-                    mainAlignment="center"
-                    crossAlignment="center"
-                    background="highlight"
-                    style={{
-                      borderRadius: '50%',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <ds-text as="span" size="small" weight="bold" color="primary">
-                      {getAccountAvatarLabel(entry.account)}
-                    </ds-text>
-                  </Container>
-                  <Container
-                    width="fill"
-                    height="fit"
-                    mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                    minWidth="0"
-                    flexGrow={1}
-                  >
-                    <ds-text as="span" size="small" weight="medium" overflow="ellipsis">
-                      {entry.account}
-                    </ds-text>
-                  </Container>
-                  <ds-icon icon="ChevronRight" size="large" color="secondary"></ds-icon>
-                </Container>
+                  entry={entry}
+                  index={index}
+                  onSelect={openDetail}
+                />
               ))
             )}
           </Container>

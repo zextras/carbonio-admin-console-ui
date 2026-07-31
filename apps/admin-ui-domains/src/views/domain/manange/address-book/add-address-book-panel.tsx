@@ -17,7 +17,7 @@ import {
 } from '@zextras/ui-components';
 import { searchDirectory, useMailstoreServers } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookEntry, AddressBookFolder } from '../../../../../types';
@@ -41,6 +41,8 @@ type FolderSelectItem = {
 
 type FolderMode = 'all' | 'specific';
 
+type TranslateFn = (key: string, defaultValue: string) => string;
+
 function getLinkedFolderIds(entry: AddressBookEntry | undefined): Array<string> {
   if (!entry) {
     return [];
@@ -48,18 +50,34 @@ function getLinkedFolderIds(entry: AddressBookEntry | undefined): Array<string> 
   return (entry.folders ?? []).map((folder) => String(folder.id));
 }
 
+function getFolderSelectLabel(name: string, isShared: boolean, sharedLabel: string): string {
+  if (isShared) {
+    return `${name} (${sharedLabel})`;
+  }
+  return name;
+}
+
+function getAccountError(account: string, t: TranslateFn): string | null {
+  const trimmed = account.trim();
+  if (trimmed === '') {
+    return t('label.account_is_required', 'Account is required');
+  }
+  if (isValidEmail(trimmed)) {
+    return null;
+  }
+  return t('label.enter_a_valid_email_address', 'Enter a valid email address');
+}
+
 export function AddAddressBookPanel({
   domainName,
   existingEntries,
   onClose,
   onAdded,
-}: AddAddressBookPanelProps) {
+}: Readonly<AddAddressBookPanelProps>) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { data: mailstoresList = [] } = useMailstoreServers();
-  const targetServer = mailstoresList
-    .map((mailbox) => mailbox?.name)
-    .filter((name): name is string => Boolean(name))[0];
+  const targetServer = mailstoresList.find((mailbox) => Boolean(mailbox?.name))?.name;
 
   const [account, setAccount] = useState('');
   const [selectedAccount, setSelectedAccount] = useState('');
@@ -78,11 +96,7 @@ export function AddAddressBookPanel({
   const linkedFolderIds = getLinkedFolderIds(existingEntry);
   const hasAllShared = linkedFolderIds.includes('all');
 
-  const accountError = !account.trim()
-    ? t('label.account_is_required', 'Account is required')
-    : !isValidEmail(account.trim())
-      ? t('label.enter_a_valid_email_address', 'Enter a valid email address')
-      : null;
+  const accountError = getAccountError(account, t);
   const folderError =
     folderMode === 'specific' && !selectedFolder?.value
       ? t('label.select_an_address_book', 'Select an address book')
@@ -102,6 +116,7 @@ export function AddAddressBookPanel({
     hasValidSelectedAccount &&
     Boolean(targetServer) &&
     !isLoadingFolders;
+  const sharedLabel = t('label.shared', 'shared');
 
   function getSearchAccountList(searchKeyword: string): void {
     const attrs =
@@ -177,7 +192,7 @@ export function AddAddressBookPanel({
         const items = folders
           .filter((folder) => !linkedIds.has(String(folder.id)))
           .map((folder) => ({
-            label: `${folder.name}${folder.isShared ? ` (${t('label.shared', 'shared')})` : ''}`,
+            label: getFolderSelectLabel(folder.name, folder.isShared === true, sharedLabel),
             value: String(folder.id),
           }));
         setFolderItems(items);
@@ -232,7 +247,7 @@ export function AddAddressBookPanel({
   function onSubmit(): void {
     setAccountTouched(true);
     setFolderTouched(true);
-    if (!canSubmit || allAlreadySharedError) {
+    if (!canSubmit || allAlreadySharedError || !targetServer) {
       return;
     }
 
@@ -242,7 +257,7 @@ export function AddAddressBookPanel({
       domain: domainName,
       account: selectedAccount,
       folder,
-      targetServers: targetServer as string,
+      targetServers: targetServer,
     })
       .then(() => {
         createSnackbar({
@@ -271,6 +286,47 @@ export function AddAddressBookPanel({
       .finally(() => {
         setIsSubmitting(false);
       });
+  }
+
+  function renderSpecificFolderSection(): ReactNode {
+    if (hasValidSelectedAccount && isLoadingFolders) {
+      return (
+        <Padding all="small">
+          <ds-spinner />
+        </Padding>
+      );
+    }
+
+    if (hasValidSelectedAccount) {
+      return (
+        <>
+          <Select
+            key={selectedFolder?.value ?? 'folder-unselected'}
+            items={folderItems}
+            background="gray5"
+            label={t('label.select_an_address_book_ellipsis', 'Select an address book…')}
+            showCheckbox={false}
+            defaultSelection={selectedFolder}
+            onChange={(value: string | null): void => {
+              setFolderTouched(true);
+              const next = folderItems.find((item) => item.value === value);
+              setSelectedFolder(next);
+            }}
+          />
+          {folderTouched && folderError && (
+            <ds-text as="span" size="small" color="error">
+              {folderError}
+            </ds-text>
+          )}
+        </>
+      );
+    }
+
+    return (
+      <ds-text as="span" size="small" color="gray1">
+        {t('label.select_a_valid_account_first', 'Select a valid account first')}
+      </ds-text>
+    );
   }
 
   const dropdownItems = searchResults.map((item) => ({
@@ -383,36 +439,7 @@ export function AddAddressBookPanel({
 
         {folderMode === 'specific' && (
           <Container height="fit" width="100%" crossAlignment="flex-start" gap="0.75rem">
-            {!hasValidSelectedAccount ? (
-              <ds-text as="span" size="small" color="gray1">
-                {t('label.select_a_valid_account_first', 'Select a valid account first')}
-              </ds-text>
-            ) : isLoadingFolders ? (
-              <Padding all="small">
-                <ds-spinner />
-              </Padding>
-            ) : (
-              <>
-                <Select
-                  key={selectedFolder?.value ?? 'folder-unselected'}
-                  items={folderItems}
-                  background="gray5"
-                  label={t('label.select_an_address_book_ellipsis', 'Select an address book…')}
-                  showCheckbox={false}
-                  defaultSelection={selectedFolder}
-                  onChange={(value: string | null): void => {
-                    setFolderTouched(true);
-                    const next = folderItems.find((item) => item.value === value);
-                    setSelectedFolder(next);
-                  }}
-                />
-                {folderTouched && folderError && (
-                  <ds-text as="span" size="small" color="error">
-                    {folderError}
-                  </ds-text>
-                )}
-              </>
-            )}
+            {renderSpecificFolderSection()}
           </Container>
         )}
 

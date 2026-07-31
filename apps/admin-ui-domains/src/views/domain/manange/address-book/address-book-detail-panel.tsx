@@ -73,7 +73,14 @@ function getFolderDisplayName(name: string): string {
     return name;
   }
   const segments = name.split('/').filter(Boolean);
-  return segments[segments.length - 1] ?? name;
+  return segments.at(-1) ?? name;
+}
+
+function getFolderSelectLabel(name: string, isShared: boolean, sharedLabel: string): string {
+  if (isShared) {
+    return `${name} (${sharedLabel})`;
+  }
+  return name;
 }
 
 export function AddressBookDetailPanel({
@@ -81,13 +88,11 @@ export function AddressBookDetailPanel({
   entry,
   onClose,
   onChanged,
-}: AddressBookDetailPanelProps) {
+}: Readonly<AddressBookDetailPanelProps>) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { data: mailstoresList = [] } = useMailstoreServers();
-  const targetServer = mailstoresList
-    .map((mailbox) => mailbox?.name)
-    .filter((name): name is string => Boolean(name))[0];
+  const targetServer = mailstoresList.find((mailbox) => Boolean(mailbox?.name))?.name;
 
   const [folders, setFolders] = useState<Array<AddressBookFolder>>(entry.folders ?? []);
   const [mailboxFolders, setMailboxFolders] = useState<Array<AddressBookFolder>>([]);
@@ -102,12 +107,13 @@ export function AddressBookDetailPanel({
 
   const hasAllShared = folders.some((folder) => String(folder.id) === 'all');
   const linkedIds = new Set(folders.map((folder) => String(folder.id)));
+  const sharedLabel = t('label.shared', 'shared');
   const availableFolderItems: Array<FolderSelectItem> = hasAllShared
     ? []
     : mailboxFolders
         .filter((folder) => !linkedIds.has(String(folder.id)))
         .map((folder) => ({
-          label: `${folder.name}${folder.isShared ? ` (${t('label.shared', 'shared')})` : ''}`,
+          label: getFolderSelectLabel(folder.name, folder.isShared === true, sharedLabel),
           value: String(folder.id),
         }));
   const canOpenInlineAdd = !hasAllShared && availableFolderItems.length > 0;
@@ -353,31 +359,7 @@ export function AddressBookDetailPanel({
             </Container>
           )}
 
-          {!isAdding ? (
-            <>
-              <Button
-                type="outlined"
-                color="primary"
-                label={t('label.add_address_book', 'Add address book')}
-                icon="Plus"
-                onClick={(): void => setIsAdding(true)}
-                disabled={!canOpenInlineAdd || isResolvingFolders}
-              />
-              {(hasAllShared || availableFolderItems.length === 0) && !isResolvingFolders && (
-                <ds-text as="p" size="small" color="gray1" overflow="break-word">
-                  {hasAllShared
-                    ? t(
-                        'label.all_address_books_already_shared',
-                        'All address books of this account are already shared.',
-                      )
-                    : t(
-                        'label.every_address_book_already_shared',
-                        'Every address book of this account is already shared.',
-                      )}
-                </ds-text>
-              )}
-            </>
-          ) : (
+          {isAdding ? (
             <Container
               width="100%"
               height="fit"
@@ -445,6 +427,30 @@ export function AddressBookDetailPanel({
                 />
               </Row>
             </Container>
+          ) : (
+            <>
+              <Button
+                type="outlined"
+                color="primary"
+                label={t('label.add_address_book', 'Add address book')}
+                icon="Plus"
+                onClick={(): void => setIsAdding(true)}
+                disabled={!canOpenInlineAdd || isResolvingFolders}
+              />
+              {(hasAllShared || availableFolderItems.length === 0) && !isResolvingFolders && (
+                <ds-text as="p" size="small" color="gray1" overflow="break-word">
+                  {hasAllShared
+                    ? t(
+                        'label.all_address_books_already_shared',
+                        'All address books of this account are already shared.',
+                      )
+                    : t(
+                        'label.every_address_book_already_shared',
+                        'Every address book of this account is already shared.',
+                      )}
+                </ds-text>
+              )}
+            </>
           )}
         </Container>
       </Container>
