@@ -169,7 +169,7 @@ export const CreateNewCosStep2 = ({ form }: CreateNewCosStep2Props) => {
         </Padding>
 
         <Button
-          label={t('label.next', 'Next')}
+          label={t('label.create', 'create')}
           icon="CheckmarkCircle"
           color="primary"
           disabled={!form.state.canSubmit}

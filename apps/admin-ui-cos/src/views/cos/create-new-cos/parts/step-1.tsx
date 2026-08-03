@@ -171,7 +171,7 @@ export const CreateNewCosStep1 = ({ form, onNext }: CreateNewCosStep1Props) => {
 
         <Button
           label={t('label.next', 'Next')}
-          icon="CheckmarkCircle"
+          icon="ArrowForwardOutline"
           color="primary"
           disabled={!form.state.canSubmit}
           onClick={onNext}
