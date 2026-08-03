@@ -6,18 +6,18 @@
 
 import { useSelector } from '@tanstack/react-store';
 import {
-  Button,
   CustomTextArea,
   getFieldErrorProps,
   Input,
   ListRow,
 } from '@zextras/ui-components';
-import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CREATE_COS_VALIDATION_MESSAGES } from '../schema';
 import type { CreateCosFormApi } from '../types';
+import { StepFooter } from './step-footer';
+import { StepHeader } from './step-header';
 import styles from './steps.module.css';
 
 type CreateNewCosStep2Props = {
@@ -29,22 +29,9 @@ export const CreateNewCosStep2 = ({ form, onBack }: CreateNewCosStep2Props) => {
   const [t] = useTranslation();
   const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
 
-  const onCancel = (): void => {
-    replaceHistory('/');
-  };
-
   return (
     <div className={styles.root}>
-      <div className={styles.header}>
-        <div className={styles.headerRow}>
-          <div className={styles.headerTitle}>
-            <ds-text as="strong" size="medium" weight="bold" color="gray0">
-              {t('label.new_cos', 'New COS')}
-            </ds-text>
-          </div>
-          <ds-divider></ds-divider>
-        </div>
-      </div>
+      <StepHeader />
       <div className={styles.scrollArea}>
         <div className={styles.formRow}>
           <div className={styles.formPanel}>
@@ -132,28 +119,7 @@ export const CreateNewCosStep2 = ({ form, onBack }: CreateNewCosStep2Props) => {
           </div>
         </div>
       </div>
-      <div className={styles.footer}>
-        <Button
-          label={t('label.cancel', 'Cancel')}
-          icon="Close"
-          color="secondary"
-          onClick={onCancel}
-        />
-        <div className={styles.footerActions}>
-          <Button
-            label={t('label.back', 'BACK')}
-            color="secondary"
-            onClick={onBack}
-          />
-          <Button
-            label={t('label.create', 'create')}
-            icon="CheckmarkCircle"
-            color="primary"
-            disabled={!form.state.canSubmit}
-            onClick={() => form.handleSubmit()}
-          />
-        </div>
-      </div>
+      <StepFooter form={form} onBack={onBack} onPrimary={() => form.handleSubmit()} />
     </div>
   );
 };
