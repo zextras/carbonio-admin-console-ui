@@ -4,46 +4,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
   CustomTextArea,
+  getFieldErrorProps,
   Input,
   ListRow,
   Padding,
   Row,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Attribute } from '../../../../../types/attribute';
-import { GENERAL_INFORMATION } from '../../../../constants';
-import { useCreateCos } from '../../../../services/use-create-cos';
+import { CREATE_COS_VALIDATION_MESSAGES } from '../schema';
+import type { CreateCosFormApi } from '../types';
 
-export const CreateNewCosStep2 = () => {
+type CreateNewCosStep2Props = {
+  form: CreateCosFormApi;
+};
+
+export const CreateNewCosStep2 = ({ form }: CreateNewCosStep2Props) => {
   const [t] = useTranslation();
-  const [zimbraNotes, setZimbraNotes] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [cosName, setCosName] = useState<string>('');
-  const createCosMutation = useCreateCos();
-
-  const onCreate = (): void => {
-    const attributes: Array<Attribute> = [
-      { n: 'zimbraNotes', _content: zimbraNotes },
-      { n: 'description', _content: description },
-      { n: 'cn', _content: cosName },
-    ];
-    createCosMutation.mutate(
-      { name: cosName, attributes },
-      {
-        onSuccess: (data) => {
-          const cos = data?.cos[0];
-          replaceHistory(cos ? `/${cos.id}/${GENERAL_INFORMATION}` : '/');
-        },
-      },
-    );
-  };
+  const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
 
   const onCancel = (): void => {
     replaceHistory('/');
@@ -89,14 +74,28 @@ export const CreateNewCosStep2 = () => {
             </Row>
             <ListRow>
               <Container padding={{ all: 'small' }} crossAlignment="flex-start">
-                <Input
-                  label={t('label.cos_name', 'Cos Name')}
-                  backgroundColor="gray5"
-                  value={cosName}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    setCosName(e.target.value.toLowerCase());
+                <form.Field name="cn">
+                  {(field) => {
+                    const error = getFieldErrorProps(
+                      field,
+                      isSubmitted,
+                      t,
+                      CREATE_COS_VALIDATION_MESSAGES,
+                    );
+                    return (
+                      <Input
+                        label={t('label.cos_name', 'Cos Name')}
+                        backgroundColor="gray5"
+                        value={field.state.value}
+                        hasError={error.hasError}
+                        description={error.description}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                          field.handleChange(e.target.value.toLowerCase());
+                        }}
+                      />
+                    );
                   }}
-                />
+                </form.Field>
                 <Padding top="small">
                   <ds-text as="span" size="small" color="gray1">
                     {t(
@@ -109,26 +108,44 @@ export const CreateNewCosStep2 = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ all: 'small' }}>
-                <Input
-                  label={t('label.description', 'Description')}
-                  backgroundColor="gray5"
-                  value={description}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    setDescription(e.target.value);
+                <form.Field name="description">
+                  {(field) => {
+                    const error = getFieldErrorProps(
+                      field,
+                      isSubmitted,
+                      t,
+                      CREATE_COS_VALIDATION_MESSAGES,
+                    );
+                    return (
+                      <Input
+                        label={t('label.description', 'Description')}
+                        backgroundColor="gray5"
+                        value={field.state.value}
+                        hasError={error.hasError}
+                        description={error.description}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                          field.handleChange(e.target.value);
+                        }}
+                      />
+                    );
                   }}
-                />
+                </form.Field>
               </Container>
             </ListRow>
             <ListRow>
               <Container padding={{ all: 'small' }}>
-                <CustomTextArea
-                  label={t('label.notes', 'Notes')}
-                  backgroundColor="gray5"
-                  value={zimbraNotes}
-                  onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
-                    setZimbraNotes(e.target.value);
-                  }}
-                />
+                <form.Field name="zimbraNotes">
+                  {(field) => (
+                    <CustomTextArea
+                      label={t('label.notes', 'Notes')}
+                      backgroundColor="gray5"
+                      value={field.state.value}
+                      onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
+                        field.handleChange(e.target.value);
+                      }}
+                    />
+                  )}
+                </form.Field>
               </Container>
             </ListRow>
           </Container>
@@ -155,8 +172,8 @@ export const CreateNewCosStep2 = () => {
           label={t('label.next', 'Next')}
           icon="CheckmarkCircle"
           color="primary"
-          disabled={cosName === ''}
-          onClick={onCreate}
+          disabled={!form.state.canSubmit}
+          onClick={() => form.handleSubmit()}
         />
       </Container>
     </Container>
