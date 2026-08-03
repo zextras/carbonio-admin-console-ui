@@ -53,7 +53,9 @@ vi.mock('../../two-factor-authentication/2fa-config', () => ({
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
 
-function setup(ui: ReactElement, initialPolicies: unknown[] = []) {
+const INITIAL_POLICY = [{ WebUI: { trustedDevice: 0, trustedIpRange: [] } }];
+
+function setup(ui: ReactElement, initialPolicies: unknown[] = INITIAL_POLICY) {
 	const queryClient = getQueryClient();
 	queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
 		id: DOMAIN_ID,
