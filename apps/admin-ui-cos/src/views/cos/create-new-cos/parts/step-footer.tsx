@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import { Button } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +26,7 @@ export const StepFooter = ({
   onPrimary,
 }: StepFooterProps) => {
   const [t] = useTranslation();
+  const canSubmit = useSelector(form.store, (s) => s.canSubmit);
   return (
     <div className={styles.footer}>
       <Button
@@ -45,7 +47,7 @@ export const StepFooter = ({
           label={isFirstStep ? t('label.next', 'Next') : t('label.create', 'create')}
           icon={isFirstStep ? 'ArrowForwardOutline' : 'CheckmarkCircle'}
           color="primary"
-          disabled={!form.state.canSubmit}
+          disabled={!canSubmit}
           onClick={onPrimary}
         />
       </div>

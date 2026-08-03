@@ -44,6 +44,7 @@ export const CreateNewCos = () => {
     defaultValues: { cn: '', description: '', zimbraNotes: '' },
     validators: {
       onChange: createCosSchema,
+      onMount: createCosSchema,
       onSubmit: createCosSchema,
     },
     onSubmit: async ({ value }) => {
