@@ -6,9 +6,9 @@
 
 import { domainByIdKey } from '@zextras/ui-shared';
 import {
-  createBrowserSoapAPIInterceptor,
-  getQueryClient,
-  setupBrowserTest,
+	createBrowserSoapAPIInterceptor,
+	getQueryClient,
+	setupBrowserTest
 } from 'admin-ui-test-utils';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
@@ -21,166 +21,270 @@ const DOMAIN_NAME = 'example.com';
 type DomainAttribute = { n: string; _content: string };
 
 function buildDisclaimerDomainAttributes(
-  overrides: Array<DomainAttribute> = [],
+	overrides: Array<DomainAttribute> = []
 ): Array<DomainAttribute> {
-  const defaults: Array<DomainAttribute> = [
-    { n: 'zimbraDomainName', _content: DOMAIN_NAME },
-    { n: 'zimbraId', _content: DOMAIN_ID },
-    { n: 'zimbraDomainMandatoryMailSignatureEnabled', _content: 'TRUE' },
-    { n: 'zimbraAmavisDomainDisclaimerText', _content: 'Sample disclaimer text' },
-    { n: 'zimbraAmavisDomainDisclaimerHTML', _content: '<p>Sample HTML disclaimer</p>' },
-  ];
+	const defaults: Array<DomainAttribute> = [
+		{ n: 'zimbraDomainName', _content: DOMAIN_NAME },
+		{ n: 'zimbraId', _content: DOMAIN_ID },
+		{ n: 'zimbraDomainMandatoryMailSignatureEnabled', _content: 'TRUE' },
+		{ n: 'zimbraAmavisDomainDisclaimerText', _content: 'Sample disclaimer text' },
+		{ n: 'zimbraAmavisDomainDisclaimerHTML', _content: '<p>Sample HTML disclaimer</p>' }
+	];
 
-  const overrideKeys = new Set(overrides.map((o) => o.n));
-  const filtered = defaults.filter((d) => !overrideKeys.has(d.n));
-  return [...filtered, ...overrides];
+	const overrideKeys = new Set(overrides.map((o) => o.n));
+	const filtered = defaults.filter((d) => !overrideKeys.has(d.n));
+	return [...filtered, ...overrides];
 }
 
 function setupDisclaimerTest(
-  attributeOverrides: Array<DomainAttribute> = [],
+	attributeOverrides: Array<DomainAttribute> = []
 ): ReturnType<typeof getQueryClient> {
-  const domainAttributes = buildDisclaimerDomainAttributes(attributeOverrides);
-  const queryClient = getQueryClient();
-  queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
-    id: DOMAIN_ID,
-    name: DOMAIN_NAME,
-    a: domainAttributes,
-  });
-  return queryClient;
+	const domainAttributes = buildDisclaimerDomainAttributes(attributeOverrides);
+	const queryClient = getQueryClient();
+	const domainData = {
+		id: DOMAIN_ID,
+		name: DOMAIN_NAME,
+		a: domainAttributes
+	};
+	queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), domainData);
+	queryClient.setQueryData(['account', 'settings'], { prefs: {}, attrs: {}, props: [] });
+	return queryClient;
 }
 
 describe('DomainDisclaimer', () => {
-  let queryClient: ReturnType<typeof getQueryClient>;
+	let queryClient: ReturnType<typeof getQueryClient>;
 
-  it('should render the Disclaimer header', async () => {
-    queryClient = setupDisclaimerTest();
-    setupBrowserTest(<DomainDisclaimer />, {
-      queryClient,
-      initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
-      withDomainIdRoute: true,
-    });
+	describe('Rendering', () => {
+		it('should render the Disclaimer header', async () => {
+			queryClient = setupDisclaimerTest();
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
 
-    await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
-  });
+			await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+		});
 
-  it('should render the Disclaimer switch', async () => {
-    queryClient = setupDisclaimerTest();
-    setupBrowserTest(<DomainDisclaimer />, {
-      queryClient,
-      initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
-      withDomainIdRoute: true,
-    });
+		it('should render the Disclaimer switch', async () => {
+			queryClient = setupDisclaimerTest();
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
 
-    await expect.element(page.getByText('Enable disclaimers for this domain')).toBeVisible();
-  });
+			await expect.element(page.getByText('Enable disclaimers for this domain')).toBeVisible();
+		});
 
-  it('should call ModifyDomain API when Save is clicked', async () => {
-    const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
-      domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }],
-    });
-    queryClient = setupDisclaimerTest();
-    setupBrowserTest(<DomainDisclaimer />, {
-      queryClient,
-      initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
-      withDomainIdRoute: true,
-    });
+		it('should render text in the TextArea from domain data', async () => {
+			queryClient = setupDisclaimerTest();
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
 
-    await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+			await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
 
-    const saveButton = page.getByRole('button', { name: /save/i });
-    await saveButton.click();
+			const textArea = page.getByRole('textbox');
+			await expect.element(textArea).toHaveValue('Sample disclaimer text');
+		});
 
-    const requestParams = (await modifyDomainInterceptor) as any;
-    expect(requestParams.id).toBe(DOMAIN_ID);
-    expect(requestParams.a).toBeDefined();
-    const enabledAttr = requestParams.a.find(
-      (attr: any) => attr.n === 'zimbraDomainMandatoryMailSignatureEnabled',
-    );
-    expect(enabledAttr).toBeDefined();
-    expect(enabledAttr._content).toBe('TRUE');
-  });
+		it('should not show Save and Cancel buttons when not dirty', async () => {
+			queryClient = setupDisclaimerTest();
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
 
-  it('should send empty disclaimer when disabled', async () => {
-    const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
-      domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }],
-    });
-    queryClient = setupDisclaimerTest([
-      { n: 'zimbraDomainMandatoryMailSignatureEnabled', _content: 'FALSE' },
-    ]);
-    setupBrowserTest(<DomainDisclaimer />, {
-      queryClient,
-      initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
-      withDomainIdRoute: true,
-    });
+			await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+			await expect
+				.element(page.getByRole('button', { name: /^save$/i }))
+				.not.toBeInTheDocument();
+			await expect
+				.element(page.getByRole('button', { name: /^cancel$/i }))
+				.not.toBeInTheDocument();
+		});
+	});
 
-    await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+	describe('Dirty state', () => {
+		it('should show Save and Cancel buttons after modifying text', async () => {
+			queryClient = setupDisclaimerTest();
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
 
-    const saveButton = page.getByRole('button', { name: /save/i });
-    await saveButton.click();
+			await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
 
-    const requestParams = (await modifyDomainInterceptor) as any;
-    const enabledAttr = requestParams.a.find(
-      (attr: any) => attr.n === 'zimbraDomainMandatoryMailSignatureEnabled',
-    );
-    expect(enabledAttr._content).toBe('FALSE');
-  });
+			const textArea = page.getByRole('textbox');
+			await userEvent.fill(textArea, 'New disclaimer');
 
-  it('should render text in the TextArea from domain data', async () => {
-    queryClient = setupDisclaimerTest();
-    setupBrowserTest(<DomainDisclaimer />, {
-      queryClient,
-      initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
-      withDomainIdRoute: true,
-    });
+			await expect.element(page.getByRole('button', { name: /^save$/i })).toBeVisible();
+			await expect.element(page.getByRole('button', { name: /^cancel$/i })).toBeVisible();
+		});
 
-    await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+		it('should hide Save and Cancel after clicking Cancel', async () => {
+			queryClient = setupDisclaimerTest();
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
 
-    const textArea = page.getByRole('textbox');
-    await expect.element(textArea).toHaveValue('Sample disclaimer text');
-  });
+			await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
 
-  it('should update text when user types in TextArea', async () => {
-    const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
-      domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }],
-    });
-    queryClient = setupDisclaimerTest();
-    setupBrowserTest(<DomainDisclaimer />, {
-      queryClient,
-      initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
-      withDomainIdRoute: true,
-    });
+			const textArea = page.getByRole('textbox');
+			await userEvent.fill(textArea, 'New disclaimer');
 
-    await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+			await expect.element(page.getByRole('button', { name: /^cancel$/i })).toBeVisible();
+			await page.getByRole('button', { name: /^cancel$/i }).click();
 
-    const textArea = page.getByRole('textbox');
-    await userEvent.fill(textArea, 'New disclaimer');
+			await expect
+				.element(page.getByRole('button', { name: /^save$/i }))
+				.not.toBeInTheDocument();
+		});
+	});
 
-    const saveButton = page.getByRole('button', { name: /save/i });
-    await saveButton.click();
+	describe('Save', () => {
+		it('should call ModifyDomain API when Save is clicked', async () => {
+			const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
+				domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }]
+			});
+			queryClient = setupDisclaimerTest();
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
 
-    const requestParams = (await modifyDomainInterceptor) as any;
-    const textAttr = requestParams.a.find(
-      (attr: any) => attr.n === 'zimbraAmavisDomainDisclaimerText',
-    );
-    expect(textAttr._content).toBe('New disclaimer');
-  });
+			await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
 
-  it('should show success snackbar after save', async () => {
-    createBrowserSoapAPIInterceptor('ModifyDomain', {
-      domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }],
-    });
-    queryClient = setupDisclaimerTest();
-    setupBrowserTest(<DomainDisclaimer />, {
-      queryClient,
-      initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
-      withDomainIdRoute: true,
-    });
+			// Make form dirty by changing text
+			const textArea = page.getByRole('textbox');
+			await userEvent.fill(textArea, 'Modified disclaimer');
 
-    await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+			const saveButton = page.getByRole('button', { name: /save/i });
+			await saveButton.click();
 
-    const saveButton = page.getByRole('button', { name: /save/i });
-    await saveButton.click();
+			const requestParams = (await modifyDomainInterceptor) as any;
+			expect(requestParams.id).toBe(DOMAIN_ID);
+			expect(requestParams.a).toBeDefined();
+			const textAttr = requestParams.a.find(
+				(attr: any) => attr.n === 'zimbraAmavisDomainDisclaimerText'
+			);
+			expect(textAttr._content).toBe('Modified disclaimer');
+		});
 
-    await expect.element(page.getByText('The change has been saved successfully')).toBeVisible();
-  });
+		it('should send enabled TRUE when disclaimer is enabled', async () => {
+			const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
+				domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }]
+			});
+			queryClient = setupDisclaimerTest();
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
+
+			await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+
+			// Make dirty by modifying text
+			const textArea = page.getByRole('textbox');
+			await userEvent.fill(textArea, 'Changed text');
+
+			const saveButton = page.getByRole('button', { name: /save/i });
+			await saveButton.click();
+
+			const requestParams = (await modifyDomainInterceptor) as any;
+			const enabledAttr = requestParams.a.find(
+				(attr: any) => attr.n === 'zimbraDomainMandatoryMailSignatureEnabled'
+			);
+			expect(enabledAttr).toBeDefined();
+			expect(enabledAttr._content).toBe('TRUE');
+		});
+
+		it('should send FALSE when disclaimer is disabled', async () => {
+			const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
+				domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }]
+			});
+			queryClient = setupDisclaimerTest([
+				{ n: 'zimbraDomainMandatoryMailSignatureEnabled', _content: 'TRUE' }
+			]);
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
+
+			await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+
+			// Toggle switch to disable
+			const switchElement = page.getByText('Enable disclaimers for this domain');
+			await switchElement.click();
+
+			const saveButton = page.getByRole('button', { name: /save/i });
+			await saveButton.click();
+
+			const requestParams = (await modifyDomainInterceptor) as any;
+			const enabledAttr = requestParams.a.find(
+				(attr: any) => attr.n === 'zimbraDomainMandatoryMailSignatureEnabled'
+			);
+			expect(enabledAttr._content).toBe('FALSE');
+		});
+
+		it('should update text when user types in TextArea and saves', async () => {
+			const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
+				domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }]
+			});
+			queryClient = setupDisclaimerTest();
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
+
+			await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+
+			const textArea = page.getByRole('textbox');
+			await userEvent.fill(textArea, 'New disclaimer');
+
+			const saveButton = page.getByRole('button', { name: /save/i });
+			await saveButton.click();
+
+			const requestParams = (await modifyDomainInterceptor) as any;
+			const textAttr = requestParams.a.find(
+				(attr: any) => attr.n === 'zimbraAmavisDomainDisclaimerText'
+			);
+			expect(textAttr._content).toBe('New disclaimer');
+		});
+
+		it('should show success snackbar after save', async () => {
+			createBrowserSoapAPIInterceptor('ModifyDomain', {
+				domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }]
+			});
+			queryClient = setupDisclaimerTest();
+			setupBrowserTest(<DomainDisclaimer />, {
+				queryClient,
+				initialRouterEntry: `/${DOMAIN_ID}/disclaimer`,
+				withDomainIdRoute: true
+			});
+
+			await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+
+			// Make dirty
+			const textArea = page.getByRole('textbox');
+			await userEvent.fill(textArea, 'Changed text');
+
+			const saveButton = page.getByRole('button', { name: /save/i });
+			await saveButton.click();
+
+			await expect
+				.element(page.getByText(/saved successfully/i))
+				.toBeVisible();
+		});
+	});
 });
