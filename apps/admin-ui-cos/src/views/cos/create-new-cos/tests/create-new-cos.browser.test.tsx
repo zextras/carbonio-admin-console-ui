@@ -146,6 +146,26 @@ describe('CreateNewCos wizard', () => {
     });
   });
 
+  describe('Edition selection', () => {
+    it('selects Email edition by default', async () => {
+      await setupWizardTest();
+      await expect
+        .element(page.getByRole('radio', { name: 'Email edition' }))
+        .toBeChecked();
+    });
+
+    it('allows switching to Workspace edition', async () => {
+      await setupWizardTest();
+      await page.getByRole('radio', { name: 'Workspace edition' }).click();
+      await expect
+        .element(page.getByRole('radio', { name: 'Workspace edition' }))
+        .toBeChecked();
+      await expect
+        .element(page.getByRole('radio', { name: 'Email edition' }))
+        .not.toBeChecked();
+    });
+  });
+
   describe('Cancel', () => {
     it('calls replaceHistory with / when Cancel is clicked', async () => {
       await setupWizardTest();

@@ -17,6 +17,7 @@ import styles from './create-new-cos.module.css';
 import { CreateNewCosStep1 } from './parts/step-1';
 import { CreateNewCosStep2 } from './parts/step-2';
 import { createCosSchema } from './schema';
+import type { CosEdition } from './types';
 
 export const CreateNewCos = () => {
   const [t] = useTranslation();
@@ -41,7 +42,7 @@ export const CreateNewCos = () => {
   ];
 
   const form = useForm({
-    defaultValues: { cn: '', description: '', zimbraNotes: '' },
+    defaultValues: { cn: '', description: '', zimbraNotes: '', edition: 'email' as CosEdition },
     validators: {
       onChange: createCosSchema,
       onMount: createCosSchema,

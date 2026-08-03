@@ -97,10 +97,11 @@
 
 .sectionTitle {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
+  gap: 0.25rem;
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
@@ -150,4 +151,10 @@
   flex-direction: row;
   align-items: center;
   gap: var(--padding-size-medium);
+}
+
+.editionOption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }

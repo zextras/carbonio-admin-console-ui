@@ -5,10 +5,13 @@
  */
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
 
+export type CosEdition = 'email' | 'workspace';
+
 export type CreateCosFormValues = {
   cn: string;
   description: string;
   zimbraNotes: string;
+  edition: CosEdition;
 };
 
 export type CreateCosFormApi = ReactFormExtendedApi<
