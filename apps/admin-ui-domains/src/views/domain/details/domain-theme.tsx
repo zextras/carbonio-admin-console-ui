@@ -107,7 +107,7 @@ const DomainTheme: FC = () => {
 	const isDirty =
 		Object.keys(domainTheme).length > 0 && !isEqual(domainTheme, initialThemeConfig);
 
-	const zimbraId = domainTheme.zimbraId ?? domainWithoutConfig?.id ?? '';
+	const zimbraId = domainWithoutConfig?.id ?? '';
 
 	// Mutation for save
 	const { mutate: saveMutation, isPending: isSaving } = useDomainMutation<unknown, ModifyDomainBody>(
@@ -178,10 +178,13 @@ const DomainTheme: FC = () => {
 			[]
 		);
 
-		const attributes = modifiedKeys.map((key) => ({
-			n: key,
-			_content: domainTheme[key as keyof themeConfigStore] ?? ''
-		}));
+		const attributes = modifiedKeys.map((key) => {
+			const value = domainTheme[key as keyof themeConfigStore];
+			return {
+				n: key,
+				_content: typeof value === 'boolean' ? String(value).toUpperCase() : (value ?? '')
+			};
+		});
 
 		saveMutation({
 			id: zimbraId,

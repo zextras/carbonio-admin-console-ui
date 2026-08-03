@@ -4,16 +4,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { domainByIdKey } from '@zextras/ui-shared';
+import { domainByIdKey, getDomainInformation } from '@zextras/ui-shared';
 import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import DomainTheme from '../domain-theme';
+
+vi.mock('@zextras/ui-shared', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
+  return {
+    ...actual,
+    getDomainInformation: vi.fn(),
+    flushCache: vi.fn(),
+  };
+});
+
+const mockedGetDomainInformation = vi.mocked(getDomainInformation);
 
 const DOMAIN_ID = 'test-domain-id-123';
 const DOMAIN_NAME = 'example.com';
@@ -104,7 +115,12 @@ describe('DomainTheme', () => {
 
   describe('Save theme', () => {
     it('should call ModifyDomain API when Save is clicked after editing primary color', async () => {
-      const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {});
+      mockedGetDomainInformation.mockResolvedValue({
+        domain: [{ id: DOMAIN_ID, name: DOMAIN_NAME, a: [] }],
+      });
+      const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
+        domain: [{ id: DOMAIN_ID, name: DOMAIN_NAME, a: [] }],
+      });
       queryClient = setupThemeTest();
       setupBrowserTest(<DomainTheme />, {
         queryClient,
@@ -130,6 +146,36 @@ describe('DomainTheme', () => {
       const colorAttr = requestParams.a.find((attr: any) => attr.n === 'carbonioWebUiPrimaryColor');
       expect(colorAttr).toBeDefined();
       expect(colorAttr._content).toBe('#FF0000');
+
+      // Wait for mutation to complete (snackbar appears)
+      await expect.element(page.getByText(/saved successfully/i)).toBeVisible();
+    });
+
+    it('should not call ModifyDomain API when light primary color is invalid', async () => {
+      let apiCalled = false;
+      createBrowserSoapAPIInterceptor('ModifyDomain', {}).then(() => {
+        apiCalled = true;
+      });
+      queryClient = setupThemeTest();
+      setupBrowserTest(<DomainTheme />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ID}/theme`,
+        withDomainIdRoute: true,
+      });
+
+      await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
+
+      const lightColorInput = page
+        .getByTestId('inherited-carbonioWebUiPrimaryColor')
+        .getByRole('textbox');
+      await userEvent.clear(lightColorInput);
+      await userEvent.type(lightColorInput, 'invalid-color');
+
+      const saveButton = page.getByRole('button', { name: /save/i });
+      await saveButton.click();
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(apiCalled).toBe(false);
     });
 
     it('should not call ModifyDomain API when dark primary color is invalid', async () => {
@@ -155,7 +201,6 @@ describe('DomainTheme', () => {
       const saveButton = page.getByRole('button', { name: /save/i });
       await saveButton.click();
 
-      // Wait a bit to ensure API would have been called if it was going to be
       await new Promise((resolve) => setTimeout(resolve, 100));
       expect(apiCalled).toBe(false);
     });
@@ -189,7 +234,12 @@ describe('DomainTheme', () => {
 
   describe('Reset theme', () => {
     it('should open reset dialog and call ModifyDomain with empty fields when Yes is clicked', async () => {
-      const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {});
+      mockedGetDomainInformation.mockResolvedValue({
+        domain: [{ id: DOMAIN_ID, name: DOMAIN_NAME, a: [] }],
+      });
+      const modifyDomainInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
+        domain: [{ id: DOMAIN_ID, name: DOMAIN_NAME, a: [] }],
+      });
       queryClient = setupThemeTest();
       setupBrowserTest(<DomainTheme />, {
         queryClient,
