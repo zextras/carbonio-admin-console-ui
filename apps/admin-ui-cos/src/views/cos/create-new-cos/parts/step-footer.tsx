@@ -19,29 +19,20 @@ type StepFooterProps = {
   onPrimary: () => void;
 };
 
-export const StepFooter = ({
-  form,
-  isFirstStep = false,
-  onBack,
-  onPrimary,
-}: StepFooterProps) => {
+export const StepFooter = ({ form, isFirstStep = false, onBack, onPrimary }: StepFooterProps) => {
   const [t] = useTranslation();
   const canSubmit = useSelector(form.store, (s) => s.canSubmit);
   return (
     <div className={styles.footer}>
       <Button
         label={t('label.cancel', 'Cancel')}
-        icon="Close"
-        color="secondary"
+        type="outlined"
+        color="gray0"
         onClick={() => replaceHistory('/')}
       />
       <div className={styles.footerActions}>
         {!isFirstStep && onBack && (
-          <Button
-            label={t('label.back', 'BACK')}
-            color="secondary"
-            onClick={onBack}
-          />
+          <Button label={t('label.back', 'BACK')} type="outlined" color="gray0" onClick={onBack} />
         )}
         <Button
           label={isFirstStep ? t('label.next', 'Next') : t('label.create', 'create')}
