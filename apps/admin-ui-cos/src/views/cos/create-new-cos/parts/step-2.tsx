@@ -24,9 +24,10 @@ import type { CreateCosFormApi } from '../types';
 
 type CreateNewCosStep2Props = {
   form: CreateCosFormApi;
+  onBack: () => void;
 };
 
-export const CreateNewCosStep2 = ({ form }: CreateNewCosStep2Props) => {
+export const CreateNewCosStep2 = ({ form, onBack }: CreateNewCosStep2Props) => {
   const [t] = useTranslation();
   const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
 
@@ -154,27 +155,34 @@ export const CreateNewCosStep2 = ({ form }: CreateNewCosStep2Props) => {
       <Container
         orientation="horizontal"
         crossAlignment="flex-start"
-        mainAlignment="flex-end"
+        mainAlignment="space-between"
         background="gray6"
         height="58px"
-        padding={{ top: 'small', right: 'large' }}
+        padding={{ top: 'small', right: 'large', left: 'large' }}
       >
-        <Padding right="medium">
-          <Button
-            label={t('label.cancel', 'Cancel')}
-            icon="Close"
-            color="secondary"
-            onClick={onCancel}
-          />
-        </Padding>
-
         <Button
-          label={t('label.create', 'create')}
-          icon="CheckmarkCircle"
-          color="primary"
-          disabled={!form.state.canSubmit}
-          onClick={() => form.handleSubmit()}
+          label={t('label.cancel', 'Cancel')}
+          icon="Close"
+          color="secondary"
+          onClick={onCancel}
         />
+
+        <Row>
+          <Padding right="medium">
+            <Button
+              label={t('label.back', 'BACK')}
+              color="secondary"
+              onClick={onBack}
+            />
+          </Padding>
+          <Button
+            label={t('label.create', 'create')}
+            icon="CheckmarkCircle"
+            color="primary"
+            disabled={!form.state.canSubmit}
+            onClick={() => form.handleSubmit()}
+          />
+        </Row>
       </Container>
     </Container>
   );

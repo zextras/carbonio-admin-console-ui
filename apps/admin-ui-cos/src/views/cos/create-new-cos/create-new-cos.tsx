@@ -73,7 +73,7 @@ export const CreateNewCos = () => {
         {currentStep === 0 ? (
           <CreateNewCosStep1 form={form} onNext={() => setCurrentStep((s) => s + 1)} />
         ) : (
-          <CreateNewCosStep2 form={form} />
+          <CreateNewCosStep2 form={form} onBack={() => setCurrentStep((s) => s - 1)} />
         )}
       </div>
     </div>
