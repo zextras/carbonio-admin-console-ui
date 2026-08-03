@@ -158,6 +158,7 @@ Year is auto-updated by eslint. The header is required in all files except:
 - Browser tests use `.browser.test.tsx` extension and run in Playwright
 - Unit tests use `.test.ts`/`.test.tsx` and run in jsdom
 - Use `admin-ui-test-utils` for shared test utilities
+- Full browser-test conventions (setup, locators, interactions, TanStack Form, MSW) are documented in `docs/browser-test-conventions.md`
 - **Never use `getByTestId`** in browser tests — it couples tests to implementation details invisible to users. Prefer user-facing selectors in this priority order:
   1. `getByRole` (e.g. `getByRole('button', { name: 'Save' })`)
   2. `getByLabelText` (e.g. `getByLabelText('Domain Name')`)
