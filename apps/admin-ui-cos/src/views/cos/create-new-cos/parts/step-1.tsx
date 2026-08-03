@@ -4,20 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSelector } from '@tanstack/react-store';
-import {
-  Button,
-  CustomTextArea,
-  getFieldErrorProps,
-  Input,
-  ListRow,
-} from '@zextras/ui-components';
+import { Button, ListRow } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
-import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CosNameField } from '../fields/cos-name-field';
-import { CREATE_COS_VALIDATION_MESSAGES } from '../schema';
+import { DescriptionField } from '../fields/description-field';
+import { NotesField } from '../fields/notes-field';
 import type { CreateCosFormApi } from '../types';
 import styles from './steps.module.css';
 
@@ -28,7 +21,6 @@ type CreateNewCosStep1Props = {
 
 export const CreateNewCosStep1 = ({ form, onNext }: CreateNewCosStep1Props) => {
   const [t] = useTranslation();
-  const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
 
   const onCancel = (): void => {
     replaceHistory('/');
@@ -58,46 +50,10 @@ export const CreateNewCosStep1 = ({ form, onNext }: CreateNewCosStep1Props) => {
               <CosNameField form={form} />
             </ListRow>
             <ListRow>
-              <div className={styles.fieldCenter}>
-                <form.Field name="description">
-                  {(field) => {
-                    const error = getFieldErrorProps(
-                      field,
-                      isSubmitted,
-                      t,
-                      CREATE_COS_VALIDATION_MESSAGES,
-                    );
-                    return (
-                      <Input
-                        label={t('label.description', 'Description')}
-                        backgroundColor="gray5"
-                        value={field.state.value}
-                        hasError={error.hasError}
-                        description={error.description}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                          field.handleChange(e.target.value);
-                        }}
-                      />
-                    );
-                  }}
-                </form.Field>
-              </div>
+              <DescriptionField form={form} />
             </ListRow>
             <ListRow>
-              <div className={styles.fieldCenter}>
-                <form.Field name="zimbraNotes">
-                  {(field) => (
-                    <CustomTextArea
-                      label={t('label.notes', 'Notes')}
-                      backgroundColor="gray5"
-                      value={field.state.value}
-                      onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
-                        field.handleChange(e.target.value);
-                      }}
-                    />
-                  )}
-                </form.Field>
-              </div>
+              <NotesField form={form} />
             </ListRow>
           </div>
         </div>
