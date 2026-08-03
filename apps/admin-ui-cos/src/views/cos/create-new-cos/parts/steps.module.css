@@ -1,0 +1,153 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: var(--padding-size-large);
+  background: var(--color-gray6-regular);
+  border-radius: var(--border-radius);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  height: 58px;
+  background: var(--color-gray6-regular);
+  border-radius: var(--border-radius);
+}
+
+.headerRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+
+.headerTitle {
+  padding: var(--padding-size-large);
+  width: fit-content;
+  height: fit-content;
+}
+
+.scrollArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(100vh - 150px);
+  overflow: auto;
+  padding-top: var(--padding-size-large);
+  border-radius: var(--border-radius);
+}
+
+.scrollArea::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.scrollArea::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.scrollArea::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray3-regular);
+  border-radius: 0.25rem;
+}
+
+.formRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+
+.formPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: fit-content;
+  background: var(--color-gray6-regular);
+  border-radius: var(--border-radius);
+}
+
+.sectionTitle {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  background: var(--color-gray6-regular);
+  padding: var(--padding-size-large) 0 0 var(--padding-size-large);
+}
+
+.fieldStart,
+.fieldCenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--padding-size-small);
+}
+
+.fieldStart {
+  align-items: flex-start;
+}
+
+.fieldCenter {
+  align-items: center;
+}
+
+.note {
+  padding-top: var(--padding-size-small);
+  width: fit-content;
+  height: fit-content;
+}
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: 58px;
+  background: var(--color-gray6-regular);
+  border-radius: var(--border-radius);
+  padding: var(--padding-size-small) var(--padding-size-large) 0 var(--padding-size-large);
+}
+
+.footerActions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--padding-size-medium);
+}

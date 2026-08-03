@@ -7,13 +7,10 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Button,
-  Container,
   CustomTextArea,
   getFieldErrorProps,
   Input,
   ListRow,
-  Padding,
-  Row,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent } from 'react';
@@ -21,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 import { CREATE_COS_VALIDATION_MESSAGES } from '../schema';
 import type { CreateCosFormApi } from '../types';
+import styles from './steps.module.css';
 
 type CreateNewCosStep2Props = {
   form: CreateCosFormApi;
@@ -36,45 +34,27 @@ export const CreateNewCosStep2 = ({ form, onBack }: CreateNewCosStep2Props) => {
   };
 
   return (
-    <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-      <Container
-        crossAlignment="flex-start"
-        mainAlignment="flex-start"
-        background="gray6"
-        height="58px"
-      >
-        <Row width="100%" mainAlignment="flex-start">
-          <Padding all="large">
+    <div className={styles.root}>
+      <div className={styles.header}>
+        <div className={styles.headerRow}>
+          <div className={styles.headerTitle}>
             <ds-text as="strong" size="medium" weight="bold" color="gray0">
               {t('label.new_cos', 'New COS')}
             </ds-text>
-          </Padding>
+          </div>
           <ds-divider></ds-divider>
-        </Row>
-      </Container>
-      <Container
-        orientation="column"
-        crossAlignment="flex-start"
-        mainAlignment="flex-start"
-        style={{ overflow: 'auto' }}
-        width="100%"
-        height="calc(100vh - 150px)"
-        padding={{ top: 'large' }}
-      >
-        <Row mainAlignment="flex-start" width="100%">
-          <Container height="fit" crossAlignment="flex-start" background="gray6">
-            <Row
-              mainAlignment="flex-start"
-              width="100%"
-              background="gray6"
-              padding={{ left: 'large', top: 'large' }}
-            >
+        </div>
+      </div>
+      <div className={styles.scrollArea}>
+        <div className={styles.formRow}>
+          <div className={styles.formPanel}>
+            <div className={styles.sectionTitle}>
               <ds-text as="strong" size="small" weight="bold" color="gray0">
                 {t('label.general_information', 'General Information')}
               </ds-text>
-            </Row>
+            </div>
             <ListRow>
-              <Container padding={{ all: 'small' }} crossAlignment="flex-start">
+              <div className={styles.fieldStart}>
                 <form.Field name="cn">
                   {(field) => {
                     const error = getFieldErrorProps(
@@ -97,18 +77,18 @@ export const CreateNewCosStep2 = ({ form, onBack }: CreateNewCosStep2Props) => {
                     );
                   }}
                 </form.Field>
-                <Padding top="small">
+                <div className={styles.note}>
                   <ds-text as="span" size="small" color="gray1">
                     {t(
                       'cos.creatCOS.cosNameLowerCaseInfo',
                       'COS name must contain only lowercase letters.',
                     )}
                   </ds-text>
-                </Padding>
-              </Container>
+                </div>
+              </div>
             </ListRow>
             <ListRow>
-              <Container padding={{ all: 'small' }}>
+              <div className={styles.fieldCenter}>
                 <form.Field name="description">
                   {(field) => {
                     const error = getFieldErrorProps(
@@ -131,10 +111,10 @@ export const CreateNewCosStep2 = ({ form, onBack }: CreateNewCosStep2Props) => {
                     );
                   }}
                 </form.Field>
-              </Container>
+              </div>
             </ListRow>
             <ListRow>
-              <Container padding={{ all: 'small' }}>
+              <div className={styles.fieldCenter}>
                 <form.Field name="zimbraNotes">
                   {(field) => (
                     <CustomTextArea
@@ -147,34 +127,24 @@ export const CreateNewCosStep2 = ({ form, onBack }: CreateNewCosStep2Props) => {
                     />
                   )}
                 </form.Field>
-              </Container>
+              </div>
             </ListRow>
-          </Container>
-        </Row>
-      </Container>
-      <Container
-        orientation="horizontal"
-        crossAlignment="flex-start"
-        mainAlignment="space-between"
-        background="gray6"
-        height="58px"
-        padding={{ top: 'small', right: 'large', left: 'large' }}
-      >
+          </div>
+        </div>
+      </div>
+      <div className={styles.footer}>
         <Button
           label={t('label.cancel', 'Cancel')}
           icon="Close"
           color="secondary"
           onClick={onCancel}
         />
-
-        <Row>
-          <Padding right="medium">
-            <Button
-              label={t('label.back', 'BACK')}
-              color="secondary"
-              onClick={onBack}
-            />
-          </Padding>
+        <div className={styles.footerActions}>
+          <Button
+            label={t('label.back', 'BACK')}
+            color="secondary"
+            onClick={onBack}
+          />
           <Button
             label={t('label.create', 'create')}
             icon="CheckmarkCircle"
@@ -182,8 +152,8 @@ export const CreateNewCosStep2 = ({ form, onBack }: CreateNewCosStep2Props) => {
             disabled={!form.state.canSubmit}
             onClick={() => form.handleSubmit()}
           />
-        </Row>
-      </Container>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 };
