@@ -322,8 +322,8 @@ const DomainDisclaimer: FC = () => {
 							<Composer
 								initialValue={richTextContent}
 								value={disclaimerDetail.zimbraAmavisDomainDisclaimerHTML}
-								onEditorChange={(ev: [string, string]): void => {
-									setValue('zimbraAmavisDomainDisclaimerHTML', ev[1]);
+								onEditorChange={(ev): void => {
+									setValue('zimbraAmavisDomainDisclaimerHTML', (ev as [string, string])[1]);
 								}}
 							/>
 						</div>
