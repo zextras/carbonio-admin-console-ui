@@ -99,17 +99,17 @@ const DomainTwoFactorAuthentication = (): React.JSX.Element => {
 	// Validation
 	const hasValidationErrors = useMemo(() => {
 		return (
-			twoFactorPolicyArray.filter((e: { label?: string; keyToGet: string }) =>
+			twoFactorPolicyArray.some((e: { label?: string; keyToGet: string }) =>
 				some(
 					map(
-						arrPoliciesToModify.find((obj: unknown) =>
-							Object.prototype.hasOwnProperty.call(obj, e.keyToGet)
+						arrPoliciesToModify.find((obj: TwoFactorAuthPolicyValues) =>
+							Object.hasOwn(obj, e.keyToGet)
 						)?.[e.keyToGet]?.trustedIpRange,
 						(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
 					) || [],
 					{ error: true }
 				)
-			).length > 0
+			)
 		);
 	}, [arrPoliciesToModify, twoFactorPolicyArray]);
 
