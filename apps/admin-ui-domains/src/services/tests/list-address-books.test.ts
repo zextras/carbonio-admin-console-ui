@@ -6,8 +6,6 @@
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { postSoapFetchRequest } from '@zextras/ui-shared';
-
 import { listAddressBooks, normalizeAddressBookFolders } from '../list-address-books';
 
 const mockPostSoapFetchRequest = vi.hoisted(() => vi.fn());

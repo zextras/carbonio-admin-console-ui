@@ -6,8 +6,6 @@
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { postSoapFetchRequest } from '@zextras/ui-shared';
-
 import { getMailboxContactFolders } from '../get-mailbox-contact-folders';
 
 const mockPostSoapFetchRequest = vi.hoisted(() => vi.fn());
