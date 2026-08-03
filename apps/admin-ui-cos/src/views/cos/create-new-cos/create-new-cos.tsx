@@ -18,9 +18,9 @@ import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Attribute } from '../../../types/attribute';
-import { GENERAL_INFORMATION } from '../../constants';
-import { useCreateCos } from '../../services/use-create-cos';
+import { Attribute } from '../../../../types/attribute';
+import { GENERAL_INFORMATION } from '../../../constants';
+import { useCreateCos } from '../../../services/use-create-cos';
 import styles from './create-new-cos.module.css';
 
 export const CreateNewCos = () => {
@@ -176,7 +176,7 @@ export const CreateNewCos = () => {
             </Padding>
 
             <Button
-              label={t('label.create', 'Create')}
+              label={t('label.next', 'Next')}
               icon="CheckmarkCircle"
               color="primary"
               disabled={cosName === ''}

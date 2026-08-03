@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useLocalStorage } from '@zextras/ui-shared';
+import { useEffect } from 'react';
 import { Route, Routes } from 'react-router';
 
 import { COS_LIST, CREATE_NEW_COS_ROUTE_ID } from '../constants';
@@ -11,9 +13,18 @@ import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosLayout } from './cos/cos-layout';
 import styles from './cos/cos-layout.module.css';
 import { CosList } from './cos/cos-list/cos-list';
-import { CreateNewCos } from './cos/create-new-cos-new';
+import { CreateNewCos } from './cos/create-new-cos/create-new-cos';
 
 export const AppView = () => {
+  const [featureFlag, setFeatureFlag] = useLocalStorage<boolean | null>(
+    'new_subscription_feature_flag',
+    null,
+  );
+
+  useEffect(() => {
+    if (featureFlag === null) setFeatureFlag(false);
+  }, [featureFlag, setFeatureFlag]);
+
   return (
     <div className={styles.appRoot}>
       <Breadcrumb />
@@ -43,14 +54,16 @@ export const AppView = () => {
               </CosLayout>
             }
           />
-          <Route
-            path={`/${CREATE_NEW_COS_ROUTE_ID}`}
-            element={
-              <CosLayout variant="fullWidth">
-                <CreateNewCos />
-              </CosLayout>
-            }
-          />
+          {featureFlag && (
+            <Route
+              path={`/${CREATE_NEW_COS_ROUTE_ID}`}
+              element={
+                <CosLayout variant="fullWidth">
+                  <CreateNewCos />
+                </CosLayout>
+              }
+            />
+          )}
         </Routes>
       </div>
     </div>

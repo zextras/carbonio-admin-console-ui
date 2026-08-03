@@ -15,7 +15,7 @@ import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { CreateCos } from '../create-new-cos';
+import { CreateCosLegacy } from '../create-new-cos-legacy';
 
 vi.mock('@zextras/ui-shared', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
@@ -51,7 +51,7 @@ async function setupCreateCosTest(): Promise<void> {
     <Routes>
       <Route path="/" element={<div>Home</div>} />
       <Route path="/:cosId/:operation" element={<div>Cos Detail</div>} />
-      <Route path="/create-new-cos" element={<CreateCos />} />
+      <Route path="/create-new-cos" element={<CreateCosLegacy />} />
     </Routes>,
     { initialRouterEntry: '/create-new-cos' },
   );
