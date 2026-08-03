@@ -238,6 +238,9 @@
   --trial-box-bg: #fff7ed;
   --trial-box-text: #bd6400;
 
+  /* Breadcrumb bar border - not yet defined in Theme.palette */
+  --breadcrumb-bar-border: #e2e6ec;
+
   /* Breakpoints */
   --breakpoint-lg: 992px;
   --breakpoint-xl: 1200px;

@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { PageHeader } from '@zextras/ui-components';
 import {
   useBreakpoint,
   useLicenseInfo,
@@ -12,7 +13,6 @@ import {
 import { type CSSProperties, type ReactNode, useEffect } from 'react';
 
 import styles from './app-view.module.css';
-import { Breadcrumb } from './breadcrumb/breadcrumb';
 import { ActivateSubscription } from './subscription/activate-subscription';
 import { MeteredSubscription } from './subscription/metered-subscription';
 import { PerpetualSubscription } from './subscription/perpetual-subscription';
@@ -78,7 +78,7 @@ export const AppView = () => {
 
   return (
     <div className={styles.root}>
-      <Breadcrumb />
+      <PageHeader />
       {!isLoading && (
         <div className={styles.detailWrapper}>
           <div

@@ -8,21 +8,9 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router';
 
-import {
-  ADVANCED,
-  ADVANCED_LBL,
-  CONFIGURATION_BACKUP,
-  IMPORT_EXTERNAL_BACKUP,
-  SERVER_CONFIG,
-  SERVERS_LIST,
-} from '../../constants';
+import { SERVERS_LIST } from '../../constants';
 import { useGlobalConfig } from '../../services/use-global-config';
-import ImportExternalBackup from './actions/import-external-backup';
-import BackupConfiguration from './configuration/backup-configuration';
-import BackupAdvanced from './default-setting/backup-advanced';
-import BackupServerConfig from './default-setting/backup-server-config';
-import ServersList from './default-setting/backup-servers-list';
-import ServerAdvanced from './server-advanced/server-advanced';
+import { SECTION_ROUTES } from './backup-section-routes';
 
 const BackupDetailPanel: FC = () => {
   const { data: globalConfig, isLoading } = useGlobalConfig();
@@ -52,12 +40,13 @@ const BackupDetailPanel: FC = () => {
     return (
       <Routes>
         <Route index element={<Navigate to={SERVERS_LIST} replace />} />
-        <Route path={SERVER_CONFIG} element={<BackupServerConfig />} />
-        <Route path={ADVANCED} element={<BackupAdvanced />} />
-        <Route path={SERVERS_LIST} element={<ServersList />} />
-        <Route path={IMPORT_EXTERNAL_BACKUP} element={<ImportExternalBackup />} />
-        <Route path={`:server/${CONFIGURATION_BACKUP}`} element={<BackupConfiguration />} />
-        <Route path={`:server/${ADVANCED_LBL}`} element={<ServerAdvanced />} />
+        {SECTION_ROUTES.map(({ id, prefix, Component }) => (
+          <Route
+            key={prefix ? `${prefix}/${id}` : id}
+            path={prefix ? `${prefix}/${id}` : id}
+            element={<Component />}
+          />
+        ))}
       </Routes>
     );
   };

@@ -60,7 +60,7 @@ export * from './components/navigation/TabBar';
 
 /** custom components */
 export * from './components/custom/box-layout';
-export * from './components/custom/breadcrumb';
+export * from './components/custom/breadcrumbs-utils';
 export {
   type ClickableRow,
   ClickableRowFactory,
@@ -85,6 +85,7 @@ export * from './components/custom/list-row';
 export * from './components/custom/modal-overlay';
 export * from './components/custom/notification-detail';
 export * from './components/custom/notification-view';
+export * from './components/custom/page-header';
 export * from './components/custom/paging';
 export * from './components/custom/primary-bar-tooltip';
 export * from './components/custom/setting-layout';
