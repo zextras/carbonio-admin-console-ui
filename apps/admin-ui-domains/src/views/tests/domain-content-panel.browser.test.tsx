@@ -87,6 +87,9 @@ function MockDomainResources() {
 function MockRestoreAccount() {
   return <div>VIEW:restore_account</div>;
 }
+function MockDomainAddressBook() {
+  return <div>VIEW:address_book</div>;
+}
 
 vi.mock('../domain/domain-detail-panel', () => ({ DomainDetailPanel: MockDetailPanel }));
 vi.mock('../domain/create-new-domain', () => ({ default: MockCreateNewDomain }));
@@ -122,6 +125,9 @@ vi.mock('../domain/manange/resources/domain-resources', () => ({ default: MockDo
 vi.mock('../domain/manange/restore-delete-account/restore-delete-account', () => ({
   default: MockRestoreAccount,
 }));
+vi.mock('../domain/manange/address-book/domain-address-book', () => ({
+  DomainAddressBook: MockDomainAddressBook,
+}));
 
 const DOMAIN_ID = 'dom-1';
 
@@ -151,6 +157,7 @@ const domainOpRoutes: Array<[string, string]> = [
   ['resources', 'VIEW:resources'],
   ['restore_account', 'VIEW:restore_account'],
   ['active_sync', 'VIEW:active_sync'],
+  ['address_book', 'VIEW:address_book'],
   ['disclaimer', 'VIEW:disclaimer'],
 ];
 
