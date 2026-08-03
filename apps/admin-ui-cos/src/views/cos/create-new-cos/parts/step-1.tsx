@@ -16,6 +16,7 @@ import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { CosNameField } from '../fields/cos-name-field';
 import { CREATE_COS_VALIDATION_MESSAGES } from '../schema';
 import type { CreateCosFormApi } from '../types';
 import styles from './steps.module.css';
@@ -54,38 +55,7 @@ export const CreateNewCosStep1 = ({ form, onNext }: CreateNewCosStep1Props) => {
               </ds-text>
             </div>
             <ListRow>
-              <div className={styles.fieldStart}>
-                <form.Field name="cn">
-                  {(field) => {
-                    const error = getFieldErrorProps(
-                      field,
-                      isSubmitted,
-                      t,
-                      CREATE_COS_VALIDATION_MESSAGES,
-                    );
-                    return (
-                      <Input
-                        label={t('label.cos_name', 'Cos Name')}
-                        backgroundColor="gray5"
-                        value={field.state.value}
-                        hasError={error.hasError}
-                        description={error.description}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                          field.handleChange(e.target.value.toLowerCase());
-                        }}
-                      />
-                    );
-                  }}
-                </form.Field>
-                <div className={styles.note}>
-                  <ds-text as="span" size="small" color="gray1">
-                    {t(
-                      'cos.creatCOS.cosNameLowerCaseInfo',
-                      'COS name must contain only lowercase letters.',
-                    )}
-                  </ds-text>
-                </div>
-              </div>
+              <CosNameField form={form} />
             </ListRow>
             <ListRow>
               <div className={styles.fieldCenter}>
