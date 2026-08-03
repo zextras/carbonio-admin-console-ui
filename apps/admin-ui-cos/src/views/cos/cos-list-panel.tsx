@@ -221,15 +221,6 @@ export const CosListPanel = () => {
           ),
         }));
 
-  useEffect(() => {
-    const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
-    if (storedValue === 'false') {
-      setIsDetailListExpanded(false);
-    } else {
-      setIsDetailListExpanded(true);
-    }
-  }, []);
-
   return (
     <Container
       orientation="column"
