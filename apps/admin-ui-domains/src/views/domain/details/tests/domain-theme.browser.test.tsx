@@ -99,6 +99,7 @@ describe('DomainTheme', () => {
       await expect.element(page.getByRole('button', { name: /save/i })).not.toBeInTheDocument();
       await expect.element(page.getByRole('button', { name: /cancel/i })).not.toBeInTheDocument();
     });
+
   });
 
   describe('Save theme', () => {
@@ -129,6 +130,34 @@ describe('DomainTheme', () => {
       const colorAttr = requestParams.a.find((attr: any) => attr.n === 'carbonioWebUiPrimaryColor');
       expect(colorAttr).toBeDefined();
       expect(colorAttr._content).toBe('#FF0000');
+    });
+
+    it('should not call ModifyDomain API when dark primary color is invalid', async () => {
+      let apiCalled = false;
+      createBrowserSoapAPIInterceptor('ModifyDomain', {}).then(() => {
+        apiCalled = true;
+      });
+      queryClient = setupThemeTest();
+      setupBrowserTest(<DomainTheme />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ID}/theme`,
+        withDomainIdRoute: true,
+      });
+
+      await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
+
+      const darkColorInput = page
+        .getByTestId('inherited-carbonioWebUiDarkPrimaryColor')
+        .getByRole('textbox');
+      await userEvent.clear(darkColorInput);
+      await userEvent.type(darkColorInput, 'not-a-color');
+
+      const saveButton = page.getByRole('button', { name: /save/i });
+      await saveButton.click();
+
+      // Wait a bit to ensure API would have been called if it was going to be
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(apiCalled).toBe(false);
     });
   });
 
@@ -187,6 +216,40 @@ describe('DomainTheme', () => {
       const colorAttr = requestParams.a.find((attr: any) => attr.n === 'carbonioWebUiPrimaryColor');
       expect(colorAttr).toBeDefined();
       expect(colorAttr._content).toBe('');
+    });
+
+    it('should close reset dialog when Cancel is clicked without calling API', async () => {
+      let apiCalled = false;
+      createBrowserSoapAPIInterceptor('ModifyDomain', {}).then(() => {
+        apiCalled = true;
+      });
+      queryClient = setupThemeTest();
+      setupBrowserTest(<DomainTheme />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ID}/theme`,
+        withDomainIdRoute: true,
+      });
+
+      await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
+
+      const resetButton = page.getByRole('button', { name: /empty all fields/i });
+      await resetButton.click();
+
+      await expect
+        .element(page.getByText(/you sure to reset the whitelabel settings/i))
+        .toBeVisible();
+
+      // Dialog has CANCEL button, not No
+      const cancelDialogButton = page.getByRole('button', { name: /^cancel$/i });
+      await cancelDialogButton.click();
+
+      await expect
+        .element(page.getByText(/you sure to reset the whitelabel settings/i))
+        .not.toBeInTheDocument();
+
+      // Wait a bit to ensure API would have been called if it was going to be
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(apiCalled).toBe(false);
     });
   });
 });
