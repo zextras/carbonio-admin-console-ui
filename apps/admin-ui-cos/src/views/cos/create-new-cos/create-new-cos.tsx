@@ -78,6 +78,7 @@ export const CreateNewCos = () => {
         { n: 'zimbraNotes', _content: value.zimbraNotes },
         { n: 'description', _content: value.description },
         { n: 'cn', _content: value.cn },
+        { n: 'edition', _content: value.edition },
         ...FEATURE_FIELDS.map((field) => ({ n: field, _content: value[field] })),
       ];
       createCosMutation.mutate(
