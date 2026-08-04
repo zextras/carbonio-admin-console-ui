@@ -15,7 +15,8 @@ import { GENERAL_INFORMATION } from '../../../constants';
 import { useCreateCos } from '../../../services/use-create-cos';
 import styles from './create-new-cos.module.css';
 import { CreateNewCosStep1 } from './parts/step-1';
-import { CreateNewCosStep2 } from './parts/step-2';
+import { StepTwoEmailEdition } from './parts/step-2-email-edition';
+import { StepTwoWorkspaceEdition } from './parts/step-2-workspace-edition';
 import { createCosSchema } from './schema';
 import type { CosEdition } from './types';
 
@@ -72,10 +73,19 @@ export const CreateNewCos = () => {
         <ds-stepper steps={stepperSteps} current={currentStep}></ds-stepper>
       </div>
       <div className={styles.contentColumn}>
-        {currentStep === 0 ? (
-          <CreateNewCosStep1 form={form} onNext={() => setCurrentStep((s) => s + 1)} />
-        ) : (
-          <CreateNewCosStep2 form={form} onBack={() => setCurrentStep((s) => s - 1)} />
+        {currentStep === 0 && (
+          <CreateNewCosStep1 form={form} onNext={() => setCurrentStep((step) => step + 1)} />
+        )}
+        {currentStep === 1 && (
+          <form.Subscribe selector={(state) => state.values.edition}>
+            {(edition) =>
+              edition === 'workspace' ? (
+                <StepTwoWorkspaceEdition form={form} onBack={() => setCurrentStep((step) => step - 1)} />
+              ) : (
+                <StepTwoEmailEdition form={form} onBack={() => setCurrentStep((step) => step - 1)} />
+              )
+            }
+          </form.Subscribe>
         )}
       </div>
     </div>
