@@ -22,20 +22,16 @@ import { matchPath, useLocation } from 'react-router';
 
 import { type SearchDirectoryEntry } from '../../../types/cos';
 import {
-  ADVANCED,
   COS_LIST,
   COS_ROUTE_ID,
-  FEATURES,
   GENERAL_INFORMATION,
   IS_COS_DETAIL_LIST_EXPANDED,
   MANAGE_APP_ID,
   MAX_COS_DISPLAY,
-  PREFERENCES,
-  SERVER_POOLS,
-  WSC,
 } from '../../constants';
 import { cosQueryKeys } from '../../services/cos-query-keys';
 import { useCosDetail } from '../../services/use-cos-detail';
+import { SECTION_ROUTES } from './cos-section-routes';
 import { GeneralListPanel } from './general-list-panel';
 
 export const CosListPanel = () => {
@@ -122,38 +118,13 @@ export const CosListPanel = () => {
     }
   };
 
-  const detailOptions: Array<ListItemType> = [
-    {
-      id: GENERAL_INFORMATION,
-      name: t('label.general_information', 'General Information'),
+  const detailOptions: Array<ListItemType> = SECTION_ROUTES.map(
+    ({ id, labelKey, labelDefault }) => ({
+      id,
+      name: t(labelKey, labelDefault),
       isSelected: isCosSelect,
-    },
-    {
-      id: FEATURES,
-      name: t('label.features', 'Features'),
-      isSelected: isCosSelect,
-    },
-    {
-      id: WSC,
-      name: t('label.wsc', 'Chat'),
-      isSelected: isCosSelect,
-    },
-    {
-      id: PREFERENCES,
-      name: t('label.preferences', 'Preferences'),
-      isSelected: isCosSelect,
-    },
-    {
-      id: SERVER_POOLS,
-      name: t('label.server_pools', 'Server Pools'),
-      isSelected: isCosSelect,
-    },
-    {
-      id: ADVANCED,
-      name: t('label.advanced', 'Advanced'),
-      isSelected: isCosSelect,
-    },
-  ];
+    }),
+  );
 
   const customIconDetail = {
     icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),

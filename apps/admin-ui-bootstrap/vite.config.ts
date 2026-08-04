@@ -6,14 +6,15 @@
 
 import { resolve } from 'node:path';
 
-import react from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
+import tailwindcss from '@tailwindcss/vite';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-import { createBootstrapRolldownOptions } from './vite-config/vite.rolldown.config';
-import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
-import { getWorkspaceRoot } from './vite-config/utils';
-import tailwindcss from '@tailwindcss/vite';
+import { createBootstrapRolldownOptions } from './vite-config/vite.rolldown.config.ts';
+import { postBuildPlugin } from './vite-config/vite-plugin-post-build.ts';
+import { getWorkspaceRoot } from './vite-config/utils.ts';
 
 const rootDir = getWorkspaceRoot();
 const packageName = 'carbonio-admin-ui';
@@ -109,13 +110,10 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [
       ...(isServeCommand ? [] : [postBuildPlugin()]),
-      react({
-        babel: {
-          plugins: [
-            ['babel-plugin-react-compiler', { panicThreshold: 'none' }],
-            ['@babel/plugin-proposal-decorators', { version: '2023-11' }],
-          ],
-        },
+      react(),
+      babel({
+        presets: [reactCompilerPreset({ panicThreshold: 'none' })],
+        plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
       }),
       svgr({
         svgrOptions: {

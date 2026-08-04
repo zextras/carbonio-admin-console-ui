@@ -10,13 +10,14 @@ import { Route, Routes } from 'react-router';
 
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
-import { Breadcrumb } from './breadcrumb/breadcrumb';
+import { BackupPageHeader } from './backup-page-header';
 
 export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
+
   return (
     <Container height={'fit'}>
-      <Breadcrumb />
+      <BackupPageHeader />
       <Routes>
         <Route
           path={'/*'}
@@ -45,4 +46,3 @@ export const AppView: FC = () => {
     </Container>
   );
 };
-

@@ -5,7 +5,7 @@
  */
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, ChipInput, ChipItem, Container, CustomTextArea, Input, LabeledValue, ListRow, Modal, Padding, RouteLeavingGuard, Row, Select, useSnackbar, } from '@zextras/ui-components';
-import { type DirectoryEntry, domainByIdKey, type DomainDirectories, flushCache, replaceHistory, searchDirectory, useCosList, useIsAdvanced, useTotalQuotaActive, useUserSettings } from '@zextras/ui-shared';
+import { type DirectoryEntry, domainByIdKey, type DomainDirectories, flushCache, replaceHistory, searchDirectory, useCosList, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -48,7 +48,6 @@ import QuotaReportDownloadButton from './quota-report-download-button';
 
 const DomainGeneralSettings: FC = () => {
   const [t] = useTranslation();
-  const isTotalQuotaActive = useTotalQuotaActive();
   const timezones = useMemo(() => timeZoneList(t), [t]);
   const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
   const cosList = cosData?.cos ?? [];
@@ -179,7 +178,7 @@ const DomainGeneralSettings: FC = () => {
   const [initDomainQuotaGB, setInitDomainQuotaGB] = useState<string>('');
 
   useEffect(() => {
-    if (isTotalQuotaActive && isAdvanced && domainData.zimbraId) {
+    if (isAdvanced && domainData.zimbraId) {
       getDomainQuota(domainData.zimbraId).then((result) => {
         if (result.type === 'success') {
           const gb = String(BytesToGB(result.limit));
@@ -188,7 +187,7 @@ const DomainGeneralSettings: FC = () => {
         }
       });
     }
-  }, [domainData.zimbraId, isAdvanced, isTotalQuotaActive]);
+  }, [domainData.zimbraId, isAdvanced]);
 
   useEffect(() => {
     if (!!cosList && cosList.length > 0) {
@@ -454,7 +453,7 @@ const DomainGeneralSettings: FC = () => {
     setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
     setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
     setZimbraDomainMaxAccounts(domainData.zimbraDomainMaxAccounts);
-    if (isTotalQuotaActive && isAdvanced) {
+    if (isAdvanced) {
       setDomainQuotaGB(initDomainQuotaGB);
     }
     const getItem = cosItems.find(
@@ -576,7 +575,7 @@ const DomainGeneralSettings: FC = () => {
 
     modifyDomain(body).then(handleSuccess).catch(handleError);
 
-    if (isTotalQuotaActive && isAdvanced && domainQuotaGB !== initDomainQuotaGB) {
+    if (isAdvanced && domainQuotaGB !== initDomainQuotaGB) {
       const quotaPromise =
         domainQuotaGB === ''
           ? unsetDomainQuota(domainData.zimbraId)
@@ -1012,7 +1011,7 @@ const DomainGeneralSettings: FC = () => {
               </Container>
             </ListRow>
 
-            {isAdvanced && isTotalQuotaActive && (
+            {isAdvanced && (
               <>
                 <Row
                   mainAlignment="flex-start"

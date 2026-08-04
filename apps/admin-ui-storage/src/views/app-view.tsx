@@ -3,28 +3,60 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/ui-components';
-import { Navigate, Route, Routes } from 'react-router';
+import { buildSectionMenu, Container,PageHeader } from '@zextras/ui-components';
+import { useTranslation } from 'react-i18next';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 
-import { DATA_VOLUMES, HSM_SETTINGS, S3CONNECTOR_LIST, SERVERS_LIST } from '../constants';
-import { Breadcrumb } from './breadcrumb/breadcrumb';
-import { VolumesDetailPanel } from './data-volumes/volumes-list';
-import { HSMsettingPanel } from './hsm/hsm-setting-panel';
-import { S3ConnectorListPanel } from './s3-connectors/s3-connector-list-panel';
-import { ServerListPanel } from './servers-list/server-list-panel';
+import { SERVERS_LIST } from '../constants';
 import { StorageLayout } from './storage-layout';
+import { SECTION_ROUTES } from './storage-section-routes';
 
 export const AppView = () => {
+  const [t] = useTranslation();
+  const { pathname } = useLocation();
+  const appBase = `/${pathname.split('/').filter(Boolean).slice(0, 2).join('/')}`;
+
+  const topLevelRoutes = SECTION_ROUTES.filter((r) => !r.prefix);
+  const serverRoutes = SECTION_ROUTES.filter((r) => r.prefix);
+
+  const topLevelSections = buildSectionMenu(appBase, topLevelRoutes, t);
+
+  const relativeSegments = pathname.startsWith(`${appBase}/`)
+    ? pathname.substring(appBase.length + 1).split('/')
+    : [];
+  const segmentAfterBase = relativeSegments[0] || undefined;
+  const deeperSegment = relativeSegments[1] || undefined;
+
+  const isServerRoute =
+    Boolean(deeperSegment) && serverRoutes.some((r) => r.id === deeperSegment);
+  const isTopLevelSection = topLevelSections.some((s) => s.path === pathname);
+
+  const serverSectionMenu =
+    isServerRoute && serverRoutes.length > 1
+      ? buildSectionMenu(`${appBase}/${segmentAfterBase}`, serverRoutes, t)
+      : undefined;
+  const topLevelSectionMenu = isTopLevelSection ? topLevelSections : undefined;
+  const sectionMenu = serverSectionMenu ?? topLevelSectionMenu;
+
+  const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
+  const nonNavigableSegments =
+    isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
+  const labelOverrides =
+    isServerRoute && segmentAfterBase ? { [segmentAfterBase]: segmentAfterBase } : undefined;
+
   return (
     <Container>
-      <Breadcrumb />
+      <PageHeader
+        crumbMenus={crumbMenus}
+        labelOverrides={labelOverrides}
+        nonNavigableSegments={nonNavigableSegments}
+      />
       <Routes>
         <Route element={<StorageLayout />}>
           <Route index element={<Navigate to={SERVERS_LIST} replace />} />
-          <Route path={SERVERS_LIST} element={<ServerListPanel />} />
-          <Route path={S3CONNECTOR_LIST} element={<S3ConnectorListPanel />} />
-          <Route path={`:server/${DATA_VOLUMES}`} element={<VolumesDetailPanel />} />
-          <Route path={`:server/${HSM_SETTINGS}`} element={<HSMsettingPanel />} />
+          {SECTION_ROUTES.map(({ id, prefix, Component }) => (
+            <Route key={id} path={prefix ? `${prefix}/${id}` : id} element={<Component />} />
+          ))}
           <Route path="*" element={null} />
         </Route>
       </Routes>

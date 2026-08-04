@@ -1,3 +1,23 @@
+## [0.16.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.2...v0.16.3) (2026-07-30)
+
+## [0.16.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.1...v0.16.2) (2026-07-30)
+
+### Other changes
+
+* **root:** update node version to 24 and remove app-specific nvmrc files ([#1319](https://github.com/zextras/carbonio-admin-console-ui/issues/1319)) ([6554519](https://github.com/zextras/carbonio-admin-console-ui/commit/6554519f5be480b321e22c8e4c2686d632b0a18c))
+
+## [0.16.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.0...v0.16.1) (2026-07-30)
+
+### Other changes
+
+* **apps:** update react-router to v8.3.0 ([#1317](https://github.com/zextras/carbonio-admin-console-ui/issues/1317)) ([931ce32](https://github.com/zextras/carbonio-admin-console-ui/commit/931ce32117a581758c86a10308f925ff488928b8))
+
+## [0.16.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.6...v0.16.0) (2026-07-29)
+
+### Features
+
+* [CO-4051] remove V1 files quota api usage ([#1316](https://github.com/zextras/carbonio-admin-console-ui/issues/1316)) ([5980544](https://github.com/zextras/carbonio-admin-console-ui/commit/598054431df1d218c459c2f6897d3d3d80460e38))
+
 ## [0.15.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.5...v0.15.6) (2026-07-24)
 
 ### Other changes

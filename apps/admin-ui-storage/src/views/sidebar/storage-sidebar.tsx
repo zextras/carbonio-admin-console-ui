@@ -29,6 +29,7 @@ import {
   S3CONNECTOR_LIST,
   SERVERS_LIST,
 } from '../../constants';
+import { SECTION_ROUTES } from '../storage-section-routes';
 
 export const StorageSidebar = () => {
   const [t] = useTranslation();
@@ -89,35 +90,23 @@ export const StorageSidebar = () => {
     filteredServers.length === 0 &&
     searchVolumeName !== '';
 
-  const globalServerOption = [
-    {
-      id: SERVERS_LIST,
-      name: t('label.servers_list', 'Servers List'),
-      isSelected: true,
-    },
-    {
-      id: S3CONNECTOR_LIST,
-      name: t('storages.s3Connectors.title', 'S3 connectors'),
-      isSelected: true,
-    },
-  ];
+  const globalServerOption = SECTION_ROUTES.filter((route) => !route.prefix).map((route) => ({
+    id: route.id,
+    name: t(route.labelKey, route.labelDefault),
+    isSelected: true,
+  }));
 
   const globalOptions = isAdvanced
     ? globalServerOption
     : globalServerOption.filter((item) => item.id !== S3CONNECTOR_LIST);
 
-  const serverSpecificOption = [
-    {
-      id: DATA_VOLUMES,
-      name: t('label.data_volumes', 'Data Volumes'),
-      isSelected: isServerSelect,
-    },
-    {
-      id: HSM_SETTINGS,
-      name: t('label.hsm_settings', 'HSM Settings'),
-      isSelected: isServerSelect,
-    },
-  ];
+  const serverSpecificOption = SECTION_ROUTES.filter(
+    (route) => route.prefix === ':server',
+  ).map((route) => ({
+    id: route.id,
+    name: t(route.labelKey, route.labelDefault),
+    isSelected: isServerSelect,
+  }));
 
   const serverOptions = isAdvanced
     ? serverSpecificOption

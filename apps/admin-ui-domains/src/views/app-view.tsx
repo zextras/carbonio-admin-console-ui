@@ -8,16 +8,16 @@ import { Container } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 
-import { Breadcrumb } from './breadcrumb/breadcrumb';
 import DomainListPanel from './domain/domain-list-panel';
 import { DomainContentPanel } from './domain-content-panel';
+import { DomainPageHeader } from './domain-page-header';
 
 export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
 
   return (
     <Container height={'fit'}>
-      <Breadcrumb />
+      <DomainPageHeader />
       <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
         <Container style={{ maxWidth: '265px' }}>
           <Suspense fallback={<ds-spinner />}>
@@ -33,4 +33,3 @@ export const AppView: FC = () => {
     </Container>
   );
 };
-

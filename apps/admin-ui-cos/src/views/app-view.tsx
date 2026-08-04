@@ -3,17 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useLocalStorage } from '@zextras/ui-shared';
+import { useLocalStorage, usePrimaryBarState } from '@zextras/ui-shared';
 import { useEffect } from 'react';
-import { Route, Routes } from 'react-router';
+import { Route, Routes, useLocation } from 'react-router';
 
-import { COS_LIST, CREATE_NEW_COS_ROUTE_ID } from '../constants';
-import { Breadcrumb } from './breadcrumb/breadcrumb';
+import { CREATE_NEW_COS_ROUTE_ID } from '../constants';
+import styles from './app-view.module.css';
 import { CosDetailPanel } from './cos/cos-detail-panel';
 import { CosLayout } from './cos/cos-layout';
-import styles from './cos/cos-layout.module.css';
-import { CosList } from './cos/cos-list/cos-list';
+import { CosListPanel } from './cos/cos-list-panel';
 import { CreateNewCos } from './cos/create-new-cos/create-new-cos';
+import { CosPageHeader } from './cos-page-header';
 
 export const AppView = () => {
   const [featureFlag, setFeatureFlag] = useLocalStorage<boolean | null>(
@@ -25,47 +25,42 @@ export const AppView = () => {
     if (featureFlag === null) setFeatureFlag(false);
   }, [featureFlag, setFeatureFlag]);
 
+  const isPrimaryBarExpanded = usePrimaryBarState();
+  const { pathname } = useLocation();
+  const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);
+
   return (
-    <div className={styles.appRoot}>
-      <Breadcrumb />
-      <div className={styles.routesRow}>
-        <Routes>
-          <Route
-            index
-            element={
-              <CosLayout variant="list">
-                <CosList />
-              </CosLayout>
-            }
-          />
-          <Route
-            path={`/${COS_LIST}`}
-            element={
-              <CosLayout variant="list">
-                <CosList />
-              </CosLayout>
-            }
-          />
-          <Route
-            path={'/:cosId/:operation'}
-            element={
-              <CosLayout variant="detail">
-                <CosDetailPanel />
-              </CosLayout>
-            }
-          />
-          {featureFlag && (
-            <Route
-              path={`/${CREATE_NEW_COS_ROUTE_ID}`}
-              element={
-                <CosLayout variant="fullWidth">
-                  <CreateNewCos />
-                </CosLayout>
-              }
-            />
-          )}
-        </Routes>
-      </div>
+    <div className={styles.root}>
+      <CosPageHeader />
+      <Routes>
+        <Route
+          path={'/*'}
+          element={
+            <div className={styles.layout}>
+              {!isCreateNewCos && (
+                <div className={styles.sidebar}>
+                  <CosListPanel />
+                </div>
+              )}
+              <div className={styles.detailWrapper}>
+                <div className={styles.detailContent} data-expanded={isPrimaryBarExpanded}>
+                  <CosDetailPanel />
+                </div>
+              </div>
+              {featureFlag && (
+                <Route
+                  path={`/${CREATE_NEW_COS_ROUTE_ID}`}
+                  element={
+                    <CosLayout variant="fullWidth">
+                      <CreateNewCos />
+                    </CosLayout>
+                  }
+                />
+              )}
+            </div>
+          }
+        />
+      </Routes>
     </div>
   );
 };
