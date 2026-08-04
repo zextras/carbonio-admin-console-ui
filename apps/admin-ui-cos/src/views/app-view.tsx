@@ -47,19 +47,19 @@ export const AppView = () => {
                   <CosDetailPanel />
                 </div>
               </div>
-              {featureFlag && (
-                <Route
-                  path={`/${CREATE_NEW_COS_ROUTE_ID}`}
-                  element={
-                    <CosLayout variant="fullWidth">
-                      <CreateNewCos />
-                    </CosLayout>
-                  }
-                />
-              )}
             </div>
           }
         />
+        {featureFlag && (
+          <Route
+            path={`/${CREATE_NEW_COS_ROUTE_ID}`}
+            element={
+              <CosLayout variant="fullWidth">
+                <CreateNewCos />
+              </CosLayout>
+            }
+          />
+        )}
       </Routes>
     </div>
   );
