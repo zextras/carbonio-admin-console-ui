@@ -15,7 +15,7 @@ export const StepHeader = () => {
       <div className={styles.headerRow}>
         <div className={styles.headerTitle}>
           <ds-text as="strong" size="medium" weight="bold" color="gray0">
-            {t('label.new_cos', 'New COS')}
+            {t('label.create_new_cos', 'Create New COS')}
           </ds-text>
         </div>
         <ds-divider></ds-divider>
