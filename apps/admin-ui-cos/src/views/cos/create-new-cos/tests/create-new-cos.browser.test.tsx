@@ -535,6 +535,37 @@ describe('CreateNewCos wizard', () => {
       expect(notesAttr?._content).toBe('Some notes');
     });
 
+    it('should include edition as email in the CreateCos request', async () => {
+      const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
+      await setupWizardTest();
+
+      await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
+      await page.getByRole('button', { name: 'Next' }).click();
+      await page.getByRole('button', { name: 'create' }).click();
+
+      const requestBody = (await createCosPromise) as {
+        a: Array<{ n: string; _content: string }>;
+      };
+      const editionAttr = requestBody.a.find((a) => a.n === 'edition');
+      expect(editionAttr?._content).toBe('email');
+    });
+
+    it('should include edition as workspace in the CreateCos request', async () => {
+      const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
+      await setupWizardTest();
+
+      await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
+      await page.getByRole('radio', { name: 'Workspace edition' }).click();
+      await page.getByRole('button', { name: 'Next' }).click();
+      await page.getByRole('button', { name: 'create' }).click();
+
+      const requestBody = (await createCosPromise) as {
+        a: Array<{ n: string; _content: string }>;
+      };
+      const editionAttr = requestBody.a.find((a) => a.n === 'edition');
+      expect(editionAttr?._content).toBe('workspace');
+    });
+
     it('should show error snackbar when CreateCos fails', async () => {
       worker.use(
         http.post('/service/admin/soap/CreateCosRequest', () =>
