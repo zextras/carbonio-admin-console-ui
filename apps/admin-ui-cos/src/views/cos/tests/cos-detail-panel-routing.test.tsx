@@ -32,11 +32,18 @@ vi.mock('../../../wsc/wsc-cos-settings', () => ({
   WscCosSettings: vi.fn(),
 }));
 
+vi.mock('../create-new-cos-legacy', () => ({
+  CreateCosLegacy: vi.fn(),
+}));
+
+import { useIsAdvanced, useLocalStorage } from '@zextras/ui-shared';
+
 import { WscCosSettings } from '../../../wsc/wsc-cos-settings';
 import { CosAdvanced } from '../advanced/cos-advanced';
 import { CosDetailPanel } from '../cos-detail-panel';
 import { CosFeatures } from '../cos-features/cos-features';
 import { CosServerPools } from '../cos-server-pools/cos-server-pools';
+import { CreateCosLegacy } from '../create-new-cos-legacy';
 import { CosGeneralInformation } from '../general-information/cos-general-information';
 import { COSPreferences } from '../preferences/cos-preferences';
 
@@ -47,7 +54,11 @@ const mocks = {
   CosServerPools: CosServerPools as unknown as Mock,
   COSPreferences: COSPreferences as unknown as Mock,
   WscCosSettings: WscCosSettings as unknown as Mock,
+  CreateCosLegacy: CreateCosLegacy as unknown as Mock,
 };
+
+const useIsAdvancedMock = useIsAdvanced as unknown as Mock;
+const useLocalStorageMock = useLocalStorage as unknown as Mock;
 
 const COS_ID = 'cos-123';
 
@@ -55,6 +66,8 @@ beforeEach(() => {
   for (const m of Object.values(mocks)) {
     m.mockImplementation(() => null);
   }
+  useIsAdvancedMock.mockReturnValue(false);
+  useLocalStorageMock.mockReturnValue([false, vi.fn()]);
 });
 
 function renderCosDetailPanelAt(path: string) {
@@ -143,6 +156,35 @@ describe('CosDetailPanel routing', () => {
     it('should render CosAdvanced for an uppercased path since the operation is matched case-insensitively', () => {
       renderCosDetailPanelAt(`/${COS_ID}/ADVANCED`);
       expect(mocks.CosAdvanced).toHaveBeenCalled();
+    });
+  });
+
+  describe('Create COS route', () => {
+    it('should render CreateCosLegacy when featureFlag and isAdvanced are both false', () => {
+      useLocalStorageMock.mockReturnValue([false, vi.fn()]);
+      useIsAdvancedMock.mockReturnValue(false);
+
+      renderCosDetailPanelAt(`/create-new-cos`);
+
+      expect(mocks.CreateCosLegacy).toHaveBeenCalled();
+    });
+
+    it('should render CreateCosLegacy when featureFlag is true but isAdvanced is false', () => {
+      useLocalStorageMock.mockReturnValue([true, vi.fn()]);
+      useIsAdvancedMock.mockReturnValue(false);
+
+      renderCosDetailPanelAt(`/create-new-cos`);
+
+      expect(mocks.CreateCosLegacy).toHaveBeenCalled();
+    });
+
+    it('should not render CreateCosLegacy when both featureFlag and isAdvanced are true', () => {
+      useLocalStorageMock.mockReturnValue([true, vi.fn()]);
+      useIsAdvancedMock.mockReturnValue(true);
+
+      renderCosDetailPanelAt(`/create-new-cos`);
+
+      expect(mocks.CreateCosLegacy).not.toHaveBeenCalled();
     });
   });
 });

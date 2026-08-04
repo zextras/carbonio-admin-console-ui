@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { useLocalStorage } from '@zextras/ui-shared';
+import { useIsAdvanced, useLocalStorage } from '@zextras/ui-shared';
 import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
@@ -23,6 +23,8 @@ export const CosDetailPanel = () => {
     if (featureFlag === null) setFeatureFlag(false);
   }, [featureFlag, setFeatureFlag]);
 
+  const isAdvanced = useIsAdvanced();
+
   return (
     <Container
       orientation="column"
@@ -36,7 +38,9 @@ export const CosDetailPanel = () => {
           <Route key={id} path={`${prefix}/${id}`} element={<Component />} />
         ))}
         <Route path={COS_LIST} element={<CosList />} />
-        {!featureFlag && <Route path={CREATE_NEW_COS_ROUTE_ID} element={<CreateCosLegacy />} />}
+        {!(featureFlag && isAdvanced) && (
+          <Route path={CREATE_NEW_COS_ROUTE_ID} element={<CreateCosLegacy />} />
+        )}
       </Routes>
     </Container>
   );
