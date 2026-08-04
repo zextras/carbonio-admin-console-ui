@@ -7,8 +7,10 @@ import '../theme/theme.css';
 import './ds-icon';
 import './ds-text';
 
-import { css, html, LitElement, nothing, type TemplateResult } from 'lit';
+import { html, LitElement, nothing, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
+
+import { stepperStyles } from './ds-stepper.styles';
 
 export type DsStepperStep = {
   label: string;
@@ -23,71 +25,7 @@ export type DsStepperProps = {
 type StepState = 'completed' | 'active' | 'upcoming';
 
 export class DsStepper extends LitElement {
-  static override readonly styles = css`
-    :host {
-      display: block;
-      font-family: var(--font-family);
-    }
-
-    ol {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .step {
-      display: grid;
-      grid-template-columns: 2rem 1fr;
-      column-gap: 0.75rem;
-    }
-
-    .indicator {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .circle {
-      width: 2rem;
-      height: 2rem;
-      border-radius: 9999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-sizing: border-box;
-      flex-shrink: 0;
-      border: 0.0625rem solid var(--color-primary-regular);
-      background-color: var(--color-gray6-regular);
-      color: var(--color-primary-regular);
-      font-size: var(--font-size-small);
-      font-weight: var(--font-weight-medium);
-    }
-
-    .step[data-state='active'] .circle,
-    .step[data-state='completed'] .circle {
-      background-color: var(--color-primary-regular);
-      color: var(--color-white);
-    }
-
-    .connector {
-      flex: 1 1 auto;
-      width: 0.125rem;
-      min-height: 1rem;
-      margin: 0.25rem 0;
-      background-color: var(--color-primary-regular);
-    }
-
-    .body {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      padding-bottom: 1rem;
-    }
-
-    .step:last-child .body {
-      padding-bottom: 0;
-    }
-  `;
+  static override readonly styles = stepperStyles;
 
   @property({ attribute: false })
   accessor steps: DsStepperProps['steps'] = [];
