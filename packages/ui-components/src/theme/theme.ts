@@ -102,6 +102,7 @@ export type Theme = {
     over: { text: string; bg: string };
   };
   trial: { box: Record<string, string> };
+  breadcrumb: { barBorder: string };
 };
 
 export const theme: Theme = {
@@ -359,5 +360,8 @@ export const theme: Theme = {
       bg: 'var(--trial-box-bg)',
       text: 'var(--trial-box-text)',
     },
+  },
+  breadcrumb: {
+    barBorder: 'var(--breadcrumb-bar-border)',
   },
 };

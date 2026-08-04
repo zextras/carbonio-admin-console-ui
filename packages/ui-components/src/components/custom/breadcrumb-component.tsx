@@ -1,0 +1,152 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import { DASHBOARD_ROUTE_ID, useModuleCrumbMenu } from '@zextras/ui-shared';
+import { sortBy } from 'lodash-es';
+import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router';
+
+import styles from './breadcrumb-component.module.css';
+import { BreadcrumbMenu } from './breadcrumb-menu';
+
+type BreadcrumbItem = {
+  label: string;
+  path: string;
+  homePath: string;
+  segment: string;
+};
+
+export type CrumbMenuItem = {
+  path: string;
+  label: string;
+};
+
+export type BreadcrumbsProps = {
+  crumbMenus?: Record<string, Array<CrumbMenuItem>>;
+  crumbMenuHeaders?: Record<string, string>;
+  nonNavigableSegments?: Array<string>;
+  labelOverrides?: Record<string, string>;
+  index: number;
+  item: BreadcrumbItem;
+};
+
+const HOME_PATH = `/${DASHBOARD_ROUTE_ID}`;
+
+function dashboardCrumb(
+  rootSegment: string,
+  t: ReturnType<typeof useTranslation>[0],
+): BreadcrumbItem {
+  return {
+    label: t('label.dashboard', 'Dashboard'),
+    path: `/${rootSegment}/dashboard`,
+    homePath: HOME_PATH,
+    segment: 'dashboard',
+  };
+}
+
+function buildSplitRoutes(
+  pathname: string,
+  t: ReturnType<typeof useTranslation>[0],
+  labelOverrides?: Record<string, string>,
+): Array<BreadcrumbItem> {
+  if (!pathname) return [];
+
+  const segments = pathname.substring(1).split('/');
+
+  const items = segments.map((segment, index) => {
+    const path = `/${segments.slice(0, index + 1).join('/')}`;
+    return {
+      label:
+        index === 0
+          ? t('label.home', 'Home')
+          : labelOverrides?.[segment] ??
+            t(`label.${segment}`, segment.charAt(0).toUpperCase() + segment.slice(1)),
+      path,
+      homePath: HOME_PATH,
+      segment,
+    };
+  });
+
+  return segments.length === 1 ? [...items, dashboardCrumb(segments[0], t)] : items;
+}
+
+export const BreadcrumbComponent = ({
+  crumbMenus,
+  crumbMenuHeaders,
+  nonNavigableSegments,
+  labelOverrides,
+  index,
+  item,
+}: Readonly<BreadcrumbsProps>) => {
+  const [t] = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const crumbRef = useRef<HTMLLIElement>(null);
+  const splitRoutes = buildSplitRoutes(location?.pathname ?? '', t, labelOverrides);
+  const moduleMenu = useModuleCrumbMenu();
+  const nonNavigableSet = new Set(nonNavigableSegments);
+
+  const isLast = (index: number): boolean => splitRoutes.length - 1 === index;
+
+  const target = index === 0 ? item.homePath : item.path;
+  const isModuleCrumb = index === 1;
+  const rawMenu = isModuleCrumb && moduleMenu.length > 0 ? moduleMenu : crumbMenus?.[item.path];
+  const menu = rawMenu ? sortBy(rawMenu, (m) => m.label.toLowerCase()) : undefined;
+  const navigable = !isLast(index) && !nonNavigableSet.has(item.segment);
+  const interactive: React.HTMLAttributes<HTMLElement> = navigable
+    ? {
+        onClick: () => navigate(target),
+        onKeyDown: (e) => {
+          if (e.key === 'Enter') navigate(target);
+        },
+        role: 'link',
+        tabIndex: 0,
+        style: { cursor: 'pointer' },
+      }
+    : {};
+
+  return (
+    <li
+      aria-current={isLast(index) ? 'page' : undefined}
+      className={styles.item}
+      key={item.path}
+      ref={crumbRef}
+    >
+      {index !== 0 && (
+        <div aria-hidden="true" className={styles.separator}>
+          <ds-text as="span" size="medium" weight="regular">
+            &nbsp;/&nbsp;
+          </ds-text>
+        </div>
+      )}
+      <ds-text
+        {...interactive}
+        as="span"
+        size="medium"
+        weight="regular"
+        className={navigable ? styles.label : styles.labelCurrent}
+      >
+        {item.label}
+      </ds-text>
+      {menu && menu.length > 0 && (
+        <BreadcrumbMenu
+          anchorRef={crumbRef}
+          header={crumbMenuHeaders?.[item.path]}
+          items={menu.map((menuItem) => ({
+            id: menuItem.path,
+            label: menuItem.label,
+            onClick: () => navigate(menuItem.path),
+            selected:
+              location.pathname === menuItem.path ||
+              location.pathname.startsWith(`${menuItem.path}/`),
+          }))}
+          placement="bottom-start"
+          triggerLabel={t('label.show_sections', 'Show sections')}
+        />
+      )}
+    </li>
+  );
+};

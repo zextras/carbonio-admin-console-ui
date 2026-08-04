@@ -3,16 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container } from '@zextras/ui-components';
+import { Container,PageHeader } from '@zextras/ui-components';
 import { FC, Suspense } from 'react';
 
-import { Breadcrumb } from './breadcrumb/breadcrumb';
 import LegalHoldPanel from './legal-hold/legal-hold-panel';
 
 export const AppView: FC = () => {
   return (
     <Container height={'fit'}>
-      <Breadcrumb />
+      <PageHeader />
       <Container
         orientation="horizontal"
         mainAlignment="flex-start"

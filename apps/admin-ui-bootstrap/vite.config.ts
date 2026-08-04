@@ -12,9 +12,9 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-import { createBootstrapRolldownOptions } from './vite-config/vite.rolldown.config';
-import { postBuildPlugin } from './vite-config/vite-plugin-post-build';
-import { getWorkspaceRoot } from './vite-config/utils';
+import { createBootstrapRolldownOptions } from './vite-config/vite.rolldown.config.ts';
+import { postBuildPlugin } from './vite-config/vite-plugin-post-build.ts';
+import { getWorkspaceRoot } from './vite-config/utils.ts';
 
 const rootDir = getWorkspaceRoot();
 const packageName = 'carbonio-admin-ui';
