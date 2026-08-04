@@ -4,7 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { addRoute, registerActions, removeRoute, useCurrentUserRights } from '@zextras/ui-shared';
+import {
+  addRoute,
+  registerActions,
+  removeRoute,
+  useCurrentUserRights,
+  useLicenseInfo,
+} from '@zextras/ui-shared';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -26,6 +32,7 @@ const App = () => {
   const navigate = useNavigate();
 
   const { data: rights } = useCurrentUserRights();
+  const { data: licenseData } = useLicenseInfo();
   const showCOS = checkShowCOS(rights);
   const createCosRight = checkCreateCosRight(rights);
 
@@ -54,6 +61,8 @@ const App = () => {
   }, [managementSection, showCOS, t]);
 
   useEffect(() => {
+    if (!licenseData) return;
+
     registerActions({
       action: () => ({
         id: 'new-cos',
@@ -69,7 +78,7 @@ const App = () => {
       id: 'new-cos',
       type: 'new',
     });
-  }, [createCosRight, navigate, t]);
+  }, [createCosRight, licenseData, navigate, t]);
 
   return null;
 };

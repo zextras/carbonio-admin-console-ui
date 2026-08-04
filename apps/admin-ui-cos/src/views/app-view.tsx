@@ -3,7 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useIsAdvanced, useLocalStorage, usePrimaryBarState } from '@zextras/ui-shared';
+import {
+  useIsAdvanced,
+  useLicenseInfo,
+  useLocalStorage,
+  usePrimaryBarState,
+} from '@zextras/ui-shared';
 import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router';
 
@@ -26,6 +31,7 @@ export const AppView = () => {
   }, [featureFlag, setFeatureFlag]);
 
   const isAdvanced = useIsAdvanced();
+  const { data: licenseData } = useLicenseInfo();
   const isPrimaryBarExpanded = usePrimaryBarState();
   const { pathname } = useLocation();
   const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);
@@ -51,7 +57,7 @@ export const AppView = () => {
             </div>
           }
         />
-        {featureFlag && isAdvanced && (
+        {featureFlag && isAdvanced && !!licenseData && (
           <Route
             path={`/${CREATE_NEW_COS_ROUTE_ID}`}
             element={

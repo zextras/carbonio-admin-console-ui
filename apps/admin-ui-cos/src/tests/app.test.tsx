@@ -26,7 +26,7 @@ vi.mock('../views/app-view', () => ({
   AppView: () => <div data-testid="app-view" />,
 }));
 
-import { addRoute, registerActions, removeRoute, useCurrentUserRights } from '@zextras/ui-shared';
+import { addRoute, registerActions, removeRoute, useCurrentUserRights, useLicenseInfo } from '@zextras/ui-shared';
 import { useNavigate } from 'react-router';
 
 import App from '../app';
@@ -69,9 +69,12 @@ const RIGHTS_WITHOUT_COS = [
 ];
 
 describe('App', () => {
+  const useLicenseInfoMock = useLicenseInfo as unknown as Mock;
+
   beforeEach(() => {
     (useCurrentUserRights as Mock).mockReturnValue({ data: RIGHTS_WITH_COS_AND_CREATE });
     (useNavigate as Mock).mockReturnValue(vi.fn());
+    useLicenseInfoMock.mockReturnValue({ data: { response: { type: 'Purchased' } } });
   });
 
   it('should call addRoute with correct config when COS rights are present', () => {
@@ -185,5 +188,13 @@ describe('App', () => {
   it('should render null', () => {
     const { container } = render(<App />);
     expect(container.innerHTML).toBe('');
+  });
+
+  it('should not register create COS action when there is no valid subscription', () => {
+    useLicenseInfoMock.mockReturnValue({ data: null });
+
+    render(<App />);
+
+    expect(registerActions).not.toHaveBeenCalled();
   });
 });

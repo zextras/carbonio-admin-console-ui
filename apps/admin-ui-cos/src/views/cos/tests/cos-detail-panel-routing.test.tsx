@@ -36,7 +36,7 @@ vi.mock('../create-new-cos-legacy', () => ({
   CreateCosLegacy: vi.fn(),
 }));
 
-import { useIsAdvanced, useLocalStorage } from '@zextras/ui-shared';
+import { useIsAdvanced, useLicenseInfo, useLocalStorage } from '@zextras/ui-shared';
 
 import { WscCosSettings } from '../../../wsc/wsc-cos-settings';
 import { CosAdvanced } from '../advanced/cos-advanced';
@@ -59,6 +59,7 @@ const mocks = {
 
 const useIsAdvancedMock = useIsAdvanced as unknown as Mock;
 const useLocalStorageMock = useLocalStorage as unknown as Mock;
+const useLicenseInfoMock = useLicenseInfo as unknown as Mock;
 
 const COS_ID = 'cos-123';
 
@@ -68,6 +69,7 @@ beforeEach(() => {
   }
   useIsAdvancedMock.mockReturnValue(false);
   useLocalStorageMock.mockReturnValue([false, vi.fn()]);
+  useLicenseInfoMock.mockReturnValue({ data: null });
 });
 
 function renderCosDetailPanelAt(path: string) {
@@ -178,13 +180,24 @@ describe('CosDetailPanel routing', () => {
       expect(mocks.CreateCosLegacy).toHaveBeenCalled();
     });
 
-    it('should not render CreateCosLegacy when both featureFlag and isAdvanced are true', () => {
+    it('should not render CreateCosLegacy when featureFlag, isAdvanced, and subscription are all valid', () => {
       useLocalStorageMock.mockReturnValue([true, vi.fn()]);
       useIsAdvancedMock.mockReturnValue(true);
+      useLicenseInfoMock.mockReturnValue({ data: { response: { type: 'Purchased' } } });
 
       renderCosDetailPanelAt(`/create-new-cos`);
 
       expect(mocks.CreateCosLegacy).not.toHaveBeenCalled();
+    });
+
+    it('should render CreateCosLegacy when featureFlag and isAdvanced are true but no valid subscription', () => {
+      useLocalStorageMock.mockReturnValue([true, vi.fn()]);
+      useIsAdvancedMock.mockReturnValue(true);
+      useLicenseInfoMock.mockReturnValue({ data: null });
+
+      renderCosDetailPanelAt(`/create-new-cos`);
+
+      expect(mocks.CreateCosLegacy).toHaveBeenCalled();
     });
   });
 });

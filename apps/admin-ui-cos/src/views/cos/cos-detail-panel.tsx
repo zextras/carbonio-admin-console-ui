@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { useIsAdvanced, useLocalStorage } from '@zextras/ui-shared';
+import { useIsAdvanced, useLicenseInfo, useLocalStorage } from '@zextras/ui-shared';
 import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
@@ -24,6 +24,7 @@ export const CosDetailPanel = () => {
   }, [featureFlag, setFeatureFlag]);
 
   const isAdvanced = useIsAdvanced();
+  const { data: licenseData } = useLicenseInfo();
 
   return (
     <Container
@@ -38,7 +39,7 @@ export const CosDetailPanel = () => {
           <Route key={id} path={`${prefix}/${id}`} element={<Component />} />
         ))}
         <Route path={COS_LIST} element={<CosList />} />
-        {!(featureFlag && isAdvanced) && (
+        {!(featureFlag && isAdvanced && !!licenseData) && (
           <Route path={CREATE_NEW_COS_ROUTE_ID} element={<CreateCosLegacy />} />
         )}
       </Routes>
