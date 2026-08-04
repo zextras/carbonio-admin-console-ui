@@ -96,7 +96,7 @@ const DomainCosLink: FC<DomainCosLinkProps> = ({
 		});
 	};
 
-	const showErrorSnackbar = (error: Error | unknown): void => {
+	const showErrorSnackbar = (error: unknown): void => {
 		const message =
 			error instanceof Error
 				? error.message
@@ -593,7 +593,7 @@ const DomainCosLink: FC<DomainCosLinkProps> = ({
 								}
 							}}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								const value = parseInt(e.target.value, 10);
+								const value = Number.parseInt(e.target.value, 10);
 								if (value < -1) {
 									setMaxAccountValue('-1');
 								} else {
