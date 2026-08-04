@@ -18,4 +18,12 @@ export const createCosSchema = z.object({
   description: z.string(),
   zimbraNotes: z.string(),
   edition: z.enum(['email', 'workspace']),
+  carbonioFeatureMailsAppEnabled: z.string(),
+  zimbraFeatureContactsEnabled: z.string(),
+  zimbraFeatureCalendarEnabled: z.string(),
+  carbonioFeatureFilesEnabled: z.string(),
+  carbonioFeatureFilesAppEnabled: z.string(),
+  carbonioFeatureTasksEnabled: z.string(),
+  carbonioFeatureWscEnabled: z.string(),
+  carbonioWscVideoCallEnabled: z.string(),
 });

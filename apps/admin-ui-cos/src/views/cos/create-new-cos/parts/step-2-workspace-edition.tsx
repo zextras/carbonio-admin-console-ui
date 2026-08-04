@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, ListRow, Switch } from '@zextras/ui-components';
+import { Button, ListRow } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import type { CreateCosFormApi } from '../types';
+import { FeatureSwitch } from '../fields/feature-switch';
+import type { CreateCosFormApi, CreateCosFormValues } from '../types';
 import { StepFooter } from './step-footer';
 import { StepHeader } from './step-header';
 import styles from './steps.module.css';
@@ -17,8 +18,25 @@ type StepTwoWorkspaceEditionProps = {
   onBack: () => void;
 };
 
+const FEATURE_KEYS: Array<keyof CreateCosFormValues> = [
+  'carbonioFeatureMailsAppEnabled',
+  'zimbraFeatureContactsEnabled',
+  'zimbraFeatureCalendarEnabled',
+  'carbonioFeatureFilesEnabled',
+  'carbonioFeatureFilesAppEnabled',
+  'carbonioFeatureTasksEnabled',
+  'carbonioFeatureWscEnabled',
+  'carbonioWscVideoCallEnabled',
+];
+
 export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditionProps) => {
   const [t] = useTranslation();
+
+  const disableAll = (): void => {
+    for (const key of FEATURE_KEYS) {
+      form.setFieldValue(key, 'FALSE' as never);
+    }
+  };
 
   return (
     <div className={styles.root}>
@@ -36,10 +54,7 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
             <div className={styles.featuresHeader}>
               <div className={styles.featuresIntro}>
                 <ds-text as="strong" size="small" weight="bold" color="gray0">
-                  {t(
-                    'cos.createCos.choose_features',
-                    'Choose which feature enable',
-                  )}
+                  {t('cos.createCos.choose_features', 'Choose which feature enable')}
                 </ds-text>
                 <ds-text as="span" size="small" color="gray0">
                   {t(
@@ -53,7 +68,7 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
                 type="outlined"
                 color="primary"
                 size="small"
-                onClick={(): void => {}}
+                onClick={disableAll}
               />
             </div>
 
@@ -64,10 +79,10 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
                     {t('label.mail', 'Mail')}
                   </ds-text>
                   <ListRow>
-                    <Switch
+                    <FeatureSwitch
+                      form={form}
+                      name="carbonioFeatureMailsAppEnabled"
                       label={t('cos.createCos.enable_mail', 'Enable mail')}
-                      onClick={(): void => {}}
-                      iconColor="primary"
                     />
                   </ListRow>
                 </div>
@@ -80,13 +95,13 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
                     {t('label.contacts', 'Contacts')}
                   </ds-text>
                   <ListRow>
-                    <Switch
+                    <FeatureSwitch
+                      form={form}
+                      name="zimbraFeatureContactsEnabled"
                       label={t(
                         'cos.createCos.enable_contacts',
                         'Users can access Contacts',
                       )}
-                      onClick={(): void => {}}
-                      iconColor="primary"
                     />
                   </ListRow>
                   <ds-text as="span" size="small" color="gray1" weight="light">
@@ -101,13 +116,13 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
                     {t('label.calendar', 'Calendar')}
                   </ds-text>
                   <ListRow>
-                    <Switch
+                    <FeatureSwitch
+                      form={form}
+                      name="zimbraFeatureCalendarEnabled"
                       label={t(
                         'cos.createCos.enable_calendar',
                         'Users can access Calendar',
                       )}
-                      onClick={(): void => {}}
-                      iconColor="primary"
                     />
                   </ListRow>
                   <ds-text as="span" size="small" color="gray1" weight="light">
@@ -126,10 +141,10 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
                     {t('label.files', 'Files')}
                   </ds-text>
                   <ListRow>
-                    <Switch
+                    <FeatureSwitch
+                      form={form}
+                      name="carbonioFeatureFilesEnabled"
                       label={t('cos.createCos.enable_files', 'Enable files')}
-                      onClick={(): void => {}}
-                      iconColor="primary"
                     />
                   </ListRow>
                   <ds-text as="span" size="small" color="gray1" weight="light">
@@ -139,10 +154,10 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
                     )}
                   </ds-text>
                   <ListRow>
-                    <Switch
+                    <FeatureSwitch
+                      form={form}
+                      name="carbonioFeatureFilesAppEnabled"
                       label={t('cos.createCos.enable_mobile_app', 'Enable mobile app')}
-                      onClick={(): void => {}}
-                      iconColor="primary"
                     />
                   </ListRow>
                 </div>
@@ -151,10 +166,10 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
                     {t('label.tasks', 'Tasks')}
                   </ds-text>
                   <ListRow>
-                    <Switch
+                    <FeatureSwitch
+                      form={form}
+                      name="carbonioFeatureTasksEnabled"
                       label={t('cos.createCos.enable_tasks', 'Enable tasks')}
-                      onClick={(): void => {}}
-                      iconColor="primary"
                     />
                   </ListRow>
                 </div>
@@ -167,10 +182,10 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
                     {t('label.chats', 'Chats')}
                   </ds-text>
                   <ListRow>
-                    <Switch
+                    <FeatureSwitch
+                      form={form}
+                      name="carbonioFeatureWscEnabled"
                       label={t('cos.createCos.enable_chats', 'Enable chats')}
-                      onClick={(): void => {}}
-                      iconColor="primary"
                     />
                   </ListRow>
                   <ds-text as="span" size="small" color="gray1" weight="light">
@@ -185,13 +200,10 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
                     {t('label.video_calls', 'Video calls')}
                   </ds-text>
                   <ListRow>
-                    <Switch
-                      label={t(
-                        'cos.createCos.enable_video_calls',
-                        'Enable video calls',
-                      )}
-                      onClick={(): void => {}}
-                      iconColor="primary"
+                    <FeatureSwitch
+                      form={form}
+                      name="carbonioWscVideoCallEnabled"
+                      label={t('cos.createCos.enable_video_calls', 'Enable video calls')}
                     />
                   </ListRow>
                   <ds-text as="span" size="small" color="gray1" weight="light">

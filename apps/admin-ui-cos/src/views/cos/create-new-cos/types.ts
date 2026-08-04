@@ -12,6 +12,14 @@ export type CreateCosFormValues = {
   description: string;
   zimbraNotes: string;
   edition: CosEdition;
+  carbonioFeatureMailsAppEnabled: string;
+  zimbraFeatureContactsEnabled: string;
+  zimbraFeatureCalendarEnabled: string;
+  carbonioFeatureFilesEnabled: string;
+  carbonioFeatureFilesAppEnabled: string;
+  carbonioFeatureTasksEnabled: string;
+  carbonioFeatureWscEnabled: string;
+  carbonioWscVideoCallEnabled: string;
 };
 
 export type CreateCosFormApi = ReactFormExtendedApi<

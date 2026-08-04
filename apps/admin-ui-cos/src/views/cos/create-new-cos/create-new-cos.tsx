@@ -18,7 +18,18 @@ import { CreateNewCosStep1 } from './parts/step-1';
 import { StepTwoEmailEdition } from './parts/step-2-email-edition';
 import { StepTwoWorkspaceEdition } from './parts/step-2-workspace-edition';
 import { createCosSchema } from './schema';
-import type { CosEdition } from './types';
+import type { CosEdition,CreateCosFormValues } from './types';
+
+const FEATURE_FIELDS: Array<keyof CreateCosFormValues> = [
+  'carbonioFeatureMailsAppEnabled',
+  'zimbraFeatureContactsEnabled',
+  'zimbraFeatureCalendarEnabled',
+  'carbonioFeatureFilesEnabled',
+  'carbonioFeatureFilesAppEnabled',
+  'carbonioFeatureTasksEnabled',
+  'carbonioFeatureWscEnabled',
+  'carbonioWscVideoCallEnabled',
+];
 
 export const CreateNewCos = () => {
   const [t] = useTranslation();
@@ -43,7 +54,20 @@ export const CreateNewCos = () => {
   ];
 
   const form = useForm({
-    defaultValues: { cn: '', description: '', zimbraNotes: '', edition: 'email' as CosEdition },
+    defaultValues: {
+      cn: '',
+      description: '',
+      zimbraNotes: '',
+      edition: 'email' as CosEdition,
+      carbonioFeatureMailsAppEnabled: 'TRUE',
+      zimbraFeatureContactsEnabled: 'TRUE',
+      zimbraFeatureCalendarEnabled: 'TRUE',
+      carbonioFeatureFilesEnabled: 'TRUE',
+      carbonioFeatureFilesAppEnabled: 'TRUE',
+      carbonioFeatureTasksEnabled: 'TRUE',
+      carbonioFeatureWscEnabled: 'TRUE',
+      carbonioWscVideoCallEnabled: 'TRUE',
+    },
     validators: {
       onChange: createCosSchema,
       onMount: createCosSchema,
@@ -54,6 +78,7 @@ export const CreateNewCos = () => {
         { n: 'zimbraNotes', _content: value.zimbraNotes },
         { n: 'description', _content: value.description },
         { n: 'cn', _content: value.cn },
+        ...FEATURE_FIELDS.map((field) => ({ n: field, _content: value[field] })),
       ];
       createCosMutation.mutate(
         { name: value.cn, attributes },

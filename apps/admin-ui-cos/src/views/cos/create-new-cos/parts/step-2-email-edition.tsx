@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ListRow, Switch } from '@zextras/ui-components';
+import { ListRow } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
+import { FeatureSwitch } from '../fields/feature-switch';
 import type { CreateCosFormApi } from '../types';
 import { StepFooter } from './step-footer';
 import { StepHeader } from './step-header';
@@ -33,10 +34,10 @@ export const StepTwoEmailEdition = ({ form, onBack }: StepTwoEmailEditionProps) 
             </div>
             <ListRow>
               <div className={styles.fieldStart}>
-                <Switch
+                <FeatureSwitch
+                  form={form}
+                  name="carbonioFeatureTasksEnabled"
                   label={t('create_new_cos.enable_tasks', 'Enable Tasks')}
-                  onClick={(): void => {}}
-                  iconColor="primary"
                 />
               </div>
             </ListRow>
