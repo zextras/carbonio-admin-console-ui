@@ -18,7 +18,7 @@ import { CreateNewCosStep1 } from './parts/step-1';
 import { StepTwoEmailEdition } from './parts/step-2-email-edition';
 import { StepTwoWorkspaceEdition } from './parts/step-2-workspace-edition';
 import { createCosSchema } from './schema';
-import type { CosEdition,CreateCosFormValues } from './types';
+import type { CosEdition, CreateCosFormValues } from './types';
 
 const FEATURE_FIELDS: Array<keyof CreateCosFormValues> = [
   'carbonioFeatureMailsAppEnabled',
@@ -92,22 +92,28 @@ export const CreateNewCos = () => {
     },
   });
 
+  function onBack(): void {
+    return setCurrentStep((step) => step - 1);
+  }
+
+  function onNext() {
+    return setCurrentStep((step) => step + 1);
+  }
+
   return (
     <div className={styles.outer}>
       <div className={styles.stepperColumn}>
         <ds-stepper steps={stepperSteps} current={currentStep}></ds-stepper>
       </div>
       <div className={styles.contentColumn}>
-        {currentStep === 0 && (
-          <CreateNewCosStep1 form={form} onNext={() => setCurrentStep((step) => step + 1)} />
-        )}
+        {currentStep === 0 && <CreateNewCosStep1 form={form} onNext={onNext} />}
         {currentStep === 1 && (
           <form.Subscribe selector={(state) => state.values.edition}>
             {(edition) =>
-              edition === 'workspace' ? (
-                <StepTwoWorkspaceEdition form={form} onBack={() => setCurrentStep((step) => step - 1)} />
+              edition === 'email' ? (
+                <StepTwoEmailEdition form={form} onBack={onBack} />
               ) : (
-                <StepTwoEmailEdition form={form} onBack={() => setCurrentStep((step) => step - 1)} />
+                <StepTwoWorkspaceEdition form={form} onBack={onBack} />
               )
             }
           </form.Subscribe>
