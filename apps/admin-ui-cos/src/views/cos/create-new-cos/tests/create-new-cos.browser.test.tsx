@@ -196,17 +196,6 @@ describe('CreateNewCos wizard', () => {
   });
 
   describe('Step 2 content', () => {
-    it('renders the Enable chats switch on workspace edition step 2', async () => {
-      await setupWizardTest();
-      await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
-      await page.getByRole('radio', { name: 'Workspace edition' }).click();
-      await page.getByRole('button', { name: 'Next' }).click();
-
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable chats' }))
-        .toBeVisible();
-    });
-
     it('navigates back from workspace edition step 2 to step 1', async () => {
       await setupWizardTest();
       await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
@@ -217,6 +206,160 @@ describe('CreateNewCos wizard', () => {
       await expect
         .element(page.getByRole('button', { name: 'Next' }))
         .toBeVisible();
+    });
+  });
+
+  describe('Step 2 - Workspace edition', () => {
+    async function setupWorkspaceStep2(): Promise<void> {
+      await setupWizardTest();
+      await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
+      await page.getByRole('radio', { name: 'Workspace edition' }).click();
+      await page.getByRole('button', { name: 'Next' }).click();
+    }
+
+    it('renders all workspace edition feature switches', async () => {
+      await setupWorkspaceStep2();
+
+      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).toBeVisible();
+      await expect
+        .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable files' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable mobile app' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable tasks' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable chats' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable video calls' }))
+        .toBeVisible();
+    });
+
+    it('renders section headers for each feature group', async () => {
+      await setupWorkspaceStep2();
+
+      await expect.element(page.getByText('Mail', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Contacts', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Calendar', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Files', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Tasks', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Chats', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Video calls', { exact: true })).toBeVisible();
+    });
+
+    it('renders feature descriptions for Contacts, Calendar, Files, Chats, and Video calls', async () => {
+      await setupWorkspaceStep2();
+
+      await expect
+        .element(
+          page.getByText('Personal and shared address books on the web client.'),
+        )
+        .toBeVisible();
+      await expect
+        .element(
+          page.getByText('Calendars, appointments and scheduling on the web client.'),
+        )
+        .toBeVisible();
+      await expect
+        .element(page.getByText('File storage and sharing on the web client.'))
+        .toBeVisible();
+      await expect
+        .element(
+          page.getByText('Messaging, group chats and file sharing between users.'),
+        )
+        .toBeVisible();
+      await expect
+        .element(
+          page.getByText('One-to-one and group video calls within Chats.'),
+        )
+        .toBeVisible();
+    });
+
+    it('has all switches checked by default', async () => {
+      await setupWorkspaceStep2();
+
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable mail' }))
+        .toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
+        .toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
+        .toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable files' }))
+        .toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable mobile app' }))
+        .toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable tasks' }))
+        .toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable chats' }))
+        .toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable video calls' }))
+        .toBeChecked();
+    });
+
+    it('disables all features when DISABLE ALL is clicked', async () => {
+      await setupWorkspaceStep2();
+
+      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
+
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable mail' }))
+        .not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
+        .not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
+        .not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable files' }))
+        .not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable mobile app' }))
+        .not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable tasks' }))
+        .not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable chats' }))
+        .not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable video calls' }))
+        .not.toBeChecked();
+    });
+
+    it('toggles a feature when its switch is clicked', async () => {
+      await setupWorkspaceStep2();
+
+      const chatsSwitch = page.getByRole('switch', { name: 'Enable chats' });
+      await expect.element(chatsSwitch).toBeChecked();
+      await chatsSwitch.click();
+      await expect.element(chatsSwitch).not.toBeChecked();
+      await chatsSwitch.click();
+      await expect.element(chatsSwitch).toBeChecked();
+    });
+
+    it('renders Back and Create buttons in footer', async () => {
+      await setupWorkspaceStep2();
+
+      await expect.element(page.getByRole('button', { name: 'BACK' })).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'create' })).toBeVisible();
     });
   });
 
