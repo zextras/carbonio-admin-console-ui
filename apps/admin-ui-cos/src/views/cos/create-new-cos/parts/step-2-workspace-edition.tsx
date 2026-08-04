@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ListRow, Switch } from '@zextras/ui-components';
+import { Button, ListRow, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { CreateCosFormApi } from '../types';
@@ -28,18 +28,181 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
           <div className={styles.formPanel}>
             <div className={styles.sectionTitle}>
               <ds-text as="strong" size="small" weight="bold" color="gray0">
-                {t('label.create_new_cos', 'Create New COS')}
+                {t('label.create_new_cos', 'Create of New COS')}
               </ds-text>
             </div>
-            <ListRow>
-              <div className={styles.fieldStart}>
-                <Switch
-                  label={t('wsc.section.content.toggle.enableFeature', 'Enable Chat')}
-                  onClick={(): void => {}}
-                  iconColor="primary"
-                />
+            <ds-divider></ds-divider>
+
+            <div className={styles.featuresHeader}>
+              <div className={styles.featuresIntro}>
+                <ds-text as="strong" size="small" weight="bold" color="gray0">
+                  {t(
+                    'cos.createCos.choose_features',
+                    'Choose which feature enable',
+                  )}
+                </ds-text>
+                <ds-text as="span" size="small" color="gray0">
+                  {t(
+                    'cos.createCos.features_description',
+                    'All features are enabled by default. Decide what this Class of Service includes now; every feature can be fine-tuned later in its dedicated settings.',
+                  )}
+                </ds-text>
               </div>
-            </ListRow>
+              <Button
+                label={t('label.disable_all', 'DISABLE ALL')}
+                type="outlined"
+                color="primary"
+                size="small"
+                onClick={(): void => {}}
+              />
+            </div>
+
+            <div className={styles.featureGroups}>
+              <div className={styles.featureRow}>
+                <div className={styles.featureColumn}>
+                  <ds-text as="strong" size="small" weight="bold" color="gray0">
+                    {t('label.mail', 'Mail')}
+                  </ds-text>
+                  <ListRow>
+                    <Switch
+                      label={t('cos.createCos.enable_mail', 'Enable mail')}
+                      onClick={(): void => {}}
+                      iconColor="primary"
+                    />
+                  </ListRow>
+                </div>
+              </div>
+              <ds-divider></ds-divider>
+
+              <div className={styles.featureRow}>
+                <div className={styles.featureColumn}>
+                  <ds-text as="strong" size="small" weight="bold" color="gray0">
+                    {t('label.contacts', 'Contacts')}
+                  </ds-text>
+                  <ListRow>
+                    <Switch
+                      label={t(
+                        'cos.createCos.enable_contacts',
+                        'Users can access Contacts',
+                      )}
+                      onClick={(): void => {}}
+                      iconColor="primary"
+                    />
+                  </ListRow>
+                  <ds-text as="span" size="small" color="gray1" weight="light">
+                    {t(
+                      'cos.createCos.contacts_description',
+                      'Personal and shared address books on the web client.',
+                    )}
+                  </ds-text>
+                </div>
+                <div className={styles.featureColumn}>
+                  <ds-text as="strong" size="small" weight="bold" color="gray0">
+                    {t('label.calendar', 'Calendar')}
+                  </ds-text>
+                  <ListRow>
+                    <Switch
+                      label={t(
+                        'cos.createCos.enable_calendar',
+                        'Users can access Calendar',
+                      )}
+                      onClick={(): void => {}}
+                      iconColor="primary"
+                    />
+                  </ListRow>
+                  <ds-text as="span" size="small" color="gray1" weight="light">
+                    {t(
+                      'cos.createCos.calendar_description',
+                      'Calendars, appointments and scheduling on the web client.',
+                    )}
+                  </ds-text>
+                </div>
+              </div>
+              <ds-divider></ds-divider>
+
+              <div className={styles.featureRow}>
+                <div className={styles.featureColumn}>
+                  <ds-text as="strong" size="small" weight="bold" color="gray0">
+                    {t('label.files', 'Files')}
+                  </ds-text>
+                  <ListRow>
+                    <Switch
+                      label={t('cos.createCos.enable_files', 'Enable files')}
+                      onClick={(): void => {}}
+                      iconColor="primary"
+                    />
+                  </ListRow>
+                  <ds-text as="span" size="small" color="gray1" weight="light">
+                    {t(
+                      'cos.createCos.files_description',
+                      'File storage and sharing on the web client.',
+                    )}
+                  </ds-text>
+                  <ListRow>
+                    <Switch
+                      label={t('cos.createCos.enable_mobile_app', 'Enable mobile app')}
+                      onClick={(): void => {}}
+                      iconColor="primary"
+                    />
+                  </ListRow>
+                </div>
+                <div className={styles.featureColumn}>
+                  <ds-text as="strong" size="small" weight="bold" color="gray0">
+                    {t('label.tasks', 'Tasks')}
+                  </ds-text>
+                  <ListRow>
+                    <Switch
+                      label={t('cos.createCos.enable_tasks', 'Enable tasks')}
+                      onClick={(): void => {}}
+                      iconColor="primary"
+                    />
+                  </ListRow>
+                </div>
+              </div>
+              <ds-divider></ds-divider>
+
+              <div className={styles.featureRow}>
+                <div className={styles.featureColumn}>
+                  <ds-text as="strong" size="small" weight="bold" color="gray0">
+                    {t('label.chats', 'Chats')}
+                  </ds-text>
+                  <ListRow>
+                    <Switch
+                      label={t('cos.createCos.enable_chats', 'Enable chats')}
+                      onClick={(): void => {}}
+                      iconColor="primary"
+                    />
+                  </ListRow>
+                  <ds-text as="span" size="small" color="gray1" weight="light">
+                    {t(
+                      'cos.createCos.chats_description',
+                      'Messaging, group chats and file sharing between users.',
+                    )}
+                  </ds-text>
+                </div>
+                <div className={styles.featureColumn}>
+                  <ds-text as="strong" size="small" weight="bold" color="gray0">
+                    {t('label.video_calls', 'Video calls')}
+                  </ds-text>
+                  <ListRow>
+                    <Switch
+                      label={t(
+                        'cos.createCos.enable_video_calls',
+                        'Enable video calls',
+                      )}
+                      onClick={(): void => {}}
+                      iconColor="primary"
+                    />
+                  </ListRow>
+                  <ds-text as="span" size="small" color="gray1" weight="light">
+                    {t(
+                      'cos.createCos.video_calls_description',
+                      'One-to-one and group video calls within Chats.',
+                    )}
+                  </ds-text>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

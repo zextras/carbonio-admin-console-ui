@@ -206,14 +206,14 @@ describe('CreateNewCos wizard', () => {
         .toBeVisible();
     });
 
-    it('renders the Enable Chat switch on workspace edition step 2', async () => {
+    it('renders the Enable chats switch on workspace edition step 2', async () => {
       await setupWizardTest();
       await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
       await page.getByRole('radio', { name: 'Workspace edition' }).click();
       await page.getByRole('button', { name: 'Next' }).click();
 
       await expect
-        .element(page.getByRole('switch', { name: 'Enable Chat' }))
+        .element(page.getByRole('switch', { name: 'Enable chats' }))
         .toBeVisible();
     });
 
