@@ -34,6 +34,7 @@ export const useRoutes = vi.fn(() => []);
 export const useContextBridge = vi.fn();
 export const queryClient = vi.fn();
 export const useDebouncedValue = vi.fn((value) => value);
+export const useLocalStorage = vi.fn((_key, initialValue) => [initialValue, vi.fn()]);
 export const useDomainSearch = vi.fn(() => ({
   data: undefined,
   isFetching: false,

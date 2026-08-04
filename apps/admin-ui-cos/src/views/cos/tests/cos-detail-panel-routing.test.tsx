@@ -61,7 +61,7 @@ function renderCosDetailPanelAt(path: string) {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
-        <Route path="/:cosId/:operation" element={<CosDetailPanel />} />
+        <Route path="/*" element={<CosDetailPanel />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -131,7 +131,7 @@ describe('CosDetailPanel routing', () => {
       render(
         <MemoryRouter initialEntries={[`/${COS_ID}`]}>
           <Routes>
-            <Route path="/:cosId/:operation" element={<CosDetailPanel />} />
+            <Route path="/*" element={<CosDetailPanel />} />
           </Routes>
         </MemoryRouter>,
       );
