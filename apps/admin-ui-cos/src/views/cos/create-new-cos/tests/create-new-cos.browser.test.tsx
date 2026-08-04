@@ -53,7 +53,7 @@ async function setupWizardTest(): Promise<void> {
     </Routes>,
     { initialRouterEntry: '/create-new-cos' },
   );
-  await expect.element(page.getByText('New COS')).toBeVisible();
+  await expect.element(page.getByText('Create New COS')).toBeVisible();
 }
 
 describe('CreateNewCos wizard', () => {
@@ -66,52 +66,39 @@ describe('CreateNewCos wizard', () => {
   });
 
   describe('Rendering (step 1)', () => {
-    it('renders the page title New COS', async () => {
+    it('renders the page title Create New COS', async () => {
       await setupWizardTest();
-      await expect.element(page.getByText('New COS')).toBeVisible();
+      await expect.element(page.getByText('Create New COS')).toBeVisible();
     });
 
     it('renders the General Information section header', async () => {
       await setupWizardTest();
       // "General Information" appears twice: in the stepper (first) and as the
       // section title (second). The section title is the latter.
-      await expect
-        .element(page.getByText('General Information').last())
-        .toBeVisible();
+      await expect.element(page.getByText('General Information').last()).toBeVisible();
     });
 
     it('renders the Cos Name input field', async () => {
       await setupWizardTest();
-      await expect
-        .element(page.getByRole('textbox', { name: 'Cos Name' }))
-        .toBeVisible();
+      await expect.element(page.getByRole('textbox', { name: 'Cos Name' })).toBeVisible();
     });
 
     it('renders the Next button', async () => {
       await setupWizardTest();
-      await expect
-        .element(page.getByRole('button', { name: 'Next' }))
-        .toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Next' })).toBeVisible();
     });
   });
 
   describe('Next button state', () => {
     it('is disabled when the cos name is empty', async () => {
       await setupWizardTest();
-      await expect
-        .element(page.getByRole('button', { name: 'Next' }))
-        .toBeDisabled();
+      await expect.element(page.getByRole('button', { name: 'Next' })).toBeDisabled();
     });
 
     it('is enabled when a valid cos name is entered', async () => {
       await setupWizardTest();
-      await userEvent.fill(
-        page.getByRole('textbox', { name: 'Cos Name' }),
-        'testcos',
-      );
-      await expect
-        .element(page.getByRole('button', { name: 'Next' }))
-        .not.toBeDisabled();
+      await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
+      await expect.element(page.getByRole('button', { name: 'Next' })).not.toBeDisabled();
     });
 
     it('is disabled again when the cos name is cleared', async () => {
@@ -119,41 +106,27 @@ describe('CreateNewCos wizard', () => {
       const cosNameInput = page.getByRole('textbox', { name: 'Cos Name' });
       await userEvent.fill(cosNameInput, 'testcos');
       await userEvent.clear(cosNameInput);
-      await expect
-        .element(page.getByRole('button', { name: 'Next' }))
-        .toBeDisabled();
+      await expect.element(page.getByRole('button', { name: 'Next' })).toBeDisabled();
     });
   });
 
   describe('Step navigation', () => {
     it('advances to step 2 when Next is clicked', async () => {
       await setupWizardTest();
-      await userEvent.fill(
-        page.getByRole('textbox', { name: 'Cos Name' }),
-        'testcos',
-      );
+      await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
       await page.getByRole('button', { name: 'Next' }).click();
 
-      await expect
-        .element(page.getByRole('button', { name: 'BACK' }))
-        .toBeVisible();
-      await expect
-        .element(page.getByRole('button', { name: 'create' }))
-        .toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'BACK' })).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'create' })).toBeVisible();
     });
 
     it('returns to step 1 when Back is clicked', async () => {
       await setupWizardTest();
-      await userEvent.fill(
-        page.getByRole('textbox', { name: 'Cos Name' }),
-        'testcos',
-      );
+      await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
       await page.getByRole('button', { name: 'Next' }).click();
       await page.getByRole('button', { name: 'BACK' }).click();
 
-      await expect
-        .element(page.getByRole('button', { name: 'Next' }))
-        .toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Next' })).toBeVisible();
     });
 
     it('keeps the entered cos name when navigating back', async () => {
@@ -170,20 +143,14 @@ describe('CreateNewCos wizard', () => {
   describe('Edition selection', () => {
     it('selects Email edition by default', async () => {
       await setupWizardTest();
-      await expect
-        .element(page.getByRole('radio', { name: 'Email edition' }))
-        .toBeChecked();
+      await expect.element(page.getByRole('radio', { name: 'Email edition' })).toBeChecked();
     });
 
     it('allows switching to Workspace edition', async () => {
       await setupWizardTest();
       await page.getByRole('radio', { name: 'Workspace edition' }).click();
-      await expect
-        .element(page.getByRole('radio', { name: 'Workspace edition' }))
-        .toBeChecked();
-      await expect
-        .element(page.getByRole('radio', { name: 'Email edition' }))
-        .not.toBeChecked();
+      await expect.element(page.getByRole('radio', { name: 'Workspace edition' })).toBeChecked();
+      await expect.element(page.getByRole('radio', { name: 'Email edition' })).not.toBeChecked();
     });
   });
 
@@ -203,9 +170,7 @@ describe('CreateNewCos wizard', () => {
       await page.getByRole('button', { name: 'Next' }).click();
       await page.getByRole('button', { name: 'BACK' }).click();
 
-      await expect
-        .element(page.getByRole('button', { name: 'Next' }))
-        .toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Next' })).toBeVisible();
     });
   });
 
@@ -227,21 +192,11 @@ describe('CreateNewCos wizard', () => {
       await expect
         .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
         .toBeVisible();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable files' }))
-        .toBeVisible();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable mobile app' }))
-        .toBeVisible();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable tasks' }))
-        .toBeVisible();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable chats' }))
-        .toBeVisible();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable video calls' }))
-        .toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable files' })).toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable mobile app' })).toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable chats' })).toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable video calls' })).toBeVisible();
     });
 
     it('renders section headers for each feature group', async () => {
@@ -260,57 +215,37 @@ describe('CreateNewCos wizard', () => {
       await setupWorkspaceStep2();
 
       await expect
-        .element(
-          page.getByText('Personal and shared address books on the web client.'),
-        )
+        .element(page.getByText('Personal and shared address books on the web client.'))
         .toBeVisible();
       await expect
-        .element(
-          page.getByText('Calendars, appointments and scheduling on the web client.'),
-        )
+        .element(page.getByText('Calendars, appointments and scheduling on the web client.'))
         .toBeVisible();
       await expect
         .element(page.getByText('File storage and sharing on the web client.'))
         .toBeVisible();
       await expect
-        .element(
-          page.getByText('Messaging, group chats and file sharing between users.'),
-        )
+        .element(page.getByText('Messaging, group chats and file sharing between users.'))
         .toBeVisible();
       await expect
-        .element(
-          page.getByText('One-to-one and group video calls within Chats.'),
-        )
+        .element(page.getByText('One-to-one and group video calls within Chats.'))
         .toBeVisible();
     });
 
     it('has all switches checked by default', async () => {
       await setupWorkspaceStep2();
 
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable mail' }))
-        .toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).toBeChecked();
       await expect
         .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
         .toBeChecked();
       await expect
         .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
         .toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable files' }))
-        .toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable mobile app' }))
-        .toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable tasks' }))
-        .toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable chats' }))
-        .toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable video calls' }))
-        .toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable files' })).toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable mobile app' })).toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable chats' })).toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable video calls' })).toBeChecked();
     });
 
     it('disables all features when DISABLE ALL is clicked', async () => {
@@ -318,27 +253,19 @@ describe('CreateNewCos wizard', () => {
 
       await page.getByRole('button', { name: 'DISABLE ALL' }).click();
 
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable mail' }))
-        .not.toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).not.toBeChecked();
       await expect
         .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
         .not.toBeChecked();
       await expect
         .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
         .not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable files' }))
-        .not.toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable files' })).not.toBeChecked();
       await expect
         .element(page.getByRole('switch', { name: 'Enable mobile app' }))
         .not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable tasks' }))
-        .not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable chats' }))
-        .not.toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).not.toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable chats' })).not.toBeChecked();
       await expect
         .element(page.getByRole('switch', { name: 'Enable video calls' }))
         .not.toBeChecked();
@@ -380,9 +307,7 @@ describe('CreateNewCos wizard', () => {
       await expect
         .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
         .toBeVisible();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable tasks' }))
-        .toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).toBeVisible();
     });
 
     it('renders section headers for each feature group', async () => {
@@ -398,14 +323,10 @@ describe('CreateNewCos wizard', () => {
       await setupEmailStep2();
 
       await expect
-        .element(
-          page.getByText('Personal and shared address books on the web client.'),
-        )
+        .element(page.getByText('Personal and shared address books on the web client.'))
         .toBeVisible();
       await expect
-        .element(
-          page.getByText('Calendars, appointments and scheduling on the web client.'),
-        )
+        .element(page.getByText('Calendars, appointments and scheduling on the web client.'))
         .toBeVisible();
     });
 
@@ -413,30 +334,22 @@ describe('CreateNewCos wizard', () => {
       await setupEmailStep2();
 
       expect(page.getByRole('switch', { name: 'Enable files' }).elements()).toHaveLength(0);
-      expect(
-        page.getByRole('switch', { name: 'Enable mobile app' }).elements(),
-      ).toHaveLength(0);
+      expect(page.getByRole('switch', { name: 'Enable mobile app' }).elements()).toHaveLength(0);
       expect(page.getByRole('switch', { name: 'Enable chats' }).elements()).toHaveLength(0);
-      expect(
-        page.getByRole('switch', { name: 'Enable video calls' }).elements(),
-      ).toHaveLength(0);
+      expect(page.getByRole('switch', { name: 'Enable video calls' }).elements()).toHaveLength(0);
     });
 
     it('has all switches checked by default', async () => {
       await setupEmailStep2();
 
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable mail' }))
-        .toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).toBeChecked();
       await expect
         .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
         .toBeChecked();
       await expect
         .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
         .toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable tasks' }))
-        .toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).toBeChecked();
     });
 
     it('disables all features when DISABLE ALL is clicked', async () => {
@@ -444,18 +357,14 @@ describe('CreateNewCos wizard', () => {
 
       await page.getByRole('button', { name: 'DISABLE ALL' }).click();
 
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable mail' }))
-        .not.toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).not.toBeChecked();
       await expect
         .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
         .not.toBeChecked();
       await expect
         .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
         .not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable tasks' }))
-        .not.toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).not.toBeChecked();
     });
 
     it('toggles a feature when its switch is clicked', async () => {
@@ -506,12 +415,8 @@ describe('CreateNewCos wizard', () => {
       expect(requestBody._jsns).toBe('urn:zimbraAdmin');
       expect(requestBody.name).toEqual({ _content: 'testcos' });
 
-      await expect
-        .element(page.getByText('testcos has been created successfully'))
-        .toBeVisible();
-      expect(replaceHistoryMock).toHaveBeenCalledWith(
-        `/${NEW_COS_ID}/general_information`,
-      );
+      await expect.element(page.getByText('testcos has been created successfully')).toBeVisible();
+      expect(replaceHistoryMock).toHaveBeenCalledWith(`/${NEW_COS_ID}/general_information`);
     });
 
     it('should include description and notes in the CreateCos request', async () => {
