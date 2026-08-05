@@ -30,12 +30,12 @@ export const FeatureItem = ({ form, name, label, description }: FeatureItemProps
         )}
       </form.Field>
     </ListRow>
-    {description ? (
+    {description && (
       <div className={styles.featureDescription}>
         <ds-text as="span" size="small" color="gray1" weight="light">
           {description}
         </ds-text>
       </div>
-    ) : null}
+    )}
   </>
 );
