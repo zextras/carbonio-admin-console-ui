@@ -29,19 +29,8 @@
   border-radius: var(--border-radius);
 }
 
-.headerRow {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 100%;
-}
-
 .headerTitle {
-  padding: var(--padding-size-large);
+  padding: var(--padding-size-large) 0;
   width: fit-content;
   height: fit-content;
 }
@@ -168,7 +157,7 @@
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  padding: var(--padding-size-large);
+  padding-bottom: var(--padding-size-large);
   gap: var(--padding-size-large);
 }
 

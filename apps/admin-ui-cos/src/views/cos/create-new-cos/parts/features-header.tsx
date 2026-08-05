@@ -28,17 +28,23 @@ export const FeaturesHeader = ({ form }: { form: CreateCosFormApi }) => {
       form.setFieldValue(key, 'FALSE' as never);
     }
   };
+  const title = t(
+    'cos.createCos.choose_features',
+    'Choose which features to enable for this edition',
+  );
+  const description = t(
+    'cos.createCos.features_description',
+    'All features are enabled by default. Pick what this Class of Service should include. You can always adjust individual features later.',
+  );
+
   return (
     <div className={styles.featuresHeader}>
       <div className={styles.featuresIntro}>
         <ds-text as="strong" size="small" weight="bold" color="gray0">
-          {t('cos.createCos.choose_features', 'Choose which feature enable')}
+          {title}
         </ds-text>
-        <ds-text as="span" size="small" color="gray0">
-          {t(
-            'cos.createCos.features_description',
-            'All features are enabled by default. Decide what this Class of Service includes now; every feature can be fine-tuned later in its dedicated settings.',
-          )}
+        <ds-text as="span" size="small" color="gray0" overflow="break-word">
+          {description}
         </ds-text>
       </div>
       <div className={styles.disableAllWrapper}>
