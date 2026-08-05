@@ -157,7 +157,7 @@
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  padding-bottom: var(--padding-size-large);
+  padding: var(--padding-size-large);
   gap: var(--padding-size-large);
 }
 
@@ -176,6 +176,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding-left: var(--padding-size-large);
   gap: var(--padding-size-large);
 }
 
@@ -211,6 +212,7 @@
   font-size: var(--font-size-extrasmall);
   font-weight: var(--font-weight-light);
   line-height: 1.5;
+  padding-left: calc(var(--icon-size-large) + var(--padding-size-small));
 }
 
 .radioGroup {

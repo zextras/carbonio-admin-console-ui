@@ -8,6 +8,7 @@ import { ListRow } from '@zextras/ui-components';
 
 import { FeatureSwitch } from '../fields/feature-switch';
 import type { CreateCosFormApi, CreateCosFormValues } from '../types';
+import styles from './steps.module.css';
 
 type FeatureItemProps = {
   form: CreateCosFormApi;
@@ -22,9 +23,11 @@ export const FeatureItem = ({ form, name, label, description }: FeatureItemProps
       <FeatureSwitch form={form} name={name} label={label} />
     </ListRow>
     {description ? (
-      <ds-text as="span" size="small" color="gray1" weight="light">
-        {description}
-      </ds-text>
+      <div className={styles.featureDescription}>
+        <ds-text as="span" size="small" color="gray1" weight="light">
+          {description}
+        </ds-text>
+      </div>
     ) : null}
   </>
 );
