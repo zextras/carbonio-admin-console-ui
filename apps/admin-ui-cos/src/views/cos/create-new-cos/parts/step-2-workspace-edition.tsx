@@ -63,13 +63,15 @@ export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditio
                   )}
                 </ds-text>
               </div>
-              <Button
-                label={t('label.disable_all', 'DISABLE ALL')}
-                type="outlined"
-                color="primary"
-                size="small"
-                onClick={disableAll}
-              />
+              <div className={styles.disableAllWrapper}>
+                <Button
+                  label={t('label.disable_all', 'DISABLE ALL')}
+                  type="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={disableAll}
+                />
+              </div>
             </div>
 
             <div className={styles.featureGroups}>

@@ -179,6 +179,10 @@
   gap: 0.25rem;
 }
 
+.disableAllWrapper {
+  flex-shrink: 0;
+}
+
 .featureGroups {
   display: flex;
   flex-direction: column;

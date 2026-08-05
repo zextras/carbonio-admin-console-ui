@@ -40,17 +40,10 @@ export const StepTwoEmailEdition = ({ form, onBack }: StepTwoEmailEditionProps) 
       <div className={styles.scrollArea}>
         <div className={styles.formRow}>
           <div className={styles.formPanel}>
-            <div className={styles.sectionTitle}>
-              <ds-text as="strong" size="small" weight="bold" color="gray0">
-                {t('label.create_new_cos', 'Create of New COS')}
-              </ds-text>
-            </div>
-            <ds-divider></ds-divider>
-
             <div className={styles.featuresHeader}>
               <div className={styles.featuresIntro}>
                 <ds-text as="strong" size="small" weight="bold" color="gray0">
-                  {t('cos.createCos.choose_features', 'Choose which feature enable')}
+                  {t('cos.createCos.choose_features', 'Choose which features to enable')}
                 </ds-text>
                 <ds-text as="span" size="small" color="gray0">
                   {t(
@@ -59,13 +52,14 @@ export const StepTwoEmailEdition = ({ form, onBack }: StepTwoEmailEditionProps) 
                   )}
                 </ds-text>
               </div>
-              <Button
-                label={t('label.disable_all', 'DISABLE ALL')}
-                type="outlined"
-                color="primary"
-                size="small"
-                onClick={disableAll}
-              />
+              <div className={styles.disableAllWrapper}>
+                <Button
+                  label={t('label.disable_all', 'DISABLE ALL')}
+                  type="outlined"
+                  color="primary"
+                  onClick={disableAll}
+                />
+              </div>
             </div>
 
             <div className={styles.featureGroups}>
@@ -94,10 +88,7 @@ export const StepTwoEmailEdition = ({ form, onBack }: StepTwoEmailEditionProps) 
                     <FeatureSwitch
                       form={form}
                       name="zimbraFeatureContactsEnabled"
-                      label={t(
-                        'cos.createCos.enable_contacts',
-                        'Users can access Contacts',
-                      )}
+                      label={t('cos.createCos.enable_contacts', 'Users can access Contacts')}
                     />
                   </ListRow>
                   <ds-text as="span" size="small" color="gray1" weight="light">
@@ -115,10 +106,7 @@ export const StepTwoEmailEdition = ({ form, onBack }: StepTwoEmailEditionProps) 
                     <FeatureSwitch
                       form={form}
                       name="zimbraFeatureCalendarEnabled"
-                      label={t(
-                        'cos.createCos.enable_calendar',
-                        'Users can access Calendar',
-                      )}
+                      label={t('cos.createCos.enable_calendar', 'Users can access Calendar')}
                     />
                   </ListRow>
                   <ds-text as="span" size="small" color="gray1" weight="light">

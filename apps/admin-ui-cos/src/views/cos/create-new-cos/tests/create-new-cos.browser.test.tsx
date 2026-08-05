@@ -403,6 +403,25 @@ describe('CreateNewCos wizard', () => {
       await expect.element(page.getByRole('button', { name: 'BACK' })).toBeVisible();
       await expect.element(page.getByRole('button', { name: 'create' })).toBeVisible();
     });
+
+    it('DISABLE ALL button flex item does not shrink (keeps natural size)', async () => {
+      await setupEmailStep2();
+
+      const button = page.getByRole('button', { name: 'DISABLE ALL' });
+      await expect.element(button).toBeVisible();
+
+      let node: HTMLElement | SVGElement | null = button.element();
+      let flexShrink: string = '1';
+      while (node && node.parentElement) {
+        const parentDisplay = globalThis.getComputedStyle(node.parentElement).display;
+        if (parentDisplay.includes('flex')) {
+          flexShrink = globalThis.getComputedStyle(node).flexShrink;
+          break;
+        }
+        node = node.parentElement;
+      }
+      expect(flexShrink).toBe('0');
+    });
   });
 
   describe('Field interactions (step 1)', () => {
