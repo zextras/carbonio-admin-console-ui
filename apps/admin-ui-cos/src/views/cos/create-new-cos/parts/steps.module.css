@@ -42,8 +42,9 @@
   justify-content: flex-start;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100vh - 150px);
-  overflow: auto;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
   padding-top: var(--padding-size-large);
   border-radius: var(--border-radius);
 }
@@ -175,6 +176,7 @@
 .featureGroups {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   width: 100%;
   padding-left: var(--padding-size-large);
   gap: var(--padding-size-large);
@@ -216,5 +218,6 @@
 }
 
 .radioGroup {
+  box-sizing: border-box;
   padding-left: var(--padding-size-large);
 }
