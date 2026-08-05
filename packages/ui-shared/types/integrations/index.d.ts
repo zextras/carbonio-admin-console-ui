@@ -24,6 +24,7 @@ export type Action = {
   primary?: boolean;
   group?: string;
   disabled?: boolean;
+  tooltipLabel?: string;
   [key: string]: unknown;
 };
 

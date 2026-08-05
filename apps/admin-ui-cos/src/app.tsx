@@ -61,8 +61,11 @@ const App = () => {
   }, [managementSection, showCOS, t]);
 
   useEffect(() => {
-    if (!licenseData) return;
-
+    const canCreate = Boolean(licenseData) && createCosRight;
+    const tooltipLabel = t(
+      'tooltip.create_cos_disabled',
+      'A valid subscription is needed to create a COS',
+    );
     registerActions({
       action: () => ({
         id: 'new-cos',
@@ -71,7 +74,8 @@ const App = () => {
         onClick: () => {
           navigate(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
         },
-        disabled: !createCosRight,
+        disabled: !canCreate,
+        tooltipLabel: !canCreate ? tooltipLabel : undefined,
         group: APP_ID,
         primary: false,
       }),
