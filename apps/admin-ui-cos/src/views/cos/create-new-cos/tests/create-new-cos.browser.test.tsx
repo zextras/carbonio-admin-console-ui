@@ -422,6 +422,22 @@ describe('CreateNewCos wizard', () => {
       }
       expect(flexShrink).toBe('0');
     });
+
+    it('DISABLE ALL on email edition does not disable workspace-only features', async () => {
+      const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
+      await setupWizardTest();
+
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('button', { name: 'Next' }).click();
+      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
+      await page.getByRole('button', { name: 'create' }).click();
+
+      const requestBody = (await createCosPromise) as {
+        a: Array<{ n: string; _content: string }>;
+      };
+      const filesAttr = requestBody.a.find((a) => a.n === 'carbonioFeatureFilesEnabled');
+      expect(filesAttr?._content).toBe('TRUE');
+    });
   });
 
   describe('Field interactions (step 1)', () => {

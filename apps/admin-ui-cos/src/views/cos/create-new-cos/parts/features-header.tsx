@@ -7,24 +7,18 @@
 import { Button } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { CreateCosFormApi, CreateCosFormValues } from '../types';
+import type { CreateCosFormApi, CreateCosFormValues } from '../types';
 import styles from './steps.module.css';
 
-const FEATURE_KEYS: Array<keyof CreateCosFormValues> = [
-  'carbonioFeatureMailsAppEnabled',
-  'zimbraFeatureContactsEnabled',
-  'zimbraFeatureCalendarEnabled',
-  'carbonioFeatureFilesEnabled',
-  'carbonioFeatureFilesAppEnabled',
-  'carbonioFeatureTasksEnabled',
-  'carbonioFeatureWscEnabled',
-  'carbonioWscVideoCallEnabled',
-];
+type FeaturesHeaderProps = {
+  form: CreateCosFormApi;
+  featureKeys: Array<keyof CreateCosFormValues>;
+};
 
-export const FeaturesHeader = ({ form }: { form: CreateCosFormApi }) => {
+export const FeaturesHeader = ({ form, featureKeys }: FeaturesHeaderProps) => {
   const [t] = useTranslation();
   const disableAll = (): void => {
-    for (const key of FEATURE_KEYS) {
+    for (const key of featureKeys) {
       form.setFieldValue(key, 'FALSE' as never);
     }
   };
