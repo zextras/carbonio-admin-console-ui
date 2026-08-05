@@ -58,7 +58,7 @@ export const CreateNewCos = () => {
       cn: '',
       description: '',
       zimbraNotes: '',
-      edition: 'email' as CosEdition,
+      edition: 'mail' as CosEdition,
       carbonioFeatureMailsAppEnabled: 'TRUE',
       zimbraFeatureContactsEnabled: 'TRUE',
       zimbraFeatureCalendarEnabled: 'TRUE',

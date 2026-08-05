@@ -17,7 +17,7 @@ export const createCosSchema = z.object({
     .regex(/^[a-z]*$/, 'cos.validation.cos_name_lowercase'),
   description: z.string(),
   zimbraNotes: z.string(),
-  edition: z.enum(['email', 'workspace']),
+  edition: z.enum(['mail', 'workspace']),
   carbonioFeatureMailsAppEnabled: z.string(),
   zimbraFeatureContactsEnabled: z.string(),
   zimbraFeatureCalendarEnabled: z.string(),

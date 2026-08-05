@@ -32,7 +32,7 @@ export const EditionField = ({ form }: EditionFieldProps) => {
       }}
     >
       <Radio
-        value="email"
+        value="mail"
         iconColor="primary"
         aria-label={emailTitle}
         label={
