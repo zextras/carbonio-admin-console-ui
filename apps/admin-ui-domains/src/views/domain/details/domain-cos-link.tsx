@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
 import {
 	Button,
 	Container,
@@ -17,38 +16,20 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/ui-components';
-import {
-	domainByIdKey,
-	flushCache,
-	getCosList,
-	postSoapFetchRequest,
-	useUserSettings
-} from '@zextras/ui-shared';
+import { getCosList, useUserSettings } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import React, { FC, KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, KeyboardEvent, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Attribute } from '../../../../types/attribute';
 import { Cos } from '../../../../types/cos';
 import { CosMaxAccountValues } from '../../../../types/domain';
-import { HELPDESK_ADMINS, MAX_COS_DISPLAY, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
-import { copyCos } from '../../../services/copy-cos-service';
-import { modifyDomain } from '../../../services/modify-domain-service';
+import { MAX_COS_DISPLAY, TRUE } from '../../../constants';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
+import { useCosLinkOperations } from './hooks/use-cos-link-operations';
 
 type CosSearchResponse = {
 	searchTotal: number;
 	cos: Cos[];
-};
-
-type ModifyDomainResponse = {
-	domain?: Array<{ id: string; name: string; [key: string]: unknown }>;
-};
-
-type ModifyDomainBody = {
-	id: string;
-	_jsns: string;
-	a: Array<{ n: string; _content: string }>;
 };
 
 type TableHeader = {
@@ -72,7 +53,6 @@ const DomainCosLink: FC<DomainCosLinkProps> = ({
 	domainName
 }) => {
 	const [t] = useTranslation();
-	const queryClient = useQueryClient();
 	const createSnackbar = useSnackbar();
 	const userSetting = useUserSettings();
 
@@ -85,41 +65,17 @@ const DomainCosLink: FC<DomainCosLinkProps> = ({
 	const [cosId, setCosId] = useState('');
 	const [maxAccountValue, setMaxAccountValue] = useState('');
 
-	const showSuccessSnackbar = (): void => {
-		createSnackbar({
-			key: 'success',
-			severity: 'success',
-			label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-			autoHideTimeout: 3000,
-			hideButton: true,
-			replace: true
-		});
+	const resetInputs = (): void => {
+		setMaxAccountValue('');
 	};
 
-	const showErrorSnackbar = (error: unknown): void => {
-		const message =
-			error instanceof Error
-				? error.message
-				: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.');
-		createSnackbar({
-			key: 'error',
-			severity: 'error',
-			label: message,
-			autoHideTimeout: 3000,
-			hideButton: true,
-			replace: true
-		});
-	};
-
-	const updateDomainCache = (data: ModifyDomainResponse): void => {
-		if (isGlobalAdmin) {
-			flushCache('domain', 'id', domainId);
-		}
-		const domain = data?.domain?.[0];
-		if (domain) {
-			queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
-		}
-	};
+	const { linkCos, duplicateCos, removeCosLink, markAsDefaultCos } = useCosLinkOperations({
+		domainId,
+		domainName,
+		cosMaxAccountList,
+		isGlobalAdmin,
+		onSuccess: resetInputs
+	});
 
 	const getCosLists = (cos: string): void => {
 		getCosList(cos, 0)
@@ -166,218 +122,11 @@ const DomainCosLink: FC<DomainCosLinkProps> = ({
 		setCosId(cos?.id ?? '');
 	};
 
-	const grantCosRights = (cId: string): void => {
-		const target = {
-			_content: cId,
-			type: 'cos',
-			by: 'id'
-		};
-		const grantee = {
-			by: 'name',
-			type: 'grp',
-			_content: `${HELPDESK_ADMINS}@${domainName}`
-		};
-
-		postSoapFetchRequest(
-			'/service/admin/soap/GrantRightRequest',
-			{
-				_jsns: ZIMBRA_ADMIN_URN,
-				target,
-				grantee,
-				right: { _content: 'getCos' }
-			},
-			'GrantRightRequest'
-		)
-			.then(() =>
-				postSoapFetchRequest(
-					'/service/admin/soap/GrantRightRequest',
-					{
-						_jsns: ZIMBRA_ADMIN_URN,
-						target,
-						grantee,
-						right: { _content: 'listCos' }
-					},
-					'GrantRightRequest'
-				)
-			)
-			.then(() =>
-				postSoapFetchRequest(
-					'/service/admin/soap/GrantRightRequest',
-					{
-						_jsns: ZIMBRA_ADMIN_URN,
-						target,
-						grantee,
-						right: { _content: 'assignCos' }
-					},
-					'GrantRightRequest'
-				)
-			);
-	};
-
-	const revokeCosRights = (cId: string): void => {
-		const target = {
-			_content: cId,
-			type: 'cos',
-			by: 'id'
-		};
-		const grantee = {
-			by: 'name',
-			type: 'grp',
-			_content: `${HELPDESK_ADMINS}@${domainName}`
-		};
-
-		postSoapFetchRequest(
-			'/service/admin/soap/RevokeRightRequest',
-			{
-				_jsns: ZIMBRA_ADMIN_URN,
-				target,
-				grantee,
-				right: { _content: 'getCos' }
-			},
-			'RevokeRightRequest'
-		)
-			.then(() =>
-				postSoapFetchRequest(
-					'/service/admin/soap/RevokeRightRequest',
-					{
-						_jsns: ZIMBRA_ADMIN_URN,
-						target,
-						grantee,
-						right: { _content: 'listCos' }
-					},
-					'RevokeRightRequest'
-				)
-			)
-			.then(() =>
-				postSoapFetchRequest(
-					'/service/admin/soap/RevokeRightRequest',
-					{
-						_jsns: ZIMBRA_ADMIN_URN,
-						target,
-						grantee,
-						right: { _content: 'assignCos' }
-					},
-					'RevokeRightRequest'
-				)
-			);
-	};
-
-	const onSaveCosLinkToDomainRef = useRef<(cId: string, cosMaxAccValue: string) => void>(undefined);
-
-	const onSaveCosLinkToDomain = (cId: string, cosMaxAccValue: string): void => {
-		if (!cId || !cosMaxAccValue) {
-			return;
-		}
-
-		const attributes: Attribute[] = [];
-		const isOverride = cosMaxAccountList.some((item) => item.id === cId);
-
-		if (isOverride) {
-			cosMaxAccountList.forEach((item) => {
-				if (item.id !== cId) {
-					attributes.push({
-						n: 'zimbraDomainCOSMaxAccounts',
-						_content: `${item.id}:${item.value}`
-					});
-				}
-			});
-			attributes.push({
-				n: 'zimbraDomainCOSMaxAccounts',
-				_content: `${cId}:${cosMaxAccValue}`
-			});
-		} else {
-			attributes.push({
-				n: '+zimbraDomainCOSMaxAccounts',
-				_content: `${cId}:${cosMaxAccValue}`
-			});
-		}
-
-		const body: ModifyDomainBody = {
-			id: domainId,
-			_jsns: ZIMBRA_ADMIN_URN,
-			a: attributes
-		};
-
-		modifyDomain(body)
-			.then((data) => {
-				showSuccessSnackbar();
-				updateDomainCache(data);
-				setMaxAccountValue('');
-			})
-			.catch(showErrorSnackbar);
-
-		if (!isOverride) {
-			grantCosRights(cId);
-		}
-	};
-
-	onSaveCosLinkToDomainRef.current = onSaveCosLinkToDomain;
-
-	const onDuplicate = (cId: string, cosMaxAccValue: string, cosName: string): void => {
-		if (!cId || !cosMaxAccValue) {
-			return;
-		}
-		const newName = `${cosName}.${domainName}`;
-		copyCos(newName, cId)
-			.then((data) => {
-				const cosDetail = data?.cos?.[0];
-				getCosLists('');
-				setTimeout(() => {
-					onSaveCosLinkToDomainRef.current?.(cosDetail?.id ?? '', cosMaxAccValue);
-				}, 1500);
-			})
-			.catch(showErrorSnackbar);
-	};
-
-	const onRemoveCosLinkToDomain = (cId: string, cosMaxAccValue: string): void => {
-		if (!cId || !cosMaxAccValue) {
-			return;
-		}
-
-		const body: ModifyDomainBody = {
-			id: domainId,
-			_jsns: ZIMBRA_ADMIN_URN,
-			a: [
-				{
-					n: '-zimbraDomainCOSMaxAccounts',
-					_content: `${cId}:${cosMaxAccValue}`
-				}
-			]
-		};
-
-		modifyDomain(body)
-			.then((data) => {
-				showSuccessSnackbar();
-				updateDomainCache(data);
-				setMaxAccountValue('');
-			})
-			.catch(showErrorSnackbar);
-
-		revokeCosRights(cId);
-	};
-
-	const markAsDefaultCos = (cId: string): void => {
-		if (!cId) {
-			return;
-		}
-
-		const body: ModifyDomainBody = {
-			id: domainId,
-			_jsns: ZIMBRA_ADMIN_URN,
-			a: [
-				{
-					n: 'zimbraDomainDefaultCOSId',
-					_content: cId
-				}
-			]
-		};
-
-		modifyDomain(body)
-			.then((data) => {
-				showSuccessSnackbar();
-				updateDomainCache(data);
-			})
-			.catch(showErrorSnackbar);
+	const handleDuplicate = (): void => {
+		duplicateCos(cosId, maxAccountValue, searchCosName, (newCosId, maxValue) => {
+			getCosLists('');
+			linkCos(newCosId, maxValue);
+		});
 	};
 
 	// Derive domainCosMaxAccountList from props and cosList
@@ -436,7 +185,7 @@ const DomainCosLink: FC<DomainCosLinkProps> = ({
 							color="primary"
 							onClick={(event: { stopPropagation: () => void }): void => {
 								event.stopPropagation();
-								onRemoveCosLinkToDomain(item.id, item.value);
+								removeCosLink(item.id, item.value);
 							}}
 						></ds-icon>
 					</Row>
@@ -616,7 +365,7 @@ const DomainCosLink: FC<DomainCosLinkProps> = ({
 									color="primary"
 									onClick={(event: { stopPropagation: () => void }): void => {
 										event.stopPropagation();
-										onDuplicate(cosId, maxAccountValue, searchCosName);
+										handleDuplicate();
 									}}
 								/>
 							</Padding>
@@ -626,7 +375,7 @@ const DomainCosLink: FC<DomainCosLinkProps> = ({
 								color="primary"
 								onClick={(event: { stopPropagation: () => void }): void => {
 									event.stopPropagation();
-									onSaveCosLinkToDomain(cosId, maxAccountValue);
+									linkCos(cosId, maxAccountValue);
 								}}
 							/>
 						</Row>
