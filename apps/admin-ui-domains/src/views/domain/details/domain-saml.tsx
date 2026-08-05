@@ -52,6 +52,20 @@ type TableHeader = {
 const INFO_BACKGROUND = '#D3EBF8';
 const INFO_COLOR = '#2196D3';
 
+type AttributeCellProps = {
+	text: string;
+	weight: 'regular' | 'light';
+	onClick: () => void;
+};
+
+const AttributeCell: FC<AttributeCellProps> = ({ text, weight, onClick }) => (
+	<Container crossAlignment="flex-start" mainAlignment="center" onClick={onClick}>
+		<ds-text as="span" size="small" weight={weight} color="gray0">
+			{text}
+		</ds-text>
+	</Container>
+);
+
 const DomainSaml: FC = () => {
 	const [t] = useTranslation();
 	const { data: domain, isLoading } = useSelectedDomain();
@@ -123,29 +137,21 @@ const DomainSaml: FC = () => {
 	// Generate table rows
 	const tableRows: TableRow[] = useMemo(
 		() =>
-			samlAttributes.map((item, index) => ({
-				id: index.toString(),
+			samlAttributes.map((item) => ({
+				id: item.attribute,
 				columns: [
-					<Container
-						crossAlignment="flex-start"
-						mainAlignment="center"
-						key={`attr-${index}`}
+					<AttributeCell
+						key={`attr-${item.attribute}`}
+						text={item.attribute}
+						weight="regular"
 						onClick={(): void => handleSelectAttribute(item)}
-					>
-						<ds-text as="span" size="small" weight="regular" color="gray0">
-							{item.attribute}
-						</ds-text>
-					</Container>,
-					<Container
-						crossAlignment="flex-start"
-						mainAlignment="center"
-						key={`val-${index}`}
+					/>,
+					<AttributeCell
+						key={`val-${item.attribute}`}
+						text={item.value}
+						weight="light"
 						onClick={(): void => handleSelectAttribute(item)}
-					>
-						<ds-text as="span" size="small" weight="light" color="gray0">
-							{item.value}
-						</ds-text>
-					</Container>
+					/>
 				]
 			})),
 		[samlAttributes, handleSelectAttribute]

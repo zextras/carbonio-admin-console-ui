@@ -42,24 +42,31 @@ export function useSamlOperations(
 	const createSnackbar = useSnackbar();
 	const [isPending, setIsPending] = useState(false);
 
+	const getErrorMessage = useCallback(
+		(error: unknown): string => {
+			if (error instanceof Error) {
+				return error.message;
+			}
+			if (typeof error === 'object' && error !== null && 'message' in error) {
+				return String((error as { message: unknown }).message);
+			}
+			return t('label.something_wrong_error_msg', 'Something went wrong. Please try again.');
+		},
+		[t]
+	);
+
 	const showError = useCallback(
 		(error: unknown): void => {
-			const message =
-				error instanceof Error
-					? error.message
-					: typeof error === 'object' && error !== null && 'message' in error
-						? String((error as { message: unknown }).message)
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.');
 			createSnackbar({
 				key: 'error',
 				severity: 'error',
-				label: message,
+				label: getErrorMessage(error),
 				autoHideTimeout: 3000,
 				hideButton: true,
 				replace: true
 			});
 		},
-		[t, createSnackbar]
+		[createSnackbar, getErrorMessage]
 	);
 
 	const showSuccess = useCallback(
