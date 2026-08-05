@@ -82,7 +82,7 @@
   height: fit-content;
   background: var(--color-gray6-regular);
   border-radius: var(--border-radius);
-  padding: var(--padding-size-large);
+  padding: var(--padding-size-large) 0;
 }
 
 .sectionTitle {
@@ -211,4 +211,8 @@
   font-size: var(--font-size-extrasmall);
   font-weight: var(--font-weight-light);
   line-height: 1.5;
+}
+
+.radioGroup {
+  padding-left: var(--padding-size-large);
 }

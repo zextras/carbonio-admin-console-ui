@@ -61,7 +61,9 @@ export const CreateNewCosStep1 = ({ form, onNext }: CreateNewCosStep1Props) => {
               </ds-text>
             </div>
             <ListRow>
-              <EditionField form={form} />
+              <div className={styles.radioGroup}>
+                <EditionField form={form} />
+              </div>
             </ListRow>
           </div>
         </div>
