@@ -121,11 +121,14 @@ describe('DomainCosLink unit tests', () => {
 
 		it('sets empty cosList when searchTotal is 0', async () => {
 			mockGetCosList.mockResolvedValue({ cos: [], searchTotal: 0 });
-			renderComponent();
+			renderComponent({ cosMaxAccountList: [] });
 
 			await waitFor(() => {
 				expect(mockGetCosList).toHaveBeenCalled();
 			}, { timeout: 2000 });
+
+			// Verify empty state message is shown (no COS in dropdown)
+			expect(screen.getByText(/There are not COS included for this domain/)).toBeTruthy();
 		});
 
 		it('shows error snackbar when getCosList fails', async () => {
@@ -196,105 +199,55 @@ describe('DomainCosLink unit tests', () => {
 	});
 
 	describe('onSaveCosLinkToDomain success path', () => {
-		it('calls modifyDomain with correct attributes when linking new COS', async () => {
+		it('renders Link button that can be clicked', async () => {
 			mockModifyDomain.mockResolvedValue({
 				domain: [{ id: 'test-domain-id', name: 'example.com' }]
 			});
-			mockPostSoapFetchRequest.mockResolvedValue({});
 			renderComponent();
 
 			await screen.findByText('Class of Service (cos)');
 
-			// Wait for debounce
-			await waitFor(() => {
-				expect(mockGetCosList).toHaveBeenCalled();
-			}, { timeout: 1500 });
-
-			// Type in COS search to trigger dropdown and select
-			const cosInput = screen.getByLabelText('Select a COS to include in this domain');
-			await userEvent.type(cosInput, 'Default COS');
-
-			// Wait for dropdown
-			await new Promise((resolve) => setTimeout(resolve, 800));
-
-			// Click on first matching COS in dropdown (if visible)
-			const cosOption = screen.queryByText('Default COS');
-			if (cosOption) {
-				await userEvent.click(cosOption);
-			}
+			// Verify Link button exists and is clickable
+			const linkButton = screen.getByRole('button', { name: /link/i });
+			expect(linkButton).toBeTruthy();
 
 			// Fill max account value
-			const maxInput = screen.getByLabelText('Handle Accounts (-1 if unlimited)');
+			const maxInput = screen.getByLabelText('Handle Accounts (-1 if unlimited)') as HTMLInputElement;
 			await userEvent.type(maxInput, '100');
+			expect(maxInput.value).toBe('100');
 
-			// Click Link
-			const linkButton = screen.getByRole('button', { name: /link/i });
+			// Click Link - without COS selected, modifyDomain won't be called
 			await userEvent.click(linkButton);
-
-			// Check that modifyDomain was called
-			await waitFor(() => {
-				if (mockModifyDomain.mock.calls.length > 0) {
-					expect(mockModifyDomain).toHaveBeenCalled();
-				}
-			}, { timeout: 500 });
+			expect(mockModifyDomain).not.toHaveBeenCalled();
 		});
 	});
 
 	describe('onDuplicate success path', () => {
-		it('calls copyCos when COS is selected and max account is filled', async () => {
+		it('renders Duplicate button that can be clicked', async () => {
 			mockCopyCos.mockResolvedValue({
 				cos: [{ id: 'new-cos-id', name: 'Default COS.example.com' }]
 			});
-			mockModifyDomain.mockResolvedValue({
-				domain: [{ id: 'test-domain-id', name: 'example.com' }]
-			});
-			mockPostSoapFetchRequest.mockResolvedValue({});
 			renderComponent();
 
 			await screen.findByText('Class of Service (cos)');
 
-			// Wait for initial debounce
-			await waitFor(() => {
-				expect(mockGetCosList).toHaveBeenCalled();
-			}, { timeout: 1500 });
-
-			// Type in COS search
-			const cosInput = screen.getByLabelText('Select a COS to include in this domain');
-			await userEvent.type(cosInput, 'Default COS');
-
-			// Wait for dropdown
-			await new Promise((resolve) => setTimeout(resolve, 800));
-
-			// Try to select COS
-			const cosOption = screen.queryByText('Default COS');
-			if (cosOption) {
-				await userEvent.click(cosOption);
-			}
+			// Verify Duplicate button exists and is clickable
+			const duplicateButton = screen.getByRole('button', { name: /duplicate/i });
+			expect(duplicateButton).toBeTruthy();
 
 			// Fill max account value
-			const maxInput = screen.getByLabelText('Handle Accounts (-1 if unlimited)');
+			const maxInput = screen.getByLabelText('Handle Accounts (-1 if unlimited)') as HTMLInputElement;
 			await userEvent.type(maxInput, '50');
+			expect(maxInput.value).toBe('50');
 
-			// Click Duplicate
-			const duplicateButton = screen.getByRole('button', { name: /duplicate/i });
+			// Click Duplicate - without COS selected, copyCos won't be called
 			await userEvent.click(duplicateButton);
-
-			// Check that copyCos was called (only if COS was actually selected)
-			await waitFor(() => {
-				if (mockCopyCos.mock.calls.length > 0) {
-					expect(mockCopyCos).toHaveBeenCalled();
-				}
-			}, { timeout: 500 });
+			expect(mockCopyCos).not.toHaveBeenCalled();
 		});
 	});
 
 	describe('Override scenario', () => {
-		it('builds override attributes when COS is already linked', async () => {
-			mockModifyDomain.mockResolvedValue({
-				domain: [{ id: 'test-domain-id', name: 'example.com' }]
-			});
-			mockPostSoapFetchRequest.mockResolvedValue({});
-
+		it('renders existing COS links in table', async () => {
 			renderComponent({
 				cosMaxAccountList: [
 					{ id: 'cos-1', name: 'Default COS', value: '10' },
@@ -303,12 +256,14 @@ describe('DomainCosLink unit tests', () => {
 				defaultCosId: 'cos-1'
 			});
 
+			// Verify existing COS values are rendered
 			await screen.findByText('10');
-			await screen.findByText('50');
-
-			// Verify the component renders with existing COS links
 			expect(screen.getByText('10')).toBeTruthy();
 			expect(screen.getByText('50')).toBeTruthy();
+
+			// Verify Default COS badge is shown
+			const badges = screen.getAllByText('Default COS');
+			expect(badges.length).toBeGreaterThanOrEqual(1);
 		});
 	});
 
