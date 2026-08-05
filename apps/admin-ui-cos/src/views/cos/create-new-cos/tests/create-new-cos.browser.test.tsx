@@ -73,14 +73,14 @@ describe('CreateNewCos wizard', () => {
 
     it('renders the General Information section header', async () => {
       await setupWizardTest();
-      // "General Information" appears twice: in the stepper (first) and as the
-      // section title (second). The section title is the latter.
       await expect.element(page.getByText('General Information').last()).toBeVisible();
     });
 
     it('renders the Class of service name input field', async () => {
       await setupWizardTest();
-      await expect.element(page.getByRole('textbox', { name: 'Class of service name' })).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Class of service name' }))
+        .toBeVisible();
     });
 
     it('renders the edition section description', async () => {
@@ -93,6 +93,13 @@ describe('CreateNewCos wizard', () => {
     it('renders the Next button', async () => {
       await setupWizardTest();
       await expect.element(page.getByRole('button', { name: 'Next' })).toBeVisible();
+    });
+
+    it('renders the lowercase-only hint text under the cos name input', async () => {
+      await setupWizardTest();
+      await expect
+        .element(page.getByText('COS name must contain only lowercase letters.'))
+        .toBeVisible();
     });
   });
 
@@ -301,6 +308,65 @@ describe('CreateNewCos wizard', () => {
       await expect.element(chatsSwitch).toBeChecked();
     });
 
+    it('toggles workspace-only features (files, mobile app, video calls) individually', async () => {
+      await setupWorkspaceStep2();
+
+      const filesSwitch = page.getByRole('switch', { name: 'Enable files' });
+      const mobileAppSwitch = page.getByRole('switch', { name: 'Enable mobile app' });
+      const videoCallsSwitch = page.getByRole('switch', { name: 'Enable video calls' });
+
+      await filesSwitch.click();
+      await expect.element(filesSwitch).not.toBeChecked();
+      await expect.element(mobileAppSwitch).toBeChecked();
+
+      await mobileAppSwitch.click();
+      await expect.element(mobileAppSwitch).not.toBeChecked();
+
+      await videoCallsSwitch.click();
+      await expect.element(videoCallsSwitch).not.toBeChecked();
+
+      await filesSwitch.click();
+      await mobileAppSwitch.click();
+      await videoCallsSwitch.click();
+      await expect.element(filesSwitch).toBeChecked();
+      await expect.element(mobileAppSwitch).toBeChecked();
+      await expect.element(videoCallsSwitch).toBeChecked();
+    });
+
+    it('disables all workspace features when DISABLE ALL is clicked', async () => {
+      await setupWorkspaceStep2();
+
+      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
+
+      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
+        .not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
+        .not.toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable files' })).not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable mobile app' }))
+        .not.toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).not.toBeChecked();
+      await expect.element(page.getByRole('switch', { name: 'Enable chats' })).not.toBeChecked();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable video calls' }))
+        .not.toBeChecked();
+    });
+
+    it('re-enables an individual feature after DISABLE ALL on workspace edition', async () => {
+      await setupWorkspaceStep2();
+
+      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
+      const filesSwitch = page.getByRole('switch', { name: 'Enable files' });
+      await expect.element(filesSwitch).not.toBeChecked();
+
+      await filesSwitch.click();
+      await expect.element(filesSwitch).toBeChecked();
+    });
+
     it('renders Back and Create buttons in footer', async () => {
       await setupWorkspaceStep2();
 
@@ -397,6 +463,36 @@ describe('CreateNewCos wizard', () => {
       await expect.element(mailSwitch).toBeChecked();
     });
 
+    it('toggles Contacts and Calendar features individually', async () => {
+      await setupEmailStep2();
+
+      const contactsSwitch = page.getByRole('switch', { name: 'Users can access Contacts' });
+      const calendarSwitch = page.getByRole('switch', { name: 'Users can access Calendar' });
+
+      await contactsSwitch.click();
+      await expect.element(contactsSwitch).not.toBeChecked();
+      await expect.element(calendarSwitch).toBeChecked();
+
+      await calendarSwitch.click();
+      await expect.element(calendarSwitch).not.toBeChecked();
+
+      await contactsSwitch.click();
+      await calendarSwitch.click();
+      await expect.element(contactsSwitch).toBeChecked();
+      await expect.element(calendarSwitch).toBeChecked();
+    });
+
+    it('re-enables an individual feature after DISABLE ALL', async () => {
+      await setupEmailStep2();
+
+      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
+      const mailSwitch = page.getByRole('switch', { name: 'Enable mail' });
+      await expect.element(mailSwitch).not.toBeChecked();
+
+      await mailSwitch.click();
+      await expect.element(mailSwitch).toBeChecked();
+    });
+
     it('renders Back and Create buttons in footer', async () => {
       await setupEmailStep2();
 
@@ -453,6 +549,37 @@ describe('CreateNewCos wizard', () => {
       const notesInput = page.getByRole('textbox', { name: 'Notes' });
       await userEvent.fill(notesInput, 'Some notes');
       await expect.element(notesInput).toHaveValue('Some notes');
+    });
+
+    it('auto-lowercases uppercase letters as the cos name is typed', async () => {
+      await setupWizardTest();
+      const cosNameInput = page.getByRole('textbox', { name: 'Class of service name' });
+      await userEvent.fill(cosNameInput, 'TestCOS');
+      await expect.element(cosNameInput).toHaveValue('testcos');
+    });
+
+    it('shows a required validation error when the cos name is cleared after a failed submit', async () => {
+      worker.use(
+        http.post('/service/admin/soap/CreateCosRequest', () =>
+          HttpResponse.json(
+            { Body: { Fault: { Reason: { Text: 'Submit failed' } } } },
+            { status: 500 },
+          ),
+        ),
+      );
+      await setupWizardTest();
+
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('button', { name: 'Next' }).click();
+      await page.getByRole('button', { name: 'create' }).click();
+
+      await expect.element(page.getByText('Submit failed')).toBeVisible();
+      await page.getByRole('button', { name: 'BACK' }).click();
+
+      const cosNameInput = page.getByRole('textbox', { name: 'Class of service name' });
+      await userEvent.clear(cosNameInput);
+
+      await expect.element(page.getByText('COS name is required')).toBeVisible();
     });
   });
 
@@ -541,6 +668,136 @@ describe('CreateNewCos wizard', () => {
       await page.getByRole('button', { name: 'create' }).click();
 
       await expect.element(page.getByText('Server error occurred')).toBeVisible();
+    });
+
+    it('navigates to / when the CreateCos response has an empty cos array', async () => {
+      createBrowserSoapAPIInterceptor('CreateCos', { cos: [] });
+      await setupWizardTest();
+
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('button', { name: 'Next' }).click();
+      await page.getByRole('button', { name: 'create' }).click();
+
+      await expect.element(page.getByText('testcos has been created successfully')).toBeVisible();
+      expect(replaceHistoryMock).toHaveBeenCalledWith('/');
+    });
+
+    it('includes all email feature attributes as TRUE in the CreateCos request', async () => {
+      const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
+      await setupWizardTest();
+
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('button', { name: 'Next' }).click();
+      await page.getByRole('button', { name: 'create' }).click();
+
+      const requestBody = (await createCosPromise) as {
+        a: Array<{ n: string; _content: string }>;
+      };
+      const getAttr = (name: string): string | undefined =>
+        requestBody.a.find((a) => a.n === name)?._content;
+      expect(getAttr('carbonioFeatureMailsAppEnabled')).toBe('TRUE');
+      expect(getAttr('zimbraFeatureContactsEnabled')).toBe('TRUE');
+      expect(getAttr('zimbraFeatureCalendarEnabled')).toBe('TRUE');
+      expect(getAttr('carbonioFeatureTasksEnabled')).toBe('TRUE');
+    });
+
+    it('includes all workspace feature attributes as TRUE in the CreateCos request', async () => {
+      const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
+      await setupWizardTest();
+
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('radio', { name: 'Workspace edition' }).click();
+      await page.getByRole('button', { name: 'Next' }).click();
+      await page.getByRole('button', { name: 'create' }).click();
+
+      const requestBody = (await createCosPromise) as {
+        a: Array<{ n: string; _content: string }>;
+      };
+      const getAttr = (name: string): string | undefined =>
+        requestBody.a.find((a) => a.n === name)?._content;
+      expect(getAttr('carbonioFeatureMailsAppEnabled')).toBe('TRUE');
+      expect(getAttr('zimbraFeatureContactsEnabled')).toBe('TRUE');
+      expect(getAttr('zimbraFeatureCalendarEnabled')).toBe('TRUE');
+      expect(getAttr('carbonioFeatureFilesEnabled')).toBe('TRUE');
+      expect(getAttr('carbonioFeatureFilesAppEnabled')).toBe('TRUE');
+      expect(getAttr('carbonioFeatureTasksEnabled')).toBe('TRUE');
+      expect(getAttr('carbonioFeatureWscEnabled')).toBe('TRUE');
+      expect(getAttr('carbonioWscVideoCallEnabled')).toBe('TRUE');
+    });
+
+    it('includes toggled feature attributes as FALSE in the CreateCos request', async () => {
+      const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
+      await setupWizardTest();
+
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('button', { name: 'Next' }).click();
+      await page.getByRole('switch', { name: 'Enable mail' }).click();
+      await page.getByRole('switch', { name: 'Enable tasks' }).click();
+      await page.getByRole('button', { name: 'create' }).click();
+
+      const requestBody = (await createCosPromise) as {
+        a: Array<{ n: string; _content: string }>;
+      };
+      const getAttr = (name: string): string | undefined =>
+        requestBody.a.find((a) => a.n === name)?._content;
+      expect(getAttr('carbonioFeatureMailsAppEnabled')).toBe('FALSE');
+      expect(getAttr('carbonioFeatureTasksEnabled')).toBe('FALSE');
+      expect(getAttr('zimbraFeatureContactsEnabled')).toBe('TRUE');
+    });
+  });
+
+  describe('Feature items without descriptions', () => {
+    it('renders Mail and Tasks without description text on email edition', async () => {
+      await setupWizardTest();
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('button', { name: 'Next' }).click();
+
+      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).toBeVisible();
+      expect(page.getByText('File storage and sharing on the web client.').elements()).toHaveLength(
+        0,
+      );
+    });
+
+    it('renders Mail, Tasks, and Mobile app without description text on workspace edition', async () => {
+      await setupWizardTest();
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('radio', { name: 'Workspace edition' }).click();
+      await page.getByRole('button', { name: 'Next' }).click();
+
+      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable mobile app' })).toBeVisible();
+    });
+  });
+
+  describe('Footer & navigation', () => {
+    it('has the create button enabled on step 2 when the form is valid', async () => {
+      await setupWizardTest();
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('button', { name: 'Next' }).click();
+
+      await expect.element(page.getByRole('button', { name: 'create' })).not.toBeDisabled();
+    });
+
+    it('navigates to / when Cancel is clicked from step 2', async () => {
+      await setupWizardTest();
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('button', { name: 'Next' }).click();
+      await page.getByRole('button', { name: 'Cancel' }).click();
+
+      expect(replaceHistoryMock).toHaveBeenCalledWith('/');
+    });
+
+    it('keeps workspace edition selected when navigating back from step 2 to step 1', async () => {
+      await setupWizardTest();
+      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
+      await page.getByRole('radio', { name: 'Workspace edition' }).click();
+      await page.getByRole('button', { name: 'Next' }).click();
+      await page.getByRole('button', { name: 'BACK' }).click();
+
+      await expect.element(page.getByRole('radio', { name: 'Workspace edition' })).toBeChecked();
+      await expect.element(page.getByRole('radio', { name: 'Email edition' })).not.toBeChecked();
     });
   });
 });
