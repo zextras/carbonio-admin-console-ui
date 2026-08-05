@@ -25,24 +25,19 @@ describe('get-address-book-services', () => {
 
   it('should parse service status from SOAP response', () => {
     const response = makeSoapResponse({
+      ok: true,
       response: {
-        target: {
-          ok: true,
-          response: {
-            services: {
-              'ldap-address-book': {
-                running: true,
-                could_start: false,
-                could_stop: true,
-              },
-            },
+        services: {
+          'ldap-address-book': {
+            running: true,
+            could_start: false,
+            could_stop: true,
           },
         },
       },
-      ok: true,
     });
 
-    expect(parseAddressBookServiceStatus(response as any, 'target')).toEqual({
+    expect(parseAddressBookServiceStatus(response as any)).toEqual({
       running: true,
       couldStart: false,
       couldStop: true,
@@ -52,7 +47,7 @@ describe('get-address-book-services', () => {
   it('should return false for missing content', async () => {
     mockPostSoapFetchRequest.mockResolvedValue({ Body: {} });
 
-    const result = await getAddressBookServices('target');
+    const result = await getAddressBookServices();
 
     expect(result).toEqual({ running: false, couldStart: false, couldStop: false });
   });
@@ -64,22 +59,24 @@ describe('get-address-book-services', () => {
       },
     });
 
-    await expect(getAddressBookServices('target')).rejects.toThrow('Service error');
+    await expect(getAddressBookServices()).rejects.toThrow('Service error');
   });
 
   it('should call postSoapFetchRequest with correct getServices payload', async () => {
-    mockPostSoapFetchRequest.mockResolvedValue(makeSoapResponse({ response: { target: { ok: true, response: {} } }, ok: true }));
+    mockPostSoapFetchRequest.mockResolvedValue(
+      makeSoapResponse({ ok: true, response: { services: {} } }),
+    );
 
-    await getAddressBookServices('target');
+    await getAddressBookServices();
 
     expect(mockPostSoapFetchRequest).toHaveBeenCalledWith(
       '/service/admin/soap/zextras',
       expect.objectContaining({
         module: 'ZxAddressBook',
         action: 'getServices',
-        targetServers: 'target',
       }),
       'zextras',
     );
+    expect(mockPostSoapFetchRequest.mock.calls[0][1]).not.toHaveProperty('targetServers');
   });
 });

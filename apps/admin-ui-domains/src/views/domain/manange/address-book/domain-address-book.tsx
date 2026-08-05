@@ -5,7 +5,6 @@
  */
 
 import { Button, Container, Input, ModalOverlay, Row, useSnackbar } from '@zextras/ui-components';
-import { useMailstoreServers } from '@zextras/ui-shared';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -114,8 +113,6 @@ export function DomainAddressBook() {
   const createSnackbar = useSnackbar();
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name ?? '';
-  const { data: mailstoresList = [] } = useMailstoreServers();
-  const targetServer = mailstoresList.find((mailbox) => Boolean(mailbox?.name))?.name;
 
   const [entries, setEntries] = useState<Array<AddressBookEntry>>([]);
   const [searchString, setSearchString] = useState('');
@@ -124,12 +121,12 @@ export function DomainAddressBook() {
   const [selectedEntry, setSelectedEntry] = useState<AddressBookEntry | null>(null);
 
   function loadAddressBooks(): void {
-    if (!domainName || !targetServer) {
+    if (!domainName) {
       return;
     }
 
     setIsLoading(true);
-    listAddressBooks({ domain: domainName, targetServers: targetServer })
+    listAddressBooks({ domain: domainName })
       .then((books) => {
         setEntries(books);
         setSelectedEntry((current) => refreshSelectedEntry(current, books));
@@ -152,11 +149,11 @@ export function DomainAddressBook() {
   }
 
   useEffect(() => {
-    if (!domainName || !targetServer) {
+    if (!domainName) {
       return;
     }
     setIsLoading(true);
-    listAddressBooks({ domain: domainName, targetServers: targetServer })
+    listAddressBooks({ domain: domainName })
       .then((books) => {
         setEntries(books);
       })
@@ -175,9 +172,9 @@ export function DomainAddressBook() {
       .finally(() => {
         setIsLoading(false);
       });
-    // Intentionally depend only on domain/server identity — snackbar/t must not re-fetch.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- stable domain + target server
-  }, [domainName, targetServer]);
+    // Intentionally depend only on domain identity — snackbar/t must not re-fetch.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- stable domain only
+  }, [domainName]);
 
   const filteredEntries = entries.filter((entry) => entryMatchesSearch(entry, searchString));
   const searchQuery = searchString.trim();

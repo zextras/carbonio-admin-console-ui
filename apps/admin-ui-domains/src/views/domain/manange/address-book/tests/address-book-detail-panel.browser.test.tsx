@@ -5,13 +5,12 @@
  */
 
 import {
-	createBrowserSoapAPIInterceptor,
 	setupBrowserTest,
 	worker,
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
 import { type ReactElement } from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
@@ -20,7 +19,6 @@ import { ZX_ADDRESS_BOOK } from '../../../../../constants';
 import { AddressBookDetailPanel } from '../address-book-detail-panel';
 
 const DOMAIN_NAME = 'example.com';
-const MAILSTORE = 'mail1.example.com';
 
 type ZextrasBody = {
 	_jsns: string;
@@ -29,7 +27,6 @@ type ZextrasBody = {
 	domain?: string;
 	account?: string;
 	folder?: string;
-	targetServers?: string;
 };
 
 type ZextrasRequestBody = {
@@ -63,39 +60,17 @@ const PARTIAL_SHARED_ENTRY: AddressBookEntry = {
 	folders: [{ id: '7', name: '/Contacts/Work', isShared: false }],
 };
 
-function buildZextrasResponse(serverName: string, response: Record<string, unknown>): object {
+function buildZextrasResponse(response: Record<string, unknown>): object {
 	return {
 		Body: {
 			response: {
 				content: JSON.stringify({
-					response: {
-						[serverName]: {
-							ok: true,
-							response,
-						},
-					},
-					nested: true,
 					ok: true,
+					response,
 				}),
 			},
 		},
 	};
-}
-
-function setupGetAllServersInterceptor(): Promise<unknown> {
-	return createBrowserSoapAPIInterceptor('GetAllServers', {
-		server: [
-			{
-				name: MAILSTORE,
-				id: 'server-1',
-				a: [
-					{ n: 'description', _content: 'Mailstore' },
-					{ n: 'zimbraServiceHostname', _content: MAILSTORE },
-					{ n: 'zimbraId', _content: 'server-1' },
-				],
-			},
-		],
-	});
 }
 
 function setupAddressBookZextrasInterceptor(
@@ -114,16 +89,16 @@ function setupAddressBookZextrasInterceptor(
 				return HttpResponse.json({ Body: {} });
 			}
 
-			const { action, targetServers = MAILSTORE } = zextrasBody;
+			const { action } = zextrasBody;
 			capturedActions.push(zextrasBody);
 
 			if (action === 'GetMailboxContactFoldersCommand') {
-				return HttpResponse.json(buildZextrasResponse(targetServers, { folders }));
+				return HttpResponse.json(buildZextrasResponse({ folders }));
 			}
 
 			if (action === 'AddAddressBookCommand' || action === 'RemoveAddressBookCommand') {
 				return HttpResponse.json(
-					buildZextrasResponse(targetServers, { message: 'ok' }),
+					buildZextrasResponse({ message: 'ok' }),
 				);
 			}
 
@@ -139,10 +114,6 @@ function renderPanel(ui: ReactElement): Promise<RenderResult> {
 }
 
 describe('AddressBookDetailPanel (browser)', () => {
-	beforeEach(() => {
-		setupGetAllServersInterceptor();
-	});
-
 	it('should render the account email and shared folders section', async () => {
 		setupAddressBookZextrasInterceptor();
 		await renderPanel(

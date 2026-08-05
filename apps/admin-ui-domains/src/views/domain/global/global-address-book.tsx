@@ -5,7 +5,7 @@
  */
 
 import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
-import { useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
+import { useUserSettings } from '@zextras/ui-shared';
 import { type CSSProperties, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -65,7 +65,6 @@ function getErrorLabel(error: Error, fallback: string): string {
 export function GlobalAddressBook() {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const { data: mailstoresList = [] } = useMailstoreServers();
   const userSetting = useUserSettings();
   const [serviceStatus, setServiceStatus] = useState<AddressBookServiceStatus>(DEFAULT_STATUS);
   const [isLoading, setIsLoading] = useState(false);
@@ -73,7 +72,6 @@ export function GlobalAddressBook() {
   const [isRequestInProgress, setIsRequestInProgress] = useState(false);
   const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
 
-  const targetServer = mailstoresList.find((mailbox) => Boolean(mailbox?.name))?.name;
   const fallbackError = t(
     'label.something_wrong_error_msg',
     'Something went wrong. Please try again.',
@@ -86,15 +84,11 @@ export function GlobalAddressBook() {
   }, [userSetting?.attrs]);
 
   useEffect(() => {
-    if (!targetServer) {
-      return;
-    }
-
     let cancelled = false;
     setIsLoading(true);
     setHasLoadedStatus(false);
 
-    getAddressBookServices(targetServer)
+    getAddressBookServices()
       .then((status) => {
         if (cancelled) {
           return;
@@ -124,19 +118,19 @@ export function GlobalAddressBook() {
     return () => {
       cancelled = true;
     };
-    // Intentionally depend only on targetServer — createSnackbar/t identity must not re-fetch.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- stable target server only
-  }, [targetServer]);
+    // Intentionally run once on mount — createSnackbar/t identity must not re-fetch.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only status fetch
+  }, []);
 
   function serviceStartStop(): void {
-    if (!targetServer || !isGlobalAdmin) {
+    if (!isGlobalAdmin) {
       return;
     }
 
     const action = serviceStatus.running ? 'doStopService' : 'doStartService';
     setIsRequestInProgress(true);
 
-    doStartStopAddressBookService(action, targetServer)
+    doStartStopAddressBookService(action)
       .then(() => {
         const nextRunning = !serviceStatus.running;
         setServiceStatus({
@@ -180,7 +174,6 @@ export function GlobalAddressBook() {
     isGlobalAdmin &&
     !isLoading &&
     !isRequestInProgress &&
-    Boolean(targetServer) &&
     (serviceStatus.running ? serviceStatus.couldStop : serviceStatus.couldStart);
 
   const { statusColor, statusAccentBorder, statusDotStyle } = getStatusPresentation(
@@ -336,7 +329,7 @@ export function GlobalAddressBook() {
                         ? t('label.stop_service', 'Stop service')
                         : t('label.start_service', 'Start service')
                     }
-                    color={serviceStatus.running ? 'error' : 'success'}
+                    color={serviceStatus.running ? 'error' : 'primary'}
                     width="fit"
                     minWidth="11.25rem"
                     onClick={serviceStartStop}

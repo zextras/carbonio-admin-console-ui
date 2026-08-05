@@ -52,25 +52,20 @@ describe('list-address-books', () => {
     it('should return entries when server responds with address books', async () => {
       mockPostSoapFetchRequest.mockResolvedValue(
         makeSoapResponse({
-          response: {
-            example: {
-              ok: true,
-              response: {
-                'address books': [
-                  {
-                    account: 'alice@example.com',
-                    accountId: 'acc-1',
-                    folderIds: 'all',
-                  },
-                ],
-              },
-            },
-          },
           ok: true,
+          response: {
+            'address books': [
+              {
+                account: 'alice@example.com',
+                accountId: 'acc-1',
+                folderIds: 'all',
+              },
+            ],
+          },
         }),
       );
 
-      const books = await listAddressBooks({ domain: 'example.com', targetServers: 'example' });
+      const books = await listAddressBooks({ domain: 'example.com' });
 
       expect(books).toEqual([
         {
@@ -84,30 +79,30 @@ describe('list-address-books', () => {
 
     it('should return an empty array when response has no address books', async () => {
       mockPostSoapFetchRequest.mockResolvedValue(
-        makeSoapResponse({ response: { example: { ok: true, response: {} } }, ok: true }),
+        makeSoapResponse({ ok: true, response: {} }),
       );
 
-      const books = await listAddressBooks({ domain: 'example.com', targetServers: 'example' });
+      const books = await listAddressBooks({ domain: 'example.com' });
 
       expect(books).toEqual([]);
     });
 
     it('should return an empty array when address books are not an array', async () => {
       mockPostSoapFetchRequest.mockResolvedValue(
-        makeSoapResponse({ response: { example: { ok: true, response: { 'address books': {} } } }, ok: true }),
+        makeSoapResponse({ ok: true, response: { 'address books': {} } }),
       );
 
-      const books = await listAddressBooks({ domain: 'example.com', targetServers: 'example' });
+      const books = await listAddressBooks({ domain: 'example.com' });
 
       expect(books).toEqual([]);
     });
 
     it('should call postSoapFetchRequest with the correct payload', async () => {
       mockPostSoapFetchRequest.mockResolvedValue(
-        makeSoapResponse({ response: { example: { ok: true, response: {} } }, ok: true }),
+        makeSoapResponse({ ok: true, response: {} }),
       );
 
-      await listAddressBooks({ domain: 'example.com', targetServers: 'example' });
+      await listAddressBooks({ domain: 'example.com' });
 
       expect(mockPostSoapFetchRequest).toHaveBeenCalledWith(
         '/service/admin/soap/zextras',
@@ -115,10 +110,10 @@ describe('list-address-books', () => {
           module: 'ZxAddressBook',
           action: 'ListAddressBookCommand',
           domain: 'example.com',
-          targetServers: 'example',
         }),
         'zextras',
       );
+      expect(mockPostSoapFetchRequest.mock.calls[0][1]).not.toHaveProperty('targetServers');
     });
   });
 });

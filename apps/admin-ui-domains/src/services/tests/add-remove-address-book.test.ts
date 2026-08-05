@@ -25,13 +25,12 @@ describe('address book mutations', () => {
   });
 
   it('should call addAddressBook with correct SOAP payload', async () => {
-    mockPostSoapFetchRequest.mockResolvedValue(makeSoapResponse({ response: { target: { ok: true, response: {} } } }));
+    mockPostSoapFetchRequest.mockResolvedValue(makeSoapResponse({ ok: true, response: {} }));
 
     await addAddressBook({
       domain: 'example.com',
       account: 'alice@example.com',
       folder: 'all',
-      targetServers: 'target',
     });
 
     expect(mockPostSoapFetchRequest).toHaveBeenCalledWith(
@@ -42,20 +41,19 @@ describe('address book mutations', () => {
         domain: 'example.com',
         account: 'alice@example.com',
         folder: 'all',
-        targetServers: 'target',
       }),
       'zextras',
     );
+    expect(mockPostSoapFetchRequest.mock.calls[0][1]).not.toHaveProperty('targetServers');
   });
 
   it('should call removeAddressBook with correct SOAP payload', async () => {
-    mockPostSoapFetchRequest.mockResolvedValue(makeSoapResponse({ response: { target: { ok: true, response: {} } } }));
+    mockPostSoapFetchRequest.mockResolvedValue(makeSoapResponse({ ok: true, response: {} }));
 
     await removeAddressBook({
       domain: 'example.com',
       account: 'alice@example.com',
       folder: '7',
-      targetServers: 'target',
     });
 
     expect(mockPostSoapFetchRequest).toHaveBeenCalledWith(
@@ -66,15 +64,15 @@ describe('address book mutations', () => {
         domain: 'example.com',
         account: 'alice@example.com',
         folder: '7',
-        targetServers: 'target',
       }),
       'zextras',
     );
+    expect(mockPostSoapFetchRequest.mock.calls[0][1]).not.toHaveProperty('targetServers');
   });
 
   it('should throw when addAddressBook response is not ok', async () => {
     mockPostSoapFetchRequest.mockResolvedValue(
-      makeSoapResponse({ response: { target: { ok: false, message: 'Add failed' } } }),
+      makeSoapResponse({ ok: false, message: 'Add failed' }),
     );
 
     await expect(
@@ -82,14 +80,13 @@ describe('address book mutations', () => {
         domain: 'example.com',
         account: 'alice@example.com',
         folder: 'all',
-        targetServers: 'target',
       }),
     ).rejects.toThrow('Add failed');
   });
 
   it('should throw when removeAddressBook response is not ok', async () => {
     mockPostSoapFetchRequest.mockResolvedValue(
-      makeSoapResponse({ response: { target: { ok: false, message: 'Remove failed' } } }),
+      makeSoapResponse({ ok: false, message: 'Remove failed' }),
     );
 
     await expect(
@@ -97,7 +94,6 @@ describe('address book mutations', () => {
         domain: 'example.com',
         account: 'alice@example.com',
         folder: '7',
-        targetServers: 'target',
       }),
     ).rejects.toThrow('Remove failed');
   });

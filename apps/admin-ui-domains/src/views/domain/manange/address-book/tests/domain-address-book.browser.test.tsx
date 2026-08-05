@@ -13,7 +13,7 @@ import {
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
 import { type ReactElement } from 'react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
@@ -22,7 +22,6 @@ import { DomainAddressBook } from '../domain-address-book';
 
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
-const MAILSTORE = 'mail1.example.com';
 
 type ZextrasBody = {
 	_jsns: string;
@@ -31,7 +30,6 @@ type ZextrasBody = {
 	domain?: string;
 	account?: string;
 	folder?: string;
-	targetServers?: string;
 	class?: string;
 };
 
@@ -79,39 +77,17 @@ const SEARCH_ACCOUNTS = [
 	{ name: 'dave@example.com', id: 'acc-4' },
 ];
 
-function buildZextrasResponse(serverName: string, response: Record<string, unknown>): object {
+function buildZextrasResponse(response: Record<string, unknown>): object {
 	return {
 		Body: {
 			response: {
 				content: JSON.stringify({
-					response: {
-						[serverName]: {
-							ok: true,
-							response,
-						},
-					},
-					nested: true,
 					ok: true,
+					response,
 				}),
 			},
 		},
 	};
-}
-
-function setupGetAllServersInterceptor(): Promise<unknown> {
-	return createBrowserSoapAPIInterceptor('GetAllServers', {
-		server: [
-			{
-				name: MAILSTORE,
-				id: 'server-1',
-				a: [
-					{ n: 'description', _content: 'Mailstore' },
-					{ n: 'zimbraServiceHostname', _content: MAILSTORE },
-					{ n: 'zimbraId', _content: 'server-1' },
-				],
-			},
-		],
-	});
 }
 
 function setupSearchDirectoryInterceptor(
@@ -146,22 +122,22 @@ function setupAddressBookZextrasInterceptor(
 				return HttpResponse.json({ Body: {} });
 			}
 
-			const { action, targetServers = MAILSTORE } = zextrasBody;
+			const { action } = zextrasBody;
 			capturedActions.push(zextrasBody);
 
 			if (action === 'ListAddressBookCommand') {
 				return HttpResponse.json(
-					buildZextrasResponse(targetServers, { 'address books': books }),
+					buildZextrasResponse({ 'address books': books }),
 				);
 			}
 
 			if (action === 'GetMailboxContactFoldersCommand') {
-				return HttpResponse.json(buildZextrasResponse(targetServers, { folders }));
+				return HttpResponse.json(buildZextrasResponse({ folders }));
 			}
 
 			if (action === 'AddAddressBookCommand' || action === 'RemoveAddressBookCommand') {
 				return HttpResponse.json(
-					buildZextrasResponse(targetServers, { message: 'ok' }),
+					buildZextrasResponse({ message: 'ok' }),
 				);
 			}
 
@@ -192,10 +168,6 @@ function setupBrowserTest(ui: ReactElement): Promise<RenderResult> {
 }
 
 describe('DomainAddressBook (browser)', () => {
-	beforeEach(() => {
-		setupGetAllServersInterceptor();
-	});
-
 	describe('List', () => {
 		it('should render the Address Book title, Add button, description, and search', async () => {
 			setupAddressBookZextrasInterceptor();

@@ -5,7 +5,6 @@
  */
 
 import {
-	createBrowserSoapAPIInterceptor,
 	getQueryClient,
 	setupBrowserTest,
 	worker,
@@ -26,7 +25,6 @@ type ZextrasRequestBody = {
 			module: string;
 			action: string;
 			service_name?: string;
-			targetServers?: string;
 		};
 	};
 };
@@ -63,46 +61,34 @@ function renderGlobalAddressBook(ui: ReactElement = <GlobalAddressBook />): Prom
 	return setupBrowserTest(ui, { queryClient: seedGlobalAdminSettings() });
 }
 
-function buildGetServicesResponse(serverName: string, state: ServiceState): object {
+function buildGetServicesResponse(state: ServiceState): object {
 	return {
 		Body: {
 			response: {
 				content: JSON.stringify({
+					ok: true,
 					response: {
-						[serverName]: {
-							ok: true,
-							response: {
-								services: {
-									[LDAP_ADDRESS_BOOK_SERVICE]: {
-										could_start: state.couldStart,
-										could_stop: state.couldStop,
-										running: state.running,
-									},
-								},
+						services: {
+							[LDAP_ADDRESS_BOOK_SERVICE]: {
+								could_start: state.couldStart,
+								could_stop: state.couldStop,
+								running: state.running,
 							},
 						},
 					},
-					nested: true,
-					ok: true,
 				}),
 			},
 		},
 	};
 }
 
-function buildActionResponse(serverName: string, message: string): object {
+function buildActionResponse(message: string): object {
 	return {
 		Body: {
 			response: {
 				content: JSON.stringify({
-					response: {
-						[serverName]: {
-							response: { message },
-							ok: true,
-						},
-					},
-					nested: true,
 					ok: true,
+					response: { message },
 				}),
 			},
 		},
@@ -123,17 +109,16 @@ function setupAddressBookInterceptor(state: ServiceState = DEFAULT_RUNNING): {
 				return HttpResponse.json({ Body: {} });
 			}
 
-			const { action, targetServers = 'mail1.example.com' } = zextrasBody;
+			const { action } = zextrasBody;
 
 			if (action === 'getServices') {
-				return HttpResponse.json(buildGetServicesResponse(targetServers, state));
+				return HttpResponse.json(buildGetServicesResponse(state));
 			}
 
 			if (action === 'doStartService' || action === 'doStopService') {
 				capturedActions.push(zextrasBody);
 				return HttpResponse.json(
 					buildActionResponse(
-						targetServers,
 						action === 'doStartService' ? 'service started' : 'service stopped',
 					),
 				);
@@ -146,27 +131,6 @@ function setupAddressBookInterceptor(state: ServiceState = DEFAULT_RUNNING): {
 	return { capturedActions };
 }
 
-function setupGetAllServersInterceptor(
-	servers: Array<{ name: string; id: string }> = [],
-): Promise<unknown> {
-	return createBrowserSoapAPIInterceptor('GetAllServers', {
-		server: servers.map((s) => ({
-			name: s.name,
-			id: s.id,
-			a: [
-				{ n: 'description', _content: 'Mailstore' },
-				{ n: 'zimbraServiceHostname', _content: s.name },
-				{ n: 'zimbraId', _content: s.id },
-			],
-		})),
-	});
-}
-
-const MAILSTORE_SERVERS = [
-	{ name: 'mail1.example.com', id: 'server-1' },
-	{ name: 'mail2.example.com', id: 'server-2' },
-];
-
 describe('GlobalAddressBook (browser)', () => {
 	beforeEach(() => {
 		setupAddressBookInterceptor();
@@ -174,7 +138,6 @@ describe('GlobalAddressBook (browser)', () => {
 
 	describe('Rendering', () => {
 		it('should render the Global Address Book title', async () => {
-			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
 			await renderGlobalAddressBook();
 			await expect
 				.element(page.getByText('Global Address Book', { exact: true }))
@@ -182,7 +145,6 @@ describe('GlobalAddressBook (browser)', () => {
 		});
 
 		it('should render the status card description and global scope note when running', async () => {
-			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
 			await renderGlobalAddressBook();
 			await expect
 				.element(
@@ -199,7 +161,6 @@ describe('GlobalAddressBook (browser)', () => {
 		});
 
 		it('should show running status and Stop service button when service is running', async () => {
-			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
 			await renderGlobalAddressBook();
 			await expect.element(page.getByText('running', { exact: true })).toBeInTheDocument();
 			await expect
@@ -209,7 +170,6 @@ describe('GlobalAddressBook (browser)', () => {
 
 		it('should show stopped status and Start service button when service is stopped', async () => {
 			setupAddressBookInterceptor(DEFAULT_STOPPED);
-			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
 			await renderGlobalAddressBook();
 			await expect.element(page.getByText('stopped', { exact: true })).toBeInTheDocument();
 			await expect
@@ -228,7 +188,6 @@ describe('GlobalAddressBook (browser)', () => {
 	describe('Actions', () => {
 		it('should call doStopService when Stop service is clicked', async () => {
 			const { capturedActions } = setupAddressBookInterceptor(DEFAULT_RUNNING);
-			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
 			await renderGlobalAddressBook();
 
 			const button = page.getByRole('button', { name: /stop service/i });
@@ -241,13 +200,12 @@ describe('GlobalAddressBook (browser)', () => {
 				action: 'doStopService',
 				service_name: LDAP_ADDRESS_BOOK_SERVICE,
 			});
-			expect(capturedActions[0].targetServers).toBeTruthy();
+			expect(capturedActions[0]).not.toHaveProperty('targetServers');
 			await expect.element(page.getByText('stopped', { exact: true })).toBeInTheDocument();
 		});
 
 		it('should call doStartService when Start service is clicked', async () => {
 			const { capturedActions } = setupAddressBookInterceptor(DEFAULT_STOPPED);
-			setupGetAllServersInterceptor(MAILSTORE_SERVERS);
 			await renderGlobalAddressBook();
 
 			const button = page.getByRole('button', { name: /start service/i });
@@ -260,7 +218,7 @@ describe('GlobalAddressBook (browser)', () => {
 				action: 'doStartService',
 				service_name: LDAP_ADDRESS_BOOK_SERVICE,
 			});
-			expect(capturedActions[0].targetServers).toBeTruthy();
+			expect(capturedActions[0]).not.toHaveProperty('targetServers');
 			await expect.element(page.getByText('running', { exact: true })).toBeInTheDocument();
 		});
 	});

@@ -12,11 +12,10 @@ import type {
 	AddressBookZextrasSoapResponse,
 } from '../../types';
 import { ZIMBRA_ADMIN_URN, ZX_ADDRESS_BOOK } from '../constants';
-import { assertZextrasServerOk } from './address-book-zextras-utils';
+import { assertZextrasOk } from './address-book-zextras-utils';
 
 type ListAddressBooksParams = {
 	domain: string;
-	targetServers: string;
 };
 
 type RawAddressBook = {
@@ -55,7 +54,6 @@ export function normalizeAddressBookFolders(
 
 export async function listAddressBooks({
 	domain,
-	targetServers,
 }: ListAddressBooksParams): Promise<Array<AddressBookEntry>> {
 	const response = await postSoapFetchRequest<
 		Record<string, unknown>,
@@ -68,16 +66,14 @@ export async function listAddressBooks({
 			action: 'ListAddressBookCommand',
 			class: 'domain',
 			domain,
-			targetServers,
 		},
 		'zextras',
 	);
 
-	const parsed = assertZextrasServerOk(response, targetServers, 'ListAddressBookCommand failed');
-	const serverResponse = parsed?.response?.[targetServers]?.response as
-		| { 'address books'?: Array<RawAddressBook> }
-		| undefined;
-	const books = serverResponse?.['address books'];
+	const parsed = assertZextrasOk(response, 'ListAddressBookCommand failed');
+	const books = (
+		parsed?.response as { 'address books'?: Array<RawAddressBook> } | undefined
+	)?.['address books'];
 
 	if (!Array.isArray(books)) {
 		return [];

@@ -31,7 +31,6 @@ vi.mock('@zextras/ui-shared', async (importOriginal) => {
 
 import { searchDirectory } from '@zextras/ui-shared';
 import {
-	createBrowserSoapAPIInterceptor,
 	setupBrowserTest,
 	worker,
 } from 'admin-ui-test-utils';
@@ -48,7 +47,6 @@ import { AddAddressBookPanel } from '../add-address-book-panel';
 const searchDirectoryMock = vi.mocked(searchDirectory);
 
 const DOMAIN_NAME = 'example.com';
-const MAILSTORE = 'mail1.example.com';
 const ACCOUNT_EMAIL = 'carol@example.com';
 
 type ZextrasBody = {
@@ -58,7 +56,6 @@ type ZextrasBody = {
 	domain?: string;
 	account?: string;
 	folder?: string;
-	targetServers?: string;
 };
 
 type ZextrasRequestBody = {
@@ -98,8 +95,7 @@ const PARTIAL_SHARED_ENTRY: AddressBookEntry = {
 };
 
 function buildZextrasResponse(
-	serverName: string,
-	response: Record<string, unknown>,
+	response: Record<string, unknown> = {},
 	ok = true,
 	message?: string,
 ): object {
@@ -107,35 +103,13 @@ function buildZextrasResponse(
 		Body: {
 			response: {
 				content: JSON.stringify({
-					response: {
-						[serverName]: {
-							ok,
-							message,
-							response: ok ? response : undefined,
-						},
-					},
-					nested: true,
-					ok: true,
+					ok,
+					message,
+					response: ok ? response : undefined,
 				}),
 			},
 		},
 	};
-}
-
-function setupGetAllServersInterceptor(): Promise<unknown> {
-	return createBrowserSoapAPIInterceptor('GetAllServers', {
-		server: [
-			{
-				name: MAILSTORE,
-				id: 'server-1',
-				a: [
-					{ n: 'description', _content: 'Mailstore' },
-					{ n: 'zimbraServiceHostname', _content: MAILSTORE },
-					{ n: 'zimbraId', _content: 'server-1' },
-				],
-			},
-		],
-	});
 }
 
 function mockSearchDirectorySuccess(
@@ -172,26 +146,26 @@ function setupAddressBookZextrasInterceptor(
 				return HttpResponse.json({ Body: {} });
 			}
 
-			const { action, targetServers = MAILSTORE } = zextrasBody;
+			const { action } = zextrasBody;
 			capturedActions.push(zextrasBody);
 
 			if (action === 'GetMailboxContactFoldersCommand') {
 				if (options.foldersError) {
 					return HttpResponse.json(
-						buildZextrasResponse(targetServers, {}, false, options.foldersError),
+						buildZextrasResponse({}, false, options.foldersError),
 					);
 				}
-				return HttpResponse.json(buildZextrasResponse(targetServers, { folders }));
+				return HttpResponse.json(buildZextrasResponse({ folders }));
 			}
 
 			if (action === 'AddAddressBookCommand') {
 				if (options.addError) {
 					return HttpResponse.json(
-						buildZextrasResponse(targetServers, {}, false, options.addError),
+						buildZextrasResponse({}, false, options.addError),
 					);
 				}
 				return HttpResponse.json(
-					buildZextrasResponse(targetServers, { message: 'ok' }),
+					buildZextrasResponse({ message: 'ok' }),
 				);
 			}
 
@@ -230,7 +204,6 @@ async function openFolderSelectAndChoose(folderLabel: string): Promise<void> {
 
 describe('AddAddressBookPanel (browser)', () => {
 	beforeEach(() => {
-		setupGetAllServersInterceptor();
 		searchDirectoryMock.mockReset();
 		mockSearchDirectorySuccess();
 	});

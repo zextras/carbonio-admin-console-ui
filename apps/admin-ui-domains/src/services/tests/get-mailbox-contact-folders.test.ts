@@ -25,30 +25,33 @@ describe('get-mailbox-contact-folders', () => {
 
   it('should return normalized folders when folder list is present', async () => {
     mockPostSoapFetchRequest.mockResolvedValue(
-      makeSoapResponse({ response: { example: { ok: true, response: { folders: [{ id: '7', name: 'Work', isShared: true }] } } }, ok: true }),
+      makeSoapResponse({
+        ok: true,
+        response: { folders: [{ id: '7', name: 'Work', isShared: true }] },
+      }),
     );
 
-    const result = await getMailboxContactFolders({ account: 'alice@example.com', targetServers: 'example' });
+    const result = await getMailboxContactFolders({ account: 'alice@example.com' });
 
     expect(result).toEqual([{ id: '7', name: 'Work', isShared: true }]);
   });
 
   it('should return empty array when folders are absent', async () => {
     mockPostSoapFetchRequest.mockResolvedValue(
-      makeSoapResponse({ response: { example: { ok: true, response: {} } }, ok: true }),
+      makeSoapResponse({ ok: true, response: {} }),
     );
 
-    const result = await getMailboxContactFolders({ account: 'alice@example.com', targetServers: 'example' });
+    const result = await getMailboxContactFolders({ account: 'alice@example.com' });
 
     expect(result).toEqual([]);
   });
 
   it('should call postSoapFetchRequest with correct request payload', async () => {
     mockPostSoapFetchRequest.mockResolvedValue(
-      makeSoapResponse({ response: { example: { ok: true, response: {} } }, ok: true }),
+      makeSoapResponse({ ok: true, response: {} }),
     );
 
-    await getMailboxContactFolders({ account: 'alice@example.com', targetServers: 'example' });
+    await getMailboxContactFolders({ account: 'alice@example.com' });
 
     expect(mockPostSoapFetchRequest).toHaveBeenCalledWith(
       '/service/admin/soap/zextras',
@@ -56,9 +59,9 @@ describe('get-mailbox-contact-folders', () => {
         module: 'ZxAddressBook',
         action: 'GetMailboxContactFoldersCommand',
         account: 'alice@example.com',
-        targetServers: 'example',
       }),
       'zextras',
     );
+    expect(mockPostSoapFetchRequest.mock.calls[0][1]).not.toHaveProperty('targetServers');
   });
 });

@@ -15,7 +15,7 @@ import {
   Select,
   useSnackbar,
 } from '@zextras/ui-components';
-import { searchDirectory, useMailstoreServers } from '@zextras/ui-shared';
+import { searchDirectory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -76,8 +76,6 @@ export function AddAddressBookPanel({
 }: Readonly<AddAddressBookPanelProps>) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const { data: mailstoresList = [] } = useMailstoreServers();
-  const targetServer = mailstoresList.find((mailbox) => Boolean(mailbox?.name))?.name;
 
   const [account, setAccount] = useState('');
   const [selectedAccount, setSelectedAccount] = useState('');
@@ -114,7 +112,6 @@ export function AddAddressBookPanel({
     !folderError &&
     !allAlreadySharedError &&
     hasValidSelectedAccount &&
-    Boolean(targetServer) &&
     !isLoadingFolders;
   const sharedLabel = t('label.shared', 'shared');
 
@@ -164,7 +161,7 @@ export function AddAddressBookPanel({
   }, [account, selectedAccount]);
 
   useEffect(() => {
-    if (!hasValidSelectedAccount || !targetServer) {
+    if (!hasValidSelectedAccount) {
       setFolderItems([]);
       setSelectedFolder(undefined);
       setIsLoadingFolders(false);
@@ -176,7 +173,7 @@ export function AddAddressBookPanel({
     setFolderItems([]);
     setSelectedFolder(undefined);
 
-    getMailboxContactFolders({ account: selectedAccount, targetServers: targetServer })
+    getMailboxContactFolders({ account: selectedAccount })
       .then((folders: Array<AddressBookFolder>) => {
         if (cancelled) {
           return;
@@ -222,7 +219,7 @@ export function AddAddressBookPanel({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- fetch folders when selected account changes
-  }, [hasValidSelectedAccount, selectedAccount, targetServer, existingEntries]);
+  }, [hasValidSelectedAccount, selectedAccount, existingEntries]);
 
   function selectAccount(accountName: string): void {
     setAccount(accountName);
@@ -247,7 +244,7 @@ export function AddAddressBookPanel({
   function onSubmit(): void {
     setAccountTouched(true);
     setFolderTouched(true);
-    if (!canSubmit || allAlreadySharedError || !targetServer) {
+    if (!canSubmit || allAlreadySharedError) {
       return;
     }
 
@@ -257,7 +254,6 @@ export function AddAddressBookPanel({
       domain: domainName,
       account: selectedAccount,
       folder,
-      targetServers: targetServer,
     })
       .then(() => {
         createSnackbar({

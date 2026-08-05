@@ -8,16 +8,14 @@ import { postSoapFetchRequest } from '@zextras/ui-shared';
 
 import type { AddressBookFolder, AddressBookZextrasSoapResponse } from '../../types';
 import { ZIMBRA_ADMIN_URN, ZX_ADDRESS_BOOK } from '../constants';
-import { assertZextrasServerOk } from './address-book-zextras-utils';
+import { assertZextrasOk } from './address-book-zextras-utils';
 
 type GetMailboxContactFoldersParams = {
 	account: string;
-	targetServers: string;
 };
 
 export async function getMailboxContactFolders({
 	account,
-	targetServers,
 }: GetMailboxContactFoldersParams): Promise<Array<AddressBookFolder>> {
 	const response = await postSoapFetchRequest<
 		Record<string, unknown>,
@@ -29,20 +27,13 @@ export async function getMailboxContactFolders({
 			module: ZX_ADDRESS_BOOK,
 			action: 'GetMailboxContactFoldersCommand',
 			account,
-			targetServers,
 		},
 		'zextras',
 	);
 
-	const parsed = assertZextrasServerOk(
-		response,
-		targetServers,
-		'GetMailboxContactFoldersCommand failed',
-	);
-	const serverResponse = parsed?.response?.[targetServers]?.response as
-		| { folders?: Array<AddressBookFolder> }
-		| undefined;
-	const folders = serverResponse?.folders;
+	const parsed = assertZextrasOk(response, 'GetMailboxContactFoldersCommand failed');
+	const folders = (parsed?.response as { folders?: Array<AddressBookFolder> } | undefined)
+		?.folders;
 
 	if (!Array.isArray(folders)) {
 		return [];

@@ -6,38 +6,30 @@
 
 import type { AddressBookZextrasSoapResponse } from '../../types';
 
-type NestedServerPayload = {
-	response?: Record<
-		string,
-		{
-			ok?: boolean;
-			message?: string;
-			response?: Record<string, unknown>;
-		}
-	>;
+export type ZextrasFlatPayload = {
 	ok?: boolean;
+	message?: string;
+	response?: Record<string, unknown>;
 };
 
-export function parseZextrasNestedContent(content: string | undefined): NestedServerPayload | null {
+export function parseZextrasContent(content: string | undefined): ZextrasFlatPayload | null {
 	if (!content) {
 		return null;
 	}
-	return JSON.parse(content) as NestedServerPayload;
+	return JSON.parse(content) as ZextrasFlatPayload;
 }
 
-export function assertZextrasServerOk(
+export function assertZextrasOk(
 	response: AddressBookZextrasSoapResponse,
-	targetServers: string,
 	fallbackMessage: string,
-): NestedServerPayload | null {
+): ZextrasFlatPayload | null {
 	if (response?.Body?.Fault) {
 		throw new Error(response.Body.Fault.Reason?.Text ?? fallbackMessage);
 	}
 
-	const parsed = parseZextrasNestedContent(response?.Body?.response?.content);
-	const serverResult = parsed?.response?.[targetServers];
-	if (serverResult?.ok === false) {
-		throw new Error(serverResult.message ?? fallbackMessage);
+	const parsed = parseZextrasContent(response?.Body?.response?.content);
+	if (parsed?.ok === false) {
+		throw new Error(parsed.message ?? fallbackMessage);
 	}
 
 	return parsed;

@@ -6,24 +6,21 @@
 
 import { describe, expect, it } from 'vitest';
 
-import {
-  assertZextrasServerOk,
-  parseZextrasNestedContent,
-} from '../address-book-zextras-utils';
+import { assertZextrasOk, parseZextrasContent } from '../address-book-zextras-utils';
 
 describe('address-book-zextras-utils', () => {
-  describe('parseZextrasNestedContent', () => {
+  describe('parseZextrasContent', () => {
     it('should return null for undefined content', () => {
-      expect(parseZextrasNestedContent(undefined)).toBeNull();
+      expect(parseZextrasContent(undefined)).toBeNull();
     });
 
     it('should parse JSON content', () => {
-      const payload = { response: { test: true }, ok: true };
-      expect(parseZextrasNestedContent(JSON.stringify(payload))).toEqual(payload);
+      const payload = { ok: true, response: { folders: [] } };
+      expect(parseZextrasContent(JSON.stringify(payload))).toEqual(payload);
     });
   });
 
-  describe('assertZextrasServerOk', () => {
+  describe('assertZextrasOk', () => {
     it('should throw when SOAP Fault exists', () => {
       const response = {
         Body: {
@@ -31,34 +28,26 @@ describe('address-book-zextras-utils', () => {
         },
       } as any;
 
-      expect(() => assertZextrasServerOk(response, 'target', 'fallback')).toThrow(
-        'Some fault',
-      );
+      expect(() => assertZextrasOk(response, 'fallback')).toThrow('Some fault');
     });
 
-    it('should throw when nested server result is not ok', () => {
+    it('should throw when payload ok is false', () => {
       const response = {
         Body: {
           response: {
             content: JSON.stringify({
-              response: {
-                target: {
-                  ok: false,
-                  message: 'Command failed',
-                },
-              },
+              ok: false,
+              message: 'Command failed',
             }),
           },
         },
       } as any;
 
-      expect(() => assertZextrasServerOk(response, 'target', 'fallback')).toThrow(
-        'Command failed',
-      );
+      expect(() => assertZextrasOk(response, 'fallback')).toThrow('Command failed');
     });
 
     it('should return parsed payload when ok', () => {
-      const payload = { response: { target: { ok: true, response: {} } }, ok: true };
+      const payload = { ok: true, response: { folders: [] } };
       const response = {
         Body: {
           response: {
@@ -67,7 +56,7 @@ describe('address-book-zextras-utils', () => {
         },
       } as any;
 
-      expect(assertZextrasServerOk(response, 'target', 'fallback')).toEqual(payload);
+      expect(assertZextrasOk(response, 'fallback')).toEqual(payload);
     });
   });
 });

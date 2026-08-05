@@ -8,20 +8,18 @@ import { postSoapFetchRequest } from '@zextras/ui-shared';
 
 import type { AddressBookZextrasSoapResponse } from '../../types';
 import { ZIMBRA_ADMIN_URN, ZX_ADDRESS_BOOK } from '../constants';
-import { assertZextrasServerOk } from './address-book-zextras-utils';
+import { assertZextrasOk } from './address-book-zextras-utils';
 
 type RemoveAddressBookParams = {
 	domain: string;
 	account: string;
 	folder: string;
-	targetServers: string;
 };
 
 export async function removeAddressBook({
 	domain,
 	account,
 	folder,
-	targetServers,
 }: RemoveAddressBookParams): Promise<void> {
 	const response = await postSoapFetchRequest<
 		Record<string, unknown>,
@@ -36,10 +34,9 @@ export async function removeAddressBook({
 			domain,
 			account,
 			folder,
-			targetServers,
 		},
 		'zextras',
 	);
 
-	assertZextrasServerOk(response, targetServers, 'RemoveAddressBookCommand failed');
+	assertZextrasOk(response, 'RemoveAddressBookCommand failed');
 }

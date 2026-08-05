@@ -15,7 +15,6 @@ import {
   Select,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useMailstoreServers } from '@zextras/ui-shared';
 import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -91,8 +90,6 @@ export function AddressBookDetailPanel({
 }: Readonly<AddressBookDetailPanelProps>) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const { data: mailstoresList = [] } = useMailstoreServers();
-  const targetServer = mailstoresList.find((mailbox) => Boolean(mailbox?.name))?.name;
 
   const [folders, setFolders] = useState<Array<AddressBookFolder>>(entry.folders ?? []);
   const [mailboxFolders, setMailboxFolders] = useState<Array<AddressBookFolder>>([]);
@@ -130,15 +127,9 @@ export function AddressBookDetailPanel({
     const listed = entry.folders ?? [];
     setFolders(listed);
 
-    if (!targetServer) {
-      setIsResolvingFolders(false);
-      setMailboxFolders([]);
-      return;
-    }
-
     let cancelled = false;
     setIsResolvingFolders(true);
-    getMailboxContactFolders({ account: entry.account, targetServers: targetServer })
+    getMailboxContactFolders({ account: entry.account })
       .then((fetched) => {
         if (cancelled) {
           return;
@@ -165,10 +156,10 @@ export function AddressBookDetailPanel({
     return (): void => {
       cancelled = true;
     };
-  }, [entry.accountId, entry.account, entry.folders, targetServer]);
+  }, [entry.accountId, entry.account, entry.folders]);
 
   function confirmRemoveFolder(): void {
-    if (!folderToRemove || !targetServer) {
+    if (!folderToRemove) {
       return;
     }
 
@@ -177,7 +168,6 @@ export function AddressBookDetailPanel({
       domain: domainName,
       account: entry.account,
       folder: String(folderToRemove.id),
-      targetServers: targetServer,
     })
       .then(() => {
         createSnackbar({
@@ -209,7 +199,7 @@ export function AddressBookDetailPanel({
   }
 
   function submitInlineAdd(): void {
-    if (!targetServer || !canSubmitAdd) {
+    if (!canSubmitAdd) {
       return;
     }
 
@@ -219,7 +209,6 @@ export function AddressBookDetailPanel({
       domain: domainName,
       account: entry.account,
       folder,
-      targetServers: targetServer,
     })
       .then(() => {
         createSnackbar({
