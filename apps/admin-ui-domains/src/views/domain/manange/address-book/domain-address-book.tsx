@@ -41,11 +41,14 @@ function refreshSelectedEntry(
   if (!current) {
     return null;
   }
-  return (
-    books.find(
-      (book) => book.accountId === current.accountId || book.account === current.account,
-    ) ?? null
+  const refreshed = books.find(
+    (book) => book.accountId === current.accountId || book.account === current.account,
   );
+  // Keep detail open after last folder delete so admin can add another folder.
+  if (!refreshed) {
+    return { ...current, folders: [], folderIds: undefined };
+  }
+  return refreshed;
 }
 
 type AddressBookAccountRowProps = {

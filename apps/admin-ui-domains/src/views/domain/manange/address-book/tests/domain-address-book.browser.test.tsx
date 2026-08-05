@@ -427,6 +427,17 @@ describe('DomainAddressBook (browser)', () => {
 				account: 'alice@example.com',
 				folder: 'all',
 			});
+
+			// Detail stays open with empty folders so admin can add another folder.
+			await expect
+				.element(page.getByText('alice@example.com').first())
+				.toBeInTheDocument();
+			await expect
+				.element(page.getByText('No address book is shared for this account.'))
+				.toBeInTheDocument();
+			await expect
+				.element(page.getByRole('button', { name: 'Add address book' }))
+				.toBeInTheDocument();
 		});
 	});
 });
