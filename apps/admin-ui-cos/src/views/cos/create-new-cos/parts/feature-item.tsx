@@ -17,7 +17,7 @@ type FeatureItemProps = {
 };
 
 export const FeatureItem = ({ form, name, label, description }: FeatureItemProps) => (
-  <>
+  <div className={styles.featureItem}>
     <ListRow>
       <form.Field name={name}>
         {(field) => (
@@ -37,5 +37,5 @@ export const FeatureItem = ({ form, name, label, description }: FeatureItemProps
         </ds-text>
       </div>
     )}
-  </>
+  </div>
 );
