@@ -29,7 +29,7 @@ export const CreateNewCosStep1 = ({ form, onNext }: CreateNewCosStep1Props) => {
 
   const editionSectionDescription = t(
     'label.edition.description',
-    'Select the edition associated with this class of service. By default, a class of service, is associated with email edition',
+    'Select the edition associated with this class of service',
   );
 
   return (

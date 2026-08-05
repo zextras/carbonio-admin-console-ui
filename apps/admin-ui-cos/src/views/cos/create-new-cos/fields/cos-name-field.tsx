@@ -28,7 +28,8 @@ export const CosNameField = ({ form }: CosNameFieldProps) => {
   return (
     <div className={styles.fieldStart}>
       <Input
-        label={t('label.cos_name', 'Cos Name')}
+        label={t('label.class_of_service_name', 'Class of service name')}
+        isRequired
         backgroundColor="gray5"
         value={field.state.value}
         hasError={error.hasError}
@@ -39,10 +40,7 @@ export const CosNameField = ({ form }: CosNameFieldProps) => {
       />
       <div className={styles.note}>
         <ds-text as="span" size="small" color="gray1">
-          {t(
-            'cos.creatCOS.cosNameLowerCaseInfo',
-            'COS name must contain only lowercase letters.',
-          )}
+          {t('cos.creatCOS.cosNameLowerCaseInfo', 'COS name must contain only lowercase letters.')}
         </ds-text>
       </div>
     </div>

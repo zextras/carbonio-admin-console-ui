@@ -43,7 +43,7 @@ export const EditionField = ({ form }: EditionFieldProps) => {
             <ds-text as="span" size="small" color="gray1">
               {t(
                 'cos.createCos.edition.email_description',
-                'Select the edition associated with this class of service. By default, a class of service, is associated with email edition',
+                'Includes email, mobile apps, push notifications, and real-time backup.',
               )}
             </ds-text>
           </div>
@@ -61,7 +61,7 @@ export const EditionField = ({ form }: EditionFieldProps) => {
             <ds-text as="span" size="small" color="gray1">
               {t(
                 'cos.createCos.edition.workspace_description',
-                'This edition include everything in the email edition plus Files&Docs and Chats&Video',
+                'Everything in Email, plus Files & Docs and Chat & Video.',
               )}
             </ds-text>
           </div>
