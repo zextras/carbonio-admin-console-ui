@@ -117,6 +117,7 @@ export default tseslint.config(
   {
     files: [
       'apps/admin-ui-subscription/**/*',
+      'apps/admin-ui-dashboard/**/*',
       'apps/admin-ui-storage/**/*',
       'apps/admin-ui-cos/**/*',
     ],
