@@ -172,6 +172,14 @@ const DomainSaml: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [domainName]);
 
+	const renderKeyClearIcon = (): ReactElement | null => (
+		<ClearInputIcon value={samlAttrKey} onClear={() => setSamlAttrKey('')} />
+	);
+
+	const renderValueClearIcon = (): ReactElement | null => (
+		<ClearInputIcon value={samlAttrValue} onClear={() => setSamlAttrValue('')} />
+	);
+
 	if (isLoading) {
 		return (
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -506,9 +514,7 @@ const DomainSaml: FC = () => {
 										onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 											setSamlAttrKey(e.target.value);
 										}}
-										CustomIcon={() => (
-											<ClearInputIcon value={samlAttrKey} onClear={() => setSamlAttrKey('')} />
-										)}
+										CustomIcon={renderKeyClearIcon}
 									/>
 								</Container>
 							</Row>
@@ -531,9 +537,7 @@ const DomainSaml: FC = () => {
 										onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 											setSamlAttrValue(e.target.value);
 										}}
-										CustomIcon={() => (
-											<ClearInputIcon value={samlAttrValue} onClear={() => setSamlAttrValue('')} />
-										)}
+										CustomIcon={renderValueClearIcon}
 									/>
 								</Container>
 							</Row>
