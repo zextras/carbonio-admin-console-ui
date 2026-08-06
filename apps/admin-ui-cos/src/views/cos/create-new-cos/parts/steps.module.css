@@ -153,24 +153,11 @@
 
 .featuresHeader {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.25rem;
   box-sizing: border-box;
   width: 100%;
   padding: var(--padding-size-large);
-  gap: var(--padding-size-large);
-}
-
-.featuresIntro {
-  display: flex;
-  flex: 1 1 0;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.disableAllWrapper {
-  flex-shrink: 0;
 }
 
 .featureGroups {

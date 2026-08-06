@@ -282,29 +282,6 @@ describe('CreateNewCos wizard', () => {
       await expect.element(page.getByRole('switch', { name: 'Enable video calls' })).toBeChecked();
     });
 
-    it('disables all features when DISABLE ALL is clicked', async () => {
-      await setupWorkspaceStep2();
-
-      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
-
-      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
-        .not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
-        .not.toBeChecked();
-      await expect.element(page.getByRole('switch', { name: 'Enable files' })).not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable mobile app' }))
-        .not.toBeChecked();
-      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).not.toBeChecked();
-      await expect.element(page.getByRole('switch', { name: 'Enable chats' })).not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable video calls' }))
-        .not.toBeChecked();
-    });
-
     it('toggles a feature when its switch is clicked', async () => {
       await setupWorkspaceStep2();
 
@@ -339,40 +316,6 @@ describe('CreateNewCos wizard', () => {
       await expect.element(filesSwitch).toBeChecked();
       await expect.element(mobileAppSwitch).toBeChecked();
       await expect.element(videoCallsSwitch).toBeChecked();
-    });
-
-    it('disables all workspace features when DISABLE ALL is clicked', async () => {
-      await setupWorkspaceStep2();
-
-      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
-
-      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
-        .not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
-        .not.toBeChecked();
-      await expect.element(page.getByRole('switch', { name: 'Enable files' })).not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable mobile app' }))
-        .not.toBeChecked();
-      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).not.toBeChecked();
-      await expect.element(page.getByRole('switch', { name: 'Enable chats' })).not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Enable video calls' }))
-        .not.toBeChecked();
-    });
-
-    it('re-enables an individual feature after DISABLE ALL on workspace edition', async () => {
-      await setupWorkspaceStep2();
-
-      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
-      const filesSwitch = page.getByRole('switch', { name: 'Enable files' });
-      await expect.element(filesSwitch).not.toBeChecked();
-
-      await filesSwitch.click();
-      await expect.element(filesSwitch).toBeChecked();
     });
 
     it('renders Back and Create buttons in footer', async () => {
@@ -445,21 +388,6 @@ describe('CreateNewCos wizard', () => {
       await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).toBeChecked();
     });
 
-    it('disables all features when DISABLE ALL is clicked', async () => {
-      await setupEmailStep2();
-
-      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
-
-      await expect.element(page.getByRole('switch', { name: 'Enable mail' })).not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Users can access Contacts' }))
-        .not.toBeChecked();
-      await expect
-        .element(page.getByRole('switch', { name: 'Users can access Calendar' }))
-        .not.toBeChecked();
-      await expect.element(page.getByRole('switch', { name: 'Enable tasks' })).not.toBeChecked();
-    });
-
     it('toggles a feature when its switch is clicked', async () => {
       await setupEmailStep2();
 
@@ -490,57 +418,11 @@ describe('CreateNewCos wizard', () => {
       await expect.element(calendarSwitch).toBeChecked();
     });
 
-    it('re-enables an individual feature after DISABLE ALL', async () => {
-      await setupEmailStep2();
-
-      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
-      const mailSwitch = page.getByRole('switch', { name: 'Enable mail' });
-      await expect.element(mailSwitch).not.toBeChecked();
-
-      await mailSwitch.click();
-      await expect.element(mailSwitch).toBeChecked();
-    });
-
     it('renders Back and Create buttons in footer', async () => {
       await setupEmailStep2();
 
       await expect.element(page.getByRole('button', { name: 'BACK' })).toBeVisible();
       await expect.element(page.getByRole('button', { name: 'create' })).toBeVisible();
-    });
-
-    it('DISABLE ALL button flex item does not shrink (keeps natural size)', async () => {
-      await setupEmailStep2();
-
-      const button = page.getByRole('button', { name: 'DISABLE ALL' });
-      await expect.element(button).toBeVisible();
-
-      let node: HTMLElement | SVGElement | null = button.element();
-      let flexShrink: string = '1';
-      while (node && node.parentElement) {
-        const parentDisplay = globalThis.getComputedStyle(node.parentElement).display;
-        if (parentDisplay.includes('flex')) {
-          flexShrink = globalThis.getComputedStyle(node).flexShrink;
-          break;
-        }
-        node = node.parentElement;
-      }
-      expect(flexShrink).toBe('0');
-    });
-
-    it('DISABLE ALL on email edition does not disable workspace-only features', async () => {
-      const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
-      await setupWizardTest();
-
-      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name' }), 'testcos');
-      await page.getByRole('button', { name: 'Next' }).click();
-      await page.getByRole('button', { name: 'DISABLE ALL' }).click();
-      await page.getByRole('button', { name: 'create' }).click();
-
-      const requestBody = (await createCosPromise) as {
-        a: Array<{ n: string; _content: string }>;
-      };
-      const filesAttr = requestBody.a.find((a) => a.n === 'carbonioFeatureFilesEnabled');
-      expect(filesAttr?._content).toBe('TRUE');
     });
   });
 

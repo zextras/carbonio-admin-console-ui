@@ -111,7 +111,7 @@ export const CreateNewCos = () => {
         {currentStep === 1 && (
           <form.Subscribe selector={(state) => state.values.edition}>
             {(edition) =>
-              edition === 'email' ? (
+              edition === 'mail' ? (
                 <StepTwoEmailEdition form={form} onBack={onBack} />
               ) : (
                 <StepTwoWorkspaceEdition form={form} onBack={onBack} />

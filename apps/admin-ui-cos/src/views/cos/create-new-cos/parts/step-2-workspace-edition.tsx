@@ -6,7 +6,7 @@
 
 import { useTranslation } from 'react-i18next';
 
-import type { CreateCosFormApi, CreateCosFormValues } from '../types';
+import type { CreateCosFormApi } from '../types';
 import { FeatureColumn } from './feature-column';
 import { FeatureItem } from './feature-item';
 import { FeatureRow } from './feature-row';
@@ -18,22 +18,11 @@ type StepTwoWorkspaceEditionProps = {
   onBack: () => void;
 };
 
-const WORKSPACE_FEATURE_KEYS: Array<keyof CreateCosFormValues> = [
-  'carbonioFeatureMailsAppEnabled',
-  'zimbraFeatureContactsEnabled',
-  'zimbraFeatureCalendarEnabled',
-  'carbonioFeatureFilesEnabled',
-  'carbonioFeatureFilesAppEnabled',
-  'carbonioFeatureTasksEnabled',
-  'carbonioFeatureWscEnabled',
-  'carbonioWscVideoCallEnabled',
-];
-
 export const StepTwoWorkspaceEdition = ({ form, onBack }: StepTwoWorkspaceEditionProps) => {
   const [t] = useTranslation();
 
   return (
-    <Step2Layout form={form} onBack={onBack} featureKeys={WORKSPACE_FEATURE_KEYS}>
+    <Step2Layout form={form} onBack={onBack}>
       <div className={styles.featureGroups}>
         <FeatureRow>
           <FeatureColumn title={t('label.mail', 'Mail')}>
