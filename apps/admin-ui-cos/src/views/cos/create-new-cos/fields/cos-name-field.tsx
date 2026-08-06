@@ -38,11 +38,6 @@ export const CosNameField = ({ form }: CosNameFieldProps) => {
           field.handleChange(e.target.value.toLowerCase());
         }}
       />
-      <div className={styles.note}>
-        <ds-text as="span" size="small" color="gray1">
-          {t('cos.creatCOS.cosNameLowerCaseInfo', 'COS name must contain only lowercase letters.')}
-        </ds-text>
-      </div>
     </div>
   );
 };

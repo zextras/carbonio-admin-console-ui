@@ -18,10 +18,9 @@ import styles from './steps.module.css';
 
 type CreateNewCosStep1Props = {
   form: CreateCosFormApi;
-  onNext: () => void;
 };
 
-export const CreateNewCosStep1 = ({ form, onNext }: CreateNewCosStep1Props) => {
+export const CreateNewCosStep1 = ({ form }: CreateNewCosStep1Props) => {
   const [t] = useTranslation();
 
   const sectionTitle = t('label.general_information', 'General Information');
@@ -68,7 +67,7 @@ export const CreateNewCosStep1 = ({ form, onNext }: CreateNewCosStep1Props) => {
           </div>
         </div>
       </div>
-      <StepFooter form={form} isFirstStep onPrimary={onNext} />
+      <StepFooter form={form} isFirstStep onPrimary={() => form.handleSubmit()} />
     </div>
   );
 };

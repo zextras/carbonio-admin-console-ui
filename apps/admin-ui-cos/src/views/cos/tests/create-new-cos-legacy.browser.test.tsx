@@ -88,13 +88,6 @@ describe('CreateCos', () => {
       await expect.element(cosNameInput).toBeVisible();
     });
 
-    it('should render the lowercase info text for COS name', async () => {
-      await setupCreateCosTest();
-      await expect
-        .element(page.getByText('COS name must contain only lowercase letters.'))
-        .toBeVisible();
-    });
-
     it('should render the Description input field', async () => {
       await setupCreateCosTest();
       const descriptionInput = page.getByRole('textbox', { name: 'Description' });

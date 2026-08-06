@@ -74,6 +74,10 @@ export const CreateNewCos = () => {
       onSubmit: createCosSchema,
     },
     onSubmit: async ({ value }) => {
+      if (currentStep === 0) {
+        setCurrentStep((step) => step + 1);
+        return;
+      }
       const attributes: Array<Attribute> = [
         { n: 'zimbraNotes', _content: value.zimbraNotes },
         { n: 'description', _content: value.description },
@@ -97,17 +101,13 @@ export const CreateNewCos = () => {
     return setCurrentStep((step) => step - 1);
   }
 
-  function onNext() {
-    return setCurrentStep((step) => step + 1);
-  }
-
   return (
     <div className={styles.outer}>
       <div className={styles.stepperColumn}>
         <ds-stepper steps={stepperSteps} current={currentStep}></ds-stepper>
       </div>
       <div className={styles.contentColumn}>
-        {currentStep === 0 && <CreateNewCosStep1 form={form} onNext={onNext} />}
+        {currentStep === 0 && <CreateNewCosStep1 form={form} />}
         {currentStep === 1 && (
           <form.Subscribe selector={(state) => state.values.edition}>
             {(edition) =>

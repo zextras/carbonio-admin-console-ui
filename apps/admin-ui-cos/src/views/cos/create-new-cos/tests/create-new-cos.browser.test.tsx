@@ -104,9 +104,9 @@ describe('CreateNewCos wizard', () => {
   });
 
   describe('Next button state', () => {
-    it('is disabled when the cos name is empty', async () => {
+    it('is always enabled, even when the cos name is empty', async () => {
       await setupWizardTest();
-      await expect.element(page.getByRole('button', { name: 'Next' })).toBeDisabled();
+      await expect.element(page.getByRole('button', { name: 'Next' })).not.toBeDisabled();
     });
 
     it('is enabled when a valid cos name is entered', async () => {
@@ -115,12 +115,27 @@ describe('CreateNewCos wizard', () => {
       await expect.element(page.getByRole('button', { name: 'Next' })).not.toBeDisabled();
     });
 
-    it('is disabled again when the cos name is cleared', async () => {
+    it('remains enabled when the cos name is cleared', async () => {
       await setupWizardTest();
       const cosNameInput = page.getByRole('textbox', { name: 'Class of service name' });
       await userEvent.fill(cosNameInput, 'testcos');
       await userEvent.clear(cosNameInput);
-      await expect.element(page.getByRole('button', { name: 'Next' })).toBeDisabled();
+      await expect.element(page.getByRole('button', { name: 'Next' })).not.toBeDisabled();
+    });
+
+    it('shows a validation error when Next is clicked with an empty cos name', async () => {
+      await setupWizardTest();
+      await page.getByRole('button', { name: 'Next' }).click();
+
+      await expect.element(page.getByText('COS name is required')).toBeVisible();
+    });
+
+    it('does not advance to step 2 when Next is clicked with an invalid form', async () => {
+      await setupWizardTest();
+      await page.getByRole('button', { name: 'Next' }).click();
+
+      expect(page.getByRole('button', { name: 'BACK' }).elements()).toHaveLength(0);
+      await expect.element(page.getByRole('button', { name: 'Next' })).toBeVisible();
     });
   });
 
