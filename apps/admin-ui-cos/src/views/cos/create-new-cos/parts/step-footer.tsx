@@ -8,11 +8,9 @@ import { Button } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
-import type { CreateCosFormApi } from '../types';
 import styles from './steps.module.css';
 
 type StepFooterProps = {
-  form: CreateCosFormApi;
   isFirstStep?: boolean;
   onBack?: () => void;
   onPrimary: () => void;
