@@ -13,7 +13,7 @@ import {
   Table,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 function getVersionTextStyle(): React.CSSProperties {
@@ -33,40 +33,25 @@ const DashboardServerList: FC<{
 }> = ({ goToMailStoreServerList, serverVersion }) => {
   const [t] = useTranslation();
   const { data: mailstoresList = [] } = useMailstoreServers();
-  const [serverListRow, setServerListRow] = useState<Array<any>>([]);
   const isAdvanced = useIsAdvanced();
 
-  useEffect(() => {
-    if (mailstoresList.length > 0) {
-      const allRows = mailstoresList.map((item) => ({
-        id: item?.id,
-        columns: [
-          <ds-text
-            as="span"
-            size="small"
-            color="gray0"
-            weight="regular"
-            key={item.id}
-            onClick={(event: { stopPropagation: () => void }): void => {
-              event.stopPropagation();
-            }}
-          >
-            {item?.name}
-          </ds-text>,
-          <ds-text
-            as="span"
-            size="small"
-            weight="regular"
-            color="gray6"
-            key={item?.name}
-            style={getVersionTextStyle()}
-            onClick={(event: { stopPropagation: () => void }): void => {
-              event.stopPropagation();
-            }}
-          >
-            {serverVersion}
-          </ds-text>,
-          isAdvanced ? (
+  const serverListRow: Array<any> =
+    mailstoresList.length > 0
+      ? mailstoresList.map((item) => ({
+          id: item?.id,
+          columns: [
+            <ds-text
+              as="span"
+              size="small"
+              color="gray0"
+              weight="regular"
+              key={item.id}
+              onClick={(event: { stopPropagation: () => void }): void => {
+                event.stopPropagation();
+              }}
+            >
+              {item?.name}
+            </ds-text>,
             <ds-text
               as="span"
               size="small"
@@ -79,31 +64,41 @@ const DashboardServerList: FC<{
               }}
             >
               {serverVersion}
-            </ds-text>
-          ) : (
-            ''
-          ),
-          <ds-text
-            as="span"
-            size="small"
-            color="gray0"
-            weight="light"
-            key={item?.name}
-            onClick={(event: { stopPropagation: () => void }): void => {
-              event.stopPropagation();
-            }}
-          >
-            {item && item?.a
-              ? item?.a.find((attribute: any) => attribute?.n === 'description')?._content
-              : ''}
-          </ds-text>,
-        ],
-      }));
-      setServerListRow(allRows);
-    } else {
-      setServerListRow([]);
-    }
-  }, [mailstoresList, serverVersion, isAdvanced]);
+            </ds-text>,
+            isAdvanced ? (
+              <ds-text
+                as="span"
+                size="small"
+                weight="regular"
+                color="gray6"
+                key={item?.name}
+                style={getVersionTextStyle()}
+                onClick={(event: { stopPropagation: () => void }): void => {
+                  event.stopPropagation();
+                }}
+              >
+                {serverVersion}
+              </ds-text>
+            ) : (
+              ''
+            ),
+            <ds-text
+              as="span"
+              size="small"
+              color="gray0"
+              weight="light"
+              key={item?.name}
+              onClick={(event: { stopPropagation: () => void }): void => {
+                event.stopPropagation();
+              }}
+            >
+              {item && item?.a
+                ? item?.a.find((attribute: any) => attribute?.n === 'description')?._content
+                : ''}
+            </ds-text>,
+          ],
+        }))
+      : [];
 
   const headers: any[] = useMemo(
     () => [
