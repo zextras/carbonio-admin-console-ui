@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Input, ListRow, Padding, PasswordInput, Popper, RouteLeavingGuard, Row, Select, Switch, Tooltip as TooltipDefault, useSnackbar } from '@zextras/ui-components';
+import { Button, Container, Input, ListRow, Padding, PasswordInput, Popper, RouteLeavingGuard, Row, Select, SelectItem, Switch, Tooltip as TooltipDefault, useSnackbar } from '@zextras/ui-components';
 import { flushCache, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
-import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../types';
@@ -23,13 +23,6 @@ const ZimbraAuthMethod = {
   LDAP: 'ldap',
   EXTERNAL: 'ad',
 } as const;
-
-type AuthMethodItem = {
-  label: string;
-  value: string;
-  info_label: string;
-  info_label_ce: string;
-};
 
 const Tooltip: FC<{ items: { label?: string }[] }> = ({ items }) => (
   <Container
@@ -56,11 +49,9 @@ const DomainAuthentication: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
 
-  const [isDirty, setIsDirty] = useState<boolean>(false);
-
   const [domainAuthData, setDomainAuthData] = useState<objectType>({});
 
-  const [zimbraAuthMech, setZimbraAuthMech] = useState<AuthMethodItem | undefined>();
+  const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
   const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
   const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
   const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>('');
@@ -74,14 +65,14 @@ const DomainAuthentication: FC = () => {
   const [zimbraFeatureResetPasswordStatus, setZimbraFeatureResetPasswordStatus] =
     useState<boolean>(false);
 
-  const [toggleLoginVerifyBtn, setToggleLoginVerifyBtn] = useState<boolean>(true);
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [isSuccessVerify, setIsSuccessVerify] = useState<boolean>(false);
   const [isValidUserName, setIsValidUserName] = useState<boolean>(true);
   const [isValidPassword, setIsValidPassword] = useState<boolean>(true);
   const [verifyAuthUserName, setVerifyAuthUserName] = useState<string>('');
   const [verifyAuthPassword, setVerifyAuthPassword] = useState<string>('');
 
-  const { data: domain } = useSelectedDomain();
+  const { data: domain, isLoading } = useSelectedDomain();
   const domainInformation = domain?.a;
 
   const [open, setOpen] = useState(false);
@@ -92,120 +83,77 @@ const DomainAuthentication: FC = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const ldapUrlIconRef = useRef<HTMLDivElement>(null);
   const filterIconRef = useRef<HTMLDivElement>(null);
-  const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
   const userSetting = useUserSettings();
-
-  useEffect(() => {
-    if (userSetting?.attrs) {
-      const account = userSetting?.attrs?.zimbraIsAdminAccount;
-      if (account && account === TRUE) {
-        setIsGlobalAdmin(true);
-      }
-    }
-  }, [userSetting?.attrs]);
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
   const isAdvanced = useIsAdvanced();
   const localLdapTrans = t(
     'label.method_allows_local_ldap_only',
     'This method allows usage of Local LDAP',
   );
-  const DOMAIN_AUTH_LIST = useMemo(
-    () => [
-      {
-        label: `${t('label.carbonio', 'Carbonio')}`,
-        value: '',
-        info_label: `${t(
-          'domain.authentication.carbonio_info',
-          'This method allows usage of Local LDAP, External AD/LDAP, Credential Password and SAML.',
-        )}`,
-        info_label_ce: `${localLdapTrans}`,
-      },
-      {
-        label: `${t('label.local_ldap_only', 'Local LDAP only')}`,
-        value: ZimbraAuthMethod.INTERNAL,
-        info_label: `${localLdapTrans}`,
-        info_label_ce: `${localLdapTrans}`,
-      },
-      {
-        label: `${t('label.external_ldap_only', 'External LDAP only')}`,
-        value: ZimbraAuthMethod.LDAP,
-        info_label: `${t(
-          'label.external_ldap_only_infor',
-          'This method allows usage of external LDAP',
-        )}`,
-        info_label_ce: `${t(
-          'label.external_ldap_only_info_ce',
-          'This method allows usage of external LDAP',
-        )}`,
-      },
-      {
-        label: `${t('label.external_ad_only', 'External AD only')}`,
-        value: ZimbraAuthMethod.EXTERNAL,
-        info_label: `${t(
-          'label.external_ad_only_info',
-          'This method allows usage of external AD',
-        )}`,
-        info_label_ce: `${t(
-          'label.external_ad_only_info_ce',
-          'This method allows usage of external AD',
-        )}`,
-      },
-    ],
-    [localLdapTrans, t],
-  );
+  const DOMAIN_AUTH_LIST = [
+    {
+      label: t('label.carbonio', 'Carbonio'),
+      value: '',
+      info_label: t(
+        'domain.authentication.carbonio_info',
+        'This method allows usage of Local LDAP, External AD/LDAP, Credential Password and SAML.',
+      ),
+      info_label_ce: localLdapTrans,
+    },
+    {
+      label: t('label.local_ldap_only', 'Local LDAP only'),
+      value: ZimbraAuthMethod.INTERNAL,
+      info_label: localLdapTrans,
+      info_label_ce: localLdapTrans,
+    },
+    {
+      label: t('label.external_ldap_only', 'External LDAP only'),
+      value: ZimbraAuthMethod.LDAP,
+      info_label: t(
+        'label.external_ldap_only_infor',
+        'This method allows usage of external LDAP',
+      ),
+      info_label_ce: t(
+        'label.external_ldap_only_info_ce',
+        'This method allows usage of external LDAP',
+      ),
+    },
+    {
+      label: t('label.external_ad_only', 'External AD only'),
+      value: ZimbraAuthMethod.EXTERNAL,
+      info_label: t(
+        'label.external_ad_only_info',
+        'This method allows usage of external AD',
+      ),
+      info_label_ce: t(
+        'label.external_ad_only_info_ce',
+        'This method allows usage of external AD',
+      ),
+    },
+  ];
 
-  const DN_TEMPLATE_TOOLTIP = useMemo(
-    () => [
-      {
-        label: `%n = ${t('label.username_with', 'username with')} @ (${t(
-          'label.example',
-          'example',
-        )} username@domain.tld)`,
-      },
-      {
-        label: `%u = ${t('label.username_without', 'username without')} @ (${t(
-          'label.example',
-          'example',
-        )} username)`,
-      },
-      {
-        label: `%d = ${t('label.domain', 'domain')} (${t('label.example', 'example')} domain.tld)`,
-      },
-      {
-        label: `%D = ${t('label.domain', 'domain')} (${t(
-          'label.example',
-          'example',
-        )} dc=domain,dc=tld)`,
-      },
-    ],
-    [t],
-  );
+  const DN_TEMPLATE_TOOLTIP = [
+    { label: `%n = ${t('label.username_with', 'username with')} @ (${t('label.example', 'example')} username@domain.tld)` },
+    { label: `%u = ${t('label.username_without', 'username without')} @ (${t('label.example', 'example')} username)` },
+    { label: `%d = ${t('label.domain', 'domain')} (${t('label.example', 'example')} domain.tld)` },
+    { label: `%D = ${t('label.domain', 'domain')} (${t('label.example', 'example')} dc=domain,dc=tld)` },
+  ];
 
-  const LDAP_URL_TOOLTIP = useMemo(
-    () => [
-      {
-        label: `${t('label.ex', 'ex.')} ldap[s]://${t(
-          'label.external_ldap_server',
-          'external-ldap-server',
-        )}${zimbraAuthMech?.value !== ZimbraAuthMethod.EXTERNAL ? '[:389]' : '[:3268]'}`,
-      },
-    ],
-    [t, zimbraAuthMech],
-  );
+  const LDAP_URL_TOOLTIP = [
+    {
+      label: `${t('label.ex', 'ex.')} ldap[s]://${t('label.external_ldap_server', 'external-ldap-server')}[:389]`,
+    },
+  ];
 
-  const FILTER_TOOLTIP = useMemo(
-    () => [
-      {
-        label: `${t('label.ex', 'ex.')} (ou=text)`,
-      },
-    ],
-    [t],
-  );
+  const FILTER_TOOLTIP = [{ label: `${t('label.ex', 'ex.')} (ou=text)` }];
 
-
-  useEffect(() => {
-    if (!!domainInformation && domainInformation.length > 0) {
-      const obj: Record<string, any> = {};
+  // Conditional state update pattern (React 19) - sync form state when domain data changes
+  const [prevDomainInformation, setPrevDomainInformation] = useState(domainInformation);
+  if (domainInformation !== prevDomainInformation) {
+    setPrevDomainInformation(domainInformation);
+    if (domainInformation && domainInformation.length > 0) {
+      const obj: Record<string, string> = {};
       domainInformation.forEach((item: Attribute) => {
         obj[item?.n] = item._content;
       });
@@ -218,83 +166,43 @@ const DomainAuthentication: FC = () => {
           : DOMAIN_AUTH_LIST[0],
       );
 
-      const setValue = <T extends string>(
-        key: keyof typeof obj,
-        setter: (value: T) => void,
-        defaultValue: T,
-      ): void => {
-        const value = obj[key] ?? defaultValue;
-        obj[key] = value;
-        setter(value);
-      };
-
-      setValue<string>('zimbraPasswordChangeListener', setZimbraPasswordChangeListener, '');
-      setValue<string>('zimbraAuthLdapURL', setZimbraAuthLdapURL, '');
-      setValue<string>('zimbraAuthLdapSearchBindDn', setZimbraAuthLdapSearchBindDn, '');
-      setValue<string>('zimbraAuthLdapSearchBindPassword', setZimbraAuthLdapSearchBindPassword, '');
-      setValue<string>('zimbraAuthLdapSearchFilter', setZimbraAuthLdapSearchFilter, '');
-      setValue<string>('zimbraAuthLdapSearchBase', setZimbraAuthLdapSearchBase, '');
+      setZimbraPasswordChangeListener(obj.zimbraPasswordChangeListener ?? '');
+      setZimbraAuthLdapURL(obj.zimbraAuthLdapURL ?? '');
+      setZimbraAuthLdapSearchBindDn(obj.zimbraAuthLdapSearchBindDn ?? '');
+      setZimbraAuthLdapSearchBindPassword(obj.zimbraAuthLdapSearchBindPassword ?? '');
+      setZimbraAuthLdapSearchFilter(obj.zimbraAuthLdapSearchFilter ?? '');
+      setZimbraAuthLdapSearchBase(obj.zimbraAuthLdapSearchBase ?? '');
 
       setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
       setZimbraAuthLdapStartTlsEnabled(obj.zimbraAuthLdapStartTlsEnabled === 'TRUE');
       setZimbraFeatureResetPasswordStatus(obj.zimbraFeatureResetPasswordStatus === ENABLED);
 
       setDomainAuthData(obj);
-      setIsDirty(false);
     }
-  }, [domainInformation, DOMAIN_AUTH_LIST]);
+  }
 
-  // Consolidated dirty check
-  useEffect(() => {
-    if (isEmpty(domainAuthData)) return;
-
-    const dirty =
-      domainAuthData.zimbraAuthMech !== zimbraAuthMech?.value ||
-      domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener ||
-      (domainAuthData.zimbraAuthFallbackToLocal === 'TRUE') !== zimbraAuthFallbackToLocal ||
-      domainAuthData.zimbraAuthLdapURL !== zimbraAuthLdapURL ||
-      domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase ||
-      domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter ||
-      (domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE') !== zimbraAuthLdapStartTlsEnabled ||
-      (domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED) !== zimbraFeatureResetPasswordStatus;
-
-    setIsDirty(dirty);
-  }, [
-    domainAuthData,
-    zimbraAuthMech,
-    zimbraPasswordChangeListener,
-    zimbraAuthFallbackToLocal,
-    zimbraAuthLdapURL,
-    zimbraAuthLdapSearchBase,
-    zimbraAuthLdapSearchFilter,
-    zimbraAuthLdapStartTlsEnabled,
-    zimbraFeatureResetPasswordStatus,
-  ]);
-
-  const authFallbackToLocal = useCallback(() => setZimbraAuthFallbackToLocal((c) => !c), []);
-  const authLdapStartTlsEnabled = useCallback(
-    () => setZimbraAuthLdapStartTlsEnabled((c) => !c),
-    [],
-  );
-  const resetPasswordStatusChange = useCallback(
-    () => setZimbraFeatureResetPasswordStatus((c) => !c),
-    [],
+  const isDirty = !isEmpty(domainAuthData) && (
+    domainAuthData.zimbraAuthMech !== zimbraAuthMech?.value ||
+    domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener ||
+    (domainAuthData.zimbraAuthFallbackToLocal === 'TRUE') !== zimbraAuthFallbackToLocal ||
+    domainAuthData.zimbraAuthLdapURL !== zimbraAuthLdapURL ||
+    domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase ||
+    domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter ||
+    (domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE') !== zimbraAuthLdapStartTlsEnabled ||
+    (domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED) !== zimbraFeatureResetPasswordStatus
   );
 
-  const onAuthMethodChange = useCallback(
-    (v: SelectItem[] | string | null): void => {
-      setZimbraAuthMech(DOMAIN_AUTH_LIST.find((item: { value: string }) => item.value === v));
-      if (v === ZimbraAuthMethod.EXTERNAL || v === ZimbraAuthMethod.LDAP) {
-        if (!zimbraAuthLdapURL) {
-          setIsValidLdapUrl(false);
-        }
-      } else {
-        setIsValidLdapDn(true);
-        setIsValidLdapUrl(true);
+  const onAuthMethodChange = (v: SelectItem[] | string | null): void => {
+    setZimbraAuthMech(DOMAIN_AUTH_LIST.find((item: { value: string }) => item.value === v));
+    if (v === ZimbraAuthMethod.EXTERNAL || v === ZimbraAuthMethod.LDAP) {
+      if (!zimbraAuthLdapURL) {
+        setIsValidLdapUrl(false);
       }
-    },
-    [DOMAIN_AUTH_LIST, zimbraAuthLdapURL],
-  );
+    } else {
+      setIsValidLdapDn(true);
+      setIsValidLdapUrl(true);
+    }
+  };
 
   const onCancel = (): void => {
     setZimbraAuthMech(
@@ -313,7 +221,6 @@ const DomainAuthentication: FC = () => {
     setZimbraFeatureResetPasswordStatus(
       domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED,
     );
-    setIsDirty(false);
     setIsValidLdapDn(true);
     setIsValidLdapUrl(true);
   };
@@ -359,65 +266,35 @@ const DomainAuthentication: FC = () => {
     await mutate(undefined);
   };
 
-  useEffect(() => {
-    if (
-      (zimbraAuthMech?.value === 'ldap' || zimbraAuthMech?.value === 'ad') &&
-      zimbraAuthLdapURL !== '' &&
-      isValidLdapUrl &&
-      zimbraAuthLdapSearchBindDn !== '' &&
-      isValidUserName &&
-      zimbraAuthLdapSearchBindPassword !== '' &&
-      isValidPassword
-    ) {
-      setIsSuccessVerify(false);
-      setToggleLoginVerifyBtn(false);
-    } else {
-      setToggleLoginVerifyBtn(true);
-    }
-  }, [
-    isValidLdapUrl,
-    isValidPassword,
-    isValidUserName,
-    zimbraAuthLdapSearchBindDn,
-    zimbraAuthLdapSearchBindPassword,
-    zimbraAuthLdapURL,
-    zimbraAuthMech?.value,
-  ]);
+  const canVerify =
+    (zimbraAuthMech?.value === 'ldap' || zimbraAuthMech?.value === 'ad') &&
+    zimbraAuthLdapURL !== '' &&
+    isValidLdapUrl &&
+    zimbraAuthLdapSearchBindDn !== '' &&
+    isValidUserName &&
+    zimbraAuthLdapSearchBindPassword !== '' &&
+    isValidPassword;
 
-  const handleClickLoginAndVerify = useCallback(() => {
-    setToggleLoginVerifyBtn(true);
+  const handleClickLoginAndVerify = (): void => {
+    setIsVerifying(true);
+    setIsSuccessVerify(false);
     const body: {
       name?: string;
       password?: string;
       _jsns?: string;
       a?: { n: string; _content?: string }[];
-    } = {};
-    const attributes: { n: string; _content?: string }[] = [];
-    body._jsns = ZIMBRA_ADMIN_URN;
-
-    attributes.push({
-      n: 'zimbraAuthMech',
-      _content: zimbraAuthMech?.value,
-    });
-    attributes.push({
-      n: 'zimbraAuthLdapURL',
-      _content: zimbraAuthLdapURL,
-    });
-    attributes.push({
-      n: 'zimbraAuthLdapSearchFilter',
-      _content: zimbraAuthLdapSearchFilter,
-    });
-    attributes.push({
-      n: 'zimbraAuthLdapSearchBindDn',
-      _content: zimbraAuthLdapSearchBindDn,
-    });
-    attributes.push({
-      n: 'zimbraAuthLdapSearchBindPassword',
-      _content: zimbraAuthLdapSearchBindPassword,
-    });
-    body.a = attributes;
-    body.name = verifyAuthUserName;
-    body.password = verifyAuthPassword;
+    } = {
+      _jsns: ZIMBRA_ADMIN_URN,
+      a: [
+        { n: 'zimbraAuthMech', _content: zimbraAuthMech?.value },
+        { n: 'zimbraAuthLdapURL', _content: zimbraAuthLdapURL },
+        { n: 'zimbraAuthLdapSearchFilter', _content: zimbraAuthLdapSearchFilter },
+        { n: 'zimbraAuthLdapSearchBindDn', _content: zimbraAuthLdapSearchBindDn },
+        { n: 'zimbraAuthLdapSearchBindPassword', _content: zimbraAuthLdapSearchBindPassword },
+      ],
+      name: verifyAuthUserName,
+      password: verifyAuthPassword,
+    };
     CheckAuthConfig(body)
       .then((response) => {
         if (response?.code[0]?._content === CHECK_OK) {
@@ -431,7 +308,7 @@ const DomainAuthentication: FC = () => {
             hideButton: true,
             replace: true,
           });
-          setToggleLoginVerifyBtn(false);
+          setIsVerifying(false);
         }
       })
       .catch((error) => {
@@ -445,19 +322,17 @@ const DomainAuthentication: FC = () => {
           hideButton: true,
           replace: true,
         });
-        setToggleLoginVerifyBtn(false);
+        setIsVerifying(false);
       });
-  }, [
-    createSnackbar,
-    t,
-    verifyAuthPassword,
-    verifyAuthUserName,
-    zimbraAuthLdapSearchBindDn,
-    zimbraAuthLdapSearchBindPassword,
-    zimbraAuthLdapSearchFilter,
-    zimbraAuthLdapURL,
-    zimbraAuthMech?.value,
-  ]);
+  };
+
+  if (isLoading) {
+    return (
+      <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+        <ds-page-shimmer rows={6} />
+      </Container>
+    );
+  }
 
   return (
     <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -735,7 +610,7 @@ const DomainAuthentication: FC = () => {
                     width="fill"
                     size="extralarge"
                     onClick={handleClickLoginAndVerify}
-                    disabled={toggleLoginVerifyBtn}
+                    disabled={!canVerify || isVerifying}
                   />
                 </Padding>
               </ListRow>
@@ -755,7 +630,7 @@ const DomainAuthentication: FC = () => {
                         'label.show_forget_password_link',
                         'Show "Forget Password" link in the login page',
                       )}
-                      onClick={resetPasswordStatusChange}
+                      onClick={(): void => setZimbraFeatureResetPasswordStatus((c) => !c)}
                       iconColor="primary"
                     />
                   </Padding>
@@ -782,7 +657,7 @@ const DomainAuthentication: FC = () => {
                     <Switch
                       value={!!zimbraAuthFallbackToLocal && isValidLdapBaseUrl(zimbraAuthLdapURL)}
                       label={t('label.enforce_external_auth', 'Enforce External Auth (LDAP/AD)')}
-                      onClick={authFallbackToLocal}
+                      onClick={(): void => setZimbraAuthFallbackToLocal((c) => !c)}
                       iconColor="primary"
                       disabled={
                         zimbraAuthFallbackToLocal === null || !isValidLdapBaseUrl(zimbraAuthLdapURL)
@@ -800,7 +675,7 @@ const DomainAuthentication: FC = () => {
                       'label.enable_secure_connection',
                       'Enable Secure Connection (StartTLS/SSL)',
                     )}
-                    onClick={authLdapStartTlsEnabled}
+                    onClick={(): void => setZimbraAuthLdapStartTlsEnabled((c) => !c)}
                     iconColor="primary"
                   />
                 </Padding>
@@ -825,7 +700,7 @@ const DomainAuthentication: FC = () => {
         </Container>
       </Container>
 
-      <RouteLeavingGuard when={isDirty} handleSave={handleSave} />
+      <RouteLeavingGuard when={isDirty} onSave={handleSave} />
     </Container>
   );
 };
