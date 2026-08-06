@@ -510,5 +510,41 @@ describe('DomainAuthentication (browser)', () => {
                 .element(page.getByRole('button', { name: /login verified/i }))
                 .toBeVisible();
         });
+
+        it('should update verify auth username field', async () => {
+            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            const usernameInput = page.getByLabelText('User Name');
+            await userEvent.type(usernameInput, 'testuser@example.com');
+
+            await expect.element(usernameInput).toHaveValue('testuser@example.com');
+        });
+
+        it('should update verify auth password field', async () => {
+            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            const passwordInput = page.getByLabelText('Password', { exact: true });
+            await userEvent.type(passwordInput, 'secretpass');
+
+            await expect.element(passwordInput).toHaveValue('secretpass');
+        });
+
+        it('should disable LOGIN AND VERIFY when Search Bind Password is cleared', async () => {
+            setupDomainStore([
+                { n: 'zimbraAuthMech', _content: 'ldap' },
+                { n: 'zimbraAuthLdapURL', _content: 'ldap://ldap.example.com' },
+                { n: 'zimbraAuthLdapSearchBindDn', _content: 'cn=admin,dc=example,dc=com' },
+                { n: 'zimbraAuthLdapSearchBindPassword', _content: 'secret123' },
+            ]);
+            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            const loginBtn = page.getByRole('button', { name: /login and verify/i });
+            await expect.element(loginBtn).not.toBeDisabled();
+
+            const bindPasswordInput = page.getByLabelText('Search Bind Password');
+            await userEvent.clear(bindPasswordInput);
+
+            await expect.element(loginBtn).toBeDisabled();
+        });
     });
 });

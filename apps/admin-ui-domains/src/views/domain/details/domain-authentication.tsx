@@ -3,13 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, Input, ListRow, Padding, PasswordInput, Popper, RouteLeavingGuard, Row, Select, SelectItem, Switch, Tooltip as TooltipDefault, useSnackbar, } from '@zextras/ui-components';
-import { domainByIdKey, flushCache, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
+import { Button, Container, Input, ListRow, Padding, PasswordInput, Popper, RouteLeavingGuard, Row, Select, Switch, Tooltip as TooltipDefault, useSnackbar } from '@zextras/ui-components';
+import { flushCache, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
 
 import { Attribute, objectType } from '../../../../types';
 import { CHECK_OK, DISABLED, ENABLED, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
@@ -17,12 +15,21 @@ import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { isValidLdapBaseUrl } from '../../utility/utils';
+import { DomainFormActions } from './components/domain-form-actions';
+import { useDomainMutation } from './hooks/use-domain-mutation';
 
 const ZimbraAuthMethod = {
   INTERNAL: 'zimbra',
   LDAP: 'ldap',
   EXTERNAL: 'ad',
 } as const;
+
+type AuthMethodItem = {
+  label: string;
+  value: string;
+  info_label: string;
+  info_label_ce: string;
+};
 
 const Tooltip: FC<{ items: { label?: string }[] }> = ({ items }) => (
   <Container
@@ -53,7 +60,7 @@ const DomainAuthentication: FC = () => {
 
   const [domainAuthData, setDomainAuthData] = useState<objectType>({});
 
-  const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
+  const [zimbraAuthMech, setZimbraAuthMech] = useState<AuthMethodItem | undefined>();
   const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
   const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
   const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>('');
@@ -76,8 +83,6 @@ const DomainAuthentication: FC = () => {
 
   const { data: domain } = useSelectedDomain();
   const domainInformation = domain?.a;
-  const queryClient = useQueryClient();
-  const { domainId } = useParams();
 
   const [open, setOpen] = useState(false);
   const iconRef = useRef<HTMLDivElement>(null);
@@ -176,11 +181,6 @@ const DomainAuthentication: FC = () => {
     [t],
   );
 
-  const DnTemplateTooltip: FC = useCallback(
-    () => <Tooltip items={DN_TEMPLATE_TOOLTIP} />,
-    [DN_TEMPLATE_TOOLTIP],
-  );
-
   const LDAP_URL_TOOLTIP = useMemo(
     () => [
       {
@@ -193,11 +193,6 @@ const DomainAuthentication: FC = () => {
     [t, zimbraAuthMech],
   );
 
-  const LdapUrlTooltip: FC = useCallback(
-    () => <Tooltip items={LDAP_URL_TOOLTIP} />,
-    [LDAP_URL_TOOLTIP],
-  );
-
   const FILTER_TOOLTIP = useMemo(
     () => [
       {
@@ -207,7 +202,6 @@ const DomainAuthentication: FC = () => {
     [t],
   );
 
-  const FilterTooltip: FC = useCallback(() => <Tooltip items={FILTER_TOOLTIP} />, [FILTER_TOOLTIP]);
 
   useEffect(() => {
     if (!!domainInformation && domainInformation.length > 0) {
@@ -250,76 +244,32 @@ const DomainAuthentication: FC = () => {
     }
   }, [domainInformation, DOMAIN_AUTH_LIST]);
 
+  // Consolidated dirty check
   useEffect(() => {
-    if (
-      !isEmpty(domainAuthData) &&
-      domainAuthData.zimbraAuthMech !== undefined &&
-      zimbraAuthMech?.value !== undefined
-    ) {
-      if (domainAuthData.zimbraAuthMech !== zimbraAuthMech.value) {
-        setIsDirty(true);
-      }
-    }
-  }, [domainAuthData, zimbraAuthMech]);
+    if (isEmpty(domainAuthData)) return;
 
-  useEffect(() => {
-    if (!isEmpty(domainAuthData)) {
-      if (domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener) {
-        setIsDirty(true);
-      }
-    }
-  }, [domainAuthData, zimbraPasswordChangeListener]);
+    const dirty =
+      domainAuthData.zimbraAuthMech !== zimbraAuthMech?.value ||
+      domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener ||
+      (domainAuthData.zimbraAuthFallbackToLocal === 'TRUE') !== zimbraAuthFallbackToLocal ||
+      domainAuthData.zimbraAuthLdapURL !== zimbraAuthLdapURL ||
+      domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase ||
+      domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter ||
+      (domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE') !== zimbraAuthLdapStartTlsEnabled ||
+      (domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED) !== zimbraFeatureResetPasswordStatus;
 
-  useEffect(() => {
-    if (!isEmpty(domainAuthData)) {
-      const oldFallbackToLocalValue = domainAuthData.zimbraAuthFallbackToLocal === 'TRUE';
-      if (oldFallbackToLocalValue !== zimbraAuthFallbackToLocal) {
-        setIsDirty(true);
-      }
-    }
-  }, [domainAuthData, zimbraAuthFallbackToLocal]);
-
-  useEffect(() => {
-    if (!isEmpty(domainAuthData)) {
-      if (domainAuthData.zimbraAuthLdapURL !== zimbraAuthLdapURL) {
-        setIsDirty(true);
-      }
-    }
-  }, [domainAuthData, zimbraAuthLdapURL]);
-
-  useEffect(() => {
-    if (!isEmpty(domainAuthData)) {
-      if (domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase) {
-        setIsDirty(true);
-      }
-    }
-  }, [domainAuthData, zimbraAuthLdapSearchBase]);
-
-  useEffect(() => {
-    if (!isEmpty(domainAuthData)) {
-      if (domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter) {
-        setIsDirty(true);
-      }
-    }
-  }, [domainAuthData, zimbraAuthLdapSearchFilter]);
-
-  useEffect(() => {
-    if (!isEmpty(domainAuthData)) {
-      const oldAuthLdapStartTlsValue = domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE';
-      if (oldAuthLdapStartTlsValue !== zimbraAuthLdapStartTlsEnabled) {
-        setIsDirty(true);
-      }
-    }
-  }, [domainAuthData, zimbraAuthLdapStartTlsEnabled]);
-
-  useEffect(() => {
-    if (!isEmpty(domainAuthData)) {
-      const oldResetPasswordStatus = domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED;
-      if (oldResetPasswordStatus !== zimbraFeatureResetPasswordStatus) {
-        setIsDirty(true);
-      }
-    }
-  }, [domainAuthData, zimbraFeatureResetPasswordStatus]);
+    setIsDirty(dirty);
+  }, [
+    domainAuthData,
+    zimbraAuthMech,
+    zimbraPasswordChangeListener,
+    zimbraAuthFallbackToLocal,
+    zimbraAuthLdapURL,
+    zimbraAuthLdapSearchBase,
+    zimbraAuthLdapSearchFilter,
+    zimbraAuthLdapStartTlsEnabled,
+    zimbraFeatureResetPasswordStatus,
+  ]);
 
   const authFallbackToLocal = useCallback(() => setZimbraAuthFallbackToLocal((c) => !c), []);
   const authLdapStartTlsEnabled = useCallback(
@@ -368,95 +318,45 @@ const DomainAuthentication: FC = () => {
     setIsValidLdapUrl(true);
   };
 
-  const onSave = (): void => {
-    const body: {
-      id?: string;
-      _jsns?: string;
-      a?: { n: string; _content?: string }[];
-    } = {};
-    const attributes: { n: string; _content?: string }[] = [];
-    body.id = domainAuthData.zimbraId;
-    body._jsns = ZIMBRA_ADMIN_URN;
+  const buildAttributes = (): { n: string; _content?: string }[] => {
+    const attributes: { n: string; _content?: string }[] = [
+      { n: 'zimbraAuthMech', _content: zimbraAuthMech?.value },
+      { n: 'zimbraPasswordChangeListener', _content: zimbraPasswordChangeListener },
+      { n: 'zimbraAuthLdapURL', _content: zimbraAuthLdapURL },
+      { n: 'zimbraAuthLdapSearchBindDn', _content: zimbraAuthLdapSearchBindDn },
+      { n: 'zimbraAuthLdapSearchBindPassword', _content: zimbraAuthLdapSearchBindPassword },
+      { n: 'zimbraAuthLdapStartTlsEnabled', _content: zimbraAuthLdapStartTlsEnabled ? 'TRUE' : 'FALSE' },
+      { n: 'zimbraAuthLdapSearchFilter', _content: zimbraAuthLdapSearchFilter },
+      { n: 'zimbraAuthLdapSearchBase', _content: zimbraAuthLdapSearchBase },
+    ];
 
-    attributes.push({
-      n: 'zimbraAuthMech',
-      _content: zimbraAuthMech?.value,
-    });
-    attributes.push({
-      n: 'zimbraPasswordChangeListener',
-      _content: zimbraPasswordChangeListener,
-    });
     if (zimbraAuthFallbackToLocal !== null) {
-      attributes.push({
-        n: 'zimbraAuthFallbackToLocal',
-        _content: zimbraAuthFallbackToLocal ? 'TRUE' : 'FALSE',
-      });
+      attributes.push({ n: 'zimbraAuthFallbackToLocal', _content: zimbraAuthFallbackToLocal ? 'TRUE' : 'FALSE' });
     }
-
-    attributes.push({
-      n: 'zimbraAuthLdapURL',
-      _content: zimbraAuthLdapURL,
-    });
-    attributes.push({
-      n: 'zimbraAuthLdapSearchBindDn',
-      _content: zimbraAuthLdapSearchBindDn,
-    });
-    attributes.push({
-      n: 'zimbraAuthLdapSearchBindPassword',
-      _content: zimbraAuthLdapSearchBindPassword,
-    });
-
-    attributes.push({
-      n: 'zimbraAuthLdapStartTlsEnabled',
-      _content: zimbraAuthLdapStartTlsEnabled ? 'TRUE' : 'FALSE',
-    });
-    attributes.push({
-      n: 'zimbraAuthLdapSearchFilter',
-      _content: zimbraAuthLdapSearchFilter,
-    });
-    attributes.push({
-      n: 'zimbraAuthLdapSearchBase',
-      _content: zimbraAuthLdapSearchBase,
-    });
     if (isAdvanced) {
-      attributes.push({
-        n: 'zimbraFeatureResetPasswordStatus',
-        _content: zimbraFeatureResetPasswordStatus ? ENABLED : DISABLED,
-      });
+      attributes.push({ n: 'zimbraFeatureResetPasswordStatus', _content: zimbraFeatureResetPasswordStatus ? ENABLED : DISABLED });
     }
-    body.a = attributes;
-    modifyDomain(body)
-      .then((data) => {
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        if (isGlobalAdmin) {
-          flushCache('domain', 'id', domainAuthData.zimbraId).then((): void => {
-            // no operation
-          });
-        }
-        const domain: objectType = data?.domain[0];
-        if (domain) {
-          queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
-        }
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+    return attributes;
+  };
+
+  const { mutate, isPending } = useDomainMutation({
+    mutationFn: async () => {
+      const body = {
+        id: domainAuthData.zimbraId,
+        _jsns: ZIMBRA_ADMIN_URN,
+        a: buildAttributes(),
+      };
+      const result = await modifyDomain(body);
+      if (isGlobalAdmin) {
+        flushCache('domain', 'id', domainAuthData.zimbraId);
+      }
+      return result;
+    },
+    successMessage: t('label.change_save_success_msg', 'The change has been saved successfully'),
+  });
+
+  const handleSave = async (): Promise<void> => {
+    await mutate(undefined);
   };
 
   useEffect(() => {
@@ -580,32 +480,13 @@ const DomainAuthentication: FC = () => {
                   {t('label.authentication', 'Authentication')}
                 </ds-text>
               </Row>
-              <Row
-                padding={{ all: 'large' }}
-                width="50%"
-                mainAlignment="flex-end"
-                crossAlignment="flex-end"
-              >
-                <Padding right="small">
-                  {isDirty && (
-                    <Button
-                      data-testid={'cancel-button'}
-                      label={t('label.cancel', 'Cancel')}
-                      color="secondary"
-                      onClick={onCancel}
-                    />
-                  )}
-                </Padding>
-                {isDirty && (
-                  <Button
-                    data-testid={'save-button'}
-                    label={t('label.save', 'Save')}
-                    color="primary"
-                    onClick={onSave}
-                    disabled={!isValidLdapUrl || !isValidLdapDN}
-                  />
-                )}
-              </Row>
+              <DomainFormActions
+                isDirty={isDirty}
+                isPending={isPending}
+                isValid={isValidLdapUrl && isValidLdapDN}
+                onCancel={onCancel}
+                onSave={handleSave}
+              />
             </Row>
           </Container>
           <ds-divider></ds-divider>
@@ -660,7 +541,7 @@ const DomainAuthentication: FC = () => {
                     placement="top-end"
                     onClose={(): void => setOpen(false)}
                   >
-                    <DnTemplateTooltip />
+                    <Tooltip items={DN_TEMPLATE_TOOLTIP} />
                   </Popper>
                 </Padding>
               </ListRow>
@@ -723,7 +604,7 @@ const DomainAuthentication: FC = () => {
                     placement="top-end"
                     onClose={(): void => setLdapUrlOpen(false)}
                   >
-                    <LdapUrlTooltip />
+                    <Tooltip items={LDAP_URL_TOOLTIP} />
                   </Popper>
                 </Padding>
               </ListRow>
@@ -756,7 +637,7 @@ const DomainAuthentication: FC = () => {
                     placement="top-end"
                     onClose={(): void => setFilterOpen(false)}
                   >
-                    <FilterTooltip />
+                    <Tooltip items={FILTER_TOOLTIP} />
                   </Popper>
                 </Padding>
                 <Padding vertical="small" horizontal="small" width="100%">
@@ -944,7 +825,7 @@ const DomainAuthentication: FC = () => {
         </Container>
       </Container>
 
-      <RouteLeavingGuard when={isDirty} onSave={onSave} />
+      <RouteLeavingGuard when={isDirty} handleSave={handleSave} />
     </Container>
   );
 };
