@@ -32,7 +32,7 @@ export const FeatureItem = ({ form, name, label, description }: FeatureItemProps
     </ListRow>
     {description && (
       <div className={styles.featureDescription}>
-        <ds-text as="span" size="small" color="gray1" weight="light">
+        <ds-text as="span" size="small" color="gray0">
           {description}
         </ds-text>
       </div>
