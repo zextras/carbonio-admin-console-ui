@@ -18,7 +18,7 @@ import {
 } from '@zextras/ui-components';
 import { getCosList, useUserSettings } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import React, { FC, KeyboardEvent, useEffect, useMemo, useState } from 'react';
+import React, { FC, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Cos } from '../../../../types/cos';
@@ -93,27 +93,26 @@ const DomainCosLink: FC<DomainCosLinkProps> = ({
 			});
 	};
 
-	const debouncedSearch = useMemo(
-		() =>
-			debounce((cos: string) => {
-				getCosLists(cos);
-			}, 700),
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
+	const debouncedSearchRef = useRef(
+		debounce((cos: string) => {
+			getCosLists(cos);
+		}, 700)
 	);
 
 	// Cleanup debounce on unmount
 	useEffect(() => {
+		const debouncedFn = debouncedSearchRef.current;
 		return () => {
-			debouncedSearch.cancel();
+			debouncedFn.cancel();
 		};
-	}, [debouncedSearch]);
+	}, []);
 
+	// Debounced search when user types (not when selecting)
 	useEffect(() => {
 		if (!isCosSelect) {
-			debouncedSearch(searchCosName);
+			debouncedSearchRef.current(searchCosName);
 		}
-	}, [searchCosName, isCosSelect, debouncedSearch]);
+	}, [searchCosName, isCosSelect]);
 
 	const selectedCos = (cos: Cos): void => {
 		setIsCosSelect(true);

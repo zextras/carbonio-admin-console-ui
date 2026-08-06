@@ -15,7 +15,7 @@ import {
 	Table,
 	Tooltip
 } from '@zextras/ui-components';
-import { ChangeEvent, FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/ninja_robo.svg';
@@ -89,80 +89,70 @@ const DomainSaml: FC = () => {
 	const [showBanner, setShowBanner] = useState(true);
 
 	// Compute endpoints inline
-	const { entityId, serviceUrl } = useMemo(() => {
-		if (!domainAttributes || domainAttributes.length === 0 || !domainName) {
-			return { entityId: '', serviceUrl: '' };
-		}
-		const publicHostName = domainAttributes.find(
-			(attr) => attr.n === ZIMBRA_PUBLIC_SERVICE_HOSTNAME
-		)?._content;
-		const publicProtocol = domainAttributes.find(
-			(attr) => attr.n === ZIMBRA_PUBLIC_SERVICE_PROTOCOL
-		)?._content;
-		return {
-			entityId: getSPEntityId(publicProtocol ?? '', publicHostName ?? '', domainName),
-			serviceUrl: getServiceUrl(publicProtocol ?? '', publicHostName ?? '')
-		};
-	}, [domainAttributes, domainName]);
+	const publicHostName = domainAttributes?.find(
+		(attr) => attr.n === ZIMBRA_PUBLIC_SERVICE_HOSTNAME
+	)?._content;
+	const publicProtocol = domainAttributes?.find(
+		(attr) => attr.n === ZIMBRA_PUBLIC_SERVICE_PROTOCOL
+	)?._content;
+	const entityId =
+		domainAttributes && domainAttributes.length > 0 && domainName
+			? getSPEntityId(publicProtocol ?? '', publicHostName ?? '', domainName)
+			: '';
+	const serviceUrl =
+		domainAttributes && domainAttributes.length > 0 && domainName
+			? getServiceUrl(publicProtocol ?? '', publicHostName ?? '')
+			: '';
 
 	// Table headers
-	const headers: TableHeader[] = useMemo(
-		() => [
-			{ id: 'attribute', label: t('label.attribute', 'Attribute'), width: '40%', bold: true },
-			{ id: 'value', label: t('label.value', 'Value'), width: '55%', bold: true }
-		],
-		[t]
-	);
+	const headers: TableHeader[] = [
+		{ id: 'attribute', label: t('label.attribute', 'Attribute'), width: '40%', bold: true },
+		{ id: 'value', label: t('label.value', 'Value'), width: '55%', bold: true }
+	];
 
 	// Config change handler
-	const handleConfigChange = useCallback((data: SamlConfigResponse): void => {
+	const handleConfigChange = (data: SamlConfigResponse): void => {
 		const attrs: SamlAttribute[] = Object.entries(data)
 			.filter(([key]) => key !== 'error')
 			.map(([key, value]) => ({ attribute: key, value: String(value) }));
 		setSamlAttributes(attrs);
-	}, []);
+	};
 
 	// Clear inputs after attribute operations
-	const handleAttributeChange = useCallback((): void => {
+	const handleAttributeChange = (): void => {
 		setSamlAttrKey('');
 		setSamlAttrValue('');
-	}, []);
+	};
 
-	const callbacks = useMemo(
-		() => ({ onConfigChange: handleConfigChange, onAttributeChange: handleAttributeChange }),
-		[handleConfigChange, handleAttributeChange]
-	);
-
-	const operations = useSamlOperations(domainName, callbacks);
+	const operations = useSamlOperations(domainName, {
+		onConfigChange: handleConfigChange,
+		onAttributeChange: handleAttributeChange
+	});
 
 	// Select attribute from table
-	const handleSelectAttribute = useCallback((attr: SamlAttribute): void => {
+	const handleSelectAttribute = (attr: SamlAttribute): void => {
 		setSamlAttrKey(attr.attribute);
 		setSamlAttrValue(attr.value);
-	}, []);
+	};
 
 	// Generate table rows
-	const tableRows: TableRow[] = useMemo(
-		() =>
-			samlAttributes.map((item) => ({
-				id: item.attribute,
-				columns: [
-					<AttributeCell
-						key={`attr-${item.attribute}`}
-						text={item.attribute}
-						weight="regular"
-						onClick={(): void => handleSelectAttribute(item)}
-					/>,
-					<AttributeCell
-						key={`val-${item.attribute}`}
-						text={item.value}
-						weight="light"
-						onClick={(): void => handleSelectAttribute(item)}
-					/>
-				]
-			})),
-		[samlAttributes, handleSelectAttribute]
-	);
+	const tableRows: TableRow[] = samlAttributes.map((item) => ({
+		id: item.attribute,
+		columns: [
+			<AttributeCell
+				key={`attr-${item.attribute}`}
+				text={item.attribute}
+				weight="regular"
+				onClick={(): void => handleSelectAttribute(item)}
+			/>,
+			<AttributeCell
+				key={`val-${item.attribute}`}
+				text={item.value}
+				weight="light"
+				onClick={(): void => handleSelectAttribute(item)}
+			/>
+		]
+	}));
 
 	// Fetch config on mount
 	useEffect(() => {
