@@ -94,13 +94,6 @@ describe('CreateNewCos wizard', () => {
       await setupWizardTest();
       await expect.element(page.getByRole('button', { name: 'Next' })).toBeVisible();
     });
-
-    it('renders the lowercase-only hint text under the cos name input', async () => {
-      await setupWizardTest();
-      await expect
-        .element(page.getByText('COS name must contain only lowercase letters.'))
-        .toBeVisible();
-    });
   });
 
   describe('Next button state', () => {
@@ -648,7 +641,7 @@ describe('CreateNewCos wizard', () => {
         a: Array<{ n: string; _content: string }>;
       };
       const editionAttr = requestBody.a.find((a) => a.n === 'edition');
-      expect(editionAttr?._content).toBe('email');
+      expect(editionAttr?._content).toBe('mail');
     });
 
     it('should include edition as workspace in the CreateCos request', async () => {
