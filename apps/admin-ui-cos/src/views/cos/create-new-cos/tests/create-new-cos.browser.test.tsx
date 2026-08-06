@@ -216,6 +216,21 @@ describe('CreateNewCos wizard', () => {
       await page.getByRole('button', { name: 'Next' }).click();
     }
 
+    it('renders the features header title and description', async () => {
+      await setupWorkspaceStep2();
+
+      await expect
+        .element(page.getByText('Choose which features to enable for this edition'))
+        .toBeVisible();
+      await expect
+        .element(
+          page.getByText(
+            'All features are enabled by default. Pick what this Class of Service should include. You can always adjust individual features later.',
+          ),
+        )
+        .toBeVisible();
+    });
+
     it('renders all workspace edition feature switches', async () => {
       await setupWorkspaceStep2();
 
@@ -318,6 +333,35 @@ describe('CreateNewCos wizard', () => {
       await expect.element(videoCallsSwitch).toBeChecked();
     });
 
+    it('toggles mail, contacts, calendar, and tasks features individually', async () => {
+      await setupWorkspaceStep2();
+
+      const mailSwitch = page.getByRole('switch', { name: 'Enable mail' });
+      const contactsSwitch = page.getByRole('switch', { name: 'Users can access Contacts' });
+      const calendarSwitch = page.getByRole('switch', { name: 'Users can access Calendar' });
+      const tasksSwitch = page.getByRole('switch', { name: 'Enable tasks' });
+
+      await mailSwitch.click();
+      await expect.element(mailSwitch).not.toBeChecked();
+      await expect.element(contactsSwitch).toBeChecked();
+
+      await contactsSwitch.click();
+      await calendarSwitch.click();
+      await tasksSwitch.click();
+      await expect.element(contactsSwitch).not.toBeChecked();
+      await expect.element(calendarSwitch).not.toBeChecked();
+      await expect.element(tasksSwitch).not.toBeChecked();
+
+      await mailSwitch.click();
+      await contactsSwitch.click();
+      await calendarSwitch.click();
+      await tasksSwitch.click();
+      await expect.element(mailSwitch).toBeChecked();
+      await expect.element(contactsSwitch).toBeChecked();
+      await expect.element(calendarSwitch).toBeChecked();
+      await expect.element(tasksSwitch).toBeChecked();
+    });
+
     it('renders Back and Create buttons in footer', async () => {
       await setupWorkspaceStep2();
 
@@ -416,6 +460,17 @@ describe('CreateNewCos wizard', () => {
       await calendarSwitch.click();
       await expect.element(contactsSwitch).toBeChecked();
       await expect.element(calendarSwitch).toBeChecked();
+    });
+
+    it('toggles the Tasks feature', async () => {
+      await setupEmailStep2();
+
+      const tasksSwitch = page.getByRole('switch', { name: 'Enable tasks' });
+      await expect.element(tasksSwitch).toBeChecked();
+      await tasksSwitch.click();
+      await expect.element(tasksSwitch).not.toBeChecked();
+      await tasksSwitch.click();
+      await expect.element(tasksSwitch).toBeChecked();
     });
 
     it('renders Back and Create buttons in footer', async () => {
