@@ -448,6 +448,31 @@ describe('CreateNewCos wizard', () => {
       await expect.element(cosNameInput).toHaveValue('testcos');
     });
 
+    it('allows hyphens in the cos name and advances to step 2', async () => {
+      await setupWizardTest();
+      await userEvent.fill(
+        page.getByRole('textbox', { name: 'Class of service name' }),
+        'test-cos',
+      );
+      await page.getByRole('button', { name: 'Next' }).click();
+
+      await expect.element(page.getByRole('button', { name: 'BACK' })).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'create' })).toBeVisible();
+    });
+
+    it('shows a lowercase validation error when the cos name contains disallowed characters', async () => {
+      await setupWizardTest();
+      await userEvent.fill(
+        page.getByRole('textbox', { name: 'Class of service name' }),
+        'test_cos',
+      );
+      await page.getByRole('button', { name: 'Next' }).click();
+
+      await expect
+        .element(page.getByText('COS name must contain only lowercase letters and hyphens'))
+        .toBeVisible();
+    });
+
     it('shows a required validation error when the cos name is cleared after a failed submit', async () => {
       worker.use(
         http.post('/service/admin/soap/CreateCosRequest', () =>
