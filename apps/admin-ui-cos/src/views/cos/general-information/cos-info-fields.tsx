@@ -12,6 +12,7 @@ import {
   ListRow,
   Row,
 } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -44,6 +45,7 @@ type CosInfoFieldsProps = {
   totalDomain: number;
   canDeleteCOS: boolean;
   readonlyCOS: boolean;
+  associatedEdition: string;
 };
 
 export const CosInfoFields = ({
@@ -54,8 +56,10 @@ export const CosInfoFields = ({
   totalDomain,
   canDeleteCOS,
   readonlyCOS,
+  associatedEdition,
 }: CosInfoFieldsProps) => {
   const [t] = useTranslation();
+  const isAdvanced = useIsAdvanced();
 
   return (
     <Row mainAlignment="flex-start" width="100%">
@@ -117,6 +121,17 @@ export const CosInfoFields = ({
             />
           </Container>
         </ListRow>
+        {isAdvanced && (
+          <ListRow>
+            <Container padding={{ all: 'small' }}>
+              <LabeledValue
+                label={t('label.associated_edition', 'Associated edition')}
+                backgroundColor="gray6"
+                value={associatedEdition}
+              />
+            </Container>
+          </ListRow>
+        )}
         <ListRow>
           <Container padding={{ all: 'small' }}>
             <form.Field name="description">

@@ -15,6 +15,7 @@ import {
   type TRow,
 } from '@zextras/ui-components';
 import { type DirectoryEntry, useDebouncedValue } from '@zextras/ui-shared';
+import { TFunction } from 'i18next';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -103,6 +104,12 @@ function getUserType(attrs: AttributeMap): string {
   if (getStringAttr(attrs, 'zimbraIsExternalVirtualAccount') === 'TRUE') return 'External';
   if (getStringAttr(attrs, 'zimbraIsSystemAccount') === 'TRUE') return 'System';
   return 'Normal';
+}
+
+function getAssociatedEdition(edition: string | undefined, t: TFunction): string {
+  if (edition === 'mail') return 'Email';
+  if (edition === 'workspace') return 'Workspace';
+  return t('label.not_available', 'Not available');
 }
 
 function processAccountItem(item: DirectoryEntry, statusColor: StatusColorMap): TRow {
@@ -283,6 +290,7 @@ export const GeneralInformationForm = ({
   const totalDomains = domainsData?.total ?? 0;
 
   const cosData = attributesToMap(cosInformation);
+  const associatedEdition = getAssociatedEdition(cosData.edition, t);
 
   const form = useForm({
     defaultValues: buildDefaultValues(cosInformation),
@@ -374,6 +382,7 @@ export const GeneralInformationForm = ({
           totalDomain={totalDomain}
           canDeleteCOS={canDeleteCOS}
           readonlyCOS={readonlyCOS}
+          associatedEdition={associatedEdition}
         />
         <SearchableTable
           title={t('cos.domains_that_use_this_cos', 'Domains that use this COS')}
