@@ -8,8 +8,8 @@ import { useForm } from '@tanstack/react-form';
 import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { StepTwoWorkspaceEdition } from './step-2-workspace-edition';
 import type { CreateCosFormApi, CreateCosFormValues } from '../types';
+import { StepTwoWorkspaceEdition } from './step-2-workspace-edition';
 
 const defaultValues: CreateCosFormValues = {
   cn: '',
@@ -29,10 +29,8 @@ const defaultValues: CreateCosFormValues = {
 function renderStep(): ReturnType<typeof render> {
   const onBack = vi.fn();
   function Harness(): React.JSX.Element {
-    const form = useForm<CreateCosFormValues>({ defaultValues });
-    return (
-      <StepTwoWorkspaceEdition form={form as unknown as CreateCosFormApi} onBack={onBack} />
-    );
+    const form = useForm({ defaultValues });
+    return <StepTwoWorkspaceEdition form={form as unknown as CreateCosFormApi} onBack={onBack} />;
   }
   return render(<Harness />);
 }
