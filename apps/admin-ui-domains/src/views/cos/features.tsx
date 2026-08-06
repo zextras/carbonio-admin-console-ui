@@ -177,7 +177,7 @@ export const Features: FC<{
 						<InheritedSwitch
 							subValue={featuresDetail?.zimbraFeatureContactsEnabled}
 							onChange={changeSwitchOption}
-							label={t('label.web_feature', 'Web Feature')}
+							label={t('label.allow_access_to_contacts', 'Allow access to Contacts')}
 							iconColor="primary"
 							inheritedValue={cosDetail?.zimbraFeatureContactsEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureContactsEnabled}
@@ -201,7 +201,7 @@ export const Features: FC<{
 						<InheritedSwitch
 							subValue={featuresDetail?.zimbraFeatureCalendarEnabled}
 							onChange={changeSwitchOption}
-							label={t('label.web_feature', 'Web Feature')}
+							label={t('label.allow_access_to_calendars', 'Allow access to Calendars')}
 							iconColor="primary"
 							inheritedValue={cosDetail?.zimbraFeatureCalendarEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureCalendarEnabled}
@@ -233,7 +233,7 @@ export const Features: FC<{
 						<InheritedSwitch
 							subValue={featuresDetail?.carbonioFeatureFilesEnabled}
 							onChange={changeSwitchOption}
-							label={t('label.web_feature', 'Web Feature')}
+							label={t('label.allow_access_to_files', 'Allow access to Files')}
 							iconColor="primary"
 							inheritedValue={cosDetail?.carbonioFeatureFilesEnabled}
 							fromSubValue={accSpecificDetail?.carbonioFeatureFilesEnabled}
@@ -257,7 +257,7 @@ export const Features: FC<{
 						<InheritedSwitch
 							subValue={featuresDetail?.carbonioFeatureTasksEnabled}
 							onChange={changeSwitchOption}
-							label={t('label.web_feature', 'Web Feature')}
+							label={t('label.allow_access_to_tasks', 'Allow access to Tasks')}
 							iconColor="primary"
 							inheritedValue={cosDetail?.carbonioFeatureTasksEnabled}
 							fromSubValue={accSpecificDetail?.carbonioFeatureTasksEnabled}

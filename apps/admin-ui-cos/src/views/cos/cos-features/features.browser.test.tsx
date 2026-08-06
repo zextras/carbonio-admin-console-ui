@@ -88,54 +88,48 @@ describe('FeaturesForm (browser)', () => {
     resetMockWorker();
   });
 
-
-  it('should render Contacts Web Feature switch and be clickable', async () => {
+  it('should render Contacts switch and be clickable', async () => {
     await setupTest();
-    const webFeatureSwitch = page.getByRole('switch', { name: 'Web Feature' }).nth(0);
+    const webFeatureSwitch = page.getByRole('switch', { name: 'Allow access to Contacts' });
     await expect.element(webFeatureSwitch).toBeChecked();
     await userEvent.click(webFeatureSwitch);
     await expect.element(webFeatureSwitch).not.toBeChecked();
   });
 
-  it('should render Calendar Web Feature switch and be clickable', async () => {
+  it('should render Calendar switch and be clickable', async () => {
     await setupTest();
-    const webFeatureSwitch = page.getByRole('switch', { name: 'Web Feature' }).nth(1);
+    const webFeatureSwitch = page.getByRole('switch', { name: 'Allow access to Calendars' });
     await expect.element(webFeatureSwitch).toBeChecked();
     await userEvent.click(webFeatureSwitch);
     await expect.element(webFeatureSwitch).not.toBeChecked();
   });
 
-  it('should render Files Web Feature switch and be clickable', async () => {
+  it('should render Files switch and be clickable', async () => {
     await setupTest();
-    const webFeatureSwitch = page.getByRole('switch', { name: 'Web Feature' }).nth(2);
+    const webFeatureSwitch = page.getByRole('switch', { name: 'Allow access to Files' });
     await expect.element(webFeatureSwitch).toBeChecked();
     await userEvent.click(webFeatureSwitch);
     await expect.element(webFeatureSwitch).not.toBeChecked();
   });
 
-  it('should render Tasks Web Feature switch and be clickable', async () => {
+  it('should render Tasks switch and be clickable', async () => {
     await setupTest();
-    const webFeatureSwitch = page.getByRole('switch', { name: 'Web Feature' }).nth(3);
+    const webFeatureSwitch = page.getByRole('switch', { name: 'Allow access to Tasks' });
     await expect.element(webFeatureSwitch).toBeChecked();
     await userEvent.click(webFeatureSwitch);
     await expect.element(webFeatureSwitch).not.toBeChecked();
   });
-
 
   it('should render General section with Can access Settings', async () => {
     await setupTest();
     await expect.element(page.getByText('General')).toBeVisible();
-    await expect
-      .element(page.getByRole('switch', { name: 'Can access Settings' }))
-      .toBeVisible();
+    await expect.element(page.getByRole('switch', { name: 'Can access Settings' })).toBeVisible();
   });
 
   it('should render General section with Active Sync Access', async () => {
     await setupTest(<TestWrapper isAdvanced />);
     await expect.element(page.getByText('General')).toBeVisible();
-    await expect
-      .element(page.getByRole('switch', { name: 'Active Sync Access' }))
-      .toBeVisible();
+    await expect.element(page.getByRole('switch', { name: 'Active Sync Access' })).toBeVisible();
   });
 
   it('should render all feature sections', async () => {
@@ -149,9 +143,7 @@ describe('FeaturesForm (browser)', () => {
 
   describe('Advanced 2FA enforcement (isAdvanced)', () => {
     const ADVANCED_COS_INFO: Array<Attribute> = MOCK_COS_INFORMATION.map((a) =>
-      a.n === 'carbonioOtpWizardFromUntrusted'
-        ? { ...a, _content: 'TRUE' }
-        : a,
+      a.n === 'carbonioOtpWizardFromUntrusted' ? { ...a, _content: 'TRUE' } : a,
     );
 
     it('should render setup enforcement section when isAdvanced', async () => {
@@ -189,9 +181,7 @@ describe('FeaturesForm (browser)', () => {
     it('should render Grace Period switch', async () => {
       await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
       await expect
-        .element(
-          page.getByRole('switch', { name: 'Allow setup deferral during grace period' }),
-        )
+        .element(page.getByRole('switch', { name: 'Allow setup deferral during grace period' }))
         .toBeVisible();
     });
 
@@ -209,17 +199,13 @@ describe('FeaturesForm (browser)', () => {
       );
       await setupTest(<TestWrapper cosInformation={wizardDisabled} isAdvanced />);
       await expect
-        .element(
-          page.getByRole('switch', { name: 'Allow setup deferral during grace period' }),
-        )
+        .element(page.getByRole('switch', { name: 'Allow setup deferral during grace period' }))
         .toBeDisabled();
     });
 
     it('should render grace period expiration date picker', async () => {
       await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
-      await expect
-        .element(page.getByText('Set grace period expiration date'))
-        .toBeVisible();
+      await expect.element(page.getByText('Set grace period expiration date')).toBeVisible();
     });
 
     it('should disable date picker when grace period is FALSE', async () => {
@@ -265,8 +251,8 @@ describe('FeaturesForm (browser)', () => {
         a.n === 'carbonioOtpGracePeriodEndingTime'
           ? { ...a, _content: '20260115120000Z' }
           : a.n === 'carbonioOtpGracePeriodEnabled'
-            ? { ...a, _content: 'TRUE' }
-            : a,
+          ? { ...a, _content: 'TRUE' }
+          : a,
       );
       await setupTest(<TestWrapper cosInformation={withGentime} isAdvanced />);
       const picker = page.getByPlaceholder('Set grace period expiration date');
@@ -279,8 +265,8 @@ describe('FeaturesForm (browser)', () => {
         a.n === 'carbonioOtpGracePeriodEndingTime'
           ? { ...a, _content: 'invalid' }
           : a.n === 'carbonioOtpGracePeriodEnabled'
-            ? { ...a, _content: 'TRUE' }
-            : a,
+          ? { ...a, _content: 'TRUE' }
+          : a,
       );
       await setupTest(<TestWrapper cosInformation={withInvalid} isAdvanced />);
       const picker = page.getByPlaceholder('Set grace period expiration date');
