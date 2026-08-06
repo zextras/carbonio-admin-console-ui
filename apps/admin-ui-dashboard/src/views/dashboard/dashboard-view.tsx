@@ -14,7 +14,7 @@ import {
   useIsAdvanced,
   useUserAccounts,
 } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 
 import {
@@ -38,7 +38,7 @@ import QuickAccess from './quick-access-view';
 const Dashboard: FC = () => {
   const navigate = useNavigate();
   const accounts = useUserAccounts();
-  const [userName, setUserName] = useState<string>('');
+  const userName = accounts[0]?.displayName || accounts[0]?.name?.split('@')[0] || '';
   const { serverVersion } = useServerVersion();
 
   const isAdvanced = useIsAdvanced();
@@ -46,7 +46,12 @@ const Dashboard: FC = () => {
   const { data: domainInformation } = useDomainInformation();
   const { data: rights } = useCurrentUserRights();
   const adminHasAllRights = useHasAllRights();
-  const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
+  const hasListServerRights =
+    rights != null &&
+    rights.length > 0 &&
+    getRights(rights, SERVER).some(
+      (item: Record<string, string>) => item?.n && item?.n === LIST_SERVER,
+    );
 
   const openOperationView = useCallback(
     (operation: string) => {
@@ -61,14 +66,6 @@ const Dashboard: FC = () => {
     [domainInformation, navigate],
   );
 
-  useEffect(() => {
-    if (accounts[0]?.displayName) {
-      setUserName(accounts[0]?.displayName);
-    } else if (accounts[0]?.name) {
-      setUserName(accounts[0]?.name.split('@')[0]);
-    }
-  }, [accounts]);
-
   const goToMailStoreServerList = useCallback(() => {
     navigate(buildPath(STORAGES_ROUTE_ID, SERVERS_LIST));
   }, [navigate]);
@@ -76,20 +73,6 @@ const Dashboard: FC = () => {
   const goToMailNotificationt = useCallback(() => {
     navigate(buildPath(NOTIFICATION_ROUTE_ID, LIST));
   }, [navigate]);
-
-  useEffect(() => {
-    if (rights && rights.length > 0) {
-      const right = getRights(rights, SERVER);
-      if (right.length > 0) {
-        const findServerRight = right.find(
-          (item: Record<string, string>) => item?.n && item?.n === LIST_SERVER,
-        );
-        if (findServerRight) {
-          sethasListServerRights(true);
-        }
-      }
-    }
-  }, [rights]);
 
   return (
     <Container>
