@@ -23,7 +23,7 @@
     "deploy": "pnpm exec tsx scripts/deploy.ts",
     "deploy:dev": "pnpm exec tsx scripts/deploy.ts development",
     "test": "turbo run test",
-    "test:ci": "turbo run test:ci --concurrency=2",
+    "test:ci": "turbo run test:ci --concurrency=2 && pnpm exec tsx scripts/strip-lcov-branches.ts",
     "test:headed": "HEADED=true turbo run test --no-cache",
     "type-check": "turbo run type-check",
     "type-check:ci": "turbo run type-check --concurrency=4",
