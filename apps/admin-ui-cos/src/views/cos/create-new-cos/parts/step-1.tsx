@@ -67,7 +67,7 @@ export const CreateNewCosStep1 = ({ form }: CreateNewCosStep1Props) => {
           </div>
         </div>
       </div>
-      <StepFooter form={form} isFirstStep onPrimary={() => form.handleSubmit()} />
+      <StepFooter isFirstStep onPrimary={() => form.handleSubmit()} />
     </div>
   );
 };

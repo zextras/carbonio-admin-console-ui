@@ -29,6 +29,6 @@ export const Step2Layout = ({ form, onBack, children }: Step2LayoutProps) => (
         </div>
       </div>
     </div>
-    <StepFooter form={form} onBack={onBack} onPrimary={() => form.handleSubmit()} />
+    <StepFooter onBack={onBack} onPrimary={() => form.handleSubmit()} />
   </div>
 );
