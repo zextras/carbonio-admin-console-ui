@@ -38,7 +38,7 @@ export const ContactsCalendarSection = ({ form, readonlyCOS }: ContactsCalendarS
           <FeatureSwitchField
             form={form}
             name="zimbraFeatureContactsEnabled"
-            label={t('label.web_feature', 'Web Feature')}
+            label={t('label.allow_access_to_contacts', 'Allow access to Contacts')}
             disabled={readonlyCOS}
           />
         </Row>
@@ -57,7 +57,7 @@ export const ContactsCalendarSection = ({ form, readonlyCOS }: ContactsCalendarS
           <FeatureSwitchField
             form={form}
             name="zimbraFeatureCalendarEnabled"
-            label={t('label.web_feature', 'Web Feature')}
+            label={t('label.allow_access_to_calendars', 'Allow access to Calendars')}
             disabled={readonlyCOS}
           />
         </Row>
