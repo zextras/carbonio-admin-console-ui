@@ -24,13 +24,8 @@ import {
 	ZIMBRA_PUBLIC_SERVICE_PROTOCOL
 } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
-import { copyTextToClipboard, getServiceUrl,getSPEntityId } from '../../utility/utils';
+import { copyTextToClipboard, getServiceUrl, getSPEntityId } from '../../utility/utils';
 import { SamlConfigResponse, useSamlOperations } from './hooks/use-saml-operations';
-
-type DomainAttribute = {
-	n: string;
-	_content: string;
-};
 
 type SamlAttribute = {
 	attribute: string;
@@ -52,6 +47,18 @@ type TableHeader = {
 const INFO_BACKGROUND = '#D3EBF8';
 const INFO_COLOR = '#2196D3';
 
+type ClearInputIconProps = {
+	value: string;
+	onClear: () => void;
+};
+
+const ClearInputIcon: FC<ClearInputIconProps> = ({ value, onClear }) =>
+	value ? (
+		<Container onClick={onClear} style={{ cursor: 'pointer' }}>
+			<ds-icon icon="CloseOutline" size="large" color="secondary"></ds-icon>
+		</Container>
+	) : null;
+
 type AttributeCellProps = {
 	text: string;
 	weight: 'regular' | 'light';
@@ -71,7 +78,7 @@ const DomainSaml: FC = () => {
 	const { data: domain, isLoading } = useSelectedDomain();
 
 	const domainName = domain?.name ?? '';
-	const domainAttributes = domain?.a as DomainAttribute[] | undefined;
+	const domainAttributes = domain?.a;
 
 	// Local state
 	const [samlAttributes, setSamlAttributes] = useState<SamlAttribute[]>([]);
@@ -499,13 +506,9 @@ const DomainSaml: FC = () => {
 										onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 											setSamlAttrKey(e.target.value);
 										}}
-										CustomIcon={(): ReactElement | null =>
-											samlAttrKey ? (
-												<Container onClick={() => setSamlAttrKey('')} style={{ cursor: 'pointer' }}>
-													<ds-icon icon="CloseOutline" size="large" color="secondary"></ds-icon>
-												</Container>
-											) : null
-										}
+										CustomIcon={() => (
+											<ClearInputIcon value={samlAttrKey} onClear={() => setSamlAttrKey('')} />
+										)}
 									/>
 								</Container>
 							</Row>
@@ -528,13 +531,9 @@ const DomainSaml: FC = () => {
 										onChange={(e: ChangeEvent<HTMLInputElement>): void => {
 											setSamlAttrValue(e.target.value);
 										}}
-										CustomIcon={(): ReactElement | null =>
-											samlAttrValue ? (
-												<Container onClick={() => setSamlAttrValue('')} style={{ cursor: 'pointer' }}>
-													<ds-icon icon="CloseOutline" size="large" color="secondary"></ds-icon>
-												</Container>
-											) : null
-										}
+										CustomIcon={() => (
+											<ClearInputIcon value={samlAttrValue} onClear={() => setSamlAttrValue('')} />
+										)}
 									/>
 								</Container>
 							</Row>
