@@ -220,6 +220,12 @@ async function setupDeleteTest(cosData = mockCosData): Promise<void> {
   await expect.element(page.getByText('General Information')).toBeVisible();
 }
 
+async function expectEditionValue(value: string): Promise<void> {
+  await expect.element(page.getByText('Associated edition')).toBeVisible();
+  const labelEl = await page.getByText('Associated edition').findElement();
+  expect(labelEl.parentElement?.textContent ?? '').toContain(value);
+}
+
 describe('CosGeneralInformation', () => {
   beforeEach(() => {
     vi.resetAllMocks();
@@ -703,31 +709,19 @@ describe('CosGeneralInformation', () => {
     it('renders the Associated edition label and Email value when edition is mail', async () => {
       await setupAdvancedGeneralInfoTest(mockCosDataWithEmailEdition);
 
-      await expect.element(page.getByText('Associated edition')).toBeVisible();
-      const editionValue = page.getByText('Associated edition').locator('..').getByText('Email');
-      await expect.element(editionValue).toBeVisible();
+      await expectEditionValue('Email');
     });
 
     it('renders Workspace value when edition is workspace', async () => {
       await setupAdvancedGeneralInfoTest(mockCosDataWithWorkspaceEdition);
 
-      await expect.element(page.getByText('Associated edition')).toBeVisible();
-      const editionValue = page
-        .getByText('Associated edition')
-        .locator('..')
-        .getByText('Workspace');
-      await expect.element(editionValue).toBeVisible();
+      await expectEditionValue('Workspace');
     });
 
     it('renders Not available value when edition attribute is missing', async () => {
       await setupAdvancedGeneralInfoTest();
 
-      await expect.element(page.getByText('Associated edition')).toBeVisible();
-      const editionValue = page
-        .getByText('Associated edition')
-        .locator('..')
-        .getByText('Not available');
-      await expect.element(editionValue).toBeVisible();
+      await expectEditionValue('Not available');
     });
 
     it('does not render the Associated edition field when advanced mode is disabled', async () => {
