@@ -53,6 +53,40 @@ const mockDefaultCosData = {
   ],
 };
 
+const mockCosDataWithEmailEdition = {
+  cos: [
+    {
+      id: COS_ID,
+      name: 'testcos',
+      a: [
+        { n: 'zimbraId', _content: COS_ID },
+        { n: 'cn', _content: 'testcos' },
+        { n: 'zimbraNotes', _content: 'Some notes here' },
+        { n: 'description', _content: 'A test COS' },
+        { n: 'zimbraCreateTimestamp', _content: '20240115123045Z' },
+        { n: 'edition', _content: 'mail' },
+      ],
+    },
+  ],
+};
+
+const mockCosDataWithWorkspaceEdition = {
+  cos: [
+    {
+      id: COS_ID,
+      name: 'testcos',
+      a: [
+        { n: 'zimbraId', _content: COS_ID },
+        { n: 'cn', _content: 'testcos' },
+        { n: 'zimbraNotes', _content: 'Some notes here' },
+        { n: 'description', _content: 'A test COS' },
+        { n: 'zimbraCreateTimestamp', _content: '20240115123045Z' },
+        { n: 'edition', _content: 'workspace' },
+      ],
+    },
+  ],
+};
+
 function mockCatalogServices(): void {
   createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
     HttpResponse.json({ items: [] }),
@@ -107,6 +141,30 @@ async function setupGeneralInfoTest(cosData = mockCosData): Promise<void> {
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
   mockCatalogServices();
+  mockSearchDirectoryResponses();
+
+  createBrowserSoapAPIInterceptor('GetCos', cosData);
+  createBrowserSoapAPIInterceptor('FlushCache', {});
+  createBrowserSoapAPIInterceptor('ModifyCos', {});
+  createBrowserSoapAPIInterceptor('RenameCos', {});
+  createBrowserSoapAPIInterceptor('DeleteCos', {});
+
+  await setupBrowserTest(
+    <Routes>
+      <Route path="/:cosId/:operation" element={<CosGeneralInformation />} />
+    </Routes>,
+    { initialRouterEntry: `/${COS_ID}/general_information`, queryClient },
+  );
+  await expect.element(page.getByText('General Information')).toBeVisible();
+}
+
+async function setupAdvancedGeneralInfoTest(cosData = mockCosData): Promise<void> {
+  const queryClient = getQueryClient();
+  await grantUserCosRights(queryClient);
+  queryClient.setQueryData(['advanced-supported'], { supported: true });
+  createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+    HttpResponse.json({ items: ['carbonio-advanced'] }),
+  );
   mockSearchDirectoryResponses();
 
   createBrowserSoapAPIInterceptor('GetCos', cosData);
@@ -638,6 +696,44 @@ describe('CosGeneralInformation', () => {
       ]);
       await expect.element(page.getByText('single@example.com')).toBeVisible();
       await expect.element(page.getByText('Normal', { exact: true })).toBeVisible();
+    });
+  });
+
+  describe('Associated edition field', () => {
+    it('renders the Associated edition label and Email value when edition is mail', async () => {
+      await setupAdvancedGeneralInfoTest(mockCosDataWithEmailEdition);
+
+      await expect.element(page.getByText('Associated edition')).toBeVisible();
+      const editionValue = page.getByText('Associated edition').locator('..').getByText('Email');
+      await expect.element(editionValue).toBeVisible();
+    });
+
+    it('renders Workspace value when edition is workspace', async () => {
+      await setupAdvancedGeneralInfoTest(mockCosDataWithWorkspaceEdition);
+
+      await expect.element(page.getByText('Associated edition')).toBeVisible();
+      const editionValue = page
+        .getByText('Associated edition')
+        .locator('..')
+        .getByText('Workspace');
+      await expect.element(editionValue).toBeVisible();
+    });
+
+    it('renders Not available value when edition attribute is missing', async () => {
+      await setupAdvancedGeneralInfoTest();
+
+      await expect.element(page.getByText('Associated edition')).toBeVisible();
+      const editionValue = page
+        .getByText('Associated edition')
+        .locator('..')
+        .getByText('Not available');
+      await expect.element(editionValue).toBeVisible();
+    });
+
+    it('does not render the Associated edition field when advanced mode is disabled', async () => {
+      await setupGeneralInfoTest();
+
+      await expect.element(page.getByText('Associated edition')).not.toBeInTheDocument();
     });
   });
 });
