@@ -3,25 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container,PageHeader } from '@zextras/ui-components';
-import { FC, Suspense } from 'react';
+import { PageHeader } from '@zextras/ui-components';
 
+import styles from './app-view.module.css';
 import Dashboard from './dashboard/dashboard-view';
 
-const DashboardComponent = () => (
-  <Container orientation="horizontal" mainAlignment="flex-start" background="gray5" height="auto">
-    <Suspense fallback={<ds-spinner />}>
-      <Dashboard />
-    </Suspense>
-  </Container>
-);
-
-export const AppView: FC = () => {
+export const AppView = () => {
   return (
-    <Container height={'fit'}>
+    <div>
       <PageHeader />
-      <DashboardComponent />
-    </Container>
+      <div className={styles.content}>
+        <Dashboard />
+      </div>
+    </div>
   );
 };
-
