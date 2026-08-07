@@ -76,34 +76,40 @@ export const Dashboard = () => {
       <ds-divider color="gray6"></ds-divider>
       <div className={styles.content}>
         {isAdvanced && adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
-        <ListRow>
-          <div className={styles.versionCol}>
-            <CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
-          </div>
-          <div className={styles.quickAccessCol}>
-            <QuickAccess
-              openOperationView={openOperationView}
-              domainName={domainInformation?.name}
-            />
-          </div>
-        </ListRow>
-
-        {isAdvanced && (
+        <div className={styles.section}>
           <ListRow>
-            <div className={styles.notificationCol}>
-              <DashboardNotification goToMailNotification={goToMailNotification} />
+            <div className={styles.versionCol}>
+              <CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
             </div>
-          </ListRow>
-        )}
-        {hasListServerRights && (
-          <ListRow>
-            <div className={styles.serverListCol}>
-              <DashboardServerList
-                goToMailStoreServerList={goToMailStoreServerList}
-                serverVersion={serverVersion}
+            <div className={styles.quickAccessCol}>
+              <QuickAccess
+                openOperationView={openOperationView}
+                domainName={domainInformation?.name}
               />
             </div>
           </ListRow>
+        </div>
+
+        {isAdvanced && (
+          <div className={styles.section}>
+            <ListRow>
+              <div className={styles.notificationCol}>
+                <DashboardNotification goToMailNotification={goToMailNotification} />
+              </div>
+            </ListRow>
+          </div>
+        )}
+        {hasListServerRights && (
+          <div className={styles.section}>
+            <ListRow>
+              <div className={styles.serverListCol}>
+                <DashboardServerList
+                  goToMailStoreServerList={goToMailStoreServerList}
+                  serverVersion={serverVersion}
+                />
+              </div>
+            </ListRow>
+          </div>
         )}
       </div>
     </div>
