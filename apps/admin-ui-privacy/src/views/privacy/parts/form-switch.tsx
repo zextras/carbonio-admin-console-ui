@@ -13,7 +13,12 @@ type FormSwitchProps = {
   label: string;
 };
 
-export function FormSwitch({ fieldValue, allowSetPrivacy, onClick, label }: FormSwitchProps) {
+export function FormSwitch({
+  fieldValue,
+  allowSetPrivacy,
+  onClick,
+  label,
+}: Readonly<FormSwitchProps>) {
   return (
     <ListRow>
       <Container

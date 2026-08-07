@@ -12,7 +12,7 @@ type FormButtonsProps = {
   onCancel: () => void;
 };
 
-export function FormButtons({ onCancel, onSave }: FormButtonsProps) {
+export function FormButtons({ onCancel, onSave }: Readonly<FormButtonsProps>) {
   const [t] = useTranslation();
   return (
     <>

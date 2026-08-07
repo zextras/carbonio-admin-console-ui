@@ -10,7 +10,7 @@ type SwitchDescriptionProps = {
   label: string;
 };
 
-export function SwitchDescription({ label }: SwitchDescriptionProps) {
+export function SwitchDescription({ label }: Readonly<SwitchDescriptionProps>) {
   return (
     <ListRow>
       <Container
