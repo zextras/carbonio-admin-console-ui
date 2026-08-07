@@ -61,7 +61,7 @@ export interface GalModalState {
 
 export function parsePollingInterval(raw: string | undefined): PollingInterval {
 	if (!raw) return { value: '1', unit: 'm' };
-	const match = raw.match(/^(\d+)([dhms])$/);
+	const match = /^(\d+)([dhms])$/.exec(raw);
 	if (!match) return { value: '1', unit: 'm' };
 	return { value: match[1], unit: match[2] as PollingUnit };
 }

@@ -42,8 +42,34 @@ import {
   isGalFormDirty,
   parseGalFormFromAttributes,
   parsePollingInterval,
+  PollingInterval,
   PollingUnit
 } from './schemas/gal-settings-types';
+
+// === Helper types for GAL account fetching ===
+interface GalAccountInfo {
+  accountData: Attribute[];
+  name: string;
+  id: string;
+}
+
+// === Helper functions to reduce nesting ===
+async function fetchGalAccountInfo(accountId: string): Promise<GalAccountInfo | undefined> {
+  try {
+    const data = await getAccount(accountId);
+    const account = data?.account?.[0];
+    if (!account) return undefined;
+    const mailHostAttr = account.a?.filter((a: Attribute) => a.n === 'zimbraMailHost') ?? [];
+    return { accountData: mailHostAttr, name: account.name, id: account.id };
+  } catch {
+    return undefined;
+  }
+}
+
+function extractPollingInterval(account: { a?: Attribute[] }): PollingInterval | null {
+  const attr = account.a?.find((a: Attribute) => a.n === 'zimbraDataSourceGalPollingInterval');
+  return attr ? parsePollingInterval(attr._content) : null;
+}
 
 type InputIconProps = { hasFocus: boolean };
 
@@ -354,53 +380,39 @@ const DomainGalSettings: FC = () => {
   // Fetch GAL data after form state is synced (runs once per domain change)
   if (formState && !hasFetchedInitialData && selectedDomain?.a) {
     setHasFetchedInitialData(true);
-    // Fetch server list with GAL accounts
     const galAccountAttrs = selectedDomain.a.filter((item) => item.n === 'zimbraGalAccountId');
+
     if (galAccountAttrs.length === 0) {
       setEmptyServerList();
     } else {
-      Promise.all(
-        galAccountAttrs.map((item) =>
-          getAccount(item._content)
-            .then((data) => {
-              const account = data?.account?.[0];
-              if (!account) return undefined;
-              const mailHostAttr = account.a?.filter((a: Attribute) => a.n === 'zimbraMailHost');
-              return {
-                accountData: mailHostAttr ?? [],
-                name: account.name,
-                id: account.id
-              };
-            })
-            .catch((): undefined => undefined)
-        )
-      ).then(buildServerList);
+      Promise.all(galAccountAttrs.map((item) => fetchGalAccountInfo(item._content))).then(
+        buildServerList
+      );
     }
-    // Fetch GAL account polling interval and datasource IDs
+
     if (formState.galAccountId) {
+      // Fetch polling interval from primary GAL account
       getAccount(formState.galAccountId).then((data) => {
         const galAccount = data?.account?.[0];
-        if (galAccount?.a) {
-          const pollingAttr = galAccount.a.find((a: Attribute) => a.n === 'zimbraDataSourceGalPollingInterval');
-          if (pollingAttr) {
-            const parsed = parsePollingInterval(pollingAttr._content);
-            setFormState((prev) => (prev ? { ...prev, galPollingInterval: parsed } : prev));
-          }
+        const parsed = galAccount ? extractPollingInterval(galAccount) : null;
+        if (parsed) {
+          setFormState((prev) => (prev ? { ...prev, galPollingInterval: parsed } : prev));
         }
       });
+      // Fetch datasource IDs for all GAL accounts
       galAccountIds.forEach((item) => {
         getDatasource(item._content).then((data) => {
           const dataSource = data?.dataSource?.[0];
-          if (dataSource?.id) {
-            setDataSourceIds((prev) => {
-              if (prev.some((d) => d.accountId === item._content)) return prev;
-              return [...prev, { accountId: item._content, dataSourceId: dataSource.id }];
-            });
-            if (dataSource?._attrs?.zimbraDataSourcePollingInterval) {
-              setDataSourcePollingInterval(dataSource._attrs.zimbraDataSourcePollingInterval);
-            }
-          } else {
+          if (!dataSource?.id) {
             setDataSourcePollingInterval('');
+            return;
+          }
+          setDataSourceIds((prev) => {
+            if (prev.some((d) => d.accountId === item._content)) return prev;
+            return [...prev, { accountId: item._content, dataSourceId: dataSource.id }];
+          });
+          if (dataSource._attrs?.zimbraDataSourcePollingInterval) {
+            setDataSourcePollingInterval(dataSource._attrs.zimbraDataSourcePollingInterval);
           }
         });
       });
