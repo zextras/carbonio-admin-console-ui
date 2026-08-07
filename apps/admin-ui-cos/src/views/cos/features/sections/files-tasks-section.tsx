@@ -38,7 +38,7 @@ export const FilesTasksSection = ({ form, readonlyCOS }: FilesTasksSectionProps)
           <FeatureSwitchField
             form={form}
             name="carbonioFeatureFilesEnabled"
-            label={t('label.web_feature', 'Web Feature')}
+            label={t('label.allow_access_to_files', 'Allow access to Files')}
             disabled={readonlyCOS}
           />
         </Row>
@@ -57,7 +57,7 @@ export const FilesTasksSection = ({ form, readonlyCOS }: FilesTasksSectionProps)
           <FeatureSwitchField
             form={form}
             name="carbonioFeatureTasksEnabled"
-            label={t('label.web_feature', 'Web Feature')}
+            label={t('label.allow_access_to_tasks', 'Allow access to Tasks')}
             disabled={readonlyCOS}
           />
         </Row>
