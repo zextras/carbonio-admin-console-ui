@@ -101,8 +101,8 @@ describe('PrivacyView', () => {
     await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
   });
 
-  it('calls Batch API when save is clicked', async () => {
-    const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
+  it('calls ModifyConfig API when save is clicked', async () => {
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
     await setupPrivacyView();
 
     await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
@@ -112,13 +112,14 @@ describe('PrivacyView', () => {
     await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     await page.getByRole('button', { name: 'Save' }).click();
 
-    const request = await batchInterceptor;
+    const request = await modifyConfigInterceptor;
 
     await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
 
     expect(request).toMatchObject({
-      ModifyConfigRequest: [
+      _jsns: 'urn:zimbraAdmin',
+      a: [
         {
           _content: 'TRUE',
           n: 'carbonioAllowFeedback',
@@ -132,7 +133,6 @@ describe('PrivacyView', () => {
           n: 'carbonioSendAnalytics',
         },
       ],
-      _jsns: 'urn:zimbra',
     });
   });
 
@@ -179,7 +179,7 @@ describe('PrivacyView', () => {
   });
 
   it('saves all changes when multiple switches are toggled before save', async () => {
-    const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
     await setupPrivacyView();
 
     await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
@@ -187,19 +187,19 @@ describe('PrivacyView', () => {
     await page.getByRole('switch', { name: SWITCH_LABELS.feedback }).click();
 
     await page.getByRole('button', { name: 'Save' }).click();
-    await batchInterceptor;
+    await modifyConfigInterceptor;
 
     await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
   });
 
   it('shows success snackbar after successful save', async () => {
-    const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
     await setupPrivacyView();
 
     await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
     await page.getByRole('button', { name: 'Save' }).click();
-    await batchInterceptor;
+    await modifyConfigInterceptor;
 
     await expect
       .element(page.getByText('The change has been saved successfully'))
@@ -207,12 +207,12 @@ describe('PrivacyView', () => {
   });
 
   it('shows error snackbar when save fails', async () => {
-    await createBrowserAPIInterceptor('post', '/service/admin/soap/BatchRequest', () =>
+    await createBrowserAPIInterceptor('post', '/service/admin/soap/ModifyConfigRequest', () =>
       HttpResponse.json(
         {
           Body: {
             Fault: {
-              Reason: { Text: 'Batch request failed' },
+              Reason: { Text: 'unknown document: ModifyConfigRequest' },
             },
           },
         },
@@ -224,7 +224,7 @@ describe('PrivacyView', () => {
     await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
     await page.getByRole('button', { name: 'Save' }).click();
 
-    await expect.element(page.getByText(/Batch request failed/)).toBeVisible();
+    await expect.element(page.getByText(/unknown document: ModifyConfigRequest/)).toBeVisible();
     await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
   });
 

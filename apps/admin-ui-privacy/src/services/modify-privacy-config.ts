@@ -21,12 +21,12 @@ export type ModifyPrivacyConfigInput = {
 };
 
 export async function modifyPrivacyConfig(value: ModifyPrivacyConfigInput): Promise<unknown> {
-  return soapFetch('Batch', {
-    ModifyConfigRequest: [
+  return soapFetch('ModifyConfig', {
+    _jsns: 'urn:zimbraAdmin',
+    a: [
       { n: CARBONIO_ALLOW_FEEDBACK, _content: value.allowFeedback ? TRUE : FALSE },
       { n: CARBONIO_SEND_FULL_ERROR_STACK, _content: value.sendFullError ? TRUE : FALSE },
       { n: CARBONIO_SEND_ANALYTICS, _content: value.sendAnalytics ? TRUE : FALSE },
     ],
-    _jsns: 'urn:zimbra',
   });
 }

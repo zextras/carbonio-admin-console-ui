@@ -15,8 +15,8 @@ vi.mock('@zextras/ui-shared', () => ({
 const { soapFetch } = await import('@zextras/ui-shared');
 
 describe('modifyPrivacyConfig', () => {
-  it('should call soapFetch with Batch and mapped TRUE/FALSE attributes', async () => {
-    const mockResponse = { BatchResponse: {} };
+  it('should call soapFetch with ModifyConfig and mapped TRUE/FALSE attributes', async () => {
+    const mockResponse = { a: [] };
     vi.mocked(soapFetch).mockResolvedValue(mockResponse);
 
     const result = await modifyPrivacyConfig({
@@ -25,13 +25,13 @@ describe('modifyPrivacyConfig', () => {
       sendAnalytics: true,
     });
 
-    expect(soapFetch).toHaveBeenCalledWith('Batch', {
-      ModifyConfigRequest: [
+    expect(soapFetch).toHaveBeenCalledWith('ModifyConfig', {
+      _jsns: 'urn:zimbraAdmin',
+      a: [
         { n: 'carbonioAllowFeedback', _content: 'TRUE' },
         { n: 'carbonioSendFullErrorStack', _content: 'FALSE' },
         { n: 'carbonioSendAnalytics', _content: 'TRUE' },
       ],
-      _jsns: 'urn:zimbra',
     });
     expect(result).toEqual(mockResponse);
   });
@@ -45,13 +45,13 @@ describe('modifyPrivacyConfig', () => {
       sendAnalytics: false,
     });
 
-    expect(soapFetch).toHaveBeenCalledWith('Batch', {
-      ModifyConfigRequest: [
+    expect(soapFetch).toHaveBeenCalledWith('ModifyConfig', {
+      _jsns: 'urn:zimbraAdmin',
+      a: [
         { n: 'carbonioAllowFeedback', _content: 'FALSE' },
         { n: 'carbonioSendFullErrorStack', _content: 'FALSE' },
         { n: 'carbonioSendAnalytics', _content: 'FALSE' },
       ],
-      _jsns: 'urn:zimbra',
     });
   });
 
