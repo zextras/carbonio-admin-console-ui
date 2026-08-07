@@ -33,7 +33,7 @@ import CarbonioVersionInformation from './carbonio-version-information-view';
 import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
 import { LicenseBanner } from './license-banner';
-import QuickAccess from './quick-access-view';
+import { QuickAccess } from './quick-access-view';
 
 const Dashboard: FC = () => {
   const navigate = useNavigate();
