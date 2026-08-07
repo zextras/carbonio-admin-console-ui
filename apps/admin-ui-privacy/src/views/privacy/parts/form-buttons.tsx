@@ -1,14 +1,18 @@
 /*
- * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import { Button, Padding } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-type FormButtonsProps = { onSave: () => void; onCancel: () => void };
+type FormButtonsProps = {
+  onSave: () => void;
+  onCancel: () => void;
+};
 
-export const FormButtons = ({ onCancel, onSave }: FormButtonsProps) => {
+export function FormButtons({ onCancel, onSave }: FormButtonsProps) {
   const [t] = useTranslation();
   return (
     <>
@@ -18,4 +22,4 @@ export const FormButtons = ({ onCancel, onSave }: FormButtonsProps) => {
       <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
     </>
   );
-};
+}

@@ -1,54 +1,26 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, removeRoute, useHasAllRights } from '@zextras/ui-shared';
-import { FC, useEffect, useMemo } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { MANAGE_APP_ID, PRIMARY_BAR_PRIVACY, PRIVACY_ROUTE_ID } from './constants';
 import { AppView } from './views/app-view';
+import { PrivacyTooltipView } from './views/privacy-tooltip-view';
 
-const App: FC = () => {
+function App() {
   const [t] = useTranslation();
-
   const hasAllConfigRights = useHasAllRights();
 
-  const PrivacyTooltipView = useMemo(
-    () => (
-      <PrimaryBarTooltip>
-        <p>
-          <Trans
-            i18nKey="label.privacy_lbl"
-            defaults="<bold>Privacy</bold>"
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-        <p>
-          <Trans
-            i18nKey="label.privacy_primarybar_tooltip"
-            defaults="Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>."
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-      </PrimaryBarTooltip>
-    ),
-    [t],
-  );
-
-  const managementSection = useMemo(
-    () => ({
-      id: MANAGE_APP_ID,
-      label: t('label.management', 'Management'),
-      position: 3,
-    }),
-    [t],
-  );
+  const managementSection = {
+    id: MANAGE_APP_ID,
+    label: t('label.management', 'Management'),
+    position: 3,
+  };
 
   useEffect(() => {
     if (hasAllConfigRights) {
@@ -60,15 +32,15 @@ const App: FC = () => {
         primaryBar: 'ShieldOutline',
         appView: AppView,
         primarybarSection: { ...managementSection },
-        tooltip: () => PrivacyTooltipView,
+        tooltip: PrivacyTooltipView,
         trackerLabel: PRIMARY_BAR_PRIVACY,
       });
     } else {
       removeRoute(PRIVACY_ROUTE_ID);
     }
-  }, [PrivacyTooltipView, hasAllConfigRights, managementSection, t]);
+  }, [hasAllConfigRights, managementSection, t]);
 
   return null;
-};
+}
 
 export default App;

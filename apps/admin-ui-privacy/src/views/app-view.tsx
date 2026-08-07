@@ -1,15 +1,16 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container,PageHeader } from '@zextras/ui-components';
+
+import { Container, PageHeader } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
+import { Suspense } from 'react';
 
-import PrivacyView from './privacy/privacy-view';
+import { PrivacyView } from './privacy/privacy-view';
 
-export const AppView: FC = () => {
+export function AppView() {
   const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
     <Container height={'fit'}>
@@ -25,5 +26,4 @@ export const AppView: FC = () => {
       </Container>
     </Container>
   );
-};
-
+}
