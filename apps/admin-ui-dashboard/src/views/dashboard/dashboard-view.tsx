@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, ListRow } from '@zextras/ui-components';
+import { ListRow } from '@zextras/ui-components';
 import {
   buildPath,
   getRights,
@@ -31,6 +31,7 @@ import { useServerVersion } from '../../hooks/use-server-version';
 import CarbonioVersionInformation from './carbonio-version-information-view';
 import { DashboardNotification } from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
+import styles from './dashboard-view.module.css';
 import { LicenseBanner } from './license-banner';
 import { QuickAccess } from './quick-access-view';
 
@@ -71,47 +72,41 @@ export const Dashboard = () => {
   }
 
   return (
-    <Container>
+    <div>
       <ds-divider color="gray6"></ds-divider>
-      <Container
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        background="gray5"
-        style={{ overflow: 'auto' }}
-        height="calc(100vh - 6.55rem)"
-      >
+      <div className={styles.content}>
         {isAdvanced && adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
         <ListRow>
-          <Container width={'40'} padding={{ all: 'extralarge' }}>
+          <div className={styles.versionCol}>
             <CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
-          </Container>
-          <Container width={'60'} padding={{ all: 'extralarge' }}>
+          </div>
+          <div className={styles.quickAccessCol}>
             <QuickAccess
               openOperationView={openOperationView}
               domainName={domainInformation?.name}
             />
-          </Container>
+          </div>
         </ListRow>
 
         {isAdvanced && (
           <ListRow>
-            <Container padding={{ all: 'extralarge' }}>
+            <div className={styles.notificationCol}>
               <DashboardNotification goToMailNotification={goToMailNotification} />
-            </Container>
+            </div>
           </ListRow>
         )}
         {hasListServerRights && (
           <ListRow>
-            <Container padding={{ all: 'extralarge' }}>
+            <div className={styles.serverListCol}>
               <DashboardServerList
                 goToMailStoreServerList={goToMailStoreServerList}
                 serverVersion={serverVersion}
               />
-            </Container>
+            </div>
           </ListRow>
         )}
-      </Container>
-    </Container>
+      </div>
+    </div>
   );
 };
 
