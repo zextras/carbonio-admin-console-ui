@@ -91,6 +91,11 @@ describe('AppView', () => {
     await expect.element(page.getByText('test')).toBeVisible();
   });
 
+  it('renders Community Edition in non-advanced mode', async () => {
+    await setupAppViewTest();
+    await expect.element(page.getByText('Community Edition!')).toBeVisible();
+  });
+
   it('renders Quick Access section with all elements', async () => {
     await setupAppViewTest();
     // Section title and icon
@@ -139,6 +144,14 @@ describe('AppView', () => {
   }
 
   describe('Advanced mode sections', () => {
+    it('hides Community Edition in advanced mode', async () => {
+      await setupAdvancedTest();
+      // Wait for advanced mode to take effect (Notifications section is advanced-only),
+      // so the Community Edition text has had time to unmount.
+      await expect.element(page.getByText(/Your Notifications/i)).toBeVisible();
+      expect(page.getByText('Community Edition!').elements().length).toBe(0);
+    });
+
     it('renders Notifications section with all elements', async () => {
       await setupAdvancedTest();
 
