@@ -6,7 +6,7 @@
 import { PageHeader } from '@zextras/ui-components';
 
 import styles from './app-view.module.css';
-import Dashboard from './dashboard/dashboard-view';
+import { Dashboard } from './dashboard/dashboard-view';
 
 export const AppView = () => {
   return (
