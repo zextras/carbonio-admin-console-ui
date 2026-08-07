@@ -65,14 +65,14 @@ Year is auto-updated by eslint. The header is required in all files except:
 - Avoid empty interface `{}` and `Object` — they accept any non-nullish value; use `Record<string, never>` for truly empty objects
 
 ### Function Definitions
-- Use function declarations for React components (not arrow functions)
+- Use arrow functions for React components (not function declarations)
 - Use regular function declarations for all other logic
 - Example:
   ```typescript
   // Component
-  function MyComponent({ title }: MyComponentProps) {
+  const MyComponent = ({ title }: MyComponentProps) => {
     return <div>{title}</div>;
-  }
+  };
 
   // Logic
   function calculateTotal(items: Array<Item>): number {
