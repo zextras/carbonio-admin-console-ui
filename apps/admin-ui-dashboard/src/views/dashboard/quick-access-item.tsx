@@ -54,6 +54,7 @@ export const QuickAccessItem = ({ item, onOpen }: QuickAccessItemProps) => (
       </ListRow>
       <ListRow>
         <Container
+          orientation="horizontal"
           mainAlignment="space-between"
           crossAlignment="center"
           width="fill"
