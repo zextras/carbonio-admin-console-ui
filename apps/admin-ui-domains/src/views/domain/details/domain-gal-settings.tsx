@@ -377,6 +377,34 @@ const DomainGalSettings: FC = () => {
     }
   }
 
+  // === Fetch helpers (declared before use to avoid hoisting issues) ===
+  const fetchPollingIntervalFromAccount = (accountId: string): void => {
+    getAccount(accountId).then((data) => {
+      const galAccount = data?.account?.[0];
+      const parsed = galAccount ? extractPollingInterval(galAccount) : null;
+      if (parsed) {
+        setFormState((prev) => (prev ? { ...prev, galPollingInterval: parsed } : prev));
+      }
+    });
+  };
+
+  const fetchDataSourceForAccount = (accountId: string): void => {
+    getDatasource(accountId).then((data) => {
+      const dataSource = data?.dataSource?.[0];
+      if (!dataSource?.id) {
+        setDataSourcePollingInterval('');
+        return;
+      }
+      setDataSourceIds((prev) => {
+        if (prev.some((d) => d.accountId === accountId)) return prev;
+        return [...prev, { accountId, dataSourceId: dataSource.id }];
+      });
+      if (dataSource._attrs?.zimbraDataSourcePollingInterval) {
+        setDataSourcePollingInterval(dataSource._attrs.zimbraDataSourcePollingInterval);
+      }
+    });
+  };
+
   // Fetch GAL data after form state is synced (runs once per domain change)
   if (formState && !hasFetchedInitialData && selectedDomain?.a) {
     setHasFetchedInitialData(true);
@@ -391,31 +419,8 @@ const DomainGalSettings: FC = () => {
     }
 
     if (formState.galAccountId) {
-      // Fetch polling interval from primary GAL account
-      getAccount(formState.galAccountId).then((data) => {
-        const galAccount = data?.account?.[0];
-        const parsed = galAccount ? extractPollingInterval(galAccount) : null;
-        if (parsed) {
-          setFormState((prev) => (prev ? { ...prev, galPollingInterval: parsed } : prev));
-        }
-      });
-      // Fetch datasource IDs for all GAL accounts
-      galAccountIds.forEach((item) => {
-        getDatasource(item._content).then((data) => {
-          const dataSource = data?.dataSource?.[0];
-          if (!dataSource?.id) {
-            setDataSourcePollingInterval('');
-            return;
-          }
-          setDataSourceIds((prev) => {
-            if (prev.some((d) => d.accountId === item._content)) return prev;
-            return [...prev, { accountId: item._content, dataSourceId: dataSource.id }];
-          });
-          if (dataSource._attrs?.zimbraDataSourcePollingInterval) {
-            setDataSourcePollingInterval(dataSource._attrs.zimbraDataSourcePollingInterval);
-          }
-        });
-      });
+      fetchPollingIntervalFromAccount(formState.galAccountId);
+      galAccountIds.forEach((item) => fetchDataSourceForAccount(item._content));
     }
   }
 
