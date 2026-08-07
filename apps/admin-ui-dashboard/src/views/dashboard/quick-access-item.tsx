@@ -4,7 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, IconName, ListRow } from '@zextras/ui-components';
+import { IconName, ListRow } from '@zextras/ui-components';
+
+import styles from './quick-access-item.module.css';
 
 export type QuickAccessItemData = {
   upperText: string;
@@ -22,46 +24,35 @@ type QuickAccessItemProps = {
 };
 
 export const QuickAccessItem = ({ item, onOpen }: QuickAccessItemProps) => (
-  <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ left: 'extralarge' }}>
-    <Container
-      height={'8.75rem'}
-      mainAlignment="flex-start"
-      crossAlignment="flex-start"
-      width={'21.75rem'}
-      style={{ borderRadius: '0.5rem', background: `var(--color-${item.bgColor})` }}
-    >
+  <div className={styles.item}>
+    <div className={styles.card} style={{ background: `var(--color-${item.bgColor})` }}>
       <ListRow>
-        <Container padding={{ all: 'large' }}>
-          <Container mainAlignment="flex-start" crossAlignment="flex-start">
+        <div className={styles.cardHeader}>
+          <div className={styles.upperText}>
             <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
               {item.upperText}
             </ds-text>
-          </Container>
-          <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ top: 'extrasmall' }}>
+          </div>
+          <div className={styles.operationText}>
             <ds-text as="strong" color="gray6" overflow="break-word" weight="bold" size="large">
               {item.operationText}
             </ds-text>
-          </Container>
-        </Container>
-        <Container crossAlignment="flex-end" padding={{ right: 'large' }}>
+          </div>
+        </div>
+        <div className={styles.operationIcon}>
           <ds-icon color="gray6" icon={item.operationIcon} size="large" />
-        </Container>
+        </div>
       </ListRow>
       <ListRow>
-        <Container padding={{ left: 'large', right: 'large' }}>
+        <div className={styles.divider}>
           <ds-divider />
-        </Container>
+        </div>
       </ListRow>
       <ListRow>
-        <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="center"
-          width="fill"
-          padding={{ all: 'large' }}
+        <div
+          className={styles.footer}
           role="button"
           tabIndex={0}
-          style={{ cursor: 'pointer' }}
           onClick={() => onOpen(item.operation)}
           onKeyDown={(event) => {
             if (event.key === 'Enter' || event.key === ' ') {
@@ -74,8 +65,8 @@ export const QuickAccessItem = ({ item, onOpen }: QuickAccessItemProps) => (
             {item.bottomText}
           </ds-text>
           <ds-icon color="gray6" icon={item.bottomIcon} size="medium" />
-        </Container>
+        </div>
       </ListRow>
-    </Container>
-  </Container>
+    </div>
+  </div>
 );
