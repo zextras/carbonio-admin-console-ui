@@ -14,7 +14,6 @@ import {
   useIsAdvanced,
   useUserAccounts,
 } from '@zextras/ui-shared';
-import { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 
 import {
@@ -30,12 +29,12 @@ import {
 } from '../../constants';
 import { useServerVersion } from '../../hooks/use-server-version';
 import CarbonioVersionInformation from './carbonio-version-information-view';
-import DashboardNotification from './dashboard-notification';
+import { DashboardNotification } from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
 import { LicenseBanner } from './license-banner';
 import { QuickAccess } from './quick-access-view';
 
-const Dashboard: FC = () => {
+export const Dashboard = () => {
   const navigate = useNavigate();
   const accounts = useUserAccounts();
   const userName = accounts[0]?.displayName || accounts[0]?.name?.split('@')[0] || '';
@@ -53,26 +52,23 @@ const Dashboard: FC = () => {
       (item: Record<string, string>) => item?.n && item?.n === LIST_SERVER,
     );
 
-  const openOperationView = useCallback(
-    (operation: string) => {
-      if (domainInformation && domainInformation?.id) {
-        if (operation === 'account') {
-          navigate(buildPath(DOMAINS_ROUTE_ID, domainInformation?.id, ACCOUNTS));
-        } else if (operation === 'mailinglist') {
-          navigate(buildPath(DOMAINS_ROUTE_ID, domainInformation?.id, DISTRIBUTION_LIST));
-        }
+  function openOperationView(operation: string) {
+    if (domainInformation && domainInformation?.id) {
+      if (operation === 'account') {
+        navigate(buildPath(DOMAINS_ROUTE_ID, domainInformation?.id, ACCOUNTS));
+      } else if (operation === 'mailinglist') {
+        navigate(buildPath(DOMAINS_ROUTE_ID, domainInformation?.id, DISTRIBUTION_LIST));
       }
-    },
-    [domainInformation, navigate],
-  );
+    }
+  }
 
-  const goToMailStoreServerList = useCallback(() => {
+  function goToMailStoreServerList() {
     navigate(buildPath(STORAGES_ROUTE_ID, SERVERS_LIST));
-  }, [navigate]);
+  }
 
-  const goToMailNotificationt = useCallback(() => {
+  function goToMailNotification() {
     navigate(buildPath(NOTIFICATION_ROUTE_ID, LIST));
-  }, [navigate]);
+  }
 
   return (
     <Container>
@@ -100,7 +96,7 @@ const Dashboard: FC = () => {
         {isAdvanced && (
           <ListRow>
             <Container padding={{ all: 'extralarge' }}>
-              <DashboardNotification goToMailNotificationt={goToMailNotificationt} />
+              <DashboardNotification goToMailNotification={goToMailNotification} />
             </Container>
           </ListRow>
         )}
@@ -118,4 +114,4 @@ const Dashboard: FC = () => {
     </Container>
   );
 };
-export default Dashboard;
+

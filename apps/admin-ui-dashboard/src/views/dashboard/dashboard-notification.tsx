@@ -5,12 +5,13 @@
  */
 
 import { Button, Container, ListRow, NotificationView } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const DashboardNotification: FC<{
-  goToMailNotificationt: () => void;
-}> = ({ goToMailNotificationt }) => {
+type DashboardNotificationProps = {
+  goToMailNotification: () => void;
+};
+
+export const DashboardNotification = ({ goToMailNotification }: DashboardNotificationProps) => {
   const [t] = useTranslation();
   return (
     <Container
@@ -44,7 +45,7 @@ const DashboardNotification: FC<{
             type="ghost"
             label={t('dashboard.go_to_notification', 'Go to notification')}
             color="primary"
-            onClick={goToMailNotificationt}
+            onClick={goToMailNotification}
             size="large"
           />
         </Container>
@@ -57,4 +58,3 @@ const DashboardNotification: FC<{
   );
 };
 
-export default DashboardNotification;
