@@ -11,9 +11,10 @@ import {
   HoverableRowFactory,
   ListRow,
   Table,
+  type THeader,
+  type TRow,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
-import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 function getVersionTextStyle(): React.CSSProperties {
@@ -27,28 +28,35 @@ function getVersionTextStyle(): React.CSSProperties {
   };
 }
 
-const DashboardServerList: FC<{
+function stopClickPropagation(event: React.MouseEvent): void {
+  event.stopPropagation();
+}
+
+type DashboardServerListProps = {
   goToMailStoreServerList: () => void;
   serverVersion: string;
-}> = ({ goToMailStoreServerList, serverVersion }) => {
+};
+
+export const DashboardServerList = ({
+  goToMailStoreServerList,
+  serverVersion,
+}: DashboardServerListProps) => {
   const [t] = useTranslation();
   const { data: mailstoresList = [] } = useMailstoreServers();
   const isAdvanced = useIsAdvanced();
 
-  const serverListRow: Array<any> =
+  const serverListRow: Array<TRow> =
     mailstoresList.length > 0
       ? mailstoresList.map((item) => ({
-          id: item?.id,
+          id: item?.id ?? '',
           columns: [
             <ds-text
               as="span"
               size="small"
               color="gray0"
               weight="regular"
-              key={item.id}
-              onClick={(event: { stopPropagation: () => void }): void => {
-                event.stopPropagation();
-              }}
+              key={`name-${item?.id}`}
+              onClick={stopClickPropagation}
             >
               {item?.name}
             </ds-text>,
@@ -57,11 +65,9 @@ const DashboardServerList: FC<{
               size="small"
               weight="regular"
               color="gray6"
-              key={item?.name}
+              key={`core-${item?.id}`}
               style={getVersionTextStyle()}
-              onClick={(event: { stopPropagation: () => void }): void => {
-                event.stopPropagation();
-              }}
+              onClick={stopClickPropagation}
             >
               {serverVersion}
             </ds-text>,
@@ -71,11 +77,9 @@ const DashboardServerList: FC<{
                 size="small"
                 weight="regular"
                 color="gray6"
-                key={item?.name}
+                key={`advanced-${item?.id}`}
                 style={getVersionTextStyle()}
-                onClick={(event: { stopPropagation: () => void }): void => {
-                  event.stopPropagation();
-                }}
+                onClick={stopClickPropagation}
               >
                 {serverVersion}
               </ds-text>
@@ -87,48 +91,43 @@ const DashboardServerList: FC<{
               size="small"
               color="gray0"
               weight="light"
-              key={item?.name}
-              onClick={(event: { stopPropagation: () => void }): void => {
-                event.stopPropagation();
-              }}
+              key={`description-${item?.id}`}
+              onClick={stopClickPropagation}
             >
               {item && item?.a
-                ? item?.a.find((attribute: any) => attribute?.n === 'description')?._content
+                ? item?.a.find((attribute) => attribute?.n === 'description')?._content
                 : ''}
             </ds-text>,
           ],
         }))
       : [];
 
-  const headers: any[] = useMemo(
-    () => [
-      {
-        id: 'server_name',
-        label: t('dashboard.server_name', 'Server name'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'carbonio_core',
-        label: t('dashboard.core_version', 'Core Version'),
-        width: '20%',
-        bold: true,
-      },
-      {
-        id: 'carbonio',
-        label: '',
-        width: isAdvanced ? '20%' : '0%',
-        bold: true,
-      },
-      {
-        id: 'description',
-        label: t('dashboard.description', 'Description'),
-        width: '35%',
-        bold: true,
-      },
-    ],
-    [t, isAdvanced],
-  );
+  const headers: Array<THeader> = [
+    {
+      id: 'server_name',
+      label: t('dashboard.server_name', 'Server name'),
+      width: '25%',
+      bold: true,
+    },
+    {
+      id: 'carbonio_core',
+      label: t('dashboard.core_version', 'Core Version'),
+      width: '20%',
+      bold: true,
+    },
+    {
+      id: 'carbonio',
+      label: '',
+      width: isAdvanced ? '20%' : '0%',
+      bold: true,
+    },
+    {
+      id: 'description',
+      label: t('dashboard.description', 'Description'),
+      width: '35%',
+      bold: true,
+    },
+  ];
 
   return (
     <Container background="gray6">
@@ -186,4 +185,3 @@ const DashboardServerList: FC<{
     </Container>
   );
 };
-export default DashboardServerList;
