@@ -28,7 +28,7 @@ import {
   STORAGES_ROUTE_ID,
 } from '../../constants';
 import { useServerVersion } from '../../hooks/use-server-version';
-import CarbonioVersionInformation from './carbonio-version-information-view';
+import { CarbonioVersionInformation } from './carbonio-version-information-view';
 import { DashboardNotification } from './dashboard-notification';
 import { DashboardServerList } from './dashboard-server-list-view';
 import styles from './dashboard-view.module.css';
