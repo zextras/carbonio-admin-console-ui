@@ -49,6 +49,7 @@ export const EditionField = ({ form }: EditionFieldProps) => {
           </div>
         }
       />
+      <div style={{ paddingBottom: '0.5rem' }} />
       <Radio
         value="workspace"
         iconColor="primary"
