@@ -6,31 +6,31 @@
 
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import { DASHBOARD, PRIMARY_BAR_DASHBOARD } from './constants';
 import { AppView } from './views/app-view';
 
-const App: FC = () => {
+const HomeTooltipView = () => {
+  const [t] = useTranslation();
+  return (
+    <PrimaryBarTooltip>
+      <Trans
+        i18nKey="label.dashboard"
+        defaults="<bold>Dashboard</bold>"
+        components={{ bold: <strong /> }}
+        t={t}
+      />
+    </PrimaryBarTooltip>
+  );
+};
+
+const App = () => {
   const [t] = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
-  const HomeTooltipView: FC = useCallback(
-    () => (
-      <PrimaryBarTooltip>
-        <Trans
-          i18nKey="label.dashboard"
-          defaults="<bold>Dashboard</bold>"
-          components={{ bold: <strong /> }}
-          t={t}
-        />
-      </PrimaryBarTooltip>
-    ),
-    [t],
-  );
 
   useEffect(() => {
     addRoute({
@@ -46,7 +46,7 @@ const App: FC = () => {
     if (pathname === '/') {
       navigate(DASHBOARD);
     }
-  }, [HomeTooltipView, navigate, pathname, t]);
+  }, [navigate, pathname, t]);
 
   return null;
 };
