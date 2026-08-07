@@ -395,10 +395,10 @@ const DomainGalSettings: FC = () => {
         setDataSourcePollingInterval('');
         return;
       }
-      setDataSourceIds((prev) => {
-        if (prev.some((d) => d.accountId === accountId)) return prev;
-        return [...prev, { accountId, dataSourceId: dataSource.id }];
-      });
+      const isDuplicate = dataSourceIds.some((d) => d.accountId === accountId);
+      if (!isDuplicate) {
+        setDataSourceIds((prev) => [...prev, { accountId, dataSourceId: dataSource.id }]);
+      }
       if (dataSource._attrs?.zimbraDataSourcePollingInterval) {
         setDataSourcePollingInterval(dataSource._attrs.zimbraDataSourcePollingInterval);
       }
@@ -521,30 +521,13 @@ const DomainGalSettings: FC = () => {
 
   const fetchGalSyncAccounts = (domainAttrs: Attribute[] | undefined): void => {
     const galAccountAttrs = domainAttrs?.filter((item) => item.n === 'zimbraGalAccountId') ?? [];
-
     if (galAccountAttrs.length === 0) {
       setEmptyServerList();
       return;
     }
-
-    const fetchPromises = galAccountAttrs.map((item) =>
-      getAccount(item._content)
-        .then((data) => {
-          const account = data?.account?.[0];
-          if (!account) return undefined;
-          const mailHostAttr = account.a?.filter((a: Attribute) => a.n === 'zimbraMailHost');
-          return {
-            accountData: mailHostAttr ?? [],
-            name: account.name,
-            id: account.id
-          };
-        })
-        .catch((): undefined => undefined)
+    Promise.all(galAccountAttrs.map((item) => fetchGalAccountInfo(item._content))).then(
+      buildServerList
     );
-
-    Promise.all(fetchPromises).then((results) => {
-      buildServerList(results);
-    });
   };
 
   const refreshDomainData = (id: string): void => {
