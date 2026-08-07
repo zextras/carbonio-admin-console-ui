@@ -4,20 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, CustomHeaderFactory, Dropdown, DropdownItem, HoverableRowFactory, Input, LabeledValue, ListRow, Padding, RouteLeavingGuard, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
+import { Button, Container, CustomHeaderFactory, Dropdown, DropdownItem, HoverableRowFactory, Input, LabeledValue, ListRow, Padding, RouteLeavingGuard, Row, Select, Switch, Table, Tooltip } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, getDomainInformation, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import {
-  AccountDataType,
-  Attribute,
-  DomainDataType,
-  IntervalType,
-  objectType,
-  Server,
-} from '../../../../types';
+import { AccountDataType, Attribute, Server } from '../../../../types';
 import {
   EXTERNAL_SERVER_EXAMPLE,
   FALSE,
@@ -39,27 +32,48 @@ import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
 import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
+import { DomainFormActions } from './components/domain-form-actions';
 import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
+import { useDomainMutation } from './hooks/use-domain-mutation';
+import {
+  formatPollingInterval,
+  GalFormState,
+  isGalFormDirty,
+  parseGalFormFromAttributes,
+  parsePollingInterval,
+  PollingUnit
+} from './schemas/gal-settings-types';
 
-const RANGE = {
-  CustomHeaderFactory,
-  DAYS: 'd',
-  HOURS: 'h',
-  MINUTES: 'm',
-  SECONDS: 's',
-} as const;
+type InputIconProps = { hasFocus: boolean };
+
+const createInfoIcon = (tooltipLabel: string) =>
+  function InfoIcon({ hasFocus }: InputIconProps): React.ReactElement {
+    return (
+      <Tooltip placement="top" overflow="break-word" maxWidth="40rem" label={tooltipLabel}>
+        <ds-text as="span">
+          <ds-icon icon="InfoOutline" size="large" color={hasFocus ? 'primary' : 'text'}></ds-icon>
+        </ds-text>
+      </Tooltip>
+    );
+  };
+
+interface TableRowData {
+  id: string;
+  columns: Array<React.ReactElement>;
+  clickable: boolean;
+}
 
 const ServerListTable: FC<{
   volumes: Array<AccountDataType>;
-  selectedRows: any;
-  onSelectionChange: (selected: any) => void;
+  selectedRows: [] | [string];
+  onSelectionChange: (ids: string[]) => void;
 }> = ({ volumes, selectedRows, onSelectionChange }) => {
   const [t] = useTranslation();
-  const tableRows: any = useMemo(
+  const tableRows: TableRowData[] = useMemo(
     () =>
       volumes.map((v, i) => ({
-        id: i,
+        id: String(i),
         columns: [
           <Tooltip placement="bottom" label={v?.name} key={i}>
             <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
@@ -71,7 +85,7 @@ const ServerListTable: FC<{
           <Tooltip placement="bottom" label={v?.name} key={i}>
             <Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
               <ds-text as="span" color="gray0" weight="regular">
-                {v?.galAccount !== null ? v?.galAccount?.name : '-'}
+                {v?.galAccount?.name ?? '-'}
               </ds-text>
             </Row>
           </Tooltip>,
@@ -127,899 +141,459 @@ const ServerListTable: FC<{
 const DomainGalSettings: FC = () => {
   const [t] = useTranslation();
   const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
-  const createSnackbar = useSnackbar();
-  const { data: selectedDomain } = useSelectedDomain();
+  const { data: selectedDomain, isLoading: isDomainLoading } = useSelectedDomain();
   const domain: { name?: string } = selectedDomain ?? {};
   const { data: allMailstoreList = [] } = useMailstoreServers();
   const { domainId } = useParams();
   const queryClient = useQueryClient();
 
-  const [open, setOpen] = useState<boolean>(false);
-  const [domainInformation, setDomainInformation] = useState(selectedDomain?.a);
-  useEffect(() => {
-    if (selectedDomain?.a) {
-      setDomainInformation(selectedDomain.a);
-    }
-  }, [selectedDomain]);
+  // === Dropdown state ===
+  const [open, setOpen] = useState(false);
+  const onClose = (): void => setOpen(false);
+  const onOpen = (): void => setOpen(true);
 
-  const onClose = useCallback(() => {
-    setOpen(false);
-  }, []);
-  const onOpen = useCallback(() => {
-    setOpen(true);
-  }, []);
-  const rangeItems = useMemo(
-    () => [
-      {
-        label: t('label.days', 'Days'),
-        value: RANGE.DAYS,
-      },
-      {
-        label: t('label.hours', 'Hours'),
-        value: RANGE.HOURS,
-      },
-      {
-        label: t('label.minutes', 'Minutes'),
-        value: RANGE.MINUTES,
-      },
-      {
-        label: t('label.seconds', 'Seconds'),
-        value: RANGE.SECONDS,
-      },
-    ],
-    [t],
-  );
-  const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [domainData, setDomainData] = useState<{
-    [key: string]: string;
-  }>({
-    zimbraGalMaxResults: '',
-    zimbraGalAccountId: '',
-    zimbraGalMode: '',
-    zimbraDataSourcePollingInterval: '',
-    zimbraGalLdapPageSize: '',
-    zimbraGalLdapURL: '',
-    zimbraGalLdapStartTlsEnabled: FALSE,
-    zimbraGalLdapSearchBase: '',
-    zimbraGalLdapFilter: '',
-    zimbraGalLdapBindDn: '',
-    zimbraGalLdapBindPassword: '',
-    zimbraGalLdapAuthMech: 'none',
-    zimbraDataSourceGalPollingInterval: '',
-  });
-  const [zimbraGalMode, setZimbraGalMode] = useState<string>('');
-  const [zimbraGalMaxResults, setZimbraGalMaxResults] = useState<string>('');
-  const [zimbraDataSourceGalPollingInterval, setZimbraDataSourceGalPollingInterval] =
-    useState<string>('');
-  const [zimbraGalLdapPageSize, setZimbraGalLdapPageSize] = useState<string>('');
-  const [zimbraGalAccountId, setZimbraGalAccountId] = useState<string>('');
-  const [zimbraGalLdapStartTlsEnabled, setZimbraGalLdapStartTlsEnabled] = useState<{
-    init: boolean;
-    current: boolean;
-  }>({
-    init: false,
-    current: false,
-  });
-  const [zimbraGalLdapAuthMech, setZimbraGalLdapAuthMech] = useState<boolean>(false);
-  const [zimbraDataSourcePollingInterval, setZimbraDataSourcePollingInterval] =
-    useState<string>('');
-  const [pollingIntervalValue, setPollingIntervalValue] = useState<string>('');
-  const [pollingIntervalType, setPollingIntervalType] = useState<IntervalType | undefined>(
-    rangeItems[0],
-  );
-  const [measureUnitSelection, setMeasureUnitSelection] = useState<any>('');
+  // === Form state (consolidated) ===
+  const [formState, setFormState] = useState<GalFormState | null>(null);
+  const [originalFormState, setOriginalFormState] = useState<GalFormState | null>(null);
 
-  const [zimbraGalAccountIdArray, setZimbraGalAccountIdArray] = useState<
-    {
-      n: string;
-      _content: string;
-    }[]
-  >([]);
-  const [zimbraAccountDataSourceId] = useState<object[]>([]);
-  const [freqValue, setFreqValue] = useState<{
-    digits: string;
-    time: string;
-  }>({
-    digits: '1',
-    time: 'm',
-  });
-  const [serverSelection, setServerSelection] = useState<number[]>([]);
-  const [toggleCreateGalSyncAccModel, setToggleCreateGalSyncAccModel] = useState<boolean>(false);
-  const [toggleDestroyGalSyncAccModel, setToggleDestroyGalSyncAccModel] = useState<boolean>(false);
-  const [isDistroyBtnDisable, setIsDistroyBtnDisable] = useState<boolean>(true);
-  const [isCreateAccBtnDisable, setIsCreateAccBtnDisable] = useState<boolean>(true);
-  const [openAccModel, setOpenAccModel] = useState<boolean>(false);
-  const [openDistroyModel, setOpenDistroyModel] = useState<boolean>(false);
+  // === Polling interval from datasource (separate from domain form) ===
+  const [dataSourcePollingInterval, setDataSourcePollingInterval] = useState('');
+
+  // === Server table state ===
   const [serverList, setServerList] = useState<AccountDataType[]>([]);
-  const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+  const [serverSelection, setServerSelection] = useState<[] | [string]>([]);
+
+  // === Modal state ===
+  const [modalState, setModalState] = useState({
+    createOpen: false,
+    destroyOpen: false,
+    createToggle: false,
+    destroyToggle: false
+  });
+
+  // === GAL account IDs for datasource operations ===
+  const [galAccountIds, setGalAccountIds] = useState<Array<{ n: string; _content: string }>>([]);
+  const [dataSourceIds, setDataSourceIds] = useState<
+    Array<{ accountId: string; dataSourceId: string }>
+  >([]);
+
+  // === User settings ===
   const userSetting = useUserSettings();
-  useEffect(() => {
-    if (userSetting?.attrs) {
-      const account = userSetting?.attrs?.zimbraIsAdminAccount;
-      if (account && account === TRUE) {
-        setIsGlobalAdmin(true);
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
+
+  // === Mutations ===
+  type SaveGalParams = {
+    formState: GalFormState;
+    galAccountIds: Array<{ n: string; _content: string }>;
+    dataSourceIds: Array<{ accountId: string; dataSourceId: string }>;
+  };
+
+  const { mutate: saveDomainMutation, isPending: isSaving } = useDomainMutation<unknown, SaveGalParams>({
+    mutationFn: async ({ formState: fs, galAccountIds: gIds, dataSourceIds: dsIds }) => {
+      const domainAttrs: Attribute[] = [
+        { n: 'zimbraGalMaxResults', _content: fs.maxResults },
+        { n: 'zimbraGalLdapPageSize', _content: fs.ldapPageSize },
+        { n: 'zimbraGalMode', _content: fs.galMode },
+        { n: 'zimbraGalLdapURL', _content: fs.ldapUrl },
+        { n: 'zimbraGalLdapStartTlsEnabled', _content: fs.ldapStartTlsEnabled ? TRUE : FALSE },
+        { n: 'zimbraGalLdapFilter', _content: fs.ldapFilter },
+        { n: 'zimbraGalLdapSearchBase', _content: fs.ldapSearchBase },
+        { n: 'zimbraGalLdapBindDn', _content: fs.ldapBindDn },
+        { n: 'zimbraGalLdapBindPassword', _content: fs.ldapBindPassword },
+        { n: 'zimbraGalLdapAuthMech', _content: fs.ldapAuthMech }
+      ];
+
+      const requests: Promise<unknown>[] = [
+        modifyDomain({ id: fs.zimbraId, _jsns: ZIMBRA_ADMIN_URN, a: domainAttrs })
+      ];
+
+      const pollingIntervalStr = formatPollingInterval(fs.galPollingInterval);
+      if (fs.galAccountId && gIds.length > 0 && dsIds.length > 0) {
+        gIds.forEach((item) => {
+          const dsMatch = dsIds.find((ds) => ds.accountId === item._content);
+          if (dsMatch) {
+            requests.push(
+              modifyDataSource({
+                id: item._content,
+                _jsns: ZIMBRA_ADMIN_URN,
+                dataSource: {
+                  id: dsMatch.dataSourceId,
+                  a: [
+                    { n: 'zimbraGalType', _content: fs.galMode },
+                    { n: 'zimbraDataSourcePollingInterval', _content: pollingIntervalStr }
+                  ]
+                }
+              })
+            );
+          }
+        });
       }
+
+      // Update GAL account polling interval
+      if (gIds.length > 0) {
+        gIds.forEach((item) => {
+          requests.push(
+            modifyAccountRequest(item._content, {
+              zimbraDataSourceGalPollingInterval: pollingIntervalStr
+            })
+          );
+        });
+      }
+
+      const results = await Promise.all(requests);
+      if (isGlobalAdmin) {
+        flushCache('domain', 'id', domainId);
+      }
+      return results;
+    },
+    successMessage: t('label.change_save_success_msg', 'The change has been saved successfully')
+  });
+
+  type CreateGalParams = {
+    serverName: string;
+    galDomainName: string;
+  };
+
+  const { mutate: createGalMutation, isPending: isCreating } = useDomainMutation<unknown, CreateGalParams>({
+    mutationFn: async ({ serverName, galDomainName }) => {
+      const attributes = [{ n: 'zimbraDataSourcePollingInterval', _content: '1d' }];
+      const account = [{ by: 'name', _content: `${galDomainName}.${serverName}@${domain?.name}` }];
+      return createGalSyncAccount(INTERNAL_GAL, domain?.name, serverName, account, ZIMBRA, attributes);
+    },
+    successMessage: t('label.create_galsync_account_success_msg', 'You have created the GALSync account name')
+  });
+
+  type DeleteGalParams = { accountId: string };
+
+  const { mutate: deleteGalMutation, isPending: isDeleting } = useDomainMutation<unknown, DeleteGalParams>({
+    mutationFn: async ({ accountId }) => destroyAccount(accountId),
+    successMessage: t('label.changes_save_success_msg', 'Your changes has been saved!')
+  });
+
+  type ReSyncParams = { accountIds: string[] };
+
+  const { mutate: reSyncMutation, isPending: isResyncing } = useDomainMutation<unknown, ReSyncParams>({
+    mutationFn: async ({ accountIds }) => {
+      await Promise.all(accountIds.map((id) => reSyncGalAccount(id)));
+    },
+    successMessage: t('label.gal_successfully_re_synced', 'GAL successfully re-synced')
+  });
+
+  // === Derived state ===
+  const isDirty = isGalFormDirty(originalFormState, formState);
+
+  const galModeLabel = useMemo(() => {
+    if (!formState?.galMode || formState.galMode === 'zimbra') return 'Internal';
+    if (formState.galMode === 'ldap') return 'External';
+    return 'Both';
+  }, [formState?.galMode]);
+
+  const pollingIntervalParsed = useMemo(() => {
+    return parsePollingInterval(dataSourcePollingInterval);
+  }, [dataSourcePollingInterval]);
+
+  const measureUnitSelection = useMemo(() => {
+    return measureUnitItems.find((item) => item.value === pollingIntervalParsed.unit) ?? measureUnitItems[0];
+  }, [measureUnitItems, pollingIntervalParsed.unit]);
+
+  // === Button disable state (derived from selection) ===
+  const selectedServer = serverSelection.length > 0 ? serverList[Number(serverSelection[0])] : null;
+  const isCreateBtnDisabled = selectedServer?.galAccount !== null;
+  const isDestroyBtnDisabled = !selectedServer || selectedServer.galAccount === null;
+
+  // === Helper functions for server list ===
+  const setEmptyServerList = (): void => {
+    setServerList(
+      allMailstoreList.map((server: Server) => ({
+        name: server.name,
+        id: server.id,
+        galAccount: null
+      }))
+    );
+  };
+
+  const buildServerList = (
+    galAccountsData: Array<{ accountData: Attribute[]; name: string; id: string } | undefined>
+  ): void => {
+    const result = allMailstoreList.map((server: Server) => {
+      const matchingAccount = galAccountsData.find(
+        (acc) => acc && server.name === acc.accountData?.[0]?._content
+      );
+      return {
+        name: server.name,
+        id: server.id,
+        galAccount: matchingAccount
+          ? {
+              server: matchingAccount.accountData?.[0]?._content ?? '',
+              name: matchingAccount.name,
+              id: matchingAccount.id
+            }
+          : null
+      };
+    });
+    setServerList(result);
+  };
+
+  // === Sync form state from domain data (React 19 conditional update) ===
+  const [prevDomainAttrs, setPrevDomainAttrs] = useState<Attribute[] | undefined>(undefined);
+  const [hasFetchedInitialData, setHasFetchedInitialData] = useState(false);
+
+  if (selectedDomain?.a !== prevDomainAttrs) {
+    setPrevDomainAttrs(selectedDomain?.a);
+    const parsed = parseGalFormFromAttributes(selectedDomain?.a);
+    if (parsed) {
+      setFormState(parsed);
+      setOriginalFormState(parsed);
+      // Extract GAL account IDs and trigger data fetches
+      const accountIds = selectedDomain?.a?.filter((a) => a.n === 'zimbraGalAccountId') ?? [];
+      setGalAccountIds(accountIds);
+      setHasFetchedInitialData(false); // Reset to trigger fetch
     }
-  }, [userSetting?.attrs]);
+  }
+
+  // Fetch GAL data after form state is synced (runs once per domain change)
+  if (formState && !hasFetchedInitialData && selectedDomain?.a) {
+    setHasFetchedInitialData(true);
+    // Fetch server list with GAL accounts
+    const galAccountAttrs = selectedDomain.a.filter((item) => item.n === 'zimbraGalAccountId');
+    if (galAccountAttrs.length === 0) {
+      setEmptyServerList();
+    } else {
+      Promise.all(
+        galAccountAttrs.map((item) =>
+          getAccount(item._content)
+            .then((data) => {
+              const account = data?.account?.[0];
+              if (!account) return undefined;
+              const mailHostAttr = account.a?.filter((a: Attribute) => a.n === 'zimbraMailHost');
+              return {
+                accountData: mailHostAttr ?? [],
+                name: account.name,
+                id: account.id
+              };
+            })
+            .catch((): undefined => undefined)
+        )
+      ).then(buildServerList);
+    }
+    // Fetch GAL account polling interval and datasource IDs
+    if (formState.galAccountId) {
+      getAccount(formState.galAccountId).then((data) => {
+        const galAccount = data?.account?.[0];
+        if (galAccount?.a) {
+          const pollingAttr = galAccount.a.find((a: Attribute) => a.n === 'zimbraDataSourceGalPollingInterval');
+          if (pollingAttr) {
+            const parsed = parsePollingInterval(pollingAttr._content);
+            setFormState((prev) => (prev ? { ...prev, galPollingInterval: parsed } : prev));
+          }
+        }
+      });
+      galAccountIds.forEach((item) => {
+        getDatasource(item._content).then((data) => {
+          const dataSource = data?.dataSource?.[0];
+          if (dataSource?.id) {
+            setDataSourceIds((prev) => {
+              if (prev.some((d) => d.accountId === item._content)) return prev;
+              return [...prev, { accountId: item._content, dataSourceId: dataSource.id }];
+            });
+            if (dataSource?._attrs?.zimbraDataSourcePollingInterval) {
+              setDataSourcePollingInterval(dataSource._attrs.zimbraDataSourcePollingInterval);
+            }
+          } else {
+            setDataSourcePollingInterval('');
+          }
+        });
+      });
+    }
+  }
 
   const closeHandler = (): void => {
-    setOpenAccModel(false);
-    setOpenDistroyModel(false);
+    setModalState((prev) => ({ ...prev, createOpen: false, destroyOpen: false }));
   };
 
   const changeGalModeBtnItems: DropdownItem[] = [
     {
       id: 'internal',
       label: t('domain.gal_change_mode_internal', 'Internal'),
-      selected: domainData?.zimbraGalMode === 'zimbra',
-      onClick: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent): void => {
-        const ev = e as React.ChangeEvent<HTMLInputElement>;
-        setDomainData({ ...domainData, zimbraGalMode: 'zimbra' });
-        if (ev?.target?.value !== domainData?.zimbraGalMode) {
-          setIsDirty(true);
-        }
-      },
+      selected: formState?.galMode === 'zimbra',
+      onClick: (): void => {
+        setFormState((prev) => (prev ? { ...prev, galMode: 'zimbra' } : prev));
+      }
     },
     {
       id: 'external',
       label: t('domain.gal_change_mode_external', 'External'),
-      selected: domainData?.zimbraGalMode === 'ldap',
-      onClick: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent): void => {
-        const ev = e as React.ChangeEvent<HTMLInputElement>;
-        setDomainData({ ...domainData, zimbraGalMode: 'ldap' });
-        if (ev?.target?.value !== domainData?.zimbraGalMode) {
-          setIsDirty(true);
-        }
-      },
-    },
+      selected: formState?.galMode === 'ldap',
+      onClick: (): void => {
+        setFormState((prev) => (prev ? { ...prev, galMode: 'ldap' } : prev));
+      }
+    }
   ];
 
-  const updateFreqValues = useCallback(
-    (obj: DomainDataType | objectType) => {
-      const val = obj?.zimbraDataSourceGalPollingInterval || zimbraDataSourceGalPollingInterval;
-      setZimbraDataSourceGalPollingInterval(val);
-      setDomainData({
-        ...domainData,
-        zimbraDataSourceGalPollingInterval: val,
-      });
-      const splitText = val.split(/(\d+)/);
-      setFreqValue({
-        digits: splitText[1],
-        time: splitText[2],
-      });
-
-      const measureUnitObject: IntervalType | undefined = measureUnitItems?.find(
-        (item: objectType) => item?.value === splitText[2],
-      );
-      setMeasureUnitSelection(measureUnitObject);
-    },
-    [domainData, measureUnitItems, zimbraDataSourceGalPollingInterval],
-  );
-
-  const getGalAccount = (accountId: string): void => {
-    getAccount(accountId).then((data) => {
-      const galAccount: {
-        a: Attribute[];
-        id: string;
-        name: string;
-      } = data?.account[0];
-      if (galAccount) {
-        if (galAccount?.a) {
-          const obj: objectType = {};
-          galAccount?.a.forEach((item: Attribute) => {
-            obj[item?.n] = item._content;
-          });
-          if (obj?.zimbraDataSourceGalPollingInterval) {
-            updateFreqValues(obj);
-          }
-        }
-      }
-    });
-  };
-
-  const getDomainDataSource = (accountId: string): void => {
-    getDatasource(accountId).then((data) => {
-      const dataSource: {
-        id: string;
-        name: string;
-        type: string;
-        _attrs: objectType;
-      } = data?.dataSource[0];
-      if (dataSource && dataSource?.id) {
-        zimbraGalAccountIdArray.forEach((item) => {
-          if (item._content === accountId) {
-            zimbraAccountDataSourceId.push({
-              id: item._content,
-              dataSourceId: dataSource?.id,
-            });
-          }
-        });
-        if (dataSource?._attrs && dataSource?._attrs?.zimbraDataSourcePollingInterval) {
-          setZimbraDataSourcePollingInterval(dataSource?._attrs?.zimbraDataSourcePollingInterval);
-        }
-      } else {
-        setZimbraDataSourcePollingInterval('');
-      }
-    });
-  };
-
-  const updateDomainInformation = useCallback(
-    (data: Array<Attribute> | undefined) => {
-      if (!!domainInformation && domainInformation.length > 0) {
-        setZimbraGalAccountId('');
-        setZimbraDataSourcePollingInterval('');
-        const obj: {
-          [key: string]: string;
-        } = {};
-        data?.map((item: Attribute) => {
-          obj[item?.n] = item._content;
-          return '';
-        });
-        if (obj.zimbraGalMaxResults) {
-          setZimbraGalMaxResults(obj.zimbraGalMaxResults);
-        } else {
-          obj.zimbraGalMaxResults = '';
-          setZimbraGalMaxResults('');
-        }
-
-        if (obj.zimbraGalLdapPageSize) {
-          setZimbraGalLdapPageSize(obj.zimbraGalLdapPageSize);
-        } else {
-          obj.zimbraGalLdapPageSize = '';
-          setZimbraGalLdapPageSize('');
-        }
-
-        if (obj.zimbraGalAccountId) {
-          const result = domainInformation.filter((item) => item.n === 'zimbraGalAccountId');
-          setZimbraGalAccountIdArray(result);
-          setZimbraGalAccountId(obj.zimbraGalAccountId);
-        } else {
-          obj.zimbraGalAccountId = '';
-          setZimbraGalAccountId('');
-        }
-
-        if (!obj.zimbraGalLdapURL) {
-          obj.zimbraGalLdapURL = '';
-        }
-
-        if (!obj.zimbraGalLdapFilter) {
-          obj.zimbraGalLdapFilter = '';
-        }
-
-        if (!obj.zimbraGalLdapSearchBase) {
-          obj.zimbraGalLdapSearchBase = '';
-        }
-
-        if (!obj.zimbraGalLdapStartTlsEnabled) {
-          obj.zimbraGalLdapStartTlsEnabled = FALSE;
-          setZimbraGalLdapStartTlsEnabled({ init: false, current: false });
-        } else if (obj.zimbraGalLdapStartTlsEnabled && obj.zimbraGalLdapStartTlsEnabled === TRUE) {
-          setZimbraGalLdapStartTlsEnabled({ init: true, current: true });
-        } else {
-          setZimbraGalLdapStartTlsEnabled({ init: false, current: false });
-        }
-
-        if (!obj.zimbraGalLdapAuthMech) {
-          obj.zimbraGalLdapAuthMech = 'none';
-        } else {
-          setZimbraGalLdapAuthMech(obj.zimbraGalLdapAuthMech !== 'none');
-        }
-        setDomainData(obj);
-        setIsDirty(false);
-      }
-    },
-
-    [domainInformation],
-  );
-
-  useEffect(() => {
-    if (zimbraGalAccountId !== '') {
-      getGalAccount(zimbraGalAccountId);
-
-      zimbraGalAccountIdArray.forEach((items) => {
-        getDomainDataSource(items?._content);
-      });
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zimbraGalAccountId]);
-
-  useMemo(() => {
-    if (zimbraDataSourcePollingInterval !== '') {
-      const rangeType = zimbraDataSourcePollingInterval.charAt(
-        zimbraDataSourcePollingInterval.length - 1,
-      );
-      setPollingIntervalValue(
-        zimbraDataSourcePollingInterval.substring(0, zimbraDataSourcePollingInterval.length - 1),
-      );
-      if (rangeType && rangeType !== '') {
-        const range: IntervalType | undefined = rangeItems.find(
-          (item: IntervalType) => item.value === rangeType,
-        );
-        setPollingIntervalType(range);
-      }
-    } else {
-      setPollingIntervalType(rangeItems[0]);
-      setPollingIntervalValue('');
-    }
-  }, [zimbraDataSourcePollingInterval, rangeItems]);
-
   const onCancel = (): void => {
-    setZimbraGalMaxResults(domainData?.zimbraGalMaxResults);
-    setZimbraGalLdapPageSize(domainData?.zimbraGalLdapPageSize);
-    updateFreqValues(domainData);
-    updateDomainInformation(domainInformation);
-    if (zimbraGalAccountId !== '') {
-      getGalAccount(zimbraGalAccountId);
+    // Reset form to original state
+    if (originalFormState) {
+      setFormState(originalFormState);
     }
-    if (zimbraGalAccountId !== '') {
-      const rangeType = zimbraDataSourcePollingInterval.charAt(
-        zimbraDataSourcePollingInterval.length - 1,
-      );
-      if (rangeType && rangeType !== '') {
-        const range: IntervalType | undefined = rangeItems.find(
-          (item: IntervalType) => item.value === rangeType,
-        );
-        setPollingIntervalType(range);
-      }
-      setPollingIntervalValue(
-        zimbraDataSourcePollingInterval.substring(0, zimbraDataSourcePollingInterval.length - 1),
-      );
-    }
-
-    domainInformation?.map((item) => {
-      if (item.n === 'zimbraGalLdapURL') {
-        if (domainData?.zimbraGalLdapURL === item?._content) {
-          setIsDirty(false);
-        }
-      }
-    });
   };
-
-  useEffect(() => {
-    if (!isDirty) {
-      domainInformation?.map((item) => {
-        if (
-          item.n === 'zimbraGalLdapURL' ||
-          item.n === 'zimbraGalLdapFilter' ||
-          item.n === 'zimbraGalLdapSearchBase' ||
-          item.n === 'zimbraGalLdapBindDn' ||
-          item.n === 'zimbraGalLdapBindPassword' ||
-          item.n === 'zimbraGalMaxResults' ||
-          item.n === 'zimbraGalLdapPageSize'
-        ) {
-          if (
-            domainData?.zimbraGalLdapURL !== item?._content ||
-            domainData?.zimbraGalLdapFilter !== item?._content ||
-            domainData?.zimbraGalLdapSearchBase !== item?._content ||
-            domainData?.zimbraGalLdapBindDn !== item?._content ||
-            domainData?.zimbraGalLdapBindPassword !== item?._content ||
-            domainData?.zimbraGalMaxResults !== item?._content ||
-            domainData?.zimbraGalLdapPageSize !== item?._content
-          ) {
-            updateDomainInformation(domainInformation);
-          }
-        }
-      });
-    }
-  }, [
-    domainData?.zimbraGalLdapBindDn,
-    domainData?.zimbraGalLdapBindPassword,
-    domainData?.zimbraGalLdapFilter,
-    domainData?.zimbraGalLdapPageSize,
-    domainData?.zimbraGalLdapSearchBase,
-    domainData?.zimbraGalLdapURL,
-    domainData?.zimbraGalMaxResults,
-    domainInformation,
-    isDirty,
-    updateDomainInformation,
-  ]);
 
   const onSave = (): void => {
-    const requests = [];
-    const body: {
-      id?: string;
-      _jsns?: string;
-      a?: { n: string; _content?: string }[];
-    } = {};
-    let attributes: Attribute[] = [];
-    body.id = domainData?.zimbraId;
-    body._jsns = ZIMBRA_ADMIN_URN;
-    attributes.push({
-      n: 'zimbraGalMaxResults',
-      _content: zimbraGalMaxResults,
-    });
-    attributes.push({
-      n: 'zimbraGalLdapPageSize',
-      _content: zimbraGalLdapPageSize,
-    });
-    attributes.push({
-      n: 'zimbraGalMode',
-      _content: domainData?.zimbraGalMode,
-    });
-    attributes.push({
-      n: 'zimbraGalLdapURL',
-      _content: domainData?.zimbraGalLdapURL,
-    });
+    if (!formState) return;
+    saveDomainMutation({ formState, galAccountIds, dataSourceIds });
+  };
 
-    attributes.push({
-      n: 'zimbraGalLdapStartTlsEnabled',
-      _content: domainData?.zimbraGalLdapStartTlsEnabled,
-    });
-    setZimbraGalLdapStartTlsEnabled({
-      ...zimbraGalLdapStartTlsEnabled,
-      current: zimbraGalLdapStartTlsEnabled?.init,
-    });
+  // === Form field handlers ===
+  const updateFormField = <K extends keyof GalFormState>(field: K, value: GalFormState[K]): void => {
+    setFormState((prev) => (prev ? { ...prev, [field]: value } : prev));
+  };
 
-    attributes.push({
-      n: 'zimbraGalLdapFilter',
-      _content: domainData?.zimbraGalLdapFilter,
-    });
+  const onMaxResultsChange = (ev: ChangeEvent<HTMLInputElement>): void => {
+    updateFormField('maxResults', ev.target.value);
+  };
 
-    attributes.push({
-      n: 'zimbraGalLdapSearchBase',
-      _content: domainData?.zimbraGalLdapSearchBase,
-    });
+  const onLdapPageSizeChange = (ev: ChangeEvent<HTMLInputElement>): void => {
+    updateFormField('ldapPageSize', ev.target.value);
+  };
 
-    attributes.push({
-      n: 'zimbraGalLdapBindDn',
-      _content: domainData?.zimbraGalLdapBindDn,
-    });
+  const onLdapUrlChange = (ev: ChangeEvent<HTMLInputElement>): void => {
+    updateFormField('ldapUrl', ev.target.value);
+  };
 
-    attributes.push({
-      n: 'zimbraGalLdapBindPassword',
-      _content: domainData?.zimbraGalLdapBindPassword,
-    });
-    attributes.push({
-      n: 'zimbraGalLdapAuthMech',
-      _content: domainData?.zimbraGalLdapAuthMech,
-    });
-    body.a = attributes;
-    requests.push(modifyDomain(body));
+  const onLdapStartTlsChange = (): void => {
+    setFormState((prev) => (prev ? { ...prev, ldapStartTlsEnabled: !prev.ldapStartTlsEnabled } : prev));
+  };
 
-    if (zimbraGalAccountId !== '') {
-      if (zimbraGalAccountIdArray?.length !== 0 && zimbraAccountDataSourceId?.length !== 0) {
-        zimbraGalAccountIdArray.forEach((items) => {
-          interface DataSourceId {
-            dataSourceId?: string;
-            id?: number;
-          }
+  const onLdapFilterChange = (ev: ChangeEvent<HTMLInputElement>): void => {
+    updateFormField('ldapFilter', ev.target.value);
+  };
 
-          const dataSourceId: DataSourceId[] = zimbraAccountDataSourceId?.filter(
-            (item: { id?: string }) => item?.id === items?._content,
-          );
+  const onLdapSearchBaseChange = (ev: ChangeEvent<HTMLInputElement>): void => {
+    updateFormField('ldapSearchBase', ev.target.value);
+  };
 
-          const dataSourceBody: {
-            id?: string;
-            _jsns?: string;
-            dataSource?: { id?: string; a?: { n: string; _content?: string }[] };
-          } = {};
-          dataSourceBody.id = items?._content;
-          dataSourceBody._jsns = ZIMBRA_ADMIN_URN;
-          attributes = [];
-          attributes.push({
-            n: 'zimbraGalType',
-            _content: domainData?.zimbraGalMode,
-          });
-          attributes.push({
-            n: 'zimbraDataSourcePollingInterval',
-            _content: zimbraDataSourceGalPollingInterval,
-          });
-          dataSourceBody.dataSource = {
-            id: dataSourceId[0]?.dataSourceId,
-            a: attributes,
+  const onLdapBindDnChange = (ev: ChangeEvent<HTMLInputElement>): void => {
+    updateFormField('ldapBindDn', ev.target.value);
+  };
+
+  const onLdapBindPasswordChange = (ev: ChangeEvent<HTMLInputElement>): void => {
+    updateFormField('ldapBindPassword', ev.target.value);
+  };
+
+  const onLdapAuthMechChange = (): void => {
+    setFormState((prev) =>
+      prev ? { ...prev, ldapAuthMech: prev.ldapAuthMech === 'none' ? 'simple' : 'none' } : prev
+    );
+  };
+
+  const onPollingValueChange = (ev: ChangeEvent<HTMLInputElement>): void => {
+    const value = ev.target.value;
+    if (Number.parseInt(value, 10) < 0) return;
+    setFormState((prev) =>
+      prev ? { ...prev, galPollingInterval: { ...prev.galPollingInterval, value } } : prev
+    );
+  };
+
+  const onPollingUnitChange = (unit: string | null): void => {
+    if (!unit) return;
+    setFormState((prev) =>
+      prev
+        ? { ...prev, galPollingInterval: { ...prev.galPollingInterval, unit: unit as PollingUnit } }
+        : prev
+    );
+  };
+
+  const fetchGalSyncAccounts = (domainAttrs: Attribute[] | undefined): void => {
+    const galAccountAttrs = domainAttrs?.filter((item) => item.n === 'zimbraGalAccountId') ?? [];
+
+    if (galAccountAttrs.length === 0) {
+      setEmptyServerList();
+      return;
+    }
+
+    const fetchPromises = galAccountAttrs.map((item) =>
+      getAccount(item._content)
+        .then((data) => {
+          const account = data?.account?.[0];
+          if (!account) return undefined;
+          const mailHostAttr = account.a?.filter((a: Attribute) => a.n === 'zimbraMailHost');
+          return {
+            accountData: mailHostAttr ?? [],
+            name: account.name,
+            id: account.id
           };
-          requests.push(modifyDataSource(dataSourceBody));
-        });
-      }
-    }
-    Promise.all(requests)
-      .then((results) => Promise.all(results))
-      .then((results) => {
-        const response: {
-          a: Attribute[];
-          id: string;
-          name: string;
-        } = results[0]?.domain[0];
-        if (response) {
-          queryClient.setQueryData(domainByIdKey(domainId, 1), response);
-          updateDomainInformation(response?.a);
-        }
-        setIsDirty(false);
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        if (isGlobalAdmin) {
-          flushCache('domain', 'id', domainId);
-        }
-      });
-    if (zimbraGalAccountIdArray?.length !== 0) {
-      zimbraGalAccountIdArray.forEach((items) => {
-        modifyAccountRequest(items?._content, {
-          zimbraDataSourceGalPollingInterval,
-        }).catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 5000,
-            hideButton: true,
-            replace: true,
-          });
-          updateFreqValues({});
-        });
-      });
-    }
-  };
+        })
+        .catch((): undefined => undefined)
+    );
 
-  const onZimbraGalMaxResultChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-    setZimbraGalMaxResults(ev.target.value);
-  };
-
-  const onZimbraGalLdapPageSizeChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-    setZimbraGalLdapPageSize(ev.target.value);
-  };
-
-  const onZimbraGalLdapUrlChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-    setDomainData({ ...domainData, zimbraGalLdapURL: ev?.target?.value });
-    setIsDirty(domainData?.zimbraGalLdapURL !== ev?.target?.value);
-  };
-
-  const onZimbraGalLdapStartTlsEnabledChange = (): void => {
-    setZimbraGalLdapStartTlsEnabled({
-      ...zimbraGalLdapStartTlsEnabled,
-      current: !zimbraGalLdapStartTlsEnabled?.current,
-    });
-    setDomainData({
-      ...domainData,
-      zimbraGalLdapStartTlsEnabled:
-        domainData?.zimbraGalLdapStartTlsEnabled === TRUE ? FALSE : TRUE,
-    });
-  };
-  useEffect(() => {
-    if (
-      domainData?.zimbraGalMaxResults !== zimbraGalMaxResults ||
-      domainData?.zimbraGalLdapPageSize !== zimbraGalLdapPageSize
-    ) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-
-    if (zimbraGalLdapStartTlsEnabled?.current !== zimbraGalLdapStartTlsEnabled?.init) {
-      setIsDirty(true);
-    }
-
-    if (zimbraGalAccountId !== '' && pollingIntervalValue !== '') {
-      if (
-        zimbraDataSourcePollingInterval !== `${pollingIntervalValue}${pollingIntervalType?.value}`
-      ) {
-        setIsDirty(true);
-      }
-    }
-  }, [
-    domainData?.zimbraGalLdapPageSize,
-    domainData?.zimbraGalMaxResults,
-    pollingIntervalType?.value,
-    pollingIntervalValue,
-    zimbraDataSourcePollingInterval,
-    zimbraGalAccountId,
-    zimbraGalLdapPageSize,
-    zimbraGalLdapStartTlsEnabled,
-    zimbraGalMaxResults,
-  ]);
-
-  const onFreqDigitsChange = useCallback(
-    (ev: ChangeEvent<HTMLInputElement>) => {
-      if (Number.parseInt(ev?.target?.value, 10) < 0 || Number.parseInt(ev?.target?.value, 10) > 9) {
-        return;
-      }
-      setFreqValue({ digits: ev?.target?.value, time: freqValue.time });
-      const measureUnitObject: IntervalType | undefined = measureUnitItems?.find(
-        (item: IntervalType): boolean => item?.value === freqValue?.time,
-      );
-      setMeasureUnitSelection(measureUnitObject);
-      setZimbraDataSourceGalPollingInterval(`${ev?.target?.value}${freqValue.time}`);
-      if (ev?.target?.value !== freqValue?.digits) {
-        setIsDirty(true);
-      }
-    },
-    [freqValue?.digits, freqValue.time, measureUnitItems],
-  );
-
-  const onFreqTimeUnitChange = useCallback(
-    (ev: any) => {
-      setFreqValue({ digits: freqValue.digits, time: ev });
-      const measureUnitObject: IntervalType | undefined = measureUnitItems?.find(
-        (item: IntervalType): boolean => item?.value === ev,
-      );
-      setMeasureUnitSelection(measureUnitObject);
-      if (ev) {
-        setZimbraDataSourceGalPollingInterval(`${freqValue.digits}${ev}`);
-      }
-      if (ev !== freqValue?.time) {
-        setIsDirty(true);
-      }
-    },
-    [freqValue.digits, freqValue?.time, measureUnitItems],
-  );
-
-  const onZimbraGalLdapFilterChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-    setIsDirty(ev?.target?.value !== domainData?.zimbraGalLdapFilter);
-
-    setDomainData({
-      ...domainData,
-      zimbraGalLdapFilter: ev?.target?.value,
-    });
-  };
-  const onZimbraGalLdapSearchBaseChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-    setDomainData({
-      ...domainData,
-      zimbraGalLdapSearchBase: ev?.target?.value,
-    });
-    if (ev?.target?.value !== domainData?.zimbraGalLdapSearchBase) {
-      setIsDirty(true);
-    }
-  };
-
-  const onZimbraGalLdapBindDnChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-    setDomainData({
-      ...domainData,
-      zimbraGalLdapBindDn: ev?.target?.value,
-    });
-    if (ev?.target?.value !== domainData?.zimbraGalLdapBindDn) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  };
-  const onZimbraGalLdapBindPasswordChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-    setDomainData({
-      ...domainData,
-      zimbraGalLdapBindPassword: ev?.target?.value,
-    });
-    if (ev?.target?.value !== domainData?.zimbraGalLdapBindPassword) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  };
-
-  const onZimbraGalLdapAuthMechChange = (): void => {
-    setIsDirty(true);
-    setDomainData({
-      ...domainData,
-      zimbraGalLdapAuthMech: domainData?.zimbraGalLdapAuthMech === 'none' ? 'simple' : 'none',
+    Promise.all(fetchPromises).then((results) => {
+      buildServerList(results);
     });
   };
 
-  useEffect(() => {
-    if (domainData?.zimbraGalMode === '' || domainData?.zimbraGalMode === 'zimbra') {
-      setZimbraGalMode('Internal');
-    } else if (domainData?.zimbraGalMode === 'ldap') {
-      setZimbraGalMode('External');
-    } else {
-      setZimbraGalMode('Both');
-    }
-  }, [domainData?.zimbraGalMode]);
-
-  useEffect(() => {
-    updateDomainInformation(domainInformation);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleClick = useCallback((i: number[], serverListData: AccountDataType[]): void => {
-    if (i.length !== 0) {
-      if (serverListData[i[0]]?.galAccount === null) {
-        setIsDistroyBtnDisable(true);
-        setIsCreateAccBtnDisable(false);
-      } else {
-        setIsCreateAccBtnDisable(true);
-        setIsDistroyBtnDisable(false);
-      }
-    } else {
-      setIsDistroyBtnDisable(true);
-      setIsCreateAccBtnDisable(true);
-    }
-  }, []);
-
-  const getAllTableList = useCallback(
-    (data: any[]) => {
-      const result = allMailstoreList.map((listItems: Server) => {
-        const obj: AccountDataType = {};
-        const matchingData = data.find(
-          (galAccount: { accountData: { _content: string }[] }) =>
-            listItems.name === galAccount?.accountData?.[0]?._content,
-        );
-        obj.name = listItems?.name;
-        obj.id = listItems?.id;
-        obj.galAccount = matchingData
-          ? {
-              server: matchingData?.accountData?.[0]?._content,
-              name: matchingData?.name,
-              id: matchingData?.id,
-            }
-          : null;
-        return obj;
-      });
-      setServerList(result);
-      handleClick(serverSelection, result);
-    },
-    [allMailstoreList, handleClick, serverSelection],
-  );
-
-  const getDomainWithGAlSyncList = useCallback(
-    (domainList: any) => {
-      const allDomains = domainList?.filter((item: Attribute) => item.n === 'zimbraGalAccountId');
-
-      const result: readonly unknown[] | [] = allDomains?.map((item: Attribute) =>
-        getAccount(item?._content)
-          .then((data) => {
-            const galAccount: {
-              a: Attribute[];
-              id: string;
-              name: string;
-            } = data?.account[0];
-            const accountData: Attribute[] = galAccount?.a?.filter(
-              (account) => account?.n === 'zimbraMailHost',
-            );
-
-            return {
-              accountData,
-              name: galAccount?.name,
-              id: galAccount?.id,
-            };
-          })
-
-          .catch(() => {}),
-      );
-      Promise.all(result ?? []).then((results) => {
-        getAllTableList(results);
-      });
-    },
-    [getAllTableList],
-  );
-
-  const getSelectedDomainInformation = useCallback(
-    (id: string): void => {
-      flushCache('all').then(() => {
-        getDomainInformation(id, 1).then((data) => {
-          const domainList = data?.domain[0];
-          if (domainList) {
-            queryClient.setQueryData(domainByIdKey(domainId, 1), domainList);
-            setDomainInformation(domainList?.a);
-            getDomainWithGAlSyncList(domainList?.a);
+  const refreshDomainData = (id: string): void => {
+    flushCache('all').then(() => {
+      getDomainInformation(id, 1).then((data) => {
+        const domainData = data?.domain?.[0];
+        if (domainData) {
+          queryClient.setQueryData(domainByIdKey(domainId, 1), domainData);
+          const newFormState = parseGalFormFromAttributes(domainData.a);
+          if (newFormState) {
+            setFormState(newFormState);
+            setOriginalFormState(newFormState);
           }
-        });
+          fetchGalSyncAccounts(domainData.a);
+        }
       });
-    },
-    [getDomainWithGAlSyncList, queryClient, domainId],
-  );
+    });
+  };
 
   const createHandler = (
-    accountData: {
-      id?: string;
-      name: string;
-      galAccount?: null;
-    },
-    galDomainName: string,
+    accountData: { id?: string; name: string; galAccount?: null },
+    galDomainName: string
   ): void => {
-    const attributes = [];
-    const account = [];
-    attributes.push({
-      n: 'zimbraDataSourcePollingInterval',
-      _content: '1d',
+    if (!domainId) return;
+    createGalMutation({
+      serverName: accountData.name,
+      galDomainName
+    }).then((result) => {
+      if (result) {
+        refreshDomainData(domainId);
+        setModalState((prev) => ({ ...prev, createOpen: false }));
+      }
     });
-    account.push({
-      by: 'name',
-      _content: `${galDomainName}.${accountData.name}@${domain?.name}`,
-    });
-    createGalSyncAccount(INTERNAL_GAL, domain?.name, accountData.name, account, ZIMBRA, attributes)
-      .then((res) => {
-        if (res) {
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t(
-              'label.create_galsync_account_success_msg',
-              'You have created the GALSync account name',
-            ),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
-        getSelectedDomainInformation(domainId as string);
-        setOpenAccModel(false);
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 5000,
-          hideButton: true,
-          replace: true,
-        });
-      });
   };
 
   const deleteHandler = (destroyData: {
     id?: string;
     name?: string;
-    galAccount: {
-      id: string;
-      name: string;
-      server: string;
-    };
+    galAccount: { id: string; name: string; server: string };
   }): void => {
-    destroyAccount(destroyData?.galAccount?.id)
-      .then((res) => {
-        if (res) {
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t('label.changes_save_success_msg', 'Your changes has been saved!'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
-        getSelectedDomainInformation(domainId as string);
-        setOpenDistroyModel(false);
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 5000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+    if (!domainId) return;
+    deleteGalMutation({ accountId: destroyData.galAccount.id }).then((result) => {
+      if (result !== undefined) {
+        refreshDomainData(domainId);
+        setModalState((prev) => ({ ...prev, destroyOpen: false }));
+      }
+    });
   };
 
-  const handleReSyncGalAccount = async (): Promise<any> => {
-    try {
-      await Promise.all(
-        serverList?.map(async (item) => {
-          item?.galAccount?.id && (await reSyncGalAccount(item?.galAccount?.id));
-        }),
-      );
-      createSnackbar({
-        key: 'success',
-        severity: 'success',
-        label: t('label.gal_successfully_re_synced', 'GAL successfully re-synced'),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    } catch {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-        autoHideTimeout: 5000,
-        hideButton: true,
-        replace: true,
-      });
-    }
+  const handleReSyncGalAccount = (): void => {
+    const accountIds = serverList
+      .map((item) => item.galAccount?.id)
+      .filter((id): id is string => id !== undefined);
+    reSyncMutation({ accountIds });
   };
 
-  useEffect(() => {
-    getDomainWithGAlSyncList(domainInformation);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Combined loading state for operations
+  const isOperationPending = isCreating || isDeleting || isResyncing;
+
+  if (isDomainLoading) {
+    return (
+      <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+        <ds-page-shimmer rows={6} />
+      </Container>
+    );
+  }
 
   return (
     <Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
@@ -1033,34 +607,20 @@ const DomainGalSettings: FC = () => {
               crossAlignment="flex-start"
             >
               <ds-text as="h2" size="medium" weight="bold" color="gray0">
-                {t('label.global_address_list', 'Global Add`ress List')}
+                {t('label.global_address_list', 'Global Address List')}
               </ds-text>
             </Row>
-            <Row
-              padding={{ all: 'large' }}
-              width="50%"
-              mainAlignment="flex-end"
-              crossAlignment="flex-end"
-            >
-              <Padding right="small">
-                {isDirty && (
-                  <Button
-                    label={t('label.cancel', 'Cancel')}
-                    color="secondary"
-                    onClick={onCancel}
-                  />
-                )}
-              </Padding>
-              {isDirty && (
-                <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-              )}
-            </Row>
+            <DomainFormActions
+              isDirty={isDirty}
+              isPending={isSaving}
+              onCancel={onCancel}
+              onSave={onSave}
+            />
           </Row>
         </Container>
       </Row>
       <ds-divider></ds-divider>
 
-      {/* new layout based on internal external mode */}
       <Container
         orientation="column"
         background="gray6"
@@ -1068,20 +628,20 @@ const DomainGalSettings: FC = () => {
         mainAlignment="flex-start"
         style={{ overflow: 'auto' }}
       >
-        {toggleCreateGalSyncAccModel && (
+        {modalState.createToggle && (
           <CreateGalsyncAccountModel
-            open={openAccModel}
+            open={modalState.createOpen}
             closeHandler={closeHandler}
             saveHandler={createHandler}
-            accountData={serverList[serverSelection[0]]}
+            accountData={serverList[Number(serverSelection[0])]}
           />
         )}
-        {toggleDestroyGalSyncAccModel && (
+        {modalState.destroyToggle && (
           <DistroyGalsyncAccountModel
-            open={openDistroyModel}
+            open={modalState.destroyOpen}
             closeHandler={closeHandler}
             saveHandler={deleteHandler}
-            accountData={serverList[serverSelection[0]]}
+            accountData={serverList[Number(serverSelection[0])]}
           />
         )}
         <Padding vertical="medium" />
@@ -1098,26 +658,26 @@ const DomainGalSettings: FC = () => {
               label={t('label.create', 'CREATE')}
               color="primary"
               onClick={(): void => {
-                setToggleCreateGalSyncAccModel(true);
-                setOpenAccModel(true);
+                setModalState((prev) => ({ ...prev, createToggle: true, createOpen: true }));
               }}
-              disabled={isCreateAccBtnDisable}
+              disabled={isCreateBtnDisabled || isOperationPending}
             />
             <Button
               type="outlined"
               label={t('label.re_sync', 'RE-SYNC')}
               color="primary"
               onClick={handleReSyncGalAccount}
+              loading={isResyncing}
+              disabled={isOperationPending}
             />
             <Button
               type="ghost"
               label={t('label.destroy', 'DELETE')}
               color="error"
               onClick={(): void => {
-                setToggleDestroyGalSyncAccModel(true);
-                setOpenDistroyModel(true);
+                setModalState((prev) => ({ ...prev, destroyToggle: true, destroyOpen: true }));
               }}
-              disabled={isDistroyBtnDisable}
+              disabled={isDestroyBtnDisabled || isOperationPending}
             />
           </Row>
         </Row>
@@ -1125,9 +685,8 @@ const DomainGalSettings: FC = () => {
           <ServerListTable
             volumes={serverList}
             selectedRows={serverSelection}
-            onSelectionChange={(selected: number[]): void => {
-              setServerSelection(selected);
-              handleClick(selected, serverList);
+            onSelectionChange={(ids: string[]): void => {
+              setServerSelection(ids.length > 0 ? [ids[0]] : []);
             }}
           />
         </Row>
@@ -1159,14 +718,14 @@ const DomainGalSettings: FC = () => {
                         size="extralarge"
                         label={t('label.change_to', 'CHANGE TO')}
                         icon={open ? 'ChevronUp' : 'ChevronDown'}
-                        onClick={(): null => null}
+                        onClick={(): void => undefined}
                       />
                     </Dropdown>
                   </Container>
                   <Padding left="small" width="100%">
                     <LabeledValue
                       label={t('label.gal_mode', 'GAL Mode')}
-                      value={zimbraGalMode}
+                      value={galModeLabel}
                       backgroundColor="gray6"
                     />
                   </Padding>
@@ -1178,11 +737,11 @@ const DomainGalSettings: FC = () => {
                   type="number"
                   label={t(
                     'label.limit_search_results_from_address_book_list_to',
-                    'Limit search results from Address Book List to',
+                    'Limit search results from Address Book List to'
                   )}
-                  value={zimbraGalMaxResults}
+                  value={formState?.maxResults ?? ''}
                   backgroundColor="gray5"
-                  onChange={onZimbraGalMaxResultChange}
+                  onChange={onMaxResultsChange}
                 />
               </Container>
               <Container padding={{ all: 'small' }}>
@@ -1190,9 +749,9 @@ const DomainGalSettings: FC = () => {
                   isRequired
                   type="number"
                   label={t('domain.page_size', 'Page Size')}
-                  value={zimbraGalLdapPageSize}
+                  value={formState?.ldapPageSize ?? ''}
                   backgroundColor="gray5"
-                  onChange={onZimbraGalLdapPageSizeChange}
+                  onChange={onLdapPageSizeChange}
                 />
               </Container>
             </Container>
@@ -1221,9 +780,9 @@ const DomainGalSettings: FC = () => {
                 <Container padding={{ all: 'small' }}>
                   <Input
                     label={t('label.gal_update_frequencey_value', 'GAL Update Frequency (value)')}
-                    value={freqValue?.digits}
+                    value={formState?.galPollingInterval.value ?? ''}
                     backgroundColor="gray5"
-                    onChange={onFreqDigitsChange}
+                    onChange={onPollingValueChange}
                   />
                 </Container>
                 <Container padding={{ all: 'small' }}>
@@ -1231,7 +790,7 @@ const DomainGalSettings: FC = () => {
                     items={measureUnitItems}
                     background="gray5"
                     label={t('label.interval', 'Interval')}
-                    onChange={onFreqTimeUnitChange}
+                    onChange={onPollingUnitChange}
                     showCheckbox={false}
                     selection={measureUnitSelection}
                   />
@@ -1241,7 +800,7 @@ const DomainGalSettings: FC = () => {
           </Row>
         </Container>
 
-        {domainData?.zimbraGalMode === 'ldap' && (
+        {formState?.galMode === 'ldap' && (
           <>
             <Container
               orientation="column"
@@ -1272,31 +831,10 @@ const DomainGalSettings: FC = () => {
                     <Container padding={{ all: 'small' }}>
                       <Input
                         label={t('label.external_server_address', 'External Server Address')}
-                        value={domainData?.zimbraGalLdapURL}
+                        value={formState?.ldapUrl ?? ''}
                         backgroundColor="gray5"
-                        onChange={onZimbraGalLdapUrlChange}
-                        CustomIcon={({
-                          hasFocus,
-                        }: {
-                          hasError: boolean;
-                          hasFocus: boolean;
-                          disabled: boolean;
-                        }): React.ReactElement => (
-                          <Tooltip
-                            placement="top"
-                            overflow="break-word"
-                            maxWidth="40rem"
-                            label={EXTERNAL_SERVER_EXAMPLE}
-                          >
-                            <ds-text as="span">
-                              <ds-icon
-                                icon="InfoOutline"
-                                size="large"
-                                color={hasFocus ? 'primary' : 'text'}
-                              ></ds-icon>
-                            </ds-text>
-                          </Tooltip>
-                        )}
+                        onChange={onLdapUrlChange}
+                        CustomIcon={createInfoIcon(EXTERNAL_SERVER_EXAMPLE)}
                       />
                     </Container>
 
@@ -1307,71 +845,29 @@ const DomainGalSettings: FC = () => {
                       crossAlignment="center"
                     >
                       <Switch
-                        defaultChecked={zimbraGalLdapStartTlsEnabled?.current}
-                        onClick={onZimbraGalLdapStartTlsEnabledChange}
+                        defaultChecked={formState?.ldapStartTlsEnabled ?? false}
+                        onClick={onLdapStartTlsChange}
                         label={t('label.user_ssl', 'Use SSL')}
-                        value={zimbraGalLdapStartTlsEnabled?.current}
+                        value={formState?.ldapStartTlsEnabled ?? false}
                       />
                     </Container>
                   </Row>
                   <Container padding={{ all: 'small' }}>
                     <Input
                       label={t('label.ldap_filter', 'LDAP Filter')}
-                      value={domainData?.zimbraGalLdapFilter}
+                      value={formState?.ldapFilter ?? ''}
                       backgroundColor="gray5"
-                      onChange={onZimbraGalLdapFilterChange}
-                      CustomIcon={({
-                        hasFocus,
-                      }: {
-                        hasError: boolean;
-                        hasFocus: boolean;
-                        disabled: boolean;
-                      }): React.ReactElement => (
-                        <Tooltip
-                          placement="top"
-                          overflow="break-word"
-                          maxWidth="40rem"
-                          label={LDAP_FILTER_LABEL}
-                        >
-                          <ds-text as="span">
-                            <ds-icon
-                              icon="InfoOutline"
-                              size="large"
-                              color={hasFocus ? 'primary' : 'text'}
-                            ></ds-icon>
-                          </ds-text>
-                        </Tooltip>
-                      )}
+                      onChange={onLdapFilterChange}
+                      CustomIcon={createInfoIcon(LDAP_FILTER_LABEL)}
                     />
                   </Container>
                   <Container padding={{ all: 'small' }}>
                     <Input
                       label={t('label.ldap_search_base', 'LDAP based search')}
-                      value={domainData?.zimbraGalLdapSearchBase}
+                      value={formState?.ldapSearchBase ?? ''}
                       backgroundColor="gray5"
-                      onChange={onZimbraGalLdapSearchBaseChange}
-                      CustomIcon={({
-                        hasFocus,
-                      }: {
-                        hasError: boolean;
-                        hasFocus: boolean;
-                        disabled: boolean;
-                      }): React.ReactElement => (
-                        <Tooltip
-                          placement="top"
-                          overflow="break-word"
-                          maxWidth="40rem"
-                          label={LDAP_SEARCH_BASE_LABEL}
-                        >
-                          <ds-text as="span">
-                            <ds-icon
-                              icon="InfoOutline"
-                              size="large"
-                              color={hasFocus ? 'primary' : 'text'}
-                            ></ds-icon>
-                          </ds-text>
-                        </Tooltip>
-                      )}
+                      onChange={onLdapSearchBaseChange}
+                      CustomIcon={createInfoIcon(LDAP_SEARCH_BASE_LABEL)}
                     />
                   </Container>
                 </Container>
@@ -1407,12 +903,13 @@ const DomainGalSettings: FC = () => {
                   padding={{ all: 'small' }}
                 >
                   <Switch
-                    defaultChecked={zimbraGalLdapAuthMech}
-                    onClick={onZimbraGalLdapAuthMechChange}
+                    defaultChecked={formState?.ldapAuthMech === 'simple'}
+                    onClick={onLdapAuthMechChange}
                     label={t(
                       'label.external_server_needs_authentication',
-                      'External Server needs authentication',
+                      'External Server needs authentication'
                     )}
+                    value={formState?.ldapAuthMech === 'simple'}
                   />
                 </Container>
               </ListRow>
@@ -1420,39 +917,18 @@ const DomainGalSettings: FC = () => {
                 <Container padding={{ all: 'small' }}>
                   <Input
                     label={t('label.bind_dn', 'Bind DN')}
-                    value={domainData?.zimbraGalLdapBindDn}
+                    value={formState?.ldapBindDn ?? ''}
                     backgroundColor="gray5"
-                    onChange={onZimbraGalLdapBindDnChange}
-                    CustomIcon={({
-                      hasFocus,
-                    }: {
-                      hasError: boolean;
-                      hasFocus: boolean;
-                      disabled: boolean;
-                    }): React.ReactElement => (
-                      <Tooltip
-                        placement="top"
-                        overflow="break-word"
-                        maxWidth="40rem"
-                        label={LDAP_BIND_DN_LABLE}
-                      >
-                        <ds-text as="span">
-                          <ds-icon
-                            icon="InfoOutline"
-                            size="large"
-                            color={hasFocus ? 'primary' : 'text'}
-                          ></ds-icon>
-                        </ds-text>
-                      </Tooltip>
-                    )}
+                    onChange={onLdapBindDnChange}
+                    CustomIcon={createInfoIcon(LDAP_BIND_DN_LABLE)}
                   />
                 </Container>
                 <Container padding={{ all: 'small' }}>
                   <Input
                     label={t('label.password', 'Password')}
-                    value={domainData?.zimbraGalLdapBindPassword}
+                    value={formState?.ldapBindPassword ?? ''}
                     backgroundColor="gray5"
-                    onChange={onZimbraGalLdapBindPasswordChange}
+                    onChange={onLdapBindPasswordChange}
                   />
                 </Container>
               </ListRow>
