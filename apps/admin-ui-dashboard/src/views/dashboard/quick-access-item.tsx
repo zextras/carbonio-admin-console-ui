@@ -26,13 +26,11 @@ type QuickAccessItemProps = {
 export const QuickAccessItem = ({ item, onOpen }: QuickAccessItemProps) => (
   <div className={styles.item}>
     <div className={styles.card} style={{ background: `var(--color-${item.bgColor})` }}>
-      <ListRow>
+      <ListRow crossAlignment="center">
         <div className={styles.cardHeader}>
-          <div className={styles.upperText}>
-            <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
-              {item.upperText}
-            </ds-text>
-          </div>
+          <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
+            {item.upperText}
+          </ds-text>
           <div className={styles.operationText}>
             <ds-text as="strong" color="gray6" overflow="break-word" weight="bold" size="large">
               {item.operationText}
