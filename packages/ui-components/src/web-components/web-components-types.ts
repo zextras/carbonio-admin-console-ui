@@ -12,6 +12,7 @@ import type { DsDividerProps } from './ds-divider';
 import type { DsIconProps } from './ds-icon';
 import type { DsPageShimmerProps } from './ds-page-shimmer';
 import type { DsSpinnerProps } from './ds-spinner';
+import type { DsStepperProps } from './ds-stepper';
 import type { DsTagIconProps } from './ds-tag-icon';
 import type { DsTextProps } from './ds-text';
 
@@ -30,6 +31,7 @@ declare global {
         'ds-icon': WebComponentElement<DsIconProps>;
         'ds-page-shimmer': WebComponentElement<DsPageShimmerProps>;
         'ds-badge': WebComponentElement<DsBadgeProps>;
+        'ds-stepper': WebComponentElement<DsStepperProps>;
         'ds-tag-icon': WebComponentElement<DsTagIconProps>;
         'ds-text': WebComponentElement<DsTextProps>;
       }

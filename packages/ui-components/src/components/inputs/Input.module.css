@@ -51,6 +51,7 @@
     left 150ms ease-out;
   cursor: inherit;
   user-select: none;
+  pointer-events: none;
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
