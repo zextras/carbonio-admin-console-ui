@@ -17,6 +17,7 @@ export type CosEntry = {
 	id?: string;
 	isDefaultCos?: boolean;
 	a?: Array<CosAttribute>;
+	_attrs?: Record<string, string>;
 };
 
 export type GetCosResponse = {

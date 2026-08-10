@@ -3,16 +3,35 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { usePrimaryBarState } from '@zextras/ui-shared';
+import {
+  useIsAdvanced,
+  useLicenseInfo,
+  useLocalStorage,
+  usePrimaryBarState,
+} from '@zextras/ui-shared';
+import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router';
 
 import { CREATE_NEW_COS_ROUTE_ID } from '../constants';
 import styles from './app-view.module.css';
 import { CosDetailPanel } from './cos/cos-detail-panel';
+import { CosLayout } from './cos/cos-layout';
 import { CosListPanel } from './cos/cos-list-panel';
+import { CreateNewCos } from './cos/create-new-cos/create-new-cos';
 import { CosPageHeader } from './cos-page-header';
 
 export const AppView = () => {
+  const [featureFlag, setFeatureFlag] = useLocalStorage<boolean | null>(
+    'new_subscription_feature_flag',
+    null,
+  );
+
+  useEffect(() => {
+    if (featureFlag === null) setFeatureFlag(false);
+  }, [featureFlag, setFeatureFlag]);
+
+  const isAdvanced = useIsAdvanced();
+  const { data: licenseData } = useLicenseInfo();
   const isPrimaryBarExpanded = usePrimaryBarState();
   const { pathname } = useLocation();
   const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);
@@ -38,6 +57,16 @@ export const AppView = () => {
             </div>
           }
         />
+        {featureFlag && isAdvanced && !!licenseData && (
+          <Route
+            path={`/${CREATE_NEW_COS_ROUTE_ID}`}
+            element={
+              <CosLayout variant="fullWidth">
+                <CreateNewCos />
+              </CosLayout>
+            }
+          />
+        )}
       </Routes>
     </div>
   );

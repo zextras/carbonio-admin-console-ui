@@ -4,7 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { addRoute, registerActions, removeRoute, useCurrentUserRights } from '@zextras/ui-shared';
+import {
+  addRoute,
+  registerActions,
+  removeRoute,
+  useCurrentUserRights,
+  useLicenseInfo,
+} from '@zextras/ui-shared';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -26,6 +32,7 @@ const App = () => {
   const navigate = useNavigate();
 
   const { data: rights } = useCurrentUserRights();
+  const { data: licenseData } = useLicenseInfo();
   const showCOS = checkShowCOS(rights);
   const createCosRight = checkCreateCosRight(rights);
 
@@ -54,6 +61,11 @@ const App = () => {
   }, [managementSection, showCOS, t]);
 
   useEffect(() => {
+    const canCreate = Boolean(licenseData) && createCosRight;
+    const tooltipLabel = t(
+      'tooltip.create_cos_disabled',
+      'A valid subscription is needed to create a COS',
+    );
     registerActions({
       action: () => ({
         id: 'new-cos',
@@ -62,14 +74,15 @@ const App = () => {
         onClick: () => {
           navigate(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
         },
-        disabled: !createCosRight,
+        disabled: !canCreate,
+        tooltipLabel: !canCreate ? tooltipLabel : undefined,
         group: APP_ID,
         primary: false,
       }),
       id: 'new-cos',
       type: 'new',
     });
-  }, [createCosRight, navigate, t]);
+  }, [createCosRight, licenseData, navigate, t]);
 
   return null;
 };

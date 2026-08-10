@@ -34,6 +34,7 @@ export type {
 } from '../types/integrations';
 export type { II18nFactory } from '../types/misc';
 export type { ThemeExtension } from '../types/theme';
+export type { ResponsiveContainerOptions } from './hooks/responsive-container';
 export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
@@ -62,6 +63,7 @@ import {
   ZIMBRA_ADMIN_URN,
 } from './constants';
 import { buildPath, replaceHistory, useCurrentRoute, useRelativePathname } from './history/hooks';
+import { getResponsiveContainerStyle, getResponsiveMaxWidth } from './hooks/responsive-container';
 import { useBreakpoint } from './hooks/use-breakpoint';
 import { useDebouncedValue } from './hooks/use-debounced-value';
 import { useLocalStorage } from './hooks/use-local-storage';
@@ -231,6 +233,8 @@ export {
   getCosList,
   getDomainInformation,
   getLocale,
+  getResponsiveContainerStyle,
+  getResponsiveMaxWidth,
   getRights,
   getShell,
   getSoapFetchRequest,
