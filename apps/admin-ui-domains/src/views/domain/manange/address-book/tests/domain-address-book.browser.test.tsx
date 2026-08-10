@@ -152,6 +152,19 @@ function setupAddressBookZextrasInterceptor(
 						folders: [],
 					} satisfies AddressBookListItem);
 
+				const responseFolders =
+					zextrasBody.exposed === false
+						? folders.map((folder) => ({
+								id: folder.id,
+								name: folder.name,
+								mounted: folder.isShared,
+							}))
+						: book.folders.map((folder) => ({
+								id: folder.id,
+								name: folder.name,
+								mounted: false,
+							}));
+
 				return HttpResponse.json(
 					buildZextrasResponse({
 						nested: true,
@@ -163,11 +176,7 @@ function setupAddressBookZextrasInterceptor(
 										{
 											account: book.account,
 											accountId: book.accountId,
-											folders: book.folders.map((folder) => ({
-												id: folder.id,
-												name: folder.name,
-												mounted: false,
-											})),
+											folders: responseFolders,
 										},
 									],
 								},
@@ -175,10 +184,6 @@ function setupAddressBookZextrasInterceptor(
 						},
 					}),
 				);
-			}
-
-			if (action === 'GetMailboxContactFoldersCommand') {
-				return HttpResponse.json(buildZextrasResponse({ response: { folders } }));
 			}
 
 			if (action === 'AddAddressBookCommand' || action === 'RemoveAddressBookCommand') {

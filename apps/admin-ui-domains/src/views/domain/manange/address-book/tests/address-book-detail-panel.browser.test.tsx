@@ -137,11 +137,34 @@ function setupAddressBookZextrasInterceptor(
 							: ALL_SHARED_ENTRY.account === requestAccount
 								? ALL_SHARED_ENTRY
 								: PARTIAL_SHARED_ENTRY;
-				return HttpResponse.json(buildGetExposedResponse(matchedEntry));
-			}
 
-			if (action === 'GetMailboxContactFoldersCommand') {
-				return HttpResponse.json(buildZextrasResponse({ response: { folders } }));
+				if (zextrasBody.exposed === false) {
+					return HttpResponse.json(
+						buildZextrasResponse({
+							nested: true,
+							response: {
+								'mail1.example.com': {
+									ok: true,
+									response: {
+										folders: [
+											{
+												account: matchedEntry.account,
+												accountId: matchedEntry.accountId,
+												folders: folders.map((folder) => ({
+													id: folder.id,
+													name: folder.name,
+													mounted: folder.isShared,
+												})),
+											},
+										],
+									},
+								},
+							},
+						}),
+					);
+				}
+
+				return HttpResponse.json(buildGetExposedResponse(matchedEntry));
 			}
 
 			if (action === 'AddAddressBookCommand' || action === 'RemoveAddressBookCommand') {
@@ -182,7 +205,9 @@ describe('AddressBookDetailPanel (browser)', () => {
 			)
 			.toBe(true);
 		expect(
-			capturedActions.find((action) => action.action === 'GetAddressBookCommand'),
+			capturedActions.find(
+				(action) => action.action === 'GetAddressBookCommand' && action.exposed === true,
+			),
 		).toMatchObject({
 			module: ZX_ADDRESS_BOOK,
 			action: 'GetAddressBookCommand',
@@ -224,9 +249,7 @@ describe('AddressBookDetailPanel (browser)', () => {
 	});
 
 	it('should show all already exposed helper when every folder is exposed', async () => {
-		setupAddressBookZextrasInterceptor([
-			{ id: '7', name: '/Contacts/Work', isShared: false },
-		]);
+		setupAddressBookZextrasInterceptor([], PARTIAL_SHARED_ENTRY);
 		await renderPanel(
 			<AddressBookDetailPanel
 				domainName={DOMAIN_NAME}
@@ -328,7 +351,7 @@ describe('AddressBookDetailPanel (browser)', () => {
 		});
 	});
 
-	it('should show mailbox folders for add when GetAddressBookCommand fails', async () => {
+	it('should show unexposed folders for add when exposed GetAddressBookCommand fails', async () => {
 		worker.use(
 			http.post('/service/admin/soap/zextras', async ({ request }) => {
 				const body = (await request.json()) as ZextrasRequestBody;
@@ -339,23 +362,35 @@ describe('AddressBookDetailPanel (browser)', () => {
 				}
 
 				if (zextrasBody.action === 'GetAddressBookCommand') {
-					return HttpResponse.json({
-						Body: {
-							Fault: {
-								Reason: { Text: 'GetAddressBookCommand failed' },
+					if (zextrasBody.exposed === true) {
+						return HttpResponse.json({
+							Body: {
+								Fault: {
+									Reason: { Text: 'GetAddressBookCommand failed' },
+								},
 							},
-						},
-					});
-				}
+						});
+					}
 
-				if (zextrasBody.action === 'GetMailboxContactFoldersCommand') {
 					return HttpResponse.json(
 						buildZextrasResponse({
+							nested: true,
 							response: {
-								folders: [
-									{ id: 258, name: '/Contacts/Sales', mounted: false },
-									{ id: 7, name: '/Contacts/Work', mounted: false },
-								],
+								'mail1.example.com': {
+									ok: true,
+									response: {
+										folders: [
+											{
+												account: 'bob@example.com',
+												accountId: 'acc-2',
+												folders: [
+													{ id: 258, name: '/Contacts/Sales', mounted: false },
+													{ id: 7, name: '/Contacts/Work', mounted: false },
+												],
+											},
+										],
+									},
+								},
 							},
 						}),
 					);

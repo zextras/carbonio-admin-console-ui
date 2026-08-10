@@ -13,25 +13,31 @@ import {
 	getFirstZextrasServerResult,
 } from './address-book-zextras-utils';
 
-type GetExposedAddressBookFoldersParams = {
+type GetAddressBookFoldersParams = {
+	domain: string;
+	account: string;
+	exposed: boolean;
+};
+
+type GetAccountAddressBookFoldersParams = {
 	domain: string;
 	account: string;
 };
 
-type RawExposedFolder = {
+type RawAddressBookFolder = {
 	id?: string | number;
 	name?: string;
 	mounted?: boolean;
 	isShared?: boolean;
 };
 
-type RawExposedAccountFolders = {
+type RawAddressBookAccountFolders = {
 	account?: string;
 	accountId?: string;
-	folders?: Array<RawExposedFolder>;
+	folders?: Array<RawAddressBookFolder>;
 };
 
-function mapRawExposedFolder(folder: RawExposedFolder): AddressBookFolder {
+function mapRawAddressBookFolder(folder: RawAddressBookFolder): AddressBookFolder {
 	return {
 		id: folder.id as string | number,
 		name: folder.name ?? String(folder.id),
@@ -39,16 +45,17 @@ function mapRawExposedFolder(folder: RawExposedFolder): AddressBookFolder {
 	};
 }
 
-function isAccountWrapper(item: RawExposedAccountFolders | RawExposedFolder): boolean {
-	return Array.isArray((item as RawExposedAccountFolders).folders);
+function isAccountWrapper(item: RawAddressBookAccountFolders | RawAddressBookFolder): boolean {
+	return Array.isArray((item as RawAddressBookAccountFolders).folders);
 }
 
-export function parseExposedAddressBookFolders(
+export function parseAddressBookFolders(
 	serverResponse: Record<string, unknown> | undefined,
 	account: string,
 ): Array<AddressBookFolder> {
-	const items = (serverResponse as { folders?: Array<RawExposedAccountFolders | RawExposedFolder> } | undefined)
-		?.folders;
+	const items = (
+		serverResponse as { folders?: Array<RawAddressBookAccountFolders | RawAddressBookFolder> } | undefined
+	)?.folders;
 
 	if (!Array.isArray(items) || items.length === 0) {
 		return [];
@@ -57,12 +64,12 @@ export function parseExposedAddressBookFolders(
 	const looksLikeAccountWrappers = items.some(isAccountWrapper);
 
 	if (!looksLikeAccountWrappers) {
-		return (items as Array<RawExposedFolder>)
+		return (items as Array<RawAddressBookFolder>)
 			.filter((folder) => folder.id != null)
-			.map(mapRawExposedFolder);
+			.map(mapRawAddressBookFolder);
 	}
 
-	const accounts = items as Array<RawExposedAccountFolders>;
+	const accounts = items as Array<RawAddressBookAccountFolders>;
 	const match =
 		accounts.find((entry) => entry.account === account) ??
 		(accounts.length === 1 ? accounts[0] : undefined);
@@ -71,13 +78,14 @@ export function parseExposedAddressBookFolders(
 		return [];
 	}
 
-	return match.folders.filter((folder) => folder.id != null).map(mapRawExposedFolder);
+	return match.folders.filter((folder) => folder.id != null).map(mapRawAddressBookFolder);
 }
 
-export async function getExposedAddressBookFolders({
+export async function getAddressBookFolders({
 	domain,
 	account,
-}: GetExposedAddressBookFoldersParams): Promise<Array<AddressBookFolder>> {
+	exposed,
+}: GetAddressBookFoldersParams): Promise<Array<AddressBookFolder>> {
 	const response = await postSoapFetchRequest<
 		Record<string, unknown>,
 		AddressBookZextrasSoapResponse
@@ -90,7 +98,7 @@ export async function getExposedAddressBookFolders({
 			class: 'domain',
 			domain,
 			account,
-			exposed: true,
+			exposed,
 		},
 		'zextras',
 	);
@@ -99,5 +107,19 @@ export async function getExposedAddressBookFolders({
 	const serverResult = getFirstZextrasServerResult(parsed);
 	const payload = serverResult?.response ?? parsed?.response;
 
-	return parseExposedAddressBookFolders(payload, account);
+	return parseAddressBookFolders(payload, account);
+}
+
+export async function getExposedAddressBookFolders({
+	domain,
+	account,
+}: GetAccountAddressBookFoldersParams): Promise<Array<AddressBookFolder>> {
+	return getAddressBookFolders({ domain, account, exposed: true });
+}
+
+export async function getUnexposedAddressBookFolders({
+	domain,
+	account,
+}: GetAccountAddressBookFoldersParams): Promise<Array<AddressBookFolder>> {
+	return getAddressBookFolders({ domain, account, exposed: false });
 }

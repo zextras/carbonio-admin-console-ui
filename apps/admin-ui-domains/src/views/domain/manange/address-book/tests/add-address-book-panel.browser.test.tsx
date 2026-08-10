@@ -56,6 +56,7 @@ type ZextrasBody = {
 	domain?: string;
 	account?: string;
 	folder?: string;
+	exposed?: boolean;
 };
 
 type ZextrasRequestBody = {

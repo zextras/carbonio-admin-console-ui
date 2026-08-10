@@ -13,8 +13,10 @@ vi.mock('@zextras/ui-shared', () => ({
 }));
 
 import {
+  getAddressBookFolders,
   getExposedAddressBookFolders,
-  parseExposedAddressBookFolders,
+  getUnexposedAddressBookFolders,
+  parseAddressBookFolders,
 } from '../get-exposed-address-book-folders';
 
 function makeSoapResponse(content: unknown) {
@@ -26,10 +28,10 @@ describe('get-exposed-address-book-folders', () => {
     vi.clearAllMocks();
   });
 
-  describe('parseExposedAddressBookFolders', () => {
+  describe('parseAddressBookFolders', () => {
     it('should parse folders for the matching account from nested payload', () => {
       expect(
-        parseExposedAddressBookFolders(
+        parseAddressBookFolders(
           {
             folders: [
               {
@@ -46,7 +48,7 @@ describe('get-exposed-address-book-folders', () => {
 
     it('should parse flat folder arrays', () => {
       expect(
-        parseExposedAddressBookFolders(
+        parseAddressBookFolders(
           {
             folders: [
               { id: 7, name: '/Contacts/Work', mounted: false },
@@ -62,7 +64,7 @@ describe('get-exposed-address-book-folders', () => {
     });
 
     it('should return an empty array when account folders are missing', () => {
-      expect(parseExposedAddressBookFolders({ folders: [] }, 'alice@example.com')).toEqual([]);
+      expect(parseAddressBookFolders({ folders: [] }, 'alice@example.com')).toEqual([]);
     });
   });
 
@@ -106,6 +108,71 @@ describe('get-exposed-address-book-folders', () => {
       'zextras',
     );
     expect(folders).toEqual([{ id: '7', name: '/Contacts/Work', isShared: false }]);
+  });
+
+  it('should call GetAddressBookCommand with exposed false for unexposed folders', async () => {
+    mockPostSoapFetchRequest.mockResolvedValue(
+      makeSoapResponse({
+        ok: true,
+        nested: true,
+        response: {
+          'dt1-single-srv1.demo.zextras.io': {
+            ok: true,
+            response: {
+              folders: [
+                {
+                  account: 'soner@test.com',
+                  accountId: '9b191b15-9ee5-4a0e-a8ea-a066f74736e4',
+                  folders: [
+                    { id: 7, name: '/Contacts', mounted: false },
+                    { id: 13, name: '/Emailed Contacts', mounted: false },
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      }),
+    );
+
+    const folders = await getUnexposedAddressBookFolders({
+      domain: 'demo.zextras.io',
+      account: 'soner@test.com',
+    });
+
+    expect(mockPostSoapFetchRequest).toHaveBeenCalledWith(
+      '/service/admin/soap/zextras',
+      expect.objectContaining({
+        module: 'ZxAddressBook',
+        action: 'GetAddressBookCommand',
+        class: 'domain',
+        domain: 'demo.zextras.io',
+        account: 'soner@test.com',
+        exposed: false,
+      }),
+      'zextras',
+    );
+    expect(folders).toEqual([
+      { id: 7, name: '/Contacts', isShared: false },
+      { id: 13, name: '/Emailed Contacts', isShared: false },
+    ]);
+  });
+
+  it('should pass exposed flag through getAddressBookFolders', async () => {
+    mockPostSoapFetchRequest.mockResolvedValue(
+      makeSoapResponse({
+        ok: true,
+        response: { folders: [] },
+      }),
+    );
+
+    await getAddressBookFolders({
+      domain: 'example.com',
+      account: 'alice@example.com',
+      exposed: false,
+    });
+
+    expect(mockPostSoapFetchRequest.mock.calls[0][1]).toMatchObject({ exposed: false });
   });
 
   it('should parse flat GetAddressBookCommand response', async () => {

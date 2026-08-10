@@ -21,8 +21,10 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import type { AddressBookEntry, AddressBookFolder } from '../../../../../types';
 import { addAddressBook } from '../../../../services/add-address-book';
-import { getExposedAddressBookFolders } from '../../../../services/get-exposed-address-book-folders';
-import { getMailboxContactFolders } from '../../../../services/get-mailbox-contact-folders';
+import {
+  getExposedAddressBookFolders,
+  getUnexposedAddressBookFolders,
+} from '../../../../services/get-exposed-address-book-folders';
 import { removeAddressBook } from '../../../../services/remove-address-book';
 
 type AddressBookDetailPanelProps = {
@@ -67,7 +69,7 @@ export function AddressBookDetailPanel({
   const createSnackbar = useSnackbar();
 
   const [folders, setFolders] = useState<Array<AddressBookFolder>>(entry.folders ?? []);
-  const [mailboxFolders, setMailboxFolders] = useState<Array<AddressBookFolder>>([]);
+  const [unexposedFolders, setUnexposedFolders] = useState<Array<AddressBookFolder>>([]);
   const [isResolvingFolders, setIsResolvingFolders] = useState(false);
   const [folderToRemove, setFolderToRemove] = useState<AddressBookFolder | null>(null);
   const [isRemoving, setIsRemoving] = useState(false);
@@ -78,26 +80,36 @@ export function AddressBookDetailPanel({
   const [isSubmittingAdd, setIsSubmittingAdd] = useState(false);
 
   const hasAllShared = folders.some((folder) => String(folder.id) === 'all');
-  const linkedIds = new Set(folders.map((folder) => String(folder.id)));
   const sharedLabel = t('label.exposed', 'exposed');
   const availableFolderItems: Array<FolderSelectItem> = hasAllShared
     ? []
-    : mailboxFolders
-        .filter((folder) => !linkedIds.has(String(folder.id)))
-        .map((folder) => ({
-          label: getFolderSelectLabel(folder.name, folder.isShared === true, sharedLabel),
-          value: String(folder.id),
-        }));
+    : unexposedFolders.map((folder) => ({
+        label: getFolderSelectLabel(folder.name, folder.isShared === true, sharedLabel),
+        value: String(folder.id),
+      }));
   const canOpenInlineAdd = !hasAllShared && availableFolderItems.length > 0;
   const canSubmitAdd =
     addMode === 'all' ? !hasAllShared : Boolean(selectedFolder?.value) && !isSubmittingAdd;
 
-  function loadExposedFolders(): Promise<void> {
-    return getExposedAddressBookFolders({
-      domain: domainName,
-      account: entry.account,
-    }).then((exposed) => {
-      setFolders(exposed);
+  function loadFolderLists(): Promise<void> {
+    return Promise.allSettled([
+      getExposedAddressBookFolders({
+        domain: domainName,
+        account: entry.account,
+      }),
+      getUnexposedAddressBookFolders({
+        domain: domainName,
+        account: entry.account,
+      }),
+    ]).then(([exposedResult, unexposedResult]) => {
+      if (exposedResult.status === 'fulfilled') {
+        setFolders(exposedResult.value);
+      }
+      if (unexposedResult.status === 'fulfilled') {
+        setUnexposedFolders(unexposedResult.value);
+      } else {
+        setUnexposedFolders([]);
+      }
     });
   }
 
@@ -117,8 +129,11 @@ export function AddressBookDetailPanel({
         domain: domainName,
         account: entry.account,
       }),
-      getMailboxContactFolders({ account: entry.account }),
-    ]).then(([exposedResult, mailboxResult]) => {
+      getUnexposedAddressBookFolders({
+        domain: domainName,
+        account: entry.account,
+      }),
+    ]).then(([exposedResult, unexposedResult]) => {
       if (cancelled) {
         return;
       }
@@ -129,10 +144,10 @@ export function AddressBookDetailPanel({
         setFolders(entry.folders ?? []);
       }
 
-      if (mailboxResult.status === 'fulfilled') {
-        setMailboxFolders(mailboxResult.value);
+      if (unexposedResult.status === 'fulfilled') {
+        setUnexposedFolders(unexposedResult.value);
       } else {
-        setMailboxFolders([]);
+        setUnexposedFolders([]);
       }
 
       setIsResolvingFolders(false);
@@ -166,7 +181,7 @@ export function AddressBookDetailPanel({
         setFolderToRemove(null);
         onChanged();
         try {
-          await loadExposedFolders();
+          await loadFolderLists();
         } catch {
           // List refresh already requested; keep current folders on refetch failure.
         }
@@ -214,7 +229,7 @@ export function AddressBookDetailPanel({
         setSelectedFolder(undefined);
         onChanged();
         try {
-          await loadExposedFolders();
+          await loadFolderLists();
         } catch {
           // List refresh already requested; keep current folders on refetch failure.
         }
