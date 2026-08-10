@@ -18,6 +18,43 @@ export type LicenseBannerProps = {
 	redirectButtonHasToAppear?: boolean;
 };
 
+type BannerLabels = {
+	expiring: string;
+	expiringWithoutMaxVersion: string;
+	expired: string;
+	expiredWithoutMaxVersion: string;
+	invalid: string;
+};
+
+type BannerDescriptions = {
+	expiring: string;
+	expired: string;
+	invalid: string;
+};
+
+function getBannerLabel(
+	maintenanceStatus: string,
+	maxCarbonioVersion: string,
+	labels: BannerLabels,
+): string {
+	if (maintenanceStatus === 'expiring') {
+		return maxCarbonioVersion ? labels.expiring : labels.expiringWithoutMaxVersion;
+	}
+	if (maintenanceStatus === 'expired') {
+		return maxCarbonioVersion ? labels.expired : labels.expiredWithoutMaxVersion;
+	}
+	return labels.invalid;
+}
+
+function getBannerDescription(
+	maintenanceStatus: string,
+	descriptions: BannerDescriptions,
+): string {
+	if (maintenanceStatus === 'expiring') return descriptions.expiring;
+	if (maintenanceStatus === 'expired') return descriptions.expired;
+	return descriptions.invalid;
+}
+
 export const LicenseBanner = ({ redirectButtonHasToAppear }: LicenseBannerProps) => {
 	const { moduleLicenseInfo, licenseBannerShouldBeDisplayed, setIsLicenseBannerOpen } =
 		useModuleLicenseInfo();
@@ -80,23 +117,19 @@ export const LicenseBanner = ({ redirectButtonHasToAppear }: LicenseBannerProps)
 	const detailsButton = t('button.view_subscription_details', 'View Subscription Details');
 	const closeButtonLabel = t('button.close', 'Close');
 
-	const labelToShow =
-		maintenanceStatus === 'expiring'
-			? maxCarbonioVersion
-				? bannerExpiringLabel
-				: bannerExpiringWithoutMaxVersionLabel
-			: maintenanceStatus === 'expired'
-				? maxCarbonioVersion
-					? bannerExpiredLabel
-					: bannerExpiredWithoutMaxVersionLabel
-				: bannerInvalidLabel;
+	const labelToShow = getBannerLabel(maintenanceStatus, maxCarbonioVersion, {
+		expiring: bannerExpiringLabel,
+		expiringWithoutMaxVersion: bannerExpiringWithoutMaxVersionLabel,
+		expired: bannerExpiredLabel,
+		expiredWithoutMaxVersion: bannerExpiredWithoutMaxVersionLabel,
+		invalid: bannerInvalidLabel,
+	});
 
-	const descriptionToShow =
-		maintenanceStatus === 'expiring'
-			? bannerExpiringDescription
-			: maintenanceStatus === 'expired'
-				? bannerExpiredDescription
-				: bannerInvalidDescription;
+	const descriptionToShow = getBannerDescription(maintenanceStatus, {
+		expiring: bannerExpiringDescription,
+		expired: bannerExpiredDescription,
+		invalid: bannerInvalidDescription,
+	});
 
 	const onClose = () => setIsLicenseBannerOpen(false);
 	const navigate = useNavigate();
