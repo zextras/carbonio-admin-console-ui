@@ -448,7 +448,7 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
   );
 
   return (
-    <Container background="gray6">
+    <Container background="gray6" height="auto">
       <ListRow>
         <Container
           mainAlignment="flex-start"
@@ -483,6 +483,7 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
           mainAlignment="space-between"
           crossAlignment="flex-start"
           width="fill"
+          height="auto"
           padding={{ all: isAddPadding ? 'large' : '' }}
         >
           <Table

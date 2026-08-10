@@ -145,7 +145,7 @@ export const DashboardServerList = ({
   ];
 
   return (
-    <Container background="gray6">
+    <Container background="gray6" height="auto">
       <ListRow>
         <Container
           padding={{ all: 'extralarge' }}
@@ -183,6 +183,7 @@ export const DashboardServerList = ({
           mainAlignment="space-between"
           crossAlignment="flex-start"
           width="fill"
+          height="auto"
         >
           <Table
             rows={serverListRow}

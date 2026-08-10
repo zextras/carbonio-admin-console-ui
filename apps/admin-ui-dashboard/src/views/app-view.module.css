@@ -4,6 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+.outer {
+  overflow: hidden;
+}
+
 .content {
   background: var(--color-gray5-regular);
 }

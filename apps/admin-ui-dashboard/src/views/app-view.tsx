@@ -10,7 +10,7 @@ import { Dashboard } from './dashboard/dashboard-view';
 
 export const AppView = () => {
   return (
-    <div>
+    <div className={styles.outer}>
       <PageHeader />
       <div className={styles.content}>
         <Dashboard />
