@@ -447,7 +447,10 @@ describe('AddressBookDetailPanel (browser)', () => {
 			.element(page.getByText('Add address books', { exact: true }))
 			.toBeInTheDocument();
 		await userEvent.click(page.getByText('A specific address book'));
-		await expect.element(page.getByText('/Contacts/Sales')).toBeInTheDocument();
+		await userEvent.click(page.getByText(/Select an address book/i));
+		await expect
+			.element(page.getByText('/Contacts/Sales', { exact: true }))
+			.toBeInTheDocument();
 	});
 
 	it('should cancel the inline add form without submitting', async () => {
