@@ -25,7 +25,15 @@ describe('address book mutations', () => {
   });
 
   it('should call addAddressBook with correct SOAP payload', async () => {
-    mockPostSoapFetchRequest.mockResolvedValue(makeSoapResponse({ ok: true, response: {} }));
+    mockPostSoapFetchRequest.mockResolvedValue(
+      makeSoapResponse({
+        ok: true,
+        nested: true,
+        response: {
+          'mail1.example.com': { ok: true, message: 'ok' },
+        },
+      }),
+    );
 
     await addAddressBook({
       domain: 'example.com',
@@ -48,7 +56,15 @@ describe('address book mutations', () => {
   });
 
   it('should call removeAddressBook with correct SOAP payload', async () => {
-    mockPostSoapFetchRequest.mockResolvedValue(makeSoapResponse({ ok: true, response: {} }));
+    mockPostSoapFetchRequest.mockResolvedValue(
+      makeSoapResponse({
+        ok: true,
+        nested: true,
+        response: {
+          'mail1.example.com': { ok: true, message: 'ok' },
+        },
+      }),
+    );
 
     await removeAddressBook({
       domain: 'example.com',
@@ -70,9 +86,15 @@ describe('address book mutations', () => {
     expect(mockPostSoapFetchRequest.mock.calls[0][1]).not.toHaveProperty('targetServers');
   });
 
-  it('should throw when addAddressBook response is not ok', async () => {
+  it('should throw when addAddressBook nested server is not ok', async () => {
     mockPostSoapFetchRequest.mockResolvedValue(
-      makeSoapResponse({ ok: false, message: 'Add failed' }),
+      makeSoapResponse({
+        ok: true,
+        nested: true,
+        response: {
+          'mail1.example.com': { ok: false, message: 'Add failed' },
+        },
+      }),
     );
 
     await expect(
@@ -84,9 +106,15 @@ describe('address book mutations', () => {
     ).rejects.toThrow('Add failed');
   });
 
-  it('should throw when removeAddressBook response is not ok', async () => {
+  it('should throw when removeAddressBook nested server is not ok', async () => {
     mockPostSoapFetchRequest.mockResolvedValue(
-      makeSoapResponse({ ok: false, message: 'Remove failed' }),
+      makeSoapResponse({
+        ok: true,
+        nested: true,
+        response: {
+          'mail1.example.com': { ok: false, message: 'Remove failed' },
+        },
+      }),
     );
 
     await expect(

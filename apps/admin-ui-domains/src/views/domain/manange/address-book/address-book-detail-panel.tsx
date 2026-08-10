@@ -21,6 +21,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import type { AddressBookEntry, AddressBookFolder } from '../../../../../types';
 import { addAddressBook } from '../../../../services/add-address-book';
+import { getExposedAddressBookFolders } from '../../../../services/get-exposed-address-book-folders';
 import { getMailboxContactFolders } from '../../../../services/get-mailbox-contact-folders';
 import { removeAddressBook } from '../../../../services/remove-address-book';
 
@@ -37,33 +38,6 @@ type FolderSelectItem = {
 };
 
 type FolderMode = 'all' | 'specific';
-
-function needsFolderNameResolution(folders: Array<AddressBookFolder>): boolean {
-  return folders.some((folder) => String(folder.id) !== 'all');
-}
-
-function mergeResolvedFolders(
-  listed: Array<AddressBookFolder>,
-  mailboxFolders: Array<AddressBookFolder>,
-): Array<AddressBookFolder> {
-  const byId = new Map(mailboxFolders.map((folder) => [String(folder.id), folder]));
-
-  return listed.map((folder) => {
-    const id = String(folder.id);
-    if (id === 'all') {
-      return { id: 'all', name: 'all', isShared: false };
-    }
-    const resolved = byId.get(id);
-    if (!resolved) {
-      return folder;
-    }
-    return {
-      id: resolved.id,
-      name: resolved.name,
-      isShared: resolved.isShared === true,
-    };
-  });
-}
 
 function getFolderDisplayName(name: string): string {
   if (name === 'all') {
@@ -118,46 +92,56 @@ export function AddressBookDetailPanel({
   const canSubmitAdd =
     addMode === 'all' ? !hasAllShared : Boolean(selectedFolder?.value) && !isSubmittingAdd;
 
+  function loadExposedFolders(): Promise<void> {
+    return getExposedAddressBookFolders({
+      domain: domainName,
+      account: entry.account,
+    }).then((exposed) => {
+      setFolders(exposed);
+    });
+  }
+
   useEffect(() => {
     setFolderToRemove(null);
     setIsRemoving(false);
     setIsAdding(false);
     setAddMode('all');
     setSelectedFolder(undefined);
-
-    const listed = entry.folders ?? [];
-    setFolders(listed);
+    setFolders(entry.folders ?? []);
 
     let cancelled = false;
     setIsResolvingFolders(true);
-    getMailboxContactFolders({ account: entry.account })
-      .then((fetched) => {
-        if (cancelled) {
-          return;
-        }
-        setMailboxFolders(fetched);
-        if (needsFolderNameResolution(listed)) {
-          setFolders(mergeResolvedFolders(listed, fetched));
-        } else {
-          setFolders(listed);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setMailboxFolders([]);
-          setFolders(listed);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsResolvingFolders(false);
-        }
-      });
+
+    Promise.allSettled([
+      getExposedAddressBookFolders({
+        domain: domainName,
+        account: entry.account,
+      }),
+      getMailboxContactFolders({ account: entry.account }),
+    ]).then(([exposedResult, mailboxResult]) => {
+      if (cancelled) {
+        return;
+      }
+
+      if (exposedResult.status === 'fulfilled') {
+        setFolders(exposedResult.value);
+      } else {
+        setFolders(entry.folders ?? []);
+      }
+
+      if (mailboxResult.status === 'fulfilled') {
+        setMailboxFolders(mailboxResult.value);
+      } else {
+        setMailboxFolders([]);
+      }
+
+      setIsResolvingFolders(false);
+    });
 
     return (): void => {
       cancelled = true;
     };
-  }, [entry.accountId, entry.account, entry.folders]);
+  }, [domainName, entry.accountId, entry.account, entry.folders]);
 
   function confirmRemoveFolder(): void {
     if (!folderToRemove) {
@@ -170,7 +154,7 @@ export function AddressBookDetailPanel({
       account: entry.account,
       folder: String(folderToRemove.id),
     })
-      .then(() => {
+      .then(async () => {
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -181,6 +165,11 @@ export function AddressBookDetailPanel({
         });
         setFolderToRemove(null);
         onChanged();
+        try {
+          await loadExposedFolders();
+        } catch {
+          // List refresh already requested; keep current folders on refetch failure.
+        }
       })
       .catch((error: Error) => {
         createSnackbar({
@@ -211,7 +200,7 @@ export function AddressBookDetailPanel({
       account: entry.account,
       folder,
     })
-      .then(() => {
+      .then(async () => {
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -224,6 +213,11 @@ export function AddressBookDetailPanel({
         setAddMode('all');
         setSelectedFolder(undefined);
         onChanged();
+        try {
+          await loadExposedFolders();
+        } catch {
+          // List refresh already requested; keep current folders on refetch failure.
+        }
       })
       .catch((error: Error) => {
         createSnackbar({

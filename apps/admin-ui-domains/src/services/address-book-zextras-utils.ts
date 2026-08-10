@@ -9,6 +9,13 @@ import type { AddressBookZextrasSoapResponse } from '../../types';
 export type ZextrasFlatPayload = {
 	ok?: boolean;
 	message?: string;
+	nested?: boolean;
+	response?: Record<string, unknown>;
+};
+
+export type ZextrasServerResult = {
+	ok?: boolean;
+	message?: string;
 	response?: Record<string, unknown>;
 };
 
@@ -17,6 +24,22 @@ export function parseZextrasContent(content: string | undefined): ZextrasFlatPay
 		return null;
 	}
 	return JSON.parse(content) as ZextrasFlatPayload;
+}
+
+function isServerResult(value: unknown): value is ZextrasServerResult {
+	return typeof value === 'object' && value !== null && ('ok' in value || 'response' in value);
+}
+
+export function getFirstZextrasServerResult(
+	parsed: ZextrasFlatPayload | null,
+): ZextrasServerResult | null {
+	const servers = parsed?.response;
+	if (!servers || typeof servers !== 'object') {
+		return null;
+	}
+
+	const first = Object.values(servers).find(isServerResult);
+	return first ?? null;
 }
 
 export function assertZextrasOk(
@@ -32,5 +55,25 @@ export function assertZextrasOk(
 		throw new Error(parsed.message ?? fallbackMessage);
 	}
 
+	const hasNestedServers =
+		parsed?.nested === true ||
+		(parsed?.response != null &&
+			Object.values(parsed.response).some(isServerResult));
+
+	if (hasNestedServers) {
+		const serverResult = getFirstZextrasServerResult(parsed);
+		if (serverResult?.ok === false) {
+			throw new Error(serverResult.message ?? fallbackMessage);
+		}
+	}
+
 	return parsed;
+}
+
+export function assertZextrasNestedOk(
+	response: AddressBookZextrasSoapResponse,
+	fallbackMessage: string,
+): ZextrasServerResult | null {
+	const parsed = assertZextrasOk(response, fallbackMessage);
+	return getFirstZextrasServerResult(parsed);
 }

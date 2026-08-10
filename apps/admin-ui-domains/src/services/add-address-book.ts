@@ -8,7 +8,7 @@ import { postSoapFetchRequest } from '@zextras/ui-shared';
 
 import type { AddressBookZextrasSoapResponse } from '../../types';
 import { ZIMBRA_ADMIN_URN, ZX_ADDRESS_BOOK } from '../constants';
-import { assertZextrasOk } from './address-book-zextras-utils';
+import { assertZextrasNestedOk } from './address-book-zextras-utils';
 
 type AddAddressBookParams = {
 	domain: string;
@@ -38,5 +38,5 @@ export async function addAddressBook({
 		'zextras',
 	);
 
-	assertZextrasOk(response, 'AddAddressBookCommand failed');
+	assertZextrasNestedOk(response, 'AddAddressBookCommand failed');
 }

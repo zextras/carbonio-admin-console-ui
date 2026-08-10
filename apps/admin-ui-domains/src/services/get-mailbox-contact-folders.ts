@@ -14,6 +14,13 @@ type GetMailboxContactFoldersParams = {
 	account: string;
 };
 
+type RawMailboxContactFolder = {
+	id?: string | number;
+	name?: string;
+	mounted?: boolean;
+	isShared?: boolean;
+};
+
 export async function getMailboxContactFolders({
 	account,
 }: GetMailboxContactFoldersParams): Promise<Array<AddressBookFolder>> {
@@ -32,16 +39,18 @@ export async function getMailboxContactFolders({
 	);
 
 	const parsed = assertZextrasOk(response, 'GetMailboxContactFoldersCommand failed');
-	const folders = (parsed?.response as { folders?: Array<AddressBookFolder> } | undefined)
+	const folders = (parsed?.response as { folders?: Array<RawMailboxContactFolder> } | undefined)
 		?.folders;
 
 	if (!Array.isArray(folders)) {
 		return [];
 	}
 
-	return folders.map((folder) => ({
-		id: folder.id,
-		name: folder.name,
-		isShared: folder.isShared === true,
-	}));
+	return folders
+		.filter((folder) => folder.id != null)
+		.map((folder) => ({
+			id: folder.id as string | number,
+			name: folder.name ?? String(folder.id),
+			isShared: folder.isShared === true || folder.mounted === true,
+		}));
 }

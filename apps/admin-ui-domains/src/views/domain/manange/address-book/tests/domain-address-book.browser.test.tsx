@@ -31,6 +31,7 @@ type ZextrasBody = {
 	account?: string;
 	folder?: string;
 	class?: string;
+	exposed?: boolean;
 };
 
 type ZextrasRequestBody = {
@@ -77,17 +78,26 @@ const SEARCH_ACCOUNTS = [
 	{ name: 'dave@example.com', id: 'acc-4' },
 ];
 
-function buildZextrasResponse(response: Record<string, unknown>): object {
+function buildZextrasResponse(content: Record<string, unknown>): object {
 	return {
 		Body: {
 			response: {
 				content: JSON.stringify({
 					ok: true,
-					response,
+					...content,
 				}),
 			},
 		},
 	};
+}
+
+function buildNestedOkResponse(): object {
+	return buildZextrasResponse({
+		nested: true,
+		response: {
+			'mail1.example.com': { ok: true, message: 'ok' },
+		},
+	});
 }
 
 function setupSearchDirectoryInterceptor(
@@ -127,18 +137,52 @@ function setupAddressBookZextrasInterceptor(
 
 			if (action === 'ListAddressBookCommand') {
 				return HttpResponse.json(
-					buildZextrasResponse({ 'address books': books }),
+					buildZextrasResponse({ response: { 'address books': books } }),
+				);
+			}
+
+			if (action === 'GetAddressBookCommand') {
+				const account = zextrasBody.account ?? '';
+				const book =
+					books.find((item) => item.account === account) ??
+					({
+						account,
+						accountId: '',
+						folderIds: '',
+						folders: [],
+					} satisfies AddressBookListItem);
+
+				return HttpResponse.json(
+					buildZextrasResponse({
+						nested: true,
+						response: {
+							'mail1.example.com': {
+								ok: true,
+								response: {
+									folders: [
+										{
+											account: book.account,
+											accountId: book.accountId,
+											folders: book.folders.map((folder) => ({
+												id: folder.id,
+												name: folder.name,
+												mounted: false,
+											})),
+										},
+									],
+								},
+							},
+						},
+					}),
 				);
 			}
 
 			if (action === 'GetMailboxContactFoldersCommand') {
-				return HttpResponse.json(buildZextrasResponse({ folders }));
+				return HttpResponse.json(buildZextrasResponse({ response: { folders } }));
 			}
 
 			if (action === 'AddAddressBookCommand' || action === 'RemoveAddressBookCommand') {
-				return HttpResponse.json(
-					buildZextrasResponse({ message: 'ok' }),
-				);
+				return HttpResponse.json(buildNestedOkResponse());
 			}
 
 			return HttpResponse.json({ Body: {} });

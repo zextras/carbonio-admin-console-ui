@@ -36,6 +36,29 @@ describe('get-mailbox-contact-folders', () => {
     expect(result).toEqual([{ id: '7', name: 'Work', isShared: true }]);
   });
 
+  it('should normalize flat GetMailboxContactFolders payload with numeric ids and mounted', async () => {
+    mockPostSoapFetchRequest.mockResolvedValue(
+      makeSoapResponse({
+        ok: true,
+        response: {
+          folders: [
+            { id: 258, name: '/MyAddressbook of dhaval', mounted: true },
+            { id: 259, name: '/Contacts/Sales', mounted: false },
+            { id: 7, name: '/Contacts', mounted: false },
+          ],
+        },
+      }),
+    );
+
+    const result = await getMailboxContactFolders({ account: 'manan@demo.zextras.io' });
+
+    expect(result).toEqual([
+      { id: 258, name: '/MyAddressbook of dhaval', isShared: true },
+      { id: 259, name: '/Contacts/Sales', isShared: false },
+      { id: 7, name: '/Contacts', isShared: false },
+    ]);
+  });
+
   it('should return empty array when folders are absent', async () => {
     mockPostSoapFetchRequest.mockResolvedValue(
       makeSoapResponse({ ok: true, response: {} }),

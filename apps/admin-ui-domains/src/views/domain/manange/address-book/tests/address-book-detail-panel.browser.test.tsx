@@ -27,6 +27,7 @@ type ZextrasBody = {
 	domain?: string;
 	account?: string;
 	folder?: string;
+	exposed?: boolean;
 };
 
 type ZextrasRequestBody = {
@@ -60,21 +61,55 @@ const PARTIAL_SHARED_ENTRY: AddressBookEntry = {
 	folders: [{ id: '7', name: '/Contacts/Work', isShared: false }],
 };
 
-function buildZextrasResponse(response: Record<string, unknown>): object {
+function buildZextrasResponse(content: Record<string, unknown>): object {
 	return {
 		Body: {
 			response: {
 				content: JSON.stringify({
 					ok: true,
-					response,
+					...content,
 				}),
 			},
 		},
 	};
 }
 
+function buildNestedOkResponse(): object {
+	return buildZextrasResponse({
+		nested: true,
+		response: {
+			'mail1.example.com': { ok: true, message: 'ok' },
+		},
+	});
+}
+
+function buildGetExposedResponse(entry: AddressBookEntry): object {
+	return buildZextrasResponse({
+		nested: true,
+		response: {
+			'mail1.example.com': {
+				ok: true,
+				response: {
+					folders: [
+						{
+							account: entry.account,
+							accountId: entry.accountId,
+							folders: (entry.folders ?? []).map((folder) => ({
+								id: folder.id,
+								name: folder.name,
+								mounted: false,
+							})),
+						},
+					],
+				},
+			},
+		},
+	});
+}
+
 function setupAddressBookZextrasInterceptor(
 	folders: Array<ContactFolder> = DEFAULT_FOLDERS,
+	entry: AddressBookEntry = ALL_SHARED_ENTRY,
 ): {
 	capturedActions: Array<ZextrasBody>;
 } {
@@ -92,14 +127,25 @@ function setupAddressBookZextrasInterceptor(
 			const { action } = zextrasBody;
 			capturedActions.push(zextrasBody);
 
+			if (action === 'GetAddressBookCommand') {
+				const requestAccount = zextrasBody.account ?? entry.account;
+				const matchedEntry =
+					requestAccount === PARTIAL_SHARED_ENTRY.account
+						? PARTIAL_SHARED_ENTRY
+						: entry.account === requestAccount
+							? entry
+							: ALL_SHARED_ENTRY.account === requestAccount
+								? ALL_SHARED_ENTRY
+								: PARTIAL_SHARED_ENTRY;
+				return HttpResponse.json(buildGetExposedResponse(matchedEntry));
+			}
+
 			if (action === 'GetMailboxContactFoldersCommand') {
-				return HttpResponse.json(buildZextrasResponse({ folders }));
+				return HttpResponse.json(buildZextrasResponse({ response: { folders } }));
 			}
 
 			if (action === 'AddAddressBookCommand' || action === 'RemoveAddressBookCommand') {
-				return HttpResponse.json(
-					buildZextrasResponse({ message: 'ok' }),
-				);
+				return HttpResponse.json(buildNestedOkResponse());
 			}
 
 			return HttpResponse.json({ Body: {} });
@@ -115,7 +161,7 @@ function renderPanel(ui: ReactElement): Promise<RenderResult> {
 
 describe('AddressBookDetailPanel (browser)', () => {
 	it('should render the account email and exposed folders section', async () => {
-		setupAddressBookZextrasInterceptor();
+		const { capturedActions } = setupAddressBookZextrasInterceptor();
 		await renderPanel(
 			<AddressBookDetailPanel
 				domainName={DOMAIN_NAME}
@@ -130,10 +176,24 @@ describe('AddressBookDetailPanel (browser)', () => {
 			.element(page.getByText('Exposed address books', { exact: true }))
 			.toBeInTheDocument();
 		await expect.element(page.getByText('All folders')).toBeInTheDocument();
+		await expect
+			.poll(() =>
+				capturedActions.some((action) => action.action === 'GetAddressBookCommand'),
+			)
+			.toBe(true);
+		expect(
+			capturedActions.find((action) => action.action === 'GetAddressBookCommand'),
+		).toMatchObject({
+			module: ZX_ADDRESS_BOOK,
+			action: 'GetAddressBookCommand',
+			domain: DOMAIN_NAME,
+			account: 'alice@example.com',
+			exposed: true,
+		});
 	});
 
-	it('should resolve folder display names from mailbox folders', async () => {
-		setupAddressBookZextrasInterceptor();
+	it('should show exposed folder display names from GetAddressBookCommand', async () => {
+		setupAddressBookZextrasInterceptor(DEFAULT_FOLDERS, PARTIAL_SHARED_ENTRY);
 		await renderPanel(
 			<AddressBookDetailPanel
 				domainName={DOMAIN_NAME}
@@ -266,6 +326,68 @@ describe('AddressBookDetailPanel (browser)', () => {
 			account: 'alice@example.com',
 			folder: 'all',
 		});
+	});
+
+	it('should show mailbox folders for add when GetAddressBookCommand fails', async () => {
+		worker.use(
+			http.post('/service/admin/soap/zextras', async ({ request }) => {
+				const body = (await request.json()) as ZextrasRequestBody;
+				const zextrasBody = body?.Body?.zextras;
+
+				if (!zextrasBody) {
+					return HttpResponse.json({ Body: {} });
+				}
+
+				if (zextrasBody.action === 'GetAddressBookCommand') {
+					return HttpResponse.json({
+						Body: {
+							Fault: {
+								Reason: { Text: 'GetAddressBookCommand failed' },
+							},
+						},
+					});
+				}
+
+				if (zextrasBody.action === 'GetMailboxContactFoldersCommand') {
+					return HttpResponse.json(
+						buildZextrasResponse({
+							response: {
+								folders: [
+									{ id: 258, name: '/Contacts/Sales', mounted: false },
+									{ id: 7, name: '/Contacts/Work', mounted: false },
+								],
+							},
+						}),
+					);
+				}
+
+				return HttpResponse.json({ Body: {} });
+			}),
+		);
+
+		await renderPanel(
+			<AddressBookDetailPanel
+				domainName={DOMAIN_NAME}
+				entry={{
+					account: 'bob@example.com',
+					accountId: 'acc-2',
+					folderIds: undefined,
+					folders: [],
+				}}
+				onClose={vi.fn()}
+				onChanged={vi.fn()}
+			/>,
+		);
+
+		await expect
+			.element(page.getByRole('button', { name: 'Add address book' }))
+			.toBeEnabled();
+		await userEvent.click(page.getByRole('button', { name: 'Add address book' }));
+		await expect
+			.element(page.getByText('Add address books', { exact: true }))
+			.toBeInTheDocument();
+		await userEvent.click(page.getByText('A specific address book'));
+		await expect.element(page.getByText('/Contacts/Sales')).toBeInTheDocument();
 	});
 
 	it('should cancel the inline add form without submitting', async () => {
