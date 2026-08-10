@@ -15,7 +15,11 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
-import { LDAP_ADDRESS_BOOK_SERVICE, ZX_ADDRESS_BOOK } from '../../../../constants';
+import {
+	ADDRESS_BOOK_SERVICE_ENABLED,
+	ZX_CONFIG,
+	ZX_CONFIG_GLOBAL_ACTION,
+} from '../../../../constants';
 import { GlobalAddressBook } from '../global-address-book';
 
 type ZextrasRequestBody = {
@@ -24,27 +28,26 @@ type ZextrasRequestBody = {
 			_jsns: string;
 			module: string;
 			action: string;
-			service_name?: string;
+			command?: string;
+			attribute?: string;
+			value?: boolean;
 		};
 	};
 };
 
 type ServiceState = {
 	running: boolean;
-	couldStart: boolean;
-	couldStop: boolean;
+	isInherited?: boolean;
 };
 
 const DEFAULT_RUNNING: ServiceState = {
 	running: true,
-	couldStart: false,
-	couldStop: true,
+	isInherited: false,
 };
 
 const DEFAULT_STOPPED: ServiceState = {
 	running: false,
-	couldStart: true,
-	couldStop: false,
+	isInherited: false,
 };
 
 function seedGlobalAdminSettings(): ReturnType<typeof getQueryClient> {
@@ -61,20 +64,31 @@ function renderGlobalAddressBook(ui: ReactElement = <GlobalAddressBook />): Prom
 	return setupBrowserTest(ui, { queryClient: seedGlobalAdminSettings() });
 }
 
-function buildGetServicesResponse(state: ServiceState): object {
+function buildGetEnabledResponse(state: ServiceState): object {
+	const valueEntry =
+		state.isInherited === true
+			? {
+					attribute: ADDRESS_BOOK_SERVICE_ENABLED,
+					inheritedValue: state.running,
+					inheritedFrom: 'default',
+					isInherited: true,
+					modules: ['ZxAddressBook'],
+				}
+			: {
+					attribute: ADDRESS_BOOK_SERVICE_ENABLED,
+					value: state.running,
+					isInherited: false,
+					modules: ['ZxAddressBook'],
+				};
+
 	return {
 		Body: {
 			response: {
 				content: JSON.stringify({
 					ok: true,
 					response: {
-						services: {
-							[LDAP_ADDRESS_BOOK_SERVICE]: {
-								could_start: state.couldStart,
-								could_stop: state.couldStop,
-								running: state.running,
-							},
-						},
+						global: '',
+						values: [valueEntry],
 					},
 				}),
 			},
@@ -82,13 +96,13 @@ function buildGetServicesResponse(state: ServiceState): object {
 	};
 }
 
-function buildActionResponse(message: string): object {
+function buildSetResponse(): object {
 	return {
 		Body: {
 			response: {
 				content: JSON.stringify({
 					ok: true,
-					response: { message },
+					message: 'ok',
 				}),
 			},
 		},
@@ -99,6 +113,7 @@ function setupAddressBookInterceptor(state: ServiceState = DEFAULT_RUNNING): {
 	capturedActions: Array<ZextrasRequestBody['Body']['zextras']>;
 } {
 	const capturedActions: Array<ZextrasRequestBody['Body']['zextras']> = [];
+	let currentState = { ...state };
 
 	worker.use(
 		http.post('/service/admin/soap/zextras', async ({ request }) => {
@@ -109,19 +124,27 @@ function setupAddressBookInterceptor(state: ServiceState = DEFAULT_RUNNING): {
 				return HttpResponse.json({ Body: {} });
 			}
 
-			const { action } = zextrasBody;
-
-			if (action === 'getServices') {
-				return HttpResponse.json(buildGetServicesResponse(state));
+			if (
+				zextrasBody.module === ZX_CONFIG &&
+				zextrasBody.action === ZX_CONFIG_GLOBAL_ACTION &&
+				zextrasBody.command === 'get' &&
+				zextrasBody.attribute === ADDRESS_BOOK_SERVICE_ENABLED
+			) {
+				return HttpResponse.json(buildGetEnabledResponse(currentState));
 			}
 
-			if (action === 'doStartService' || action === 'doStopService') {
+			if (
+				zextrasBody.module === ZX_CONFIG &&
+				zextrasBody.action === ZX_CONFIG_GLOBAL_ACTION &&
+				zextrasBody.command === 'set' &&
+				zextrasBody.attribute === ADDRESS_BOOK_SERVICE_ENABLED
+			) {
 				capturedActions.push(zextrasBody);
-				return HttpResponse.json(
-					buildActionResponse(
-						action === 'doStartService' ? 'service started' : 'service stopped',
-					),
-				);
+				currentState = {
+					running: zextrasBody.value === true,
+					isInherited: false,
+				};
+				return HttpResponse.json(buildSetResponse());
 			}
 
 			return HttpResponse.json({ Body: {} });
@@ -189,7 +212,7 @@ describe('GlobalAddressBook (browser)', () => {
 	});
 
 	describe('Actions', () => {
-		it('should call doStopService when Stop service is clicked', async () => {
+		it('should set addressBookServiceEnabled false when Stop service is clicked', async () => {
 			const { capturedActions } = setupAddressBookInterceptor(DEFAULT_RUNNING);
 			await renderGlobalAddressBook();
 
@@ -199,15 +222,16 @@ describe('GlobalAddressBook (browser)', () => {
 
 			await expect.poll(() => capturedActions.length).toBeGreaterThan(0);
 			expect(capturedActions[0]).toMatchObject({
-				module: ZX_ADDRESS_BOOK,
-				action: 'doStopService',
-				service_name: LDAP_ADDRESS_BOOK_SERVICE,
+				module: ZX_CONFIG,
+				action: ZX_CONFIG_GLOBAL_ACTION,
+				command: 'set',
+				attribute: ADDRESS_BOOK_SERVICE_ENABLED,
+				value: false,
 			});
-			expect(capturedActions[0]).not.toHaveProperty('targetServers');
 			await expect.element(page.getByText('stopped', { exact: true })).toBeInTheDocument();
 		});
 
-		it('should call doStartService when Start service is clicked', async () => {
+		it('should set addressBookServiceEnabled true when Start service is clicked', async () => {
 			const { capturedActions } = setupAddressBookInterceptor(DEFAULT_STOPPED);
 			await renderGlobalAddressBook();
 
@@ -217,11 +241,12 @@ describe('GlobalAddressBook (browser)', () => {
 
 			await expect.poll(() => capturedActions.length).toBeGreaterThan(0);
 			expect(capturedActions[0]).toMatchObject({
-				module: ZX_ADDRESS_BOOK,
-				action: 'doStartService',
-				service_name: LDAP_ADDRESS_BOOK_SERVICE,
+				module: ZX_CONFIG,
+				action: ZX_CONFIG_GLOBAL_ACTION,
+				command: 'set',
+				attribute: ADDRESS_BOOK_SERVICE_ENABLED,
+				value: true,
 			});
-			expect(capturedActions[0]).not.toHaveProperty('targetServers');
 			await expect.element(page.getByText('running', { exact: true })).toBeInTheDocument();
 		});
 	});

@@ -11,8 +11,8 @@ import { useTranslation } from 'react-i18next';
 
 import type { AddressBookServiceStatus } from '../../../../types';
 import { LDAP_ADDRESS_BOOK_PORT, LDAP_ADDRESS_BOOK_SERVICE, TRUE } from '../../../constants';
-import { doStartStopAddressBookService } from '../../../services/do-start-stop-address-book-service';
 import { getAddressBookServices } from '../../../services/get-address-book-services';
+import { setAddressBookServiceEnabled } from '../../../services/set-address-book-service-enabled';
 
 const DEFAULT_STATUS: AddressBookServiceStatus = {
   running: false,
@@ -127,21 +127,20 @@ export function GlobalAddressBook() {
       return;
     }
 
-    const action = serviceStatus.running ? 'doStopService' : 'doStartService';
+    const nextEnabled = !serviceStatus.running;
     setIsRequestInProgress(true);
 
-    doStartStopAddressBookService(action)
+    setAddressBookServiceEnabled(nextEnabled)
       .then(() => {
-        const nextRunning = !serviceStatus.running;
         setServiceStatus({
-          running: nextRunning,
-          couldStart: !nextRunning,
-          couldStop: nextRunning,
+          running: nextEnabled,
+          couldStart: !nextEnabled,
+          couldStop: nextEnabled,
         });
         createSnackbar({
           key: 'success',
           severity: 'success',
-          label: nextRunning
+          label: nextEnabled
             ? t(
                 'label.ldap_address_book_service_started',
                 'ldap-address-book service started',

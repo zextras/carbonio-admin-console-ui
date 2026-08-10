@@ -23,33 +23,99 @@ describe('get-address-book-services', () => {
     vi.clearAllMocks();
   });
 
-  it('should parse service status from SOAP response', () => {
+  it('should parse running status from inheritedValue when isInherited is true', () => {
     const response = makeSoapResponse({
       ok: true,
       response: {
-        services: {
-          'ldap-address-book': {
-            running: true,
-            could_start: false,
-            could_stop: true,
+        values: [
+          {
+            attribute: 'addressBookServiceEnabled',
+            inheritedValue: true,
+            inheritedFrom: 'default',
+            isInherited: true,
+            modules: ['ZxAddressBook'],
           },
-        },
+        ],
       },
     });
 
-    expect(parseAddressBookServiceStatus(response as any)).toEqual({
+    expect(parseAddressBookServiceStatus(response)).toEqual({
       running: true,
       couldStart: false,
       couldStop: true,
     });
   });
 
-  it('should return false for missing content', async () => {
+  it('should parse stopped status from inheritedValue when isInherited is true', () => {
+    const response = makeSoapResponse({
+      ok: true,
+      response: {
+        values: [
+          {
+            attribute: 'addressBookServiceEnabled',
+            inheritedValue: false,
+            isInherited: true,
+          },
+        ],
+      },
+    });
+
+    expect(parseAddressBookServiceStatus(response)).toEqual({
+      running: false,
+      couldStart: true,
+      couldStop: false,
+    });
+  });
+
+  it('should parse running status from value when isInherited is false', () => {
+    const response = makeSoapResponse({
+      ok: true,
+      response: {
+        values: [
+          {
+            attribute: 'addressBookServiceEnabled',
+            value: true,
+            isInherited: false,
+            modules: ['ZxAddressBook'],
+          },
+        ],
+      },
+    });
+
+    expect(parseAddressBookServiceStatus(response)).toEqual({
+      running: true,
+      couldStart: false,
+      couldStop: true,
+    });
+  });
+
+  it('should parse stopped status from value when isInherited is false', () => {
+    const response = makeSoapResponse({
+      ok: true,
+      response: {
+        values: [
+          {
+            attribute: 'addressBookServiceEnabled',
+            value: false,
+            isInherited: false,
+          },
+        ],
+      },
+    });
+
+    expect(parseAddressBookServiceStatus(response)).toEqual({
+      running: false,
+      couldStart: true,
+      couldStop: false,
+    });
+  });
+
+  it('should return false flags for missing content', async () => {
     mockPostSoapFetchRequest.mockResolvedValue({ Body: {} });
 
     const result = await getAddressBookServices();
 
-    expect(result).toEqual({ running: false, couldStart: false, couldStop: false });
+    expect(result).toEqual({ running: false, couldStart: true, couldStop: false });
   });
 
   it('should forward SOAP fault as an error', async () => {
@@ -62,9 +128,20 @@ describe('get-address-book-services', () => {
     await expect(getAddressBookServices()).rejects.toThrow('Service error');
   });
 
-  it('should call postSoapFetchRequest with correct getServices payload', async () => {
+  it('should call postSoapFetchRequest with addressBookServiceEnabled get payload', async () => {
     mockPostSoapFetchRequest.mockResolvedValue(
-      makeSoapResponse({ ok: true, response: { services: {} } }),
+      makeSoapResponse({
+        ok: true,
+        response: {
+          values: [
+            {
+              attribute: 'addressBookServiceEnabled',
+              value: true,
+              isInherited: false,
+            },
+          ],
+        },
+      }),
     );
 
     await getAddressBookServices();
@@ -72,11 +149,12 @@ describe('get-address-book-services', () => {
     expect(mockPostSoapFetchRequest).toHaveBeenCalledWith(
       '/service/admin/soap/zextras',
       expect.objectContaining({
-        module: 'ZxAddressBook',
-        action: 'getServices',
+        module: 'ZxConfig',
+        action: 'global',
+        command: 'get',
+        attribute: 'addressBookServiceEnabled',
       }),
       'zextras',
     );
-    expect(mockPostSoapFetchRequest.mock.calls[0][1]).not.toHaveProperty('targetServers');
   });
 });
