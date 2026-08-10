@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ListRow } from '@zextras/ui-components';
+import { LicenseBanner, ListRow } from '@zextras/ui-components';
 import {
   buildPath,
   getRights,
@@ -32,7 +32,6 @@ import { CarbonioVersionInformation } from './carbonio-version-information-view'
 import { DashboardNotification } from './dashboard-notification';
 import { DashboardServerList } from './dashboard-server-list-view';
 import styles from './dashboard-view.module.css';
-import { LicenseBanner } from './license-banner';
 import { QuickAccess } from './quick-access-view';
 
 export const Dashboard = () => {
