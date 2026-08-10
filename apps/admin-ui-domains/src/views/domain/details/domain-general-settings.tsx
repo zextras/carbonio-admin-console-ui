@@ -7,7 +7,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, ChipInput, ChipItem, Container, CustomTextArea, Input, LabeledValue, ListRow, Modal, Padding, RouteLeavingGuard, Row, Select, useSnackbar, } from '@zextras/ui-components';
 import { type DirectoryEntry, domainByIdKey, type DomainDirectories, flushCache, replaceHistory, searchDirectory, useCosList, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -43,6 +43,7 @@ import {
 } from '../../utility/utils';
 import { DomainFormActions } from './components/domain-form-actions';
 import DomainCosLink from './domain-cos-link';
+import { useDomainMutation } from './hooks/use-domain-mutation';
 import DomainListChipInput from './parts/domain-list-chip-input';
 import QuotaReportDownloadButton from './quota-report-download-button';
 import {
@@ -54,7 +55,7 @@ import {
 
 const DomainGeneralSettings: FC = () => {
   const [t] = useTranslation();
-  const timezones = useMemo(() => timeZoneList(t), [t]);
+  const timezones = timeZoneList(t);
   const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
   const cosList = cosData?.cos ?? [];
   const { data: domain } = useSelectedDomain();
@@ -65,59 +66,53 @@ const DomainGeneralSettings: FC = () => {
   const userSetting = useUserSettings();
   const isAdvanced = useIsAdvanced();
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
-  const serviceProtocolItems: any = useMemo(
-    () => [
-      {
-        value: NOT_SET,
-        label: t('label.not_set', 'Not Set'),
-      },
-      {
-        label: `${t('label.https', 'https')} (${t('label.secure', 'secure')})`,
-        value: HTTPS,
-      },
-      {
-        label: `${t('label.http', 'http')} (${t('label.unsecure', 'unsecure')})`,
-        value: HTTP,
-      },
-    ],
-    [t],
-  );
+  const serviceProtocolItems: any = [
+    {
+      value: NOT_SET,
+      label: t('label.not_set', 'Not Set'),
+    },
+    {
+      label: `${t('label.https', 'https')} (${t('label.secure', 'secure')})`,
+      value: HTTPS,
+    },
+    {
+      label: `${t('label.http', 'http')} (${t('label.unsecure', 'unsecure')})`,
+      value: HTTP,
+    },
+  ];
 
-  const domainStatusItems = useMemo(
-    () => [
-      {
-        label: t('label.active', 'Active'),
-        value: ACTIVE,
-      },
-      {
-        label: `${t('label.closed', 'Closed')} (${t('label.soft_deleted', 'Soft-deleted')})`,
-        value: CLOSED,
-      },
-      {
-        label: `${t('label.locked', 'Locked')} (${t(
-          'label.login_is_disabled',
+  const domainStatusItems = [
+    {
+      label: t('label.active', 'Active'),
+      value: ACTIVE,
+    },
+    {
+      label: `${t('label.closed', 'Closed')} (${t('label.soft_deleted', 'Soft-deleted')})`,
+      value: CLOSED,
+    },
+    {
+      label: `${t('label.locked', 'Locked')} (${t(
+        'label.login_is_disabled',
 
-          'Login is disabled',
-        )})`,
-        value: LOCKED,
-      },
-      {
-        label: `${t('label.in_maintenance', 'In maintenance')} (${t(
-          'label.login_is_disabled',
-          'Login is disabled',
-        )})`,
-        value: MAINTENANCE,
-      },
-      {
-        label: `${t('label.suspended', 'Suspended')} (${t(
-          'label.login_is_disabled',
-          'Login is disabled',
-        )})`,
-        value: SUSPENDED,
-      },
-    ],
-    [t],
-  );
+        'Login is disabled',
+      )})`,
+      value: LOCKED,
+    },
+    {
+      label: `${t('label.in_maintenance', 'In maintenance')} (${t(
+        'label.login_is_disabled',
+        'Login is disabled',
+      )})`,
+      value: MAINTENANCE,
+    },
+    {
+      label: `${t('label.suspended', 'Suspended')} (${t(
+        'label.login_is_disabled',
+        'Login is disabled',
+      )})`,
+      value: SUSPENDED,
+    },
+  ];
 
   // Form state - replaces many individual useState
   const [formState, setFormState] = useState<GeneralFormState | null>(null);
@@ -142,7 +137,6 @@ const DomainGeneralSettings: FC = () => {
 
   // Validation state
   const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Delete domain state
   const [domainDirectories, setDomainDirectories] = useState<DomainDirectories>({
@@ -284,43 +278,27 @@ const DomainGeneralSettings: FC = () => {
       setDomainQuotaGB(initDomainQuotaGB);
     }
   };
-  const handleSuccess = (data: { domain: Domain[] }): void => {
-    if (isGlobalAdmin && formState?.zimbraId) {
-      flushCache('domain', 'id', formState.zimbraId);
-    }
-    createSnackbar({
-      key: 'success',
-      severity: 'success',
-      label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-      autoHideTimeout: 3000,
-      hideButton: true,
-      replace: true,
-    });
-    const newDomain: Domain = data?.domain[0];
-    if (newDomain) {
-      queryClient.setQueryData(domainByIdKey(domainId, 1), newDomain);
-    }
-    setIsLoading(false);
-  };
 
-  const handleError = (error: { message?: string }): void => {
-    createSnackbar({
-      key: 'error',
-      severity: 'error',
-      label: error?.message
-        ? error?.message
-        : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-      autoHideTimeout: 3000,
-      hideButton: true,
-      replace: true,
-    });
-    setIsLoading(false);
-  };
+  // Save mutation using useDomainMutation hook
+  const { mutate: saveSettings, isPending: isSaving } = useDomainMutation<
+    { domain: Domain[] },
+    { id: string; _jsns: string; a: ReturnType<typeof buildGeneralAttributes> }
+  >({
+    mutationFn: async (body) => {
+      const result = await modifyDomain(body);
+      // Flush cache for global admin after successful save
+      if (isGlobalAdmin && body.id) {
+        flushCache('domain', 'id', body.id);
+      }
+      return result;
+    },
+    successMessage: t('label.change_save_success_msg', 'The change has been saved successfully')
+  });
 
   const isInvalidEmail = (): boolean =>
     !(isValidEmail(formState?.carbonioNotificationFrom ?? '') || formState?.carbonioNotificationFrom === '');
 
-  const onSave = (): void => {
+  const onSave = async (): Promise<void> => {
     if (!formState) return;
 
     if (isInvalidEmail()) {
@@ -328,7 +306,6 @@ const DomainGeneralSettings: FC = () => {
       return;
     }
 
-    setIsLoading(true);
     setHasCarbonioNotificationFromError(false);
 
     const attributes = buildGeneralAttributes({
@@ -343,8 +320,9 @@ const DomainGeneralSettings: FC = () => {
       a: attributes,
     };
 
-    modifyDomain(body).then(handleSuccess).catch(handleError);
+    await saveSettings(body);
 
+    // Handle quota separately if changed (advanced mode only)
     if (isAdvanced && domainQuotaGB !== initDomainQuotaGB) {
       const quotaPromise =
         domainQuotaGB === ''
@@ -368,7 +346,7 @@ const DomainGeneralSettings: FC = () => {
     }
   };
 
-  const deleteOnlyDomain = useCallback((): void => {
+  const deleteOnlyDomain = (): void => {
     if (!formState?.zimbraId) return;
     deleteDomain(formState.zimbraId).then(() => {
       setIsRequestInProgress(false);
@@ -389,7 +367,7 @@ const DomainGeneralSettings: FC = () => {
       });
       replaceHistory(`/`);
     });
-  }, [createSnackbar, formState?.zimbraId, t]);
+  };
 
   const onDeleteAccountAndDomain = (): void => {
     setIsRequestInProgress(true);
@@ -439,87 +417,80 @@ const DomainGeneralSettings: FC = () => {
     });
   };
 
-  const domainCreationDate = useMemo(
-    () =>
-      formState?.zimbraCreateTimestamp
-        ? getFormatedDate(getDateFromStr(formState.zimbraCreateTimestamp))
-        : '',
-    [formState?.zimbraCreateTimestamp],
-  );
+  const domainCreationDate = formState?.zimbraCreateTimestamp
+    ? getFormatedDate(getDateFromStr(formState.zimbraCreateTimestamp))
+    : '';
 
   // Derive domain name from formState
   const domainName = formState?.zimbraDomainName ?? '';
-  const getAllDirectories = useCallback(
-    (
-      offset: number,
-      limit: number,
-      accountListArr: DirectoryEntry[],
-      dlListArr: DirectoryEntry[],
-      aliasListArr: DirectoryEntry[],
-      calResourceArr: DirectoryEntry[],
-    ): void => {
-      const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
-      const attrs =
-        'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus, zimbraIsSystemAccount';
-      searchDirectory({ attr: attrs, type, domainName, query: '', offset, limit })
-        .then((data) => {
-          if (data?.account?.length) {
-            data.account.forEach((item: DirectoryEntry) => {
-              const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });
-              if (zimbraIsSystemAccount) {
-                item.zimbraIsSystemAccount = zimbraIsSystemAccount._content;
-              }
-              return item;
-            });
-            accountListArr.push(...data.account);
-          }
-          if (data?.dl?.length) {
-            dlListArr.push(...data.dl);
-          }
-          if (data?.alias?.length) {
-            aliasListArr.push(...data.alias);
-          }
-          if (data?.calresource?.length) {
-            calResourceArr.push(...data.calresource);
-          }
-          if (data?.more) {
-            getAllDirectories(
-              offset + limit,
-              limit,
-              cloneDeep(accountListArr),
-              cloneDeep(dlListArr),
-              cloneDeep(aliasListArr),
-              cloneDeep(calResourceArr),
-            );
-          } else if ((data?.searchTotal ?? 0) > 0) {
-            if (
-              accountListArr?.length ||
-              dlListArr?.length ||
-              aliasListArr?.length ||
-              calResourceArr?.length
-            ) {
-              setDomainDirectories({
-                account: cloneDeep(accountListArr),
-                dl: cloneDeep(dlListArr),
-                alias: cloneDeep(aliasListArr),
-                calresource: cloneDeep(calResourceArr),
-              });
-              setOpenConfirmDialog(false);
-              setOpenDeleteDomainConfirmDialog(true);
-            } else {
-              deleteOnlyDomain();
+  const getAllDirectories = (
+    offset: number,
+    limit: number,
+    accountListArr: DirectoryEntry[],
+    dlListArr: DirectoryEntry[],
+    aliasListArr: DirectoryEntry[],
+    calResourceArr: DirectoryEntry[],
+  ): void => {
+    const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
+    const attrs =
+      'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus, zimbraIsSystemAccount';
+    searchDirectory({ attr: attrs, type, domainName, query: '', offset, limit })
+      .then((data) => {
+        if (data?.account?.length) {
+          data.account.forEach((item: DirectoryEntry) => {
+            const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });
+            if (zimbraIsSystemAccount) {
+              item.zimbraIsSystemAccount = zimbraIsSystemAccount._content;
             }
-          } else if (data?.searchTotal === 0) {
+            return item;
+          });
+          accountListArr.push(...data.account);
+        }
+        if (data?.dl?.length) {
+          dlListArr.push(...data.dl);
+        }
+        if (data?.alias?.length) {
+          aliasListArr.push(...data.alias);
+        }
+        if (data?.calresource?.length) {
+          calResourceArr.push(...data.calresource);
+        }
+        if (data?.more) {
+          getAllDirectories(
+            offset + limit,
+            limit,
+            cloneDeep(accountListArr),
+            cloneDeep(dlListArr),
+            cloneDeep(aliasListArr),
+            cloneDeep(calResourceArr),
+          );
+        } else if ((data?.searchTotal ?? 0) > 0) {
+          if (
+            accountListArr?.length ||
+            dlListArr?.length ||
+            aliasListArr?.length ||
+            calResourceArr?.length
+          ) {
+            setDomainDirectories({
+              account: cloneDeep(accountListArr),
+              dl: cloneDeep(dlListArr),
+              alias: cloneDeep(aliasListArr),
+              calresource: cloneDeep(calResourceArr),
+            });
+            setOpenConfirmDialog(false);
+            setOpenDeleteDomainConfirmDialog(true);
+          } else {
             deleteOnlyDomain();
           }
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, deleteOnlyDomain, domainName, t],
-  );
+        } else if (data?.searchTotal === 0) {
+          deleteOnlyDomain();
+        }
+      })
+      .catch((error) => {
+        const snackbarConfig = generateSnackbarFromError(error, t);
+        createSnackbar(snackbarConfig);
+      });
+  };
 
   const onDeleteDomain = (): void => {
     setIsRequestInProgress(true);
@@ -595,7 +566,7 @@ const DomainGeneralSettings: FC = () => {
 
   return (
     <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-      {isLoading && <ds-spinner></ds-spinner>}
+      {isSaving && <ds-spinner></ds-spinner>}
       <Row mainAlignment="flex-start" width="100%">
         <Container
           orientation="vertical"
@@ -611,7 +582,7 @@ const DomainGeneralSettings: FC = () => {
             </Row>
             <DomainFormActions
               isDirty={isDirty}
-              isPending={isLoading}
+              isPending={isSaving}
               onCancel={onCancel}
               onSave={onSave}
             />
@@ -895,6 +866,7 @@ const DomainGeneralSettings: FC = () => {
                 <ChipInput
                   isRequired
                   placeholder={t('label.send_notifications_to', 'Send notifications to...')}
+                  aria-label={t('label.notification_recipients', 'Notification recipients')}
                   background="gray5"
                   defaultValue={formState?.carbonioNotificationRecipients ?? []}
                   value={formState?.carbonioNotificationRecipients ?? []}
@@ -1138,6 +1110,7 @@ const DomainGeneralSettings: FC = () => {
                         <Input
                           value={confirmDomainName}
                           backgroundColor="gray5"
+                          aria-label={t('label.confirm_domain_name', 'Confirm domain name')}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                             setConfirmDomainName(e.target.value);
                             if (isEqual(e.target.value, domainName)) {
