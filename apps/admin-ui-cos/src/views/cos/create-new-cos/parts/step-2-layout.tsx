@@ -1,0 +1,34 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import type { ReactNode } from 'react';
+
+import type { CreateCosFormApi } from '../types';
+import { FeaturesHeader } from './features-header';
+import { StepFooter } from './step-footer';
+import { StepHeader } from './step-header';
+import styles from './steps.module.css';
+
+type Step2LayoutProps = {
+  form: CreateCosFormApi;
+  onBack: () => void;
+  children: ReactNode;
+};
+
+export const Step2Layout = ({ form, onBack, children }: Step2LayoutProps) => (
+  <div className={styles.root}>
+    <StepHeader />
+    <div className={styles.scrollArea}>
+      <div className={styles.formRow}>
+        <div className={styles.formPanel}>
+          <FeaturesHeader />
+          {children}
+        </div>
+      </div>
+    </div>
+    <StepFooter onBack={onBack} onPrimary={() => form.handleSubmit()} />
+  </div>
+);

@@ -14,7 +14,11 @@ import { GeneralInformationForm } from './general-information-form';
 export const CosGeneralInformation = () => {
   const { cosId } = useParams();
   const { data: cosDetailData, isPending } = useCosDetail(cosId);
-  const cosInformation = cosDetailData?.cos?.[0]?.a;
+  const cosEntry = cosDetailData?.cos?.[0];
+  const cosInformation = [
+    ...(cosEntry?.a ?? []),
+    ...Object.entries(cosEntry?._attrs ?? {}).map(([n, _content]) => ({ n, _content })),
+  ];
   const { data: rights = [] } = useCurrentUserRights();
 
   const rightsConfig = find(rights, { type: COS }) || { all: [], type: COS };

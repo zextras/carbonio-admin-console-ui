@@ -34,6 +34,10 @@ export const useRoutes = vi.fn(() => []);
 export const useContextBridge = vi.fn();
 export const queryClient = vi.fn();
 export const useDebouncedValue = vi.fn((value) => value);
+export const useLocalStorage = vi.fn((_key, initialValue) => [initialValue, vi.fn()]);
+export const useBreakpoint = vi.fn(() => 'xl');
+export const getResponsiveContainerStyle = vi.fn(() => ({}));
+export const useLicenseInfo = vi.fn();
 export const useDomainSearch = vi.fn(() => ({
   data: undefined,
   isFetching: false,

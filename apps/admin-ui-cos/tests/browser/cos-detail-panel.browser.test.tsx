@@ -47,6 +47,7 @@ describe('CosDetailPanel', () => {
 
   it('should render the COS detail panel with basic structure', async () => {
     createBrowserSoapAPIInterceptor('SearchDirectory', {});
+    createBrowserSoapAPIInterceptor('GetAccount', {});
 
     await setupBrowserTest(
       <Routes>
@@ -59,6 +60,7 @@ describe('CosDetailPanel', () => {
   });
   it('should show the list of COS elements', async () => {
     createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+    createBrowserSoapAPIInterceptor('GetAccount', {});
 
     await setupBrowserTest(
       <Routes>
@@ -72,6 +74,7 @@ describe('CosDetailPanel', () => {
   });
   it('should change the number of visible COS', async () => {
     createBrowserSoapAPIInterceptor('SearchDirectory', mockApiResponse);
+    createBrowserSoapAPIInterceptor('GetAccount', {});
 
     await setupBrowserTest(
       <Routes>
@@ -88,7 +91,10 @@ describe('CosDetailPanel', () => {
     await expect.element(page.getByText('100')).toBeVisible();
 
     const listOfElements = page.getByText('10').elements();
-    const dsText = listOfElements[1].closest('ds-text') ?? listOfElements[1].querySelector('ds-text') ?? listOfElements[1];
+    const dsText =
+      listOfElements[1].closest('ds-text') ??
+      listOfElements[1].querySelector('ds-text') ??
+      listOfElements[1];
     expect(dsText.getAttribute('weight')).toBe('bold');
 
     await page.getByText('15').click();

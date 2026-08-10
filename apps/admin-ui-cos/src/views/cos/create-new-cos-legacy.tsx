@@ -21,7 +21,7 @@ import { Attribute } from '../../../types/attribute';
 import { GENERAL_INFORMATION } from '../../constants';
 import { useCreateCos } from '../../services/use-create-cos';
 
-export const CreateCos = () => {
+export const CreateCosLegacy = () => {
   const [t] = useTranslation();
   const [zimbraNotes, setZimbraNotes] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -54,8 +54,18 @@ export const CreateCos = () => {
   };
 
   return (
-    <Container height="fit" padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-      <Container height="fit" crossAlignment="flex-start" mainAlignment="flex-start" background="gray6">
+    <Container
+      height="fit"
+      padding={{ all: 'large' }}
+      mainAlignment="flex-start"
+      background="gray6"
+    >
+      <Container
+        height="fit"
+        crossAlignment="flex-start"
+        mainAlignment="flex-start"
+        background="gray6"
+      >
         <Row width="100%" mainAlignment="space-between" crossAlignment="center">
           <Padding all="large">
             <ds-text as="strong" size="medium" weight="bold" color="gray0">
