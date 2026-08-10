@@ -10,7 +10,7 @@ import { type CSSProperties, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookServiceStatus } from '../../../../types';
-import { LDAP_ADDRESS_BOOK_SERVICE, TRUE } from '../../../constants';
+import { LDAP_ADDRESS_BOOK_PORT, LDAP_ADDRESS_BOOK_SERVICE, TRUE } from '../../../constants';
 import { doStartStopAddressBookService } from '../../../services/do-start-stop-address-book-service';
 import { getAddressBookServices } from '../../../services/get-address-book-services';
 
@@ -282,6 +282,11 @@ export function GlobalAddressBook() {
                             'label.ldap_address_book_stopped_description',
                             'LDAP clients can’t query exposed address books while the service is stopped.',
                           )}
+                    </ds-text>
+                    <ds-text as="p" size="small" color="gray1" overflow="break-word">
+                      {t('label.ldap_address_book_port', 'Listening on port {{port}}.', {
+                        port: LDAP_ADDRESS_BOOK_PORT,
+                      })}
                     </ds-text>
                   </Container>
                 </Container>

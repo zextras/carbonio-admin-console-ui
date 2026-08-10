@@ -71,6 +71,7 @@ export const ADDRESS_BOOK = 'address_book';
 export const GLOBAL_ADDRESS_BOOK_ROUTE = 'global/address_book';
 export const ZX_ADDRESS_BOOK = 'ZxAddressBook';
 export const LDAP_ADDRESS_BOOK_SERVICE = 'ldap-address-book';
+export const LDAP_ADDRESS_BOOK_PORT = 8636;
 export const DOMAIN_CERTIFICATE = 'domain_certificate';
 export const DOMAIN_CERTIFICATE_CA_CHAIN = 'domain_certificate_ca_chain';
 export const DOMAIN_CERTIFICATE_PRIVATE_KEY = 'domain_certificate_private_key';

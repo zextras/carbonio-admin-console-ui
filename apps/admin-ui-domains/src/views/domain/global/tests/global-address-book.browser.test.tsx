@@ -158,6 +158,9 @@ describe('GlobalAddressBook (browser)', () => {
 					page.getByText(/Applies globally, to every domain on this infrastructure/i),
 				)
 				.toBeInTheDocument();
+			await expect
+				.element(page.getByText('Listening on port 8636.', { exact: true }))
+				.toBeInTheDocument();
 		});
 
 		it('should show running status and Stop service button when service is running', async () => {
