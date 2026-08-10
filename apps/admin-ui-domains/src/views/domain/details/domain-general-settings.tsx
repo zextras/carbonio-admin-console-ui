@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, ChipInput, ChipItem, Container, CustomTextArea, Input, LabeledValue, ListRow, Modal, Padding, RouteLeavingGuard, Row, Select, useSnackbar, } from '@zextras/ui-components';
+import { Button, ChipInput, ChipItem, Container, CustomTextArea, Input, LabeledValue, ListRow, Modal, Padding, RouteLeavingGuard, Row, Select, SelectItem, useSnackbar, } from '@zextras/ui-components';
 import { type DirectoryEntry, domainByIdKey, type DomainDirectories, flushCache, replaceHistory, searchDirectory, useCosList, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
@@ -118,15 +118,15 @@ const DomainGeneralSettings: FC = () => {
   const [formState, setFormState] = useState<GeneralFormState | null>(null);
   const [originalFormState, setOriginalFormState] = useState<GeneralFormState | null>(null);
 
-  // UI state for Select components (using any to match Select component expectations)
-  const [selectedTimeZone, setSelectedTimeZone]: any = useState(timezones[0]);
-  const [selectedPublicServiceProtocol, setSelectedPublicServiceProtocol]: any = useState(
+  // UI state for Select components
+  const [selectedTimeZone, setSelectedTimeZone] = useState(timezones[0]);
+  const [selectedPublicServiceProtocol, setSelectedPublicServiceProtocol] = useState(
     serviceProtocolItems[0],
   );
-  const [domainStatus, setDomainStatus] = useState<any>(domainStatusItems[0]);
+  const [domainStatus, setDomainStatus] = useState(domainStatusItems[0]);
 
   // COS state
-  const [cosItems, setCosItems] = useState<any[]>([]);
+  const [cosItems, setCosItems] = useState<SelectItem[]>([]);
   const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
 
   // Modal state
@@ -234,21 +234,21 @@ const DomainGeneralSettings: FC = () => {
     setFormState((prev) => (prev ? { ...prev, [field]: value } : prev));
   };
 
-  const onTimeZoneChange = (v: any): void => {
-    const it = timezones.find((item: any) => item.value === v);
-    setSelectedTimeZone(it);
+  const onTimeZoneChange = (v: string | null): void => {
+    const it = timezones.find((item) => item.value === v);
+    if (it) setSelectedTimeZone(it);
     updateFormField('zimbraPrefTimeZoneId', v ?? '');
   };
 
-  const onPublicServiceProtocolChange = (v: any): void => {
-    const it = serviceProtocolItems.find((item: any) => item.value === v);
-    setSelectedPublicServiceProtocol(it);
+  const onPublicServiceProtocolChange = (v: string | null): void => {
+    const it = serviceProtocolItems.find((item) => item.value === v);
+    if (it) setSelectedPublicServiceProtocol(it);
     updateFormField('zimbraPublicServiceProtocol', v ?? '');
   };
 
-  const onDomainStatusChange = (v: any): void => {
-    const it = domainStatusItems.find((item: any) => item.value === v);
-    setDomainStatus(it);
+  const onDomainStatusChange = (v: string | null): void => {
+    const it = domainStatusItems.find((item) => item.value === v);
+    if (it) setDomainStatus(it);
     updateFormField('zimbraDomainStatus', v ?? '');
   };
   const onCancel = (): void => {
