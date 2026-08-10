@@ -196,7 +196,7 @@ export function DomainAddressBook() {
               crossAlignment="flex-start"
             >
               <ds-text as="h1" size="medium" weight="bold" color="gray0">
-                {t('label.ldap_addressbook', 'LDAP Addressbook')}
+                {t('label.ldap_addressbook', 'LDAP Address Book')}
               </ds-text>
             </Row>
             <Row

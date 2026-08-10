@@ -275,7 +275,7 @@ const DomainListPanel: FC = () => {
       },
       {
         id: ADDRESS_BOOK,
-        name: t('label.ldap_addressbook', 'LDAP Addressbook'),
+        name: t('label.ldap_addressbook', 'LDAP Address Book'),
         isSelected: isDomainSelect,
       },
       {

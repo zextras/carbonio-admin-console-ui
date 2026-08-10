@@ -206,7 +206,7 @@ export function GlobalAddressBook() {
         style={{ overflow: 'auto' }}
         width="100%"
         height="calc(100vh - 9.375rem)"
-        padding={{ all: 'large' }}
+        padding={{ vertical: 'large' }}
         gap="1rem"
       >
         {isLoading && !hasLoadedStatus ? (
@@ -218,7 +218,6 @@ export function GlobalAddressBook() {
             <Container
               orientation="vertical"
               width="100%"
-              maxWidth="640px"
               height="fit"
               background="gray6"
               mainAlignment="flex-start"

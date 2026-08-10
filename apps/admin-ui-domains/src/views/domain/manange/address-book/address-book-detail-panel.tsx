@@ -13,6 +13,7 @@ import {
   RadioGroup,
   Row,
   Select,
+  Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useEffect, useState } from 'react';
@@ -332,16 +333,18 @@ export function AddressBookDetailPanel({
                         )}
                       </ds-text>
                     </Container>
-                    <Button
-                      type="ghost"
-                      color="error"
-                      size="medium"
-                      icon="Trash2Outline"
-                      aria-label={t('label.remove_folder', 'Remove folder')}
-                      onClick={(): void => {
-                        setFolderToRemove(folder);
-                      }}
-                    />
+                    <Tooltip label={t('label.remove_exposed_folder', 'Remove exposed folder')}>
+                      <Button
+                        type="ghost"
+                        color="error"
+                        size="medium"
+                        icon="Trash2Outline"
+                        aria-label={t('label.remove_exposed_folder', 'Remove exposed folder')}
+                        onClick={(): void => {
+                          setFolderToRemove(folder);
+                        }}
+                      />
+                    </Tooltip>
                   </Container>
                 ))
               )}
@@ -446,7 +449,7 @@ export function AddressBookDetailPanel({
 
       <Modal
         size="small"
-        title={t('label.remove_folder', 'Remove folder?')}
+        title={t('label.remove_exposed_folder', 'Remove exposed folder')}
         open={Boolean(folderToRemove)}
         showCloseIcon
         onClose={(): void => {
@@ -476,10 +479,10 @@ export function AddressBookDetailPanel({
         }
       >
         <Container padding={{ top: 'extralarge', bottom: 'extralarge' }} mainAlignment="flex-start">
-          <ds-text as="p" size="large" overflow="break-word">
+          <ds-text as="p" size="large" overflow="break-word" style={{ whiteSpace: 'pre-line', textAlign: 'left'}}>
             <Trans
-              i18nKey="label.remove_folder_confirm"
-              defaults='Remove folder "{{folder}}" from {{account}}?'
+              i18nKey="label.remove_exposed_folder_confirm"
+              defaults='Remove exposed folder "{{folder}}" from {{account}}?'
               values={{
                 folder:
                   folderToRemove && String(folderToRemove.id) === 'all'

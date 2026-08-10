@@ -169,12 +169,12 @@ function setupBrowserTest(ui: ReactElement): Promise<RenderResult> {
 
 describe('DomainAddressBook (browser)', () => {
 	describe('List', () => {
-		it('should render the LDAP Addressbook title, Add button, description, and search', async () => {
+		it('should render the LDAP Address Book title, Add button, description, and search', async () => {
 			setupAddressBookZextrasInterceptor();
 			await setupBrowserTest(<DomainAddressBook />);
 
 			await expect
-				.element(page.getByText('LDAP Addressbook', { exact: true }))
+				.element(page.getByText('LDAP Address Book', { exact: true }))
 				.toBeInTheDocument();
 			await expect.element(page.getByRole('button', { name: 'Add' })).toBeInTheDocument();
 			await expect
@@ -372,9 +372,9 @@ describe('DomainAddressBook (browser)', () => {
 			await userEvent.click(page.getByText('alice@example.com'));
 			await expect.element(page.getByText('All folders')).toBeInTheDocument();
 
-			await userEvent.click(page.getByRole('button', { name: 'Remove folder' }));
+			await userEvent.click(page.getByRole('button', { name: 'Remove exposed folder' }));
 			await expect
-				.element(page.getByText('Remove folder?', { exact: true }))
+				.element(page.getByText('Remove exposed folder', { exact: true }))
 				.toBeInTheDocument();
 
 			setBooks(DEFAULT_BOOKS.filter((book) => book.account !== 'alice@example.com'));

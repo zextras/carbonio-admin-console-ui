@@ -239,9 +239,9 @@ describe('AddressBookDetailPanel (browser)', () => {
 		);
 
 		await expect.element(page.getByText('All folders')).toBeInTheDocument();
-		await userEvent.click(page.getByRole('button', { name: 'Remove folder' }));
+		await userEvent.click(page.getByRole('button', { name: 'Remove exposed folder' }));
 		await expect
-			.element(page.getByText('Remove folder?', { exact: true }))
+				.element(page.getByText('Remove exposed folder', { exact: true }))
 			.toBeInTheDocument();
 
 		await userEvent.click(page.getByRole('button', { name: 'Remove', exact: true }));
