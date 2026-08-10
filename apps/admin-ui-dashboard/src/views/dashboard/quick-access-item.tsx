@@ -5,7 +5,6 @@
  */
 
 import { IconName, ListRow } from '@zextras/ui-components';
-import type { KeyboardEvent } from 'react';
 
 import styles from './quick-access-item.module.css';
 
@@ -25,13 +24,6 @@ type QuickAccessItemProps = {
 };
 
 export const QuickAccessItem = ({ item, onOpen }: QuickAccessItemProps) => {
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      onOpen(item.operation);
-    }
-  };
-
   return (
     <div className={styles.item}>
       <div className={styles.card} style={{ background: `var(--color-${item.bgColor})` }}>
@@ -56,18 +48,15 @@ export const QuickAccessItem = ({ item, onOpen }: QuickAccessItemProps) => {
           </div>
         </ListRow>
         <ListRow>
-          <div
+          <button
             className={styles.footer}
-            role="button"
-            tabIndex={0}
             onClick={() => onOpen(item.operation)}
-            onKeyDown={handleKeyDown}
           >
             <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
               {item.bottomText}
             </ds-text>
             <ds-icon color="gray6" icon={item.bottomIcon} size="medium" />
-          </div>
+          </button>
         </ListRow>
       </div>
     </div>

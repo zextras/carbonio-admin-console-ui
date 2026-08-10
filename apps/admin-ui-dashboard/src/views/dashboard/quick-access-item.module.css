@@ -41,4 +41,6 @@
   padding: var(--padding-size-large);
   box-sizing: border-box;
   cursor: pointer;
+  border: none;
+  background: transparent;
 }
