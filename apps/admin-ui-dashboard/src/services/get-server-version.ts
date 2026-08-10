@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-declare const BASE_PATH: string;
-
 type GetServerVersionResponse =
 	| { type: 'success'; version: string }
 	| { type: 'error'; error: string };
