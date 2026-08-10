@@ -26,12 +26,15 @@ import HoverableRowFactory from './hoverable-row-factory';
 import { ListRow } from './list-row';
 import { ModalOverlay } from './modal-overlay';
 import { NotificationDetail } from './notification-detail';
+import { Paging } from './paging';
+import { TrackNumberPerPage } from './track-number-per-page';
 
 const DESC = 'desc';
 const NOTIFICATION_ALL = 'All';
 const NOTIFICATION_ERROR = 'Error';
 const NOTIFICATION_INFORMATION = 'Information';
 const NOTIFICATION_WARNING = 'Warning';
+const DEFAULT_PAGE_SIZE = 10;
 
 const copyTextToClipboard = (text: string): void => {
   if (navigator) {
@@ -109,7 +112,14 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
     all: 0,
   });
   const [selectedRow, setSelectedRow] = useState<any>([]);
+  const [limit, setLimit] = useState(DEFAULT_PAGE_SIZE);
+  const [offset, setOffset] = useState(0);
   const timer = useRef<any>(null);
+
+  function handlePageSizeChange(newLimit: number): void {
+    setLimit(newLimit);
+    setOffset(0);
+  }
 
   const items = useMemo(
     () => [
@@ -458,6 +468,7 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
             selected={change}
             onChange={(_: unknown, selectedId: string): void => {
               setChange(selectedId);
+              setOffset(0);
             }}
             underlineColor="primary"
           />
@@ -472,22 +483,30 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
           mainAlignment="space-between"
           crossAlignment="flex-start"
           width="fill"
-          maxHeight="calc(100vh - 21.25rem)"
-          minHeight="auto"
           padding={{ all: isAddPadding ? 'large' : '' }}
         >
           <Table
             selectedRows={selectedRow}
-            rows={notificationRows}
+            rows={notificationRows.slice(offset, offset + limit)}
             headers={headers}
             showCheckbox={false}
             multiSelect={false}
-            style={{ overflow: 'auto', height: '100%' }}
             RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>
       </ListRow>
+      {notificationRows.length > 0 && (
+        <Container orientation="horizontal" mainAlignment="space-between" width="fill">
+          <Paging
+            key={`${change}-${limit}`}
+            totalItem={notificationRows.length}
+            setOffset={setOffset}
+            pageSize={limit}
+          />
+          <TrackNumberPerPage setPageSize={handlePageSizeChange} />
+        </Container>
+      )}
       {showNotificationDetail && (
         <ModalOverlay open={showNotificationDetail}>
           <NotificationDetail

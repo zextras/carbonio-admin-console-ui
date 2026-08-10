@@ -10,12 +10,17 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   ListRow,
+  Paging,
   Table,
   type THeader,
+  TrackNumberPerPage,
   type TRow,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+const DEFAULT_PAGE_SIZE = 10;
 
 function getVersionTextStyle(): React.CSSProperties {
   return {
@@ -44,10 +49,20 @@ export const DashboardServerList = ({
   const [t] = useTranslation();
   const { data: mailstoresList = [] } = useMailstoreServers();
   const isAdvanced = useIsAdvanced();
+  const [limit, setLimit] = useState(DEFAULT_PAGE_SIZE);
+  const [offset, setOffset] = useState(0);
+
+  const totalServers = mailstoresList.length;
+  const paginatedList = mailstoresList.slice(offset, offset + limit);
+
+  function handlePageSizeChange(newLimit: number): void {
+    setLimit(newLimit);
+    setOffset(0);
+  }
 
   const serverListRow: Array<TRow> =
-    mailstoresList.length > 0
-      ? mailstoresList.map((item) => ({
+    paginatedList.length > 0
+      ? paginatedList.map((item) => ({
           id: item?.id ?? '',
           columns: [
             <ds-text
@@ -168,20 +183,28 @@ export const DashboardServerList = ({
           mainAlignment="space-between"
           crossAlignment="flex-start"
           width="fill"
-          maxHeight="calc(100vh - 25rem)"
-          minHeight="auto"
         >
           <Table
             rows={serverListRow}
             headers={headers}
             showCheckbox={false}
             multiSelect={false}
-            style={{ overflow: 'auto', height: '100%' }}
             RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>
       </ListRow>
+      {totalServers > 0 && (
+        <Container orientation="horizontal" mainAlignment="space-between" width="fill">
+          <Paging
+            key={limit}
+            totalItem={totalServers}
+            setOffset={setOffset}
+            pageSize={limit}
+          />
+          <TrackNumberPerPage setPageSize={handlePageSizeChange} />
+        </Container>
+      )}
     </Container>
   );
 };
