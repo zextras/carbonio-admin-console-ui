@@ -6,11 +6,9 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-declare const BASE_PATH: string;
+import { dashboardQueryKeys } from '../services/dashboard-query-keys';
 
-const serverVersionQueryKeys = {
-  all: ['server-version'],
-};
+declare const BASE_PATH: string;
 
 async function fetchServerVersion(): Promise<string> {
   const response = await fetch(`${BASE_PATH}.version`);
@@ -26,7 +24,7 @@ export const useServerVersion = (): {
   isLoading: boolean;
 } => {
   const { data, isLoading } = useQuery({
-    queryKey: serverVersionQueryKeys.all,
+    queryKey: dashboardQueryKeys.serverVersion(),
     queryFn: fetchServerVersion,
     staleTime: Infinity,
     gcTime: Infinity,
