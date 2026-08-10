@@ -137,10 +137,10 @@ describe('GlobalAddressBook (browser)', () => {
 	});
 
 	describe('Rendering', () => {
-		it('should render the Global Address Book title', async () => {
+		it('should render the Services title', async () => {
 			await renderGlobalAddressBook();
 			await expect
-				.element(page.getByText('Global Address Book', { exact: true }))
+				.element(page.getByText('Services', { exact: true }))
 				.toBeInTheDocument();
 		});
 
@@ -149,7 +149,7 @@ describe('GlobalAddressBook (browser)', () => {
 			await expect
 				.element(
 					page.getByText(
-						/Shared address book folders are reachable by LDAP clients on every domain/i,
+						/Exposed address book folders are reachable by LDAP clients on every domain/i,
 					),
 				)
 				.toBeInTheDocument();
@@ -175,7 +175,7 @@ describe('GlobalAddressBook (browser)', () => {
 			await expect
 				.element(
 					page.getByText(
-						/LDAP clients can’t query shared address books while the service is stopped/i,
+						/LDAP clients can’t query exposed address books while the service is stopped/i,
 					),
 				)
 				.toBeInTheDocument();

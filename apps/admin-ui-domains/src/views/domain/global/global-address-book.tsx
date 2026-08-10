@@ -192,7 +192,7 @@ export function GlobalAddressBook() {
               crossAlignment="flex-start"
             >
               <ds-text as="h1" size="medium" weight="bold" color="gray0">
-                {t('label.global_address_book', 'Global Address Book')}
+                {t('label.services', 'Services')}
               </ds-text>
             </Row>
           </Row>
@@ -277,11 +277,11 @@ export function GlobalAddressBook() {
                       {serviceStatus.running
                         ? t(
                             'label.ldap_address_book_running_description',
-                            'Shared address book folders are reachable by LDAP clients on every domain.',
+                            'Exposed address book folders are reachable by LDAP clients on every domain.',
                           )
                         : t(
                             'label.ldap_address_book_stopped_description',
-                            'LDAP clients can’t query shared address books while the service is stopped.',
+                            'LDAP clients can’t query exposed address books while the service is stopped.',
                           )}
                     </ds-text>
                   </Container>

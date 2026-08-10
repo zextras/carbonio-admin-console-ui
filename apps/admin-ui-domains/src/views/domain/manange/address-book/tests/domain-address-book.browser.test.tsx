@@ -169,25 +169,25 @@ function setupBrowserTest(ui: ReactElement): Promise<RenderResult> {
 
 describe('DomainAddressBook (browser)', () => {
 	describe('List', () => {
-		it('should render the Address Book title, Add button, description, and search', async () => {
+		it('should render the LDAP Addressbook title, Add button, description, and search', async () => {
 			setupAddressBookZextrasInterceptor();
 			await setupBrowserTest(<DomainAddressBook />);
 
 			await expect
-				.element(page.getByText('Address Book', { exact: true }))
+				.element(page.getByText('LDAP Addressbook', { exact: true }))
 				.toBeInTheDocument();
 			await expect.element(page.getByRole('button', { name: 'Add' })).toBeInTheDocument();
 			await expect
 				.element(
 					page.getByText(
-						/Accounts whose address books are shared through the LDAP Address Book service for example\.com/i,
+						/Accounts whose address books are exposed through the LDAP Address Book service for example\.com/i,
 					),
 				)
 				.toBeInTheDocument();
 			await expect.element(page.getByLabelText('Search accounts')).toBeInTheDocument();
 		});
 
-		it('should display shared account emails', async () => {
+		it('should display exposed account emails', async () => {
 			setupAddressBookZextrasInterceptor();
 			await setupBrowserTest(<DomainAddressBook />);
 
@@ -245,14 +245,14 @@ describe('DomainAddressBook (browser)', () => {
 	});
 
 	describe('Add panel', () => {
-		it('should open Share a new address book panel from Add', async () => {
+		it('should open Expose a new address book panel from Add', async () => {
 			setupAddressBookZextrasInterceptor();
 			await setupBrowserTest(<DomainAddressBook />);
 
 			await userEvent.click(page.getByRole('button', { name: 'Add' }));
 
 			await expect
-				.element(page.getByText('Share a new address book', { exact: true }))
+				.element(page.getByText('Expose a new address book', { exact: true }))
 				.toBeInTheDocument();
 			await expect
 				.element(page.getByText('All address books', { exact: true }))
@@ -281,13 +281,13 @@ describe('DomainAddressBook (browser)', () => {
 
 			await userEvent.click(page.getByRole('button', { name: 'Add' }));
 			await expect
-				.element(page.getByText('Share a new address book', { exact: true }))
+				.element(page.getByText('Expose a new address book', { exact: true }))
 				.toBeInTheDocument();
 
 			await userEvent.click(page.getByRole('button', { name: 'Cancel' }));
 
 			await expect
-				.element(page.getByText('Share a new address book', { exact: true }))
+				.element(page.getByText('Expose a new address book', { exact: true }))
 				.not.toBeInTheDocument();
 		});
 
@@ -298,7 +298,7 @@ describe('DomainAddressBook (browser)', () => {
 
 			await userEvent.click(page.getByRole('button', { name: 'Add' }));
 			await expect
-				.element(page.getByText('Share a new address book', { exact: true }))
+				.element(page.getByText('Expose a new address book', { exact: true }))
 				.toBeInTheDocument();
 
 			const panelAddButton = page.getByRole('button', { name: 'Add' }).nth(1);
@@ -307,7 +307,7 @@ describe('DomainAddressBook (browser)', () => {
 	});
 
 	describe('Detail panel', () => {
-		it('should open detail with shared folders for an account', async () => {
+		it('should open detail with exposed folders for an account', async () => {
 			setupAddressBookZextrasInterceptor();
 			await setupBrowserTest(<DomainAddressBook />);
 
@@ -317,12 +317,12 @@ describe('DomainAddressBook (browser)', () => {
 				.element(page.getByText('alice@example.com').first())
 				.toBeInTheDocument();
 			await expect
-				.element(page.getByText('Shared address books', { exact: true }))
+				.element(page.getByText('Exposed address books', { exact: true }))
 				.toBeInTheDocument();
 			await expect.element(page.getByText('All folders')).toBeInTheDocument();
 		});
 
-		it('should share all address books from the detail inline add', async () => {
+		it('should expose all address books from the detail inline add', async () => {
 			const { capturedActions, setBooks } = setupAddressBookZextrasInterceptor();
 			await setupBrowserTest(<DomainAddressBook />);
 
@@ -346,7 +346,7 @@ describe('DomainAddressBook (browser)', () => {
 
 			await userEvent.click(page.getByRole('button', { name: 'Add' }).nth(1));
 
-			await expect.element(page.getByText('Address book shared')).toBeInTheDocument();
+			await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
 			await expect
 				.poll(() =>
 					capturedActions.some((action) => action.action === 'AddAddressBookCommand'),
@@ -365,7 +365,7 @@ describe('DomainAddressBook (browser)', () => {
 			});
 		});
 
-		it('should remove a shared folder after confirmation', async () => {
+		it('should remove an exposed folder after confirmation', async () => {
 			const { capturedActions, setBooks } = setupAddressBookZextrasInterceptor();
 			await setupBrowserTest(<DomainAddressBook />);
 
@@ -405,7 +405,7 @@ describe('DomainAddressBook (browser)', () => {
 				.element(page.getByText('alice@example.com').first())
 				.toBeInTheDocument();
 			await expect
-				.element(page.getByText('No address book is shared for this account.'))
+				.element(page.getByText('No address book is exposed for this account.'))
 				.toBeInTheDocument();
 			await expect
 				.element(page.getByRole('button', { name: 'Add address book' }))

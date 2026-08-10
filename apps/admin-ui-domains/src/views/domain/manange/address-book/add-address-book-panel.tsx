@@ -103,8 +103,8 @@ export function AddAddressBookPanel({
   const allAlreadySharedError =
     hasValidSelectedAccount && folderMode === 'all' && hasAllShared
       ? t(
-          'label.all_address_books_already_shared',
-          'All address books of this account are already shared.',
+          'label.all_address_books_already_exposed',
+          'All address books of this account are already exposed.',
         )
       : null;
   const canSubmit =
@@ -113,7 +113,7 @@ export function AddAddressBookPanel({
     !allAlreadySharedError &&
     hasValidSelectedAccount &&
     !isLoadingFolders;
-  const sharedLabel = t('label.shared', 'shared');
+  const sharedLabel = t('label.exposed', 'exposed');
 
   function getSearchAccountList(searchKeyword: string): void {
     const attrs =
@@ -259,7 +259,7 @@ export function AddAddressBookPanel({
         createSnackbar({
           key: 'success',
           severity: 'success',
-          label: t('label.address_book_shared', 'Address book shared'),
+          label: t('label.address_book_exposed', 'Address book exposed'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -361,7 +361,7 @@ export function AddAddressBookPanel({
     >
       <Row mainAlignment="space-between" width="100%" padding={{ all: 'large' }}>
         <ds-text as="h2" size="medium" weight="bold" color="gray0">
-          {t('label.share_a_new_address_book', 'Share a new address book')}
+          {t('label.expose_a_new_address_book', 'Expose a new address book')}
         </ds-text>
         <Button type="ghost" color="secondary" icon="CloseOutline" onClick={onClose} />
       </Row>
@@ -405,7 +405,7 @@ export function AddAddressBookPanel({
         </Container>
 
         <ds-text as="span" size="small" weight="bold">
-          {t('label.address_books_to_share', 'Address books to share')}
+          {t('label.address_books_to_expose', 'Address books to expose')}
         </ds-text>
         <RadioGroup
           value={folderMode}

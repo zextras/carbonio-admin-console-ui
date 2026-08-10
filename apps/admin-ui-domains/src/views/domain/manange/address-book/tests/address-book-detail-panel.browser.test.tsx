@@ -114,7 +114,7 @@ function renderPanel(ui: ReactElement): Promise<RenderResult> {
 }
 
 describe('AddressBookDetailPanel (browser)', () => {
-	it('should render the account email and shared folders section', async () => {
+	it('should render the account email and exposed folders section', async () => {
 		setupAddressBookZextrasInterceptor();
 		await renderPanel(
 			<AddressBookDetailPanel
@@ -127,7 +127,7 @@ describe('AddressBookDetailPanel (browser)', () => {
 
 		await expect.element(page.getByText('alice@example.com').first()).toBeInTheDocument();
 		await expect
-			.element(page.getByText('Shared address books', { exact: true }))
+			.element(page.getByText('Exposed address books', { exact: true }))
 			.toBeInTheDocument();
 		await expect.element(page.getByText('All folders')).toBeInTheDocument();
 	});
@@ -163,7 +163,7 @@ describe('AddressBookDetailPanel (browser)', () => {
 		expect(onClose).toHaveBeenCalledOnce();
 	});
 
-	it('should show all already shared helper when every folder is shared', async () => {
+	it('should show all already exposed helper when every folder is exposed', async () => {
 		setupAddressBookZextrasInterceptor([
 			{ id: '7', name: '/Contacts/Work', isShared: false },
 		]);
@@ -178,7 +178,7 @@ describe('AddressBookDetailPanel (browser)', () => {
 
 		await expect
 			.element(
-				page.getByText('Every address book of this account is already shared.'),
+				page.getByText('Every address book of this account is already exposed.'),
 			)
 			.toBeInTheDocument();
 		await expect
@@ -186,7 +186,7 @@ describe('AddressBookDetailPanel (browser)', () => {
 			.toBeDisabled();
 	});
 
-	it('should share all address books from the inline add form', async () => {
+	it('should expose all address books from the inline add form', async () => {
 		const { capturedActions } = setupAddressBookZextrasInterceptor();
 		const onChanged = vi.fn();
 		await renderPanel(
@@ -206,7 +206,7 @@ describe('AddressBookDetailPanel (browser)', () => {
 
 		await userEvent.click(page.getByRole('button', { name: 'Add' }));
 
-		await expect.element(page.getByText('Address book shared')).toBeInTheDocument();
+		await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
 		expect(onChanged).toHaveBeenCalledOnce();
 		await expect
 			.poll(() =>
@@ -226,7 +226,7 @@ describe('AddressBookDetailPanel (browser)', () => {
 		});
 	});
 
-	it('should remove a shared folder after confirmation', async () => {
+	it('should remove an exposed folder after confirmation', async () => {
 		const { capturedActions } = setupAddressBookZextrasInterceptor();
 		const onChanged = vi.fn();
 		await renderPanel(

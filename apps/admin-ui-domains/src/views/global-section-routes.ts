@@ -86,8 +86,8 @@ export const GLOBAL_SECTION_ROUTES: Array<GlobalSectionRoute> = [
   },
   {
     id: ADDRESS_BOOK,
-    labelKey: 'label.address_book',
-    labelDefault: 'Address Book',
+    labelKey: 'label.services',
+    labelDefault: 'Services',
     Component: GlobalAddressBook,
   },
 ];

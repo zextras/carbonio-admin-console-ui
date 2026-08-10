@@ -104,7 +104,7 @@ export function AddressBookDetailPanel({
 
   const hasAllShared = folders.some((folder) => String(folder.id) === 'all');
   const linkedIds = new Set(folders.map((folder) => String(folder.id)));
-  const sharedLabel = t('label.shared', 'shared');
+  const sharedLabel = t('label.exposed', 'exposed');
   const availableFolderItems: Array<FolderSelectItem> = hasAllShared
     ? []
     : mailboxFolders
@@ -214,7 +214,7 @@ export function AddressBookDetailPanel({
         createSnackbar({
           key: 'success',
           severity: 'success',
-          label: t('label.address_book_shared', 'Address book shared'),
+          label: t('label.address_book_exposed', 'Address book exposed'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -275,7 +275,7 @@ export function AddressBookDetailPanel({
           gap="1rem"
         >
           <ds-text as="span" size="small" weight="bold">
-            {t('label.shared_address_books', 'Shared address books')}
+            {t('label.exposed_address_books', 'Exposed address books')}
           </ds-text>
 
           {isResolvingFolders ? (
@@ -296,8 +296,8 @@ export function AddressBookDetailPanel({
                 <Container padding={{ all: 'large' }} height="fit">
                   <ds-text as="span" size="small" color="gray1">
                     {t(
-                      'label.no_address_book_shared_for_this_account',
-                      'No address book is shared for this account.',
+                      'label.no_address_book_exposed_for_this_account',
+                      'No address book is exposed for this account.',
                     )}
                   </ds-text>
                 </Container>
@@ -430,12 +430,12 @@ export function AddressBookDetailPanel({
                 <ds-text as="p" size="small" color="gray1" overflow="break-word">
                   {hasAllShared
                     ? t(
-                        'label.all_address_books_already_shared',
-                        'All address books of this account are already shared.',
+                        'label.all_address_books_already_exposed',
+                        'All address books of this account are already exposed.',
                       )
                     : t(
-                        'label.every_address_book_already_shared',
-                        'Every address book of this account is already shared.',
+                        'label.every_address_book_already_exposed',
+                        'Every address book of this account is already exposed.',
                       )}
                 </ds-text>
               )}

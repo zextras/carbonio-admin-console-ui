@@ -220,7 +220,7 @@ describe('AddAddressBookPanel (browser)', () => {
 		);
 
 		await expect
-			.element(page.getByText('Share a new address book', { exact: true }))
+			.element(page.getByText('Expose a new address book', { exact: true }))
 			.toBeInTheDocument();
 		await expect
 			.element(page.getByLabelText(/Start typing an account e-mail/i))
@@ -336,7 +336,7 @@ describe('AddAddressBookPanel (browser)', () => {
 			.toBeInTheDocument();
 	});
 
-	it('should share all address books after selecting an account', async () => {
+	it('should expose all address books after selecting an account', async () => {
 		const { capturedActions } = setupAddressBookZextrasInterceptor();
 		const onClose = vi.fn();
 		const onAdded = vi.fn();
@@ -353,7 +353,7 @@ describe('AddAddressBookPanel (browser)', () => {
 		await expect.element(page.getByRole('button', { name: 'Add' })).toBeEnabled();
 		await userEvent.click(page.getByRole('button', { name: 'Add' }));
 
-		await expect.element(page.getByText('Address book shared')).toBeInTheDocument();
+		await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
 		expect(onAdded).toHaveBeenCalledOnce();
 		expect(onClose).toHaveBeenCalledOnce();
 		await expect
@@ -374,7 +374,7 @@ describe('AddAddressBookPanel (browser)', () => {
 		});
 	});
 
-	it('should share a specific address book folder', async () => {
+	it('should expose a specific address book folder', async () => {
 		const { capturedActions } = setupAddressBookZextrasInterceptor();
 		const onAdded = vi.fn();
 		await renderPanel(
@@ -392,7 +392,7 @@ describe('AddAddressBookPanel (browser)', () => {
 		await expect.element(page.getByRole('button', { name: 'Add' })).toBeEnabled();
 		await userEvent.click(page.getByRole('button', { name: 'Add' }));
 
-		await expect.element(page.getByText('Address book shared')).toBeInTheDocument();
+		await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
 		expect(onAdded).toHaveBeenCalledOnce();
 
 		const addRequest = capturedActions.find(
@@ -425,7 +425,7 @@ describe('AddAddressBookPanel (browser)', () => {
 		await expect.element(page.getByRole('button', { name: 'Add' })).toBeDisabled();
 	});
 
-	it('should show all already shared error when account has all folders linked', async () => {
+	it('should show all already exposed error when account has all folders linked', async () => {
 		setupAddressBookZextrasInterceptor();
 		await renderPanel(
 			<AddAddressBookPanel
@@ -440,13 +440,13 @@ describe('AddAddressBookPanel (browser)', () => {
 
 		await expect
 			.element(
-				page.getByText('All address books of this account are already shared.'),
+				page.getByText('All address books of this account are already exposed.'),
 			)
 			.toBeInTheDocument();
 		await expect.element(page.getByRole('button', { name: 'Add' })).toBeDisabled();
 	});
 
-	it('should filter linked folders and label shared ones in the folder select', async () => {
+	it('should filter linked folders and label exposed ones in the folder select', async () => {
 		setupAddressBookZextrasInterceptor({
 			folders: [
 				{ id: '7', name: '/Contacts/Work', isShared: false },
@@ -471,7 +471,7 @@ describe('AddAddressBookPanel (browser)', () => {
 			.element(page.getByText('/Contacts/Personal', { exact: true }))
 			.toBeInTheDocument();
 		await expect
-			.element(page.getByText('/Contacts/External (shared)', { exact: true }))
+			.element(page.getByText('/Contacts/External (exposed)', { exact: true }))
 			.toBeInTheDocument();
 		await expect
 			.element(page.getByText('/Contacts/Work', { exact: true }))
@@ -515,7 +515,7 @@ describe('AddAddressBookPanel (browser)', () => {
 		expect(onAdded).not.toHaveBeenCalled();
 		expect(onClose).not.toHaveBeenCalled();
 		await expect
-			.element(page.getByText('Share a new address book', { exact: true }))
+			.element(page.getByText('Expose a new address book', { exact: true }))
 			.toBeInTheDocument();
 	});
 

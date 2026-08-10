@@ -196,7 +196,7 @@ export function DomainAddressBook() {
               crossAlignment="flex-start"
             >
               <ds-text as="h1" size="medium" weight="bold" color="gray0">
-                {t('label.address_book', 'Address Book')}
+                {t('label.ldap_addressbook', 'LDAP Addressbook')}
               </ds-text>
             </Row>
             <Row
@@ -233,7 +233,7 @@ export function DomainAddressBook() {
         <ds-text as="p" size="small" color="gray1" overflow="break-word">
           {t(
             'label.domain_address_book_description',
-            'Accounts whose address books are shared through the LDAP Address Book service for {{domain}}. Entries marked Global are inherited from the global configuration.',
+            'Accounts whose address books are exposed through the LDAP Address Book service for {{domain}}.',
             { domain: domainName },
           )}
         </ds-text>
