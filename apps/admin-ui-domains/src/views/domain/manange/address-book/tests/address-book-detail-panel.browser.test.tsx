@@ -387,8 +387,11 @@ describe('AddressBookDetailPanel (browser)', () => {
 					if (zextrasBody.exposed === true) {
 						return HttpResponse.json({
 							Body: {
-								Fault: {
-									Reason: { Text: 'GetAddressBookCommand failed' },
+								response: {
+									content: JSON.stringify({
+										ok: false,
+										message: 'GetAddressBookCommand failed',
+									}),
 								},
 							},
 						});
