@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Dropdown } from '@zextras/ui-components';
+import { Button, Dropdown, type DropdownItem } from '@zextras/ui-components';
 import {
   type Action,
   ACTION_TYPES,
@@ -13,29 +13,43 @@ import {
   useAppList,
 } from '@zextras/ui-shared';
 import { groupBy, noop, reduce } from 'lodash-es';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { type FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+
+function toDropdownItem(action: Action): DropdownItem {
+  return {
+    disabled: action.disabled,
+    icon: action.icon as DropdownItem['icon'],
+    id: action.id,
+    label: action.label,
+    onClick: action.onClick,
+    tooltipLabel: action.tooltipLabel,
+  };
+}
 
 const useSecondaryActions = (
   actions: Array<Action>,
   activeRoute?: AppRoute,
-): Array<Action | { type: string; id: string }> => {
+): Array<DropdownItem> => {
   const apps = useAppList();
 
   const byApp = useMemo(() => groupBy(actions, 'group'), [actions]);
   return useMemo(
     () => [
-      ...(byApp[activeRoute?.app ?? ''] ?? []),
+      ...(byApp[activeRoute?.app ?? ''] ?? []).map(toDropdownItem),
       ...reduce(
         apps,
         (acc, app, i) => {
           if (app.name !== activeRoute?.app && byApp[app.name]?.length > 0) {
-            acc.push({ type: 'divider', label: '', id: `divider-${i}` }, ...byApp[app.name]);
+            acc.push(
+              { id: `divider-${i}`, label: '', type: 'divider' },
+              ...byApp[app.name].map(toDropdownItem),
+            );
           }
           return acc;
         },
-        [] as Array<Action | { type: string; id: string }>,
+        [] as Array<DropdownItem>,
       ),
     ],
     [activeRoute?.app, apps, byApp],
@@ -47,7 +61,7 @@ export const CreationButton: FC<{ activeRoute?: AppRoute }> = ({ activeRoute }) 
   const location = useLocation();
   const actions = useActions({ activeRoute, location }, ACTION_TYPES.NEW);
   const [open, setOpen] = useState(false);
-  const secondaryActions = useSecondaryActions(actions, activeRoute) as any;
+  const secondaryActions = useSecondaryActions(actions, activeRoute);
 
   const onClose = useCallback(() => {
     setOpen(false);

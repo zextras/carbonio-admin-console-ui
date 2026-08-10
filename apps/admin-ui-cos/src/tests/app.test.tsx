@@ -26,7 +26,7 @@ vi.mock('../views/app-view', () => ({
   AppView: () => <div data-testid="app-view" />,
 }));
 
-import { addRoute, registerActions, removeRoute, useCurrentUserRights } from '@zextras/ui-shared';
+import { addRoute, registerActions, removeRoute, useCurrentUserRights, useLicenseInfo } from '@zextras/ui-shared';
 import { useNavigate } from 'react-router';
 
 import App from '../app';
@@ -69,9 +69,12 @@ const RIGHTS_WITHOUT_COS = [
 ];
 
 describe('App', () => {
+  const useLicenseInfoMock = useLicenseInfo as unknown as Mock;
+
   beforeEach(() => {
     (useCurrentUserRights as Mock).mockReturnValue({ data: RIGHTS_WITH_COS_AND_CREATE });
     (useNavigate as Mock).mockReturnValue(vi.fn());
+    useLicenseInfoMock.mockReturnValue({ data: { response: { type: 'Purchased' } } });
   });
 
   it('should call addRoute with correct config when COS rights are present', () => {
@@ -137,7 +140,7 @@ describe('App', () => {
     );
   });
 
-  it('should disable create COS action when createCosRight is false', () => {
+  it('should disable create COS action and set tooltip when createCosRight is false', () => {
     (useCurrentUserRights as Mock).mockReturnValue({ data: RIGHTS_WITH_COS_ONLY });
 
     render(<App />);
@@ -145,14 +148,16 @@ describe('App', () => {
     const registeredCall = (registerActions as Mock).mock.calls[0][0];
     const action = registeredCall.action();
     expect(action.disabled).toBe(true);
+    expect(action.tooltipLabel).toBeDefined();
   });
 
-  it('should enable create COS action when createCosRight is true', () => {
+  it('should enable create COS action and omit tooltip when createCosRight is true', () => {
     render(<App />);
 
     const registeredCall = (registerActions as Mock).mock.calls[0][0];
     const action = registeredCall.action();
     expect(action.disabled).toBe(false);
+    expect(action.tooltipLabel).toBeUndefined();
   });
 
   it('should navigate to create COS route on action onClick', () => {
@@ -185,5 +190,19 @@ describe('App', () => {
   it('should render null', () => {
     const { container } = render(<App />);
     expect(container.innerHTML).toBe('');
+  });
+
+  it('should register create COS action as disabled with tooltip when there is no valid subscription', () => {
+    useLicenseInfoMock.mockReturnValue({ data: null });
+
+    render(<App />);
+
+    expect(registerActions).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'new-cos', type: 'new' }),
+    );
+    const registeredCall = (registerActions as Mock).mock.calls[0][0];
+    const action = registeredCall.action();
+    expect(action.disabled).toBe(true);
+    expect(action.tooltipLabel).toBeDefined();
   });
 });

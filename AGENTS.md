@@ -65,14 +65,14 @@ Year is auto-updated by eslint. The header is required in all files except:
 - Avoid empty interface `{}` and `Object` — they accept any non-nullish value; use `Record<string, never>` for truly empty objects
 
 ### Function Definitions
-- Use function declarations for React components (not arrow functions)
-- Use regular function declarations for all other logic
+- Use arrow functions for React components, directly exported with a named export
+- Use regular function declarations for all other (non-component) logic
 - Example:
   ```typescript
   // Component
-  function MyComponent({ title }: MyComponentProps) {
+  export const MyComponent = ({ title }: MyComponentProps) => {
     return <div>{title}</div>;
-  }
+  };
 
   // Logic
   function calculateTotal(items: Array<Item>): number {
@@ -87,9 +87,9 @@ Year is auto-updated by eslint. The header is required in all files except:
 
 ### React Components
 - Use named exports only, no default exports
-- Do not use `FC` — use plain function declarations with an explicit props type
+- Do not use `FC` — use arrow function consts with an explicit props type, directly exported
 - Return type is inferred; do not annotate it explicitly
-- Example: `function ComponentName({ title }: ComponentNameProps) { ... }`
+- Example: `export const ComponentName = ({ title }: ComponentNameProps) => { ... };`
 
 #### Typing Component Props
 - `children?: React.ReactNode` — accepts everything React can render (preferred over `JSX.Element`)
@@ -158,6 +158,7 @@ Year is auto-updated by eslint. The header is required in all files except:
 - Browser tests use `.browser.test.tsx` extension and run in Playwright
 - Unit tests use `.test.ts`/`.test.tsx` and run in jsdom
 - Use `admin-ui-test-utils` for shared test utilities
+- Full browser-test conventions (setup, locators, interactions, TanStack Form, MSW) are documented in `docs/browser-test-conventions.md`
 - **Never use `getByTestId`** in browser tests — it couples tests to implementation details invisible to users. Prefer user-facing selectors in this priority order:
   1. `getByRole` (e.g. `getByRole('button', { name: 'Save' })`)
   2. `getByLabelText` (e.g. `getByLabelText('Domain Name')`)

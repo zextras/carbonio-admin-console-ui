@@ -15,6 +15,7 @@ import {
   type TRow,
 } from '@zextras/ui-components';
 import { type DirectoryEntry, useDebouncedValue } from '@zextras/ui-shared';
+import { TFunction } from 'i18next';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -105,6 +106,12 @@ function getUserType(attrs: AttributeMap): string {
   return 'Normal';
 }
 
+function getAssociatedEdition(edition: string | undefined, t: TFunction): string {
+  if (edition === 'mail') return 'Email';
+  if (edition === 'workspace') return 'Workspace';
+  return t('label.not_available', 'Not available');
+}
+
 function processAccountItem(item: DirectoryEntry, statusColor: StatusColorMap): TRow {
   const attrs = flattenAttributes(item.a, new Set(['mail']));
   const mailAddresses = getStringArrayAttr(attrs, 'mail');
@@ -165,9 +172,7 @@ function processDomainItem(
 ): TRow {
   const attrs = flattenAttributes(item.a, new Set(['zimbraDomainCOSMaxAccounts']));
   const cosMaxAccounts = getStringArrayAttr(attrs, 'zimbraDomainCOSMaxAccounts');
-  const maxAccountValue = cosMaxAccounts
-    .find((acc) => acc?.split(':')[0] === cosId)
-    ?.split(':')[1];
+  const maxAccountValue = cosMaxAccounts.find((acc) => acc?.split(':')[0] === cosId)?.split(':')[1];
   const defaultCOSId = getStringAttr(attrs, 'zimbraDomainDefaultCOSId');
 
   return {
@@ -285,6 +290,7 @@ export const GeneralInformationForm = ({
   const totalDomains = domainsData?.total ?? 0;
 
   const cosData = attributesToMap(cosInformation);
+  const associatedEdition = getAssociatedEdition(cosData.edition, t);
 
   const form = useForm({
     defaultValues: buildDefaultValues(cosInformation),
@@ -366,7 +372,6 @@ export const GeneralInformationForm = ({
         orientation="column"
         crossAlignment="flex-start"
         mainAlignment="flex-start"
-        style={{ overflow: 'auto' }}
         width="100%"
       >
         <CosInfoFields
@@ -377,6 +382,7 @@ export const GeneralInformationForm = ({
           totalDomain={totalDomain}
           canDeleteCOS={canDeleteCOS}
           readonlyCOS={readonlyCOS}
+          associatedEdition={associatedEdition}
         />
         <SearchableTable
           title={t('cos.domains_that_use_this_cos', 'Domains that use this COS')}
