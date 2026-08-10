@@ -127,7 +127,7 @@ const DomainGeneralSettings: FC = () => {
 
   // COS state
   const [cosItems, setCosItems] = useState<SelectItem[]>([]);
-  const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
+  const [cosMaxAccountList, setCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
 
   // Modal state
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
@@ -206,9 +206,9 @@ const DomainGeneralSettings: FC = () => {
           id: domainContent._content?.split(':')[0],
           value: domainContent._content?.split(':')[1] ?? -1,
         }));
-        SetCosMaxAccountList(domainCosMaxAccounts);
+        setCosMaxAccountList(domainCosMaxAccounts);
       } else {
-        SetCosMaxAccountList([]);
+        setCosMaxAccountList([]);
       }
     }
   }, [domainInformation, domainStatusItems, serviceProtocolItems, timezones]);
