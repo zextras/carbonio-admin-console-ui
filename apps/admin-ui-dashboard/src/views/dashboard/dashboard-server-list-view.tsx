@@ -197,13 +197,10 @@ export const DashboardServerList = ({
       </ListRow>
       {totalServers > 0 && (
         <Container orientation="horizontal" mainAlignment="space-between" width="fill">
-          <Paging
-            key={limit}
-            totalItem={totalServers}
-            setOffset={setOffset}
-            pageSize={limit}
-          />
-          <TrackNumberPerPage setPageSize={handlePageSizeChange} />
+          <Paging key={limit} totalItem={totalServers} setOffset={setOffset} pageSize={limit} />
+          <div style={{ padding: '0.5rem 1rem' }}>
+            <TrackNumberPerPage setPageSize={handlePageSizeChange} />
+          </div>
         </Container>
       )}
     </Container>

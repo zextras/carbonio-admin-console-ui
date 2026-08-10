@@ -505,7 +505,9 @@ const NotificationView: FC<NotificationViewProps> = ({ isShowTitle, isAddPadding
             setOffset={setOffset}
             pageSize={limit}
           />
-          <TrackNumberPerPage setPageSize={handlePageSizeChange} />
+          <div style={{ padding: '0.5rem 1rem' }}>
+            <TrackNumberPerPage setPageSize={handlePageSizeChange} />
+          </div>
         </Container>
       )}
       {showNotificationDetail && (
