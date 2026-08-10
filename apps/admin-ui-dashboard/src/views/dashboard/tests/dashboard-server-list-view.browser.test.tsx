@@ -107,4 +107,50 @@ describe('DashboardServerList', () => {
     await expect.element(page.getByText('Core Version')).toBeVisible();
     await expect.element(page.getByText('Description')).toBeVisible();
   });
+
+  describe('pagination', () => {
+    const manyMockServers = Array.from({ length: 15 }, (_, i) => ({
+      id: `server-${i + 1}`,
+      name: `mailstore${i + 1}.test.com`,
+      a: [
+        { n: 'description', _content: `Mailstore ${i + 1}` },
+        { n: 'zimbraServiceHostname', _content: `mailstore${i + 1}.test.com` },
+      ],
+    }));
+
+    it('renders pagination controls when servers exist', async () => {
+      await setupServerListTest({ servers: manyMockServers });
+
+      await expect.element(page.getByText('1 of 2')).toBeVisible();
+      await expect.element(page.getByText(/items per page/i)).toBeVisible();
+    });
+
+    it('does not render pagination controls when no servers exist', async () => {
+      await setupServerListTest({ servers: [] });
+
+      expect(page.getByText(/items per page/i).elements().length).toBe(0);
+    });
+
+    it('limits displayed rows to the first page', async () => {
+      await setupServerListTest({ servers: manyMockServers });
+
+      await expect.element(page.getByText('mailstore1.test.com')).toBeVisible();
+      await expect.element(page.getByText('mailstore10.test.com')).toBeVisible();
+      expect(page.getByText('mailstore11.test.com').elements().length).toBe(0);
+    });
+
+    it('navigates to the next page', async () => {
+      await setupServerListTest({ servers: manyMockServers });
+
+      await expect.element(page.getByText('1 of 2')).toBeVisible();
+
+      const nextButton = page.getByRole('button', { name: 'Next page' });
+      await nextButton.click();
+
+      await expect.element(page.getByText('2 of 2')).toBeVisible();
+      await expect.element(page.getByText('mailstore11.test.com')).toBeVisible();
+      await expect.element(page.getByText('mailstore15.test.com')).toBeVisible();
+      expect(page.getByText('mailstore1.test.com').elements().length).toBe(0);
+    });
+  });
 });
