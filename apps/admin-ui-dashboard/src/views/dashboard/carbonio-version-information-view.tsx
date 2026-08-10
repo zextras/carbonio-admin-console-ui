@@ -57,7 +57,7 @@ export const CarbonioVersionInformation = ({
           size="large"
           style={largeTextStyle}
         >
-          {t('cumminity_edition', 'Community Edition!')}
+          {t('community_edition', 'Community Edition!')}
         </ds-text>
       )}
       {serverVersion && (
