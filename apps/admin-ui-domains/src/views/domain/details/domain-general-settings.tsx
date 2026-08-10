@@ -123,7 +123,7 @@ const DomainGeneralSettings: FC = () => {
   const [formState, setFormState] = useState<GeneralFormState | null>(null);
   const [originalFormState, setOriginalFormState] = useState<GeneralFormState | null>(null);
 
-  // UI state for Select components
+  // UI state for Select components (using any to match Select component expectations)
   const [selectedTimeZone, setSelectedTimeZone]: any = useState(timezones[0]);
   const [selectedPublicServiceProtocol, setSelectedPublicServiceProtocol]: any = useState(
     serviceProtocolItems[0],
@@ -747,9 +747,9 @@ const DomainGeneralSettings: FC = () => {
                     updateFormField('zimbraDomainDefaultCOSId', e ?? '');
                   }}
                   selection={
-                    !formState?.zimbraDomainDefaultCOSId
-                      ? cosItems[-1]
-                      : cosItems.find((item: any) => item.value === formState.zimbraDomainDefaultCOSId)
+                    formState?.zimbraDomainDefaultCOSId
+                      ? cosItems.find((item: any) => item.value === formState.zimbraDomainDefaultCOSId)
+                      : cosItems[-1]
                   }
                 />
               </Container>
