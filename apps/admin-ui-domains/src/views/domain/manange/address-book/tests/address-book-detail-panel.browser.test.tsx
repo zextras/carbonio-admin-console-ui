@@ -97,7 +97,7 @@ function buildGetExposedResponse(entry: AddressBookEntry): object {
 							folders: (entry.folders ?? []).map((folder) => ({
 								id: folder.id,
 								name: folder.name,
-								mounted: false,
+								mounted: folder.isShared === true,
 							})),
 						},
 					],
@@ -229,6 +229,28 @@ describe('AddressBookDetailPanel (browser)', () => {
 		);
 
 		await expect.element(page.getByText('Work')).toBeInTheDocument();
+	});
+
+	it('should show Shared label for mounted folders in the exposed list', async () => {
+		const mountedEntry: AddressBookEntry = {
+			account: 'shared@example.com',
+			accountId: 'acc-shared',
+			folderIds: '258',
+			folders: [{ id: '258', name: '/MyAddressbook of dhaval', isShared: true }],
+		};
+		setupAddressBookZextrasInterceptor([], mountedEntry);
+		await renderPanel(
+			<AddressBookDetailPanel
+				domainName={DOMAIN_NAME}
+				entry={mountedEntry}
+				onClose={vi.fn()}
+				onChanged={vi.fn()}
+			/>,
+		);
+
+		await expect
+			.element(page.getByText('MyAddressbook of dhaval (Shared)', { exact: true }))
+			.toBeInTheDocument();
 	});
 
 	it('should call onClose when the close button is clicked', async () => {

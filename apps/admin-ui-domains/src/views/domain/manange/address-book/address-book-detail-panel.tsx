@@ -80,7 +80,7 @@ export function AddressBookDetailPanel({
   const [isSubmittingAdd, setIsSubmittingAdd] = useState(false);
 
   const hasAllShared = folders.some((folder) => String(folder.id) === 'all');
-  const sharedLabel = t('label.exposed', 'exposed');
+  const sharedLabel = t('label.shared', 'Shared');
   const availableFolderItems: Array<FolderSelectItem> = hasAllShared
     ? []
     : unexposedFolders.map((folder) => ({
@@ -338,7 +338,11 @@ export function AddressBookDetailPanel({
                         {String(folder.id) === 'all' ? (
                           <em>{t('label.all_folders', 'All folders')}</em>
                         ) : (
-                          getFolderDisplayName(folder.name)
+                          getFolderSelectLabel(
+                            getFolderDisplayName(folder.name),
+                            folder.isShared === true,
+                            sharedLabel,
+                          )
                         )}
                       </ds-text>
                     </Container>

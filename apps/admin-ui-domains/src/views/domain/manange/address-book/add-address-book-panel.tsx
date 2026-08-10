@@ -113,7 +113,7 @@ export function AddAddressBookPanel({
     !allAlreadySharedError &&
     hasValidSelectedAccount &&
     !isLoadingFolders;
-  const sharedLabel = t('label.exposed', 'exposed');
+  const sharedLabel = t('label.shared', 'Shared');
 
   function getSearchAccountList(searchKeyword: string): void {
     const attrs =

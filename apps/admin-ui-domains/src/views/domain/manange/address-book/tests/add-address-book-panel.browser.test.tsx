@@ -472,7 +472,7 @@ describe('AddAddressBookPanel (browser)', () => {
 			.element(page.getByText('/Contacts/Personal', { exact: true }))
 			.toBeInTheDocument();
 		await expect
-			.element(page.getByText('/Contacts/External (exposed)', { exact: true }))
+			.element(page.getByText('/Contacts/External (Shared)', { exact: true }))
 			.toBeInTheDocument();
 		await expect
 			.element(page.getByText('/Contacts/Work', { exact: true }))
