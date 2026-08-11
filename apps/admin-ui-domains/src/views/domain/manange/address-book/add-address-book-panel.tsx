@@ -17,7 +17,7 @@ import {
 } from '@zextras/ui-components';
 import { searchDirectory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ChangeEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookEntry, AddressBookFolder } from '../../../../../types';
@@ -147,17 +147,29 @@ export function AddAddressBookPanel({
       });
   }
 
-  const searchAccountCall = debounce((searchKeyword: string) => {
-    getSearchAccountList(searchKeyword);
-  }, 700);
+  const getSearchAccountListRef = useRef(getSearchAccountList);
+  getSearchAccountListRef.current = getSearchAccountList;
+
+  const searchAccountCallRef = useRef(
+    debounce((searchKeyword: string) => {
+      getSearchAccountListRef.current(searchKeyword);
+    }, 700),
+  );
+
+  useEffect(() => {
+    const searchAccountCall = searchAccountCallRef.current;
+    return () => {
+      searchAccountCall.cancel();
+    };
+  }, []);
 
   useEffect(() => {
     if (account !== '' && account !== selectedAccount) {
-      searchAccountCall(account);
+      searchAccountCallRef.current(account);
     } else if (account === '') {
+      searchAccountCallRef.current.cancel();
       setSearchResults([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- debounced search on account input only
   }, [account, selectedAccount]);
 
   useEffect(() => {
@@ -390,7 +402,7 @@ export function AddAddressBookPanel({
               'Start typing an account e-mail',
             )}
             size="medium"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+            onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               onAccountInputChange(e.target.value);
             }}
             inputValue={account}

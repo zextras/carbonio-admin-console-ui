@@ -5,7 +5,7 @@
  */
 
 import { Button, Container, Input, ModalOverlay, Row, useSnackbar } from '@zextras/ui-components';
-import { useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookEntry } from '../../../../../types';
@@ -242,7 +242,7 @@ export function DomainAddressBook() {
           label={t('label.search_accounts', 'Search accounts')}
           value={searchString}
           backgroundColor="gray5"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+          onChange={(e: ChangeEvent<HTMLInputElement>): void => {
             setSearchString(e.target.value);
           }}
         />

@@ -300,7 +300,10 @@ describe('AddAddressBookPanel (browser)', () => {
 			/>,
 		);
 
-		await page.getByTestId('icon: CloseOutline').click();
+		const closeIcon = document.querySelector('ds-icon[icon="CloseOutline"]');
+		const closeBtn = closeIcon?.closest('button');
+		expect(closeBtn).toBeTruthy();
+		await userEvent.click(closeBtn!);
 
 		expect(onClose).toHaveBeenCalledOnce();
 	});

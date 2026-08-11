@@ -25,6 +25,7 @@ import {
   getExposedAddressBookFolders,
   getUnexposedAddressBookFolders,
 } from '../../../../services/get-exposed-address-book-folders';
+import { getMailboxContactFolders } from '../../../../services/get-mailbox-contact-folders';
 import { removeAddressBook } from '../../../../services/remove-address-book';
 
 type AddressBookDetailPanelProps = {
@@ -91,26 +92,35 @@ export function AddressBookDetailPanel({
   const canSubmitAdd =
     addMode === 'all' ? !hasAllShared : Boolean(selectedFolder?.value) && !isSubmittingAdd;
 
-  function loadFolderLists(): Promise<void> {
-    return Promise.allSettled([
-      getExposedAddressBookFolders({
-        domain: domainName,
-        account: entry.account,
-      }),
-      getUnexposedAddressBookFolders({
-        domain: domainName,
-        account: entry.account,
-      }),
-    ]).then(([exposedResult, unexposedResult]) => {
-      if (exposedResult.status === 'fulfilled') {
-        setFolders(exposedResult.value);
-      }
-      if (unexposedResult.status === 'fulfilled') {
-        setUnexposedFolders(unexposedResult.value);
-      } else {
-        setUnexposedFolders([]);
-      }
+  async function resolvePickerFolders(
+    exposedFolders: Array<AddressBookFolder>,
+  ): Promise<Array<AddressBookFolder>> {
+    if (exposedFolders.length === 0) {
+      return getMailboxContactFolders({ account: entry.account });
+    }
+    return getUnexposedAddressBookFolders({
+      domain: domainName,
+      account: entry.account,
     });
+  }
+
+  async function loadFolderLists(): Promise<void> {
+    let exposedFolders = folders;
+    try {
+      exposedFolders = await getExposedAddressBookFolders({
+        domain: domainName,
+        account: entry.account,
+      });
+      setFolders(exposedFolders);
+    } catch {
+      // Keep current exposed folders on refetch failure.
+    }
+
+    try {
+      setUnexposedFolders(await resolvePickerFolders(exposedFolders));
+    } catch {
+      setUnexposedFolders([]);
+    }
   }
 
   useEffect(() => {
@@ -124,34 +134,42 @@ export function AddressBookDetailPanel({
     let cancelled = false;
     setIsResolvingFolders(true);
 
-    Promise.allSettled([
-      getExposedAddressBookFolders({
-        domain: domainName,
-        account: entry.account,
-      }),
-      getUnexposedAddressBookFolders({
-        domain: domainName,
-        account: entry.account,
-      }),
-    ]).then(([exposedResult, unexposedResult]) => {
+    void (async (): Promise<void> => {
+      let exposedFolders = entry.folders ?? [];
+      try {
+        exposedFolders = await getExposedAddressBookFolders({
+          domain: domainName,
+          account: entry.account,
+        });
+        if (!cancelled) {
+          setFolders(exposedFolders);
+        }
+      } catch {
+        if (!cancelled) {
+          setFolders(entry.folders ?? []);
+        }
+        exposedFolders = entry.folders ?? [];
+      }
+
       if (cancelled) {
         return;
       }
 
-      if (exposedResult.status === 'fulfilled') {
-        setFolders(exposedResult.value);
-      } else {
-        setFolders(entry.folders ?? []);
+      try {
+        const pickerFolders = await resolvePickerFolders(exposedFolders);
+        if (!cancelled) {
+          setUnexposedFolders(pickerFolders);
+        }
+      } catch {
+        if (!cancelled) {
+          setUnexposedFolders([]);
+        }
       }
 
-      if (unexposedResult.status === 'fulfilled') {
-        setUnexposedFolders(unexposedResult.value);
-      } else {
-        setUnexposedFolders([]);
+      if (!cancelled) {
+        setIsResolvingFolders(false);
       }
-
-      setIsResolvingFolders(false);
-    });
+    })();
 
     return (): void => {
       cancelled = true;

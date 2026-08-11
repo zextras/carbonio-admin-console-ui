@@ -186,6 +186,20 @@ function setupAddressBookZextrasInterceptor(
 				);
 			}
 
+			if (action === 'GetMailboxContactFoldersCommand') {
+				return HttpResponse.json(
+					buildZextrasResponse({
+						response: {
+							folders: folders.map((folder) => ({
+								id: folder.id,
+								name: folder.name,
+								mounted: folder.isShared,
+							})),
+						},
+					}),
+				);
+			}
+
 			if (action === 'AddAddressBookCommand' || action === 'RemoveAddressBookCommand') {
 				return HttpResponse.json(buildNestedOkResponse());
 			}
