@@ -7,60 +7,26 @@ import {
   Container,
   DropDownInput,
   ListItems,
-  type ListItemType,
   ListPanelItem,
   Padding,
   Row,
   useSnackbar,
 } from '@zextras/ui-components';
-import {
-  getAllRights,
-  replaceHistory,
-  useAllConfig,
-  useBackupServers,
-  useCurrentUserRights,
-  useDebouncedValue,
-  useDomainById,
-  useIsAdvanced,
-} from '@zextras/ui-shared';
+import { replaceHistory, useDebouncedValue, useDomainById } from '@zextras/ui-shared';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  ACCOUNTS,
-  ACTIVE_SYNC,
-  AUTHENTICATION,
-  BOOLEAN_FALSE,
-  CONFIG,
-  DELEGATES_DOMAIN_ADMINS,
-  DISCLAIMER,
-  DISTRIBUTION_LIST,
-  FALSE,
-  GAL,
   GENERAL_SETTINGS,
-  GLOBAL_2FA_ROUTE,
-  GLOBAL_ACTIVE_SYNC_ROUTE,
-  GLOBAL_ADMINISTRATORS,
-  GLOBAL_DOMAIN_ROUTE,
-  GLOBAL_QUARANTINE_ROUTE,
-  GLOBAL_SETTINGS_ROUTE,
-  GLOBAL_WHITELABEL_SETTINGS,
   IS_DETAIL_LIST_EXPANDED,
   IS_MANAGE_LIST_EXPANDED,
   MAX_DOMAIN_DISPLAY,
-  RESOURCES,
-  RESTORE_ACCOUNT,
-  SAML,
-  SECURITY_GROUP,
-  TWO_FACTOR_AUTHENTICATION,
-  VIRTUAL_HOSTS,
-  WHITELABEL_SETTINGS,
-  ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../constants';
 import { type SoapEntity } from '../../services/search-domain-service';
 import { useDomainSearch } from '../../services/use-domain-search';
 import type { Domain } from '../../store/types';
 import { GlobalListPanel } from './global-list-panel';
+import { useDomainListOptions } from './hooks/use-domain-list-options';
 import { useDomainNavigation } from './hooks/use-domain-navigation';
 
 export const DomainListPanel = () => {
@@ -102,37 +68,8 @@ export const DomainListPanel = () => {
     }
   }, [createSnackbar, error, t]);
 
-  const isAdvanced = useIsAdvanced();
-  const { data: backupData } = useBackupServers({
-    enabled: isAdvanced,
-  });
-  const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
-  const { data: rights } = useCurrentUserRights();
-  const { data: globalConfigInformation = [] } = useAllConfig();
-  const is2FAAvailable =
-    domainInformation?.a?.find((item) => item?.n === 'zimbraAuthMech') === undefined;
-
-  useEffect(() => {
-    if (rights && rights.length > 0) {
-      const allRights = getAllRights(rights, CONFIG);
-      if (allRights && allRights.length > 0) {
-        const right = allRights[0];
-        if (
-          right?.all &&
-          Array.isArray(right?.all) &&
-          right?.all.length > 0 &&
-          right?.all[0].getAttrs &&
-          right?.all[0].getAttrs.length > 0
-        ) {
-          right?.all[0].getAttrs.forEach((item: Record<string, unknown>) => {
-            if (item?.all && item?.all === true) {
-              setIsShowGlobalConfig(true);
-            }
-          });
-        }
-      }
-    }
-  }, [rights]);
+  const { manageOptions, detailItems, globalOptionsItems, isShowGlobalConfig } =
+    useDomainListOptions({ isDomainSelect, domainInformation });
 
   const [prevDomainId, setPrevDomainId] = useState(domainInformation?.id);
   const [prevIsDomainSelect, setPrevIsDomainSelect] = useState(isDomainSelect);
@@ -151,167 +88,6 @@ export const DomainListPanel = () => {
       setSearchQuery('');
     }
   }
-
-  const isDisclaimerEnable = globalConfigInformation.find(
-    (item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-  )?._content;
-
-  const detailOptions = [
-    {
-      id: GENERAL_SETTINGS,
-      name: t('label.general_settings', 'General Settings'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: GAL,
-      name: t('label.global_address_list', 'Global Address List'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: AUTHENTICATION,
-      name: t('label.authentication', 'Authentication'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: VIRTUAL_HOSTS,
-      name: t('label.virtual_hosts_and_certificates', 'Virtual Hosts & Certificate'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: WHITELABEL_SETTINGS,
-      name: t('label.whitelabel_settings', 'Whitelabel Settings'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: TWO_FACTOR_AUTHENTICATION,
-      name: t('label.2-factor-authentication', '2-Factor-Authentication'),
-      isSelected: isDomainSelect && is2FAAvailable,
-    },
-    {
-      id: SAML,
-      name: t('label.saml', 'SAML'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: DISCLAIMER,
-      name: t('label.disclaimer', 'Disclaimer'),
-      isSelected: isDisclaimerEnable === FALSE ? BOOLEAN_FALSE : isDomainSelect,
-    },
-  ];
-
-  const allListItemType = [
-    {
-      id: ACCOUNTS,
-      name: t('label.accounts', 'Accounts'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: DELEGATES_DOMAIN_ADMINS,
-      name: t('label.delegates_domain_admins', 'Delegated Domain Admins'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: DISTRIBUTION_LIST,
-      name: t('label.distribution_list', 'Distribution List'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: RESOURCES,
-      name: t('label.resources', 'Resources'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: ACTIVE_SYNC,
-      name: t('label.active_sync', 'ActiveSync'),
-      isSelected: isDomainSelect,
-    },
-    {
-      id: RESTORE_ACCOUNT,
-      name: t('label.restore_account', 'Restore Account'),
-      isSelected: isDomainSelect,
-    },
-  ];
-
-  const globalOptionItems = [
-    {
-      id: GLOBAL_SETTINGS_ROUTE,
-      name: t('label.settings', 'Settings'),
-      isSelected: true,
-    },
-    {
-      id: GLOBAL_ADMINISTRATORS,
-      name: t('label.administrators', 'Administrators'),
-      isSelected: true,
-    },
-    {
-      id: GLOBAL_WHITELABEL_SETTINGS,
-      name: t('label.whitelabel_settings', 'Whitelabel Settings'),
-      isSelected: true,
-    },
-    {
-      id: GLOBAL_DOMAIN_ROUTE,
-      name: t('label.domains', 'Domains'),
-      isSelected: true,
-    },
-    {
-      id: GLOBAL_2FA_ROUTE,
-      name: t('label.2fa', '2-Factor-Authentication'),
-      isSelected: true,
-    },
-    {
-      id: GLOBAL_QUARANTINE_ROUTE,
-      name: t('label.quarantine', 'Quarantine'),
-      isSelected: true,
-    },
-    {
-      id: GLOBAL_ACTIVE_SYNC_ROUTE,
-      name: t('label.active_sync', 'ActiveSync'),
-      isSelected: true,
-    },
-  ];
-
-  const manageItems = !isAdvanced
-    ? allListItemType.filter(
-        (item: ListItemType) =>
-          item?.id !== RESTORE_ACCOUNT &&
-          item?.id !== ACTIVE_SYNC &&
-          item?.id !== DELEGATES_DOMAIN_ADMINS &&
-          item?.id !== SECURITY_GROUP,
-      )
-    : allListItemType;
-
-  const detailItems = detailOptions.filter((item: ListItemType) => {
-    if (!isAdvanced) {
-      if (
-        item?.id === WHITELABEL_SETTINGS ||
-        item?.id === SAML ||
-        item?.id === TWO_FACTOR_AUTHENTICATION
-      ) {
-        return false;
-      }
-    }
-    return true;
-  });
-
-  const globalOptionsItems = !isAdvanced
-    ? globalOptionItems.filter(
-        (item: ListItemType) =>
-          item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
-          item?.id !== GLOBAL_2FA_ROUTE &&
-          item.id !== GLOBAL_ACTIVE_SYNC_ROUTE,
-      )
-    : globalOptionItems;
-
-  const manageOptions = (() => {
-    const items =
-      backupData && !backupData?.backupModuleEnable && !backupData?.isBackupModuleLicensed
-        ? manageItems.filter((item: ListItemType) => item?.id !== RESTORE_ACCOUNT)
-        : manageItems;
-    return items.map((item: ListItemType) => ({
-      ...item,
-      isSelected: isDomainSelect,
-    }));
-  })();
 
   const toggleDetailView = (): void => {
     if (isDetailListExpanded) {
