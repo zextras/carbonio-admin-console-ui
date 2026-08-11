@@ -95,6 +95,7 @@ export default tseslint.config(
       'apps/admin-ui-domains/src/views/domain/domain-list/**',
       'packages/ui-components/src/components/custom/breadcrumb.tsx',
       'apps/admin-ui-dashboard/**',
+      'apps/admin-ui-privacy/**/*',
     ],
     plugins: {
       'react-compiler': reactCompiler,
