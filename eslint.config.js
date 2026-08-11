@@ -92,8 +92,9 @@ export default tseslint.config(
   // once all of them will be here, we can remove the ovrerrides and make the strict config default
   {
     files: [
-      'apps/admin-ui-domains/src/views/domain/domain-list/*',
+      'apps/admin-ui-domains/src/views/domain/domain-list/**',
       'packages/ui-components/src/components/custom/breadcrumb.tsx',
+      'apps/admin-ui-dashboard/**',
     ],
     plugins: {
       'react-compiler': reactCompiler,

@@ -4,16 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, IconName, ListRow } from '@zextras/ui-components';
-import { FC } from 'react';
+import { IconName, ListRow } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-const QuickAccess: FC<{
+import styles from './quick-access.module.css';
+import { QuickAccessItem, type QuickAccessItemData } from './quick-access-item';
+
+type QuickAccessProps = {
   openOperationView: (operation: string) => void;
   domainName: string;
-}> = ({ openOperationView, domainName }) => {
+};
+
+export const QuickAccess = ({ openOperationView, domainName }: QuickAccessProps) => {
   const [t] = useTranslation();
-  const quickAccessItems = [
+  const quickAccessItems: Array<QuickAccessItemData> = [
     {
       upperText: t('label.domains', 'Domains'),
       operationText: t('label.accounts', 'Accounts'),
@@ -33,111 +37,26 @@ const QuickAccess: FC<{
       operation: 'mailinglist',
     },
   ];
-  const handleClickedQuickAccess = (item: string): void => {
-    openOperationView(item);
-  };
   return (
-    <Container
-      background="gray6"
-      mainAlignment="flex-start"
-      crossAlignment="flex-start"
-      padding={{ top: 'extralarge', right: 'extralarge', bottom: 'extralarge' }}
-      style={{ borderRadius: '0.5rem' }}
-    >
-      <Container
-        padding={{ bottom: 'large', right: 'large', left: 'extralarge', top: 'large' }}
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-      >
+    <div className={styles.root}>
+      <div className={styles.header}>
         <ListRow>
-          <Container mainAlignment="flex-start" crossAlignment="flex-start" width="2rem">
-            <ds-icon size="large" icon="FlashOutline"></ds-icon>
-          </Container>
-          <Container mainAlignment="flex-start" crossAlignment="flex-start">
+          <div className={styles.icon}>
+            <ds-icon size="large" icon="FlashOutline" aria-label={t('label.quick_access', 'Quick Access')} />
+          </div>
+          <div className={styles.title}>
             <ds-text as="strong" color="gray0" overflow="break-word" weight="bold" size="medium">
               {t('dashboard.quick_access_to', 'Quick Access to')} {domainName}
             </ds-text>
-          </Container>
+          </div>
         </ListRow>
-      </Container>
-      <Container
-        orientation="horizontal"
-        mainAlignment="space-between"
-        crossAlignment="flex-start"
-        padding={{ bottom: 'large', right: 'medium', left: 'medium', top: 'large' }}
-      >
+      </div>
+      <div className={styles.items}>
         {quickAccessItems.map((item) => (
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ left: 'extralarge' }}
-            key={item?.operation}
-          >
-            <Container
-              height={'8.75rem'}
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              width={'21.75rem'}
-              style={{ borderRadius: '0.5rem', background: `var(--color-${item?.bgColor})` }}
-            >
-              <ListRow>
-                <Container padding={{ all: 'large' }}>
-                  <Container mainAlignment="flex-start" crossAlignment="flex-start">
-                    <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
-                      {item?.upperText}
-                    </ds-text>
-                  </Container>
-                  <Container
-                    mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                    padding={{ top: 'extrasmall' }}
-                  >
-                    <ds-text as="strong" color="gray6" overflow="break-word" weight="bold" size="large">
-                      {item?.operationText}
-                    </ds-text>
-                  </Container>
-                </Container>
-                <Container crossAlignment="flex-end" padding={{ right: 'large' }}>
-                  <ds-icon color="gray6" icon={item?.operationIcon} size="large"></ds-icon>
-                </Container>
-              </ListRow>
-              <ListRow>
-                <Container padding={{ left: 'large', right: 'large' }}>
-                  <ds-divider></ds-divider>
-                </Container>
-              </ListRow>
-              <ListRow>
-                <Container
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  padding={{ all: 'large' }}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(): void => {
-                    handleClickedQuickAccess(item?.operation);
-                  }}
-                >
-                  <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
-                    {item?.bottomText}
-                  </ds-text>
-                </Container>
-                <Container
-                  mainAlignment="flex-end"
-                  crossAlignment="flex-end"
-                  padding={{ all: 'large' }}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(): void => {
-                    handleClickedQuickAccess(item?.operation);
-                  }}
-                >
-                  <ds-icon icon={item?.bottomIcon} size="medium" color="gray6"></ds-icon>
-                </Container>
-              </ListRow>
-            </Container>
-          </Container>
+          <QuickAccessItem key={item.operation} item={item} onOpen={openOperationView} />
         ))}
-      </Container>
-    </Container>
+      </div>
+    </div>
   );
 };
 
-export default QuickAccess;

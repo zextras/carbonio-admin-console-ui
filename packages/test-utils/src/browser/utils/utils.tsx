@@ -18,7 +18,11 @@ import { getQueryClient, Wrapper, WrapperProps } from './wrapper';
 
 export const LocationDisplay = () => {
   const location = useLocation();
-  return <div data-testid="location">{location.pathname}</div>;
+  return (
+    <div data-testid="location" role="status" aria-label="location">
+      {location.pathname}
+    </div>
+  );
 };
 
 /**
