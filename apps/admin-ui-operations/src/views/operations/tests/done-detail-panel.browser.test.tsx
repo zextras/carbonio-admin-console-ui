@@ -188,7 +188,7 @@ describe('DoneDetailPanel', () => {
         await expect.element(page.getByText('doBackup')).toBeVisible();
         await page.getByText('doBackup').click();
         await expect.element(page.getByText('Details')).toBeVisible();
-        await page.getByTestId('icon: CloseOutline').click();
+        await page.getByRole('button', { name: /close/i }).click();
         await expect.poll(() => page.getByText('Operation Type').elements()).toHaveLength(0);
     });
 

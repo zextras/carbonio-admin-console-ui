@@ -41,7 +41,7 @@ type OperationTableRow = {
   clickable: boolean;
 };
 
-function buildOperationRows(
+export function buildOperationRows(
   operations: Array<Operation> | undefined,
   onClick: (index: number) => void,
   donePanel?: boolean,

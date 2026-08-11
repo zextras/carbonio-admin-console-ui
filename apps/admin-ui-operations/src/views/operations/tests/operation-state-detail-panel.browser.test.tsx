@@ -339,7 +339,7 @@ describe.each(PANEL_VARIANTS)(
       await expect
         .element(page.getByText('doBackup on mailstore1.test.com'))
         .toBeVisible();
-      await page.getByTestId('icon: CloseOutline').click();
+      await page.getByRole('button', { name: /close/i }).click();
       expect(
         page.getByText('doBackup on mailstore1.test.com').elements(),
       ).toHaveLength(0);
@@ -418,8 +418,8 @@ describe.each(PANEL_VARIANTS)(
         .element(page.getByText(variant.modalConfirmationText))
         .toBeVisible();
       await page
-        .getByTestId('modal')
         .getByRole('button', { name: variant.actionButton })
+        .last()
         .click();
 
       await expect.poll(() => stopCalledTimes).toBe(1);

@@ -169,4 +169,27 @@ describe('OperationsTable', () => {
 
 		await expect.element(page.getByText('Empty Table')).toBeVisible();
 	});
+
+	it('renders all provided headers', async () => {
+		const MULTI_HEADERS: Array<OperationTableHeader> = [
+			{ id: 'h1', label: 'First', width: '100px', bold: false, i18nAllLabel: 'All', align: 'left' },
+			{ id: 'h2', label: 'Second', width: '100px', bold: false, i18nAllLabel: 'All', align: 'center' },
+			{ id: 'h3', label: 'Third', width: '100px', bold: false, i18nAllLabel: 'All', align: 'left' },
+		];
+
+		await setupBrowserTest(
+			<OperationsTable
+				operations={[]}
+				headers={MULTI_HEADERS}
+				donePanel={false}
+				selectedRows={[]}
+				onSelectionChange={vi.fn()}
+				onClick={vi.fn()}
+			/>,
+		);
+
+		await expect.element(page.getByText('First')).toBeVisible();
+		await expect.element(page.getByText('Second')).toBeVisible();
+		await expect.element(page.getByText('Third')).toBeVisible();
+	});
 });

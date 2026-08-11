@@ -94,6 +94,7 @@ export const OperationsWizardDetailPanel = ({
             type="ghost"
             color={'text'}
             icon="CloseOutline"
+            aria-label={t('label.close', 'Close')}
             onClick={(): void => setWizardDetailToggle(false)}
           />
         </Row>
