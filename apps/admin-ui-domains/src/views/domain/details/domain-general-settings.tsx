@@ -66,7 +66,7 @@ const DomainGeneralSettings: FC = () => {
   const userSetting = useUserSettings();
   const isAdvanced = useIsAdvanced();
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
-  const serviceProtocolItems: any = [
+  const serviceProtocolItems: SelectItem[] = [
     {
       value: NOT_SET,
       label: t('label.not_set', 'Not Set'),
@@ -714,14 +714,10 @@ const DomainGeneralSettings: FC = () => {
                   background="gray5"
                   label={t('label.default_class_of_service', 'Default Class of Service')}
                   showCheckbox={false}
-                  onChange={(e: any): void => {
+                  onChange={(e: string | null): void => {
                     updateFormField('zimbraDomainDefaultCOSId', e ?? '');
                   }}
-                  selection={
-                    formState?.zimbraDomainDefaultCOSId
-                      ? cosItems.find((item: any) => item.value === formState.zimbraDomainDefaultCOSId)
-                      : cosItems[-1]
-                  }
+                  defaultSelection={cosItems.find((item) => item.value === formState?.zimbraDomainDefaultCOSId) ?? cosItems[0]}
                 />
               </Container>
               <Container padding={{ all: 'small' }}>
@@ -729,10 +725,9 @@ const DomainGeneralSettings: FC = () => {
                   items={domainStatusItems}
                   background="gray5"
                   label={t('label.status', 'Status')}
-                  defaultSelection={domainStatusItems[0]}
                   showCheckbox={false}
                   onChange={onDomainStatusChange}
-                  selection={domainStatus}
+                  defaultSelection={domainStatus}
                 />
               </Container>
             </ListRow>
