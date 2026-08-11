@@ -308,4 +308,66 @@ describe('DomainListPanel', () => {
         .toBeVisible();
     });
   });
+
+  describe('Domain search', () => {
+    it('should populate the search input with the domain name on initial load', async () => {
+      queryClient.setQueryData(['domain', 'by-id', DOMAIN_ID, 1], {
+        id: DOMAIN_ID,
+        name: 'example.com',
+        a: [{ n: 'zimbraDomainName', _content: 'example.com' }],
+      });
+
+      await setupBrowserTest(<DomainListPanel />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
+      });
+
+      await expect
+        .element(page.getByPlaceholder('I want to see this domain'))
+        .toHaveValue('example.com');
+    });
+
+    it('should update the search input when typing', async () => {
+      await setupBrowserTest(<DomainListPanel />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
+      });
+
+      const input = page.getByPlaceholder('I want to see this domain');
+      await input.fill('ex');
+
+      await expect.element(input).toHaveValue('ex');
+    });
+
+    it('should replace typed text with domain name when selecting from dropdown', async () => {
+      await setupBrowserTest(<DomainListPanel />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
+      });
+
+      const input = page.getByPlaceholder('I want to see this domain');
+      await input.fill('ex');
+      await expect.element(input).toHaveValue('ex');
+
+      await input.click();
+      await page.getByText('corp.org').click();
+
+      await expect.element(input).toHaveValue('corp.org');
+    });
+
+    it('should clear the search input when no domain is selected', async () => {
+      queryClient.setQueryData(['domain', 'by-id', DOMAIN_ID, 1], {
+        id: DOMAIN_ID,
+        name: 'example.com',
+        a: [{ n: 'zimbraDomainName', _content: 'example.com' }],
+      });
+
+      await setupBrowserTest(<DomainListPanel />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/global/settings`,
+      });
+
+      await expect.element(page.getByPlaceholder('Type the exact domain name')).toHaveValue('');
+    });
+  });
 });
