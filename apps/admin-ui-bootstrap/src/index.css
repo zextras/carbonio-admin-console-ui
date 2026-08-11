@@ -65,3 +65,21 @@ body {
     max-width: 100vh;
   }
 }
+
+* {
+  scrollbar-color: var(--color-gray3-regular) transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray3-regular);
+  border-radius: 0.25rem;
+}

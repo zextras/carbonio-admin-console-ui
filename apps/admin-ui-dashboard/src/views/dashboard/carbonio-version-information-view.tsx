@@ -6,13 +6,20 @@
 
 import { Container, Padding } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const CarbonioVersionInformation: FC<{
+const largeTextStyle = { '--ds-text-font-size': '2.25rem' } as React.CSSProperties;
+const versionTextStyle = { '--ds-text-font-size': '1.2rem' } as React.CSSProperties;
+
+type CarbonioVersionInformationProps = {
   userName: string;
   serverVersion: string;
-}> = ({ userName, serverVersion }) => {
+};
+
+export const CarbonioVersionInformation = ({
+  userName,
+  serverVersion,
+}: CarbonioVersionInformationProps) => {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
   return (
@@ -26,7 +33,7 @@ const CarbonioVersionInformation: FC<{
         overflow="break-word"
         weight="light"
         size="extralarge"
-        style={{ '--ds-text-font-size': '2.25rem' } as React.CSSProperties}
+        style={largeTextStyle}
         as="h1"
       >
         {t('welcome', 'Welcome')}
@@ -37,7 +44,7 @@ const CarbonioVersionInformation: FC<{
         overflow="break-word"
         weight="light"
         size="large"
-        style={{ '--ds-text-font-size': '2.25rem' } as React.CSSProperties}
+        style={largeTextStyle}
       >
         {userName}
       </ds-text>
@@ -48,9 +55,9 @@ const CarbonioVersionInformation: FC<{
           overflow="break-word"
           weight="light"
           size="large"
-          style={{ '--ds-text-font-size': '2.25rem' } as React.CSSProperties}
+          style={largeTextStyle}
         >
-          {t('cumminity_edition', 'Community Edition!')}
+          {t('community_edition', 'Community Edition!')}
         </ds-text>
       )}
       {serverVersion && (
@@ -60,7 +67,7 @@ const CarbonioVersionInformation: FC<{
             color="secondary"
             overflow="break-word"
             weight="light"
-            style={{ '--ds-text-font-size': '1.2rem' } as React.CSSProperties}
+            style={versionTextStyle}
           >
             {`Version ${serverVersion}`}
           </ds-text>
@@ -69,5 +76,3 @@ const CarbonioVersionInformation: FC<{
     </Container>
   );
 };
-
-export default CarbonioVersionInformation;
