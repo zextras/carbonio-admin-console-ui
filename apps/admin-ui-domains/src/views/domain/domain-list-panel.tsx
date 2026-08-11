@@ -61,10 +61,10 @@ import {
   WHITELABEL_SETTINGS,
   ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../constants';
-import { SoapEntity } from '../../services/search-domain-service';
+import { type SoapEntity } from '../../services/search-domain-service';
 import { useDomainSearch } from '../../services/use-domain-search';
 import type { Domain } from '../../store/types';
-import { GlobalListPanel } from './global-list-panel';
+import { type GlobalListPanel } from './global-list-panel';
 
 const DOMAINS_BASE = `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`;
 
