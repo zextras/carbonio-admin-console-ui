@@ -335,6 +335,10 @@ describe('AddAddressBookPanel (browser)', () => {
 		await expect
 			.element(page.getByText('Select a valid account first'))
 			.toBeInTheDocument();
+		// DropDownInput highlights via error-colored divider when hasError is set
+		await expect
+			.poll(() => document.querySelector('ds-divider[color="error"]') !== null)
+			.toBe(true);
 	});
 
 	it('should expose all address books after selecting an account', async () => {

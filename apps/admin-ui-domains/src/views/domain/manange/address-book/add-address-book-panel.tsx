@@ -319,7 +319,7 @@ export function AddAddressBookPanel({
     }
 
     return (
-      <ds-text as="span" size="small" color="gray1">
+      <ds-text as="span" size="small" color="error">
         {t('label.select_a_valid_account_first', 'Select a valid account first')}
       </ds-text>
     );
@@ -395,7 +395,10 @@ export function AddAddressBookPanel({
             }}
             inputValue={account}
             isCustomIcon={false}
-            hasError={accountTouched && Boolean(accountError)}
+            hasError={
+              (accountTouched && Boolean(accountError)) ||
+              (folderMode === 'specific' && !hasValidSelectedAccount)
+            }
           />
           {accountTouched && accountError && (
             <ds-text as="span" size="small" color="error">
