@@ -45,13 +45,20 @@ const RunningDetailPanel: FC = () => {
     setOpen(false);
   };
 
-  const stopHandler = useStopOperation({
-    selectedData,
-    setOpen,
-    setWizardDetailToggle,
-    successI18nKey: 'label.stop_operation_sucess',
-    successDefault: 'The {{name}} operation has been stopped successfully',
-  });
+  const stopMutation = useStopOperation(
+    () => {
+      setOpen(false);
+      setWizardDetailToggle(false);
+    },
+    'label.stop_operation_sucess',
+    'The {{name}} operation has been stopped successfully',
+  );
+
+  const stopHandler = (): void => {
+    if (selectedData?.id) {
+      stopMutation.mutate({ id: selectedData.id, name: selectedData?.name });
+    }
+  };
 
   const handleClick = (i: number): void => {
     const volumeObject = runningData?.find((s: Operation, index: number) => index === i);

@@ -45,13 +45,20 @@ const QueuedDetailPanel: FC = () => {
 		setOpen(false);
 	};
 
-	const stopHandler = useStopOperation({
-		selectedData,
-		setOpen,
-		setWizardDetailToggle,
-		successI18nKey: 'label.cancel_operation_sucess',
-		successDefault: 'The {{name}} operation has been canceled successfully',
-	});
+	const stopMutation = useStopOperation(
+		() => {
+			setOpen(false);
+			setWizardDetailToggle(false);
+		},
+		'label.cancel_operation_sucess',
+		'The {{name}} operation has been canceled successfully',
+	);
+
+	const stopHandler = (): void => {
+		if (selectedData?.id) {
+			stopMutation.mutate({ id: selectedData.id, name: selectedData?.name });
+		}
+	};
 
 	const handleClick = (i: number): void => {
 		const volumeObject = queuedData?.find((s: Operation, index: number) => index === i);

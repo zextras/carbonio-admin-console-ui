@@ -7,7 +7,9 @@ import { z } from 'zod';
 
 export const operationsContentSchema = z
   .object({
-    response: z.record(z.string(), z.object({ ok: z.boolean().optional() })).optional(),
+    response: z
+      .record(z.string(), z.object({ ok: z.boolean().optional() }).passthrough())
+      .optional(),
     operations: z.array(z.any()).optional(),
     ok: z.boolean().optional(),
   })

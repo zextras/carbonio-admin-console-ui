@@ -7,7 +7,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAllServers } from '@zextras/ui-shared';
 
-import { type Operation } from '../types/operations';
+import { type Operation, type OperationsContent } from '../types/operations';
+import { operationsContentSchema } from '../types/operations-schemas';
 import { getAllOperations } from './get-all-operations';
 import { operationQueryKeys } from './operation-query-keys';
 
@@ -17,9 +18,18 @@ type UseAllOperationsOptions = {
 
 const fetchAllOperations = async (serverName: string): Promise<Array<Operation>> => {
   const response = await getAllOperations();
-  const res = JSON.parse(response?.Body?.response?.content ?? '');
-  if (res?.response?.[serverName]?.ok) {
-    return (res?.response?.[serverName]?.response?.operationList ?? []) as Array<Operation>;
+  let parsed: OperationsContent = {};
+  try {
+    const raw = JSON.parse(response?.Body?.response?.content ?? '{}');
+    const result = operationsContentSchema.safeParse(raw);
+    if (result.success) {
+      parsed = result.data as OperationsContent;
+    }
+  } catch {
+    parsed = {};
+  }
+  if (parsed?.response?.[serverName]?.ok) {
+    return (parsed?.response?.[serverName]?.response?.operationList ?? []) as Array<Operation>;
   }
   return [];
 };
