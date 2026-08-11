@@ -9,7 +9,7 @@ import { postSoapFetchRequest } from '@zextras/ui-shared';
 import type {
 	AddressBookEntry,
 	AddressBookFolder,
-	AddressBookZextrasSoapResponse,
+	AddressBookSoapResponse,
 } from '../../types';
 import { ZIMBRA_ADMIN_URN, ZX_ADDRESS_BOOK } from '../constants';
 import { assertZextrasOk } from './address-book-zextras-utils';
@@ -57,7 +57,7 @@ export async function listAddressBooks({
 }: ListAddressBooksParams): Promise<Array<AddressBookEntry>> {
 	const response = await postSoapFetchRequest<
 		Record<string, unknown>,
-		AddressBookZextrasSoapResponse
+		AddressBookSoapResponse
 	>(
 		'/service/admin/soap/zextras',
 		{

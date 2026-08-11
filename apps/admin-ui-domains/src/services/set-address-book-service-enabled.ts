@@ -6,7 +6,7 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-import type { AddressBookZextrasSoapResponse } from '../../types';
+import type { AddressBookSoapResponse } from '../../types';
 import {
 	ADDRESS_BOOK_SERVICE_ENABLED,
 	SET,
@@ -18,10 +18,10 @@ import { assertZextrasOk } from './address-book-zextras-utils';
 
 export async function setAddressBookServiceEnabled(
 	enabled: boolean,
-): Promise<AddressBookZextrasSoapResponse> {
+): Promise<AddressBookSoapResponse> {
 	const response = await postSoapFetchRequest<
 		Record<string, unknown>,
-		AddressBookZextrasSoapResponse
+		AddressBookSoapResponse
 	>(
 		'/service/admin/soap/zextras',
 		{

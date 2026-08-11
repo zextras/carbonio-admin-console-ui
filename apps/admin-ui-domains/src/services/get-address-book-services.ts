@@ -6,7 +6,7 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-import type { AddressBookServiceStatus, AddressBookZextrasSoapResponse } from '../../types';
+import type { AddressBookServiceStatus, AddressBookSoapResponse } from '../../types';
 import {
 	ADDRESS_BOOK_SERVICE_ENABLED,
 	GET,
@@ -28,7 +28,7 @@ type AddressBookServiceEnabledResponse = {
 };
 
 export function parseAddressBookServiceStatus(
-	response: AddressBookZextrasSoapResponse,
+	response: AddressBookSoapResponse,
 ): AddressBookServiceStatus {
 	const parsed = parseZextrasContent(response?.Body?.response?.content);
 	const values = (parsed?.response as AddressBookServiceEnabledResponse | undefined)?.values;
@@ -49,7 +49,7 @@ export function parseAddressBookServiceStatus(
 export async function getAddressBookServices(): Promise<AddressBookServiceStatus> {
 	const response = await postSoapFetchRequest<
 		Record<string, unknown>,
-		AddressBookZextrasSoapResponse
+		AddressBookSoapResponse
 	>(
 		'/service/admin/soap/zextras',
 		{

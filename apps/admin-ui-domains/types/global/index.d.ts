@@ -18,7 +18,7 @@ export type AddressBookServiceStatus = {
 	couldStop: boolean;
 };
 
-export type AddressBookZextrasSoapResponse = {
+export type AddressBookSoapResponse = {
 	Body?: {
 		response?: {
 			content?: string;

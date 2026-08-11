@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { AddressBookZextrasSoapResponse } from '../../types';
+import type { AddressBookSoapResponse } from '../../types';
 
 export type ZextrasFlatPayload = {
 	ok?: boolean;
@@ -43,7 +43,7 @@ export function getFirstZextrasServerResult(
 }
 
 export function assertZextrasOk(
-	response: AddressBookZextrasSoapResponse,
+	response: AddressBookSoapResponse,
 	fallbackMessage: string,
 ): ZextrasFlatPayload | null {
 	if (response?.Body?.Fault) {
@@ -71,7 +71,7 @@ export function assertZextrasOk(
 }
 
 export function assertZextrasNestedOk(
-	response: AddressBookZextrasSoapResponse,
+	response: AddressBookSoapResponse,
 	fallbackMessage: string,
 ): ZextrasServerResult | null {
 	const parsed = assertZextrasOk(response, fallbackMessage);

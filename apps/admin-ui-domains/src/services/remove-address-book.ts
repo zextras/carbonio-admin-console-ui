@@ -6,7 +6,7 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-import type { AddressBookZextrasSoapResponse } from '../../types';
+import type { AddressBookSoapResponse } from '../../types';
 import { ZIMBRA_ADMIN_URN, ZX_ADDRESS_BOOK } from '../constants';
 import { assertZextrasNestedOk } from './address-book-zextras-utils';
 
@@ -23,7 +23,7 @@ export async function removeAddressBook({
 }: RemoveAddressBookParams): Promise<void> {
 	const response = await postSoapFetchRequest<
 		Record<string, unknown>,
-		AddressBookZextrasSoapResponse
+		AddressBookSoapResponse
 	>(
 		'/service/admin/soap/zextras',
 		{

@@ -6,7 +6,7 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-import type { AddressBookFolder, AddressBookZextrasSoapResponse } from '../../types';
+import type { AddressBookFolder, AddressBookSoapResponse } from '../../types';
 import { ZIMBRA_ADMIN_URN, ZX_ADDRESS_BOOK } from '../constants';
 import {
 	assertZextrasOk,
@@ -88,7 +88,7 @@ export async function getAddressBookFolders({
 }: GetAddressBookFoldersParams): Promise<Array<AddressBookFolder>> {
 	const response = await postSoapFetchRequest<
 		Record<string, unknown>,
-		AddressBookZextrasSoapResponse
+		AddressBookSoapResponse
 	>(
 		'/service/admin/soap/zextras',
 		{
