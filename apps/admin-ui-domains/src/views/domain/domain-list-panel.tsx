@@ -64,7 +64,7 @@ import {
 import { type SoapEntity } from '../../services/search-domain-service';
 import { useDomainSearch } from '../../services/use-domain-search';
 import type { Domain } from '../../store/types';
-import { type GlobalListPanel } from './global-list-panel';
+import { GlobalListPanel } from './global-list-panel';
 
 const DOMAINS_BASE = `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`;
 
@@ -156,8 +156,6 @@ export const DomainListPanel = () => {
     }
   }, [rights]);
 
-  // Sync search box when the selected domain changes or is cleared
-  // Using the "adjust state during render" pattern recommended by React docs
   const [prevDomainId, setPrevDomainId] = useState(domainInformation?.id);
   const [prevIsDomainSelect, setPrevIsDomainSelect] = useState(isDomainSelect);
   if (domainInformation?.id !== prevDomainId) {
