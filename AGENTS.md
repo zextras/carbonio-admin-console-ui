@@ -146,7 +146,7 @@ Year is auto-updated by eslint. The header is required in all files except:
 - **Wrap/mirror HTML elements:** extend `React.ComponentPropsWithoutRef<'button'>`
 - **Generic components:**
   ```typescript
-  function List<T>({ items, renderItem }: { items: Array<T>; renderItem: (item: T) => React.ReactNode }) { ... }
+  const List = <T,>({ items, renderItem }: { items: Array<T>; renderItem: (item: T) => React.ReactNode }) => { ... };
   ```
 - **Conditional props** (one or the other, not both): use `never` — `{ foo: string; bar?: never } | { bar: string; foo?: never }`
 - **Discriminated unions** for props that vary by type: `{ type: 'button'; onClick: () => void } | { type: 'link'; href: string }`

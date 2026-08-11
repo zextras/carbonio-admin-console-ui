@@ -200,7 +200,7 @@ describe('AppView - restore account view', () => {
     await setupRestoreRoute();
 
     await page.getByText('alice@example.com').click();
-    await page.getByRole('button', { name: /next/i }).click();
+    await page.getByRole('button', { name: 'NEXT', exact: true }).click();
 
     // The Config step renders the Domain search field.
     await expect.element(page.getByText('Domain', { exact: true })).toBeVisible();
@@ -211,7 +211,7 @@ describe('AppView - restore account view', () => {
     await setupRestoreRoute();
 
     await page.getByText('alice@example.com').click();
-    await page.getByRole('button', { name: /next/i }).click();
+    await page.getByRole('button', { name: 'NEXT', exact: true }).click();
     await expect.element(page.getByLabelText('Search')).toBeVisible();
 
     await page.getByRole('button', { name: /cancel/i }).click();

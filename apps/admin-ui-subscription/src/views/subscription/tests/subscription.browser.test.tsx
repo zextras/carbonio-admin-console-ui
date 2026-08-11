@@ -138,7 +138,7 @@ describe('Subscription - License Banner', () => {
     // Match either 18 or 19 Jun 2025 depending on timezone
     await expect.element(page.getByText(/Maintenance has expired./i)).toBeVisible();
 
-    const closeButton = page.getByTestId('license-banner-close-button');
+    const closeButton = page.getByRole('button', { name: /close/i });
     await closeButton.click();
 
     const bannerTexts = page.getByText(/Your maintenance/i).elements();

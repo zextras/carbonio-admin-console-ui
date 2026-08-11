@@ -14,7 +14,8 @@
     "lint:fix": "eslint --fix --quiet --cache",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
-    "test:ci": "vitest run --coverage --maxWorkers=2"
+    "test:ci": "vitest run --coverage --maxWorkers=2",
+    "type-lint": "pnpm run type-check && pnpm run lint"
   },
   "dependencies": {
     "@fontsource/roboto": "^5.2.10",

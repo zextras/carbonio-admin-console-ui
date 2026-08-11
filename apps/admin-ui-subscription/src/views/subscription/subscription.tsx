@@ -5,14 +5,15 @@
  */
 
 import {
-  Button,
-  Container,
-  Input,
-  LabeledValue,
-  Modal,
-  Quota,
-  Row,
-  Tooltip,
+	Button,
+	Container,
+	Input,
+	LabeledValue,
+	LicenseBanner,
+	Modal,
+	Quota,
+	Row,
+	Tooltip,
 } from '@zextras/ui-components';
 import {
   useActivateLicense,
@@ -27,7 +28,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../constants';
-import { LicenseBanner } from '../dashboard/license-banner';
 import { DATE_FORMAT, TIME_FORMAT } from './constants';
 import { ServiceStatus } from './service-status';
 

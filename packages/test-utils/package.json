@@ -13,7 +13,8 @@
   "scripts": {
     "type-check": "tsc --build",
     "lint": "eslint --cache --quiet",
-    "lint:fix": "eslint --fix --cache --quiet"
+    "lint:fix": "eslint --fix --cache --quiet",
+    "type-lint": "pnpm run type-check && pnpm run lint"
   },
   "msw": {
     "workerDirectory": "./public"

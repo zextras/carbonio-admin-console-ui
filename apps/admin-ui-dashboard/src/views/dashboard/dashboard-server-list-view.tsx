@@ -10,11 +10,17 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   ListRow,
+  Paging,
   Table,
+  type THeader,
+  TrackNumberPerPage,
+  type TRow,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+const DEFAULT_PAGE_SIZE = 10;
 
 function getVersionTextStyle(): React.CSSProperties {
   return {
@@ -27,116 +33,119 @@ function getVersionTextStyle(): React.CSSProperties {
   };
 }
 
-const DashboardServerList: FC<{
+function stopClickPropagation(event: React.MouseEvent): void {
+  event.stopPropagation();
+}
+
+type DashboardServerListProps = {
   goToMailStoreServerList: () => void;
   serverVersion: string;
-}> = ({ goToMailStoreServerList, serverVersion }) => {
+};
+
+export const DashboardServerList = ({
+  goToMailStoreServerList,
+  serverVersion,
+}: DashboardServerListProps) => {
   const [t] = useTranslation();
   const { data: mailstoresList = [] } = useMailstoreServers();
-  const [serverListRow, setServerListRow] = useState<Array<any>>([]);
   const isAdvanced = useIsAdvanced();
+  const [limit, setLimit] = useState(DEFAULT_PAGE_SIZE);
+  const [offset, setOffset] = useState(0);
 
-  useEffect(() => {
-    if (mailstoresList.length > 0) {
-      const allRows = mailstoresList.map((item) => ({
-        id: item?.id,
-        columns: [
-          <ds-text
-            as="span"
-            size="small"
-            color="gray0"
-            weight="regular"
-            key={item.id}
-            onClick={(event: { stopPropagation: () => void }): void => {
-              event.stopPropagation();
-            }}
-          >
-            {item?.name}
-          </ds-text>,
-          <ds-text
-            as="span"
-            size="small"
-            weight="regular"
-            color="gray6"
-            key={item?.name}
-            style={getVersionTextStyle()}
-            onClick={(event: { stopPropagation: () => void }): void => {
-              event.stopPropagation();
-            }}
-          >
-            {serverVersion}
-          </ds-text>,
-          isAdvanced ? (
+  const totalServers = mailstoresList.length;
+  const paginatedList = mailstoresList.slice(offset, offset + limit);
+
+  function handlePageSizeChange(newLimit: number): void {
+    setLimit(newLimit);
+    setOffset(0);
+  }
+
+  const serverListRow: Array<TRow> =
+    paginatedList.length > 0
+      ? paginatedList.map((item) => ({
+          id: item?.id ?? '',
+          columns: [
+            <ds-text
+              as="span"
+              size="small"
+              color="gray0"
+              weight="regular"
+              key={`name-${item?.id}`}
+              onClick={stopClickPropagation}
+            >
+              {item?.name}
+            </ds-text>,
             <ds-text
               as="span"
               size="small"
               weight="regular"
               color="gray6"
-              key={item?.name}
+              key={`core-${item?.id}`}
               style={getVersionTextStyle()}
-              onClick={(event: { stopPropagation: () => void }): void => {
-                event.stopPropagation();
-              }}
+              onClick={stopClickPropagation}
             >
               {serverVersion}
-            </ds-text>
-          ) : (
-            ''
-          ),
-          <ds-text
-            as="span"
-            size="small"
-            color="gray0"
-            weight="light"
-            key={item?.name}
-            onClick={(event: { stopPropagation: () => void }): void => {
-              event.stopPropagation();
-            }}
-          >
-            {item && item?.a
-              ? item?.a.find((attribute: any) => attribute?.n === 'description')?._content
-              : ''}
-          </ds-text>,
-        ],
-      }));
-      setServerListRow(allRows);
-    } else {
-      setServerListRow([]);
-    }
-  }, [mailstoresList, serverVersion, isAdvanced]);
+            </ds-text>,
+            isAdvanced ? (
+              <ds-text
+                as="span"
+                size="small"
+                weight="regular"
+                color="gray6"
+                key={`advanced-${item?.id}`}
+                style={getVersionTextStyle()}
+                onClick={stopClickPropagation}
+              >
+                {serverVersion}
+              </ds-text>
+            ) : (
+              ''
+            ),
+            <ds-text
+              as="span"
+              size="small"
+              color="gray0"
+              weight="light"
+              key={`description-${item?.id}`}
+              onClick={stopClickPropagation}
+            >
+              {item && item?.a
+                ? item?.a.find((attribute) => attribute?.n === 'description')?._content
+                : ''}
+            </ds-text>,
+          ],
+        }))
+      : [];
 
-  const headers: any[] = useMemo(
-    () => [
-      {
-        id: 'server_name',
-        label: t('dashboard.server_name', 'Server name'),
-        width: '25%',
-        bold: true,
-      },
-      {
-        id: 'carbonio_core',
-        label: t('dashboard.core_version', 'Core Version'),
-        width: '20%',
-        bold: true,
-      },
-      {
-        id: 'carbonio',
-        label: '',
-        width: isAdvanced ? '20%' : '0%',
-        bold: true,
-      },
-      {
-        id: 'description',
-        label: t('dashboard.description', 'Description'),
-        width: '35%',
-        bold: true,
-      },
-    ],
-    [t, isAdvanced],
-  );
+  const headers: Array<THeader> = [
+    {
+      id: 'server_name',
+      label: t('dashboard.server_name', 'Server name'),
+      width: '25%',
+      bold: true,
+    },
+    {
+      id: 'carbonio_core',
+      label: t('dashboard.core_version', 'Core Version'),
+      width: '20%',
+      bold: true,
+    },
+    {
+      id: 'carbonio',
+      label: '',
+      width: isAdvanced ? '20%' : '0%',
+      bold: true,
+    },
+    {
+      id: 'description',
+      label: t('dashboard.description', 'Description'),
+      width: '35%',
+      bold: true,
+    },
+  ];
 
   return (
-    <Container background="gray6">
+    <Container background="gray6" height="auto">
       <ListRow>
         <Container
           padding={{ all: 'extralarge' }}
@@ -174,21 +183,26 @@ const DashboardServerList: FC<{
           mainAlignment="space-between"
           crossAlignment="flex-start"
           width="fill"
-          maxHeight="calc(100vh - 25rem)"
-          minHeight="auto"
+          height="auto"
         >
           <Table
             rows={serverListRow}
             headers={headers}
             showCheckbox={false}
             multiSelect={false}
-            style={{ overflow: 'auto', height: '100%' }}
             RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>
       </ListRow>
+      {totalServers > 0 && (
+        <Container orientation="horizontal" mainAlignment="space-between" width="fill">
+          <Paging key={limit} totalItem={totalServers} setOffset={setOffset} pageSize={limit} />
+          <div style={{ padding: '0.5rem 1rem' }}>
+            <TrackNumberPerPage setPageSize={handlePageSizeChange} />
+          </div>
+        </Container>
+      )}
     </Container>
   );
 };
-export default DashboardServerList;
