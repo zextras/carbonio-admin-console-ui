@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, LabeledValue, ListRow, Padding, Row, useSnackbar } from '@zextras/ui-components';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -25,20 +25,16 @@ const OperationsWizardDetailPanel: FC<{
   allowStop: boolean;
 }> = ({ setWizardDetailToggle, setOpen, selectedData, allowStop }) => {
   const [t] = useTranslation();
-  const [status, setStatus] = useState('');
   const createSnackbar = useSnackbar();
 
-  useEffect(() => {
-    if (selectedData?.state === STARTED) {
-      setStatus(RUNNING_ROUTE_ID.charAt(0).toUpperCase() + RUNNING_ROUTE_ID.slice(1));
-    } else if (selectedData?.state === QUEUED) {
-      setStatus(QUEUED);
-    } else {
-      setStatus(DONE_ROUTE_ID.charAt(0).toUpperCase() + DONE_ROUTE_ID.slice(1));
-    }
-  }, [selectedData?.state]);
+  const status =
+    selectedData?.state === STARTED
+      ? RUNNING_ROUTE_ID.charAt(0).toUpperCase() + RUNNING_ROUTE_ID.slice(1)
+      : selectedData?.state === QUEUED
+        ? QUEUED
+        : DONE_ROUTE_ID.charAt(0).toUpperCase() + DONE_ROUTE_ID.slice(1);
 
-  const copyOperation = useCallback(() => {
+  const copyOperation = () => {
     const operationItem = `
 			${t('operations.label.operation_type', 'Operation Type')} : ${selectedData?.module || ''} \n
 			${t('operations.label.who_started_it', 'Who started it?')} : ${
@@ -74,11 +70,7 @@ const OperationsWizardDetailPanel: FC<{
       hideButton: true,
       replace: true,
     });
-  }, [t, selectedData, createSnackbar, status]);
-
-  const copyOperationHandler = useCallback(() => {
-    copyOperation();
-  }, [copyOperation]);
+  };
 
   return (
     <Container background="gray6">
@@ -115,7 +107,7 @@ const OperationsWizardDetailPanel: FC<{
               color="primary"
               icon="CopyOutline"
               iconPlacement="right"
-              onClick={copyOperationHandler}
+              onClick={copyOperation}
             />
           </Padding>
           {allowStop && (
