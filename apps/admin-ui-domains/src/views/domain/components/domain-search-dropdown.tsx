@@ -51,7 +51,7 @@ export const DomainSearchDropdown = ({
     }
   }, [createSnackbar, error, t]);
 
-  const [prevDomainId, setPrevDomainId] = useState(domainInformation?.id);
+  const [prevDomainId, setPrevDomainId] = useState<string | undefined>(undefined);
   const [prevIsDomainSelect, setPrevIsDomainSelect] = useState(isDomainSelect);
   if (domainInformation?.id !== prevDomainId) {
     setPrevDomainId(domainInformation?.id);
