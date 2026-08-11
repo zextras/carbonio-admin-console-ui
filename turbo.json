@@ -37,6 +37,12 @@
       "outputs": [],
       "cache": true
     },
+    "type-lint": {
+      "dependsOn": ["^type-lint"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [],
+      "cache": true
+    },
     "test": {
       "dependsOn": ["^test"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],

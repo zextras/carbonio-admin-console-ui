@@ -19,7 +19,8 @@
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
     "test:ci": "vitest run --coverage --maxWorkers=2",
-    "test:coverage": "CI=TRUE vitest run --coverage"
+    "test:coverage": "CI=TRUE vitest run --coverage",
+    "type-lint": "pnpm run type-check && pnpm run lint"
   },
   "dependencies": {
     "@posthog/react": "^1.10.3",

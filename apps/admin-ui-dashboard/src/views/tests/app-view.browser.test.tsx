@@ -91,30 +91,32 @@ describe('AppView', () => {
     await expect.element(page.getByText('test')).toBeVisible();
   });
 
+  it('renders Community Edition in non-advanced mode', async () => {
+    await setupAppViewTest();
+    await expect.element(page.getByText('Community Edition!')).toBeVisible();
+  });
+
   it('renders Quick Access section with all elements', async () => {
     await setupAppViewTest();
     // Section title and icon
     await expect.element(page.getByText(/Quick Access/i)).toBeVisible();
-    await expect.element(page.getByTestId('icon: FlashOutline')).toBeVisible();
+    await expect.element(page.getByRole('img', { name: 'Quick Access' })).toBeVisible();
 
     // Accounts card
     await expect.element(page.getByText(/Accounts/i)).toBeVisible();
-    await expect.element(page.getByTestId('icon: PersonOutline')).toBeVisible();
+    await expect.element(page.getByRole('img', { name: 'Accounts' })).toBeVisible();
 
     // Distribution List card
     await expect.element(page.getByText(/Distribution List/i)).toBeVisible();
-    await expect.element(page.getByTestId('icon: DistributionListOutline')).toBeVisible();
+    await expect.element(page.getByRole('img', { name: 'Distribution List' })).toBeVisible();
 
     // Domain labels (at least 1)
     const domainsElements = page.getByText(/Domains/i).all();
     expect(domainsElements.length).toBeGreaterThanOrEqual(1);
 
-    // Open labels and chevron icons (at least 2 each)
+    // Open labels (at least 2)
     const openElements = page.getByText(/^Open$/i).all();
     expect(openElements.length).toBeGreaterThanOrEqual(2);
-
-    const chevronIcons = page.getByTestId('icon: ChevronRightOutline').all();
-    expect(chevronIcons.length).toBeGreaterThanOrEqual(2);
   });
 
   async function setupAdvancedTest() {
@@ -139,11 +141,19 @@ describe('AppView', () => {
   }
 
   describe('Advanced mode sections', () => {
+    it('hides Community Edition in advanced mode', async () => {
+      await setupAdvancedTest();
+      // Wait for advanced mode to take effect (Notifications section is advanced-only),
+      // so the Community Edition text has had time to unmount.
+      await expect.element(page.getByText(/Your Notifications/i)).toBeVisible();
+      expect(page.getByText('Community Edition!').elements().length).toBe(0);
+    });
+
     it('renders Notifications section with all elements', async () => {
       await setupAdvancedTest();
 
       // Bell icon and title
-      await expect.element(page.getByTestId('icon: BellOutline')).toBeVisible();
+      await expect.element(page.getByRole('img', { name: 'Notifications' })).toBeVisible();
       await expect.element(page.getByText(/Your Notifications/i)).toBeVisible();
 
       // Go to notification button
@@ -172,7 +182,7 @@ describe('AppView', () => {
       await page.getByText('Open').first().click();
 
       await expect
-        .element(page.getByTestId('location'))
+        .element(page.getByRole('status', { name: 'location' }))
         .toHaveTextContent(`/manage/${DOMAINS_ROUTE_ID}/domain-1/${ACCOUNTS}`);
     });
 
@@ -184,7 +194,7 @@ describe('AppView', () => {
       await page.getByText('Open').nth(1).click();
 
       await expect
-        .element(page.getByTestId('location'))
+        .element(page.getByRole('status', { name: 'location' }))
         .toHaveTextContent(`/manage/${DOMAINS_ROUTE_ID}/domain-1/${DISTRIBUTION_LIST}`);
     });
   });

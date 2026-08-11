@@ -132,6 +132,7 @@ const Paging: FC<PagingProps> = ({
           color="primary"
           onClick={onFirstPage}
           disabled={isFirstPageDisabled}
+          aria-label={t('label.first_page', 'First page')}
         />
       </Row>
       <Row padding={{ right: 'small' }}>
@@ -142,6 +143,7 @@ const Paging: FC<PagingProps> = ({
           color="primary"
           onClick={onPreviousPage}
           disabled={isPreviousPageDisabled}
+          aria-label={t('label.previous_page', 'Previous page')}
         />
       </Row>
       <ds-text as="span" size="medium" weight="bold" color="#828282">
@@ -169,6 +171,7 @@ const Paging: FC<PagingProps> = ({
           onClick={onNextPage}
           data-testid="next-page"
           disabled={isNextPageDisabled || currentPage === totalPages}
+          aria-label={t('label.next_page', 'Next page')}
         />
       </Row>
       <Row padding={{ left: 'small' }}>
@@ -179,6 +182,7 @@ const Paging: FC<PagingProps> = ({
           color="primary"
           onClick={onLastPage}
           disabled={isLastPageDisabled || currentPage === totalPages}
+          aria-label={t('label.last_page', 'Last page')}
         />
       </Row>
     </Container>
