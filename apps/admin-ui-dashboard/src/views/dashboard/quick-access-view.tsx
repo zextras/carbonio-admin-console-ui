@@ -42,7 +42,7 @@ export const QuickAccess = ({ openOperationView, domainName }: QuickAccessProps)
       <div className={styles.header}>
         <ListRow>
           <div className={styles.icon}>
-            <ds-icon size="large" icon="FlashOutline" />
+            <ds-icon size="large" icon="FlashOutline" aria-label={t('label.quick_access', 'Quick Access')} />
           </div>
           <div className={styles.title}>
             <ds-text as="strong" color="gray0" overflow="break-word" weight="bold" size="medium">

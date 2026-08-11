@@ -39,7 +39,7 @@ export const QuickAccessItem = ({ item, onOpen }: QuickAccessItemProps) => {
             </div>
           </div>
           <div className={styles.operationIcon}>
-            <ds-icon color="gray6" icon={item.operationIcon} size="large" />
+            <ds-icon color="gray6" icon={item.operationIcon} size="large" aria-label={item.operationText} />
           </div>
         </ListRow>
         <ListRow>
@@ -55,7 +55,7 @@ export const QuickAccessItem = ({ item, onOpen }: QuickAccessItemProps) => {
             <ds-text as="span" color="gray6" overflow="break-word" weight="light" size="medium">
               {item.bottomText}
             </ds-text>
-            <ds-icon color="gray6" icon={item.bottomIcon} size="medium" />
+            <ds-icon color="gray6" icon={item.bottomIcon} size="medium" aria-hidden="true" />
           </button>
         </ListRow>
       </div>

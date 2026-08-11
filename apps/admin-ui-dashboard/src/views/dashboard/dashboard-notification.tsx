@@ -21,7 +21,7 @@ export const DashboardNotification = ({ goToMailNotification }: DashboardNotific
         <div className={styles.headerContent}>
           <ListRow>
             <div className={styles.icon}>
-              <ds-icon icon="BellOutline" size="large"></ds-icon>
+              <ds-icon icon="BellOutline" size="large" aria-label={t('dashboard.notifications', 'Notifications')}></ds-icon>
             </div>
             <div className={styles.title}>
               <ds-text as="strong" size="medium" color="gray0" weight="bold">
