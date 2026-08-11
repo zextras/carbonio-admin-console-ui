@@ -25,6 +25,8 @@ import {
 import { type SoapEntity } from '../../services/search-domain-service';
 import { useDomainSearch } from '../../services/use-domain-search';
 import type { Domain } from '../../store/types';
+import { DomainOverflowMessage } from './components/domain-overflow-message';
+import { DomainSearchResultItem } from './components/domain-search-result-item';
 import { GlobalListPanel } from './global-list-panel';
 import { useDomainListOptions } from './hooks/use-domain-list-options';
 import { useDomainNavigation } from './hooks/use-domain-navigation';
@@ -117,60 +119,21 @@ export const DomainListPanel = () => {
     icon: searchDomainName === '' ? ('GlobeOutline' as const) : ('CloseOutline' as const),
   };
 
+  const handleDomainSelect = (domain: SoapEntity): void => {
+    setSearchDomainName(domain?.name);
+    setSearchQuery('');
+    setIsDomainListExpand(false);
+    replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
+  };
+
   const items =
     domainList.length > MAX_DOMAIN_DISPLAY
-      ? [
-          {
-            customComponent: (
-              <>
-                <Row mainAlignment="flex-start">
-                  <Padding horizontal="small">
-                    <ds-icon
-                      style={{ width: '1.25rem', height: '1.25rem' }}
-                      icon="InfoOutline"
-                    ></ds-icon>
-                  </Padding>
-                </Row>
-                <Row
-                  mainAlignment="flex-start"
-                  width="100%"
-                  padding={{
-                    all: 'small',
-                  }}
-                >
-                  <ds-text as="p" overflow="break-word">
-                    {t(
-                      'many_domain_info_msg',
-                      'So many domains! Which one would you like to see? Start typing to filter.',
-                    )}
-                  </ds-text>
-                </Row>
-              </>
-            ),
-          },
-        ]
+      ? [{ customComponent: <DomainOverflowMessage /> }]
       : domainList.map((domain) => ({
           id: domain.id,
           label: domain.name,
           customComponent: (
-            <Row
-              style={{
-                display: 'block',
-                textAlign: 'left',
-                height: 'inherit',
-                padding: '0.188rem',
-                width: 'inherit',
-              }}
-              onClick={(): void => {
-                const domainEntity: SoapEntity = domain;
-                setSearchDomainName(domainEntity?.name);
-                setSearchQuery('');
-                setIsDomainListExpand(false);
-                replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
-              }}
-            >
-              {domain?.name}
-            </Row>
+            <DomainSearchResultItem domain={domain} onSelect={handleDomainSelect} />
           ),
         }));
 
