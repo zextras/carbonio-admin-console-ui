@@ -14,7 +14,7 @@ import { operationQueryKeys } from './operation-query-keys';
 
 const fetchDoneOperations = async (): Promise<Array<Operation>> => {
 	const response = await getAllDoneOperations();
-	const res = JSON.parse(response?.Body?.response?.content);
+	const res = JSON.parse(response?.Body?.response?.content ?? '');
 	if (res?.ok) {
 		return (res?.response?.operationList ?? []) as Array<Operation>;
 	}

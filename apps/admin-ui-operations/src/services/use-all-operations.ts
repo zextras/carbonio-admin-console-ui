@@ -17,7 +17,7 @@ type UseAllOperationsOptions = {
 
 const fetchAllOperations = async (serverName: string): Promise<Array<Operation>> => {
   const response = await getAllOperations();
-  const res = JSON.parse(response?.Body?.response?.content);
+  const res = JSON.parse(response?.Body?.response?.content ?? '');
   if (res?.response?.[serverName]?.ok) {
     return (res?.response?.[serverName]?.response?.operationList ?? []) as Array<Operation>;
   }

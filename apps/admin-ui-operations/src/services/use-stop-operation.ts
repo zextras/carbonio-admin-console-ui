@@ -41,7 +41,7 @@ export const useStopOperation = ({
 
     stopOperations(selectedData?.id)
       .then((res) => {
-        const result = JSON.parse(res?.Body?.response?.content);
+        const result = JSON.parse(res?.Body?.response?.content ?? '');
         if (result?.response?.[`${serverName}`]?.ok) {
           createSnackbar({
             key: '1',
