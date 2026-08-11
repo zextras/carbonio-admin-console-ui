@@ -16,12 +16,6 @@ function App() {
   const [t] = useTranslation();
   const hasAllConfigRights = useHasAllRights();
 
-  const managementSection = {
-    id: MANAGE_APP_ID,
-    label: t('label.management', 'Management'),
-    position: 3,
-  };
-
   useEffect(() => {
     if (hasAllConfigRights) {
       addRoute({
@@ -31,14 +25,18 @@ function App() {
         label: t('label.privacy', 'Privacy'),
         primaryBar: 'ShieldOutline',
         appView: AppView,
-        primarybarSection: { ...managementSection },
+        primarybarSection: {
+          id: MANAGE_APP_ID,
+          label: t('label.management', 'Management'),
+          position: 3,
+        },
         tooltip: PrivacyTooltipView,
         trackerLabel: PRIMARY_BAR_PRIVACY,
       });
     } else {
       removeRoute(PRIVACY_ROUTE_ID);
     }
-  }, [hasAllConfigRights, managementSection, t]);
+  }, [hasAllConfigRights, t]);
 
   return null;
 }
