@@ -3,7 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import { Container, RouteLeavingGuard, Row } from '@zextras/ui-components';
 import {
 	domainByIdKey,
@@ -12,8 +14,8 @@ import {
 	useAllConfig,
 	useUserSettings
 } from '@zextras/ui-shared';
-import { cloneDeep, isEqual, reduce } from 'lodash-es';
-import { FC, useState } from 'react';
+import { reduce } from 'lodash-es';
+import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -27,6 +29,7 @@ import { ThemeConfigs } from '../theme/theme-configs';
 import { ResetTheme } from '../theme/theme-reset';
 import { DomainFormActions } from './components/domain-form-actions';
 import { useDomainMutation } from './hooks/use-domain-mutation';
+import { THEME_DEFAULTS, ThemeFormValues,themeSchema } from './schemas/domain-theme-schema';
 
 type ModifyDomainBody = {
 	id: string;
@@ -34,10 +37,10 @@ type ModifyDomainBody = {
 	a: Array<{ n: string; _content: string }>;
 };
 
-function attributesToThemeConfig(attributes: Attribute[] | undefined): themeConfigStore {
+function attributesToThemeConfig(attributes: Attribute[] | undefined): ThemeFormValues {
 	if (!attributes || attributes.length === 0) return {};
-	return attributes.reduce<themeConfigStore>((acc, item) => {
-		acc[item.n as keyof themeConfigStore] = item._content as never;
+	return attributes.reduce<ThemeFormValues>((acc, item) => {
+		acc[item.n as keyof ThemeFormValues] = item._content as never;
 		return acc;
 	}, {});
 }
@@ -84,28 +87,66 @@ const DomainTheme: FC = () => {
 	const { data: selectedDomain } = useSelectedDomain();
 	const domainName = selectedDomain?.name;
 
-	// Derived values
 	const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 	const globalTheme = attributesToThemeConfig(configInformation);
 
-	// Local state
-	const [domainTheme, setDomainTheme] = useState<themeConfigStore>({});
-	const [initialThemeConfig, setInitialThemeConfig] = useState<themeConfigStore>({});
 	const [isOpenResetDialog, setIsOpenResetDialog] = useState(false);
 	const [isValidated, setIsValidated] = useState(true);
-
-	// Sync with fetched data (conditional state update pattern)
 	const [prevDomainInfo, setPrevDomainInfo] = useState(domainInformation);
+	const [originalValues, setOriginalValues] = useState<ThemeFormValues>(THEME_DEFAULTS);
+
+	const form = useForm({
+		defaultValues: THEME_DEFAULTS as ThemeFormValues,
+		validators: {
+			onChange: themeSchema,
+			onSubmit: themeSchema
+		},
+		onSubmit: async ({ value }) => {
+			// Validation check for hex colors
+			if (value?.carbonioWebUiPrimaryColor && !isValidHexColor(value.carbonioWebUiPrimaryColor)) {
+				return;
+			}
+			if (
+				value?.carbonioWebUiDarkPrimaryColor &&
+				!isValidHexColor(value.carbonioWebUiDarkPrimaryColor)
+			) {
+				return;
+			}
+
+			const modifiedKeys = reduce<ThemeFormValues, string[]>(
+				value,
+				(result, val, key) =>
+					val !== originalValues[key as keyof ThemeFormValues] ? [...result, key] : result,
+				[]
+			);
+
+			const attributes = modifiedKeys.map((key) => {
+				const attrValue = value[key as keyof ThemeFormValues];
+				return {
+					n: key,
+					_content: typeof attrValue === 'boolean' ? String(attrValue).toUpperCase() : (attrValue ?? '')
+				};
+			});
+
+			await saveMutation({
+				id: zimbraId,
+				_jsns: ZIMBRA_ADMIN_URN,
+				a: attributes
+			});
+			form.reset(value, { keepDefaultValues: true });
+		}
+	});
+
+	// Sync form with server data
 	if (domainInformation !== prevDomainInfo) {
 		setPrevDomainInfo(domainInformation);
 		const themeConfig = attributesToThemeConfig(domainInformation);
-		setInitialThemeConfig(cloneDeep(themeConfig));
-		setDomainTheme(cloneDeep(themeConfig));
+		setOriginalValues(themeConfig);
+		form.reset(themeConfig, { keepDefaultValues: false });
 	}
 
-	// Derived dirty state
-	const isDirty =
-		Object.keys(domainTheme).length > 0 && !isEqual(domainTheme, initialThemeConfig);
+	const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+	const domainTheme = useSelector(form.store, (state) => state.values);
 
 	const zimbraId = domainWithoutConfig?.id ?? '';
 
@@ -157,44 +198,27 @@ const DomainTheme: FC = () => {
 
 	const isPending = isSaving || isResetting;
 
+	// Wrapper for ThemeConfigs compatibility
+	const setThemeConfig = useCallback(
+		(updater: ((prev: themeConfigStore) => themeConfigStore) | themeConfigStore): void => {
+			const currentValues = form.store.state.values;
+			const newValues = typeof updater === 'function' ? updater(currentValues as themeConfigStore) : updater;
+			Object.keys(newValues).forEach((key) => {
+				const typedKey = key as keyof ThemeFormValues;
+				if (currentValues[typedKey] !== newValues[typedKey]) {
+					form.setFieldValue(typedKey, newValues[typedKey] as never);
+				}
+			});
+		},
+		[form]
+	);
+
 	const onSave = (): void => {
-		if (
-			domainTheme?.carbonioWebUiPrimaryColor &&
-			!isValidHexColor(domainTheme.carbonioWebUiPrimaryColor)
-		) {
-			return;
-		}
-		if (
-			domainTheme?.carbonioWebUiDarkPrimaryColor &&
-			!isValidHexColor(domainTheme.carbonioWebUiDarkPrimaryColor)
-		) {
-			return;
-		}
-
-		const modifiedKeys = reduce<themeConfigStore, string[]>(
-			domainTheme,
-			(result, value, key) =>
-				isEqual(value, initialThemeConfig[key as keyof themeConfigStore]) ? result : [...result, key],
-			[]
-		);
-
-		const attributes = modifiedKeys.map((key) => {
-			const value = domainTheme[key as keyof themeConfigStore];
-			return {
-				n: key,
-				_content: typeof value === 'boolean' ? String(value).toUpperCase() : (value ?? '')
-			};
-		});
-
-		saveMutation({
-			id: zimbraId,
-			_jsns: ZIMBRA_ADMIN_URN,
-			a: attributes
-		});
+		form.handleSubmit();
 	};
 
 	const onCancel = (): void => {
-		setDomainTheme(cloneDeep(initialThemeConfig));
+		form.reset();
 	};
 
 	const onResetTheme = (): void => {
@@ -256,9 +280,9 @@ const DomainTheme: FC = () => {
 					<ds-divider></ds-divider>
 				</Row>
 				<ThemeConfigs
-					themeConfig={domainTheme}
-					globalTheme={globalTheme}
-					setThemeConfig={setDomainTheme}
+					themeConfig={domainTheme as themeConfigStore}
+					globalTheme={globalTheme as themeConfigStore}
+					setThemeConfig={setThemeConfig}
 					setIsValidated={setIsValidated}
 					onResetTheme={onResetTheme}
 				/>

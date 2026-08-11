@@ -3,10 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import { Container, RouteLeavingGuard, Row } from '@zextras/ui-components';
-import { cloneDeep, differenceWith, isEqual, map, some } from 'lodash-es';
-import React, { useMemo, useState } from 'react';
+import { differenceWith, isEqual, map, some } from 'lodash-es';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TwoFactorAuthPolicyValues } from '../../../../types';
@@ -17,6 +19,7 @@ import { isValidIpRange, TwoFactorPolicyArray } from '../../utility/utils';
 import { TwoFactorAuthencationConfig } from '../two-factor-authentication/2fa-config';
 import { DomainFormActions } from './components/domain-form-actions';
 import { useDomainMutation } from './hooks/use-domain-mutation';
+import { TwoFactorFormValues,twoFactorSchema } from './schemas/domain-2fa-schema';
 
 function parsePoliciesResponse(response: unknown): TwoFactorAuthPolicyValues[] {
 	if (!response || typeof response !== 'object') return [];
@@ -61,6 +64,31 @@ async function savePolicies(
 	return { ok: true };
 }
 
+// Convert API policies to form values
+function policiesToFormValues(policies: TwoFactorAuthPolicyValues[]): TwoFactorFormValues {
+	return {
+		policies: policies.map((policy) => {
+			const serviceKey = Object.keys(policy)[0];
+			const policyData = policy[serviceKey];
+			return {
+				service: serviceKey,
+				trustedDevice: policyData?.trustedDevice ?? 0,
+				trustedIpRange: policyData?.trustedIpRange ?? []
+			};
+		})
+	};
+}
+
+// Convert form values back to API format
+function formValuesToPolicies(values: TwoFactorFormValues): TwoFactorAuthPolicyValues[] {
+	return values.policies.map((policy) => ({
+		[policy.service]: {
+			trustedDevice: policy.trustedDevice,
+			trustedIpRange: policy.trustedIpRange
+		}
+	}));
+}
+
 const DomainTwoFactorAuthentication = (): React.JSX.Element => {
 	const [t] = useTranslation();
 	const queryClient = useQueryClient();
@@ -79,44 +107,56 @@ const DomainTwoFactorAuthentication = (): React.JSX.Element => {
 		enabled: !!domainName
 	});
 
-	// Local state for modified policies (kept for compatibility with TwoFactorAuthencationConfig)
-	const [arrPoliciesToModify, setArrPoliciesToModify] = useState<TwoFactorAuthPolicyValues[]>([]);
-
-	// Sync with fetched data
 	const [prevPolicies, setPrevPolicies] = useState(policies);
+
+	const form = useForm({
+		defaultValues: { policies: [] } as TwoFactorFormValues,
+		validators: {
+			onChange: twoFactorSchema,
+			onSubmit: twoFactorSchema
+		},
+		onSubmit: async ({ value }) => {
+			const policiesData = formValuesToPolicies(value);
+			const result = await mutate({ policies: policiesData });
+			if (result?.ok) {
+				await queryClient.invalidateQueries({ queryKey: ['2fa-policies', domainName] });
+				form.reset(value, { keepDefaultValues: true });
+			}
+		}
+	});
+
+	// Sync form with fetched data
 	if (policies !== prevPolicies) {
 		setPrevPolicies(policies);
-		setArrPoliciesToModify(cloneDeep(policies ?? []));
+		const formValues = policiesToFormValues(policies ?? []);
+		form.reset(formValues, { keepDefaultValues: false });
 	}
 
-	// Dirty state
-	const isDirty = useMemo(() => {
-		if (!policies || policies.length === 0) return false;
-		const diff = differenceWith(arrPoliciesToModify, policies, isEqual);
-		return diff.length > 0;
-	}, [policies, arrPoliciesToModify]);
+	const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+
+	// Get arrPoliciesToModify from form state for compatibility with TwoFactorAuthencationConfig
+	const formPolicies = useSelector(form.store, (state) => state.values.policies);
+	const arrPoliciesToModify = useMemo(() => formValuesToPolicies({ policies: formPolicies }), [formPolicies]);
 
 	// Validation
 	const hasValidationErrors = useMemo(() => {
-		return (
-			twoFactorPolicyArray.some((e: { label?: string; keyToGet: string }) =>
-				some(
-					map(
-						arrPoliciesToModify.find((obj: TwoFactorAuthPolicyValues) =>
-							Object.hasOwn(obj, e.keyToGet)
-						)?.[e.keyToGet]?.trustedIpRange,
-						(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
-					) || [],
-					{ error: true }
-				)
+		return twoFactorPolicyArray.some((e: { label?: string; keyToGet: string }) =>
+			some(
+				map(
+					arrPoliciesToModify.find((obj: TwoFactorAuthPolicyValues) =>
+						Object.hasOwn(obj, e.keyToGet)
+					)?.[e.keyToGet]?.trustedIpRange,
+					(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
+				) || [],
+				{ error: true }
 			)
 		);
 	}, [arrPoliciesToModify, twoFactorPolicyArray]);
 
 	// Mutation
 	const { mutate, isPending } = useDomainMutation({
-		mutationFn: async () => {
-			return savePolicies(domainName, policies ?? [], arrPoliciesToModify);
+		mutationFn: async (data: { policies: TwoFactorAuthPolicyValues[] }) => {
+			return savePolicies(domainName, policies ?? [], data.policies);
 		},
 		successMessage: t(
 			'label.2fa-policy-updated-successfully',
@@ -124,20 +164,22 @@ const DomainTwoFactorAuthentication = (): React.JSX.Element => {
 		)
 	});
 
-	const handleOnSave = async (): Promise<void> => {
-		const result = await mutate(undefined);
-		if (result?.ok) {
-			await queryClient.invalidateQueries({ queryKey: ['2fa-policies', domainName] });
-		}
+	const handleOnSave = (): void => {
+		form.handleSubmit();
 	};
 
 	const handleOnCancel = (): void => {
-		setArrPoliciesToModify(cloneDeep(policies ?? []));
+		form.reset();
 	};
 
-	const modifyPolicies = (newPolicies: TwoFactorAuthPolicyValues[]): void => {
-		setArrPoliciesToModify(newPolicies);
-	};
+	// Wrapper for TwoFactorAuthencationConfig compatibility
+	const modifyPolicies = useCallback(
+		(newPolicies: TwoFactorAuthPolicyValues[]): void => {
+			const formValues = policiesToFormValues(newPolicies);
+			form.setFieldValue('policies', formValues.policies);
+		},
+		[form]
+	);
 
 	if (isLoading) {
 		return (
