@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ACCOUNTS,
   ACTIVE_SYNC,
+  ADDRESS_BOOK,
   AUTHENTICATION,
   BOOLEAN_FALSE,
   CONFIG,
@@ -27,6 +28,7 @@ import {
   GENERAL_SETTINGS,
   GLOBAL_2FA_ROUTE,
   GLOBAL_ACTIVE_SYNC_ROUTE,
+  GLOBAL_ADDRESS_BOOK_ROUTE,
   GLOBAL_ADMINISTRATORS,
   GLOBAL_DOMAIN_ROUTE,
   GLOBAL_QUARANTINE_ROUTE,
@@ -152,6 +154,11 @@ export const useDomainListOptions = ({
       isSelected: isDomainSelect,
     },
     {
+      id: ADDRESS_BOOK,
+      name: t('label.ldap_addressbook', 'LDAP Address Book'),
+      isSelected: isDomainSelect,
+    },
+    {
       id: RESTORE_ACCOUNT,
       name: t('label.restore_account', 'Restore Account'),
       isSelected: isDomainSelect,
@@ -192,6 +199,11 @@ export const useDomainListOptions = ({
     {
       id: GLOBAL_ACTIVE_SYNC_ROUTE,
       name: t('label.active_sync', 'ActiveSync'),
+      isSelected: true,
+    },
+    {
+      id: GLOBAL_ADDRESS_BOOK_ROUTE,
+      name: t('label.services', 'Services'),
       isSelected: true,
     },
   ];

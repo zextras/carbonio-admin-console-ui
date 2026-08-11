@@ -33,6 +33,9 @@ function MockGlobalTwoFactorAuth() {
 function MockGlobalActiveSync() {
   return <div>VIEW:global-active-sync</div>;
 }
+function MockGlobalAddressBook() {
+  return <div>VIEW:global-address-book</div>;
+}
 function MockGlobalDelegates() {
   return <div>VIEW:global-delegates</div>;
 }
@@ -84,6 +87,9 @@ function MockDomainResources() {
 function MockRestoreAccount() {
   return <div>VIEW:restore_account</div>;
 }
+function MockDomainAddressBook() {
+  return <div>VIEW:address_book</div>;
+}
 
 vi.mock('../domain/domain-detail-panel', () => ({ DomainDetailPanel: MockDetailPanel }));
 vi.mock('../domain/create-new-domain', () => ({ default: MockCreateNewDomain }));
@@ -91,6 +97,9 @@ vi.mock('../domain/global/global-detail-panel', () => ({ default: MockGlobalDeta
 vi.mock('../domain/global/global-theme', () => ({ default: MockGlobalTheme }));
 vi.mock('../domain/global/global-two-factor-auth', () => ({ default: MockGlobalTwoFactorAuth }));
 vi.mock('../domain/global/global-active-sync', () => ({ default: MockGlobalActiveSync }));
+vi.mock('../domain/global/global-address-book', () => ({
+  GlobalAddressBook: MockGlobalAddressBook,
+}));
 vi.mock('../domain/global-delegates', () => ({ default: MockGlobalDelegates }));
 vi.mock('../domain/domain-list/domain-list', () => ({ DomainList: MockDomainList }));
 vi.mock('../quarantine/quarantine-list', () => ({ default: MockQuarantineList }));
@@ -116,6 +125,9 @@ vi.mock('../domain/manange/resources/domain-resources', () => ({ default: MockDo
 vi.mock('../domain/manange/restore-delete-account/restore-delete-account', () => ({
   default: MockRestoreAccount,
 }));
+vi.mock('../domain/manange/address-book/domain-address-book', () => ({
+  DomainAddressBook: MockDomainAddressBook,
+}));
 
 const DOMAIN_ID = 'dom-1';
 
@@ -128,6 +140,7 @@ const globalRoutes: Array<[string, string]> = [
   ['/global/domains', 'VIEW:domain-list'],
   ['/global/administrators', 'VIEW:global-delegates'],
   ['/global/active_sync', 'VIEW:global-active-sync'],
+  ['/global/address_book', 'VIEW:global-address-book'],
 ];
 
 const domainOpRoutes: Array<[string, string]> = [
@@ -144,6 +157,7 @@ const domainOpRoutes: Array<[string, string]> = [
   ['resources', 'VIEW:resources'],
   ['restore_account', 'VIEW:restore_account'],
   ['active_sync', 'VIEW:active_sync'],
+  ['address_book', 'VIEW:address_book'],
   ['disclaimer', 'VIEW:disclaimer'],
 ];
 

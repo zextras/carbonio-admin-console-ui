@@ -6,6 +6,9 @@
 
 /// <reference types="vite/client" />
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-imports, simple-import-sort/imports
+import React from 'react';
+
 import '@zextras/ui-components';
 
 declare module '*.jsx';
