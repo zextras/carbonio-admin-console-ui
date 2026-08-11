@@ -8,7 +8,7 @@ import { Container } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 
-import DomainListPanel from './domain/domain-list-panel';
+import { DomainListPanel } from './domain/domain-list-panel';
 import { DomainContentPanel } from './domain-content-panel';
 import { DomainPageHeader } from './domain-page-header';
 

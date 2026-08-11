@@ -16,7 +16,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { DOMAINS_ROUTE_ID, MANAGE_APP_ID } from '../../../constants';
-import DomainListPanel from '../domain-list-panel';
+import { DomainListPanel } from '../domain-list-panel';
 
 type DomainEntry = {
   name: string;

@@ -23,7 +23,7 @@ import {
   useDomainById,
   useIsAdvanced,
 } from '@zextras/ui-shared';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
 
@@ -64,11 +64,11 @@ import {
 import { SoapEntity } from '../../services/search-domain-service';
 import { useDomainSearch } from '../../services/use-domain-search';
 import type { Domain } from '../../store/types';
-import GlobalListPanel from './global-list-panel';
+import { GlobalListPanel } from './global-list-panel';
 
 const DOMAINS_BASE = `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`;
 
-const DomainListPanel: FC = () => {
+export const DomainListPanel = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const locationService = useLocation();
@@ -76,8 +76,12 @@ const DomainListPanel: FC = () => {
   const [searchDomainName, setSearchDomainName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearch = useDebouncedValue(searchQuery, 700);
-  const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
-  const [isManageListExpanded, setIsManageListExpanded] = useState(true);
+  const [isDetailListExpanded, setIsDetailListExpanded] = useState(
+    () => localStorage.getItem(IS_DETAIL_LIST_EXPANDED) !== 'false',
+  );
+  const [isManageListExpanded, setIsManageListExpanded] = useState(
+    () => localStorage.getItem(IS_MANAGE_LIST_EXPANDED) !== 'false',
+  );
 
   const globalMatch =
     matchPath(`${DOMAINS_BASE}/${GLOBAL_ROUTE}/*`, locationService.pathname) ??
@@ -124,16 +128,11 @@ const DomainListPanel: FC = () => {
   const { data: backupData } = useBackupServers({
     enabled: isAdvanced,
   });
-  const [manageOptions, setListItemType] = useState<ListItemType[]>([]);
   const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
   const { data: rights } = useCurrentUserRights();
   const { data: globalConfigInformation = [] } = useAllConfig();
-  const [is2FAAvailable, setIs2FAAvailable] = useState(true);
-
-  useEffect(() => {
-    const isAvail2Fa = domainInformation?.a?.find((item) => item?.n === 'zimbraAuthMech');
-    setIs2FAAvailable(isAvail2Fa === undefined);
-  }, [domainInformation]);
+  const is2FAAvailable =
+    domainInformation?.a?.find((item) => item?.n === 'zimbraAuthMech') === undefined;
 
   useEffect(() => {
     if (rights && rights.length > 0) {
@@ -157,38 +156,33 @@ const DomainListPanel: FC = () => {
     }
   }, [rights]);
 
-  useEffect(() => {
+  // Sync search box when the selected domain changes or is cleared
+  // Using the "adjust state during render" pattern recommended by React docs
+  const [prevDomainId, setPrevDomainId] = useState(domainInformation?.id);
+  const [prevIsDomainSelect, setPrevIsDomainSelect] = useState(isDomainSelect);
+  if (domainInformation?.id !== prevDomainId) {
+    setPrevDomainId(domainInformation?.id);
     if (domainInformation?.name) {
-      setSearchDomainName(domainInformation?.name);
+      setSearchDomainName(domainInformation.name);
       setSearchQuery('');
       setIsDomainListExpand(false);
     }
-  }, [domainInformation?.id, domainInformation?.name]);
-
-  useEffect(() => {
+  }
+  if (isDomainSelect !== prevIsDomainSelect) {
+    setPrevIsDomainSelect(isDomainSelect);
     if (!isDomainSelect) {
       setSearchDomainName('');
       setSearchQuery('');
     }
-  }, [isDomainSelect]);
+  }
 
-  const selectedDomain = useCallback((domain: SoapEntity) => {
-    setSearchDomainName(domain?.name);
-    setSearchQuery('');
-    setIsDomainListExpand(false);
-    replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
-  }, []);
-
-  const navigateToView = useCallback(
-    (view: string) => {
-      if (view.startsWith(`${GLOBAL_ROUTE}/`)) {
-        replaceHistory(`/${view}`);
-      } else if (isDomainSelect && selectedDomainId) {
-        replaceHistory(`/${selectedDomainId}/${view}`);
-      }
-    },
-    [isDomainSelect, selectedDomainId],
-  );
+  const navigateToView = (view: string) => {
+    if (view.startsWith(`${GLOBAL_ROUTE}/`)) {
+      replaceHistory(`/${view}`);
+    } else if (isDomainSelect && selectedDomainId) {
+      replaceHistory(`/${selectedDomainId}/${view}`);
+    }
+  };
 
   const isDisclaimerEnable = useMemo(
     () =>
@@ -349,8 +343,7 @@ const DomainListPanel: FC = () => {
         }
         return true;
       }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [detailOptions, isAdvanced, is2FAAvailable],
+    [detailOptions, isAdvanced],
   );
 
   const globalOptionsItems = useMemo(
@@ -366,21 +359,17 @@ const DomainListPanel: FC = () => {
     [globalOptionItems, isAdvanced],
   );
 
-  useEffect(() => {
-    if (backupData && !backupData?.backupModuleEnable && !backupData?.isBackupModuleLicensed) {
-      const options = manageItems.filter((item: ListItemType) => item?.id !== RESTORE_ACCOUNT);
-      setListItemType(options);
-    }
-  }, [manageItems, isDomainSelect, backupData]);
-
-  useMemo(() => {
-    setListItemType(
-      manageItems.map((item: ListItemType) => {
-        item.isSelected = isDomainSelect;
-        return item;
-      }),
-    );
-  }, [isDomainSelect, manageItems]);
+  // Derived: manage options are always consistent with manageItems, backup status, and selection
+  const manageOptions = useMemo(() => {
+    const items =
+      backupData && !backupData?.backupModuleEnable && !backupData?.isBackupModuleLicensed
+        ? manageItems.filter((item: ListItemType) => item?.id !== RESTORE_ACCOUNT)
+        : manageItems;
+    return items.map((item: ListItemType) => ({
+      ...item,
+      isSelected: isDomainSelect,
+    }));
+  }, [manageItems, backupData, isDomainSelect]);
 
   const toggleDetailView = (): void => {
     if (isDetailListExpanded) {
@@ -455,7 +444,11 @@ const DomainListPanel: FC = () => {
                 width: 'inherit',
               }}
               onClick={(): void => {
-                selectedDomain(domain);
+                const domainEntity: SoapEntity = domain;
+                setSearchDomainName(domainEntity?.name);
+                setSearchQuery('');
+                setIsDomainListExpand(false);
+                replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
               }}
             >
               {domain?.name}
@@ -464,23 +457,10 @@ const DomainListPanel: FC = () => {
         }));
 
   useEffect(() => {
-    const storedDetailListViewValue = localStorage.getItem(IS_DETAIL_LIST_EXPANDED);
-    if (storedDetailListViewValue === 'false') {
-      setIsDetailListExpanded(false);
-    } else {
-      setIsDetailListExpanded(true);
-    }
-    const storedManageListViewValue = localStorage.getItem(IS_MANAGE_LIST_EXPANDED);
-    if (storedManageListViewValue === 'false') {
-      setIsManageListExpanded(false);
-    } else {
-      setIsManageListExpanded(true);
-    }
     if (locationService.pathname === DOMAINS_BASE) {
       replaceHistory(`/${GLOBAL_DOMAIN_ROUTE}`);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [locationService.pathname]);
 
   return (
     <Container
@@ -555,4 +535,3 @@ const DomainListPanel: FC = () => {
     </Container>
   );
 };
-export default DomainListPanel;
