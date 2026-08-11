@@ -6,7 +6,7 @@
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { useLocalStorage } from '@zextras/ui-shared';
 import { cloneDeep, find } from 'lodash-es';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 
@@ -26,18 +26,15 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
     {},
   );
 
-	const [dismissedDomainName, setDismissedDomainName] = useState<string | null>(null);
+  const [dismissedDomainName, setDismissedDomainName] = useState<string | null>(null);
 
-  const isDomainClosed = useMemo(() => {
-    const domainStatus = find(domain?.a, { n: 'zimbraDomainStatus' });
-    return !!(
-      domainStatus?._content === 'closed' &&
-      domain?.name &&
-      !domainLocalValue[domain?.name] &&
-      !location.pathname.includes('domains/global') &&
-      closeDomainBanner !== domain?.name
-    );
-  }, [closeDomainBanner, domain?.a, domain?.name, domainLocalValue]);
+  const domainStatus = find(domain?.a, { n: 'zimbraDomainStatus' });
+  const isDomainClosed =
+    domainStatus?._content === 'closed' &&
+    domain?.name &&
+    !domainLocalValue[domain?.name] &&
+    !location.pathname.includes('domains/global') &&
+    closeDomainBanner !== domain?.name;
   return (
     <Container
       orientation="column"
@@ -72,9 +69,9 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
                 onClick={(): void => {
                   setDismissedDomainName(domain?.name ?? null);
                   const domainLocal = cloneDeep(domainLocalValue);
-    if (domain?.name) {
-      domainLocal[domain?.name] = true;
-    }
+                  if (domain?.name) {
+                    domainLocal[domain?.name] = true;
+                  }
                   setDomainLocalValue(domainLocal);
                 }}
               />
@@ -84,6 +81,7 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
               size="large"
               color="white"
               style={{ cursor: 'pointer' }}
+              aria-label={t('label.close', 'Close')}
               onClick={(): void => {
                 setDismissedDomainName(domain?.name ?? null);
                 setSearchParams(
@@ -98,9 +96,7 @@ export const DomainDetailPanel = ({ children }: DomainDetailPanelProps) => {
             ></ds-icon>
           </Row>
         </Row>
-      ) : (
-        <></>
-      )}
+      ) : null}
       {children}
     </Container>
   );
