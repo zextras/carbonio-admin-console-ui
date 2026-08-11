@@ -162,6 +162,19 @@ describe('DomainListPanel', () => {
       await page.getByText('Details', { exact: true }).click();
       await expect.element(page.getByText('General Settings')).toBeVisible();
     });
+
+    it('should restore manage items when Manage header is clicked again', async () => {
+      await setupBrowserTest(<DomainListPanel />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
+      });
+
+      await page.getByText('Manage', { exact: true }).click();
+      expect(page.getByText('Accounts').elements()).toHaveLength(0);
+
+      await page.getByText('Manage', { exact: true }).click();
+      await expect.element(page.getByText('Accounts')).toBeVisible();
+    });
   });
 
   describe('Domain dropdown', () => {
@@ -230,6 +243,69 @@ describe('DomainListPanel', () => {
 
       await expect.element(page.getByText('Manage', { exact: true })).toBeVisible();
       await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
+    });
+
+    it('should show the not-found message when search returns no results', async () => {
+      setupSearchDirectoryInterceptor([]);
+
+      await setupBrowserTest(<DomainListPanel />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
+      });
+
+      await expect
+        .element(page.getByText('Not found - check the text and try again'))
+        .toBeVisible();
+    });
+  });
+
+  describe('Global config', () => {
+    it('should render the global config section with global items', async () => {
+      await setupBrowserTest(<DomainListPanel />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
+      });
+
+      await expect.element(page.getByText('Global', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Settings', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Administrators')).toBeVisible();
+    });
+  });
+
+  describe('No domain selected', () => {
+    it('should show the search input with no-domain label', async () => {
+      await setupBrowserTest(<DomainListPanel />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/global/settings`,
+      });
+
+      await expect
+        .element(page.getByPlaceholder('Type the exact domain name'))
+        .toBeVisible();
+    });
+  });
+
+  describe('Domain overflow', () => {
+    it('should show the overflow message when there are more than MAX_DOMAIN_DISPLAY domains', async () => {
+      const manyDomains = Array.from({ length: 21 }, (_, i) =>
+        buildDomain(`domain-${i}.com`, `overflow-domain-${i}`),
+      );
+      setupSearchDirectoryInterceptor(manyDomains);
+
+      await setupBrowserTest(<DomainListPanel />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
+      });
+
+      await page.getByPlaceholder('I want to see this domain').click();
+
+      await expect
+        .element(
+          page.getByText(
+            'So many domains! Which one would you like to see? Start typing to filter.',
+          ),
+        )
+        .toBeVisible();
     });
   });
 });
