@@ -4,18 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container,Modal, Row } from '@zextras/ui-components';
-import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { STARTED } from '../../constants';
 import { type Operation } from '../../types/operations';
 
-const DeleteOperationsModal: FC<{
+type DeleteOperationsModalProps = {
 	open: boolean;
 	closeHandler: () => void;
 	saveHandler: () => void;
 	selectedData: Operation | undefined;
-}> = ({ open, closeHandler, saveHandler, selectedData }) => {
+};
+
+export const DeleteOperationsModal = ({
+	open,
+	closeHandler,
+	saveHandler,
+	selectedData,
+}: DeleteOperationsModalProps) => {
 	const [t] = useTranslation();
 
 	return (
@@ -94,5 +100,3 @@ const DeleteOperationsModal: FC<{
 		</>
 	);
 };
-
-export default DeleteOperationsModal;

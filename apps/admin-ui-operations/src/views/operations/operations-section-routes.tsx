@@ -12,7 +12,7 @@ import {
   RUNNING_ROUTE_ID,
   STARTED,
 } from '../../constants';
-import DoneDetailPanel from './done-detail-panel';
+import { DoneDetailPanel } from './done-detail-panel';
 import { OperationStateDetailPanel } from './operation-state-detail-panel';
 
 export type SectionRoute = {

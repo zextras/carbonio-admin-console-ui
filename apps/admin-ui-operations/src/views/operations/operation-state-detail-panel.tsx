@@ -11,9 +11,9 @@ import { useAllOperations } from '../../services/use-all-operations';
 import { useStopOperation } from '../../services/use-stop-operation';
 import { type Operation } from '../../types/operations';
 import { OperationsHeader } from '../utility/utils';
-import DeleteOperationsModal from './delete-operations-modal';
+import { DeleteOperationsModal } from './delete-operations-modal';
 import { OperationsTable } from './operations-table';
-import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
+import { OperationsWizardDetailPanel } from './operations-wizard-detail-panel';
 
 type OperationStateDetailPanelProps = {
   state: string;

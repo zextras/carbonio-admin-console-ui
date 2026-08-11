@@ -5,24 +5,24 @@
  */
 
 import { Container, Input, ModalOverlay, Paging, Row, useSnackbar } from '@zextras/ui-components';
-import { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useDoneOperations } from '../../services/use-done-operations';
 import { type Operation } from '../../types/operations';
 import { OperationsDoneHeader } from '../utility/utils';
 import { OperationsTable } from './operations-table';
-import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
+import { OperationsWizardDetailPanel } from './operations-wizard-detail-panel';
 
 const FunnelSearchIcon = () => (
   <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
 );
 
-const DoneDetailPanel: FC = () => {
+export const DoneDetailPanel = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { data: doneData = [], isError } = useDoneOperations();
-  const operationsDoneHeader = useMemo(() => OperationsDoneHeader(t), [t]);
+  const operationsDoneHeader = OperationsDoneHeader(t);
   const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
   const [selectedData, setSelectedData] = useState<Operation | undefined>();
   const [isSelectedRow, setIsSelectedRow] = useState<Array<string>>([]);
@@ -154,5 +154,3 @@ const DoneDetailPanel: FC = () => {
     </>
   );
 };
-
-export default DoneDetailPanel;

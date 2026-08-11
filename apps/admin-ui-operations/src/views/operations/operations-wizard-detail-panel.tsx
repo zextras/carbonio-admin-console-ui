@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, LabeledValue, ListRow, Padding, Row, useSnackbar } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -18,12 +17,19 @@ import {
 import { copyTextToClipboard } from '../utility/utils';
 import { MilliSecondToDate } from './functions/milliSecondToDate';
 
-const OperationsWizardDetailPanel: FC<{
+type OperationsWizardDetailPanelProps = {
   setWizardDetailToggle: (value: boolean) => void;
   setOpen: (value: boolean) => void;
   selectedData: any;
   allowStop: boolean;
-}> = ({ setWizardDetailToggle, setOpen, selectedData, allowStop }) => {
+};
+
+export const OperationsWizardDetailPanel = ({
+  setWizardDetailToggle,
+  setOpen,
+  selectedData,
+  allowStop,
+}: OperationsWizardDetailPanelProps) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
 
@@ -214,5 +220,3 @@ const OperationsWizardDetailPanel: FC<{
     </Container>
   );
 };
-
-export default OperationsWizardDetailPanel;

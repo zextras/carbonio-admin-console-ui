@@ -15,7 +15,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { type Operation } from '../../../types/operations';
-import DoneDetailPanel from '../done-detail-panel';
+import { DoneDetailPanel } from '../done-detail-panel';
 
 const MOCK_DONE_OPERATIONS: Array<Operation> = [
     {
