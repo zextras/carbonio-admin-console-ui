@@ -25,7 +25,6 @@ import {
 } from '@zextras/ui-shared';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { matchPath, useLocation } from 'react-router';
 
 import {
   ACCOUNTS,
@@ -36,7 +35,6 @@ import {
   DELEGATES_DOMAIN_ADMINS,
   DISCLAIMER,
   DISTRIBUTION_LIST,
-  DOMAINS_ROUTE_ID,
   FALSE,
   GAL,
   GENERAL_SETTINGS,
@@ -45,12 +43,10 @@ import {
   GLOBAL_ADMINISTRATORS,
   GLOBAL_DOMAIN_ROUTE,
   GLOBAL_QUARANTINE_ROUTE,
-  GLOBAL_ROUTE,
   GLOBAL_SETTINGS_ROUTE,
   GLOBAL_WHITELABEL_SETTINGS,
   IS_DETAIL_LIST_EXPANDED,
   IS_MANAGE_LIST_EXPANDED,
-  MANAGE_APP_ID,
   MAX_DOMAIN_DISPLAY,
   RESOURCES,
   RESTORE_ACCOUNT,
@@ -65,13 +61,12 @@ import { type SoapEntity } from '../../services/search-domain-service';
 import { useDomainSearch } from '../../services/use-domain-search';
 import type { Domain } from '../../store/types';
 import { GlobalListPanel } from './global-list-panel';
-
-const DOMAINS_BASE = `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`;
+import { useDomainNavigation } from './hooks/use-domain-navigation';
 
 export const DomainListPanel = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const locationService = useLocation();
+  const { isDomainSelect, selectedDomainId, domainView, navigateToView } = useDomainNavigation();
   const [isDomainListExpand, setIsDomainListExpand] = useState(false);
   const [searchDomainName, setSearchDomainName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,23 +77,6 @@ export const DomainListPanel = () => {
   const [isManageListExpanded, setIsManageListExpanded] = useState(
     () => localStorage.getItem(IS_MANAGE_LIST_EXPANDED) !== 'false',
   );
-
-  const globalMatch =
-    matchPath(`${DOMAINS_BASE}/${GLOBAL_ROUTE}/*`, locationService.pathname) ??
-    matchPath(`${DOMAINS_BASE}/${GLOBAL_ROUTE}`, locationService.pathname);
-  const isGlobalRoute = !!globalMatch;
-  const domainMatch = isGlobalRoute
-    ? null
-    : matchPath(`${DOMAINS_BASE}/:domainId/:operation`, locationService.pathname);
-  const selectedDomainId = domainMatch?.params.domainId ?? '';
-  const isDomainSelect = !!selectedDomainId;
-  const globalSub = globalMatch
-    ? (globalMatch.params as Record<string, string | undefined>)['*'] ?? ''
-    : '';
-  const globalView = globalSub ? `${GLOBAL_ROUTE}/${globalSub}` : GLOBAL_SETTINGS_ROUTE;
-  const domainView = isGlobalRoute
-    ? globalView
-    : domainMatch?.params.operation ?? GLOBAL_DOMAIN_ROUTE;
 
   const { data: domainInformation } = useDomainById<Domain>({
     domainId: selectedDomainId || undefined,
@@ -173,14 +151,6 @@ export const DomainListPanel = () => {
       setSearchQuery('');
     }
   }
-
-  const navigateToView = (view: string) => {
-    if (view.startsWith(`${GLOBAL_ROUTE}/`)) {
-      replaceHistory(`/${view}`);
-    } else if (isDomainSelect && selectedDomainId) {
-      replaceHistory(`/${selectedDomainId}/${view}`);
-    }
-  };
 
   const isDisclaimerEnable = globalConfigInformation.find(
     (item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
@@ -427,12 +397,6 @@ export const DomainListPanel = () => {
             </Row>
           ),
         }));
-
-  useEffect(() => {
-    if (locationService.pathname === DOMAINS_BASE) {
-      replaceHistory(`/${GLOBAL_DOMAIN_ROUTE}`);
-    }
-  }, [locationService.pathname]);
 
   return (
     <Container
