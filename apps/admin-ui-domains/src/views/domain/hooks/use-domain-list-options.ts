@@ -196,15 +196,15 @@ export const useDomainListOptions = ({
     },
   ];
 
-  const manageItems: Array<ListItemType> = !isAdvanced
-    ? allListItemType.filter(
+  const manageItems: Array<ListItemType> = isAdvanced
+    ? allListItemType
+    : allListItemType.filter(
         (item) =>
           item.id !== RESTORE_ACCOUNT &&
           item.id !== ACTIVE_SYNC &&
           item.id !== DELEGATES_DOMAIN_ADMINS &&
           item.id !== SECURITY_GROUP,
-      )
-    : allListItemType;
+      );
 
   const detailItems: Array<ListItemType> = detailOptions.filter((item) => {
     if (!isAdvanced) {
@@ -219,14 +219,14 @@ export const useDomainListOptions = ({
     return true;
   });
 
-  const globalOptionsItems: Array<ListItemType> = !isAdvanced
-    ? globalOptionItems.filter(
+  const globalOptionsItems: Array<ListItemType> = isAdvanced
+    ? globalOptionItems
+    : globalOptionItems.filter(
         (item) =>
           item.id !== GLOBAL_WHITELABEL_SETTINGS &&
           item.id !== GLOBAL_2FA_ROUTE &&
           item.id !== GLOBAL_ACTIVE_SYNC_ROUTE,
-      )
-    : globalOptionItems;
+      );
 
   const manageOptions: Array<ListItemType> = (() => {
     const items =
