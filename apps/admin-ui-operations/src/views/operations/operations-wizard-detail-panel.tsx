@@ -24,6 +24,16 @@ type OperationsWizardDetailPanelProps = {
   allowStop: boolean;
 };
 
+function getDisplayStatus(state: string | undefined): string {
+  if (state === STARTED) {
+    return RUNNING_ROUTE_ID.charAt(0).toUpperCase() + RUNNING_ROUTE_ID.slice(1);
+  }
+  if (state === QUEUED) {
+    return QUEUED;
+  }
+  return DONE_ROUTE_ID.charAt(0).toUpperCase() + DONE_ROUTE_ID.slice(1);
+}
+
 export const OperationsWizardDetailPanel = ({
   setWizardDetailToggle,
   setOpen,
@@ -33,12 +43,7 @@ export const OperationsWizardDetailPanel = ({
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
 
-  const status =
-    selectedData?.state === STARTED
-      ? RUNNING_ROUTE_ID.charAt(0).toUpperCase() + RUNNING_ROUTE_ID.slice(1)
-      : selectedData?.state === QUEUED
-        ? QUEUED
-        : DONE_ROUTE_ID.charAt(0).toUpperCase() + DONE_ROUTE_ID.slice(1);
+  const status = getDisplayStatus(selectedData?.state);
 
   const copyOperation = () => {
     const operationItem = `

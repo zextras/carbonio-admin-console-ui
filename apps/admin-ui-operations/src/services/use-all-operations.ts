@@ -29,7 +29,7 @@ const fetchAllOperations = async (serverName: string): Promise<Array<Operation>>
     parsed = {};
   }
   if (parsed?.response?.[serverName]?.ok) {
-    return (parsed?.response?.[serverName]?.response?.operationList ?? []) as Array<Operation>;
+    return parsed?.response?.[serverName]?.response?.operationList ?? [];
   }
   return [];
 };

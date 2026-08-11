@@ -26,7 +26,7 @@ const fetchDoneOperations = async (): Promise<Array<Operation>> => {
 		parsed = {};
 	}
 	if (parsed?.ok) {
-		return (parsed?.response?.operationList ?? []) as Array<Operation>;
+		return parsed?.response?.operationList ?? [];
 	}
 	return [];
 };
