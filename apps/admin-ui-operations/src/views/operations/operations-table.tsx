@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 import { EXCEPTION, FINISHED, STARTED } from '../../constants';
 import { type Operation } from '../../types/operations';
-import MiliSecondToDate from './functions/miliSecondToDate';
+import { MilliSecondToDate } from './functions/milliSecondToDate';
 
 export const OperationsTable: FC<{
   operations: Array<Operation>;
@@ -103,7 +103,7 @@ export const OperationsTable: FC<{
             }}
           >
             <ds-text as="span" weight="light" size="small">
-              {v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
+              {v?.startTime ? MilliSecondToDate(v?.startTime) : ''}
             </ds-text>
           </Row>,
           <Row
@@ -181,7 +181,7 @@ export const OperationsTable: FC<{
             }}
           >
             <ds-text as="span" weight="light" size="small">
-              {v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
+              {v?.startTime ? MilliSecondToDate(v?.startTime) : ''}
             </ds-text>
           </Row>,
           <Row
@@ -195,7 +195,7 @@ export const OperationsTable: FC<{
             }}
           >
             <ds-text as="span" weight="light" size="small">
-              {v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}
+              {v?.queuedTime ? MilliSecondToDate(v?.queuedTime) : ''}
             </ds-text>
           </Row>,
         ],

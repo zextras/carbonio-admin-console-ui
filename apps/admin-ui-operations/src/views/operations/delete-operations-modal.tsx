@@ -10,7 +10,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { STARTED } from '../../constants';
 import { type Operation } from '../../types/operations';
 
-const DeleteOpearationsModel: FC<{
+const DeleteOperationsModal: FC<{
 	open: boolean;
 	closeHandler: () => void;
 	saveHandler: () => void;
@@ -95,4 +95,4 @@ const DeleteOpearationsModel: FC<{
 	);
 };
 
-export default DeleteOpearationsModel;
+export default DeleteOperationsModal;

@@ -13,7 +13,7 @@ import { useAllOperations } from '../../services/use-all-operations';
 import { useStopOperation } from '../../services/use-stop-operation';
 import { type Operation } from '../../types/operations';
 import { OperationsHeader } from '../utility/utils';
-import DeleteOpearationsModel from './delete-operations-model';
+import DeleteOperationsModal from './delete-operations-modal';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 
@@ -50,7 +50,7 @@ const QueuedDetailPanel: FC = () => {
 			setOpen(false);
 			setWizardDetailToggle(false);
 		},
-		'label.cancel_operation_sucess',
+		'label.cancel_operation_success',
 		'The {{name}} operation has been canceled successfully',
 	);
 
@@ -99,7 +99,7 @@ const QueuedDetailPanel: FC = () => {
 					height="calc(100vh - 12.5rem)"
 					padding={{ all: 'large' }}
 				>
-					<DeleteOpearationsModel
+					<DeleteOperationsModal
 						open={open}
 						closeHandler={closeHandler}
 						saveHandler={stopHandler}

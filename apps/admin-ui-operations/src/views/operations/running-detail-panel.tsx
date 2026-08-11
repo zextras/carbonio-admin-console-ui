@@ -13,7 +13,7 @@ import { useAllOperations } from '../../services/use-all-operations';
 import { useStopOperation } from '../../services/use-stop-operation';
 import { type Operation } from '../../types/operations';
 import { OperationsHeader } from '../utility/utils';
-import DeleteOpearationsModel from './delete-operations-model';
+import DeleteOperationsModal from './delete-operations-modal';
 import { OperationsTable } from './operations-table';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 
@@ -50,7 +50,7 @@ const RunningDetailPanel: FC = () => {
       setOpen(false);
       setWizardDetailToggle(false);
     },
-    'label.stop_operation_sucess',
+    'label.stop_operation_success',
     'The {{name}} operation has been stopped successfully',
   );
 
@@ -85,7 +85,7 @@ const RunningDetailPanel: FC = () => {
         style={{ overflowY: 'auto', position: 'relative' }}
         background="white"
       >
-        <DeleteOpearationsModel
+        <DeleteOperationsModal
           open={open}
           closeHandler={closeHandler}
           saveHandler={stopHandler}

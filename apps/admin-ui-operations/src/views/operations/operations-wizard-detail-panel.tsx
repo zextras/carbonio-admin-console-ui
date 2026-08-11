@@ -9,14 +9,14 @@ import { useTranslation } from 'react-i18next';
 
 import {
   DONE_ROUTE_ID,
-  FALSE_OPERTION,
+  FALSE_OPERATION,
   QUEUED,
   RUNNING_ROUTE_ID,
   STARTED,
-  TRUE_OPERTION,
+  TRUE_OPERATION,
 } from '../../constants';
 import { copyTextToClipboard } from '../utility/utils';
-import MiliSecondToDate from './functions/miliSecondToDate';
+import { MilliSecondToDate } from './functions/milliSecondToDate';
 
 const OperationsWizardDetailPanel: FC<{
   setWizardDetailToggle: (value: boolean) => void;
@@ -44,7 +44,7 @@ const OperationsWizardDetailPanel: FC<{
       (selectedData?.type ? selectedData?.type : status) || ''
     } \n
 			${t('operations.label.submitted_at', 'Submitted at')}:  ${
-      selectedData?.startTime ? MiliSecondToDate(selectedData?.startTime) : ''
+      selectedData?.startTime ? MilliSecondToDate(selectedData?.startTime) : ''
     } \n
 			${t('operations.label.started_at', 'Started at')} : ${
       selectedData?.humanStartTime ? selectedData?.humanStartTime : ''
@@ -55,10 +55,10 @@ const OperationsWizardDetailPanel: FC<{
         : ''
     } \n
 			${t('operations.label.create_fake_blob', 'Create Fake Blob')} : ${
-      selectedData?.parameters?.createFakeBlob ? TRUE_OPERTION : FALSE_OPERTION
+      selectedData?.parameters?.createFakeBlob ? TRUE_OPERATION : FALSE_OPERATION
     } \n
 			${t('operations.label.Deep', 'Deep')} : ${
-      selectedData?.parameters?.isDeep ? TRUE_OPERTION : FALSE_OPERTION
+      selectedData?.parameters?.isDeep ? TRUE_OPERATION : FALSE_OPERATION
     } \n
 		`;
     copyTextToClipboard(operationItem);
@@ -115,8 +115,8 @@ const OperationsWizardDetailPanel: FC<{
               type="outlined"
               label={
                 selectedData?.state === STARTED
-                  ? t('operations.stop_opearation_btn', 'STOP OPERATION')
-                  : t('operations.cancel_opearation_btn', 'CANCEL OPERATION')
+                  ? t('operations.stop_operation_btn', 'STOP OPERATION')
+                  : t('operations.cancel_operation_btn', 'CANCEL OPERATION')
               }
               color="error"
               icon={selectedData?.state === STARTED ? 'StopCircleOutline' : 'Close'}
@@ -160,7 +160,7 @@ const OperationsWizardDetailPanel: FC<{
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.submitted_at', 'Submitted at')}
-                  value={selectedData?.startTime ? MiliSecondToDate(selectedData?.startTime) : ''}
+                  value={selectedData?.startTime ? MilliSecondToDate(selectedData?.startTime) : ''}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
@@ -197,14 +197,14 @@ const OperationsWizardDetailPanel: FC<{
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.create_fake_blob', 'Create Fake Blob')}
-                  value={selectedData?.parameters?.createFakeBlob ? TRUE_OPERTION : FALSE_OPERTION}
+                  value={selectedData?.parameters?.createFakeBlob ? TRUE_OPERATION : FALSE_OPERATION}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.Deep', 'Deep')}
-                  value={selectedData?.parameters?.isDeep ? TRUE_OPERTION : FALSE_OPERTION}
+                  value={selectedData?.parameters?.isDeep ? TRUE_OPERATION : FALSE_OPERATION}
                 />
               </Container>
             </ListRow>

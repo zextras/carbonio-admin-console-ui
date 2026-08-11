@@ -5,7 +5,7 @@
  */
 import { AM, PM } from '../../../constants';
 
-const MiliSecondToDate = (time: number): string => {
+export const MilliSecondToDate = (time: number): string => {
 	const date = new Date(time);
 	const formattedDate = date.toLocaleDateString();
 	let hours = date.getHours();
@@ -18,5 +18,3 @@ const MiliSecondToDate = (time: number): string => {
 
 	return `${formattedDate} - ${finalTime}`;
 };
-
-export default MiliSecondToDate;
