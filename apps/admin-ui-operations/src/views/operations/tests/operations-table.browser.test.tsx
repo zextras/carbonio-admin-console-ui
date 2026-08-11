@@ -10,7 +10,7 @@ import { page } from 'vitest/browser';
 
 import { EXCEPTION, FINISHED, STARTED } from '../../../constants';
 import { type Operation } from '../../../types/operations';
-import { OperationsTable } from '../operations-table';
+import { OperationsTable, type OperationTableHeader } from '../operations-table';
 
 const UNDONE_OPERATIONS: Array<Operation> = [
 	{
@@ -57,7 +57,7 @@ const DONE_OPERATIONS: Array<Operation> = [
 	},
 ];
 
-const HEADERS = [
+const HEADERS: Array<OperationTableHeader> = [
 	{ id: 'h', label: 'h', width: '100px', bold: false, i18nAllLabel: 'All', align: 'left' },
 ];
 
