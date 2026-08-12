@@ -11,8 +11,8 @@ import { type ChangeEvent, type Dispatch, type SetStateAction, useEffect, useSta
 import { useTranslation } from 'react-i18next';
 
 import type { CronScheduler, GlobalConfig, ModifyBackupData } from '../../types';
-import { useModifyBackupConfig } from '../services/use-modify-backup-config';
 import { useGlobalConfig } from '../services/use-global-config';
+import { useModifyBackupConfig } from '../services/use-modify-backup-config';
 import { checkAllowSetBackup } from '../utils/check-backup-rights';
 
 export const useBackupConfig = (): {
