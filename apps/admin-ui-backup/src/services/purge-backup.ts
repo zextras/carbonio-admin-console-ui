@@ -6,8 +6,8 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
-import { PURGE_BACKUP_URL } from '../constants';
 import type { ExternalSoapResponse } from '../../types';
+import { PURGE_BACKUP_URL } from '../constants';
 
 export const triggerBackupPurge = async (server: string): Promise<ExternalSoapResponse> =>
   fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(PURGE_BACKUP_URL, {

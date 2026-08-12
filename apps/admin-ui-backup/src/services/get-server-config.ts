@@ -6,8 +6,8 @@
 
 import { getSoapFetchRequest } from '@zextras/ui-shared';
 
-import { GET_SERVER_BACKUP_URL } from '../constants';
 import type { GetServerResponse } from '../../types';
+import { GET_SERVER_BACKUP_URL } from '../constants';
 
 export const getServerConfig = async (serverId: string): Promise<GetServerResponse> =>
   getSoapFetchRequest<GetServerResponse>(

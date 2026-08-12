@@ -37,10 +37,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights, useUserAccounts } from '@zextras/ui-shared';
 
+import type { CronScheduler } from '../../../types';
 import { backupQueryKeys } from '../../services/backup-query-keys';
 import { modifyBackupRequest } from '../../services/modify-backup';
 import { useGlobalConfig } from '../../services/use-global-config';
-import type { CronScheduler } from '../../../types';
 import { useBackupConfig } from '../use-backup-config';
 
 describe('useBackupConfig', () => {

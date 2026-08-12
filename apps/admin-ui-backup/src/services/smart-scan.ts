@@ -6,8 +6,8 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
-import { SMART_SCAN_URL } from '../constants';
 import type { ExternalSoapResponse } from '../../types';
+import { SMART_SCAN_URL } from '../constants';
 
 export const triggerSmartScan = async (server: string): Promise<ExternalSoapResponse> =>
   fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(SMART_SCAN_URL, {

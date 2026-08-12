@@ -6,8 +6,8 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-import { ZIMBRA_ADMIN_URN } from '../constants';
 import type { ListBucketsContent, SoapResponseBody } from '../../types';
+import { ZIMBRA_ADMIN_URN } from '../constants';
 
 export const listBuckets = async (server: string): Promise<ListBucketsContent> => {
   const res = await postSoapFetchRequest<Record<string, unknown>, SoapResponseBody>(

@@ -6,8 +6,8 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
-import { MIGRATE_VOLUME_URL } from '../constants';
 import type { ExternalSoapResponse } from '../../types';
+import { MIGRATE_VOLUME_URL } from '../constants';
 
 export const migrateVolume = async (
   body: Record<string, unknown>,

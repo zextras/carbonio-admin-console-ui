@@ -6,8 +6,8 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-import { BACKUP_SOAP_URL, ZIMBRA_ADMIN_URN } from '../constants';
 import type { SoapResponseBody } from '../../types';
+import { BACKUP_SOAP_URL, ZIMBRA_ADMIN_URN } from '../constants';
 
 export type ServiceAction = 'doStartService' | 'doStopService';
 
