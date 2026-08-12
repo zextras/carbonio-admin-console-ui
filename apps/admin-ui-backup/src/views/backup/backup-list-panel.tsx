@@ -58,7 +58,10 @@ export const BackupListPanel = () => {
     (f: Record<string, string | number | boolean>) => f?.name === BACKUP_BASIC && f?.enabled,
   );
   const { data: rights } = useCurrentUserRights();
-  const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
+  const serverRights = rights && rights.length > 0 ? getRights(rights, SERVER) : [];
+  const hasListServerRights = serverRights.some(
+    (item: Record<string, string>) => item?.n === LIST_SERVER,
+  );
 
   const filteredServers = (isError || isLoading)
     ? []
@@ -139,20 +142,6 @@ export const BackupListPanel = () => {
     }
     setIsServerSpecificsExpanded(!isServerSpecificsExpanded);
   };
-
-  useEffect(() => {
-    if (rights && rights.length > 0) {
-      const right = getRights(rights, SERVER);
-      if (right.length > 0) {
-        const findServerRight = right.find(
-          (item: Record<string, string>) => item?.n && item?.n === LIST_SERVER,
-        );
-        if (findServerRight) {
-          sethasListServerRights(true);
-        }
-      }
-    }
-  }, [rights]);
 
   const customIconDetail = {
     icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
