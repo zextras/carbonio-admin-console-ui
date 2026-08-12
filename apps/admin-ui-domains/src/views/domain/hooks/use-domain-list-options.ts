@@ -214,6 +214,7 @@ export const useDomainListOptions = ({
         (item) =>
           item.id !== RESTORE_ACCOUNT &&
           item.id !== ACTIVE_SYNC &&
+          item.id !== ADDRESS_BOOK &&
           item.id !== DELEGATES_DOMAIN_ADMINS &&
           item.id !== SECURITY_GROUP,
       );
@@ -237,7 +238,8 @@ export const useDomainListOptions = ({
         (item) =>
           item.id !== GLOBAL_WHITELABEL_SETTINGS &&
           item.id !== GLOBAL_2FA_ROUTE &&
-          item.id !== GLOBAL_ACTIVE_SYNC_ROUTE,
+          item.id !== GLOBAL_ACTIVE_SYNC_ROUTE &&
+          item.id !== GLOBAL_ADDRESS_BOOK_ROUTE,
       );
 
   const manageOptions: Array<ListItemType> = (() => {
