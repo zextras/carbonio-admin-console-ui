@@ -19,7 +19,7 @@ import {
   S3,
   S3_BUCKET,
 } from '../../../../constants';
-import { listBuckets } from '../../../../services/list-buckets';
+import { useListBuckets } from '../../../../services/use-list-buckets';
 import { useMigrateVolume } from '../../../../services/use-migrate-volume';
 import type { BackupConfigFormApi } from '../types';
 
@@ -43,8 +43,9 @@ export const VolumeManagement = ({
   const [t] = useTranslation();
   const migrateMutation = useMigrateVolume(serverName);
   const createSnackbar = useSnackbar();
+  const { data: bucketData } = useListBuckets(serverName);
 
-  const [bucketList, setBucketList] = useState<Array<BucketItem>>([]);
+  const bucketList: Array<BucketItem> = bucketData?.buckets ?? [];
   const [bucketListOption, setBucketListOption] = useState<Array<SelectOption>>([]);
   const [isShowSetExternalVolume, setIsShowSetExternalVolume] = useState(false);
   const [isManageExternalVolumeEnable, setIsManageExternalVolumeEnable] = useState(false);
@@ -65,18 +66,6 @@ export const VolumeManagement = ({
   const [manageExternalVolumeNewLocalMountpoint, setManageExternalVolumeNewLocalMountpoint] =
     useState('');
   const [rootVolumePath, setRootVolumePath] = useState('');
-
-  useEffect(() => {
-    listBuckets(serverName)
-      .then((response) => {
-        if (response.ok) {
-          setBucketList(response.response.values);
-        }
-      })
-      .catch(() => {
-        setBucketList([]);
-      });
-  }, [serverName]);
 
   useEffect(() => {
     if (bucketList.length > 0) {

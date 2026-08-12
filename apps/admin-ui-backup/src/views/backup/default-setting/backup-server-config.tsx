@@ -180,7 +180,6 @@ export const BackupServerConfig = () => {
                   label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
                   iconColor="primary"
                   disabled={!allowSetBackup}
-                  data-testid={'smart-scan-toggle'}
                 />
               </Padding>
             </ListRow>
@@ -212,7 +211,6 @@ export const BackupServerConfig = () => {
                   label={t('backup.config.scheduleBackupPurge', 'Schedule Backup Purge')}
                   iconColor="primary"
                   disabled={!allowSetBackup}
-                  data-testid={'backup-purge-toggle'}
                 />
               </Padding>
             </ListRow>
