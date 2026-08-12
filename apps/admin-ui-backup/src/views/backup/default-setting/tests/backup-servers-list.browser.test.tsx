@@ -13,7 +13,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import ServersList from '../backup-servers-list';
+import { ServersList } from '../backup-servers-list';
 
 const SERVER_1 = {
   id: 'server-1',

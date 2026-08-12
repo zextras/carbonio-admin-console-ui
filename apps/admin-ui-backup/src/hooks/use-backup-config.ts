@@ -7,17 +7,9 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights } from '@zextras/ui-shared';
-import { TFunction } from 'i18next';
+import type { TFunction } from 'i18next';
 import { cloneDeep, find, isEmpty, isEqual, reduce } from 'lodash-es';
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { type ChangeEvent, type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { GlobalConfig, ModifyBackupData } from '../../types';
@@ -46,16 +38,14 @@ export const useBackupConfig = (): {
   const [backupDetail, setBackupDetail] = useState<GlobalConfig>(cloneDeep(globalConfig));
   const createSnackbar = useSnackbar();
   const { data: rights } = useCurrentUserRights();
-  const allowSetBackup = useMemo(() => {
-    const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-    return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+  const allowSetBackup = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
-  const onCancel = useCallback((): void => {
+  const onCancel = (): void => {
     setBackupDetail({ ...globalConfig });
-  }, [globalConfig]);
+  };
 
-  const onSave = useCallback((): void => {
+  const onSave = (): void => {
     const modifiedKeys = reduce<GlobalConfig, Array<string>>(
       globalConfig,
       function (result, value, key): Array<string> {
@@ -112,7 +102,7 @@ export const useBackupConfig = (): {
           replace: true,
         });
       });
-  }, [globalConfig, backupDetail, queryClient, createSnackbar, t]);
+  };
 
   useEffect(() => {
     if (!isEqual(globalConfig, backupDetail)) {
@@ -122,50 +112,41 @@ export const useBackupConfig = (): {
     }
   }, [globalConfig, backupDetail]);
 
-  const changeSwitchOption = useCallback(
-    (key: string): void => {
-      setBackupDetail((prev: GlobalConfig) => ({
-        ...prev,
-        [key]: backupDetail[key] !== true,
-      }));
-    },
-    [backupDetail],
-  );
+  const changeSwitchOption = (key: string): void => {
+    setBackupDetail((prev: GlobalConfig) => ({
+      ...prev,
+      [key]: backupDetail[key] !== true,
+    }));
+  };
 
-  const changeBackupDetail = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+  const changeBackupDetail = (e: ChangeEvent<HTMLInputElement>) => {
     setBackupDetail((prev: GlobalConfig) => ({ ...prev, [e.target.name]: e.target.value }));
-  }, []);
+  };
 
-  const changeBackupSchedulerInput = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setBackupDetail((prev: GlobalConfig) => ({
-        ...prev,
-        [e.target.name]: {
-          ...prev[e.target.name],
-          'cron-pattern': e.target.value,
-          'cron-enabled': (backupDetail[e.target.name] as { 'cron-enabled': boolean })[
-            'cron-enabled'
-          ],
-        },
-      }));
-    },
-    [backupDetail],
-  );
+  const changeBackupSchedulerInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setBackupDetail((prev: GlobalConfig) => ({
+      ...prev,
+      [e.target.name]: {
+        ...prev[e.target.name],
+        'cron-pattern': e.target.value,
+        'cron-enabled': (backupDetail[e.target.name] as { 'cron-enabled': boolean })[
+          'cron-enabled'
+        ],
+      },
+    }));
+  };
 
-  const changeBackupSchedulerSwitch = useCallback(
-    (key: string): void => {
-      setBackupDetail((prev: GlobalConfig) => ({
-        ...prev,
-        [key]: {
-          ...prev[key],
-          'cron-pattern': (backupDetail[key] as { 'cron-pattern': string })['cron-pattern'],
-          'cron-enabled':
-            (backupDetail[key] as { 'cron-enabled': boolean })['cron-enabled'] !== true,
-        },
-      }));
-    },
-    [backupDetail],
-  );
+  const changeBackupSchedulerSwitch = (key: string): void => {
+    setBackupDetail((prev: GlobalConfig) => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        'cron-pattern': (backupDetail[key] as { 'cron-pattern': string })['cron-pattern'],
+        'cron-enabled':
+          (backupDetail[key] as { 'cron-enabled': boolean })['cron-enabled'] !== true,
+      },
+    }));
+  };
 
   return {
     isDirty,

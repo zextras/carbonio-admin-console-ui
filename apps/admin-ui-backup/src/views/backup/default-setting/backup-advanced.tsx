@@ -12,14 +12,13 @@ import {
   Select,
   Switch,
 } from '@zextras/ui-components';
-import { FC, useMemo } from 'react';
 
 import type { GlobalConfig } from '../../../../types';
 import { useBackupConfig } from '../../../hooks/use-backup-config';
 import { useGlobalConfig } from '../../../services/use-global-config';
-import BackupConfigHeader from '../components/backup/backup-config-header';
+import { BackupConfigHeader } from '../components/backup/backup-config-header';
 
-const BackupAdvanced: FC = () => {
+export const BackupAdvanced = () => {
   const {
     isDirty,
     backupDetail,
@@ -34,23 +33,20 @@ const BackupAdvanced: FC = () => {
 
   const { data: globalConfig } = useGlobalConfig();
 
-  const compressLevelItems = useMemo(
-    () => [
-      {
-        label: '1',
-        value: '1',
-      },
-      {
-        label: '2',
-        value: '2',
-      },
-      {
-        label: '3',
-        value: '3',
-      },
-    ],
-    [],
-  );
+  const compressLevelItems = [
+    {
+      label: '1',
+      value: '1',
+    },
+    {
+      label: '2',
+      value: '2',
+    },
+    {
+      label: '3',
+      value: '3',
+    },
+  ];
   const onBackupCompressionLevelChange = (v: string | null): void => {
     setBackupDetail((prev: GlobalConfig) => ({ ...prev, backupCompressionLevel: v ?? '' }));
   };
@@ -327,4 +323,3 @@ const BackupAdvanced: FC = () => {
     </>
   );
 };
-export default BackupAdvanced;

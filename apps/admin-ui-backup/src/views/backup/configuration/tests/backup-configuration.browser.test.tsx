@@ -17,7 +17,7 @@ import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import BackupConfiguration from '../backup-configuration';
+import { BackupConfiguration } from '../backup-configuration';
 
 const BackupConfigurationWithRoute = () => (
   <Routes>

@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Padding, Row } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router';
 
@@ -12,7 +11,7 @@ import { SERVERS_LIST } from '../../constants';
 import { useGlobalConfig } from '../../services/use-global-config';
 import { SECTION_ROUTES } from './backup-section-routes';
 
-const BackupDetailPanel: FC = () => {
+export const BackupDetailPanel = () => {
   const { data: globalConfig, isLoading } = useGlobalConfig();
   const [t] = useTranslation();
 
@@ -63,4 +62,3 @@ const BackupDetailPanel: FC = () => {
     </Container>
   );
 };
-export default BackupDetailPanel;

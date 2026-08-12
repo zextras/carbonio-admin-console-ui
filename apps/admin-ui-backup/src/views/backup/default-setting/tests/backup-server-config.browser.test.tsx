@@ -14,7 +14,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { backupQueryKeys } from '../../../../services/backup-query-keys';
-import BackupServerConfig from '../backup-server-config';
+import { BackupServerConfig } from '../backup-server-config';
 
 const GLOBAL_CONFIG = {
   ZxBackup_RealTimeScanner: true,

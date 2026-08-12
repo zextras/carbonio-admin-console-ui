@@ -9,35 +9,35 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { Mock, vi } from 'vitest';
 
 vi.mock('../actions/import-external-backup', () => ({
-  default: vi.fn(),
+  ImportExternalBackup: vi.fn(),
 }));
 
 vi.mock('../configuration/backup-configuration', () => ({
-  default: vi.fn(),
+  BackupConfiguration: vi.fn(),
 }));
 
 vi.mock('../default-setting/backup-advanced', () => ({
-  default: vi.fn(),
+  BackupAdvanced: vi.fn(),
 }));
 
 vi.mock('../default-setting/backup-server-config', () => ({
-  default: vi.fn(),
+  BackupServerConfig: vi.fn(),
 }));
 
 vi.mock('../default-setting/backup-servers-list', () => ({
-  default: vi.fn(),
+  ServersList: vi.fn(),
 }));
 
 vi.mock('../server-advanced/server-advanced', () => ({
-  default: vi.fn(),
+  ServerAdvanced: vi.fn(),
 }));
 
-import ImportExternalBackup from '../actions/import-external-backup';
-import BackupConfiguration from '../configuration/backup-configuration';
-import BackupAdvanced from '../default-setting/backup-advanced';
-import BackupServerConfig from '../default-setting/backup-server-config';
-import ServersList from '../default-setting/backup-servers-list';
-import ServerAdvanced from '../server-advanced/server-advanced';
+import { ImportExternalBackup } from '../actions/import-external-backup';
+import { BackupConfiguration } from '../configuration/backup-configuration';
+import { BackupAdvanced } from '../default-setting/backup-advanced';
+import { BackupServerConfig } from '../default-setting/backup-server-config';
+import { ServersList } from '../default-setting/backup-servers-list';
+import { ServerAdvanced } from '../server-advanced/server-advanced';
 
 const mocks = {
   BackupServerConfig: BackupServerConfig as unknown as Mock,

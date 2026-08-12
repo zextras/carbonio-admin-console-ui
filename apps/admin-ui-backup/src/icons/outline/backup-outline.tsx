@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FC } from 'react';
+type SvgBackupOutlineProps = React.SVGProps<SVGSVGElement>;
 
-const SvgBackupOutline: FC = (props) => (
+export const SvgBackupOutline = (props: SvgBackupOutlineProps) => (
   <svg
     width="20"
     height="20"
@@ -48,5 +48,3 @@ const SvgBackupOutline: FC = (props) => (
     </defs>
   </svg>
 );
-
-export default SvgBackupOutline;

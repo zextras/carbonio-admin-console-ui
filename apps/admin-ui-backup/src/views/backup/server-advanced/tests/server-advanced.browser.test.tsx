@@ -16,7 +16,7 @@ import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import ServerAdvanced from '../server-advanced';
+import { ServerAdvanced } from '../server-advanced';
 
 const SERVER_ID = 'server-1';
 const SERVER_NAME = 'mail01.example.com';

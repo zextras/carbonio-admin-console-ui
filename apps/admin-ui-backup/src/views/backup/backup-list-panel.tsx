@@ -20,7 +20,7 @@ import {
   useModuleLicenseInfo,
   useRelativePathname,
 } from '@zextras/ui-shared';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 
@@ -39,7 +39,7 @@ import {
 } from '../../constants';
 import { SECTION_ROUTES } from './backup-section-routes';
 
-const BackupListPanel: FC = () => {
+export const BackupListPanel = () => {
   const [t] = useTranslation();
   const relativePathname = useRelativePathname();
   const serverMatch = matchPath('/:server/:operation', relativePathname);
@@ -70,17 +70,13 @@ const BackupListPanel: FC = () => {
     }
   }, [moduleLicenseInfo]);
 
-  const defaultSettingsOptions = useMemo(
-    () =>
-      SECTION_ROUTES.filter((route) => !route.prefix && route.id !== IMPORT_EXTERNAL_BACKUP).map(
-        ({ id, labelKey, labelDefault }) => ({
-          id,
-          name: t(labelKey, labelDefault),
-          isSelected: !!isBackupModuleLicensed,
-        }),
-      ),
-    [t, isBackupModuleLicensed],
-  );
+  const defaultSettingsOptions = SECTION_ROUTES.filter(
+    (route) => !route.prefix && route.id !== IMPORT_EXTERNAL_BACKUP,
+  ).map(({ id, labelKey, labelDefault }) => ({
+    id,
+    name: t(labelKey, labelDefault),
+    isSelected: !!isBackupModuleLicensed,
+  }));
 
   const [defaultOptions, setDefaultOptions] = useState<Array<ListItemType>>(defaultSettingsOptions);
 
@@ -94,16 +90,12 @@ const BackupListPanel: FC = () => {
     }
   }, [hasListServerRights, defaultSettingsOptions]);
 
-  const serverSettingsOptions = useMemo(
-    () =>
-      SECTION_ROUTES.filter((route) => route.prefix === ':server').map(
-        ({ id, labelKey, labelDefault }) => ({
-          id,
-          name: t(labelKey, labelDefault),
-          isSelected: isBackupModuleLicensed ? isServerSelect : false,
-        }),
-      ),
-    [t, isServerSelect, isBackupModuleLicensed],
+  const serverSettingsOptions = SECTION_ROUTES.filter((route) => route.prefix === ':server').map(
+    ({ id, labelKey, labelDefault }) => ({
+      id,
+      name: t(labelKey, labelDefault),
+      isSelected: isBackupModuleLicensed ? isServerSelect : false,
+    }),
   );
 
   const handleSelectOperationItem = (id: string): void => {
@@ -135,7 +127,7 @@ const BackupListPanel: FC = () => {
     setIsServerSpecificsExpanded(!isServerSpecificsExpanded);
   };
 
-  const addServerToList = useCallback((list: Array<MailstoreServer>) => {
+  const addServerToList = (list: Array<MailstoreServer>) => {
     const data: Array<ListItemType> = list.map((serverItem) => ({
       id: serverItem?.id ?? '',
       name: serverItem?.name ?? '',
@@ -161,7 +153,7 @@ const BackupListPanel: FC = () => {
       ),
     }));
     setServerNames(data);
-  }, []);
+  };
 
   useEffect(() => {
     if (isError || isLoading) {
@@ -288,4 +280,3 @@ const BackupListPanel: FC = () => {
     </Container>
   );
 };
-export default BackupListPanel;

@@ -31,7 +31,7 @@ import {
   SERVER_CONFIG,
   SERVERS_LIST,
 } from '../../../constants';
-import BackupListPanel from '../backup-list-panel';
+import { BackupListPanel } from '../backup-list-panel';
 
 const mockedReplaceHistory = vi.mocked(replaceHistory);
 

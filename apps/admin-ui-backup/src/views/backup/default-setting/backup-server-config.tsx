@@ -13,13 +13,13 @@ import {
   Switch,
 } from '@zextras/ui-components';
 import { useModuleLicenseInfo } from '@zextras/ui-shared';
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
 import { useBackupConfig } from '../../../hooks/use-backup-config';
-import BackupConfigHeader from '../components/backup/backup-config-header';
+import { BackupConfigHeader } from '../components/backup/backup-config-header';
 
-const BackupServerConfig: FC = () => {
+export const BackupServerConfig = () => {
   const {
     isDirty,
     backupDetail,
@@ -296,4 +296,3 @@ const BackupServerConfig: FC = () => {
     </>
   );
 };
-export default BackupServerConfig;

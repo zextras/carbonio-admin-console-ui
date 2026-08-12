@@ -14,7 +14,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { backupQueryKeys } from '../../../../services/backup-query-keys';
-import BackupAdvanced from '../backup-advanced';
+import { BackupAdvanced } from '../backup-advanced';
 
 const GLOBAL_CONFIG = {
   backupLatencyHighThreshold: '100',

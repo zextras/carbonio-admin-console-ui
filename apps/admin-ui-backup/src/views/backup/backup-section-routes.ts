@@ -13,12 +13,12 @@ import {
   SERVER_CONFIG,
   SERVERS_LIST,
 } from '../../constants';
-import ImportExternalBackup from './actions/import-external-backup';
-import BackupConfiguration from './configuration/backup-configuration';
-import BackupAdvanced from './default-setting/backup-advanced';
-import BackupServerConfig from './default-setting/backup-server-config';
-import ServersList from './default-setting/backup-servers-list';
-import ServerAdvanced from './server-advanced/server-advanced';
+import { ImportExternalBackup } from './actions/import-external-backup';
+import { BackupConfiguration } from './configuration/backup-configuration';
+import { BackupAdvanced } from './default-setting/backup-advanced';
+import { BackupServerConfig } from './default-setting/backup-server-config';
+import { ServersList } from './default-setting/backup-servers-list';
+import { ServerAdvanced } from './server-advanced/server-advanced';
 
 export type SectionRoute = {
   id: string;

@@ -4,24 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
-import { TFunction } from 'i18next';
-import { FC } from 'react';
+import type { TFunction } from 'i18next';
 
-interface BackupConfigHeaderProps {
+type BackupConfigHeaderProps = {
   title: string;
   isDirty: boolean;
   onCancel: () => void;
   onSave: () => void;
   t: TFunction;
-}
+};
 
-const BackupConfigHeader: FC<BackupConfigHeaderProps> = ({
+export const BackupConfigHeader = ({
   title,
   isDirty,
   onCancel,
   onSave,
   t,
-}) => (
+}: BackupConfigHeaderProps) => (
   <Row mainAlignment="flex-start" width="100%" padding={{ left: 'large', right: 'large' }}>
     <Container orientation="vertical" mainAlignment="space-around" background="gray6" height="58px">
       <Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
@@ -42,5 +41,3 @@ const BackupConfigHeader: FC<BackupConfigHeaderProps> = ({
     </Container>
   </Row>
 );
-
-export default BackupConfigHeader;

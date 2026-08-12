@@ -22,7 +22,7 @@ import {
   useCurrentUserRights,
 } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { type ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -36,7 +36,7 @@ import type {
 import { CONFIG, SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 
-const ServerAdvanced: FC = () => {
+export const ServerAdvanced = () => {
   const { server } = useParams();
   const { data: allServers = [] } = useAllServers();
   const [t] = useTranslation();
@@ -62,10 +62,10 @@ const ServerAdvanced: FC = () => {
     useState<boolean>(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const { data: rights } = useCurrentUserRights();
-  const allowSetBackup = useMemo(() => {
+  const allowSetBackup = (() => {
     const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
     return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  })();
 
   useEffect(() => {
     if (allServers && allServers.length > 0) {
@@ -245,7 +245,7 @@ const ServerAdvanced: FC = () => {
     }
   }, [server, allServers, createSnackbar, t]);
 
-  const onCancel = useCallback(() => {
+  const onCancel = () => {
     setLdapDumpEnabled(currentBackupValue.ldapDumpEnabled);
     setBackupLatencyLowThreshold(currentBackupValue.backupLatencyLowThreshold);
     setBackupLatencyHighThreshold(currentBackupValue.backupLatencyHighThreshold);
@@ -261,22 +261,7 @@ const ServerAdvanced: FC = () => {
     setPurgeOldConfiguration(currentBackupValue?.purgeOldConfiguration);
     setServerConfiguration(currentBackupValue?.serverConfiguration);
     setIsDirty(false);
-  }, [
-    currentBackupValue?.ldapDumpEnabled,
-    currentBackupValue?.backupLatencyLowThreshold,
-    currentBackupValue?.backupLatencyHighThreshold,
-    currentBackupValue?.backupMaxWaitTime,
-    currentBackupValue?.backupMaxMetaDataSize,
-    currentBackupValue?.backupOnTheFlyMetadata,
-    currentBackupValue?.scheduledMetadataArchivingEnabled,
-    currentBackupValue?.backupMaxOperationPerAccount,
-    currentBackupValue?.backupCompressionLevel,
-    currentBackupValue?.backupNumberThreadsForItems,
-    currentBackupValue?.backupNumberThreadsForAccounts,
-    currentBackupValue?.includeIndex,
-    currentBackupValue?.purgeOldConfiguration,
-    currentBackupValue?.serverConfiguration,
-  ]);
+  };
 
   useEffect(() => {
     if (
@@ -404,7 +389,7 @@ const ServerAdvanced: FC = () => {
     }
   }, [currentBackupValue.serverConfiguration, serverConfiguration]);
 
-  const onSave = useCallback(() => {
+  const onSave = () => {
     const body: CoreAttributeBody = {
       ldapDumpEnabled: {
         value: ldapDumpEnabled,
@@ -537,27 +522,9 @@ const ServerAdvanced: FC = () => {
           replace: true,
         });
       });
-  }, [
-    ldapDumpEnabled,
-    createSnackbar,
-    t,
-    server,
-    backupLatencyLowThreshold,
-    backupLatencyHighThreshold,
-    backupMaxMetaDataSize,
-    backupOnTheFlyMetadata,
-    scheduledMetadataArchivingEnabled,
-    backupMaxOperationPerAccount,
-    backupCompressionLevel,
-    backupNumberThreadsForItems,
-    backupNumberThreadsForAccounts,
-    serverConfiguration,
-    purgeOldConfiguration,
-    includeIndex,
-    backupMaxWaitTime,
-  ]);
+  };
 
-  const checkLdapStatus = useCallback(() => {
+  const checkLdapStatus = () => {
     setIsRequestInProgress(true);
     checkLdap()
       .then((data: CheckLdapResponse) => {
@@ -595,7 +562,7 @@ const ServerAdvanced: FC = () => {
           replace: true,
         });
       });
-  }, [createSnackbar, t]);
+  };
 
   return (
     <Container mainAlignment="flex-start" background="gray6">
@@ -985,4 +952,4 @@ const ServerAdvanced: FC = () => {
     </Container>
   );
 };
-export default ServerAdvanced;
+

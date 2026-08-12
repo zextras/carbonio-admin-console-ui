@@ -27,7 +27,7 @@ import {
   useModuleLicenseInfo,
 } from '@zextras/ui-shared';
 import { find, isEmpty } from 'lodash-es';
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -58,7 +58,7 @@ import {
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 
-const BackupConfiguration: FC = () => {
+export const BackupConfiguration = () => {
   const { server } = useParams();
   const [t] = useTranslation();
   const { data: allServers = [] } = useAllServers();
@@ -106,45 +106,39 @@ const BackupConfiguration: FC = () => {
     useState<string>('');
   const [rootVolumePath, setRootVolumePath] = useState<string>('');
   const { data: rights } = useCurrentUserRights();
-  const allowSetBackup = useMemo(() => {
+  const allowSetBackup = (() => {
     const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
     return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  })();
 
-  const destinationOptions: Array<SelectOption> = useMemo(
-    () => [
-      {
-        label: t(
-          'label.manage_external_volume_and_move_all',
-          'MANAGE EXTERNAL VOLUME and Move All Items to Local Path',
-        ),
-        value: MANAGE_EXTERNAL_VOLUME,
-      },
-      {
-        label: t('label.move_item_to_an_external_bucket', 'Move Items to an External Bucket'),
-        value: MOVE_TO_EXTERNAL_BUCKET,
-      },
-      {
-        label: t('label.move_item_to_a_local_mountpoint', 'Move Items to a Local Mountpoint'),
-        value: MOVE_TO_LOCAL_MOUNT_POINT,
-      },
-    ],
-    [t],
-  );
+  const destinationOptions: Array<SelectOption> = [
+    {
+      label: t(
+        'label.manage_external_volume_and_move_all',
+        'MANAGE EXTERNAL VOLUME and Move All Items to Local Path',
+      ),
+      value: MANAGE_EXTERNAL_VOLUME,
+    },
+    {
+      label: t('label.move_item_to_an_external_bucket', 'Move Items to an External Bucket'),
+      value: MOVE_TO_EXTERNAL_BUCKET,
+    },
+    {
+      label: t('label.move_item_to_a_local_mountpoint', 'Move Items to a Local Mountpoint'),
+      value: MOVE_TO_LOCAL_MOUNT_POINT,
+    },
+  ];
 
-  const externalVolumeOptions: Array<SelectOption> = useMemo(
-    () => [
-      {
-        label: t('label.mountpoint', 'Mountpoint'),
-        value: MOUNTPOINT,
-      },
-      {
-        label: t('label.s3_bucket', 'S3 Bucket'),
-        value: S3_BUCKET,
-      },
-    ],
-    [t],
-  );
+  const externalVolumeOptions: Array<SelectOption> = [
+    {
+      label: t('label.mountpoint', 'Mountpoint'),
+      value: MOUNTPOINT,
+    },
+    {
+      label: t('label.s3_bucket', 'S3 Bucket'),
+      value: S3_BUCKET,
+    },
+  ];
 
   const [externalVolume, setExternalVolume] = useState<SelectOption>(externalVolumeOptions[0]);
   const [destinationSelected, setDestinationSelected] = useState<SelectOption>(
@@ -167,21 +161,15 @@ const BackupConfiguration: FC = () => {
       }
     }
   }, [moduleLicenseInfo]);
-  const onDestinationChange = useCallback(
-    (v: string | null): void => {
-      const it = destinationOptions.find((item: SelectOption) => item.value === v);
-      setDestinationSelected(it ?? destinationOptions[0]);
-    },
-    [destinationOptions],
-  );
+  const onDestinationChange = (v: string | null): void => {
+    const it = destinationOptions.find((item: SelectOption) => item.value === v);
+    setDestinationSelected(it ?? destinationOptions[0]);
+  };
 
-  const onExternalVolumeChange = useCallback(
-    (v: string | null): void => {
-      const it = externalVolumeOptions.find((item: SelectOption) => item.value === v);
-      setExternalVolume(it ?? externalVolumeOptions[0]);
-    },
-    [externalVolumeOptions],
-  );
+  const onExternalVolumeChange = (v: string | null): void => {
+    const it = externalVolumeOptions.find((item: SelectOption) => item.value === v);
+    setExternalVolume(it ?? externalVolumeOptions[0]);
+  };
 
   useEffect(() => {
     if (allServers && allServers.length > 0) {
@@ -344,7 +332,7 @@ const BackupConfiguration: FC = () => {
     }
   }, [server, allServers, createSnackbar, t]);
 
-  const onCancel = useCallback(() => {
+  const onCancel = () => {
     setModuleEnableStartup(currentBackupValue.moduleEnableStartup);
     setEnableRealtimeScanner(currentBackupValue?.enableRealtimeScanner);
     setRunSmartScanStartup(currentBackupValue?.runSmartScanStartup);
@@ -357,21 +345,9 @@ const BackupConfiguration: FC = () => {
     setKeepDeletedItemInBackup(currentBackupValue?.keepDeletedItemInBackup);
     setKeepDeletedAccountsInBackup(currentBackupValue?.keepDeletedAccountsInBackup);
     setIsDirty(false);
-  }, [
-    currentBackupValue?.moduleEnableStartup,
-    currentBackupValue?.enableRealtimeScanner,
-    currentBackupValue?.runSmartScanStartup,
-    currentBackupValue?.spaceThreshold,
-    currentBackupValue?.isScheduleSmartScan,
-    currentBackupValue?.scheduleSmartScan,
-    currentBackupValue?.scheduleAutomaticRetentionPolicy,
-    currentBackupValue?.retentionPolicySchedule,
-    currentBackupValue?.backupDestPath,
-    currentBackupValue?.keepDeletedItemInBackup,
-    currentBackupValue?.keepDeletedAccountsInBackup,
-  ]);
+  };
 
-  const onSave = useCallback(() => {
+  const onSave = () => {
     let body: CoreAttributeBody = {
       ZxBackup_ModuleEnabledAtStartup: {
         value: moduleEnableStartup,
@@ -512,23 +488,7 @@ const BackupConfiguration: FC = () => {
           replace: true,
         });
       });
-  }, [
-    moduleEnableStartup,
-    server,
-    runSmartScanStartup,
-    spaceThreshold,
-    scheduleSmartScan,
-    isScheduleSmartScan,
-    retentionPolicySchedule,
-    scheduleAutomaticRetentionPolicy,
-    backupDestPath,
-    keepDeletedItemInBackup,
-    keepDeletedAccountsInBackup,
-    isBackupImportRealtimeFeatureLicensed,
-    enableRealtimeScanner,
-    t,
-    createSnackbar,
-  ]);
+  };
 
   useEffect(() => {
     if (
@@ -629,7 +589,7 @@ const BackupConfiguration: FC = () => {
     }
   }, [currentBackupValue?.keepDeletedAccountsInBackup, keepDeletedAccountsInBackup]);
 
-  const serviceStartStop = useCallback(() => {
+  const serviceStartStop = () => {
     setIsRequestInProgress(true);
     postSoapFetchRequest<Record<string, unknown>, SoapResponseBody>(
       `/service/admin/soap/zextras`,
@@ -664,10 +624,9 @@ const BackupConfiguration: FC = () => {
           replace: true,
         });
       });
-  }, [backupServiceStart, createSnackbar, t, server]);
+  };
 
-  const doInitializeBackup = useCallback(
-    (isFromInitialize?: boolean) => {
+  const doInitializeBackup = (isFromInitialize?: boolean) => {
       setIsRequestInProgress(true);
       fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(
         `/service/extension/zextras_admin/backup/doSmartScan`,
@@ -704,11 +663,9 @@ const BackupConfiguration: FC = () => {
             replace: true,
           });
         });
-    },
-    [server, createSnackbar, t, isBackupInitialized],
-  );
+  };
 
-  const doBackupPurge = useCallback(() => {
+  const doBackupPurge = () => {
     setIsPurgeRequestRunning(true);
     fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(
       `/service/extension/zextras_admin/backup/doPurge`,
@@ -742,10 +699,9 @@ const BackupConfiguration: FC = () => {
           replace: true,
         });
       });
-  }, [server, createSnackbar, t]);
+  };
 
-  const onBackupExternalVolume = useCallback(
-    (body: Record<string, unknown>) => {
+  const onBackupExternalVolume = (body: Record<string, unknown>) => {
       setIsExternalVolumeRequestRunning(true);
       fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(
         `/service/extension/zextras_admin/backup/migrateBackupVolume`,
@@ -811,11 +767,9 @@ const BackupConfiguration: FC = () => {
             replace: true,
           });
         });
-    },
-    [createSnackbar, t, server, allServers],
-  );
+  };
 
-  const getAllBuckets = useCallback(() => {
+  const getAllBuckets = () => {
     fetchSoap('zextras', {
       _jsns: ZIMBRA_ADMIN_URN,
       module: 'ZxCore',
@@ -831,7 +785,7 @@ const BackupConfiguration: FC = () => {
         setBucketList([]);
       }
     });
-  }, [server]);
+  };
 
   useEffect(() => {
     getAllBuckets();
@@ -854,27 +808,21 @@ const BackupConfiguration: FC = () => {
     }
   }, [bucketList]);
 
-  const onManageExternalVolumeConfigurationChange = useCallback(
-    (v: string | null): void => {
-      if (bucketListOption.length > 0) {
-        const it = bucketListOption.find((item: SelectOption) => item.value === v);
-        if (it) setManageExternalVolumeBucketList(it);
-      }
-    },
-    [bucketListOption],
-  );
+  const onManageExternalVolumeConfigurationChange = (v: string | null): void => {
+    if (bucketListOption.length > 0) {
+      const it = bucketListOption.find((item: SelectOption) => item.value === v);
+      if (it) setManageExternalVolumeBucketList(it);
+    }
+  };
 
-  const onBucketConfigurationChange = useCallback(
-    (v: string | null): void => {
-      if (bucketListOption.length > 0) {
-        const it = bucketListOption.find((item: SelectOption) => item.value === v);
-        if (it) setBucketConfiguration(it);
-      }
-    },
-    [bucketListOption],
-  );
+  const onBucketConfigurationChange = (v: string | null): void => {
+    if (bucketListOption.length > 0) {
+      const it = bucketListOption.find((item: SelectOption) => item.value === v);
+      if (it) setBucketConfiguration(it);
+    }
+  };
 
-  const onSaveSetExternal = useCallback(() => {
+  const onSaveSetExternal = () => {
     const body: Record<string, unknown> = {
       storeType: externalVolume?.value === MOUNTPOINT ? LOCAL_VALUE : S3,
       volumeRootPath: externalVolume?.value === MOUNTPOINT ? rootVolumePath : '',
@@ -887,13 +835,7 @@ const BackupConfiguration: FC = () => {
       body.useIntelligentTiering = true;
     }
     onBackupExternalVolume(body);
-  }, [
-    server,
-    externalVolume?.value,
-    bucketConfiguration?.value,
-    onBackupExternalVolume,
-    rootVolumePath,
-  ]);
+  };
 
   useEffect(() => {
     if (!isEmpty(backupArchivingStore)) {
@@ -922,7 +864,7 @@ const BackupConfiguration: FC = () => {
     }
   }, [backupArchivingStore, bucketList]);
 
-  const onSaveManageExternalVolume = useCallback(() => {
+  const onSaveManageExternalVolume = () => {
     const body: Record<string, unknown> = {};
     if (isManageExternalVolumeEnable && destinationSelected?.value === MANAGE_EXTERNAL_VOLUME) {
       body.storeType = 'default';
@@ -942,19 +884,10 @@ const BackupConfiguration: FC = () => {
     }
     body.targetServers = [server];
     onBackupExternalVolume(body);
-  }, [
-    isManageExternalVolumeEnable,
-    destinationSelected?.value,
-    manageExternalVolumeBucketList?.value,
-    onBackupExternalVolume,
-    manageExternalVolumeNewLocalMountpoint,
-    server,
-  ]);
+  };
 
-  const isSetManageExternalButtonVisible = useMemo(
-    () => isManageExternalVolumeEnable || isShowSetExternalVolume,
-    [isManageExternalVolumeEnable, isShowSetExternalVolume],
-  );
+  const isSetManageExternalButtonVisible =
+    isManageExternalVolumeEnable || isShowSetExternalVolume;
 
   return (
     <>
@@ -1608,4 +1541,3 @@ const BackupConfiguration: FC = () => {
     </>
   );
 };
-export default BackupConfiguration;
