@@ -41,13 +41,12 @@ const App = () => {
   const isAdvanced = useIsAdvanced();
   const hasAllConfigRights = useHasAllRights();
 
-  const servicesSection = {
-    id: SERVICES_ROUTE_ID,
-    label: t('label.services', 'Services'),
-    position: 4,
-  };
-
   useEffect(() => {
+    const servicesSection = {
+      id: SERVICES_ROUTE_ID,
+      label: t('label.services', 'Services'),
+      position: 4,
+    };
     if (hasAllConfigRights) {
       if (isAdvanced) {
         addRoute({
@@ -65,7 +64,7 @@ const App = () => {
     } else {
       removeRoute(BACKUP_ROUTE_ID);
     }
-  }, [hasAllConfigRights, isAdvanced, servicesSection, t]);
+  }, [hasAllConfigRights, isAdvanced, t]);
 
   return null;
 };

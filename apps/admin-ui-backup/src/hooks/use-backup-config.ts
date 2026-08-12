@@ -7,7 +7,7 @@
 import { useCurrentUserRights } from '@zextras/ui-shared';
 import type { TFunction } from 'i18next';
 import { cloneDeep, isEqual, reduce } from 'lodash-es';
-import { type ChangeEvent, type Dispatch, type SetStateAction, useEffect, useState } from 'react';
+import { type ChangeEvent, type Dispatch, type SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { CronScheduler, GlobalConfig, ModifyBackupData } from '../../types';
@@ -30,12 +30,12 @@ export const useBackupConfig = (): {
   t: TFunction;
 } => {
   const [t] = useTranslation();
-  const [isDirty, setIsDirty] = useState<boolean>(false);
   const { data: globalConfig = {} } = useGlobalConfig();
   const modifyMutation = useModifyBackupConfig();
   const [backupDetail, setBackupDetail] = useState<GlobalConfig>(cloneDeep(globalConfig));
   const { data: rights } = useCurrentUserRights();
   const allowSetBackup = checkAllowSetBackup(rights);
+  const isDirty = !isEqual(globalConfig, backupDetail);
 
   const onCancel = (): void => {
     setBackupDetail({ ...globalConfig });
@@ -56,14 +56,6 @@ export const useBackupConfig = (): {
 
     modifyMutation.mutate(modifiedData);
   };
-
-  useEffect(() => {
-    if (!isEqual(globalConfig, backupDetail)) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [globalConfig, backupDetail]);
 
   const changeSwitchOption = (key: string): void => {
     setBackupDetail((prev: GlobalConfig) => ({

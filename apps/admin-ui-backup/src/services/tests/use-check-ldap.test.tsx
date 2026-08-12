@@ -30,9 +30,10 @@ function createWrapper() {
   const queryClient = new QueryClient({
     defaultOptions: { mutations: { retry: false } },
   });
-  return ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+  function Wrapper({ children }: { children: ReactNode }) {
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  }
+  return Wrapper;
 }
 
 describe('useCheckLdap', () => {
