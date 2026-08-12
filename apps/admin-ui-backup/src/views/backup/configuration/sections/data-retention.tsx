@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Input, LabeledValue, ListRow, Switch } from '@zextras/ui-components';
-import { Trans, useTranslation } from 'react-i18next';
 import type { ChangeEvent } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { usePurgeBackup } from '../../../../services/use-purge-backup';
 import type { BackupConfigFormApi } from '../types';

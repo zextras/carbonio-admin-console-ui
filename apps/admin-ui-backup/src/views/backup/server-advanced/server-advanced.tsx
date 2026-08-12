@@ -4,615 +4,143 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
+import { Button, Container, Padding, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
 import {
-  Button,
-  Container,
-  Input,
-  ListRow,
-  Padding,
-  RouteLeavingGuard,
-  Row,
-  Switch,
-  useSnackbar,
-} from '@zextras/ui-components';
-import {
-  getSoapFetchRequest,
   setCoreAttributes,
   useAllServers,
   useCurrentUserRights,
 } from '@zextras/ui-shared';
-import { type ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import type {
-  CheckLdapResponse,
   CoreAttributeBody,
   GetServerResponse,
-  ServerAdvancedState,
   SetCoreAttributesResponse,
 } from '../../../../types';
 import { SERVER } from '../../../constants';
-import { checkLdap } from '../../../services/check-ldap';
+import { useServerConfig } from '../../../services/use-server-config';
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
+import { serverAdvancedSchema } from './schema';
+import { BackupOptions } from './sections/backup-options';
+import { LatencySettings } from './sections/latency-settings';
+import { MetadataSettings } from './sections/metadata-settings';
+import { OtherControls } from './sections/other-controls';
+import { WaitingTimeSettings } from './sections/waiting-time-settings';
+import type { ServerAdvancedFormValues } from './types';
 
-export const ServerAdvanced = () => {
-  const { server } = useParams();
-  const { data: allServers = [] } = useAllServers();
+function mapServerConfigToFormValues(data: GetServerResponse | undefined): ServerAdvancedFormValues {
+  const attr = data?.attributes;
+  return {
+    ldapDumpEnabled: attr?.ldapDumpEnabled?.value ?? false,
+    serverConfiguration: attr?.ZxBackup_BackupCustomizations?.value ?? false,
+    purgeOldConfiguration: attr?.ZxBackup_PurgeCustomizations?.value ?? false,
+    includeIndex: attr?.backupSaveIndex?.value ?? false,
+    backupLatencyHighThreshold: String(attr?.backupLatencyHighThreshold?.value ?? 0),
+    backupLatencyLowThreshold: String(attr?.backupLatencyLowThreshold?.value ?? 0),
+    backupMaxWaitTime: String(attr?.ZxBackup_MaxWaitingTime?.value ?? 0),
+    backupMaxMetaDataSize: String(attr?.ZxBackup_MaxMetadataSize?.value ?? 0),
+    backupOnTheFlyMetadata: attr?.backupOnTheFlyMetadata?.value ?? false,
+    scheduledMetadataArchivingEnabled: attr?.scheduledMetadataArchivingEnabled?.value ?? false,
+    backupMaxOperationPerAccount: String(attr?.ZxBackup_MaxOperationPerAccount?.value ?? 0),
+    backupCompressionLevel: String(attr?.backupCompressionLevel?.value ?? 0),
+    backupNumberThreadsForItems: String(attr?.backupNumberThreadsForItems?.value ?? 0),
+    backupNumberThreadsForAccounts: String(attr?.backupNumberThreadsForAccounts?.value ?? 0),
+  };
+}
+
+function mapFormValuesToCoreAttributes(
+  values: ServerAdvancedFormValues,
+  server: string,
+): CoreAttributeBody {
+  return {
+    ldapDumpEnabled: { value: values.ldapDumpEnabled, objectName: server, configType: SERVER },
+    ZxBackup_BackupCustomizations: { value: values.serverConfiguration, objectName: server, configType: SERVER },
+    ZxBackup_PurgeCustomizations: { value: values.purgeOldConfiguration, objectName: server, configType: SERVER },
+    backupSaveIndex: { value: values.includeIndex, objectName: server, configType: SERVER },
+    backupLatencyHighThreshold: { value: Number(values.backupLatencyHighThreshold), objectName: server, configType: SERVER },
+    backupLatencyLowThreshold: { value: Number(values.backupLatencyLowThreshold), objectName: server, configType: SERVER },
+    ZxBackup_MaxWaitingTime: { value: Number(values.backupMaxWaitTime), objectName: server, configType: SERVER },
+    ZxBackup_MaxMetadataSize: { value: Number(values.backupMaxMetaDataSize), objectName: server, configType: SERVER },
+    backupOnTheFlyMetadata: { value: values.backupOnTheFlyMetadata, objectName: server, configType: SERVER },
+    scheduledMetadataArchivingEnabled: { value: values.scheduledMetadataArchivingEnabled, objectName: server, configType: SERVER },
+    ZxBackup_MaxOperationPerAccount: { value: Number(values.backupMaxOperationPerAccount), objectName: server, configType: SERVER },
+    backupCompressionLevel: { value: Number(values.backupCompressionLevel), objectName: server, configType: SERVER },
+    backupNumberThreadsForItems: { value: Number(values.backupNumberThreadsForItems), objectName: server, configType: SERVER },
+    backupNumberThreadsForAccounts: { value: Number(values.backupNumberThreadsForAccounts), objectName: server, configType: SERVER },
+  };
+}
+
+function ServerAdvancedContent({
+  serverConfig,
+  serverName,
+}: {
+  serverConfig: GetServerResponse;
+  serverName: string;
+}) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [ldapDumpEnabled, setLdapDumpEnabled] = useState<boolean>(false);
-  const [serverConfiguration, setServerConfiguration] = useState<boolean>(false);
-  const [purgeOldConfiguration, setPurgeOldConfiguration] = useState<boolean>(false);
-  const [includeIndex, setIncludeIndex] = useState<boolean>(false);
-  const [backupLatencyLowThreshold, setBackupLatencyLowThreshold] = useState<number>(0);
-  const [backupLatencyHighThreshold, setBackupLatencyHighThreshold] = useState<number>(0);
-  const [backupMaxWaitTime, setBackupMaxWaitTime] = useState<number>(0);
-  const [backupMaxMetaDataSize, setBackupMaxMetaDataSize] = useState<number>(0);
-  const [backupOnTheFlyMetadata, setBackupOnTheFlyMetadata] = useState<boolean>(false);
-  const [backupMaxOperationPerAccount, setBackupMaxOperationPerAccount] = useState<number>(0);
-  const [backupCompressionLevel, setBackupCompressionLevel] = useState<number>(0);
-  const [backupNumberThreadsForItems, setBackupNumberThreadsForItems] = useState<number>(0);
-  const [backupNumberThreadsForAccounts, setBackupNumberThreadsForAccounts] = useState<number>(0);
-  const [currentBackupValue, setCurrentBackupValue] = useState<ServerAdvancedState>(
-    {} as ServerAdvancedState,
-  );
-  const [scheduledMetadataArchivingEnabled, setScheduledMetadataArchivingEnabled] =
-    useState<boolean>(false);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const { data: rights } = useCurrentUserRights();
   const allowSetBackup = checkAllowSetBackup(rights);
 
-  useEffect(() => {
-    if (allServers && allServers.length > 0) {
-      const selectedServer = allServers.find((serverItem) => serverItem?.name === server);
-      if (selectedServer && selectedServer?.id) {
-        const currentBackupObject: Partial<ServerAdvancedState> = {};
-        getSoapFetchRequest<GetServerResponse>(
-          `/service/extension/zextras_admin/core/getServer/${selectedServer?.id}?module=zxbackup`,
-        )
-          .then((data: GetServerResponse) => {
-            const attributes = data?.attributes;
-            if (data && data?.attributes) {
-              if (attributes?.ldapDumpEnabled) {
-                const value = attributes?.ldapDumpEnabled?.value;
-                if (value) {
-                  setLdapDumpEnabled(value);
-                  currentBackupObject.ldapDumpEnabled = true;
-                } else {
-                  setLdapDumpEnabled(false);
-                  currentBackupObject.ldapDumpEnabled = false;
-                }
-              }
-
-              if (attributes?.backupLatencyLowThreshold) {
-                const value = attributes?.backupLatencyLowThreshold?.value;
-                if (value) {
-                  setBackupLatencyLowThreshold(value);
-                  currentBackupObject.backupLatencyLowThreshold = value;
-                } else {
-                  setBackupLatencyLowThreshold(value);
-                  currentBackupObject.backupLatencyLowThreshold = 0;
-                }
-              }
-
-              if (attributes?.backupLatencyHighThreshold) {
-                const value = attributes?.backupLatencyHighThreshold?.value;
-                if (value) {
-                  setBackupLatencyHighThreshold(value);
-                  currentBackupObject.backupLatencyHighThreshold = value;
-                } else {
-                  currentBackupObject.backupLatencyHighThreshold = 0;
-                }
-              }
-
-              if (attributes?.ZxBackup_MaxWaitingTime) {
-                const value = attributes?.ZxBackup_MaxWaitingTime?.value;
-                if (value) {
-                  setBackupMaxWaitTime(value);
-                  currentBackupObject.backupMaxWaitTime = value;
-                } else {
-                  currentBackupObject.backupMaxWaitTime = 0;
-                }
-              }
-
-              if (attributes?.ZxBackup_MaxMetadataSize) {
-                const value = attributes?.ZxBackup_MaxMetadataSize?.value;
-                if (value) {
-                  setBackupMaxMetaDataSize(value);
-                  currentBackupObject.backupMaxMetaDataSize = value;
-                } else {
-                  currentBackupObject.backupMaxMetaDataSize = 0;
-                }
-              }
-
-              if (attributes?.backupOnTheFlyMetadata) {
-                const value = attributes?.backupOnTheFlyMetadata?.value;
-                if (value) {
-                  setBackupOnTheFlyMetadata(value);
-                  currentBackupObject.backupOnTheFlyMetadata = true;
-                } else {
-                  setBackupOnTheFlyMetadata(false);
-                  currentBackupObject.backupOnTheFlyMetadata = false;
-                }
-              }
-
-              if (attributes?.scheduledMetadataArchivingEnabled) {
-                const value = attributes?.scheduledMetadataArchivingEnabled?.value;
-                if (value) {
-                  setScheduledMetadataArchivingEnabled(value);
-                  currentBackupObject.scheduledMetadataArchivingEnabled = true;
-                } else {
-                  setScheduledMetadataArchivingEnabled(false);
-                  currentBackupObject.scheduledMetadataArchivingEnabled = false;
-                }
-              }
-
-              if (attributes?.ZxBackup_MaxOperationPerAccount) {
-                const value = attributes?.ZxBackup_MaxOperationPerAccount?.value;
-                if (value) {
-                  setBackupMaxOperationPerAccount(value);
-                  currentBackupObject.backupMaxOperationPerAccount = value;
-                } else {
-                  currentBackupObject.backupMaxOperationPerAccount = 0;
-                }
-              }
-
-              if (attributes?.backupCompressionLevel) {
-                const value = attributes?.backupCompressionLevel?.value;
-                if (value) {
-                  setBackupCompressionLevel(value);
-                  currentBackupObject.backupCompressionLevel = value;
-                } else {
-                  currentBackupObject.backupCompressionLevel = 0;
-                }
-              }
-
-              if (attributes?.backupNumberThreadsForItems) {
-                const value = attributes?.backupNumberThreadsForItems?.value;
-                if (value) {
-                  setBackupNumberThreadsForItems(value);
-                  currentBackupObject.backupNumberThreadsForItems = value;
-                } else {
-                  currentBackupObject.backupNumberThreadsForItems = 0;
-                }
-              }
-
-              if (attributes?.backupNumberThreadsForAccounts) {
-                const value = attributes?.backupNumberThreadsForAccounts?.value;
-                if (value) {
-                  setBackupNumberThreadsForAccounts(value);
-                  currentBackupObject.backupNumberThreadsForAccounts = value;
-                } else {
-                  currentBackupObject.backupNumberThreadsForAccounts = 0;
-                }
-              }
-
-              if (attributes?.ZxBackup_BackupCustomizations) {
-                const value = attributes?.ZxBackup_BackupCustomizations?.value;
-                if (value) {
-                  setServerConfiguration(value);
-                  currentBackupObject.serverConfiguration = true;
-                } else {
-                  setServerConfiguration(false);
-                  currentBackupObject.serverConfiguration = false;
-                }
-              }
-
-              if (attributes?.ZxBackup_PurgeCustomizations) {
-                const value = attributes?.ZxBackup_PurgeCustomizations?.value;
-                if (value) {
-                  setPurgeOldConfiguration(value);
-                  currentBackupObject.purgeOldConfiguration = true;
-                } else {
-                  setPurgeOldConfiguration(false);
-                  currentBackupObject.purgeOldConfiguration = false;
-                }
-              }
-
-              if (attributes?.backupSaveIndex) {
-                const value = attributes?.backupSaveIndex?.value;
-                if (value) {
-                  setIncludeIndex(value);
-                  currentBackupObject.includeIndex = true;
-                } else {
-                  setIncludeIndex(false);
-                  currentBackupObject.includeIndex = false;
-                }
-              }
-            }
-            setCurrentBackupValue(currentBackupObject as ServerAdvancedState);
-            setIsDirty(false);
-          })
-          .catch((error: Error) => {
-            setIsDirty(false);
-            createSnackbar({
-              key: 'error',
-              severity: 'error',
-              label: error?.message
-                ? error?.message
-                : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-          });
+  const form = useForm({
+    defaultValues: mapServerConfigToFormValues(serverConfig),
+    validators: { onChange: serverAdvancedSchema, onSubmit: serverAdvancedSchema },
+    onSubmit: async ({ value }) => {
+      const body = mapFormValuesToCoreAttributes(value, serverName);
+      const data = await setCoreAttributes<SetCoreAttributesResponse>(body);
+      if (data?.errors && Array.isArray(data?.errors)) {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: data?.errors[0]?.error ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+      } else {
+        form.reset(value, { keepDefaultValues: true });
+        createSnackbar({
+          key: 'success',
+          severity: 'success',
+          label: t('label.the_last_changes_has_been_saved_successfully', 'Changes have been saved successfully'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
       }
-    }
-  }, [server, allServers, createSnackbar, t]);
+    },
+  });
 
-  const onCancel = () => {
-    setLdapDumpEnabled(currentBackupValue.ldapDumpEnabled);
-    setBackupLatencyLowThreshold(currentBackupValue.backupLatencyLowThreshold);
-    setBackupLatencyHighThreshold(currentBackupValue.backupLatencyHighThreshold);
-    setBackupMaxWaitTime(currentBackupValue.backupMaxWaitTime);
-    setBackupMaxMetaDataSize(currentBackupValue.backupMaxMetaDataSize);
-    setBackupOnTheFlyMetadata(currentBackupValue.backupOnTheFlyMetadata);
-    setScheduledMetadataArchivingEnabled(currentBackupValue.scheduledMetadataArchivingEnabled);
-    setBackupMaxOperationPerAccount(currentBackupValue.backupMaxOperationPerAccount);
-    setBackupCompressionLevel(currentBackupValue.backupCompressionLevel);
-    setBackupNumberThreadsForItems(currentBackupValue.backupNumberThreadsForItems);
-    setBackupNumberThreadsForAccounts(currentBackupValue.backupNumberThreadsForAccounts);
-    setIncludeIndex(currentBackupValue?.includeIndex);
-    setPurgeOldConfiguration(currentBackupValue?.purgeOldConfiguration);
-    setServerConfiguration(currentBackupValue?.serverConfiguration);
-    setIsDirty(false);
-  };
-
-  useEffect(() => {
-    if (
-      currentBackupValue.ldapDumpEnabled !== undefined &&
-      currentBackupValue.ldapDumpEnabled !== ldapDumpEnabled
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.ldapDumpEnabled, ldapDumpEnabled]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.backupLatencyLowThreshold !== undefined &&
-      currentBackupValue.backupLatencyLowThreshold !== backupLatencyLowThreshold
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.backupLatencyLowThreshold, backupLatencyLowThreshold]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.backupLatencyHighThreshold !== undefined &&
-      currentBackupValue.backupLatencyHighThreshold !== backupLatencyHighThreshold
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.backupLatencyHighThreshold, backupLatencyHighThreshold]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.backupMaxWaitTime !== undefined &&
-      currentBackupValue.backupMaxWaitTime !== backupMaxWaitTime
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.backupMaxWaitTime, backupMaxWaitTime]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.backupMaxMetaDataSize !== undefined &&
-      currentBackupValue.backupMaxMetaDataSize !== backupMaxMetaDataSize
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.backupMaxMetaDataSize, backupMaxMetaDataSize]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.backupOnTheFlyMetadata !== undefined &&
-      currentBackupValue.backupOnTheFlyMetadata !== backupOnTheFlyMetadata
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.backupOnTheFlyMetadata, backupOnTheFlyMetadata]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.scheduledMetadataArchivingEnabled !== undefined &&
-      currentBackupValue.scheduledMetadataArchivingEnabled !== scheduledMetadataArchivingEnabled
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.scheduledMetadataArchivingEnabled, scheduledMetadataArchivingEnabled]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.backupMaxOperationPerAccount !== undefined &&
-      currentBackupValue.backupMaxOperationPerAccount !== backupMaxOperationPerAccount
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.backupMaxOperationPerAccount, backupMaxOperationPerAccount]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.backupCompressionLevel !== undefined &&
-      currentBackupValue.backupCompressionLevel !== backupCompressionLevel
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.backupCompressionLevel, backupCompressionLevel]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.backupNumberThreadsForItems !== undefined &&
-      currentBackupValue.backupNumberThreadsForItems !== backupNumberThreadsForItems
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.backupNumberThreadsForItems, backupNumberThreadsForItems]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.backupNumberThreadsForAccounts !== undefined &&
-      currentBackupValue.backupNumberThreadsForAccounts !== backupNumberThreadsForAccounts
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.backupNumberThreadsForAccounts, backupNumberThreadsForAccounts]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.includeIndex !== undefined &&
-      currentBackupValue.includeIndex !== includeIndex
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.includeIndex, includeIndex]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.purgeOldConfiguration !== undefined &&
-      currentBackupValue.purgeOldConfiguration !== purgeOldConfiguration
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.purgeOldConfiguration, purgeOldConfiguration]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.serverConfiguration !== undefined &&
-      currentBackupValue.serverConfiguration !== serverConfiguration
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue.serverConfiguration, serverConfiguration]);
-
-  const onSave = () => {
-    const body: CoreAttributeBody = {
-      ldapDumpEnabled: {
-        value: ldapDumpEnabled,
-        objectName: server,
-        configType: SERVER,
-      },
-      ZxBackup_BackupCustomizations: {
-        value: serverConfiguration,
-        objectName: server,
-        configType: SERVER,
-      },
-      ZxBackup_PurgeCustomizations: {
-        value: purgeOldConfiguration,
-        objectName: server,
-        configType: SERVER,
-      },
-      backupSaveIndex: {
-        value: includeIndex,
-        objectName: server,
-        configType: SERVER,
-      },
-      backupLatencyHighThreshold: {
-        value: backupLatencyHighThreshold,
-        objectName: server,
-        configType: SERVER,
-      },
-      backupLatencyLowThreshold: {
-        value: backupLatencyLowThreshold,
-        objectName: server,
-        configType: SERVER,
-      },
-      ZxBackup_MaxWaitingTime: {
-        value: backupMaxWaitTime,
-        objectName: server,
-        configType: SERVER,
-      },
-      ZxBackup_MaxMetadataSize: {
-        value: backupMaxMetaDataSize,
-        objectName: server,
-        configType: SERVER,
-      },
-      backupOnTheFlyMetadata: {
-        value: backupOnTheFlyMetadata,
-        objectName: server,
-        configType: SERVER,
-      },
-      scheduledMetadataArchivingEnabled: {
-        value: scheduledMetadataArchivingEnabled,
-        objectName: server,
-        configType: SERVER,
-      },
-      ZxBackup_MaxOperationPerAccount: {
-        value: backupMaxOperationPerAccount,
-        objectName: server,
-        configType: SERVER,
-      },
-      backupCompressionLevel: {
-        value: backupCompressionLevel,
-        objectName: server,
-        configType: SERVER,
-      },
-      backupNumberThreadsForItems: {
-        value: backupNumberThreadsForItems,
-        objectName: server,
-        configType: SERVER,
-      },
-      backupNumberThreadsForAccounts: {
-        value: backupNumberThreadsForAccounts,
-        objectName: server,
-        configType: SERVER,
-      },
-    };
-    setIsRequestInProgress(true);
-    setCoreAttributes<SetCoreAttributesResponse>(body)
-      .then((data) => {
-        setIsRequestInProgress(false);
-        if (data?.errors && Array.isArray(data?.errors)) {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: data?.errors[0]?.error
-              ? data?.errors[0]?.error
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        } else {
-          setCurrentBackupValue((prev: ServerAdvancedState) => ({
-            ...prev,
-            ldapDumpEnabled,
-            backupLatencyLowThreshold,
-            backupLatencyHighThreshold,
-            backupMaxWaitTime,
-            backupMaxMetaDataSize,
-            backupOnTheFlyMetadata,
-            scheduledMetadataArchivingEnabled,
-            backupMaxOperationPerAccount,
-            backupCompressionLevel,
-            backupNumberThreadsForItems,
-            backupNumberThreadsForAccounts,
-            serverConfiguration,
-            purgeOldConfiguration,
-            includeIndex,
-          }));
-          setIsDirty(false);
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t(
-              'label.the_last_changes_has_been_saved_successfully',
-              'Changes have been saved successfully',
-            ),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
-      })
-      .catch((error: Error) => {
-        setIsRequestInProgress(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  };
-
-  const checkLdapStatus = () => {
-    setIsRequestInProgress(true);
-    checkLdap()
-      .then((data: CheckLdapResponse) => {
-        setIsRequestInProgress(false);
-        if (data?.ok && data?.ok === true) {
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t('backup.ldap_working_properly', 'Ldap working properly'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        } else {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
-      })
-      .catch((error: Error) => {
-        setIsRequestInProgress(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  };
+  const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
 
   return (
     <Container mainAlignment="flex-start" background="gray6">
-      <Container
-        orientation="column"
-        background="gray6"
-        crossAlignment="flex-start"
-        mainAlignment="flex-start"
-      >
+      <Container orientation="column" background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
         <Row mainAlignment="flex-start" width="100%">
           <Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
             <Row orientation="horizontal" width="100%">
-              <Row
-                padding={{ all: 'large' }}
-                mainAlignment="flex-start"
-                width="50%"
-                crossAlignment="flex-start"
-              >
+              <Row padding={{ all: 'large' }} mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
                 <ds-text as="h2" size="medium" weight="bold" color="gray0">
                   {t('backup.advanced', 'Advanced')}
                 </ds-text>
               </Row>
-              <Row
-                padding={{ all: 'large' }}
-                width="50%"
-                mainAlignment="flex-end"
-                crossAlignment="flex-end"
-              >
+              <Row padding={{ all: 'large' }} width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
                 <Padding right="small">
                   {isDirty && (
-                    <Button
-                      label={t('label.cancel', 'Cancel')}
-                      color="secondary"
-                      onClick={onCancel}
-                      disabled={isRequestInProgress}
-                    />
+                    <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={() => form.reset()} />
                   )}
                 </Padding>
                 {isDirty && (
-                  <Button
-                    label={t('label.save', 'Save')}
-                    color="primary"
-                    onClick={onSave}
-                    disabled={isRequestInProgress}
-                    loading={isRequestInProgress}
-                  />
+                  <Button label={t('label.save', 'Save')} color="primary" onClick={() => form.handleSubmit()} />
                 )}
               </Row>
             </Row>
           </Container>
           <ds-divider></ds-divider>
         </Row>
-
         <Container
           mainAlignment="flex-start"
           crossAlignment="flex-end"
@@ -620,333 +148,49 @@ export const ServerAdvanced = () => {
           padding={{ all: 'large' }}
           height="calc(100vh - 9.375rem)"
         >
-          <ListRow>
-            <Container
-              padding={{ top: 'large' }}
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-            >
-              <Switch
-                label={t('backup.ldap_dump', 'LDAP Dump')}
-                value={ldapDumpEnabled}
-                onClick={(): void => setLdapDumpEnabled(!ldapDumpEnabled)}
-                iconColor="primary"
-                disabled={!allowSetBackup}
-              />
-            </Container>
-            <Container padding={{ top: 'large' }}>
-              <Switch
-                label={t('backup.include_server_configuration', 'Include server configuration')}
-                value={serverConfiguration}
-                onClick={(): void => setServerConfiguration(!serverConfiguration)}
-                iconColor="primary"
-                disabled={!allowSetBackup}
-              />
-            </Container>
-            <Container padding={{ top: 'large' }}>
-              <Switch
-                label={t('backup.purge_old_configuration', 'Purge old configuration')}
-                value={purgeOldConfiguration}
-                onClick={(): void => setPurgeOldConfiguration(!purgeOldConfiguration)}
-                iconColor="primary"
-                disabled={!allowSetBackup}
-              />
-            </Container>
-            <Container padding={{ top: 'large' }}>
-              <Switch
-                label={t('backup.include_index', 'Include index')}
-                value={includeIndex}
-                onClick={(): void => setIncludeIndex(!includeIndex)}
-                iconColor="primary"
-                disabled={!allowSetBackup}
-              />
-            </Container>
-          </ListRow>
-
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large' }}
-              style={{ display: 'block' }}
-            >
-              <Button
-                type="outlined"
-                label={t('backup.check_ldap', 'Check ldap')}
-                color="primary"
-                icon="ActivityOutline"
-                iconPlacement="right"
-                onClick={checkLdapStatus}
-                disabled={isRequestInProgress || !allowSetBackup}
-                loading={isRequestInProgress}
-                style={{ width: '100%' }}
-                width="fill"
-                size="large"
-              />
-            </Container>
-          </ListRow>
-
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'extralarge' }}
-            height="fit"
-          >
-            <ds-text as="h3" size="medium" weight="bold">
-              {t('backup.tuning_options', 'Tuning Options')}
-            </ds-text>
-          </Container>
-
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'large' }}
-            height="fit"
-          >
-            <ds-text as="h3" size="medium" weight="bold">
-              {t('backup.latency', 'Latency')}
-            </ds-text>
-          </Container>
-
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large', right: 'large' }}
-              width="50%"
-            >
-              <Input
-                isRequired
-                label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
-                backgroundColor="gray5"
-                value={backupLatencyHighThreshold}
-                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                  setBackupLatencyHighThreshold(Number(e.target.value));
-                }}
-                disabled={!allowSetBackup}
-              />
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large', right: 'large' }}
-              width="50%"
-            >
-              <Input
-                isRequired
-                label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
-                backgroundColor="gray5"
-                value={backupLatencyLowThreshold}
-                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                  setBackupLatencyLowThreshold(Number(e.target.value));
-                }}
-                disabled={!allowSetBackup}
-              />
-            </Container>
-          </ListRow>
-
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'extralarge' }}
-            height="fit"
-          >
-            <ds-text as="h3" size="medium" weight="bold">
-              {t('backup.waiting_time', 'Waititng Time')}
-            </ds-text>
-          </Container>
-
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large', right: 'large' }}
-              width="100%"
-            >
-              <Input
-                label={t('backup.max_waiting_time_ms', 'Max Waiting Time (ms)')}
-                backgroundColor="gray5"
-                borderColor="gray3"
-                value={backupMaxWaitTime}
-                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                  setBackupMaxWaitTime(Number(e.target.value));
-                }}
-                disabled={!allowSetBackup}
-              />
-            </Container>
-          </ListRow>
-
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'extralarge' }}
-            height="fit"
-          >
-            <ds-text as="h3" size="medium" weight="bold">
-              {t('backup.metadata', 'Metadata')}
-            </ds-text>
-          </Container>
-
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large', right: 'large' }}
-              width="100%"
-            >
-              <Input
-                isRequired
-                label={t('backup.maximum_metadata_size_mb', 'Maximum Metadata Size (MB)')}
-                backgroundColor="gray5"
-                value={backupMaxMetaDataSize}
-                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                  setBackupMaxMetaDataSize(Number(e.target.value));
-                }}
-                disabled={!allowSetBackup}
-              />
-            </Container>
-          </ListRow>
-
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large', right: 'large' }}
-              width="100%"
-            >
-              <Switch
-                label={t(
-                  'backup.append_metadata_instead_of_rewrite_faster_but_dangerous',
-                  'Append metadata instead of rewrite (faster but dangerous)',
-                )}
-                value={backupOnTheFlyMetadata}
-                onClick={(): void => setBackupOnTheFlyMetadata(!backupOnTheFlyMetadata)}
-                iconColor="primary"
-                disabled={!allowSetBackup}
-              />
-            </Container>
-          </ListRow>
-
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large', right: 'large' }}
-              width="100%"
-            >
-              <Switch
-                label={t(
-                  'backup.archive_user_metadata_folder_in_the_remote_backup',
-                  'Archive user metadata folder in the remote backup',
-                )}
-                value={scheduledMetadataArchivingEnabled}
-                onClick={(): void =>
-                  setScheduledMetadataArchivingEnabled(!scheduledMetadataArchivingEnabled)
-                }
-                iconColor="primary"
-                disabled={!allowSetBackup}
-              />
-            </Container>
-          </ListRow>
-
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            padding={{ top: 'extralarge' }}
-            height="fit"
-          >
-            <ds-text as="h3" size="medium" weight="bold">
-              {t('backup.other_controls', 'Other Controls')}
-            </ds-text>
-          </Container>
-
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large', right: 'large' }}
-              width="500%"
-            >
-              <Input
-                isRequired
-                label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
-                backgroundColor="gray5"
-                value={backupMaxOperationPerAccount}
-                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                  setBackupMaxOperationPerAccount(Number(e.target.value));
-                }}
-                disabled={!allowSetBackup}
-              />
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large', right: 'large' }}
-              width="500%"
-            >
-              <Input
-                isRequired
-                label={t('backup.compression_level', 'Compression Level')}
-                backgroundColor="gray5"
-                value={backupCompressionLevel}
-                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                  setBackupCompressionLevel(Number(e.target.value));
-                }}
-                disabled={!allowSetBackup}
-              />
-            </Container>
-          </ListRow>
-
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large', right: 'large' }}
-              width="500%"
-            >
-              <Input
-                isRequired
-                label={t('backup.thread_number_for_items', 'Thread number for items')}
-                backgroundColor="gray5"
-                value={backupNumberThreadsForItems}
-                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                  setBackupNumberThreadsForItems(Number(e.target.value));
-                }}
-                disabled={!allowSetBackup}
-              />
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large', right: 'large' }}
-              width="500%"
-            >
-              <Input
-                isRequired
-                label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
-                backgroundColor="gray5"
-                value={backupNumberThreadsForAccounts}
-                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                  setBackupNumberThreadsForAccounts(Number(e.target.value));
-                }}
-                disabled={!allowSetBackup}
-              />
-            </Container>
-          </ListRow>
+          <BackupOptions form={form as never} allowSetBackup={allowSetBackup} />
+          <LatencySettings form={form as never} allowSetBackup={allowSetBackup} />
+          <WaitingTimeSettings form={form as never} allowSetBackup={allowSetBackup} />
+          <MetadataSettings form={form as never} allowSetBackup={allowSetBackup} />
+          <OtherControls form={form as never} allowSetBackup={allowSetBackup} />
         </Container>
       </Container>
-      <RouteLeavingGuard when={isDirty} onSave={onSave} />
+      <RouteLeavingGuard when={isDirty} onSave={() => form.handleSubmit()} />
     </Container>
   );
-};
+}
 
+export const ServerAdvanced = () => {
+  const { server } = useParams();
+  const { data: allServers = [] } = useAllServers();
+
+  const selectedServer = allServers.find((serverItem) => serverItem?.name === server);
+  const serverId = selectedServer?.id ?? '';
+  const { data: serverConfig, isPending } = useServerConfig(serverId || undefined);
+
+  if (isPending || !serverConfig) {
+    return (
+      <Container mainAlignment="flex-start" background="gray6">
+        <Container orientation="column" background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
+          <Row mainAlignment="flex-start" width="100%">
+            <Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
+              <Row orientation="horizontal" width="100%">
+                <Row padding={{ all: 'large' }} mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+                  <ds-text as="h2" size="medium" weight="bold" color="gray0">
+                    Advanced
+                  </ds-text>
+                </Row>
+              </Row>
+            </Container>
+            <ds-divider></ds-divider>
+          </Row>
+          <Container mainAlignment="center" height="calc(100vh - 9.375rem)">
+            <ds-spinner></ds-spinner>
+          </Container>
+        </Container>
+      </Container>
+    );
+  }
+
+  return <ServerAdvancedContent serverConfig={serverConfig} serverName={server ?? ''} />;
+};

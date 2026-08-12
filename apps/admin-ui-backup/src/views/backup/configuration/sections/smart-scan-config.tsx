@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Input, ListRow, Switch } from '@zextras/ui-components';
-import { useTranslation } from 'react-i18next';
 import type { ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSmartScan } from '../../../../services/use-smart-scan';
 import type { BackupConfigFormApi } from '../types';

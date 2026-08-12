@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { Button, Container, Padding, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
 import {
   setCoreAttributes,
@@ -11,12 +13,10 @@ import {
   useCurrentUserRights,
   useModuleLicenseInfo,
 } from '@zextras/ui-shared';
-import { useForm } from '@tanstack/react-form';
-import { useSelector } from '@tanstack/react-store';
 import { isEmpty } from 'lodash-es';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
-import { useState } from 'react';
 
 import type {
   BackupArchivingStore,
@@ -28,11 +28,11 @@ import { BACKUP_REALTIME, SERVER } from '../../../constants';
 import { useServerConfig } from '../../../services/use-server-config';
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
 import { backupConfigSchema } from './schema';
-import { ServiceStatus } from './sections/service-status';
-import { GeneralSettings } from './sections/general-settings';
-import { VolumeManagement } from './sections/volume-management';
-import { SmartScanConfig } from './sections/smart-scan-config';
 import { DataRetention } from './sections/data-retention';
+import { GeneralSettings } from './sections/general-settings';
+import { ServiceStatus } from './sections/service-status';
+import { SmartScanConfig } from './sections/smart-scan-config';
+import { VolumeManagement } from './sections/volume-management';
 import type { BackupConfigFormValues } from './types';
 
 function mapServerConfigToFormValues(data: GetServerResponse | undefined): BackupConfigFormValues {
