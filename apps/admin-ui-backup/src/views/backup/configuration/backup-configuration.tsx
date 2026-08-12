@@ -4,1537 +4,263 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Container, Padding, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
 import {
-  Button,
-  Container,
-  Input,
-  LabeledValue,
-  ListRow,
-  Padding,
-  RouteLeavingGuard,
-  Row,
-  Select,
-  Switch,
-  useSnackbar,
-} from '@zextras/ui-components';
-import {
-  fetchExternalSoap,
-  getSoapFetchRequest,
-  postSoapFetchRequest,
   setCoreAttributes,
   useAllServers,
   useCurrentUserRights,
   useModuleLicenseInfo,
 } from '@zextras/ui-shared';
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { isEmpty } from 'lodash-es';
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
+import { useState } from 'react';
 
 import type {
   BackupArchivingStore,
-  BackupConfigurationState,
-  BucketItem,
   CoreAttributeBody,
-  ExternalSoapResponse,
   GetServerResponse,
-  ListBucketsContent,
-  SelectOption,
   SetCoreAttributesResponse,
-  SoapResponseBody,
 } from '../../../../types';
-import {
-  BACKUP_REALTIME,
-  LOCAL_VALUE,
-  MANAGE_EXTERNAL_VOLUME,
-  MOUNTPOINT,
-  MOVE_TO_EXTERNAL_BUCKET,
-  MOVE_TO_LOCAL_MOUNT_POINT,
-  S3,
-  S3_BUCKET,
-  SERVER,
-  ZIMBRA_ADMIN_URN,
-} from '../../../constants';
-import { fetchSoap } from '../../../services/bucket-service';
+import { BACKUP_REALTIME, SERVER } from '../../../constants';
+import { useServerConfig } from '../../../services/use-server-config';
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
+import { backupConfigSchema } from './schema';
+import { ServiceStatus } from './sections/service-status';
+import { GeneralSettings } from './sections/general-settings';
+import { VolumeManagement } from './sections/volume-management';
+import { SmartScanConfig } from './sections/smart-scan-config';
+import { DataRetention } from './sections/data-retention';
+import type { BackupConfigFormValues } from './types';
 
-export const BackupConfiguration = () => {
-  const { server } = useParams();
+function mapServerConfigToFormValues(data: GetServerResponse | undefined): BackupConfigFormValues {
+  const attr = data?.attributes;
+  return {
+    moduleEnableStartup: attr?.ZxBackup_ModuleEnabledAtStartup?.value ?? false,
+    enableRealtimeScanner: attr?.ZxBackup_RealTimeScanner?.value ?? false,
+    runSmartScanStartup: attr?.ZxBackup_DoSmartScanOnStartup?.value ?? false,
+    spaceThreshold: String(attr?.ZxBackup_SpaceThreshold?.value ?? 0),
+    backupDestPath: attr?.ZxBackup_DestPath?.value ?? '',
+    isScheduleSmartScan: attr?.backupSmartScanScheduler?.value?.['cron-enabled'] ?? false,
+    scheduleSmartScan: attr?.backupSmartScanScheduler?.value?.['cron-pattern'] ?? '',
+    scheduleAutomaticRetentionPolicy: attr?.backupPurgeScheduler?.value?.['cron-enabled'] ?? false,
+    retentionPolicySchedule: attr?.backupPurgeScheduler?.value?.['cron-pattern'] ?? '',
+    keepDeletedItemInBackup: String(attr?.ZxBackup_DataRetentionDays?.value ?? 0),
+    keepDeletedAccountsInBackup: String(attr?.backupAccountsRetentionDays?.value ?? 0),
+  };
+}
+
+function mapFormValuesToCoreAttributes(
+  values: BackupConfigFormValues,
+  server: string,
+  includeRealtime: boolean,
+): CoreAttributeBody {
+  const body: CoreAttributeBody = {
+    ZxBackup_ModuleEnabledAtStartup: { value: values.moduleEnableStartup, objectName: server, configType: SERVER },
+    ZxBackup_DoSmartScanOnStartup: { value: values.runSmartScanStartup, objectName: server, configType: SERVER },
+    ZxBackup_SpaceThreshold: { value: Number(values.spaceThreshold), objectName: server, configType: SERVER },
+    backupSmartScanScheduler: { value: { 'cron-pattern': values.scheduleSmartScan, 'cron-enabled': values.isScheduleSmartScan }, objectName: server, configType: SERVER },
+    backupPurgeScheduler: { value: { 'cron-pattern': values.retentionPolicySchedule, 'cron-enabled': values.scheduleAutomaticRetentionPolicy }, objectName: server, configType: SERVER },
+    ZxBackup_DestPath: { value: values.backupDestPath, objectName: server, configType: SERVER },
+    ZxBackup_DataRetentionDays: { value: Number(values.keepDeletedItemInBackup), objectName: server, configType: SERVER },
+    backupAccountsRetentionDays: { value: Number(values.keepDeletedAccountsInBackup), objectName: server, configType: SERVER },
+  };
+  if (includeRealtime) {
+    body.ZxBackup_RealTimeScanner = { value: values.enableRealtimeScanner, objectName: server, configType: SERVER };
+  }
+  return body;
+}
+
+function BackupConfigurationContent({
+  serverConfig,
+  serverName,
+  serverId,
+  isRealtimeLicensed,
+}: {
+  serverConfig: GetServerResponse;
+  serverName: string;
+  serverId: string;
+  isRealtimeLicensed: boolean;
+}) {
   const [t] = useTranslation();
-  const { data: allServers = [] } = useAllServers();
   const createSnackbar = useSnackbar();
-  const [moduleEnableStartup, setModuleEnableStartup] = useState<boolean>(false);
-  const [enableRealtimeScanner, setEnableRealtimeScanner] = useState<boolean>(false);
-  const [runSmartScanStartup, setRunSmartScanStartup] = useState<boolean>(false);
-  const [spaceThreshold, setSpaceThreshold] = useState<number>(0);
-  const [isScheduleSmartScan, setIsScheduleSmartScan] = useState<boolean>(false);
-  const [scheduleSmartScan, setScheduleSmartScan] = useState<string>('');
-  const [keepDeletedItemInBackup, setKeepDeletedItemInBackup] = useState<number>(0);
-  const [keepDeletedAccountsInBackup, setKeepDeletedAccountsInBackup] = useState<number>(0);
-  const [scheduleAutomaticRetentionPolicy, setScheduleAutomaticRetentionPolicy] =
-    useState<boolean>(false);
-  const [retentionPolicySchedule, setRetentionPolicySchedule] = useState<string>('');
-  const [backupDestPath, setBackupDestPath] = useState<string>('');
-  const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const [currentBackupValue, setCurrentBackupValue] = useState<BackupConfigurationState>(
-    {} as BackupConfigurationState,
-  );
-  const [backupServiceStart, setBackupServiceStart] = useState<boolean>(false);
-  const [isBackupInitialized, setIsBackupInitialized] = useState<boolean>(false);
-  const [isPurgeRequestRunning, setIsPurgeRequestRunning] = useState<boolean>(false);
-  const [isExternalVolumeRequestRunning, setIsExternalVolumeRequestRunning] =
-    useState<boolean>(false);
-  const [isSaveRequestInProgress, setIsSaveRequestInProgress] = useState<boolean>(false);
-  const [isManageExternalVolumeEnable, setIsManageExternalVolumeEnable] = useState<boolean>(false);
-  const [isBackArchivingStoreEmpty, setIsBackArchivingStoreEmpty] = useState<boolean>(false);
-  const [isShowSetExternalVolume, setIsShowSetExternalVolume] = useState<boolean>(false);
-  const [bucketList, setBucketList] = useState<Array<BucketItem>>([]);
-  const [backupArchivingStore, setBackupArchivingStore] = useState<BackupArchivingStore>({});
-  const [initializeBackup, setInitializeBackup] = useState(
-    t('backup.initialize_backup', 'Initialize Backup'),
-  );
-  const [showIcon, setShowIcon] = useState(true);
-  const [manageExternalVolumeType, setManageExternalVolumeType] = useState<string>('');
-  const [manageExternalVolumeConfiguration, setManageExternalVolumeConfiguration] =
-    useState<SelectOption>({} as SelectOption);
-  const [manageExternalVolumeBucketList, setManageExternalVolumeBucketList] =
-    useState<SelectOption>({} as SelectOption);
-  const [manageExternalVolumeLocalMountpoint, setManageExternalVolumeLocalMountpoint] =
-    useState<string>('');
-  const [manageExternalVolumeNewLocalMountpoint, setManageExternalVolumeNewLocalMountpoint] =
-    useState<string>('');
-  const [rootVolumePath, setRootVolumePath] = useState<string>('');
   const { data: rights } = useCurrentUserRights();
   const allowSetBackup = checkAllowSetBackup(rights);
-
-  const destinationOptions: Array<SelectOption> = [
-    {
-      label: t(
-        'label.manage_external_volume_and_move_all',
-        'MANAGE EXTERNAL VOLUME and Move All Items to Local Path',
-      ),
-      value: MANAGE_EXTERNAL_VOLUME,
-    },
-    {
-      label: t('label.move_item_to_an_external_bucket', 'Move Items to an External Bucket'),
-      value: MOVE_TO_EXTERNAL_BUCKET,
-    },
-    {
-      label: t('label.move_item_to_a_local_mountpoint', 'Move Items to a Local Mountpoint'),
-      value: MOVE_TO_LOCAL_MOUNT_POINT,
-    },
-  ];
-
-  const externalVolumeOptions: Array<SelectOption> = [
-    {
-      label: t('label.mountpoint', 'Mountpoint'),
-      value: MOUNTPOINT,
-    },
-    {
-      label: t('label.s3_bucket', 'S3 Bucket'),
-      value: S3_BUCKET,
-    },
-  ];
-
-  const [externalVolume, setExternalVolume] = useState<SelectOption>(externalVolumeOptions[0]);
-  const [destinationSelected, setDestinationSelected] = useState<SelectOption>(
-    destinationOptions[0],
+  const [serviceRunning, setServiceRunning] = useState(
+    serverConfig?.services?.module?.running ?? false,
   );
-  const [bucketConfiguration, setBucketConfiguration] = useState<SelectOption>({} as SelectOption);
-  const [bucketListOption, setBucketListOption] = useState<Array<SelectOption>>([]);
 
-  const { moduleLicenseInfo } = useModuleLicenseInfo();
-  const [isBackupImportRealtimeFeatureLicensed, setIsBackupImportRealtimeFeatureLicensed] =
-    useState<boolean>(false);
+  const isBackupInitialized = serverConfig?.properties?.backup_initialized ?? false;
+  const backupArchivingStore: BackupArchivingStore =
+    serverConfig?.attributes?.backupArchivingStore?.value ?? {};
+  const isBackArchivingStoreEmpty = isEmpty(backupArchivingStore);
 
-  useEffect(() => {
-    if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
-      const backupRealtimeModule = moduleLicenseInfo.features.filter(
-        (item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME,
-      );
-      if (backupRealtimeModule && backupRealtimeModule[0] && backupRealtimeModule[0]?.enabled) {
-        setIsBackupImportRealtimeFeatureLicensed(true);
-      }
-    }
-  }, [moduleLicenseInfo]);
-  const onDestinationChange = (v: string | null): void => {
-    const it = destinationOptions.find((item: SelectOption) => item.value === v);
-    setDestinationSelected(it ?? destinationOptions[0]);
-  };
+  const isRealtimeLicensedValue = isRealtimeLicensed;
 
-  const onExternalVolumeChange = (v: string | null): void => {
-    const it = externalVolumeOptions.find((item: SelectOption) => item.value === v);
-    setExternalVolume(it ?? externalVolumeOptions[0]);
-  };
-
-  useEffect(() => {
-    if (allServers && allServers.length > 0) {
-      const selectedServer = allServers.find((serverItem) => serverItem?.name === server);
-      const currentBackupObject: Partial<BackupConfigurationState> = {};
-      if (selectedServer && selectedServer?.id) {
-        getSoapFetchRequest<GetServerResponse>(
-          `/service/extension/zextras_admin/core/getServer/${selectedServer?.id}?module=zxbackup`,
-        )
-          .then((data: GetServerResponse) => {
-            if (data && data?.attributes) {
-              const attributes = data?.attributes;
-              if (attributes?.ZxBackup_ModuleEnabledAtStartup) {
-                const value = attributes?.ZxBackup_ModuleEnabledAtStartup?.value;
-                if (value) {
-                  setModuleEnableStartup(value);
-                  currentBackupObject.moduleEnableStartup = true;
-                } else {
-                  setModuleEnableStartup(false);
-                  currentBackupObject.moduleEnableStartup = false;
-                }
-              }
-
-              if (attributes?.ZxBackup_RealTimeScanner) {
-                const value = attributes?.ZxBackup_RealTimeScanner?.value;
-                if (value) {
-                  setEnableRealtimeScanner(value);
-                  currentBackupObject.enableRealtimeScanner = true;
-                } else {
-                  setEnableRealtimeScanner(false);
-                  currentBackupObject.enableRealtimeScanner = false;
-                }
-              }
-
-              if (attributes?.ZxBackup_DoSmartScanOnStartup) {
-                const value = attributes?.ZxBackup_DoSmartScanOnStartup?.value;
-                if (value) {
-                  setRunSmartScanStartup(value);
-                  currentBackupObject.runSmartScanStartup = true;
-                } else {
-                  setRunSmartScanStartup(false);
-                  currentBackupObject.runSmartScanStartup = false;
-                }
-              }
-
-              if (attributes?.ZxBackup_SpaceThreshold) {
-                const value = attributes?.ZxBackup_SpaceThreshold?.value;
-                if (value) {
-                  setSpaceThreshold(value);
-                  currentBackupObject.spaceThreshold = value;
-                } else {
-                  currentBackupObject.spaceThreshold = 0;
-                }
-              }
-
-              if (attributes?.backupSmartScanScheduler) {
-                const value = attributes?.backupSmartScanScheduler?.value;
-
-                if (value && value?.['cron-enabled']) {
-                  setIsScheduleSmartScan(value['cron-enabled']);
-                  currentBackupObject.isScheduleSmartScan = true;
-                } else {
-                  setIsScheduleSmartScan(false);
-                  currentBackupObject.isScheduleSmartScan = false;
-                }
-
-                if (value && value['cron-pattern']) {
-                  setScheduleSmartScan(value['cron-pattern']);
-                  currentBackupObject.scheduleSmartScan = value['cron-pattern'];
-                } else {
-                  currentBackupObject.scheduleSmartScan = '';
-                }
-              }
-
-              if (attributes?.backupPurgeScheduler) {
-                const value = attributes?.backupPurgeScheduler?.value;
-                if (value && value['cron-enabled']) {
-                  setScheduleAutomaticRetentionPolicy(value['cron-enabled']);
-                  currentBackupObject.scheduleAutomaticRetentionPolicy = true;
-                } else {
-                  setScheduleAutomaticRetentionPolicy(false);
-                  currentBackupObject.scheduleAutomaticRetentionPolicy = false;
-                }
-                if (value && value['cron-pattern']) {
-                  setRetentionPolicySchedule(value['cron-pattern']);
-                  currentBackupObject.retentionPolicySchedule = value['cron-pattern'];
-                } else {
-                  currentBackupObject.retentionPolicySchedule = '';
-                }
-              }
-
-              if (attributes?.ZxBackup_DestPath) {
-                const value = attributes?.ZxBackup_DestPath?.value;
-                if (value) {
-                  setBackupDestPath(value);
-                  currentBackupObject.backupDestPath = value;
-                } else {
-                  currentBackupObject.backupDestPath = '';
-                }
-              }
-              if (attributes?.ZxBackup_DataRetentionDays) {
-                const value = attributes?.ZxBackup_DataRetentionDays?.value;
-                if (value) {
-                  setKeepDeletedItemInBackup(value);
-                  currentBackupObject.keepDeletedItemInBackup = value;
-                } else {
-                  currentBackupObject.keepDeletedItemInBackup = 0;
-                }
-              }
-
-              if (attributes?.backupAccountsRetentionDays) {
-                const value = attributes?.backupAccountsRetentionDays?.value;
-                if (value) {
-                  setKeepDeletedAccountsInBackup(value);
-                  currentBackupObject.keepDeletedAccountsInBackup = value;
-                } else {
-                  currentBackupObject.keepDeletedAccountsInBackup = 0;
-                }
-              }
-
-              if (attributes?.backupArchivingStore) {
-                const value = attributes?.backupArchivingStore?.value;
-                if (isEmpty(value)) {
-                  setBackupArchivingStore({});
-                  setIsBackArchivingStoreEmpty(true);
-                } else {
-                  setBackupArchivingStore(value);
-                  setIsBackArchivingStoreEmpty(false);
-                }
-              }
-            }
-
-            if (data && data?.services?.module?.running) {
-              setBackupServiceStart(true);
-            } else {
-              setBackupServiceStart(false);
-            }
-            if (data && data?.properties && data?.properties?.backup_initialized) {
-              setIsBackupInitialized(true);
-            } else {
-              setIsBackupInitialized(false);
-            }
-            setCurrentBackupValue(currentBackupObject as BackupConfigurationState);
-            setIsDirty(false);
-          })
-          .catch((error: Error) => {
-            setIsDirty(false);
-            createSnackbar({
-              key: 'error',
-              severity: 'error',
-              label: error?.message
-                ? error?.message
-                : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-          });
-      }
-    }
-  }, [server, allServers, createSnackbar, t]);
-
-  const onCancel = () => {
-    setModuleEnableStartup(currentBackupValue.moduleEnableStartup);
-    setEnableRealtimeScanner(currentBackupValue?.enableRealtimeScanner);
-    setRunSmartScanStartup(currentBackupValue?.runSmartScanStartup);
-    setSpaceThreshold(currentBackupValue?.spaceThreshold);
-    setIsScheduleSmartScan(currentBackupValue?.isScheduleSmartScan);
-    setScheduleSmartScan(currentBackupValue?.scheduleSmartScan);
-    setScheduleAutomaticRetentionPolicy(currentBackupValue?.scheduleAutomaticRetentionPolicy);
-    setRetentionPolicySchedule(currentBackupValue?.retentionPolicySchedule);
-    setBackupDestPath(currentBackupValue?.backupDestPath);
-    setKeepDeletedItemInBackup(currentBackupValue?.keepDeletedItemInBackup);
-    setKeepDeletedAccountsInBackup(currentBackupValue?.keepDeletedAccountsInBackup);
-    setIsDirty(false);
-  };
-
-  const onSave = () => {
-    let body: CoreAttributeBody = {
-      ZxBackup_ModuleEnabledAtStartup: {
-        value: moduleEnableStartup,
-        objectName: server,
-        configType: SERVER,
-      },
-      ZxBackup_DoSmartScanOnStartup: {
-        value: runSmartScanStartup,
-        objectName: server,
-        configType: SERVER,
-      },
-      ZxBackup_SpaceThreshold: {
-        value: spaceThreshold,
-        objectName: server,
-        configType: SERVER,
-      },
-      backupSmartScanScheduler: {
-        value: {
-          'cron-pattern': scheduleSmartScan,
-          'cron-enabled': isScheduleSmartScan,
-        },
-        objectName: server,
-        configType: SERVER,
-      },
-      backupPurgeScheduler: {
-        value: {
-          'cron-pattern': retentionPolicySchedule,
-          'cron-enabled': scheduleAutomaticRetentionPolicy,
-        },
-        objectName: server,
-        configType: SERVER,
-      },
-      ZxBackup_DestPath: {
-        value: backupDestPath,
-        objectName: server,
-        configType: SERVER,
-      },
-      ZxBackup_DataRetentionDays: {
-        value: keepDeletedItemInBackup,
-        objectName: server,
-        configType: SERVER,
-      },
-      backupAccountsRetentionDays: {
-        value: keepDeletedAccountsInBackup,
-        objectName: server,
-        configType: SERVER,
-      },
-    };
-
-    if (isBackupImportRealtimeFeatureLicensed) {
-      const scanner = {
-        ZxBackup_RealTimeScanner: {
-          value: enableRealtimeScanner,
-          objectName: server,
-          configType: SERVER,
-        },
-      };
-      body = { ...body, ...scanner };
-    }
-    setIsSaveRequestInProgress(true);
-    setCoreAttributes<SetCoreAttributesResponse>(body)
-      .then((data) => {
-        setIsSaveRequestInProgress(false);
-        if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
-          let errorMessage = t(
-            'label.something_wrong_error_msg',
-            'Something went wrong. Please try again.',
-          );
-          if (data?.errors && Array.isArray(data?.errors) && data?.errors[0]?.error) {
-            errorMessage = data?.errors[0]?.error;
-          } else if (data?.error) {
-            errorMessage =
-              typeof data?.error === 'string' ? data?.error : data?.error?.message ?? '';
-          }
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: errorMessage,
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        } else {
-          setCurrentBackupValue((prev: BackupConfigurationState) => ({
-            ...prev,
-            moduleEnableStartup,
-            enableRealtimeScanner,
-            runSmartScanStartup,
-            spaceThreshold,
-            isScheduleSmartScan,
-            scheduleSmartScan,
-            scheduleAutomaticRetentionPolicy,
-            retentionPolicySchedule,
-            backupDestPath,
-            keepDeletedItemInBackup,
-            keepDeletedAccountsInBackup,
-          }));
-          setIsDirty(false);
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t(
-              'label.the_last_changes_has_been_saved_successfully',
-              'Changes have been saved successfully',
-            ),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
-      })
-      .catch(() => {
-        setIsSaveRequestInProgress(false);
-        setCurrentBackupValue((prev: BackupConfigurationState) => ({
-          ...prev,
-          moduleEnableStartup,
-          enableRealtimeScanner,
-          runSmartScanStartup,
-          spaceThreshold,
-          isScheduleSmartScan,
-          scheduleSmartScan,
-          scheduleAutomaticRetentionPolicy,
-          retentionPolicySchedule,
-          backupDestPath,
-          keepDeletedItemInBackup,
-          keepDeletedAccountsInBackup,
-        }));
-        setIsDirty(false);
+  const form = useForm({
+    defaultValues: mapServerConfigToFormValues(serverConfig),
+    validators: { onChange: backupConfigSchema, onSubmit: backupConfigSchema },
+    onSubmit: async ({ value }) => {
+      const body = mapFormValuesToCoreAttributes(value, serverName, isRealtimeLicensedValue);
+      const data = await setCoreAttributes<SetCoreAttributesResponse>(body);
+      if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
+        const errorMessage =
+          data?.errors?.[0]?.error ??
+          (typeof data?.error === 'string' ? data?.error : data?.error?.message ?? '') ??
+          t('label.something_wrong_error_msg', 'Something went wrong. Please try again.');
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: errorMessage,
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+      } else {
+        form.reset(value, { keepDefaultValues: true });
         createSnackbar({
           key: 'success',
           severity: 'success',
-          label: t(
-            'label.the_last_changes_has_been_saved_successfully',
-            'Changes have been saved successfully',
-          ),
+          label: t('label.the_last_changes_has_been_saved_successfully', 'Changes have been saved successfully'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
         });
-      });
-  };
-
-  useEffect(() => {
-    if (
-      currentBackupValue.moduleEnableStartup !== undefined &&
-      currentBackupValue.moduleEnableStartup !== moduleEnableStartup
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.moduleEnableStartup, moduleEnableStartup]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.enableRealtimeScanner !== undefined &&
-      currentBackupValue.enableRealtimeScanner !== enableRealtimeScanner
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.enableRealtimeScanner, enableRealtimeScanner]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.runSmartScanStartup !== undefined &&
-      currentBackupValue.runSmartScanStartup !== runSmartScanStartup
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.runSmartScanStartup, runSmartScanStartup]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.spaceThreshold !== undefined &&
-      currentBackupValue.spaceThreshold !== spaceThreshold
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.spaceThreshold, spaceThreshold]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.isScheduleSmartScan !== undefined &&
-      currentBackupValue.isScheduleSmartScan !== isScheduleSmartScan
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.isScheduleSmartScan, isScheduleSmartScan]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.scheduleSmartScan !== undefined &&
-      currentBackupValue.scheduleSmartScan !== scheduleSmartScan
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.scheduleSmartScan, scheduleSmartScan]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.scheduleAutomaticRetentionPolicy !== undefined &&
-      currentBackupValue.scheduleAutomaticRetentionPolicy !== scheduleAutomaticRetentionPolicy
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.scheduleAutomaticRetentionPolicy, scheduleAutomaticRetentionPolicy]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.retentionPolicySchedule !== undefined &&
-      currentBackupValue.retentionPolicySchedule !== retentionPolicySchedule
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.retentionPolicySchedule, retentionPolicySchedule]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.backupDestPath !== undefined &&
-      currentBackupValue.backupDestPath !== backupDestPath
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.backupDestPath, backupDestPath]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.keepDeletedItemInBackup !== undefined &&
-      currentBackupValue.keepDeletedItemInBackup !== keepDeletedItemInBackup
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.keepDeletedItemInBackup, keepDeletedItemInBackup]);
-
-  useEffect(() => {
-    if (
-      currentBackupValue.keepDeletedAccountsInBackup !== undefined &&
-      currentBackupValue.keepDeletedAccountsInBackup !== keepDeletedAccountsInBackup
-    ) {
-      setIsDirty(true);
-    }
-  }, [currentBackupValue?.keepDeletedAccountsInBackup, keepDeletedAccountsInBackup]);
-
-  const serviceStartStop = () => {
-    setIsRequestInProgress(true);
-    postSoapFetchRequest<Record<string, unknown>, SoapResponseBody>(
-      `/service/admin/soap/zextras`,
-      {
-        _jsns: ZIMBRA_ADMIN_URN,
-        module: 'ZxBackup',
-        action: backupServiceStart ? 'doStopService' : 'doStartService',
-        service_name: 'module',
-        targetServers: server,
-      },
-      'zextras',
-    )
-      .then((res: SoapResponseBody) => {
-        setIsRequestInProgress(false);
-        if (res?.Body?.response?.content) {
-          const content = JSON.parse(res?.Body?.response?.content);
-          if (content?.ok && content?.ok === true) {
-            setBackupServiceStart(!backupServiceStart);
-          }
-        }
-      })
-      .catch((error: Error) => {
-        setIsRequestInProgress(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  };
-
-  const doInitializeBackup = (isFromInitialize?: boolean) => {
-      setIsRequestInProgress(true);
-      fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(
-        `/service/extension/zextras_admin/backup/doSmartScan`,
-        {
-          targetServers: [server],
-        },
-      )
-        .then((res: ExternalSoapResponse) => {
-          setIsRequestInProgress(false);
-          if (isFromInitialize && res && res?.serverId) {
-            setIsBackupInitialized(!isBackupInitialized);
-          }
-          if (res && res?.error && res?.error?.message) {
-            createSnackbar({
-              key: 'error',
-              severity: 'error',
-              label: res?.error?.details?.cause || res?.error?.message,
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-          }
-        })
-        .catch((error: Error) => {
-          setIsRequestInProgress(false);
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
-  };
-
-  const doBackupPurge = () => {
-    setIsPurgeRequestRunning(true);
-    fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(
-      `/service/extension/zextras_admin/backup/doPurge`,
-      {
-        targetServers: [server],
-      },
-    )
-      .then((res: ExternalSoapResponse) => {
-        setIsPurgeRequestRunning(false);
-        if (res && res?.error && res?.error?.message) {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: res?.error?.details?.cause || res?.error?.message,
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
-      })
-      .catch((error: Error) => {
-        setIsPurgeRequestRunning(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  };
-
-  const onBackupExternalVolume = (body: Record<string, unknown>) => {
-      setIsExternalVolumeRequestRunning(true);
-      fetchExternalSoap<Record<string, unknown>, ExternalSoapResponse>(
-        `/service/extension/zextras_admin/backup/migrateBackupVolume`,
-        {
-          ...body,
-        },
-      )
-        .then((res: ExternalSoapResponse) => {
-          setIsExternalVolumeRequestRunning(false);
-          if (res?.error && res?.error?.details) {
-            createSnackbar({
-              key: 'error',
-              severity: 'error',
-              label:
-                res?.error?.message ??
-                res?.error?.details?.cause ??
-                t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-          } else {
-            const selectedServer = allServers.find((serverItem) => serverItem?.name === server);
-            getSoapFetchRequest<GetServerResponse>(
-              `/service/extension/zextras_admin/core/getServer/${selectedServer?.id}?module=zxbackup`,
-            ).then((data: GetServerResponse) => {
-              if (data && data?.attributes) {
-                const attributes = data?.attributes;
-                if (attributes?.backupArchivingStore) {
-                  const value = attributes?.backupArchivingStore?.value;
-                  if (isEmpty(value)) {
-                    setBackupArchivingStore({});
-                    setIsBackArchivingStoreEmpty(true);
-                  } else {
-                    setBackupArchivingStore(value);
-                    setIsBackArchivingStoreEmpty(false);
-                  }
-                }
-              }
-            });
-            setIsShowSetExternalVolume(false);
-            setIsManageExternalVolumeEnable(false);
-            createSnackbar({
-              key: 'info',
-              severity: 'info',
-              label: t('label.operation_now_in_queue', 'The operation is now in the queue'),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-          }
-        })
-        .catch((error: Error) => {
-          setIsExternalVolumeRequestRunning(false);
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
-  };
-
-  const getAllBuckets = () => {
-    fetchSoap('zextras', {
-      _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'listBuckets',
-      type: 'all',
-      targetServer: server,
-      showSecrets: true,
-    }).then((res: SoapResponseBody) => {
-      const response: ListBucketsContent = JSON.parse(res.Body.response.content);
-      if (response.ok) {
-        setBucketList(response.response.values);
-      } else {
-        setBucketList([]);
       }
-    });
-  };
+    },
+  });
 
-  useEffect(() => {
-    getAllBuckets();
-  }, [getAllBuckets]);
-
-  useEffect(() => {
-    if (bucketList.length > 0) {
-      const allOptions: Array<SelectOption> = [];
-      bucketList.forEach((item: BucketItem) => {
-        allOptions.push({
-          label: `${item?.storeType} | ${item?.bucketName}`,
-          value: item?.uuid,
-        });
-      });
-      setBucketListOption(allOptions);
-      if (allOptions.length > 0) {
-        setBucketConfiguration(allOptions[0]);
-        setManageExternalVolumeBucketList(allOptions[0]);
-      }
-    }
-  }, [bucketList]);
-
-  const onManageExternalVolumeConfigurationChange = (v: string | null): void => {
-    if (bucketListOption.length > 0) {
-      const it = bucketListOption.find((item: SelectOption) => item.value === v);
-      if (it) setManageExternalVolumeBucketList(it);
-    }
-  };
-
-  const onBucketConfigurationChange = (v: string | null): void => {
-    if (bucketListOption.length > 0) {
-      const it = bucketListOption.find((item: SelectOption) => item.value === v);
-      if (it) setBucketConfiguration(it);
-    }
-  };
-
-  const onSaveSetExternal = () => {
-    const body: Record<string, unknown> = {
-      storeType: externalVolume?.value === MOUNTPOINT ? LOCAL_VALUE : S3,
-      volumeRootPath: externalVolume?.value === MOUNTPOINT ? rootVolumePath : '',
-      bucketConfigurationId: externalVolume?.value === MOUNTPOINT ? '' : bucketConfiguration?.value,
-      targetServers: [server],
-    };
-    if (externalVolume?.value === S3_BUCKET) {
-      body.useInfrequentAccess = true;
-      body.infrequentAcccessThreshold = 0;
-      body.useIntelligentTiering = true;
-    }
-    onBackupExternalVolume(body);
-  };
-
-  useEffect(() => {
-    if (!isEmpty(backupArchivingStore)) {
-      if (backupArchivingStore?.storeType) {
-        setManageExternalVolumeType(backupArchivingStore?.storeType);
-      }
-      if (backupArchivingStore?.volumeRootPath) {
-        setManageExternalVolumeLocalMountpoint(backupArchivingStore?.volumeRootPath);
-      }
-    }
-    if (
-      !isEmpty(backupArchivingStore) &&
-      backupArchivingStore?.bucketConfigurationId &&
-      bucketList.length > 0
-    ) {
-      const bucket = bucketList.find(
-        (item: BucketItem) => item?.uuid === backupArchivingStore?.bucketConfigurationId,
-      );
-      if (bucket) {
-        const name = `${bucket?.storeType} | ${bucket?.bucketName}`;
-        setManageExternalVolumeConfiguration({
-          label: name,
-          value: bucket?.uuid,
-        });
-      }
-    }
-  }, [backupArchivingStore, bucketList]);
-
-  const onSaveManageExternalVolume = () => {
-    const body: Record<string, unknown> = {};
-    if (isManageExternalVolumeEnable && destinationSelected?.value === MANAGE_EXTERNAL_VOLUME) {
-      body.storeType = 'default';
-      body.backup_volume_decommission = true;
-    } else if (
-      isManageExternalVolumeEnable &&
-      destinationSelected?.value === MOVE_TO_EXTERNAL_BUCKET
-    ) {
-      body.bucketConfigurationId = manageExternalVolumeBucketList?.value;
-      body.storeType = 'S3';
-    } else if (
-      isManageExternalVolumeEnable &&
-      destinationSelected?.value === MOVE_TO_LOCAL_MOUNT_POINT
-    ) {
-      body.volumeRootPath = manageExternalVolumeNewLocalMountpoint;
-      body.storeType = 'LOCAL';
-    }
-    body.targetServers = [server];
-    onBackupExternalVolume(body);
-  };
-
-  const isSetManageExternalButtonVisible =
-    isManageExternalVolumeEnable || isShowSetExternalVolume;
+  const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
 
   return (
-    <>
-      {isSaveRequestInProgress && <ds-spinner></ds-spinner>}
-      <Container mainAlignment="flex-start" background="gray6">
+    <Container mainAlignment="flex-start" background="gray6">
+      <Container orientation="column" background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
+        <Row mainAlignment="flex-start" width="100%">
+          <Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
+            <Row orientation="horizontal" width="100%">
+              <Row padding={{ all: 'large' }} mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+                <ds-text as="h2" size="medium" weight="bold" color="gray0">
+                  {serverName} {t('backup.backup_configuration', 'backup configuration')}
+                </ds-text>
+              </Row>
+              <Row padding={{ all: 'large' }} width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
+                <Padding right="small">
+                  {isDirty && (
+                    <Button
+                      label={t('label.cancel', 'Cancel')}
+                      color="secondary"
+                      onClick={() => form.reset()}
+                    />
+                  )}
+                </Padding>
+                {isDirty && (
+                  <Button
+                    label={t('label.save', 'Save')}
+                    color="primary"
+                    onClick={() => form.handleSubmit()}
+                  />
+                )}
+              </Row>
+            </Row>
+          </Container>
+          <ds-divider></ds-divider>
+        </Row>
         <Container
-          orientation="column"
-          background="gray6"
-          crossAlignment="flex-start"
           mainAlignment="flex-start"
+          crossAlignment="flex-end"
+          style={{ overflow: 'auto' }}
+          padding={{ all: 'large' }}
+          height="calc(100vh - 9.375rem)"
         >
+          <ServiceStatus
+            serverName={serverName}
+            serverId={serverId}
+            serviceRunning={serviceRunning}
+            onServiceToggle={setServiceRunning}
+            allowSetBackup={allowSetBackup}
+          />
+          <GeneralSettings
+            form={form as never}
+            allowSetBackup={allowSetBackup}
+            isRealtimeLicensed={isRealtimeLicensed}
+            isBackupInitialized={isBackupInitialized}
+            serverName={serverName}
+          />
+          <VolumeManagement
+            form={form as never}
+            allowSetBackup={allowSetBackup}
+            isBackupInitialized={isBackupInitialized}
+            serverName={serverName}
+            backupArchivingStore={backupArchivingStore}
+            isBackArchivingStoreEmpty={isBackArchivingStoreEmpty}
+          />
+          <SmartScanConfig
+            form={form as never}
+            allowSetBackup={allowSetBackup}
+            isBackupInitialized={isBackupInitialized}
+            serverName={serverName}
+          />
+          <DataRetention
+            form={form as never}
+            allowSetBackup={allowSetBackup}
+            isBackupInitialized={isBackupInitialized}
+            serverName={serverName}
+          />
+        </Container>
+      </Container>
+      <RouteLeavingGuard when={isDirty} onSave={() => form.handleSubmit()} />
+    </Container>
+  );
+}
+
+export const BackupConfiguration = () => {
+  const { server } = useParams();
+  const { data: allServers = [] } = useAllServers();
+  const { moduleLicenseInfo } = useModuleLicenseInfo();
+
+  const selectedServer = allServers.find((serverItem) => serverItem?.name === server);
+  const serverId = selectedServer?.id ?? '';
+  const { data: serverConfig, isPending } = useServerConfig(serverId || undefined);
+
+  const isRealtimeLicensed = (() => {
+    const features = moduleLicenseInfo?.features ?? [];
+    return features.some(
+      (f: Record<string, string | number | boolean>) => f?.name === BACKUP_REALTIME && f?.enabled,
+    );
+  })();
+
+  if (isPending || !serverConfig) {
+    return (
+      <Container mainAlignment="flex-start" background="gray6">
+        <Container orientation="column" background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
           <Row mainAlignment="flex-start" width="100%">
             <Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
               <Row orientation="horizontal" width="100%">
-                <Row
-                  padding={{ all: 'large' }}
-                  mainAlignment="flex-start"
-                  width="50%"
-                  crossAlignment="flex-start"
-                >
+                <Row padding={{ all: 'large' }} mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
                   <ds-text as="h2" size="medium" weight="bold" color="gray0">
-                    {server} {t('backup.backup_configuration', 'backup configuration')}
+                    {server} backup configuration
                   </ds-text>
-                </Row>
-                <Row
-                  padding={{ all: 'large' }}
-                  width="50%"
-                  mainAlignment="flex-end"
-                  crossAlignment="flex-end"
-                >
-                  <Padding right="small">
-                    {isDirty && (
-                      <Button
-                        label={t('label.cancel', 'Cancel')}
-                        color="secondary"
-                        onClick={onCancel}
-                        disabled={isRequestInProgress}
-                      />
-                    )}
-                  </Padding>
-                  {isDirty && (
-                    <Button
-                      label={t('label.save', 'Save')}
-                      color="primary"
-                      onClick={onSave}
-                      disabled={isSaveRequestInProgress}
-                      loading={isSaveRequestInProgress}
-                    />
-                  )}
                 </Row>
               </Row>
             </Container>
             <ds-divider></ds-divider>
           </Row>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-end"
-            style={{ overflow: 'auto' }}
-            padding={{ all: 'large' }}
-            height="calc(100vh - 9.375rem)"
-          >
-            <Container
-              mainAlignment="flex-end"
-              crossAlignment="flex-end"
-              padding={{ top: 'large' }}
-              height="fit"
-              orientation="horizontal"
-            >
-              <ds-text as="span">{t('backup.the_service_is', 'The service is')}</ds-text>&nbsp;
-              {!backupServiceStart && (
-                <ds-text as="span" color="error">
-                  {t('backup.stopped', 'stopped')}
-                </ds-text>
-              )}
-              {backupServiceStart && (
-                <ds-text as="span" color="primary">
-                  {t('backup.running', 'running')}
-                </ds-text>
-              )}
-            </Container>
-
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-end"
-              padding={{ top: 'medium' }}
-              height="fit"
-            >
-              <Button
-                type="outlined"
-                label={
-                  backupServiceStart
-                    ? t('backup.stop_service', 'Stop service')
-                    : t('backup.start_service', 'Start service')
-                }
-                color={backupServiceStart ? 'error' : 'primary'}
-                width="fit"
-                onClick={serviceStartStop}
-                disabled={isRequestInProgress || !allowSetBackup}
-                loading={isRequestInProgress}
-                size="large"
-              />
-            </Container>
-
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'extralarge' }}
-              height="fit"
-            >
-              <ds-text as="h3" size="medium" weight="bold">
-                {t('backup.general', 'General')}
-              </ds-text>
-            </Container>
-
-            <ListRow>
-              <Container
-                padding={{ top: 'large' }}
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-              >
-                <Switch
-                  label={t('backup.backup_is_enabled_at_startup', 'Backup is enabled at startup')}
-                  value={moduleEnableStartup}
-                  onClick={(): void => setModuleEnableStartup(!moduleEnableStartup)}
-                  iconColor="primary"
-                  disabled={!allowSetBackup}
-                />
-              </Container>
-              {isBackupImportRealtimeFeatureLicensed && (
-                <Container padding={{ top: 'large' }}>
-                  <Switch
-                    label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
-                    value={enableRealtimeScanner}
-                    onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
-                    iconColor="primary"
-                    disabled={!allowSetBackup}
-                  />
-                </Container>
-              )}
-
-              <Container padding={{ top: 'large' }}>
-                <Switch
-                  label={t('backup.run_smartscan_at_startup', 'Run the Smartscan at startup')}
-                  value={runSmartScanStartup}
-                  onClick={(): void => setRunSmartScanStartup(!runSmartScanStartup)}
-                  iconColor="primary"
-                  disabled={!allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-
-            <ListRow>
-              <Container padding={{ top: 'large' }} style={{ display: 'block' }}>
-                <Button
-                  type="outlined"
-                  label={initializeBackup}
-                  color="primary"
-                  {...(showIcon && { icon: 'PowerOutline' })}
-                  iconPlacement="right"
-                  width="fill"
-                  style={{ width: '100%' }}
-                  disabled={isBackupInitialized || !allowSetBackup}
-                  onClick={(): void => {
-                    setShowIcon(false);
-                    setInitializeBackup(
-                      t(
-                        'backup.initialising_backup_check_your_notifications_for_updates',
-                        'INITIALISING BACKUP... CHECK YOUR NOTIFICATIONS FOR UPDATES',
-                      ),
-                    );
-                    setTimeout(() => {
-                      setInitializeBackup(t('backup.initialize_backup', 'Initialize Backup'));
-                      setShowIcon(true);
-                    }, 10000);
-                    doInitializeBackup(true);
-                  }}
-                  size="large"
-                />
-              </Container>
-            </ListRow>
-
-            <ListRow>
-              <Container padding={{ top: 'large' }}>
-                <Input
-                  isRequired
-                  label={t(
-                    'backup.local_volume_reload_if_you_changed_this_value',
-                    'Local Volume (reload if you changed this value)',
-                  )}
-                  value={backupDestPath || ''}
-                  backgroundColor="gray5"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                    setBackupDestPath(e.target.value);
-                  }}
-                />
-              </Container>
-            </ListRow>
-
-            <ListRow>
-              <Container padding={{ top: 'large' }}>
-                <Input
-                  label={t('backup.space_threshold_mb', 'Space Threshold (MB)')}
-                  value={spaceThreshold}
-                  backgroundColor="gray5"
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    !allowSetBackup && setSpaceThreshold(e.target.value as unknown as number);
-                  }}
-                  disabled={!allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-
-            {!isBackArchivingStoreEmpty && (
-              <Container>
-                <ListRow>
-                  <Container padding={{ top: 'large' }}>
-                    <LabeledValue
-                      label={t('backup.external_volume', 'External Volume')}
-                      value={manageExternalVolumeType}
-                      backgroundColor="gray5"
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container padding={{ top: 'large', bottom: 'large' }}>
-                    <LabeledValue
-                      label={t('backup.bucket_configuration', 'Bucket Configuration')}
-                      value={
-                        manageExternalVolumeType.startsWith('LOCAL')
-                          ? manageExternalVolumeLocalMountpoint
-                          : manageExternalVolumeConfiguration?.label
-                      }
-                      backgroundColor="gray5"
-                    />
-                  </Container>
-                </ListRow>
-              </Container>
-            )}
-
-            {isShowSetExternalVolume && (
-              <ListRow>
-                <Container padding={{ top: 'large', bottom: 'large' }}>
-                  <Select
-                    items={externalVolumeOptions}
-                    background="gray5"
-                    label={t('label.select_an_external_volume', 'Select an External Volume')}
-                    showCheckbox={false}
-                    onChange={onExternalVolumeChange}
-                    selection={externalVolume}
-                    disabled={!allowSetBackup}
-                  />
-                </Container>
-              </ListRow>
-            )}
-
-            {isShowSetExternalVolume && externalVolume?.value === MOUNTPOINT && (
-              <Container>
-                <Input
-                  label={t('label.path', 'Path')}
-                  value={rootVolumePath || ''}
-                  backgroundColor="gray5"
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    !allowSetBackup && setRootVolumePath(e.target.value);
-                  }}
-                />
-              </Container>
-            )}
-            {isShowSetExternalVolume && externalVolume?.value === S3_BUCKET && (
-              <Select
-                items={bucketListOption}
-                background="gray5"
-                label={t('label.select_a_bucket_configuration', 'Select a Bucket Configuration')}
-                showCheckbox={false}
-                selection={bucketConfiguration}
-                onChange={onBucketConfigurationChange}
-                disabled={!allowSetBackup}
-              />
-            )}
-
-            {isShowSetExternalVolume && (
-              <Row
-                padding={{ all: 'large' }}
-                width="50%"
-                mainAlignment="flex-end"
-                crossAlignment="flex-end"
-              >
-                <Padding right="small">
-                  <Button
-                    label={t('label.cancel', 'Cancel')}
-                    color="secondary"
-                    onClick={(): void => {
-                      setIsShowSetExternalVolume(false);
-                    }}
-                    disabled={!allowSetBackup}
-                  />
-                </Padding>
-
-                <Button
-                  label={t('label.migrate', 'Migrate')}
-                  color="primary"
-                  onClick={onSaveSetExternal}
-                  disabled={isExternalVolumeRequestRunning || !allowSetBackup}
-                  loading={isExternalVolumeRequestRunning}
-                />
-              </Row>
-            )}
-
-            {isManageExternalVolumeEnable && (
-              <ListRow>
-                <Container padding={{ bottom: 'large' }}>
-                  <Select
-                    items={destinationOptions}
-                    background="gray5"
-                    label={t('label.destination', 'Destination')}
-                    showCheckbox={false}
-                    onChange={onDestinationChange}
-                    selection={destinationSelected}
-                    disabled={!allowSetBackup}
-                  />
-                </Container>
-              </ListRow>
-            )}
-
-            {isManageExternalVolumeEnable &&
-              destinationSelected?.value === MOVE_TO_EXTERNAL_BUCKET && (
-                <Container>
-                  <ListRow>
-                    <Container padding={{ bottom: 'large' }}>
-                      <Select
-                        items={bucketListOption}
-                        background="gray5"
-                        label={t('backup.bucket_list', 'Buckets List')}
-                        showCheckbox={false}
-                        selection={bucketConfiguration}
-                        onChange={onManageExternalVolumeConfigurationChange}
-                        disabled={!allowSetBackup}
-                      />
-                    </Container>
-                  </ListRow>
-                </Container>
-              )}
-            {isManageExternalVolumeEnable &&
-              destinationSelected?.value === MOVE_TO_LOCAL_MOUNT_POINT && (
-                <Container>
-                  <ListRow>
-                    <Container padding={{ bottom: 'large' }}>
-                      <Input
-                        isRequired
-                        label={t('backup.local_mountpoint', 'Local Mountpoint')}
-                        value={manageExternalVolumeNewLocalMountpoint || ''}
-                        backgroundColor="gray5"
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                          !allowSetBackup &&
-                            setManageExternalVolumeNewLocalMountpoint(e.target.value);
-                        }}
-                      />
-                    </Container>
-                  </ListRow>
-                </Container>
-              )}
-            {isManageExternalVolumeEnable && (
-              <Row width="100%">
-                <Container
-                  padding={{ right: 'extrasmall' }}
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  width="50%"
-                >
-                  <Button
-                    label={t('label.cancel', 'Cancel')}
-                    color="secondary"
-                    width="fill"
-                    onClick={(): void => {
-                      setIsManageExternalVolumeEnable(false);
-                    }}
-                    disabled={!allowSetBackup}
-                  />
-                </Container>
-
-                <Button
-                  label={t('label.migrate', 'Migrate')}
-                  color="primary"
-                  width="fit"
-                  onClick={onSaveManageExternalVolume}
-                  disabled={isExternalVolumeRequestRunning || !allowSetBackup}
-                  loading={isExternalVolumeRequestRunning}
-                />
-              </Row>
-            )}
-            <ListRow>
-              <Container padding={{ top: 'large' }} style={{ display: 'block' }}>
-                {!isSetManageExternalButtonVisible && (
-                  <Button
-                    type="outlined"
-                    label={
-                      isBackArchivingStoreEmpty
-                        ? t('backup.set_external_volume', 'Set external volume')
-                        : t('backup.manage_external_volume', 'Manage external volume')
-                    }
-                    color="primary"
-                    icon="HardDriveOutline"
-                    iconPlacement="right"
-                    size="large"
-                    style={{ width: '100%' }}
-                    width="fill"
-                    disabled={!isBackupInitialized || !allowSetBackup}
-                    onClick={(): void => {
-                      if (!isBackArchivingStoreEmpty) {
-                        setIsManageExternalVolumeEnable(true);
-                        setIsShowSetExternalVolume(false);
-                      } else {
-                        setIsShowSetExternalVolume(true);
-                        setIsManageExternalVolumeEnable(false);
-                      }
-                    }}
-                  />
-                )}
-              </Container>
-            </ListRow>
-
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <ds-divider></ds-divider>
-              </Container>
-            </ListRow>
-
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large' }}
-              height="fit"
-            >
-              <ds-text as="h3" size="medium" weight="bold">
-                {t('backup.smart_scan_configuration', 'SmartScan Configuration')}
-              </ds-text>
-            </Container>
-
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large' }}
-              height="fit"
-            >
-              <Switch
-                label={t('backup.schedule_smartscan', 'Schedule Smartscan')}
-                value={isScheduleSmartScan}
-                onClick={(): void => setIsScheduleSmartScan(!isScheduleSmartScan)}
-                iconColor="primary"
-                disabled={!allowSetBackup}
-              />
-            </Container>
-
-            <ListRow>
-              <Container padding={{ top: 'large' }}>
-                <Input
-                  isRequired
-                  label={t('backup.schedule', 'Schedule')}
-                  value={scheduleSmartScan}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    setScheduleSmartScan(e.target.value);
-                  }}
-                  disabled={!isScheduleSmartScan || !allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-
-            <ListRow>
-              <Container padding={{ top: 'large' }} style={{ display: 'block' }}>
-                <Button
-                  type="outlined"
-                  label={t('backup.force_start_smartscan_now', 'Force start smartscan now')}
-                  color="primary"
-                  icon="PowerOutline"
-                  iconPlacement="right"
-                  size="large"
-                  style={{ width: '100%' }}
-                  width="fill"
-                  disabled={!isBackupInitialized || !allowSetBackup}
-                  onClick={(): void => {
-                    doInitializeBackup();
-                  }}
-                />
-              </Container>
-            </ListRow>
-
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <ds-divider></ds-divider>
-              </Container>
-            </ListRow>
-
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large' }}
-              height="fit"
-            >
-              <ds-text as="h3" size="medium" weight="bold">
-                {t('backup.data_retention_policies', 'Data Retention Policies')}
-              </ds-text>
-            </Container>
-
-            <ListRow>
-              <Container
-                padding={{ top: 'large' }}
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-              >
-                <Switch
-                  label={t(
-                    'backup.schedule_automatic_retention_policies',
-                    'Schedule automatic retention policies',
-                  )}
-                  value={scheduleAutomaticRetentionPolicy}
-                  onClick={(): void =>
-                    setScheduleAutomaticRetentionPolicy(!scheduleAutomaticRetentionPolicy)
-                  }
-                  iconColor="primary"
-                  disabled={!allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-
-            <ListRow>
-              <Container padding={{ top: 'large' }}>
-                <Input
-                  isRequired
-                  label={t('backup.schedule', 'Schedule')}
-                  backgroundColor="gray5"
-                  value={retentionPolicySchedule}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    setRetentionPolicySchedule(e.target.value);
-                  }}
-                  disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large', right: 'large' }}
-                width="35%"
-              >
-                <Input
-                  isRequired
-                  label={t(
-                    'backup.keep_deleted_item_in_backup',
-                    'Keep deleted items in the backup',
-                  )}
-                  value={keepDeletedItemInBackup}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    setKeepDeletedItemInBackup(e.target.value as unknown as number);
-                  }}
-                  disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-                  // @ts-expect-error - needs a fix // DS only support string
-                  description={
-                    <Trans
-                      i18nKey="backup.back_delete_account_warning_message"
-                      defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
-                    />
-                  }
-                />
-              </Container>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large', right: 'large' }}
-                width="15%"
-              >
-                <LabeledValue label={t('backup.range', 'Range')} value={t('label.days', 'Days')} />
-              </Container>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large', right: 'large' }}
-                width="35%"
-              >
-                <Input
-                  isRequired
-                  label={t(
-                    'backup.keep_deleted_account_in_the_backup',
-                    'Keep deleted account in the backup',
-                  )}
-                  backgroundColor="gray5"
-                  value={keepDeletedAccountsInBackup}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    setKeepDeletedAccountsInBackup(e.target.value as unknown as number);
-                  }}
-                  disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-                  // @ts-expect-error - needs a fix // DS only support string
-                  description={
-                    <Trans
-                      i18nKey="backup.back_delete_account_warning_message"
-                      defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
-                    />
-                  }
-                />
-              </Container>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-                width="15%"
-              >
-                <LabeledValue
-                  label={t('backup.range', 'Range')}
-                  backgroundColor="gray5"
-                  value={t('label.days', 'Days')}
-                />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ top: 'large' }} style={{ display: 'block' }}>
-                <Button
-                  type="outlined"
-                  label={t('backup.force_backup_purge_now', 'Force backup purge now')}
-                  color="primary"
-                  icon="PowerOutline"
-                  iconPlacement="right"
-                  style={{ width: '100%' }}
-                  width="fill"
-                  disabled={isPurgeRequestRunning || !isBackupInitialized || !allowSetBackup}
-                  loading={isPurgeRequestRunning}
-                  onClick={(): void => {
-                    doBackupPurge();
-                  }}
-                  size="large"
-                />
-              </Container>
-            </ListRow>
+          <Container mainAlignment="center" height="calc(100vh - 9.375rem)">
+            <ds-spinner></ds-spinner>
           </Container>
         </Container>
-        <RouteLeavingGuard when={isDirty} onSave={onSave} />
       </Container>
-    </>
+    );
+  }
+
+  return (
+    <BackupConfigurationContent
+      serverConfig={serverConfig}
+      serverName={server ?? ''}
+      serverId={serverId}
+      isRealtimeLicensed={isRealtimeLicensed}
+    />
   );
 };

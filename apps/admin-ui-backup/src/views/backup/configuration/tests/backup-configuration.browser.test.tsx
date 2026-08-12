@@ -510,7 +510,9 @@ describe('BackupConfiguration', () => {
         initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
       });
 
-      await expect.element(page.getByText('Backup is enabled at startup')).toBeVisible();
+      await expect
+        .element(page.getByText('Backup is enabled at startup'))
+        .toBeVisible();
 
       await page.getByText('Backup is enabled at startup').click();
 
