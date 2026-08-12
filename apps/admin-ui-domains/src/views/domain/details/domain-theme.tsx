@@ -96,7 +96,7 @@ const DomainTheme: FC = () => {
 	const [originalValues, setOriginalValues] = useState<ThemeFormValues>(THEME_DEFAULTS);
 
 	const form = useForm({
-		defaultValues: THEME_DEFAULTS as ThemeFormValues,
+		defaultValues: THEME_DEFAULTS,
 		validators: {
 			onChange: themeSchema,
 			onSubmit: themeSchema
@@ -116,7 +116,7 @@ const DomainTheme: FC = () => {
 			const modifiedKeys = reduce<ThemeFormValues, string[]>(
 				value,
 				(result, val, key) =>
-					val !== originalValues[key as keyof ThemeFormValues] ? [...result, key] : result,
+					val === originalValues[key as keyof ThemeFormValues] ? result : [...result, key],
 				[]
 			);
 

@@ -658,12 +658,12 @@ const DomainAuthentication: FC = () => {
 										{(field) => (
 											<TooltipDefault
 												label={
-													!isValidLdapBaseUrl(formValues.zimbraAuthLdapURL)
-														? t(
+													isValidLdapBaseUrl(formValues.zimbraAuthLdapURL)
+														? ''
+														: t(
 																'label.please_add_ldap_url_endpoint_first',
 																'To enable this, please add a ldap URL endpoint first'
 															)
-														: ''
 												}
 												disabled={isValidLdapBaseUrl(formValues.zimbraAuthLdapURL)}
 											>

@@ -5,11 +5,10 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { useSelector } from '@tanstack/react-store';
 import { Container, ListRow, Row, Switch, TextArea } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
-import { ChangeEvent, FC, useState } from 'react';
+import { ChangeEvent, FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -144,8 +143,17 @@ const DomainDisclaimer: FC = () => {
 	// Rich text editor initial content
 	const [richTextContent, setRichTextContent] = useState('');
 
-	// Sync with fetched data
-	const [prevDomainInfo, setPrevDomainInfo] = useState<typeof domainInformation>(undefined);
+	// Derive values from domain (stable for first render)
+	const derivedValues = useMemo(
+		() => extractDisclaimerFromDomain(domainInformation),
+		[domainInformation]
+	);
+
+	// Track user modifications locally for immediate UI feedback
+	const [localOverrides, setLocalOverrides] = useState<Partial<DisclaimerFormValues>>({});
+
+	// Sync form when domain changes
+	const [lastSyncedDomainId, setLastSyncedDomainId] = useState<string | undefined>(undefined);
 
 	const form = useForm({
 		defaultValues: DISCLAIMER_DEFAULTS,
@@ -153,25 +161,49 @@ const DomainDisclaimer: FC = () => {
 			onChange: disclaimerSchema,
 			onSubmit: disclaimerSchema
 		},
-		onSubmit: async ({ value }) => {
+		onSubmit: async () => {
+			// Use displayValues which has the correct merged state
+			const submitValues = { ...derivedValues, ...localOverrides };
 			await saveMutation({
 				id: domainId,
 				_jsns: ZIMBRA_ADMIN_URN,
-				a: buildAttributes(value, domainName)
+				a: buildAttributes(submitValues, domainName)
 			});
-			form.reset(value, { keepDefaultValues: true });
+			form.reset(submitValues, { keepDefaultValues: true });
+			setLocalOverrides({});
 		}
 	});
 
-	// Sync form with server data
-	if (domainInformation !== prevDomainInfo) {
-		setPrevDomainInfo(domainInformation);
-		const extracted = extractDisclaimerFromDomain(domainInformation);
-		form.reset(extracted, { keepDefaultValues: false });
-		setRichTextContent(extracted.zimbraAmavisDomainDisclaimerHTML ?? '');
+	// Sync form with server data when domain changes
+	if (domain?.id && domain.id !== lastSyncedDomainId) {
+		setLastSyncedDomainId(domain.id);
+		form.reset(derivedValues, { keepDefaultValues: false });
+		setRichTextContent(derivedValues.zimbraAmavisDomainDisclaimerHTML ?? '');
+		setLocalOverrides({});
 	}
 
-	const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+	// Display values: merge derivedValues with local overrides
+	const displayValues = { ...derivedValues, ...localOverrides };
+
+	// isDirty: check if localOverrides has any changes from derivedValues
+	const isDirty = useMemo(() => {
+		if (Object.keys(localOverrides).length === 0) return false;
+		return (
+			localOverrides.zimbraDomainMandatoryMailSignatureEnabled !== undefined &&
+			localOverrides.zimbraDomainMandatoryMailSignatureEnabled !==
+				derivedValues.zimbraDomainMandatoryMailSignatureEnabled
+		) ||
+		(
+			localOverrides.zimbraAmavisDomainDisclaimerText !== undefined &&
+			localOverrides.zimbraAmavisDomainDisclaimerText !==
+				derivedValues.zimbraAmavisDomainDisclaimerText
+		) ||
+		(
+			localOverrides.zimbraAmavisDomainDisclaimerHTML !== undefined &&
+			localOverrides.zimbraAmavisDomainDisclaimerHTML !==
+				derivedValues.zimbraAmavisDomainDisclaimerHTML
+		);
+	}, [localOverrides, derivedValues]);
 
 	// Mutation for save
 	const { mutate: saveMutation, isPending } = useDomainMutation<unknown, ModifyDomainBody>({
@@ -190,7 +222,8 @@ const DomainDisclaimer: FC = () => {
 
 	const onCancel = (): void => {
 		form.reset();
-		setRichTextContent(form.store.state.values.zimbraAmavisDomainDisclaimerHTML ?? '');
+		setLocalOverrides({});
+		setRichTextContent(derivedValues.zimbraAmavisDomainDisclaimerHTML ?? '');
 	};
 
 	const onSave = (): void => {
@@ -249,20 +282,21 @@ const DomainDisclaimer: FC = () => {
 							bottom: 'extralarge'
 						}}
 					>
-						<form.Field name="zimbraDomainMandatoryMailSignatureEnabled">
-							{(field) => (
-								<Switch
-									label={t(
-										'label.enable_disclaimers_for_this_domain',
-										'Enable disclaimers for this domain'
-									)}
-									value={field.state.value}
-									onClick={(): void => {
-										field.handleChange(!field.state.value);
-									}}
-								/>
+						<Switch
+							label={t(
+								'label.enable_disclaimers_for_this_domain',
+								'Enable disclaimers for this domain'
 							)}
-						</form.Field>
+							value={displayValues.zimbraDomainMandatoryMailSignatureEnabled}
+							onClick={(): void => {
+								const newValue = !displayValues.zimbraDomainMandatoryMailSignatureEnabled;
+								form.setFieldValue('zimbraDomainMandatoryMailSignatureEnabled', newValue);
+								setLocalOverrides((prev) => ({
+									...prev,
+									zimbraDomainMandatoryMailSignatureEnabled: newValue
+								}));
+							}}
+						/>
 					</Container>
 					<Container
 						crossAlignment="flex-start"
@@ -309,18 +343,19 @@ const DomainDisclaimer: FC = () => {
 							right: 'extralarge'
 						}}
 					>
-						<form.Field name="zimbraAmavisDomainDisclaimerText">
-							{(field) => (
-								<TextArea
-									label={''}
-									value={field.state.value}
-									onChange={(event: ChangeEvent<HTMLTextAreaElement>): void => {
-										field.handleChange(event.currentTarget.value);
-									}}
-									maxHeight="20.5rem"
-								/>
-							)}
-						</form.Field>
+						<TextArea
+							label={''}
+							value={displayValues.zimbraAmavisDomainDisclaimerText}
+							onChange={(event: ChangeEvent<HTMLTextAreaElement>): void => {
+								const value = event.currentTarget.value;
+								form.setFieldValue('zimbraAmavisDomainDisclaimerText', value);
+								setLocalOverrides((prev) => ({
+									...prev,
+									zimbraAmavisDomainDisclaimerText: value
+								}));
+							}}
+							maxHeight="20.5rem"
+						/>
 					</Container>
 					<Container
 						crossAlignment="flex-start"
