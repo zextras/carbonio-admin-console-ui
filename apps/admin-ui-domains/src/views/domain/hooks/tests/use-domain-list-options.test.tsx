@@ -65,7 +65,7 @@ describe('useDomainListOptions', () => {
       expect(ids).not.toContain('active_sync');
       expect(ids).not.toContain('restore_account');
       expect(ids).not.toContain('delegates_domain_admins');
-      expect(ids).toContain('address_book');
+      expect(ids).not.toContain('address_book');
     });
 
     it('should include all manage items when isAdvanced is true', () => {
@@ -112,7 +112,7 @@ describe('useDomainListOptions', () => {
       expect(ids).not.toContain('global/whitelabel_settings');
       expect(ids).not.toContain('global/2fa');
       expect(ids).not.toContain('global/active_sync');
-      expect(ids).toContain('global/address_book');
+      expect(ids).not.toContain('global/address_book');
     });
   });
 
