@@ -9,7 +9,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import type { BackupAccountItem } from '../../../../types';
-import RestoreAccountView from './restore-account';
+import { RestoreAccountView } from './restore-account';
 
 const mockLegalHoldAccount: BackupAccountItem = {
   id: 'acc-1',
@@ -27,10 +27,7 @@ describe('RestoreAccountView (browser)', () => {
   describe('DatePicker', () => {
     it('should render the Account status on date picker', async () => {
       setupBrowserTest(
-        <RestoreAccountView
-          legalHoldAccount={mockLegalHoldAccount}
-          onBack={mockOnBack}
-        />,
+        <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
       );
 
       await expect.element(page.getByPlaceholder('Account status on')).toBeVisible();
@@ -38,10 +35,7 @@ describe('RestoreAccountView (browser)', () => {
 
     it('should render the Account status on picker as enabled', async () => {
       setupBrowserTest(
-        <RestoreAccountView
-          legalHoldAccount={mockLegalHoldAccount}
-          onBack={mockOnBack}
-        />,
+        <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
       );
 
       await expect.element(page.getByPlaceholder('Account status on')).toBeEnabled();
@@ -49,10 +43,7 @@ describe('RestoreAccountView (browser)', () => {
 
     it('should not render the Include items deleted after picker initially', async () => {
       setupBrowserTest(
-        <RestoreAccountView
-          legalHoldAccount={mockLegalHoldAccount}
-          onBack={mockOnBack}
-        />,
+        <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
       );
 
       await expect
@@ -62,10 +53,7 @@ describe('RestoreAccountView (browser)', () => {
 
     it('should render the Include items deleted after picker when the switch is enabled', async () => {
       setupBrowserTest(
-        <RestoreAccountView
-          legalHoldAccount={mockLegalHoldAccount}
-          onBack={mockOnBack}
-        />,
+        <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
       );
 
       const switchLabel = page.getByText('Include items deleted');
@@ -76,10 +64,7 @@ describe('RestoreAccountView (browser)', () => {
 
     it('should open the Account status on calendar popover when the calendar icon is clicked', async () => {
       setupBrowserTest(
-        <RestoreAccountView
-          legalHoldAccount={mockLegalHoldAccount}
-          onBack={mockOnBack}
-        />,
+        <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
       );
 
       await page.getByRole('button', { name: 'Calendar' }).click();
@@ -89,10 +74,7 @@ describe('RestoreAccountView (browser)', () => {
 
     it('should render the Include items deleted after picker as clearable', async () => {
       setupBrowserTest(
-        <RestoreAccountView
-          legalHoldAccount={mockLegalHoldAccount}
-          onBack={mockOnBack}
-        />,
+        <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
       );
 
       await page.getByText('Include items deleted').click();
@@ -102,15 +84,35 @@ describe('RestoreAccountView (browser)', () => {
     });
   });
 
-  describe('close', () => {
+  describe('restore panel', () => {
     it('should call onBack when the close button is clicked', async () => {
       setupBrowserTest(
         <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
       );
 
-      await page.getByTestId('icon: CloseOutline').click();
+      await page.getByRole('button', { name: 'Close' }).click();
 
       expect(mockOnBack).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render restore settings and keep give permission disabled', async () => {
+      setupBrowserTest(
+        <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
+      );
+
+      await expect.element(page.getByText('Restore Settings')).toBeVisible();
+      await expect.element(page.getByLabelText('Legal Hold prefix')).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Give Permission' })).toBeDisabled();
+    });
+
+    it('should show a validation error when restore is clicked without a prefix', async () => {
+      setupBrowserTest(
+        <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
+      );
+
+      await page.getByRole('button', { name: 'Restore' }).click();
+
+      await expect.element(page.getByText('Legal Hold prefix should not be blank')).toBeVisible();
     });
   });
 });
