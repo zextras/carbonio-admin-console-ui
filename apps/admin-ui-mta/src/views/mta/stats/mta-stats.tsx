@@ -1,9 +1,10 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueries, useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Container,
@@ -17,7 +18,7 @@ import {
 } from '@zextras/ui-components';
 import { useMtaServers } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MailQueueInfo, MtaStats, TRow } from '../../../../types';
@@ -25,229 +26,187 @@ import logo from '../../../assets/gardian.svg';
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING } from '../../../constants';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import { mailQueueFlushByServer } from '../../../services/mail-queue-flush';
-import MTAStatsMail from './mta-stats-mail';
+import { mtaQueryKeys } from '../../../services/mta-query-keys';
+import { MTAStatsMail } from './mta-stats-mail';
 
-const MTAStats: FC = () => {
+type ServerInfo = { id: string; name: string };
+
+function extractQueueStats(
+  queueData: { queue: Array<MailQueueInfo> } | undefined,
+  serverId: string,
+  serverName: string,
+): MtaStats {
+  const queue = queueData?.queue ?? [];
+  return {
+    id: serverId,
+    serverName,
+    active: String(queue.find((info: MailQueueInfo) => info?.name === ACTIVE)?.n ?? ''),
+    corrupt: String(queue.find((info: MailQueueInfo) => info?.name === CORRUPT)?.n ?? ''),
+    deferred: String(queue.find((info: MailQueueInfo) => info?.name === DEFERRED)?.n ?? ''),
+    hold: String(queue.find((info: MailQueueInfo) => info?.name === HOLD)?.n ?? ''),
+    incoming: String(queue.find((info: MailQueueInfo) => info?.name === INCOMING)?.n ?? ''),
+  };
+}
+
+export function MTAStats() {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
   const { data: mtaServerListData = [] } = useMtaServers();
-  const [serverTableRow, setServerTableRow] = useState<Array<TRow>>([]);
   const [selectedServer, setSelectedServer] = useState<Array<string>>([]);
-  const [mtaServerList, setMtaServerList] = useState<Array<Record<string, string>>>([]);
-  const [mailServerStats, setMailServerStats] = useState<Array<MtaStats>>([]);
-  const [requestInprogress, setRequestInprogress] = useState<boolean>(false);
-  const [showMtaStatDetail, setShowMtaStatDetail] = useState<boolean>(false);
-  const [currentTime, setCurrentTime] = useState<string | Date>('');
+  const [scanTime, setScanTime] = useState<Date | null>(null);
   const [flushRequestInProgress, setFlushRequestInProgress] = useState<boolean>(false);
 
-  const serverHeader = useMemo(
-    () => [
-      {
-        id: 'mail_server',
-        label: t('mta.mail_server', 'Mail Server'),
-        width: '40%',
-        bold: true,
-      },
-      {
-        id: 'queued',
-        label: t('mta.queued', 'Queued'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'corrupt',
-        label: t('mta.corrupt', 'Corrupt'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'deferred',
-        label: t('mta.deferred', 'Deferred'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'incoming',
-        label: t('mta.incoming', 'Incoming'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'hold',
-        label: t('mta.hold', 'Hold'),
-        width: '12%',
-        bold: true,
-      },
+  const showMtaStatDetail = selectedServer.length > 0;
+
+  const mtaServerList: Array<ServerInfo> = mtaServerListData?.length
+    ? mtaServerListData.map((item) => ({ id: item?.id || '', name: item?.name || '' }))
+    : [];
+
+  const serverQueueQueries = useQueries({
+    queries: mtaServerList.map((server) => ({
+      queryKey: mtaQueryKeys.mailQueueInfo(server.name),
+      queryFn: () => getMailqueueInformation(server.name),
+      enabled: Boolean(server.name),
+      staleTime: 30_000,
+      retry: 1,
+      refetchOnWindowFocus: false,
+    })),
+  });
+
+  const requestInprogress = serverQueueQueries.some((q) => q.isLoading || q.isFetching);
+
+  const mailServerStats: Array<MtaStats> = mtaServerList.map((server, index) => {
+    const queryResult = serverQueueQueries[index];
+    const serverData = queryResult?.data?.server?.[0];
+    return extractQueueStats(serverData, server.id, server.name);
+  });
+
+  const serverHeader = [
+    {
+      id: 'mail_server',
+      label: t('mta.mail_server', 'Mail Server'),
+      width: '40%',
+      bold: true,
+    },
+    {
+      id: 'queued',
+      label: t('mta.queued', 'Queued'),
+      width: '12%',
+      bold: true,
+    },
+    {
+      id: 'corrupt',
+      label: t('mta.corrupt', 'Corrupt'),
+      width: '12%',
+      bold: true,
+    },
+    {
+      id: 'deferred',
+      label: t('mta.deferred', 'Deferred'),
+      width: '12%',
+      bold: true,
+    },
+    {
+      id: 'incoming',
+      label: t('mta.incoming', 'Incoming'),
+      width: '12%',
+      bold: true,
+    },
+    {
+      id: 'hold',
+      label: t('mta.hold', 'Hold'),
+      width: '12%',
+      bold: true,
+    },
+  ];
+
+  const serverTableRow: Array<TRow> = mailServerStats.map((item: MtaStats) => ({
+    id: item?.id,
+    columns: [
+      <Container
+        crossAlignment="flex-start"
+        key={item?.id}
+        style={{ cursor: 'pointer' }}
+        onClick={(): void => {
+          setSelectedServer([item?.id]);
+        }}
+      >
+        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+          {item?.serverName}
+        </ds-text>
+      </Container>,
+      <Container
+        crossAlignment="flex-start"
+        key={item?.id}
+        style={{ cursor: 'pointer' }}
+        onClick={(): void => {
+          setSelectedServer([item.id]);
+        }}
+      >
+        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+          {item?.active}
+        </ds-text>
+      </Container>,
+      <Container
+        crossAlignment="flex-start"
+        key={item?.id}
+        style={{ cursor: 'pointer' }}
+        onClick={(): void => {
+          setSelectedServer([item?.id]);
+        }}
+      >
+        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+          {item?.corrupt}
+        </ds-text>
+      </Container>,
+      <Container
+        crossAlignment="flex-start"
+        key={item?.id}
+        style={{ cursor: 'pointer' }}
+        onClick={(): void => {
+          setSelectedServer([item?.id]);
+        }}
+      >
+        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+          {item?.deferred}
+        </ds-text>
+      </Container>,
+      <Container
+        crossAlignment="flex-start"
+        key={item?.id}
+        style={{ cursor: 'pointer' }}
+        onClick={(): void => {
+          setSelectedServer([item?.id]);
+        }}
+      >
+        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+          {item?.incoming}
+        </ds-text>
+      </Container>,
+      <Container
+        crossAlignment="flex-start"
+        key={item?.id}
+        style={{ cursor: 'pointer' }}
+        onClick={(): void => {
+          setSelectedServer([item?.id]);
+        }}
+      >
+        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+          {item?.hold}
+        </ds-text>
+      </Container>,
     ],
-    [t],
-  );
+  }));
 
-  useMemo(() => {
-    if (selectedServer && selectedServer.length > 0) {
-      setShowMtaStatDetail(true);
-    } else {
-      setShowMtaStatDetail(false);
-    }
-  }, [selectedServer]);
-
-  useMemo(() => {
-    if (mailServerStats.length > 0) {
-      const list: Array<TRow> = [];
-      mailServerStats.forEach((item: MtaStats) => {
-        list.push({
-          id: item?.id,
-          columns: [
-            <Container
-              crossAlignment="flex-start"
-              key={item?.id}
-              style={{ cursor: 'pointer' }}
-              onClick={(): void => {
-                setSelectedServer([item?.id]);
-              }}
-            >
-              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
-                {item?.serverName}
-              </ds-text>
-            </Container>,
-            <Container
-              crossAlignment="flex-start"
-              key={item?.id}
-              style={{ cursor: 'pointer' }}
-              onClick={(): void => {
-                setSelectedServer([item.id]);
-              }}
-            >
-              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
-                {item?.active}
-              </ds-text>
-            </Container>,
-            <Container
-              crossAlignment="flex-start"
-              key={item?.id}
-              style={{ cursor: 'pointer' }}
-              onClick={(): void => {
-                setSelectedServer([item?.id]);
-              }}
-            >
-              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
-                {item?.corrupt}
-              </ds-text>
-            </Container>,
-            <Container
-              crossAlignment="flex-start"
-              key={item?.id}
-              style={{ cursor: 'pointer' }}
-              onClick={(): void => {
-                setSelectedServer([item?.id]);
-              }}
-            >
-              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
-                {item?.deferred}
-              </ds-text>
-            </Container>,
-            <Container
-              crossAlignment="flex-start"
-              key={item?.id}
-              style={{ cursor: 'pointer' }}
-              onClick={(): void => {
-                setSelectedServer([item?.id]);
-              }}
-            >
-              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
-                {item?.incoming}
-              </ds-text>
-            </Container>,
-            <Container
-              crossAlignment="flex-start"
-              key={item?.id}
-              style={{ cursor: 'pointer' }}
-              onClick={(): void => {
-                setSelectedServer([item?.id]);
-              }}
-            >
-              <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
-                {item?.hold}
-              </ds-text>
-            </Container>,
-          ],
-        });
-      });
-      setCurrentTime(new Date());
-      setServerTableRow(list);
-    } else {
-      setServerTableRow([]);
-    }
-  }, [mailServerStats]);
-
-  const scanServer = useCallback(() => {
-    setMailServerStats([]);
-    mtaServerList.forEach((item) => {
-      setRequestInprogress(true);
-      getMailqueueInformation(item?.name)
-        .then((data) => {
-          setRequestInprogress(false);
-          if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
-            data?.server.forEach((queueInfo: { queue: Array<MailQueueInfo> }) => {
-              setMailServerStats((prev) => [
-                ...prev,
-                ...[
-                  {
-                    id: item?.id,
-                    serverName: item?.name,
-                    active: String(
-                      queueInfo?.queue.find((info: MailQueueInfo) => info?.name === ACTIVE)?.n ?? '',
-                    ),
-                    corrupt: String(
-                      queueInfo?.queue.find((info: MailQueueInfo) => info?.name === CORRUPT)?.n ?? '',
-                    ),
-                    deferred: String(
-                      queueInfo?.queue.find((info: MailQueueInfo) => info?.name === DEFERRED)?.n ?? '',
-                    ),
-                    hold: String(
-                      queueInfo?.queue.find((info: MailQueueInfo) => info?.name === HOLD)?.n ?? '',
-                    ),
-                    incoming: String(
-                      queueInfo?.queue.find((info: MailQueueInfo) => info?.name === INCOMING)?.n ?? '',
-                    ),
-                  },
-                ],
-              ]);
-            });
-          }
-        })
-        .catch((error) => {
-          setRequestInprogress(false);
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error
-              ? error?.error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
+  function scanServer() {
+    setScanTime(new Date());
+    mtaServerList.forEach((server) => {
+      queryClient.invalidateQueries({ queryKey: mtaQueryKeys.mailQueueInfo(server.name) });
     });
-  }, [createSnackbar, mtaServerList, t]);
+  }
 
-  useEffect(() => {
-    if (mtaServerList?.length > 0) {
-      scanServer();
-    }
-  }, [mtaServerList, scanServer]);
-
-  useEffect(() => {
-    if (mtaServerListData && mtaServerListData.length > 0) {
-      const list: Array<Record<string, string>> = [];
-      mtaServerListData.forEach((item) => {
-        list.push({ id: item?.id || '', name: item?.name || '' });
-      });
-      setMtaServerList(list);
-    }
-  }, [mtaServerListData]);
-
-  const flushQueues = useCallback(() => {
+  async function flushQueues() {
     const flushRequest: Array<Promise<Record<string, unknown>>> = [];
     if (showMtaStatDetail) {
       const serverName = mtaServerList.find((item) => item?.id === selectedServer[0])?.name;
@@ -260,79 +219,43 @@ const MTAStats: FC = () => {
       });
     }
 
-    if (flushRequest && flushRequest.length > 0) {
+    if (flushRequest.length > 0) {
       setFlushRequestInProgress(true);
-      Promise.all(flushRequest)
-        .then((response) => Promise.all(response))
-        .then(() => {
-          setFlushRequestInProgress(false);
-          let updatedItem: Array<MtaStats> = [];
-          if (showMtaStatDetail) {
-            updatedItem = mailServerStats.map((item: MtaStats) => {
-              if (item?.id === selectedServer[0]) {
-                return {
-                  active: '-',
-                  corrupt: '-',
-                  deferred: '-',
-                  hold: '-',
-                  incoming: '-',
-                  id: item?.id,
-                  serverName: item?.serverName,
-                };
-              }
-              return item;
-            });
-          } else {
-            updatedItem = mailServerStats.map((item: MtaStats) => ({
-              active: '-',
-              corrupt: '-',
-              deferred: '-',
-              hold: '-',
-              incoming: '-',
-              id: item?.id,
-              serverName: item?.serverName,
-            }));
-          }
-          setSelectedServer([]);
-          setShowMtaStatDetail(false);
-          setMailServerStats(updatedItem);
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t('mta.mail_queue_flush_successfully', 'Mail queue flush successfully'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
+      try {
+        await Promise.all(flushRequest);
+        setSelectedServer([]);
+        mtaServerList.forEach((server) => {
+          queryClient.invalidateQueries({ queryKey: mtaQueryKeys.mailQueueInfo(server.name) });
         });
+        createSnackbar({
+          key: 'success',
+          severity: 'success',
+          label: t('mta.mail_queue_flush_successfully', 'Mail queue flush successfully'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+      } catch (error) {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: (error as { error?: { message?: string } })?.error?.message
+            ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+      } finally {
+        setFlushRequestInProgress(false);
+      }
     }
-  }, [mailServerStats, mtaServerList, selectedServer, showMtaStatDetail, t, createSnackbar]);
+  }
 
-  const updateMailCount = useCallback(
-    (state: MtaStats) => {
-      let updatedItem: Array<MtaStats> = [];
-      updatedItem = mailServerStats.map((item: MtaStats) => {
-        if (item?.id === state?.id) {
-          return {
-            active: state?.active,
-            corrupt: state?.corrupt,
-            deferred: state?.deferred,
-            hold: state?.hold,
-            incoming: state?.incoming,
-            id: item?.id,
-            serverName: state?.serverName,
-          };
-        }
-        return item;
-      });
-      setMailServerStats(updatedItem);
-    },
-    [mailServerStats],
-  );
-
-  const closeDialogMail = useCallback(() => {
+  function closeDialogMail() {
     setSelectedServer([]);
-  }, []);
+  }
+
+  const currentTime = scanTime ?? (serverQueueQueries.some((q) => q.dataUpdatedAt) ? new Date() : null);
 
   return (
     <Container background="gray6" mainAlignment="flex-start">
@@ -391,7 +314,7 @@ const MTAStats: FC = () => {
               <Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
                 <ds-text as="span" size="small" overflow="ellipsis">
                   &nbsp;
-                  {currentTime === ''
+                  {currentTime === null
                     ? '-'
                     : format(new Date(currentTime), 'HH:mm:ss dd eeee yyyy')}
                 </ds-text>
@@ -508,7 +431,6 @@ const MTAStats: FC = () => {
             <ModalOverlay open={showMtaStatDetail}>
               <MTAStatsMail
                 serverState={mailServerStats.find((item) => item?.id === selectedServer[0])}
-                updateMailCount={updateMailCount}
                 closeDialogMail={closeDialogMail}
                 flushQueues={flushQueues}
                 requestInprogress={requestInprogress}
@@ -520,5 +442,4 @@ const MTAStats: FC = () => {
       </Container>
     </Container>
   );
-};
-export default MTAStats;
+}

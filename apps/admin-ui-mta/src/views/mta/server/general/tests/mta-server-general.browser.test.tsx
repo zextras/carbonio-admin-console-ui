@@ -6,6 +6,8 @@
 
 import {
   createBrowserSoapAPIInterceptor,
+  getAllConfigRightsResponseMock,
+  getGetInfoResponseMock,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -13,7 +15,7 @@ import { Route, Routes } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import MTAServerGeneral from '../mta-server-general';
+import { MTAServerGeneral } from '../mta-server-general';
 
 const SERVER_NAME = 'mail1.test.com';
 
@@ -87,6 +89,8 @@ function getAllServersWithMtaResponse() {
 }
 
 function setupInterceptors() {
+  createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+  createBrowserSoapAPIInterceptor('GetAllEffectiveRights', getAllConfigRightsResponseMock());
   createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse());
   createBrowserSoapAPIInterceptor('GetAllServers', getAllServersWithMtaResponse());
   // Component calls GetServer twice: once with applyConfig=1, once with applyConfig=0
@@ -126,6 +130,13 @@ async function expectLoggingSectionVisible() {
   await expect.element(page.getByText('SAS Log level for Amavis')).toBeVisible();
   await expect.element(page.getByText('SMTP client logging of TLS Activity')).toBeVisible();
   await expect.element(page.getByText('LMTP client logging of TLS activity')).toBeVisible();
+}
+
+async function toggleDisableVirusCheck() {
+  const virusCheckSwitch = page.getByRole('switch', { name: 'Disable Virus Check' });
+  await expect.element(virusCheckSwitch).toBeVisible();
+  await expect.poll(() => virusCheckSwitch.element().getAttribute('aria-disabled')).toBeNull();
+  await virusCheckSwitch.click();
 }
 
 describe('MTAServerGeneral', { timeout: 20_000 }, () => {
@@ -251,5 +262,72 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
     await expect.element(page.getByText('SAS Log level for Amavis')).toBeVisible();
     await expect.element(page.getByText('SMTP client logging of TLS Activity')).toBeVisible();
     await expect.element(page.getByText('LMTP client logging of TLS activity')).toBeVisible();
+  });
+
+  it('shows Save and Cancel when a switch changes', async () => {
+    setupInterceptors();
+
+    await setupBrowserTest(renderComponent(), {
+      initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
+    });
+
+    await toggleDisableVirusCheck();
+
+    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+  });
+
+  it('resets dirty state when Cancel is clicked', async () => {
+    setupInterceptors();
+
+    await setupBrowserTest(renderComponent(), {
+      initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
+    });
+
+    await toggleDisableVirusCheck();
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Cancel' }).click();
+
+    await expect.poll(() => page.getByRole('button', { name: 'Save' }).elements().length).toBe(0);
+    await expect.poll(() => page.getByRole('button', { name: 'Cancel' }).elements().length).toBe(0);
+  });
+
+  it('submits a ModifyServer request with changed data on save', async () => {
+    setupInterceptors();
+    const modifyServerInterceptor = createBrowserSoapAPIInterceptor('ModifyServer', {
+      server: [
+        {
+          id: 'server-1',
+          name: SERVER_NAME,
+          a: [{ n: 'carbonioAmavisDisableVirusCheck', _content: 'TRUE' }],
+        },
+      ],
+    });
+
+    await setupBrowserTest(renderComponent(), {
+      initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
+    });
+
+    await toggleDisableVirusCheck();
+
+    const saveButton = page.getByRole('button', { name: 'Save' });
+    await expect.element(saveButton).toBeVisible();
+    await saveButton.click();
+
+    const request = await modifyServerInterceptor;
+    expect(request).toMatchObject({
+      _jsns: 'urn:zimbraAdmin',
+      id: 'server-1',
+      a: expect.arrayContaining([
+        expect.objectContaining({
+          n: 'carbonioAmavisDisableVirusCheck',
+          _content: 'TRUE',
+        }),
+      ]),
+    });
   });
 });

@@ -6,13 +6,15 @@
 
 import {
   createBrowserSoapAPIInterceptor,
+  getAllConfigRightsResponseMock,
+  getGetInfoResponseMock,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import MTAAntiVirusAndAntiSpam from '../antivirus-and-antispam';
+import { MTAAntiVirusAndAntiSpam } from '../antivirus-and-antispam';
 
 function getAllConfigResponse() {
   return {
@@ -60,8 +62,17 @@ async function expectAntivirusWarningsSwitchesVisible() {
   await expect.element(page.getByText('Warn admins when something is quarantined')).toBeVisible();
 }
 
+async function toggleVerifyDkimSwitch() {
+  const dkimSwitch = page.getByRole('switch', { name: 'Verify DKIM validity' });
+  await expect.element(dkimSwitch).toBeVisible();
+  await expect.poll(() => dkimSwitch.element().getAttribute('aria-disabled')).toBeNull();
+  await dkimSwitch.click();
+}
+
 describe('MTAAntiVirusAndAntiSpam', () => {
   beforeEach(async () => {
+    createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    createBrowserSoapAPIInterceptor('GetAllEffectiveRights', getAllConfigRightsResponseMock());
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse());
   });
 
@@ -110,11 +121,23 @@ describe('MTAAntiVirusAndAntiSpam', () => {
   it('renders Add and Remove buttons for both definition tables', async () => {
     await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
-    const addButtons = page.getByRole('button', { name: 'Add' }).all();
-    expect(addButtons.length).toBe(2);
-
-    const removeButtons = page.getByRole('button', { name: 'Remove' }).all();
-    expect(removeButtons.length).toBe(2);
+    await expect.element(page.getByText('Antivirus & Antispam', { exact: true })).toBeVisible();
+    await expect
+      .poll(
+        () =>
+          Array.from(document.querySelectorAll('button')).filter(
+            (button) => button.textContent?.trim() === 'Add',
+          ).length,
+      )
+      .toBe(2);
+    await expect
+      .poll(
+        () =>
+          Array.from(document.querySelectorAll('button')).filter(
+            (button) => button.textContent?.trim() === 'Remove',
+          ).length,
+      )
+      .toBe(2);
   });
 
   it('does not render Save and Cancel buttons when no changes are made', async () => {
@@ -128,9 +151,7 @@ describe('MTAAntiVirusAndAntiSpam', () => {
   it('shows Save and Cancel when a switch changes', async () => {
     await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
-    const dkimSwitch = page.getByText('Verify DKIM validity');
-    await expect.element(dkimSwitch).toBeVisible();
-    await dkimSwitch.click();
+    await toggleVerifyDkimSwitch();
 
     await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
@@ -139,7 +160,7 @@ describe('MTAAntiVirusAndAntiSpam', () => {
   it('resets dirty state when Cancel is clicked', async () => {
     await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
 
-    await page.getByText('Verify DKIM validity').click();
+    await toggleVerifyDkimSwitch();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Cancel' }).click();

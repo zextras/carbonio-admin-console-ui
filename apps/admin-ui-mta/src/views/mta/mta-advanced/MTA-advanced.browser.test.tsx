@@ -6,13 +6,15 @@
 
 import {
   createBrowserSoapAPIInterceptor,
+  getAllConfigRightsResponseMock,
+  getGetInfoResponseMock,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import MTAAdvanced from './mta-advanced';
+import { MTAAdvanced } from './mta-advanced';
 
 async function expectLoggingSectionVisible() {
   await expect.element(page.getByText('Logging', { exact: true })).toBeVisible();
@@ -54,8 +56,35 @@ function getAllConfigResponse(zimbraMtaMaxMessageSize: string) {
   };
 }
 
+async function waitForInputEnabled(label: string) {
+  const input = page.getByLabelText(label);
+  await expect.element(input).toBeVisible();
+  await expect.poll(() => {
+    const element = input.element() as HTMLInputElement;
+    return element.disabled ? 'disabled' : 'enabled';
+  }).toBe('enabled');
+  return input;
+}
+
+async function toggleSwitch(name: string) {
+  const switchControl = page.getByRole('switch', { name });
+  await expect.element(switchControl).toBeVisible();
+  await expect.poll(() => switchControl.element().getAttribute('aria-disabled')).toBeNull();
+  await switchControl.click();
+}
+
+async function toggleLoggingSwitch() {
+  await toggleSwitch('Enable logging of the remote SMTP client port');
+}
+
+async function toggleAuthSwitch() {
+  await toggleSwitch('Enable simple authentication and security layer');
+}
+
 describe('MTAAdvanced', () => {
   beforeEach(async () => {
+    createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    createBrowserSoapAPIInterceptor('GetAllEffectiveRights', getAllConfigRightsResponseMock());
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse('10485760'));
   });
 
@@ -97,7 +126,7 @@ describe('MTAAdvanced', () => {
     const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
     await customSizeRadio.click();
 
-    const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
+    const sizeInput = await waitForInputEnabled('Max size for mail messages (MB)');
 
     await sizeInput.clear();
     await sizeInput.fill('0');
@@ -125,30 +154,25 @@ describe('MTAAdvanced', () => {
   it('should handle input field interactions', async () => {
     await setupBrowserTest(<MTAAdvanced />, { grantRights: 'config' });
 
-    const antivirusInput = page.getByLabelText('Max antivirus threads (value)');
-    await expect.element(antivirusInput).toBeVisible();
+    const antivirusInput = await waitForInputEnabled('Max antivirus threads (value)');
     await antivirusInput.clear();
     await antivirusInput.fill('15');
 
-    const lmtpInput = page.getByLabelText('LMTP threads (Value)');
-    await expect.element(lmtpInput).toBeVisible();
+    const lmtpInput = await waitForInputEnabled('LMTP threads (Value)');
     await lmtpInput.clear();
     await lmtpInput.fill('25');
 
-    const milterInput = page.getByLabelText('MILTER threads (value)');
-    await expect.element(milterInput).toBeVisible();
+    const milterInput = await waitForInputEnabled('MILTER threads (value)');
     await milterInput.clear();
     await milterInput.fill('8');
 
-    const connectionsInput = page.getByLabelText(
+    const connectionsInput = await waitForInputEnabled(
       'Reject concurrent MILTER connections above (value)',
     );
-    await expect.element(connectionsInput).toBeVisible();
     await connectionsInput.clear();
     await connectionsInput.fill('150');
 
-    const smtpdInput = page.getByLabelText('Smtpd sender login maps');
-    await expect.element(smtpdInput).toBeVisible();
+    const smtpdInput = await waitForInputEnabled('Smtpd sender login maps');
     await smtpdInput.clear();
     await smtpdInput.fill('proxy:ldap://newhost:389');
   }, 20000);
@@ -183,7 +207,7 @@ describe('MTAAdvanced', () => {
     const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
     await customSizeRadio.click();
 
-    const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
+    const sizeInput = await waitForInputEnabled('Max size for mail messages (MB)');
 
     // Test multiple input changes to trigger setValue(ZIMBRA_MTA_MESSAGE_SIZE, e.target.value) and setZimbraMtaMaxMessageSizeState(e.target.value)
     await sizeInput.clear();
@@ -279,7 +303,7 @@ describe('MTAAdvanced', () => {
     const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
     await customSizeRadio.click();
 
-    const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
+    const sizeInput = await waitForInputEnabled('Max size for mail messages (MB)');
 
     // Test the onChange handler by filling different values
     // This should trigger both setValue(ZIMBRA_MTA_MESSAGE_SIZE, e.target.value) and setZimbraMtaMaxMessageSizeState(e.target.value)
@@ -337,7 +361,7 @@ describe('MTAAdvanced', () => {
     const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
     await customSizeRadio.click();
 
-    const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
+    const sizeInput = await waitForInputEnabled('Max size for mail messages (MB)');
     await sizeInput.clear();
     await sizeInput.fill('200');
 
@@ -357,18 +381,15 @@ describe('MTAAdvanced', () => {
     await setupBrowserTest(<MTAAdvanced />, { grantRights: 'config' });
 
     // Make multiple changes to trigger different parts of the save logic
-    const loggingSwitch = page.getByText('Enable logging of the remote SMTP client port');
-    await loggingSwitch.click();
-
-    const authSwitch = page.getByText('Enable simple authentication and security layer');
-    await authSwitch.click();
+    await toggleLoggingSwitch();
+    await toggleAuthSwitch();
 
     // Change input values
-    const antivirusInput = page.getByLabelText('Max antivirus threads (value)');
+    const antivirusInput = await waitForInputEnabled('Max antivirus threads (value)');
     await antivirusInput.clear();
     await antivirusInput.fill('15');
 
-    const smtpdInput = page.getByLabelText('Smtpd sender login maps');
+    const smtpdInput = await waitForInputEnabled('Smtpd sender login maps');
     await smtpdInput.clear();
     await smtpdInput.fill('proxy:ldap://testhost:389');
 
@@ -376,7 +397,7 @@ describe('MTAAdvanced', () => {
     const customSizeRadio = page.getByRole('radio', { name: 'Custom max size mail messages (MB)' });
     await customSizeRadio.click();
 
-    const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
+    const sizeInput = await waitForInputEnabled('Max size for mail messages (MB)');
     await sizeInput.clear();
     await sizeInput.fill('150');
 
@@ -390,12 +411,12 @@ describe('MTAAdvanced', () => {
     await setupBrowserTest(<MTAAdvanced />, { grantRights: 'config' });
 
     // Enter an invalid SMTPD sender login maps value to trigger error handling
-    const smtpdInput = page.getByLabelText('Smtpd sender login maps');
+    const smtpdInput = await waitForInputEnabled('Smtpd sender login maps');
     await smtpdInput.clear();
     await smtpdInput.fill('invalid-proxy-format');
 
     // Make another change to trigger dirty state
-    const antivirusInput = page.getByLabelText('Max antivirus threads (value)');
+    const antivirusInput = await waitForInputEnabled('Max antivirus threads (value)');
     await antivirusInput.clear();
     await antivirusInput.fill('10');
 

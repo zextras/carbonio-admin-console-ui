@@ -12,7 +12,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import MTAPostScreenTuning from '../post-screen-tuning';
+import { MTAPostScreenTuning } from '../post-screen-tuning';
 
 function getAllConfigResponse() {
   return {
@@ -133,14 +133,14 @@ describe('MTAPostScreenTuning', () => {
   it('renders Action selects and Command Time to Live inputs in the Tuning section', async () => {
     await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
-    const actionLabels = page.getByText('Action', { exact: true }).all();
-    expect(actionLabels.length).toBeGreaterThanOrEqual(3);
-
-    const ttlLabels = page.getByText('Command Time to Live (value)').all();
-    expect(ttlLabels.length).toBeGreaterThanOrEqual(3);
-
-    const intervalLabels = page.getByText('Interval', { exact: true }).all();
-    expect(intervalLabels.length).toBeGreaterThanOrEqual(3);
+    await expect.element(page.getByText('Tuning', { exact: true })).toBeVisible();
+    await expect.poll(() => page.getByText('Action', { exact: true }).elements().length).toBeGreaterThanOrEqual(3);
+    await expect
+      .poll(() => page.getByText('Command Time to Live (value)').elements().length)
+      .toBeGreaterThanOrEqual(3);
+    await expect
+      .poll(() => page.getByText('Interval', { exact: true }).elements().length)
+      .toBeGreaterThanOrEqual(3);
   });
 
   it('does not render Save and Cancel buttons when no changes are made', async () => {

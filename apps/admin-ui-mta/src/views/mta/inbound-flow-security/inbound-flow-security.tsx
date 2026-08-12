@@ -1,451 +1,111 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  ChipInput,
-  Container,
-  ListRow,
-  Padding,
-  Row,
-  Switch,
-  Tooltip,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Button, Container, ListRow, Padding, Row } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
 import { find, isEqual, uniq } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaInboundSecurity } from '../../../../types';
+import { CONFIG, ZIMBRA_MTA_BLOCKED_EXTENSION } from '../../../constants';
+import { useModifyConfig } from '../../../services/use-modify-config';
+import { ProtocolChecksSection } from './sections/protocol-checks-section';
+import { RejectionSection } from './sections/rejection-section';
+import { SettingsSection } from './sections/settings-section';
 import {
-  _REJECT_UNKNOWN_CLIENT_HOSTNAME,
-  CONFIG,
-  FALSE,
-  REJECT_INVALID_HELO_HOSTNAME,
-  REJECT_NON_FQDN_HELO_HOSTNAME,
-  REJECT_NON_FQDN_SENDER,
-  REJECT_SENDER_LOGIN_MISMATCH,
-  REJECT_UNKNOWN_CLIENT_HOSTNAME,
-  REJECT_UNKNOWN_HELO_HOSTNAME,
-  REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME,
-  REJECT_UNKNOWN_SENDER_DOMAIN,
-  TRUE,
-  ZIMBRA_MTA_BLOCKED_EXTENSION,
-  ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-  ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-  ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,
-  ZIMBRA_MTA_RESTRICTION,
-  ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-  ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-  ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-} from '../../../constants';
-import { modifyConfig } from '../../../services/modify-config';
-import CustomChip from '../../components/customChip';
+  buildSaveAttributes,
+  parseBlockExtensionData,
+  parseBlockExtensionWarningData,
+  parseMtaRestrictionData,
+  parseSmtpdRejectionData,
+} from './utils/inbound-security-utils';
 
-const MTAInboundFlowSecurity: FC = () => {
+type FormState = {
+  initial: MtaInboundSecurity;
+  current: MtaInboundSecurity;
+};
+
+type ExtensionState = {
+  mtaBlockExtension: Array<Record<string, string>>;
+  commonBlockedExtensions: Array<string>;
+};
+
+function buildInitialState(configInformation: Array<Record<string, string>>): MtaInboundSecurity {
+  const blockExtResult = parseBlockExtensionData(configInformation);
+  const warningData = parseBlockExtensionWarningData(configInformation);
+  const rejectionData = parseSmtpdRejectionData(configInformation);
+  const restrictionData = parseMtaRestrictionData(configInformation);
+
+  return {
+    ...warningData,
+    ...rejectionData,
+    ...restrictionData,
+    zimbraMtaBlockedExtension: blockExtResult.currentBlockedExtension,
+  } as MtaInboundSecurity;
+}
+
+function buildExtensionState(configInformation: Array<Record<string, string>>): ExtensionState {
+  const blockExtResult = parseBlockExtensionData(configInformation);
+  return {
+    mtaBlockExtension: blockExtResult.mtaBlockExtension,
+    commonBlockedExtensions: blockExtResult.commonBlockedExtensions,
+  };
+}
+
+function MTAInboundFlowSecurityForm({
+  configInformation,
+}: {
+  configInformation: Array<Record<string, string>>;
+}) {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-  const [isDirty, setIsDirty] = useState<boolean>(false);
-  const { data: configInformation = [], invalidate } = useAllConfig();
-  const [mtaBlockExtension, setMtaBlockExtension] = useState<Array<Record<string, string>>>([]);
-
-  const [mtaInboundSecurityInitialDetail, setMtaInboundSecurityInitialDetail] =
-    useState<MtaInboundSecurity>();
-  const [mtaInboundSecurityDetail, setMtaInboundSecurityDetail] = useState<MtaInboundSecurity>();
-  const [commonBlockedExtensions, setCommonBlockedExtensions] = useState<Array<string>>([]);
+  const { mutateAsync: modifyConfigAsync } = useModifyConfig();
   const { data: rights } = useCurrentUserRights();
 
-  const allowSetMTA = useMemo(() => {
-    const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-    return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  const [formState, setFormState] = useState<FormState>(() => {
+    const initialState = buildInitialState(configInformation);
+    return { initial: initialState, current: initialState };
+  });
 
-  const setInitialValue = useCallback((key: string, value: unknown): void => {
-    setMtaInboundSecurityInitialDetail((prev) => ({ ...prev, [key]: value } as MtaInboundSecurity));
-  }, []);
-
-  const setValue = useCallback((key: string, value: unknown): void => {
-    setMtaInboundSecurityDetail((prev) => ({ ...prev, [key]: value } as MtaInboundSecurity));
-  }, []);
-
-  const setInitialAndCurrentValue = useCallback(
-    (key: string, value: unknown) => {
-      setInitialValue(key, value);
-      setValue(key, value);
-    },
-    [setInitialValue, setValue],
+  const [extensionState, setExtensionState] = useState<ExtensionState>(() =>
+    buildExtensionState(configInformation),
   );
 
-  const setBlockExtensionData = useCallback(() => {
-    const findBlockExtension = configInformation.filter(
-      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION,
-    );
-    if (findBlockExtension && findBlockExtension.length > 0) {
-      const allExtensions: Array<Record<string, string>> = [];
-      findBlockExtension.forEach((item: Record<string, string>) => {
-        allExtensions.push({ label: item?._content });
-      });
-      setInitialValue(
-        ZIMBRA_MTA_BLOCKED_EXTENSION,
-        findBlockExtension.map((item: Record<string, string>) => item?._content),
-      );
-      if (allExtensions) {
-        setValue(
-          ZIMBRA_MTA_BLOCKED_EXTENSION,
-          allExtensions.map((item: Record<string, string>) => item?.label),
-        );
-      }
-      setMtaBlockExtension(allExtensions);
+  const mtaInboundSecurityInitialDetail = formState.initial;
+  const mtaInboundSecurityDetail = formState.current;
+  const { mtaBlockExtension, commonBlockedExtensions } = extensionState;
+
+  const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+  const allowSetMTA = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+
+  const isDirty =
+    !!mtaInboundSecurityDetail && !isEqual(mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail);
+
+  function setValue(key: string, value: unknown): void {
+    setFormState((prev) => ({
+      ...prev,
+      current: { ...prev.current, [key]: value } as MtaInboundSecurity,
+    }));
+  }
+
+  async function modifyConfigRequest(attributes: Array<Record<string, string>>): Promise<void> {
+    try {
+      await modifyConfigAsync(attributes);
+      setFormState((prev) => ({ ...prev, initial: prev.current }));
+    } catch {
+      // Error snackbar is already shown by the hook
     }
-    const findCommonBlockExtension = configInformation.filter(
-      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,
-    );
-    if (findCommonBlockExtension && findCommonBlockExtension.length > 0) {
-      setCommonBlockedExtensions(findCommonBlockExtension.map((item: Record<string, string>) => item?._content));
-    }
-  }, [configInformation, setInitialValue, setValue]);
+  }
 
-  const setBlockExtensionWarningData = useCallback(() => {
-    const zimbraMtaBlockedExtensionWarnAdmin = configInformation.filter(
-      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-    );
-    const zimbraMtaBlockedExtensionWarnRecipient = configInformation.filter(
-      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-    );
-
-    if (zimbraMtaBlockedExtensionWarnAdmin && zimbraMtaBlockedExtensionWarnAdmin[0]?._content) {
-      setInitialAndCurrentValue(
-        ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-        zimbraMtaBlockedExtensionWarnAdmin[0]?._content === TRUE,
-      );
-    }
-
-    if (
-      zimbraMtaBlockedExtensionWarnRecipient &&
-      zimbraMtaBlockedExtensionWarnRecipient[0]?._content
-    ) {
-      setInitialAndCurrentValue(
-        ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-        zimbraMtaBlockedExtensionWarnRecipient[0]?._content === TRUE,
-      );
-    }
-  }, [configInformation, setInitialAndCurrentValue]);
-
-  const setsmtpdRejectionData = useCallback(() => {
-    const zimbraMtaSmtpdRejectUnlistedSender = configInformation.filter(
-      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-    );
-
-    if (zimbraMtaSmtpdRejectUnlistedSender && zimbraMtaSmtpdRejectUnlistedSender[0]?._content) {
-      setInitialAndCurrentValue(
-        ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-        zimbraMtaSmtpdRejectUnlistedSender[0]?._content === 'yes',
-      );
-    }
-    const zimbraMtaSmtpdRejectUnlistedRecipient = configInformation.filter(
-      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-    );
-    if (
-      zimbraMtaSmtpdRejectUnlistedRecipient &&
-      zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content
-    ) {
-      setInitialAndCurrentValue(
-        ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-        zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content === 'yes',
-      );
-    }
-    const zimbraMtaSmtpdSenderRestrictions = configInformation.filter(
-      (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-    );
-
-    if (zimbraMtaSmtpdSenderRestrictions) {
-      setInitialAndCurrentValue(
-        ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-        zimbraMtaSmtpdSenderRestrictions.length > 0 &&
-          zimbraMtaSmtpdSenderRestrictions[0]?._content === REJECT_SENDER_LOGIN_MISMATCH,
-      );
-    }
-  }, [configInformation, setInitialAndCurrentValue]);
-
-  useEffect(() => {
-    if (configInformation && configInformation.length > 0) {
-      setBlockExtensionData();
-      setBlockExtensionWarningData();
-      setsmtpdRejectionData();
-      const zimbraMtaRestriction = configInformation.filter(
-        (item: Record<string, string>) => item?.n === ZIMBRA_MTA_RESTRICTION,
-      );
-      if (zimbraMtaRestriction) {
-        const rejectUnknownClientHostname = zimbraMtaRestriction.filter(
-          (item: Record<string, string>) => item?._content === REJECT_UNKNOWN_CLIENT_HOSTNAME,
-        );
-
-        const isRejectUnknownClientHostname =
-          rejectUnknownClientHostname &&
-          rejectUnknownClientHostname[0] &&
-          rejectUnknownClientHostname[0]._content === REJECT_UNKNOWN_CLIENT_HOSTNAME;
-
-        setInitialAndCurrentValue(_REJECT_UNKNOWN_CLIENT_HOSTNAME, isRejectUnknownClientHostname);
-
-        const rejectUnknownReverseClientHostname = zimbraMtaRestriction.filter(
-          (item: Record<string, string>) =>
-            item?._content === REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME,
-        );
-        const isRejectUnknownReverseClientHostname =
-          rejectUnknownReverseClientHostname &&
-          rejectUnknownReverseClientHostname[0] &&
-          rejectUnknownReverseClientHostname[0]._content === REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME;
-
-        setInitialAndCurrentValue(
-          'rejectUnknownReverseClientHostname',
-          isRejectUnknownReverseClientHostname,
-        );
-
-        const rejectInvalidHeloHostname = zimbraMtaRestriction.filter(
-          (item: Record<string, string>) => item?._content === REJECT_INVALID_HELO_HOSTNAME,
-        );
-        const isRejectInvalidHeloHostname =
-          rejectInvalidHeloHostname &&
-          rejectInvalidHeloHostname[0] &&
-          rejectInvalidHeloHostname[0]._content === REJECT_INVALID_HELO_HOSTNAME;
-
-        setInitialAndCurrentValue('rejectInvalidHeloHostname', isRejectInvalidHeloHostname);
-
-        const rejectNonFqdnHeloHostname = zimbraMtaRestriction.filter(
-          (item: Record<string, string>) => item?._content === REJECT_NON_FQDN_HELO_HOSTNAME,
-        );
-        const isRejectNonFqdnHeloHostname =
-          rejectNonFqdnHeloHostname &&
-          rejectNonFqdnHeloHostname[0] &&
-          rejectNonFqdnHeloHostname[0]._content === REJECT_NON_FQDN_HELO_HOSTNAME;
-
-        setInitialAndCurrentValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
-
-        const rejectUnknownHeloHostname = zimbraMtaRestriction.filter(
-          (item: Record<string, string>) => item?._content === REJECT_UNKNOWN_HELO_HOSTNAME,
-        );
-        const isRejectUnknownHeloHostname =
-          rejectUnknownHeloHostname &&
-          rejectUnknownHeloHostname[0] &&
-          rejectUnknownHeloHostname[0]._content === REJECT_UNKNOWN_HELO_HOSTNAME;
-
-        setInitialAndCurrentValue('rejectUnknownHeloHostname', isRejectUnknownHeloHostname);
-
-        const rejectUnknownSenderDomain = zimbraMtaRestriction.filter(
-          (item: Record<string, string>) => item?._content === REJECT_UNKNOWN_SENDER_DOMAIN,
-        );
-        const isRejectUnknownSenderDomain =
-          rejectUnknownSenderDomain &&
-          rejectUnknownSenderDomain[0] &&
-          rejectUnknownSenderDomain[0]._content === REJECT_UNKNOWN_SENDER_DOMAIN;
-
-        setInitialAndCurrentValue('rejectUnknownSenderDomain', isRejectUnknownSenderDomain);
-
-        const rejectNonFqdnSender = zimbraMtaRestriction.filter(
-          (item: Record<string, string>) => item?._content === REJECT_NON_FQDN_SENDER,
-        );
-        const isRejectNonFqdnSender =
-          rejectNonFqdnSender &&
-          rejectNonFqdnSender[0] &&
-          rejectNonFqdnSender[0]._content === REJECT_NON_FQDN_SENDER;
-
-        setInitialAndCurrentValue('rejectNonFqdnSender', isRejectNonFqdnSender);
-      }
-    }
-  }, [
-    configInformation,
-    setInitialValue,
-    setValue,
-    setInitialAndCurrentValue,
-    setBlockExtensionData,
-    setBlockExtensionWarningData,
-    setsmtpdRejectionData,
-  ]);
-
-  useEffect(() => {
-    if (
-      mtaInboundSecurityDetail &&
-      !isEqual(mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail)
-    ) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail]);
-
-  const modifyConfigRequest = useCallback(
-    (attributes: Array<Record<string, string>>): void => {
-      modifyConfig(attributes)
-        .then(() => {
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          invalidate();
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
-    },
-    [createSnackbar, invalidate, t],
-  );
-
-  const setMtaRestrictions = useCallback(
-    (attributes: Array<Record<string, string>>) => {
-      if (mtaInboundSecurityDetail?.rejectUnknownClientHostname) {
-        attributes.push({
-          n: ZIMBRA_MTA_RESTRICTION,
-          _content: mtaInboundSecurityDetail?.rejectUnknownClientHostname
-            ? REJECT_UNKNOWN_CLIENT_HOSTNAME
-            : '',
-        });
-      }
-      if (mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname) {
-        attributes.push({
-          n: ZIMBRA_MTA_RESTRICTION,
-          _content: mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname
-            ? REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME
-            : '',
-        });
-      }
-
-      if (mtaInboundSecurityDetail?.rejectInvalidHeloHostname) {
-        attributes.push({
-          n: ZIMBRA_MTA_RESTRICTION,
-          _content: mtaInboundSecurityDetail?.rejectInvalidHeloHostname
-            ? REJECT_INVALID_HELO_HOSTNAME
-            : '',
-        });
-      }
-
-      if (mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname) {
-        attributes.push({
-          n: ZIMBRA_MTA_RESTRICTION,
-          _content: mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname
-            ? REJECT_NON_FQDN_HELO_HOSTNAME
-            : '',
-        });
-      }
-    },
-    [
-      mtaInboundSecurityDetail?.rejectInvalidHeloHostname,
-      mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname,
-      mtaInboundSecurityDetail?.rejectUnknownClientHostname,
-      mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname,
-    ],
-  );
-
-  const setValueForSave = useCallback(
-    (attributes: Array<Record<string, string>>) => {
-      if (mtaInboundSecurityDetail?.rejectUnknownHeloHostname) {
-        attributes.push({
-          n: ZIMBRA_MTA_RESTRICTION,
-          _content: mtaInboundSecurityDetail?.rejectUnknownHeloHostname
-            ? REJECT_UNKNOWN_HELO_HOSTNAME
-            : '',
-        });
-      }
-
-      if (mtaInboundSecurityDetail?.rejectUnknownSenderDomain) {
-        attributes.push({
-          n: ZIMBRA_MTA_RESTRICTION,
-          _content: mtaInboundSecurityDetail?.rejectUnknownSenderDomain
-            ? REJECT_UNKNOWN_SENDER_DOMAIN
-            : '',
-        });
-      }
-
-      if (mtaInboundSecurityDetail?.rejectNonFqdnSender) {
-        attributes.push({
-          n: ZIMBRA_MTA_RESTRICTION,
-          _content: mtaInboundSecurityDetail?.rejectNonFqdnSender ? REJECT_NON_FQDN_SENDER : '',
-        });
-      }
-
-      if (!attributes.find((item: Record<string, string>) => item?.n === ZIMBRA_MTA_RESTRICTION)) {
-        attributes.push({
-          n: ZIMBRA_MTA_RESTRICTION,
-          _content: '',
-        });
-      }
-    },
-    [
-      mtaInboundSecurityDetail?.rejectNonFqdnSender,
-      mtaInboundSecurityDetail?.rejectUnknownHeloHostname,
-      mtaInboundSecurityDetail?.rejectUnknownSenderDomain,
-    ],
-  );
-
-  const onSave = useCallback(() => {
-    const attributes: Array<Record<string, string>> = [];
-    setMtaRestrictions(attributes);
-    setValueForSave(attributes);
-    if (mtaInboundSecurityDetail?.zimbraMtaBlockedExtension) {
-      const blockedExtension = mtaInboundSecurityDetail?.zimbraMtaBlockedExtension;
-      if (blockedExtension) {
-        if (blockedExtension.length === 0) {
-          attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: '' });
-        } else {
-          blockedExtension.forEach((item: string) => {
-            attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: item });
-          });
-        }
-      }
-    }
-    attributes.push({
-      n: ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-      _content: mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin ? TRUE : FALSE,
-    });
-    attributes.push({
-      n: ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-      _content: mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient ? TRUE : FALSE,
-    });
-
-    attributes.push({
-      n: ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-      _content: mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender ? 'yes' : 'no',
-    });
-    attributes.push({
-      n: ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-      _content: mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient ? 'yes' : 'no',
-    });
-    attributes.push({
-      n: ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-      _content: mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions
-        ? REJECT_SENDER_LOGIN_MISMATCH
-        : '',
-    });
+  function onSave() {
+    const attributes = buildSaveAttributes(mtaInboundSecurityDetail);
     modifyConfigRequest(attributes);
-  }, [
-    setMtaRestrictions,
-    setValueForSave,
-    mtaInboundSecurityDetail?.zimbraMtaBlockedExtension,
-    mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin,
-    mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient,
-    mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender,
-    mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient,
-    mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions,
-    modifyConfigRequest,
-  ]);
+  }
 
-  const onCancel = useCallback(() => {
-    setMtaInboundSecurityDetail(mtaInboundSecurityInitialDetail);
+  function onCancel() {
+    setFormState((prev) => ({ ...prev, current: prev.initial }));
     if (mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtension) {
       const extension = mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtension;
       if (extension) {
@@ -453,92 +113,40 @@ const MTAInboundFlowSecurity: FC = () => {
         extension.forEach((item: string) => {
           allExtensions.push({ label: item });
         });
-        setMtaBlockExtension(allExtensions);
+        setExtensionState((prev) => ({ ...prev, mtaBlockExtension: allExtensions }));
       }
     }
-    setValue(
-      ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-      mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtensionWarnAdmin,
-    );
-    setValue(
-      ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-      mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtensionWarnRecipient,
-    );
+  }
 
-    setValue(
-      ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-      mtaInboundSecurityInitialDetail?.zimbraMtaSmtpdRejectUnlistedSender,
-    );
-    setValue(
-      ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-      mtaInboundSecurityInitialDetail?.zimbraMtaSmtpdRejectUnlistedRecipient,
-    );
-    setValue(
-      ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-      mtaInboundSecurityInitialDetail?.zimbraMtaSmtpdSenderRestrictions,
-    );
-    setValue(
-      'rejectUnknownClientHostname',
-      mtaInboundSecurityInitialDetail?.rejectUnknownClientHostname !== undefined,
-    );
-    setValue(
-      'rejectUnknownReverseClientHostname',
-      mtaInboundSecurityInitialDetail?.rejectUnknownReverseClientHostname !== undefined,
-    );
-    setValue(
-      'rejectInvalidHeloHostname',
-      mtaInboundSecurityInitialDetail?.rejectInvalidHeloHostname !== undefined,
-    );
-    setValue(
-      'rejectNonFqdnHeloHostname',
-      mtaInboundSecurityInitialDetail?.rejectNonFqdnHeloHostname !== undefined,
-    );
-    setValue(
-      'rejectUnknownHeloHostname',
-      mtaInboundSecurityInitialDetail?.rejectUnknownHeloHostname !== undefined,
-    );
-    setValue(
-      'rejectUnknownSenderDomain',
-      mtaInboundSecurityInitialDetail?.rejectUnknownSenderDomain !== undefined,
-    );
-    setValue(
-      'rejectNonFqdnSender',
-      mtaInboundSecurityInitialDetail?.rejectNonFqdnSender !== undefined,
-    );
-    setTimeout(() => {
-      setIsDirty(false);
-    }, 100);
-  }, [mtaInboundSecurityInitialDetail, setValue]);
-
-  const onBlockExtensionChange = useCallback(
-    (ev: Array<{ label?: string }>) => {
-      if (ev && ev.length > 0) {
-        const validExtensionExpression = /^[A-Za-z0-9]*$/;
-        const extension = ev
-          .map((item: Record<string, string | undefined>) => item?.label)
-          .filter((item): item is string => !!item)
-          .filter((item: string) => validExtensionExpression.test(item));
-        if (extension && extension.length > 0) {
-          setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, extension);
-          const validExtension = extension.map((item: string) => ({ label: item }));
-          setMtaBlockExtension(validExtension);
-        }
-      } else {
-        setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
-        setMtaBlockExtension([]);
+  function onBlockExtensionChange(ev: Array<{ label?: string }>) {
+    if (ev && ev.length > 0) {
+      const validExtensionExpression = /^[A-Za-z0-9]*$/;
+      const extension = ev
+        .map((item: Record<string, string | undefined>) => item?.label)
+        .filter((item): item is string => !!item)
+        .filter((item: string) => validExtensionExpression.test(item));
+      if (extension && extension.length > 0) {
+        setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, extension);
+        const validExtension = extension.map((item: string) => ({ label: item }));
+        setExtensionState((prev) => ({ ...prev, mtaBlockExtension: validExtension }));
       }
-    },
-    [setValue],
-  );
+    } else {
+      setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
+      setExtensionState((prev) => ({ ...prev, mtaBlockExtension: [] }));
+    }
+  }
 
-  const onCommonBlockExtensionAdd = useCallback(() => {
+  function onCommonBlockExtensionAdd() {
     const allExtension = uniq([
       ...mtaBlockExtension.map((item: Record<string, string>) => item?.label),
       ...commonBlockedExtensions,
     ]);
     setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, allExtension);
-    setMtaBlockExtension(allExtension.map((item: string) => ({ label: item })));
-  }, [setValue, mtaBlockExtension, commonBlockedExtensions]);
+    setExtensionState((prev) => ({
+      ...prev,
+      mtaBlockExtension: allExtension.map((item: string) => ({ label: item })),
+    }));
+  }
 
   return (
     <Container background="gray6" mainAlignment="flex-start">
@@ -565,18 +173,10 @@ const MTAInboundFlowSecurity: FC = () => {
               background="gray6"
             >
               <Padding right="small">
-                {isDirty && (
-                  <Button
-                    label={t('label.cancel', 'Cancel')}
-                    color="secondary"
-                    onClick={onCancel}
-                  />
-                )}
+                <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
               </Padding>
               <Padding right="small">
-                {isDirty && (
-                  <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-                )}
+                <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
               </Padding>
             </Container>
           )}
@@ -597,9 +197,7 @@ const MTAInboundFlowSecurity: FC = () => {
           crossAlignment="flex-start"
           mainAlignment="flex-start"
           height="auto"
-          padding={{
-            bottom: 'extralarge',
-          }}
+          padding={{ bottom: 'extralarge' }}
         >
           <ds-text as="p" size="small">
             <Trans
@@ -612,413 +210,52 @@ const MTAInboundFlowSecurity: FC = () => {
         <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
           <ds-divider></ds-divider>
         </Container>
-        <Container
-          crossAlignment="flex-start"
-          mainAlignment="flex-start"
-          height="auto"
-          padding={{ top: 'large', bottom: 'extralarge' }}
-        >
-          <ds-text as="h3" size="small" weight="bold" color="gray0">
-            {t('mta.settings', 'Settings')}
-          </ds-text>
-        </Container>
-        <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          padding={{ top: 'large', bottom: 'extralarge' }}
-          height="auto"
-        >
-          <Container
-            crossAlignment="flex-start"
-            width="70%"
-            padding={{ right: 'medium' }}
-            style={allowSetMTA ? {} : { pointerEvents: 'none', cursor: 'pointer' }}
-          >
-            <ChipInput
-              placeholder={t(
-                'mta.add_here_any_blocked_extension',
-                'Add here any Blocked Extension',
-              )}
-              background="gray5"
-              requireUniqueChips
-              value={mtaBlockExtension}
-              onChange={onBlockExtensionChange}
-              disabled={!allowSetMTA}
-              ChipComponent={CustomChip}
-              maxChips={null}
-            />
-          </Container>
-          <Container crossAlignment="flex-start" width="30%">
-            <Button
-              label={t('mta.add_commonly_blocked_extensions', 'Add commonly blocked extensions')}
-              color="primary"
-              size="medium"
-              type="outlined"
-              onClick={onCommonBlockExtensionAdd}
-              disabled={!allowSetMTA}
-            />
-          </Container>
-        </Container>
-        <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          padding={{ top: 'large', bottom: 'extralarge' }}
-          height="auto"
-        >
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.notify_administrators_of_blocked_file_extension_incoming_emails',
-                'Notify administrators about blocked file extensions in incoming emails',
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t(
-                  'mta.notify_admins_about_block_extensions',
-                  'Notify admins about blocked extensions',
-                )}
-                value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin}
-                onClick={(): void =>
-                  setValue(
-                    ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-                    !mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-          <Container crossAlignment="flex-start" height="auto">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.notify_recipients_of_blocked_file_extension_incoming_emails',
-                'Notify recipients about blocked file extensions in incoming emails',
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t(
-                  'mta.notify_external_recipient_about_block_extensions',
-                  'Notify external recipients about blocked extensions',
-                )}
-                value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
-                onClick={(): void =>
-                  setValue(
-                    ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-                    !mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-        </Container>
+
+        <SettingsSection
+          mtaInboundSecurityDetail={mtaInboundSecurityDetail}
+          mtaBlockExtension={mtaBlockExtension}
+          allowSetMTA={allowSetMTA}
+          setValue={setValue}
+          onBlockExtensionChange={onBlockExtensionChange}
+          onCommonBlockExtensionAdd={onCommonBlockExtensionAdd}
+        />
+
         <ListRow>
           <ds-divider></ds-divider>
         </ListRow>
 
-        <Container
-          crossAlignment="flex-start"
-          padding={{ top: 'extralarge', bottom: 'large' }}
-          height="auto"
-        >
-          <ds-text as="h3" size="small" weight="bold" color="gray0">
-            {t('mta.rejection', 'Rejection')}
-          </ds-text>
-        </Container>
-        <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          padding={{ top: 'large', bottom: 'extralarge' }}
-          height="auto"
-        >
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.reject_emails_from_unlisted_senders',
-                'Reject emails from unlisted senders',
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t('mta.reject_unlisted_sender', 'Reject unlisted Sender')}
-                value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender}
-                onClick={(): void =>
-                  setValue(
-                    ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-                    !mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.reject_emails_addressed_to_unlisted_recipients',
-                'Reject emails addressed to unlisted recipients',
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t('mta.reject_unlisted_recipient', 'Reject unlisted Recipient')}
-                value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient}
-                onClick={(): void =>
-                  setValue(
-                    ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-                    !mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.reject_emails_when_sender_login_does_not_match_authenticated_user',
-                `Reject emails when the sender's login does not match the authenticated user`,
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t(
-                  'mta.reject_sender_login_mismatch_or_empty',
-                  'Reject Sender login mismatch or empty ',
-                )}
-                value={mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions}
-                onClick={(): void =>
-                  setValue(
-                    ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-                    !mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-        </Container>
+        <RejectionSection
+          mtaInboundSecurityDetail={mtaInboundSecurityDetail}
+          allowSetMTA={allowSetMTA}
+          setValue={setValue}
+        />
+
         <ListRow>
           <ds-divider></ds-divider>
         </ListRow>
 
-        <Container
-          crossAlignment="flex-start"
-          padding={{ top: 'extralarge', bottom: 'large' }}
-          height="auto"
-        >
-          <ds-text as="h3" size="small" weight="bold" color="gray0">
-            {t('mta.protocol_checks', 'Protocol Checks')}
-          </ds-text>
-        </Container>
-        <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          padding={{ top: 'large', bottom: 'medium' }}
-          height="auto"
-        >
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.reject_emails_from_client_hostnames',
-                `Rejects emails from clients with unknown or unresolvable hostnames`,
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t('mta.clients_ip_address', 'Client’s IP address')}
-                value={mtaInboundSecurityDetail?.rejectUnknownClientHostname}
-                onClick={(): void =>
-                  setValue(
-                    _REJECT_UNKNOWN_CLIENT_HOSTNAME,
-                    !mtaInboundSecurityDetail?.rejectUnknownClientHostname,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.reject_emails_from_client_with_inresolved_helo_hostnames',
-                `Rejects emails from clients with unresolvable HELO/EHLO hostnames`,
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t(
-                  'mta.client_must_greet_with_resolving_hostname',
-                  'Client should have a resolving hostname',
-                )}
-                value={mtaInboundSecurityDetail?.rejectUnknownHeloHostname}
-                onClick={(): void =>
-                  setValue(
-                    'rejectUnknownHeloHostname',
-                    !mtaInboundSecurityDetail?.rejectUnknownHeloHostname,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-        </Container>
-        <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          padding={{ top: 'small', bottom: 'small' }}
-          height="auto"
-        >
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.reject_emails_from_client_with_unknown_unresolvable_reverse_hostname',
-                `Rejects emails from clients with unknown or unresolvable reverse hostnames`,
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t('mta.check_client_host_name', 'Check Client Hostname')}
-                value={mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname}
-                onClick={(): void =>
-                  setValue(
-                    'rejectUnknownReverseClientHostname',
-                    !mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.reject_emails_from_unknown_or_unresolvable_sender_domains',
-                `Rejects emails from unknown or unresolvable sender domains`,
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t('mta.senders_domain', 'Sender’s Domain')}
-                value={mtaInboundSecurityDetail?.rejectUnknownSenderDomain}
-                onClick={(): void =>
-                  setValue(
-                    'rejectUnknownSenderDomain',
-                    !mtaInboundSecurityDetail?.rejectUnknownSenderDomain,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-        </Container>
-        <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          padding={{ top: 'small', bottom: 'small' }}
-          height="auto"
-        >
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.reject_emails_with_an_invalid_or_unresolvable_helo_hostname',
-                `Reject emails with an invalid or unresolvable HELO hostname`,
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t(
-                  'mta.hostname_in_greeting_violates_rfc',
-                  'Hostname in greeting violates RFC',
-                )}
-                value={mtaInboundSecurityDetail?.rejectInvalidHeloHostname}
-                onClick={(): void =>
-                  setValue(
-                    'rejectInvalidHeloHostname',
-                    !mtaInboundSecurityDetail?.rejectInvalidHeloHostname,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.reject_emails_with_non_fully_qualified_domain_name_sender_address',
-                `Rejects emails with non fully qualified domain name (FQDN) sender addresses`,
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t(
-                  'mta.senders_address_must_fully_qualified',
-                  'Sender address must be fully qualified',
-                )}
-                value={mtaInboundSecurityDetail?.rejectNonFqdnSender}
-                onClick={(): void =>
-                  setValue('rejectNonFqdnSender', !mtaInboundSecurityDetail?.rejectNonFqdnSender)
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-        </Container>
-        <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
-          padding={{ top: 'small', bottom: 'small' }}
-          height="auto"
-        >
-          <Container crossAlignment="flex-start">
-            <Tooltip
-              placement="bottom"
-              label={t(
-                'mta.reject_emails_from_client_domain_hostname',
-                `Rejects emails from clients with non fully qualified domain name (FQDN) in their HELO/EHLO hostname`,
-              )}
-              maxWidth="auto"
-            >
-              <Switch
-                label={t(
-                  'mta.client_must_greet_with_fully_qualified_hostname',
-                  'Client should have a qualified hostname',
-                )}
-                value={mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname}
-                onClick={(): void =>
-                  setValue(
-                    'rejectNonFqdnHeloHostname',
-                    !mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname,
-                  )
-                }
-                disabled={!allowSetMTA}
-              />
-            </Tooltip>
-          </Container>
-        </Container>
+        <ProtocolChecksSection
+          mtaInboundSecurityDetail={mtaInboundSecurityDetail}
+          allowSetMTA={allowSetMTA}
+          setValue={setValue}
+        />
       </Container>
     </Container>
   );
-};
+}
 
-export default MTAInboundFlowSecurity;
+export function MTAInboundFlowSecurity() {
+  const { data: configInformation = [] } = useAllConfig();
+
+  if (!configInformation.length) {
+    return (
+      <Container background="gray6" mainAlignment="center" crossAlignment="center">
+        <ds-spinner />
+      </Container>
+    );
+  }
+
+  return (
+    <MTAInboundFlowSecurityForm key={configInformation.length} configInformation={configInformation} />
+  );
+}

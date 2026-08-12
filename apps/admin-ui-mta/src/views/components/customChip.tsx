@@ -1,27 +1,27 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Chip } from '@zextras/ui-components';
-import React, { ReactElement } from 'react';
+import type { ComponentProps } from 'react';
 
-const copyClipboard = (label: string): void => {
-	navigator.clipboard.writeText(label);
-};
+type CustomChipProps = ComponentProps<typeof Chip> & { value?: unknown };
 
-const CustomChip = (props: React.ComponentProps<typeof Chip> & { value?: unknown }): ReactElement => {
-	const label = typeof props?.label === 'string' ? props.label : '';
-	const actions: React.ComponentProps<typeof Chip>['actions'] = props?.actions ?? [
-		{
-			id: 'copy-to-clipboard',
-			type: 'button' as const,
-			icon: 'CopyOutline' as const,
-			onClick: (): void => copyClipboard(label),
-		},
-	];
-	return <Chip {...props} actions={actions} color="black"></Chip>;
-};
+function copyClipboard(label: string): void {
+  navigator.clipboard.writeText(label);
+}
 
-export default CustomChip;
+export function CustomChip(props: Readonly<CustomChipProps>) {
+  const label = typeof props?.label === 'string' ? props.label : '';
+  const actions: ComponentProps<typeof Chip>['actions'] = props?.actions ?? [
+    {
+      id: 'copy-to-clipboard',
+      type: 'button' as const,
+      icon: 'CopyOutline' as const,
+      onClick: (): void => copyClipboard(label),
+    },
+  ];
+  return <Chip {...props} actions={actions} color="black"></Chip>;
+}

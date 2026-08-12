@@ -18,26 +18,26 @@ import {
   QUEUE,
 } from '../../../constants';
 
-vi.mock('../antvirus-and-antispam/antivirus-and-antispam', () => ({
-  default: () => <div>VIEW:antivirus-and-antispam</div>,
+vi.mock('../antivirus-and-antispam/antivirus-and-antispam', () => ({
+  MTAAntiVirusAndAntiSpam: () => <div>VIEW:antivirus-and-antispam</div>,
 }));
 vi.mock('../inbound-flow-security/inbound-flow-security', () => ({
-  default: () => <div>VIEW:inbound-flow-security</div>,
+  MTAInboundFlowSecurity: () => <div>VIEW:inbound-flow-security</div>,
 }));
 vi.mock('../mta-advanced/mta-advanced', () => ({
-  default: () => <div>VIEW:advanced</div>,
+  MTAAdvanced: () => <div>VIEW:advanced</div>,
 }));
 vi.mock('../outbound-flow/outbound-flow', () => ({
-  default: () => <div>VIEW:outbound-flow</div>,
+  MTAOutBoundFlow: () => <div>VIEW:outbound-flow</div>,
 }));
 vi.mock('../post-screen-tuning/post-screen-tuning', () => ({
-  default: () => <div>VIEW:postscreen-tuning</div>,
+  MTAPostScreenTuning: () => <div>VIEW:postscreen-tuning</div>,
 }));
 vi.mock('../server/general/mta-server-general', () => ({
-  default: () => <div>VIEW:mta-server-general</div>,
+  MTAServerGeneral: () => <div>VIEW:mta-server-general</div>,
 }));
 vi.mock('../stats/mta-stats', () => ({
-  default: () => <div>VIEW:queue</div>,
+  MTAStats: () => <div>VIEW:queue</div>,
 }));
 
 import { MTADetailPanel } from '../mta-detail-panel';
