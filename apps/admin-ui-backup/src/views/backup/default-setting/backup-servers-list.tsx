@@ -14,7 +14,6 @@ import {
 } from '@zextras/ui-components';
 import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type {
@@ -260,8 +259,6 @@ export const ServersList = () => {
     },
   ];
 
-  const [serverList, setServerList] = useState<BackupServerType[]>([]);
-
   const getSmartScanStatus = (
     smartScanStartup: boolean,
     backupSmartScan: boolean,
@@ -328,10 +325,8 @@ export const ServersList = () => {
     return serverValue;
   };
 
-  useEffect(() => {
-    if (servers && servers?.length > 0) {
-      const sList: Array<BackupServerType> = [];
-      servers.forEach((item) => {
+  const serverList: Array<BackupServerType> = servers.length > 0
+    ? servers.map((item) => {
         const id = item?.id ?? '';
         const name = item?.name ?? '';
         const description =
@@ -346,16 +341,13 @@ export const ServersList = () => {
             )[id];
             if (zxBackItem && zxBackItem?.ZxBackup) {
               const backupValues = getBackupServerValue(zxBackItem?.ZxBackup);
-              sList.push({ id, name, description, ...backupValues });
+              return { id, name, description, ...backupValues };
             }
           }
-        } else {
-          sList.push({ id, name, description });
         }
-      });
-      setServerList(sList);
-    }
-  }, [backupServerList, servers]);
+        return { id, name, description };
+      })
+    : [];
 
   return (
     <>
