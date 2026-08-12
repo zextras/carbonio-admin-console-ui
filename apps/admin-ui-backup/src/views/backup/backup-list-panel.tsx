@@ -48,8 +48,12 @@ export const BackupListPanel = () => {
     serverMatch?.params.operation ?? opMatch?.params.operation ?? SERVERS_LIST;
   const selectedServer = serverMatch?.params.server ?? '';
   const isServerSelect = !!serverMatch;
-  const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
-  const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
+  const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(
+    () => localStorage.getItem(IS_DEFAULT_SETTINGS_EXPANDED) !== 'false',
+  );
+  const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState(
+    () => localStorage.getItem(IS_SERVER_SPECIFICS_EXPANDED) !== 'false',
+  );
   const { data: serverList = [], isError, isLoading } = useMailstoreServers();
   const [searchServer, setSearchServer] = useState<string>(selectedServer);
   const { moduleLicenseInfo } = useModuleLicenseInfo();
@@ -152,21 +156,6 @@ export const BackupListPanel = () => {
       }
     },
   };
-
-  useEffect(() => {
-    const storedValue = localStorage.getItem(IS_DEFAULT_SETTINGS_EXPANDED);
-    if (storedValue === 'false') {
-      setIsDefaultSettingsExpanded(false);
-    } else {
-      setIsDefaultSettingsExpanded(true);
-    }
-    const storedServerSpecificsValue = localStorage.getItem(IS_SERVER_SPECIFICS_EXPANDED);
-    if (storedServerSpecificsValue === 'false') {
-      setIsServerSpecificsExpanded(false);
-    } else {
-      setIsServerSpecificsExpanded(true);
-    }
-  }, []);
 
   return (
     <Container
