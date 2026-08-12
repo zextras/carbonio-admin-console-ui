@@ -26,7 +26,7 @@ import {
   useCurrentUserRights,
   useModuleLicenseInfo,
 } from '@zextras/ui-shared';
-import { find, isEmpty } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -45,7 +45,6 @@ import type {
 } from '../../../../types';
 import {
   BACKUP_REALTIME,
-  CONFIG,
   LOCAL_VALUE,
   MANAGE_EXTERNAL_VOLUME,
   MOUNTPOINT,
@@ -57,6 +56,7 @@ import {
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
+import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
 
 export const BackupConfiguration = () => {
   const { server } = useParams();
@@ -106,10 +106,7 @@ export const BackupConfiguration = () => {
     useState<string>('');
   const [rootVolumePath, setRootVolumePath] = useState<string>('');
   const { data: rights } = useCurrentUserRights();
-  const allowSetBackup = (() => {
-    const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-    return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  })();
+  const allowSetBackup = checkAllowSetBackup(rights);
 
   const destinationOptions: Array<SelectOption> = [
     {

@@ -8,15 +8,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights } from '@zextras/ui-shared';
 import type { TFunction } from 'i18next';
-import { cloneDeep, find, isEmpty, isEqual, reduce } from 'lodash-es';
+import { cloneDeep, isEmpty, isEqual, reduce } from 'lodash-es';
 import { type ChangeEvent, type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { CronScheduler, GlobalConfig, ModifyBackupData } from '../../types';
-import { CONFIG } from '../constants';
 import { backupQueryKeys } from '../services/backup-query-keys';
 import { modifyBackupRequest } from '../services/modify-backup';
 import { useGlobalConfig } from '../services/use-global-config';
+import { checkAllowSetBackup } from '../utils/check-backup-rights';
 
 export const useBackupConfig = (): {
   isDirty: boolean;
@@ -38,8 +38,7 @@ export const useBackupConfig = (): {
   const [backupDetail, setBackupDetail] = useState<GlobalConfig>(cloneDeep(globalConfig));
   const createSnackbar = useSnackbar();
   const { data: rights } = useCurrentUserRights();
-  const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-  const allowSetBackup = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+  const allowSetBackup = checkAllowSetBackup(rights);
 
   const onCancel = (): void => {
     setBackupDetail({ ...globalConfig });

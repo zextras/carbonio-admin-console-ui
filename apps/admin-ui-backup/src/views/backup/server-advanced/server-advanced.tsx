@@ -21,7 +21,6 @@ import {
   useAllServers,
   useCurrentUserRights,
 } from '@zextras/ui-shared';
-import { find } from 'lodash-es';
 import { type ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -33,8 +32,9 @@ import type {
   ServerAdvancedState,
   SetCoreAttributesResponse,
 } from '../../../../types';
-import { CONFIG, SERVER } from '../../../constants';
+import { SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
+import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
 
 export const ServerAdvanced = () => {
   const { server } = useParams();
@@ -62,10 +62,7 @@ export const ServerAdvanced = () => {
     useState<boolean>(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const { data: rights } = useCurrentUserRights();
-  const allowSetBackup = (() => {
-    const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-    return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  })();
+  const allowSetBackup = checkAllowSetBackup(rights);
 
   useEffect(() => {
     if (allServers && allServers.length > 0) {
