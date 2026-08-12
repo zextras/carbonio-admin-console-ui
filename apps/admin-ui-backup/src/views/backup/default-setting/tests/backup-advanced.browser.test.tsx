@@ -39,7 +39,7 @@ describe('BackupAdvanced', () => {
   beforeEach(async () => {
     queryClient = getQueryClient();
     await grantUserConfigRights(queryClient);
-    queryClient.setQueryData(backupQueryKeys.globalConfig(), { ...GLOBAL_CONFIG });
+    queryClient.setQueryData(['global-config'], { ...GLOBAL_CONFIG });
   });
 
   afterEach(() => {

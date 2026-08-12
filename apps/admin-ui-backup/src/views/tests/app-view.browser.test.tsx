@@ -135,7 +135,7 @@ describe('AppView', () => {
       createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
       await mockDumpGlobalConfigWithData();
 
-      queryClient.setQueryData(backupQueryKeys.globalConfig(), {
+      queryClient.setQueryData(['global-config'], {
         privateKeyAlgorithm: 'RSA',
       });
 

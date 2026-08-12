@@ -14,15 +14,12 @@ vi.mock('@zextras/ui-shared', async (importOriginal) => {
     ...actual,
     useCurrentUserRights: vi.fn(),
     useUserAccounts: vi.fn(),
+    useGlobalSettings: vi.fn(),
   };
 });
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => [(key: string, fallback?: string) => fallback || key, { i18n: {} }],
-}));
-
-vi.mock('../../services/use-global-config', () => ({
-  useGlobalConfig: vi.fn(),
 }));
 
 const mockMutate = vi.fn();
@@ -33,10 +30,9 @@ vi.mock('../../services/use-modify-backup-config', () => ({
   }),
 }));
 
-import { useCurrentUserRights, useUserAccounts } from '@zextras/ui-shared';
+import { useCurrentUserRights, useGlobalSettings, useUserAccounts } from '@zextras/ui-shared';
 
 import type { CronScheduler } from '../../../types';
-import { useGlobalConfig } from '../../services/use-global-config';
 import { useBackupConfig } from '../use-backup-config';
 
 describe('useBackupConfig', () => {
@@ -68,7 +64,7 @@ describe('useBackupConfig', () => {
   beforeEach(() => {
     mockMutate.mockClear();
 
-    (useGlobalConfig as unknown as Mock).mockReturnValue({ data: mockGlobalConfig });
+    (useGlobalSettings as unknown as Mock).mockReturnValue({ data: mockGlobalConfig });
 
     (useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
     (useCurrentUserRights as Mock).mockReturnValue({

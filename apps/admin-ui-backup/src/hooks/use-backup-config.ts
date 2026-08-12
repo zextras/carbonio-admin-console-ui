@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights } from '@zextras/ui-shared';
+import { useCurrentUserRights, useGlobalSettings } from '@zextras/ui-shared';
 import type { TFunction } from 'i18next';
 import { cloneDeep, isEqual, reduce } from 'lodash-es';
 import { type ChangeEvent, type Dispatch, type SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { CronScheduler, GlobalConfig, ModifyBackupData } from '../../types';
-import { useGlobalConfig } from '../services/use-global-config';
 import { useModifyBackupConfig } from '../services/use-modify-backup-config';
 import { checkAllowSetBackup } from '../utils/check-backup-rights';
 
@@ -30,7 +29,7 @@ export const useBackupConfig = (): {
   t: TFunction;
 } => {
   const [t] = useTranslation();
-  const { data: globalConfig = {} } = useGlobalConfig();
+  const { data: globalConfig = {} } = useGlobalSettings();
   const modifyMutation = useModifyBackupConfig();
   const [backupDetail, setBackupDetail] = useState<GlobalConfig>(cloneDeep(globalConfig));
   const { data: rights } = useCurrentUserRights();

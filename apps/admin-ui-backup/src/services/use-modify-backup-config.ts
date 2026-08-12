@@ -11,7 +11,6 @@ import { isEmpty } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
 import type { ModifyBackupData, ModifyBackupResponse } from '../../types';
-import { backupQueryKeys } from './backup-query-keys';
 
 export function useModifyBackupConfig() {
   const [t] = useTranslation();
@@ -36,7 +35,7 @@ export function useModifyBackupConfig() {
       throw new Error(errorMessage);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: backupQueryKeys.globalConfig() });
+      await queryClient.invalidateQueries({ queryKey: ['global-config'] });
       createSnackbar({
         key: 'success',
         severity: 'success',

@@ -6,7 +6,6 @@
 
 export const backupQueryKeys = {
   all: ['backup'] as const,
-  globalConfig: () => [...backupQueryKeys.all, 'global-config'] as const,
   serverConfig: (serverId?: string) =>
     [...backupQueryKeys.all, 'server-config', serverId ?? 'default'] as const,
   buckets: () => [...backupQueryKeys.all, 'buckets'] as const,

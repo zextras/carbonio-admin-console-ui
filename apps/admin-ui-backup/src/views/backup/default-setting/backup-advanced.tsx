@@ -12,10 +12,10 @@ import {
   Select,
   Switch,
 } from '@zextras/ui-components';
+import { useGlobalSettings } from '@zextras/ui-shared';
 
 import type { GlobalConfig } from '../../../../types';
 import { useBackupConfig } from '../../../hooks/use-backup-config';
-import { useGlobalConfig } from '../../../services/use-global-config';
 import { BackupConfigHeader } from '../components/backup/backup-config-header';
 
 export const BackupAdvanced = () => {
@@ -31,7 +31,7 @@ export const BackupAdvanced = () => {
     t,
   } = useBackupConfig();
 
-  const { data: globalConfig } = useGlobalConfig();
+  const { data: globalConfig } = useGlobalSettings();
 
   const compressLevelItems = [
     {
