@@ -12,7 +12,7 @@ import { cloneDeep, find, isEmpty, isEqual, reduce } from 'lodash-es';
 import { type ChangeEvent, type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { GlobalConfig, ModifyBackupData } from '../../types';
+import type { CronScheduler, GlobalConfig, ModifyBackupData } from '../../types';
 import { CONFIG } from '../constants';
 import { backupQueryKeys } from '../services/backup-query-keys';
 import { modifyBackupRequest } from '../services/modify-backup';
@@ -127,7 +127,7 @@ export const useBackupConfig = (): {
     setBackupDetail((prev: GlobalConfig) => ({
       ...prev,
       [e.target.name]: {
-        ...prev[e.target.name],
+        ...(prev[e.target.name] as CronScheduler),
         'cron-pattern': e.target.value,
         'cron-enabled': (backupDetail[e.target.name] as { 'cron-enabled': boolean })[
           'cron-enabled'
@@ -140,7 +140,7 @@ export const useBackupConfig = (): {
     setBackupDetail((prev: GlobalConfig) => ({
       ...prev,
       [key]: {
-        ...prev[key],
+        ...(prev[key] as CronScheduler),
         'cron-pattern': (backupDetail[key] as { 'cron-pattern': string })['cron-pattern'],
         'cron-enabled':
           (backupDetail[key] as { 'cron-enabled': boolean })['cron-enabled'] !== true,

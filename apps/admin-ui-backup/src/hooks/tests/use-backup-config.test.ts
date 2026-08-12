@@ -40,6 +40,7 @@ import { useCurrentUserRights, useUserAccounts } from '@zextras/ui-shared';
 import { backupQueryKeys } from '../../services/backup-query-keys';
 import { modifyBackupRequest } from '../../services/modify-backup';
 import { useGlobalConfig } from '../../services/use-global-config';
+import type { CronScheduler } from '../../../types';
 import { useBackupConfig } from '../use-backup-config';
 
 describe('useBackupConfig', () => {
@@ -481,8 +482,8 @@ describe('useBackupConfig', () => {
         result.current.changeBackupSchedulerInput(event);
       });
 
-      expect(result.current.backupDetail.scheduler1['cron-pattern']).toBe('0 6 * * *');
-      expect(result.current.backupDetail.scheduler1['cron-enabled']).toBe(true);
+      expect((result.current.backupDetail.scheduler1 as CronScheduler)['cron-pattern']).toBe('0 6 * * *');
+      expect((result.current.backupDetail.scheduler1 as CronScheduler)['cron-enabled']).toBe(true);
     });
 
     it('should handle scheduler that was initially disabled', () => {
@@ -499,8 +500,8 @@ describe('useBackupConfig', () => {
         result.current.changeBackupSchedulerInput(event);
       });
 
-      expect(result.current.backupDetail.scheduler2['cron-pattern']).toBe('0 18 * * *');
-      expect(result.current.backupDetail.scheduler2['cron-enabled']).toBe(false);
+      expect((result.current.backupDetail.scheduler2 as CronScheduler)['cron-pattern']).toBe('0 18 * * *');
+      expect((result.current.backupDetail.scheduler2 as CronScheduler)['cron-enabled']).toBe(false);
     });
   });
 
@@ -512,8 +513,8 @@ describe('useBackupConfig', () => {
         result.current.changeBackupSchedulerSwitch('scheduler1');
       });
 
-      expect(result.current.backupDetail.scheduler1['cron-enabled']).toBe(false);
-      expect(result.current.backupDetail.scheduler1['cron-pattern']).toBe('0 0 * * *');
+      expect((result.current.backupDetail.scheduler1 as CronScheduler)['cron-enabled']).toBe(false);
+      expect((result.current.backupDetail.scheduler1 as CronScheduler)['cron-pattern']).toBe('0 0 * * *');
     });
 
     it('should toggle back to true', () => {
@@ -523,8 +524,8 @@ describe('useBackupConfig', () => {
         result.current.changeBackupSchedulerSwitch('scheduler2');
       });
 
-      expect(result.current.backupDetail.scheduler2['cron-enabled']).toBe(true);
-      expect(result.current.backupDetail.scheduler2['cron-pattern']).toBe('0 12 * * *');
+      expect((result.current.backupDetail.scheduler2 as CronScheduler)['cron-enabled']).toBe(true);
+      expect((result.current.backupDetail.scheduler2 as CronScheduler)['cron-pattern']).toBe('0 12 * * *');
     });
   });
 
@@ -558,7 +559,7 @@ describe('useBackupConfig', () => {
 
       expect(result.current.backupDetail.backupEnabled).toBe(false);
       expect(result.current.backupDetail.backupPath).toBe('/new');
-      expect(result.current.backupDetail.scheduler1['cron-enabled']).toBe(false);
+      expect((result.current.backupDetail.scheduler1 as CronScheduler)['cron-enabled']).toBe(false);
       expect(result.current.isDirty).toBe(true);
     });
 

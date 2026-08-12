@@ -9,8 +9,32 @@ export type CronScheduler = {
   'cron-enabled': boolean;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type GlobalConfig = Record<string, any>;
+export type GlobalConfig = {
+  ZxBackup_ModuleEnabledAtStartup?: boolean;
+  ZxBackup_RealTimeScanner?: boolean;
+  ZxBackup_DoSmartScanOnStartup?: boolean;
+  ZxBackup_BackupCustomizations?: boolean;
+  ZxBackup_PurgeCustomizations?: boolean;
+  backupSaveIndex?: boolean;
+  backupOnTheFlyMetadata?: boolean;
+  scheduledMetadataArchivingEnabled?: boolean;
+  ldapDumpEnabled?: boolean;
+  ZxBackup_DestPath?: string;
+  ZxBackup_SpaceThreshold?: string;
+  ZxBackup_MaxMetadataSize?: string;
+  ZxBackup_MaxWaitingTime?: string;
+  ZxBackup_MaxOperationPerAccount?: string;
+  ZxBackup_DataRetentionDays?: string;
+  backupLatencyHighThreshold?: string;
+  backupLatencyLowThreshold?: string;
+  backupLocalMetadataThreshold?: string;
+  backupNumberThreadsForAccounts?: string;
+  backupAccountsRetentionDays?: string;
+  backupCompressionLevel?: string | number;
+  backupSmartScanScheduler?: CronScheduler;
+  backupPurgeScheduler?: CronScheduler;
+  [key: string]: unknown;
+};
 
 export type MailstoreServer = {
   id?: string;
