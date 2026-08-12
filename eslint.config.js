@@ -98,6 +98,7 @@ export default tseslint.config(
       'apps/admin-ui-domains/src/views/domain/global-list-panel.tsx',
       'apps/admin-ui-dashboard/**',
       'apps/admin-ui-operations/**',
+      'apps/admin-ui-backup/**',
     ],
     plugins: {
       'react-compiler': reactCompiler,
