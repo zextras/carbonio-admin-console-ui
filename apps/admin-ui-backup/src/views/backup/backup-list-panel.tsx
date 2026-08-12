@@ -70,17 +70,9 @@ export const BackupListPanel = () => {
     isSelected: !!isBackupModuleLicensed,
   }));
 
-  const [defaultOptions, setDefaultOptions] = useState<Array<ListItemType>>(defaultSettingsOptions);
-
-  useEffect(() => {
-    if (!hasListServerRights) {
-      setDefaultOptions(
-        defaultSettingsOptions.filter((item: Record<string, unknown>) => item?.id !== SERVERS_LIST),
-      );
-    } else {
-      setDefaultOptions(defaultSettingsOptions);
-    }
-  }, [hasListServerRights, defaultSettingsOptions]);
+  const defaultOptions = hasListServerRights
+    ? defaultSettingsOptions
+    : defaultSettingsOptions.filter((item) => item?.id !== SERVERS_LIST);
 
   const serverSettingsOptions = SECTION_ROUTES.filter((route) => route.prefix === ':server').map(
     ({ id, labelKey, labelDefault }) => ({
