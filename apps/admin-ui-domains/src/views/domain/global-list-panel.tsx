@@ -3,54 +3,52 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { ListItems, ListPanelItem } from '@zextras/ui-components';
-import { FC, useEffect, useState } from 'react';
+import { ListItems, type ListItemType, ListPanelItem } from '@zextras/ui-components';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IS_GLOBAL_LIST_EXPANDED } from '../../constants';
 
-const GlobalListPanel: FC<any> = ({
-	globalOptionItems,
-	selectedOperationItem,
-	setSelectedOperationItem
-}) => {
-	const [t] = useTranslation();
-	const [isGlobalListExpanded, setIsGlobalListExpanded] = useState(true);
-
-	const toggleGlobalView = (): void => {
-		if (isGlobalListExpanded) {
-			setIsGlobalListExpanded(false);
-			localStorage.setItem(IS_GLOBAL_LIST_EXPANDED, 'false');
-		} else {
-			setIsGlobalListExpanded(true);
-			localStorage.removeItem(IS_GLOBAL_LIST_EXPANDED);
-		}
-	};
-
-	useEffect(() => {
-		const storedValue = localStorage.getItem(IS_GLOBAL_LIST_EXPANDED);
-		if (storedValue === 'false') {
-			setIsGlobalListExpanded(false);
-		} else {
-			setIsGlobalListExpanded(true);
-		}
-	}, []);
-	return (
-		<>
-			<ListPanelItem
-				title={t('label.global', 'Global')}
-				isListExpanded={isGlobalListExpanded}
-				setToggleView={toggleGlobalView}
-			/>
-			{isGlobalListExpanded && (
-				<ListItems
-					items={globalOptionItems}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
-				/>
-			)}
-		</>
-	);
+type GlobalListPanelProps = {
+  globalOptionItems: Array<ListItemType>;
+  selectedOperationItem: string | null;
+  setSelectedOperationItem: (id: string) => void;
 };
 
-export default GlobalListPanel;
+export const GlobalListPanel = ({
+  globalOptionItems,
+  selectedOperationItem,
+  setSelectedOperationItem,
+}: GlobalListPanelProps) => {
+  const [t] = useTranslation();
+  const [isGlobalListExpanded, setIsGlobalListExpanded] = useState(
+    () => localStorage.getItem(IS_GLOBAL_LIST_EXPANDED) !== 'false',
+  );
+
+  const toggleGlobalView = (): void => {
+    if (isGlobalListExpanded) {
+      setIsGlobalListExpanded(false);
+      localStorage.setItem(IS_GLOBAL_LIST_EXPANDED, 'false');
+    } else {
+      setIsGlobalListExpanded(true);
+      localStorage.removeItem(IS_GLOBAL_LIST_EXPANDED);
+    }
+  };
+
+  return (
+    <>
+      <ListPanelItem
+        title={t('label.global', 'Global')}
+        isListExpanded={isGlobalListExpanded}
+        setToggleView={toggleGlobalView}
+      />
+      {isGlobalListExpanded && (
+        <ListItems
+          items={globalOptionItems}
+          selectedOperationItem={selectedOperationItem}
+          setSelectedOperationItem={setSelectedOperationItem}
+        />
+      )}
+    </>
+  );
+};
