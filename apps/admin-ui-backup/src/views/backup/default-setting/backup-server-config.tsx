@@ -13,7 +13,6 @@ import {
   Switch,
 } from '@zextras/ui-components';
 import { useModuleLicenseInfo } from '@zextras/ui-shared';
-import { useEffect, useState } from 'react';
 
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
 import { useBackupConfig } from '../../../hooks/use-backup-config';
@@ -34,26 +33,13 @@ export const BackupServerConfig = () => {
   } = useBackupConfig();
 
   const { moduleLicenseInfo } = useModuleLicenseInfo();
-  const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
-  const [isBackupRealTimeFeatureLicensed, setBackupRealTimeFeatureLicensed] =
-    useState<boolean>(false);
-  useEffect(() => {
-    if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
-      const backupModule = moduleLicenseInfo.features.filter(
-        (item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC,
-      );
-      if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
-        setIsBackupModuleLicensed(true);
-      }
-
-      const realTime = moduleLicenseInfo.features.filter(
-        (item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME,
-      );
-      if (realTime && realTime[0] && realTime[0]?.enabled) {
-        setBackupRealTimeFeatureLicensed(true);
-      }
-    }
-  }, [moduleLicenseInfo]);
+  const licenseFeatures = moduleLicenseInfo?.features ?? [];
+  const isBackupModuleLicensed = licenseFeatures.some(
+    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_BASIC && f?.enabled,
+  );
+  const isBackupRealTimeFeatureLicensed = licenseFeatures.some(
+    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_REALTIME && f?.enabled,
+  );
 
   return (
     <>
