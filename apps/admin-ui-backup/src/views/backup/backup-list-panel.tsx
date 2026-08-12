@@ -53,22 +53,14 @@ export const BackupListPanel = () => {
   const { data: serverList = [], isError, isLoading } = useMailstoreServers();
   const [searchServer, setSearchServer] = useState<string>(selectedServer);
   const [serverNames, setServerNames] = useState<Array<ListItemType>>([]);
-  const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
   const { moduleLicenseInfo } = useModuleLicenseInfo();
+  const licenseFeatures = moduleLicenseInfo?.features ?? [];
+  const isBackupModuleLicensed = licenseFeatures.some(
+    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_BASIC && f?.enabled,
+  );
   const { data: rights } = useCurrentUserRights();
   const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
   const [isShowError, setIsShowError] = useState(false);
-
-  useEffect(() => {
-    if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
-      const backupModule = moduleLicenseInfo.features.filter(
-        (item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC,
-      );
-      if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
-        setIsBackupModuleLicensed(true);
-      }
-    }
-  }, [moduleLicenseInfo]);
 
   const defaultSettingsOptions = SECTION_ROUTES.filter(
     (route) => !route.prefix && route.id !== IMPORT_EXTERNAL_BACKUP,
