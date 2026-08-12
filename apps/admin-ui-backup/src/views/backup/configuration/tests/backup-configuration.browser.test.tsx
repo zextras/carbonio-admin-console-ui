@@ -15,7 +15,7 @@ import {
 import { HttpResponse } from 'msw';
 import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 
 import { BackupConfiguration } from '../backup-configuration';
 
@@ -514,7 +514,8 @@ describe('BackupConfiguration', () => {
         .element(page.getByText('Backup is enabled at startup'))
         .toBeVisible();
 
-      await page.getByText('Backup is enabled at startup').click();
+      const input = page.getByRole('textbox', { name: 'Local Volume (reload if you changed this value)' });
+      await userEvent.fill(input, '/new/backup/path');
 
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
       await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();

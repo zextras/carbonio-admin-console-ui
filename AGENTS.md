@@ -164,7 +164,8 @@ Year is auto-updated by eslint. The header is required in all files except:
   1. `getByRole` (e.g. `getByRole('button', { name: 'Save' })`)
   2. `getByLabelText` (e.g. `getByLabelText('Domain Name')`)
   3. `getByText` / `getByPlaceholder` (visible text content)
-  4. For icon-only buttons without `aria-label`: locate the rendered icon via its visible attribute (e.g. `page.locator('ds-icon[icon="ChevronRight"]')`)
+  4. For icon-only buttons without `aria-label`: locate the rendered icon via its visible attribute (e.g. `page.getByTestId('icon: CloseOutline')`)
+- **`page.locator` does not exist** in Vitest browser mode — the `page` object from `vitest/browser` is NOT a Playwright Page. Use `page.getByRole`, `page.getByText`, `page.getByTestId`, or `userEvent` for all interactions instead.
 
 ### State Management
 - Global state: Zustand stores in `store/` directories

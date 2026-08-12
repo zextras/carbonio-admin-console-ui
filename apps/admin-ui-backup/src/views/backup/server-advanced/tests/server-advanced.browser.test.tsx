@@ -219,12 +219,28 @@ describe('ServerAdvanced', () => {
         initialRouterEntry: `/${SERVER_NAME}`,
       });
 
-      // Wait for API data to load (input gets populated with value from API)
+      // Wait for API data to load (child component mounts)
       await expect
         .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
         .toHaveValue('200');
 
-      await userEvent.click(page.getByText('Include server configuration'));
+      // Re-set account + rights after child mount (gcTime:0 GC'd them during parent loading gate)
+      queryClient.setQueryData(['account', 'info'], {
+        id: 'test-user-id',
+        name: 'test@example.com',
+        displayName: 'Test User',
+        signatures: { signature: [] },
+        identities: undefined,
+        rights: { targets: [] },
+      });
+      queryClient.setQueryData(
+        ['effective-rights', 'test@example.com'],
+        [{ type: 'config', all: [{ setAttrs: [{ all: true }], getAttrs: [{ all: true }] }] }],
+      );
+
+      const latencyInput = page.getByRole('textbox', { name: 'Latency High Threshold (ms)' });
+      await expect.element(latencyInput).toBeEnabled();
+      await userEvent.fill(latencyInput, '999');
 
       await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
@@ -241,7 +257,23 @@ describe('ServerAdvanced', () => {
         .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
         .toHaveValue('200');
 
-      await userEvent.click(page.getByText('Include server configuration'));
+      // Re-set account + rights after child mount
+      queryClient.setQueryData(['account', 'info'], {
+        id: 'test-user-id',
+        name: 'test@example.com',
+        displayName: 'Test User',
+        signatures: { signature: [] },
+        identities: undefined,
+        rights: { targets: [] },
+      });
+      queryClient.setQueryData(
+        ['effective-rights', 'test@example.com'],
+        [{ type: 'config', all: [{ setAttrs: [{ all: true }], getAttrs: [{ all: true }] }] }],
+      );
+
+      const latencyInput = page.getByRole('textbox', { name: 'Latency High Threshold (ms)' });
+      await expect.element(latencyInput).toBeEnabled();
+      await userEvent.fill(latencyInput, '999');
 
       await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
 
