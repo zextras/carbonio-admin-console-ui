@@ -67,6 +67,7 @@ Year is auto-updated by eslint. The header is required in all files except:
 ### Function Definitions
 - Use arrow functions for React components, directly exported with a named export
 - Use regular function declarations for all other (non-component) logic
+- **Never use IIFEs** (Immediately Invoked Function Expressions) — extract to a variable or a named function instead
 - Example:
   ```typescript
   // Component
