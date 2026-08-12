@@ -52,7 +52,6 @@ export const BackupListPanel = () => {
   const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
   const { data: serverList = [], isError, isLoading } = useMailstoreServers();
   const [searchServer, setSearchServer] = useState<string>(selectedServer);
-  const [serverNames, setServerNames] = useState<Array<ListItemType>>([]);
   const { moduleLicenseInfo } = useModuleLicenseInfo();
   const licenseFeatures = moduleLicenseInfo?.features ?? [];
   const isBackupModuleLicensed = licenseFeatures.some(
@@ -60,7 +59,37 @@ export const BackupListPanel = () => {
   );
   const { data: rights } = useCurrentUserRights();
   const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
-  const [isShowError, setIsShowError] = useState(false);
+
+  const filteredServers = (isError || isLoading)
+    ? []
+    : serverList.filter((item) => item.name?.includes(searchServer));
+
+  const serverNames: Array<ListItemType> = filteredServers.map((serverItem) => ({
+    id: serverItem?.id ?? '',
+    name: serverItem?.name ?? '',
+    isSelected: false,
+    label: serverItem?.name ?? '',
+    customComponent: (
+      <Row
+        style={{
+          display: 'block',
+          textAlign: 'left',
+          height: 'inherit',
+          padding: '0.18rem',
+          width: 'inherit',
+        }}
+        onClick={(): void => {
+          const serverName = serverItem?.name ?? '';
+          setSearchServer(serverName);
+          replaceHistory(`/${serverName}/${CONFIGURATION_BACKUP}`);
+        }}
+      >
+        {serverItem?.name}
+      </Row>
+    ),
+  }));
+
+  const isShowError = serverList.length > 0 && filteredServers.length === 0;
 
   const defaultSettingsOptions = SECTION_ROUTES.filter(
     (route) => !route.prefix && route.id !== IMPORT_EXTERNAL_BACKUP,
@@ -111,45 +140,6 @@ export const BackupListPanel = () => {
     setIsServerSpecificsExpanded(!isServerSpecificsExpanded);
   };
 
-  const addServerToList = (list: Array<MailstoreServer>) => {
-    const data: Array<ListItemType> = list.map((serverItem) => ({
-      id: serverItem?.id ?? '',
-      name: serverItem?.name ?? '',
-      isSelected: false,
-      label: serverItem?.name ?? '',
-      customComponent: (
-        <Row
-          style={{
-            display: 'block',
-            textAlign: 'left',
-            height: 'inherit',
-            padding: '0.18rem',
-            width: 'inherit',
-          }}
-          onClick={(): void => {
-            const server = serverItem?.name ?? '';
-            setSearchServer(server);
-            replaceHistory(`/${server}/${CONFIGURATION_BACKUP}`);
-          }}
-        >
-          {serverItem?.name}
-        </Row>
-      ),
-    }));
-    setServerNames(data);
-  };
-
-  useEffect(() => {
-    if (isError || isLoading) {
-      return;
-    }
-    const filterList = serverList.filter((item) => item.name?.includes(searchServer));
-    addServerToList(filterList);
-    if (serverList.length > 0 && filterList.length === 0) {
-      setIsShowError(true);
-    }
-  }, [searchServer, addServerToList, serverList, isError, isLoading]);
-
   useEffect(() => {
     if (rights && rights.length > 0) {
       const right = getRights(rights, SERVER);
@@ -167,7 +157,6 @@ export const BackupListPanel = () => {
   const customIconDetail = {
     icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
     onClick: (): void => {
-      setIsShowError(false);
       if (searchServer !== '') {
         setSearchServer('');
         replaceHistory(`/${SERVER_CONFIG}`);
@@ -227,7 +216,6 @@ export const BackupListPanel = () => {
                   width="16.56rem"
                   inputLabel={t('label.select_a_server', 'Select a Server')}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                    setIsShowError(false);
                     setSearchServer(e.target.value);
                   }}
                   inputValue={searchServer}
