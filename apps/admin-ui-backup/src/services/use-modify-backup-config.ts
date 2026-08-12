@@ -6,12 +6,12 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
+import { setCoreAttributes } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
 import type { ModifyBackupData, ModifyBackupResponse } from '../../types';
 import { backupQueryKeys } from './backup-query-keys';
-import { modifyBackupRequest } from './modify-backup';
 
 export function useModifyBackupConfig() {
   const [t] = useTranslation();
@@ -20,7 +20,11 @@ export function useModifyBackupConfig() {
 
   return useMutation<ModifyBackupResponse, Error, ModifyBackupData>({
     mutationFn: async (modifiedData: ModifyBackupData) => {
-      const data = await modifyBackupRequest(modifiedData);
+      const body: Record<string, unknown> = {};
+      Object.keys(modifiedData).forEach((key) => {
+        body[key] = { value: modifiedData[key], configType: 'global' };
+      });
+      const data = await setCoreAttributes<ModifyBackupResponse>(body);
       if (data?.status === 200 || isEmpty(data)) {
         return data;
       }

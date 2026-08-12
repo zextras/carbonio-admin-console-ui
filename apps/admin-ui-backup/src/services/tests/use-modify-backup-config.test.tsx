@@ -11,9 +11,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockCreateSnackbar = vi.fn();
 const mockInvalidateQueries = vi.fn();
+const mockSetCoreAttributes = vi.fn();
 
 vi.mock('@zextras/ui-components', () => ({
   useSnackbar: () => mockCreateSnackbar,
+}));
+
+vi.mock('@zextras/ui-shared', () => ({
+  setCoreAttributes: (...args: unknown[]) => mockSetCoreAttributes(...args),
 }));
 
 vi.mock('react-i18next', () => ({
@@ -28,11 +33,6 @@ vi.mock('@tanstack/react-query', async () => {
   };
 });
 
-vi.mock('../modify-backup', () => ({
-  modifyBackupRequest: vi.fn(),
-}));
-
-import { modifyBackupRequest } from '../modify-backup';
 import { useModifyBackupConfig } from '../use-modify-backup-config';
 
 function createWrapper() {
@@ -50,8 +50,8 @@ describe('useModifyBackupConfig', () => {
     vi.clearAllMocks();
   });
 
-  it('calls modifyBackupRequest and shows success snackbar on success', async () => {
-    vi.mocked(modifyBackupRequest).mockResolvedValue({} as never);
+  it('calls setCoreAttributes with shaped data and shows success snackbar', async () => {
+    mockSetCoreAttributes.mockResolvedValue({});
 
     const { result } = renderHook(() => useModifyBackupConfig(), {
       wrapper: createWrapper(),
@@ -60,7 +60,9 @@ describe('useModifyBackupConfig', () => {
     result.current.mutate({ ZxBackup_ModuleEnabledAtStartup: true });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(modifyBackupRequest).toHaveBeenCalledWith({ ZxBackup_ModuleEnabledAtStartup: true });
+    expect(mockSetCoreAttributes).toHaveBeenCalledWith({
+      ZxBackup_ModuleEnabledAtStartup: { value: true, configType: 'global' },
+    });
     expect(mockInvalidateQueries).toHaveBeenCalled();
     expect(mockCreateSnackbar).toHaveBeenCalledWith(
       expect.objectContaining({ severity: 'success' }),
@@ -68,7 +70,7 @@ describe('useModifyBackupConfig', () => {
   });
 
   it('shows error snackbar on failure', async () => {
-    vi.mocked(modifyBackupRequest).mockRejectedValue(new Error('Server error') as never);
+    mockSetCoreAttributes.mockRejectedValue(new Error('Server error'));
 
     const { result } = renderHook(() => useModifyBackupConfig(), {
       wrapper: createWrapper(),
