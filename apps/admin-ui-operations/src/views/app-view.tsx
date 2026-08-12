@@ -4,15 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, type CrumbMenuItem,PageHeader } from '@zextras/ui-components';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
 
 import { RUNNING_ROUTE_ID } from '../constants';
-import OperationsLayout from './operations/operations-layout';
+import { OperationsLayout } from './operations/operations-layout';
 import { SECTION_ROUTES } from './operations/operations-section-routes';
 
-export const AppView: FC = () => {
+export const AppView = () => {
 	const [t] = useTranslation();
 	const { pathname } = useLocation();
 	const appBase = `/${pathname.split('/').filter(Boolean).slice(0, 2).join('/')}`;

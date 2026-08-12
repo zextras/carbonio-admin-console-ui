@@ -7,6 +7,7 @@ import type { ComponentType } from 'react';
 
 import {
   ACTIVE_SYNC,
+  ADDRESS_BOOK,
   ADMINISTRATORS,
   DOMAINS,
   QUARANTINE,
@@ -16,6 +17,7 @@ import {
 } from '../constants';
 import { DomainList } from './domain/domain-list/domain-list';
 import GlobalActiveSync from './domain/global/global-active-sync';
+import { GlobalAddressBook } from './domain/global/global-address-book';
 import GlobalDetailPanel from './domain/global/global-detail-panel';
 import GlobalTheme from './domain/global/global-theme';
 import GlobalTwoFactorAuthentcation from './domain/global/global-two-factor-auth';
@@ -81,5 +83,11 @@ export const GLOBAL_SECTION_ROUTES: Array<GlobalSectionRoute> = [
     labelKey: 'label.active_sync',
     labelDefault: 'Active Sync',
     Component: GlobalActiveSync,
+  },
+  {
+    id: ADDRESS_BOOK,
+    labelKey: 'label.services',
+    labelDefault: 'Services',
+    Component: GlobalAddressBook,
   },
 ];

@@ -8,4 +8,5 @@ export const operationQueryKeys = {
 	all: ['operation'] as const,
 	allOperations: () => [...operationQueryKeys.all, 'all-operations'] as const,
 	doneOperations: () => [...operationQueryKeys.all, 'done-operations'] as const,
+	stopOperation: () => [...operationQueryKeys.all, 'stop-operation'] as const,
 } as const;
