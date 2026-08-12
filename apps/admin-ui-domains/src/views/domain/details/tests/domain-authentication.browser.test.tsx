@@ -277,8 +277,15 @@ describe('DomainAuthentication (browser)', () => {
 
     describe('LDAP URL validation', () => {
         it('should show error when LDAP URL is invalid', async () => {
-            setupDomainStore([{ n: 'zimbraAuthMech', _content: 'ldap' }]);
             setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            // Wait for page to load and select auth method
+            await expect.element(page.getByText('Your Auth Method is')).toBeVisible();
+
+            // Click on auth method select and choose External LDAP only
+            const authSelect = page.getByTestId('auth-method-select');
+            await authSelect.click();
+            await page.getByText('External LDAP only').click();
 
             const urlInput = page.getByLabelText('URL');
             await userEvent.type(urlInput, 'not-a-valid-url');
@@ -287,14 +294,22 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should show Required when URL is cleared in LDAP mode', async () => {
-            setupDomainStore([
-                { n: 'zimbraAuthMech', _content: 'ldap' },
-                { n: 'zimbraAuthLdapURL', _content: 'ldap://ldap.example.com' },
-            ]);
-            await setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
+            // Wait for page to load and select auth method
+            await expect.element(page.getByText('Your Auth Method is')).toBeVisible();
+
+            // Click on auth method select and choose External LDAP only
+            const authSelect = page.getByTestId('auth-method-select');
+            await authSelect.click();
+            await page.getByText('External LDAP only').click();
+
+            // Type a valid URL first
             const urlInput = page.getByLabelText('URL');
+            await userEvent.type(urlInput, 'ldap://ldap.example.com');
             await expect.element(urlInput).toHaveValue('ldap://ldap.example.com');
+
+            // Now clear it
             await userEvent.clear(urlInput);
 
             await expect.element(page.getByText('Required')).toBeVisible();
@@ -351,6 +366,9 @@ describe('DomainAuthentication (browser)', () => {
             });
 
             setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            // Wait for form to fully load (auth method select appears when domain data is synced)
+            await expect.element(page.getByText('Your Auth Method is')).toBeVisible();
 
             const urlInput = page.getByLabelText('URL');
             await userEvent.type(urlInput, 'ldap://ldap.test.com');
@@ -446,13 +464,31 @@ describe('DomainAuthentication (browser)', () => {
 
     describe('Verify Auth', () => {
         it('should enable LOGIN AND VERIFY button when LDAP/AD auth with required fields', async () => {
-            setupDomainStore([
-                { n: 'zimbraAuthMech', _content: 'ldap' },
-                { n: 'zimbraAuthLdapURL', _content: 'ldap://ldap.example.com' },
-                { n: 'zimbraAuthLdapSearchBindDn', _content: 'cn=admin,dc=example,dc=com' },
-                { n: 'zimbraAuthLdapSearchBindPassword', _content: 'secret123' },
-            ]);
-            await setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            // Wait for page to load and select auth method
+            await expect.element(page.getByText('Your Auth Method is')).toBeVisible();
+
+            // Click on auth method select and choose External LDAP only
+            const authSelect = page.getByTestId('auth-method-select');
+            await authSelect.click();
+            await page.getByText('External LDAP only').click();
+
+            // Fill all required fields manually
+            const urlInput = page.getByLabelText('URL');
+            await userEvent.type(urlInput, 'ldap://ldap.example.com');
+
+            const bindUserInput = page.getByLabelText('Search Bind User');
+            await userEvent.type(bindUserInput, 'cn=admin,dc=example,dc=com');
+
+            const bindPasswordInput = page.getByLabelText('Search Bind Password');
+            await userEvent.type(bindPasswordInput, 'secret123');
+
+            const usernameInput = page.getByLabelText('User Name');
+            await userEvent.type(usernameInput, 'testuser@example.com');
+
+            const passwordInput = page.getByLabelText('Password', { exact: true });
+            await userEvent.type(passwordInput, 'testpass');
 
             await expect
                 .element(page.getByRole('button', { name: /login and verify/i }))
@@ -460,22 +496,35 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should call CheckAuthConfig when LOGIN AND VERIFY is clicked', async () => {
-            setupDomainStore([
-                { n: 'zimbraAuthMech', _content: 'ldap' },
-                { n: 'zimbraAuthLdapURL', _content: 'ldap://ldap.example.com' },
-            ]);
-
             const checkAuthInterceptor = createBrowserSoapAPIInterceptor('CheckAuthConfig', {
                 code: [{ _content: 'check.OK' }],
             });
 
             setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
+            // Wait for page to load and select auth method
+            await expect.element(page.getByText('Your Auth Method is')).toBeVisible();
+
+            // Click on auth method select and choose External LDAP only
+            const authSelect = page.getByTestId('auth-method-select');
+            await authSelect.click();
+            await page.getByText('External LDAP only').click();
+
+            // Fill all required fields manually
+            const urlInput = page.getByLabelText('URL');
+            await userEvent.type(urlInput, 'ldap://ldap.example.com');
+
             const bindUserInput = page.getByLabelText('Search Bind User');
             await userEvent.type(bindUserInput, 'cn=admin,dc=example,dc=com');
 
             const bindPasswordInput = page.getByLabelText('Search Bind Password');
             await userEvent.type(bindPasswordInput, 'secret123');
+
+            const usernameInput = page.getByLabelText('User Name');
+            await userEvent.type(usernameInput, 'testuser@example.com');
+
+            const passwordInput = page.getByLabelText('Password', { exact: true });
+            await userEvent.type(passwordInput, 'testpass');
 
             const loginBtn = page.getByRole('button', { name: /login and verify/i });
             await expect.element(loginBtn).not.toBeDisabled();
@@ -486,22 +535,35 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should show LOGIN VERIFIED after successful verification', async () => {
-            setupDomainStore([
-                { n: 'zimbraAuthMech', _content: 'ldap' },
-                { n: 'zimbraAuthLdapURL', _content: 'ldap://ldap.example.com' },
-            ]);
-
             createBrowserSoapAPIInterceptor('CheckAuthConfig', {
                 code: [{ _content: 'check.OK' }],
             });
 
             setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
+            // Wait for page to load and select auth method
+            await expect.element(page.getByText('Your Auth Method is')).toBeVisible();
+
+            // Click on auth method select and choose External LDAP only
+            const authSelect = page.getByTestId('auth-method-select');
+            await authSelect.click();
+            await page.getByText('External LDAP only').click();
+
+            // Fill all required fields manually
+            const urlInput = page.getByLabelText('URL');
+            await userEvent.type(urlInput, 'ldap://ldap.example.com');
+
             const bindUserInput = page.getByLabelText('Search Bind User');
             await userEvent.type(bindUserInput, 'cn=admin,dc=example,dc=com');
 
             const bindPasswordInput = page.getByLabelText('Search Bind Password');
             await userEvent.type(bindPasswordInput, 'secret123');
+
+            const usernameInput = page.getByLabelText('User Name');
+            await userEvent.type(usernameInput, 'testuser@example.com');
+
+            const passwordInput = page.getByLabelText('Password', { exact: true });
+            await userEvent.type(passwordInput, 'testpass');
 
             const loginBtn = page.getByRole('button', { name: /login and verify/i });
             await loginBtn.click();
@@ -530,18 +592,36 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should disable LOGIN AND VERIFY when Search Bind Password is cleared', async () => {
-            setupDomainStore([
-                { n: 'zimbraAuthMech', _content: 'ldap' },
-                { n: 'zimbraAuthLdapURL', _content: 'ldap://ldap.example.com' },
-                { n: 'zimbraAuthLdapSearchBindDn', _content: 'cn=admin,dc=example,dc=com' },
-                { n: 'zimbraAuthLdapSearchBindPassword', _content: 'secret123' },
-            ]);
             setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            // Wait for page to load and select auth method
+            await expect.element(page.getByText('Your Auth Method is')).toBeVisible();
+
+            // Click on auth method select and choose External LDAP only
+            const authSelect = page.getByTestId('auth-method-select');
+            await authSelect.click();
+            await page.getByText('External LDAP only').click();
+
+            // Fill all required fields manually
+            const urlInput = page.getByLabelText('URL');
+            await userEvent.type(urlInput, 'ldap://ldap.example.com');
+
+            const bindUserInput = page.getByLabelText('Search Bind User');
+            await userEvent.type(bindUserInput, 'cn=admin,dc=example,dc=com');
+
+            const bindPasswordInput = page.getByLabelText('Search Bind Password');
+            await userEvent.type(bindPasswordInput, 'secret123');
+
+            const usernameInput = page.getByLabelText('User Name');
+            await userEvent.type(usernameInput, 'testuser@example.com');
+
+            const passwordInput = page.getByLabelText('Password', { exact: true });
+            await userEvent.type(passwordInput, 'testpass');
 
             const loginBtn = page.getByRole('button', { name: /login and verify/i });
             await expect.element(loginBtn).not.toBeDisabled();
 
-            const bindPasswordInput = page.getByLabelText('Search Bind Password');
+            // Clear bind password - button should become disabled
             await userEvent.clear(bindPasswordInput);
 
             await expect.element(loginBtn).toBeDisabled();

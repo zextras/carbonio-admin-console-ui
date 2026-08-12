@@ -183,7 +183,7 @@ const DomainAuthentication: FC = () => {
 			}
 
 			await mutate({
-				id: value.zimbraId,
+				id: domain?.id ?? '',
 				_jsns: ZIMBRA_ADMIN_URN,
 				a: attributes
 			});
