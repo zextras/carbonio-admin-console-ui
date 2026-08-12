@@ -224,12 +224,10 @@ export const BackupConfiguration = () => {
   const serverId = selectedServer?.id ?? '';
   const { data: serverConfig, isPending } = useServerConfig(serverId || undefined);
 
-  const isRealtimeLicensed = (() => {
-    const features = moduleLicenseInfo?.features ?? [];
-    return features.some(
-      (f: Record<string, string | number | boolean>) => f?.name === BACKUP_REALTIME && f?.enabled,
-    );
-  })();
+  const licenseFeatures = moduleLicenseInfo?.features ?? [];
+  const isRealtimeLicensed = licenseFeatures.some(
+    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_REALTIME && f?.enabled,
+  );
 
   if (isPending || !serverConfig) {
     return (
