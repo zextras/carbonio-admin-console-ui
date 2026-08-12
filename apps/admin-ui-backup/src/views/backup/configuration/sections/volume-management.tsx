@@ -3,10 +3,19 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Input, LabeledValue, ListRow, Padding, Row, Select } from '@zextras/ui-components';
-import { useSnackbar } from '@zextras/ui-components';
+import {
+  Button,
+  Container,
+  Input,
+  LabeledValue,
+  ListRow,
+  Padding,
+  Row,
+  Select,
+  useSnackbar,
+} from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { BackupArchivingStore, BucketItem, SelectOption } from '../../../../../types';
@@ -46,7 +55,11 @@ export const VolumeManagement = ({
   const { data: bucketData } = useListBuckets(serverName);
 
   const bucketList: Array<BucketItem> = bucketData?.buckets ?? [];
-  const [bucketListOption, setBucketListOption] = useState<Array<SelectOption>>([]);
+  const bucketListOption: Array<SelectOption> = bucketList.map((item) => ({
+    label: `${item?.storeType} | ${item?.bucketName}`,
+    value: item?.uuid,
+  }));
+
   const [isShowSetExternalVolume, setIsShowSetExternalVolume] = useState(false);
   const [isManageExternalVolumeEnable, setIsManageExternalVolumeEnable] = useState(false);
   const [externalVolume, setExternalVolume] = useState<SelectOption>({
@@ -57,28 +70,11 @@ export const VolumeManagement = ({
     label: t('label.manage_external_volume_and_move_all', 'MANAGE EXTERNAL VOLUME and Move All Items to Local Path'),
     value: MANAGE_EXTERNAL_VOLUME,
   });
-  const [bucketConfiguration, setBucketConfiguration] = useState<SelectOption>({} as SelectOption);
-  const [manageExternalVolumeBucketList, setManageExternalVolumeBucketList] =
-    useState<SelectOption>({} as SelectOption);
-  const [manageExternalVolumeType, setManageExternalVolumeType] = useState('');
-  const [manageExternalVolumeLocalMountpoint, setManageExternalVolumeLocalMountpoint] =
-    useState('');
+  const [selectedBucketId, setSelectedBucketId] = useState<string>('');
+  const [selectedManageBucketId, setSelectedManageBucketId] = useState<string>('');
   const [manageExternalVolumeNewLocalMountpoint, setManageExternalVolumeNewLocalMountpoint] =
     useState('');
   const [rootVolumePath, setRootVolumePath] = useState('');
-
-  useEffect(() => {
-    if (bucketList.length > 0) {
-      const allOptions: Array<SelectOption> = bucketList.map((item) => ({
-        label: `${item?.storeType} | ${item?.bucketName}`,
-        value: item?.uuid,
-      }));
-      setBucketListOption(allOptions);
-      if (allOptions.length > 0) {
-        setBucketConfiguration(allOptions[0]);
-      }
-    }
-  }, [bucketList]);
 
   const externalVolumeOptions: Array<SelectOption> = [
     { label: t('label.mountpoint', 'Mountpoint'), value: MOUNTPOINT },
@@ -94,29 +90,23 @@ export const VolumeManagement = ({
     { label: t('label.move_item_to_a_local_mountpoint', 'Move Items to a Local Mountpoint'), value: MOVE_TO_LOCAL_MOUNT_POINT },
   ];
 
-  useEffect(() => {
-    if (!isEmpty(backupArchivingStore)) {
-      if (backupArchivingStore?.storeType) {
-        setManageExternalVolumeType(backupArchivingStore.storeType);
-      }
-      if (backupArchivingStore?.volumeRootPath) {
-        setManageExternalVolumeLocalMountpoint(backupArchivingStore.volumeRootPath);
-      }
-    }
-    if (
-      !isEmpty(backupArchivingStore) &&
-      backupArchivingStore?.bucketConfigurationId &&
-      bucketList.length > 0
-    ) {
-      const bucket = bucketList.find(
-        (item) => item?.uuid === backupArchivingStore?.bucketConfigurationId,
-      );
-      if (bucket) {
-        const name = `${bucket?.storeType} | ${bucket?.bucketName}`;
-        setManageExternalVolumeBucketList({ label: name, value: bucket?.uuid });
-      }
-    }
-  }, [backupArchivingStore, bucketList]);
+  const manageExternalVolumeType = backupArchivingStore?.storeType ?? '';
+  const manageExternalVolumeLocalMountpoint = backupArchivingStore?.volumeRootPath ?? '';
+
+  const matchedBucket =
+    !isEmpty(backupArchivingStore) && backupArchivingStore?.bucketConfigurationId
+      ? bucketList.find((item) => item?.uuid === backupArchivingStore?.bucketConfigurationId)
+      : undefined;
+
+  const bucketConfiguration: SelectOption = selectedBucketId
+    ? bucketListOption.find((opt) => opt.value === selectedBucketId) ?? bucketListOption[0] ?? ({} as SelectOption)
+    : bucketListOption[0] ?? ({} as SelectOption);
+
+  const manageExternalVolumeBucketList: SelectOption = selectedManageBucketId
+    ? bucketListOption.find((opt) => opt.value === selectedManageBucketId) ?? ({} as SelectOption)
+    : matchedBucket
+      ? { label: `${matchedBucket?.storeType} | ${matchedBucket?.bucketName}`, value: matchedBucket?.uuid }
+      : ({} as SelectOption);
 
   const onMigrate = (body: Record<string, unknown>) => {
     migrateMutation.mutate(body, {
@@ -281,10 +271,7 @@ export const VolumeManagement = ({
           label={t('label.select_a_bucket_configuration', 'Select a Bucket Configuration')}
           showCheckbox={false}
           selection={bucketConfiguration}
-          onChange={(v) => {
-            const it = bucketListOption.find((item) => item.value === v);
-            if (it) setBucketConfiguration(it);
-          }}
+          onChange={(v) => setSelectedBucketId(v ?? '')}
           disabled={!allowSetBackup}
         />
       )}
@@ -335,10 +322,7 @@ export const VolumeManagement = ({
                 label={t('backup.bucket_list', 'Buckets List')}
                 showCheckbox={false}
                 selection={manageExternalVolumeBucketList}
-                onChange={(v) => {
-                  const it = bucketListOption.find((item) => item.value === v);
-                  if (it) setManageExternalVolumeBucketList(it);
-                }}
+                onChange={(v) => setSelectedManageBucketId(v ?? '')}
                 disabled={!allowSetBackup}
               />
             </Container>

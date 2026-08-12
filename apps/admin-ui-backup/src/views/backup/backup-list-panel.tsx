@@ -20,11 +20,10 @@ import {
   useModuleLicenseInfo,
   useRelativePathname,
 } from '@zextras/ui-shared';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 
-import type { MailstoreServer } from '../../../types';
 import {
   ADVANCED_LBL,
   BACKUP_BASIC,
