@@ -15,7 +15,12 @@ import {
   Switch,
   useSnackbar,
 } from '@zextras/ui-components';
-import { getSoapFetchRequest, setCoreAttributes, useAllServers, useCurrentUserRights } from '@zextras/ui-shared';
+import {
+  getSoapFetchRequest,
+  setCoreAttributes,
+  useAllServers,
+  useCurrentUserRights,
+} from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { type ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -50,7 +55,9 @@ const ServerAdvanced: FC = () => {
   const [backupCompressionLevel, setBackupCompressionLevel] = useState<number>(0);
   const [backupNumberThreadsForItems, setBackupNumberThreadsForItems] = useState<number>(0);
   const [backupNumberThreadsForAccounts, setBackupNumberThreadsForAccounts] = useState<number>(0);
-  const [currentBackupValue, setCurrentBackupValue] = useState<ServerAdvancedState>({} as ServerAdvancedState);
+  const [currentBackupValue, setCurrentBackupValue] = useState<ServerAdvancedState>(
+    {} as ServerAdvancedState,
+  );
   const [scheduledMetadataArchivingEnabled, setScheduledMetadataArchivingEnabled] =
     useState<boolean>(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);

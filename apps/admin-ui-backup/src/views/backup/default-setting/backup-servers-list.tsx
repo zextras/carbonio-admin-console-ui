@@ -17,7 +17,13 @@ import { isEmpty } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { BackupServerType, GetServerResponse, SmartScanTypeOption, StatusOption, TableHeader } from '../../../../types';
+import type {
+  BackupServerType,
+  GetServerResponse,
+  SmartScanTypeOption,
+  StatusOption,
+  TableHeader,
+} from '../../../../types';
 import { bytesToSize } from '../../utility/utils';
 
 const SMART_SCAN_TYPE = {
@@ -26,7 +32,6 @@ const SMART_SCAN_TYPE = {
   ON_STARTUP_AND_SCHEDULED: 3,
   SCHEDULED: 4,
 } as const;
-
 
 const BackupServersListTable: FC<{
   serverList: Array<BackupServerType>;
@@ -109,10 +114,22 @@ const BackupServersListTable: FC<{
           >
             {s?.backupAtStartup ? s?.backupAtStartup : t('label.na', 'N/A')}
           </ds-text>,
-          <ds-text as="span" size="small" weight="light" key={s?.name} color={s?.rtStatus ? 'gray0' : 'error'}>
+          <ds-text
+            as="span"
+            size="small"
+            weight="light"
+            key={s?.name}
+            color={s?.rtStatus ? 'gray0' : 'error'}
+          >
             {s?.rtStatus ? s?.rtStatus : t('label.na', 'N/A')}
           </ds-text>,
-          <ds-text as="span" size="small" weight="light" key={s?.name} color={s?.type ? 'gray0' : 'error'}>
+          <ds-text
+            as="span"
+            size="small"
+            weight="light"
+            key={s?.name}
+            color={s?.type ? 'gray0' : 'error'}
+          >
             {s?.type ? s?.type : t('label.na', 'N/A')}
           </ds-text>,
           <Tooltip
@@ -335,11 +352,16 @@ const ServersList: FC = () => {
       servers.forEach((item) => {
         const id = item?.id ?? '';
         const name = item?.name ?? '';
-        const description = item?.a?.filter((value) => value.n === 'description')[0]?._content ?? '';
+        const description =
+          item?.a?.filter((value) => value.n === 'description')[0]?._content ?? '';
         if (backupServerList && backupServerList.length > 0) {
-          const backupServerItem = backupServerList.filter((backupItem: Record<string, unknown>) => backupItem[id])[0];
+          const backupServerItem = backupServerList.filter(
+            (backupItem: Record<string, unknown>) => backupItem[id],
+          )[0];
           if (backupServerItem) {
-            const zxBackItem = (backupServerItem as Record<string, Record<string, GetServerResponse>>)[id];
+            const zxBackItem = (
+              backupServerItem as Record<string, Record<string, GetServerResponse>>
+            )[id];
             if (zxBackItem && zxBackItem?.ZxBackup) {
               const backupValues = getBackupServerValue(zxBackItem?.ZxBackup);
               sList.push({ id, name, description, ...backupValues });
@@ -391,9 +413,7 @@ const ServersList: FC = () => {
           padding={{ top: 'large', left: 'small', right: 'small' }}
         >
           <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-            <BackupServersListTable
-              serverList={serverList}
-            />
+            <BackupServersListTable serverList={serverList} />
           </Row>
         </Container>
       </Container>

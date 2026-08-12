@@ -5,17 +5,17 @@
  */
 
 export type LegalHolds = {
-	name: string;
-	id: string;
-	status: string;
+  name: string;
+  id: string;
+  status: string;
 };
 
 export type BackupAccountItem = {
-	name: string;
-	id: string;
-	status: string;
-	legalHold: string;
-	serverName: string;
-	creationTimestamp: number;
-	deletedTimestamp?: number;
+  name: string;
+  id: string;
+  status: string;
+  legalHold: string;
+  serverName: string;
+  creationTimestamp: number;
+  deletedTimestamp?: number;
 };

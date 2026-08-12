@@ -7,8 +7,8 @@ import { Container } from '@zextras/ui-components';
 import { FC } from 'react';
 
 const ImportExternalBackup: FC = () => (
-	<Container>
-		<Container>Import External</Container>
-	</Container>
+  <Container>
+    <Container>Import External</Container>
+  </Container>
 );
 export default ImportExternalBackup;

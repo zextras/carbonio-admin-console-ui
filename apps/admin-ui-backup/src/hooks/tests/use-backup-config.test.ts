@@ -40,7 +40,7 @@ import { useCurrentUserRights, useUserAccounts } from '@zextras/ui-shared';
 import { backupQueryKeys } from '../../services/backup-query-keys';
 import { modifyBackupRequest } from '../../services/modify-backup';
 import { useGlobalConfig } from '../../services/use-global-config';
-import { useBackupConfig } from '../useBackupConfig';
+import { useBackupConfig } from '../use-backup-config';
 
 describe('useBackupConfig', () => {
   let mockCreateSnackbar: Mock;

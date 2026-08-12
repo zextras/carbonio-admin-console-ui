@@ -3,13 +3,21 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, RouteLeavingGuard, Row, Select, Switch } from '@zextras/ui-components';
+import {
+  Container,
+  Input,
+  ListRow,
+  RouteLeavingGuard,
+  Row,
+  Select,
+  Switch,
+} from '@zextras/ui-components';
 import { FC, useMemo } from 'react';
 
 import type { GlobalConfig } from '../../../../types';
-import { useBackupConfig } from '../../../hooks/useBackupConfig';
+import { useBackupConfig } from '../../../hooks/use-backup-config';
 import { useGlobalConfig } from '../../../services/use-global-config';
-import BackupConfigHeader from '../components/backup/BackupConfigHeader';
+import BackupConfigHeader from '../components/backup/backup-config-header';
 
 const BackupAdvanced: FC = () => {
   const {
