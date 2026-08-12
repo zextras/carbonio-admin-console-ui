@@ -6,6 +6,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
+import { isEmpty } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
 import type { ModifyBackupData, ModifyBackupResponse } from '../../types';
@@ -18,7 +19,18 @@ export function useModifyBackupConfig() {
   const queryClient = useQueryClient();
 
   return useMutation<ModifyBackupResponse, Error, ModifyBackupData>({
-    mutationFn: (modifiedData: ModifyBackupData) => modifyBackupRequest(modifiedData),
+    mutationFn: async (modifiedData: ModifyBackupData) => {
+      const data = await modifyBackupRequest(modifiedData);
+      if (data?.status === 200 || isEmpty(data)) {
+        return data;
+      }
+      const errorMessage =
+        data?.errors?.[0]?.error ??
+        data?.statusText ??
+        (typeof data?.error === 'string' ? data?.error : '') ??
+        t('label.something_wrong_error_msg', 'Something went wrong. Please try again.');
+      throw new Error(errorMessage);
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: backupQueryKeys.globalConfig() });
       createSnackbar({

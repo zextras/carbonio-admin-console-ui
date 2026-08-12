@@ -4,22 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQueryClient } from '@tanstack/react-query';
-import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights } from '@zextras/ui-shared';
 import type { TFunction } from 'i18next';
-import { cloneDeep, isEmpty, isEqual, reduce } from 'lodash-es';
+import { cloneDeep, isEqual, reduce } from 'lodash-es';
 import { type ChangeEvent, type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { CronScheduler, GlobalConfig, ModifyBackupData } from '../../types';
-import { backupQueryKeys } from '../services/backup-query-keys';
-import { modifyBackupRequest } from '../services/modify-backup';
+import { useModifyBackupConfig } from '../services/use-modify-backup-config';
 import { useGlobalConfig } from '../services/use-global-config';
 import { checkAllowSetBackup } from '../utils/check-backup-rights';
 
 export const useBackupConfig = (): {
   isDirty: boolean;
+  isSaving: boolean;
   backupDetail: GlobalConfig;
   setBackupDetail: Dispatch<SetStateAction<GlobalConfig>>;
   allowSetBackup: boolean;
@@ -34,9 +32,8 @@ export const useBackupConfig = (): {
   const [t] = useTranslation();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const { data: globalConfig = {} } = useGlobalConfig();
-  const queryClient = useQueryClient();
+  const modifyMutation = useModifyBackupConfig();
   const [backupDetail, setBackupDetail] = useState<GlobalConfig>(cloneDeep(globalConfig));
-  const createSnackbar = useSnackbar();
   const { data: rights } = useCurrentUserRights();
   const allowSetBackup = checkAllowSetBackup(rights);
 
@@ -57,50 +54,7 @@ export const useBackupConfig = (): {
       modifiedData[ele] = backupDetail[ele];
     });
 
-    modifyBackupRequest(modifiedData)
-      .then((data) => {
-        if (data?.status === 200 || isEmpty(data)) {
-          queryClient.setQueryData(backupQueryKeys.globalConfig(), backupDetail);
-          queryClient.invalidateQueries({ queryKey: backupQueryKeys.globalConfig() });
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t(
-              'label.the_last_changes_has_been_saved_successfully',
-              'Changes have been saved successfully',
-            ),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        } else {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label:
-              data?.errors?.[0]?.error ??
-              data?.statusText ??
-              (typeof data?.error === 'string' ? data?.error : '') ??
-              t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
-      })
-      .catch((err) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label:
-            err?.errors?.[0]?.error ??
-            err?.statusText ??
-            t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+    modifyMutation.mutate(modifiedData);
   };
 
   useEffect(() => {
@@ -149,6 +103,7 @@ export const useBackupConfig = (): {
 
   return {
     isDirty,
+    isSaving: modifyMutation.isPending,
     backupDetail,
     setBackupDetail,
     allowSetBackup,

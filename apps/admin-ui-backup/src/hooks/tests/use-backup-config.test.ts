@@ -4,50 +4,42 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { ChangeEvent } from 'react';
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 
-vi.mock('@zextras/ui-components', () => ({
-  useSnackbar: vi.fn(),
-}));
-
-vi.mock('@zextras/ui-shared', () => ({
-  useCurrentUserRights: vi.fn(),
-  useUserAccounts: vi.fn(),
-}));
+vi.mock('@zextras/ui-shared', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
+  return {
+    ...actual,
+    useCurrentUserRights: vi.fn(),
+    useUserAccounts: vi.fn(),
+  };
+});
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => [(key: string, fallback?: string) => fallback || key, { i18n: {} }],
-}));
-
-vi.mock('../../services/modify-backup', () => ({
-  modifyBackupRequest: vi.fn(),
 }));
 
 vi.mock('../../services/use-global-config', () => ({
   useGlobalConfig: vi.fn(),
 }));
 
-vi.mock('@tanstack/react-query', () => ({
-  useQueryClient: vi.fn(),
+const mockMutate = vi.fn();
+vi.mock('../../services/use-modify-backup-config', () => ({
+  useModifyBackupConfig: () => ({
+    mutate: mockMutate,
+    isPending: false,
+  }),
 }));
 
-import { useQueryClient } from '@tanstack/react-query';
-import { useSnackbar } from '@zextras/ui-components';
 import { useCurrentUserRights, useUserAccounts } from '@zextras/ui-shared';
 
 import type { CronScheduler } from '../../../types';
-import { backupQueryKeys } from '../../services/backup-query-keys';
-import { modifyBackupRequest } from '../../services/modify-backup';
 import { useGlobalConfig } from '../../services/use-global-config';
 import { useBackupConfig } from '../use-backup-config';
 
 describe('useBackupConfig', () => {
-  let mockCreateSnackbar: Mock;
-  let mockInvalidateQueries: Mock;
-  let mockSetQueryData: Mock;
-
   const mockGlobalConfig = {
     backupEnabled: true,
     backupPath: '/backup',
@@ -74,18 +66,9 @@ describe('useBackupConfig', () => {
   ];
 
   beforeEach(() => {
-    mockCreateSnackbar = vi.fn();
-    mockInvalidateQueries = vi.fn();
-    mockSetQueryData = vi.fn();
-
-    (useSnackbar as Mock).mockReturnValue(mockCreateSnackbar);
+    mockMutate.mockClear();
 
     (useGlobalConfig as unknown as Mock).mockReturnValue({ data: mockGlobalConfig });
-
-    (useQueryClient as unknown as Mock).mockReturnValue({
-      invalidateQueries: mockInvalidateQueries,
-      setQueryData: mockSetQueryData,
-    });
 
     (useUserAccounts as Mock).mockReturnValue([{ name: 'testuser@example.com' }]);
     (useCurrentUserRights as Mock).mockReturnValue({
@@ -94,8 +77,6 @@ describe('useBackupConfig', () => {
       isSuccess: true,
       isError: false,
     });
-
-    (modifyBackupRequest as Mock).mockResolvedValue({ status: 200 });
   });
 
   afterEach(() => {
@@ -107,6 +88,7 @@ describe('useBackupConfig', () => {
       const { result } = renderHook(() => useBackupConfig());
 
       expect(result.current.isDirty).toBe(false);
+      expect(result.current.isSaving).toBe(false);
       expect(result.current.backupDetail).toEqual(mockGlobalConfig);
       expect(result.current.allowSetBackup).toBe(true);
       expect(typeof result.current.t).toBe('function');
@@ -154,7 +136,6 @@ describe('useBackupConfig', () => {
     it('should set isDirty to false when backupDetail matches globalConfig', () => {
       const { result } = renderHook(() => useBackupConfig());
 
-      // First make it dirty
       act(() => {
         result.current.setBackupDetail({
           ...mockGlobalConfig,
@@ -164,7 +145,6 @@ describe('useBackupConfig', () => {
 
       expect(result.current.isDirty).toBe(true);
 
-      // Then reset it
       act(() => {
         result.current.setBackupDetail(mockGlobalConfig);
       });
@@ -177,7 +157,6 @@ describe('useBackupConfig', () => {
     it('should reset backupDetail to globalConfig', () => {
       const { result } = renderHook(() => useBackupConfig());
 
-      // Modify the state first
       act(() => {
         result.current.setBackupDetail({
           ...mockGlobalConfig,
@@ -189,7 +168,6 @@ describe('useBackupConfig', () => {
       expect(result.current.backupDetail.backupEnabled).toBe(false);
       expect(result.current.backupDetail.backupPath).toBe('/new-path');
 
-      // Cancel changes
       act(() => {
         result.current.onCancel();
       });
@@ -200,11 +178,9 @@ describe('useBackupConfig', () => {
   });
 
   describe('onSave', () => {
-    it('should save only modified fields successfully', async () => {
-      (modifyBackupRequest as Mock).mockResolvedValue({ status: 200 });
+    it('should call mutate with only modified fields', () => {
       const { result } = renderHook(() => useBackupConfig());
 
-      // Modify some fields
       act(() => {
         result.current.setBackupDetail({
           ...mockGlobalConfig,
@@ -213,188 +189,24 @@ describe('useBackupConfig', () => {
         });
       });
 
-      await act(async () => {
+      act(() => {
         result.current.onSave();
       });
 
-      await waitFor(() => {
-        expect(modifyBackupRequest).toHaveBeenCalledWith({
-          backupEnabled: false,
-          backupPath: '/new-backup',
-        });
-      });
-
-      expect(mockInvalidateQueries).toHaveBeenCalledWith({
-        queryKey: backupQueryKeys.globalConfig(),
-      });
-
-      expect(mockSetQueryData).toHaveBeenCalledWith(
-        backupQueryKeys.globalConfig(),
-        expect.objectContaining({
-          backupEnabled: false,
-          backupPath: '/new-backup',
-        }),
-      );
-
-      expect(mockCreateSnackbar).toHaveBeenCalledWith({
-        key: 'success',
-        severity: 'success',
-        label: 'Changes have been saved successfully',
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
+      expect(mockMutate).toHaveBeenCalledWith({
+        backupEnabled: false,
+        backupPath: '/new-backup',
       });
     });
 
-    it('should handle empty response as success', async () => {
-      (modifyBackupRequest as Mock).mockResolvedValue({});
+    it('should call mutate with empty object when no changes made', () => {
       const { result } = renderHook(() => useBackupConfig());
 
       act(() => {
-        result.current.setBackupDetail({
-          ...mockGlobalConfig,
-          backupEnabled: false,
-        });
-      });
-
-      await act(async () => {
         result.current.onSave();
       });
 
-      await waitFor(() => {
-        expect(mockInvalidateQueries).toHaveBeenCalled();
-        expect(mockSetQueryData).toHaveBeenCalled();
-        expect(mockCreateSnackbar).toHaveBeenCalledWith(
-          expect.objectContaining({ severity: 'success' }),
-        );
-      });
-    });
-
-    it('should show error snackbar on API error response', async () => {
-      const errorResponse = {
-        status: 400,
-        errors: [{ error: 'Invalid configuration' }],
-      };
-      (modifyBackupRequest as Mock).mockResolvedValue(errorResponse);
-      const { result } = renderHook(() => useBackupConfig());
-
-      act(() => {
-        result.current.setBackupDetail({
-          ...mockGlobalConfig,
-          backupEnabled: false,
-        });
-      });
-
-      await act(async () => {
-        result.current.onSave();
-      });
-
-      await waitFor(() => {
-        expect(mockInvalidateQueries).not.toHaveBeenCalled();
-        expect(mockCreateSnackbar).toHaveBeenCalledWith({
-          key: 'error',
-          severity: 'error',
-          label: 'Invalid configuration',
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-    });
-
-    it('should handle statusText in error response', async () => {
-      const errorResponse = {
-        status: 500,
-        statusText: 'Internal Server Error',
-      };
-      (modifyBackupRequest as Mock).mockResolvedValue(errorResponse);
-      const { result } = renderHook(() => useBackupConfig());
-
-      act(() => {
-        result.current.setBackupDetail({
-          ...mockGlobalConfig,
-          backupEnabled: false,
-        });
-      });
-
-      await act(async () => {
-        result.current.onSave();
-      });
-
-      await waitFor(() => {
-        expect(mockCreateSnackbar).toHaveBeenCalledWith(
-          expect.objectContaining({
-            severity: 'error',
-            label: 'Internal Server Error',
-          }),
-        );
-      });
-    });
-
-    it('should handle rejected promise', async () => {
-      const error = {
-        errors: [{ error: 'Network error' }],
-      };
-      (modifyBackupRequest as Mock).mockRejectedValue(error);
-      const { result } = renderHook(() => useBackupConfig());
-
-      act(() => {
-        result.current.setBackupDetail({
-          ...mockGlobalConfig,
-          backupEnabled: false,
-        });
-      });
-
-      await act(async () => {
-        result.current.onSave();
-      });
-
-      await waitFor(() => {
-        expect(mockInvalidateQueries).not.toHaveBeenCalled();
-        expect(mockCreateSnackbar).toHaveBeenCalledWith({
-          key: 'error',
-          severity: 'error',
-          label: 'Network error',
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-    });
-
-    it('should use fallback error message when no specific error available', async () => {
-      (modifyBackupRequest as Mock).mockRejectedValue({});
-      const { result } = renderHook(() => useBackupConfig());
-
-      act(() => {
-        result.current.setBackupDetail({
-          ...mockGlobalConfig,
-          backupEnabled: false,
-        });
-      });
-
-      await act(async () => {
-        result.current.onSave();
-      });
-
-      await waitFor(() => {
-        expect(mockCreateSnackbar).toHaveBeenCalledWith(
-          expect.objectContaining({
-            label: 'Something went wrong. Please try again.',
-          }),
-        );
-      });
-    });
-
-    it('should not call API if no changes made', async () => {
-      const { result } = renderHook(() => useBackupConfig());
-
-      // Don't modify anything
-      await act(async () => {
-        result.current.onSave();
-      });
-
-      expect(modifyBackupRequest).toHaveBeenCalledWith({});
+      expect(mockMutate).toHaveBeenCalledWith({});
     });
   });
 
@@ -482,8 +294,12 @@ describe('useBackupConfig', () => {
         result.current.changeBackupSchedulerInput(event);
       });
 
-      expect((result.current.backupDetail.scheduler1 as CronScheduler)['cron-pattern']).toBe('0 6 * * *');
-      expect((result.current.backupDetail.scheduler1 as CronScheduler)['cron-enabled']).toBe(true);
+      expect(
+        (result.current.backupDetail.scheduler1 as CronScheduler)['cron-pattern'],
+      ).toBe('0 6 * * *');
+      expect(
+        (result.current.backupDetail.scheduler1 as CronScheduler)['cron-enabled'],
+      ).toBe(true);
     });
 
     it('should handle scheduler that was initially disabled', () => {
@@ -500,8 +316,12 @@ describe('useBackupConfig', () => {
         result.current.changeBackupSchedulerInput(event);
       });
 
-      expect((result.current.backupDetail.scheduler2 as CronScheduler)['cron-pattern']).toBe('0 18 * * *');
-      expect((result.current.backupDetail.scheduler2 as CronScheduler)['cron-enabled']).toBe(false);
+      expect(
+        (result.current.backupDetail.scheduler2 as CronScheduler)['cron-pattern'],
+      ).toBe('0 18 * * *');
+      expect(
+        (result.current.backupDetail.scheduler2 as CronScheduler)['cron-enabled'],
+      ).toBe(false);
     });
   });
 
@@ -513,8 +333,12 @@ describe('useBackupConfig', () => {
         result.current.changeBackupSchedulerSwitch('scheduler1');
       });
 
-      expect((result.current.backupDetail.scheduler1 as CronScheduler)['cron-enabled']).toBe(false);
-      expect((result.current.backupDetail.scheduler1 as CronScheduler)['cron-pattern']).toBe('0 0 * * *');
+      expect(
+        (result.current.backupDetail.scheduler1 as CronScheduler)['cron-enabled'],
+      ).toBe(false);
+      expect(
+        (result.current.backupDetail.scheduler1 as CronScheduler)['cron-pattern'],
+      ).toBe('0 0 * * *');
     });
 
     it('should toggle back to true', () => {
@@ -524,8 +348,12 @@ describe('useBackupConfig', () => {
         result.current.changeBackupSchedulerSwitch('scheduler2');
       });
 
-      expect((result.current.backupDetail.scheduler2 as CronScheduler)['cron-enabled']).toBe(true);
-      expect((result.current.backupDetail.scheduler2 as CronScheduler)['cron-pattern']).toBe('0 12 * * *');
+      expect(
+        (result.current.backupDetail.scheduler2 as CronScheduler)['cron-enabled'],
+      ).toBe(true);
+      expect(
+        (result.current.backupDetail.scheduler2 as CronScheduler)['cron-pattern'],
+      ).toBe('0 12 * * *');
     });
   });
 
@@ -559,69 +387,30 @@ describe('useBackupConfig', () => {
 
       expect(result.current.backupDetail.backupEnabled).toBe(false);
       expect(result.current.backupDetail.backupPath).toBe('/new');
-      expect((result.current.backupDetail.scheduler1 as CronScheduler)['cron-enabled']).toBe(false);
+      expect(
+        (result.current.backupDetail.scheduler1 as CronScheduler)['cron-enabled'],
+      ).toBe(false);
       expect(result.current.isDirty).toBe(true);
     });
 
-    it('should properly reset after save', async () => {
-      (modifyBackupRequest as Mock).mockResolvedValue({ status: 200 });
-      const { result } = renderHook(() => useBackupConfig());
-
-      // Make changes
-      act(() => {
-        result.current.setBackupDetail({
-          ...mockGlobalConfig,
-          backupEnabled: false,
-        });
-      });
-
-      expect(result.current.isDirty).toBe(true);
-
-      // Save changes
-      await act(async () => {
-        result.current.onSave();
-      });
-
-      await waitFor(() => {
-        expect(mockInvalidateQueries).toHaveBeenCalledWith({
-          queryKey: backupQueryKeys.globalConfig(),
-        });
-      });
-
-      // Verify the save process was completed successfully
-      expect(modifyBackupRequest).toHaveBeenCalled();
-      expect(mockCreateSnackbar).toHaveBeenCalledWith(
-        expect.objectContaining({
-          severity: 'success',
-        }),
-      );
-    });
-
-    it('should maintain dirty state after failed save', async () => {
-      (modifyBackupRequest as Mock).mockRejectedValue(new Error('Save failed'));
+    it('should call mutate on save after multiple changes', () => {
       const { result } = renderHook(() => useBackupConfig());
 
       act(() => {
         result.current.setBackupDetail({
           ...mockGlobalConfig,
           backupEnabled: false,
+          backupPath: '/new',
         });
+        result.current.changeBackupSchedulerSwitch('scheduler1');
       });
 
-      expect(result.current.isDirty).toBe(true);
-
-      await act(async () => {
+      act(() => {
         result.current.onSave();
       });
 
-      await waitFor(() => {
-        expect(mockCreateSnackbar).toHaveBeenCalledWith(
-          expect.objectContaining({ severity: 'error' }),
-        );
-      });
-
+      expect(mockMutate).toHaveBeenCalled();
       expect(result.current.isDirty).toBe(true);
-      expect(mockInvalidateQueries).not.toHaveBeenCalled();
     });
   });
 });
