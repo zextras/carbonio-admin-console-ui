@@ -4,41 +4,48 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, LabeledValue, ListRow, Padding, Row, useSnackbar } from '@zextras/ui-components';
-import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
   DONE_ROUTE_ID,
-  FALSE_OPERTION,
+  FALSE_OPERATION,
   QUEUED,
   RUNNING_ROUTE_ID,
   STARTED,
-  TRUE_OPERTION,
+  TRUE_OPERATION,
 } from '../../constants';
 import { copyTextToClipboard } from '../utility/utils';
-import MiliSecondToDate from './functions/miliSecondToDate';
+import { MilliSecondToDate } from './functions/milliSecondToDate';
 
-const OperationsWizardDetailPanel: FC<{
+type OperationsWizardDetailPanelProps = {
   setWizardDetailToggle: (value: boolean) => void;
   setOpen: (value: boolean) => void;
   selectedData: any;
   allowStop: boolean;
-}> = ({ setWizardDetailToggle, setOpen, selectedData, allowStop }) => {
+};
+
+function getDisplayStatus(state: string | undefined): string {
+  if (state === STARTED) {
+    return RUNNING_ROUTE_ID.charAt(0).toUpperCase() + RUNNING_ROUTE_ID.slice(1);
+  }
+  if (state === QUEUED) {
+    return QUEUED;
+  }
+  return DONE_ROUTE_ID.charAt(0).toUpperCase() + DONE_ROUTE_ID.slice(1);
+}
+
+export const OperationsWizardDetailPanel = ({
+  setWizardDetailToggle,
+  setOpen,
+  selectedData,
+  allowStop,
+}: OperationsWizardDetailPanelProps) => {
   const [t] = useTranslation();
-  const [status, setStatus] = useState('');
   const createSnackbar = useSnackbar();
 
-  useEffect(() => {
-    if (selectedData?.state === STARTED) {
-      setStatus(RUNNING_ROUTE_ID.charAt(0).toUpperCase() + RUNNING_ROUTE_ID.slice(1));
-    } else if (selectedData?.state === QUEUED) {
-      setStatus(QUEUED);
-    } else {
-      setStatus(DONE_ROUTE_ID.charAt(0).toUpperCase() + DONE_ROUTE_ID.slice(1));
-    }
-  }, [selectedData?.state]);
+  const status = getDisplayStatus(selectedData?.state);
 
-  const copyOperation = useCallback(() => {
+  const copyOperation = () => {
     const operationItem = `
 			${t('operations.label.operation_type', 'Operation Type')} : ${selectedData?.module || ''} \n
 			${t('operations.label.who_started_it', 'Who started it?')} : ${
@@ -48,7 +55,7 @@ const OperationsWizardDetailPanel: FC<{
       (selectedData?.type ? selectedData?.type : status) || ''
     } \n
 			${t('operations.label.submitted_at', 'Submitted at')}:  ${
-      selectedData?.startTime ? MiliSecondToDate(selectedData?.startTime) : ''
+      selectedData?.startTime ? MilliSecondToDate(selectedData?.startTime) : ''
     } \n
 			${t('operations.label.started_at', 'Started at')} : ${
       selectedData?.humanStartTime ? selectedData?.humanStartTime : ''
@@ -59,10 +66,10 @@ const OperationsWizardDetailPanel: FC<{
         : ''
     } \n
 			${t('operations.label.create_fake_blob', 'Create Fake Blob')} : ${
-      selectedData?.parameters?.createFakeBlob ? TRUE_OPERTION : FALSE_OPERTION
+      selectedData?.parameters?.createFakeBlob ? TRUE_OPERATION : FALSE_OPERATION
     } \n
 			${t('operations.label.Deep', 'Deep')} : ${
-      selectedData?.parameters?.isDeep ? TRUE_OPERTION : FALSE_OPERTION
+      selectedData?.parameters?.isDeep ? TRUE_OPERATION : FALSE_OPERATION
     } \n
 		`;
     copyTextToClipboard(operationItem);
@@ -74,11 +81,7 @@ const OperationsWizardDetailPanel: FC<{
       hideButton: true,
       replace: true,
     });
-  }, [t, selectedData, createSnackbar, status]);
-
-  const copyOperationHandler = useCallback(() => {
-    copyOperation();
-  }, [copyOperation]);
+  };
 
   return (
     <Container background="gray6">
@@ -96,6 +99,7 @@ const OperationsWizardDetailPanel: FC<{
             type="ghost"
             color={'text'}
             icon="CloseOutline"
+            aria-label={t('label.close', 'Close')}
             onClick={(): void => setWizardDetailToggle(false)}
           />
         </Row>
@@ -115,7 +119,7 @@ const OperationsWizardDetailPanel: FC<{
               color="primary"
               icon="CopyOutline"
               iconPlacement="right"
-              onClick={copyOperationHandler}
+              onClick={copyOperation}
             />
           </Padding>
           {allowStop && (
@@ -123,8 +127,8 @@ const OperationsWizardDetailPanel: FC<{
               type="outlined"
               label={
                 selectedData?.state === STARTED
-                  ? t('operations.stop_opearation_btn', 'STOP OPERATION')
-                  : t('operations.cancel_opearation_btn', 'CANCEL OPERATION')
+                  ? t('operations.stop_operation_btn', 'STOP OPERATION')
+                  : t('operations.cancel_operation_btn', 'CANCEL OPERATION')
               }
               color="error"
               icon={selectedData?.state === STARTED ? 'StopCircleOutline' : 'Close'}
@@ -168,7 +172,7 @@ const OperationsWizardDetailPanel: FC<{
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.submitted_at', 'Submitted at')}
-                  value={selectedData?.startTime ? MiliSecondToDate(selectedData?.startTime) : ''}
+                  value={selectedData?.startTime ? MilliSecondToDate(selectedData?.startTime) : ''}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
@@ -205,14 +209,14 @@ const OperationsWizardDetailPanel: FC<{
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.create_fake_blob', 'Create Fake Blob')}
-                  value={selectedData?.parameters?.createFakeBlob ? TRUE_OPERTION : FALSE_OPERTION}
+                  value={selectedData?.parameters?.createFakeBlob ? TRUE_OPERATION : FALSE_OPERATION}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('operations.label.Deep', 'Deep')}
-                  value={selectedData?.parameters?.isDeep ? TRUE_OPERTION : FALSE_OPERTION}
+                  value={selectedData?.parameters?.isDeep ? TRUE_OPERATION : FALSE_OPERATION}
                 />
               </Container>
             </ListRow>
@@ -222,5 +226,3 @@ const OperationsWizardDetailPanel: FC<{
     </Container>
   );
 };
-
-export default OperationsWizardDetailPanel;

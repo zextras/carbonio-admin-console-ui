@@ -9,7 +9,7 @@ import { Route, Routes } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import OperationsLayout from '../operations-layout';
+import { OperationsLayout } from '../operations-layout';
 
 describe('OperationsLayout', () => {
   it('renders the operations list panel and the outlet content', async () => {

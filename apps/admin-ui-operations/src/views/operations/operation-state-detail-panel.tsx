@@ -1,29 +1,41 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 import { Container, ModalOverlay, Row, useSnackbar } from '@zextras/ui-components';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { STARTED } from '../../constants';
 import { useAllOperations } from '../../services/use-all-operations';
 import { useStopOperation } from '../../services/use-stop-operation';
 import { type Operation } from '../../types/operations';
 import { OperationsHeader } from '../utility/utils';
-import DeleteOpearationsModel from './delete-operations-model';
+import { DeleteOperationsModal } from './delete-operations-modal';
 import { OperationsTable } from './operations-table';
-import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
+import { OperationsWizardDetailPanel } from './operations-wizard-detail-panel';
 
-const RunningDetailPanel: FC = () => {
+type OperationStateDetailPanelProps = {
+  state: string;
+  headingKey: string;
+  headingDefault: string;
+  stopSuccessI18nKey: string;
+  stopSuccessDefault: string;
+};
+
+export const OperationStateDetailPanel = ({
+  state,
+  headingKey,
+  headingDefault,
+  stopSuccessI18nKey,
+  stopSuccessDefault,
+}: OperationStateDetailPanelProps) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const { data: runningData = [], isError } = useAllOperations({
-    select: (operations) => operations.filter((item) => item.state === STARTED),
+  const { data: operationsData = [], isError } = useAllOperations({
+    select: (operations) => operations.filter((item) => item.state === state),
   });
-  const operationsHeader = useMemo(() => OperationsHeader(t), [t]);
+  const operationsHeader = OperationsHeader(t);
   const [wizardDetailToggle, setWizardDetailToggle] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<Operation | undefined>();
@@ -45,16 +57,25 @@ const RunningDetailPanel: FC = () => {
     setOpen(false);
   };
 
-  const stopHandler = useStopOperation({
-    selectedData,
-    setOpen,
-    setWizardDetailToggle,
-    successI18nKey: 'label.stop_operation_sucess',
-    successDefault: 'The {{name}} operation has been stopped successfully',
-  });
+  const stopMutation = useStopOperation(
+    () => {
+      setOpen(false);
+      setWizardDetailToggle(false);
+    },
+    stopSuccessI18nKey,
+    stopSuccessDefault,
+  );
+
+  const stopHandler = (): void => {
+    if (selectedData?.id) {
+      stopMutation.mutate({ id: selectedData.id, name: selectedData?.name });
+    }
+  };
 
   const handleClick = (i: number): void => {
-    const volumeObject = runningData?.find((s: Operation, index: number) => index === i);
+    const volumeObject = operationsData?.find(
+      (s: Operation, index: number) => index === i,
+    );
     setSelectedData(volumeObject);
     setWizardDetailToggle(true);
   };
@@ -78,7 +99,7 @@ const RunningDetailPanel: FC = () => {
         style={{ overflowY: 'auto', position: 'relative' }}
         background="white"
       >
-        <DeleteOpearationsModel
+        <DeleteOperationsModal
           open={open}
           closeHandler={closeHandler}
           saveHandler={stopHandler}
@@ -86,7 +107,7 @@ const RunningDetailPanel: FC = () => {
         />
         <Row mainAlignment="flex-start" padding={{ all: 'large' }}>
           <ds-text as="h2" weight="bold">
-            {t('operations.running_panel_heading', 'Running Operations')}
+            {t(headingKey, headingDefault)}
           </ds-text>
         </Row>
         <ds-divider></ds-divider>
@@ -99,9 +120,9 @@ const RunningDetailPanel: FC = () => {
           padding={{ all: 'large' }}
         >
           <Row width="100%" padding={{ top: 'large' }}>
-            {runningData && (
+            {operationsData && (
               <OperationsTable
-                operations={runningData}
+                operations={operationsData}
                 headers={operationsHeader}
                 donePanel={false}
                 selectedRows={isSelectedRow}
@@ -119,5 +140,3 @@ const RunningDetailPanel: FC = () => {
     </>
   );
 };
-
-export default RunningDetailPanel;

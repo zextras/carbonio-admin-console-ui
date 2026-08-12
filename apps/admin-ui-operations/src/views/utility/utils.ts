@@ -13,7 +13,7 @@ export const OperationsHeader = (
 	width: string;
 	bold: boolean;
 	i18nAllLabel: string;
-	align: string;
+	align: 'center' | 'char' | 'justify' | 'left' | 'right';
 }> => [
 	{
 		id: 'Server',
@@ -65,7 +65,7 @@ export const OperationsDoneHeader = (
 	width: string;
 	bold: boolean;
 	i18nAllLabel: string;
-	align: string;
+	align: 'center' | 'char' | 'justify' | 'left' | 'right';
 }> => [
 	{
 		id: 'Server',

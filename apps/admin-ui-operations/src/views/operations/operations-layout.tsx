@@ -6,12 +6,12 @@
 
 import { Container } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
+import { Suspense } from 'react';
 import { Outlet } from 'react-router';
 
-import OperationsListPanel from './operations-list-panel';
+import { OperationsListPanel } from './operations-list-panel';
 
-const OperationsLayout: FC = () => {
+export const OperationsLayout = () => {
 	const detailViewMaxWidth = useDetailViewMaxWidth();
 
 	return (
@@ -33,5 +33,3 @@ const OperationsLayout: FC = () => {
 		</Container>
 	);
 };
-
-export default OperationsLayout;

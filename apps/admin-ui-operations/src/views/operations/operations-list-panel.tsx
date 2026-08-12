@@ -6,7 +6,6 @@
 
 import { Container, ListItems } from '@zextras/ui-components';
 import { replaceHistory, useRelativePathname } from '@zextras/ui-shared';
-import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 
@@ -16,25 +15,19 @@ import { SECTION_ROUTES } from './operations-section-routes';
 
 const VALID_TABS = new Set([RUNNING_ROUTE_ID, QUEUED_ROUTE_ID, DONE_ROUTE_ID]);
 
-const OperationsListPanel: FC = () => {
+export const OperationsListPanel = () => {
 	const [t] = useTranslation();
 	const relativePathname = useRelativePathname();
 
-	const selectedOperationItem = useMemo(() => {
-		const match = matchPath('/:operation', relativePathname);
-		const op = match?.params.operation;
-		return op && VALID_TABS.has(op) ? op : RUNNING_ROUTE_ID;
-	}, [relativePathname]);
+	const match = matchPath('/:operation', relativePathname);
+	const op = match?.params.operation;
+	const selectedOperationItem = op && VALID_TABS.has(op) ? op : RUNNING_ROUTE_ID;
 
-	const manageOptions = useMemo<Array<ManageOption>>(
-		() =>
-			SECTION_ROUTES.map(({ id, labelKey, labelDefault }) => ({
-				id,
-				name: t(labelKey, labelDefault),
-				isSelected: true
-			})),
-		[t]
-	);
+	const manageOptions: Array<ManageOption> = SECTION_ROUTES.map(({ id, labelKey, labelDefault }) => ({
+		id,
+		name: t(labelKey, labelDefault),
+		isSelected: true
+	}));
 
 	return (
 		<Container
@@ -54,5 +47,3 @@ const OperationsListPanel: FC = () => {
 		</Container>
 	);
 };
-
-export default OperationsListPanel;

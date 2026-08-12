@@ -12,6 +12,7 @@ import logo from '../assets/ninja_robo.svg';
 import {
   ACCOUNTS,
   ACTIVE_SYNC,
+  ADDRESS_BOOK,
   AUTHENTICATION,
   CREATE_NEW_DOMAIN_ROUTE_ID,
   DELEGATES_DOMAIN_ADMINS,
@@ -41,6 +42,7 @@ import { DomainDetailPanel } from './domain/domain-detail-panel';
 import { DomainOperationsLayout } from './domain/domain-operations-layout';
 import ManageAccounts from './domain/manange/accounts/manage-accounts';
 import ActiveSync from './domain/manange/active-sync/active-sync';
+import { DomainAddressBook } from './domain/manange/address-book/domain-address-book';
 import ManageDelegates from './domain/manange/delegates/manage-delegates';
 import DomainMailingList from './domain/manange/mailing-list/domain-mailing-list';
 import DomainResources from './domain/manange/resources/domain-resources';
@@ -115,6 +117,7 @@ export const DomainContentPanel = () => (
         <Route path={SAML} element={<DomainSaml />} />
         <Route path={ACCOUNTS} element={<ManageAccounts />} />
         <Route path={ACTIVE_SYNC} element={<ActiveSync />} />
+        <Route path={ADDRESS_BOOK} element={<DomainAddressBook />} />
         <Route path={DELEGATES_DOMAIN_ADMINS} element={<ManageDelegates />} />
         <Route path={DISTRIBUTION_LIST} element={<DomainMailingList />} />
         <Route path={RESOURCES} element={<DomainResources />} />
