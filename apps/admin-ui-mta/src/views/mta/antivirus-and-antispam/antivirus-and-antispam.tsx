@@ -81,7 +81,11 @@ function buildInitialState(configInformation: Array<Record<string, string>>): Mt
   return initialState as MtaAntivirusAndAntispam;
 }
 
-function MTAAntiVirusAndAntiSpamForm({ configInformation }: { configInformation: Array<Record<string, string>> }) {
+type MTAAntiVirusAndAntiSpamFormProps = Readonly<{
+  configInformation: Array<Record<string, string>>;
+}>;
+
+function MTAAntiVirusAndAntiSpamForm({ configInformation }: MTAAntiVirusAndAntiSpamFormProps) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
@@ -115,9 +119,9 @@ function MTAAntiVirusAndAntiSpamForm({ configInformation }: { configInformation:
   ];
 
   const freqValue = mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency;
-  const updateFrequncy = freqValue?.replace(/\D/g, '') ?? '';
+  const updateFrequncy = freqValue?.replaceAll(/\D/g, '') ?? '';
   const updateMesurementUnit =
-    intervalOptions.find((item) => item.value === freqValue?.replace(/[^a-zA-Z]/g, '')) ||
+    intervalOptions.find((item) => item.value === freqValue?.replaceAll(/[^a-zA-Z]/g, '')) ||
     intervalOptions[2];
 
   const spamTagPercentOptions = [
@@ -251,11 +255,13 @@ function MTAAntiVirusAndAntiSpamForm({ configInformation }: { configInformation:
     if (d?.zimbraSpamSubjectTag) attrs.push({ n: ZIMBRA_SPAM_SUBJECT_TAG, _content: d.zimbraSpamSubjectTag });
     if (d?.zimbraAmavisFinalSpamDestiny) attrs.push({ n: ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY, _content: d.zimbraAmavisFinalSpamDestiny });
 
-    attrs.push({ n: ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA, _content: d?.zimbraAmavisOriginatingBypassSA ? TRUE : FALSE });
-    attrs.push({ n: ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION, _content: d?.zimbraAmavisEnableDKIMVerification ? TRUE : FALSE });
-    attrs.push({ n: ZIMBRA_VIRUS_WARN_RECIPIENT, _content: d?.zimbraVirusWarnRecipient ? TRUE : FALSE });
-    attrs.push({ n: ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE, _content: d?.zimbraVirusBlockEncryptedArchive ? TRUE : FALSE });
-    attrs.push({ n: ZIMBRA_VIRUS_WARN_ADMIN, _content: d?.zimbraVirusWarnAdmin ? TRUE : FALSE });
+    attrs.push(
+      { n: ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA, _content: d?.zimbraAmavisOriginatingBypassSA ? TRUE : FALSE },
+      { n: ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION, _content: d?.zimbraAmavisEnableDKIMVerification ? TRUE : FALSE },
+      { n: ZIMBRA_VIRUS_WARN_RECIPIENT, _content: d?.zimbraVirusWarnRecipient ? TRUE : FALSE },
+      { n: ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE, _content: d?.zimbraVirusBlockEncryptedArchive ? TRUE : FALSE },
+      { n: ZIMBRA_VIRUS_WARN_ADMIN, _content: d?.zimbraVirusWarnAdmin ? TRUE : FALSE },
+    );
 
     if (d?.zimbraSpamKillPercent && d?.zimbraAmavisFinalSpamDestiny && d.zimbraAmavisFinalSpamDestiny !== D_PASS) {
       attrs.push({ n: ZIMBRA_SPAM_KILL_PERCENT, _content: d.zimbraSpamKillPercent });
