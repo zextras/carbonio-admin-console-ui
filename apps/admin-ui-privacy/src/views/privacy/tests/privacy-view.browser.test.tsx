@@ -1,16 +1,18 @@
 /*
- * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import {
+  createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
   getAllConfigResponseMock,
   getAllConfigRightsResponseMock,
   getGetInfoResponseMock,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -19,7 +21,7 @@ import {
   CARBONIO_SEND_ANALYTICS,
   CARBONIO_SEND_FULL_ERROR_STACK,
 } from '../../../constants';
-import PrivacyView from '../privacy-view';
+import { PrivacyView } from '../privacy-view';
 
 const mockConfigData = {
   [CARBONIO_SEND_ANALYTICS]: 'FALSE',
@@ -27,40 +29,41 @@ const mockConfigData = {
   [CARBONIO_ALLOW_FEEDBACK]: 'FALSE',
 };
 
+const SWITCH_LABELS = {
+  error: 'Send full error data',
+  analytics: 'Allow data analytics',
+  feedback: 'Allow live survey feedbacks',
+} as const;
+
+async function setupPrivacyView(configData: Record<string, string> = mockConfigData): Promise<void> {
+  const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+  const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
+    'GetAllConfig',
+    getAllConfigResponseMock(configData),
+  );
+  const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
+    'GetAllEffectiveRights',
+    getAllConfigRightsResponseMock(),
+  );
+
+  setupBrowserTest(<PrivacyView />);
+
+  await getInfoInterceptor;
+  await getAllConfigInterceptor;
+  await getAllConfigRightsInterceptor;
+
+  await expect.element(page.getByRole('switch', { name: SWITCH_LABELS.error })).toBeVisible();
+}
+
 describe('PrivacyView', () => {
   it('renders privacy settings page with all switches', async () => {
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
+    await setupPrivacyView();
 
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    // Check main title
     await expect.element(page.getByText('Privacy')).toBeVisible();
+    await expect.element(page.getByRole('switch', { name: SWITCH_LABELS.error })).toBeVisible();
+    await expect.element(page.getByRole('switch', { name: SWITCH_LABELS.analytics })).toBeVisible();
+    await expect.element(page.getByRole('switch', { name: SWITCH_LABELS.feedback })).toBeVisible();
 
-    // Check all three privacy switches are present
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-    const errorSwitchIcon = page.getByTestId('icon: ToggleLeftOutline').first();
-    await expect.element(errorSwitchIcon).toBeVisible();
-
-    await expect.element(page.getByText('Allow data analytics')).toBeVisible();
-    const analyticsSwitchIcon = page.getByTestId('icon: ToggleLeftOutline').nth(1);
-    await expect.element(analyticsSwitchIcon).toBeVisible();
-
-    await expect.element(page.getByText('Allow live survey feedbacks')).toBeVisible();
-    const feedbackSwitchIcon = page.getByTestId('icon: ToggleLeftOutline').nth(2);
-    await expect.element(feedbackSwitchIcon).toBeVisible();
-
-    // Check description texts
     await expect
       .element(page.getByText(/We all make mistakes but it's how you deal with them/))
       .toBeVisible();
@@ -75,146 +78,48 @@ describe('PrivacyView', () => {
   });
 
   it('shows save and cancel buttons when switch is toggled', async () => {
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    await setupPrivacyView();
 
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
+    await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
 
-    setupBrowserTest(<PrivacyView />);
+    await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
 
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Initially, save/cancel buttons should not be visible
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-
-    // Find and click the switch
-    const switchLabel = page.getByText('Send full error data');
-    await expect.element(switchLabel).toBeVisible();
-    await switchLabel.click();
-
-    // Now save and cancel buttons should be visible
-    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-  });
-
-  it('shows save and cancel buttons when switch is toggled from TRUE to FALSE', async () => {
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
-
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    // Wait for the component to load and render
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Initially, save/cancel buttons should not be visible
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-
-    // Find and click on the switch
-    const switchLabel = page.getByText('Send full error data');
-    await expect.element(switchLabel).toBeVisible();
-    await switchLabel.click();
-
-    // Now save and cancel buttons should be visible
     await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
   });
 
   it('hides save and cancel buttons when cancel is clicked', async () => {
-    createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    await setupPrivacyView();
 
-    createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponseMock(mockConfigData));
-    createBrowserSoapAPIInterceptor('GetAllEffectiveRights', getAllConfigRightsResponseMock());
-
-    setupBrowserTest(<PrivacyView />);
-
-    // Wait for the component to load and render
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Click on a switch to make changes
-    const switchLabel = page.getByText('Send full error data');
-    await expect.element(switchLabel).toBeVisible();
-    await switchLabel.click();
-
-    // Verify save and cancel buttons appear
-    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
 
-    // Click cancel to revert changes
-    const cancelButton = page.getByRole('button', { name: 'Cancel' });
-    await cancelButton.click();
+    await page.getByRole('button', { name: 'Cancel' }).click();
 
-    // Save/cancel buttons should disappear
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
+    await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
   });
 
-  it('calls Batch API when save is clicked', async () => {
-    const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
+  it('calls ModifyConfig API when save is clicked', async () => {
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    await setupPrivacyView();
 
-    setupBrowserTest(<PrivacyView />);
+    await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
+    await page.getByRole('switch', { name: SWITCH_LABELS.analytics }).click();
+    await page.getByRole('switch', { name: SWITCH_LABELS.feedback }).click();
 
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
-
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    // Wait for the component to load and render
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Toggle all three switches to make changes
-    await page.getByText('Send full error data').click();
-    await page.getByText('Allow data analytics').click();
-    await page.getByText('Allow live survey feedbacks').click();
-
-    // Verify save button appears
     await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    await page.getByRole('button', { name: 'Save' }).click();
 
-    // Click save to trigger API calls
-    const saveButton = page.getByRole('button', { name: 'Save' });
-    await saveButton.click();
+    const request = await modifyConfigInterceptor;
 
-    // Wait for Batch API call to complete
-    const request = await batchInterceptor;
-
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    // Verify that save/cancel buttons disappear after successful save
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
+    await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
 
     expect(request).toMatchObject({
-      ModifyConfigRequest: [
+      _jsns: 'urn:zimbraAdmin',
+      a: [
         {
           _content: 'TRUE',
           n: 'carbonioAllowFeedback',
@@ -228,535 +133,140 @@ describe('PrivacyView', () => {
           n: 'carbonioSendAnalytics',
         },
       ],
-      _jsns: 'urn:zimbra',
     });
   });
 
   it('does not show save/cancel buttons when switches are disabled', async () => {
     setupBrowserTest(<PrivacyView />);
-    // Wait for the component to load and render
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-    // Try to click on switches when disabled (they should not trigger state changes)
-    const errorSwitchLabel = page.getByText('Send full error data');
-    await expect.element(errorSwitchLabel).toBeVisible();
-    await errorSwitchLabel.click();
-    const analyticsSwitchLabel = page.getByText('Allow data analytics');
-    await expect.element(analyticsSwitchLabel).toBeVisible();
-    await analyticsSwitchLabel.click();
-    // Switch labels should still be visible but save/cancel buttons should not appear
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-    await expect.element(page.getByText('Allow data analytics')).toBeVisible();
-    await expect.element(page.getByText('Allow live survey feedbacks')).toBeVisible();
-    // Save/cancel buttons should NOT appear when switches are disabled
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
+    await expect.element(page.getByText(SWITCH_LABELS.error)).toBeVisible();
+
+    await page.getByText(SWITCH_LABELS.error).click();
+    await page.getByText(SWITCH_LABELS.analytics).click();
+
+    await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
   });
 
-  it('loads config values correctly and displays switches in appropriate state', async () => {
-    // Test with mixed TRUE/FALSE values
+  it('loads config values and reflects checked state', async () => {
     const mixedConfigData = {
       [CARBONIO_SEND_ANALYTICS]: 'TRUE',
       [CARBONIO_SEND_FULL_ERROR_STACK]: 'FALSE',
       [CARBONIO_ALLOW_FEEDBACK]: 'TRUE',
     };
 
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mixedConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
+    await setupPrivacyView(mixedConfigData);
 
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    // Wait for the component to load and render
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Verify all switches are visible (actual state verification would require more complex testing)
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-    await expect.element(page.getByText('Allow data analytics')).toBeVisible();
-    await expect.element(page.getByText('Allow live survey feedbacks')).toBeVisible();
-
-    // Initially no save/cancel buttons
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
+    await expect
+      .element(page.getByRole('switch', { name: SWITCH_LABELS.error }))
+      .not.toBeChecked();
+    await expect.element(page.getByRole('switch', { name: SWITCH_LABELS.analytics })).toBeChecked();
+    await expect.element(page.getByRole('switch', { name: SWITCH_LABELS.feedback })).toBeChecked();
+    await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
   });
 
-  it('persists state across multiple toggle operations', async () => {
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
+  it('persists dirty state across multiple toggle operations and cancels all', async () => {
+    await setupPrivacyView();
 
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
+    await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
+    await page.getByRole('switch', { name: SWITCH_LABELS.analytics }).click();
+    await page.getByRole('switch', { name: SWITCH_LABELS.feedback }).click();
 
-    // Wait for component to load
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Toggle first switch
-    const firstSwitch = page.getByText('Send full error data');
-    await firstSwitch.click();
     await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    await page.getByRole('button', { name: 'Cancel' }).click();
 
-    // Toggle second switch without saving first
-    const secondSwitch = page.getByText('Allow data analytics');
-    await secondSwitch.click();
-
-    // Toggle third switch
-    const thirdSwitch = page.getByText('Allow live survey feedbacks');
-    await thirdSwitch.click();
-
-    // All changes should be tracked, save button still visible
-    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-
-    // Cancel should revert all changes
-    const cancelButton = page.getByRole('button', { name: 'Cancel' });
-    await cancelButton.click();
-
-    // Wait for state to reset
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Buttons should disappear
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-  });
-
-  it('maintains dirty state when multiple switches are toggled', async () => {
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
-
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    // Wait for component to load
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Toggle first switch
-    const firstSwitch = page.getByText('Send full error data');
-    await firstSwitch.click();
-
-    // Toggle same switch again (should maintain dirty state)
-    await firstSwitch.click();
-
-    // Toggle third switch
-    const thirdSwitch = page.getByText('Allow live survey feedbacks');
-    await thirdSwitch.click();
-
-    // Save/cancel should still be visible
-    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-
-    // Cancel all changes
-    const cancelButton = page.getByRole('button', { name: 'Cancel' });
-    await cancelButton.click();
-
-    // Wait for reset
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Buttons should be gone
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
+    await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
   });
 
   it('saves all changes when multiple switches are toggled before save', async () => {
-    // Capture the Batch call
-    const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    await setupPrivacyView();
 
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
+    await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
+    await page.getByRole('switch', { name: SWITCH_LABELS.analytics }).click();
+    await page.getByRole('switch', { name: SWITCH_LABELS.feedback }).click();
 
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
+    await page.getByRole('button', { name: 'Save' }).click();
+    await modifyConfigInterceptor;
 
-    // Wait for component to load
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Toggle all three switches
-    await page.getByText('Send full error data').click();
-    await page.getByText('Allow data analytics').click();
-    await page.getByText('Allow live survey feedbacks').click();
-
-    // Verify save button appears
-    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-
-    // Save all changes
-    const saveButton = page.getByRole('button', { name: 'Save' });
-    await saveButton.click();
-
-    // Wait for Batch API call to complete
-    await batchInterceptor;
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Buttons should disappear after successful save
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-  }, 20000);
-
-  it('loads correctly with all settings enabled', async () => {
-    const allEnabledConfig = {
-      [CARBONIO_SEND_ANALYTICS]: 'TRUE',
-      [CARBONIO_SEND_FULL_ERROR_STACK]: 'TRUE',
-      [CARBONIO_ALLOW_FEEDBACK]: 'TRUE',
-    };
-
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(allEnabledConfig),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
-
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    // Wait for component to load
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // All switches should be visible
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-    await expect.element(page.getByText('Allow data analytics')).toBeVisible();
-    await expect.element(page.getByText('Allow live survey feedbacks')).toBeVisible();
-
-    // Should not show save/cancel initially
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-
-    // Should be able to toggle from TRUE to FALSE
-    const firstSwitch = page.getByText('Send full error data');
-    await firstSwitch.click();
-    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-  });
-
-  it('loads correctly with mixed settings', async () => {
-    const mixedConfig = {
-      [CARBONIO_SEND_ANALYTICS]: 'TRUE',
-      [CARBONIO_SEND_FULL_ERROR_STACK]: 'FALSE',
-      [CARBONIO_ALLOW_FEEDBACK]: 'TRUE',
-    };
-
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mixedConfig),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
-
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    // Wait for component to load
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // All switches should be visible
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-    await expect.element(page.getByText('Allow data analytics')).toBeVisible();
-    await expect.element(page.getByText('Allow live survey feedbacks')).toBeVisible();
-
-    // Should be able to toggle any switch
-    const analyticsSwitch = page.getByText('Allow data analytics');
-    await analyticsSwitch.click();
-    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
   });
 
   it('shows success snackbar after successful save', async () => {
-    const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    await setupPrivacyView();
 
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
+    await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
+    await page.getByRole('button', { name: 'Save' }).click();
+    await modifyConfigInterceptor;
+
+    await expect
+      .element(page.getByText('The change has been saved successfully'))
+      .toBeVisible();
+  });
+
+  it('shows error snackbar when save fails', async () => {
+    await createBrowserAPIInterceptor('post', '/service/admin/soap/ModifyConfigRequest', () =>
+      HttpResponse.json(
+        {
+          Body: {
+            Fault: {
+              Reason: { Text: 'unknown document: ModifyConfigRequest' },
+            },
+          },
+        },
+        { status: 500 },
+      ),
     );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
+    await setupPrivacyView();
 
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
+    await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
+    await page.getByRole('button', { name: 'Save' }).click();
 
-    // Wait for component to load
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
+    await expect.element(page.getByText(/unknown document: ModifyConfigRequest/)).toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+  });
 
-    // Toggle a switch
-    const firstSwitch = page.getByText('Send full error data');
-    await firstSwitch.click();
+  it('toggles switch checked state when clicked', async () => {
+    await setupPrivacyView();
 
-    // Save changes
-    const saveButton = page.getByRole('button', { name: 'Save' });
-    await saveButton.click();
+    const errorSwitch = page.getByRole('switch', { name: SWITCH_LABELS.error });
+    const analyticsSwitch = page.getByRole('switch', { name: SWITCH_LABELS.analytics });
+    const feedbackSwitch = page.getByRole('switch', { name: SWITCH_LABELS.feedback });
 
-    await batchInterceptor;
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await expect.element(errorSwitch).not.toBeChecked();
+    await expect.element(analyticsSwitch).not.toBeChecked();
+    await expect.element(feedbackSwitch).not.toBeChecked();
 
-    // This test verifies the integration with snackbar system
-    const successSnackbar = page.getByText('The change has been saved successfully');
-    await expect.element(successSnackbar).toBeVisible();
-  }, 20000);
+    await errorSwitch.click();
+    await expect.element(errorSwitch).toBeChecked();
+    await expect.element(analyticsSwitch).not.toBeChecked();
+    await expect.element(feedbackSwitch).not.toBeChecked();
 
-  it('should change switch icon from ToggleLeft to ToggleRight when clicked', async () => {
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
+    await analyticsSwitch.click();
+    await expect.element(errorSwitch).toBeChecked();
+    await expect.element(analyticsSwitch).toBeChecked();
+  });
 
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    // Wait for component to load
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Initially switches should be in false state (ToggleLeft)
-    const errorSwitchIcon = page.getByTestId('icon: ToggleLeftOutline').first();
-    await expect.element(errorSwitchIcon).toBeVisible();
-
-    const analyticsSwitchIcon = page.getByTestId('icon: ToggleLeftOutline').nth(1);
-    await expect.element(analyticsSwitchIcon).toBeVisible();
-    //
-    const feedbackSwitchIcon = page.getByTestId('icon: ToggleLeftOutline').nth(2);
-    await expect.element(feedbackSwitchIcon).toBeVisible();
-    //
-    // Click the error switch to toggle it on
-    const errorSwitchLabel = page.getByText('Send full error data');
-    await errorSwitchLabel.click();
-    //
-    // After click, error switch should now show ToggleRight
-    const errorSwitchIconAfterClick = page.getByTestId('icon: ToggleRight').first();
-    await expect.element(errorSwitchIconAfterClick).toBeVisible();
-
-    // Analytics and feedback should still show ToggleLeft
-    const analyticsSwitchIconAfterFirstClick = page.getByTestId('icon: ToggleLeftOutline').first();
-    await expect.element(analyticsSwitchIconAfterFirstClick).toBeVisible();
-
-    const feedbackSwitchIconAfterFirstClick = page.getByTestId('icon: ToggleLeftOutline').nth(1);
-    await expect.element(feedbackSwitchIconAfterFirstClick).toBeVisible();
-
-    // Click the analytics switch
-    const analyticsSwitchLabel = page.getByText('Allow data analytics');
-    await analyticsSwitchLabel.click();
-
-    // Both error and analytics should now show ToggleRight
-    await expect.element(page.getByTestId('icon: ToggleRight').first()).toBeVisible();
-    await expect.element(page.getByTestId('icon: ToggleRight').nth(1)).toBeVisible();
-  }, 20000);
-
-  it('should handle toggle operations when all settings start as TRUE', async () => {
-    // Test with all switches initially enabled (TRUE)
+  it('handles toggle operations when all settings start as TRUE', async () => {
     const allEnabledConfig = {
       [CARBONIO_SEND_ANALYTICS]: 'TRUE',
       [CARBONIO_SEND_FULL_ERROR_STACK]: 'TRUE',
       [CARBONIO_ALLOW_FEEDBACK]: 'TRUE',
     };
 
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(allEnabledConfig),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
+    await setupPrivacyView(allEnabledConfig);
 
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
+    await expect.element(page.getByRole('switch', { name: SWITCH_LABELS.error })).toBeChecked();
+    await expect.element(page.getByRole('switch', { name: SWITCH_LABELS.analytics })).toBeChecked();
+    await expect.element(page.getByRole('switch', { name: SWITCH_LABELS.feedback })).toBeChecked();
 
-    // Wait for component to load
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Initially, save/cancel buttons should not be visible
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-
-    // All switches should be visible
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-    await expect.element(page.getByText('Allow data analytics')).toBeVisible();
-    await expect.element(page.getByText('Allow live survey feedbacks')).toBeVisible();
-
-    // Click the first switch to toggle it
-    const firstSwitch = page.getByText('Send full error data');
-    await expect.element(firstSwitch).toBeVisible();
-    await firstSwitch.click();
-
-    // After clicking, save and cancel buttons should appear
+    await page.getByRole('switch', { name: SWITCH_LABELS.error }).click();
     await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
 
-    // Cancel should revert the change
-    const cancelButton = page.getByRole('button', { name: 'Cancel' });
-    await cancelButton.click();
-
-    // Wait for state to reset
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Buttons should disappear after cancel
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
+    await page.getByRole('button', { name: 'Cancel' }).click();
+    await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    await expect.element(page.getByRole('switch', { name: SWITCH_LABELS.error })).toBeChecked();
   });
-
-  it('should correctly handle multiple switch toggles and state changes', async () => {
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
-
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    // Wait for component to load
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Initially, save/cancel buttons should not be visible
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-
-    // All switches should be visible
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-    await expect.element(page.getByText('Allow data analytics')).toBeVisible();
-    await expect.element(page.getByText('Allow live survey feedbacks')).toBeVisible();
-
-    // Toggle error switch
-    const errorSwitchLabel = page.getByText('Send full error data');
-    await errorSwitchLabel.click();
-
-    // Save/cancel buttons should appear after first toggle
-    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-
-    // Toggle analytics switch
-    const analyticsSwitchLabel = page.getByText('Allow data analytics');
-    await analyticsSwitchLabel.click();
-
-    // Toggle feedback switch
-    const feedbackSwitchLabel = page.getByText('Allow live survey feedbacks');
-    await feedbackSwitchLabel.click();
-
-    // Save/cancel buttons should still be visible after multiple toggles
-    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-
-    // Cancel should revert all changes
-    const cancelButton = page.getByRole('button', { name: 'Cancel' });
-    await cancelButton.click();
-
-    // Wait for state to reset
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Buttons should disappear after cancel
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-  }, 25000);
-
-  it('should maintain correct states when cancel is clicked', async () => {
-    const getInfoInterceptor = createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-    const getAllConfigInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllConfig',
-      getAllConfigResponseMock(mockConfigData),
-    );
-    const getAllConfigRightsInterceptor = createBrowserSoapAPIInterceptor(
-      'GetAllEffectiveRights',
-      getAllConfigRightsResponseMock(),
-    );
-
-    setupBrowserTest(<PrivacyView />);
-    await getInfoInterceptor;
-    await getAllConfigInterceptor;
-    await getAllConfigRightsInterceptor;
-
-    // Wait for component to load
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-
-    // Initially, save/cancel buttons should not be visible
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-
-    // All switches should be visible
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-    await expect.element(page.getByText('Allow data analytics')).toBeVisible();
-    await expect.element(page.getByText('Allow live survey feedbacks')).toBeVisible();
-
-    // Toggle all three switches
-    await page.getByText('Send full error data').click();
-    await page.getByText('Allow data analytics').click();
-    await page.getByText('Allow live survey feedbacks').click();
-
-    // Save/cancel buttons should appear after toggling
-    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-
-    // Cancel should revert all changes
-    const cancelButton = page.getByRole('button', { name: 'Cancel' });
-    await cancelButton.click();
-
-    // Wait for state reset
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Buttons should disappear after cancel
-    expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-    expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-
-    // All switches should still be visible after cancel
-    await expect.element(page.getByText('Send full error data')).toBeVisible();
-    await expect.element(page.getByText('Allow data analytics')).toBeVisible();
-    await expect.element(page.getByText('Allow live survey feedbacks')).toBeVisible();
-  }, 25000);
 });
