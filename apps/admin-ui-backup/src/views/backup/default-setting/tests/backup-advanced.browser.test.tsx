@@ -5,11 +5,13 @@
  */
 
 import {
+  createBrowserAPIInterceptor,
   getQueryClient,
   grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -118,6 +120,49 @@ describe('BackupAdvanced', () => {
 
       expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
       expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
+    });
+
+    it('should hide Save and Cancel buttons after a successful save', async () => {
+      createBrowserAPIInterceptor(
+        'post',
+        '/service/extension/zextras_admin/core/attribute/set',
+        () => HttpResponse.json({}),
+      );
+      createBrowserAPIInterceptor(
+        'post',
+        '/service/admin/soap/zextras',
+        () =>
+          HttpResponse.json({
+            Body: {
+              response: {
+                content: JSON.stringify({
+                  response: { ...GLOBAL_CONFIG, ldapDumpEnabled: true },
+                }),
+              },
+            },
+          }),
+      );
+
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
+
+      await expect.element(page.getByText('LDAP Dump')).toBeVisible();
+
+      await page.getByText('LDAP Dump').click();
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+
+      await page.getByRole('button', { name: 'Save' }).click();
+
+      await expect
+        .element(page.getByRole('button', { name: 'Save' }))
+        .not.toBeInTheDocument();
+      await expect
+        .element(page.getByRole('button', { name: 'Cancel' }))
+        .not.toBeInTheDocument();
+
+      await expect
+        .element(page.getByRole('switch', { name: 'LDAP Dump' }))
+        .toBeChecked();
     });
   });
 

@@ -59,11 +59,14 @@ function buildRunningServerConfig() {
   });
 }
 
+let currentConfigResponse: Record<string, unknown>;
+
 function mockGetServerConfig(response?: Record<string, unknown>) {
+  currentConfigResponse = response ?? buildServerConfigResponse();
   return createBrowserAPIInterceptor(
     'get',
     `/service/extension/zextras_admin/core/getServer/${SERVER_ID}`,
-    () => HttpResponse.json(response ?? buildServerConfigResponse()),
+    () => HttpResponse.json(currentConfigResponse),
   );
 }
 
@@ -154,6 +157,7 @@ describe('BackupConfiguration', () => {
       buildLicenseData([{ name: 'backup_basic', quantity: '1', enabled: true }]),
     );
     queryClient.setQueryData(['all-servers'], [{ name: SERVER_NAME, id: SERVER_ID }]);
+    currentConfigResponse = buildServerConfigResponse();
   });
 
   afterEach(() => {
@@ -703,6 +707,55 @@ describe('BackupConfiguration', () => {
 
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
       await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+    });
+
+    it('should hide Save and Cancel buttons after a successful save', async () => {
+      mockGetAllServers();
+      mockGetServerConfig(buildRunningServerConfig());
+      mockZextrasListBuckets();
+      createBrowserAPIInterceptor(
+        'post',
+        '/service/extension/zextras_admin/core/attribute/set',
+        () => HttpResponse.json({}),
+      );
+
+      await setupBrowserTest(<BackupConfigurationWithRoute />, {
+        queryClient,
+        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
+      });
+
+      await expect
+        .element(page.getByText('Backup is enabled at startup'))
+        .toBeVisible();
+
+      restoreAccountAndRights(queryClient);
+
+      const input = page.getByRole('textbox', {
+        name: 'Local Volume (reload if you changed this value)',
+      });
+      await expect.element(input).toBeEnabled();
+      await userEvent.fill(input, '/new/backup/path');
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+
+      currentConfigResponse = {
+        ...buildRunningServerConfig(),
+        attributes: {
+          ...buildRunningServerConfig().attributes,
+          ZxBackup_DestPath: { value: '/new/backup/path' },
+        },
+      };
+
+      await userEvent.click(page.getByRole('button', { name: 'Save' }));
+
+      await expect
+        .element(page.getByRole('button', { name: 'Save' }))
+        .not.toBeInTheDocument();
+      await expect
+        .element(page.getByRole('button', { name: 'Cancel' }))
+        .not.toBeInTheDocument();
+
+      await expect.element(input).toHaveValue('/new/backup/path');
     });
   });
 });

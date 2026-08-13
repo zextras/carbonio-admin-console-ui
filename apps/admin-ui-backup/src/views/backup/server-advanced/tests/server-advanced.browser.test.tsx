@@ -293,7 +293,7 @@ describe('ServerAdvanced', () => {
             name: 'Archive user metadata folder in the remote backup',
           }),
         )
-        .toHaveAttribute('aria-checked', 'true');
+        .toBeChecked();
     });
 
     it('should hide Cancel and Save buttons after clicking Cancel', async () => {
