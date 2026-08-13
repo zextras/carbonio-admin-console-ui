@@ -98,7 +98,7 @@ function ServerAdvancedContent({
           replace: true,
         });
       } else {
-        form.reset(value, { keepDefaultValues: true });
+        form.reset(value);
         createSnackbar({
           key: 'success',
           severity: 'success',

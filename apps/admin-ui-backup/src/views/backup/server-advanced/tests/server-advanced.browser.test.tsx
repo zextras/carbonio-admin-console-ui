@@ -236,6 +236,47 @@ describe('ServerAdvanced', () => {
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     });
 
+    it('should hide Save and Cancel buttons after a successful save', async () => {
+      createBrowserAPIInterceptor(
+        'post',
+        '/service/extension/zextras_admin/core/attribute/set',
+        () => HttpResponse.json({}),
+      );
+
+      await setupBrowserTest(<ServerAdvancedWithRoute />, {
+        queryClient,
+        initialRouterEntry: `/${SERVER_NAME}`,
+      });
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
+        .toHaveValue('200');
+
+      queryClient.setQueryData(['account', 'info'], {
+        id: 'test-user-id',
+        name: 'test@example.com',
+        displayName: 'Test User',
+        signatures: { signature: [] },
+        identities: undefined,
+        rights: { targets: [] },
+      });
+      queryClient.setQueryData(
+        ['effective-rights', 'test@example.com'],
+        [{ type: 'config', all: [{ setAttrs: [{ all: true }], getAttrs: [{ all: true }] }] }],
+      );
+
+      await userEvent.click(
+        page.getByText('Archive user metadata folder in the remote backup'),
+      );
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+
+      await userEvent.click(page.getByRole('button', { name: 'Save' }));
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+    });
+
     it('should hide Cancel and Save buttons after clicking Cancel', async () => {
       await setupBrowserTest(<ServerAdvancedWithRoute />, {
         queryClient,
