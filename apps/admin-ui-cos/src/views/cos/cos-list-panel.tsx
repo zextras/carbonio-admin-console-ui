@@ -80,20 +80,24 @@ export const CosListPanel = () => {
     prevCosRef.current = cosName;
   }, [cosName, queryClient]);
 
-  useEffect(() => {
+  const [prevCosId, setPrevCosId] = useState<string | undefined>(undefined);
+  if (cosInformation?.id !== prevCosId) {
+    setPrevCosId(cosInformation?.id);
     if (cosInformation?.name) {
-      setSearchCosName(cosInformation?.name);
+      setSearchCosName(cosInformation.name);
       setSearchQuery('');
       setIsCosListExpand(false);
     }
-  }, [cosInformation?.id, cosInformation?.name]);
+  }
 
-  useEffect(() => {
+  const [prevIsCosSelect, setPrevIsCosSelect] = useState(isCosSelect);
+  if (isCosSelect !== prevIsCosSelect) {
+    setPrevIsCosSelect(isCosSelect);
     if (!isCosSelect) {
       setSearchCosName('');
       setSearchQuery('');
     }
-  }, [isCosSelect]);
+  }
 
   const selectedCos = (cosData: SearchDirectoryEntry) => {
     setSearchCosName(cosData?.name);
