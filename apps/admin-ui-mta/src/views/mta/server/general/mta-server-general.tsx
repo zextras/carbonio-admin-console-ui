@@ -152,7 +152,7 @@ function MTAServerGeneralForm({
   });
 
   const [networkValue, setNetworkValue] = useState<Array<IpRangeValue>>(() =>
-    parseNetworkLabels(findAttrContent(serverAttributes, ZIMBRA_MTA_MY_NETWORKS), /  ?/),
+    parseNetworkLabels(findAttrContent(serverAttributes, ZIMBRA_MTA_MY_NETWORKS), / {1,2}/),
   );
 
   const mtaServerGeneralInitialDetail = formState.initial;
@@ -180,7 +180,7 @@ function MTAServerGeneralForm({
   function onCancel() {
     setFormState((prev) => ({ ...prev, current: prev.initial }));
     setNetworkValue(
-      parseNetworkLabels(findAttrContent(serverAttributes, ZIMBRA_MTA_MY_NETWORKS), /  ?/),
+      parseNetworkLabels(findAttrContent(serverAttributes, ZIMBRA_MTA_MY_NETWORKS), / {1,2}/),
     );
   }
 

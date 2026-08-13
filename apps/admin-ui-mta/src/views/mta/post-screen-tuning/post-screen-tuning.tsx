@@ -89,7 +89,11 @@ function buildInitialState(configInformation: Array<Record<string, string>>): Mt
   return state as MtaPostTuning;
 }
 
-function MTAPostScreenTuningForm({ configInformation }: { configInformation: Array<Record<string, string>> }) {
+type MTAPostScreenTuningFormProps = Readonly<{
+  configInformation: Array<Record<string, string>>;
+}>;
+
+function MTAPostScreenTuningForm({ configInformation }: MTAPostScreenTuningFormProps) {
   const [t] = useTranslation();
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
   const [formState, setFormState] = useState<FormState>(() => {
@@ -191,9 +195,11 @@ function MTAPostScreenTuningForm({ configInformation }: { configInformation: Arr
     pushIfExists(ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL, d?.zimbraMtaPostscreenDnsblMaxTTL);
     pushIfExists(ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL, d?.zimbraMtaPostscreenDnsblTTL);
 
-    attrs.push({ n: ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE, _content: d?.zimbraMtaPostscreenBareNewlineEnable ? 'yes' : 'no' });
-    attrs.push({ n: ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE, _content: d?.zimbraMtaPostscreenNonSmtpCommandEnable ? 'yes' : 'no' });
-    attrs.push({ n: ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE, _content: d?.zimbraMtaPostscreenPipeliningEnable ? 'yes' : 'no' });
+    attrs.push(
+      { n: ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE, _content: d?.zimbraMtaPostscreenBareNewlineEnable ? 'yes' : 'no' },
+      { n: ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE, _content: d?.zimbraMtaPostscreenNonSmtpCommandEnable ? 'yes' : 'no' },
+      { n: ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE, _content: d?.zimbraMtaPostscreenPipeliningEnable ? 'yes' : 'no' },
+    );
 
     pushIfExists(ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION, d?.zimbraMtaPostscreenPipeliningAction);
     pushIfExists(ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION, d?.zimbraMtaPostscreenNonSmtpCommandAction);

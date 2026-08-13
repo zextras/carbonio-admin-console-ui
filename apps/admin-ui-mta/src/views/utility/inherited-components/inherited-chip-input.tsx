@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 
 type ChipValue = Array<{ label?: string }> | string | undefined;
 
-type InheritedChipInputProps = {
+type InheritedChipInputProps = Readonly<{
 	subValue: ChipValue;
 	inheritedValue: ChipValue;
 	background?: string;
@@ -31,7 +31,7 @@ type InheritedChipInputProps = {
 	description?: string;
 	placeholder?: string;
 	ChipComponent?: ComponentType;
-};
+}>;
 
 function normalizeChipValue(value: ChipValue): Array<{ label?: string }> {
 	if (Array.isArray(value)) {

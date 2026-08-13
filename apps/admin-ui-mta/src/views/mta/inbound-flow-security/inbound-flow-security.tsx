@@ -55,11 +55,11 @@ function buildExtensionState(configInformation: Array<Record<string, string>>): 
   };
 }
 
-function MTAInboundFlowSecurityForm({
-  configInformation,
-}: {
+type MTAInboundFlowSecurityFormProps = Readonly<{
   configInformation: Array<Record<string, string>>;
-}) {
+}>;
+
+function MTAInboundFlowSecurityForm({ configInformation }: MTAInboundFlowSecurityFormProps) {
   const [t] = useTranslation();
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
   const { data: rights } = useCurrentUserRights();

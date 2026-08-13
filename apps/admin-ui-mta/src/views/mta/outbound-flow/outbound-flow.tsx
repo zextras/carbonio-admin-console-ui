@@ -76,7 +76,7 @@ function buildInitialState(configInformation: Array<Record<string, string>>): Mt
 function buildNetworkValue(configInformation: Array<Record<string, string>>): Array<IpRangeValue> {
   const zimbraMtaMyNetworks = findConfigValue(configInformation, ZIMBRA_MTA_MY_NETWORKS);
   return zimbraMtaMyNetworks?.trim()
-    ? map(split(zimbraMtaMyNetworks, /  ?/), (ip) => ({ label: trim(ip) }))
+    ? map(split(zimbraMtaMyNetworks, / {1,2}/), (ip) => ({ label: trim(ip) }))
     : [];
 }
 
@@ -137,7 +137,11 @@ function setTableValues(server: Server, tableRow: Array<TRow>, t: (key: string, 
   });
 }
 
-function MTAOutBoundFlowForm({ configInformation }: { configInformation: Array<Record<string, string>> }) {
+type MTAOutBoundFlowFormProps = Readonly<{
+  configInformation: Array<Record<string, string>>;
+}>;
+
+function MTAOutBoundFlowForm({ configInformation }: MTAOutBoundFlowFormProps) {
   const [t] = useTranslation();
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
   const { data: mtaServersList = [] } = useMtaServers();

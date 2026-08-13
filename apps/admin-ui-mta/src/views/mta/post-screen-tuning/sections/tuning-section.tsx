@@ -115,7 +115,7 @@ export function TuningSection({
               isRequired
               label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
               backgroundColor="gray5"
-              value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(/\D/g, '')}
+              value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replaceAll(/\D/g, '')}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 setValue(ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL, e.target.value);
               }}
@@ -185,7 +185,7 @@ export function TuningSection({
               isRequired
               label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
               backgroundColor="gray5"
-              value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL.replace(/\D/g, '')}
+              value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL.replaceAll(/\D/g, '')}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 setValue(ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL, e.target.value);
               }}

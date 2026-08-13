@@ -108,11 +108,11 @@ function buildLocalUIState(configInformation: Array<Record<string, string>>): Lo
   };
 }
 
-function MTAAdvancedForm({
-  configInformation,
-}: {
+type MTAAdvancedFormProps = Readonly<{
   configInformation: Array<Record<string, string>>;
-}) {
+}>;
+
+function MTAAdvancedForm({ configInformation }: MTAAdvancedFormProps) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
