@@ -55,6 +55,11 @@ export const BackupListPanel = () => {
   );
   const { data: serverList = [], isError, isLoading } = useMailstoreServers();
   const [searchServer, setSearchServer] = useState<string>(selectedServer);
+  const [prevSelectedServer, setPrevSelectedServer] = useState(selectedServer);
+  if (selectedServer !== prevSelectedServer) {
+    setPrevSelectedServer(selectedServer);
+    setSearchServer(selectedServer);
+  }
   const { moduleLicenseInfo } = useModuleLicenseInfo();
   const licenseFeatures = moduleLicenseInfo?.features ?? [];
   const isBackupModuleLicensed = licenseFeatures.some(
