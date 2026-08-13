@@ -41,7 +41,7 @@ export const RestoreAccountView = ({ legalHoldAccount, onBack }: RestoreAccountV
   const [selectedRow, setSelectedRow] = useState<Array<string>>([]);
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [undeleteFromDate, setUndeleteFromDate] = useState<Date | null>(
-    new Date(legalHoldAccount?.creationTimestamp ?? ''),
+    legalHoldAccount?.creationTimestamp ? new Date(legalHoldAccount.creationTimestamp) : null,
   );
   const [isRestoreOperationComplete, setIsRestoreOperationComplete] = useState(false);
   const [legalHoldAccountInformation, setLegalHoldAccountInformation] =

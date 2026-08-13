@@ -5,6 +5,7 @@
  */
 
 import { Container, DropDownInput, Input, Padding, Row } from '@zextras/ui-components';
+import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { DomainItem } from '../../../types';
@@ -119,7 +120,7 @@ export const LegalHoldFilters = ({
               : t('domain.type_the_exact_domain_name', 'Type the exact domain name')
           }
           hasError={isShowError}
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+          onChange={(ev: ChangeEvent<HTMLInputElement>) => {
             onSearchDomainChange(ev.target.value);
           }}
           inputValue={searchDomainName}
@@ -136,7 +137,7 @@ export const LegalHoldFilters = ({
           backgroundColor="gray5"
           CustomIcon={FunnelSearchIcon}
           defaultValue={searchAccountName}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
             onSearchAccountChange(e.target.value);
           }}
         />

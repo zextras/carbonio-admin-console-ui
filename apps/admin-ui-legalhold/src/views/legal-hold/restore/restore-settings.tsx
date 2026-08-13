@@ -5,6 +5,7 @@
  */
 
 import { Container, DatePicker, Input, LabeledValue, Switch } from '@zextras/ui-components';
+import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { BackupAccountItem } from '../../../../types';
@@ -60,7 +61,7 @@ export const RestoreSettings = ({
             label={t('legal_hold.legalhold_prefix', 'Legal Hold prefix')}
             backgroundColor="gray5"
             value={legalHoldPrefix}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               onPrefixChange(e.target.value);
             }}
           />

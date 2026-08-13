@@ -16,12 +16,13 @@ import {
   type THeader,
   type TRow,
 } from '@zextras/ui-components';
+import type { CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RECORD_DISPLAY_LIMIT } from '../../constants';
 import { LegalHoldEmptyState } from './legal-hold-empty-state';
 
-const absoluteContainerItemStyle: React.CSSProperties = {
+const absoluteContainerItemStyle: CSSProperties = {
   position: 'absolute',
   zIndex: 1,
   top: '8rem',

@@ -10,7 +10,7 @@ type Details = {
 
 export type ErrorResponse = {
   code: string;
-  details: Details;
+  details?: Details;
   message: string;
   time: number;
 };

@@ -15,6 +15,7 @@ import {
   type THeader,
   type TRow,
 } from '@zextras/ui-components';
+import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { DirectoryAccount, ZimbraAttribute } from '../../../../types';
@@ -131,7 +132,7 @@ export const LegalAccessSection = ({
               items={items}
               inputLabel={t('label.search_an_account', 'Search an Account')}
               size="medium"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 onSearchChange(e.target.value);
               }}
               inputValue={searchAccount}
