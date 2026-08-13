@@ -33,7 +33,7 @@ import {
   mapGlobalConfigToFormValues,
 } from './types';
 
-function BackupServerConfigForm({ globalConfig }: { globalConfig: GlobalConfig }) {
+function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: GlobalConfig }) {
   const [t] = useTranslation();
   const modifyMutation = useModifyBackupConfig();
   const { data: rights } = useCurrentUserRights();
