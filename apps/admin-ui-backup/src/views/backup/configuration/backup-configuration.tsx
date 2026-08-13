@@ -5,6 +5,7 @@
  */
 
 import { useForm } from '@tanstack/react-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Button, Container, Padding, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
 import {
@@ -25,6 +26,7 @@ import type {
   SetCoreAttributesResponse,
 } from '../../../../types';
 import { BACKUP_REALTIME, SERVER } from '../../../constants';
+import { backupQueryKeys } from '../../../services/backup-query-keys';
 import { useServerConfig } from '../../../services/use-server-config';
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
 import { backupConfigSchema } from './schema';
@@ -86,6 +88,7 @@ function BackupConfigurationContent({
 }) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
   const { data: rights } = useCurrentUserRights();
   const allowSetBackup = checkAllowSetBackup(rights);
   const [serviceRunning, setServiceRunning] = useState(
@@ -120,6 +123,7 @@ function BackupConfigurationContent({
         });
       } else {
         form.reset(value, { keepDefaultValues: true });
+        queryClient.invalidateQueries({ queryKey: backupQueryKeys.serverConfig(serverId) });
         createSnackbar({
           key: 'success',
           severity: 'success',
