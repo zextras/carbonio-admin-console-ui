@@ -41,6 +41,20 @@ type VolumeManagementProps = {
   isBackArchivingStoreEmpty: boolean;
 };
 
+function getManageExternalVolumeBucketList(
+  selectedManageBucketId: string,
+  bucketListOption: Array<SelectOption>,
+  matchedBucket: BucketItem | undefined,
+): SelectOption {
+  if (selectedManageBucketId) {
+    return bucketListOption.find((opt) => opt.value === selectedManageBucketId) ?? ({} as SelectOption);
+  }
+  if (matchedBucket) {
+    return { label: `${matchedBucket?.storeType} | ${matchedBucket?.bucketName}`, value: matchedBucket?.uuid };
+  }
+  return {} as SelectOption;
+}
+
 export const VolumeManagement = ({
   form,
   allowSetBackup,
@@ -102,16 +116,16 @@ export const VolumeManagement = ({
     ? bucketListOption.find((opt) => opt.value === selectedBucketId) ?? bucketListOption[0] ?? ({} as SelectOption)
     : bucketListOption[0] ?? ({} as SelectOption);
 
-  const manageExternalVolumeBucketList: SelectOption = selectedManageBucketId
-    ? bucketListOption.find((opt) => opt.value === selectedManageBucketId) ?? ({} as SelectOption)
-    : matchedBucket
-      ? { label: `${matchedBucket?.storeType} | ${matchedBucket?.bucketName}`, value: matchedBucket?.uuid }
-      : ({} as SelectOption);
+  const manageExternalVolumeBucketList: SelectOption = getManageExternalVolumeBucketList(
+    selectedManageBucketId,
+    bucketListOption,
+    matchedBucket,
+  );
 
   const onMigrate = (body: Record<string, unknown>) => {
     migrateMutation.mutate(body, {
       onSuccess: (res) => {
-        if (res?.error && res?.error?.details) {
+        if (res?.error?.details) {
           createSnackbar({
             key: 'error',
             severity: 'error',
@@ -385,12 +399,12 @@ export const VolumeManagement = ({
               width="fill"
               disabled={!isBackupInitialized || !allowSetBackup}
               onClick={() => {
-                if (!isBackArchivingStoreEmpty) {
-                  setIsManageExternalVolumeEnable(true);
-                  setIsShowSetExternalVolume(false);
-                } else {
+                if (isBackArchivingStoreEmpty) {
                   setIsShowSetExternalVolume(true);
                   setIsManageExternalVolumeEnable(false);
+                } else {
+                  setIsManageExternalVolumeEnable(true);
+                  setIsShowSetExternalVolume(false);
                 }
               }}
             />
