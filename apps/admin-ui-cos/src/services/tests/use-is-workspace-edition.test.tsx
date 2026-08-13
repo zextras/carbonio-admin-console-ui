@@ -6,15 +6,9 @@
 import { renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('react-router', () => ({
-	useParams: vi.fn(() => ({ cosId: 'test-cos-id' })),
-}));
-
 vi.mock('../use-cos-detail', () => ({
 	useCosDetail: vi.fn(),
 }));
-
-import { useParams } from 'react-router';
 
 import { useCosDetail } from '../use-cos-detail';
 import { useIsWorkspaceEdition } from '../use-is-workspace-edition';
@@ -33,7 +27,7 @@ describe('useIsWorkspaceEdition', () => {
 			},
 		} as never);
 
-		const { result } = renderHook(() => useIsWorkspaceEdition());
+		const { result } = renderHook(() => useIsWorkspaceEdition('test-cos-id'));
 		expect(result.current).toBe(true);
 	});
 
@@ -50,7 +44,7 @@ describe('useIsWorkspaceEdition', () => {
 			},
 		} as never);
 
-		const { result } = renderHook(() => useIsWorkspaceEdition());
+		const { result } = renderHook(() => useIsWorkspaceEdition('test-cos-id'));
 		expect(result.current).toBe(false);
 	});
 
@@ -67,11 +61,11 @@ describe('useIsWorkspaceEdition', () => {
 			},
 		} as never);
 
-		const { result } = renderHook(() => useIsWorkspaceEdition());
+		const { result } = renderHook(() => useIsWorkspaceEdition('test-cos-id'));
 		expect(result.current).toBe(true);
 	});
 
-	it('returns false when edition attribute is absent', () => {
+	it('returns true when edition attribute is absent', () => {
 		vi.mocked(useCosDetail).mockReturnValue({
 			data: {
 				cos: [
@@ -84,29 +78,28 @@ describe('useIsWorkspaceEdition', () => {
 			},
 		} as never);
 
-		const { result } = renderHook(() => useIsWorkspaceEdition());
-		expect(result.current).toBe(false);
+		const { result } = renderHook(() => useIsWorkspaceEdition('test-cos-id'));
+		expect(result.current).toBe(true);
 	});
 
-	it('returns false when data is still loading', () => {
+	it('returns true when data is still loading', () => {
 		vi.mocked(useCosDetail).mockReturnValue({ data: undefined } as never);
 
-		const { result } = renderHook(() => useIsWorkspaceEdition());
-		expect(result.current).toBe(false);
+		const { result } = renderHook(() => useIsWorkspaceEdition('test-cos-id'));
+		expect(result.current).toBe(true);
 	});
 
-	it('returns false when cosEntry is undefined', () => {
+	it('returns true when cosEntry is undefined', () => {
 		vi.mocked(useCosDetail).mockReturnValue({ data: { cos: [] } } as never);
 
-		const { result } = renderHook(() => useIsWorkspaceEdition());
-		expect(result.current).toBe(false);
+		const { result } = renderHook(() => useIsWorkspaceEdition('test-cos-id'));
+		expect(result.current).toBe(true);
 	});
 
-	it('reads cosId from useParams', () => {
+	it('passes cosId to useCosDetail', () => {
 		vi.mocked(useCosDetail).mockReturnValue({ data: undefined } as never);
 
-		renderHook(() => useIsWorkspaceEdition());
-		expect(useCosDetail).toHaveBeenCalledWith('test-cos-id');
-		expect(useParams).toHaveBeenCalled();
+		renderHook(() => useIsWorkspaceEdition('my-cos-id'));
+		expect(useCosDetail).toHaveBeenCalledWith('my-cos-id');
 	});
 });
