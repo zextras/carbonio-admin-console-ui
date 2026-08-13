@@ -77,8 +77,8 @@ function ServerAdvancedContent({
   serverConfig,
   serverName,
 }: {
-  serverConfig: GetServerResponse;
-  serverName: string;
+  readonly serverConfig: GetServerResponse;
+  readonly serverName: string;
 }) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
