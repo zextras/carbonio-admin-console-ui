@@ -93,7 +93,7 @@ function setupInterceptors() {
   createBrowserSoapAPIInterceptor('GetAllEffectiveRights', getAllConfigRightsResponseMock());
   createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse());
   createBrowserSoapAPIInterceptor('GetAllServers', getAllServersWithMtaResponse());
-  // Component calls GetServer twice: once with applyConfig=1, once with applyConfig=0
+  // GetServer ×2: effective (applyConfig SOAP 1 / JS false), then specific (SOAP 0 / JS true)
   createBrowserSoapAPIInterceptor('GetServer', getServerResponse());
   createBrowserSoapAPIInterceptor('GetServer', getServerSpecificResponse());
 }

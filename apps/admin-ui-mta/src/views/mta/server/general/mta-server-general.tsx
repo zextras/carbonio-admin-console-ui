@@ -129,8 +129,8 @@ type MTAServerGeneralFormProps = Readonly<{
   serverAttributes: Array<ServerAttr>;
   serverSpecificAttributes: Array<ServerAttr>;
   configInformation: Array<ConfigItem>;
-  refetchServer: () => void;
-  refetchServerSpecific: () => void;
+  refetchServer: () => Promise<{ data?: { server?: Array<{ a?: Array<ServerAttr> }> } }>;
+  refetchServerSpecific: () => Promise<unknown>;
 }>;
 
 function MTAServerGeneralForm({
@@ -193,8 +193,16 @@ function MTAServerGeneralForm({
         const serverItem = (data as { server?: Array<{ a?: { n: string; _content: string }[] }> })
           ?.server?.[0];
         if (serverItem?.a) {
-          refetchServer();
-          refetchServerSpecific();
+          const [freshServerResult] = await Promise.all([
+            refetchServer(),
+            refetchServerSpecific(),
+          ]);
+          const freshAttrs = freshServerResult.data?.server?.[0]?.a ?? [];
+          const initialState = buildInitialState(freshAttrs);
+          setFormState({ initial: initialState, current: initialState });
+          setNetworkValue(
+            parseNetworkLabels(findAttrContent(freshAttrs, ZIMBRA_MTA_MY_NETWORKS), / {1,2}/),
+          );
         }
       }
     } catch {
@@ -383,13 +391,13 @@ export function MTAServerGeneral() {
     data: serverData,
     isLoading: isLoadingServer,
     refetch: refetchServer,
-  } = useServerInformation(server, true);
+  } = useServerInformation(server, false);
 
   const {
     data: serverSpecificData,
     isLoading: isLoadingServerSpecific,
     refetch: refetchServerSpecific,
-  } = useServerInformation(server, false);
+  } = useServerInformation(server, true);
 
   const serverAttributes: Array<ServerAttr> =
     serverData?.server?.[0]?.a ?? [];
