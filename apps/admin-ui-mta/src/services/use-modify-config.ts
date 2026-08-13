@@ -17,8 +17,7 @@ export function useModifyConfig() {
 
   return useMutation<Record<string, unknown>, Error, Array<Record<string, string>>>({
     mutationFn: (attributes) => modifyConfig(attributes),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['all-config'] });
+    onSuccess: () => {
       createSnackbar({
         key: 'success',
         severity: 'success',
@@ -27,6 +26,7 @@ export function useModifyConfig() {
         hideButton: true,
         replace: true,
       });
+      void queryClient.invalidateQueries({ queryKey: ['all-config'] });
     },
     onError: (error) => {
       createSnackbar({
