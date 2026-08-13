@@ -54,7 +54,7 @@ describe('useIsWorkspaceEdition', () => {
 		expect(result.current).toBe(false);
 	});
 
-	it('returns false when edition is empty', () => {
+	it('returns true when edition is empty', () => {
 		vi.mocked(useCosDetail).mockReturnValue({
 			data: {
 				cos: [
@@ -68,7 +68,7 @@ describe('useIsWorkspaceEdition', () => {
 		} as never);
 
 		const { result } = renderHook(() => useIsWorkspaceEdition());
-		expect(result.current).toBe(false);
+		expect(result.current).toBe(true);
 	});
 
 	it('returns false when edition attribute is absent', () => {

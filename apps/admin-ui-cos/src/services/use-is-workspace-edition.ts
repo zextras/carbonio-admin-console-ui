@@ -10,5 +10,6 @@ import { useCosDetail } from './use-cos-detail';
 export const useIsWorkspaceEdition = (): boolean => {
   const { cosId } = useParams();
   const { data: cosDetailData } = useCosDetail(cosId);
-  return cosDetailData?.cos?.[0]?._attrs?.edition === 'workspace';
+  const edition = cosDetailData?.cos?.[0]?._attrs?.edition;
+  return edition === 'workspace' || edition === '' || edition === undefined;
 };
