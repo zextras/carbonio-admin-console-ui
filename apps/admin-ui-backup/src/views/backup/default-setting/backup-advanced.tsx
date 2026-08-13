@@ -31,7 +31,7 @@ const COMPRESS_LEVEL_ITEMS = [
   { label: '3', value: '3' },
 ];
 
-function BackupAdvancedForm({ globalConfig }: { globalConfig: GlobalConfig }) {
+function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalConfig }) {
   const [t] = useTranslation();
   const modifyMutation = useModifyBackupConfig();
   const { data: rights } = useCurrentUserRights();
