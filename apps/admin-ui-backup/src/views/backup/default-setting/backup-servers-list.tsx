@@ -10,7 +10,6 @@ import {
   HoverableRowFactory,
   Row,
   Table,
-  Tooltip,
 } from '@zextras/ui-components';
 import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
@@ -24,6 +23,7 @@ import type {
   TableHeader,
 } from '../../../../types';
 import { bytesToSize } from '../../utility/utils';
+import { SpaceCell, StatusText, TooltipText } from './backup-servers-list-cells';
 
 const SMART_SCAN_TYPE = {
   DISABLED: 1,
@@ -101,98 +101,16 @@ const BackupServersListTable = ({ serverList }: BackupServersListTableProps) => 
       <ds-text as="span" size="small" weight="regular" key={s?.name} color="gray0">
         {s?.name}
       </ds-text>,
-      <ds-text
-        as="span"
-        size="small"
-        weight="light"
-        key={s?.name}
-        color={s?.backupAtStartup ? 'gray0' : 'error'}
-      >
-        {s?.backupAtStartup ? s?.backupAtStartup : t('label.na', 'N/A')}
-      </ds-text>,
-      <ds-text
-        as="span"
-        size="small"
-        weight="light"
-        key={s?.name}
-        color={s?.rtStatus ? 'gray0' : 'error'}
-      >
-        {s?.rtStatus ? s?.rtStatus : t('label.na', 'N/A')}
-      </ds-text>,
-      <ds-text
-        as="span"
-        size="small"
-        weight="light"
-        key={s?.name}
-        color={s?.type ? 'gray0' : 'error'}
-      >
-        {s?.type ? s?.type : t('label.na', 'N/A')}
-      </ds-text>,
-      <Tooltip
-        placement="bottom"
-        label={s?.smartScanTooltip ? s?.smartScanTooltip : t('label.na', 'N/A')}
-        key={s?.name}
-      >
-        <ds-text as="span" size="small" weight="light" color={s?.smartScan ? 'gray0' : 'error'}>
-          {s?.smartScan ? s?.smartScan : t('label.na', 'N/A')}
-        </ds-text>
-      </Tooltip>,
-      <Tooltip
-        placement="bottom"
-        label={s?.purgeTooltip ? s?.purgeTooltip : t('label.na', 'N/A')}
-        key={s?.name}
-      >
-        <ds-text as="span" size="small" weight="light" color={s?.purge ? 'gray0' : 'error'}>
-          {s?.purge ? s?.purge : t('label.na', 'N/A')}
-        </ds-text>
-      </Tooltip>,
+      <StatusText key={s?.name} value={s?.backupAtStartup} />,
+      <StatusText key={s?.name} value={s?.rtStatus} />,
+      <StatusText key={s?.name} value={s?.type} />,
+      <TooltipText key={s?.name} value={s?.smartScan} tooltip={s?.smartScanTooltip} />,
+      <TooltipText key={s?.name} value={s?.purge} tooltip={s?.purgeTooltip} />,
       <ds-text as="span" size="small" weight="light" key={s?.name} color="gray0">
         {s?.description}
       </ds-text>,
-      <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-        <ds-icon icon="FolderOutline"></ds-icon>
-        <Row padding={{ left: 'small' }}>
-          <Tooltip
-            placement="bottom"
-            label={
-              s?.availableMetadataSpaceTooltip
-                ? s?.availableMetadataSpaceTooltip
-                : t('label.na', 'N/A')
-            }
-          >
-            <ds-text
-              as="span"
-              size="small"
-              weight="light"
-              color={s?.availableMetadataSpace ? 'gray0' : 'error'}
-            >
-              {s?.availableMetadataSpace ? s?.availableMetadataSpace : t('label.na', 'N/A')}
-            </ds-text>
-          </Tooltip>
-        </Row>
-      </Row>,
-      <Row mainAlignment="flex-start" width="100%" key={s?.name}>
-        <ds-icon icon="FolderOutline"></ds-icon>
-        <Row padding={{ left: 'small' }}>
-          <Tooltip
-            placement="bottom"
-            label={
-              s?.availableBackupSpaceTooltip
-                ? s?.availableBackupSpaceTooltip
-                : t('label.na', 'N/A')
-            }
-          >
-            <ds-text
-              as="span"
-              size="small"
-              weight="light"
-              color={s?.availableBackupSpace ? 'gray0' : 'error'}
-            >
-              {s?.availableBackupSpace ? s?.availableBackupSpace : t('label.na', 'N/A')}
-            </ds-text>
-          </Tooltip>
-        </Row>
-      </Row>,
+      <SpaceCell key={s?.name} value={s?.availableMetadataSpace} tooltip={s?.availableMetadataSpaceTooltip} />,
+      <SpaceCell key={s?.name} value={s?.availableBackupSpace} tooltip={s?.availableBackupSpaceTooltip} />,
     ],
     clickable: false,
   }));
@@ -330,11 +248,11 @@ export const ServersList = () => {
         const id = item?.id ?? '';
         const name = item?.name ?? '';
         const description =
-          item?.a?.filter((value) => value.n === 'description')[0]?._content ?? '';
+          item?.a?.find((value) => value.n === 'description')?._content ?? '';
         if (backupServerList && backupServerList.length > 0) {
-          const backupServerItem = backupServerList.filter(
+          const backupServerItem = backupServerList.find(
             (backupItem: Record<string, unknown>) => backupItem[id],
-          )[0];
+          );
           if (backupServerItem) {
             const zxBackItem = (
               backupServerItem as Record<string, Record<string, GetServerResponse>>
@@ -350,47 +268,45 @@ export const ServersList = () => {
     : [];
 
   return (
-    <>
-      <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-        <Row mainAlignment="flex-start" width="100%">
-          <Container
-            orientation="vertical"
-            mainAlignment="space-around"
-            background="gray6"
-            height="58px"
-          >
-            <Row
-              orientation="horizontal"
-              width="100%"
-              padding={{ all: 'extrasmall' }}
-              crossAlignment="flex-start"
-              mainAlignment="flex-start"
-            >
-              <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-                <ds-text as="h2" size="medium" weight="bold" color="gray0">
-                  {t('label.server_list', 'Server List')}
-                </ds-text>
-              </Row>
-            </Row>
-          </Container>
-          <Row orientation="horizontal" width="100%" background="gray6">
-            <ds-divider></ds-divider>
-          </Row>
-        </Row>
+    <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+      <Row mainAlignment="flex-start" width="100%">
         <Container
-          orientation="column"
-          crossAlignment="flex-start"
-          mainAlignment="flex-start"
-          style={{ overflow: 'auto' }}
-          width="100%"
-          height="calc(100vh - 200px)"
-          padding={{ top: 'large', left: 'small', right: 'small' }}
+          orientation="vertical"
+          mainAlignment="space-around"
+          background="gray6"
+          height="58px"
         >
-          <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-            <BackupServersListTable serverList={serverList} />
+          <Row
+            orientation="horizontal"
+            width="100%"
+            padding={{ all: 'extrasmall' }}
+            crossAlignment="flex-start"
+            mainAlignment="flex-start"
+          >
+            <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+              <ds-text as="h2" size="medium" weight="bold" color="gray0">
+                {t('label.server_list', 'Server List')}
+              </ds-text>
+            </Row>
           </Row>
         </Container>
+        <Row orientation="horizontal" width="100%" background="gray6">
+          <ds-divider></ds-divider>
+        </Row>
+      </Row>
+      <Container
+        orientation="column"
+        crossAlignment="flex-start"
+        mainAlignment="flex-start"
+        style={{ overflow: 'auto' }}
+        width="100%"
+        height="calc(100vh - 200px)"
+        padding={{ top: 'large', left: 'small', right: 'small' }}
+      >
+        <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+          <BackupServersListTable serverList={serverList} />
+        </Row>
       </Container>
-    </>
+    </Container>
   );
 };
