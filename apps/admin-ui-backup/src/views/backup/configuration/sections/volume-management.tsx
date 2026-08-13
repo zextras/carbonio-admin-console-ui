@@ -41,7 +41,7 @@ type VolumeManagementProps = {
   isBackArchivingStoreEmpty: boolean;
 };
 
-function getManageExternalVolumeBucketList(
+export function getManageExternalVolumeBucketList(
   selectedManageBucketId: string,
   bucketListOption: Array<SelectOption>,
   matchedBucket: BucketItem | undefined,
