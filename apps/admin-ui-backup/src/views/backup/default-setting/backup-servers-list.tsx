@@ -11,8 +11,9 @@ import {
   Row,
   Table,
 } from '@zextras/ui-components';
-import { useAllServers, useBackupServers, useIsAdvanced } from '@zextras/ui-shared';
+import { replaceHistory, useAllServers, useBackupServers, useIsAdvanced } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
+import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type {
@@ -22,8 +23,20 @@ import type {
   StatusOption,
   TableHeader,
 } from '../../../../types';
+import { CONFIGURATION_BACKUP } from '../../../constants';
 import { bytesToSize } from '../../utility/utils';
 import { SpaceCell, StatusText, TooltipText } from './backup-servers-list-cells';
+
+type ClickableRowProps = {
+  serverName: string;
+  children: ReactNode;
+};
+
+const ClickableRow = ({ serverName, children }: ClickableRowProps) => (
+  <Row onClick={(): void => replaceHistory(`/${serverName}/${CONFIGURATION_BACKUP}`)}>
+    {children}
+  </Row>
+);
 
 const SMART_SCAN_TYPE = {
   DISABLED: 1,
@@ -98,21 +111,39 @@ const BackupServersListTable = ({ serverList }: BackupServersListTableProps) => 
   const tableRows = serverList.map((s, i) => ({
     id: i?.toString(),
     columns: [
-      <ds-text as="span" size="small" weight="regular" key={s?.name} color="gray0">
-        {s?.name}
-      </ds-text>,
-      <StatusText key={s?.name} value={s?.backupAtStartup} />,
-      <StatusText key={s?.name} value={s?.rtStatus} />,
-      <StatusText key={s?.name} value={s?.type} />,
-      <TooltipText key={s?.name} value={s?.smartScan} tooltip={s?.smartScanTooltip} />,
-      <TooltipText key={s?.name} value={s?.purge} tooltip={s?.purgeTooltip} />,
-      <ds-text as="span" size="small" weight="light" key={s?.name} color="gray0">
-        {s?.description}
-      </ds-text>,
-      <SpaceCell key={s?.name} value={s?.availableMetadataSpace} tooltip={s?.availableMetadataSpaceTooltip} />,
-      <SpaceCell key={s?.name} value={s?.availableBackupSpace} tooltip={s?.availableBackupSpaceTooltip} />,
+      <ClickableRow key={s?.name} serverName={s?.name}>
+        <ds-text as="span" size="small" weight="regular" color="gray0">
+          {s?.name}
+        </ds-text>
+      </ClickableRow>,
+      <ClickableRow key={s?.name} serverName={s?.name}>
+        <StatusText value={s?.backupAtStartup} />
+      </ClickableRow>,
+      <ClickableRow key={s?.name} serverName={s?.name}>
+        <StatusText value={s?.rtStatus} />
+      </ClickableRow>,
+      <ClickableRow key={s?.name} serverName={s?.name}>
+        <StatusText value={s?.type} />
+      </ClickableRow>,
+      <ClickableRow key={s?.name} serverName={s?.name}>
+        <TooltipText value={s?.smartScan} tooltip={s?.smartScanTooltip} />
+      </ClickableRow>,
+      <ClickableRow key={s?.name} serverName={s?.name}>
+        <TooltipText value={s?.purge} tooltip={s?.purgeTooltip} />
+      </ClickableRow>,
+      <ClickableRow key={s?.name} serverName={s?.name}>
+        <ds-text as="span" size="small" weight="light" color="gray0">
+          {s?.description}
+        </ds-text>
+      </ClickableRow>,
+      <ClickableRow key={s?.name} serverName={s?.name}>
+        <SpaceCell value={s?.availableMetadataSpace} tooltip={s?.availableMetadataSpaceTooltip} />
+      </ClickableRow>,
+      <ClickableRow key={s?.name} serverName={s?.name}>
+        <SpaceCell value={s?.availableBackupSpace} tooltip={s?.availableBackupSpaceTooltip} />
+      </ClickableRow>,
     ],
-    clickable: false,
+    clickable: true,
   }));
 
   return (

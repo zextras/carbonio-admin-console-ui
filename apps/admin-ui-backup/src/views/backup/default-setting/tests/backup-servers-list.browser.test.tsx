@@ -4,16 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+vi.mock('@zextras/ui-shared', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
+  return { ...actual, replaceHistory: vi.fn() };
+});
+
+import { replaceHistory } from '@zextras/ui-shared';
 import {
   getQueryClient,
   grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { CONFIGURATION_BACKUP } from '../../../../constants';
 import { ServersList } from '../backup-servers-list';
+
+const mockedReplaceHistory = vi.mocked(replaceHistory);
 
 const SERVER_1 = {
   id: 'server-1',
@@ -69,6 +78,7 @@ describe('ServersList', () => {
 
   afterEach(() => {
     resetMockWorker();
+    mockedReplaceHistory.mockClear();
   });
 
   describe('Rendering', () => {
@@ -286,6 +296,59 @@ describe('ServersList', () => {
 
       await expect.element(page.getByText('Server List')).toBeVisible();
       expect(page.getByText('mail01.example.com').elements()).toHaveLength(0);
+    });
+  });
+
+  describe('Row click navigation', () => {
+    it('should navigate to server configuration when clicking the server name', async () => {
+      queryClient.setQueryData(['all-servers'], [SERVER_1]);
+      queryClient.setQueryData(['backup-servers'], {
+        backupModuleEnable: false,
+        backupServerList: [],
+        isBackupModuleLicensed: false,
+      });
+
+      await setupBrowserTest(<ServersList />, { queryClient });
+
+      await page.getByText('mail01.example.com').click();
+
+      expect(mockedReplaceHistory).toHaveBeenCalledWith(
+        `/${SERVER_1.name}/${CONFIGURATION_BACKUP}`,
+      );
+    });
+
+    it('should navigate when clicking any cell in the row', async () => {
+      queryClient.setQueryData(['all-servers'], [SERVER_1]);
+      queryClient.setQueryData(['backup-servers'], {
+        backupModuleEnable: false,
+        backupServerList: [],
+        isBackupModuleLicensed: false,
+      });
+
+      await setupBrowserTest(<ServersList />, { queryClient });
+
+      await page.getByText('Mail server 1').click();
+
+      expect(mockedReplaceHistory).toHaveBeenCalledWith(
+        `/${SERVER_1.name}/${CONFIGURATION_BACKUP}`,
+      );
+    });
+
+    it('should navigate with the correct server name for each server', async () => {
+      queryClient.setQueryData(['all-servers'], [SERVER_1, SERVER_2]);
+      queryClient.setQueryData(['backup-servers'], {
+        backupModuleEnable: false,
+        backupServerList: [],
+        isBackupModuleLicensed: false,
+      });
+
+      await setupBrowserTest(<ServersList />, { queryClient });
+
+      await page.getByText('mail02.example.com').click();
+
+      expect(mockedReplaceHistory).toHaveBeenCalledWith(
+        `/${SERVER_2.name}/${CONFIGURATION_BACKUP}`,
+      );
     });
   });
 });
