@@ -5,6 +5,7 @@
  */
 import { Container, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import { useIsWorkspaceEdition } from '../../../../services/use-is-workspace-edition';
 import { FeatureSwitchField } from '../../fields/feature-switch-field';
@@ -17,7 +18,8 @@ type FilesTasksSectionProps = {
 
 export const FilesTasksSection = ({ form, readonlyCOS }: FilesTasksSectionProps) => {
   const [t] = useTranslation();
-  const isWorspaceEdition = useIsWorkspaceEdition();
+  const { cosId } = useParams();
+  const isWorspaceEdition = useIsWorkspaceEdition(cosId);
 
   return (
     <Row

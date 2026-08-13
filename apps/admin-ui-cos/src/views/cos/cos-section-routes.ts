@@ -65,3 +65,8 @@ export const SECTION_ROUTES: Array<SectionRoute> = [
     Component: CosAdvanced,
   },
 ];
+
+export const getVisibleSectionRoutes = (isWorkspaceEdition: boolean): Array<SectionRoute> =>
+  isWorkspaceEdition
+    ? SECTION_ROUTES
+    : SECTION_ROUTES.filter((route) => route.id !== WSC);

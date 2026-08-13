@@ -31,7 +31,8 @@ import {
 } from '../../constants';
 import { cosQueryKeys } from '../../services/cos-query-keys';
 import { useCosDetail } from '../../services/use-cos-detail';
-import { SECTION_ROUTES } from './cos-section-routes';
+import { useIsWorkspaceEdition } from '../../services/use-is-workspace-edition';
+import { getVisibleSectionRoutes } from './cos-section-routes';
 import { GeneralListPanel } from './general-list-panel';
 
 export const CosListPanel = () => {
@@ -49,6 +50,7 @@ export const CosListPanel = () => {
   const { data: cosDetailData } = useCosDetail(selectedCosId);
   const cosInformation = cosDetailData?.cos?.[0];
   const cosName = cosInformation?.name;
+  const isWorkspaceEdition = useIsWorkspaceEdition(selectedCosId);
   const prevCosRef = useRef<string | undefined>(undefined);
   const [isDetailListExpanded, setIsDetailListExpanded] = useState(() => {
     const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
@@ -122,7 +124,9 @@ export const CosListPanel = () => {
     }
   };
 
-  const detailOptions: Array<ListItemType> = SECTION_ROUTES.map(
+  const visibleSectionRoutes = getVisibleSectionRoutes(isWorkspaceEdition);
+
+  const detailOptions: Array<ListItemType> = visibleSectionRoutes.map(
     ({ id, labelKey, labelDefault }) => ({
       id,
       name: t(labelKey, labelDefault),
