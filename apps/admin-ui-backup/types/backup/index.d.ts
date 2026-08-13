@@ -22,7 +22,6 @@ export type GlobalConfig = {
   ZxBackup_DestPath?: string;
   ZxBackup_SpaceThreshold?: string;
   ZxBackup_MaxMetadataSize?: string;
-  ZxBackup_MaxWaitingTime?: string;
   ZxBackup_MaxOperationPerAccount?: string;
   ZxBackup_DataRetentionDays?: string;
   backupLatencyHighThreshold?: string;
@@ -144,7 +143,6 @@ export type BackupServerAttributes = {
   ZxBackup_SpaceThreshold?: ServerAttributeValue<number>;
   ZxBackup_DestPath?: ServerAttributeValue<string>;
   ZxBackup_DataRetentionDays?: ServerAttributeValue<number>;
-  ZxBackup_MaxWaitingTime?: ServerAttributeValue<number>;
   ZxBackup_MaxMetadataSize?: ServerAttributeValue<number>;
   ZxBackup_MaxOperationPerAccount?: ServerAttributeValue<number>;
   ZxBackup_BackupCustomizations?: ServerAttributeValue<boolean>;

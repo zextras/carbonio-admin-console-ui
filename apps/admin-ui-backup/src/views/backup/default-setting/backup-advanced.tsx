@@ -23,7 +23,7 @@ import { useModifyBackupConfig } from '../../../services/use-modify-backup-confi
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
 import { BackupConfigHeader } from '../components/backup/backup-config-header';
 import { defaultSettingsSchema } from './schema';
-import { mapFormValuesToModifyData,mapGlobalConfigToFormValues } from './types';
+import { getDirtyPayload, mapGlobalConfigToFormValues } from './utils';
 
 const COMPRESS_LEVEL_ITEMS = [
   { label: '1', value: '1' },
@@ -41,9 +41,12 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
     defaultValues: mapGlobalConfigToFormValues(globalConfig),
     validators: { onChange: defaultSettingsSchema, onSubmit: defaultSettingsSchema },
     onSubmit: async ({ value }) => {
-      modifyMutation.mutate(mapFormValuesToModifyData(value) as never, {
-        onSuccess: () => form.reset(value, { keepDefaultValues: true }),
-      });
+      modifyMutation.mutate(
+        getDirtyPayload(value, mapGlobalConfigToFormValues(globalConfig)) as never,
+        {
+          onSuccess: () => form.reset(value, { keepDefaultValues: true }),
+        },
+      );
     },
   });
 
@@ -218,26 +221,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                         <Input
                           isRequired
                           label={t('backup.metatdata_size', 'Metadata Size')}
-                          value={field.state.value}
-                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            field.handleChange(e.target.value)
-                          }
-                          backgroundColor="gray5"
-                          disabled={!allowSetBackup}
-                        />
-                      )}
-                    </form.Field>
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container padding={{ all: 'small' }}>
-                    <form.Field name="maxWaitingTime">
-                      {(field) => (
-                        <Input
-                          label={`${t('backup.max_waiting_time', 'Max Waiting Time')} (${t(
-                            'backup.ms',
-                            'MS',
-                          )})`}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)

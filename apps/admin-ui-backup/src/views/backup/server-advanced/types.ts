@@ -12,7 +12,6 @@ export type ServerAdvancedFormValues = {
   includeIndex: boolean;
   backupLatencyHighThreshold: string;
   backupLatencyLowThreshold: string;
-  backupMaxWaitTime: string;
   backupMaxMetaDataSize: string;
   backupOnTheFlyMetadata: boolean;
   scheduledMetadataArchivingEnabled: boolean;
@@ -22,7 +21,7 @@ export type ServerAdvancedFormValues = {
   backupNumberThreadsForAccounts: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export type ServerAdvancedFormApi = ReactFormExtendedApi<
   ServerAdvancedFormValues,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

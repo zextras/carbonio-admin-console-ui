@@ -24,7 +24,6 @@ const GLOBAL_CONFIG = {
   ZxBackup_PurgeCustomizations: false,
   backupSaveIndex: false,
   ZxBackup_MaxMetadataSize: '1024',
-  ZxBackup_MaxWaitingTime: '5000',
   ZxBackup_MaxOperationPerAccount: '10',
   backupCompressionLevel: '2',
   backupNumberThreadsForAccounts: '4',
@@ -60,7 +59,6 @@ describe('BackupAdvanced', () => {
       await expect.element(page.getByText(/Latency High Threshold/)).toBeVisible();
       await expect.element(page.getByText(/Latency Low Threshold/)).toBeVisible();
       await expect.element(page.getByText('Metadata Size')).toBeVisible();
-      await expect.element(page.getByText(/Max Waiting Time/)).toBeVisible();
       await expect.element(page.getByText('Max Operations / Account')).toBeVisible();
       await expect.element(page.getByText('Threads For Items')).toBeVisible();
       await expect.element(page.getByText('Threads For Account')).toBeVisible();

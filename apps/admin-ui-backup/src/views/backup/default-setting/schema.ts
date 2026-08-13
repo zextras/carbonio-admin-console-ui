@@ -33,7 +33,6 @@ export const defaultSettingsSchema = z.object({
   purgeOldConfigurations: z.boolean(),
   saveIndex: z.boolean(),
   maxMetadataSize: optionalNonNegativeInt,
-  maxWaitingTime: optionalNonNegativeInt,
   maxOperationsPerAccount: optionalNonNegativeInt,
   compressionLevel: z.string(),
   threadsForItems: optionalNonNegativeInt,

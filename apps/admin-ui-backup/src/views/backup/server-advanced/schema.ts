@@ -24,7 +24,6 @@ export const serverAdvancedSchema = z.object({
   includeIndex: z.boolean(),
   backupLatencyHighThreshold: optionalNonNegativeInt,
   backupLatencyLowThreshold: optionalNonNegativeInt,
-  backupMaxWaitTime: optionalNonNegativeInt,
   backupMaxMetaDataSize: optionalNonNegativeInt,
   backupOnTheFlyMetadata: z.boolean(),
   scheduledMetadataArchivingEnabled: z.boolean(),

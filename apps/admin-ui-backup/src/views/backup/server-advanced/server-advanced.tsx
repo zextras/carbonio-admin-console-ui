@@ -28,7 +28,6 @@ import { BackupOptions } from './sections/backup-options';
 import { LatencySettings } from './sections/latency-settings';
 import { MetadataSettings } from './sections/metadata-settings';
 import { OtherControls } from './sections/other-controls';
-import { WaitingTimeSettings } from './sections/waiting-time-settings';
 import type { ServerAdvancedFormValues } from './types';
 
 function mapServerConfigToFormValues(data: GetServerResponse | undefined): ServerAdvancedFormValues {
@@ -40,7 +39,6 @@ function mapServerConfigToFormValues(data: GetServerResponse | undefined): Serve
     includeIndex: attr?.backupSaveIndex?.value ?? false,
     backupLatencyHighThreshold: String(attr?.backupLatencyHighThreshold?.value ?? 0),
     backupLatencyLowThreshold: String(attr?.backupLatencyLowThreshold?.value ?? 0),
-    backupMaxWaitTime: String(attr?.ZxBackup_MaxWaitingTime?.value ?? 0),
     backupMaxMetaDataSize: String(attr?.ZxBackup_MaxMetadataSize?.value ?? 0),
     backupOnTheFlyMetadata: attr?.backupOnTheFlyMetadata?.value ?? false,
     scheduledMetadataArchivingEnabled: attr?.scheduledMetadataArchivingEnabled?.value ?? false,
@@ -62,7 +60,6 @@ function mapFormValuesToCoreAttributes(
     backupSaveIndex: { value: values.includeIndex, objectName: server, configType: SERVER },
     backupLatencyHighThreshold: { value: Number(values.backupLatencyHighThreshold), objectName: server, configType: SERVER },
     backupLatencyLowThreshold: { value: Number(values.backupLatencyLowThreshold), objectName: server, configType: SERVER },
-    ZxBackup_MaxWaitingTime: { value: Number(values.backupMaxWaitTime), objectName: server, configType: SERVER },
     ZxBackup_MaxMetadataSize: { value: Number(values.backupMaxMetaDataSize), objectName: server, configType: SERVER },
     backupOnTheFlyMetadata: { value: values.backupOnTheFlyMetadata, objectName: server, configType: SERVER },
     scheduledMetadataArchivingEnabled: { value: values.scheduledMetadataArchivingEnabled, objectName: server, configType: SERVER },
@@ -150,7 +147,6 @@ function ServerAdvancedContent({
         >
           <BackupOptions form={form as never} allowSetBackup={allowSetBackup} />
           <LatencySettings form={form as never} allowSetBackup={allowSetBackup} />
-          <WaitingTimeSettings form={form as never} allowSetBackup={allowSetBackup} />
           <MetadataSettings form={form as never} allowSetBackup={allowSetBackup} />
           <OtherControls form={form as never} allowSetBackup={allowSetBackup} />
         </Container>

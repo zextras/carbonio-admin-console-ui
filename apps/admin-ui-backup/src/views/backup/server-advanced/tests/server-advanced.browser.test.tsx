@@ -37,7 +37,6 @@ const SERVER_CONFIG_RESPONSE = {
     backupSaveIndex: { value: true },
     backupLatencyHighThreshold: { value: 200 },
     backupLatencyLowThreshold: { value: 50 },
-    ZxBackup_MaxWaitingTime: { value: 5000 },
     ZxBackup_MaxMetadataSize: { value: 1024 },
     backupOnTheFlyMetadata: { value: false },
     scheduledMetadataArchivingEnabled: { value: false },
@@ -168,15 +167,6 @@ describe('ServerAdvanced', () => {
 
       await expect.element(page.getByText('Latency High Threshold (ms)')).toBeVisible();
       await expect.element(page.getByText('Latency Low Threshold (ms)')).toBeVisible();
-    });
-
-    it('should render Max Waiting Time input', async () => {
-      await setupBrowserTest(<ServerAdvancedWithRoute />, {
-        queryClient,
-        initialRouterEntry: `/${SERVER_NAME}`,
-      });
-
-      await expect.element(page.getByText('Max Waiting Time (ms)')).toBeVisible();
     });
 
     it('should render Maximum Metadata Size input', async () => {

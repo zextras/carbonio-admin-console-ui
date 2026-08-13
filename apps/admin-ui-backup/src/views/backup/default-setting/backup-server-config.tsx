@@ -29,9 +29,9 @@ import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
 import { BackupConfigHeader } from '../components/backup/backup-config-header';
 import { defaultSettingsSchema } from './schema';
 import {
-  mapFormValuesToModifyData,
+  getDirtyPayload,
   mapGlobalConfigToFormValues,
-} from './types';
+} from './utils';
 
 function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: GlobalConfig }) {
   const [t] = useTranslation();
@@ -52,9 +52,12 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
     defaultValues: mapGlobalConfigToFormValues(globalConfig),
     validators: { onChange: defaultSettingsSchema, onSubmit: defaultSettingsSchema },
     onSubmit: async ({ value }) => {
-      modifyMutation.mutate(mapFormValuesToModifyData(value) as never, {
-        onSuccess: () => form.reset(value, { keepDefaultValues: true }),
-      });
+      modifyMutation.mutate(
+        getDirtyPayload(value, mapGlobalConfigToFormValues(globalConfig)) as never,
+        {
+          onSuccess: () => form.reset(value, { keepDefaultValues: true }),
+        },
+      );
     },
   });
 
