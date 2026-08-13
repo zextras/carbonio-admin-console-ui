@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { BucketItem } from '../backup';
+
 export type SoapResponseBody<T = unknown> = {
   Body: {
     response: {
@@ -45,6 +47,6 @@ export type ModifyBackupResponse = SoapErrorResponse & {
 export type ListBucketsContent = {
   ok: boolean;
   response: {
-    values: Array<import('./backup').BucketItem>;
+    values: Array<BucketItem>;
   };
 };
