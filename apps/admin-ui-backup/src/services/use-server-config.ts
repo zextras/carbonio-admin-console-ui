@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { backupQueryKeys } from './backup-query-keys';
 import { getServerConfig } from './get-server-config';
@@ -17,4 +17,5 @@ export const useServerConfig = (serverId: string | undefined) =>
     staleTime: 30_000,
     retry: 1,
     refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
   });

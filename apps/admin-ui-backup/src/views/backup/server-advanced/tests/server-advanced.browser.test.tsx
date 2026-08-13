@@ -53,11 +53,13 @@ const ServerAdvancedWithRoute = () => (
   </Routes>
 );
 
+let currentServerConfigResponse = SERVER_CONFIG_RESPONSE;
+
 function setupMocks() {
   createBrowserAPIInterceptor(
     'get',
     `/service/extension/zextras_admin/core/getServer/${SERVER_ID}`,
-    () => HttpResponse.json(SERVER_CONFIG_RESPONSE),
+    () => HttpResponse.json(currentServerConfigResponse),
   );
 }
 
@@ -68,6 +70,7 @@ describe('ServerAdvanced', () => {
     queryClient = getQueryClient();
     await grantUserConfigRights(queryClient);
     queryClient.setQueryData(['all-servers'], ALL_SERVERS);
+    currentServerConfigResponse = SERVER_CONFIG_RESPONSE;
     setupMocks();
   });
 
@@ -271,10 +274,26 @@ describe('ServerAdvanced', () => {
 
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
 
+      currentServerConfigResponse = {
+        ...SERVER_CONFIG_RESPONSE,
+        attributes: {
+          ...SERVER_CONFIG_RESPONSE.attributes,
+          scheduledMetadataArchivingEnabled: { value: true },
+        },
+      };
+
       await userEvent.click(page.getByRole('button', { name: 'Save' }));
 
       await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
       await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+
+      await expect
+        .element(
+          page.getByRole('switch', {
+            name: 'Archive user metadata folder in the remote backup',
+          }),
+        )
+        .toHaveAttribute('aria-checked', 'true');
     });
 
     it('should hide Cancel and Save buttons after clicking Cancel', async () => {

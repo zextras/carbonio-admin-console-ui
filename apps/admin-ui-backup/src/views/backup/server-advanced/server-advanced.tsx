@@ -5,6 +5,7 @@
  */
 
 import { useForm } from '@tanstack/react-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Button, Container, Padding, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
 import {
@@ -21,6 +22,7 @@ import type {
   SetCoreAttributesResponse,
 } from '../../../../types';
 import { SERVER } from '../../../constants';
+import { backupQueryKeys } from '../../../services/backup-query-keys';
 import { useServerConfig } from '../../../services/use-server-config';
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
 import { serverAdvancedSchema } from './schema';
@@ -73,12 +75,15 @@ function mapFormValuesToCoreAttributes(
 function ServerAdvancedContent({
   serverConfig,
   serverName,
+  serverId,
 }: {
   readonly serverConfig: GetServerResponse;
   readonly serverName: string;
+  readonly serverId: string;
 }) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
   const { data: rights } = useCurrentUserRights();
   const allowSetBackup = checkAllowSetBackup(rights);
 
@@ -98,7 +103,8 @@ function ServerAdvancedContent({
           replace: true,
         });
       } else {
-        form.reset(value);
+        form.reset(value, { keepDefaultValues: true });
+        queryClient.invalidateQueries({ queryKey: backupQueryKeys.serverConfig(serverId) });
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -188,5 +194,5 @@ export const ServerAdvanced = () => {
     );
   }
 
-  return <ServerAdvancedContent serverConfig={serverConfig} serverName={server ?? ''} />;
+  return <ServerAdvancedContent serverConfig={serverConfig} serverName={server ?? ''} serverId={serverId} />;
 };

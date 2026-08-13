@@ -178,6 +178,32 @@ Year is auto-updated by eslint. The header is required in all files except:
   } as const;
   ```
 
+### TanStack Form + React Query: Post-Save Pattern
+
+When a form backed by TanStack Form needs to clear `isDirty` after a successful save, you must use **both** `form.reset()` and query invalidation together. Neither alone works:
+
+- **`form.reset()` alone** → `isDirty` stays `true` (defaults unchanged) or values revert (if defaults updated and `!isTouched`)
+- **Query invalidation alone** → `isDirty` stays `true` (`isTouched` is still `true`, so `formApi.update()` never triggers a `baseStore` change, and `isDefaultValue` is never recomputed)
+
+**Correct pattern:**
+```typescript
+// 1. Reset form values to saved state AND clear isTouched
+form.reset(value, { keepDefaultValues: true });
+// 2. Invalidate the query so refetch updates the form's internal defaults
+queryClient.invalidateQueries({ queryKey: myQueryKeys.config(id) });
+```
+
+**Why this works:** `form.reset(value, { keepDefaultValues: true })` clears `isTouched` to `false`. When the refetch completes, `formApi.update(opts)` runs with new `defaultValues`. Since `!isTouched` is now `true`, `shouldUpdateValues` is `true`, which triggers a `baseStore` change. This causes `isDefaultValue` to recompute against the new defaults → `isDirty` becomes `false`.
+
+**Query hook requirement:** Add `placeholderData: keepPreviousData` to prevent loading-spinner flashes during refetch and cross-entity navigation:
+```typescript
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+// ...
+placeholderData: keepPreviousData,
+```
+
+**Reference implementation:** `apps/admin-ui-storage/src/views/hsm/hsm-setting-panel.tsx` (HSM Settings), `apps/admin-ui-backup/src/views/backup/server-advanced/server-advanced.tsx` (Server Advanced)
+
 ### API Calls
 - Use `soapFetch` for SOAP API calls
 - Service files contain API request functions
