@@ -239,7 +239,7 @@ export const GeneralInformationForm = ({
   const [t] = useTranslation();
   const { cosId } = useParams();
   const modifyCosMutation = useModifyCos(cosId);
-  const renameCosMutation = useRenameCos();
+  const renameCosMutation = useRenameCos(cosId);
   const { data: totalAccount = 0 } = useTotalAccounts(cosId);
   const { data: totalDomain = 0 } = useTotalDomains(cosId);
 
