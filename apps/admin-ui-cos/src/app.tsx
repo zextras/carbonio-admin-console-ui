@@ -36,14 +36,13 @@ const App = () => {
   const showCOS = checkShowCOS(rights);
   const createCosRight = checkCreateCosRight(rights);
 
-  const managementSection = {
-    id: MANAGE_APP_ID,
-    label: t('label.management', 'Management'),
-    position: 3,
-  };
-
   useEffect(() => {
     if (showCOS) {
+      const managementSection = {
+        id: MANAGE_APP_ID,
+        label: t('label.management', 'Management'),
+        position: 3,
+      };
       addRoute({
         route: COS_ROUTE_ID,
         position: 2,
@@ -58,7 +57,7 @@ const App = () => {
     } else {
       removeRoute(COS_ROUTE_ID);
     }
-  }, [managementSection, showCOS, t]);
+  }, [showCOS, t]);
 
   useEffect(() => {
     const canCreate = Boolean(licenseData) && createCosRight;
