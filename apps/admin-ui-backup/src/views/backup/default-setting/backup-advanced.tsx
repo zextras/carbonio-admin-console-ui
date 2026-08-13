@@ -61,18 +61,12 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
           crossAlignment="flex-start"
           mainAlignment="flex-start"
         >
-          <Row mainAlignment="flex-start" width="100%">
-            <Container orientation="vertical" mainAlignment="space-around" height="56px">
-              <BackupConfigHeader
-                title={t('label.advanced', 'Advanced')}
-                isDirty={isDirty}
-                onCancel={() => form.reset()}
-                onSave={() => form.handleSubmit()}
-                t={t}
-              />
-            </Container>
-            <ds-divider></ds-divider>
-          </Row>
+          <BackupConfigHeader
+            title={t('label.advanced', 'Advanced')}
+            isDirty={isDirty}
+            onCancel={() => form.reset()}
+            onSave={() => form.handleSubmit()}
+          />
           <Container
             orientation="column"
             crossAlignment="flex-start"
@@ -95,10 +89,10 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                       {(field) => (
                         <Input
                           isRequired
-                          label={`${t('backup.latency_high_threshold', 'Latency High Threshold')} (${t(
-                            'backup.kb',
-                            'KB',
-                          )})`}
+                          label={`${t(
+                            'backup.latency_high_threshold',
+                            'Latency High Threshold',
+                          )} (${t('backup.kb', 'KB')})`}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
@@ -116,10 +110,10 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                       {(field) => (
                         <Input
                           isRequired
-                          label={`${t('backup.latency_low_threshold', 'Latency Low Threshold')} (${t(
-                            'backup.kb',
-                            'KB',
-                          )})`}
+                          label={`${t(
+                            'backup.latency_low_threshold',
+                            'Latency Low Threshold',
+                          )} (${t('backup.kb', 'KB')})`}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
@@ -259,7 +253,8 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                           background="gray5"
                           label={t('backup.compression_level', 'Compression Level')}
                           defaultSelection={COMPRESS_LEVEL_ITEMS.find(
-                            (item) => item.value === String(globalConfig.backupCompressionLevel ?? ''),
+                            (item) =>
+                              item.value === String(globalConfig.backupCompressionLevel ?? ''),
                           )}
                           onChange={(v) => field.handleChange(v ?? '')}
                           showCheckbox={false}

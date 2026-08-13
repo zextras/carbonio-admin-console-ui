@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
-import type { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 type BackupConfigHeaderProps = {
   title: string;
   isDirty: boolean;
   onCancel: () => void;
   onSave: () => void;
-  t: TFunction;
 };
 
 export const BackupConfigHeader = ({
@@ -19,25 +18,38 @@ export const BackupConfigHeader = ({
   isDirty,
   onCancel,
   onSave,
-  t,
-}: BackupConfigHeaderProps) => (
-  <Row mainAlignment="flex-start" width="100%" padding={{ left: 'large', right: 'large' }}>
-    <Container orientation="vertical" mainAlignment="space-around" background="gray6" height="58px">
-      <Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
-        <Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-          <ds-text as="h2" size="medium" weight="bold" color="gray0">
-            {title}
-          </ds-text>
+}: BackupConfigHeaderProps) => {
+  const [t] = useTranslation();
+  return (
+    <Row mainAlignment="flex-start" width="100%">
+      <Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
+        <Row orientation="horizontal" width="100%">
+          <Row
+            padding={{ all: 'large' }}
+            mainAlignment="flex-start"
+            width="50%"
+            crossAlignment="center"
+          >
+            <ds-text as="h2" size="medium" weight="bold" color="gray0">
+              {title}
+            </ds-text>
+          </Row>
+          <Row
+            padding={{ all: 'large' }}
+            width="50%"
+            mainAlignment="flex-end"
+            crossAlignment="center"
+          >
+            <Padding right="small">
+              {isDirty && (
+                <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
+              )}
+            </Padding>
+            {isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
+          </Row>
         </Row>
-        <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-          <Padding right="small">
-            {isDirty && (
-              <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
-            )}
-          </Padding>
-          {isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
-        </Row>
-      </Row>
-    </Container>
-  </Row>
-);
+      </Container>
+      <ds-divider></ds-divider>
+    </Row>
+  );
+};

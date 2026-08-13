@@ -7,12 +7,8 @@
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
-import { Button, Container, Padding, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
-import {
-  setCoreAttributes,
-  useAllServers,
-  useCurrentUserRights,
-} from '@zextras/ui-shared';
+import { Container, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
+import { setCoreAttributes, useAllServers, useCurrentUserRights } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -25,6 +21,7 @@ import { SERVER } from '../../../constants';
 import { backupQueryKeys } from '../../../services/backup-query-keys';
 import { useServerConfig } from '../../../services/use-server-config';
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
+import { BackupConfigHeader } from '../components/backup/backup-config-header';
 import { serverAdvancedSchema } from './schema';
 import { BackupOptions } from './sections/backup-options';
 import { LatencySettings } from './sections/latency-settings';
@@ -32,7 +29,9 @@ import { MetadataSettings } from './sections/metadata-settings';
 import { OtherControls } from './sections/other-controls';
 import type { ServerAdvancedFormValues } from './types';
 
-function mapServerConfigToFormValues(data: GetServerResponse | undefined): ServerAdvancedFormValues {
+function mapServerConfigToFormValues(
+  data: GetServerResponse | undefined,
+): ServerAdvancedFormValues {
   const attr = data?.attributes;
   return {
     ldapDumpEnabled: attr?.ldapDumpEnabled?.value ?? false,
@@ -57,18 +56,62 @@ function mapFormValuesToCoreAttributes(
 ): CoreAttributeBody {
   return {
     ldapDumpEnabled: { value: values.ldapDumpEnabled, objectName: server, configType: SERVER },
-    ZxBackup_BackupCustomizations: { value: values.serverConfiguration, objectName: server, configType: SERVER },
-    ZxBackup_PurgeCustomizations: { value: values.purgeOldConfiguration, objectName: server, configType: SERVER },
+    ZxBackup_BackupCustomizations: {
+      value: values.serverConfiguration,
+      objectName: server,
+      configType: SERVER,
+    },
+    ZxBackup_PurgeCustomizations: {
+      value: values.purgeOldConfiguration,
+      objectName: server,
+      configType: SERVER,
+    },
     backupSaveIndex: { value: values.includeIndex, objectName: server, configType: SERVER },
-    backupLatencyHighThreshold: { value: Number(values.backupLatencyHighThreshold), objectName: server, configType: SERVER },
-    backupLatencyLowThreshold: { value: Number(values.backupLatencyLowThreshold), objectName: server, configType: SERVER },
-    ZxBackup_MaxMetadataSize: { value: Number(values.backupMaxMetaDataSize), objectName: server, configType: SERVER },
-    backupOnTheFlyMetadata: { value: values.backupOnTheFlyMetadata, objectName: server, configType: SERVER },
-    scheduledMetadataArchivingEnabled: { value: values.scheduledMetadataArchivingEnabled, objectName: server, configType: SERVER },
-    ZxBackup_MaxOperationPerAccount: { value: Number(values.backupMaxOperationPerAccount), objectName: server, configType: SERVER },
-    backupCompressionLevel: { value: Number(values.backupCompressionLevel), objectName: server, configType: SERVER },
-    backupNumberThreadsForItems: { value: Number(values.backupNumberThreadsForItems), objectName: server, configType: SERVER },
-    backupNumberThreadsForAccounts: { value: Number(values.backupNumberThreadsForAccounts), objectName: server, configType: SERVER },
+    backupLatencyHighThreshold: {
+      value: Number(values.backupLatencyHighThreshold),
+      objectName: server,
+      configType: SERVER,
+    },
+    backupLatencyLowThreshold: {
+      value: Number(values.backupLatencyLowThreshold),
+      objectName: server,
+      configType: SERVER,
+    },
+    ZxBackup_MaxMetadataSize: {
+      value: Number(values.backupMaxMetaDataSize),
+      objectName: server,
+      configType: SERVER,
+    },
+    backupOnTheFlyMetadata: {
+      value: values.backupOnTheFlyMetadata,
+      objectName: server,
+      configType: SERVER,
+    },
+    scheduledMetadataArchivingEnabled: {
+      value: values.scheduledMetadataArchivingEnabled,
+      objectName: server,
+      configType: SERVER,
+    },
+    ZxBackup_MaxOperationPerAccount: {
+      value: Number(values.backupMaxOperationPerAccount),
+      objectName: server,
+      configType: SERVER,
+    },
+    backupCompressionLevel: {
+      value: Number(values.backupCompressionLevel),
+      objectName: server,
+      configType: SERVER,
+    },
+    backupNumberThreadsForItems: {
+      value: Number(values.backupNumberThreadsForItems),
+      objectName: server,
+      configType: SERVER,
+    },
+    backupNumberThreadsForAccounts: {
+      value: Number(values.backupNumberThreadsForAccounts),
+      objectName: server,
+      configType: SERVER,
+    },
   };
 }
 
@@ -97,7 +140,9 @@ function ServerAdvancedContent({
         createSnackbar({
           key: 'error',
           severity: 'error',
-          label: data?.errors[0]?.error ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          label:
+            data?.errors[0]?.error ??
+            t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -108,7 +153,10 @@ function ServerAdvancedContent({
         createSnackbar({
           key: 'success',
           severity: 'success',
-          label: t('label.the_last_changes_has_been_saved_successfully', 'Changes have been saved successfully'),
+          label: t(
+            'label.the_last_changes_has_been_saved_successfully',
+            'Changes have been saved successfully',
+          ),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -121,29 +169,18 @@ function ServerAdvancedContent({
 
   return (
     <Container mainAlignment="flex-start" background="gray6">
-      <Container orientation="column" background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
-        <Row mainAlignment="flex-start" width="100%">
-          <Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
-            <Row orientation="horizontal" width="100%">
-              <Row padding={{ all: 'large' }} mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-                <ds-text as="h2" size="medium" weight="bold" color="gray0">
-                  {t('backup.advanced', 'Advanced')}
-                </ds-text>
-              </Row>
-              <Row padding={{ all: 'large' }} width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-                <Padding right="small">
-                  {isDirty && (
-                    <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={() => form.reset()} />
-                  )}
-                </Padding>
-                {isDirty && (
-                  <Button label={t('label.save', 'Save')} color="primary" onClick={() => form.handleSubmit()} />
-                )}
-              </Row>
-            </Row>
-          </Container>
-          <ds-divider></ds-divider>
-        </Row>
+      <Container
+        orientation="column"
+        background="gray6"
+        crossAlignment="flex-start"
+        mainAlignment="flex-start"
+      >
+        <BackupConfigHeader
+          title={t('backup.advanced', 'Advanced')}
+          isDirty={isDirty}
+          onCancel={() => form.reset()}
+          onSave={() => form.handleSubmit()}
+        />
         <Container
           mainAlignment="flex-start"
           crossAlignment="flex-end"
@@ -173,11 +210,21 @@ export const ServerAdvanced = () => {
   if (isPending || !serverConfig) {
     return (
       <Container mainAlignment="flex-start" background="gray6">
-        <Container orientation="column" background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
+        <Container
+          orientation="column"
+          background="gray6"
+          crossAlignment="flex-start"
+          mainAlignment="flex-start"
+        >
           <Row mainAlignment="flex-start" width="100%">
             <Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
               <Row orientation="horizontal" width="100%">
-                <Row padding={{ all: 'large' }} mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+                <Row
+                  padding={{ all: 'large' }}
+                  mainAlignment="flex-start"
+                  width="50%"
+                  crossAlignment="flex-start"
+                >
                   <ds-text as="h2" size="medium" weight="bold" color="gray0">
                     Advanced
                   </ds-text>
@@ -194,5 +241,11 @@ export const ServerAdvanced = () => {
     );
   }
 
-  return <ServerAdvancedContent serverConfig={serverConfig} serverName={server ?? ''} serverId={serverId} />;
+  return (
+    <ServerAdvancedContent
+      serverConfig={serverConfig}
+      serverName={server ?? ''}
+      serverId={serverId}
+    />
+  );
 };

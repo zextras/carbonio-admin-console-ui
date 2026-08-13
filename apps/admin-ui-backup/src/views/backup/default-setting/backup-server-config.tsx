@@ -14,11 +14,7 @@ import {
   Row,
   Switch,
 } from '@zextras/ui-components';
-import {
-  useCurrentUserRights,
-  useGlobalSettings,
-  useModuleLicenseInfo,
-} from '@zextras/ui-shared';
+import { useCurrentUserRights, useGlobalSettings, useModuleLicenseInfo } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,10 +24,7 @@ import { useModifyBackupConfig } from '../../../services/use-modify-backup-confi
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
 import { BackupConfigHeader } from '../components/backup/backup-config-header';
 import { defaultSettingsSchema } from './schema';
-import {
-  getDirtyPayload,
-  mapGlobalConfigToFormValues,
-} from './utils';
+import { getDirtyPayload, mapGlobalConfigToFormValues } from './utils';
 
 function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: GlobalConfig }) {
   const [t] = useTranslation();
@@ -75,11 +68,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
           isDirty={isDirty}
           onCancel={() => form.reset()}
           onSave={() => form.handleSubmit()}
-          t={t}
         />
-        <Row orientation="horizontal" width="100%" background="gray6">
-          <ds-divider></ds-divider>
-        </Row>
         <Container
           orientation="column"
           crossAlignment="flex-start"
@@ -187,10 +176,10 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                 {(field) => (
                   <Input
                     isRequired
-                    label={`${t('backup.local_metadata_threshold', 'Local Metadata Threshold')} (${t(
-                      'label.mb',
-                      'MB',
-                    )})`}
+                    label={`${t(
+                      'backup.local_metadata_threshold',
+                      'Local Metadata Threshold',
+                    )} (${t('label.mb', 'MB')})`}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       field.handleChange(e.target.value)

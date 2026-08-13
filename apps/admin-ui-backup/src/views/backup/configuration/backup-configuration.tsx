@@ -7,7 +7,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
-import { Button, Container, Padding, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
+import { Container, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
 import {
   setCoreAttributes,
   useAllServers,
@@ -29,6 +29,7 @@ import { BACKUP_REALTIME, SERVER } from '../../../constants';
 import { backupQueryKeys } from '../../../services/backup-query-keys';
 import { useServerConfig } from '../../../services/use-server-config';
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
+import { BackupConfigHeader } from '../components/backup/backup-config-header';
 import { backupConfigSchema } from './schema';
 import { DataRetention } from './sections/data-retention';
 import { GeneralSettings } from './sections/general-settings';
@@ -60,17 +61,55 @@ function mapFormValuesToCoreAttributes(
   includeRealtime: boolean,
 ): CoreAttributeBody {
   const body: CoreAttributeBody = {
-    ZxBackup_ModuleEnabledAtStartup: { value: values.moduleEnableStartup, objectName: server, configType: SERVER },
-    ZxBackup_DoSmartScanOnStartup: { value: values.runSmartScanStartup, objectName: server, configType: SERVER },
-    ZxBackup_SpaceThreshold: { value: Number(values.spaceThreshold), objectName: server, configType: SERVER },
-    backupSmartScanScheduler: { value: { 'cron-pattern': values.scheduleSmartScan, 'cron-enabled': values.isScheduleSmartScan }, objectName: server, configType: SERVER },
-    backupPurgeScheduler: { value: { 'cron-pattern': values.retentionPolicySchedule, 'cron-enabled': values.scheduleAutomaticRetentionPolicy }, objectName: server, configType: SERVER },
+    ZxBackup_ModuleEnabledAtStartup: {
+      value: values.moduleEnableStartup,
+      objectName: server,
+      configType: SERVER,
+    },
+    ZxBackup_DoSmartScanOnStartup: {
+      value: values.runSmartScanStartup,
+      objectName: server,
+      configType: SERVER,
+    },
+    ZxBackup_SpaceThreshold: {
+      value: Number(values.spaceThreshold),
+      objectName: server,
+      configType: SERVER,
+    },
+    backupSmartScanScheduler: {
+      value: {
+        'cron-pattern': values.scheduleSmartScan,
+        'cron-enabled': values.isScheduleSmartScan,
+      },
+      objectName: server,
+      configType: SERVER,
+    },
+    backupPurgeScheduler: {
+      value: {
+        'cron-pattern': values.retentionPolicySchedule,
+        'cron-enabled': values.scheduleAutomaticRetentionPolicy,
+      },
+      objectName: server,
+      configType: SERVER,
+    },
     ZxBackup_DestPath: { value: values.backupDestPath, objectName: server, configType: SERVER },
-    ZxBackup_DataRetentionDays: { value: Number(values.keepDeletedItemInBackup), objectName: server, configType: SERVER },
-    backupAccountsRetentionDays: { value: Number(values.keepDeletedAccountsInBackup), objectName: server, configType: SERVER },
+    ZxBackup_DataRetentionDays: {
+      value: Number(values.keepDeletedItemInBackup),
+      objectName: server,
+      configType: SERVER,
+    },
+    backupAccountsRetentionDays: {
+      value: Number(values.keepDeletedAccountsInBackup),
+      objectName: server,
+      configType: SERVER,
+    },
   };
   if (includeRealtime) {
-    body.ZxBackup_RealTimeScanner = { value: values.enableRealtimeScanner, objectName: server, configType: SERVER };
+    body.ZxBackup_RealTimeScanner = {
+      value: values.enableRealtimeScanner,
+      objectName: server,
+      configType: SERVER,
+    };
   }
   return body;
 }
@@ -127,7 +166,10 @@ function BackupConfigurationContent({
         createSnackbar({
           key: 'success',
           severity: 'success',
-          label: t('label.the_last_changes_has_been_saved_successfully', 'Changes have been saved successfully'),
+          label: t(
+            'label.the_last_changes_has_been_saved_successfully',
+            'Changes have been saved successfully',
+          ),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -140,37 +182,18 @@ function BackupConfigurationContent({
 
   return (
     <Container mainAlignment="flex-start" background="gray6">
-      <Container orientation="column" background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
-        <Row mainAlignment="flex-start" width="100%">
-          <Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
-            <Row orientation="horizontal" width="100%">
-              <Row padding={{ all: 'large' }} mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-                <ds-text as="h2" size="medium" weight="bold" color="gray0">
-                  {serverName} {t('backup.backup_configuration', 'backup configuration')}
-                </ds-text>
-              </Row>
-              <Row padding={{ all: 'large' }} width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-                <Padding right="small">
-                  {isDirty && (
-                    <Button
-                      label={t('label.cancel', 'Cancel')}
-                      color="secondary"
-                      onClick={() => form.reset()}
-                    />
-                  )}
-                </Padding>
-                {isDirty && (
-                  <Button
-                    label={t('label.save', 'Save')}
-                    color="primary"
-                    onClick={() => form.handleSubmit()}
-                  />
-                )}
-              </Row>
-            </Row>
-          </Container>
-          <ds-divider></ds-divider>
-        </Row>
+      <Container
+        orientation="column"
+        background="gray6"
+        crossAlignment="flex-start"
+        mainAlignment="flex-start"
+      >
+        <BackupConfigHeader
+          title={`${serverName} ${t('backup.backup_configuration', 'backup configuration')}`}
+          isDirty={isDirty}
+          onCancel={() => form.reset()}
+          onSave={() => form.handleSubmit()}
+        />
         <Container
           mainAlignment="flex-start"
           crossAlignment="flex-end"
@@ -236,11 +259,21 @@ export const BackupConfiguration = () => {
   if (isPending || !serverConfig) {
     return (
       <Container mainAlignment="flex-start" background="gray6">
-        <Container orientation="column" background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
+        <Container
+          orientation="column"
+          background="gray6"
+          crossAlignment="flex-start"
+          mainAlignment="flex-start"
+        >
           <Row mainAlignment="flex-start" width="100%">
             <Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
               <Row orientation="horizontal" width="100%">
-                <Row padding={{ all: 'large' }} mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+                <Row
+                  padding={{ all: 'large' }}
+                  mainAlignment="flex-start"
+                  width="50%"
+                  crossAlignment="flex-start"
+                >
                   <ds-text as="h2" size="medium" weight="bold" color="gray0">
                     {server} backup configuration
                   </ds-text>
