@@ -138,18 +138,14 @@ export const CosInfoFields = ({
             <Container padding={{ all: 'small' }}>
               <form.Field name="edition">
                 {(field) => {
-                  const items = field.state.value
-                    ? EDITION_ITEMS_ASSIGNED
-                    : EDITION_ITEMS_FULL;
+                  const items = field.state.value ? EDITION_ITEMS_ASSIGNED : EDITION_ITEMS_FULL;
                   return (
                     <Select
                       items={items}
                       label={t('label.associated_edition', 'Associated edition')}
-                      background="gray6"
+                      background="gray5"
                       showCheckbox={false}
-                      selection={
-                        items.find((item) => item.value === field.state.value) ?? items[0]
-                      }
+                      selection={items.find((item) => item.value === field.state.value) ?? items[0]}
                       onChange={(value): void => {
                         field.handleChange(value ?? '');
                       }}
