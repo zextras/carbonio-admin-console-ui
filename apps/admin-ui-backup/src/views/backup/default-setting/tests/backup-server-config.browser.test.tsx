@@ -5,11 +5,14 @@
  */
 
 import {
+  createBrowserAPIInterceptor,
+  delayedBrowserZextrasActionInterceptor,
   getQueryClient,
   grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
@@ -243,6 +246,49 @@ describe('BackupServerConfig', () => {
 
       // Should remain clean since switch is disabled
       await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Loading state', () => {
+    it('should show a spinner when global-config is still loading', async () => {
+      setLicenseData(queryClient);
+      queryClient.removeQueries({ queryKey: ['global-config'] });
+      delayedBrowserZextrasActionInterceptor(
+        'dump_global_config',
+        () =>
+          HttpResponse.json({
+            Body: { response: { content: JSON.stringify({ response: {} }) } },
+          }),
+        5000,
+      );
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByRole('status')).toBeVisible();
+      await expect.element(page.getByText('Server Config')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Form submission', () => {
+    it('should call the modify config mutation when Backup Path is changed and Save is clicked', async () => {
+      setLicenseData(queryClient);
+
+      const interceptor = await createBrowserAPIInterceptor(
+        'post',
+        '/service/extension/zextras_admin/core/attribute/set',
+        () => HttpResponse.json({}),
+      );
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      const backupPathInput = page.getByRole('textbox', { name: 'Backup Path' });
+      await backupPathInput.fill('/tmp/backup');
+
+      const saveButton = page.getByRole('button', { name: 'Save' });
+      await expect.element(saveButton).toBeVisible();
+      await saveButton.click();
+
+      await expect.poll(() => interceptor.getCalledTimes()).toBe(1);
     });
   });
 });

@@ -97,6 +97,40 @@ function mockZextrasListBuckets() {
   );
 }
 
+function mockZextrasListBucketsWithData() {
+  return createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
+    HttpResponse.json({
+      Body: {
+        response: {
+          content: JSON.stringify({
+            ok: true,
+            response: {
+              values: [
+                { storeType: 'S3', bucketName: 'bucket-1', uuid: 'uuid-1' },
+                { storeType: 'S3', bucketName: 'bucket-2', uuid: 'uuid-2' },
+              ],
+            },
+          }),
+        },
+      },
+    }),
+  );
+}
+
+function restoreAccountAndRights(qc: ReturnType<typeof getQueryClient>) {
+  qc.setQueryData(['account', 'info'], {
+    id: 'test-user-id',
+    name: 'test@example.com',
+    displayName: 'Test User',
+    signatures: { signature: [] },
+    identities: undefined,
+    rights: { targets: [] },
+  });
+  qc.setQueryData(['effective-rights', 'test@example.com'], [
+    { type: 'config', all: [{ setAttrs: [{ all: true }], getAttrs: [{ all: true }] }] },
+  ]);
+}
+
 function buildLicenseData(features: Array<{ name: string; quantity: string; enabled: boolean }>) {
   return {
     ok: true,
@@ -479,6 +513,156 @@ describe('BackupConfiguration', () => {
 
       await expect
         .element(page.getByRole('button', { name: 'Manage external volume' }))
+        .toBeVisible();
+    });
+
+    it('should show external volume select when "Set external volume" button is clicked', async () => {
+      mockGetAllServers();
+      mockGetServerConfig({
+        ...buildServerConfigResponse(),
+        properties: { backup_initialized: true },
+      });
+      mockZextrasListBucketsWithData();
+
+      await setupBrowserTest(<BackupConfigurationWithRoute />, {
+        queryClient,
+        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
+      });
+
+      await expect.element(page.getByRole('button', { name: 'Set external volume' })).toBeVisible();
+      restoreAccountAndRights(queryClient);
+
+      await userEvent.click(page.getByRole('button', { name: 'Set external volume' }));
+
+      await expect.element(page.getByText('Select an External Volume')).toBeVisible();
+    });
+
+    it('should show Path input when Mountpoint is selected', async () => {
+      mockGetAllServers();
+      mockGetServerConfig({
+        ...buildServerConfigResponse(),
+        properties: { backup_initialized: true },
+      });
+      mockZextrasListBucketsWithData();
+
+      await setupBrowserTest(<BackupConfigurationWithRoute />, {
+        queryClient,
+        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
+      });
+
+      await expect.element(page.getByRole('button', { name: 'Set external volume' })).toBeVisible();
+      restoreAccountAndRights(queryClient);
+
+      await userEvent.click(page.getByRole('button', { name: 'Set external volume' }));
+
+      await expect.element(page.getByRole('textbox', { name: 'Path' })).toBeVisible();
+    });
+
+    it('should show Cancel and Migrate buttons in set external volume mode', async () => {
+      mockGetAllServers();
+      mockGetServerConfig({
+        ...buildServerConfigResponse(),
+        properties: { backup_initialized: true },
+      });
+      mockZextrasListBucketsWithData();
+
+      await setupBrowserTest(<BackupConfigurationWithRoute />, {
+        queryClient,
+        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
+      });
+
+      await expect.element(page.getByRole('button', { name: 'Set external volume' })).toBeVisible();
+      restoreAccountAndRights(queryClient);
+
+      await userEvent.click(page.getByRole('button', { name: 'Set external volume' }));
+
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Migrate' })).toBeVisible();
+    });
+
+    it('should hide set external volume panel when Cancel is clicked', async () => {
+      mockGetAllServers();
+      mockGetServerConfig({
+        ...buildServerConfigResponse(),
+        properties: { backup_initialized: true },
+      });
+      mockZextrasListBucketsWithData();
+
+      await setupBrowserTest(<BackupConfigurationWithRoute />, {
+        queryClient,
+        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
+      });
+
+      await expect.element(page.getByRole('button', { name: 'Set external volume' })).toBeVisible();
+      restoreAccountAndRights(queryClient);
+
+      await userEvent.click(page.getByRole('button', { name: 'Set external volume' }));
+      await expect.element(page.getByText('Select an External Volume')).toBeVisible();
+
+      await userEvent.click(page.getByRole('button', { name: 'Cancel' }));
+
+      expect(page.getByText('Select an External Volume').elements()).toHaveLength(0);
+    });
+  });
+
+  describe('Manage External Volume', () => {
+    it('should show Destination select when "Manage external volume" is clicked', async () => {
+      mockGetAllServers();
+      mockGetServerConfig({
+        ...buildServerConfigResponse(),
+        attributes: {
+          ...buildServerConfigResponse().attributes,
+          backupArchivingStore: {
+            value: {
+              storeType: 'S3',
+              bucketConfigurationId: 'uuid-1',
+            },
+          },
+        },
+        properties: { backup_initialized: true },
+      });
+      mockZextrasListBucketsWithData();
+
+      await setupBrowserTest(<BackupConfigurationWithRoute />, {
+        queryClient,
+        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
+      });
+
+      await expect
+        .element(page.getByRole('button', { name: 'Manage external volume' }))
+        .toBeVisible();
+      restoreAccountAndRights(queryClient);
+
+      await userEvent.click(page.getByRole('button', { name: 'Manage external volume' }));
+
+      await expect.element(page.getByText('Destination', { exact: true })).toBeVisible();
+    });
+
+    it('should render external volume type and bucket config LabeledValues when archiving store exists', async () => {
+      mockGetAllServers();
+      mockGetServerConfig({
+        ...buildServerConfigResponse(),
+        attributes: {
+          ...buildServerConfigResponse().attributes,
+          backupArchivingStore: {
+            value: {
+              storeType: 'S3',
+              bucketConfigurationId: 'uuid-1',
+            },
+          },
+        },
+        properties: { backup_initialized: true },
+      });
+      mockZextrasListBucketsWithData();
+
+      await setupBrowserTest(<BackupConfigurationWithRoute />, {
+        queryClient,
+        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
+      });
+
+      await expect.element(page.getByText('External Volume', { exact: true })).toBeVisible();
+      await expect
+        .element(page.getByText('Bucket Configuration', { exact: true }))
         .toBeVisible();
     });
   });
