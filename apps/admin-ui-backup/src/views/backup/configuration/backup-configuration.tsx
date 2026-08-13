@@ -79,10 +79,10 @@ function BackupConfigurationContent({
   serverId,
   isRealtimeLicensed,
 }: {
-  serverConfig: GetServerResponse;
-  serverName: string;
-  serverId: string;
-  isRealtimeLicensed: boolean;
+  readonly serverConfig: GetServerResponse;
+  readonly serverName: string;
+  readonly serverId: string;
+  readonly isRealtimeLicensed: boolean;
 }) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
