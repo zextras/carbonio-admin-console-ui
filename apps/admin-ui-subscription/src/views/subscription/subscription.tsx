@@ -24,7 +24,7 @@ import {
 } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { find } from 'lodash-es';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../constants';
@@ -74,6 +74,46 @@ const moduleName: ModuleName = {
   wsc_basic: { value: 'Basic', label: 'Chats' },
 };
 
+const MODULE_PREDEFINED_ORDER = [
+  'Storages',
+  'HA',
+  'Backup',
+  'Auth',
+  'MailApp',
+  'Files',
+  'ActiveSync',
+  'Chats',
+  'Admin',
+];
+
+function buildModules(features: Array<ModuleConfig> | undefined): Array<AllModuleConfig> {
+  if (!features) return [];
+
+  const allModules = features.map((module: ModuleConfig) => ({
+    ...module,
+    name: moduleName[module.name],
+  }));
+
+  const formatModules = allModules.filter((module: AllModuleConfig) => module.name !== undefined);
+
+  const ModuleSort = (a: AllModuleConfig, b: AllModuleConfig): number => {
+    const indexA = MODULE_PREDEFINED_ORDER.indexOf(a.name.label);
+    const indexB = MODULE_PREDEFINED_ORDER.indexOf(b.name.label);
+
+    if (indexA === -1 && indexB === -1) {
+      return formatModules.indexOf(a) - formatModules.indexOf(b);
+    }
+
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+
+    return indexA - indexB;
+  };
+
+  const sortedModules = [...formatModules].sort(ModuleSort);
+  return sortedModules.filter((module: AllModuleConfig) => module.name.value !== 'SproxyD');
+}
+
 const getGapColorForLabel = (label: React.Key | null | undefined): string => {
   switch (label) {
     case 'Storages':
@@ -110,15 +150,10 @@ export const Subscription = (): React.JSX.Element => {
   const activateLicenseMutation = useActivateLicense();
 
   const removeLicenseMutation = useRemoveLicense();
-  const allowSetSubsciption = useMemo(() => {
-    const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-    return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+  const allowSetSubsciption = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
-  const services = useMemo(() => {
-    if (!licenseData) return null;
-    return licenseData;
-  }, [licenseData]);
+  const services = licenseData ?? null;
 
   const authenticationToken = licenseData?.response?.authenticationToken;
   if (authenticationToken !== prevAuthToken) {
@@ -128,45 +163,7 @@ export const Subscription = (): React.JSX.Element => {
     }
   }
 
-  const modules: Array<AllModuleConfig> = useMemo(() => {
-    if (!licenseData?.response?.features) return [];
-
-    const featurs = licenseData.response.features;
-    const allModules = featurs.map((module: ModuleConfig) => ({
-      ...module,
-      name: moduleName[module.name],
-    }));
-
-    const formatModules = allModules.filter((module: AllModuleConfig) => module.name !== undefined);
-    const predefinedOrder = [
-      'Storages',
-      'HA',
-      'Backup',
-      'Auth',
-      'MailApp',
-      'Files',
-      'ActiveSync',
-      'Chats',
-      'Admin',
-    ];
-
-    const ModuleSort = (a: AllModuleConfig, b: AllModuleConfig): number => {
-      const indexA = predefinedOrder.indexOf(a.name.label);
-      const indexB = predefinedOrder.indexOf(b.name.label);
-
-      if (indexA === -1 && indexB === -1) {
-        return formatModules.indexOf(a) - formatModules.indexOf(b);
-      }
-
-      if (indexA === -1) return 1;
-      if (indexB === -1) return -1;
-
-      return indexA - indexB;
-    };
-
-    const sortedModules = [...formatModules].sort(ModuleSort);
-    return sortedModules.filter((module: AllModuleConfig) => module.name.value !== 'SproxyD');
-  }, [licenseData]);
+  const modules: Array<AllModuleConfig> = buildModules(licenseData?.response?.features);
 
   const activeLicence = (): void => {
     activateLicenseMutation.mutate({ token: licenseKey, renewal: false });
@@ -185,16 +182,10 @@ export const Subscription = (): React.JSX.Element => {
     activateLicenseMutation.mutate({ token: licenseKey, renewal: true });
   };
 
-  const calculatedAccountQuotaSizePercentage: number = useMemo(() => {
-    const accountCount = services?.response?.accountCount ?? 0;
-    const licensedUsers = Number(services?.response?.licensedUsers ?? '0');
-
-    if (licensedUsers === 0) {
-      return 0;
-    }
-
-    return (accountCount / licensedUsers) * 100;
-  }, [services]);
+  const accountCount = services?.response?.accountCount ?? 0;
+  const licensedUsers = Number(services?.response?.licensedUsers ?? '0');
+  const calculatedAccountQuotaSizePercentage: number =
+    licensedUsers === 0 ? 0 : (accountCount / licensedUsers) * 100;
 
   const getTypeDisplayValue = (): string => {
     if (!services?.response) return '';

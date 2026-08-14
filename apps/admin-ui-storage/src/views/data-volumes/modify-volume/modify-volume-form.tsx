@@ -18,7 +18,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { type S3ConnectorVolume, type Volume } from '../../../../types';
@@ -198,12 +198,12 @@ export function ModifyVolumeForm({
     connectorTypeItems?.find((item) => item?.value?.toLowerCase() === storeTypeValue?.toLowerCase())
       ?.label;
 
-  const openDocumentation = useCallback((url: string): void => {
+  function openDocumentation(url: string): void {
     if (globalThis.window === undefined) {
       return;
     }
     globalThis.window.open(url, '_blank', 'noopener,noreferrer');
-  }, []);
+  }
 
   const currentConnectorId = getVolumeConnectorConfigurationId(externalVolDetail);
 

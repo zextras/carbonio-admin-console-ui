@@ -14,7 +14,7 @@ import {
   Switch,
   Tooltip,
 } from '@zextras/ui-components';
-import { type ChangeEvent, useCallback, useEffect } from 'react';
+import { type ChangeEvent, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { AdvancedMailstoresConfigProps } from '../../../../../types';
@@ -45,12 +45,12 @@ export function AdvancedMailstoresConfig({
   const { form } = useAdvancedVolumeContext();
   const { t } = useTranslation();
 
-  const openDocumentation = useCallback((url: string): void => {
+  function openDocumentation(url: string): void {
     if (globalThis.window === undefined) {
       return;
     }
     globalThis.window.open(url, '_blank', 'noopener,noreferrer');
-  }, []);
+  }
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
   const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);
