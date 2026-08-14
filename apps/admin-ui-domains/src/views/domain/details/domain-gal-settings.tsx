@@ -363,6 +363,19 @@ const DomainGalSettings: FC = () => {
     setServerList(result);
   };
 
+  function addDataSourceId(accountId: string, dataSourceId: string): void {
+    setDataSourceIds((prev) => {
+      if (prev.some((d) => d.accountId === accountId)) return prev;
+      return [...prev, { accountId, dataSourceId }];
+    });
+  }
+
+  function handleDatasourceResult(item: Attribute, data: Awaited<ReturnType<typeof getDatasource>>): void {
+    const dataSource = data?.dataSource?.[0];
+    if (!dataSource?.id) return;
+    addDataSourceId(item._content, dataSource.id);
+  }
+
   // Fetch GAL sync accounts and datasource polling interval in useEffect
   useEffect(() => {
     if (!selectedDomain?.a) return;
@@ -387,14 +400,7 @@ const DomainGalSettings: FC = () => {
       });
 
       galAccountAttrs.forEach((item) => {
-        getDatasource(item._content).then((data) => {
-          const dataSource = data?.dataSource?.[0];
-          if (!dataSource?.id) return;
-          setDataSourceIds((prev) => {
-            if (prev.some((d) => d.accountId === item._content)) return prev;
-            return [...prev, { accountId: item._content, dataSourceId: dataSource.id }];
-          });
-        });
+        getDatasource(item._content).then((data) => handleDatasourceResult(item, data));
       });
     }
   }, [selectedDomain?.id, allMailstoreList]);
