@@ -9,7 +9,7 @@ import type { AppRoute } from '@zextras/ui-shared';
 
 import { ShellPrimaryBar } from './shell-primary-bar';
 
-type ShellNavigationBarProps = { activeRoute: AppRoute | undefined };
+type ShellNavigationBarProps = { readonly activeRoute: AppRoute | undefined };
 
 export function ShellNavigationBar({ activeRoute }: ShellNavigationBarProps) {
   return (

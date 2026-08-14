@@ -8,10 +8,10 @@ import type { BadgeInfo } from '@zextras/ui-shared';
 import React from 'react';
 
 type BadgeWrapProps = {
-  badge: BadgeInfo;
-  isExpanded: boolean;
-  children?: React.ReactNode;
-  ref?: React.Ref<HTMLDivElement>;
+  readonly badge: BadgeInfo;
+  readonly isExpanded: boolean;
+  readonly children?: React.ReactNode;
+  readonly ref?: React.Ref<HTMLDivElement>;
 };
 
 function getBadgeStyle(badgeColor: string | undefined): React.CSSProperties {

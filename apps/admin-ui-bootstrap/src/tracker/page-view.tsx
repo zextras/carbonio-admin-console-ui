@@ -13,7 +13,7 @@ export const TrackerPageView = (): null => {
   const { pathname, search } = useLocation();
   useEffect(() => {
     tracker.capture('$pageview', {
-      $current_url: window.origin + pathname + search,
+      $current_url: globalThis.origin + pathname + search,
     });
   }, [pathname, search, tracker]);
 

@@ -6,7 +6,7 @@
 
 import styles from './collapser.module.css';
 
-type CollapserProps = { open: boolean; onClick: () => void };
+type CollapserProps = { readonly open: boolean; readonly onClick: () => void };
 
 export function Collapser({ open, onClick }: CollapserProps) {
   return (
