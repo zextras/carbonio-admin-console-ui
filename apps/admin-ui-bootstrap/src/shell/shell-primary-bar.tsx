@@ -153,9 +153,9 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
         }}
       >
         <Container mainAlignment="flex-start">
-          {map(primaryBarViewWithSection, (view, index) =>
+          {map(primaryBarViewWithSection, (view) =>
             view.visible ? (
-              <React.Fragment key={index}>
+              <React.Fragment key={view?.section?.id ?? view?.id ?? ''}>
                 {view?.section === undefined && (
                   <PrimaryBarElement
                     key={view?.id}
