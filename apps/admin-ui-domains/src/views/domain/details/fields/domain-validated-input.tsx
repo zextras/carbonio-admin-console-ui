@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { AnyFieldApi, DeepValue } from '@tanstack/form-core';
 import { useSelector } from '@tanstack/react-store';
 import { getFieldErrorProps, Input } from '@zextras/ui-components';
 import { ChangeEvent, ReactElement } from 'react';
@@ -12,9 +13,14 @@ import { useTranslation } from 'react-i18next';
 import { DOMAIN_VALIDATION_MESSAGES } from '../schemas/domain-validation-messages';
 import { DomainFormApi } from '../schemas/form-types';
 
+type StringKeys<T> = {
+	[K in keyof T]: T[K] extends string | undefined ? K : never;
+}[keyof T] &
+	string;
+
 type DomainValidatedInputProps<T extends Record<string, unknown>> = {
 	form: DomainFormApi<T>;
-	name: keyof T & string;
+	name: StringKeys<T>;
 	label: string;
 	disabled?: boolean;
 };
@@ -31,7 +37,7 @@ export const DomainValidatedInput = <T extends Record<string, unknown>>({
 	return (
 		<form.Field name={name}>
 			{(field) => {
-				const error = getFieldErrorProps(field, isSubmitted, t, DOMAIN_VALIDATION_MESSAGES);
+				const error = getFieldErrorProps(field as AnyFieldApi, isSubmitted, t, DOMAIN_VALIDATION_MESSAGES);
 				return (
 					<Input
 						label={label}
@@ -39,8 +45,7 @@ export const DomainValidatedInput = <T extends Record<string, unknown>>({
 						backgroundColor="gray5"
 						inputName={String(name)}
 						onChange={(e: ChangeEvent<HTMLInputElement>) =>
-							// eslint-disable-next-line @typescript-eslint/no-explicit-any
-							field.handleChange(e.target.value as any)
+							field.handleChange(e.target.value as DeepValue<T, StringKeys<T>>)
 						}
 						onBlur={() => field.handleBlur()}
 						hasError={error.hasError}

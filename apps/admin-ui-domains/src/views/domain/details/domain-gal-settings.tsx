@@ -8,7 +8,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Button, Container, CustomHeaderFactory, Dropdown, DropdownItem, HoverableRowFactory, Input, LabeledValue, ListRow, Padding, RouteLeavingGuard, Row, Select, Switch, Table, Tooltip } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, getDomainInformation, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
-import React, { ChangeEvent, FC, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -97,30 +97,26 @@ const ServerListTable: FC<{
   onSelectionChange: (ids: string[]) => void;
 }> = ({ volumes, selectedRows, onSelectionChange }) => {
   const [t] = useTranslation();
-  const tableRows: TableRowData[] = useMemo(
-    () =>
-      volumes.map((v, i) => ({
-        id: String(i),
-        columns: [
-          <Tooltip placement="bottom" label={v?.name} key={i}>
-            <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-              <ds-text as="span" color="gray0" weight="regular">
-                {v?.name}
-              </ds-text>
-            </Row>
-          </Tooltip>,
-          <Tooltip placement="bottom" label={v?.name} key={i}>
-            <Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-              <ds-text as="span" color="gray0" weight="regular">
-                {v?.galAccount?.name ?? '-'}
-              </ds-text>
-            </Row>
-          </Tooltip>,
-        ],
-        clickable: true,
-      })),
-    [volumes],
-  );
+  const tableRows: TableRowData[] = volumes.map((v, i) => ({
+    id: String(i),
+    columns: [
+      <Tooltip placement="bottom" label={v?.name} key={i}>
+        <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+          <ds-text as="span" color="gray0" weight="regular">
+            {v?.name}
+          </ds-text>
+        </Row>
+      </Tooltip>,
+      <Tooltip placement="bottom" label={v?.name} key={i}>
+        <Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+          <ds-text as="span" color="gray0" weight="regular">
+            {v?.galAccount?.name ?? '-'}
+          </ds-text>
+        </Row>
+      </Tooltip>,
+    ],
+    clickable: true,
+  }));
 
   return (
     <Container mainAlignment="flex-start" crossAlignment="flex-start">
@@ -167,7 +163,7 @@ const ServerListTable: FC<{
 
 const DomainGalSettings: FC = () => {
   const [t] = useTranslation();
-  const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
+  const measureUnitItems = MeasureUnitItems(t);
   const { data: selectedDomain, isLoading: isDomainLoading } = useSelectedDomain();
   const domain: { name?: string } = selectedDomain ?? {};
   const { data: allMailstoreList = [] } = useMailstoreServers();
@@ -314,10 +310,7 @@ const DomainGalSettings: FC = () => {
   const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
 
   // === Derive form values from domain (stable for first render) ===
-  const derivedValues = useMemo(
-    () => parseGalFormFromAttributes(selectedDomain?.a),
-    [selectedDomain?.a]
-  );
+  const derivedValues = parseGalFormFromAttributes(selectedDomain?.a);
 
   // Track user-modified galMode separately
   const [userModifiedGalMode, setUserModifiedGalMode] = useState<string | null>(null);
@@ -345,9 +338,7 @@ const DomainGalSettings: FC = () => {
   const baseValues = derivedValues ?? GAL_SETTINGS_DEFAULTS;
   const displayValues = { ...baseValues, ...localOverrides } as GalSettingsFormValues;
 
-  const measureUnitSelection = useMemo(() => {
-    return measureUnitItems.find((item) => item.value === displayValues.galPollingInterval.unit) ?? measureUnitItems[0];
-  }, [measureUnitItems, displayValues.galPollingInterval.unit]);
+  const measureUnitSelection = measureUnitItems.find((item) => item.value === displayValues.galPollingInterval.unit) ?? measureUnitItems[0];
 
   // === Button disable state (derived from selection) ===
   const selectedServer = serverSelection.length > 0 ? serverList[Number(serverSelection[0])] : null;
@@ -388,16 +379,13 @@ const DomainGalSettings: FC = () => {
   };
 
   // Effective galMode for conditional rendering
-  const effectiveGalMode = useMemo(() => {
-    if (userModifiedGalMode) return userModifiedGalMode;
-    return derivedValues?.galMode ?? 'zimbra';
-  }, [userModifiedGalMode, derivedValues?.galMode]);
+  const effectiveGalMode = userModifiedGalMode ?? derivedValues?.galMode ?? 'zimbra';
 
-  const galModeLabel = useMemo(() => {
-    if (!effectiveGalMode || effectiveGalMode === 'zimbra') return 'Internal';
-    if (effectiveGalMode === 'ldap') return 'External';
-    return 'Both';
-  }, [effectiveGalMode]);
+  const galModeLabel = !effectiveGalMode || effectiveGalMode === 'zimbra'
+    ? 'Internal'
+    : effectiveGalMode === 'ldap'
+      ? 'External'
+      : 'Both';
 
   // === Fetch helpers (declared before use to avoid hoisting issues) ===
   const fetchPollingIntervalFromAccount = (accountId: string): void => {

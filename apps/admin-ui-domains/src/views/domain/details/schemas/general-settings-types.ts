@@ -8,7 +8,7 @@ import { Attribute, DomainsByFeature, objectType } from '../../../../../types';
 import { CARBONIO_SEARCH_SPECIFIED_DOMAINS_BY_FEATURE } from '../../../../constants';
 
 // === Form state ===
-export interface GeneralFormState {
+export type GeneralFormState = {
 	zimbraId: string;
 	zimbraDomainName: string;
 	zimbraPrefTimeZoneId: string;
@@ -24,10 +24,10 @@ export interface GeneralFormState {
 	zimbraDomainDefaultCOSId: string;
 	zimbraDomainMaxAccounts: string;
 	carbonioNotificationFrom: string;
-	carbonioNotificationRecipients: objectType[];
-	carbonioSearchSpecifiedDomainsByFeature: DomainsByFeature[];
+	carbonioNotificationRecipients: Array<objectType>;
+	carbonioSearchSpecifiedDomainsByFeature: Array<DomainsByFeature>;
 	zimbraCreateTimestamp: string;
-}
+};
 
 // === Parser function ===
 export function parseGeneralFormFromAttributes(

@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Container, RouteLeavingGuard, Row } from '@zextras/ui-components';
 import { differenceWith, isEqual, map, some } from 'lodash-es';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TwoFactorAuthPolicyValues } from '../../../../types';
@@ -95,7 +95,7 @@ const DomainTwoFactorAuthentication = (): React.JSX.Element => {
 	const { data: domain } = useSelectedDomain();
 	const domainName = domain?.name;
 
-	const twoFactorPolicyArray = useMemo(() => TwoFactorPolicyArray(t), [t]);
+	const twoFactorPolicyArray = TwoFactorPolicyArray(t);
 
 	// Fetch policies
 	const { data: policies, isLoading } = useQuery({
@@ -136,22 +136,20 @@ const DomainTwoFactorAuthentication = (): React.JSX.Element => {
 
 	// Get arrPoliciesToModify from form state for compatibility with TwoFactorAuthencationConfig
 	const formPolicies = useSelector(form.store, (state) => state.values.policies);
-	const arrPoliciesToModify = useMemo(() => formValuesToPolicies({ policies: formPolicies }), [formPolicies]);
+	const arrPoliciesToModify = formValuesToPolicies({ policies: formPolicies });
 
 	// Validation
-	const hasValidationErrors = useMemo(() => {
-		return twoFactorPolicyArray.some((e: { label?: string; keyToGet: string }) =>
-			some(
-				map(
-					arrPoliciesToModify.find((obj: TwoFactorAuthPolicyValues) =>
-						Object.hasOwn(obj, e.keyToGet)
-					)?.[e.keyToGet]?.trustedIpRange,
-					(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
-				) || [],
-				{ error: true }
-			)
-		);
-	}, [arrPoliciesToModify, twoFactorPolicyArray]);
+	const hasValidationErrors = twoFactorPolicyArray.some((e: { label?: string; keyToGet: string }) =>
+		some(
+			map(
+				arrPoliciesToModify.find((obj: TwoFactorAuthPolicyValues) =>
+					Object.hasOwn(obj, e.keyToGet)
+				)?.[e.keyToGet]?.trustedIpRange,
+				(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
+			) || [],
+			{ error: true }
+		)
+	);
 
 	// Mutation
 	const { mutate, isPending } = useDomainMutation({
@@ -173,13 +171,10 @@ const DomainTwoFactorAuthentication = (): React.JSX.Element => {
 	};
 
 	// Wrapper for TwoFactorAuthencationConfig compatibility
-	const modifyPolicies = useCallback(
-		(newPolicies: TwoFactorAuthPolicyValues[]): void => {
-			const formValues = policiesToFormValues(newPolicies);
-			form.setFieldValue('policies', formValues.policies);
-		},
-		[form]
-	);
+	const modifyPolicies = (newPolicies: TwoFactorAuthPolicyValues[]): void => {
+		const formValues = policiesToFormValues(newPolicies);
+		form.setFieldValue('policies', formValues.policies);
+	};
 
 	if (isLoading) {
 		return (

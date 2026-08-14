@@ -13,7 +13,7 @@ import {
   Row,
   Tooltip,
 } from '@zextras/ui-components';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/helmet_logo.svg';
@@ -71,7 +71,7 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
     }
   };
 
-  const addVirtualHost = useCallback(() => {
+  const addVirtualHost = (): void => {
     if (virtualHostValue && isValidVirtualHostname(virtualHostValue)) {
       const lastId = items.length > 0 ? items.at(-1)?.id : '0';
       const newId = Number.parseInt(lastId, 10) + 1;
@@ -84,7 +84,7 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
       setAddButtonDisabled(true);
       setVirtualHostValue('');
     }
-  }, [virtualHostValue, items, setItems]);
+  };
   return (
     <Container width="100%">
       <Container

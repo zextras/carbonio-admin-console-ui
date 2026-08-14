@@ -8,7 +8,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Container, ListRow, Row, Switch, TextArea } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
-import { ChangeEvent, FC, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -144,39 +144,34 @@ const DomainDisclaimer: FC = () => {
 	const [richTextContent, setRichTextContent] = useState('');
 
 	// Derive values from domain (stable for first render)
-	const derivedValues = useMemo(
-		() => extractDisclaimerFromDomain(domainInformation),
-		[domainInformation]
-	);
+	const derivedValues = extractDisclaimerFromDomain(domainInformation);
 
 	// Track user modifications locally for immediate UI feedback
 	const [localOverrides, setLocalOverrides] = useState<Partial<DisclaimerFormValues>>({});
 
 	// Sync form when domain changes
-	const [lastSyncedDomainId, setLastSyncedDomainId] = useState<string | undefined>(undefined);
+	const lastSyncedDomainIdRef = useRef<string | undefined>(undefined);
 
 	const form = useForm({
-		defaultValues: DISCLAIMER_DEFAULTS,
+		defaultValues: derivedValues,
 		validators: {
 			onChange: disclaimerSchema,
 			onSubmit: disclaimerSchema
 		},
-		onSubmit: async () => {
-			// Use displayValues which has the correct merged state
-			const submitValues = { ...derivedValues, ...localOverrides };
+		onSubmit: async ({ value }) => {
 			await saveMutation({
 				id: domainId,
 				_jsns: ZIMBRA_ADMIN_URN,
-				a: buildAttributes(submitValues, domainName)
+				a: buildAttributes(value, domainName)
 			});
-			form.reset(submitValues, { keepDefaultValues: true });
+			form.reset(value, { keepDefaultValues: true });
 			setLocalOverrides({});
 		}
 	});
 
 	// Sync form with server data when domain changes
-	if (domain?.id && domain.id !== lastSyncedDomainId) {
-		setLastSyncedDomainId(domain.id);
+	if (domain?.id && domain.id !== lastSyncedDomainIdRef.current) {
+		lastSyncedDomainIdRef.current = domain.id;
 		form.reset(derivedValues, { keepDefaultValues: false });
 		setRichTextContent(derivedValues.zimbraAmavisDomainDisclaimerHTML ?? '');
 		setLocalOverrides({});
@@ -186,9 +181,8 @@ const DomainDisclaimer: FC = () => {
 	const displayValues = { ...derivedValues, ...localOverrides };
 
 	// isDirty: check if localOverrides has any changes from derivedValues
-	const isDirty = useMemo(() => {
-		if (Object.keys(localOverrides).length === 0) return false;
-		return (
+	const isDirty = Object.keys(localOverrides).length > 0 && (
+		(
 			localOverrides.zimbraDomainMandatoryMailSignatureEnabled !== undefined &&
 			localOverrides.zimbraDomainMandatoryMailSignatureEnabled !==
 				derivedValues.zimbraDomainMandatoryMailSignatureEnabled
@@ -202,8 +196,8 @@ const DomainDisclaimer: FC = () => {
 			localOverrides.zimbraAmavisDomainDisclaimerHTML !== undefined &&
 			localOverrides.zimbraAmavisDomainDisclaimerHTML !==
 				derivedValues.zimbraAmavisDomainDisclaimerHTML
-		);
-	}, [localOverrides, derivedValues]);
+		)
+	);
 
 	// Mutation for save
 	const { mutate: saveMutation, isPending } = useDomainMutation<unknown, ModifyDomainBody>({
@@ -372,7 +366,12 @@ const DomainDisclaimer: FC = () => {
 										initialValue={richTextContent}
 										value={field.state.value}
 										onEditorChange={(ev): void => {
-											field.handleChange((ev as [string, string])[1]);
+											const htmlValue = (ev as [string, string])[1];
+											field.handleChange(htmlValue);
+											setLocalOverrides((prev) => ({
+												...prev,
+												zimbraAmavisDomainDisclaimerHTML: htmlValue
+											}));
 										}}
 									/>
 								</div>

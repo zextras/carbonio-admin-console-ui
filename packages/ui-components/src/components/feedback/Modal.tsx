@@ -37,6 +37,8 @@ type ModalProps = CustomModalProps &
     copyLabel?: ModalFooterProps['errorActionLabel'];
     /** Close icon tooltip label */
     closeIconTooltip?: string;
+    /** Close icon aria-label for accessibility */
+    closeIconAriaLabel?: string;
     ref?: React.Ref<HTMLDivElement>;
   } & Omit<HTMLAttributes<HTMLDivElement>, 'title'>;
 
@@ -62,6 +64,7 @@ const Modal = ({
   showCloseIcon = true,
   children,
   closeIconTooltip,
+  closeIconAriaLabel,
   ref,
   ...rest
 }: ModalProps) => {
@@ -78,6 +81,7 @@ const Modal = ({
         showCloseIcon={showCloseIcon}
         onClose={onClose}
         closeIconTooltip={closeIconTooltip}
+        closeIconAriaLabel={closeIconAriaLabel}
       />
       <ds-divider></ds-divider>
       <ModalBody centered={centered} ref={modalBodyRef}>

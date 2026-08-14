@@ -4,20 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { FormAsyncValidateOrFn, FormValidateOrFn } from '@tanstack/form-core';
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DomainFormApi<T> = ReactFormExtendedApi<
 	T,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any,
-	any
+	undefined | FormValidateOrFn<T>,
+	undefined | FormValidateOrFn<T>,
+	undefined | FormAsyncValidateOrFn<T>,
+	undefined | FormValidateOrFn<T>,
+	undefined | FormAsyncValidateOrFn<T>,
+	undefined | FormValidateOrFn<T>,
+	undefined | FormAsyncValidateOrFn<T>,
+	undefined | FormValidateOrFn<T>,
+	undefined | FormAsyncValidateOrFn<T>,
+	undefined | FormAsyncValidateOrFn<T>,
+	unknown
 >;

@@ -15,7 +15,7 @@ import {
 	useUserSettings
 } from '@zextras/ui-shared';
 import { reduce } from 'lodash-es';
-import { FC, useCallback, useState } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -199,19 +199,16 @@ const DomainTheme: FC = () => {
 	const isPending = isSaving || isResetting;
 
 	// Wrapper for ThemeConfigs compatibility
-	const setThemeConfig = useCallback(
-		(updater: ((prev: themeConfigStore) => themeConfigStore) | themeConfigStore): void => {
-			const currentValues = form.store.state.values;
-			const newValues = typeof updater === 'function' ? updater(currentValues as themeConfigStore) : updater;
-			Object.keys(newValues).forEach((key) => {
-				const typedKey = key as keyof ThemeFormValues;
-				if (currentValues[typedKey] !== newValues[typedKey]) {
-					form.setFieldValue(typedKey, newValues[typedKey] as never);
-				}
-			});
-		},
-		[form]
-	);
+	const setThemeConfig = (updater: ((prev: themeConfigStore) => themeConfigStore) | themeConfigStore): void => {
+		const currentValues = form.store.state.values;
+		const newValues = typeof updater === 'function' ? updater(currentValues as themeConfigStore) : updater;
+		Object.keys(newValues).forEach((key) => {
+			const typedKey = key as keyof ThemeFormValues;
+			if (currentValues[typedKey] !== newValues[typedKey]) {
+				form.setFieldValue(typedKey, newValues[typedKey] as never);
+			}
+		});
+	};
 
 	const onSave = (): void => {
 		form.handleSubmit();

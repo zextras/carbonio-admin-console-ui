@@ -130,9 +130,7 @@ describe('DomainTheme', () => {
 
       await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByLabelText(/ex\. #225CA8/i).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#FF0000');
 
@@ -165,9 +163,7 @@ describe('DomainTheme', () => {
 
       await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
 
-      const lightColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const lightColorInput = page.getByLabelText(/ex\. #225CA8/i).first();
       await userEvent.clear(lightColorInput);
       await userEvent.type(lightColorInput, 'invalid-color');
 
@@ -192,9 +188,7 @@ describe('DomainTheme', () => {
 
       await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
 
-      const darkColorInput = page
-        .getByTestId('inherited-carbonioWebUiDarkPrimaryColor')
-        .getByRole('textbox');
+      const darkColorInput = page.getByLabelText(/ex\. #225CA8/i).last();
       await userEvent.clear(darkColorInput);
       await userEvent.type(darkColorInput, 'not-a-color');
 
@@ -217,9 +211,7 @@ describe('DomainTheme', () => {
 
       await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByLabelText(/ex\. #225CA8/i).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#00FF00');
 
