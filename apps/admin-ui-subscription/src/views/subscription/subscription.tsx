@@ -24,7 +24,7 @@ import {
 } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { find } from 'lodash-es';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../constants';
@@ -103,6 +103,7 @@ export const Subscription = (): React.JSX.Element => {
   const { data: version } = useVersion();
   const { data: licenseData, isFetching } = useLicenseInfo();
   const [licenseKey, setLicenseKey] = useState('');
+  const [prevAuthToken, setPrevAuthToken] = useState<string | undefined>(undefined);
   const { data: rights } = useCurrentUserRights();
   const { t } = useTranslation();
 
@@ -119,11 +120,13 @@ export const Subscription = (): React.JSX.Element => {
     return licenseData;
   }, [licenseData]);
 
-  useEffect(() => {
-    if (licenseData?.response?.authenticationToken) {
-      setLicenseKey(licenseData.response.authenticationToken);
+  const authenticationToken = licenseData?.response?.authenticationToken;
+  if (authenticationToken !== prevAuthToken) {
+    setPrevAuthToken(authenticationToken);
+    if (authenticationToken) {
+      setLicenseKey(authenticationToken);
     }
-  }, [licenseData?.response?.authenticationToken]);
+  }
 
   const modules: Array<AllModuleConfig> = useMemo(() => {
     if (!licenseData?.response?.features) return [];
