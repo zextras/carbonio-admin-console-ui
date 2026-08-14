@@ -8,7 +8,7 @@ import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
 import { find, join, map } from 'lodash-es';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -67,6 +67,7 @@ const MTAServerGeneralForm = ({
   const [networkValue, setNetworkValue] = useState<Array<IpRangeValue>>(() =>
     parseNetworkLabels(findAttrContent(serverAttributes, ZIMBRA_MTA_MY_NETWORKS), / {1,2}/),
   );
+  const saveInFlightRef = useRef(false);
 
   const mtaServerSpecificGeneralDetail = buildServerSpecificState(serverSpecificAttributes);
 
@@ -141,10 +142,18 @@ const MTAServerGeneralForm = ({
     setNetworkValue([]);
   }
 
+  function handleSave() {
+    if (saveInFlightRef.current) return;
+    saveInFlightRef.current = true;
+    void form.handleSubmit().finally(() => {
+      saveInFlightRef.current = false;
+    });
+  }
+
   return (
     <FormPageLayout
       title={`${t('label.general_lbl', 'General')} - ${serverName}`}
-      onSave={() => form.handleSubmit()}
+      onSave={handleSave}
       onCancel={handleCancel}
       unsavedChanges={isDirty}
     >

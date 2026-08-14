@@ -49,7 +49,6 @@ export const AntispamSection = ({
           <form.Field name="zimbraSpamSubjectTag">
             {(field) => (
               <Input
-                isRequired
                 label={t(
                   'mta.add_this_prefix_to_spam_mail_subject',
                   'Add this prefix to the Spam mail subject',

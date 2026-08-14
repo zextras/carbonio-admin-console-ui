@@ -328,5 +328,14 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
         }),
       ]),
     });
+
+    const secondModifyServerInterceptor = createBrowserSoapAPIInterceptor('ModifyServer', {});
+    const secondCallSettled = await Promise.race([
+      secondModifyServerInterceptor.then(() => true),
+      new Promise<boolean>((resolve) => {
+        setTimeout(() => resolve(false), 2000);
+      }),
+    ]);
+    expect(secondCallSettled).toBe(false);
   });
 });

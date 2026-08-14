@@ -248,7 +248,6 @@ export const AntivirusDefinitionsSection = ({
       >
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="70%">
           <Input
-            isRequired
             label={t('mta.definition_update_frequency', 'Definition Update Frenquency')}
             backgroundColor="gray5"
             value={updateFrequncy}
