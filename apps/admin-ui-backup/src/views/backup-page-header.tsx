@@ -25,8 +25,7 @@ export const BackupPageHeader = () => {
   const segmentAfterBase = relativeSegments[0] || undefined;
   const deeperSegment = relativeSegments[1] || undefined;
 
-  const isServerRoute =
-    Boolean(deeperSegment) && serverRoutes.some((r) => r.id === deeperSegment);
+  const isServerRoute = Boolean(deeperSegment) && serverRoutes.some((r) => r.id === deeperSegment);
   const isTopLevelSection = topLevelSections.some((s) => s.path === pathname);
 
   const serverSectionMenu =
@@ -37,8 +36,7 @@ export const BackupPageHeader = () => {
   const sectionMenu = serverSectionMenu ?? topLevelSectionMenu;
 
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
-  const nonNavigableSegments =
-    isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
+  const nonNavigableSegments = isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
   const labelOverrides =
     isServerRoute && segmentAfterBase ? { [segmentAfterBase]: segmentAfterBase } : undefined;
   const crumbMenuHeaders =

@@ -6,51 +6,47 @@
 
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, removeRoute, useHasAllRights, useIsAdvanced } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { BACKUP_ROUTE_ID, PRIMARY_BAR_BACKUP, SERVICES_ROUTE_ID } from './constants';
 import { AppView } from './views/app-view';
 
-const App: FC = () => {
+const BackupTooltipView = () => {
+  const [t] = useTranslation();
+  return (
+    <PrimaryBarTooltip>
+      <p>
+        <Trans
+          i18nKey="label.backup_lbl"
+          defaults="<bold>Backup</bold>"
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </p>
+      <p>
+        <Trans
+          i18nKey="label.backup_primarybar_tooltip"
+          defaults="Manage your <bold>backup services</bold>, view their <bold>status</bold>, the <bold>servers list</bold> or <bold>import an existing backup</bold>."
+          components={{ bold: <strong /> }}
+          t={t}
+        />
+      </p>
+    </PrimaryBarTooltip>
+  );
+};
+
+const App = () => {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
   const hasAllConfigRights = useHasAllRights();
 
-  const servicesSection = useMemo(
-    () => ({
+  useEffect(() => {
+    const servicesSection = {
       id: SERVICES_ROUTE_ID,
       label: t('label.services', 'Services'),
       position: 4,
-    }),
-    [t],
-  );
-
-  const BackupTooltipView: FC = useCallback(
-    () => (
-      <PrimaryBarTooltip>
-        <p>
-          <Trans
-            i18nKey="label.backup_lbl"
-            defaults="<bold>Backup</bold>"
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-        <p>
-          <Trans
-            i18nKey="label.backup_primarybar_tooltip"
-            defaults="Manage your <bold>backup services</bold>, view their <bold>status</bold>, the <bold>servers list</bold> or <bold>import an existing backup</bold>."
-            components={{ bold: <strong /> }}
-            t={t}
-          />
-        </p>
-      </PrimaryBarTooltip>
-    ),
-    [t],
-  );
-
-  useEffect(() => {
+    };
     if (hasAllConfigRights) {
       if (isAdvanced) {
         addRoute({
@@ -68,7 +64,7 @@ const App: FC = () => {
     } else {
       removeRoute(BACKUP_ROUTE_ID);
     }
-  }, [BackupTooltipView, hasAllConfigRights, isAdvanced, servicesSection, t]);
+  }, [hasAllConfigRights, isAdvanced, t]);
 
   return null;
 };
