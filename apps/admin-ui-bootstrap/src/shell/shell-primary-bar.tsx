@@ -12,7 +12,7 @@ import {
   useUtilityBarStore,
 } from '@zextras/ui-shared';
 import { map, sortBy, trim } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, useCallback, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 import BadgeWrap from './badge-wrap';

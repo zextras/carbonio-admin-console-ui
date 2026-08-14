@@ -16,7 +16,7 @@ import {
   UtilityView,
 } from '@zextras/ui-shared';
 import { map, noop } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IconName } from '../../../../packages/ui-components/src/web-components/icon-registry';
@@ -44,10 +44,16 @@ const UtilityBarItem: FC<{ view: UtilityView }> = ({ view }) => {
   return <view.button mode={mode} setMode={setMode} />;
 };
 
+function clipTextAfterWords(text: string): string {
+  const words = text?.split('');
+  const clippedText = words?.slice(0, 32).join('');
+  return clippedText + (words?.length > 32 ? '...' : '');
+}
+
 export const ShellUtilityBar: FC = () => {
-  const [accountName, setAccountName] = useState('');
   const views = useUtilityViews();
   const acct = useUserAccount();
+  const accountName = acct?.name ? clipTextAfterWords(acct.name) : '';
   const isAdvanced = useIsAdvanced();
   const { data: helpDocumentationUrlAttribute } = useConfigAttribute(
     CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
@@ -75,18 +81,6 @@ export const ShellUtilityBar: FC = () => {
     ],
     [helpDocumentationUrl, t],
   );
-
-  const clipTextAfterWords = (text: string): string => {
-    const words = text?.split('');
-    const clippedText = words?.slice(0, 32).join('');
-    return clippedText + (words?.length > 32 ? '...' : '');
-  };
-
-  useEffect(() => {
-    if (acct?.name) {
-      setAccountName(clipTextAfterWords(acct?.name));
-    }
-  }, [acct?.name]);
 
   return (
     <Container orientation="horizontal" width="fit">
