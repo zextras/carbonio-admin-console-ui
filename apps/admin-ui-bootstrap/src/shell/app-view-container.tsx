@@ -9,15 +9,15 @@ import { useAppList, useAppRoutes, useAppStore } from '@zextras/ui-shared';
 import { find, map } from 'lodash-es';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
 
-const FirstAppRedirect = () => {
+function FirstAppRedirect() {
   const apps = useAppList();
   const routes = useAppRoutes();
   const location = useLocation();
   const mainRoute = find(routes, (r) => apps[0]?.name === r.app)?.path;
   return mainRoute && location?.pathname === '/' ? <Navigate to={`/${mainRoute}`} replace /> : null;
-};
+}
 
-export default function AppViewContainer() {
+export function AppViewContainer() {
   const appViews = useAppStore((s) => s.views.appView);
   const routes = [
     ...map(appViews, (view) => (

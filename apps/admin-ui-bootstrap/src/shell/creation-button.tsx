@@ -13,7 +13,7 @@ import {
   useAppList,
 } from '@zextras/ui-shared';
 import { groupBy, noop, reduce } from 'lodash-es';
-import { type FC, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
@@ -53,7 +53,9 @@ const useSecondaryActions = (
   ];
 };
 
-export const CreationButton: FC<{ activeRoute?: AppRoute }> = ({ activeRoute }) => {
+type CreationButtonProps = { activeRoute?: AppRoute };
+
+export const CreationButton = ({ activeRoute }: CreationButtonProps) => {
   const [t] = useTranslation();
   const location = useLocation();
   const actions = useActions({ activeRoute, location }, ACTION_TYPES.NEW);

@@ -12,10 +12,10 @@ import {
   useUtilityBarStore,
 } from '@zextras/ui-shared';
 import { map, sortBy, trim } from 'lodash-es';
-import React, { FC, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
-import BadgeWrap from './badge-wrap';
+import { BadgeWrap } from './badge-wrap';
 import { Collapser } from './collapser';
 import styles from './shell-primary-bar.module.css';
 
@@ -26,7 +26,9 @@ type PrimaryBarItemProps = {
   onClick: () => void;
 };
 
-const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, onClick }) => {
+type PrimaryBarViewItem = PrimaryBarView & { children?: Array<PrimaryBarView> };
+
+const PrimaryBarElement = ({ view, active, isExpanded, onClick }: PrimaryBarItemProps) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
   return (
@@ -52,6 +54,7 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
                 onClick={onClick}
                 size={'extralarge'}
                 className={styles.primaryBarButton}
+                aria-label={view.label}
               />
             ) : (
               <ds-text as="span" onClick={onClick}>
@@ -85,7 +88,9 @@ const PrimaryBarElement: FC<PrimaryBarItemProps> = ({ view, active, isExpanded, 
   );
 };
 
-const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRoute }) => {
+type ShellPrimaryBarProps = { activeRoute: AppRoute | undefined };
+
+const ShellPrimaryBar = ({ activeRoute }: ShellPrimaryBarProps) => {
   const isOpen = useUtilityBarStore((s) => s.primaryBarState);
 
   const setIsOpen = useUtilityBarStore((s) => s.setPrimaryBarState);
@@ -105,9 +110,9 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
     routes[activeRoute?.id] = trim(location.pathname, '/');
   }
 
-  let primaryBarViewWithSection: Array<any> = [];
+  let primaryBarViewWithSection: Array<PrimaryBarViewItem> = [];
   if (primaryBarViews.length > 0) {
-    const allPrimaryBarView: Array<any> = primaryBarViews.filter(
+    const allPrimaryBarView: Array<PrimaryBarViewItem> = primaryBarViews.filter(
       (item) => item.section === undefined || !item.section,
     );
     if (primarybarSections.length > 0) {
@@ -117,14 +122,20 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
           position: item?.position,
           label: item?.label,
         };
-        const primaryBarItems: Array<any> = [];
+        const primaryBarItems: Array<PrimaryBarView> = [];
         primaryBarViews.forEach((primaryBarItem) => {
           if (item?.id === primaryBarItem?.section?.id) {
             primaryBarItems.push(primaryBarItem);
           }
         });
         allPrimaryBarView.push({
-          position: item?.position,
+          id: item?.id ?? '',
+          app: '',
+          route: '',
+          path: '',
+          label: item?.label ?? '',
+          component: '',
+          position: item?.position ?? 0,
           badge: { show: false, count: 0, showCount: false, color: 'primary' },
           visible: true,
           section,
@@ -213,4 +224,4 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
   );
 };
 
-export default ShellPrimaryBar;
+export { ShellPrimaryBar };

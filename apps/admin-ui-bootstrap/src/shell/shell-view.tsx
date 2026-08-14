@@ -8,9 +8,9 @@ import { Row } from '@zextras/ui-components';
 import { useCurrentRoute } from '@zextras/ui-shared';
 
 import { ShellUtilityBar, ShellUtilityPanel } from '../utility-bar';
-import AppViewContainer from './app-view-container';
+import { AppViewContainer } from './app-view-container';
 import { ShellHeader } from './shell-header';
-import ShellNavigationBar from './shell-navigation-bar';
+import { ShellNavigationBar } from './shell-navigation-bar';
 
 function getDivStyle() {
   return {
@@ -26,7 +26,7 @@ function getDivStyle() {
   } as const;
 }
 
-export default function ShellView() {
+export function ShellView() {
   const activeRoute = useCurrentRoute();
   return (
     <div style={getDivStyle()}>
