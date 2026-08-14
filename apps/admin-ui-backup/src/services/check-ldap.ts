@@ -9,4 +9,4 @@ import { getSoapFetchRequest } from '@zextras/ui-shared';
 import type { CheckLdapResponse } from '../../types';
 
 export const checkLdap = async (): Promise<CheckLdapResponse> =>
-	getSoapFetchRequest<CheckLdapResponse>(`/service/extension/zextras_admin/backup/checkLDAPDump`);
+  getSoapFetchRequest<CheckLdapResponse>(`/service/extension/zextras_admin/backup/checkLDAPDump`);

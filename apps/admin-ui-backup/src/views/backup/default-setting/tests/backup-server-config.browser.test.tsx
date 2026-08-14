@@ -5,281 +5,290 @@
  */
 
 import {
-    getQueryClient,
-    grantUserConfigRights,
-    resetMockWorker,
-    setupBrowserTest,
+  createBrowserAPIInterceptor,
+  delayedBrowserZextrasActionInterceptor,
+  getQueryClient,
+  grantUserConfigRights,
+  resetMockWorker,
+  setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { backupQueryKeys } from '../../../../services/backup-query-keys';
-import BackupServerConfig from '../backup-server-config';
+import { BackupServerConfig } from '../backup-server-config';
 
 const GLOBAL_CONFIG = {
-    ZxBackup_RealTimeScanner: true,
-    ZxBackup_ModuleEnabledAtStartup: true,
-    ZxBackup_DoSmartScanOnStartup: false,
-    ZxBackup_DestPath: '/opt/zextras/backup',
-    ZxBackup_SpaceThreshold: 512,
-    backupLocalMetadataThreshold: 256,
-    backupSmartScanScheduler: {
-        'cron-enabled': true,
-        'cron-pattern': '0 0 * * *',
-    },
-    backupPurgeScheduler: {
-        'cron-enabled': false,
-        'cron-pattern': '0 2 * * *',
-    },
-    ZxBackup_DataRetentionDays: 30,
-    backupAccountsRetentionDays: 15,
+  ZxBackup_RealTimeScanner: true,
+  ZxBackup_ModuleEnabledAtStartup: true,
+  ZxBackup_DoSmartScanOnStartup: false,
+  ZxBackup_DestPath: '/opt/zextras/backup',
+  ZxBackup_SpaceThreshold: 512,
+  backupLocalMetadataThreshold: 256,
+  backupSmartScanScheduler: {
+    'cron-enabled': true,
+    'cron-pattern': '0 0 * * *',
+  },
+  backupPurgeScheduler: {
+    'cron-enabled': false,
+    'cron-pattern': '0 2 * * *',
+  },
+  ZxBackup_DataRetentionDays: 30,
+  backupAccountsRetentionDays: 15,
 };
 
 function setLicenseData(
-    queryClient: ReturnType<typeof getQueryClient>,
-    { backupBasic = true, backupRealtime = true } = {},
+  queryClient: ReturnType<typeof getQueryClient>,
+  { backupBasic = true, backupRealtime = true } = {},
 ) {
-    queryClient.setQueryData(['subscription', 'license'], {
-        ok: true,
-        response: {
-            type: 'SUBSCRIPTION',
-            subType: 'SUBSCRIPTION',
-            expired: false,
-            maintenanceStatus: 'active',
-            features: [
-                { name: 'backup_basic', enabled: backupBasic },
-                { name: 'backup_realtime', enabled: backupRealtime },
-            ],
-        },
-    });
+  queryClient.setQueryData(['subscription', 'license'], {
+    ok: true,
+    response: {
+      type: 'SUBSCRIPTION',
+      subType: 'SUBSCRIPTION',
+      expired: false,
+      maintenanceStatus: 'active',
+      features: [
+        { name: 'backup_basic', enabled: backupBasic },
+        { name: 'backup_realtime', enabled: backupRealtime },
+      ],
+    },
+  });
 }
 
 describe('BackupServerConfig', () => {
-    let queryClient: ReturnType<typeof getQueryClient>;
+  let queryClient: ReturnType<typeof getQueryClient>;
 
-    beforeEach(async () => {
-        queryClient = getQueryClient();
-        await grantUserConfigRights(queryClient);
-        queryClient.setQueryData(backupQueryKeys.globalConfig(), { ...GLOBAL_CONFIG });
+  beforeEach(async () => {
+    queryClient = getQueryClient();
+    await grantUserConfigRights(queryClient);
+    queryClient.setQueryData(['global-config'], { ...GLOBAL_CONFIG });
+  });
+
+  afterEach(() => {
+    resetMockWorker();
+    queryClient.removeQueries({ queryKey: backupQueryKeys.all });
+  });
+
+  describe('Rendering', () => {
+    it('should not render anything when backup module is not licensed', async () => {
+      setLicenseData(queryClient, { backupBasic: false });
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByText('Server Config')).not.toBeInTheDocument();
     });
 
-    afterEach(() => {
-        resetMockWorker();
-        queryClient.removeQueries({ queryKey: backupQueryKeys.all });
+    it('should render the "Server Config" title when licensed', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByText('Server Config')).toBeVisible();
     });
 
-    describe('Rendering', () => {
-        it('should not render anything when backup module is not licensed', async () => {
-            setLicenseData(queryClient, { backupBasic: false });
+    it('should render "Enable Realtime Scanner" switch when realtime is licensed', async () => {
+      setLicenseData(queryClient);
 
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-            await expect.element(page.getByText('Server Config')).not.toBeInTheDocument();
-        });
-
-        it('should render the "Server Config" title when licensed', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect.element(page.getByText('Server Config')).toBeVisible();
-        });
-
-        it('should render "Enable Realtime Scanner" switch when realtime is licensed', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect
-                .element(page.getByText('Enable Realtime Scanner'))
-                .toBeVisible();
-        });
-
-        it('should not render "Enable Realtime Scanner" when realtime is not licensed', async () => {
-            setLicenseData(queryClient, { backupRealtime: false });
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect.element(page.getByText('Server Config')).toBeVisible();
-            await expect
-                .element(page.getByText('Enable Realtime Scanner'))
-                .not.toBeInTheDocument();
-        });
-
-        it('should render "Backup is enabled at the startup" switch', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect
-                .element(page.getByText('Backup is enabled at the startup'))
-                .toBeVisible();
-        });
-
-        it('should render "Run the Smartscan at the startup" switch', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect
-                .element(page.getByText('Run the Smartscan at the startup'))
-                .toBeVisible();
-        });
+      await expect.element(page.getByText('Enable Realtime Scanner')).toBeVisible();
     });
 
-    describe('Input fields', () => {
-        it('should render the Backup Path input with correct value', async () => {
-            setLicenseData(queryClient);
+    it('should not render "Enable Realtime Scanner" when realtime is not licensed', async () => {
+      setLicenseData(queryClient, { backupRealtime: false });
 
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-            const input = page.getByRole('textbox', { name: 'Backup Path' });
-            await expect.element(input).toBeVisible();
-            await expect.element(input).toHaveValue('/opt/zextras/backup');
-        });
-
-        it('should render the Minimum Space Threshold input', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect
-                .element(page.getByText('Minimum Space Threshold (MB)'))
-                .toBeVisible();
-        });
-
-        it('should render the Local Metadata Threshold input', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect
-                .element(page.getByText('Local Metadata Threshold (MB)'))
-                .toBeVisible();
-        });
-
-        it('should render the Schedule Smartscan switch', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect
-                .element(page.getByText('Schedule Smartscan'))
-                .toBeVisible();
-        });
-
-        it('should render the Schedule Backup Purge switch', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect
-                .element(page.getByText('Schedule Backup Purge'))
-                .toBeVisible();
-        });
-
-        it('should render "Keep deleted items in the backup" input', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect
-                .element(page.getByText('Keep deleted items in the backup'))
-                .toBeVisible();
-        });
-
-        it('should render "Keep deleted accounts in the backup" input', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            await expect
-                .element(page.getByText('Keep deleted accounts in the backup'))
-                .toBeVisible();
-        });
-
-        it('should render the "forever" helper text twice', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            const helperTexts = page.getByText(
-                'If you set 0, your data will be kept in backup forever',
-            );
-            await expect.element(helperTexts.first()).toBeVisible();
-        });
+      await expect.element(page.getByText('Server Config')).toBeVisible();
+      await expect.element(page.getByText('Enable Realtime Scanner')).not.toBeInTheDocument();
     });
 
-    describe('Dirty state', () => {
-        it('should not show Cancel and Save buttons when form is clean', async () => {
-            setLicenseData(queryClient);
+    it('should render "Backup is enabled at the startup" switch', async () => {
+      setLicenseData(queryClient);
 
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-            await expect.element(page.getByText('Server Config')).toBeVisible();
-            await expect
-                .element(page.getByRole('button', { name: 'Cancel' }))
-                .not.toBeInTheDocument();
-            await expect
-                .element(page.getByRole('button', { name: 'Save' }))
-                .not.toBeInTheDocument();
-        });
-
-        it('should show Cancel and Save buttons after toggling a switch', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            const backupStartupSwitch = page.getByText('Backup is enabled at the startup');
-            await userEvent.click(backupStartupSwitch);
-
-            await expect
-                .element(page.getByRole('button', { name: 'Cancel' }))
-                .toBeVisible();
-            await expect
-                .element(page.getByRole('button', { name: 'Save' }))
-                .toBeVisible();
-        });
-
-        it('should hide Cancel and Save buttons after clicking Cancel', async () => {
-            setLicenseData(queryClient);
-
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-            const backupStartupSwitch = page.getByText('Backup is enabled at the startup');
-            await userEvent.click(backupStartupSwitch);
-
-            await expect
-                .element(page.getByRole('button', { name: 'Cancel' }))
-                .toBeVisible();
-
-            await userEvent.click(page.getByRole('button', { name: 'Cancel' }));
-
-            await expect
-                .element(page.getByRole('button', { name: 'Cancel' }))
-                .not.toBeInTheDocument();
-            await expect
-                .element(page.getByRole('button', { name: 'Save' }))
-                .not.toBeInTheDocument();
-        });
+      await expect.element(page.getByText('Backup is enabled at the startup')).toBeVisible();
     });
 
-    describe('Permissions', () => {
-        it('should disable switches when user has no config rights', async () => {
-            setLicenseData(queryClient);
-            queryClient.setQueryData(['effective-rights', 'test@example.com'], [
-                { type: 'config', all: [] },
-            ]);
+    it('should render "Run the Smartscan at the startup" switch', async () => {
+      setLicenseData(queryClient);
 
-            await setupBrowserTest(<BackupServerConfig />, { queryClient });
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-            const backupStartupSwitch = page.getByText('Backup is enabled at the startup');
-            await userEvent.click(backupStartupSwitch);
-
-            // Should remain clean since switch is disabled
-            await expect
-                .element(page.getByRole('button', { name: 'Cancel' }))
-                .not.toBeInTheDocument();
-        });
+      await expect.element(page.getByText('Run the Smartscan at the startup')).toBeVisible();
     });
+  });
+
+  describe('Input fields', () => {
+    it('should render the Backup Path input with correct value', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      const input = page.getByRole('textbox', { name: 'Backup Path' });
+      await expect.element(input).toBeVisible();
+      await expect.element(input).toHaveValue('/opt/zextras/backup');
+    });
+
+    it('should render the Minimum Space Threshold input', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByText('Minimum Space Threshold (MB)')).toBeVisible();
+    });
+
+    it('should render the Local Metadata Threshold input', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByText('Local Metadata Threshold (MB)')).toBeVisible();
+    });
+
+    it('should render the Schedule Smartscan switch', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByText('Schedule Smartscan')).toBeVisible();
+    });
+
+    it('should render the Schedule Backup Purge switch', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByText('Schedule Backup Purge')).toBeVisible();
+    });
+
+    it('should render "Keep deleted items in the backup" input', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByText('Keep deleted items in the backup')).toBeVisible();
+    });
+
+    it('should render "Keep deleted accounts in the backup" input', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByText('Keep deleted accounts in the backup')).toBeVisible();
+    });
+
+    it('should render the "forever" helper text twice', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      const helperTexts = page.getByText('If you set 0, your data will be kept in backup forever');
+      await expect.element(helperTexts.first()).toBeVisible();
+    });
+  });
+
+  describe('Dirty state', () => {
+    it('should not show Cancel and Save buttons when form is clean', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByText('Server Config')).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    });
+
+    it('should show Cancel and Save buttons after toggling a switch', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      const backupStartupSwitch = page.getByText('Backup is enabled at the startup');
+      await userEvent.click(backupStartupSwitch);
+
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+
+    it('should hide Cancel and Save buttons after clicking Cancel', async () => {
+      setLicenseData(queryClient);
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      const backupStartupSwitch = page.getByText('Backup is enabled at the startup');
+      await userEvent.click(backupStartupSwitch);
+
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+
+      await userEvent.click(page.getByRole('button', { name: 'Cancel' }));
+
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Permissions', () => {
+    it('should disable switches when user has no config rights', async () => {
+      setLicenseData(queryClient);
+      queryClient.setQueryData(
+        ['effective-rights', 'test@example.com'],
+        [{ type: 'config', all: [] }],
+      );
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      const backupStartupSwitch = page.getByText('Backup is enabled at the startup');
+      await userEvent.click(backupStartupSwitch);
+
+      // Should remain clean since switch is disabled
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Loading state', () => {
+    it('should show a spinner when global-config is still loading', async () => {
+      setLicenseData(queryClient);
+      queryClient.removeQueries({ queryKey: ['global-config'] });
+      delayedBrowserZextrasActionInterceptor(
+        'dump_global_config',
+        () =>
+          HttpResponse.json({
+            Body: { response: { content: JSON.stringify({ response: {} }) } },
+          }),
+        5000,
+      );
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      await expect.element(page.getByRole('status')).toBeVisible();
+      await expect.element(page.getByText('Server Config')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Form submission', () => {
+    it('should call the modify config mutation when Backup Path is changed and Save is clicked', async () => {
+      setLicenseData(queryClient);
+
+      const interceptor = await createBrowserAPIInterceptor(
+        'post',
+        '/service/extension/zextras_admin/core/attribute/set',
+        () => HttpResponse.json({}),
+      );
+
+      await setupBrowserTest(<BackupServerConfig />, { queryClient });
+
+      const backupPathInput = page.getByRole('textbox', { name: 'Backup Path' });
+      await backupPathInput.fill('/tmp/backup');
+
+      const saveButton = page.getByRole('button', { name: 'Save' });
+      await expect.element(saveButton).toBeVisible();
+      await saveButton.click();
+
+      await expect.poll(() => interceptor.getCalledTimes()).toBe(1);
+    });
+  });
 });

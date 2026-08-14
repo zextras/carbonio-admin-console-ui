@@ -20,11 +20,10 @@ import {
   useModuleLicenseInfo,
   useRelativePathname,
 } from '@zextras/ui-shared';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 
-import type { MailstoreServer } from '../../../types';
 import {
   ADVANCED_LBL,
   BACKUP_BASIC,
@@ -39,7 +38,7 @@ import {
 } from '../../constants';
 import { SECTION_ROUTES } from './backup-section-routes';
 
-const BackupListPanel: FC = () => {
+export const BackupListPanel = () => {
   const [t] = useTranslation();
   const relativePathname = useRelativePathname();
   const serverMatch = matchPath('/:server/:operation', relativePathname);
@@ -48,62 +47,79 @@ const BackupListPanel: FC = () => {
     serverMatch?.params.operation ?? opMatch?.params.operation ?? SERVERS_LIST;
   const selectedServer = serverMatch?.params.server ?? '';
   const isServerSelect = !!serverMatch;
-  const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
-  const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
+  const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(
+    () => localStorage.getItem(IS_DEFAULT_SETTINGS_EXPANDED) !== 'false',
+  );
+  const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState(
+    () => localStorage.getItem(IS_SERVER_SPECIFICS_EXPANDED) !== 'false',
+  );
   const { data: serverList = [], isError, isLoading } = useMailstoreServers();
   const [searchServer, setSearchServer] = useState<string>(selectedServer);
-  const [serverNames, setServerNames] = useState<Array<ListItemType>>([]);
-  const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
+  const [prevSelectedServer, setPrevSelectedServer] = useState(selectedServer);
+  if (selectedServer !== prevSelectedServer) {
+    setPrevSelectedServer(selectedServer);
+    setSearchServer(selectedServer);
+  }
   const { moduleLicenseInfo } = useModuleLicenseInfo();
+  const licenseFeatures = moduleLicenseInfo?.features ?? [];
+  const isBackupModuleLicensed = licenseFeatures.some(
+    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_BASIC && f?.enabled,
+  );
   const { data: rights } = useCurrentUserRights();
-  const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
-  const [isShowError, setIsShowError] = useState(false);
-
-  useEffect(() => {
-    if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
-      const backupModule = moduleLicenseInfo.features.filter(
-        (item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC,
-      );
-      if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
-        setIsBackupModuleLicensed(true);
-      }
-    }
-  }, [moduleLicenseInfo]);
-
-  const defaultSettingsOptions = useMemo(
-    () =>
-      SECTION_ROUTES.filter((route) => !route.prefix && route.id !== IMPORT_EXTERNAL_BACKUP).map(
-        ({ id, labelKey, labelDefault }) => ({
-          id,
-          name: t(labelKey, labelDefault),
-          isSelected: !!isBackupModuleLicensed,
-        }),
-      ),
-    [t, isBackupModuleLicensed],
+  const serverRights = rights && rights.length > 0 ? getRights(rights, SERVER) : [];
+  const hasListServerRights = serverRights.some(
+    (item: Record<string, string>) => item?.n === LIST_SERVER,
   );
 
-  const [defaultOptions, setDefaultOptions] = useState<Array<ListItemType>>(defaultSettingsOptions);
+  const filteredServers = (isError || isLoading)
+    ? []
+    : serverList.filter((item) => item.name?.includes(searchServer));
 
-  useEffect(() => {
-    if (!hasListServerRights) {
-      setDefaultOptions(
-        defaultSettingsOptions.filter((item: Record<string, unknown>) => item?.id !== SERVERS_LIST),
-      );
-    } else {
-      setDefaultOptions(defaultSettingsOptions);
-    }
-  }, [hasListServerRights, defaultSettingsOptions]);
+  const serverNames: Array<ListItemType> = filteredServers.map((serverItem) => ({
+    id: serverItem?.id ?? '',
+    name: serverItem?.name ?? '',
+    isSelected: false,
+    label: serverItem?.name ?? '',
+    customComponent: (
+      <Row
+        style={{
+          display: 'block',
+          textAlign: 'left',
+          height: 'inherit',
+          padding: '0.18rem',
+          width: 'inherit',
+        }}
+        onClick={(): void => {
+          const serverName = serverItem?.name ?? '';
+          setSearchServer(serverName);
+          replaceHistory(`/${serverName}/${CONFIGURATION_BACKUP}`);
+        }}
+      >
+        {serverItem?.name}
+      </Row>
+    ),
+  }));
 
-  const serverSettingsOptions = useMemo(
-    () =>
-      SECTION_ROUTES.filter((route) => route.prefix === ':server').map(
-        ({ id, labelKey, labelDefault }) => ({
-          id,
-          name: t(labelKey, labelDefault),
-          isSelected: isBackupModuleLicensed ? isServerSelect : false,
-        }),
-      ),
-    [t, isServerSelect, isBackupModuleLicensed],
+  const isShowError = serverList.length > 0 && filteredServers.length === 0;
+
+  const defaultSettingsOptions = SECTION_ROUTES.filter(
+    (route) => !route.prefix && route.id !== IMPORT_EXTERNAL_BACKUP,
+  ).map(({ id, labelKey, labelDefault }) => ({
+    id,
+    name: t(labelKey, labelDefault),
+    isSelected: !!isBackupModuleLicensed,
+  }));
+
+  const defaultOptions = hasListServerRights
+    ? defaultSettingsOptions
+    : defaultSettingsOptions.filter((item) => item?.id !== SERVERS_LIST);
+
+  const serverSettingsOptions = SECTION_ROUTES.filter((route) => route.prefix === ':server').map(
+    ({ id, labelKey, labelDefault }) => ({
+      id,
+      name: t(labelKey, labelDefault),
+      isSelected: isBackupModuleLicensed ? isServerSelect : false,
+    }),
   );
 
   const handleSelectOperationItem = (id: string): void => {
@@ -135,84 +151,15 @@ const BackupListPanel: FC = () => {
     setIsServerSpecificsExpanded(!isServerSpecificsExpanded);
   };
 
-  const addServerToList = useCallback((list: Array<MailstoreServer>) => {
-    const data: Array<ListItemType> = list.map((serverItem) => ({
-      id: serverItem?.id ?? '',
-      name: serverItem?.name ?? '',
-      isSelected: false,
-      label: serverItem?.name ?? '',
-      customComponent: (
-        <Row
-          style={{
-            display: 'block',
-            textAlign: 'left',
-            height: 'inherit',
-            padding: '0.18rem',
-            width: 'inherit',
-          }}
-          onClick={(): void => {
-            const server = serverItem?.name ?? '';
-            setSearchServer(server);
-            replaceHistory(`/${server}/${CONFIGURATION_BACKUP}`);
-          }}
-        >
-          {serverItem?.name}
-        </Row>
-      ),
-    }));
-    setServerNames(data);
-  }, []);
-
-  useEffect(() => {
-    if (isError || isLoading) {
-      return;
-    }
-    const filterList = serverList.filter((item) => item.name?.includes(searchServer));
-    addServerToList(filterList);
-    if (serverList.length > 0 && filterList.length === 0) {
-      setIsShowError(true);
-    }
-  }, [searchServer, addServerToList, serverList, isError, isLoading]);
-
-  useEffect(() => {
-    if (rights && rights.length > 0) {
-      const right = getRights(rights, SERVER);
-      if (right.length > 0) {
-        const findServerRight = right.find(
-          (item: Record<string, string>) => item?.n && item?.n === LIST_SERVER,
-        );
-        if (findServerRight) {
-          sethasListServerRights(true);
-        }
-      }
-    }
-  }, [rights]);
-
   const customIconDetail = {
     icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
     onClick: (): void => {
-      setIsShowError(false);
       if (searchServer !== '') {
         setSearchServer('');
         replaceHistory(`/${SERVER_CONFIG}`);
       }
     },
   };
-
-  useEffect(() => {
-    const storedValue = localStorage.getItem(IS_DEFAULT_SETTINGS_EXPANDED);
-    if (storedValue === 'false') {
-      setIsDefaultSettingsExpanded(false);
-    } else {
-      setIsDefaultSettingsExpanded(true);
-    }
-    const storedServerSpecificsValue = localStorage.getItem(IS_SERVER_SPECIFICS_EXPANDED);
-    if (storedServerSpecificsValue === 'false') {
-      setIsServerSpecificsExpanded(false);
-    } else {
-      setIsServerSpecificsExpanded(true);
-    }
-  }, []);
 
   return (
     <Container
@@ -251,7 +198,6 @@ const BackupListPanel: FC = () => {
                   width="16.56rem"
                   inputLabel={t('label.select_a_server', 'Select a Server')}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                    setIsShowError(false);
                     setSearchServer(e.target.value);
                   }}
                   inputValue={searchServer}
@@ -288,4 +234,3 @@ const BackupListPanel: FC = () => {
     </Container>
   );
 };
-export default BackupListPanel;
