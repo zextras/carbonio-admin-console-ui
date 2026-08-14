@@ -168,4 +168,35 @@ describe('MTAAntiVirusAndAntiSpam', () => {
     await expect.poll(() => page.getByRole('button', { name: 'Save' }).elements().length).toBe(0);
     await expect.poll(() => page.getByRole('button', { name: 'Cancel' }).elements().length).toBe(0);
   });
+
+  it('submits a ModifyConfig request with changed data on save', async () => {
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+
+    await setupBrowserTest(<MTAAntiVirusAndAntiSpam />, { grantRights: 'config' });
+
+    await toggleVerifyDkimSwitch();
+
+    const saveButton = page.getByRole('button', { name: 'Save' });
+    await expect.element(saveButton).toBeVisible();
+    await saveButton.click();
+
+    const request = await modifyConfigInterceptor;
+    expect(request).toMatchObject({
+      a: expect.arrayContaining([
+        expect.objectContaining({
+          n: 'zimbraAmavisEnableDKIMVerification',
+          _content: 'FALSE',
+        }),
+      ]),
+    });
+
+    const secondModifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    const secondCallSettled = await Promise.race([
+      secondModifyConfigInterceptor.then(() => true),
+      new Promise<boolean>((resolve) => {
+        setTimeout(() => resolve(false), 2000);
+      }),
+    ]);
+    expect(secondCallSettled).toBe(false);
+  });
 }, 20_000);

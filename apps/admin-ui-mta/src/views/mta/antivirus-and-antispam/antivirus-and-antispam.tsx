@@ -8,7 +8,7 @@ import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, SelectItem, useSnackbar } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { ReactElement, useState } from 'react';
+import { ReactElement, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MtaAntivirusAndAntispam } from '../../../../types';
@@ -95,6 +95,7 @@ const MTAAntiVirusAndAntiSpamForm = ({ configInformation }: MTAAntiVirusAndAntiS
   const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
     useState('');
   const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState(false);
+  const saveInFlightRef = useRef(false);
 
   const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
   const allowSetMTA = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
@@ -379,10 +380,18 @@ const MTAAntiVirusAndAntiSpamForm = ({ configInformation }: MTAAntiVirusAndAntiS
     setSelectedAdditionalAntivirusDefinition([]);
   }
 
+  function handleSave() {
+    if (saveInFlightRef.current) return;
+    saveInFlightRef.current = true;
+    void form.handleSubmit().finally(() => {
+      saveInFlightRef.current = false;
+    });
+  }
+
   return (
     <FormPageLayout
       title={t('mta.antivirus_and_antispam', 'Antivirus & Antispam')}
-      onSave={() => form.handleSubmit()}
+      onSave={handleSave}
       onCancel={handleCancel}
       unsavedChanges={isDirty}
     >
