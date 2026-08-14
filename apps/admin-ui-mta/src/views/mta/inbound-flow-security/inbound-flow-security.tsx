@@ -8,7 +8,7 @@ import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, ListRow } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
 import { find, uniq } from 'lodash-es';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaInboundSecurity } from '../../../../types';
@@ -64,6 +64,7 @@ const MTAInboundFlowSecurityForm = ({ configInformation }: MTAInboundFlowSecurit
   const [extensionState, setExtensionState] = useState<ExtensionState>(() =>
     buildExtensionState(configInformation),
   );
+  const saveInFlightRef = useRef(false);
 
   const { mtaBlockExtension, commonBlockedExtensions } = extensionState;
 
@@ -136,10 +137,18 @@ const MTAInboundFlowSecurityForm = ({ configInformation }: MTAInboundFlowSecurit
     }
   }
 
+  function handleSave() {
+    if (saveInFlightRef.current) return;
+    saveInFlightRef.current = true;
+    void form.handleSubmit().finally(() => {
+      saveInFlightRef.current = false;
+    });
+  }
+
   return (
     <FormPageLayout
       title={t('mta.inbound_flow_and_security', 'Inbound Flow & Security')}
-      onSave={() => form.handleSubmit()}
+      onSave={handleSave}
       onCancel={handleCancel}
       unsavedChanges={isDirty}
     >

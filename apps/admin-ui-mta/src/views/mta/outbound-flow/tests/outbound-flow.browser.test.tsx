@@ -161,4 +161,26 @@ describe('MTAOutBoundFlow', () => {
     await expect.poll(() => page.getByRole('button', { name: 'Save' }).elements().length).toBe(0);
     await expect.poll(() => page.getByRole('button', { name: 'Cancel' }).elements().length).toBe(0);
   });
+
+  it('submits ModifyConfig only once on Save', async () => {
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
+
+    await toggleAddClientIpSwitch();
+    const saveButton = page.getByRole('button', { name: 'Save' });
+    await expect.element(saveButton).toBeVisible();
+    await saveButton.click();
+
+    await modifyConfigInterceptor;
+
+    const secondModifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    const secondCallSettled = await Promise.race([
+      secondModifyConfigInterceptor.then(() => true),
+      new Promise<boolean>((resolve) => {
+        setTimeout(() => resolve(false), 2000);
+      }),
+    ]);
+    expect(secondCallSettled).toBe(false);
+  });
 }, 20_000);

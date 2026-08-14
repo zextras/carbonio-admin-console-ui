@@ -58,7 +58,6 @@ export const DnsBlacklistingSection = ({
           <form.Field name="zimbraMtaPostscreenDnsblSites">
             {(field) => (
               <Input
-                isRequired
                 label={t('mta.dns_blacklist_sites', 'DNS Blacklist Sites')}
                 backgroundColor="gray5"
                 value={field.state.value ?? ''}

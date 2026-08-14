@@ -149,6 +149,15 @@ describe('MTAInboundFlowSecurity', () => {
         }),
       ]),
     );
+
+    const secondModifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    const secondCallSettled = await Promise.race([
+      secondModifyConfigInterceptor.then(() => true),
+      new Promise<boolean>((resolve) => {
+        setTimeout(() => resolve(false), 2000);
+      }),
+    ]);
+    expect(secondCallSettled).toBe(false);
   }, 20000);
 
   it('does not call ModifyConfig when adding commonly blocked extensions until Save', async () => {

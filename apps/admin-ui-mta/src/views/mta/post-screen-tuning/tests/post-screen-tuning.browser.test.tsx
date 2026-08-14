@@ -174,6 +174,28 @@ describe('MTAPostScreenTuning', () => {
     await expect.poll(() => page.getByRole('button', { name: 'Cancel' }).elements().length).toBe(0);
   });
 
+  it('submits ModifyConfig only once on Save', async () => {
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
+
+    await page.getByText('Bare Newline').click();
+    const saveButton = page.getByRole('button', { name: 'Save' });
+    await expect.element(saveButton).toBeVisible();
+    await saveButton.click();
+
+    await modifyConfigInterceptor;
+
+    const secondModifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    const secondCallSettled = await Promise.race([
+      secondModifyConfigInterceptor.then(() => true),
+      new Promise<boolean>((resolve) => {
+        setTimeout(() => resolve(false), 2000);
+      }),
+    ]);
+    expect(secondCallSettled).toBe(false);
+  });
+
   it('dismisses the greylisting info banner when close is clicked', async () => {
     await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 

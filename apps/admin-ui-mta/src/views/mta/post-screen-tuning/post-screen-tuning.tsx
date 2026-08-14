@@ -7,6 +7,7 @@ import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, SelectItem } from '@zextras/ui-components';
 import { useAllConfig, useLocalStorage } from '@zextras/ui-shared';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MtaPostTuning } from '../../../../types';
@@ -90,6 +91,7 @@ const MTAPostScreenTuningForm = ({ configInformation }: MTAPostScreenTuningFormP
   const [t] = useTranslation();
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
   const [isShowBanner, setIsShowBanner] = useLocalStorage(IS_SHOW_POST_TUNING_BANNER, true);
+  const saveInFlightRef = useRef(false);
 
   const form = useForm({
     defaultValues: buildInitialState(configInformation),
@@ -248,10 +250,18 @@ const MTAPostScreenTuningForm = ({ configInformation }: MTAPostScreenTuningFormP
     () => bareNewLineTTL,
   );
 
+  function handleSave() {
+    if (saveInFlightRef.current) return;
+    saveInFlightRef.current = true;
+    void form.handleSubmit().finally(() => {
+      saveInFlightRef.current = false;
+    });
+  }
+
   return (
     <FormPageLayout
       title={t('mta.postscreen_tuning', 'Postscreen Tuning')}
-      onSave={() => form.handleSubmit()}
+      onSave={handleSave}
       onCancel={() => form.reset()}
       unsavedChanges={isDirty}
     >

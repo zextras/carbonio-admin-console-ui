@@ -8,7 +8,7 @@ import { useSelector } from '@tanstack/react-store';
 import { type ChipItem, Container, FormPageLayout } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
 import { find, join, map, some, split, trim } from 'lodash-es';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute, IpRangeValue, MtaOutboundFlow, Server, TRow } from '../../../../types';
@@ -129,6 +129,7 @@ const MTAOutBoundFlowForm = ({ configInformation }: MTAOutBoundFlowFormProps) =>
   const [networkValue, setNetworkValue] = useState<Array<IpRangeValue>>(() =>
     buildNetworkValue(configInformation),
   );
+  const saveInFlightRef = useRef(false);
 
   const form = useForm({
     defaultValues: buildInitialState(configInformation),
@@ -224,10 +225,18 @@ const MTAOutBoundFlowForm = ({ configInformation }: MTAOutBoundFlowFormProps) =>
     setNetworkValue(buildNetworkValue(configInformation));
   }
 
+  function handleSave() {
+    if (saveInFlightRef.current) return;
+    saveInFlightRef.current = true;
+    void form.handleSubmit().finally(() => {
+      saveInFlightRef.current = false;
+    });
+  }
+
   return (
     <FormPageLayout
       title={t('mta.outbound_flow', 'Outbound Flow')}
-      onSave={() => form.handleSubmit()}
+      onSave={handleSave}
       onCancel={handleCancel}
       unsavedChanges={isDirty}
     >
