@@ -16,12 +16,11 @@ import {
   UtilityView,
 } from '@zextras/ui-shared';
 import { map, noop } from 'lodash-es';
-import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { openLink, useUtilityViews } from './utils';
 
-const UtilityBarItem: FC<{ view: UtilityView }> = ({ view }) => {
+const UtilityBarItem = ({ view }: { view: UtilityView }) => {
   const { mode, setMode, current, setCurrent } = useUtilityBarStore();
   const onClick = (): void => {
     setMode(current !== view.id ? 'open' : mode !== 'open' ? 'open' : 'closed');
@@ -36,6 +35,7 @@ const UtilityBarItem: FC<{ view: UtilityView }> = ({ view }) => {
           icon={view.button as IconName}
           onClick={onClick}
           size="large"
+          aria-label={view.label}
         />
       </Tooltip>
     );
@@ -49,7 +49,7 @@ function clipTextAfterWords(text: string): string {
   return clippedText + (words?.length > 32 ? '...' : '');
 }
 
-export const ShellUtilityBar: FC = () => {
+export const ShellUtilityBar = () => {
   const views = useUtilityViews();
   const acct = useUserAccount();
   const accountName = acct?.name ? clipTextAfterWords(acct.name) : '';
@@ -96,6 +96,7 @@ export const ShellUtilityBar: FC = () => {
             size={'extralarge'}
             color="primary"
             onClick={noop}
+            aria-label={t('label.account_menu', 'Account menu')}
           />
         </Dropdown>
       </Tooltip>
