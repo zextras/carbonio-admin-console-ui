@@ -6,29 +6,31 @@
 import { Container, InheritedSwitch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { MtaServerGeneral } from '../../../../../../types';
 import {
   CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
+  FALSE,
+  TRUE,
   ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
   ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
 } from '../../../../../constants';
+import {
+  ConfigItem,
+  MtaServerGeneralFormApi,
+  MtaServerGeneralFormValues,
+} from '../types';
 
 type AntivirusAntispamSectionProps = Readonly<{
-  mtaServerGeneralDetail: MtaServerGeneral | undefined;
-  mtaServerSpecificGeneralDetail: MtaServerGeneral | undefined;
-  configInformation: Array<{ n: string; _content: string }>;
+  form: MtaServerGeneralFormApi;
+  mtaServerSpecificGeneralDetail: MtaServerGeneralFormValues | undefined;
+  configInformation: Array<ConfigItem>;
   allowSetMTA: boolean;
-  changeSwitchOption: (key: keyof MtaServerGeneral) => void;
-  setEmptyValue: (keyName: keyof MtaServerGeneral) => void;
 }>;
 
 export function AntivirusAntispamSection({
-  mtaServerGeneralDetail,
+  form,
   mtaServerSpecificGeneralDetail,
   configInformation,
   allowSetMTA,
-  changeSwitchOption,
-  setEmptyValue,
 }: AntivirusAntispamSectionProps) {
   const [t] = useTranslation();
 
@@ -53,56 +55,74 @@ export function AntivirusAntispamSection({
         height="auto"
       >
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-          <InheritedSwitch
-            subValue={mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA}
-            onChange={changeSwitchOption}
-            label={t('mta.also_check_outbound_messages', 'Also check outbound messages')}
-            iconColor="primary"
-            inheritedValue={
-              configInformation?.find(
-                (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-              )?._content
-            }
-            fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisOriginatingBypassSA}
-            inputName={ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA}
-            onChangeReset={(): void => setEmptyValue(ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA)}
-            disabled={!allowSetMTA}
-          />
+          <form.Field name="zimbraAmavisOriginatingBypassSA">
+            {(field) => (
+              <InheritedSwitch
+                subValue={field.state.value}
+                onChange={() =>
+                  field.handleChange(field.state.value === TRUE ? FALSE : TRUE)
+                }
+                label={t('mta.also_check_outbound_messages', 'Also check outbound messages')}
+                iconColor="primary"
+                inheritedValue={
+                  configInformation?.find(
+                    (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
+                  )?._content
+                }
+                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisOriginatingBypassSA}
+                inputName={ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA}
+                onChangeReset={() => field.handleChange(undefined)}
+                disabled={!allowSetMTA}
+              />
+            )}
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start">
-          <InheritedSwitch
-            subValue={mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification}
-            onChange={changeSwitchOption}
-            label={t('mta.verify_dkim_validity', 'Verify DKIM validity')}
-            iconColor="primary"
-            inheritedValue={
-              configInformation?.find(
-                (item: Record<string, string>) =>
-                  item?.n === ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-              )?._content
-            }
-            fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisEnableDKIMVerification}
-            inputName={ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION}
-            onChangeReset={(): void => setEmptyValue(ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION)}
-            disabled={!allowSetMTA}
-          />
+          <form.Field name="zimbraAmavisEnableDKIMVerification">
+            {(field) => (
+              <InheritedSwitch
+                subValue={field.state.value}
+                onChange={() =>
+                  field.handleChange(field.state.value === TRUE ? FALSE : TRUE)
+                }
+                label={t('mta.verify_dkim_validity', 'Verify DKIM validity')}
+                iconColor="primary"
+                inheritedValue={
+                  configInformation?.find(
+                    (item: Record<string, string>) =>
+                      item?.n === ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
+                  )?._content
+                }
+                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisEnableDKIMVerification}
+                inputName={ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION}
+                onChangeReset={() => field.handleChange(undefined)}
+                disabled={!allowSetMTA}
+              />
+            )}
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start">
-          <InheritedSwitch
-            subValue={mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck}
-            onChange={changeSwitchOption}
-            label={t('mta.disable_virus_check', 'Disable Virus Check')}
-            iconColor="primary"
-            inheritedValue={
-              configInformation?.find(
-                (item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-              )?._content
-            }
-            fromSubValue={mtaServerSpecificGeneralDetail?.carbonioAmavisDisableVirusCheck}
-            inputName={CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK}
-            onChangeReset={(): void => setEmptyValue(CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK)}
-            disabled={!allowSetMTA}
-          />
+          <form.Field name="carbonioAmavisDisableVirusCheck">
+            {(field) => (
+              <InheritedSwitch
+                subValue={field.state.value}
+                onChange={() =>
+                  field.handleChange(field.state.value === TRUE ? FALSE : TRUE)
+                }
+                label={t('mta.disable_virus_check', 'Disable Virus Check')}
+                iconColor="primary"
+                inheritedValue={
+                  configInformation?.find(
+                    (item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
+                  )?._content
+                }
+                fromSubValue={mtaServerSpecificGeneralDetail?.carbonioAmavisDisableVirusCheck}
+                inputName={CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK}
+                onChangeReset={() => field.handleChange(undefined)}
+                disabled={!allowSetMTA}
+              />
+            )}
+          </form.Field>
         </Container>
       </Container>
     </>

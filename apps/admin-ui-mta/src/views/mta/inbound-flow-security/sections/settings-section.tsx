@@ -6,27 +6,21 @@
 import { Button, ChipInput, Container, Switch, Tooltip } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { MtaInboundSecurity } from '../../../../../types';
-import {
-  ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-  ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-} from '../../../../constants';
 import { CustomChip } from '../../../components/customChip';
+import { MtaInboundFormApi } from '../types';
 
 type SettingsSectionProps = {
-  mtaInboundSecurityDetail: MtaInboundSecurity | undefined;
+  form: MtaInboundFormApi;
   mtaBlockExtension: Array<Record<string, string>>;
   allowSetMTA: boolean;
-  setValue: (key: string, value: unknown) => void;
   onBlockExtensionChange: (ev: Array<{ label?: string }>) => void;
   onCommonBlockExtensionAdd: () => void;
 };
 
 export function SettingsSection({
-  mtaInboundSecurityDetail,
+  form,
   mtaBlockExtension,
   allowSetMTA,
-  setValue,
   onBlockExtensionChange,
   onCommonBlockExtensionAdd,
 }: Readonly<SettingsSectionProps>) {
@@ -87,54 +81,52 @@ export function SettingsSection({
         height="auto"
       >
         <Container crossAlignment="flex-start">
-          <Tooltip
-            placement="bottom"
-            label={t(
-              'mta.notify_administrators_of_blocked_file_extension_incoming_emails',
-              'Notify administrators about blocked file extensions in incoming emails',
+          <form.Field name="zimbraMtaBlockedExtensionWarnAdmin">
+            {(field) => (
+              <Tooltip
+                placement="bottom"
+                label={t(
+                  'mta.notify_administrators_of_blocked_file_extension_incoming_emails',
+                  'Notify administrators about blocked file extensions in incoming emails',
+                )}
+                maxWidth="auto"
+              >
+                <Switch
+                  label={t(
+                    'mta.notify_admins_about_block_extensions',
+                    'Notify admins about blocked extensions',
+                  )}
+                  value={field.state.value}
+                  onClick={() => field.handleChange(!field.state.value)}
+                  disabled={!allowSetMTA}
+                />
+              </Tooltip>
             )}
-            maxWidth="auto"
-          >
-            <Switch
-              label={t(
-                'mta.notify_admins_about_block_extensions',
-                'Notify admins about blocked extensions',
-              )}
-              value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-                  !mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin,
-                )
-              }
-              disabled={!allowSetMTA}
-            />
-          </Tooltip>
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start" height="auto">
-          <Tooltip
-            placement="bottom"
-            label={t(
-              'mta.notify_recipients_of_blocked_file_extension_incoming_emails',
-              'Notify recipients about blocked file extensions in incoming emails',
+          <form.Field name="zimbraMtaBlockedExtensionWarnRecipient">
+            {(field) => (
+              <Tooltip
+                placement="bottom"
+                label={t(
+                  'mta.notify_recipients_of_blocked_file_extension_incoming_emails',
+                  'Notify recipients about blocked file extensions in incoming emails',
+                )}
+                maxWidth="auto"
+              >
+                <Switch
+                  label={t(
+                    'mta.notify_external_recipient_about_block_extensions',
+                    'Notify external recipients about blocked extensions',
+                  )}
+                  value={field.state.value}
+                  onClick={() => field.handleChange(!field.state.value)}
+                  disabled={!allowSetMTA}
+                />
+              </Tooltip>
             )}
-            maxWidth="auto"
-          >
-            <Switch
-              label={t(
-                'mta.notify_external_recipient_about_block_extensions',
-                'Notify external recipients about blocked extensions',
-              )}
-              value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-                  !mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient,
-                )
-              }
-              disabled={!allowSetMTA}
-            />
-          </Tooltip>
+          </form.Field>
         </Container>
       </Container>
     </>

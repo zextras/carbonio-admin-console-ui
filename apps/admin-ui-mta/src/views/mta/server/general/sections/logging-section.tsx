@@ -6,34 +6,28 @@
 import { Container, InheritedSelect } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { MtaServerGeneral } from '../../../../../../types';
 import {
   ZIMBRA_AMAVIS_LOG_LEVEL,
   ZIMBRA_AMAVIS_SA_LOG_LEVEL,
   ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
   ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 } from '../../../../../constants';
+import {
+  ConfigItem,
+  MtaServerGeneralFormApi,
+  MtaServerGeneralFormValues,
+} from '../types';
 
 type LoggingSectionProps = Readonly<{
-  mtaServerGeneralDetail: MtaServerGeneral | undefined;
-  mtaServerSpecificGeneralDetail: MtaServerGeneral | undefined;
-  configInformation: Array<{ n: string; _content: string }>;
-  onAmavisLogLevelChange: (v: string) => void;
-  onAmavisSALogLevelChange: (v: string) => void;
-  onSMTPClientLogLevelChange: (v: string) => void;
-  onLMTPTlsLogLevelChange: (v: string) => void;
-  setEmptyValue: (keyName: keyof MtaServerGeneral) => void;
+  form: MtaServerGeneralFormApi;
+  mtaServerSpecificGeneralDetail: MtaServerGeneralFormValues | undefined;
+  configInformation: Array<ConfigItem>;
 }>;
 
 export function LoggingSection({
-  mtaServerGeneralDetail,
+  form,
   mtaServerSpecificGeneralDetail,
   configInformation,
-  onAmavisLogLevelChange,
-  onAmavisSALogLevelChange,
-  onSMTPClientLogLevelChange,
-  onLMTPTlsLogLevelChange,
-  setEmptyValue,
 }: LoggingSectionProps) {
   const [t] = useTranslation();
 
@@ -87,39 +81,47 @@ export function LoggingSection({
         padding={{ bottom: 'extralarge' }}
       >
         <Container crossAlignment="flex-start">
-          <InheritedSelect
-            label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
-            items={amavisLogLevelOptions}
-            subValue={mtaServerGeneralDetail?.zimbraAmavisLogLevel}
-            inheritedValue={
-              configInformation?.find(
-                (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL,
-              )?._content
-            }
-            fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisLogLevel}
-            background="gray5"
-            selectName="zimbraAmavisLogLevel"
-            onChange={onAmavisLogLevelChange}
-            onChangeReset={(): void => setEmptyValue('zimbraAmavisLogLevel')}
-          />
+          <form.Field name="zimbraAmavisLogLevel">
+            {(field) => (
+              <InheritedSelect
+                label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
+                items={amavisLogLevelOptions}
+                subValue={field.state.value}
+                inheritedValue={
+                  configInformation?.find(
+                    (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL,
+                  )?._content
+                }
+                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisLogLevel}
+                background="gray5"
+                selectName="zimbraAmavisLogLevel"
+                onChange={(v) => field.handleChange(v)}
+                onChangeReset={() => field.handleChange(undefined)}
+              />
+            )}
+          </form.Field>
         </Container>
 
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
-          <InheritedSelect
-            label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
-            items={amavisSALogLevelOptions}
-            subValue={mtaServerGeneralDetail?.zimbraAmavisSALogLevel}
-            inheritedValue={
-              configInformation?.find(
-                (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL,
-              )?._content
-            }
-            fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisSALogLevel}
-            background="gray5"
-            selectName="zimbraAmavisSALogLevel"
-            onChange={onAmavisSALogLevelChange}
-            onChangeReset={(): void => setEmptyValue('zimbraAmavisSALogLevel')}
-          />
+          <form.Field name="zimbraAmavisSALogLevel">
+            {(field) => (
+              <InheritedSelect
+                label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
+                items={amavisSALogLevelOptions}
+                subValue={field.state.value}
+                inheritedValue={
+                  configInformation?.find(
+                    (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL,
+                  )?._content
+                }
+                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisSALogLevel}
+                background="gray5"
+                selectName="zimbraAmavisSALogLevel"
+                onChange={(v) => field.handleChange(v)}
+                onChangeReset={() => field.handleChange(undefined)}
+              />
+            )}
+          </form.Field>
         </Container>
       </Container>
 
@@ -131,45 +133,53 @@ export function LoggingSection({
         height="auto"
       >
         <Container crossAlignment="flex-start">
-          <InheritedSelect
-            label={t(
-              'mta.smtp_client_logging_of_tls_activity',
-              'SMTP client logging of TLS Activity',
+          <form.Field name="zimbraMtaSmtpdTlsLoglevel">
+            {(field) => (
+              <InheritedSelect
+                label={t(
+                  'mta.smtp_client_logging_of_tls_activity',
+                  'SMTP client logging of TLS Activity',
+                )}
+                items={zimbraMtaSmtpdLoglevelOptions}
+                subValue={field.state.value}
+                inheritedValue={
+                  configInformation?.find(
+                    (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
+                  )?._content
+                }
+                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaSmtpdTlsLoglevel}
+                background="gray5"
+                selectName="zimbraMtaSmtpdTlsLoglevel"
+                onChange={(v) => field.handleChange(v)}
+                onChangeReset={() => field.handleChange(undefined)}
+              />
             )}
-            items={zimbraMtaSmtpdLoglevelOptions}
-            subValue={mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel}
-            inheritedValue={
-              configInformation?.find(
-                (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-              )?._content
-            }
-            fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaSmtpdTlsLoglevel}
-            background="gray5"
-            selectName="zimbraMtaSmtpdTlsLoglevel"
-            onChange={onSMTPClientLogLevelChange}
-            onChangeReset={(): void => setEmptyValue('zimbraMtaSmtpdTlsLoglevel')}
-          />
+          </form.Field>
         </Container>
 
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
-          <InheritedSelect
-            label={t(
-              'mta.lmtp_client_logging_of_tls_activity',
-              'LMTP client logging of TLS activity',
+          <form.Field name="zimbraMtaLmtpTlsLoglevel">
+            {(field) => (
+              <InheritedSelect
+                label={t(
+                  'mta.lmtp_client_logging_of_tls_activity',
+                  'LMTP client logging of TLS activity',
+                )}
+                items={zimbraMtaLmtpTlsLoglevelOptions}
+                subValue={field.state.value}
+                inheritedValue={
+                  configInformation?.find(
+                    (item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
+                  )?._content
+                }
+                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaLmtpTlsLoglevel}
+                background="gray5"
+                selectName="zimbraMtaLmtpTlsLoglevel"
+                onChange={(v) => field.handleChange(v)}
+                onChangeReset={() => field.handleChange(undefined)}
+              />
             )}
-            items={zimbraMtaLmtpTlsLoglevelOptions}
-            subValue={mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel}
-            inheritedValue={
-              configInformation?.find(
-                (item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
-              )?._content
-            }
-            fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaLmtpTlsLoglevel}
-            background="gray5"
-            selectName="zimbraMtaLmtpTlsLoglevel"
-            onChange={onLMTPTlsLogLevelChange}
-            onChangeReset={(): void => setEmptyValue('zimbraMtaLmtpTlsLoglevel')}
-          />
+          </form.Field>
         </Container>
       </Container>
     </>

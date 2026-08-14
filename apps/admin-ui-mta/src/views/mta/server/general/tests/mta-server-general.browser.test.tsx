@@ -152,8 +152,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
       grantRights: 'config',
     });
 
-    await expect.element(page.getByText('General', { exact: true })).toBeVisible();
-    await expect.element(page.getByText(SERVER_NAME)).toBeVisible();
+    await expect.element(page.getByText(`General - ${SERVER_NAME}`)).toBeVisible();
   });
 
   it('renders the Authentication section', async () => {
@@ -232,7 +231,7 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
       grantRights: 'config',
     });
 
-    await expect.element(page.getByText('General', { exact: true })).toBeVisible();
+    await expect.element(page.getByText(`General - ${SERVER_NAME}`)).toBeVisible();
     expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
     expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
   });

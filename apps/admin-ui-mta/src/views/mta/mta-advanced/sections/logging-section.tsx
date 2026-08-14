@@ -6,28 +6,14 @@
 import { Container, Select, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { type MtaAdvanced } from '../../../../../types';
-import { ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING } from '../../../../constants';
+import type { MtaAdvancedFormApi } from '../types';
 
 type LoggingSectionProps = {
-  mtaAdvancedDetail: MtaAdvanced | undefined;
+  form: MtaAdvancedFormApi;
   allowSetMTA: boolean;
-  setValue: (key: string, value: unknown) => void;
-  onAmavisLogLevelChange: (v: string | null) => void;
-  onAmavisSALogLevelChange: (v: string) => void;
-  onSMTPClientLogLevelChange: (v: string) => void;
-  onLMTPTlsLogLevelChange: (v: string) => void;
 };
 
-export function LoggingSection({
-  mtaAdvancedDetail,
-  allowSetMTA,
-  setValue,
-  onAmavisLogLevelChange,
-  onAmavisSALogLevelChange,
-  onSMTPClientLogLevelChange,
-  onLMTPTlsLogLevelChange,
-}: Readonly<LoggingSectionProps>) {
+export function LoggingSection({ form, allowSetMTA }: Readonly<LoggingSectionProps>) {
   const [t] = useTranslation();
 
   const amavisLogLevelOptions = [
@@ -72,20 +58,19 @@ export function LoggingSection({
         height="auto"
         padding={{ top: 'large', bottom: 'extralarge' }}
       >
-        <Switch
-          label={t(
-            'mta.enable_logging_of_remote_smtp_client_port',
-            'Enable logging of the remote SMTP client port',
+        <form.Field name="zimbraMtaSmtpdClientPortLogging">
+          {(field) => (
+            <Switch
+              label={t(
+                'mta.enable_logging_of_remote_smtp_client_port',
+                'Enable logging of the remote SMTP client port',
+              )}
+              value={field.state.value}
+              onClick={() => field.handleChange(!field.state.value)}
+              disabled={!allowSetMTA}
+            />
           )}
-          value={mtaAdvancedDetail?.zimbraMtaSmtpdClientPortLogging}
-          onClick={(): void =>
-            setValue(
-              ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
-              !mtaAdvancedDetail?.zimbraMtaSmtpdClientPortLogging,
-            )
-          }
-          disabled={!allowSetMTA}
-        />
+        </form.Field>
       </Container>
 
       <Container
@@ -96,36 +81,44 @@ export function LoggingSection({
         padding={{ bottom: 'extralarge' }}
       >
         <Container crossAlignment="flex-start">
-          <Select
-            items={amavisLogLevelOptions}
-            background="gray5"
-            label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
-            showCheckbox={false}
-            selection={
-              amavisLogLevelOptions.find(
-                (item: Record<string, string>) =>
-                  item.value === mtaAdvancedDetail?.zimbraAmavisLogLevel,
-              ) || amavisLogLevelOptions[0]
-            }
-            onChange={onAmavisLogLevelChange}
-            disabled={!allowSetMTA}
-          />
+          <form.Field name="zimbraAmavisLogLevel">
+            {(field) => (
+              <Select
+                items={amavisLogLevelOptions}
+                background="gray5"
+                label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
+                showCheckbox={false}
+                selection={
+                  amavisLogLevelOptions.find(
+                    (item: Record<string, string>) => item.value === field.state.value,
+                  ) || amavisLogLevelOptions[0]
+                }
+                onChange={(v: string | null) => {
+                  if (v !== null) field.handleChange(v);
+                }}
+                disabled={!allowSetMTA}
+              />
+            )}
+          </form.Field>
         </Container>
 
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
-          <Select
-            items={amavisSALogLevelOptions}
-            background="gray5"
-            label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
-            showCheckbox={false}
-            selection={amavisSALogLevelOptions.find(
-              (item: Record<string, string>) =>
-                item.value === mtaAdvancedDetail?.zimbraAmavisSALogLevel,
+          <form.Field name="zimbraAmavisSALogLevel">
+            {(field) => (
+              <Select
+                items={amavisSALogLevelOptions}
+                background="gray5"
+                label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
+                showCheckbox={false}
+                selection={amavisSALogLevelOptions.find(
+                  (item: Record<string, string>) => item.value === field.state.value,
+                )}
+                // @ts-expect-error - needs a fix
+                onChange={(v: string) => field.handleChange(v)}
+                disabled={!allowSetMTA}
+              />
             )}
-            // @ts-expect-error - needs a fix
-            onChange={onAmavisSALogLevelChange}
-            disabled={!allowSetMTA}
-          />
+          </form.Field>
         </Container>
       </Container>
 
@@ -137,41 +130,47 @@ export function LoggingSection({
         height="auto"
       >
         <Container crossAlignment="flex-start">
-          <Select
-            items={zimbraMtaSmtpdLoglevelOptions}
-            background="gray5"
-            label={t(
-              'mta.smtp_client_logging_of_tls_activity',
-              'SMTP client logging of TLS Activity',
+          <form.Field name="zimbraMtaSmtpdTlsLoglevel">
+            {(field) => (
+              <Select
+                items={zimbraMtaSmtpdLoglevelOptions}
+                background="gray5"
+                label={t(
+                  'mta.smtp_client_logging_of_tls_activity',
+                  'SMTP client logging of TLS Activity',
+                )}
+                showCheckbox={false}
+                selection={zimbraMtaSmtpdLoglevelOptions.find(
+                  (item: Record<string, string>) => item.value === field.state.value,
+                )}
+                // @ts-expect-error - needs a fix
+                onChange={(v: string) => field.handleChange(v)}
+                disabled={!allowSetMTA}
+              />
             )}
-            showCheckbox={false}
-            selection={zimbraMtaSmtpdLoglevelOptions.find(
-              (item: Record<string, string>) =>
-                item.value === mtaAdvancedDetail?.zimbraMtaSmtpdTlsLoglevel,
-            )}
-            // @ts-expect-error - needs a fix
-            onChange={onSMTPClientLogLevelChange}
-            disabled={!allowSetMTA}
-          />
+          </form.Field>
         </Container>
 
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
-          <Select
-            items={zimbraMtaLmtpTlsLoglevelOptions}
-            background="gray5"
-            label={t(
-              'mta.lmtp_client_logging_of_tls_activity',
-              'LMTP client logging of TLS activity',
+          <form.Field name="zimbraMtaLmtpTlsLoglevel">
+            {(field) => (
+              <Select
+                items={zimbraMtaLmtpTlsLoglevelOptions}
+                background="gray5"
+                label={t(
+                  'mta.lmtp_client_logging_of_tls_activity',
+                  'LMTP client logging of TLS activity',
+                )}
+                showCheckbox={false}
+                selection={zimbraMtaLmtpTlsLoglevelOptions.find(
+                  (item: Record<string, string>) => item.value === field.state.value,
+                )}
+                // @ts-expect-error - needs a fix
+                onChange={(v: string) => field.handleChange(v)}
+                disabled={!allowSetMTA}
+              />
             )}
-            showCheckbox={false}
-            selection={zimbraMtaLmtpTlsLoglevelOptions.find(
-              (item: Record<string, string>) =>
-                item.value === mtaAdvancedDetail?.zimbraMtaLmtpTlsLoglevel,
-            )}
-            // @ts-expect-error - needs a fix
-            onChange={onLMTPTlsLogLevelChange}
-            disabled={!allowSetMTA}
-          />
+          </form.Field>
         </Container>
       </Container>
     </>

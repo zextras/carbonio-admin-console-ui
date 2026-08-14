@@ -6,24 +6,14 @@
 import { Container, Switch, Tooltip } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { MtaInboundSecurity } from '../../../../../types';
-import {
-  ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-  ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-  ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-} from '../../../../constants';
+import { MtaInboundFormApi } from '../types';
 
 type RejectionSectionProps = {
-  mtaInboundSecurityDetail: MtaInboundSecurity | undefined;
+  form: MtaInboundFormApi;
   allowSetMTA: boolean;
-  setValue: (key: string, value: unknown) => void;
 };
 
-export function RejectionSection({
-  mtaInboundSecurityDetail,
-  allowSetMTA,
-  setValue,
-}: Readonly<RejectionSectionProps>) {
+export function RejectionSection({ form, allowSetMTA }: Readonly<RejectionSectionProps>) {
   const [t] = useTranslation();
 
   return (
@@ -45,73 +35,70 @@ export function RejectionSection({
         height="auto"
       >
         <Container crossAlignment="flex-start">
-          <Tooltip
-            placement="bottom"
-            label={t(
-              'mta.reject_emails_from_unlisted_senders',
-              'Reject emails from unlisted senders',
+          <form.Field name="zimbraMtaSmtpdRejectUnlistedSender">
+            {(field) => (
+              <Tooltip
+                placement="bottom"
+                label={t(
+                  'mta.reject_emails_from_unlisted_senders',
+                  'Reject emails from unlisted senders',
+                )}
+                maxWidth="auto"
+              >
+                <Switch
+                  label={t('mta.reject_unlisted_sender', 'Reject unlisted Sender')}
+                  value={field.state.value}
+                  onClick={() => field.handleChange(!field.state.value)}
+                  disabled={!allowSetMTA}
+                />
+              </Tooltip>
             )}
-            maxWidth="auto"
-          >
-            <Switch
-              label={t('mta.reject_unlisted_sender', 'Reject unlisted Sender')}
-              value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-                  !mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender,
-                )
-              }
-              disabled={!allowSetMTA}
-            />
-          </Tooltip>
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start">
-          <Tooltip
-            placement="bottom"
-            label={t(
-              'mta.reject_emails_addressed_to_unlisted_recipients',
-              'Reject emails addressed to unlisted recipients',
+          <form.Field name="zimbraMtaSmtpdRejectUnlistedRecipient">
+            {(field) => (
+              <Tooltip
+                placement="bottom"
+                label={t(
+                  'mta.reject_emails_addressed_to_unlisted_recipients',
+                  'Reject emails addressed to unlisted recipients',
+                )}
+                maxWidth="auto"
+              >
+                <Switch
+                  label={t('mta.reject_unlisted_recipient', 'Reject unlisted Recipient')}
+                  value={field.state.value}
+                  onClick={() => field.handleChange(!field.state.value)}
+                  disabled={!allowSetMTA}
+                />
+              </Tooltip>
             )}
-            maxWidth="auto"
-          >
-            <Switch
-              label={t('mta.reject_unlisted_recipient', 'Reject unlisted Recipient')}
-              value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-                  !mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient,
-                )
-              }
-              disabled={!allowSetMTA}
-            />
-          </Tooltip>
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start">
-          <Tooltip
-            placement="bottom"
-            label={t(
-              'mta.reject_emails_when_sender_login_does_not_match_authenticated_user',
-              "Reject emails when the sender's login does not match the authenticated user",
+          <form.Field name="zimbraMtaSmtpdSenderRestrictions">
+            {(field) => (
+              <Tooltip
+                placement="bottom"
+                label={t(
+                  'mta.reject_emails_when_sender_login_does_not_match_authenticated_user',
+                  "Reject emails when the sender's login does not match the authenticated user",
+                )}
+                maxWidth="auto"
+              >
+                <Switch
+                  label={t(
+                    'mta.reject_sender_login_mismatch_or_empty',
+                    'Reject Sender login mismatch or empty ',
+                  )}
+                  value={field.state.value}
+                  onClick={() => field.handleChange(!field.state.value)}
+                  disabled={!allowSetMTA}
+                />
+              </Tooltip>
             )}
-            maxWidth="auto"
-          >
-            <Switch
-              label={t(
-                'mta.reject_sender_login_mismatch_or_empty',
-                'Reject Sender login mismatch or empty ',
-              )}
-              value={mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-                  !mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions,
-                )
-              }
-              disabled={!allowSetMTA}
-            />
-          </Tooltip>
+          </form.Field>
         </Container>
       </Container>
     </>

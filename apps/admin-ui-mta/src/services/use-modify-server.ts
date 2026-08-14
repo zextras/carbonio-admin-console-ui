@@ -8,21 +8,19 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { modifyServer } from './modify-server';
+import {
+  modifyServer,
+  type ModifyServerBody,
+  type ModifyServerResponse,
+} from './modify-server';
 import { mtaQueryKeys } from './mta-query-keys';
-
-type ModifyServerBody = {
-  id?: string;
-  _jsns?: string;
-  a?: Array<Record<string, string>>;
-};
 
 export function useModifyServer(serverName?: string) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const queryClient = useQueryClient();
 
-  return useMutation<Record<string, unknown>, Error, ModifyServerBody>({
+  return useMutation<ModifyServerResponse, Error, ModifyServerBody>({
     mutationFn: (body) => modifyServer(body),
     onSuccess: async () => {
       if (serverName) {

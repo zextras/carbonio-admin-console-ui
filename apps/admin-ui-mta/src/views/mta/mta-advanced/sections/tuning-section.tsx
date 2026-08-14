@@ -4,31 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Input, Switch } from '@zextras/ui-components';
-import { type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type MtaAdvanced } from '../../../../../types';
-import {
-  ZIMBRA_CLAM_AV_MAX_THREADS,
-  ZIMBRA_LMTP_NUM_THREADS,
-  ZIMBRA_MILTER_MAX_CONNECTIONS,
-  ZIMBRA_MITER_NUM_THREADS,
-  ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
-} from '../../../../constants';
+import type { MtaAdvancedFormApi } from '../types';
 
 type TuningSectionProps = {
-  mtaAdvancedDetail: MtaAdvanced | undefined;
+  form: MtaAdvancedFormApi;
   allowSetMTA: boolean;
   isErrorInSmtpdProxy: boolean;
-  setValue: (key: string, value: unknown) => void;
-  onSenderLoginMapsChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSenderLoginMapsChange: (value: string) => void;
 };
 
 export function TuningSection({
-  mtaAdvancedDetail,
+  form,
   allowSetMTA,
   isErrorInSmtpdProxy,
-  setValue,
   onSenderLoginMapsChange,
 }: Readonly<TuningSectionProps>) {
   const [t] = useTranslation();
@@ -49,41 +39,53 @@ export function TuningSection({
         height="auto"
       >
         <Container crossAlignment="flex-start">
-          <Input
-            isRequired
-            label={t('mta.max_antivirus_threads', 'Max antivirus threads (value)')}
-            backgroundColor="gray5"
-            value={mtaAdvancedDetail?.zimbraClamAVMaxThreads}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              setValue(ZIMBRA_CLAM_AV_MAX_THREADS, e.target.value);
-            }}
-            disabled={!allowSetMTA}
-          />
+          <form.Field name="zimbraClamAVMaxThreads">
+            {(field) => (
+              <Input
+                isRequired
+                label={t('mta.max_antivirus_threads', 'Max antivirus threads (value)')}
+                backgroundColor="gray5"
+                value={field.state.value}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  field.handleChange(e.target.value);
+                }}
+                disabled={!allowSetMTA}
+              />
+            )}
+          </form.Field>
         </Container>
 
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
-          <Input
-            isRequired
-            label={t('mta.lmtp_threads', 'LMTP threads (Value)')}
-            backgroundColor="gray5"
-            value={mtaAdvancedDetail?.zimbraLmtpNumThreads}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              setValue(ZIMBRA_LMTP_NUM_THREADS, e.target.value);
-            }}
-            disabled={!allowSetMTA}
-          />
+          <form.Field name="zimbraLmtpNumThreads">
+            {(field) => (
+              <Input
+                isRequired
+                label={t('mta.lmtp_threads', 'LMTP threads (Value)')}
+                backgroundColor="gray5"
+                value={field.state.value}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  field.handleChange(e.target.value);
+                }}
+                disabled={!allowSetMTA}
+              />
+            )}
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
-          <Input
-            isRequired
-            label={t('mta.milter_threads', 'MILTER threads (value)')}
-            backgroundColor="gray5"
-            value={mtaAdvancedDetail?.zimbraMilterNumThreads}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              setValue(ZIMBRA_MITER_NUM_THREADS, e.target.value);
-            }}
-            disabled={!allowSetMTA}
-          />
+          <form.Field name="zimbraMilterNumThreads">
+            {(field) => (
+              <Input
+                isRequired
+                label={t('mta.milter_threads', 'MILTER threads (value)')}
+                backgroundColor="gray5"
+                value={field.state.value}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  field.handleChange(e.target.value);
+                }}
+                disabled={!allowSetMTA}
+              />
+            )}
+          </form.Field>
         </Container>
       </Container>
 
@@ -96,48 +98,59 @@ export function TuningSection({
         width="100%"
       >
         <Container crossAlignment="flex-start" height="auto">
-          <Input
-            isRequired
-            label={t(
-              'mta.reject_concurrent_milter_connection_above',
-              'Reject concurrent MILTER connections above (value)',
+          <form.Field name="zimbraMilterMaxConnections">
+            {(field) => (
+              <Input
+                isRequired
+                label={t(
+                  'mta.reject_concurrent_milter_connection_above',
+                  'Reject concurrent MILTER connections above (value)',
+                )}
+                backgroundColor="gray5"
+                value={field.state.value}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  field.handleChange(e.target.value);
+                }}
+                disabled={!allowSetMTA}
+              />
             )}
-            backgroundColor="gray5"
-            value={mtaAdvancedDetail?.zimbraMilterMaxConnections}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              setValue(ZIMBRA_MILTER_MAX_CONNECTIONS, e.target.value);
-            }}
-            disabled={!allowSetMTA}
-          />
+          </form.Field>
         </Container>
       </Container>
 
       <Container crossAlignment="flex-start" padding={{ bottom: 'large' }} height="auto">
-        <Input
-          label={t('mta.smtpd_sender_login_maps', 'Smtpd sender login maps')}
-          backgroundColor="gray5"
-          value={mtaAdvancedDetail?.zimbraMtaSmtpdSenderLoginMaps}
-          onChange={onSenderLoginMapsChange}
-          disabled={!allowSetMTA}
-          hasError={isErrorInSmtpdProxy}
-        />
+        <form.Field name="zimbraMtaSmtpdSenderLoginMaps">
+          {(field) => (
+            <Input
+              label={t('mta.smtpd_sender_login_maps', 'Smtpd sender login maps')}
+              backgroundColor="gray5"
+              value={field.state.value}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const { value } = e.target;
+                onSenderLoginMapsChange(value);
+                field.handleChange(value);
+              }}
+              disabled={!allowSetMTA}
+              hasError={isErrorInSmtpdProxy}
+            />
+          )}
+        </form.Field>
       </Container>
 
       <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-        <Switch
-          label={t(
-            'mta.enable_simple_authentication_and_security_layer',
-            'Enable simple authentication and security layer',
+        <form.Field name="zimbraMtaSmtpSaslAuthEnable">
+          {(field) => (
+            <Switch
+              label={t(
+                'mta.enable_simple_authentication_and_security_layer',
+                'Enable simple authentication and security layer',
+              )}
+              value={!!field.state.value}
+              onClick={() => field.handleChange(!field.state.value)}
+              disabled={!allowSetMTA}
+            />
           )}
-          value={!!mtaAdvancedDetail?.zimbraMtaSmtpSaslAuthEnable}
-          onClick={(): void =>
-            setValue(
-              ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
-              !mtaAdvancedDetail?.zimbraMtaSmtpSaslAuthEnable,
-            )
-          }
-          disabled={!allowSetMTA}
-        />
+        </form.Field>
       </Container>
     </>
   );

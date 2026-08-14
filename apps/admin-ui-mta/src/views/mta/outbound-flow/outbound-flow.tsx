@@ -3,9 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, type ChipItem, Container, ListRow, Padding, Row } from '@zextras/ui-components';
+import { useSelector } from '@tanstack/react-store';
+import { type ChipItem, Container, FormPageLayout } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
-import { find, isEqual, join, map, some, split, trim } from 'lodash-es';
+import { find, join, map, some, split, trim } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,6 +30,7 @@ import {
   ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
 } from '../../../constants';
 import { useModifyConfig } from '../../../services/use-modify-config';
+import { useAppForm } from '../../../types/app-form-api';
 import { validateIpAddress } from '../../utility/utils';
 import { GeneralSection } from './sections/general-section';
 import { InstancesSection } from './sections/instances-section';
@@ -37,40 +39,24 @@ function findConfigValue(config: Array<Record<string, string>>, key: string): st
   return config.find((item) => item?.n === key)?._content;
 }
 
-type FormState = {
-  initial: MtaOutboundFlow;
-  current: MtaOutboundFlow;
-};
-
 function buildInitialState(configInformation: Array<Record<string, string>>): MtaOutboundFlow {
-  const initialState: Partial<MtaOutboundFlow> = {};
-
-  const stringKeys = [
-    ZIMBRA_MTA_FALLBACK_RELAY_HOST,
-    ZIMBRA_MTA_MY_ORIGIN,
-    ZIMBRA_MTA_RELAY_HOST,
-    ZIMBRA_MTA_TLS_SECURITY_LEVEL,
-    ZIMBRA_MTA_SMTP_HELLO_NAME,
-    ZIMBRA_MTA_MY_HOSTNAME,
-    ZIMBRA_MTA_SASL_AUTH_ENABLED,
-    ZIMBRA_MTA_MY_NETWORKS,
-  ];
-  stringKeys.forEach((key) => {
-    const val = findConfigValue(configInformation, key);
-    if (val) initialState[key as keyof MtaOutboundFlow] = val as never;
-  });
-
-  const originatingIp = findConfigValue(configInformation, ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP);
-  if (originatingIp) {
-    initialState[ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP as keyof MtaOutboundFlow] = (originatingIp === TRUE) as never;
-  }
-
-  const authenticatedUser = findConfigValue(configInformation, ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER);
-  if (authenticatedUser) {
-    initialState[ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER as keyof MtaOutboundFlow] = (authenticatedUser === TRUE) as never;
-  }
-
-  return initialState as MtaOutboundFlow;
+  return {
+    zimbraSmtpSendAddOriginatingIP:
+      findConfigValue(configInformation, ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP) === TRUE,
+    zimbraSmtpSendAddAuthenticatedUser:
+      findConfigValue(configInformation, ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER) === TRUE,
+    zimbraMtaSaslAuthEnable:
+      findConfigValue(configInformation, ZIMBRA_MTA_SASL_AUTH_ENABLED) ?? '',
+    zimbraMtaMyNetworks: findConfigValue(configInformation, ZIMBRA_MTA_MY_NETWORKS) ?? '',
+    zimbraMtaSmtpHeloName: findConfigValue(configInformation, ZIMBRA_MTA_SMTP_HELLO_NAME) ?? '',
+    zimbraMtaMyHostname: findConfigValue(configInformation, ZIMBRA_MTA_MY_HOSTNAME) ?? '',
+    zimbraMtaFallbackRelayHost:
+      findConfigValue(configInformation, ZIMBRA_MTA_FALLBACK_RELAY_HOST) ?? '',
+    zimbraMtaRelayHost: findConfigValue(configInformation, ZIMBRA_MTA_RELAY_HOST) ?? '',
+    zimbraMtaMyOrigin: findConfigValue(configInformation, ZIMBRA_MTA_MY_ORIGIN) ?? '',
+    zimbraMtaTlsSecurityLevel:
+      findConfigValue(configInformation, ZIMBRA_MTA_TLS_SECURITY_LEVEL) ?? '',
+  };
 }
 
 function buildNetworkValue(configInformation: Array<Record<string, string>>): Array<IpRangeValue> {
@@ -81,25 +67,17 @@ function buildNetworkValue(configInformation: Array<Record<string, string>>): Ar
 }
 
 function setTableValues(server: Server, tableRow: Array<TRow>, t: (key: string, fallback: string) => string) {
-  const serviceEnabled = server?.a?.filter(
-    (item: Record<string, unknown>) => item?.n === 'zimbraServiceEnabled',
-  );
+  const serviceEnabled = server?.a?.filter((item) => item?.n === 'zimbraServiceEnabled');
   const zimbraMtaAuthEnabled = server?.a?.find(
-    (item: Record<string, unknown>) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED,
+    (item) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED,
   );
   let antivirus: Array<Attribute> = [];
   let antispam: Array<Attribute> = [];
   let opendkim: Array<Attribute> = [];
   if (serviceEnabled && serviceEnabled.length > 0) {
-    antivirus = serviceEnabled.filter(
-      (item: Record<string, unknown>) => item?._content === ANTIVIRUS,
-    );
-    antispam = serviceEnabled.filter(
-      (item: Record<string, unknown>) => item?._content === ANTISPAM,
-    );
-    opendkim = serviceEnabled.filter(
-      (item: Record<string, unknown>) => item?._content === OPENDKIM,
-    );
+    antivirus = serviceEnabled.filter((item) => item?._content === ANTIVIRUS);
+    antispam = serviceEnabled.filter((item) => item?._content === ANTISPAM);
+    opendkim = serviceEnabled.filter((item) => item?._content === OPENDKIM);
   }
   let isAuthEnable = t('label.disabled', 'Disabled');
   if (
@@ -147,28 +125,71 @@ function MTAOutBoundFlowForm({ configInformation }: MTAOutBoundFlowFormProps) {
   const { data: mtaServersList = [] } = useMtaServers();
   const { data: rights } = useCurrentUserRights();
 
-  const [formState, setFormState] = useState<FormState>(() => {
-    const initialState = buildInitialState(configInformation);
-    return { initial: initialState, current: initialState };
-  });
   const [networkValue, setNetworkValue] = useState<Array<IpRangeValue>>(() =>
     buildNetworkValue(configInformation),
   );
 
-  const mtaOutboundFlowInitialDetail = formState.initial;
-  const mtaOutboundDetail = formState.current;
+  const form = useAppForm({
+    defaultValues: buildInitialState(configInformation),
+    onSubmit: async ({ value }) => {
+      const attributes: Array<Record<string, string>> = [];
+      attributes.push({
+        n: ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
+        _content: value.zimbraSmtpSendAddOriginatingIP ? TRUE : FALSE,
+      });
+      attributes.push({
+        n: ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
+        _content: value.zimbraSmtpSendAddAuthenticatedUser ? TRUE : FALSE,
+      });
+      if (value.zimbraMtaSaslAuthEnable) {
+        attributes.push({
+          n: ZIMBRA_MTA_SASL_AUTH_ENABLED,
+          _content: value.zimbraMtaSaslAuthEnable,
+        });
+      }
+
+      attributes.push({
+        n: ZIMBRA_MTA_MY_NETWORKS,
+        _content: value.zimbraMtaMyNetworks || '',
+      });
+      attributes.push({
+        n: ZIMBRA_MTA_SMTP_HELLO_NAME,
+        _content: value.zimbraMtaSmtpHeloName || '',
+      });
+      attributes.push({
+        n: ZIMBRA_MTA_MY_HOSTNAME,
+        _content: value.zimbraMtaMyHostname || '',
+      });
+      attributes.push({
+        n: ZIMBRA_MTA_FALLBACK_RELAY_HOST,
+        _content: value.zimbraMtaFallbackRelayHost || '',
+      });
+      attributes.push({
+        n: ZIMBRA_MTA_RELAY_HOST,
+        _content: value.zimbraMtaRelayHost || '',
+      });
+      attributes.push({
+        n: ZIMBRA_MTA_MY_ORIGIN,
+        _content: value.zimbraMtaMyOrigin || '',
+      });
+      attributes.push({
+        n: ZIMBRA_MTA_TLS_SECURITY_LEVEL,
+        _content: value.zimbraMtaTlsSecurityLevel || '',
+      });
+
+      try {
+        await modifyConfigAsync(attributes);
+        form.reset(value, { keepDefaultValues: true });
+      } catch {
+        // Error snackbar is already shown by the hook
+      }
+    },
+  });
+
+  const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
 
   const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
   const allowSetMTA = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-
-  const isDirty = !!mtaOutboundDetail && !isEqual(mtaOutboundDetail, mtaOutboundFlowInitialDetail);
-
-  function setValue(key: string, value: unknown): void {
-    setFormState((prev) => ({
-      ...prev,
-      current: { ...prev.current, [key]: value } as MtaOutboundFlow,
-    }));
-  }
 
   const instancesTableRows: Array<TRow> = [];
   if (mtaServersList && mtaServersList.length > 0) {
@@ -177,68 +198,6 @@ function MTAOutBoundFlowForm({ configInformation }: MTAOutBoundFlowFormProps) {
         setTableValues(server, instancesTableRows, t);
       }
     });
-  }
-
-  async function modifyConfigRequest(attributes: Array<Record<string, string>>): Promise<void> {
-    try {
-      await modifyConfigAsync(attributes);
-      setFormState((prev) => ({ ...prev, initial: prev.current }));
-    } catch {
-      // Error snackbar is already shown by the hook
-    }
-  }
-
-  function onSave() {
-    const attributes: Array<Record<string, string>> = [];
-    attributes.push({
-      n: ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
-      _content: mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP ? TRUE : FALSE,
-    });
-    attributes.push({
-      n: ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
-      _content: mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser ? TRUE : FALSE,
-    });
-    if (mtaOutboundDetail?.zimbraMtaSaslAuthEnable) {
-      attributes.push({
-        n: ZIMBRA_MTA_SASL_AUTH_ENABLED,
-        _content: mtaOutboundDetail?.zimbraMtaSaslAuthEnable,
-      });
-    }
-
-    attributes.push({
-      n: ZIMBRA_MTA_MY_NETWORKS,
-      _content: mtaOutboundDetail?.zimbraMtaMyNetworks || '',
-    });
-    attributes.push({
-      n: ZIMBRA_MTA_SMTP_HELLO_NAME,
-      _content: mtaOutboundDetail?.zimbraMtaSmtpHeloName || '',
-    });
-    attributes.push({
-      n: ZIMBRA_MTA_MY_HOSTNAME,
-      _content: mtaOutboundDetail?.zimbraMtaMyHostname || '',
-    });
-    attributes.push({
-      n: ZIMBRA_MTA_FALLBACK_RELAY_HOST,
-      _content: mtaOutboundDetail?.zimbraMtaFallbackRelayHost || '',
-    });
-    attributes.push({
-      n: ZIMBRA_MTA_RELAY_HOST,
-      _content: mtaOutboundDetail?.zimbraMtaRelayHost || '',
-    });
-    attributes.push({
-      n: ZIMBRA_MTA_MY_ORIGIN,
-      _content: mtaOutboundDetail?.zimbraMtaMyOrigin || '',
-    });
-    attributes.push({
-      n: ZIMBRA_MTA_TLS_SECURITY_LEVEL,
-      _content: mtaOutboundDetail?.zimbraMtaTlsSecurityLevel || '',
-    });
-    modifyConfigRequest(attributes);
-  }
-
-  function onCancel() {
-    setFormState((prev) => ({ ...prev, current: prev.initial }));
-    setNetworkValue(buildNetworkValue(configInformation));
   }
 
   function onBlockExtensionChange(ips: Array<ChipItem<string>>) {
@@ -254,48 +213,23 @@ function MTAOutBoundFlowForm({ configInformation }: MTAOutBoundFlowFormProps) {
     const value = data.length === 0 ? '' : join(map(data, 'label'), ' ');
     const isErrorValueAvail = some(data || [], { error: true });
     if (allowSetMTA && !isErrorValueAvail) {
-      setValue(ZIMBRA_MTA_MY_NETWORKS, value);
+      form.setFieldValue('zimbraMtaMyNetworks', value);
     }
     setNetworkValue(data);
   }
 
+  function handleCancel() {
+    form.reset();
+    setNetworkValue(buildNetworkValue(configInformation));
+  }
+
   return (
-    <Container background="gray6" mainAlignment="flex-start">
-      <Row
-        mainAlignment="flex-start"
-        crossAlignment="center"
-        orientation="horizontal"
-        background="gray6"
-        width="fill"
-        height="3.5rem"
-      >
-        <Row padding={{ horizontal: 'small' }}></Row>
-        <Row takeAvailableSpace mainAlignment="flex-start">
-          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
-            {t('mta.outbound_flow', 'Outbound Flow')}
-          </ds-text>
-        </Row>
-        <Row>
-          {isDirty && (
-            <Container
-              orientation="horizontal"
-              mainAlignment="flex-end"
-              crossAlignment="flex-end"
-              background="gray6"
-            >
-              <Padding right="small">
-                <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
-              </Padding>
-              <Padding right="small">
-                <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-              </Padding>
-            </Container>
-          )}
-        </Row>
-      </Row>
-      <ListRow>
-        <ds-divider></ds-divider>
-      </ListRow>
+    <FormPageLayout
+      title={t('mta.outbound_flow', 'Outbound Flow')}
+      onSave={() => form.handleSubmit()}
+      onCancel={handleCancel}
+      unsavedChanges={isDirty}
+    >
       <Container
         padding={{ all: 'extralarge' }}
         mainAlignment="flex-start"
@@ -304,16 +238,15 @@ function MTAOutBoundFlowForm({ configInformation }: MTAOutBoundFlowFormProps) {
         style={{ overflow: 'auto' }}
       >
         <GeneralSection
-          mtaOutboundDetail={mtaOutboundDetail}
+          form={form}
           networkValue={networkValue}
           allowSetMTA={allowSetMTA}
-          setValue={setValue}
           onBlockExtensionChange={onBlockExtensionChange}
         />
 
         <InstancesSection instancesTableRows={instancesTableRows} />
       </Container>
-    </Container>
+    </FormPageLayout>
   );
 }
 

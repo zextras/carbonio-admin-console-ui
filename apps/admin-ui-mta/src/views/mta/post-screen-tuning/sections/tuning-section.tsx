@@ -6,45 +6,29 @@
 import { Container, Input, Select, SelectItem, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { MtaPostTuning } from '../../../../../types';
-import {
-  ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,
-  ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL,
-  ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE,
-  ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL,
-  ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE,
-  ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL,
-} from '../../../../constants';
+import { MtaPostTuningFormApi } from '../types';
 
-type SelectValue = SelectItem[] | string | null;
+type SelectValue = Array<SelectItem> | string | null;
 
 type TuningSectionProps = Readonly<{
-  mtaPostTuningDetail: MtaPostTuning | undefined;
-  setValue: (key: string, value: unknown) => void;
+  form: MtaPostTuningFormApi;
   ignoreEnforceDropOptions: Array<SelectItem>;
   intervalOptions: Array<SelectItem>;
   bareNewLineTTLUnit: SelectItem;
   nonSMTPCommandTTLUnit: SelectItem;
   pipeliningTTLUnit: SelectItem;
-  onBareNewLineActionChange: (v: string) => void;
-  onNonSMTPCommandActionChange: (v: string) => void;
-  onPipeLiningActionChange: (v: string) => void;
   onBareNewLineTTLUnitChange: (v: SelectValue) => void;
   onNonSMTPCommandTTLUnitChange: (v: SelectValue) => void;
   onPipelinginTTLUnitChange: (v: SelectValue) => void;
 }>;
 
 export function TuningSection({
-  mtaPostTuningDetail,
-  setValue,
+  form,
   ignoreEnforceDropOptions,
   intervalOptions,
   bareNewLineTTLUnit,
   nonSMTPCommandTTLUnit,
   pipeliningTTLUnit,
-  onBareNewLineActionChange,
-  onNonSMTPCommandActionChange,
-  onPipeLiningActionChange,
   onBareNewLineTTLUnitChange,
   onNonSMTPCommandTTLUnitChange,
   onPipelinginTTLUnitChange,
@@ -78,30 +62,32 @@ export function TuningSection({
           padding={{ right: 'medium' }}
         >
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start">
-            <Switch
-              label={t('mta.bare_newline', 'Bare Newline')}
-              value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineEnable}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,
-                  !mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineEnable,
-                )
-              }
-            />
+            <form.Field name="zimbraMtaPostscreenBareNewlineEnable">
+              {(field) => (
+                <Switch
+                  label={t('mta.bare_newline', 'Bare Newline')}
+                  value={field.state.value}
+                  onClick={(): void => field.handleChange(!field.state.value)}
+                />
+              )}
+            </form.Field>
           </Container>
           <Container crossAlignment="flex-end">
-            <Select
-              items={ignoreEnforceDropOptions}
-              background="gray5"
-              label={t('mta.action', 'Action')}
-              showCheckbox={false}
-              selection={ignoreEnforceDropOptions.find(
-                (item) =>
-                  item.value === mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineAction,
+            <form.Field name="zimbraMtaPostscreenBareNewlineAction">
+              {(field) => (
+                <Select
+                  items={ignoreEnforceDropOptions}
+                  background="gray5"
+                  label={t('mta.action', 'Action')}
+                  showCheckbox={false}
+                  selection={ignoreEnforceDropOptions.find(
+                    (item) => item.value === field.state.value,
+                  )}
+                  // @ts-expect-error - needs a fix
+                  onChange={(v: string) => field.handleChange(v)}
+                />
               )}
-              // @ts-expect-error - needs a fix // Need to fix it with custom soultion
-              onChange={onBareNewLineActionChange}
-            />
+            </form.Field>
           </Container>
         </Container>
         <Container
@@ -111,15 +97,21 @@ export function TuningSection({
           width="100%"
         >
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
-            <Input
-              isRequired
-              label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
-              backgroundColor="gray5"
-              value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replaceAll(/\D/g, '')}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                setValue(ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL, e.target.value);
-              }}
-            />
+            <form.Field name="zimbraMtaPostscreenBareNewlineTTL">
+              {(field) => (
+                <Input
+                  isRequired
+                  label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
+                  backgroundColor="gray5"
+                  value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                    const digits = e.target.value;
+                    const unit = field.state.value?.replaceAll(/[^a-zA-Z]/g, '') || 'h';
+                    field.handleChange(`${digits}${unit}`);
+                  }}
+                />
+              )}
+            </form.Field>
           </Container>
           <Container crossAlignment="flex-end" width="30%">
             <Select
@@ -148,30 +140,32 @@ export function TuningSection({
           padding={{ right: 'medium' }}
         >
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start">
-            <Switch
-              label={t('mta.non_smtp_command', 'NonSMTP Command')}
-              value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandEnable}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE,
-                  !mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandEnable,
-                )
-              }
-            />
+            <form.Field name="zimbraMtaPostscreenNonSmtpCommandEnable">
+              {(field) => (
+                <Switch
+                  label={t('mta.non_smtp_command', 'NonSMTP Command')}
+                  value={field.state.value}
+                  onClick={(): void => field.handleChange(!field.state.value)}
+                />
+              )}
+            </form.Field>
           </Container>
           <Container crossAlignment="flex-end">
-            <Select
-              items={ignoreEnforceDropOptions}
-              background="gray5"
-              label={t('mta.action', 'Action')}
-              showCheckbox={false}
-              selection={ignoreEnforceDropOptions.find(
-                (item) =>
-                  item.value === mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandAction,
+            <form.Field name="zimbraMtaPostscreenNonSmtpCommandAction">
+              {(field) => (
+                <Select
+                  items={ignoreEnforceDropOptions}
+                  background="gray5"
+                  label={t('mta.action', 'Action')}
+                  showCheckbox={false}
+                  selection={ignoreEnforceDropOptions.find(
+                    (item) => item.value === field.state.value,
+                  )}
+                  // @ts-expect-error - needs a fix
+                  onChange={(v: string) => field.handleChange(v)}
+                />
               )}
-              // @ts-expect-error - needs a fix // Need to fix it with custom soultion
-              onChange={onNonSMTPCommandActionChange}
-            />
+            </form.Field>
           </Container>
         </Container>
         <Container
@@ -181,15 +175,21 @@ export function TuningSection({
           width="100%"
         >
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
-            <Input
-              isRequired
-              label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
-              backgroundColor="gray5"
-              value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL.replaceAll(/\D/g, '')}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                setValue(ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL, e.target.value);
-              }}
-            />
+            <form.Field name="zimbraMtaPostscreenNonSmtpCommandTTL">
+              {(field) => (
+                <Input
+                  isRequired
+                  label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
+                  backgroundColor="gray5"
+                  value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                    const digits = e.target.value;
+                    const unit = field.state.value?.replaceAll(/[^a-zA-Z]/g, '') || 'h';
+                    field.handleChange(`${digits}${unit}`);
+                  }}
+                />
+              )}
+            </form.Field>
           </Container>
           <Container crossAlignment="flex-end" width="30%">
             <Select
@@ -218,30 +218,32 @@ export function TuningSection({
           padding={{ right: 'medium' }}
         >
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start">
-            <Switch
-              label={t('mta.pipelining', 'Pipelining')}
-              value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningEnable}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE,
-                  !mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningEnable,
-                )
-              }
-            />
+            <form.Field name="zimbraMtaPostscreenPipeliningEnable">
+              {(field) => (
+                <Switch
+                  label={t('mta.pipelining', 'Pipelining')}
+                  value={field.state.value}
+                  onClick={(): void => field.handleChange(!field.state.value)}
+                />
+              )}
+            </form.Field>
           </Container>
           <Container crossAlignment="flex-end">
-            <Select
-              items={ignoreEnforceDropOptions}
-              background="gray5"
-              label={t('mta.action', 'Action')}
-              showCheckbox={false}
-              selection={ignoreEnforceDropOptions.find(
-                (item) =>
-                  item.value === mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningAction,
+            <form.Field name="zimbraMtaPostscreenPipeliningAction">
+              {(field) => (
+                <Select
+                  items={ignoreEnforceDropOptions}
+                  background="gray5"
+                  label={t('mta.action', 'Action')}
+                  showCheckbox={false}
+                  selection={ignoreEnforceDropOptions.find(
+                    (item) => item.value === field.state.value,
+                  )}
+                  // @ts-expect-error - needs a fix
+                  onChange={(v: string) => field.handleChange(v)}
+                />
               )}
-              // @ts-expect-error - needs a fix // Need to fix it with custom soultion
-              onChange={onPipeLiningActionChange}
-            />
+            </form.Field>
           </Container>
         </Container>
         <Container
@@ -251,15 +253,21 @@ export function TuningSection({
           width="100%"
         >
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
-            <Input
-              isRequired
-              label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
-              backgroundColor="gray5"
-              value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL.replaceAll(/\D/g, '')}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                setValue(ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL, e.target.value);
-              }}
-            />
+            <form.Field name="zimbraMtaPostscreenPipeliningTTL">
+              {(field) => (
+                <Input
+                  isRequired
+                  label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
+                  backgroundColor="gray5"
+                  value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                    const digits = e.target.value;
+                    const unit = field.state.value?.replaceAll(/[^a-zA-Z]/g, '') || 'h';
+                    field.handleChange(`${digits}${unit}`);
+                  }}
+                />
+              )}
+            </form.Field>
           </Container>
           <Container crossAlignment="flex-end" width="30%">
             <Select

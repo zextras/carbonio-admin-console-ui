@@ -19,26 +19,18 @@ import {
 import React, { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { MtaAntivirusAndAntispam } from '../../../../../types';
-import {
-  CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-  ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
-  ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
-  ZIMBRA_VIRUS_WARN_ADMIN,
-  ZIMBRA_VIRUS_WARN_RECIPIENT,
-} from '../../../../constants';
+import { MtaAntivirusFormApi } from '../types';
 
 type TableRow = { id: string; columns: Array<string | ReactElement> };
 
 type AntivirusDefinitionsSectionProps = Readonly<{
-  mtaAntiVirusAndAntispamDetail: MtaAntivirusAndAntispam | undefined;
-  setValue: (key: string, value: unknown) => void;
+  form: MtaAntivirusFormApi;
   allowSetMTA: boolean;
   intervalOptions: Array<SelectItem>;
   updateFrequncy: string;
   setUpdateFrequncy: (value: string) => void;
   updateMesurementUnit: SelectItem;
-  onUpdateMesurementChange: (v: SelectItem[] | string | null) => void;
+  onUpdateMesurementChange: (v: Array<SelectItem> | string | null) => void;
   antiVirusMirrorTableRow: Array<TableRow>;
   antiVirusMirrorHeader: Array<{ id: string; label: string; width: string; bold: boolean }>;
   selectedAntivirusMirrors: Array<string>;
@@ -64,8 +56,7 @@ type AntivirusDefinitionsSectionProps = Readonly<{
 }>;
 
 export function AntivirusDefinitionsSection({
-  mtaAntiVirusAndAntispamDetail,
-  setValue,
+  form,
   allowSetMTA,
   intervalOptions,
   updateFrequncy,
@@ -106,17 +97,16 @@ export function AntivirusDefinitionsSection({
       </Container>
 
       <Container crossAlignment="flex-start" padding={{ bottom: 'large' }} height="auto">
-        <Switch
-          label={t('mta.disable_virus_check', 'Disable Virus Check')}
-          value={mtaAntiVirusAndAntispamDetail?.carbonioAmavisDisableVirusCheck}
-          onClick={(): void =>
-            setValue(
-              CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-              !mtaAntiVirusAndAntispamDetail?.carbonioAmavisDisableVirusCheck,
-            )
-          }
-          disabled={!allowSetMTA}
-        />
+        <form.Field name="carbonioAmavisDisableVirusCheck">
+          {(field) => (
+            <Switch
+              label={t('mta.disable_virus_check', 'Disable Virus Check')}
+              value={field.state.value}
+              onClick={(): void => field.handleChange(!field.state.value)}
+              disabled={!allowSetMTA}
+            />
+          )}
+        </form.Field>
       </Container>
 
       <Container
@@ -264,10 +254,6 @@ export function AntivirusDefinitionsSection({
             value={updateFrequncy}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setUpdateFrequncy(e.target.value);
-              setValue(
-                ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
-                `${e.target.value}${updateMesurementUnit?.value}`,
-              );
             }}
             disabled={!allowSetMTA}
           />
@@ -291,48 +277,48 @@ export function AntivirusDefinitionsSection({
         height="auto"
       >
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }} height="auto">
-          <Switch
-            label={t(
-              'mta.warn_recipients_when_is_quarantined',
-              'Warn recipients when something is quarantined',
+          <form.Field name="zimbraVirusWarnRecipient">
+            {(field) => (
+              <Switch
+                label={t(
+                  'mta.warn_recipients_when_is_quarantined',
+                  'Warn recipients when something is quarantined',
+                )}
+                value={field.state.value}
+                onClick={(): void => field.handleChange(!field.state.value)}
+                disabled={!allowSetMTA}
+              />
             )}
-            value={mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnRecipient}
-            onClick={(): void =>
-              setValue(
-                ZIMBRA_VIRUS_WARN_RECIPIENT,
-                !mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnRecipient,
-              )
-            }
-            disabled={!allowSetMTA}
-          />
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start" height="auto">
-          <Switch
-            label={t('mta.virus_block_encrypted_archive', 'Virus Block Encrypted Archive')}
-            value={mtaAntiVirusAndAntispamDetail?.zimbraVirusBlockEncryptedArchive}
-            onClick={(): void =>
-              setValue(
-                ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
-                !mtaAntiVirusAndAntispamDetail?.zimbraVirusBlockEncryptedArchive,
-              )
-            }
-            disabled={!allowSetMTA}
-          />
+          <form.Field name="zimbraVirusBlockEncryptedArchive">
+            {(field) => (
+              <Switch
+                label={t('mta.virus_block_encrypted_archive', 'Virus Block Encrypted Archive')}
+                value={field.state.value}
+                onClick={(): void => field.handleChange(!field.state.value)}
+                disabled={!allowSetMTA}
+              />
+            )}
+          </form.Field>
         </Container>
       </Container>
 
       <Container crossAlignment="flex-start" height="auto">
-        <Switch
-          label={t(
-            'mta.warn_admins_when_something_quarntined',
-            'Warn admins when something is quarantined',
+        <form.Field name="zimbraVirusWarnAdmin">
+          {(field) => (
+            <Switch
+              label={t(
+                'mta.warn_admins_when_something_quarntined',
+                'Warn admins when something is quarantined',
+              )}
+              value={field.state.value}
+              onClick={(): void => field.handleChange(!field.state.value)}
+              disabled={!allowSetMTA}
+            />
           )}
-          value={mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnAdmin}
-          onClick={(): void =>
-            setValue(ZIMBRA_VIRUS_WARN_ADMIN, !mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnAdmin)
-          }
-          disabled={!allowSetMTA}
-        />
+        </form.Field>
       </Container>
 
       <Modal

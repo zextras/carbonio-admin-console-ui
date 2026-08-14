@@ -6,11 +6,17 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const modifyServer = async (body: {
+export type ModifyServerBody = {
 	id?: string;
 	_jsns?: string;
 	a?: Array<Record<string, string>>;
-}): Promise<Record<string, unknown>> =>
+};
+
+export type ModifyServerResponse = {
+	server?: Array<{ a?: Array<{ n: string; _content: string }> }>;
+};
+
+export const modifyServer = async (body: ModifyServerBody): Promise<ModifyServerResponse> =>
 	soapFetch(`ModifyServer`, {
 		...body
 	});

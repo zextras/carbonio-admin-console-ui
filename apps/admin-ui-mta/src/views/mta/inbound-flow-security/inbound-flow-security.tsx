@@ -3,15 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, ListRow, Padding, Row } from '@zextras/ui-components';
+import { useSelector } from '@tanstack/react-store';
+import { Container, FormPageLayout, ListRow } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
-import { find, isEqual, uniq } from 'lodash-es';
+import { find, uniq } from 'lodash-es';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaInboundSecurity } from '../../../../types';
 import { CONFIG, ZIMBRA_MTA_BLOCKED_EXTENSION } from '../../../constants';
 import { useModifyConfig } from '../../../services/use-modify-config';
+import { useAppForm } from '../../../types/app-form-api';
 import { ProtocolChecksSection } from './sections/protocol-checks-section';
 import { RejectionSection } from './sections/rejection-section';
 import { SettingsSection } from './sections/settings-section';
@@ -22,11 +24,6 @@ import {
   parseMtaRestrictionData,
   parseSmtpdRejectionData,
 } from './utils/inbound-security-utils';
-
-type FormState = {
-  initial: MtaInboundSecurity;
-  current: MtaInboundSecurity;
-};
 
 type ExtensionState = {
   mtaBlockExtension: Array<Record<string, string>>;
@@ -64,59 +61,36 @@ function MTAInboundFlowSecurityForm({ configInformation }: MTAInboundFlowSecurit
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
   const { data: rights } = useCurrentUserRights();
 
-  const [formState, setFormState] = useState<FormState>(() => {
-    const initialState = buildInitialState(configInformation);
-    return { initial: initialState, current: initialState };
-  });
-
   const [extensionState, setExtensionState] = useState<ExtensionState>(() =>
     buildExtensionState(configInformation),
   );
 
-  const mtaInboundSecurityInitialDetail = formState.initial;
-  const mtaInboundSecurityDetail = formState.current;
   const { mtaBlockExtension, commonBlockedExtensions } = extensionState;
 
   const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
   const allowSetMTA = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
-  const isDirty =
-    !!mtaInboundSecurityDetail && !isEqual(mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail);
-
-  function setValue(key: string, value: unknown): void {
-    setFormState((prev) => ({
-      ...prev,
-      current: { ...prev.current, [key]: value } as MtaInboundSecurity,
-    }));
-  }
-
-  async function modifyConfigRequest(attributes: Array<Record<string, string>>): Promise<void> {
-    try {
-      await modifyConfigAsync(attributes);
-      setFormState((prev) => ({ ...prev, initial: prev.current }));
-    } catch {
-      // Error snackbar is already shown by the hook
-    }
-  }
-
-  function onSave() {
-    const attributes = buildSaveAttributes(mtaInboundSecurityDetail);
-    modifyConfigRequest(attributes);
-  }
-
-  function onCancel() {
-    setFormState((prev) => ({ ...prev, current: prev.initial }));
-    if (mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtension) {
-      const extension = mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtension;
-      if (extension) {
-        const allExtensions: Array<Record<string, string>> = [];
-        extension.forEach((item: string) => {
-          allExtensions.push({ label: item });
-        });
-        setExtensionState((prev) => ({ ...prev, mtaBlockExtension: allExtensions }));
+  const form = useAppForm({
+    defaultValues: buildInitialState(configInformation),
+    onSubmit: async ({ value }) => {
+      try {
+        const attributes = buildSaveAttributes(value);
+        await modifyConfigAsync(attributes);
+        form.reset(value, { keepDefaultValues: true });
+        const extension = value[ZIMBRA_MTA_BLOCKED_EXTENSION];
+        if (extension) {
+          setExtensionState((prev) => ({
+            ...prev,
+            mtaBlockExtension: extension.map((item: string) => ({ label: item })),
+          }));
+        }
+      } catch {
+        // Error snackbar is already shown by the hook
       }
-    }
-  }
+    },
+  });
+
+  const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
 
   function onBlockExtensionChange(ev: Array<{ label?: string }>) {
     if (ev && ev.length > 0) {
@@ -126,12 +100,12 @@ function MTAInboundFlowSecurityForm({ configInformation }: MTAInboundFlowSecurit
         .filter((item): item is string => !!item)
         .filter((item: string) => validExtensionExpression.test(item));
       if (extension && extension.length > 0) {
-        setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, extension);
+        form.setFieldValue(ZIMBRA_MTA_BLOCKED_EXTENSION, extension);
         const validExtension = extension.map((item: string) => ({ label: item }));
         setExtensionState((prev) => ({ ...prev, mtaBlockExtension: validExtension }));
       }
     } else {
-      setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
+      form.setFieldValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
       setExtensionState((prev) => ({ ...prev, mtaBlockExtension: [] }));
     }
   }
@@ -141,106 +115,72 @@ function MTAInboundFlowSecurityForm({ configInformation }: MTAInboundFlowSecurit
       ...mtaBlockExtension.map((item: Record<string, string>) => item?.label),
       ...commonBlockedExtensions,
     ]);
-    setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, allExtension);
+    form.setFieldValue(ZIMBRA_MTA_BLOCKED_EXTENSION, allExtension);
     setExtensionState((prev) => ({
       ...prev,
       mtaBlockExtension: allExtension.map((item: string) => ({ label: item })),
     }));
   }
 
+  function handleCancel() {
+    form.reset();
+    const defaultValues = form.options.defaultValues;
+    if (defaultValues?.zimbraMtaBlockedExtension) {
+      const extension = defaultValues.zimbraMtaBlockedExtension;
+      setExtensionState((prev) => ({
+        ...prev,
+        mtaBlockExtension: extension.map((item: string) => ({ label: item })),
+      }));
+    } else {
+      setExtensionState((prev) => ({ ...prev, mtaBlockExtension: [] }));
+    }
+  }
+
   return (
-    <Container background="gray6" mainAlignment="flex-start">
-      <Row
+    <FormPageLayout
+      title={t('mta.inbound_flow_and_security', 'Inbound Flow & Security')}
+      onSave={() => form.handleSubmit()}
+      onCancel={handleCancel}
+      unsavedChanges={isDirty}
+    >
+      <Container
+        crossAlignment="flex-start"
         mainAlignment="flex-start"
-        crossAlignment="center"
-        orientation="horizontal"
-        background="gray6"
-        width="fill"
-        height="56px"
+        height="auto"
+        padding={{ bottom: 'extralarge' }}
       >
-        <Row padding={{ horizontal: 'small' }}></Row>
-        <Row takeAvailableSpace mainAlignment="flex-start">
-          <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
-            {t('mta.inbound_flow_and_security', 'Inbound Flow & Security')}
-          </ds-text>
-        </Row>
-        <Row>
-          {isDirty && (
-            <Container
-              orientation="horizontal"
-              mainAlignment="flex-end"
-              crossAlignment="flex-end"
-              background="gray6"
-            >
-              <Padding right="small">
-                <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
-              </Padding>
-              <Padding right="small">
-                <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-              </Padding>
-            </Container>
-          )}
-        </Row>
-      </Row>
+        <ds-text as="p" size="small">
+          <Trans
+            i18nKey="mta.important_mta_reboot_information_message"
+            defaults="<bold>IMPORTANT: Any changes made on this page will require a reboot of the MTA</bold> for them to take effect. Simply saving the changes will not suffice."
+            components={{ bold: <strong /> }}
+          />
+        </ds-text>
+      </Container>
+      <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
+        <ds-divider></ds-divider>
+      </Container>
+
+      <SettingsSection
+        form={form}
+        mtaBlockExtension={mtaBlockExtension}
+        allowSetMTA={allowSetMTA}
+        onBlockExtensionChange={onBlockExtensionChange}
+        onCommonBlockExtensionAdd={onCommonBlockExtensionAdd}
+      />
+
       <ListRow>
         <ds-divider></ds-divider>
       </ListRow>
 
-      <Container
-        padding={{ all: 'extralarge' }}
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        height="calc(100vh - 10.5rem)"
-        style={{ overflow: 'auto' }}
-      >
-        <Container
-          crossAlignment="flex-start"
-          mainAlignment="flex-start"
-          height="auto"
-          padding={{ bottom: 'extralarge' }}
-        >
-          <ds-text as="p" size="small">
-            <Trans
-              i18nKey="mta.important_mta_reboot_information_message"
-              defaults="<bold>IMPORTANT: Any changes made on this page will require a reboot of the MTA</bold> for them to take effect. Simply saving the changes will not suffice."
-              components={{ bold: <strong /> }}
-            />
-          </ds-text>
-        </Container>
-        <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-          <ds-divider></ds-divider>
-        </Container>
+      <RejectionSection form={form} allowSetMTA={allowSetMTA} />
 
-        <SettingsSection
-          mtaInboundSecurityDetail={mtaInboundSecurityDetail}
-          mtaBlockExtension={mtaBlockExtension}
-          allowSetMTA={allowSetMTA}
-          setValue={setValue}
-          onBlockExtensionChange={onBlockExtensionChange}
-          onCommonBlockExtensionAdd={onCommonBlockExtensionAdd}
-        />
+      <ListRow>
+        <ds-divider></ds-divider>
+      </ListRow>
 
-        <ListRow>
-          <ds-divider></ds-divider>
-        </ListRow>
-
-        <RejectionSection
-          mtaInboundSecurityDetail={mtaInboundSecurityDetail}
-          allowSetMTA={allowSetMTA}
-          setValue={setValue}
-        />
-
-        <ListRow>
-          <ds-divider></ds-divider>
-        </ListRow>
-
-        <ProtocolChecksSection
-          mtaInboundSecurityDetail={mtaInboundSecurityDetail}
-          allowSetMTA={allowSetMTA}
-          setValue={setValue}
-        />
-      </Container>
-    </Container>
+      <ProtocolChecksSection form={form} allowSetMTA={allowSetMTA} />
+    </FormPageLayout>
   );
 }
 

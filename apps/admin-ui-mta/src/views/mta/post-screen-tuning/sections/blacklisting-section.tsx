@@ -6,16 +6,13 @@
 import { Button, Container, Input, Padding, Select, SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { MtaPostTuning } from '../../../../../types';
-import { ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST } from '../../../../constants';
+import { MtaPostTuningFormApi } from '../types';
 
 type BlacklistingSectionProps = Readonly<{
-  mtaPostTuningDetail: MtaPostTuning | undefined;
+  form: MtaPostTuningFormApi;
   isShowBanner: boolean;
   setIsShowBanner: (value: boolean) => void;
-  setValue: (key: string, value: unknown) => void;
   ignoreEnforceDropOptions: Array<SelectItem>;
-  onBlackListActionChange: (v: string) => void;
 }>;
 
 const containerStyle = {
@@ -26,12 +23,10 @@ const containerStyle = {
 };
 
 export function BlacklistingSection({
-  mtaPostTuningDetail,
+  form,
   isShowBanner,
   setIsShowBanner,
-  setValue,
   ignoreEnforceDropOptions,
-  onBlackListActionChange,
 }: BlacklistingSectionProps) {
   const [t] = useTranslation();
 
@@ -110,28 +105,36 @@ export function BlacklistingSection({
         height="auto"
       >
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-          <Select
-            items={ignoreEnforceDropOptions}
-            background="gray5"
-            label={t('mta.black_list_action', 'Blacklist Action')}
-            showCheckbox={false}
-            selection={ignoreEnforceDropOptions.find(
-              (item) => item.value === mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction,
+          <form.Field name="zimbraMtaPostscreenBlacklistAction">
+            {(field) => (
+              <Select
+                items={ignoreEnforceDropOptions}
+                background="gray5"
+                label={t('mta.black_list_action', 'Blacklist Action')}
+                showCheckbox={false}
+                selection={ignoreEnforceDropOptions.find(
+                  (item) => item.value === field.state.value,
+                )}
+                // @ts-expect-error - needs a fix
+                onChange={(v: string) => field.handleChange(v)}
+              />
             )}
-            // @ts-expect-error - needs a fix // Need to fix it with custom soultion
-            onChange={onBlackListActionChange}
-          />
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start">
-          <Input
-            isRequired
-            label={t('mta.access_list_path', 'Access List Path')}
-            backgroundColor="gray5"
-            value={mtaPostTuningDetail?.zimbraMtaPostscreenAccessList}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              setValue(ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST, e.target.value);
-            }}
-          />
+          <form.Field name="zimbraMtaPostscreenAccessList">
+            {(field) => (
+              <Input
+                isRequired
+                label={t('mta.access_list_path', 'Access List Path')}
+                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                  field.handleChange(e.target.value);
+                }}
+              />
+            )}
+          </form.Field>
         </Container>
       </Container>
     </>

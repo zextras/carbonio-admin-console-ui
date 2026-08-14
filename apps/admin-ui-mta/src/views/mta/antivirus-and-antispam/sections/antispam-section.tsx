@@ -6,36 +6,23 @@
 import { Container, Input, Select, SelectItem, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { MtaAntivirusAndAntispam } from '../../../../../types';
-import {
-  D_PASS,
-  ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-  ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-  ZIMBRA_SPAM_SUBJECT_TAG,
-} from '../../../../constants';
+import { D_PASS } from '../../../../constants';
+import { MtaAntivirusFormApi } from '../types';
 
 type AntispamSectionProps = Readonly<{
-  mtaAntiVirusAndAntispamDetail: MtaAntivirusAndAntispam | undefined;
-  setValue: (key: string, value: unknown) => void;
+  form: MtaAntivirusFormApi;
   allowSetMTA: boolean;
   spamTagPercentOptions: Array<SelectItem>;
   spamKillPercentOptions: Array<SelectItem>;
   discardPassOptions: Array<SelectItem>;
-  onSpamTagPercentChange: (v: string) => void;
-  onSpamDestinyChange: (v: string) => void;
-  onSpamKillPercentChange: (v: string) => void;
 }>;
 
 export function AntispamSection({
-  mtaAntiVirusAndAntispamDetail,
-  setValue,
+  form,
   allowSetMTA,
   spamTagPercentOptions,
   spamKillPercentOptions,
   discardPassOptions,
-  onSpamTagPercentChange,
-  onSpamDestinyChange,
-  onSpamKillPercentChange,
 }: AntispamSectionProps) {
   const [t] = useTranslation();
 
@@ -59,34 +46,39 @@ export function AntispamSection({
         height="auto"
       >
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-          <Input
-            isRequired
-            label={t(
-              'mta.add_this_prefix_to_spam_mail_subject',
-              'Add this prefix to the Spam mail subject',
+          <form.Field name="zimbraSpamSubjectTag">
+            {(field) => (
+              <Input
+                isRequired
+                label={t(
+                  'mta.add_this_prefix_to_spam_mail_subject',
+                  'Add this prefix to the Spam mail subject',
+                )}
+                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                  field.handleChange(e.target.value);
+                }}
+                disabled={!allowSetMTA}
+              />
             )}
-            backgroundColor="gray5"
-            value={mtaAntiVirusAndAntispamDetail?.zimbraSpamSubjectTag}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              setValue(ZIMBRA_SPAM_SUBJECT_TAG, e.target.value);
-            }}
-            disabled={!allowSetMTA}
-          />
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start">
-          <Select
-            items={spamTagPercentOptions}
-            background="gray5"
-            label={t('mta.tolerance_for_spam_delivery', 'Tolerance for Spam Delivery')}
-            showCheckbox={false}
-            selection={spamTagPercentOptions.find(
-              (item) =>
-                item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent,
+          <form.Field name="zimbraSpamTagPercent">
+            {(field) => (
+              <Select
+                items={spamTagPercentOptions}
+                background="gray5"
+                label={t('mta.tolerance_for_spam_delivery', 'Tolerance for Spam Delivery')}
+                showCheckbox={false}
+                selection={spamTagPercentOptions.find((item) => item.value === field.state.value)}
+                // @ts-expect-error - needs a fix
+                onChange={(v: string) => field.handleChange(v)}
+                disabled={!allowSetMTA}
+              />
             )}
-            // @ts-expect-error - needs a fix
-            onChange={onSpamTagPercentChange}
-            disabled={!allowSetMTA}
-          />
+          </form.Field>
         </Container>
       </Container>
 
@@ -98,36 +90,42 @@ export function AntispamSection({
         height="auto"
       >
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-          <Select
-            items={discardPassOptions}
-            background="gray5"
-            label={t('mta.block_spam_destiny', 'Block Spam destiny')}
-            showCheckbox={false}
-            selection={discardPassOptions.find(
-              (item) =>
-                item.value === mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny,
+          <form.Field name="zimbraAmavisFinalSpamDestiny">
+            {(field) => (
+              <Select
+                items={discardPassOptions}
+                background="gray5"
+                label={t('mta.block_spam_destiny', 'Block Spam destiny')}
+                showCheckbox={false}
+                selection={discardPassOptions.find((item) => item.value === field.state.value)}
+                // @ts-expect-error - needs a fix
+                onChange={(v: string) => field.handleChange(v)}
+                disabled={!allowSetMTA}
+              />
             )}
-            // @ts-expect-error - needs a fix
-            onChange={onSpamDestinyChange}
-            disabled={!allowSetMTA}
-          />
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start">
-          <Select
-            items={spamKillPercentOptions}
-            background="gray5"
-            label={t('mta.tolerance_for_spam_blocking', 'Tolerance for Spam Blocking')}
-            showCheckbox={false}
-            selection={spamKillPercentOptions.find(
-              (item) =>
-                item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent,
+          <form.Field name="zimbraSpamKillPercent">
+            {(field) => (
+              <form.Subscribe selector={(state) => state.values.zimbraAmavisFinalSpamDestiny}>
+                {(spamDestiny) => (
+                  <Select
+                    items={spamKillPercentOptions}
+                    background="gray5"
+                    label={t('mta.tolerance_for_spam_blocking', 'Tolerance for Spam Blocking')}
+                    showCheckbox={false}
+                    selection={spamKillPercentOptions.find(
+                      (item) => item.value === field.state.value,
+                    )}
+                    // @ts-expect-error - needs a fix
+                    onChange={(v: string) => field.handleChange(v)}
+                    disabled={spamDestiny === D_PASS || !allowSetMTA}
+                  />
+                )}
+              </form.Subscribe>
             )}
-            // @ts-expect-error - needs a fix
-            onChange={onSpamKillPercentChange}
-            disabled={
-              mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny === D_PASS || !allowSetMTA
-            }
-          />
+          </form.Field>
         </Container>
       </Container>
 
@@ -139,30 +137,28 @@ export function AntispamSection({
         height="auto"
       >
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-          <Switch
-            label={t('mta.also_check_outbound_messages', 'Also check outbound messages')}
-            value={mtaAntiVirusAndAntispamDetail?.zimbraAmavisOriginatingBypassSA}
-            onClick={(): void =>
-              setValue(
-                ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-                !mtaAntiVirusAndAntispamDetail?.zimbraAmavisOriginatingBypassSA,
-              )
-            }
-            disabled={!allowSetMTA}
-          />
+          <form.Field name="zimbraAmavisOriginatingBypassSA">
+            {(field) => (
+              <Switch
+                label={t('mta.also_check_outbound_messages', 'Also check outbound messages')}
+                value={field.state.value}
+                onClick={(): void => field.handleChange(!field.state.value)}
+                disabled={!allowSetMTA}
+              />
+            )}
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start">
-          <Switch
-            label={t('mta.verify_dkim_validity', 'Verify DKIM validity')}
-            value={mtaAntiVirusAndAntispamDetail?.zimbraAmavisEnableDKIMVerification}
-            onClick={(): void =>
-              setValue(
-                ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-                !mtaAntiVirusAndAntispamDetail?.zimbraAmavisEnableDKIMVerification,
-              )
-            }
-            disabled={!allowSetMTA}
-          />
+          <form.Field name="zimbraAmavisEnableDKIMVerification">
+            {(field) => (
+              <Switch
+                label={t('mta.verify_dkim_validity', 'Verify DKIM validity')}
+                value={field.state.value}
+                onClick={(): void => field.handleChange(!field.state.value)}
+                disabled={!allowSetMTA}
+              />
+            )}
+          </form.Field>
         </Container>
       </Container>
     </>

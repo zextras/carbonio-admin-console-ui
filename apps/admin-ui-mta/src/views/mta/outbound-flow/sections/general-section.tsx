@@ -13,36 +13,23 @@ import {
   Tooltip,
 } from '@zextras/ui-components';
 import { some } from 'lodash-es';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IpRangeValue, MtaOutboundFlow } from '../../../../../types';
-import {
-  ZIMBRA_MTA_FALLBACK_RELAY_HOST,
-  ZIMBRA_MTA_MY_HOSTNAME,
-  ZIMBRA_MTA_MY_ORIGIN,
-  ZIMBRA_MTA_RELAY_HOST,
-  ZIMBRA_MTA_SASL_AUTH_ENABLED,
-  ZIMBRA_MTA_SMTP_HELLO_NAME,
-  ZIMBRA_MTA_TLS_SECURITY_LEVEL,
-  ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
-  ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
-} from '../../../../constants';
+import { IpRangeValue } from '../../../../../types';
 import { CustomChip } from '../../../components/customChip';
+import type { OutboundFlowFormApi } from '../types';
 
 type GeneralSectionProps = {
-  mtaOutboundDetail: MtaOutboundFlow | undefined;
+  form: OutboundFlowFormApi;
   networkValue: Array<IpRangeValue>;
   allowSetMTA: boolean;
-  setValue: (key: string, value: unknown) => void;
   onBlockExtensionChange: (ips: Array<ChipItem<string>>) => void;
 };
 
 export function GeneralSection({
-  mtaOutboundDetail,
+  form,
   networkValue,
   allowSetMTA,
-  setValue,
   onBlockExtensionChange,
 }: Readonly<GeneralSectionProps>) {
   const [t] = useTranslation();
@@ -51,10 +38,6 @@ export function GeneralSection({
     { label: t('mta.may', 'May'), value: 'may' },
     { label: t('mta.none', 'None'), value: 'none' },
   ];
-
-  function onTlsSecurityOptions(v: string) {
-    setValue(ZIMBRA_MTA_TLS_SECURITY_LEVEL, v);
-  }
 
   return (
     <>
@@ -76,48 +59,46 @@ export function GeneralSection({
         height="auto"
       >
         <Container crossAlignment="flex-start">
-          <Tooltip
-            placement="bottom"
-            label={t(
-              'mta.include_originating_ip_address_in_smtp_header_outgoing_emails',
-              'Include the originating IP address in the SMTP headers of outgoing emails',
+          <form.Field name="zimbraSmtpSendAddOriginatingIP">
+            {(field) => (
+              <Tooltip
+                placement="bottom"
+                label={t(
+                  'mta.include_originating_ip_address_in_smtp_header_outgoing_emails',
+                  'Include the originating IP address in the SMTP headers of outgoing emails',
+                )}
+                maxWidth="auto"
+              >
+                <Switch
+                  label={t('mta.add_client_ip_to_header', 'Add client IP to the header')}
+                  value={field.state.value}
+                  onClick={() => field.handleChange(!field.state.value)}
+                  disabled={!allowSetMTA}
+                />
+              </Tooltip>
             )}
-            maxWidth="auto"
-          >
-            <Switch
-              label={t('mta.add_client_ip_to_header', 'Add client IP to the header')}
-              value={mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
-                  !mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP,
-                )
-              }
-              disabled={!allowSetMTA}
-            />
-          </Tooltip>
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start">
-          <Tooltip
-            placement="bottom"
-            label={t(
-              'mta.include_authenticated_user_information_in_smtp_header_for_outgoing_emails',
-              'Include the authenticated user information in the SMTP headers of outgoing emails',
+          <form.Field name="zimbraSmtpSendAddAuthenticatedUser">
+            {(field) => (
+              <Tooltip
+                placement="bottom"
+                label={t(
+                  'mta.include_authenticated_user_information_in_smtp_header_for_outgoing_emails',
+                  'Include the authenticated user information in the SMTP headers of outgoing emails',
+                )}
+                maxWidth="auto"
+              >
+                <Switch
+                  label={t('mta.add_username_to_header', 'Add username to the header')}
+                  value={field.state.value}
+                  onClick={() => field.handleChange(!field.state.value)}
+                  disabled={!allowSetMTA}
+                />
+              </Tooltip>
             )}
-            maxWidth="auto"
-          >
-            <Switch
-              label={t('mta.add_username_to_header', 'Add username to the header')}
-              value={mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
-                  !mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser,
-                )
-              }
-              disabled={!allowSetMTA}
-            />
-          </Tooltip>
+          </form.Field>
         </Container>
       </Container>
       <Container
@@ -128,41 +109,43 @@ export function GeneralSection({
         height="auto"
       >
         <Container crossAlignment="flex-start">
-          <Tooltip
-            placement="bottom"
-            label={t(
-              'mta.enable_or_disable_authentication_for_email_transfer_agent',
-              'Enable or disable authentication for the Mail Transfer Agent (MTA)',
+          <form.Field name="zimbraMtaSaslAuthEnable">
+            {(field) => (
+              <Tooltip
+                placement="bottom"
+                label={t(
+                  'mta.enable_or_disable_authentication_for_email_transfer_agent',
+                  'Enable or disable authentication for the Mail Transfer Agent (MTA)',
+                )}
+                maxWidth="auto"
+              >
+                <Switch
+                  label={t('mta.enable_authentication', 'Enable Authentication')}
+                  value={field.state.value === 'yes'}
+                  onClick={() => field.handleChange(field.state.value === 'yes' ? 'no' : 'yes')}
+                  disabled={!allowSetMTA}
+                />
+              </Tooltip>
             )}
-            maxWidth="auto"
-          >
-            <Switch
-              label={t('mta.enable_authentication', 'Enable Authentication')}
-              value={mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes'}
-              onClick={(): void =>
-                setValue(
-                  ZIMBRA_MTA_SASL_AUTH_ENABLED,
-                  mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes' ? 'no' : 'yes',
-                )
-              }
-              disabled={!allowSetMTA}
-            />
-          </Tooltip>
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start">
-          <Select
-            items={tlsSecurityOptions}
-            background="gray5"
-            label={t('mta.tls_security_level', 'TLS Security Level')}
-            showCheckbox={false}
-            selection={tlsSecurityOptions.find(
-              (item: Record<string, string>) =>
-                item.value === mtaOutboundDetail?.zimbraMtaTlsSecurityLevel,
+          <form.Field name="zimbraMtaTlsSecurityLevel">
+            {(field) => (
+              <Select
+                items={tlsSecurityOptions}
+                background="gray5"
+                label={t('mta.tls_security_level', 'TLS Security Level')}
+                showCheckbox={false}
+                selection={tlsSecurityOptions.find(
+                  (item: Record<string, string>) => item.value === field.state.value,
+                )}
+                // @ts-expect-error - needs a fix
+                onChange={(v: string) => field.handleChange(v)}
+                disabled={!allowSetMTA}
+              />
             )}
-            // @ts-expect-error - needs a fix
-            onChange={onTlsSecurityOptions}
-            disabled={!allowSetMTA}
-          />
+          </form.Field>
         </Container>
       </Container>
       <Container
@@ -199,28 +182,36 @@ export function GeneralSection({
         height="auto"
       >
         <Container padding={{ right: 'medium' }}>
-          <Input
-            label={t('mta.smtp_helo_name', 'SMTP HELO Name')}
-            value={mtaOutboundDetail?.zimbraMtaSmtpHeloName || ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              if (allowSetMTA) {
-                setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);
-              }
-            }}
-            backgroundColor="gray5"
-          />
+          <form.Field name="zimbraMtaSmtpHeloName">
+            {(field) => (
+              <Input
+                label={t('mta.smtp_helo_name', 'SMTP HELO Name')}
+                value={field.state.value || ''}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (allowSetMTA) {
+                    field.handleChange(e.target.value);
+                  }
+                }}
+                backgroundColor="gray5"
+              />
+            )}
+          </form.Field>
         </Container>
         <Container>
-          <Input
-            label={t('mta.my_hostname', 'My Hostname')}
-            value={mtaOutboundDetail?.zimbraMtaMyHostname || ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              if (allowSetMTA) {
-                setValue(ZIMBRA_MTA_MY_HOSTNAME, e.target.value);
-              }
-            }}
-            backgroundColor="gray5"
-          />
+          <form.Field name="zimbraMtaMyHostname">
+            {(field) => (
+              <Input
+                label={t('mta.my_hostname', 'My Hostname')}
+                value={field.state.value || ''}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (allowSetMTA) {
+                    field.handleChange(e.target.value);
+                  }
+                }}
+                backgroundColor="gray5"
+              />
+            )}
+          </form.Field>
         </Container>
       </Container>
 
@@ -232,28 +223,36 @@ export function GeneralSection({
         height="auto"
       >
         <Container padding={{ right: 'medium' }}>
-          <Input
-            label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
-            value={mtaOutboundDetail?.zimbraMtaFallbackRelayHost || ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              if (allowSetMTA) {
-                setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
-              }
-            }}
-            backgroundColor="gray5"
-          />
+          <form.Field name="zimbraMtaFallbackRelayHost">
+            {(field) => (
+              <Input
+                label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
+                value={field.state.value || ''}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (allowSetMTA) {
+                    field.handleChange(e.target.value);
+                  }
+                }}
+                backgroundColor="gray5"
+              />
+            )}
+          </form.Field>
         </Container>
         <Container>
-          <Input
-            label={t('mta.relay_host', 'Relay Host')}
-            value={mtaOutboundDetail?.zimbraMtaRelayHost || ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              if (allowSetMTA) {
-                setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
-              }
-            }}
-            backgroundColor="gray5"
-          />
+          <form.Field name="zimbraMtaRelayHost">
+            {(field) => (
+              <Input
+                label={t('mta.relay_host', 'Relay Host')}
+                value={field.state.value || ''}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (allowSetMTA) {
+                    field.handleChange(e.target.value);
+                  }
+                }}
+                backgroundColor="gray5"
+              />
+            )}
+          </form.Field>
         </Container>
       </Container>
       <Container
@@ -262,16 +261,20 @@ export function GeneralSection({
         height="auto"
         padding={{ top: 'large' }}
       >
-        <Input
-          label={t('mta.my_origin', 'My Origin')}
-          value={mtaOutboundDetail?.zimbraMtaMyOrigin || ''}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-            if (allowSetMTA) {
-              setValue(ZIMBRA_MTA_MY_ORIGIN, e.target.value);
-            }
-          }}
-          backgroundColor="gray5"
-        />
+        <form.Field name="zimbraMtaMyOrigin">
+          {(field) => (
+            <Input
+              label={t('mta.my_origin', 'My Origin')}
+              value={field.state.value || ''}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                if (allowSetMTA) {
+                  field.handleChange(e.target.value);
+                }
+              }}
+              backgroundColor="gray5"
+            />
+          )}
+        </form.Field>
       </Container>
     </>
   );
