@@ -26,6 +26,7 @@ const mockCosData = {
     {
       id: COS_ID,
       name: 'default',
+      _attrs: { edition: 'workspace' },
       a: [
         { n: 'zimbraId', _content: COS_ID },
         { n: 'carbonioFeatureMailsAppEnabled', _content: 'TRUE' },
@@ -127,6 +128,21 @@ describe('CosFeatures', () => {
     it('should render the Files section', async () => {
       await setupCosFeaturesTest();
       await expect.element(page.getByText('Files', { exact: true })).toBeVisible();
+    });
+
+    it('should not render the Files section when edition is mail', async () => {
+      const mailCosData = {
+        ...mockCosData,
+        cos: [
+          {
+            ...mockCosData.cos[0],
+            _attrs: { edition: 'mail' },
+          },
+        ],
+      };
+      await setupCosFeaturesTest(mailCosData);
+      await expect.element(page.getByText('Files', { exact: true })).not.toBeInTheDocument();
+      await expect.element(page.getByText('Tasks', { exact: true })).toBeVisible();
     });
 
     it('should render the Tasks section', async () => {

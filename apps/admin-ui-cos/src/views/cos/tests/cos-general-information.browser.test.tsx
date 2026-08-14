@@ -222,8 +222,12 @@ async function setupDeleteTest(cosData = mockCosData): Promise<void> {
 
 async function expectEditionValue(value: string): Promise<void> {
   await expect.element(page.getByText('Associated edition')).toBeVisible();
-  const labelEl = await page.getByText('Associated edition').findElement();
-  expect(labelEl.parentElement?.textContent ?? '').toContain(value);
+  const labelEl = page.getByText('Associated edition').element();
+  let el: Element | null = labelEl;
+  while (el && !el.textContent?.includes(value)) {
+    el = el.parentElement;
+  }
+  expect(el?.textContent ?? '').toContain(value);
 }
 
 describe('CosGeneralInformation', () => {
@@ -718,16 +722,74 @@ describe('CosGeneralInformation', () => {
       await expectEditionValue('Workspace');
     });
 
-    it('renders Not available value when edition attribute is missing', async () => {
+    it('renders Not assigned value when edition attribute is missing', async () => {
       await setupAdvancedGeneralInfoTest();
 
-      await expectEditionValue('Not available');
+      await expectEditionValue('Not assigned');
     });
 
     it('does not render the Associated edition field when advanced mode is disabled', async () => {
       await setupGeneralInfoTest();
 
       await expect.element(page.getByText('Associated edition')).not.toBeInTheDocument();
+    });
+
+    it('does not show Not assigned option in dropdown when edition is assigned', async () => {
+      await setupAdvancedGeneralInfoTest(mockCosDataWithEmailEdition);
+
+      await page.getByText('Email').first().click();
+
+      await expect.element(page.getByText('Workspace')).toBeVisible();
+      await expect.element(page.getByText('Not assigned')).not.toBeInTheDocument();
+    });
+
+    it('shows Email and Workspace options in dropdown when edition is not assigned', async () => {
+      await setupAdvancedGeneralInfoTest();
+
+      await page.getByText('Not assigned').click();
+
+      await expect.element(page.getByText('Workspace')).toBeVisible();
+    });
+
+    it('should show Save and Cancel when edition is changed', async () => {
+      await setupAdvancedGeneralInfoTest(mockCosDataWithEmailEdition);
+
+      await page.getByText('Email').first().click();
+      await page.getByText('Workspace').click();
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+    });
+
+    it('should send edition in ModifyCos when saving after changing edition', async () => {
+      const modifyCosPromise = createBrowserSoapAPIInterceptor('ModifyCos', {});
+      const queryClient = getQueryClient();
+      await grantUserCosRights(queryClient);
+      queryClient.setQueryData(['advanced-supported'], { supported: true });
+      createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
+        HttpResponse.json({ items: ['carbonio-advanced'] }),
+      );
+      mockSearchDirectoryResponses();
+      createBrowserSoapAPIInterceptor('GetCos', mockCosDataWithEmailEdition);
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+
+      await setupBrowserTest(
+        <Routes>
+          <Route path="/:cosId/:operation" element={<CosGeneralInformation />} />
+        </Routes>,
+        { initialRouterEntry: `/${COS_ID}/general_information`, queryClient },
+      );
+      await expect.element(page.getByText('General Information')).toBeVisible();
+
+      await page.getByText('Email').first().click();
+      await page.getByText('Workspace').click();
+
+      await page.getByRole('button', { name: 'Save' }).click();
+
+      const requestBody = (await modifyCosPromise) as ModifyCosBody;
+      const editionAttr = requestBody.a.find((a: { n: string }) => a.n === 'edition');
+      expect(editionAttr).toBeDefined();
+      expect(editionAttr!._content).toBe('workspace');
     });
   });
 });
