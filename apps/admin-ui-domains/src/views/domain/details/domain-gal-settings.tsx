@@ -381,11 +381,12 @@ const DomainGalSettings: FC = () => {
   // Effective galMode for conditional rendering
   const effectiveGalMode = userModifiedGalMode ?? derivedValues?.galMode ?? 'zimbra';
 
-  const galModeLabel = !effectiveGalMode || effectiveGalMode === 'zimbra'
-    ? 'Internal'
-    : effectiveGalMode === 'ldap'
-      ? 'External'
-      : 'Both';
+  const getGalModeLabel = (): string => {
+    if (!effectiveGalMode || effectiveGalMode === 'zimbra') return 'Internal';
+    if (effectiveGalMode === 'ldap') return 'External';
+    return 'Both';
+  };
+  const galModeLabel = getGalModeLabel();
 
   // === Fetch helpers (declared before use to avoid hoisting issues) ===
   const fetchPollingIntervalFromAccount = (accountId: string): void => {

@@ -29,7 +29,7 @@ function ModalHeader({
 	type,
 	closeIconTooltip,
 	closeIconAriaLabel = 'Close',
-}: ModalHeaderProps): React.JSX.Element {
+}: Readonly<ModalHeaderProps>): React.JSX.Element {
 	return (
 		<Row width="100%" padding={{ bottom: 'small' }}>
 			<ds-text
