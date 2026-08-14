@@ -94,7 +94,6 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
   }, [isOpen, setIsOpen]);
   const primaryBarViews = useAppStore((s) => s.views.primaryBar);
   const primarybarSections = useAppStore((s) => s.views.primarybarSections);
-  const [primaryBarViewWithSection, setPrimaryBarViewWithSection] = useState<any[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -106,37 +105,35 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
     routes[activeRoute?.id] = trim(location.pathname, '/');
   }
 
-  useEffect(() => {
-    let allPrimaryBarView = [];
-    if (primaryBarViews.length > 0) {
-      allPrimaryBarView = primaryBarViews.filter(
-        (item) => item.section === undefined || !item.section,
-      );
-      if (primarybarSections.length > 0) {
-        primarybarSections.forEach((item) => {
-          const section = {
-            id: item?.id,
-            position: item?.position,
-            label: item?.label,
-          };
-          const parimaryBarItems: any = [];
-          primaryBarViews.forEach((primaryBarItem) => {
-            if (item?.id === primaryBarItem?.section?.id) {
-              parimaryBarItems.push(primaryBarItem);
-            }
-          });
-          allPrimaryBarView.push({
-            position: item?.position,
-            badge: { show: false, count: 0, showCount: false, color: 'primary' },
-            visible: true,
-            section,
-            children: parimaryBarItems,
-          });
+  let primaryBarViewWithSection: Array<any> = [];
+  if (primaryBarViews.length > 0) {
+    let allPrimaryBarView = primaryBarViews.filter(
+      (item) => item.section === undefined || !item.section,
+    );
+    if (primarybarSections.length > 0) {
+      primarybarSections.forEach((item) => {
+        const section = {
+          id: item?.id,
+          position: item?.position,
+          label: item?.label,
+        };
+        const parimaryBarItems: Array<any> = [];
+        primaryBarViews.forEach((primaryBarItem) => {
+          if (item?.id === primaryBarItem?.section?.id) {
+            parimaryBarItems.push(primaryBarItem);
+          }
         });
-      }
-      setPrimaryBarViewWithSection(sortBy(allPrimaryBarView, 'position'));
+        allPrimaryBarView.push({
+          position: item?.position,
+          badge: { show: false, count: 0, showCount: false, color: 'primary' },
+          visible: true,
+          section,
+          children: parimaryBarItems,
+        });
+      });
     }
-  }, [primarybarSections, primaryBarViews]);
+    primaryBarViewWithSection = sortBy(allPrimaryBarView, 'position');
+  }
 
   return (
     <>
