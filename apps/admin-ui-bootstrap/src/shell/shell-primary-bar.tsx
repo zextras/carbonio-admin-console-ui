@@ -117,10 +117,10 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
           position: item?.position,
           label: item?.label,
         };
-        const parimaryBarItems: Array<any> = [];
+        const primaryBarItems: Array<any> = [];
         primaryBarViews.forEach((primaryBarItem) => {
           if (item?.id === primaryBarItem?.section?.id) {
-            parimaryBarItems.push(primaryBarItem);
+            primaryBarItems.push(primaryBarItem);
           }
         });
         allPrimaryBarView.push({
@@ -128,7 +128,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
           badge: { show: false, count: 0, showCount: false, color: 'primary' },
           visible: true,
           section,
-          children: parimaryBarItems,
+          children: primaryBarItems,
         });
       });
     }
