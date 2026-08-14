@@ -5,14 +5,14 @@
  */
 import { Container } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
+import { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import BackupDetailPanel from './backup/backup-detail-panel';
-import BackupListPanel from './backup/backup-list-panel';
+import { BackupDetailPanel } from './backup/backup-detail-panel';
+import { BackupListPanel } from './backup/backup-list-panel';
 import { BackupPageHeader } from './backup-page-header';
 
-export const AppView: FC = () => {
+export const AppView = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
 
   return (

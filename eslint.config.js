@@ -100,6 +100,7 @@ export default tseslint.config(
       'apps/admin-ui-bootstrap/**',
       'apps/admin-ui-privacy/**/*',
       'apps/admin-ui-operations/**',
+      'apps/admin-ui-backup/**',
     ],
     plugins: {
       'react-compiler': reactCompiler,
