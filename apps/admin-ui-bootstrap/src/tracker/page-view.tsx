@@ -9,13 +9,13 @@ import { useLocation } from 'react-router';
 import { useTracker } from './tracker';
 
 export const TrackerPageView = (): null => {
-	const tracker = useTracker();
-	const { pathname, search } = useLocation();
-	useEffect(() => {
-		tracker.capture('$pageview', {
-			$current_url: window.origin + pathname + search
-		});
-	}, [pathname, search, tracker]);
+  const tracker = useTracker();
+  const { pathname, search } = useLocation();
+  useEffect(() => {
+    tracker.capture('$pageview', {
+      $current_url: window.origin + pathname + search,
+    });
+  }, [pathname, search, tracker]);
 
-	return null;
+  return null;
 };
