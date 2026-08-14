@@ -22,10 +22,12 @@ export function DomainFormActions({
 	isValid = true,
 	onCancel,
 	onSave
-}: Readonly<DomainFormActionsProps>): React.JSX.Element | null {
+}: Readonly<DomainFormActionsProps>): React.JSX.Element {
 	const [t] = useTranslation();
 
-	if (!isDirty) return null;
+	if (!isDirty) {
+		return <Row width="50%" />;
+	}
 
 	return (
 		<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">

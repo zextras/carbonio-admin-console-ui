@@ -12,8 +12,8 @@ import { DomainFormActions } from '../domain-form-actions';
 
 describe('DomainFormActions', () => {
 	describe('Visibility', () => {
-		it('returns null when isDirty is false', async () => {
-			const { container } = await setupBrowserTest(
+		it('hides buttons when isDirty is false', async () => {
+			await setupBrowserTest(
 				<DomainFormActions
 					isDirty={false}
 					onCancel={vi.fn()}
@@ -21,7 +21,8 @@ describe('DomainFormActions', () => {
 				/>
 			);
 
-			expect(container.innerHTML).toBe('');
+			expect(page.getByRole('button', { name: /cancel/i }).elements()).toHaveLength(0);
+			expect(page.getByRole('button', { name: /save/i }).elements()).toHaveLength(0);
 		});
 
 		it('shows Save and Cancel buttons when isDirty is true', async () => {
