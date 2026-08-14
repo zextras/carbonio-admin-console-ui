@@ -352,4 +352,69 @@ describe('DomainGalSettings (browser)', () => {
       await expect.element(page.getByText('Empty Table')).toBeInTheDocument();
     });
   });
+
+  describe('GAL mode switching', () => {
+    it('should show LDAP section after switching to External', async () => {
+      await setupAndRender();
+      await expect.element(page.getByText('LDAP Url')).not.toBeInTheDocument();
+
+      const changeToButton = page.getByRole('button', { name: /change to/i });
+      await changeToButton.click();
+
+      const externalOption = page.getByText('External', { exact: true });
+      await externalOption.click();
+
+      await expect.element(page.getByText('LDAP Url')).toBeInTheDocument();
+    });
+
+    it('should hide LDAP section after switching to Internal', async () => {
+      await setupAndRender([{ n: 'zimbraGalMode', _content: 'ldap' }]);
+      await expect.element(page.getByText('LDAP Url')).toBeInTheDocument();
+
+      const changeToButton = page.getByRole('button', { name: /change to/i });
+      await changeToButton.click();
+
+      const internalOption = page.getByText('Internal', { exact: true });
+      await internalOption.click();
+
+      await expect.element(page.getByText('LDAP Url')).not.toBeInTheDocument();
+    });
+
+    it('should mark form as dirty after mode switch', async () => {
+      await setupAndRender();
+      await expect.element(page.getByRole('button', { name: /save/i })).not.toBeInTheDocument();
+
+      const changeToButton = page.getByRole('button', { name: /change to/i });
+      await changeToButton.click();
+
+      const externalOption = page.getByText('External', { exact: true });
+      await externalOption.click();
+
+      await expect.element(page.getByRole('button', { name: /save/i })).toBeVisible();
+    });
+  });
+
+  describe('Button actions', () => {
+    it('should have CREATE button disabled when no server is selected', async () => {
+      await setupAndRender();
+      const createButton = page.getByRole('button', { name: /^create$/i });
+      await expect.element(createButton).toBeDisabled();
+    });
+
+    it('should have DELETE button disabled when no server is selected', async () => {
+      await setupAndRender();
+      const deleteButton = page.getByRole('button', { name: /^delete$/i });
+      await expect.element(deleteButton).toBeDisabled();
+    });
+
+    it('should enable DELETE when server with GAL account is selected', async () => {
+      await setupAndRender();
+
+      const serverRow = page.getByText('mail1.example.com').first();
+      await serverRow.click();
+
+      const deleteButton = page.getByRole('button', { name: /^delete$/i });
+      await expect.element(deleteButton).toBeEnabled();
+    });
+  });
 });

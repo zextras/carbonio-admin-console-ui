@@ -41,7 +41,7 @@ const TestApp: FC<{
 	const [open, setOpen] = useState(initialOpen);
 	return (
 		<>
-			<button type="button" data-testid="reopen-btn" onClick={(): void => setOpen(true)}>
+			<button type="button" onClick={(): void => setOpen(true)}>
 				Reopen
 			</button>
 			<CreateGalsyncAccountModel
@@ -115,7 +115,7 @@ describe('CreateGalsyncAccountModel (browser)', () => {
 			await userEvent.type(input, 'new-gal');
 			await page.getByRole('button', { name: /GO BACK/i }).click();
 
-			await page.getByTestId('reopen-btn').click();
+			await page.getByRole('button', { name: /reopen/i }).click();
 
 			await expect.element(page.getByLabelText('Account Name')).toHaveValue('');
 		});
@@ -147,7 +147,7 @@ describe('CreateGalsyncAccountModel (browser)', () => {
 		it('closes the modal', async () => {
 			await setup(<TestApp saveHandler={vi.fn()} />);
 
-			await page.getByTestId('icon: Close').click();
+			await page.getByRole('button', { name: /^close$/i }).click();
 
 			await expect.element(page.getByText('Create Account')).not.toBeInTheDocument();
 		});
@@ -157,9 +157,9 @@ describe('CreateGalsyncAccountModel (browser)', () => {
 
 			const input = page.getByLabelText('Account Name');
 			await userEvent.type(input, 'new-gal');
-			await page.getByTestId('icon: Close').click();
+			await page.getByRole('button', { name: /^close$/i }).click();
 
-			await page.getByTestId('reopen-btn').click();
+			await page.getByRole('button', { name: /reopen/i }).click();
 
 			await expect.element(page.getByLabelText('Account Name')).toHaveValue('');
 		});

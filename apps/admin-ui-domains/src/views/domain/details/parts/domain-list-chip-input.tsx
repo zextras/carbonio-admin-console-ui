@@ -6,7 +6,7 @@
 
 import { ChipInput, ChipInputProps, DropdownItem, Row, Tooltip } from '@zextras/ui-components';
 import { useAllConfig } from '@zextras/ui-shared';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DomainsByFeature } from '../../../../../types';
@@ -22,47 +22,38 @@ const DomainListChipInput: FC<{
   const [t] = useTranslation();
   const { data: config = [] } = useAllConfig();
   const [domainOption, setDomainOption] = useState<Array<DropdownItem>>([]);
-  const getAllDomainList = useCallback(
-    (searchQuery: string): void => {
-      getDomainList(searchQuery, 0, 10).then((data) => {
-        const domainListResponse: ZimbraDomainResponse = data?.domain || [];
-        if (domainListResponse && Array.isArray(domainListResponse)) {
-          const domainListArr = domainListResponse.map((domain) => ({
-            label: domain.name,
-            id: domain.name,
-          }));
+  const getAllDomainList = (searchQuery: string): void => {
+    getDomainList(searchQuery, 0, 10).then((data) => {
+      const domainListResponse: ZimbraDomainResponse = data?.domain || [];
+      if (domainListResponse && Array.isArray(domainListResponse)) {
+        const domainListArr = domainListResponse.map((domain) => ({
+          label: domain.name,
+          id: domain.name,
+        }));
 
-          setDomainOption(domainListArr.filter((domain) => domain.id !== domainName));
-        }
-      });
-    },
-    [domainName],
-  );
+        setDomainOption(domainListArr.filter((domain) => domain.id !== domainName));
+      }
+    });
+  };
 
-  const onInputType = useCallback<NonNullable<ChipInputProps['onInputType']>>(
-    ({ textContent }: { textContent: any }) => {
+  const onInputType: NonNullable<ChipInputProps['onInputType']> = ({ textContent }) => {
+    if (textContent) {
       getAllDomainList(textContent);
-    },
-    [getAllDomainList],
-  );
+    }
+  };
 
-  const onChange = useCallback<NonNullable<ChipInputProps['onChange']>>(
-    (domainChipList) => {
-      setDomainList(
-        domainChipList.map((domain) => ({
-          label: domain.label,
-        })),
-      );
-    },
-    [setDomainList],
-  );
-
-  const isEnableSearchAllDomainsByFeature: boolean = useMemo(() => {
-    const carbonioSearchAllDomainsByFeature = config.filter(
-      (item: Record<string, string>) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+  const onChange: NonNullable<ChipInputProps['onChange']> = (domainChipList) => {
+    setDomainList(
+      domainChipList.map((domain) => ({
+        label: domain.label,
+      })),
     );
-    return carbonioSearchAllDomainsByFeature[0]?._content === TRUE;
-  }, [config]);
+  };
+
+  const carbonioSearchAllDomainsByFeature = config.filter(
+    (item: Record<string, string>) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+  );
+  const isEnableSearchAllDomainsByFeature = carbonioSearchAllDomainsByFeature[0]?._content === TRUE;
 
   return (
     <Tooltip

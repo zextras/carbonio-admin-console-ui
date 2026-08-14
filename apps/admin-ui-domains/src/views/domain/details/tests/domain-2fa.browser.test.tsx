@@ -36,7 +36,6 @@ vi.mock('../../two-factor-authentication/2fa-config', () => ({
 	TwoFactorAuthencationConfig: ({ modifyPolicies }: { modifyPolicies: any }) => (
 		<button
 			type="button"
-			data-testid="mock-2fa-modify"
 			onClick={(): void => {
 				modifyPolicies([
 					{
@@ -53,13 +52,17 @@ vi.mock('../../two-factor-authentication/2fa-config', () => ({
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
 
-function setup(ui: ReactElement) {
+const INITIAL_POLICY = [{ WebUI: { trustedDevice: 0, trustedIpRange: [] } }];
+
+function setup(ui: ReactElement, initialPolicies: unknown[] = INITIAL_POLICY) {
 	const queryClient = getQueryClient();
 	queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
 		id: DOMAIN_ID,
 		name: DOMAIN_NAME,
 		a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
 	});
+	// Pre-populate 2fa policies to avoid loading state
+	queryClient.setQueryData(['2fa-policies', DOMAIN_NAME], initialPolicies);
 	return setupBrowserTest(ui, {
 		queryClient,
 		withDomainIdRoute: true,
@@ -102,7 +105,7 @@ describe('DomainTwoFactorAuthentication (browser)', () => {
 				.element(page.getByText('2-Factor-Authentication'))
 				.toBeVisible();
 
-			await page.getByTestId('mock-2fa-modify').click();
+			await page.getByRole('button', { name: /mock 2fa config/i }).click();
 
 			await expect
 				.element(page.getByRole('button', { name: /^save$/i }))
@@ -119,7 +122,7 @@ describe('DomainTwoFactorAuthentication (browser)', () => {
 				.element(page.getByText('2-Factor-Authentication'))
 				.toBeVisible();
 
-			await page.getByTestId('mock-2fa-modify').click();
+			await page.getByRole('button', { name: /mock 2fa config/i }).click();
 			await expect
 				.element(page.getByRole('button', { name: /^cancel$/i }))
 				.toBeVisible();
@@ -140,7 +143,7 @@ describe('DomainTwoFactorAuthentication (browser)', () => {
 				.element(page.getByText('2-Factor-Authentication'))
 				.toBeVisible();
 
-			await page.getByTestId('mock-2fa-modify').click();
+			await page.getByRole('button', { name: /mock 2fa config/i }).click();
 			await page.getByRole('button', { name: /^save$/i }).click();
 
 			expect(mockedSet2faPolicies).toHaveBeenCalled();
@@ -153,7 +156,7 @@ describe('DomainTwoFactorAuthentication (browser)', () => {
 				.element(page.getByText('2-Factor-Authentication'))
 				.toBeVisible();
 
-			await page.getByTestId('mock-2fa-modify').click();
+			await page.getByRole('button', { name: /mock 2fa config/i }).click();
 			await page.getByRole('button', { name: /^save$/i }).click();
 
 			await expect

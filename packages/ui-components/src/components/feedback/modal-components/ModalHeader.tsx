@@ -18,6 +18,7 @@ type ModalHeaderProps = {
 	showCloseIcon?: boolean;
 	onClose?: (event: React.MouseEvent | KeyboardEvent) => void;
 	closeIconTooltip?: string;
+	closeIconAriaLabel?: string;
 };
 
 function ModalHeader({
@@ -27,7 +28,8 @@ function ModalHeader({
 	title,
 	type,
 	closeIconTooltip,
-}: ModalHeaderProps): React.JSX.Element {
+	closeIconAriaLabel = 'Close',
+}: Readonly<ModalHeaderProps>): React.JSX.Element {
 	return (
 		<Row width="100%" padding={{ bottom: 'small' }}>
 			<ds-text
@@ -41,7 +43,14 @@ function ModalHeader({
 			</ds-text>
 			{showCloseIcon && onClose && (
 				<Tooltip label={closeIconTooltip} disabled={!closeIconTooltip}>
-					<Button icon="Close" size="large" onClick={onClose} type="ghost" color="text" />
+					<Button
+						icon="Close"
+						size="large"
+						onClick={onClose}
+						type="ghost"
+						color="text"
+						aria-label={closeIconAriaLabel}
+					/>
 				</Tooltip>
 			)}
 		</Row>

@@ -5,7 +5,7 @@
  */
 import { Button, Container, CustomTextArea, Padding, Tooltip, useSnackbar, } from '@zextras/ui-components';
 import { flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ICertificateContent } from '../../../../../types';
@@ -102,7 +102,7 @@ export const LoadAndVerifyCert: FC<{
     setUploadBtnTgl(false);
   };
 
-  const uploadClickHandler = useCallback((): any => {
+  const uploadClickHandler = (): void => {
     const zimbraId = domainInformation?.find((item: any) => item.n === ZIMBRA_ID)?._content;
     const concatedCertiFile = objDomainCertificate?.content
       ? objDomainCertificate?.content.concat('\n', objDomainCertificateCaChain.content)
@@ -148,19 +148,9 @@ export const LoadAndVerifyCert: FC<{
           replace: true,
         });
       });
-  }, [
-    createSnackbar,
-    domainInformation,
-    externalData,
-    isGlobalAdmin,
-    objDomainCertificate?.content,
-    objDomainCertificateCaChain.content,
-    objDomainCertificatePrivateKey?.content,
-    setToggleWizardSection,
-    t,
-  ]);
+  };
 
-  const verifyCertificateHandler = useCallback((): void => {
+  const verifyCertificateHandler = (): void => {
     if (objDomainCertificate.content === '') {
       setDomainCertiErr(false);
     }
@@ -257,15 +247,7 @@ export const LoadAndVerifyCert: FC<{
         }
       });
     }
-  }, [
-    createSnackbar,
-    isCertificateAvailbale,
-    objDomainCertificate.content,
-    objDomainCertificateCaChain.content,
-    objDomainCertificatePrivateKey.content,
-    t,
-    uploadClickHandler,
-  ]);
+  };
 
   useEffect(() => {
     if (objDomainCertificate.content !== '') {

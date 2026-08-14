@@ -18,7 +18,7 @@ describe('Operations AppView', () => {
 		await expect.element(page.getByText('Home')).toBeVisible();
 
 		// Index redirect lands on the operations list (Running/Queued/Done tabs)
-		await expect.element(page.getByText('Running')).toBeVisible();
+		await expect.element(page.getByText('Running', { exact: true })).toBeVisible();
 		await expect.element(page.getByText('Queued')).toBeVisible();
 		await expect.element(page.getByText('Done')).toBeVisible();
 	});

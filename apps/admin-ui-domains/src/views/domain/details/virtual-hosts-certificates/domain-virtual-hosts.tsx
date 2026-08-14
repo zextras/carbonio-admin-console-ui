@@ -7,7 +7,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, Container, ModalOverlay, Padding, RouteLeavingGuard, Row, useSnackbar, } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
 import { isEqual, mapValues, reduce } from 'lodash-es';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -193,7 +193,7 @@ export const DomainVirtualHosts: FC = () => {
     setToggleLoadVerifyCertWizard(!toggleLoadVerifyCertWizard);
   };
 
-  const getAllCertiDetailsAPICall = useCallback((): void => {
+  const getAllCertiDetailsAPICall = (): void => {
     soapFetch('GetDomainCert', {
       _jsns: ZIMBRA_ADMIN_URN,
       domain: domainId,
@@ -246,7 +246,7 @@ export const DomainVirtualHosts: FC = () => {
           replace: true,
         });
       });
-  }, [createSnackbar, domainId, domainInformation, setIsCertificateAvailable, t]);
+  };
 
   const deleteHandler = (): void => {
     const body: {
