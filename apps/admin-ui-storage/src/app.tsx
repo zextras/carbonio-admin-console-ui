@@ -53,14 +53,13 @@ function App() {
       (item: Record<string, string>) => item?.n && item?.n === LIST_SERVER,
     );
 
-  const managementSection = {
-    id: MANAGE_APP_ID,
-    label: t('label.management', 'Management'),
-    position: 3,
-  };
-
   useEffect(() => {
     if (hasListServerRights) {
+      const primarybarSection = {
+        id: MANAGE_APP_ID,
+        label: t('label.management', 'Management'),
+        position: 3,
+      };
       addRoute({
         route: STORAGES_ROUTE_ID,
         position: 4,
@@ -68,12 +67,12 @@ function App() {
         label: t('label.storage', 'Storage') || '',
         primaryBar: 'HardDriveOutline',
         appView: AppView,
-        primarybarSection: { ...managementSection },
+        primarybarSection,
         tooltip: StorageTooltipView,
         trackerLabel: PRIMARY_BAR_STORAGE,
       });
     }
-  }, [hasListServerRights, managementSection, t]);
+  }, [hasListServerRights, t]);
 
   return null;
 }
