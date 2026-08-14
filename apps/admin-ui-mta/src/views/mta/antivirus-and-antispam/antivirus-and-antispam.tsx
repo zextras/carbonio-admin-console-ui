@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
@@ -38,7 +39,6 @@ import {
   ZIMBRA_VIRUS_WARN_RECIPIENT,
 } from '../../../constants';
 import { useModifyConfig } from '../../../services/use-modify-config';
-import { useAppForm } from '../../../types/app-form-api';
 import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
 import { AntispamSection } from './sections/antispam-section';
 import { AntivirusDefinitionsSection } from './sections/antivirus-definitions-section';
@@ -103,7 +103,7 @@ function MTAAntiVirusAndAntiSpamForm({ configInformation }: MTAAntiVirusAndAntiS
   const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
   const allowSetMTA = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: buildInitialState(configInformation),
     onSubmit: async ({ value }) => {
       const attrs: Array<Record<string, string>> = [];

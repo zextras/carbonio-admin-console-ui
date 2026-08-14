@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { type ChipItem, Container, FormPageLayout } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
@@ -30,7 +31,6 @@ import {
   ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
 } from '../../../constants';
 import { useModifyConfig } from '../../../services/use-modify-config';
-import { useAppForm } from '../../../types/app-form-api';
 import { validateIpAddress } from '../../utility/utils';
 import { GeneralSection } from './sections/general-section';
 import { InstancesSection } from './sections/instances-section';
@@ -129,7 +129,7 @@ function MTAOutBoundFlowForm({ configInformation }: MTAOutBoundFlowFormProps) {
     buildNetworkValue(configInformation),
   );
 
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: buildInitialState(configInformation),
     onSubmit: async ({ value }) => {
       const attributes: Array<Record<string, string>> = [];

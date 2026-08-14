@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, useSnackbar } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
@@ -27,7 +28,6 @@ import {
   ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 } from '../../../constants';
 import { useModifyConfig } from '../../../services/use-modify-config';
-import { useAppForm } from '../../../types/app-form-api';
 import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
 import { LoggingSection } from './sections/logging-section';
 import { MailMessageSizeSection } from './sections/mail-message-size-section';
@@ -93,7 +93,7 @@ function MTAAdvancedForm({ configInformation }: MTAAdvancedFormProps) {
 
   const [isErrorInSmtpdProxy, setIsErrorInSmtpdProxy] = useState<boolean>(false);
 
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: buildInitialState(configInformation),
     onSubmit: async ({ value }) => {
       if (isErrorInSmtpdProxy) {

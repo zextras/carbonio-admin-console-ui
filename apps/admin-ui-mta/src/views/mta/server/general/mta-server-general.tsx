@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
@@ -20,7 +21,6 @@ import {
 import type { ModifyServerResponse } from '../../../../services/modify-server';
 import { useModifyServer } from '../../../../services/use-modify-server';
 import { useServerInformation } from '../../../../services/use-server-information';
-import { useAppForm } from '../../../../types/app-form-api';
 import { validateIpAddress } from '../../../utility/utils';
 import { AntivirusAntispamSection } from './sections/antivirus-antispam-section';
 import { AuthenticationSection } from './sections/authentication-section';
@@ -79,7 +79,7 @@ function MTAServerGeneralForm({
   const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
   const allowSetMTA = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: buildInitialState(serverAttributes),
     onSubmit: async ({ value }) => {
       const id = mtaServerList.find((serverItem) => serverItem?.name === serverName)?.id;

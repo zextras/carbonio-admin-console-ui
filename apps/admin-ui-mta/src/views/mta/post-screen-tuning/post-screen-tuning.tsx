@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, ListRow, SelectItem } from '@zextras/ui-components';
 import { useAllConfig, useLocalStorage } from '@zextras/ui-shared';
@@ -31,7 +32,6 @@ import {
   ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION,
 } from '../../../constants';
 import { useModifyConfig } from '../../../services/use-modify-config';
-import { useAppForm } from '../../../types/app-form-api';
 import { BlacklistingSection } from './sections/blacklisting-section';
 import { DnsBlacklistingSection } from './sections/dns-blacklisting-section';
 import { TuningSection } from './sections/tuning-section';
@@ -91,7 +91,7 @@ function MTAPostScreenTuningForm({ configInformation }: MTAPostScreenTuningFormP
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
   const [isShowBanner, setIsShowBanner] = useLocalStorage(IS_SHOW_POST_TUNING_BANNER, true);
 
-  const form = useAppForm({
+  const form = useForm({
     defaultValues: buildInitialState(configInformation),
     onSubmit: async ({ value }) => {
       const attrs: Array<Record<string, string>> = [];
