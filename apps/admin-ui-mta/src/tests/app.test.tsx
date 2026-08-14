@@ -4,22 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { type Mock, vi } from 'vitest';
 
 vi.mock('@zextras/ui-components', () => ({
-  PrimaryBarTooltip: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="primary-bar-tooltip">{children}</div>
-  ),
+  PrimaryBarTooltip: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => [(key: string, fallback?: string) => fallback || key, { i18n: {} }],
-  Trans: ({ defaults }: { defaults: string }) => <>{defaults}</>,
+  Trans: ({ defaults }: { defaults: string }) => <>{defaults.replace(/<\/?bold>/g, '')}</>,
 }));
 
 vi.mock('../views/app-view', () => ({
-  AppView: () => <div data-testid="app-view" />,
+  AppView: () => <div />,
 }));
 
 import { addRoute, removeRoute, useHasAllRights } from '@zextras/ui-shared';
@@ -82,7 +80,8 @@ describe('App', () => {
   });
 
   it('should render MtaTooltipView content', () => {
-    const { getByTestId } = render(<MtaTooltipView />);
-    expect(getByTestId('primary-bar-tooltip')).toBeDefined();
+    render(<MtaTooltipView />);
+    expect(screen.getByText('MTA')).toBeDefined();
+    expect(screen.getByText('Mail Transfer Agent')).toBeDefined();
   });
 });

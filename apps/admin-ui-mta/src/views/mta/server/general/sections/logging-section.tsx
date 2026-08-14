@@ -24,11 +24,11 @@ type LoggingSectionProps = Readonly<{
   configInformation: Array<ConfigItem>;
 }>;
 
-export function LoggingSection({
+export const LoggingSection = ({
   form,
   mtaServerSpecificGeneralDetail,
   configInformation,
-}: LoggingSectionProps) {
+}: LoggingSectionProps) => {
   const [t] = useTranslation();
 
   const amavisLogLevelOptions = [

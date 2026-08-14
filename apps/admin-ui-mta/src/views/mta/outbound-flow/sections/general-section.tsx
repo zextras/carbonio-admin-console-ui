@@ -26,12 +26,12 @@ type GeneralSectionProps = {
   onBlockExtensionChange: (ips: Array<ChipItem<string>>) => void;
 };
 
-export function GeneralSection({
+export const GeneralSection = ({
   form,
   networkValue,
   allowSetMTA,
   onBlockExtensionChange,
-}: Readonly<GeneralSectionProps>) {
+}: Readonly<GeneralSectionProps>) => {
   const [t] = useTranslation();
 
   const tlsSecurityOptions = [

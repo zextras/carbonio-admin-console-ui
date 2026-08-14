@@ -51,14 +51,14 @@ type MTAServerGeneralFormProps = Readonly<{
   refetchServerSpecific: ServerQueryRefetch;
 }>;
 
-function MTAServerGeneralForm({
+const MTAServerGeneralForm = ({
   serverName,
   serverAttributes,
   serverSpecificAttributes,
   configInformation,
   refetchServer,
   refetchServerSpecific,
-}: MTAServerGeneralFormProps) {
+}: MTAServerGeneralFormProps) => {
   const [t] = useTranslation();
   const { data: rights } = useCurrentUserRights();
   const { data: mtaServerList = [] } = useMtaServers();
@@ -175,7 +175,7 @@ function MTAServerGeneralForm({
   );
 }
 
-export function MTAServerGeneral() {
+export const MTAServerGeneral = () => {
   const { server } = useParams();
   const { data: configInformation = [] } = useAllConfig();
 

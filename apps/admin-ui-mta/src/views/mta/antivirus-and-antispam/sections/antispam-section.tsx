@@ -17,13 +17,13 @@ type AntispamSectionProps = Readonly<{
   discardPassOptions: Array<SelectItem>;
 }>;
 
-export function AntispamSection({
+export const AntispamSection = ({
   form,
   allowSetMTA,
   spamTagPercentOptions,
   spamKillPercentOptions,
   discardPassOptions,
-}: AntispamSectionProps) {
+}: AntispamSectionProps) => {
   const [t] = useTranslation();
 
   return (

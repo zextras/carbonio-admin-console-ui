@@ -4,13 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, DefaultTabBarItem, type DefaultTabBarItemProps } from '@zextras/ui-components';
-import { ReactElement } from 'react';
 
-export function ReusedDefaultTabBar({
+export const ReusedDefaultTabBar = ({
   item,
   selected,
   onClick,
-}: Readonly<DefaultTabBarItemProps>): ReactElement {
+}: Readonly<DefaultTabBarItemProps>) => {
   const count = (item as { count?: number }).count;
   return (
     <DefaultTabBarItem

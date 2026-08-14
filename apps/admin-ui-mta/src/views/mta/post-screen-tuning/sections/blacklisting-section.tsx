@@ -22,12 +22,12 @@ const containerStyle = {
   marginBottom: '0.938rem',
 };
 
-export function BlacklistingSection({
+export const BlacklistingSection = ({
   form,
   isShowBanner,
   setIsShowBanner,
   ignoreEnforceDropOptions,
-}: BlacklistingSectionProps) {
+}: BlacklistingSectionProps) => {
   const [t] = useTranslation();
 
   return (
@@ -90,6 +90,7 @@ export function BlacklistingSection({
               color={'text'}
               icon="CloseOutline"
               size="large"
+              aria-label={t('label.close', 'Close')}
               onClick={(): void => {
                 setIsShowBanner(false);
               }}

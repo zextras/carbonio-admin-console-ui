@@ -14,7 +14,7 @@ import { MTADetailPanel } from './mta/mta-detail-panel';
 import { MTAListPanel } from './mta/mta-list-panel';
 import { SECTION_ROUTES } from './mta/mta-section-routes';
 
-export function AppView() {
+export const AppView = () => {
   const [t] = useTranslation();
   const { pathname } = useLocation();
   const detailViewMaxWidth = useDetailViewMaxWidth();

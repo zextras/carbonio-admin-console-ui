@@ -85,7 +85,7 @@ type MTAAdvancedFormProps = Readonly<{
   configInformation: Array<Record<string, string>>;
 }>;
 
-function MTAAdvancedForm({ configInformation }: MTAAdvancedFormProps) {
+const MTAAdvancedForm = ({ configInformation }: MTAAdvancedFormProps) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
@@ -109,83 +109,54 @@ function MTAAdvancedForm({ configInformation }: MTAAdvancedFormProps) {
       }
 
       const attributes: Array<Record<string, string>> = [];
-      attributes.push({
-        n: ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
-        _content: value.zimbraMtaSmtpdClientPortLogging ? 'yes' : 'no',
-      });
-      if (value.zimbraAmavisLogLevel) {
-        attributes.push({
-          n: ZIMBRA_AMAVIS_LOG_LEVEL,
-          _content: value.zimbraAmavisLogLevel,
-        });
-      }
-      if (value.zimbraAmavisSALogLevel) {
-        attributes.push({
-          n: ZIMBRA_AMAVIS_SA_LOG_LEVEL,
-          _content: value.zimbraAmavisSALogLevel,
-        });
-      }
-      if (value.zimbraMtaSmtpdTlsLoglevel) {
-        attributes.push({
-          n: ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-          _content: value.zimbraMtaSmtpdTlsLoglevel,
-        });
-      }
-      if (value.zimbraMtaLmtpTlsLoglevel) {
-        attributes.push({
-          n: ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
-          _content: value.zimbraMtaLmtpTlsLoglevel,
-        });
-      }
-      if (value.zimbraClamAVMaxThreads) {
-        attributes.push({
-          n: ZIMBRA_CLAM_AV_MAX_THREADS,
-          _content: value.zimbraClamAVMaxThreads,
-        });
-      }
-      if (value.zimbraLmtpNumThreads) {
-        attributes.push({
-          n: ZIMBRA_LMTP_NUM_THREADS,
-          _content: value.zimbraLmtpNumThreads,
-        });
-      }
-      if (value.zimbraMilterNumThreads) {
-        attributes.push({
-          n: ZIMBRA_MITER_NUM_THREADS,
-          _content: value.zimbraMilterNumThreads,
-        });
-      }
-
-      if (value.limitMaxMessageSize === false) {
-        attributes.push({
-          n: ZIMBRA_MTA_MESSAGE_SIZE,
-          _content: '',
-        });
-      } else if (value.zimbraMtaMaxMessageSize) {
-        attributes.push({
-          n: ZIMBRA_MTA_MESSAGE_SIZE,
-          _content: mbToBytes(Number(value.zimbraMtaMaxMessageSize)).toString(),
-        });
-      }
-
-      if (value.zimbraMilterMaxConnections) {
-        attributes.push({
-          n: ZIMBRA_MILTER_MAX_CONNECTIONS,
-          _content: value.zimbraMilterMaxConnections,
-        });
-      }
-
-      attributes.push({
-        n: ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
-        _content: value.zimbraMtaSmtpSaslAuthEnable ? 'yes' : 'no',
-      });
-
-      attributes.push({
-        n: ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
-        _content: value.zimbraMtaSmtpdSenderLoginMaps
-          ? value.zimbraMtaSmtpdSenderLoginMaps
-          : '',
-      });
+      attributes.push(
+        {
+          n: ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
+          _content: value.zimbraMtaSmtpdClientPortLogging ? 'yes' : 'no',
+        },
+        ...(value.zimbraAmavisLogLevel
+          ? [{ n: ZIMBRA_AMAVIS_LOG_LEVEL, _content: value.zimbraAmavisLogLevel }]
+          : []),
+        ...(value.zimbraAmavisSALogLevel
+          ? [{ n: ZIMBRA_AMAVIS_SA_LOG_LEVEL, _content: value.zimbraAmavisSALogLevel }]
+          : []),
+        ...(value.zimbraMtaSmtpdTlsLoglevel
+          ? [{ n: ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL, _content: value.zimbraMtaSmtpdTlsLoglevel }]
+          : []),
+        ...(value.zimbraMtaLmtpTlsLoglevel
+          ? [{ n: ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL, _content: value.zimbraMtaLmtpTlsLoglevel }]
+          : []),
+        ...(value.zimbraClamAVMaxThreads
+          ? [{ n: ZIMBRA_CLAM_AV_MAX_THREADS, _content: value.zimbraClamAVMaxThreads }]
+          : []),
+        ...(value.zimbraLmtpNumThreads
+          ? [{ n: ZIMBRA_LMTP_NUM_THREADS, _content: value.zimbraLmtpNumThreads }]
+          : []),
+        ...(value.zimbraMilterNumThreads
+          ? [{ n: ZIMBRA_MITER_NUM_THREADS, _content: value.zimbraMilterNumThreads }]
+          : []),
+        ...(value.limitMaxMessageSize === false
+          ? [{ n: ZIMBRA_MTA_MESSAGE_SIZE, _content: '' }]
+          : value.zimbraMtaMaxMessageSize
+            ? [
+                {
+                  n: ZIMBRA_MTA_MESSAGE_SIZE,
+                  _content: mbToBytes(Number(value.zimbraMtaMaxMessageSize)).toString(),
+                },
+              ]
+            : []),
+        ...(value.zimbraMilterMaxConnections
+          ? [{ n: ZIMBRA_MILTER_MAX_CONNECTIONS, _content: value.zimbraMilterMaxConnections }]
+          : []),
+        {
+          n: ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,
+          _content: value.zimbraMtaSmtpSaslAuthEnable ? 'yes' : 'no',
+        },
+        {
+          n: ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
+          _content: value.zimbraMtaSmtpdSenderLoginMaps ? value.zimbraMtaSmtpdSenderLoginMaps : '',
+        },
+      );
 
       try {
         await modifyConfigAsync(attributes);
@@ -241,7 +212,7 @@ function MTAAdvancedForm({ configInformation }: MTAAdvancedFormProps) {
   );
 }
 
-export function MTAAdvanced() {
+export const MTAAdvanced = () => {
   const { data: configInformation = [] } = useAllConfig();
 
   if (!configInformation.length) {

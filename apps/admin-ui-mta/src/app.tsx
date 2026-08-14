@@ -12,7 +12,7 @@ import { MANAGE_APP_ID, MTA_ROUTE_ID, PRIMARY_BAR_MTA } from './constants';
 import { AppView } from './views/app-view';
 import { MtaTooltipView } from './views/mta-tooltip-view';
 
-function App() {
+const App = () => {
   const [t] = useTranslation();
   const hasAllConfigRights = useHasAllRights();
 

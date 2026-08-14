@@ -26,12 +26,12 @@ type AntivirusAntispamSectionProps = Readonly<{
   allowSetMTA: boolean;
 }>;
 
-export function AntivirusAntispamSection({
+export const AntivirusAntispamSection = ({
   form,
   mtaServerSpecificGeneralDetail,
   configInformation,
   allowSetMTA,
-}: AntivirusAntispamSectionProps) {
+}: AntivirusAntispamSectionProps) => {
   const [t] = useTranslation();
 
   return (

@@ -48,7 +48,7 @@ function extractQueueStats(
   };
 }
 
-export function MTAStats() {
+export const MTAStats = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const queryClient = useQueryClient();

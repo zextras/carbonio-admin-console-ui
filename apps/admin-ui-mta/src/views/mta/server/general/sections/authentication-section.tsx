@@ -35,7 +35,7 @@ type AuthenticationSectionProps = Readonly<{
   onResetMyNetwork: () => void;
 }>;
 
-export function AuthenticationSection({
+export const AuthenticationSection = ({
   form,
   mtaServerSpecificGeneralDetail,
   configInformation,
@@ -44,7 +44,7 @@ export function AuthenticationSection({
   allowSetMTA,
   onBlockExtensionChange,
   onResetMyNetwork,
-}: AuthenticationSectionProps) {
+}: AuthenticationSectionProps) => {
   const [t] = useTranslation();
 
   return (

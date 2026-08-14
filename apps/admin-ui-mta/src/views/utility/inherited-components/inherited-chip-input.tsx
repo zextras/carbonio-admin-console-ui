@@ -43,7 +43,7 @@ function normalizeChipValue(value: ChipValue): Array<{ label?: string }> {
 	return [];
 }
 
-export function InheritedChipInput({
+export const InheritedChipInput = ({
 	placeholder,
 	requireUniqueChips,
 	subValue,
@@ -57,7 +57,7 @@ export function InheritedChipInput({
 	pref = {},
 	description,
 	ChipComponent,
-}: InheritedChipInputProps) {
+}: InheritedChipInputProps) => {
 	const [t] = useTranslation();
 
 	return (

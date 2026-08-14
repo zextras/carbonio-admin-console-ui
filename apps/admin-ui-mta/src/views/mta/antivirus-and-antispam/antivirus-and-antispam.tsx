@@ -85,7 +85,7 @@ type MTAAntiVirusAndAntiSpamFormProps = Readonly<{
   configInformation: Array<Record<string, string>>;
 }>;
 
-function MTAAntiVirusAndAntiSpamForm({ configInformation }: MTAAntiVirusAndAntiSpamFormProps) {
+const MTAAntiVirusAndAntiSpamForm = ({ configInformation }: MTAAntiVirusAndAntiSpamFormProps) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
@@ -432,7 +432,7 @@ function MTAAntiVirusAndAntiSpamForm({ configInformation }: MTAAntiVirusAndAntiS
   );
 }
 
-export function MTAAntiVirusAndAntiSpam() {
+export const MTAAntiVirusAndAntiSpam = () => {
   const { data: configInformation = [] } = useAllConfig();
 
   if (!configInformation.length) {

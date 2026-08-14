@@ -7,7 +7,7 @@
 import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { Trans, useTranslation } from 'react-i18next';
 
-export function MtaTooltipView() {
+export const MtaTooltipView = () => {
   const [t] = useTranslation();
   return (
     <PrimaryBarTooltip>

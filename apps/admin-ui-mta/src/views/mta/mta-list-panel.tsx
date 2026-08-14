@@ -24,7 +24,7 @@ import type { DropdownItem, MtaServer } from '../../types/mta';
 import { ListPanelItem } from '../list/list-panel-item';
 import { SECTION_ROUTES } from './mta-section-routes';
 
-export function MTAListPanel() {
+export const MTAListPanel = () => {
   const [t] = useTranslation();
 
   const [isMtaSettingsExpanded, setIsMtaSettingsExpanded] = useState(true);

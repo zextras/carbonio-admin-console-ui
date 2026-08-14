@@ -106,13 +106,13 @@ function parseQueueItems(serverData: { queue?: Array<{ qi?: Array<Record<string,
   return { items, total };
 }
 
-export function MTAStatsMail({
+export const MTAStatsMail = ({
   serverState,
   closeDialogMail,
   flushQueues,
   requestInprogress,
   flushRequestInProgress,
-}: MTAStatsMailProps) {
+}: MTAStatsMailProps) => {
   const [t] = useTranslation();
   const queryClient = useQueryClient();
   const { mutateAsync: batchMailQueueActionAsync } = useBatchMailQueueAction();

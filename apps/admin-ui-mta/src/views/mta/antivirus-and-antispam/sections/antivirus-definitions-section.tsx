@@ -55,7 +55,7 @@ type AntivirusDefinitionsSectionProps = Readonly<{
   removeAdditionalAntivirusDefinition: () => void;
 }>;
 
-export function AntivirusDefinitionsSection({
+export const AntivirusDefinitionsSection = ({
   form,
   allowSetMTA,
   intervalOptions,
@@ -80,7 +80,7 @@ export function AntivirusDefinitionsSection({
   isShowRemoveAlertDialog,
   setIsShowRemoveAlertDialog,
   removeAdditionalAntivirusDefinition,
-}: AntivirusDefinitionsSectionProps) {
+}: AntivirusDefinitionsSectionProps) => {
   const [t] = useTranslation();
 
   return (

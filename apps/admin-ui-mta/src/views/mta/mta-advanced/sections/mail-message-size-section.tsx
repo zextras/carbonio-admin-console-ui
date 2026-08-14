@@ -13,10 +13,10 @@ type MailMessageSizeSectionProps = {
   allowSetMTA: boolean;
 };
 
-export function MailMessageSizeSection({
+export const MailMessageSizeSection = ({
   form,
   allowSetMTA,
-}: Readonly<MailMessageSizeSectionProps>) {
+}: Readonly<MailMessageSizeSectionProps>) => {
   const [t] = useTranslation();
 
   return (

@@ -22,7 +22,7 @@ type DnsBlacklistingSectionProps = Readonly<{
   onDNSTTLUnitChange: (v: SelectValue) => void;
 }>;
 
-export function DnsBlacklistingSection({
+export const DnsBlacklistingSection = ({
   form,
   ignoreEnforceDropOptions,
   intervalOptions,
@@ -32,7 +32,7 @@ export function DnsBlacklistingSection({
   onDNSMinTTLUnitChange,
   onDNSMaxTTLUnitChange,
   onDNSTTLUnitChange,
-}: DnsBlacklistingSectionProps) {
+}: DnsBlacklistingSectionProps) => {
   const [t] = useTranslation();
 
   return (

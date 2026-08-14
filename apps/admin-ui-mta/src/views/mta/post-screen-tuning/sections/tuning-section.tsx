@@ -22,7 +22,7 @@ type TuningSectionProps = Readonly<{
   onPipelinginTTLUnitChange: (v: SelectValue) => void;
 }>;
 
-export function TuningSection({
+export const TuningSection = ({
   form,
   ignoreEnforceDropOptions,
   intervalOptions,
@@ -32,7 +32,7 @@ export function TuningSection({
   onBareNewLineTTLUnitChange,
   onNonSMTPCommandTTLUnitChange,
   onPipelinginTTLUnitChange,
-}: TuningSectionProps) {
+}: TuningSectionProps) => {
   const [t] = useTranslation();
 
   return (

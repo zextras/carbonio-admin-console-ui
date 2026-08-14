@@ -15,12 +15,12 @@ type TuningSectionProps = {
   onSenderLoginMapsChange: (value: string) => void;
 };
 
-export function TuningSection({
+export const TuningSection = ({
   form,
   allowSetMTA,
   isErrorInSmtpdProxy,
   onSenderLoginMapsChange,
-}: Readonly<TuningSectionProps>) {
+}: Readonly<TuningSectionProps>) => {
   const [t] = useTranslation();
 
   return (

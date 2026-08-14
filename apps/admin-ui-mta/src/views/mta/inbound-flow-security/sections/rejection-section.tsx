@@ -13,7 +13,7 @@ type RejectionSectionProps = {
   allowSetMTA: boolean;
 };
 
-export function RejectionSection({ form, allowSetMTA }: Readonly<RejectionSectionProps>) {
+export const RejectionSection = ({ form, allowSetMTA }: Readonly<RejectionSectionProps>) => {
   const [t] = useTranslation();
 
   return (

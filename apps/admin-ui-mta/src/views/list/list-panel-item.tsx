@@ -13,11 +13,11 @@ type ListPanelItemProps = {
   setToggleView: () => void;
 };
 
-export function ListPanelItem({
+export const ListPanelItem = ({
   title,
   isListExpanded,
   setToggleView,
-}: Readonly<ListPanelItemProps>) {
+}: Readonly<ListPanelItemProps>) => {
   const [t] = useTranslation();
   const ariaLabel = isListExpanded
     ? t('label.collapse', 'Collapse')

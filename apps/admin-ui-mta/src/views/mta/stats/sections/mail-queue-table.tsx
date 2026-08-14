@@ -28,7 +28,7 @@ type MailQueueTableProps = Readonly<{
   onSelectionChange: (selected: Array<string>) => void;
 }>;
 
-export function MailQueueTable({
+export const MailQueueTable = ({
   mailRows,
   selectedRow,
   isMailQueueLoading,
@@ -37,7 +37,7 @@ export function MailQueueTable({
   setOffset,
   setLimit,
   onSelectionChange,
-}: MailQueueTableProps) {
+}: MailQueueTableProps) => {
   const [t] = useTranslation();
 
   const headers = [

@@ -86,7 +86,7 @@ type MTAPostScreenTuningFormProps = Readonly<{
   configInformation: Array<Record<string, string>>;
 }>;
 
-function MTAPostScreenTuningForm({ configInformation }: MTAPostScreenTuningFormProps) {
+const MTAPostScreenTuningForm = ({ configInformation }: MTAPostScreenTuningFormProps) => {
   const [t] = useTranslation();
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
   const [isShowBanner, setIsShowBanner] = useLocalStorage(IS_SHOW_POST_TUNING_BANNER, true);
@@ -279,7 +279,7 @@ function MTAPostScreenTuningForm({ configInformation }: MTAPostScreenTuningFormP
   );
 }
 
-export function MTAPostScreenTuning() {
+export const MTAPostScreenTuning = () => {
   const { data: configInformation = [] } = useAllConfig();
 
   if (!configInformation.length) {

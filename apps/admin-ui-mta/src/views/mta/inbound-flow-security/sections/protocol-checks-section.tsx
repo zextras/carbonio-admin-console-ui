@@ -13,10 +13,10 @@ type ProtocolChecksSectionProps = {
   allowSetMTA: boolean;
 };
 
-export function ProtocolChecksSection({
+export const ProtocolChecksSection = ({
   form,
   allowSetMTA,
-}: Readonly<ProtocolChecksSectionProps>) {
+}: Readonly<ProtocolChecksSectionProps>) => {
   const [t] = useTranslation();
 
   return (

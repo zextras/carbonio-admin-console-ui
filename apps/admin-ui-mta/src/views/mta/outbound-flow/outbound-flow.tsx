@@ -119,7 +119,7 @@ type MTAOutBoundFlowFormProps = Readonly<{
   configInformation: Array<Record<string, string>>;
 }>;
 
-function MTAOutBoundFlowForm({ configInformation }: MTAOutBoundFlowFormProps) {
+const MTAOutBoundFlowForm = ({ configInformation }: MTAOutBoundFlowFormProps) => {
   const [t] = useTranslation();
   const { mutateAsync: modifyConfigAsync } = useModifyConfig();
   const { data: mtaServersList = [] } = useMtaServers();
@@ -194,7 +194,7 @@ function MTAOutBoundFlowForm({ configInformation }: MTAOutBoundFlowFormProps) {
   const instancesTableRows: Array<TRow> = [];
   if (mtaServersList && mtaServersList.length > 0) {
     mtaServersList.forEach((server: Server) => {
-      if (server && server?.a && Array.isArray(server?.a) && server?.a.length > 0) {
+      if (server?.a?.length) {
         setTableValues(server, instancesTableRows, t);
       }
     });
@@ -250,7 +250,7 @@ function MTAOutBoundFlowForm({ configInformation }: MTAOutBoundFlowFormProps) {
   );
 }
 
-export function MTAOutBoundFlow() {
+export const MTAOutBoundFlow = () => {
   const { data: configInformation = [] } = useAllConfig();
 
   if (!configInformation.length) {

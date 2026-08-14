@@ -18,9 +18,9 @@ type InstancesSectionProps = {
   instancesTableRows: Array<TRow>;
 };
 
-export function InstancesSection({
+export const InstancesSection = ({
   instancesTableRows,
-}: Readonly<InstancesSectionProps>) {
+}: Readonly<InstancesSectionProps>) => {
   const [t] = useTranslation();
 
   const instanceTableHeader = [

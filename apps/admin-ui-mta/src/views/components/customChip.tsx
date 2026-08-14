@@ -13,7 +13,7 @@ function copyClipboard(label: string): void {
   navigator.clipboard.writeText(label);
 }
 
-export function CustomChip(props: Readonly<CustomChipProps>) {
+export const CustomChip = (props: Readonly<CustomChipProps>) => {
   const label = typeof props?.label === 'string' ? props.label : '';
   const actions: ComponentProps<typeof Chip>['actions'] = props?.actions ?? [
     {

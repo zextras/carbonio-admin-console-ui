@@ -185,7 +185,7 @@ describe('MTAPostScreenTuning', () => {
       )
       .toBeVisible();
 
-    await page.getByTestId('icon: CloseOutline').click();
+    await page.getByRole('button', { name: 'Close' }).click();
 
     await expect
       .poll(

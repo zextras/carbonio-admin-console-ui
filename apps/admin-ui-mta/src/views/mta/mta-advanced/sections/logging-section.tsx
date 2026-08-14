@@ -13,7 +13,7 @@ type LoggingSectionProps = {
   allowSetMTA: boolean;
 };
 
-export function LoggingSection({ form, allowSetMTA }: Readonly<LoggingSectionProps>) {
+export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionProps>) => {
   const [t] = useTranslation();
 
   const amavisLogLevelOptions = [

@@ -21,7 +21,7 @@ type MailQueueActionsProps = Readonly<{
   flushQueues: () => void;
 }>;
 
-export function MailQueueActions({
+export const MailQueueActions = ({
   selectedRowCount,
   holdInProgress,
   releaseInProgress,
@@ -34,7 +34,7 @@ export function MailQueueActions({
   onRequeuePress,
   onDeletePress,
   flushQueues,
-}: MailQueueActionsProps) {
+}: MailQueueActionsProps) => {
   const [t] = useTranslation();
 
   return (

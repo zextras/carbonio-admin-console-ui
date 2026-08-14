@@ -9,7 +9,7 @@ import { Route, Routes } from 'react-router';
 
 import { SECTION_ROUTES } from './mta-section-routes';
 
-function EmptyState() {
+const EmptyState = () => {
   const [t] = useTranslation();
   return (
     <Container height="fill" mainAlignment="center" crossAlignment="center">
@@ -22,7 +22,7 @@ function EmptyState() {
   );
 }
 
-export function MTADetailPanel() {
+export const MTADetailPanel = () => {
   return (
     <Container
       orientation="column"

@@ -17,13 +17,13 @@ type SettingsSectionProps = {
   onCommonBlockExtensionAdd: () => void;
 };
 
-export function SettingsSection({
+export const SettingsSection = ({
   form,
   mtaBlockExtension,
   allowSetMTA,
   onBlockExtensionChange,
   onCommonBlockExtensionAdd,
-}: Readonly<SettingsSectionProps>) {
+}: Readonly<SettingsSectionProps>) => {
   const [t] = useTranslation();
 
   return (
