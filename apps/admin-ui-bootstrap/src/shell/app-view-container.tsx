@@ -7,30 +7,23 @@
 import { Container } from '@zextras/ui-components';
 import { useAppList, useAppRoutes, useAppStore } from '@zextras/ui-shared';
 import { find, map } from 'lodash-es';
-import { useMemo } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
 
 const FirstAppRedirect = () => {
   const apps = useAppList();
   const routes = useAppRoutes();
   const location = useLocation();
-  const mainRoute = useMemo(
-    () => find(routes, (r) => apps[0]?.name === r.app)?.path,
-    [apps, routes],
-  );
+  const mainRoute = find(routes, (r) => apps[0]?.name === r.app)?.path;
   return mainRoute && location?.pathname === '/' ? <Navigate to={`/${mainRoute}`} replace /> : null;
 };
 
 export default function AppViewContainer() {
   const appViews = useAppStore((s) => s.views.appView);
-  const routes = useMemo(
-    () => [
-      ...map(appViews, (view) => (
-        <Route key={view.id} path={`/${view.path}/*`} element={<view.component />} />
-      )),
-    ],
-    [appViews],
-  );
+  const routes = [
+    ...map(appViews, (view) => (
+      <Route key={view.id} path={`/${view.path}/*`} element={<view.component />} />
+    )),
+  ];
 
   return (
     <Container

@@ -12,7 +12,7 @@ import {
   useUtilityBarStore,
 } from '@zextras/ui-shared';
 import { map, sortBy, trim } from 'lodash-es';
-import React, { FC, useCallback, useRef, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 import BadgeWrap from './badge-wrap';
@@ -89,9 +89,9 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
   const isOpen = useUtilityBarStore((s) => s.primaryBarState);
 
   const setIsOpen = useUtilityBarStore((s) => s.setPrimaryBarState);
-  const onCollapserClick = useCallback(() => {
+  const onCollapserClick = () => {
     setIsOpen(!isOpen);
-  }, [isOpen, setIsOpen]);
+  };
   const primaryBarViews = useAppStore((s) => s.views.primaryBar);
   const primarybarSections = useAppStore((s) => s.views.primarybarSections);
   const navigate = useNavigate();
@@ -107,7 +107,7 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
 
   let primaryBarViewWithSection: Array<any> = [];
   if (primaryBarViews.length > 0) {
-    let allPrimaryBarView = primaryBarViews.filter(
+    const allPrimaryBarView: Array<any> = primaryBarViews.filter(
       (item) => item.section === undefined || !item.section,
     );
     if (primarybarSections.length > 0) {

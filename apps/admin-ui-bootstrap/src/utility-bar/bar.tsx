@@ -16,7 +16,7 @@ import {
   UtilityView,
 } from '@zextras/ui-shared';
 import { map, noop } from 'lodash-es';
-import { FC, useCallback, useMemo } from 'react';
+import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IconName } from '../../../../packages/ui-components/src/web-components/icon-registry';
@@ -24,10 +24,10 @@ import { openLink, useUtilityViews } from './utils';
 
 const UtilityBarItem: FC<{ view: UtilityView }> = ({ view }) => {
   const { mode, setMode, current, setCurrent } = useUtilityBarStore();
-  const onClick = useCallback((): void => {
+  const onClick = (): void => {
     setMode(current !== view.id ? 'open' : mode !== 'open' ? 'open' : 'closed');
     setCurrent(view.id);
-  }, [current, mode, setCurrent, setMode, view.id]);
+  };
   if (typeof view.button === 'string') {
     return (
       <Tooltip label={view.label} placement="bottom-end">
@@ -62,25 +62,22 @@ export const ShellUtilityBar: FC = () => {
     ? helpDocumentationUrlAttribute || CARBONIO_CE_ADMIN_DOCUMENTATION_URL
     : CARBONIO_CE_ADMIN_DOCUMENTATION_URL;
   const [t] = useTranslation();
-  const accountItems = useMemo(
-    () => [
-      {
-        id: 'help',
-        label: t('label.help_and_documentation', 'Help & Documentation'),
-        onClick: () => openLink(helpDocumentationUrl),
-        icon: 'QuestionMarkOutline' as IconName,
+  const accountItems = [
+    {
+      id: 'help',
+      label: t('label.help_and_documentation', 'Help & Documentation'),
+      onClick: () => openLink(helpDocumentationUrl),
+      icon: 'QuestionMarkOutline' as IconName,
+    },
+    {
+      id: 'logout',
+      label: t('label.logout', 'Logout'),
+      onClick: (): void => {
+        logout();
       },
-      {
-        id: 'logout',
-        label: t('label.logout', 'Logout'),
-        onClick: (): void => {
-          logout();
-        },
-        icon: 'LogOut' as IconName,
-      },
-    ],
-    [helpDocumentationUrl, t],
-  );
+      icon: 'LogOut' as IconName,
+    },
+  ];
 
   return (
     <Container orientation="horizontal" width="fit">

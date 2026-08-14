@@ -13,7 +13,7 @@ import {
   useAppList,
 } from '@zextras/ui-shared';
 import { groupBy, noop, reduce } from 'lodash-es';
-import { type FC, useCallback, useMemo, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
@@ -34,26 +34,23 @@ const useSecondaryActions = (
 ): Array<DropdownItem> => {
   const apps = useAppList();
 
-  const byApp = useMemo(() => groupBy(actions, 'group'), [actions]);
-  return useMemo(
-    () => [
-      ...(byApp[activeRoute?.app ?? ''] ?? []).map(toDropdownItem),
-      ...reduce(
-        apps,
-        (acc, app, i) => {
-          if (app.name !== activeRoute?.app && byApp[app.name]?.length > 0) {
-            acc.push(
-              { id: `divider-${i}`, label: '', type: 'divider' },
-              ...byApp[app.name].map(toDropdownItem),
-            );
-          }
-          return acc;
-        },
-        [] as Array<DropdownItem>,
-      ),
-    ],
-    [activeRoute?.app, apps, byApp],
-  );
+  const byApp = groupBy(actions, 'group');
+  return [
+    ...(byApp[activeRoute?.app ?? ''] ?? []).map(toDropdownItem),
+    ...reduce(
+      apps,
+      (acc, app, i) => {
+        if (app.name !== activeRoute?.app && byApp[app.name]?.length > 0) {
+          acc.push(
+            { id: `divider-${i}`, label: '', type: 'divider' },
+            ...byApp[app.name].map(toDropdownItem),
+          );
+        }
+        return acc;
+      },
+      [] as Array<DropdownItem>,
+    ),
+  ];
 };
 
 export const CreationButton: FC<{ activeRoute?: AppRoute }> = ({ activeRoute }) => {
@@ -63,12 +60,12 @@ export const CreationButton: FC<{ activeRoute?: AppRoute }> = ({ activeRoute }) 
   const [open, setOpen] = useState(false);
   const secondaryActions = useSecondaryActions(actions, activeRoute);
 
-  const onClose = useCallback(() => {
+  const onClose = () => {
     setOpen(false);
-  }, []);
-  const onOpen = useCallback(() => {
+  };
+  const onOpen = () => {
     setOpen(true);
-  }, []);
+  };
   return (
     <Dropdown items={secondaryActions} onClose={onClose} onOpen={onOpen}>
       <Button

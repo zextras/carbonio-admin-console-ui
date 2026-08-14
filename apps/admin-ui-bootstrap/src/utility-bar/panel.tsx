@@ -6,7 +6,7 @@
 import { Container } from '@zextras/ui-components';
 import { useUtilityBarStore } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect } from 'react';
 
 import styles from './panel.module.css';
 import { useUtilityViews } from './utils';
@@ -14,7 +14,7 @@ import { useUtilityViews } from './utils';
 export const ShellUtilityPanel: FC = () => {
   const { mode, setMode, current, setCurrent } = useUtilityBarStore();
   const views = useUtilityViews();
-  const currentPanel = useMemo(() => find(views, (view) => view.id === current), [current, views]);
+  const currentPanel = find(views, (view) => view.id === current);
   useEffect(() => {
     if (!(current && currentPanel)) {
       setCurrent(views[0]?.id);

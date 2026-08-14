@@ -6,7 +6,7 @@
 
 import { ModalManagerContext, useSnackbar } from '@zextras/ui-components';
 import { BASENAME, useBridge } from '@zextras/ui-shared';
-import { FC, useContext, useMemo } from 'react';
+import { FC, useContext } from 'react';
 import { BrowserRouter, useLocation, useNavigate } from 'react-router';
 
 import ShellView from '../shell/shell-view';
@@ -20,18 +20,15 @@ const ContextBridge: FC = () => {
 
   const createModal = useContext(ModalManagerContext) as unknown as Function;
 
-  const history = useMemo(
-    () => ({
-      push: (to: string) => navigate(to),
-      replace: (to: string) => navigate(to, { replace: true }),
-      goBack: () => navigate(-1),
-      go: (delta: number) => navigate(delta),
-      location,
-      createHref: (to: string) => to,
-      listen: () => () => {},
-    }),
-    [navigate, location],
-  );
+  const history = {
+    push: (to: string) => navigate(to),
+    replace: (to: string) => navigate(to, { replace: true }),
+    goBack: () => navigate(-1),
+    go: (delta: number) => navigate(delta),
+    location,
+    createHref: (to: string) => to,
+    listen: () => () => {},
+  };
 
   useBridge({
     functions: {
