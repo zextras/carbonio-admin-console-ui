@@ -95,23 +95,16 @@ const ShellPrimaryBar: FC<{ activeRoute: AppRoute | undefined }> = ({ activeRout
   const primaryBarViews = useAppStore((s) => s.views.primaryBar);
   const primarybarSections = useAppStore((s) => s.views.primarybarSections);
   const [primaryBarViewWithSection, setPrimaryBarViewWithSection] = useState<any[]>([]);
-  const [routes, setRoutes] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    setRoutes((r) =>
-      primaryBarViews.reduce((acc, v) => {
-        acc[v?.id] = v.path;
-        return acc;
-      }, r),
-    );
-  }, [primaryBarViews]);
-  useEffect(() => {
-    if (activeRoute) {
-      setRoutes((r) => ({ ...r, [activeRoute?.id]: trim(location.pathname, '/') }));
-    }
-  }, [activeRoute, location.pathname, primaryBarViews]);
+  const routes = primaryBarViews.reduce<Record<string, string>>((acc, v) => {
+    acc[v?.id] = v.path;
+    return acc;
+  }, {});
+  if (activeRoute) {
+    routes[activeRoute?.id] = trim(location.pathname, '/');
+  }
 
   useEffect(() => {
     let allPrimaryBarView = [];
