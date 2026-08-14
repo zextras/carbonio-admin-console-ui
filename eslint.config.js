@@ -30,6 +30,7 @@ export default tseslint.config(
       '**/dist-types/**',
       '**/build/**',
       '**/coverage/**',
+      'package/**',
       '**/*vitest*',
       '**/*.config.*',
       '**/.prettierrc.js',
