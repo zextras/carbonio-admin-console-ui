@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Dropdown, Tooltip } from '@zextras/ui-components';
+import { Button, Container, Dropdown, type IconName, Tooltip } from '@zextras/ui-components';
 import {
   CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
@@ -19,7 +19,6 @@ import { map, noop } from 'lodash-es';
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IconName } from '../../../../packages/ui-components/src/web-components/icon-registry';
 import { openLink, useUtilityViews } from './utils';
 
 const UtilityBarItem: FC<{ view: UtilityView }> = ({ view }) => {
