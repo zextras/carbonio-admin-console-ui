@@ -34,22 +34,18 @@ import { MailMessageSizeSection } from './sections/mail-message-size-section';
 import { TuningSection } from './sections/tuning-section';
 import type { MtaAdvancedFormValues } from './types';
 
-function findConfigValue(
-  config: Array<Record<string, string>>,
-  key: string,
-): string | undefined {
+function findConfigValue(config: Array<Record<string, string>>, key: string): string | undefined {
   return config.find((item) => item?.n === key)?._content;
 }
 
-function findConfigValueYesNo(
-  config: Array<Record<string, string>>,
-  key: string,
-): boolean {
+function findConfigValueYesNo(config: Array<Record<string, string>>, key: string): boolean {
   const item = config.find((c) => c?.n === key);
   return item?._content === 'yes';
 }
 
-function buildInitialState(configInformation: Array<Record<string, string>>): MtaAdvancedFormValues {
+function buildInitialState(
+  configInformation: Array<Record<string, string>>,
+): MtaAdvancedFormValues {
   const maxMessageSize = findConfigValue(configInformation, ZIMBRA_MTA_MESSAGE_SIZE);
   const hasLimit = !!maxMessageSize;
 
@@ -199,27 +195,19 @@ const MTAAdvancedForm = ({ configInformation }: MTAAdvancedFormProps) => {
       onCancel={() => form.reset()}
       unsavedChanges={isDirty}
     >
-      <Container
-        padding={{ all: 'extralarge' }}
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        height="calc(100vh - 10.5rem)"
-        style={{ overflow: 'auto' }}
-      >
-        <LoggingSection form={form} allowSetMTA={allowSetMTA} />
+      <LoggingSection form={form} allowSetMTA={allowSetMTA} />
 
-        <TuningSection
-          form={form}
-          allowSetMTA={allowSetMTA}
-          isErrorInSmtpdProxy={isErrorInSmtpdProxy}
-          onSenderLoginMapsChange={handleSenderLoginMapsChange}
-        />
+      <TuningSection
+        form={form}
+        allowSetMTA={allowSetMTA}
+        isErrorInSmtpdProxy={isErrorInSmtpdProxy}
+        onSenderLoginMapsChange={handleSenderLoginMapsChange}
+      />
 
-        <MailMessageSizeSection form={form} allowSetMTA={allowSetMTA} />
-      </Container>
+      <MailMessageSizeSection form={form} allowSetMTA={allowSetMTA} />
     </FormPageLayout>
   );
-}
+};
 
 export const MTAAdvanced = () => {
   const { data: configInformation = [] } = useAllConfig();
@@ -233,4 +221,4 @@ export const MTAAdvanced = () => {
   }
 
   return <MTAAdvancedForm key={configInformation.length} configInformation={configInformation} />;
-}
+};

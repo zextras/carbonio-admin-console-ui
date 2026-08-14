@@ -5,13 +5,7 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import {
-  Container,
-  FormPageLayout,
-  ListRow,
-  SelectItem,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Container, FormPageLayout, SelectItem, useSnackbar } from '@zextras/ui-components';
 import { useAllConfig, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { ReactElement, useState } from 'react';
@@ -53,7 +47,9 @@ function findAllConfigValues(config: Array<Record<string, string>>, key: string)
   return config.filter((item) => item?.n === key).map((item) => item?._content);
 }
 
-function buildInitialState(configInformation: Array<Record<string, string>>): MtaAntivirusAndAntispam {
+function buildInitialState(
+  configInformation: Array<Record<string, string>>,
+): MtaAntivirusAndAntispam {
   const mirrors = findAllConfigValues(configInformation, ZIMBRA_CLAM_AVDATABASE_MIRROR);
   const customUrls = findAllConfigValues(configInformation, CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL);
 
@@ -275,7 +271,10 @@ const MTAAntiVirusAndAntiSpamForm = ({ configInformation }: MTAAntiVirusAndAntiS
       createSnackbar({
         key: 'error',
         severity: 'error',
-        label: t('mta.space_not_allowed_in_antivirus_mirror', 'Space not allowed in antivirus mirror'),
+        label: t(
+          'mta.space_not_allowed_in_antivirus_mirror',
+          'Space not allowed in antivirus mirror',
+        ),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
@@ -334,7 +333,9 @@ const MTAAntiVirusAndAntiSpamForm = ({ configInformation }: MTAAntiVirusAndAntiS
     const current = currentCustomUrls;
     form.setFieldValue(
       'carbonioClamAVDatabaseCustomURL',
-      current ? `${current}, ${additionalAntiVirusDefinitionAddText}` : additionalAntiVirusDefinitionAddText,
+      current
+        ? `${current}, ${additionalAntiVirusDefinitionAddText}`
+        : additionalAntiVirusDefinitionAddText,
     );
     setSelectedAdditionalAntivirusDefinition([]);
     setAdditionalAntiVirusDefinitionAddText('');
@@ -385,52 +386,42 @@ const MTAAntiVirusAndAntiSpamForm = ({ configInformation }: MTAAntiVirusAndAntiS
       onCancel={handleCancel}
       unsavedChanges={isDirty}
     >
-      <ListRow>
-        <ds-divider></ds-divider>
-      </ListRow>
-      <Container
-        padding={{ all: 'extralarge' }}
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        height="auto"
-      >
-        <AntispamSection
-          form={form}
-          allowSetMTA={allowSetMTA}
-          spamTagPercentOptions={spamTagPercentOptions}
-          spamKillPercentOptions={spamKillPercentOptions}
-          discardPassOptions={discardPassOptions}
-        />
-        <AntivirusDefinitionsSection
-          form={form}
-          allowSetMTA={allowSetMTA}
-          intervalOptions={intervalOptions}
-          updateFrequncy={updateFrequncy}
-          setUpdateFrequncy={setUpdateFrequncyValue}
-          updateMesurementUnit={updateMesurementUnit}
-          onUpdateMesurementChange={onUpdateMesurementChange}
-          antiVirusMirrorTableRow={antiVirusMirrorTableRow}
-          antiVirusMirrorHeader={antiVirusMirrorHeader}
-          selectedAntivirusMirrors={selectedAntivirusMirrors}
-          antiVirusMirrorsAddText={antiVirusMirrorsAddText}
-          setAntiVirusMirrorsAddText={setAntiVirusMirrorsAddText}
-          onAddAntivirusMirrors={onAddAntivirusMirrors}
-          onRemoveAntivirusMirrors={onRemoveAntivirusMirrors}
-          additionalAntiVirusDefinitionTableRow={additionalAntiVirusDefinitionTableRow}
-          additionalVirusDefinitionHeader={additionalVirusDefinitionHeader}
-          selectedAdditionalAntivirusDefinition={selectedAdditionalAntivirusDefinition}
-          additionalAntiVirusDefinitionAddText={additionalAntiVirusDefinitionAddText}
-          setAdditionalAntiVirusDefinitionAddText={setAdditionalAntiVirusDefinitionAddText}
-          onAddAdditionalAntivirusDefinition={onAddAdditionalAntivirusDefinition}
-          onRemoveAdditionalAntivirusDefinition={onRemoveAdditionalAntivirusDefinition}
-          isShowRemoveAlertDialog={isShowRemoveAlertDialog}
-          setIsShowRemoveAlertDialog={setIsShowRemoveAlertDialog}
-          removeAdditionalAntivirusDefinition={removeAdditionalAntivirusDefinition}
-        />
-      </Container>
+      <AntispamSection
+        form={form}
+        allowSetMTA={allowSetMTA}
+        spamTagPercentOptions={spamTagPercentOptions}
+        spamKillPercentOptions={spamKillPercentOptions}
+        discardPassOptions={discardPassOptions}
+      />
+      <AntivirusDefinitionsSection
+        form={form}
+        allowSetMTA={allowSetMTA}
+        intervalOptions={intervalOptions}
+        updateFrequncy={updateFrequncy}
+        setUpdateFrequncy={setUpdateFrequncyValue}
+        updateMesurementUnit={updateMesurementUnit}
+        onUpdateMesurementChange={onUpdateMesurementChange}
+        antiVirusMirrorTableRow={antiVirusMirrorTableRow}
+        antiVirusMirrorHeader={antiVirusMirrorHeader}
+        selectedAntivirusMirrors={selectedAntivirusMirrors}
+        antiVirusMirrorsAddText={antiVirusMirrorsAddText}
+        setAntiVirusMirrorsAddText={setAntiVirusMirrorsAddText}
+        onAddAntivirusMirrors={onAddAntivirusMirrors}
+        onRemoveAntivirusMirrors={onRemoveAntivirusMirrors}
+        additionalAntiVirusDefinitionTableRow={additionalAntiVirusDefinitionTableRow}
+        additionalVirusDefinitionHeader={additionalVirusDefinitionHeader}
+        selectedAdditionalAntivirusDefinition={selectedAdditionalAntivirusDefinition}
+        additionalAntiVirusDefinitionAddText={additionalAntiVirusDefinitionAddText}
+        setAdditionalAntiVirusDefinitionAddText={setAdditionalAntiVirusDefinitionAddText}
+        onAddAdditionalAntivirusDefinition={onAddAdditionalAntivirusDefinition}
+        onRemoveAdditionalAntivirusDefinition={onRemoveAdditionalAntivirusDefinition}
+        isShowRemoveAlertDialog={isShowRemoveAlertDialog}
+        setIsShowRemoveAlertDialog={setIsShowRemoveAlertDialog}
+        removeAdditionalAntivirusDefinition={removeAdditionalAntivirusDefinition}
+      />
     </FormPageLayout>
   );
-}
+};
 
 export const MTAAntiVirusAndAntiSpam = () => {
   const { data: configInformation = [] } = useAllConfig();
@@ -444,6 +435,9 @@ export const MTAAntiVirusAndAntiSpam = () => {
   }
 
   return (
-    <MTAAntiVirusAndAntiSpamForm key={configInformation.length} configInformation={configInformation} />
+    <MTAAntiVirusAndAntiSpamForm
+      key={configInformation.length}
+      configInformation={configInformation}
+    />
   );
-}
+};

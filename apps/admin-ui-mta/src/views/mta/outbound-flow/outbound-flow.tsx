@@ -45,8 +45,7 @@ function buildInitialState(configInformation: Array<Record<string, string>>): Mt
       findConfigValue(configInformation, ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP) === TRUE,
     zimbraSmtpSendAddAuthenticatedUser:
       findConfigValue(configInformation, ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER) === TRUE,
-    zimbraMtaSaslAuthEnable:
-      findConfigValue(configInformation, ZIMBRA_MTA_SASL_AUTH_ENABLED) ?? '',
+    zimbraMtaSaslAuthEnable: findConfigValue(configInformation, ZIMBRA_MTA_SASL_AUTH_ENABLED) ?? '',
     zimbraMtaMyNetworks: findConfigValue(configInformation, ZIMBRA_MTA_MY_NETWORKS) ?? '',
     zimbraMtaSmtpHeloName: findConfigValue(configInformation, ZIMBRA_MTA_SMTP_HELLO_NAME) ?? '',
     zimbraMtaMyHostname: findConfigValue(configInformation, ZIMBRA_MTA_MY_HOSTNAME) ?? '',
@@ -66,11 +65,13 @@ function buildNetworkValue(configInformation: Array<Record<string, string>>): Ar
     : [];
 }
 
-function setTableValues(server: Server, tableRow: Array<TRow>, t: (key: string, fallback: string) => string) {
+function setTableValues(
+  server: Server,
+  tableRow: Array<TRow>,
+  t: (key: string, fallback: string) => string,
+) {
   const serviceEnabled = server?.a?.filter((item) => item?.n === 'zimbraServiceEnabled');
-  const zimbraMtaAuthEnabled = server?.a?.find(
-    (item) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED,
-  );
+  const zimbraMtaAuthEnabled = server?.a?.find((item) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED);
   let antivirus: Array<Attribute> = [];
   let antispam: Array<Attribute> = [];
   let opendkim: Array<Attribute> = [];
@@ -230,25 +231,17 @@ const MTAOutBoundFlowForm = ({ configInformation }: MTAOutBoundFlowFormProps) =>
       onCancel={handleCancel}
       unsavedChanges={isDirty}
     >
-      <Container
-        padding={{ all: 'extralarge' }}
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        height="calc(100vh - 10.5rem)"
-        style={{ overflow: 'auto' }}
-      >
-        <GeneralSection
-          form={form}
-          networkValue={networkValue}
-          allowSetMTA={allowSetMTA}
-          onBlockExtensionChange={onBlockExtensionChange}
-        />
+      <GeneralSection
+        form={form}
+        networkValue={networkValue}
+        allowSetMTA={allowSetMTA}
+        onBlockExtensionChange={onBlockExtensionChange}
+      />
 
-        <InstancesSection instancesTableRows={instancesTableRows} />
-      </Container>
+      <InstancesSection instancesTableRows={instancesTableRows} />
     </FormPageLayout>
   );
-}
+};
 
 export const MTAOutBoundFlow = () => {
   const { data: configInformation = [] } = useAllConfig();
@@ -261,5 +254,7 @@ export const MTAOutBoundFlow = () => {
     );
   }
 
-  return <MTAOutBoundFlowForm key={configInformation.length} configInformation={configInformation} />;
-}
+  return (
+    <MTAOutBoundFlowForm key={configInformation.length} configInformation={configInformation} />
+  );
+};

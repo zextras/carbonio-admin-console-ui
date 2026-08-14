@@ -5,7 +5,7 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { Container, FormPageLayout, ListRow, SelectItem } from '@zextras/ui-components';
+import { Container, FormPageLayout, SelectItem } from '@zextras/ui-components';
 import { useAllConfig, useLocalStorage } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
@@ -100,7 +100,10 @@ const MTAPostScreenTuningForm = ({ configInformation }: MTAPostScreenTuningFormP
         if (val) attrs.push({ n: key, _content: val });
       };
 
-      pushIfExists(ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION, value.zimbraMtaPostscreenBlacklistAction);
+      pushIfExists(
+        ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION,
+        value.zimbraMtaPostscreenBlacklistAction,
+      );
       pushIfExists(ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST, value.zimbraMtaPostscreenAccessList);
       pushIfExists(ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION, value.zimbraMtaPostscreenDnsblAction);
       pushIfExists(ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES, value.zimbraMtaPostscreenDnsblSites);
@@ -128,7 +131,10 @@ const MTAPostScreenTuningForm = ({ configInformation }: MTAPostScreenTuningFormP
         },
       );
 
-      pushIfExists(ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION, value.zimbraMtaPostscreenPipeliningAction);
+      pushIfExists(
+        ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION,
+        value.zimbraMtaPostscreenPipeliningAction,
+      );
       pushIfExists(
         ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION,
         value.zimbraMtaPostscreenNonSmtpCommandAction,
@@ -142,7 +148,10 @@ const MTAPostScreenTuningForm = ({ configInformation }: MTAPostScreenTuningFormP
         ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL,
         value.zimbraMtaPostscreenNonSmtpCommandTTL,
       );
-      pushIfExists(ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL, value.zimbraMtaPostscreenBareNewlineTTL);
+      pushIfExists(
+        ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL,
+        value.zimbraMtaPostscreenBareNewlineTTL,
+      );
 
       try {
         await modifyConfigAsync(attrs);
@@ -175,10 +184,19 @@ const MTAPostScreenTuningForm = ({ configInformation }: MTAPostScreenTuningFormP
     return intervalOptions.find((item) => item.value === unit) || intervalOptions[2];
   }
 
-  const dnsblMinTTL = useSelector(form.store, (state) => state.values.zimbraMtaPostscreenDnsblMinTTL);
-  const dnsblMaxTTL = useSelector(form.store, (state) => state.values.zimbraMtaPostscreenDnsblMaxTTL);
+  const dnsblMinTTL = useSelector(
+    form.store,
+    (state) => state.values.zimbraMtaPostscreenDnsblMinTTL,
+  );
+  const dnsblMaxTTL = useSelector(
+    form.store,
+    (state) => state.values.zimbraMtaPostscreenDnsblMaxTTL,
+  );
   const dnsblTTL = useSelector(form.store, (state) => state.values.zimbraMtaPostscreenDnsblTTL);
-  const pipeliningTTL = useSelector(form.store, (state) => state.values.zimbraMtaPostscreenPipeliningTTL);
+  const pipeliningTTL = useSelector(
+    form.store,
+    (state) => state.values.zimbraMtaPostscreenPipeliningTTL,
+  );
   const nonSMTPCommandTTL = useSelector(
     form.store,
     (state) => state.values.zimbraMtaPostscreenNonSmtpCommandTTL,
@@ -237,47 +255,37 @@ const MTAPostScreenTuningForm = ({ configInformation }: MTAPostScreenTuningFormP
       onCancel={() => form.reset()}
       unsavedChanges={isDirty}
     >
-      <ListRow>
-        <ds-divider></ds-divider>
-      </ListRow>
-      <Container
-        padding={{ all: 'extralarge' }}
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        height="auto"
-      >
-        <BlacklistingSection
-          form={form}
-          isShowBanner={isShowBanner}
-          setIsShowBanner={setIsShowBanner}
-          ignoreEnforceDropOptions={ignoreEnforceDropOptions}
-        />
-        <DnsBlacklistingSection
-          form={form}
-          ignoreEnforceDropOptions={ignoreEnforceDropOptions}
-          intervalOptions={intervalOptions}
-          dnsblMinTTLUnit={dnsblMinTTLUnit}
-          dnsblMaxTTLUnit={dnsblMaxTTLUnit}
-          dnsblTTLUnit={dnsblTTLUnit}
-          onDNSMinTTLUnitChange={onDNSMinTTLUnitChange}
-          onDNSMaxTTLUnitChange={onDNSMaxTTLUnitChange}
-          onDNSTTLUnitChange={onDNSTTLUnitChange}
-        />
-        <TuningSection
-          form={form}
-          ignoreEnforceDropOptions={ignoreEnforceDropOptions}
-          intervalOptions={intervalOptions}
-          bareNewLineTTLUnit={bareNewLineTTLUnit}
-          nonSMTPCommandTTLUnit={nonSMTPCommandTTLUnit}
-          pipeliningTTLUnit={pipeliningTTLUnit}
-          onBareNewLineTTLUnitChange={onBareNewLineTTLUnitChange}
-          onNonSMTPCommandTTLUnitChange={onNonSMTPCommandTTLUnitChange}
-          onPipelinginTTLUnitChange={onPipelinginTTLUnitChange}
-        />
-      </Container>
+      <BlacklistingSection
+        form={form}
+        isShowBanner={isShowBanner}
+        setIsShowBanner={setIsShowBanner}
+        ignoreEnforceDropOptions={ignoreEnforceDropOptions}
+      />
+      <DnsBlacklistingSection
+        form={form}
+        ignoreEnforceDropOptions={ignoreEnforceDropOptions}
+        intervalOptions={intervalOptions}
+        dnsblMinTTLUnit={dnsblMinTTLUnit}
+        dnsblMaxTTLUnit={dnsblMaxTTLUnit}
+        dnsblTTLUnit={dnsblTTLUnit}
+        onDNSMinTTLUnitChange={onDNSMinTTLUnitChange}
+        onDNSMaxTTLUnitChange={onDNSMaxTTLUnitChange}
+        onDNSTTLUnitChange={onDNSTTLUnitChange}
+      />
+      <TuningSection
+        form={form}
+        ignoreEnforceDropOptions={ignoreEnforceDropOptions}
+        intervalOptions={intervalOptions}
+        bareNewLineTTLUnit={bareNewLineTTLUnit}
+        nonSMTPCommandTTLUnit={nonSMTPCommandTTLUnit}
+        pipeliningTTLUnit={pipeliningTTLUnit}
+        onBareNewLineTTLUnitChange={onBareNewLineTTLUnitChange}
+        onNonSMTPCommandTTLUnitChange={onNonSMTPCommandTTLUnitChange}
+        onPipelinginTTLUnitChange={onPipelinginTTLUnitChange}
+      />
     </FormPageLayout>
   );
-}
+};
 
 export const MTAPostScreenTuning = () => {
   const { data: configInformation = [] } = useAllConfig();
@@ -293,4 +301,4 @@ export const MTAPostScreenTuning = () => {
   return (
     <MTAPostScreenTuningForm key={configInformation.length} configInformation={configInformation} />
   );
-}
+};
