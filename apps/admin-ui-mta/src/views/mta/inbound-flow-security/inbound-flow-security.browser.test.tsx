@@ -150,4 +150,38 @@ describe('MTAInboundFlowSecurity', () => {
       ]),
     );
   }, 20000);
+
+  it('does not call ModifyConfig when adding commonly blocked extensions until Save', async () => {
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+
+    await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
+
+    await page.getByRole('button', { name: 'Add commonly blocked extensions' }).click();
+
+    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    await expect.element(page.getByText('zip', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('js', { exact: true })).toBeVisible();
+
+    const settledEarly = await Promise.race([
+      modifyConfigInterceptor.then(() => true),
+      new Promise<boolean>((resolve) => {
+        setTimeout(() => resolve(false), 2000);
+      }),
+    ]);
+    expect(settledEarly).toBe(false);
+
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    const request = await modifyConfigInterceptor;
+    const attributes = extractModifyAttributes(request);
+
+    expect(attributes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ n: 'zimbraMtaBlockedExtension', _content: 'exe' }),
+        expect.objectContaining({ n: 'zimbraMtaBlockedExtension', _content: 'bat' }),
+        expect.objectContaining({ n: 'zimbraMtaBlockedExtension', _content: 'zip' }),
+        expect.objectContaining({ n: 'zimbraMtaBlockedExtension', _content: 'js' }),
+      ]),
+    );
+  }, 20_000);
 });

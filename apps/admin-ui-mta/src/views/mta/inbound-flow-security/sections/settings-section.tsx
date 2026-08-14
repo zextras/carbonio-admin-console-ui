@@ -68,7 +68,10 @@ export const SettingsSection = ({
             color="primary"
             size="medium"
             type="outlined"
-            onClick={onCommonBlockExtensionAdd}
+            onClick={(e) => {
+              e.preventDefault();
+              onCommonBlockExtensionAdd();
+            }}
             disabled={!allowSetMTA}
           />
         </Container>
@@ -131,4 +134,4 @@ export const SettingsSection = ({
       </Container>
     </>
   );
-}
+};
