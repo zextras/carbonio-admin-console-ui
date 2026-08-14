@@ -127,9 +127,7 @@ describe('MTAListPanel navigation', () => {
     await page.getByText('mail.test.com').click();
     mockedReplaceHistory.mockClear();
 
-    const clearIcon = document.querySelector('ds-icon[icon="CloseOutline"]');
-    expect(clearIcon).toBeTruthy();
-    (clearIcon as HTMLElement).click();
+    await page.getByTestId('icon: CloseOutline').click();
 
     expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${INBOUND_FLOW_SECURITY}`);
   });

@@ -81,6 +81,24 @@ function buildInitialState(configInformation: Array<Record<string, string>>): Mt
   };
 }
 
+function buildMessageSizeAttributes(
+  limitMaxMessageSize: boolean,
+  zimbraMtaMaxMessageSize: string,
+): Array<Record<string, string>> {
+  if (limitMaxMessageSize === false) {
+    return [{ n: ZIMBRA_MTA_MESSAGE_SIZE, _content: '' }];
+  }
+  if (zimbraMtaMaxMessageSize) {
+    return [
+      {
+        n: ZIMBRA_MTA_MESSAGE_SIZE,
+        _content: mbToBytes(Number(zimbraMtaMaxMessageSize)).toString(),
+      },
+    ];
+  }
+  return [];
+}
+
 type MTAAdvancedFormProps = Readonly<{
   configInformation: Array<Record<string, string>>;
 }>;
@@ -135,16 +153,7 @@ const MTAAdvancedForm = ({ configInformation }: MTAAdvancedFormProps) => {
         ...(value.zimbraMilterNumThreads
           ? [{ n: ZIMBRA_MITER_NUM_THREADS, _content: value.zimbraMilterNumThreads }]
           : []),
-        ...(value.limitMaxMessageSize === false
-          ? [{ n: ZIMBRA_MTA_MESSAGE_SIZE, _content: '' }]
-          : value.zimbraMtaMaxMessageSize
-            ? [
-                {
-                  n: ZIMBRA_MTA_MESSAGE_SIZE,
-                  _content: mbToBytes(Number(value.zimbraMtaMaxMessageSize)).toString(),
-                },
-              ]
-            : []),
+        ...buildMessageSizeAttributes(value.limitMaxMessageSize, value.zimbraMtaMaxMessageSize),
         ...(value.zimbraMilterMaxConnections
           ? [{ n: ZIMBRA_MILTER_MAX_CONNECTIONS, _content: value.zimbraMilterMaxConnections }]
           : []),
