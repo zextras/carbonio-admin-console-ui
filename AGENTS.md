@@ -67,6 +67,7 @@ Year is auto-updated by eslint. The header is required in all files except:
 ### Function Definitions
 - Use arrow functions for React components, directly exported with a named export
 - Use regular function declarations for all other (non-component) logic
+- **Never use IIFEs** (Immediately Invoked Function Expressions) — extract to a variable or a named function instead
 - Example:
   ```typescript
   // Component
@@ -163,7 +164,8 @@ Year is auto-updated by eslint. The header is required in all files except:
   1. `getByRole` (e.g. `getByRole('button', { name: 'Save' })`)
   2. `getByLabelText` (e.g. `getByLabelText('Domain Name')`)
   3. `getByText` / `getByPlaceholder` (visible text content)
-  4. For icon-only buttons without `aria-label`: locate the rendered icon via its visible attribute (e.g. `page.locator('ds-icon[icon="ChevronRight"]')`)
+  4. For icon-only buttons without `aria-label`: locate the rendered icon via its visible attribute (e.g. `page.getByTestId('icon: CloseOutline')`)
+- **`page.locator` does not exist** in Vitest browser mode — the `page` object from `vitest/browser` is NOT a Playwright Page. Use `page.getByRole`, `page.getByText`, `page.getByTestId`, or `userEvent` for all interactions instead.
 
 ### State Management
 - Global state: Zustand stores in `store/` directories
@@ -175,6 +177,32 @@ Year is auto-updated by eslint. The header is required in all files except:
     info: () => [...accountQueryKeys.all, 'info'] as const,
   } as const;
   ```
+
+### TanStack Form + React Query: Post-Save Pattern
+
+When a form backed by TanStack Form needs to clear `isDirty` after a successful save, you must use **both** `form.reset()` and query invalidation together. Neither alone works:
+
+- **`form.reset()` alone** → `isDirty` stays `true` (defaults unchanged) or values revert (if defaults updated and `!isTouched`)
+- **Query invalidation alone** → `isDirty` stays `true` (`isTouched` is still `true`, so `formApi.update()` never triggers a `baseStore` change, and `isDefaultValue` is never recomputed)
+
+**Correct pattern:**
+```typescript
+// 1. Reset form values to saved state AND clear isTouched
+form.reset(value, { keepDefaultValues: true });
+// 2. Invalidate the query so refetch updates the form's internal defaults
+queryClient.invalidateQueries({ queryKey: myQueryKeys.config(id) });
+```
+
+**Why this works:** `form.reset(value, { keepDefaultValues: true })` clears `isTouched` to `false`. When the refetch completes, `formApi.update(opts)` runs with new `defaultValues`. Since `!isTouched` is now `true`, `shouldUpdateValues` is `true`, which triggers a `baseStore` change. This causes `isDefaultValue` to recompute against the new defaults → `isDirty` becomes `false`.
+
+**Query hook requirement:** Add `placeholderData: keepPreviousData` to prevent loading-spinner flashes during refetch and cross-entity navigation:
+```typescript
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+// ...
+placeholderData: keepPreviousData,
+```
+
+**Reference implementation:** `apps/admin-ui-storage/src/views/hsm/hsm-setting-panel.tsx` (HSM Settings), `apps/admin-ui-backup/src/views/backup/server-advanced/server-advanced.tsx` (Server Advanced)
 
 ### API Calls
 - Use `soapFetch` for SOAP API calls

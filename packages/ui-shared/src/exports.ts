@@ -92,7 +92,7 @@ import { useCosList } from './react-query/use-cos-list';
 import { domainByIdKey, useDomainById } from './react-query/use-domain-by-id';
 import { useDomainInformation } from './react-query/use-domain-information';
 import { useDomainSearch } from './react-query/use-domain-search';
-import { useGlobalCarbonioSendAnalytics } from './react-query/use-global-settings';
+import { useGlobalCarbonioSendAnalytics, useGlobalSettings } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
 import { useMailstoreServers } from './react-query/use-mailstore-servers';
@@ -286,6 +286,7 @@ export {
   useDomainInformation,
   useDomainSearch,
   useGlobalCarbonioSendAnalytics,
+  useGlobalSettings,
   useHasAllRights,
   useI18nStore,
   useIntegrationsStore,
