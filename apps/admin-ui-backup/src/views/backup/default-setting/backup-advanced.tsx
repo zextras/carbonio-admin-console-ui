@@ -3,49 +3,55 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, RouteLeavingGuard, Row, Select, Switch } from '@zextras/ui-components';
-import { FC, useMemo } from 'react';
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
+import {
+  Container,
+  Input,
+  ListRow,
+  RouteLeavingGuard,
+  Row,
+  Select,
+  Switch,
+} from '@zextras/ui-components';
+import { useCurrentUserRights, useGlobalSettings } from '@zextras/ui-shared';
+import type { ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { GlobalConfig } from '../../../../types';
-import { useBackupConfig } from '../../../hooks/useBackupConfig';
-import { useGlobalConfig } from '../../../services/use-global-config';
-import BackupConfigHeader from '../components/backup/BackupConfigHeader';
+import { useModifyBackupConfig } from '../../../services/use-modify-backup-config';
+import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
+import { BackupConfigHeader } from '../components/backup/backup-config-header';
+import { defaultSettingsSchema } from './schema';
+import { getDirtyPayload, mapGlobalConfigToFormValues } from './utils';
 
-const BackupAdvanced: FC = () => {
-  const {
-    isDirty,
-    backupDetail,
-    setBackupDetail,
-    allowSetBackup,
-    onCancel,
-    onSave,
-    changeSwitchOption,
-    changeBackupDetail,
-    t,
-  } = useBackupConfig();
+const COMPRESS_LEVEL_ITEMS = [
+  { label: '1', value: '1' },
+  { label: '2', value: '2' },
+  { label: '3', value: '3' },
+];
 
-  const { data: globalConfig } = useGlobalConfig();
+function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalConfig }) {
+  const [t] = useTranslation();
+  const modifyMutation = useModifyBackupConfig();
+  const { data: rights } = useCurrentUserRights();
+  const allowSetBackup = checkAllowSetBackup(rights);
 
-  const compressLevelItems = useMemo(
-    () => [
-      {
-        label: '1',
-        value: '1',
-      },
-      {
-        label: '2',
-        value: '2',
-      },
-      {
-        label: '3',
-        value: '3',
-      },
-    ],
-    [],
-  );
-  const onBackupCompressionLevelChange = (v: string | null): void => {
-    setBackupDetail((prev: GlobalConfig) => ({ ...prev, backupCompressionLevel: v ?? '' }));
-  };
+  const form = useForm({
+    defaultValues: mapGlobalConfigToFormValues(globalConfig),
+    validators: { onChange: defaultSettingsSchema, onSubmit: defaultSettingsSchema },
+    onSubmit: async ({ value }) => {
+      modifyMutation.mutate(
+        getDirtyPayload(value, mapGlobalConfigToFormValues(globalConfig)) as never,
+        {
+          onSuccess: () => form.reset(value, { keepDefaultValues: true }),
+        },
+      );
+    },
+  });
+
+  const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+
   return (
     <>
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -55,18 +61,12 @@ const BackupAdvanced: FC = () => {
           crossAlignment="flex-start"
           mainAlignment="flex-start"
         >
-          <Row mainAlignment="flex-start" width="100%">
-            <Container orientation="vertical" mainAlignment="space-around" height="56px">
-              <BackupConfigHeader
-                title={t('label.advanced', 'Advanced')}
-                isDirty={isDirty}
-                onCancel={onCancel}
-                onSave={onSave}
-                t={t}
-              />
-            </Container>
-            <ds-divider></ds-divider>
-          </Row>
+          <BackupConfigHeader
+            title={t('label.advanced', 'Advanced')}
+            isDirty={isDirty}
+            onCancel={() => form.reset()}
+            onSave={() => form.handleSubmit()}
+          />
           <Container
             orientation="column"
             crossAlignment="flex-start"
@@ -85,191 +85,44 @@ const BackupAdvanced: FC = () => {
               >
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
-                    <Input
-                      isRequired
-                      label={`${t('backup.latency_high_threshold', 'Latency High Threshold')} (${t(
-                        'backup.kb',
-                        'KB',
-                      )})`}
-                      value={backupDetail.backupLatencyHighThreshold}
-                      defaultValue={backupDetail.backupLatencyHighThreshold}
-                      onChange={changeBackupDetail}
-                      inputName="backupLatencyHighThreshold"
-                      backgroundColor="gray5"
-                      disabled={!allowSetBackup}
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container padding={{ all: 'small' }}>
-                    <Input
-                      isRequired
-                      label={`${t('backup.latency_low_threshold', 'Latency Low Threshold')} (${t(
-                        'backup.kb',
-                        'KB',
-                      )})`}
-                      value={backupDetail.backupLatencyLowThreshold}
-                      defaultValue={backupDetail.backupLatencyLowThreshold}
-                      onChange={changeBackupDetail}
-                      inputName="backupLatencyLowThreshold"
-                      backgroundColor="gray5"
-                      disabled={!allowSetBackup}
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container
-                    orientation="horizontal"
-                    mainAlignment="space-between"
-                    crossAlignment="flex-start"
-                    padding={{ all: 'small' }}
-                  >
-                    <Switch
-                      value={backupDetail.ldapDumpEnabled}
-                      onClick={(): void => changeSwitchOption('ldapDumpEnabled')}
-                      label={t('backup.ldap_dump', 'LDAP Dump')}
-                      iconColor="primary"
-                      disabled={!allowSetBackup}
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container
-                    orientation="horizontal"
-                    mainAlignment="space-between"
-                    crossAlignment="flex-start"
-                    padding={{ all: 'small' }}
-                  >
-                    <Switch
-                      value={backupDetail.ZxBackup_BackupCustomizations}
-                      onClick={(): void => changeSwitchOption('ZxBackup_BackupCustomizations')}
-                      label={t(
-                        'backup.store_server_configurations_in_the_backup',
-                        'Store Server Configuration in the backup',
+                    <form.Field name="latencyHighThreshold">
+                      {(field) => (
+                        <Input
+                          isRequired
+                          label={`${t(
+                            'backup.latency_high_threshold',
+                            'Latency High Threshold',
+                          )} (${t('backup.kb', 'KB')})`}
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            field.handleChange(e.target.value)
+                          }
+                          backgroundColor="gray5"
+                          disabled={!allowSetBackup}
+                        />
                       )}
-                      iconColor="primary"
-                      disabled={!allowSetBackup}
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container
-                    orientation="horizontal"
-                    mainAlignment="space-between"
-                    crossAlignment="flex-start"
-                    padding={{ all: 'small' }}
-                  >
-                    <Switch
-                      value={backupDetail.ZxBackup_PurgeCustomizations}
-                      onClick={(): void => changeSwitchOption('ZxBackup_PurgeCustomizations')}
-                      label={t('backup.purge_old_configurations', 'Purge Old Configurations')}
-                      iconColor="primary"
-                      disabled={!allowSetBackup}
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container
-                    orientation="horizontal"
-                    mainAlignment="space-between"
-                    crossAlignment="flex-start"
-                    padding={{ all: 'small' }}
-                  >
-                    <Switch
-                      value={backupDetail.backupSaveIndex}
-                      onClick={(): void => changeSwitchOption('backupSaveIndex')}
-                      label={t('backup.save_index', 'Save Index')}
-                      iconColor="primary"
-                      disabled={!allowSetBackup}
-                    />
+                    </form.Field>
                   </Container>
                 </ListRow>
                 <ListRow>
                   <Container padding={{ all: 'small' }}>
-                    <Input
-                      isRequired
-                      label={t('backup.metatdata_size', 'Metadata Size')}
-                      value={backupDetail.ZxBackup_MaxMetadataSize}
-                      defaultValue={backupDetail.ZxBackup_MaxMetadataSize}
-                      onChange={changeBackupDetail}
-                      inputName="ZxBackup_MaxMetadataSize"
-                      backgroundColor="gray5"
-                      disabled={!allowSetBackup}
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container padding={{ all: 'small' }}>
-                    <Input
-                      label={`${t('backup.max_waiting_time', 'Max Waiting Time')} (${t(
-                        'backup.ms',
-                        'MS',
-                      )})`}
-                      value={backupDetail.ZxBackup_MaxWaitingTime}
-                      defaultValue={backupDetail.ZxBackup_MaxWaitingTime}
-                      onChange={changeBackupDetail}
-                      inputName="ZxBackup_MaxWaitingTime"
-                      backgroundColor="gray5"
-                      disabled={!allowSetBackup}
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container padding={{ all: 'small' }}>
-                    <Input
-                      isRequired
-                      label={t('backup.max_operations_account', 'Max Operations / Account')}
-                      value={backupDetail.ZxBackup_MaxOperationPerAccount}
-                      defaultValue={backupDetail.ZxBackup_MaxOperationPerAccount}
-                      onChange={changeBackupDetail}
-                      inputName="ZxBackup_MaxOperationPerAccount"
-                      backgroundColor="gray5"
-                      disabled={!allowSetBackup}
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container padding={{ all: 'small' }}>
-                    <Select
-                      items={compressLevelItems}
-                      background="gray5"
-                      label={t('backup.compression_level', 'Compression Level')}
-                      defaultSelection={compressLevelItems.find(
-                        (item: { label: string; value: string }) =>
-                          item.value === globalConfig?.backupCompressionLevel?.toString(),
+                    <form.Field name="latencyLowThreshold">
+                      {(field) => (
+                        <Input
+                          isRequired
+                          label={`${t(
+                            'backup.latency_low_threshold',
+                            'Latency Low Threshold',
+                          )} (${t('backup.kb', 'KB')})`}
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            field.handleChange(e.target.value)
+                          }
+                          backgroundColor="gray5"
+                          disabled={!allowSetBackup}
+                        />
                       )}
-                      onChange={onBackupCompressionLevelChange}
-                      showCheckbox={false}
-                      disabled={!allowSetBackup}
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container padding={{ all: 'small' }}>
-                    <Input
-                      isRequired
-                      label={t('backup.threads_for_items', 'Threads For Items')}
-                      value={backupDetail.backupNumberThreadsForAccounts}
-                      defaultValue={backupDetail.backupNumberThreadsForAccounts}
-                      onChange={changeBackupDetail}
-                      inputName="backupNumberThreadsForAccounts"
-                      backgroundColor="gray5"
-                      disabled={!allowSetBackup}
-                    />
-                  </Container>
-                </ListRow>
-                <ListRow>
-                  <Container padding={{ all: 'small' }}>
-                    <Input
-                      isRequired
-                      label={t('backup.threads_for_account', 'Threads For Account')}
-                      value={backupDetail.backupNumberThreadsForAccounts}
-                      defaultValue={backupDetail.backupNumberThreadsForAccounts}
-                      onChange={changeBackupDetail}
-                      inputName="backupNumberThreadsForAccounts"
-                      backgroundColor="gray5"
-                      disabled={!allowSetBackup}
-                    />
+                    </form.Field>
                   </Container>
                 </ListRow>
                 <ListRow>
@@ -279,16 +132,17 @@ const BackupAdvanced: FC = () => {
                     crossAlignment="flex-start"
                     padding={{ all: 'small' }}
                   >
-                    <Switch
-                      value={backupDetail.backupOnTheFlyMetadata}
-                      onClick={(): void => changeSwitchOption('backupOnTheFlyMetadata')}
-                      label={t(
-                        'backup.flash_metadata_in_the_disk_at_every_save',
-                        'Flash metadata in the disk at every save',
+                    <form.Field name="ldapDumpEnabled">
+                      {(field) => (
+                        <Switch
+                          value={field.state.value}
+                          onClick={() => field.handleChange(!field.state.value)}
+                          label={t('backup.ldap_dump', 'LDAP Dump')}
+                          iconColor="primary"
+                          disabled={!allowSetBackup}
+                        />
                       )}
-                      iconColor="primary"
-                      disabled={!allowSetBackup}
-                    />
+                    </form.Field>
                   </Container>
                 </ListRow>
                 <ListRow>
@@ -298,16 +152,198 @@ const BackupAdvanced: FC = () => {
                     crossAlignment="flex-start"
                     padding={{ all: 'small' }}
                   >
-                    <Switch
-                      value={backupDetail.scheduledMetadataArchivingEnabled}
-                      onClick={(): void => changeSwitchOption('scheduledMetadataArchivingEnabled')}
-                      label={t(
-                        'backup.archive_user_metadata_folder_in_the_remote_backup',
-                        'Archive user metadata folder in the remote backup',
+                    <form.Field name="storeServerConfiguration">
+                      {(field) => (
+                        <Switch
+                          value={field.state.value}
+                          onClick={() => field.handleChange(!field.state.value)}
+                          label={t(
+                            'backup.store_server_configurations_in_the_backup',
+                            'Store Server Configuration in the backup',
+                          )}
+                          iconColor="primary"
+                          disabled={!allowSetBackup}
+                        />
                       )}
-                      iconColor="primary"
-                      disabled={!allowSetBackup}
-                    />
+                    </form.Field>
+                  </Container>
+                </ListRow>
+                <ListRow>
+                  <Container
+                    orientation="horizontal"
+                    mainAlignment="space-between"
+                    crossAlignment="flex-start"
+                    padding={{ all: 'small' }}
+                  >
+                    <form.Field name="purgeOldConfigurations">
+                      {(field) => (
+                        <Switch
+                          value={field.state.value}
+                          onClick={() => field.handleChange(!field.state.value)}
+                          label={t('backup.purge_old_configurations', 'Purge Old Configurations')}
+                          iconColor="primary"
+                          disabled={!allowSetBackup}
+                        />
+                      )}
+                    </form.Field>
+                  </Container>
+                </ListRow>
+                <ListRow>
+                  <Container
+                    orientation="horizontal"
+                    mainAlignment="space-between"
+                    crossAlignment="flex-start"
+                    padding={{ all: 'small' }}
+                  >
+                    <form.Field name="saveIndex">
+                      {(field) => (
+                        <Switch
+                          value={field.state.value}
+                          onClick={() => field.handleChange(!field.state.value)}
+                          label={t('backup.save_index', 'Save Index')}
+                          iconColor="primary"
+                          disabled={!allowSetBackup}
+                        />
+                      )}
+                    </form.Field>
+                  </Container>
+                </ListRow>
+                <ListRow>
+                  <Container padding={{ all: 'small' }}>
+                    <form.Field name="maxMetadataSize">
+                      {(field) => (
+                        <Input
+                          isRequired
+                          label={t('backup.metatdata_size', 'Metadata Size')}
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            field.handleChange(e.target.value)
+                          }
+                          backgroundColor="gray5"
+                          disabled={!allowSetBackup}
+                        />
+                      )}
+                    </form.Field>
+                  </Container>
+                </ListRow>
+                <ListRow>
+                  <Container padding={{ all: 'small' }}>
+                    <form.Field name="maxOperationsPerAccount">
+                      {(field) => (
+                        <Input
+                          isRequired
+                          label={t('backup.max_operations_account', 'Max Operations / Account')}
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            field.handleChange(e.target.value)
+                          }
+                          backgroundColor="gray5"
+                          disabled={!allowSetBackup}
+                        />
+                      )}
+                    </form.Field>
+                  </Container>
+                </ListRow>
+                <ListRow>
+                  <Container padding={{ all: 'small' }}>
+                    <form.Field name="compressionLevel">
+                      {(field) => (
+                        <Select
+                          items={COMPRESS_LEVEL_ITEMS}
+                          background="gray5"
+                          label={t('backup.compression_level', 'Compression Level')}
+                          defaultSelection={COMPRESS_LEVEL_ITEMS.find(
+                            (item) =>
+                              item.value === String(globalConfig.backupCompressionLevel ?? ''),
+                          )}
+                          onChange={(v) => field.handleChange(v ?? '')}
+                          showCheckbox={false}
+                          disabled={!allowSetBackup}
+                        />
+                      )}
+                    </form.Field>
+                  </Container>
+                </ListRow>
+                <ListRow>
+                  <Container padding={{ all: 'small' }}>
+                    <form.Field name="threadsForItems">
+                      {(field) => (
+                        <Input
+                          isRequired
+                          label={t('backup.threads_for_items', 'Threads For Items')}
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            field.handleChange(e.target.value)
+                          }
+                          backgroundColor="gray5"
+                          disabled={!allowSetBackup}
+                        />
+                      )}
+                    </form.Field>
+                  </Container>
+                </ListRow>
+                <ListRow>
+                  <Container padding={{ all: 'small' }}>
+                    <form.Field name="threadsForAccounts">
+                      {(field) => (
+                        <Input
+                          isRequired
+                          label={t('backup.threads_for_account', 'Threads For Account')}
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            field.handleChange(e.target.value)
+                          }
+                          backgroundColor="gray5"
+                          disabled={!allowSetBackup}
+                        />
+                      )}
+                    </form.Field>
+                  </Container>
+                </ListRow>
+                <ListRow>
+                  <Container
+                    orientation="horizontal"
+                    mainAlignment="space-between"
+                    crossAlignment="flex-start"
+                    padding={{ all: 'small' }}
+                  >
+                    <form.Field name="flashMetadataOnSave">
+                      {(field) => (
+                        <Switch
+                          value={field.state.value}
+                          onClick={() => field.handleChange(!field.state.value)}
+                          label={t(
+                            'backup.flash_metadata_in_the_disk_at_every_save',
+                            'Flash metadata in the disk at every save',
+                          )}
+                          iconColor="primary"
+                          disabled={!allowSetBackup}
+                        />
+                      )}
+                    </form.Field>
+                  </Container>
+                </ListRow>
+                <ListRow>
+                  <Container
+                    orientation="horizontal"
+                    mainAlignment="space-between"
+                    crossAlignment="flex-start"
+                    padding={{ all: 'small' }}
+                  >
+                    <form.Field name="archiveMetadataEnabled">
+                      {(field) => (
+                        <Switch
+                          value={field.state.value}
+                          onClick={() => field.handleChange(!field.state.value)}
+                          label={t(
+                            'backup.archive_user_metadata_folder_in_the_remote_backup',
+                            'Archive user metadata folder in the remote backup',
+                          )}
+                          iconColor="primary"
+                          disabled={!allowSetBackup}
+                        />
+                      )}
+                    </form.Field>
                   </Container>
                 </ListRow>
               </Container>
@@ -315,8 +351,21 @@ const BackupAdvanced: FC = () => {
           </Container>
         </Container>
       </Container>
-      <RouteLeavingGuard when={isDirty} onSave={onSave} />
+      <RouteLeavingGuard when={isDirty} onSave={() => form.handleSubmit()} />
     </>
   );
+}
+
+export const BackupAdvanced = () => {
+  const { data: globalConfig, isPending } = useGlobalSettings();
+
+  if (isPending || !globalConfig) {
+    return (
+      <Container padding={{ all: 'large' }} mainAlignment="center" background="gray6">
+        <ds-spinner />
+      </Container>
+    );
+  }
+
+  return <BackupAdvancedForm globalConfig={globalConfig} />;
 };
-export default BackupAdvanced;

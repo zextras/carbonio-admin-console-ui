@@ -14,7 +14,7 @@ import { StrictMode, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { Bootstrapper } from './boot/bootstrapper';
-import LoadingView from './boot/splash';
+import { LoadingView } from './boot/splash';
 
 function shouldAllowContextMenu(ev: MouseEvent): boolean {
   const target = ev.target as HTMLElement;
