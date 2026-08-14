@@ -9,7 +9,7 @@ import { LocationDisplay, setupBrowserTest } from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import ShellPrimaryBar from '../shell-primary-bar';
+import { ShellPrimaryBar } from '../shell-primary-bar';
 
 const EMPTY_DATA = {
   routes: {},

@@ -6,13 +6,12 @@
 
 import { useAppStore } from '@zextras/ui-shared';
 import { LocationDisplay, setupBrowserTest } from 'admin-ui-test-utils';
-import { FC } from 'react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import AppViewContainer from '../app-view-container';
+import { AppViewContainer } from '../app-view-container';
 
-const StubView: FC = () => <div>STUB-APPVIEW</div>;
+const StubView = () => <div>STUB-APPVIEW</div>;
 
 const EMPTY_DATA = {
   routes: {},
