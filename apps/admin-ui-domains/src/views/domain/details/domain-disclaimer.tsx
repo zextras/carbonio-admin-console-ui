@@ -5,10 +5,11 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import { Container, ListRow, Row, Switch, TextArea } from '@zextras/ui-components';
 import { domainByIdKey, flushCache, useUserSettings } from '@zextras/ui-shared';
 import { encode } from 'html-entities';
-import { ChangeEvent, FC, useRef, useState } from 'react';
+import { ChangeEvent, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -30,7 +31,8 @@ import { useDomainMutation } from './hooks/use-domain-mutation';
 import {
 	DISCLAIMER_DEFAULTS,
 	DisclaimerFormValues,
-	disclaimerSchema} from './schemas/domain-disclaimer-schema';
+	disclaimerSchema
+} from './schemas/domain-disclaimer-schema';
 
 type ModifyDomainBody = {
 	id: string;
@@ -140,71 +142,14 @@ const DomainDisclaimer: FC = () => {
 
 	const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
-	// Rich text editor initial content
-	const [richTextContent, setRichTextContent] = useState('');
-
-	// Derive values from domain (stable for first render)
-	const derivedValues = extractDisclaimerFromDomain(domainInformation);
-
-	// Track user modifications locally for immediate UI feedback
-	const [localOverrides, setLocalOverrides] = useState<Partial<DisclaimerFormValues>>({});
-
-	// Sync form when domain changes
-	const lastSyncedDomainIdRef = useRef<string | undefined>(undefined);
-
-	const form = useForm({
-		defaultValues: derivedValues,
-		validators: {
-			onChange: disclaimerSchema,
-			onSubmit: disclaimerSchema
-		},
-		onSubmit: async ({ value }) => {
-			await saveMutation({
-				id: domainId,
-				_jsns: ZIMBRA_ADMIN_URN,
-				a: buildAttributes(value, domainName)
-			});
-			form.reset(value, { keepDefaultValues: true });
-			setLocalOverrides({});
-		}
-	});
-
-	// Sync form with server data when domain changes
-	if (domain?.id && domain.id !== lastSyncedDomainIdRef.current) {
-		lastSyncedDomainIdRef.current = domain.id;
-		form.reset(derivedValues, { keepDefaultValues: false });
-		setRichTextContent(derivedValues.zimbraAmavisDomainDisclaimerHTML ?? '');
-		setLocalOverrides({});
-	}
-
-	// Display values: merge derivedValues with local overrides
-	const displayValues = { ...derivedValues, ...localOverrides };
-
-	// isDirty: check if localOverrides has any changes from derivedValues
-	const isDirty = Object.keys(localOverrides).length > 0 && (
-		(
-			localOverrides.zimbraDomainMandatoryMailSignatureEnabled !== undefined &&
-			localOverrides.zimbraDomainMandatoryMailSignatureEnabled !==
-				derivedValues.zimbraDomainMandatoryMailSignatureEnabled
-		) ||
-		(
-			localOverrides.zimbraAmavisDomainDisclaimerText !== undefined &&
-			localOverrides.zimbraAmavisDomainDisclaimerText !==
-				derivedValues.zimbraAmavisDomainDisclaimerText
-		) ||
-		(
-			localOverrides.zimbraAmavisDomainDisclaimerHTML !== undefined &&
-			localOverrides.zimbraAmavisDomainDisclaimerHTML !==
-				derivedValues.zimbraAmavisDomainDisclaimerHTML
-		)
-	);
+	const defaultValues = extractDisclaimerFromDomain(domainInformation);
 
 	// Mutation for save
 	const { mutate: saveMutation, isPending } = useDomainMutation<unknown, ModifyDomainBody>({
 		mutationFn: async (body) => {
 			const data = await modifyDomain(body);
 			if (isGlobalAdmin) {
-				flushCache('domain', 'id', body.id);
+				await flushCache('domain', 'id', body.id);
 			}
 			const responseDomain = data?.domain?.[0];
 			if (responseDomain && routeDomainId) {
@@ -214,17 +159,34 @@ const DomainDisclaimer: FC = () => {
 		}
 	});
 
+	const form = useForm({
+		defaultValues,
+		validators: {
+			onChange: disclaimerSchema
+		},
+		onSubmit: async ({ value }) => {
+			const result = await saveMutation({
+				id: domainId,
+				_jsns: ZIMBRA_ADMIN_URN,
+				a: buildAttributes(value, domainName)
+			});
+			if (result) {
+				form.reset(value, { keepDefaultValues: true });
+			}
+		}
+	});
+
+	const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+
 	const onCancel = (): void => {
 		form.reset();
-		setLocalOverrides({});
-		setRichTextContent(derivedValues.zimbraAmavisDomainDisclaimerHTML ?? '');
 	};
 
 	const onSave = (): void => {
 		form.handleSubmit();
 	};
 
-	if (isLoading) {
+	if (isLoading || !domainInformation) {
 		return (
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 				<ds-page-shimmer rows={6} />
@@ -276,21 +238,20 @@ const DomainDisclaimer: FC = () => {
 							bottom: 'extralarge'
 						}}
 					>
-						<Switch
-							label={t(
-								'label.enable_disclaimers_for_this_domain',
-								'Enable disclaimers for this domain'
+						<form.Field name="zimbraDomainMandatoryMailSignatureEnabled">
+							{(field) => (
+								<Switch
+									label={t(
+										'label.enable_disclaimers_for_this_domain',
+										'Enable disclaimers for this domain'
+									)}
+									value={field.state.value}
+									onClick={(): void => {
+										field.handleChange(!field.state.value);
+									}}
+								/>
 							)}
-							value={displayValues.zimbraDomainMandatoryMailSignatureEnabled}
-							onClick={(): void => {
-								const newValue = !displayValues.zimbraDomainMandatoryMailSignatureEnabled;
-								form.setFieldValue('zimbraDomainMandatoryMailSignatureEnabled', newValue);
-								setLocalOverrides((prev) => ({
-									...prev,
-									zimbraDomainMandatoryMailSignatureEnabled: newValue
-								}));
-							}}
-						/>
+						</form.Field>
 					</Container>
 					<Container
 						crossAlignment="flex-start"
@@ -337,19 +298,18 @@ const DomainDisclaimer: FC = () => {
 							right: 'extralarge'
 						}}
 					>
-						<TextArea
-							label={''}
-							value={displayValues.zimbraAmavisDomainDisclaimerText}
-							onChange={(event: ChangeEvent<HTMLTextAreaElement>): void => {
-								const value = event.currentTarget.value;
-								form.setFieldValue('zimbraAmavisDomainDisclaimerText', value);
-								setLocalOverrides((prev) => ({
-									...prev,
-									zimbraAmavisDomainDisclaimerText: value
-								}));
-							}}
-							maxHeight="20.5rem"
-						/>
+						<form.Field name="zimbraAmavisDomainDisclaimerText">
+							{(field) => (
+								<TextArea
+									label={''}
+									value={field.state.value}
+									onChange={(event: ChangeEvent<HTMLTextAreaElement>): void => {
+										field.handleChange(event.currentTarget.value);
+									}}
+									maxHeight="20.5rem"
+								/>
+							)}
+						</form.Field>
 					</Container>
 					<Container
 						crossAlignment="flex-start"
@@ -363,15 +323,11 @@ const DomainDisclaimer: FC = () => {
 							{(field) => (
 								<div className={styles.editorWrapper}>
 									<Composer
-										initialValue={richTextContent}
+										initialValue={defaultValues.zimbraAmavisDomainDisclaimerHTML}
 										value={field.state.value}
 										onEditorChange={(ev): void => {
 											const htmlValue = (ev as [string, string])[1];
 											field.handleChange(htmlValue);
-											setLocalOverrides((prev) => ({
-												...prev,
-												zimbraAmavisDomainDisclaimerHTML: htmlValue
-											}));
 										}}
 									/>
 								</div>

@@ -29,7 +29,7 @@ import { ThemeConfigs } from '../theme/theme-configs';
 import { ResetTheme } from '../theme/theme-reset';
 import { DomainFormActions } from './components/domain-form-actions';
 import { useDomainMutation } from './hooks/use-domain-mutation';
-import { THEME_DEFAULTS, ThemeFormValues,themeSchema } from './schemas/domain-theme-schema';
+import { ThemeFormValues, themeSchema } from './schemas/domain-theme-schema';
 
 type ModifyDomainBody = {
 	id: string;
@@ -92,62 +92,8 @@ const DomainTheme: FC = () => {
 
 	const [isOpenResetDialog, setIsOpenResetDialog] = useState(false);
 	const [isValidated, setIsValidated] = useState(true);
-	const [prevDomainInfo, setPrevDomainInfo] = useState(domainInformation);
-	const [originalValues, setOriginalValues] = useState<ThemeFormValues>(THEME_DEFAULTS);
 
-	const form = useForm({
-		defaultValues: THEME_DEFAULTS,
-		validators: {
-			onChange: themeSchema,
-			onSubmit: themeSchema
-		},
-		onSubmit: async ({ value }) => {
-			// Validation check for hex colors
-			if (value?.carbonioWebUiPrimaryColor && !isValidHexColor(value.carbonioWebUiPrimaryColor)) {
-				return;
-			}
-			if (
-				value?.carbonioWebUiDarkPrimaryColor &&
-				!isValidHexColor(value.carbonioWebUiDarkPrimaryColor)
-			) {
-				return;
-			}
-
-			const modifiedKeys = reduce<ThemeFormValues, string[]>(
-				value,
-				(result, val, key) =>
-					val === originalValues[key as keyof ThemeFormValues] ? result : [...result, key],
-				[]
-			);
-
-			const attributes = modifiedKeys.map((key) => {
-				const attrValue = value[key as keyof ThemeFormValues];
-				return {
-					n: key,
-					_content: typeof attrValue === 'boolean' ? String(attrValue).toUpperCase() : (attrValue ?? '')
-				};
-			});
-
-			await saveMutation({
-				id: zimbraId,
-				_jsns: ZIMBRA_ADMIN_URN,
-				a: attributes
-			});
-			form.reset(value, { keepDefaultValues: true });
-		}
-	});
-
-	// Sync form with server data
-	if (domainInformation !== prevDomainInfo) {
-		setPrevDomainInfo(domainInformation);
-		const themeConfig = attributesToThemeConfig(domainInformation);
-		setOriginalValues(themeConfig);
-		form.reset(themeConfig, { keepDefaultValues: false });
-	}
-
-	const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
-	const domainTheme = useSelector(form.store, (state) => state.values);
-
+	const initialThemeConfig = attributesToThemeConfig(domainInformation);
 	const zimbraId = domainWithoutConfig?.id ?? '';
 
 	// Mutation for save
@@ -156,7 +102,7 @@ const DomainTheme: FC = () => {
 			mutationFn: async (body) => {
 				const data = await modifyDomain(body);
 				if (isGlobalAdmin) {
-					flushCache('domain', 'id', body.id);
+					await flushCache('domain', 'id', body.id);
 				}
 				const domain = data?.domain?.[0];
 				if (domain && domainId) {
@@ -180,7 +126,7 @@ const DomainTheme: FC = () => {
 		mutationFn: async (body) => {
 			const data = await modifyDomain(body);
 			if (isGlobalAdmin) {
-				flushCache('domain', 'id', body.id);
+				await flushCache('domain', 'id', body.id);
 			}
 			const domain = data?.domain?.[0];
 			if (domain && domainId) {
@@ -195,6 +141,53 @@ const DomainTheme: FC = () => {
 		},
 		successMessage: t('label.theme_reset_success', 'Theme has been reset successfully')
 	});
+
+	const form = useForm({
+		defaultValues: initialThemeConfig,
+		validators: {
+			onChange: themeSchema
+		},
+		onSubmit: async ({ value }) => {
+			// Validation check for hex colors
+			if (value?.carbonioWebUiPrimaryColor && !isValidHexColor(value.carbonioWebUiPrimaryColor)) {
+				return;
+			}
+			if (
+				value?.carbonioWebUiDarkPrimaryColor &&
+				!isValidHexColor(value.carbonioWebUiDarkPrimaryColor)
+			) {
+				return;
+			}
+
+			const modifiedKeys = reduce<ThemeFormValues, string[]>(
+				value,
+				(result, val, key) =>
+					val === initialThemeConfig[key as keyof ThemeFormValues] ? result : [...result, key],
+				[]
+			);
+
+			const attributes = modifiedKeys.map((key) => {
+				const attrValue = value[key as keyof ThemeFormValues];
+				return {
+					n: key,
+					_content: typeof attrValue === 'boolean' ? String(attrValue).toUpperCase() : (attrValue ?? '')
+				};
+			});
+
+			const result = await saveMutation({
+				id: zimbraId,
+				_jsns: ZIMBRA_ADMIN_URN,
+				a: attributes
+			});
+
+			if (result) {
+				form.reset(value, { keepDefaultValues: true });
+			}
+		}
+	});
+
+	const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+	const domainTheme = useSelector(form.store, (state) => state.values);
 
 	const isPending = isSaving || isResetting;
 
@@ -226,17 +219,20 @@ const DomainTheme: FC = () => {
 		setIsOpenResetDialog(false);
 	};
 
-	const onResetHandler = (): void => {
+	const onResetHandler = async (): Promise<void> => {
 		setIsOpenResetDialog(false);
 		const attributes = DOMAIN_DEFAULT_THEME_KEYS.map((key) => ({ n: key, _content: '' }));
-		resetMutation({
+		const result = await resetMutation({
 			id: zimbraId,
 			_jsns: ZIMBRA_ADMIN_URN,
 			a: attributes
 		});
+		if (result) {
+			form.reset({}, { keepDefaultValues: true });
+		}
 	};
 
-	if (isDomainLoading) {
+	if (isDomainLoading || !domainWithoutConfig) {
 		return (
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 				<ds-page-shimmer rows={6} />

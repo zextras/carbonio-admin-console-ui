@@ -5,7 +5,22 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { Button, Container, Input, ListRow, Padding, PasswordInput, Popper, RouteLeavingGuard, Row, Select, SelectItem, Switch, Tooltip as TooltipDefault, useSnackbar } from '@zextras/ui-components';
+import {
+	Button,
+	Container,
+	Input,
+	ListRow,
+	Padding,
+	PasswordInput,
+	Popper,
+	RouteLeavingGuard,
+	Row,
+	Select,
+	SelectItem,
+	Switch,
+	Tooltip as TooltipDefault,
+	useSnackbar
+} from '@zextras/ui-components';
 import { flushCache, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import React, { FC, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +36,8 @@ import { useDomainMutation } from './hooks/use-domain-mutation';
 import {
 	AUTHENTICATION_DEFAULTS,
 	AuthenticationFormValues,
-	authenticationSchema} from './schemas/domain-authentication-schema';
+	authenticationSchema
+} from './schemas/domain-authentication-schema';
 
 const ZimbraAuthMethod = {
 	INTERNAL: 'zimbra',
@@ -57,12 +73,37 @@ type AuthMethodItem = {
 	info_label_ce: string;
 };
 
+function parseAuthenticationFromAttributes(
+	domainInformation: Attribute[] | undefined
+): AuthenticationFormValues {
+	if (!domainInformation || domainInformation.length === 0) {
+		return AUTHENTICATION_DEFAULTS;
+	}
+	const obj: Record<string, string> = {};
+	domainInformation.forEach((item: Attribute) => {
+		obj[item?.n] = item._content;
+	});
+
+	return {
+		zimbraAuthMech: obj.zimbraAuthMech ?? '',
+		zimbraPasswordChangeListener: obj.zimbraPasswordChangeListener ?? '',
+		zimbraAuthLdapURL: obj.zimbraAuthLdapURL ?? '',
+		zimbraAuthLdapSearchBindDn: obj.zimbraAuthLdapSearchBindDn ?? '',
+		zimbraAuthLdapSearchBindPassword: obj.zimbraAuthLdapSearchBindPassword ?? '',
+		zimbraAuthLdapSearchFilter: obj.zimbraAuthLdapSearchFilter ?? '',
+		zimbraAuthLdapSearchBase: obj.zimbraAuthLdapSearchBase ?? '',
+		zimbraAuthFallbackToLocal: obj.zimbraAuthFallbackToLocal === 'TRUE',
+		zimbraAuthLdapStartTlsEnabled: obj.zimbraAuthLdapStartTlsEnabled === 'TRUE',
+		zimbraFeatureResetPasswordStatus: obj.zimbraFeatureResetPasswordStatus === ENABLED,
+		zimbraId: obj.zimbraId ?? ''
+	};
+}
+
 const DomainAuthentication: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 
-	// UI-only states (not part of form data)
-	const [zimbraAuthMech, setZimbraAuthMech] = useState<AuthMethodItem | undefined>();
+	// UI-only states (verification)
 	const [isVerifying, setIsVerifying] = useState<boolean>(false);
 	const [isSuccessVerify, setIsSuccessVerify] = useState<boolean>(false);
 	const [verifyAuthUserName, setVerifyAuthUserName] = useState<string>('');
@@ -145,13 +186,21 @@ const DomainAuthentication: FC = () => {
 
 	const FILTER_TOOLTIP = [{ label: `${t('label.ex', 'ex.')} (ou=text)` }];
 
-	const [prevDomainInformation, setPrevDomainInformation] = useState(domainInformation);
+	const { mutate, isPending } = useDomainMutation({
+		mutationFn: async (body: { id: string; _jsns: string; a: { n: string; _content?: string }[] }) => {
+			const result = await modifyDomain(body);
+			if (isGlobalAdmin) {
+				await flushCache('domain', 'id', body.id);
+			}
+			return result;
+		},
+		successMessage: t('label.change_save_success_msg', 'The change has been saved successfully')
+	});
 
 	const form = useForm({
-		defaultValues: AUTHENTICATION_DEFAULTS,
+		defaultValues: parseAuthenticationFromAttributes(domainInformation),
 		validators: {
-			onChange: authenticationSchema,
-			onSubmit: authenticationSchema
+			onChange: authenticationSchema
 		},
 		onSubmit: async ({ value }) => {
 			const attributes: { n: string; _content?: string }[] = [
@@ -182,47 +231,23 @@ const DomainAuthentication: FC = () => {
 				});
 			}
 
-			await mutate({
-				id: domain?.id ?? '',
+			const result = await mutate({
+				id: domain?.id || value.zimbraId || '',
 				_jsns: ZIMBRA_ADMIN_URN,
 				a: attributes
 			});
-			form.reset(value, { keepDefaultValues: true });
+
+			if (result) {
+				form.reset(value, { keepDefaultValues: true });
+			}
 		}
 	});
 
-	// Sync form with server data
-	if (domainInformation !== prevDomainInformation) {
-		setPrevDomainInformation(domainInformation);
-		if (domainInformation && domainInformation.length > 0) {
-			const obj: Record<string, string> = {};
-			domainInformation.forEach((item: Attribute) => {
-				obj[item?.n] = item._content;
-			});
-
-			const authMethod =
-				DOMAIN_AUTH_LIST.find((item) => item.value === obj.zimbraAuthMech) ?? DOMAIN_AUTH_LIST[0];
-			setZimbraAuthMech(authMethod);
-
-			const formValues: AuthenticationFormValues = {
-				zimbraAuthMech: authMethod.value,
-				zimbraPasswordChangeListener: obj.zimbraPasswordChangeListener ?? '',
-				zimbraAuthLdapURL: obj.zimbraAuthLdapURL ?? '',
-				zimbraAuthLdapSearchBindDn: obj.zimbraAuthLdapSearchBindDn ?? '',
-				zimbraAuthLdapSearchBindPassword: obj.zimbraAuthLdapSearchBindPassword ?? '',
-				zimbraAuthLdapSearchFilter: obj.zimbraAuthLdapSearchFilter ?? '',
-				zimbraAuthLdapSearchBase: obj.zimbraAuthLdapSearchBase ?? '',
-				zimbraAuthFallbackToLocal: obj.zimbraAuthFallbackToLocal === 'TRUE',
-				zimbraAuthLdapStartTlsEnabled: obj.zimbraAuthLdapStartTlsEnabled === 'TRUE',
-				zimbraFeatureResetPasswordStatus: obj.zimbraFeatureResetPasswordStatus === ENABLED,
-				zimbraId: obj.zimbraId ?? ''
-			};
-			form.reset(formValues, { keepDefaultValues: false });
-		}
-	}
-
 	const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
 	const formValues = useSelector(form.store, (state) => state.values);
+
+	const zimbraAuthMech =
+		DOMAIN_AUTH_LIST.find((item) => item.value === formValues.zimbraAuthMech) ?? DOMAIN_AUTH_LIST[0];
 
 	// Validation states derived from form
 	const isValidLdapUrl =
@@ -236,31 +261,12 @@ const DomainAuthentication: FC = () => {
 			formValues.zimbraAuthMech === ZimbraAuthMethod.LDAP) &&
 		!formValues.zimbraAuthLdapURL;
 
-	const { mutate, isPending } = useDomainMutation({
-		mutationFn: async (body: { id: string; _jsns: string; a: { n: string; _content?: string }[] }) => {
-			const result = await modifyDomain(body);
-			if (isGlobalAdmin) {
-				flushCache('domain', 'id', body.id);
-			}
-			return result;
-		},
-		successMessage: t('label.change_save_success_msg', 'The change has been saved successfully')
-	});
-
 	const onAuthMethodChange = (v: SelectItem[] | string | null): void => {
-		const method = DOMAIN_AUTH_LIST.find((item) => item.value === v);
-		setZimbraAuthMech(method);
 		form.setFieldValue('zimbraAuthMech', (v as string) ?? '');
 	};
 
 	const onCancel = (): void => {
 		form.reset();
-		// After reset, values return to defaults - read from the reset state
-		const resetValues = form.store.state.values;
-		const authMethod = DOMAIN_AUTH_LIST.find(
-			(item) => item.value === resetValues.zimbraAuthMech
-		);
-		setZimbraAuthMech(authMethod);
 	};
 
 	const handleSave = (): void => {
@@ -299,38 +305,50 @@ const DomainAuthentication: FC = () => {
 			name: verifyAuthUserName,
 			password: verifyAuthPassword
 		};
+
 		CheckAuthConfig(body)
-			.then((response) => {
-				if (response?.code[0]?._content === CHECK_OK) {
+			.then((res) => {
+				setIsVerifying(false);
+				const code = res?.code?.[0]?._content ?? res?.code?._content ?? res?.Body?.CheckAuthConfigResponse?.code?._content;
+				if (code === CHECK_OK) {
 					setIsSuccessVerify(true);
-				} else {
+				} else if (res?.Header?._content) {
+					setIsSuccessVerify(false);
 					createSnackbar({
 						key: 'error',
 						severity: 'error',
-						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 5000,
+						label: res?.Header?._content,
+						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
 					});
-					setIsVerifying(false);
+				} else {
+					setIsSuccessVerify(false);
+					createSnackbar({
+						key: 'error',
+						severity: 'error',
+						label: res?.Body?.CheckAuthConfigResponse?.message?._content || res?.message?.[0]?._content || t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
 				}
 			})
-			.catch((error) => {
+			.catch((err) => {
+				setIsVerifying(false);
+				setIsSuccessVerify(false);
 				createSnackbar({
 					key: 'error',
 					severity: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 5000,
+					label: err?.message,
+					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
-				setIsVerifying(false);
 			});
 	};
 
-	if (isLoading) {
+	if (isLoading || !domainInformation) {
 		return (
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 				<ds-page-shimmer rows={6} />
@@ -347,7 +365,7 @@ const DomainAuthentication: FC = () => {
 				mainAlignment="flex-start"
 			>
 				<Row mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="56px">
+					<Container orientation="vertical" mainAlignment="space-around" height="58px">
 						<Row orientation="horizontal" width="100%">
 							<Row
 								padding={{ all: 'large' }}
@@ -394,17 +412,15 @@ const DomainAuthentication: FC = () => {
 							</ListRow>
 							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
-									{zimbraAuthMech && (
-										<Select
-											data-testid={'auth-method-select'}
-											background="gray5"
-											label={t('label.your_auth_method_is', 'Your Auth Method is')}
-											showCheckbox={false}
-											items={DOMAIN_AUTH_LIST}
-											selection={zimbraAuthMech}
-											onChange={onAuthMethodChange}
-										/>
-									)}
+									<Select
+										data-testid={'auth-method-select'}
+										background="gray5"
+										label={t('label.your_auth_method_is', 'Your Auth Method is')}
+										showCheckbox={false}
+										items={DOMAIN_AUTH_LIST}
+										selection={zimbraAuthMech}
+										onChange={onAuthMethodChange}
+									/>
 									<Padding top="medium">
 										{zimbraAuthMech && (
 											<ds-text as="p" size="small" color="gray1">
@@ -476,20 +492,18 @@ const DomainAuthentication: FC = () => {
 														</Container>
 													</Row>
 												)}
+												<Popper
+													open={ldapUrlOpen}
+													anchorEl={ldapUrlIconRef as RefObject<HTMLElement>}
+													placement="top-end"
+													onClose={(): void => setLdapUrlOpen(false)}
+												>
+													<Tooltip items={LDAP_URL_TOOLTIP} />
+												</Popper>
 											</>
 										)}
 									</form.Field>
-									<Popper
-										open={ldapUrlOpen}
-										anchorEl={ldapUrlIconRef as RefObject<HTMLElement>}
-										placement="top-end"
-										onClose={(): void => setLdapUrlOpen(false)}
-									>
-										<Tooltip items={LDAP_URL_TOOLTIP} />
-									</Popper>
 								</Padding>
-							</ListRow>
-							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<form.Field name="zimbraAuthLdapSearchFilter">
 										{(field) => (

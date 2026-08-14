@@ -6,9 +6,32 @@
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
-import { Button, Container, CustomHeaderFactory, Dropdown, DropdownItem, HoverableRowFactory, Input, LabeledValue, ListRow, Padding, RouteLeavingGuard, Row, Select, Switch, Table, Tooltip } from '@zextras/ui-components';
-import { domainByIdKey, flushCache, getDomainInformation, useMailstoreServers, useUserSettings } from '@zextras/ui-shared';
-import React, { ChangeEvent, FC, useState } from 'react';
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  Dropdown,
+  DropdownItem,
+  HoverableRowFactory,
+  Input,
+  LabeledValue,
+  ListRow,
+  Padding,
+  RouteLeavingGuard,
+  Row,
+  Select,
+  Switch,
+  Table,
+  Tooltip
+} from '@zextras/ui-components';
+import {
+  domainByIdKey,
+  flushCache,
+  getDomainInformation,
+  useMailstoreServers,
+  useUserSettings
+} from '@zextras/ui-shared';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -22,7 +45,7 @@ import {
   LDAP_SEARCH_BASE_LABEL,
   TRUE,
   ZIMBRA,
-  ZIMBRA_ADMIN_URN,
+  ZIMBRA_ADMIN_URN
 } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { createGalSyncAccount } from '../../../services/create-gal-sync-service';
@@ -38,7 +61,11 @@ import { DomainFormActions } from './components/domain-form-actions';
 import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 import { useDomainMutation } from './hooks/use-domain-mutation';
-import { GAL_SETTINGS_DEFAULTS,GalSettingsFormValues, galSettingsSchema } from './schemas/domain-gal-settings-schema';
+import {
+  GAL_SETTINGS_DEFAULTS,
+  GalSettingsFormValues,
+  galSettingsSchema
+} from './schemas/domain-gal-settings-schema';
 import {
   formatPollingInterval,
   parseGalFormFromAttributes,
@@ -54,7 +81,7 @@ interface GalAccountInfo {
   id: string;
 }
 
-// === Helper functions to reduce nesting ===
+// === Helper functions ===
 async function fetchGalAccountInfo(accountId: string): Promise<GalAccountInfo | undefined> {
   try {
     const data = await getAccount(accountId);
@@ -92,61 +119,49 @@ interface TableRowData {
 }
 
 const ServerListTable: FC<{
-  volumes: Array<AccountDataType>;
+  volumes?: Array<AccountDataType>;
   selectedRows: [] | [string];
   onSelectionChange: (ids: string[]) => void;
-}> = ({ volumes, selectedRows, onSelectionChange }) => {
+}> = ({ volumes = [], selectedRows, onSelectionChange }) => {
   const [t] = useTranslation();
-  const tableRows: TableRowData[] = volumes.map((v, i) => ({
-    id: String(i),
-    columns: [
-      <Tooltip placement="bottom" label={v?.name} key={i}>
-        <Row style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-          <ds-text as="span" color="gray0" weight="regular">
-            {v?.name}
-          </ds-text>
-        </Row>
-      </Tooltip>,
-      <Tooltip placement="bottom" label={v?.name} key={i}>
-        <Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-          <ds-text as="span" color="gray0" weight="regular">
-            {v?.galAccount?.name ?? '-'}
-          </ds-text>
-        </Row>
-      </Tooltip>,
-    ],
+  const tableRows: TableRowData[] = (volumes ?? []).map((v, i) => ({
+    id: `${i}`,
     clickable: true,
+    columns: [
+      <ds-text as="span" key={v.name} size="small" weight="regular">
+        {v.name}
+      </ds-text>,
+      <ds-text as="span" key={v.name} size="small" weight="regular">
+        {v.galAccount ? v.galAccount.name : t('label.none', 'None')}
+      </ds-text>
+    ]
   }));
 
+  const headers = GalServerTableheaders(t);
+
   return (
-    <Container mainAlignment="flex-start" crossAlignment="flex-start">
-      <ListRow>
+    <Container width="100%">
+      <Table
+        id="server-list-table"
+        headers={headers}
+        rows={tableRows}
+        selectedRows={selectedRows}
+        onSelectionChange={onSelectionChange}
+        HeaderFactory={CustomHeaderFactory}
+        RowFactory={HoverableRowFactory}
+      />
+      {(!volumes || volumes.length === 0) && (
         <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          crossAlignment="flex-start"
+          background="gray5"
+          height="12rem"
           width="fill"
-          maxHeight="calc(100vh - 25rem)"
-          minHeight="auto"
+          crossAlignment="center"
+          mainAlignment="center"
         >
-          <Table
-            headers={GalServerTableheaders(t)}
-            rows={tableRows}
-            showCheckbox={false}
-            multiSelect={false}
-            selectedRows={selectedRows}
-            onSelectionChange={onSelectionChange}
-            RowFactory={HoverableRowFactory}
-            HeaderFactory={CustomHeaderFactory}
-          />
-        </Container>
-      </ListRow>
-      {tableRows.length === 0 && (
-        <Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '1rem' }}>
-          <Padding all="medium" width="30.875rem">
+          <Padding all="large">
             <ds-text
               as="p"
-              color="gray0"
+              color="gray1"
               overflow="break-word"
               weight="regular"
               size="large"
@@ -175,19 +190,6 @@ const DomainGalSettings: FC = () => {
   const onClose = (): void => setOpen(false);
   const onOpen = (): void => setOpen(true);
 
-  // === Form with TanStack Form ===
-  const form = useForm({
-    defaultValues: GAL_SETTINGS_DEFAULTS,
-    validators: {
-      onChange: galSettingsSchema,
-      onSubmit: galSettingsSchema
-    },
-    onSubmit: async ({ value }) => {
-      await saveDomainMutationFn(value);
-      form.reset(value, { keepDefaultValues: true });
-    }
-  });
-
   // === Server table state ===
   const [serverList, setServerList] = useState<AccountDataType[]>([]);
   const [serverSelection, setServerSelection] = useState<[] | [string]>([]);
@@ -212,7 +214,6 @@ const DomainGalSettings: FC = () => {
 
   // === Mutations ===
   const saveDomainMutationFn = async (fs: GalSettingsFormValues): Promise<unknown[]> => {
-    // Use domain ID from derived values as fallback (handles form sync timing)
     const effectiveZimbraId = fs.zimbraId || selectedDomain?.id || '';
     const domainAttrs: Attribute[] = [
       { n: 'zimbraGalMaxResults', _content: fs.maxResults },
@@ -253,7 +254,6 @@ const DomainGalSettings: FC = () => {
       });
     }
 
-    // Update GAL account polling interval
     if (galAccountIds.length > 0) {
       galAccountIds.forEach((item) => {
         requests.push(
@@ -265,13 +265,16 @@ const DomainGalSettings: FC = () => {
     }
 
     const results = await Promise.all(requests);
-    if (isGlobalAdmin) {
-      flushCache('domain', 'id', domainId);
+    if (isGlobalAdmin && (domainId || effectiveZimbraId)) {
+      await flushCache('domain', 'id', domainId || effectiveZimbraId);
     }
     return results;
   };
 
-  const { isPending: isSaving } = useDomainMutation<unknown[], GalSettingsFormValues>({
+  const { mutate: saveDomainMutation, isPending: isSaving } = useDomainMutation<
+    unknown[],
+    GalSettingsFormValues
+  >({
     mutationFn: saveDomainMutationFn,
     successMessage: t('label.change_save_success_msg', 'The change has been saved successfully')
   });
@@ -306,44 +309,26 @@ const DomainGalSettings: FC = () => {
     successMessage: t('label.gal_successfully_re_synced', 'GAL successfully re-synced')
   });
 
-  // === Derived state ===
+  const parsedValues = parseGalFormFromAttributes(selectedDomain?.a);
+  const initialValues: GalSettingsFormValues = parsedValues
+    ? { ...parsedValues, zimbraId: selectedDomain?.id ?? parsedValues.zimbraId }
+    : GAL_SETTINGS_DEFAULTS;
+
+  const form = useForm({
+    defaultValues: initialValues,
+    validators: {
+      onChange: galSettingsSchema
+    },
+    onSubmit: async ({ value }) => {
+      const result = await saveDomainMutation(value);
+      if (result) {
+        form.reset(value, { keepDefaultValues: true });
+      }
+    }
+  });
+
   const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
-
-  // === Derive form values from domain (stable for first render) ===
-  const derivedValues = parseGalFormFromAttributes(selectedDomain?.a);
-
-  // Track user-modified galMode separately
-  const [userModifiedGalMode, setUserModifiedGalMode] = useState<string | null>(null);
-
-  // State for data fetching
-  const [hasFetchedInitialData, setHasFetchedInitialData] = useState(false);
-
-  // Track user modifications locally for immediate UI feedback
-  const [localOverrides, setLocalOverrides] = useState<Partial<GalSettingsFormValues>>({});
-
-  // Sync form when domain changes (sync render pattern)
-  const [lastSyncedDomainId, setLastSyncedDomainId] = useState<string | undefined>(undefined);
-
-  if (derivedValues?.zimbraId && derivedValues.zimbraId !== lastSyncedDomainId) {
-    setLastSyncedDomainId(derivedValues.zimbraId);
-    form.reset(derivedValues as GalSettingsFormValues, { keepDefaultValues: false });
-    setUserModifiedGalMode(null);
-    setLocalOverrides({}); // Clear local overrides on domain change
-    const accountIds = selectedDomain?.a?.filter((a: Attribute) => a.n === 'zimbraGalAccountId') ?? [];
-    setGalAccountIds(accountIds);
-    setHasFetchedInitialData(false);
-  }
-
-  // Display values: merge derivedValues with local overrides for immediate UI feedback
-  const baseValues = derivedValues ?? GAL_SETTINGS_DEFAULTS;
-  const displayValues = { ...baseValues, ...localOverrides } as GalSettingsFormValues;
-
-  const measureUnitSelection = measureUnitItems.find((item) => item.value === displayValues.galPollingInterval.unit) ?? measureUnitItems[0];
-
-  // === Button disable state (derived from selection) ===
-  const selectedServer = serverSelection.length > 0 ? serverList[Number(serverSelection[0])] : null;
-  const isCreateBtnDisabled = selectedServer?.galAccount !== null;
-  const isDestroyBtnDisabled = !selectedServer || selectedServer.galAccount === null;
+  const formValues = useSelector(form.store, (state) => state.values);
 
   // === Helper functions for server list ===
   const setEmptyServerList = (): void => {
@@ -378,44 +363,11 @@ const DomainGalSettings: FC = () => {
     setServerList(result);
   };
 
-  // Effective galMode for conditional rendering
-  const effectiveGalMode = userModifiedGalMode ?? derivedValues?.galMode ?? 'zimbra';
-
-  const getGalModeLabel = (): string => {
-    if (!effectiveGalMode || effectiveGalMode === 'zimbra') return 'Internal';
-    if (effectiveGalMode === 'ldap') return 'External';
-    return 'Both';
-  };
-  const galModeLabel = getGalModeLabel();
-
-  // === Fetch helpers (declared before use to avoid hoisting issues) ===
-  const fetchPollingIntervalFromAccount = (accountId: string): void => {
-    getAccount(accountId).then((data) => {
-      const galAccount = data?.account?.[0];
-      const parsed = galAccount ? extractPollingInterval(galAccount) : null;
-      if (parsed) {
-        form.setFieldValue('galPollingInterval', parsed);
-      }
-    });
-  };
-
-  const fetchDataSourceForAccount = (accountId: string): void => {
-    getDatasource(accountId).then((data) => {
-      const dataSource = data?.dataSource?.[0];
-      if (!dataSource?.id) {
-        return;
-      }
-      const isDuplicate = dataSourceIds.some((d) => d.accountId === accountId);
-      if (!isDuplicate) {
-        setDataSourceIds((prev) => [...prev, { accountId, dataSourceId: dataSource.id }]);
-      }
-    });
-  };
-
-  // Fetch GAL data after domain data is available (runs once per domain change)
-  if (derivedValues?.zimbraId && !hasFetchedInitialData && selectedDomain?.a) {
-    setHasFetchedInitialData(true);
-    const galAccountAttrs = selectedDomain.a.filter((item: Attribute) => item.n === 'zimbraGalAccountId');
+  // Fetch GAL sync accounts and datasource polling interval in useEffect
+  useEffect(() => {
+    if (!selectedDomain?.a) return;
+    const galAccountAttrs = selectedDomain.a.filter((item: Attribute) => item.n === 'zimbraGalAccountId') ?? [];
+    setGalAccountIds(galAccountAttrs);
 
     if (galAccountAttrs.length === 0) {
       setEmptyServerList();
@@ -425,11 +377,45 @@ const DomainGalSettings: FC = () => {
       );
     }
 
-    if (derivedValues.galAccountId) {
-      fetchPollingIntervalFromAccount(derivedValues.galAccountId);
-      galAccountIds.forEach((item) => fetchDataSourceForAccount(item._content));
+    if (initialValues.galAccountId) {
+      getAccount(initialValues.galAccountId).then((data) => {
+        const galAccount = data?.account?.[0];
+        const parsed = galAccount ? extractPollingInterval(galAccount) : null;
+        if (parsed) {
+          form.setFieldValue('galPollingInterval', parsed);
+        }
+      });
+
+      galAccountAttrs.forEach((item) => {
+        getDatasource(item._content).then((data) => {
+          const dataSource = data?.dataSource?.[0];
+          if (!dataSource?.id) return;
+          setDataSourceIds((prev) => {
+            if (prev.some((d) => d.accountId === item._content)) return prev;
+            return [...prev, { accountId: item._content, dataSourceId: dataSource.id }];
+          });
+        });
+      });
     }
-  }
+  }, [selectedDomain?.id, allMailstoreList]);
+
+  const effectiveGalMode = formValues.galMode;
+
+  const getGalModeLabel = (): string => {
+    if (!effectiveGalMode || effectiveGalMode === 'zimbra') return 'Internal';
+    if (effectiveGalMode === 'ldap') return 'External';
+    return 'Both';
+  };
+  const galModeLabel = getGalModeLabel();
+
+  const measureUnitSelection =
+    measureUnitItems.find((item) => item.value === formValues.galPollingInterval.unit) ??
+    measureUnitItems[0];
+
+  // === Button disable state (derived from selection) ===
+  const selectedServer = serverSelection.length > 0 ? serverList[Number(serverSelection[0])] : null;
+  const isCreateBtnDisabled = selectedServer?.galAccount !== null;
+  const isDestroyBtnDisabled = !selectedServer || selectedServer.galAccount === null;
 
   const closeHandler = (): void => {
     setModalState((prev) => ({ ...prev, createOpen: false, destroyOpen: false }));
@@ -442,7 +428,6 @@ const DomainGalSettings: FC = () => {
       selected: effectiveGalMode === 'zimbra',
       onClick: (): void => {
         form.setFieldValue('galMode', 'zimbra');
-        setUserModifiedGalMode('zimbra');
       }
     },
     {
@@ -451,15 +436,12 @@ const DomainGalSettings: FC = () => {
       selected: effectiveGalMode === 'ldap',
       onClick: (): void => {
         form.setFieldValue('galMode', 'ldap');
-        setUserModifiedGalMode('ldap');
       }
     }
   ];
 
   const onCancel = (): void => {
     form.reset();
-    setUserModifiedGalMode(null); // Reset to domain value
-    setLocalOverrides({}); // Clear local overrides
   };
 
   const onSave = (): void => {
@@ -467,98 +449,66 @@ const DomainGalSettings: FC = () => {
   };
 
   // === Form field handlers ===
-  // Each handler updates both the form store (for submission) and localOverrides (for immediate UI)
   const onMaxResultsChange = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.target.value;
-    form.setFieldValue('maxResults', value);
-    setLocalOverrides(prev => ({ ...prev, maxResults: value }));
+    form.setFieldValue('maxResults', ev.target.value);
   };
 
   const onLdapPageSizeChange = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.target.value;
-    form.setFieldValue('ldapPageSize', value);
-    setLocalOverrides(prev => ({ ...prev, ldapPageSize: value }));
+    form.setFieldValue('ldapPageSize', ev.target.value);
   };
 
   const onLdapUrlChange = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.target.value;
-    form.setFieldValue('ldapUrl', value);
-    setLocalOverrides(prev => ({ ...prev, ldapUrl: value }));
+    form.setFieldValue('ldapUrl', ev.target.value);
   };
 
   const onLdapStartTlsChange = (): void => {
-    const newValue = !displayValues.ldapStartTlsEnabled;
-    form.setFieldValue('ldapStartTlsEnabled', newValue);
-    setLocalOverrides(prev => ({ ...prev, ldapStartTlsEnabled: newValue }));
+    form.setFieldValue('ldapStartTlsEnabled', !formValues.ldapStartTlsEnabled);
   };
 
   const onLdapFilterChange = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.target.value;
-    form.setFieldValue('ldapFilter', value);
-    setLocalOverrides(prev => ({ ...prev, ldapFilter: value }));
+    form.setFieldValue('ldapFilter', ev.target.value);
   };
 
   const onLdapSearchBaseChange = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.target.value;
-    form.setFieldValue('ldapSearchBase', value);
-    setLocalOverrides(prev => ({ ...prev, ldapSearchBase: value }));
+    form.setFieldValue('ldapSearchBase', ev.target.value);
   };
 
   const onLdapBindDnChange = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.target.value;
-    form.setFieldValue('ldapBindDn', value);
-    setLocalOverrides(prev => ({ ...prev, ldapBindDn: value }));
+    form.setFieldValue('ldapBindDn', ev.target.value);
   };
 
   const onLdapBindPasswordChange = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.target.value;
-    form.setFieldValue('ldapBindPassword', value);
-    setLocalOverrides(prev => ({ ...prev, ldapBindPassword: value }));
+    form.setFieldValue('ldapBindPassword', ev.target.value);
   };
 
   const onLdapAuthMechChange = (): void => {
-    const newValue = displayValues.ldapAuthMech === 'none' ? 'simple' : 'none';
-    form.setFieldValue('ldapAuthMech', newValue);
-    setLocalOverrides(prev => ({ ...prev, ldapAuthMech: newValue }));
+    form.setFieldValue('ldapAuthMech', formValues.ldapAuthMech === 'none' ? 'simple' : 'none');
   };
 
   const onPollingValueChange = (ev: ChangeEvent<HTMLInputElement>): void => {
     const value = ev.target.value;
     if (Number.parseInt(value, 10) < 0) return;
-    const newPolling = { ...displayValues.galPollingInterval, value };
-    form.setFieldValue('galPollingInterval', newPolling);
-    setLocalOverrides(prev => ({ ...prev, galPollingInterval: newPolling }));
+    form.setFieldValue('galPollingInterval', { ...formValues.galPollingInterval, value });
   };
 
   const onPollingUnitChange = (unit: string | null): void => {
     if (!unit) return;
-    const newPolling = { ...displayValues.galPollingInterval, unit: unit as PollingUnit };
-    form.setFieldValue('galPollingInterval', newPolling);
-    setLocalOverrides(prev => ({ ...prev, galPollingInterval: newPolling }));
-  };
-
-  const fetchGalSyncAccounts = (domainAttrs: Attribute[] | undefined): void => {
-    const galAccountAttrs = domainAttrs?.filter((item: Attribute) => item.n === 'zimbraGalAccountId') ?? [];
-    if (galAccountAttrs.length === 0) {
-      setEmptyServerList();
-      return;
-    }
-    Promise.all(galAccountAttrs.map((item: Attribute) => fetchGalAccountInfo(item._content))).then(
-      buildServerList
-    );
+    form.setFieldValue('galPollingInterval', {
+      ...formValues.galPollingInterval,
+      unit: unit as PollingUnit
+    });
   };
 
   const refreshDomainData = (id: string): void => {
     flushCache('all').then(() => {
       getDomainInformation(id, 1).then((data: { domain?: Array<{ id: string; a?: Attribute[] }> }) => {
         const domainData = data?.domain?.[0];
-        if (domainData) {
+        if (domainData && domainId) {
           queryClient.setQueryData(domainByIdKey(domainId, 1), domainData);
           const newFormState = parseGalFormFromAttributes(domainData.a);
           if (newFormState) {
             form.reset(newFormState as GalSettingsFormValues, { keepDefaultValues: false });
           }
-          fetchGalSyncAccounts(domainData.a);
         }
       });
     });
@@ -601,10 +551,9 @@ const DomainGalSettings: FC = () => {
     reSyncMutation({ accountIds });
   };
 
-  // Combined loading state for operations
   const isOperationPending = isCreating || isDeleting || isResyncing;
 
-  if (isDomainLoading) {
+  if (isDomainLoading || !selectedDomain?.a) {
     return (
       <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
         <ds-page-shimmer rows={6} />
@@ -756,7 +705,7 @@ const DomainGalSettings: FC = () => {
                     'label.limit_search_results_from_address_book_list_to',
                     'Limit search results from Address Book List to'
                   )}
-                  value={displayValues.maxResults ?? ''}
+                  value={formValues.maxResults ?? ''}
                   backgroundColor="gray5"
                   onChange={onMaxResultsChange}
                 />
@@ -766,7 +715,7 @@ const DomainGalSettings: FC = () => {
                   isRequired
                   type="number"
                   label={t('domain.page_size', 'Page Size')}
-                  value={displayValues.ldapPageSize ?? ''}
+                  value={formValues.ldapPageSize ?? ''}
                   backgroundColor="gray5"
                   onChange={onLdapPageSizeChange}
                 />
@@ -797,7 +746,7 @@ const DomainGalSettings: FC = () => {
                 <Container padding={{ all: 'small' }}>
                   <Input
                     label={t('label.gal_update_frequencey_value', 'GAL Update Frequency (value)')}
-                    value={displayValues.galPollingInterval.value ?? ''}
+                    value={formValues.galPollingInterval.value ?? ''}
                     backgroundColor="gray5"
                     onChange={onPollingValueChange}
                   />
@@ -848,7 +797,7 @@ const DomainGalSettings: FC = () => {
                     <Container padding={{ all: 'small' }}>
                       <Input
                         label={t('label.external_server_address', 'External Server Address')}
-                        value={displayValues.ldapUrl ?? ''}
+                        value={formValues.ldapUrl ?? ''}
                         backgroundColor="gray5"
                         onChange={onLdapUrlChange}
                         CustomIcon={createInfoIcon(EXTERNAL_SERVER_EXAMPLE)}
@@ -862,17 +811,17 @@ const DomainGalSettings: FC = () => {
                       crossAlignment="center"
                     >
                       <Switch
-                        defaultChecked={displayValues.ldapStartTlsEnabled ?? false}
+                        defaultChecked={formValues.ldapStartTlsEnabled ?? false}
                         onClick={onLdapStartTlsChange}
                         label={t('label.user_ssl', 'Use SSL')}
-                        value={displayValues.ldapStartTlsEnabled ?? false}
+                        value={formValues.ldapStartTlsEnabled ?? false}
                       />
                     </Container>
                   </Row>
                   <Container padding={{ all: 'small' }}>
                     <Input
                       label={t('label.ldap_filter', 'LDAP Filter')}
-                      value={displayValues.ldapFilter ?? ''}
+                      value={formValues.ldapFilter ?? ''}
                       backgroundColor="gray5"
                       onChange={onLdapFilterChange}
                       CustomIcon={createInfoIcon(LDAP_FILTER_LABEL)}
@@ -881,7 +830,7 @@ const DomainGalSettings: FC = () => {
                   <Container padding={{ all: 'small' }}>
                     <Input
                       label={t('label.ldap_search_base', 'LDAP based search')}
-                      value={displayValues.ldapSearchBase ?? ''}
+                      value={formValues.ldapSearchBase ?? ''}
                       backgroundColor="gray5"
                       onChange={onLdapSearchBaseChange}
                       CustomIcon={createInfoIcon(LDAP_SEARCH_BASE_LABEL)}
@@ -920,13 +869,13 @@ const DomainGalSettings: FC = () => {
                   padding={{ all: 'small' }}
                 >
                   <Switch
-                    defaultChecked={displayValues.ldapAuthMech === 'simple'}
+                    defaultChecked={formValues.ldapAuthMech === 'simple'}
                     onClick={onLdapAuthMechChange}
                     label={t(
                       'label.external_server_needs_authentication',
                       'External Server needs authentication'
                     )}
-                    value={displayValues.ldapAuthMech === 'simple'}
+                    value={formValues.ldapAuthMech === 'simple'}
                   />
                 </Container>
               </ListRow>
@@ -934,7 +883,7 @@ const DomainGalSettings: FC = () => {
                 <Container padding={{ all: 'small' }}>
                   <Input
                     label={t('label.bind_dn', 'Bind DN')}
-                    value={displayValues.ldapBindDn ?? ''}
+                    value={formValues.ldapBindDn ?? ''}
                     backgroundColor="gray5"
                     onChange={onLdapBindDnChange}
                     CustomIcon={createInfoIcon(LDAP_BIND_DN_LABLE)}
@@ -943,7 +892,7 @@ const DomainGalSettings: FC = () => {
                 <Container padding={{ all: 'small' }}>
                   <Input
                     label={t('label.password', 'Password')}
-                    value={displayValues.ldapBindPassword ?? ''}
+                    value={formValues.ldapBindPassword ?? ''}
                     backgroundColor="gray5"
                     onChange={onLdapBindPasswordChange}
                   />

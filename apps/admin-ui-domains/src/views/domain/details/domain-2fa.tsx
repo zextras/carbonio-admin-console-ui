@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Container, RouteLeavingGuard, Row } from '@zextras/ui-components';
 import { differenceWith, isEqual, map, some } from 'lodash-es';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TwoFactorAuthPolicyValues } from '../../../../types';
@@ -19,7 +19,7 @@ import { isValidIpRange, TwoFactorPolicyArray } from '../../utility/utils';
 import { TwoFactorAuthencationConfig } from '../two-factor-authentication/2fa-config';
 import { DomainFormActions } from './components/domain-form-actions';
 import { useDomainMutation } from './hooks/use-domain-mutation';
-import { TwoFactorFormValues,twoFactorSchema } from './schemas/domain-2fa-schema';
+import { TwoFactorFormValues, twoFactorSchema } from './schemas/domain-2fa-schema';
 
 function parsePoliciesResponse(response: unknown): TwoFactorAuthPolicyValues[] {
 	if (!response || typeof response !== 'object') return [];
@@ -107,30 +107,31 @@ const DomainTwoFactorAuthentication = (): React.JSX.Element => {
 		enabled: !!domainName
 	});
 
-	const [prevPolicies, setPrevPolicies] = useState(policies);
+	// Mutation
+	const { mutate, isPending } = useDomainMutation({
+		mutationFn: async (data: { policies: TwoFactorAuthPolicyValues[] }) => {
+			return savePolicies(domainName, policies ?? [], data.policies);
+		},
+		successMessage: t(
+			'label.2fa-policy-updated-successfully',
+			'The settings have been applied to all services'
+		)
+	});
 
 	const form = useForm({
-		defaultValues: { policies: [] } as TwoFactorFormValues,
+		defaultValues: policiesToFormValues(policies ?? []),
 		validators: {
-			onChange: twoFactorSchema,
-			onSubmit: twoFactorSchema
+			onChange: twoFactorSchema
 		},
 		onSubmit: async ({ value }) => {
 			const policiesData = formValuesToPolicies(value);
 			const result = await mutate({ policies: policiesData });
 			if (result?.ok) {
-				await queryClient.invalidateQueries({ queryKey: ['2fa-policies', domainName] });
 				form.reset(value, { keepDefaultValues: true });
+				await queryClient.invalidateQueries({ queryKey: ['2fa-policies', domainName] });
 			}
 		}
 	});
-
-	// Sync form with fetched data
-	if (policies !== prevPolicies) {
-		setPrevPolicies(policies);
-		const formValues = policiesToFormValues(policies ?? []);
-		form.reset(formValues, { keepDefaultValues: false });
-	}
 
 	const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
 
@@ -151,17 +152,6 @@ const DomainTwoFactorAuthentication = (): React.JSX.Element => {
 		)
 	);
 
-	// Mutation
-	const { mutate, isPending } = useDomainMutation({
-		mutationFn: async (data: { policies: TwoFactorAuthPolicyValues[] }) => {
-			return savePolicies(domainName, policies ?? [], data.policies);
-		},
-		successMessage: t(
-			'label.2fa-policy-updated-successfully',
-			'The settings have been applied to all services'
-		)
-	});
-
 	const handleOnSave = (): void => {
 		form.handleSubmit();
 	};
@@ -176,7 +166,7 @@ const DomainTwoFactorAuthentication = (): React.JSX.Element => {
 		form.setFieldValue('policies', formValues.policies);
 	};
 
-	if (isLoading) {
+	if (isLoading || !policies) {
 		return (
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 				<ds-page-shimmer rows={6} />
