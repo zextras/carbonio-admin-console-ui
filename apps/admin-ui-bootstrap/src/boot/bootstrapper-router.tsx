@@ -6,44 +6,41 @@
 
 import { ModalManagerContext, useSnackbar } from '@zextras/ui-components';
 import { BASENAME, useBridge } from '@zextras/ui-shared';
-import { FC, useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import { BrowserRouter, useLocation, useNavigate } from 'react-router';
 
-import ShellView from '../shell/shell-view';
+import { ShellView } from '../shell/shell-view';
 import { TrackerProvider } from '../tracker/provider';
 import { AppLoaderMounter } from './app/app-loader-mounter';
 
-const ContextBridge: FC = () => {
+const ContextBridge = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const createSnackbar = useSnackbar();
 
-  const createModal = useContext(ModalManagerContext) as unknown as Function;
+  const { createModal } = useContext(ModalManagerContext) ?? {};
 
-  const history = useMemo(
-    () => ({
-      push: (to: string) => navigate(to),
-      replace: (to: string) => navigate(to, { replace: true }),
-      goBack: () => navigate(-1),
-      go: (delta: number) => navigate(delta),
-      location,
-      createHref: (to: string) => to,
-      listen: () => () => {},
-    }),
-    [navigate, location],
-  );
+  const history = {
+    push: (to: string) => navigate(to),
+    replace: (to: string) => navigate(to, { replace: true }),
+    goBack: () => navigate(-1),
+    go: (delta: number) => navigate(delta),
+    location,
+    createHref: (to: string) => to,
+    listen: () => () => {},
+  };
 
   useBridge({
     functions: {
       getHistory: () => history,
       createSnackbar,
-      createModal,
+      createModal: createModal ?? (() => {}),
     },
   });
   return null;
 };
 
-export const BootstrapperRouter: FC = () => (
+export const BootstrapperRouter = () => (
   <BrowserRouter basename={BASENAME}>
     <TrackerProvider>
       <ContextBridge />

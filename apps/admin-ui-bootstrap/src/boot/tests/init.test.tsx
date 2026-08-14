@@ -7,10 +7,10 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { I18nFactory, useIsAdvanced } from '@zextras/ui-shared';
 import {
-	advancedSupportedApi,
-	getInfoRequestApi,
-	loginConfigApi,
-	minMaxVersionApi,
+  advancedSupportedApi,
+  getInfoRequestApi,
+  loginConfigApi,
+  minMaxVersionApi,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import { describe, expect, it, vi } from 'vitest';

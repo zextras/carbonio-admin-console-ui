@@ -13,7 +13,6 @@ import {
   type UtilityView,
 } from '@zextras/ui-shared';
 import { filter, intersection } from 'lodash-es';
-import { useMemo } from 'react';
 
 const checkList = (l1: Array<string>, l2?: Array<string>): boolean =>
   intersection(l1, l2).length > 0;
@@ -31,10 +30,7 @@ export const useUtilityViews = (): Array<UtilityView> => {
   const utilityViews = useAppStore((s) => s.views.utilityBar);
 
   const activeRoute = useCurrentRoute();
-  return useMemo(
-    () => filter(utilityViews, (v) => checkRoute(v, activeRoute)),
-    [activeRoute, utilityViews],
-  );
+  return filter(utilityViews, (v) => checkRoute(v, activeRoute));
 };
 export const openLink = (link: string): void => {
   window.open(link, '_blank');

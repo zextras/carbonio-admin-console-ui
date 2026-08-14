@@ -7,7 +7,7 @@
 import { usePostHog } from '@posthog/react';
 import { useIsAdvanced, useUserAccount } from '@zextras/ui-shared';
 import type { CaptureOptions, Properties } from 'posthog-js';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 
 interface Tracker {
   capture: (
@@ -50,12 +50,9 @@ export const useTracker = (): Tracker => {
     }
   }, [account, postHog, isAdvanced]);
 
-  const capture = useCallback<Tracker['capture']>(
-    (eventName, properties, options) => {
-      postHog.capture(eventName, properties, options);
-    },
-    [postHog],
-  );
+  const capture: Tracker['capture'] = (eventName, properties, options) => {
+    postHog.capture(eventName, properties, options);
+  };
 
   return { capture };
 };
