@@ -32,6 +32,8 @@ const COS_FEATURE_DEFAULTS: CosFeaturesFormValues = {
   carbonioFeatureMailsAppEnabled: 'FALSE',
   zimbraFeatureOutOfOfficeReplyEnabled: 'FALSE',
   zimbraFeatureSignaturesEnabled: 'FALSE',
+  zimbraFeatureImportFolderEnabled: 'FALSE',
+  zimbraFeatureExportFolderEnabled: 'FALSE',
   zimbraFeatureMobileSyncEnabled: 'FALSE',
   zimbraFeatureContactsEnabled: 'FALSE',
   zimbraFeatureCalendarEnabled: 'FALSE',
