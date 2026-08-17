@@ -27,6 +27,16 @@ type MockNotification = {
   operationId: string;
 };
 
+type SoapActionBody = {
+  Body?: {
+    zextras?: {
+      notificationId?: string;
+      key?: string;
+      value?: boolean;
+    };
+  };
+};
+
 function createMockNotifications(count: number): Array<MockNotification> {
   const levels = ['Information', 'Warning', 'Error'];
   return Array.from({ length: count }, (_, i) => ({
@@ -63,6 +73,18 @@ async function setupNotificationViewTest(notifications: Array<MockNotification>)
   );
 
   await setupBrowserTest(<NotificationView isShowTitle={false} />);
+}
+
+function setupSetNotificationAttrInterceptor() {
+  return createBrowserZextrasActionInterceptor('setNotificationAttr', () =>
+    HttpResponse.json({
+      Body: {
+        response: {
+          content: JSON.stringify({ ok: true }),
+        },
+      },
+    }),
+  );
 }
 
 describe('NotificationView', () => {
@@ -104,5 +126,65 @@ describe('NotificationView', () => {
     await page.getByText(/WARNING \(.*\)/).click();
 
     await expect.element(page.getByText('1 of 1')).toBeVisible();
+  });
+
+  it('shows per-level counts on filter tabs', async () => {
+    await setupNotificationViewTest(createMockNotifications(15));
+
+    await expect.element(page.getByText(/ALL \(15\)/)).toBeVisible();
+    await expect.element(page.getByText(/INFORMATION \(5\)/)).toBeVisible();
+    await expect.element(page.getByText(/WARNING \(5\)/)).toBeVisible();
+    await expect.element(page.getByText(/ERROR \(5\)/)).toBeVisible();
+  });
+
+  it('filters rows by level when a tab is selected', async () => {
+    await setupNotificationViewTest(createMockNotifications(15));
+
+    await page.getByText(/WARNING \(.*\)/).click();
+
+    // Warning items are the indexes i where i % 3 === 1.
+    await expect.element(page.getByText('Subject-002')).toBeVisible();
+    await expect.element(page.getByText('Subject-008')).toBeVisible();
+    expect(page.getByText('Subject-001').elements().length).toBe(0);
+    expect(page.getByText('Subject-003').elements().length).toBe(0);
+  });
+
+  it('marks a notification as unread from the detail modal', async () => {
+    const ackInterceptor = setupSetNotificationAttrInterceptor();
+    await setupNotificationViewTest(createMockNotifications(15));
+
+    // Notifications are sorted by date descending: notif-15 (ack=true) is the first row.
+    await page.getByText('Subject-015').dblClick();
+
+    await expect.element(page.getByText(/Notification Details/i)).toBeVisible();
+
+    await page.getByRole('button', { name: 'Mark as unread' }).click();
+
+    await expect.element(
+      page.getByText('Notification mark as unread successfully'),
+    ).toBeVisible();
+
+    const lastRequest = ackInterceptor.getLastRequestBody<SoapActionBody>();
+    expect(lastRequest?.Body?.zextras?.notificationId).toBe('notif-15');
+    expect(lastRequest?.Body?.zextras?.key).toBe('ack');
+    expect(lastRequest?.Body?.zextras?.value).toBe(false);
+  });
+
+  it('silently marks an unread notification as read on row click', async () => {
+    const ackInterceptor = setupSetNotificationAttrInterceptor();
+    await setupNotificationViewTest(createMockNotifications(15));
+
+    // notif-14 has ack=false (i % 2 === 1) and is on the first page.
+    await page.getByText('Subject-014').click();
+
+    await expect.element(page.getByText(/Notification Details/i)).toBeVisible();
+    expect(
+      page.getByText('Notification mark as read successfully').elements().length,
+    ).toBe(0);
+
+    const lastRequest = ackInterceptor.getLastRequestBody<SoapActionBody>();
+    expect(lastRequest?.Body?.zextras?.notificationId).toBe('notif-14');
+    expect(lastRequest?.Body?.zextras?.key).toBe('ack');
+    expect(lastRequest?.Body?.zextras?.value).toBe(true);
   });
 });
