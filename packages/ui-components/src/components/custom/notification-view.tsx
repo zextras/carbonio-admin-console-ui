@@ -5,13 +5,13 @@
  */
 
 import {
-	type Notification,
-	useAllNotifications,
-	useReadUnreadNotification,
-	useSnackbar,
+  type Notification,
+  useAllNotifications,
+  useReadUnreadNotification,
+  useSnackbar,
 } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { type ReactElement, useEffect, useRef, useState } from 'react';
+import { type ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { type SingleItemArray } from '../../types/utils';
@@ -86,7 +86,7 @@ function buildNotificationCell(
   columnId: string,
   content: string,
   weight: 'light' | 'regular' | 'medium',
-  onCellClick: (event: React.MouseEvent<HTMLElement>) => void,
+  onCellClick: () => void,
 ): ReactElement {
   return (
     <ds-text
@@ -111,7 +111,6 @@ export const NotificationView = ({ isShowTitle, isAddPadding = false }: Notifica
   const [selectedRow, setSelectedRow] = useState<SingleItemArray<string>>([]);
   const [limit, setLimit] = useState(DEFAULT_PAGE_SIZE);
   const [offset, setOffset] = useState(0);
-  const timer = useRef<number | null>(null);
 
   const { data: notificationList = [], isPending, error } = useAllNotifications();
   const readUnreadMutation = useReadUnreadNotification();
@@ -201,17 +200,8 @@ export const NotificationView = ({ isShowTitle, isAddPadding = false }: Notifica
       ? notificationList
       : notificationList.filter((item) => item.level === change);
 
-  const handleCellClick = (event: React.MouseEvent<HTMLElement>, item: Notification): void => {
-    if (timer.current !== null) {
-      clearTimeout(timer.current);
-    }
-    if (event.detail === 1) {
-      timer.current = window.setTimeout((): void => {
-        setShowNotificationDetail(true);
-      }, 300);
-    } else if (event.detail === 2) {
-      setShowNotificationDetail(true);
-    }
+  const handleCellClick = (item: Notification): void => {
+    setShowNotificationDetail(true);
     setSelectedNotificationId(item.id);
     setSelectedRow([item.id]);
     if (!item.ack) {
@@ -220,8 +210,8 @@ export const NotificationView = ({ isShowTitle, isAddPadding = false }: Notifica
   };
 
   const notificationRows = filteredNotifications.map((item) => {
-    const onCellClick = (event: React.MouseEvent<HTMLElement>): void => {
-      handleCellClick(event, item);
+    const onCellClick = (): void => {
+      handleCellClick(item);
     };
     return {
       id: item.id,
@@ -234,7 +224,13 @@ export const NotificationView = ({ isShowTitle, isAddPadding = false }: Notifica
           item.ack ? 'light' : 'medium',
           onCellClick,
         ),
-        buildNotificationCell(item, 'level', item.level, item.ack ? 'light' : 'medium', onCellClick),
+        buildNotificationCell(
+          item,
+          'level',
+          item.level,
+          item.ack ? 'light' : 'medium',
+          onCellClick,
+        ),
         buildNotificationCell(
           item,
           'subject',
