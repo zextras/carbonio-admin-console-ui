@@ -182,9 +182,22 @@ describe('NotificationView', () => {
       page.getByText('Notification mark as read successfully').elements().length,
     ).toBe(0);
 
+    await vi.waitFor(() => {
+      expect(ackInterceptor.getCalledTimes()).toBeGreaterThan(0);
+    });
     const lastRequest = ackInterceptor.getLastRequestBody<SoapActionBody>();
     expect(lastRequest?.Body?.zextras?.notificationId).toBe('notif-14');
     expect(lastRequest?.Body?.zextras?.key).toBe('ack');
     expect(lastRequest?.Body?.zextras?.value).toBe(true);
   });
+
+  it('shows an error snackbar when fetching notifications fails', async () => {
+    // A network-level failure makes the query reject; the snackbar shows the
+    // transport error message ("Failed to fetch" in Chromium).
+    createBrowserZextrasActionInterceptor('getAllNotifications', () => HttpResponse.error());
+
+    await setupBrowserTest(<NotificationView isShowTitle={false} />);
+
+    await expect.element(page.getByText('Failed to fetch')).toBeVisible();
+  }, 20_000);
 });
