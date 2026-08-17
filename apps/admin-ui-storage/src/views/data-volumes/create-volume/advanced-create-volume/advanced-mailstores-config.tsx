@@ -30,6 +30,13 @@ import {
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 import styles from './create-volume.module.css';
 
+function openDocumentation(url: string): void {
+  if (globalThis.window === undefined) {
+    return;
+  }
+  globalThis.window.open(url, '_blank', 'noopener,noreferrer');
+}
+
 function CompressionThresholdIcon() {
   return (
     <ds-text as="span" color="secondary">
@@ -44,13 +51,6 @@ export function AdvancedMailstoresConfig({
 }: AdvancedMailstoresConfigProps) {
   const { form } = useAdvancedVolumeContext();
   const { t } = useTranslation();
-
-  function openDocumentation(url: string): void {
-    if (globalThis.window === undefined) {
-      return;
-    }
-    globalThis.window.open(url, '_blank', 'noopener,noreferrer');
-  }
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
   const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);

@@ -75,6 +75,13 @@ function getVolumeConnectorConfigurationId(volume: Volume | undefined): string |
   return volume?.bucketConfigurationId ?? volume?.uuid;
 }
 
+function openDocumentation(url: string): void {
+  if (globalThis.window === undefined) {
+    return;
+  }
+  globalThis.window.open(url, '_blank', 'noopener,noreferrer');
+}
+
 function mapS3Connectors(s3Connectors: Array<S3ConnectorVolume>): Array<S3ConnectorVolume> {
   return s3Connectors.map((items) => ({
     uuid: items.uuid,
@@ -197,13 +204,6 @@ export function ModifyVolumeForm({
   const getConnectorTypeLabel = (storeTypeValue: string | undefined): string | undefined =>
     connectorTypeItems?.find((item) => item?.value?.toLowerCase() === storeTypeValue?.toLowerCase())
       ?.label;
-
-  function openDocumentation(url: string): void {
-    if (globalThis.window === undefined) {
-      return;
-    }
-    globalThis.window.open(url, '_blank', 'noopener,noreferrer');
-  }
 
   const currentConnectorId = getVolumeConnectorConfigurationId(externalVolDetail);
 
