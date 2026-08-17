@@ -18,13 +18,6 @@ export type Notification = {
 	operationId: string;
 };
 
-export type GetAllNotificationsResponse = {
-	ok: boolean;
-	response: {
-		notifications: Array<Notification>;
-	};
-};
-
 export type ManageOption = {
 	id: string;
 	name: string;
