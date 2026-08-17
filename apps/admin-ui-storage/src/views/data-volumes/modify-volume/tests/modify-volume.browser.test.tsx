@@ -18,7 +18,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { Volume } from '../../../../../types';
-import { DATA_VOLUMES } from '../../../../constants';
+import {
+  AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
+  AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
+  DATA_VOLUMES,
+} from '../../../../constants';
 import { ModifyVolume } from '../modify-volume';
 
 vi.mock('../../s3-connectors/parts/verify/verify-progress', () => ({
@@ -400,6 +404,32 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
       await expect
         .element(page.getByText('Use intelligent tiering', { exact: true }))
         .toBeVisible();
+    });
+
+    it('should open the Amazon documentation links when tiering doc buttons are clicked', async () => {
+      const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);
+      await setupBrowserTest(
+        renderModifyVolume(EXTERNAL_S3_VOLUME.id as number, EXTERNAL_VOLUME_LIST),
+        { initialRouterEntry: VOLUME_ROUTE_ENTRY },
+      );
+
+      await page
+        .getByRole('button', { name: 'Open Amazon Storage Class Documentation' })
+        .click();
+      await page.getByRole('button', { name: 'Open Amazon Tiering Documentation' }).click();
+
+      expect(openSpy).toHaveBeenCalledTimes(2);
+      expect(openSpy).toHaveBeenCalledWith(
+        AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
+        '_blank',
+        'noopener,noreferrer',
+      );
+      expect(openSpy).toHaveBeenCalledWith(
+        AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
+        '_blank',
+        'noopener,noreferrer',
+      );
+      openSpy.mockRestore();
     });
   });
 });
