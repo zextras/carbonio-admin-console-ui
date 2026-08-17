@@ -16,7 +16,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { LOG_AND_QUEUES, NOTIFICATION_ROUTE_ID } from '../../../constants';
-import NotificationsListPanel from '../notifications-list-panel';
+import { NotificationsListPanel } from '../notifications-list-panel';
 
 const NOTIFICATIONS_BASE = `/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}`;
 
