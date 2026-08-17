@@ -5,7 +5,9 @@
  */
 import { Container, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
+import { useIsWorkspaceEdition } from '../../../../services/use-is-workspace-edition';
 import { FeatureSwitchField } from '../../fields/feature-switch-field';
 import type { CosFeaturesFormApi } from '../../types';
 
@@ -16,7 +18,9 @@ type FilesTasksSectionProps = {
 
 export const FilesTasksSection = ({ form, readonlyCOS }: FilesTasksSectionProps) => {
   const [t] = useTranslation();
-  
+  const { cosId } = useParams();
+  const isWorspaceEdition = useIsWorkspaceEdition(cosId);
+
   return (
     <Row
       mainAlignment="flex-start"
@@ -24,25 +28,27 @@ export const FilesTasksSection = ({ form, readonlyCOS }: FilesTasksSectionProps)
       padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
       width="100%"
     >
-      <Container
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        width="50%"
-        orientation="vertical"
-        padding={{ bottom: 'large' }}
-      >
-        <ds-text as="strong" weight="bold">
-          {t('label.files', 'Files')}
-        </ds-text>
-        <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-          <FeatureSwitchField
-            form={form}
-            name="carbonioFeatureFilesEnabled"
-            label={t('label.allow_access_to_files', 'Allow access to Files')}
-            disabled={readonlyCOS}
-          />
-        </Row>
-      </Container>
+      {isWorspaceEdition && (
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          width="50%"
+          orientation="vertical"
+          padding={{ bottom: 'large' }}
+        >
+          <ds-text as="strong" weight="bold">
+            {t('label.files', 'Files')}
+          </ds-text>
+          <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+            <FeatureSwitchField
+              form={form}
+              name="carbonioFeatureFilesEnabled"
+              label={t('label.allow_access_to_files', 'Allow access to Files')}
+              disabled={readonlyCOS}
+            />
+          </Row>
+        </Container>
+      )}
       <Container
         mainAlignment="flex-start"
         width="50%"

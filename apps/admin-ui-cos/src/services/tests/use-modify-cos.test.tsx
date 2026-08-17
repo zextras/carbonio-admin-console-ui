@@ -102,7 +102,7 @@ describe('useModifyCos', () => {
     );
   });
 
-  it('should show error snackbar on failure', async () => {
+  it('should show generic error message even when the error has a message', async () => {
     vi.mocked(modifyCos).mockRejectedValue(new Error('Modify failed'));
 
     const { wrapper } = createWrapper();
@@ -112,11 +112,14 @@ describe('useModifyCos', () => {
 
     await waitFor(() => expect(mockCreateSnackbar).toHaveBeenCalledTimes(1));
     expect(mockCreateSnackbar).toHaveBeenCalledWith(
-      expect.objectContaining({ severity: 'error', label: 'Modify failed' }),
+      expect.objectContaining({
+        severity: 'error',
+        label: 'Something went wrong. Please try again.',
+      }),
     );
   });
 
-  it('should show fallback error message when error has no message', async () => {
+  it('should show generic error message when error has no message', async () => {
     vi.mocked(modifyCos).mockRejectedValue(new Error());
 
     const { wrapper } = createWrapper();

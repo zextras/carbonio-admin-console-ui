@@ -9,7 +9,8 @@ import { useLocation } from 'react-router';
 
 import { COS_LIST, COS_ROUTE_ID, CREATE_NEW_COS_ROUTE_ID, MANAGE_APP_ID } from '../constants';
 import { useCosDetail } from '../services/use-cos-detail';
-import { SECTION_ROUTES } from './cos/cos-section-routes';
+import { useIsWorkspaceEdition } from '../services/use-is-workspace-edition';
+import { getVisibleSectionRoutes } from './cos/cos-section-routes';
 
 const NON_COS_ID_SEGMENTS = new Set([CREATE_NEW_COS_ROUTE_ID, COS_LIST]);
 
@@ -23,10 +24,12 @@ export const CosPageHeader = () => {
 
   const { data: cosDetail } = useCosDetail(isCosId ? segmentAfterBase : undefined);
   const cosName = cosDetail?.cos?.[0]?.name;
+  const isWorkspaceEdition = useIsWorkspaceEdition(segmentAfterBase);
 
+  const visibleSectionRoutes = getVisibleSectionRoutes(isWorkspaceEdition);
   const sectionMenu =
-    isCosId && SECTION_ROUTES.length > 1
-      ? buildSectionMenu(`${cosAppPath}/${segmentAfterBase}`, SECTION_ROUTES, t)
+    isCosId && visibleSectionRoutes.length > 1
+      ? buildSectionMenu(`${cosAppPath}/${segmentAfterBase}`, visibleSectionRoutes, t)
       : undefined;
 
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
