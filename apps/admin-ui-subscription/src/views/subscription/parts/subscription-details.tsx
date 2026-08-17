@@ -21,8 +21,7 @@ export type AllModuleConfig = {
   enabled: boolean;
 };
 
-function getTypeDisplayValue(response: LicenseInfo | undefined): string {
-  if (!response) return '';
+function getTypeDisplayValue(response: LicenseInfo): string {
   const { type, subType } = response;
 
   if (type === 'Purchased') {
