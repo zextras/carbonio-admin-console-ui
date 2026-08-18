@@ -25,6 +25,8 @@ import { LegalAccessSection } from './legal-access-section';
 import { RestoreAccountHeader } from './restore-account-header';
 import { RestoreAccountInfo } from './restore-account-info';
 import { RestoreSettings } from './restore-settings';
+import type { RestoreFormValues } from './types';
+import { useRestoreForm } from './use-restore-form';
 
 type RestoreAccountViewProps = {
   legalHoldAccount: BackupAccountItem | null;
@@ -35,14 +37,8 @@ export const RestoreAccountView = ({ legalHoldAccount, onBack }: RestoreAccountV
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [searchAccount, setSearchAccount] = useState('');
-  const [unDelete, setUnDelete] = useState(false);
-  const [legalHoldPrefix, setLegalHoldPrefix] = useState('');
   const [accountList, setAccountList] = useState<Array<DirectoryAccount>>([]);
   const [selectedRow, setSelectedRow] = useState<Array<string>>([]);
-  const [fromDate, setFromDate] = useState<Date | null>(null);
-  const [undeleteFromDate, setUndeleteFromDate] = useState<Date | null>(
-    legalHoldAccount?.creationTimestamp ? new Date(legalHoldAccount.creationTimestamp) : null,
-  );
   const [isRestoreOperationComplete, setIsRestoreOperationComplete] = useState(false);
   const [legalHoldAccountInformation, setLegalHoldAccountInformation] =
     useState<DirectoryAccount | null>(null);
@@ -64,67 +60,45 @@ export const RestoreAccountView = ({ legalHoldAccount, onBack }: RestoreAccountV
   const isRequestInProgress = restoreMutation.isPending || grantPermissionMutation.isPending;
   const isEnableLegalAccess = grantPermissionMutation.isSuccess;
 
-  function handleFromDateChange(date: Date | null): void {
-    if (undeleteFromDate && date && date.getTime() < undeleteFromDate.getTime()) {
-      setUndeleteFromDate(date);
-    }
-    setFromDate(date);
-  }
+  const defaultValues: RestoreFormValues = {
+    legalHoldPrefix: '',
+    fromDate: null,
+    unDelete: false,
+    undeleteFromDate: legalHoldAccount?.creationTimestamp
+      ? new Date(legalHoldAccount.creationTimestamp)
+      : null,
+  };
 
-  function onAdd(): void {
-    if (searchAccount === '') {
-      return;
-    }
-    const filterData = searchAccountResult.filter((item) => item.name === searchAccount);
-    setAccountList((current) => unionBy([...current, ...filterData], 'id'));
-    setSearchAccount('');
-  }
-
-  function onRemove(): void {
-    setAccountList((current) => current.filter((item) => item.id !== selectedRow[0]));
-  }
-
-  function showValidationError(message: string): void {
-    createSnackbar({
-      key: 'error',
-      severity: 'error',
-      label: message,
-      autoHideTimeout: 3000,
-      hideButton: true,
-      replace: true,
-    });
-  }
-
-  function onRestore(): void {
-    if (legalHoldPrefix === '') {
-      showValidationError(
-        t('legal_hold.legal_hold_prefix_blank_error', 'Legal Hold prefix should not be blank'),
-      );
-      return;
-    }
+  function handleRestoreSubmit(value: RestoreFormValues): void {
     if (account === '') {
-      showValidationError(
-        t('legal_hold.legal_hold_account_blank_error', 'Legal Hold account should not be blank'),
-      );
-      return;
-    }
-    if (fromDate === null) {
-      showValidationError(
-        t('legal_hold.legal_hold_fromdate_blank_error', 'Legal Hold from date should not be blank'),
-      );
+      createSnackbar({
+        key: 'error',
+        severity: 'error',
+        label: t(
+          'legal_hold.legal_hold_account_blank_error',
+          'Legal Hold account should not be blank',
+        ),
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
+      });
       return;
     }
 
-    const destinationAccount = `${legalHoldPrefix}_${account}`;
+    if (!value.fromDate) {
+      return;
+    }
+
+    const destinationAccount = `${value.legalHoldPrefix}_${account}`;
     const getDate = resolveRestoreTimestamp({
-      requestedDate: endOfDayTimestamp(fromDate),
+      requestedDate: endOfDayTimestamp(value.fromDate),
       creationTimestamp: legalHoldAccount?.creationTimestamp,
       deletedTimestamp: legalHoldAccount?.deletedTimestamp,
     });
     const getUndeletedDate =
-      unDelete && undeleteFromDate
+      value.unDelete && value.undeleteFromDate
         ? resolveRestoreTimestamp({
-            requestedDate: startOfDayTimestamp(undeleteFromDate),
+            requestedDate: startOfDayTimestamp(value.undeleteFromDate),
             creationTimestamp: legalHoldAccount?.creationTimestamp,
             deletedTimestamp: legalHoldAccount?.deletedTimestamp,
           })
@@ -140,7 +114,7 @@ export const RestoreAccountView = ({ legalHoldAccount, onBack }: RestoreAccountV
         destinationAccount,
         date: getDate,
         undeleteDate: getUndeletedDate ?? null,
-        unDelete,
+        unDelete: value.unDelete,
         targetServers,
       },
       {
@@ -158,6 +132,21 @@ export const RestoreAccountView = ({ legalHoldAccount, onBack }: RestoreAccountV
         },
       },
     );
+  }
+
+  const form = useRestoreForm(defaultValues, handleRestoreSubmit);
+
+  function onAdd(): void {
+    if (searchAccount === '') {
+      return;
+    }
+    const filterData = searchAccountResult.filter((item) => item.name === searchAccount);
+    setAccountList((current) => unionBy([...current, ...filterData], 'id'));
+    setSearchAccount('');
+  }
+
+  function onRemove(): void {
+    setAccountList((current) => current.filter((item) => item.id !== selectedRow[0]));
   }
 
   function onGivePermission(): void {
@@ -199,18 +188,7 @@ export const RestoreAccountView = ({ legalHoldAccount, onBack }: RestoreAccountV
           background="gray6"
         >
           <RestoreAccountInfo legalHoldAccount={legalHoldAccount} />
-          <RestoreSettings
-            legalHoldAccount={legalHoldAccount}
-            account={account}
-            legalHoldPrefix={legalHoldPrefix}
-            fromDate={fromDate}
-            undeleteFromDate={undeleteFromDate}
-            unDelete={unDelete}
-            onPrefixChange={setLegalHoldPrefix}
-            onFromDateChange={handleFromDateChange}
-            onUndeleteFromDateChange={setUndeleteFromDate}
-            onToggleUnDelete={() => setUnDelete((current) => !current)}
-          />
+          <RestoreSettings form={form} legalHoldAccount={legalHoldAccount} account={account} />
           <LegalAccessSection
             searchAccount={searchAccount}
             searchAccountResult={searchAccountResult}
@@ -228,7 +206,7 @@ export const RestoreAccountView = ({ legalHoldAccount, onBack }: RestoreAccountV
               type="outlined"
               color="primary"
               label={t('legal_hold.restore', 'Restore')}
-              onClick={onRestore}
+              onClick={() => form.handleSubmit()}
               disabled={isRequestInProgress || isRestoreOperationComplete}
               width="fill"
             />

@@ -4,38 +4,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, DatePicker, Input, LabeledValue, Switch } from '@zextras/ui-components';
+import { useSelector } from '@tanstack/react-store';
+import {
+  Container,
+  DatePicker,
+  getFieldErrorProps,
+  Input,
+  LabeledValue,
+  Switch,
+} from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { BackupAccountItem } from '../../../../types';
+import { RESTORE_VALIDATION_MESSAGES } from './schema';
+import type { RestoreFormApi } from './types';
 
 type RestoreSettingsProps = {
+  form: RestoreFormApi;
   legalHoldAccount: BackupAccountItem | null;
   account: string;
-  legalHoldPrefix: string;
-  fromDate: Date | null;
-  undeleteFromDate: Date | null;
-  unDelete: boolean;
-  onPrefixChange: (value: string) => void;
-  onFromDateChange: (date: Date | null) => void;
-  onUndeleteFromDateChange: (date: Date | null) => void;
-  onToggleUnDelete: () => void;
 };
 
-export const RestoreSettings = ({
-  legalHoldAccount,
-  account,
-  legalHoldPrefix,
-  fromDate,
-  undeleteFromDate,
-  unDelete,
-  onPrefixChange,
-  onFromDateChange,
-  onUndeleteFromDateChange,
-  onToggleUnDelete,
-}: RestoreSettingsProps) => {
+export const RestoreSettings = ({ form, legalHoldAccount, account }: RestoreSettingsProps) => {
   const [t] = useTranslation();
+  const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
+  const unDelete = useSelector(form.store, (s) => s.values.unDelete);
+  const fromDate = useSelector(form.store, (s) => s.values.fromDate);
 
   return (
     <>
@@ -57,14 +52,24 @@ export const RestoreSettings = ({
         height="auto"
       >
         <Container crossAlignment="flex-start">
-          <Input
-            label={t('legal_hold.legalhold_prefix', 'Legal Hold prefix')}
-            backgroundColor="gray5"
-            value={legalHoldPrefix}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              onPrefixChange(e.target.value);
+          <form.Field name="legalHoldPrefix">
+            {(field) => {
+              const error = getFieldErrorProps(field, isSubmitted, t, RESTORE_VALIDATION_MESSAGES);
+              return (
+                <Input
+                  label={t('legal_hold.legalhold_prefix', 'Legal Hold prefix')}
+                  backgroundColor="gray5"
+                  value={field.state.value}
+                  hasError={error.hasError}
+                  description={error.description}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    field.handleChange(e.target.value);
+                  }}
+                  onBlur={() => field.handleBlur()}
+                />
+              );
             }}
-          />
+          </form.Field>
         </Container>
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <LabeledValue
@@ -82,17 +87,38 @@ export const RestoreSettings = ({
         height="auto"
       >
         <Container crossAlignment="flex-start">
-          <DatePicker
-            label={t('label.account_status_on ', 'Account status on')}
-            onChange={onFromDateChange}
-            dateFormat="dd/MM/yyyy"
-            minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
-            maxDate={
-              legalHoldAccount?.deletedTimestamp
-                ? new Date(legalHoldAccount.deletedTimestamp)
-                : new Date()
-            }
-          />
+          <form.Field name="fromDate">
+            {(field) => {
+              const error = getFieldErrorProps(field, isSubmitted, t, RESTORE_VALIDATION_MESSAGES);
+              return (
+                <>
+                  <DatePicker
+                    label={t('label.account_status_on ', 'Account status on')}
+                    onChange={(date) => {
+                      field.handleChange(date);
+                      const undeleteFromDate = form.getFieldValue('undeleteFromDate');
+                      if (undeleteFromDate && date && date.getTime() < undeleteFromDate.getTime()) {
+                        form.setFieldValue('undeleteFromDate', date);
+                      }
+                    }}
+                    selected={field.state.value}
+                    dateFormat="dd/MM/yyyy"
+                    minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
+                    maxDate={
+                      legalHoldAccount?.deletedTimestamp
+                        ? new Date(legalHoldAccount.deletedTimestamp)
+                        : new Date()
+                    }
+                  />
+                  {error.hasError && error.description && (
+                    <ds-text as="span" size="extrasmall" color="error">
+                      {error.description}
+                    </ds-text>
+                  )}
+                </>
+              );
+            }}
+          </form.Field>
         </Container>
       </Container>
       <Container
@@ -103,12 +129,16 @@ export const RestoreSettings = ({
         height="auto"
       >
         <Container crossAlignment="flex-start">
-          <Switch
-            label={t('legal_hold.include_items_deleted', 'Include items deleted')}
-            value={unDelete}
-            onClick={onToggleUnDelete}
-            iconColor="primary"
-          />
+          <form.Field name="unDelete">
+            {(field) => (
+              <Switch
+                label={t('legal_hold.include_items_deleted', 'Include items deleted')}
+                value={field.state.value}
+                onClick={() => field.handleChange(!field.state.value)}
+                iconColor="primary"
+              />
+            )}
+          </form.Field>
         </Container>
       </Container>
       {unDelete && (
@@ -120,15 +150,19 @@ export const RestoreSettings = ({
           height="auto"
         >
           <Container crossAlignment="flex-start">
-            <DatePicker
-              isClearable
-              label={t('label.include_items_deleted_after', 'Include items deleted after')}
-              onChange={onUndeleteFromDateChange}
-              dateFormat="dd/MM/yyyy"
-              selected={undeleteFromDate}
-              minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
-              maxDate={fromDate ?? new Date()}
-            />
+            <form.Field name="undeleteFromDate">
+              {(field) => (
+                <DatePicker
+                  isClearable
+                  label={t('label.include_items_deleted_after', 'Include items deleted after')}
+                  onChange={(date) => field.handleChange(date)}
+                  dateFormat="dd/MM/yyyy"
+                  selected={field.state.value}
+                  minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
+                  maxDate={fromDate ?? new Date()}
+                />
+              )}
+            </form.Field>
           </Container>
         </Container>
       )}

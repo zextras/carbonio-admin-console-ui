@@ -6,7 +6,7 @@
 
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 
 import type { BackupAccountItem } from '../../../../types';
 import { RestoreAccountView } from './restore-account';
@@ -113,6 +113,19 @@ describe('RestoreAccountView (browser)', () => {
       await page.getByRole('button', { name: 'Restore' }).click();
 
       await expect.element(page.getByText('Legal Hold prefix should not be blank')).toBeVisible();
+    });
+
+    it('should show a validation error when restore is clicked without a from date', async () => {
+      setupBrowserTest(
+        <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
+      );
+
+      await userEvent.fill(page.getByLabelText('Legal Hold prefix'), 'lh');
+      await page.getByRole('button', { name: 'Restore' }).click();
+
+      await expect
+        .element(page.getByText('Legal Hold from date should not be blank'))
+        .toBeVisible();
     });
   });
 });
