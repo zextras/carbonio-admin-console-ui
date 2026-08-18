@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { type CSSProperties, useEffect, useState } from 'react';
@@ -11,8 +12,9 @@ import { useTranslation } from 'react-i18next';
 
 import type { AddressBookServiceStatus } from '../../../../types';
 import { LDAP_ADDRESS_BOOK_PORT, LDAP_ADDRESS_BOOK_SERVICE, TRUE } from '../../../constants';
-import { getAddressBookServices } from '../../../services/get-address-book-services';
+import { domainQueryKeys } from '../../../services/domain-query-keys';
 import { setAddressBookServiceEnabled } from '../../../services/set-address-book-service-enabled';
+import { useAddressBookServiceStatus } from '../../../services/use-address-book-service';
 
 const DEFAULT_STATUS: AddressBookServiceStatus = {
   running: false,
@@ -66,11 +68,11 @@ export function GlobalAddressBook() {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const userSetting = useUserSettings();
-  const [serviceStatus, setServiceStatus] = useState<AddressBookServiceStatus>(DEFAULT_STATUS);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasLoadedStatus, setHasLoadedStatus] = useState(false);
   const [isRequestInProgress, setIsRequestInProgress] = useState(false);
   const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
+  const queryClient = useQueryClient();
+  const { data, isPending, error: statusError } = useAddressBookServiceStatus();
+  const serviceStatus = data ?? DEFAULT_STATUS;
 
   const fallbackError = t(
     'label.something_wrong_error_msg',
@@ -84,43 +86,17 @@ export function GlobalAddressBook() {
   }, [userSetting?.attrs]);
 
   useEffect(() => {
-    let cancelled = false;
-    setIsLoading(true);
-    setHasLoadedStatus(false);
-
-    getAddressBookServices()
-      .then((status) => {
-        if (cancelled) {
-          return;
-        }
-        setServiceStatus(status);
-        setHasLoadedStatus(true);
-      })
-      .catch((error: Error) => {
-        if (cancelled) {
-          return;
-        }
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: getErrorLabel(error, fallbackError),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
+    if (statusError) {
+      createSnackbar({
+        key: 'error',
+        severity: 'error',
+        label: getErrorLabel(statusError, fallbackError),
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
       });
-
-    return () => {
-      cancelled = true;
-    };
-    // Intentionally run once on mount — createSnackbar/t identity must not re-fetch.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only status fetch
-  }, []);
+    }
+  }, [statusError, createSnackbar, fallbackError]);
 
   function serviceStartStop(): void {
     if (!isGlobalAdmin) {
@@ -132,11 +108,7 @@ export function GlobalAddressBook() {
 
     setAddressBookServiceEnabled(nextEnabled)
       .then(() => {
-        setServiceStatus({
-          running: nextEnabled,
-          couldStart: !nextEnabled,
-          couldStop: nextEnabled,
-        });
+        queryClient.invalidateQueries({ queryKey: domainQueryKeys.addressBookService() });
         createSnackbar({
           key: 'success',
           severity: 'success',
@@ -171,7 +143,7 @@ export function GlobalAddressBook() {
 
   const canToggle =
     isGlobalAdmin &&
-    !isLoading &&
+    !isPending &&
     !isRequestInProgress &&
     (serviceStatus.running ? serviceStatus.couldStop : serviceStatus.couldStart);
 
@@ -208,12 +180,12 @@ export function GlobalAddressBook() {
         padding={{ vertical: 'large' }}
         gap="1rem"
       >
-        {isLoading && !hasLoadedStatus ? (
+        {isPending ? (
           <Padding all="small">
             <ds-spinner />
           </Padding>
         ) : (
-          hasLoadedStatus && (
+          !statusError && (
             <Container
               orientation="vertical"
               width="100%"
