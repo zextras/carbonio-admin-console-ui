@@ -37,25 +37,17 @@ import { checkRightRequest } from '../../../../services/check-right';
 import { countAccount } from '../../../../services/count-account-service';
 import { domainQueryKeys } from '../../../../services/domain-query-keys';
 import { getAccountRequest } from '../../../../services/get-account';
-import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
-import { getSessions } from '../../../../services/get-sessions';
-import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
+import { useAccountMembership } from '../../../../services/use-account-membership';
 import { useAccountQuota } from '../../../../services/use-account-quota';
 import { useCosQuota } from '../../../../services/use-cos-quota';
+import { useSignatures } from '../../../../services/use-signatures';
+import { type UserSession, useUserSessions } from '../../../../services/use-user-sessions';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { AccountContext, AccountDetail } from './account-context';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
-
-type UserSession = {
-  name: string;
-  sid: string;
-  zid: string;
-  ip: string;
-  service: string;
-};
 
 type CheckRightResponse = {
   allow: true;
@@ -73,6 +65,7 @@ const ManageAccounts: FC = () => {
   const queryClient = useQueryClient();
   const [accountDetail, setAccountDetail] = useState<AccountDetail>({});
   const [initAccountDetail, setInitAccountDetail] = useState<AccountDetail>({});
+  const [selectedDetailAccount, setSelectedDetailAccount] = useState<any>(undefined);
   const [cosDetail, setCosDetail] = useState<any>({});
   const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
   const [defaultTab, setDefaultTab] = useState('general');
@@ -108,6 +101,11 @@ const ManageAccounts: FC = () => {
   const { data: cosQuota } = useCosQuota(
     isAdvancedAccountSelected ? (accountDetail?.zimbraCOSId as string | undefined) : undefined,
   );
+  const { data: signatureData } = useSignatures(selectedDetailAccount?.id);
+  const { data: membershipData, error: membershipError } = useAccountMembership(
+    selectedDetailAccount?.id,
+  );
+  const { data: sessionsData } = useUserSessions(selectedDetailAccount?.name);
   const [accountSearchCurrentPage, setAccountSearchCurrentPage] = useState(1);
 
   const accountTypeFilter: any = useMemo(
@@ -291,17 +289,51 @@ const ManageAccounts: FC = () => {
   const [signatureItems, setSignatureItems] = useState<any[]>([]);
   const [isDirty, setIsDirty] = useState<boolean>(false);
 
-  const generateSignatureList = (signatureResponse: any): void => {
-    if (signatureResponse && Array.isArray(signatureResponse)) {
-      setSignatureList(signatureResponse);
+  useEffect(() => {
+    setSignatureList(signatureData ?? []);
+  }, [signatureData]);
+
+  useEffect(() => {
+    if (!membershipData) {
+      return;
     }
-  };
-  const getSignatureDetail = useCallback((id: string): void => {
-    getSingatures(id).then((data) => {
-      const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
-      generateSignatureList(signatureResponse);
+    const directMemArr: any[] = [];
+    const inDirectMemArr: any[] = [];
+    membershipData.forEach((ele: any) => {
+      //remove zimbraIsAdminGroup
+      const re = /^__(monitoring|helpdesk|groups|users|delegated|domain)_admins.*/;
+      if (re.test(ele?.name)) return;
+      if (ele?.via) inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
+      else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
     });
-  }, []);
+    setDirectMemberList(directMemArr);
+    setInDirectMemberList(inDirectMemArr);
+  }, [membershipData]);
+
+  useEffect(() => {
+    if (membershipError) {
+      createSnackbar({
+        key: 'error',
+        severity: 'error',
+        label: membershipError?.message
+          ? membershipError?.message
+          : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
+      });
+    }
+  }, [membershipError, createSnackbar, t]);
+
+  useEffect(() => {
+    if (!sessionsData) {
+      setUserSessionList([]);
+      setAllUserSessionList([]);
+      return;
+    }
+    setUserSessionList(sessionsData);
+    setAllUserSessionList(sessionsData);
+  }, [sessionsData]);
 
   const STATUS_COLOR: any = useMemo(
     () => ({
@@ -620,42 +652,6 @@ const ManageAccounts: FC = () => {
       t,
     ],
   );
-  const getAccountMembership = useCallback(
-    (id: string): void => {
-      getAccountMembershipRequest(id)
-        .then((data: any) => {
-          const directMemArr: any[] = [];
-          const inDirectMemArr: any[] = [];
-
-          data?.dl?.forEach((ele: any) => {
-            //remove zimbraIsAdminGroup
-            const re = /^__(monitoring|helpdesk|groups|users|delegated|domain)_admins.*/;
-            if (re.test(ele?.name)) return;
-            if (ele?.via)
-              inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
-            else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
-          });
-
-          setDirectMemberList(directMemArr);
-          setInDirectMemberList(inDirectMemArr);
-        })
-
-        .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
-    },
-    [setDirectMemberList, setInDirectMemberList, t, createSnackbar],
-  );
-
   const getFolderList = useCallback(
     (acc: any, delegateList: any): void => {
       postSoapFetchRequest(
@@ -735,57 +731,16 @@ const ManageAccounts: FC = () => {
     [getFolderList],
   );
 
-  const getAllUserSession = useCallback((acc: any) => {
-    const sessionType: string[] = ['admin', 'imap', 'soap'];
-    setUserSessionList([]);
-    setAllUserSessionList([]);
-    sessionType.forEach((item: string) => {
-      getSessions(item, acc).then((resp: any) => {
-        if (resp && resp?.s) {
-          const existingSession = resp?.s;
-          if (existingSession) {
-            const session: UserSession[] = [];
-            const filterSession = existingSession.filter(
-              (sessionItem: any) => sessionItem?.name === acc,
-            );
-            if (filterSession.length > 0) {
-              filterSession.forEach((element: any) => {
-                session.push({
-                  ip: '',
-                  name: element?.name,
-                  sid: element?.sid,
-                  service: '',
-                  zid: element?.zid,
-                });
-              });
-            }
-            setUserSessionList((prev: any) => [...prev, ...session]);
-            setAllUserSessionList((prev: any) => [...prev, ...session]);
-          }
-        }
-      });
-    });
-  }, []);
-
   const openDetailView = useCallback(
     (acc: any): void => {
       setAccountDetail({});
       setShowEditAccountView(true);
+      setSelectedDetailAccount(acc);
       getAccountDetail(acc?.id);
-      getSignatureDetail(acc?.id);
-      getAccountMembership(acc?.id);
       getIdentitiesList(acc);
-      getAllUserSession(acc?.name);
       getDeletePasswordRight(acc?.name);
     },
-    [
-      getAccountDetail,
-      getSignatureDetail,
-      getAccountMembership,
-      getIdentitiesList,
-      getAllUserSession,
-      getDeletePasswordRight,
-    ],
+    [getAccountDetail, getIdentitiesList, getDeletePasswordRight],
   );
 
   const handleClickTableRow = (item: any): void => {
