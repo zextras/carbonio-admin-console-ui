@@ -1,16 +1,17 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container,PageHeader } from '@zextras/ui-components';
-import { FC, Suspense } from 'react';
 
-import LegalHoldPanel from './legal-hold/legal-hold-panel';
+import { Container, PageHeader } from '@zextras/ui-components';
+import { Suspense } from 'react';
 
-export const AppView: FC = () => {
+import { LegalHoldPanel } from './legal-hold/legal-hold-panel';
+
+export const AppView = () => {
   return (
-    <Container height={'fit'}>
+    <Container height="fit">
       <PageHeader />
       <Container
         orientation="horizontal"
@@ -26,4 +27,3 @@ export const AppView: FC = () => {
     </Container>
   );
 };
-
