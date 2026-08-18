@@ -6,7 +6,10 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
-export const updateSamlAttributes = async (domain: string, body: JSON): Promise<any> =>
+export const updateSamlAttributes = async (
+	domain: string,
+	body: Record<string, unknown>
+): Promise<any> =>
 	fetchExternalSoap(
 		`/service/extension/zextras_admin/auth/saml/${domain}`,
 		{

@@ -38,7 +38,7 @@ export const useSamlMutation = (domain: string) => {
 					return;
 				case 'saveAttribute':
 					await assertNoError(
-						await updateSamlAttributes(domain, { [input.key]: input.value } as unknown as JSON),
+						await updateSamlAttributes(domain, { [input.key]: input.value }),
 					);
 					return;
 				case 'removeAttribute':
