@@ -98,6 +98,7 @@ export default tseslint.config(
       'apps/admin-ui-domains/src/views/domain/domain-list-panel.tsx',
       'apps/admin-ui-domains/src/views/domain/global-list-panel.tsx',
       'apps/admin-ui-dashboard/**',
+      'apps/admin-ui-legalhold/**',
       'apps/admin-ui-bootstrap/**',
       'apps/admin-ui-privacy/**/*',
       'apps/admin-ui-operations/**',

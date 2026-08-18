@@ -1,65 +1,46 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryBarTooltip } from '@zextras/ui-components';
 import { addRoute, removeRoute, useHasAllRights, useIsAdvanced } from '@zextras/ui-shared';
-import { FC, useCallback, useEffect, useMemo } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { LEGAL_HOLD_ROUTE_ID, PRIMARY_BAR_LEGAL_HOLD, SERVICES_ROUTE_ID } from './constants';
 import { AppView } from './views/app-view';
+import { LegalHoldTooltipView } from './views/legal-hold-tooltip-view';
 
-const App: FC = () => {
+const App = () => {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
-
   const hasAllConfigRights = useHasAllRights();
 
-  const servicesSection = useMemo(
-    () => ({
-      id: SERVICES_ROUTE_ID,
-      label: t('label.services', 'Services'),
-      position: 4,
-    }),
-    [t],
-  );
-
-  const LegalHoldTooltipView: FC = useCallback(
-    () => (
-      <PrimaryBarTooltip>
-        <Trans
-          i18nKey="label.legal_hold_lbl"
-          defaults="<bold>Legal Hold</bold>"
-          components={{ bold: <strong /> }}
-          t={t}
-        />
-      </PrimaryBarTooltip>
-    ),
-    [t],
-  );
-
   useEffect(() => {
-    if (isAdvanced) {
-      if (hasAllConfigRights) {
-        addRoute({
-          route: LEGAL_HOLD_ROUTE_ID,
-          position: 2,
-          visible: true,
-          label: t('label.legal_hold', 'Legal Hold') || '',
-          primaryBar: 'LockOutline',
-          appView: AppView,
-          primarybarSection: { ...servicesSection },
-          tooltip: LegalHoldTooltipView,
-          trackerLabel: PRIMARY_BAR_LEGAL_HOLD,
-        });
-      } else {
-        removeRoute(LEGAL_HOLD_ROUTE_ID);
-      }
+    if (!isAdvanced) {
+      return;
     }
-  }, [LegalHoldTooltipView, hasAllConfigRights, isAdvanced, servicesSection, t]);
+    if (hasAllConfigRights) {
+      addRoute({
+        route: LEGAL_HOLD_ROUTE_ID,
+        position: 2,
+        visible: true,
+        label: t('label.legal_hold', 'Legal Hold') || '',
+        primaryBar: 'LockOutline',
+        appView: AppView,
+        primarybarSection: {
+          id: SERVICES_ROUTE_ID,
+          label: t('label.services', 'Services'),
+          position: 4,
+        },
+        tooltip: LegalHoldTooltipView,
+        trackerLabel: PRIMARY_BAR_LEGAL_HOLD,
+      });
+    } else {
+      removeRoute(LEGAL_HOLD_ROUTE_ID);
+    }
+  }, [hasAllConfigRights, isAdvanced, t]);
 
   return null;
 };
