@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Container, DefaultTabBarItem, Modal, Padding, RouteLeavingGuard, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
 import { flushCache, setCoreAttributes, useCurrentUserRights, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { differenceBy, find, isEqual, reduce, remove } from 'lodash-es';
@@ -34,7 +35,7 @@ import {
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
 import { deleteAccount } from '../../../../../services/delete-account-service';
-import { getAccountQuota } from '../../../../../services/get-account-quota';
+import { domainQueryKeys } from '../../../../../services/domain-query-keys';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
@@ -42,6 +43,7 @@ import { renameAccountRequest } from '../../../../../services/rename-account';
 import { setAccountQuota } from '../../../../../services/set-account-quota';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
+import { useAccountQuota } from '../../../../../services/use-account-quota';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 import EditAccountAdministrationSection from './edit-account-administration-section';
@@ -99,6 +101,39 @@ const EditAccount: FC<{
   const userSetting = useUserSettings();
   const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
   const { data: rights = [] } = useCurrentUserRights();
+  const queryClient = useQueryClient();
+  const { data: accountQuota, error: accountQuotaError } = useAccountQuota(
+    isAdvanced ? (accountDetail?.zimbraId as string | undefined) : undefined,
+  );
+
+  useEffect(() => {
+    if (!accountQuota) {
+      return;
+    }
+    setInitAccountDetail((prev: any) => ({
+      ...prev,
+      totalComputedQuotaLimit: accountQuota.totalComputedLimit,
+      totalQuotaSource: accountQuota.totalLimitSource,
+    }));
+    setAccountDetail((prev: any) => ({
+      ...prev,
+      totalComputedQuotaLimit: accountQuota.totalComputedLimit,
+      totalQuotaSource: accountQuota.totalLimitSource,
+    }));
+  }, [accountQuota, setAccountDetail, setInitAccountDetail]);
+
+  useEffect(() => {
+    if (accountQuotaError) {
+      createSnackbar({
+        key: 'getAccountQuotaError',
+        severity: 'error',
+        label: accountQuotaError.message,
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: false,
+      });
+    }
+  }, [accountQuotaError, createSnackbar]);
 
   const userType = useMemo(() => {
     if (userSetting?.attrs?.zimbraIsDelegatedAdminAccount === 'TRUE') {
@@ -517,23 +552,9 @@ const EditAccount: FC<{
       setOrUnsetPromise
         .then(notifyResult)
         .then(() => {
-          return getAccountQuota(accountDetail?.zimbraId);
-        })
-        .then((response) => {
-          if (response.type === 'success') {
-            setInitAccountDetail((prev) => ({
-              ...prev,
-              totalComputedQuotaLimit: response.totalComputedLimit,
-              totalQuotaSource: response.totalLimitSource,
-            }));
-            setAccountDetail((prev) => ({
-              ...prev,
-              totalComputedQuotaLimit: response.totalComputedLimit,
-              totalQuotaSource: response.totalLimitSource,
-            }));
-          } else {
-            throw new Error(response.error);
-          }
+          queryClient.invalidateQueries({
+            queryKey: domainQueryKeys.accountQuota(accountDetail?.zimbraId ?? ''),
+          });
         })
         .catch((error) => {
           createSnackbar({
