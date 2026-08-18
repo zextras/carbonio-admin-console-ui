@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
 import { 	Button,	Container,	Padding,	RouteLeavingGuard,	Row,	useSnackbar } from '@zextras/ui-components';
 import {  differenceWith, isEqual, map, some  } from 'lodash-es';
 import {  FC, useEffect, useMemo, useState  } from 'react';
@@ -12,9 +11,8 @@ import {  useTranslation  } from 'react-i18next';
 import {  TwoFactorAuthPolicyValues  } from '../../../../types';
 import {  OK  } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
-import { domainQueryKeys } from '../../../services/domain-query-keys';
-import {  set2faPolicies  } from '../../../services/set-2fa-policies';
 import { use2faPolicies } from '../../../services/use-2fa-policies';
+import { useSet2faPolicies } from '../../../services/use-set-2fa-policies';
 import {  isValidIpRange,TwoFactorPolicyArray  } from '../../utility/utils';
 import {  TwoFactorAuthencationConfig  } from '../two-factor-authentication/2fa-config';
 
@@ -25,7 +23,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 	const [arrPoliciesToModify, setArrPoliciesToModify] = useState<TwoFactorAuthPolicyValues[]>([]);
 	const { data: domain } = useSelectedDomain();
 	const domainName = domain?.name;
-	const queryClient = useQueryClient();
+	const setPolicyMutation = useSet2faPolicies(domainName);
 	const { data: arrPolicies = [], error: policiesError } = use2faPolicies(domainName);
 	const twoFactorPolicyArray = useMemo(() => TwoFactorPolicyArray(t), [t]);
 
@@ -63,23 +61,23 @@ const DomainTwoFactorAuthentication: FC = () => {
 		const dif = differenceWith(arrPoliciesToModify, arrPolicies, isEqual);
 
 		map(dif, (policy: TwoFactorAuthPolicyValues) => {
-			set2faPolicies(
-				domainName,
-				Object.keys(policy)[0],
-				policy[Object.keys(policy)[0]]?.trustedDevice,
-				policy[Object.keys(policy)[0]]?.trustedIpRange?.length !== 0
-					? policy[Object.keys(policy)[0]]?.trustedIpRange?.toString()
-					: 'empty'
-			)
-				.then((res) => {
-					const response = JSON.parse(res?.Body?.response?.content);
-					if (response?.ok) {
+			setPolicyMutation.mutate(
+				{
+					service: Object.keys(policy)[0],
+					trustedDevice: policy[Object.keys(policy)[0]]?.trustedDevice,
+					trustedIpRange:
+						policy[Object.keys(policy)[0]]?.trustedIpRange?.length !== 0
+							? policy[Object.keys(policy)[0]]?.trustedIpRange?.toString()
+							: 'empty'
+				},
+				{
+					onSuccess: ({ message }): void => {
 						createSnackbar({
 							key: 'policy-success',
-							severity: response?.message !== OK ? 'warning' : 'success',
+							severity: message && message !== OK ? 'warning' : 'success',
 							label:
-								response?.message !== OK
-									? response?.message
+								message && message !== OK
+									? message
 									: t(
 											'label.2fa-policy-updated-successfully',
 											'The settings have been applied to all services'
@@ -89,34 +87,21 @@ const DomainTwoFactorAuthentication: FC = () => {
 							replace: true
 						});
 						setIsDirty(false);
-						queryClient.invalidateQueries({
-							queryKey: domainQueryKeys.twoFactorPolicies(domainName ?? '')
-						});
-					} else {
+					},
+					onError: (error: Error): void => {
 						createSnackbar({
 							key: 'policy-error',
 							severity: 'error',
-							label: response?.error
-								? response?.error
+							label: error?.message
+								? error?.message
 								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true
 						});
 					}
-				})
-				.catch((error: any) => {
-					createSnackbar({
-						key: 'error',
-						severity: 'error',
-						label: error
-							? error?.error
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				});
+				}
+			);
 		});
 	};
 
