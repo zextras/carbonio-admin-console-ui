@@ -34,3 +34,12 @@ export const getAccountRequest = async (
 		...request
 	});
 };
+
+export const getAccount = async (accountId: string): Promise<any> =>
+	soapFetch(`GetAccount`, {
+		_jsns: 'urn:zimbraAdmin',
+		account: {
+			by: 'id',
+			_content: accountId
+		}
+	});
