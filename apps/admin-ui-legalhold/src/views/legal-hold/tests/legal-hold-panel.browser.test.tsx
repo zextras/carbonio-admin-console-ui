@@ -15,7 +15,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import type { BackupAccountItem, DomainItem } from '../../../../types';
-import LegalHoldPanel from '../legal-hold-panel';
+import { LegalHoldPanel } from '../legal-hold-panel';
 
 const MOCK_BACKUP_ACCOUNTS: Array<BackupAccountItem> = [
     {
@@ -191,5 +191,29 @@ describe('LegalHoldPanel', () => {
     it('should render domain dropdown input', async () => {
         await setupBrowserTest(<LegalHoldPanel />);
         await expect.element(page.getByText('Type the exact domain name')).toBeVisible();
+    });
+
+    it('should toggle legal hold and clear the selection', async () => {
+        worker.use(
+            http.post('*/service/extension/zextras_admin/backup/legalHold*', () =>
+                HttpResponse.json({ accounts: [MOCK_BACKUP_ACCOUNTS[0]] }),
+            ),
+        );
+
+        await setupBrowserTest(<LegalHoldPanel />);
+        await expect.element(page.getByText('admin@test.com')).toBeVisible();
+        await page.getByText('admin@test.com').click();
+
+        const setButton = page.getByRole('button', { name: 'Set legal hold' });
+        await expect.element(setButton).toBeEnabled();
+        await setButton.click();
+
+        await expect.element(page.getByRole('button', { name: 'Set legal hold' })).toBeDisabled();
+    });
+
+    it('should open the restore panel from the restore route', async () => {
+        await setupBrowserTest(<LegalHoldPanel />, { initialRouterEntry: '/restore/acc-2' });
+        await expect.element(page.getByText('Restore - user@test.com')).toBeVisible();
+        await expect.element(page.getByRole('button', { name: 'Close' })).toBeVisible();
     });
 });

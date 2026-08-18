@@ -1,423 +1,163 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  DatePicker,
-  DropDownInput,
-  HoverableRowFactory,
-  Input,
-  LabeledValue,
-  Padding,
-  Row,
-  Switch,
-  Table,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { postSoapFetchRequest, soapFetch } from '@zextras/ui-shared';
-import { format } from 'date-fns';
-import { cloneDeep, debounce, unionBy } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Container, useSnackbar } from '@zextras/ui-components';
+import { useDebouncedValue } from '@zextras/ui-shared';
+import { unionBy } from 'lodash-es';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { BackupAccountItem, DirectoryAccount } from '../../../../types';
+import { SEARCH_DEBOUNCE_MS } from '../../../constants';
+import { useAccountDirectory } from '../../../services/use-account-directory';
+import { useGetAccount } from '../../../services/use-get-account';
+import { useGrantFolderPermission } from '../../../services/use-grant-folder-permission';
+import { useRestoreLegalHoldAccount } from '../../../services/use-restore-legal-hold-account';
 import {
-  BackupAccountItem,
-  DirectoryAccount,
-  GetAccountResponse,
-  TableRow,
-  ZimbraAttribute,
-} from '../../../../types';
-import {
-  ERROR_LABLE,
-  RECORD_DISPLAY_LIMIT,
-  SUCCESS_LABLE,
-  ZIMBRA_ADMIN_URN,
-} from '../../../constants';
-import { accountListDirectory } from '../../../services/account-list-directory-service';
-import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
-import { formatedErrorMessage } from '../../utility/utils';
+  endOfDayTimestamp,
+  resolveRestoreTimestamp,
+  startOfDayTimestamp,
+} from '../../utility/resolve-restore-timestamp';
+import { LegalAccessSection } from './legal-access-section';
+import { RestoreAccountHeader } from './restore-account-header';
+import { RestoreAccountInfo } from './restore-account-info';
+import { RestoreSettings } from './restore-settings';
+import type { RestoreFormValues } from './types';
+import { useRestoreForm } from './use-restore-form';
 
-const RestoreAccountView: FC<{
+type RestoreAccountViewProps = {
   legalHoldAccount: BackupAccountItem | null;
   onBack: () => void;
-}> = ({ legalHoldAccount, onBack }) => {
+};
+
+export const RestoreAccountView = ({ legalHoldAccount, onBack }: RestoreAccountViewProps) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [searchAccount, setSearchAccount] = useState<string>('');
-  const [unDelete, setUnDelete] = useState(false);
-  const [legalHoldPrefix, setLegalHoldPrefix] = useState<string>('');
-  const account = legalHoldAccount?.name ?? '';
-  const accountId = legalHoldAccount?.id ?? '';
-  const targetServers = legalHoldAccount?.serverName ?? '';
+  const [searchAccount, setSearchAccount] = useState('');
   const [accountList, setAccountList] = useState<Array<DirectoryAccount>>([]);
-  const [searchAccountResult, setSearchAccountResult] = useState<Array<DirectoryAccount>>([]);
-  const [isRequestInprogress, setIsRequestInprogress] = useState<boolean>(false);
-  const offset = 0;
-  const limit = RECORD_DISPLAY_LIMIT;
-  const [tableRows, setTableRows] = useState<Array<TableRow>>([]);
   const [selectedRow, setSelectedRow] = useState<Array<string>>([]);
-  const [fromDate, setFromDate] = useState<Date | null>(null);
-  const [undeleteFromDate, setUndeleteFromDate] = useState<Date | null>(
-    new Date(legalHoldAccount?.creationTimestamp ?? ''),
-  );
-  const [isEnableLeagalAccess, setIsEnableLeagalAccess] = useState<boolean>(false);
-  const [isRestoreOprationComplete, setIsRestoreOprationComplete] = useState<boolean>(false);
+  const [isRestoreOperationComplete, setIsRestoreOperationComplete] = useState(false);
   const [legalHoldAccountInformation, setLegalHoldAccountInformation] =
     useState<DirectoryAccount | null>(null);
 
-  const header = useMemo(
-    () => [
-      {
-        id: 'name',
-        label: t('label.name', 'Name'),
-        width: '40%',
-        bold: true,
-      },
-      {
-        id: 'email',
-        label: t('label.email', 'Email'),
-        width: '60%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
+  const account = legalHoldAccount?.name ?? '';
+  const accountId = legalHoldAccount?.id ?? '';
+  const targetServers = legalHoldAccount?.serverName ?? '';
+  const debouncedSearchAccount = useDebouncedValue(searchAccount, SEARCH_DEBOUNCE_MS);
 
-  const showSnackbar = useCallback(
-    (key: string, severity: 'success' | 'info' | 'warning' | 'error', msg: string) => {
+  const accountDirectoryQuery = useAccountDirectory(
+    debouncedSearchAccount,
+    legalHoldAccount?.id ?? '',
+  );
+  const restoreMutation = useRestoreLegalHoldAccount();
+  const getAccountMutation = useGetAccount();
+  const grantPermissionMutation = useGrantFolderPermission();
+
+  const searchAccountResult = accountDirectoryQuery.data ?? [];
+  const isRequestInProgress = restoreMutation.isPending || grantPermissionMutation.isPending;
+  const isEnableLegalAccess = grantPermissionMutation.isSuccess;
+
+  const defaultValues: RestoreFormValues = {
+    legalHoldPrefix: '',
+    fromDate: null,
+    unDelete: false,
+    undeleteFromDate: legalHoldAccount?.creationTimestamp
+      ? new Date(legalHoldAccount.creationTimestamp)
+      : null,
+  };
+
+  function handleRestoreSubmit(value: RestoreFormValues): void {
+    if (account === '') {
       createSnackbar({
-        key,
-        severity,
-        label: msg,
+        key: 'error',
+        severity: 'error',
+        label: t(
+          'legal_hold.legal_hold_account_blank_error',
+          'Legal Hold account should not be blank',
+        ),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
       });
-    },
-    [createSnackbar],
-  );
-
-  const items = searchAccountResult.map((item) => ({
-    id: item.id,
-    label: item?.a.find((rec: ZimbraAttribute) => rec?.n === 'displayName')?._content ?? item?.name,
-    customComponent: [
-      <ds-text
-        as="span"
-        size="small"
-        key={item?.id}
-        color="gray0"
-        weight="regular"
-        onClick={(): void => {
-          setSearchAccount(item?.name);
-        }}
-      >
-        {item?.name || ' '}
-      </ds-text>,
-    ],
-  }));
-
-  const getAccountList = useCallback(
-    (searchStr: string) => {
-      const type = 'distributionlists,accounts';
-      const attrs = 'displayName,zimbraId';
-      const query = `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
-      accountListDirectory({
-        attr: attrs,
-        type,
-        domainName: '',
-        query: searchStr === '' ? '' : query,
-        offset,
-        limit,
-      })
-        .then((data) => {
-          const accountListResponse =
-            data?.account
-              ?.filter(
-                (filteredAccount: DirectoryAccount) => filteredAccount?.id !== legalHoldAccount?.id,
-              )
-              ?.map((item: DirectoryAccount) => {
-                const holdItem = { ...item, type: 'usr' };
-                return holdItem;
-              }) || [];
-          const dlListResponse =
-            data?.dl?.map((item: DirectoryAccount) => {
-              const holdItem = { ...item, type: 'grp' };
-              return holdItem;
-            }) || [];
-          const mergeAccounts = [...accountListResponse, ...dlListResponse];
-          if (mergeAccounts && Array.isArray(mergeAccounts)) {
-            setSearchAccountResult(mergeAccounts);
-          }
-        })
-        .catch((error) => {
-          showSnackbar(
-            ERROR_LABLE,
-            ERROR_LABLE,
-            error
-              ? error?.error
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          );
-        });
-    },
-    [legalHoldAccount?.id, limit, showSnackbar, t],
-  );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchAccountList = useCallback(
-    debounce((searchStr: string) => {
-      getAccountList(searchStr);
-    }, 700),
-    [debounce, getAccountList],
-  );
-
-  useEffect(() => {
-    if (searchAccount !== '') {
-      searchAccountList(searchAccount);
+      return;
     }
-  }, [searchAccount, searchAccountList]);
 
-  const callDeligateRequest = useCallback(
-    (request: Array<Promise<Response>>) => {
-      setIsRequestInprogress(true);
-      Promise.all(request)
-        .then((response) => Promise.all(response))
-        .then(() => {
-          setIsRequestInprogress(false);
-          setIsEnableLeagalAccess(true);
-          showSnackbar(
-            SUCCESS_LABLE,
-            SUCCESS_LABLE,
-            t('legal_hold.permission_given_successfully', 'Permission given successfully'),
-          );
-        });
-    },
-    [showSnackbar, t],
-  );
+    if (!value.fromDate) {
+      return;
+    }
 
-  const enableLegalAccess = useCallback(() => {
-    const requestItem: Array<Promise<Response>> = [];
-    accountList.forEach((item) => {
-      requestItem.push(
-        postSoapFetchRequest(
-          `/service/admin/soap/FolderActionRequest`,
-          {
-            _jsns: 'urn:zimbraMail',
-            action: {
-              op: 'grant',
-              id: '1',
-              grant: {
-                perm: 'r',
-
-                gt: item?.type ?? 'usr',
-                d: item?.name,
-                pw: '',
-              },
-            },
-          },
-          'FolderActionRequest',
-          legalHoldAccountInformation?.id,
-        ),
-      );
+    const destinationAccount = `${value.legalHoldPrefix}_${account}`;
+    const getDate = resolveRestoreTimestamp({
+      requestedDate: endOfDayTimestamp(value.fromDate),
+      creationTimestamp: legalHoldAccount?.creationTimestamp,
+      deletedTimestamp: legalHoldAccount?.deletedTimestamp,
     });
-    callDeligateRequest(requestItem);
-  }, [accountList, callDeligateRequest, legalHoldAccountInformation]);
+    const getUndeletedDate =
+      value.unDelete && value.undeleteFromDate
+        ? resolveRestoreTimestamp({
+            requestedDate: startOfDayTimestamp(value.undeleteFromDate),
+            creationTimestamp: legalHoldAccount?.creationTimestamp,
+            deletedTimestamp: legalHoldAccount?.deletedTimestamp,
+          })
+        : undefined;
 
-  const onRemove = useCallback(() => {
-    const updatedList = accountList.filter((item) => item?.id !== selectedRow[0]);
-    setAccountList(updatedList);
-  }, [accountList, selectedRow]);
-
-  const onAdd = useCallback(() => {
-    if (searchAccount !== '') {
-      setSearchAccount('');
-      const holdList = cloneDeep(accountList);
-      const filterData = searchAccountResult.filter((item) => item?.name === searchAccount);
-      setAccountList(unionBy([...holdList, ...filterData], 'id'));
-    }
-  }, [accountList, searchAccount, searchAccountResult]);
-
-  const handleFromDateChange = useCallback(
-    (d: Date | null) => {
-      if (undeleteFromDate && d && d.getTime() < undeleteFromDate.getTime()) {
-        setUndeleteFromDate(d);
-      }
-      setFromDate(d);
-    },
-    [undeleteFromDate],
-  );
-
-  const handleUndeleteFromDateChange = useCallback((d: Date | null) => {
-    setUndeleteFromDate(d);
-  }, []);
-
-  useMemo(() => {
-    if (accountList.length === 0) {
-      setTableRows([]);
+    if (!getDate) {
       return;
     }
-    const accountListArr: Array<TableRow> = [];
-    accountList.forEach((item: DirectoryAccount) => {
-      accountListArr.push({
-        id: item?.id,
-        columns: [
-          <ds-text
-            as="span"
-            size="small"
-            key={item?.id}
-            color="gray0"
-            weight="regular"
-            onClick={(): void => {
-              setSelectedRow([item?.id]);
-            }}
-          >
-            {item?.a.find((rec: ZimbraAttribute) => rec?.n === 'displayName')?._content ??
-              item?.name}
-          </ds-text>,
-          <ds-text
-            as="span"
-            size="small"
-            key={item?.name}
-            color="gray0"
-            weight="regular"
-            onClick={(): void => {
-              setSelectedRow([item?.id]);
-            }}
-          >
-            {item?.name ?? ''}
-          </ds-text>,
-        ],
-      });
-    });
-    setTableRows(accountListArr);
-  }, [accountList]);
 
-  const fixDate = useCallback(
-    ({ getDate, getUndeletedDate }: { getDate?: boolean; getUndeletedDate?: boolean }) => {
-      let returnTimestamp;
-      const creationTimestamp = legalHoldAccount?.creationTimestamp;
-      const deletedTimestamp = legalHoldAccount?.deletedTimestamp;
-      if (getDate) {
-        returnTimestamp = fromDate?.setHours(23, 59, 59, 999);
-      }
-      if (getUndeletedDate && unDelete) {
-        returnTimestamp = undeleteFromDate?.setHours(0, 0, 0, 0);
-      }
-
-      if (returnTimestamp && returnTimestamp > new Date().getTime()) {
-        returnTimestamp = new Date().getTime();
-      }
-
-      if (returnTimestamp && deletedTimestamp && returnTimestamp > deletedTimestamp) {
-        returnTimestamp = deletedTimestamp;
-      }
-
-      if (returnTimestamp && creationTimestamp && returnTimestamp < creationTimestamp) {
-        returnTimestamp = creationTimestamp;
-      }
-      return returnTimestamp;
-    },
-    [
-      fromDate,
-      legalHoldAccount?.creationTimestamp,
-      legalHoldAccount?.deletedTimestamp,
-      unDelete,
-      undeleteFromDate,
-    ],
-  );
-
-  const onRestore = useCallback(() => {
-    if (legalHoldPrefix === '') {
-      showSnackbar(
-        ERROR_LABLE,
-        ERROR_LABLE,
-        t('legal_hold.legal_hold_prefix_blank_error', 'Legal Hold prefix should not be blank'),
-      );
-      return;
-    }
-    if (account === '') {
-      showSnackbar(
-        ERROR_LABLE,
-        ERROR_LABLE,
-        t('legal_hold.legal_hold_account_blank_error', 'Legal Hold account should not be blank'),
-      );
-      return;
-    }
-    if (fromDate === null) {
-      showSnackbar(
-        ERROR_LABLE,
-        ERROR_LABLE,
-        t('legal_hold.legal_hold_fromdate_blank_error', 'Legal Hold from date should not be blank'),
-      );
-      return;
-    }
-    const destinationAccount = `${legalHoldPrefix}_${account}`;
-    const sourceAccountId = accountId;
-    const getDate = fixDate({ getDate: true });
-    const getUndeletedDate = fixDate({ getUndeletedDate: true });
-    if (getDate) {
-      setIsRequestInprogress(true);
-      doRestoreOnNewLegalHoldAccount(
-        sourceAccountId,
+    restoreMutation.mutate(
+      {
+        sourceAccountId: accountId,
         destinationAccount,
-        getDate,
-        getUndeletedDate ?? null,
-        unDelete,
+        date: getDate,
+        undeleteDate: getUndeletedDate ?? null,
+        unDelete: value.unDelete,
         targetServers,
-      )
-        .then(() => {
-          setIsRequestInprogress(false);
-          setIsRestoreOprationComplete(true);
-          showSnackbar(
-            SUCCESS_LABLE,
-            SUCCESS_LABLE,
-            t('legal_hold.account_successful_restored', 'Account successfully restored'),
-          );
-          if (tableRows.length === 0) {
+      },
+      {
+        onSuccess: () => {
+          setIsRestoreOperationComplete(true);
+          if (accountList.length === 0) {
             onBack();
-          } else {
-            soapFetch(`GetAccount`, {
-              _jsns: ZIMBRA_ADMIN_URN,
-              account: {
-                by: 'name',
-                _content: destinationAccount,
-              },
-            }).then((rawData) => {
-              const data = rawData as GetAccountResponse;
-              if (Array.isArray(data?.account)) {
-                setLegalHoldAccountInformation(data?.account[0]);
-              }
-            });
+            return;
           }
-        })
-        .catch((err) => {
-          setIsRequestInprogress(false);
-          const formatedMessage = formatedErrorMessage(err);
-          showSnackbar(
-            ERROR_LABLE,
-            ERROR_LABLE,
-            formatedMessage?.message ??
-              t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          );
-        });
+          getAccountMutation.mutate(destinationAccount, {
+            onSuccess: (restoredAccount) => {
+              setLegalHoldAccountInformation(restoredAccount);
+            },
+          });
+        },
+      },
+    );
+  }
+
+  const form = useRestoreForm(defaultValues, handleRestoreSubmit);
+
+  function onAdd(): void {
+    if (searchAccount === '') {
+      return;
     }
-  }, [
-    account,
-    accountId,
-    fixDate,
-    fromDate,
-    legalHoldPrefix,
-    onBack,
-    showSnackbar,
-    t,
-    tableRows.length,
-    targetServers,
-    unDelete,
-  ]);
+    const filterData = searchAccountResult.filter((item) => item.name === searchAccount);
+    setAccountList((current) => unionBy([...current, ...filterData], 'id'));
+    setSearchAccount('');
+  }
+
+  function onRemove(): void {
+    setAccountList((current) => current.filter((item) => item.id !== selectedRow[0]));
+  }
+
+  function onGivePermission(): void {
+    if (!legalHoldAccountInformation?.id) {
+      return;
+    }
+    grantPermissionMutation.mutate({
+      accounts: accountList,
+      targetAccountId: legalHoldAccountInformation.id,
+    });
+  }
 
   return (
     <Container
@@ -428,7 +168,7 @@ const RestoreAccountView: FC<{
         top: '2.625rem',
         right: '0',
         bottom: '0',
-        left: `${'max(calc(100% - 43.125rem), 0.75rem)'}`,
+        left: 'max(calc(100% - 43.125rem), 0.75rem)',
         transition: 'left 0.2s ease-in-out',
         height: 'auto',
         width: 'auto',
@@ -438,37 +178,7 @@ const RestoreAccountView: FC<{
       }}
     >
       <Container mainAlignment="flex-start">
-        <Row
-          mainAlignment="flex-start"
-          crossAlignment="center"
-          orientation="horizontal"
-          background="white"
-          width="fill"
-          height="3.5rem"
-        >
-          <Row padding={{ horizontal: 'small' }}></Row>
-          <Row takeAvailableSpace mainAlignment="flex-start">
-            <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
-              {t('legal_hold.restore', 'Restore')} {' - '}
-              {legalHoldAccount?.name}
-            </ds-text>
-          </Row>
-
-          <Row padding={{ right: 'extrasmall', left: 'small' }}>
-            <Button
-              type="ghost"
-              color={'text'}
-              size="medium"
-              icon="CloseOutline"
-              onClick={(): void => {
-                onBack();
-              }}
-            />
-          </Row>
-        </Row>
-        <Row>
-          <ds-divider></ds-divider>
-        </Row>
+        <RestoreAccountHeader accountName={legalHoldAccount?.name} onBack={onBack} />
         <Container
           padding={{ all: 'extralarge' }}
           mainAlignment="flex-start"
@@ -477,281 +187,27 @@ const RestoreAccountView: FC<{
           style={{ overflow: 'auto' }}
           background="gray6"
         >
-          <Container
-            orientation="horizontal"
-            crossAlignment="flex-start"
-            mainAlignment="flex-start"
-            height="auto"
-            padding={{ bottom: 'small' }}
-          >
-            <Container crossAlignment="flex-start" width={'7rem'}>
-              <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
-                {t('label.server', 'Server Name')} :
-              </ds-text>
-            </Container>
-            <Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
-              <ds-text as="span" size="small" overflow="ellipsis">
-                {legalHoldAccount?.serverName}
-              </ds-text>
-            </Container>
-          </Container>
-          <Container
-            orientation="horizontal"
-            crossAlignment="flex-start"
-            mainAlignment="flex-start"
-            height="auto"
-            padding={{ bottom: 'small' }}
-          >
-            <Container crossAlignment="flex-start" width={'7rem'}>
-              <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
-                {t('label.account_id', 'Account Id')} :
-              </ds-text>
-            </Container>
-            <Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
-              <ds-text as="span" size="small" overflow="ellipsis">
-                {legalHoldAccount?.id}
-              </ds-text>
-            </Container>
-          </Container>
-
-          <Container
-            orientation="horizontal"
-            crossAlignment="flex-start"
-            mainAlignment="flex-start"
-            height="auto"
-            padding={{ bottom: 'small' }}
-          >
-            <Container crossAlignment="flex-start" width={'7rem'}>
-              <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
-                {t('label.created_date', 'Created Date')} :
-              </ds-text>
-            </Container>
-            <Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
-              <ds-text as="span" size="small" overflow="ellipsis">
-                {legalHoldAccount?.creationTimestamp
-                  ? format(legalHoldAccount?.creationTimestamp, 'dd/MM/yyyy')
-                  : ''}
-              </ds-text>
-            </Container>
-          </Container>
-
-          {legalHoldAccount?.deletedTimestamp && (
-            <Container
-              orientation="horizontal"
-              crossAlignment="flex-start"
-              mainAlignment="flex-start"
-              height="auto"
-            >
-              <Container crossAlignment="flex-start" width={'7rem'}>
-                <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
-                  {t('label.deleted_date', 'Deleted Date')} :
-                </ds-text>
-              </Container>
-              <Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
-                <ds-text as="span" size="small" overflow="ellipsis">
-                  {format(legalHoldAccount?.deletedTimestamp, 'dd/MM/yyyy')}
-                </ds-text>
-              </Container>
-            </Container>
-          )}
-
-          <Container
-            crossAlignment="flex-start"
-            mainAlignment="flex-start"
-            height="auto"
-            padding={{ top: 'large' }}
-          >
-            <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
-              {t('legal_hold.restore_settings', 'Restore Settings')}
-            </ds-text>
-          </Container>
-          <Container
-            orientation="horizontal"
-            mainAlignment="space-between"
-            crossAlignment="flex-start"
-            padding={{ bottom: 'large', top: 'large' }}
-            height="auto"
-          >
-            <Container crossAlignment="flex-start">
-              <Input
-                label={t('legal_hold.legalhold_prefix', 'Legal Hold prefix')}
-                backgroundColor="gray5"
-                value={legalHoldPrefix}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                  setLegalHoldPrefix(e.target.value);
-                }}
-              />
-            </Container>
-
-            <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
-              <LabeledValue
-                label={t('label.account', 'Account')}
-                backgroundColor="gray5"
-                value={account}
-              />
-            </Container>
-          </Container>
-          <Container
-            orientation="horizontal"
-            mainAlignment="space-between"
-            crossAlignment="flex-start"
-            padding={{ bottom: 'extralarge' }}
-            height="auto"
-          >
-            <Container crossAlignment="flex-start">
-              <DatePicker
-                label={t('label.account_status_on ', 'Account status on')}
-                onChange={handleFromDateChange}
-                dateFormat="dd/MM/yyyy"
-                minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
-                maxDate={
-                  legalHoldAccount?.deletedTimestamp
-                    ? new Date(legalHoldAccount.deletedTimestamp)
-                    : new Date()
-                }
-              />
-            </Container>
-          </Container>
-
-          <Container
-            orientation="horizontal"
-            mainAlignment="space-between"
-            crossAlignment="flex-start"
-            padding={{ bottom: 'extralarge' }}
-            height="auto"
-          >
-            <Container crossAlignment="flex-start">
-              <Switch
-                label={t('legal_hold.include_items_deleted', 'Include items deleted')}
-                value={unDelete}
-                onClick={(): void => {
-                  setUnDelete(!unDelete);
-                }}
-                iconColor="primary"
-              />
-            </Container>
-          </Container>
-
-          {unDelete && (
-            <Container
-              orientation="horizontal"
-              mainAlignment="space-between"
-              crossAlignment="flex-start"
-              padding={{ bottom: 'extralarge' }}
-              height="auto"
-            >
-              <Container crossAlignment="flex-start">
-                <DatePicker
-                  isClearable
-                  label={t('label.include_items_deleted_after', 'Include items deleted after')}
-                  onChange={handleUndeleteFromDateChange}
-                  dateFormat="dd/MM/yyyy"
-                  selected={undeleteFromDate}
-                  minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
-                  maxDate={fromDate as Date}
-                />
-              </Container>
-            </Container>
-          )}
-
-          <Container
-            crossAlignment="flex-start"
-            mainAlignment="flex-start"
-            height="auto"
-            padding={{ top: 'medium', bottom: 'large' }}
-          >
-            <ds-text as="span" size="small" overflow="ellipsis" weight="bold">
-              {t('legal_hold.legal_access', 'Legal Access')}
-            </ds-text>
-          </Container>
-
-          <Container crossAlignment="flex-start" height="auto">
-            <Container
-              crossAlignment="flex-start"
-              padding={{ right: 'medium' }}
-              orientation="horizontal"
-              mainAlignment="space-between"
-              height="auto"
-            >
-              <Container width="70%" padding={{ right: 'medium' }} height="auto">
-                <DropDownInput
-                  width="100%"
-                  items={items}
-                  inputLabel={t('label.search_an_account', 'Search an Account')}
-                  size="medium"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                    setSearchAccount(e.target.value);
-                  }}
-                  inputValue={searchAccount}
-                  isCustomIcon={false}
-                />
-              </Container>
-              <Container width="auto" crossAlignment="flex-end" height="auto">
-                <Button
-                  type="outlined"
-                  size="large"
-                  label={t('label.add', 'Add')}
-                  color="primary"
-                  onClick={onAdd}
-                />
-              </Container>
-              <Container
-                width="auto"
-                crossAlignment="flex-end"
-                mainAlignment="flex-end"
-                height="auto"
-              >
-                <Button
-                  type="ghost"
-                  size="large"
-                  label={t('label.remove', 'Remove')}
-                  color="error"
-                  onClick={onRemove}
-                  disabled={accountList.length === 0}
-                />
-              </Container>
-            </Container>
-          </Container>
-
-          <Container
-            mainAlignment="flex-start"
-            padding={{ top: 'medium', bottom: 'large' }}
-            height="auto"
-          >
-            <Table
-              rows={tableRows}
-              headers={header}
-              showCheckbox={false}
-              multiSelect={false}
-              selectedRows={selectedRow as [] | [string]}
-              RowFactory={HoverableRowFactory}
-              HeaderFactory={CustomHeaderFactory}
-            />
-          </Container>
-          {accountList.length === 0 && (
-            <Container crossAlignment="center" mainAlignment="flex-start" padding={{ all: '3rem' }}>
-              <Padding all="medium">
-                <ds-text
-                  as="p"
-                  color="gray1"
-                  overflow="break-word"
-                  weight="regular"
-                  size="large"
-                  style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-                >
-                  {t('label.this_list_is_empty', 'This list is empty.')}
-                </ds-text>
-              </Padding>
-            </Container>
-          )}
+          <RestoreAccountInfo legalHoldAccount={legalHoldAccount} />
+          <RestoreSettings form={form} legalHoldAccount={legalHoldAccount} account={account} />
+          <LegalAccessSection
+            searchAccount={searchAccount}
+            searchAccountResult={searchAccountResult}
+            accountList={accountList}
+            selectedRow={selectedRow}
+            onSearchChange={setSearchAccount}
+            onSelectSearchResult={setSearchAccount}
+            onAdd={onAdd}
+            onRemove={onRemove}
+            onSelectionChange={(ids) => setSelectedRow(ids[0] ? [ids[0]] : [])}
+          />
           <Container mainAlignment="flex-start" height="auto">
             <Button
               size="large"
               type="outlined"
               color="primary"
               label={t('legal_hold.restore', 'Restore')}
-              onClick={onRestore}
-              disabled={isRequestInprogress || isRestoreOprationComplete}
+              onClick={() => form.handleSubmit()}
+              disabled={isRequestInProgress || isRestoreOperationComplete}
               width="fill"
             />
           </Container>
@@ -777,18 +233,16 @@ const RestoreAccountView: FC<{
           type="default"
           color="primary"
           label={t('legal_hold.give_permission', 'Give Permission')}
-          onClick={enableLegalAccess}
+          onClick={onGivePermission}
           disabled={
             accountList.length === 0 ||
-            isRequestInprogress ||
-            !isRestoreOprationComplete ||
+            isRequestInProgress ||
+            !isRestoreOperationComplete ||
             legalHoldAccountInformation === null ||
-            isEnableLeagalAccess
+            isEnableLegalAccess
           }
         />
       </Container>
     </Container>
   );
 };
-
-export default RestoreAccountView;
