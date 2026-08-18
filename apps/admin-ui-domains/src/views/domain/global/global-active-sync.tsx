@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Container,
@@ -21,12 +20,8 @@ import { useTranslation } from 'react-i18next';
 
 import { doPurgeActiveSync } from '../../../services/do-purge-mobile-state';
 import { doStratStopJail } from '../../../services/do-start-stop-jail';
-import { domainQueryKeys } from '../../../services/domain-query-keys';
-import { setAntiDosServiceEnabled } from '../../../services/set-mobile-anti-dos-service';
-import { setAntiDosServiceJailDuration } from '../../../services/set-mobile-anti-dos-service-jail-duration';
-import { setAntiDosServiceMaxRequests } from '../../../services/set-mobile-anti-dos-service-max-requests';
-import { setAntiDosServiceTimeWindow } from '../../../services/set-mobile-anti-dos-service-time-window';
 import { useAntiDosConfig } from '../../../services/use-anti-dos-config';
+import { useSaveAntiDosSetting } from '../../../services/use-save-anti-dos-setting';
 
 const GlobalActiveSync: FC = () => {
   const [t] = useTranslation();
@@ -42,8 +37,8 @@ const GlobalActiveSync: FC = () => {
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const { data: mailstoresList = [] } = useMailstoreServers();
   const createSnackbar = useSnackbar();
-  const queryClient = useQueryClient();
   const { data: antiDosConfig } = useAntiDosConfig();
+  const saveSettingMutation = useSaveAntiDosSetting();
 
   const successSnackbar = (): void => {
     createSnackbar({
@@ -134,30 +129,43 @@ const GlobalActiveSync: FC = () => {
       });
     }
   };
+  const onErrorSnackbar = (error: Error): void => {
+    createSnackbar({
+      key: 'error',
+      severity: 'error',
+      label: error?.message
+        ? error.message
+        : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+      autoHideTimeout: 3000,
+      hideButton: true,
+      replace: true,
+    });
+  };
+
   const onSave = (): void => {
     if (mobileAntiDosServiceEnbled !== intMobileAntiDosServiceEnbled) {
-      setAntiDosServiceEnabled(mobileAntiDosServiceEnbled).then(() => {
-        successSnackbar();
-        queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });
-      });
+      saveSettingMutation.mutate(
+        { field: 'enabled', value: mobileAntiDosServiceEnbled },
+        { onSuccess: successSnackbar, onError: onErrorSnackbar },
+      );
     }
     if (mobileAntiDosServiceJailDuration !== intMobileAntiDosServiceJailDuration) {
-      setAntiDosServiceJailDuration(Number(mobileAntiDosServiceJailDuration)).then(() => {
-        successSnackbar();
-        queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });
-      });
+      saveSettingMutation.mutate(
+        { field: 'jailDuration', value: Number(mobileAntiDosServiceJailDuration) },
+        { onSuccess: successSnackbar, onError: onErrorSnackbar },
+      );
     }
     if (mobileAntiDosServiceMaxRequests !== intMobileAntiDosServiceMaxRequests) {
-      setAntiDosServiceMaxRequests(Number(mobileAntiDosServiceMaxRequests)).then(() => {
-        successSnackbar();
-        queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });
-      });
+      saveSettingMutation.mutate(
+        { field: 'maxRequests', value: Number(mobileAntiDosServiceMaxRequests) },
+        { onSuccess: successSnackbar, onError: onErrorSnackbar },
+      );
     }
     if (mobileAntiDosServiceTimeWindow !== intMobileAntiDosServiceTimeWindow) {
-      setAntiDosServiceTimeWindow(Number(mobileAntiDosServiceTimeWindow)).then(() => {
-        successSnackbar();
-        queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });
-      });
+      saveSettingMutation.mutate(
+        { field: 'timeWindow', value: Number(mobileAntiDosServiceTimeWindow) },
+        { onSuccess: successSnackbar, onError: onErrorSnackbar },
+      );
     }
     setIsDirty(false);
   };
