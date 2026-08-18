@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQueryClient } from '@tanstack/react-query';
 import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { type CSSProperties, useEffect, useState } from 'react';
@@ -12,9 +11,8 @@ import { useTranslation } from 'react-i18next';
 
 import type { AddressBookServiceStatus } from '../../../../types';
 import { LDAP_ADDRESS_BOOK_PORT, LDAP_ADDRESS_BOOK_SERVICE, TRUE } from '../../../constants';
-import { domainQueryKeys } from '../../../services/domain-query-keys';
-import { setAddressBookServiceEnabled } from '../../../services/set-address-book-service-enabled';
 import { useAddressBookServiceStatus } from '../../../services/use-address-book-service';
+import { useSetAddressBookServiceEnabled } from '../../../services/use-set-address-book-service-enabled';
 
 const DEFAULT_STATUS: AddressBookServiceStatus = {
   running: false,
@@ -68,10 +66,9 @@ export function GlobalAddressBook() {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const userSetting = useUserSettings();
-  const [isRequestInProgress, setIsRequestInProgress] = useState(false);
   const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
-  const queryClient = useQueryClient();
   const { data, isPending, error: statusError } = useAddressBookServiceStatus();
+  const setServiceEnabledMutation = useSetAddressBookServiceEnabled();
   const serviceStatus = data ?? DEFAULT_STATUS;
 
   const fallbackError = t(
@@ -104,29 +101,21 @@ export function GlobalAddressBook() {
     }
 
     const nextEnabled = !serviceStatus.running;
-    setIsRequestInProgress(true);
 
-    setAddressBookServiceEnabled(nextEnabled)
-      .then(() => {
-        queryClient.invalidateQueries({ queryKey: domainQueryKeys.addressBookService() });
+    setServiceEnabledMutation.mutate(nextEnabled, {
+      onSuccess: () => {
         createSnackbar({
           key: 'success',
           severity: 'success',
           label: nextEnabled
-            ? t(
-                'label.ldap_address_book_service_started',
-                'ldap-address-book service started',
-              )
-            : t(
-                'label.ldap_address_book_service_stopped',
-                'ldap-address-book service stopped',
-              ),
+            ? t('label.ldap_address_book_service_started', 'ldap-address-book service started')
+            : t('label.ldap_address_book_service_stopped', 'ldap-address-book service stopped'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
         });
-      })
-      .catch((error: Error) => {
+      },
+      onError: (error: Error) => {
         createSnackbar({
           key: 'error',
           severity: 'error',
@@ -135,16 +124,14 @@ export function GlobalAddressBook() {
           hideButton: true,
           replace: true,
         });
-      })
-      .finally(() => {
-        setIsRequestInProgress(false);
-      });
+      },
+    });
   }
 
   const canToggle =
     isGlobalAdmin &&
     !isPending &&
-    !isRequestInProgress &&
+    !setServiceEnabledMutation.isPending &&
     (serviceStatus.running ? serviceStatus.couldStop : serviceStatus.couldStart);
 
   const { statusColor, statusAccentBorder, statusDotStyle } = getStatusPresentation(
@@ -309,7 +296,7 @@ export function GlobalAddressBook() {
                     minWidth="11.25rem"
                     onClick={serviceStartStop}
                     disabled={!canToggle}
-                    loading={isRequestInProgress}
+                    loading={setServiceEnabledMutation.isPending}
                     size="large"
                   />
                 </Container>
