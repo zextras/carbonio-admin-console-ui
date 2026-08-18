@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type FC, type JSX, useCallback } from 'react';
+import { type JSX, type KeyboardEvent } from 'react';
 
 import { List } from '../display/List/List';
 import { ListItem } from '../display/ListItem';
@@ -24,19 +24,24 @@ type ListItemsProps = {
   setSelectedOperationItem: (id: string) => void;
 };
 
-const ListItems: FC<ListItemsProps> = ({
+export const ListItems = ({
   items,
   selectedOperationItem,
   setSelectedOperationItem,
-}) => {
-  const selectOption = useCallback(
-    (item: ListItemType) => () => {
-      if (item?.isSelected) {
+}: ListItemsProps) => {
+  const selectOption = (item: ListItemType) => (): void => {
+    if (item?.isSelected) {
+      setSelectedOperationItem(item?.id);
+    }
+  };
+
+  const handleItemKeyDown =
+    (item: ListItemType) => (event: KeyboardEvent<HTMLDivElement>): void => {
+      if (item?.isSelected && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault();
         setSelectedOperationItem(item?.id);
       }
-    },
-    [setSelectedOperationItem],
-  );
+    };
 
   return (
     <Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
@@ -56,6 +61,10 @@ const ListItems: FC<ListItemsProps> = ({
                   mainAlignment="flex-start"
                   width="100%"
                   onClick={selectOption(item)}
+                  onKeyDown={handleItemKeyDown(item)}
+                  role="button"
+                  tabIndex={0}
+                  aria-current={item?.id === selectedOperationItem ? 'true' : undefined}
                   style={{ cursor: 'pointer' }}
                 >
                   <Container
@@ -87,4 +96,4 @@ const ListItems: FC<ListItemsProps> = ({
   );
 };
 
-export { ListItems, type ListItemsProps, type ListItemType };
+export { type ListItemsProps,type ListItemType };

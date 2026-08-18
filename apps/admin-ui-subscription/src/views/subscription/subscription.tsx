@@ -4,31 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button, Container, Input, LicenseBanner, Modal, Row } from '@zextras/ui-components';
 import {
-	Button,
-	Container,
-	Input,
-	LabeledValue,
-	LicenseBanner,
-	Modal,
-	Quota,
-	Row,
-	Tooltip,
-} from '@zextras/ui-components';
-import {
+  type LicenseInfo,
   useActivateLicense,
   useCurrentUserRights,
   useLicenseInfo,
   useRemoveLicense,
   useVersion,
 } from '@zextras/ui-shared';
-import { format } from 'date-fns';
 import { find } from 'lodash-es';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CONFIG } from '../../constants';
-import { DATE_FORMAT, TIME_FORMAT } from './constants';
+import { SubscriptionDetails } from './parts/subscription-details';
 import { ServiceStatus } from './service-status';
 
 type Module = {
@@ -74,6 +64,46 @@ const moduleName: ModuleName = {
   wsc_basic: { value: 'Basic', label: 'Chats' },
 };
 
+const MODULE_PREDEFINED_ORDER = [
+  'Storages',
+  'HA',
+  'Backup',
+  'Auth',
+  'MailApp',
+  'Files',
+  'ActiveSync',
+  'Chats',
+  'Admin',
+];
+
+function buildModules(features: Array<ModuleConfig> | undefined): Array<AllModuleConfig> {
+  if (!features) return [];
+
+  const allModules = features.map((module: ModuleConfig) => ({
+    ...module,
+    name: moduleName[module.name],
+  }));
+
+  const formatModules = allModules.filter((module: AllModuleConfig) => module.name !== undefined);
+
+  const ModuleSort = (a: AllModuleConfig, b: AllModuleConfig): number => {
+    const indexA = MODULE_PREDEFINED_ORDER.indexOf(a.name.label);
+    const indexB = MODULE_PREDEFINED_ORDER.indexOf(b.name.label);
+
+    if (indexA === -1 && indexB === -1) {
+      return formatModules.indexOf(a) - formatModules.indexOf(b);
+    }
+
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+
+    return indexA - indexB;
+  };
+
+  const sortedModules = [...formatModules].sort(ModuleSort);
+  return sortedModules.filter((module: AllModuleConfig) => module.name.value !== 'SproxyD');
+}
+
 const getGapColorForLabel = (label: React.Key | null | undefined): string => {
   switch (label) {
     case 'Storages':
@@ -97,73 +127,115 @@ const getGapColorForLabel = (label: React.Key | null | undefined): string => {
   }
 };
 
+type SubscriptionActionsProps = {
+  readonly licenseKey: string;
+  readonly onLicenseKeyChange: (value: string) => void;
+  readonly canSetSubscription: boolean;
+  readonly response: LicenseInfo | undefined;
+  readonly activatePending: boolean;
+  readonly activateRenewal: boolean;
+  readonly removePending: boolean;
+  readonly onActivate: () => void;
+  readonly onDeactivate: () => void;
+  readonly onRenew: () => void;
+};
+
+const SubscriptionActions = ({
+  licenseKey,
+  onLicenseKeyChange,
+  canSetSubscription,
+  response,
+  activatePending,
+  activateRenewal,
+  removePending,
+  onActivate,
+  onDeactivate,
+  onRenew,
+}: SubscriptionActionsProps) => {
+  const { t } = useTranslation();
+  const showActivate = !response || response.expired;
+
+  return (
+    <Container
+      orientation="horizontal"
+      width="100%"
+      height="fit"
+      wrap="wrap"
+      mainAlignment="flex-start"
+      crossAlignment="flex-start"
+      style={{ padding: '8px 0 16px 0' }}
+    >
+      <Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="74%">
+        <Input
+          label={t('core.subscription.token', 'Token')}
+          backgroundColor="gray5"
+          value={licenseKey}
+          disabled={!canSetSubscription}
+          onChange={(e: ChangeEvent<HTMLInputElement>): void => onLicenseKeyChange(e.target.value)}
+        />
+      </Container>
+      <Container
+        crossAlignment="flex-start"
+        orientation="horizontal"
+        width="26%"
+        style={{ gap: '0.875rem' }}
+      >
+        <Button
+          label={
+            showActivate
+              ? t('core.subscription.activate', 'Activate')
+              : t('core.subscription.deactivate', 'Deactivate')
+          }
+          disabled={!canSetSubscription || !licenseKey || activatePending || removePending}
+          type="outlined"
+          color={showActivate ? 'primary' : 'error'}
+          onClick={showActivate ? onActivate : onDeactivate}
+          loading={activatePending && !activateRenewal}
+          size="extralarge"
+        />
+        <Button
+          label={t('core.subscription.renew', 'Renew')}
+          disabled={
+            !canSetSubscription || !licenseKey || !response || activatePending || removePending
+          }
+          type="outlined"
+          color="primary"
+          onClick={onRenew}
+          loading={activatePending && activateRenewal}
+          size="extralarge"
+        />
+      </Container>
+    </Container>
+  );
+};
+
 export const Subscription = (): React.JSX.Element => {
   const [open, setOpen] = useState(false);
 
   const { data: version } = useVersion();
   const { data: licenseData, isFetching } = useLicenseInfo();
   const [licenseKey, setLicenseKey] = useState('');
+  const [prevAuthToken, setPrevAuthToken] = useState<string | undefined>(undefined);
   const { data: rights } = useCurrentUserRights();
   const { t } = useTranslation();
 
   const activateLicenseMutation = useActivateLicense();
 
   const removeLicenseMutation = useRemoveLicense();
-  const allowSetSubsciption = useMemo(() => {
-    const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-    return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+  const allowSetSubsciption = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
-  const services = useMemo(() => {
-    if (!licenseData) return null;
-    return licenseData;
-  }, [licenseData]);
+  const services = licenseData ?? null;
 
-  useEffect(() => {
-    if (licenseData?.response?.authenticationToken) {
-      setLicenseKey(licenseData.response.authenticationToken);
+  const authenticationToken = licenseData?.response?.authenticationToken;
+  if (authenticationToken !== prevAuthToken) {
+    setPrevAuthToken(authenticationToken);
+    if (authenticationToken) {
+      setLicenseKey(authenticationToken);
     }
-  }, [licenseData?.response?.authenticationToken]);
+  }
 
-  const modules: Array<AllModuleConfig> = useMemo(() => {
-    if (!licenseData?.response?.features) return [];
-
-    const featurs = licenseData.response.features;
-    const allModules = featurs.map((module: ModuleConfig) => ({
-      ...module,
-      name: moduleName[module.name],
-    }));
-
-    const formatModules = allModules.filter((module: AllModuleConfig) => module.name !== undefined);
-    const predefinedOrder = [
-      'Storages',
-      'HA',
-      'Backup',
-      'Auth',
-      'MailApp',
-      'Files',
-      'ActiveSync',
-      'Chats',
-      'Admin',
-    ];
-
-    const ModuleSort = (a: AllModuleConfig, b: AllModuleConfig): number => {
-      const indexA = predefinedOrder.indexOf(a.name.label);
-      const indexB = predefinedOrder.indexOf(b.name.label);
-
-      if (indexA === -1 && indexB === -1) {
-        return formatModules.indexOf(a) - formatModules.indexOf(b);
-      }
-
-      if (indexA === -1) return 1;
-      if (indexB === -1) return -1;
-
-      return indexA - indexB;
-    };
-
-    const sortedModules = [...formatModules].sort(ModuleSort);
-    return sortedModules.filter((module: AllModuleConfig) => module.name.value !== 'SproxyD');
-  }, [licenseData]);
+  const modules: Array<AllModuleConfig> = buildModules(licenseData?.response?.features);
 
   const activeLicence = (): void => {
     activateLicenseMutation.mutate({ token: licenseKey, renewal: false });
@@ -182,29 +254,10 @@ export const Subscription = (): React.JSX.Element => {
     activateLicenseMutation.mutate({ token: licenseKey, renewal: true });
   };
 
-  const calculatedAccountQuotaSizePercentage: number = useMemo(() => {
-    const accountCount = services?.response?.accountCount ?? 0;
-    const licensedUsers = Number(services?.response?.licensedUsers ?? '0');
-
-    if (licensedUsers === 0) {
-      return 0;
-    }
-
-    return (accountCount / licensedUsers) * 100;
-  }, [services]);
-
-  const getTypeDisplayValue = (): string => {
-    if (!services?.response) return '';
-    const { type, subType } = services.response;
-
-    if (type === 'Purchased') {
-      if (subType === 'PERPETUAL' || subType === 'REGULAR') {
-        return `${type} - ${subType}`;
-      }
-      return subType ?? '';
-    }
-    return type ?? '';
-  };
+  const accountCount = services?.response?.accountCount ?? 0;
+  const licensedUsers = Number(services?.response?.licensedUsers ?? '0');
+  const calculatedAccountQuotaSizePercentage: number =
+    licensedUsers === 0 ? 0 : (accountCount / licensedUsers) * 100;
 
   if (isFetching) {
     return <ds-spinner></ds-spinner>;
@@ -247,303 +300,35 @@ export const Subscription = (): React.JSX.Element => {
         height="calc(100vh - 200px)"
       >
         <Row width="fill" mainAlignment="flex-start" padding={{ vertical: 'large' }}>
-          <ds-text as="label" weight="bold">{t('core.subscription.activation', 'Activation')}</ds-text>
+          <ds-text as="label" weight="bold">
+            {t('core.subscription.activation', 'Activation')}
+          </ds-text>
         </Row>
-        <Container
-          orientation="horizontal"
-          width="100%"
-          height="fit"
-          wrap="wrap"
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          style={{ padding: '8px 0 16px 0' }}
-        >
-          <Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="74%">
-            <Input
-              label={t('core.subscription.token', 'Token')}
-              backgroundColor="gray5"
-              value={licenseKey}
-              disabled={!allowSetSubsciption}
-              onChange={(e: any): void => setLicenseKey(e.target.value)}
-            />
-          </Container>
-          <Container
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            width="26%"
-            style={{ gap: '0.875rem' }}
-          >
-            <Button
-              label={
-                !services?.response || services.response.expired
-                  ? t('core.subscription.activate', 'Activate')
-                  : t('core.subscription.deactivate', 'Deactivate')
-              }
-              disabled={
-                !allowSetSubsciption ||
-                !licenseKey ||
-                activateLicenseMutation.isPending ||
-                removeLicenseMutation.isPending
-              }
-              type="outlined"
-              color={!services?.response || services.response.expired ? 'primary' : 'error'}
-              onClick={
-                !services?.response || services.response.expired
-                  ? (): void => activeLicence()
-                  : (): void => setOpen(true)
-              }
-              loading={
-                activateLicenseMutation.isPending && !activateLicenseMutation.variables?.renewal
-              }
-              size="extralarge"
-            />
-            <Button
-              label={t('core.subscription.renew', 'Renew')}
-              disabled={
-                !allowSetSubsciption ||
-                !licenseKey ||
-                !services?.response ||
-                activateLicenseMutation.isPending ||
-                removeLicenseMutation.isPending
-              }
-              type="outlined"
-              color="primary"
-              onClick={(): void => renewLicence()}
-              loading={
-                activateLicenseMutation.isPending && !!activateLicenseMutation.variables?.renewal
-              }
-              size="extralarge"
-            />
-          </Container>
-        </Container>
-        {services?.response && (
-          <Container
-            orientation="horizontal"
-            width="100%"
-            height="fit"
-            wrap="wrap"
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-          >
-            <Row
-              width="49.5%"
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'small', bottom: 'small', right: 'small' }}
-            >
-              <LabeledValue
-                label={t('core.subscription.company_name', 'Company Name')}
-                value={services.response.endUser || ''}
-              />
-            </Row>
-            <Row
-              width="49.5%"
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'small', bottom: 'small', right: 'small' }}
-            >
-              <LabeledValue
-                label={t('core.subscription.provider', 'Provider')}
-                value={services.response.customer}
-              />
-            </Row>
-            <Row
-              width="49.5%"
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'small', bottom: 'small', right: 'small' }}
-            >
-              <LabeledValue
-                label={t('core.subscription.type', 'Type')}
-                value={getTypeDisplayValue()}
-              />
-            </Row>
-            <Row
-              width="49.5%"
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'small', bottom: 'small', right: 'small' }}
-            >
-              <LabeledValue
-                label={t('core.subscription.order_id', 'Order ID')}
-                value={services.response?.infrastructureId ?? ''}
-              />
-            </Row>
-            <Row
-              width="49.5%"
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'small', bottom: 'small', right: 'small' }}
-            >
-              <LabeledValue
-                label={t('core.subscription.date_start', 'Date Start')}
-                value={
-                  services.response.dateStart
-                    ? format(services.response.dateStart, DATE_FORMAT)
-                    : ''
-                }
-              />
-            </Row>
-            <Row
-              width="49.5%"
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'small', bottom: 'small', right: 'small' }}
-            >
-              <LabeledValue
-                label={t('core.subscription.date_end', 'Date End')}
-                value={
-                  services.response.notYetValid ||
-                  !services.response.authenticationToken ||
-                  !services.response.dateEnd
-                    ? ''
-                    : format(services.response.dateEnd, DATE_FORMAT)
-                }
-              />
-            </Row>
-            {services.response.maintenanceEndDate && (
-              <Row
-                width="99%"
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                padding={{ top: 'small', bottom: 'small', right: 'small' }}
-              >
-                <LabeledValue
-                  label={t('core.subscription.maintenance_end_date', 'Maintenance End Date')}
-                  value={format(services.response.maintenanceEndDate, DATE_FORMAT)}
-                />
-              </Row>
-            )}
-            {services.response.type === 'ISP' && (
-              <Row
-                width="49.5%"
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                padding={{ top: 'small', bottom: 'small', right: 'small' }}
-              >
-                <Tooltip
-                  label={
-                    <ds-text as="p" style={{ whiteSpace: 'pre-line' }}>
-                      {t(
-                        'core.subscription.last_validation_check_tooltip',
-                        'This date represents the last day on which the license was validated by the Zextras Subscription Service.\n\nSince this is a Pay Per Use (PPU) subscription, the system automatically reports daily usage data to the Zextras Subscription Service. No user action is required as long as communication is functioning correctly. If the system is unable to contact the service, a 7-day grace period is applied. This grace period is automatically renewed each time the Zextras Subscription Service is successfully contacted.',
-                      )}
-                    </ds-text>
-                  }
-                >
-                  <LabeledValue
-                    label={t('core.subscription.last_validation_check', 'Last Validation Check')}
-                    value={
-                      services.response.lastValidationCheck
-                        ? format(services.response.lastValidationCheck, DATE_FORMAT)
-                        : ''
-                    }
-                  />
-                </Tooltip>
-              </Row>
-            )}
-            {services.response.type === 'ISP' && (
-              <Row
-                width="49.5%"
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                padding={{ top: 'small', bottom: 'small', right: 'small' }}
-              >
-                <Tooltip
-                  label={
-                    <ds-text as="p" style={{ whiteSpace: 'pre-line' }}>
-                      {t(
-                        'core.subscription.next_validation_deadline_tooltip',
-                        'This date represents the last day the license will remain fully functional if usage data is not sent to the Zextras Subscription Service.\n\nSince this is a Pay Per Use (PPU) subscription, the system automatically reports daily usage data to the Zextras Subscription Service. No user action is required as long as communication is functioning correctly. If the system is unable to contact the service, a 7-day grace period is applied. This grace period is automatically renewed each time the Zextras Subscription Service is successfully contacted.',
-                      )}
-                    </ds-text>
-                  }
-                >
-                  <LabeledValue
-                    label={t(
-                      'core.subscription.next_validation_deadline',
-                      'Next Validation Deadline',
-                    )}
-                    value={
-                      services.response.nextValidationDeadline
-                        ? format(services.response.nextValidationDeadline, DATE_FORMAT)
-                        : ''
-                    }
-                  />
-                </Tooltip>
-              </Row>
-            )}
-            <Row
-              width="49.5%"
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'small', bottom: 'small', right: 'small' }}
-            >
-              <LabeledValue
-                label={t('core.subscription.version', 'Module Version')}
-                value={version}
-              />
-            </Row>
-            <Row
-              width="49.5%"
-              orientation="vertical"
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'small', bottom: 'large', right: 'small' }}
-              style={{ gap: '.5rem' }}
-            >
-              <ds-text as="span" size="small" color="#828282">
-                {t('core.subscription.accounts', 'Accounts')}
-              </ds-text>
-              <Row
-                orientation="vertical"
-                width="100%"
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-              >
-                <ds-text as="span" size="small">{`${services.response.accountCount} / ${services.response.licensedUsers}`}</ds-text>
-                <Quota
-                  fill={calculatedAccountQuotaSizePercentage}
-                  background="#F5F6F8"
-                  fillBackground="#2B73D2"
-                  style={{ borderRadius: '2px' }}
-                />
-              </Row>
-            </Row>
-            {services.response.subType === 'PERPETUAL' && services.response.maxCarbonioVersion && (
-              <Row
-                width="49.5%"
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                padding={{ top: 'small', bottom: 'small', right: 'small' }}
-              >
-                <LabeledValue
-                  label={t('core.subscription.maxCarbonioVersion', 'Max Carbonio Version')}
-                  value={services.response.maxCarbonioVersion}
-                />
-              </Row>
-            )}
-            {services.response.updateTime && (
-              <Row
-                width="49.5%"
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                padding={{ top: 'small', bottom: 'small', right: 'small' }}
-              >
-                <LabeledValue
-                  label={t('core.subscription.updateTime', 'Update Time')}
-                  value={format(services.response.updateTime, TIME_FORMAT)}
-                />
-              </Row>
-            )}
-          </Container>
-        )}
+        <SubscriptionActions
+          licenseKey={licenseKey}
+          onLicenseKeyChange={setLicenseKey}
+          canSetSubscription={allowSetSubsciption}
+          response={licenseData?.response}
+          activatePending={activateLicenseMutation.isPending}
+          activateRenewal={!!activateLicenseMutation.variables?.renewal}
+          removePending={removeLicenseMutation.isPending}
+          onActivate={activeLicence}
+          onDeactivate={(): void => setOpen(true)}
+          onRenew={renewLicence}
+        />
+        <SubscriptionDetails
+          response={licenseData?.response}
+          version={version}
+          accountQuotaPercentage={calculatedAccountQuotaSizePercentage}
+        />
         <Row
           width="fill"
           mainAlignment="flex-start"
           padding={{ top: 'large', bottom: 'large', right: 'large' }}
         >
-          <ds-text as="label" weight="bold">{t('core.subscription.modules', 'Modules')}</ds-text>
+          <ds-text as="label" weight="bold">
+            {t('core.subscription.modules', 'Modules')}
+          </ds-text>
         </Row>
         <Container
           orientation="horizontal"
