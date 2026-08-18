@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Container,
@@ -20,14 +21,12 @@ import { useTranslation } from 'react-i18next';
 
 import { doPurgeActiveSync } from '../../../services/do-purge-mobile-state';
 import { doStratStopJail } from '../../../services/do-start-stop-jail';
-import { getMobileAntiDosService } from '../../../services/get-mobile-anti-dos-service';
-import { getMobileAntiDosServiceJailDuration } from '../../../services/get-mobile-anti-dos-service-jail-duration';
-import { getMobileAntiDosServiceMaxRequests } from '../../../services/get-mobile-anti-dos-service-max-requests';
-import { getMobileAntiDosServiceTimeWindow } from '../../../services/get-mobile-anti-dos-service-time-window';
+import { domainQueryKeys } from '../../../services/domain-query-keys';
 import { setAntiDosServiceEnabled } from '../../../services/set-mobile-anti-dos-service';
 import { setAntiDosServiceJailDuration } from '../../../services/set-mobile-anti-dos-service-jail-duration';
 import { setAntiDosServiceMaxRequests } from '../../../services/set-mobile-anti-dos-service-max-requests';
 import { setAntiDosServiceTimeWindow } from '../../../services/set-mobile-anti-dos-service-time-window';
+import { useAntiDosConfig } from '../../../services/use-anti-dos-config';
 
 const GlobalActiveSync: FC = () => {
   const [t] = useTranslation();
@@ -43,6 +42,8 @@ const GlobalActiveSync: FC = () => {
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const { data: mailstoresList = [] } = useMailstoreServers();
   const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
+  const { data: antiDosConfig } = useAntiDosConfig();
 
   const successSnackbar = (): void => {
     createSnackbar({
@@ -136,26 +137,26 @@ const GlobalActiveSync: FC = () => {
   const onSave = (): void => {
     if (mobileAntiDosServiceEnbled !== intMobileAntiDosServiceEnbled) {
       setAntiDosServiceEnabled(mobileAntiDosServiceEnbled).then(() => {
-        setIntMobileAntiDosServiceEnbled(mobileAntiDosServiceEnbled);
         successSnackbar();
+        queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });
       });
     }
     if (mobileAntiDosServiceJailDuration !== intMobileAntiDosServiceJailDuration) {
       setAntiDosServiceJailDuration(Number(mobileAntiDosServiceJailDuration)).then(() => {
-        setIntMobileAntiDosServiceJailDuration(mobileAntiDosServiceJailDuration);
         successSnackbar();
+        queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });
       });
     }
     if (mobileAntiDosServiceMaxRequests !== intMobileAntiDosServiceMaxRequests) {
       setAntiDosServiceMaxRequests(Number(mobileAntiDosServiceMaxRequests)).then(() => {
-        setIntMobileAntiDosServiceMaxRequests(mobileAntiDosServiceMaxRequests);
         successSnackbar();
+        queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });
       });
     }
     if (mobileAntiDosServiceTimeWindow !== intMobileAntiDosServiceTimeWindow) {
       setAntiDosServiceTimeWindow(Number(mobileAntiDosServiceTimeWindow)).then(() => {
-        setIntMobileAntiDosServiceTimeWindow(mobileAntiDosServiceTimeWindow);
         successSnackbar();
+        queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });
       });
     }
     setIsDirty(false);
@@ -170,36 +171,17 @@ const GlobalActiveSync: FC = () => {
   };
 
   useEffect(() => {
-    getMobileAntiDosService().then((data): any => {
-      const parseData = JSON.parse(data?.Body?.response?.content);
-      setIntMobileAntiDosServiceEnbled(parseData.response?.values[0]?.value);
-      setMobileAntiDosServiceEnbled(parseData?.response?.values[0]?.value);
-    });
-    getMobileAntiDosServiceJailDuration().then((data): any => {
-      const parseData = JSON.parse(data?.Body?.response?.content);
-      const JailDurationData = parseData.response?.values[0]?.value
-        ? parseData.response?.values[0]?.value
-        : parseData.response?.values[0]?.inheritedValue;
-      setIntMobileAntiDosServiceJailDuration(JailDurationData);
-      setMobileAntiDosServiceJailDuration(JailDurationData);
-    });
-    getMobileAntiDosServiceMaxRequests().then((data): any => {
-      const parseData = JSON.parse(data?.Body?.response?.content);
-      const MaxRequestsData = parseData.response?.values[0]?.value
-        ? parseData.response?.values[0]?.value
-        : parseData.response?.values[0]?.inheritedValue;
-      setMobileAntiDosServiceMaxRequests(MaxRequestsData);
-      setIntMobileAntiDosServiceMaxRequests(MaxRequestsData);
-    });
-    getMobileAntiDosServiceTimeWindow().then((data): any => {
-      const parseData = JSON.parse(data?.Body?.response?.content);
-      const TimeWindowData = parseData.response?.values[0]?.value
-        ? parseData.response?.values[0]?.value
-        : parseData.response?.values[0]?.inheritedValue;
-      setMobileAntiDosServiceTimeWindow(TimeWindowData);
-      setIntMobileAntiDosServiceTimeWindow(TimeWindowData);
-    });
-  }, []);
+    if (antiDosConfig) {
+      setIntMobileAntiDosServiceEnbled(antiDosConfig.enabled);
+      setMobileAntiDosServiceEnbled(antiDosConfig.enabled);
+      setIntMobileAntiDosServiceJailDuration(antiDosConfig.jailDuration);
+      setMobileAntiDosServiceJailDuration(antiDosConfig.jailDuration);
+      setIntMobileAntiDosServiceMaxRequests(antiDosConfig.maxRequests);
+      setMobileAntiDosServiceMaxRequests(antiDosConfig.maxRequests);
+      setIntMobileAntiDosServiceTimeWindow(antiDosConfig.timeWindow);
+      setMobileAntiDosServiceTimeWindow(antiDosConfig.timeWindow);
+    }
+  }, [antiDosConfig]);
 
   return (
     <>
