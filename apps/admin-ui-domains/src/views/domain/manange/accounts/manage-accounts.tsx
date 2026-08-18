@@ -38,11 +38,11 @@ import { countAccount } from '../../../../services/count-account-service';
 import { domainQueryKeys } from '../../../../services/domain-query-keys';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
-import { getAccountQuota } from '../../../../services/get-account-quota';
-import { getCosQuota } from '../../../../services/get-cos-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
+import { useAccountQuota } from '../../../../services/use-account-quota';
+import { useCosQuota } from '../../../../services/use-cos-quota';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { AccountContext, AccountDetail } from './account-context';
@@ -101,6 +101,13 @@ const ManageAccounts: FC = () => {
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const [allowedDeletePassword, setAllowedDeletePassword] = useState<boolean>(false);
   const account = useUserAccount();
+  const isAdvancedAccountSelected = isAdvanced && !!accountDetail?.zimbraId;
+  const { data: accountQuota, error: accountQuotaError } = useAccountQuota(
+    isAdvancedAccountSelected ? (accountDetail?.zimbraId as string) : undefined,
+  );
+  const { data: cosQuota } = useCosQuota(
+    isAdvancedAccountSelected ? (accountDetail?.zimbraCOSId as string | undefined) : undefined,
+  );
   const [accountSearchCurrentPage, setAccountSearchCurrentPage] = useState(1);
 
   const accountTypeFilter: any = useMemo(
@@ -495,40 +502,45 @@ const ManageAccounts: FC = () => {
     [account?.name],
   );
 
-  const retrieveAccountQuotaByAccountId = useCallback(
-    (accountId: string, cosIdOfAccount: string): void => {
-      getAccountQuota(accountId).then((res) => {
-        if (res.type === 'success') {
-          setAccDetailValue(TOTAL_COMPUTED_QUOTA_LIMIT, res.totalComputedLimit);
-          setAccDetailValue(TOTAL_QUOTA_USED, res.totalUsed);
-          setAccDetailValue(TOTAL_QUOTA_USED_BY_MODULE, res.usedByModules);
-          setAccDetailValue(TOTAL_QUOTA_SOURCE, res.totalLimitSource);
-          setAccDetailValue(TOTAL_QUOTA_STATUS, res.totalStatus);
-        } else {
-          createSnackbar({
-            key: 'retrieveAccountQuotaError',
-            severity: 'error',
-            label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
+  useEffect(() => {
+    if (!accountQuota) {
+      return;
+    }
+    setAccDetailValue(TOTAL_COMPUTED_QUOTA_LIMIT, accountQuota.totalComputedLimit);
+    setAccDetailValue(TOTAL_QUOTA_USED, accountQuota.totalUsed);
+    setAccDetailValue(TOTAL_QUOTA_USED_BY_MODULE, accountQuota.usedByModules);
+    setAccDetailValue(TOTAL_QUOTA_SOURCE, accountQuota.totalLimitSource);
+    setAccDetailValue(TOTAL_QUOTA_STATUS, accountQuota.totalStatus);
+  }, [accountQuota, setAccDetailValue]);
+
+  useEffect(() => {
+    if (!cosQuota) {
+      return;
+    }
+    setCosDetail((prev: any) => ({
+      ...prev,
+      [TOTAL_COMPUTED_QUOTA_LIMIT]: cosQuota.totalComputedLimit,
+    }));
+  }, [cosQuota]);
+
+  useEffect(() => {
+    if (accountQuotaError) {
+      createSnackbar({
+        key: 'retrieveAccountQuotaError',
+        severity: 'error',
+        label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
       });
-      getCosQuota(cosIdOfAccount).then((res) => {
-        if (res.type === 'success') {
-          setCosDetail((prev: any) => ({
-            ...prev,
-            [TOTAL_COMPUTED_QUOTA_LIMIT]: res.totalComputedLimit,
-          }));
-        }
-      });
-      if (domainId) {
-        queryClient.invalidateQueries({ queryKey: domainQueryKeys.quota(domainId) });
-      }
-    },
-    [createSnackbar, domainId, setAccDetailValue, queryClient, t],
-  );
+    }
+  }, [accountQuotaError, createSnackbar, t]);
+
+  useEffect(() => {
+    if (accountQuota && domainId) {
+      queryClient.invalidateQueries({ queryKey: domainQueryKeys.quota(domainId) });
+    }
+  }, [accountQuota, domainId, queryClient]);
 
   const getAccountDetail = useCallback(
     (id: string): void => {
@@ -576,7 +588,6 @@ const ManageAccounts: FC = () => {
           setDefaultCOS(!obj.zimbraCOSId);
           getMailboxQuotaUsed(id);
           if (isAdvanced) {
-            retrieveAccountQuotaByAccountId(id, obj.zimbraCOSId);
             getListOtp(data?.account?.[0]?.name);
             getCredentialList(data?.account?.[0]?.name);
             getABQStatus(id);
