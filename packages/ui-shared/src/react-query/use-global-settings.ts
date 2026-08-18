@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { keepPreviousData, useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 import { postSoapFetchRequest } from '../network/fetch';
@@ -45,6 +45,7 @@ export const useGlobalSettings = (options: GlobalConfigOptions = {}) => {
 		retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 30000),
 		refetchOnWindowFocus: false,
 		refetchOnReconnect: true,
+		placeholderData: keepPreviousData,
 		...queryOptions
 	});
 };

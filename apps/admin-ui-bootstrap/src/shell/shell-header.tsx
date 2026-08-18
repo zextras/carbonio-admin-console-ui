@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { type AppRoute, CARBONIO_LOGO_URL, useLoginConfigStore } from '@zextras/ui-shared';
-import React, { FC } from 'react';
+import React from 'react';
 
 import Logo from '../svg/carbonio-admin-panel.svg';
 import { CreationButton } from './creation-button';
@@ -16,10 +16,12 @@ const styles = {
   rightSection: 'flex flex-row justify-end items-center',
 };
 
-const ShellHeader: FC<{
+type ShellHeaderProps = {
   activeRoute: AppRoute | undefined;
   children?: React.ReactNode;
-}> = ({ activeRoute, children }) => {
+};
+
+const ShellHeader = ({ activeRoute, children }: ShellHeaderProps) => {
   const { carbonioAdminUiAppLogo, carbonioAdminUiDarkAppLogo, carbonioLogoURL } =
     useLoginConfigStore();
 

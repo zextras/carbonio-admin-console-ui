@@ -6,7 +6,7 @@
 import { PostHogProvider } from '@posthog/react';
 import { useAllConfig, useIsAdvanced } from '@zextras/ui-shared';
 import type { PostHogConfig } from 'posthog-js';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { TrackerPageView } from './page-view';
 
@@ -26,23 +26,17 @@ export const TrackerProvider = ({
 
   const isAdvanced = useIsAdvanced();
 
-  const showPostHogSurveys = useMemo(
-    () => !isAdvanced && feedbackPermission,
-    [isAdvanced, feedbackPermission],
-  );
+  const showPostHogSurveys = !isAdvanced && feedbackPermission;
 
-  const options = useMemo(
-    (): Partial<PostHogConfig> => ({
-      api_host: PH_API_HOST,
-      person_profiles: 'identified_only',
-      opt_out_capturing_by_default: false,
-      disable_session_recording: true,
-      mask_all_text: true,
-      disable_surveys: !showPostHogSurveys,
-      autocapture: false,
-    }),
-    [showPostHogSurveys],
-  );
+  const options: Partial<PostHogConfig> = {
+    api_host: PH_API_HOST,
+    person_profiles: 'identified_only',
+    opt_out_capturing_by_default: false,
+    disable_session_recording: true,
+    mask_all_text: true,
+    disable_surveys: !showPostHogSurveys,
+    autocapture: false,
+  };
 
   if (isLoading) {
     return <>{children}</>;

@@ -4,11 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { I18nFactory } from '@zextras/ui-shared';
 import { createContext, useContext } from 'react';
 
-export const BootstrapperContext = createContext<any>({});
+type BootstrapperContextValue = {
+  i18nFactory?: I18nFactory;
+};
 
-export function useI18nFactory(): any {
-	const { i18nFactory } = useContext(BootstrapperContext);
-	return i18nFactory;
+export const BootstrapperContext = createContext<BootstrapperContextValue | null>(null);
+
+export function useI18nFactory(): I18nFactory | undefined {
+  const ctx = useContext(BootstrapperContext);
+  return ctx?.i18nFactory;
 }

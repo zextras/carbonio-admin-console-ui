@@ -8,10 +8,10 @@ import type { BadgeInfo } from '@zextras/ui-shared';
 import React from 'react';
 
 type BadgeWrapProps = {
-  badge: BadgeInfo;
-  isExpanded: boolean;
-  children?: React.ReactNode;
-  ref?: React.Ref<HTMLDivElement>;
+  readonly badge: BadgeInfo;
+  readonly isExpanded: boolean;
+  readonly children?: React.ReactNode;
+  readonly ref?: React.Ref<HTMLDivElement>;
 };
 
 function getBadgeStyle(badgeColor: string | undefined): React.CSSProperties {
@@ -31,30 +31,29 @@ function getBadgeStyle(badgeColor: string | undefined): React.CSSProperties {
   };
 }
 
-const BadgeWrap = ({ badge, children, isExpanded, ref }: BadgeWrapProps) => (
-  <Container
-    width={48}
-    height={48}
-    style={{ position: 'relative', width: isExpanded ? '25%' : '100%' }}
-    ref={ref}
-  >
-    {badge.show && (
-      <Container height="fit" width="fit" style={getBadgeStyle(badge.color)}>
-        {badge.showCount ? (
-          <ds-text
-            as="span"
-            size="extrasmall"
-            color="gray6"
-            style={{ padding: '2px 4px', fontSize: '10px' }}
-          >
-            {badge.count ?? 0}
-          </ds-text>
-        ) : null}
-      </Container>
-    )}
-    {children}
-  </Container>
-);
-
-BadgeWrap.displayName = 'BadgeWrap';
-export default BadgeWrap;
+export function BadgeWrap({ badge, children, isExpanded, ref }: BadgeWrapProps) {
+  return (
+    <Container
+      width={48}
+      height={48}
+      style={{ position: 'relative', width: isExpanded ? '25%' : '100%' }}
+      ref={ref}
+    >
+      {badge.show && (
+        <Container height="fit" width="fit" style={getBadgeStyle(badge.color)}>
+          {badge.showCount ? (
+            <ds-text
+              as="span"
+              size="extrasmall"
+              color="gray6"
+              style={{ padding: '2px 4px', fontSize: '10px' }}
+            >
+              {badge.count ?? 0}
+            </ds-text>
+          ) : null}
+        </Container>
+      )}
+      {children}
+    </Container>
+  );
+}

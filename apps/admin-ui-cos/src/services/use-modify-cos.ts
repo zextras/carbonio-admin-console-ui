@@ -37,13 +37,11 @@ export function useModifyCos(cosId?: string) {
         replace: true,
       });
     },
-    onError: (error) => {
+    onError: () => {
       createSnackbar({
         key: 'error',
         severity: 'error',
-        label: error?.message
-          ? error?.message
-          : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+        label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,

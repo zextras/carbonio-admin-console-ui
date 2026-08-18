@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { type CoreAttributeRequest, getCoreAttributes } from '@zextras/ui-shared';
 import { useEffect } from 'react';
@@ -21,6 +21,7 @@ export const useCoreAttributes = (body: Array<CoreAttributeRequest>) => {
     queryFn: () => getCoreAttributes(body),
     enabled: body.length > 0,
     staleTime: 30_000,
+    placeholderData: keepPreviousData,
     retry: 1,
     refetchOnWindowFocus: false,
   });

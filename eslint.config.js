@@ -98,8 +98,11 @@ export default tseslint.config(
       'apps/admin-ui-domains/src/views/domain/global-list-panel.tsx',
       'apps/admin-ui-dashboard/**',
       'apps/admin-ui-legalhold/**',
+      'apps/admin-ui-bootstrap/**',
       'apps/admin-ui-privacy/**/*',
-      'apps/admin-ui-operations/**'
+      'apps/admin-ui-operations/**',
+      'apps/admin-ui-cos/**/*',
+      'apps/admin-ui-backup/**',
     ],
     plugins: {
       'react-compiler': reactCompiler,
@@ -121,11 +124,7 @@ export default tseslint.config(
     },
   },
   {
-    files: [
-      'apps/admin-ui-subscription/**/*',
-      'apps/admin-ui-storage/**/*',
-      'apps/admin-ui-cos/**/*',
-    ],
+    files: ['apps/admin-ui-subscription/**/*', 'apps/admin-ui-storage/**/*'],
     plugins: {
       'react-compiler': reactCompiler,
       'jsx-a11y': jsxA11y,
