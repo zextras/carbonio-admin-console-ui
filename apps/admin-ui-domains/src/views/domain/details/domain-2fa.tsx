@@ -3,16 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import { 	Button,	Container,	Padding,	RouteLeavingGuard,	Row,	useSnackbar } from '@zextras/ui-components';
 import {  differenceWith, isEqual, map, some  } from 'lodash-es';
-import {  FC, useCallback, useEffect, useMemo, useState  } from 'react';
+import {  FC, useEffect, useMemo, useState  } from 'react';
 import {  useTranslation  } from 'react-i18next';
 
 import {  TwoFactorAuthPolicyValues  } from '../../../../types';
 import {  OK  } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
-import {  list2faPolicies  } from '../../../services/list-2fa-policies';
+import { domainQueryKeys } from '../../../services/domain-query-keys';
 import {  set2faPolicies  } from '../../../services/set-2fa-policies';
+import { use2faPolicies } from '../../../services/use-2fa-policies';
 import {  isValidIpRange,TwoFactorPolicyArray  } from '../../utility/utils';
 import {  TwoFactorAuthencationConfig  } from '../two-factor-authentication/2fa-config';
 
@@ -20,37 +22,32 @@ const DomainTwoFactorAuthentication: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar = useSnackbar();
-	const [arrPolicies, setArrPolicies] = useState<TwoFactorAuthPolicyValues[]>([]);
 	const [arrPoliciesToModify, setArrPoliciesToModify] = useState<TwoFactorAuthPolicyValues[]>([]);
 	const { data: domain } = useSelectedDomain();
 	const domainName = domain?.name;
+	const queryClient = useQueryClient();
+	const { data: arrPolicies = [], error: policiesError } = use2faPolicies(domainName);
 	const twoFactorPolicyArray = useMemo(() => TwoFactorPolicyArray(t), [t]);
 
-	const listGlobalPolicies = useCallback(() => {
-		list2faPolicies(domainName)
-			.then((res) => {
-				if (res?.Body?.response?.content) {
-					const content = JSON.parse(res?.Body?.response?.content);
-					if (content?.response) {
-						setArrPolicies(content?.response?.values);
-						setArrPoliciesToModify(content?.response?.values);
-					}
-				}
-			})
-			.catch((error: any) => {
-				createSnackbar({
-					key: 'error',
-					severity: 'error',
-					label: error
-						? error?.error
-						: 
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+	useEffect(() => {
+		setArrPoliciesToModify(arrPolicies);
+	}, [arrPolicies]);
+
+	useEffect(() => {
+		if (policiesError) {
+			createSnackbar({
+				key: 'error',
+				severity: 'error',
+				label: policiesError?.message
+					? policiesError?.message
+					: 
+					  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
 			});
-	}, [domainName, createSnackbar, t]);
+		}
+	}, [policiesError, createSnackbar, t]);
 
 	const modifyPolicies = (newPolicies: TwoFactorAuthPolicyValues[]): void => {
 		setArrPoliciesToModify(newPolicies);
@@ -92,6 +89,9 @@ const DomainTwoFactorAuthentication: FC = () => {
 							replace: true
 						});
 						setIsDirty(false);
+						queryClient.invalidateQueries({
+							queryKey: domainQueryKeys.twoFactorPolicies(domainName ?? '')
+						});
 					} else {
 						createSnackbar({
 							key: 'policy-error',
@@ -123,10 +123,6 @@ const DomainTwoFactorAuthentication: FC = () => {
 	const handleOnCancel = (): void => {
 		setArrPoliciesToModify(arrPolicies);
 	};
-
-	useEffect(() => {
-		listGlobalPolicies();
-	}, [listGlobalPolicies]);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
