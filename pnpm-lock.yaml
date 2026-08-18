@@ -1144,9 +1144,6 @@ importers:
 
   apps/admin-ui-notifications:
     dependencies:
-      '@posthog/react':
-        specifier: ^1.10.3
-        version: 1.10.3(@types/react@19.2.18)(posthog-js@1.417.4)(react@19.2.8)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.4(react@19.2.8)
@@ -1162,18 +1159,6 @@ importers:
       i18next:
         specifier: ^26.3.1
         version: 26.3.6(@typescript/typescript6@6.0.2)
-      immer:
-        specifier: 11.1.8
-        version: 11.1.8
-      lodash-es:
-        specifier: ^4.17.21
-        version: 4.18.1
-      posthog-js:
-        specifier: ^1.396.3
-        version: 1.417.4
-      qrcode.react:
-        specifier: ^4.2.0
-        version: 4.2.0(react@19.2.8)
       react:
         specifier: ^19.2.7
         version: 19.2.8
