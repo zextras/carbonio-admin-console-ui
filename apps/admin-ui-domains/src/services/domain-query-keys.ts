@@ -11,6 +11,12 @@ export const domainQueryKeys = {
   accountQuota: (accountId: string) =>
     [...domainQueryKeys.all, 'account-quota', accountId] as const,
   cosQuota: (cosId: string) => [...domainQueryKeys.all, 'cos-quota', cosId] as const,
+  accountSignatures: (accountId: string) =>
+    [...domainQueryKeys.all, 'account-signatures', accountId] as const,
+  accountMembership: (accountId: string) =>
+    [...domainQueryKeys.all, 'account-membership', accountId] as const,
+  userSessions: (accountName: string) =>
+    [...domainQueryKeys.all, 'user-sessions', accountName] as const,
   twoFactorPolicies: (domain: string) =>
     [...domainQueryKeys.all, 'two-factor-policies', domain] as const,
   addressBookService: () => [...domainQueryKeys.all, 'address-book-service'] as const,
