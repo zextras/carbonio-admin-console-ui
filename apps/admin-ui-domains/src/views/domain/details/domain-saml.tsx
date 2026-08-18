@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Container,
@@ -28,10 +29,12 @@ import {
 } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { deleteSamlAttributes } from '../../../services/delete-saml-attributes';
+import { domainQueryKeys } from '../../../services/domain-query-keys';
 import { generateSignedCertificate } from '../../../services/generate-signed-certificate';
 import { getSamlConfig } from '../../../services/get-saml-configurations';
 import { importSamlConfig } from '../../../services/import-saml-configurations';
 import { updateSamlAttributes } from '../../../services/update-saml-attributes';
+import { useSamlConfig } from '../../../services/use-saml-config';
 import { copyTextToClipboard, download, getServiceUrl, getSPEntityId } from '../../utility/utils';
 
 type SamlAttribute = {
@@ -41,12 +44,13 @@ type SamlAttribute = {
 
 const DomainSaml: FC = () => {
   const [t] = useTranslation();
-  const [samlAttributes, setSamlAttributes] = useState<Array<SamlAttribute>>([]);
   const [samlTableRows, setSamlTableRows] = useState<any[]>([]);
   const [isAllowUnsecure, setIsAllowUnsecure] = useState<boolean>(false);
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name || '';
   const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
+  const { data: samlConfig, error: samlError } = useSamlConfig(domainName);
   const [samlAttrKey, setSamlAttrKey] = useState<string>('');
   const [samlAttrValue, setSamlAttrValue] = useState<any>('');
   const [metadataUrl, setMetadataUrl] = useState<string>('');
@@ -54,6 +58,14 @@ const DomainSaml: FC = () => {
   const [serverUrl, setServiceUrl] = useState<string>('');
   const [showBannerText, setShowBannerText] = useState<boolean>(true);
   const domainInformation: any = domain?.a;
+
+  const samlAttributes: Array<SamlAttribute> = samlConfig
+    ? Object.entries(samlConfig).map(([attribute, value]) => ({ attribute, value }))
+    : [];
+
+  function refreshSamlConfig(): void {
+    queryClient.invalidateQueries({ queryKey: domainQueryKeys.samlConfig(domainName) });
+  }
 
   const headers: any = useMemo(
     () => [
@@ -72,18 +84,6 @@ const DomainSaml: FC = () => {
     ],
     [t],
   );
-
-  const setSAMLAttributes = useCallback((samlData: any): void => {
-    const samlAttr: Array<SamlAttribute> = [];
-    Object.entries(samlData).forEach((entry) => {
-      const [key, value] = entry;
-      samlAttr.push({
-        attribute: key,
-        value,
-      });
-    });
-    setSamlAttributes(samlAttr);
-  }, []);
 
   const openSamlValue = useCallback((item: SamlAttribute): void => {
     setSamlAttrKey(item?.attribute);
@@ -173,30 +173,18 @@ const DomainSaml: FC = () => {
     [openSamlValue],
   );
 
-  const getSAMLConfigurations = useCallback(
-    (domain: string): void => {
-      getSamlConfig(domain, true)
-        .then((data) => {
-          if (!data?.error) {
-            setSAMLAttributes(data);
-          } else {
-            const err = { message: data?.error };
-            showError(err);
-          }
-        })
-        .catch((error) => {
-          showError(error);
-        });
-    },
-    [setSAMLAttributes, showError],
-  );
+  useEffect(() => {
+    if (samlError) {
+      showError(samlError);
+    }
+  }, [samlError, showError]);
 
   const importSAMLConfigurations = useCallback(
     (domain: string, url: string, allowUnsecure: boolean): void => {
       importSamlConfig(domain, url, allowUnsecure)
         .then((data) => {
           if (!data?.error) {
-            setSAMLAttributes(data);
+            refreshSamlConfig();
             createSnackbar({
               key: 'success',
               severity: 'success',
@@ -217,7 +205,7 @@ const DomainSaml: FC = () => {
           showError(error);
         });
     },
-    [createSnackbar, setSAMLAttributes, showError, t],
+    [createSnackbar, refreshSamlConfig, showError, t],
   );
 
   const generateSPCertificates = useCallback(
@@ -225,7 +213,7 @@ const DomainSaml: FC = () => {
       generateSignedCertificate(domain)
         .then((data) => {
           if (!data?.error) {
-            setSAMLAttributes(data);
+            refreshSamlConfig();
             createSnackbar({
               key: 'success',
               severity: 'success',
@@ -246,7 +234,7 @@ const DomainSaml: FC = () => {
           showError(error);
         });
     },
-    [createSnackbar, setSAMLAttributes, showError, t],
+    [createSnackbar, refreshSamlConfig, showError, t],
   );
 
   const addOrUpdateSAMLAttributes = useCallback(
@@ -255,7 +243,7 @@ const DomainSaml: FC = () => {
       updateSamlAttributes(domain, body)
         .then((data) => {
           if (!data?.error) {
-            setSAMLAttributes(data);
+            refreshSamlConfig();
             setSamlAttrKey('');
             setSamlAttrValue('');
             const attributeName = key;
@@ -293,7 +281,7 @@ const DomainSaml: FC = () => {
           showError(error);
         });
     },
-    [createSnackbar, setSAMLAttributes, showError, t],
+    [createSnackbar, refreshSamlConfig, showError, t],
   );
 
   const removeSAMLAttributes = useCallback(
@@ -301,7 +289,7 @@ const DomainSaml: FC = () => {
       deleteSamlAttributes(domain, key)
         .then((data) => {
           if (!data?.error) {
-            setSAMLAttributes(data);
+            refreshSamlConfig();
             setSamlAttrKey('');
             setSamlAttrValue('');
             const attributeName = key;
@@ -325,7 +313,7 @@ const DomainSaml: FC = () => {
           showError(error);
         });
     },
-    [createSnackbar, setSAMLAttributes, showError, t],
+    [createSnackbar, refreshSamlConfig, showError, t],
   );
 
   const deleteSAMLConfigurations = useCallback(
@@ -333,7 +321,7 @@ const DomainSaml: FC = () => {
       deleteSamlAttributes(domain)
         .then((data) => {
           if (!data?.error) {
-            setSAMLAttributes(data);
+            refreshSamlConfig();
             createSnackbar({
               key: 'success',
               severity: 'success',
@@ -354,7 +342,7 @@ const DomainSaml: FC = () => {
           showError(error);
         });
     },
-    [createSnackbar, setSAMLAttributes, showError, t],
+    [createSnackbar, refreshSamlConfig, showError, t],
   );
 
   useEffect(() => {
@@ -371,12 +359,6 @@ const DomainSaml: FC = () => {
       setServiceUrl(getServiceUrl(publicProtocolArr[0]?._content, publicHostNameArr[0]?._content));
     }
   }, [domainInformation, domainName]);
-
-  useEffect(() => {
-    if (domainName) {
-      getSAMLConfigurations(domainName);
-    }
-  }, [domainName, getSAMLConfigurations]);
 
   useEffect(() => {
     if (samlAttributes) {
