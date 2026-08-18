@@ -207,6 +207,7 @@ describe('CreateMailstoresVolume', () => {
   });
 
   it('onComplete submits the form and calls CreateAdvancedRequest with the correct payload (including infrequentAccessThreshold regression fix)', async () => {
+    mockFormSeed.volume = { volumeAllocation: 2 };
     renderComponent();
 
     expect(wizardProps.onComplete).not.toBeNull();

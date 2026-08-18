@@ -30,7 +30,10 @@ export const ActivationProgress = ({
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   if (prevIsPending !== isPending) {
     setPrevIsPending(isPending);

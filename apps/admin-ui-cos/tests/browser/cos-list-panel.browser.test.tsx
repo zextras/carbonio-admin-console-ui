@@ -141,7 +141,7 @@ describe('CosListPanel', () => {
     expect(detailsDsText?.getAttribute('weight')).toBe('bold');
   });
 
-  it('should change chevron icon when details dropdown is toggled', async () => {
+  it('should expose the expanded state on the Details toggle', async () => {
     await setupListPanelTest(mockApiResponse, {
       initialRouterEntry: `/${MANAGE_APP_ID}/cos/${FIRST_COS_ID}/${GENERAL_INFORMATION}`,
       seedCosDetail: true,
@@ -149,12 +149,14 @@ describe('CosListPanel', () => {
 
     await expect.element(page.getByText('General Information')).toBeVisible();
 
-    const buttonBeforeClick = page.getByRole('button').nth(1).element();
-    expect(buttonBeforeClick.innerHTML).toContain('ChevronUpOutline');
+    await expect
+      .element(page.getByRole('button', { name: 'Details' }))
+      .toHaveAttribute('aria-expanded', 'true');
 
-    await page.getByText('Details').click();
-    const buttonAfterClick = page.getByRole('button').nth(1).element();
-    expect(buttonAfterClick.innerHTML).toContain('ChevronDownOutline');
+    await page.getByRole('button', { name: 'Details' }).click();
+    await expect
+      .element(page.getByRole('button', { name: 'Details' }))
+      .toHaveAttribute('aria-expanded', 'false');
   });
 
   it('should show all COS items in dropdown after selecting a COS when no cos is selected', async () => {

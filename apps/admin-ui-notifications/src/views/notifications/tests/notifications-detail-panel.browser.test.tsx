@@ -10,7 +10,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { type Notification, type ZextrasRequestBody } from '../../../types/notifications';
-import NotificationsDetailPanel from '../notifications-detail-panel';
+import { NotificationsDetailPanel } from '../notifications-detail-panel';
 
 function setupGetAllNotificationsInterceptor(
 	notifications: Array<Notification> = [],

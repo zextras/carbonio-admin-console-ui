@@ -7,12 +7,14 @@
 import {
   advancedSupportedApiForBrowser,
   createBrowserSoapAPIInterceptor,
+  createBrowserZextrasActionInterceptor,
   getGetInfoResponseMock,
   getQueryClient,
   LocationDisplay,
   registerAppRoute,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import type { ReactElement } from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
@@ -65,6 +67,15 @@ describe('AppView', () => {
       info: { majorversion: '24', minorversion: '5', microversion: '0' },
     });
     createBrowserSoapAPIInterceptor('SearchDirectory', {});
+    createBrowserZextrasActionInterceptor('getAllNotifications', () =>
+      HttpResponse.json({
+        Body: {
+          response: {
+            content: JSON.stringify({ ok: true, response: { notifications: [] } }),
+          },
+        },
+      }),
+    );
 
     await setupBrowserTest(
       <>

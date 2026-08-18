@@ -4,26 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export type NotificationLevel = 'Warning' | 'Error' | 'Information';
-
-export type Notification = {
-	id: string;
-	server: string;
-	date: number;
-	level: NotificationLevel;
-	subject: string;
-	text: string;
-	ack: boolean;
-	group: string;
-	operationId: string;
-};
-
-export type GetAllNotificationsResponse = {
-	ok: boolean;
-	response: {
-		notifications: Array<Notification>;
-	};
-};
+export type { Notification } from '@zextras/ui-shared';
 
 export type ManageOption = {
 	id: string;

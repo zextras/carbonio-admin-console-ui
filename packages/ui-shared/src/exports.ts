@@ -97,6 +97,12 @@ import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-
 import { useLastLoginTimestamp } from './react-query/use-last-login';
 import { useMailstoreServers } from './react-query/use-mailstore-servers';
 import {
+	type Notification,
+	notificationsQueryKeys,
+	useAllNotifications,
+	useReadUnreadNotification,
+} from './react-query/use-notifications';
+import {
   getAllRights,
   getRights,
   useCurrentUserRights,
@@ -246,6 +252,7 @@ export {
   loginConfig,
   logout,
   normalizeRoute,
+  notificationsQueryKeys,
   OPEN_TICKET_URL,
   postSoapFetchRequest,
   queryClient,
@@ -268,6 +275,7 @@ export {
   useActions,
   useActivateLicense,
   useAllConfig,
+  useAllNotifications,
   useAllServers,
   useAppList,
   useAppRoutes,
@@ -301,6 +309,7 @@ export {
   useModuleLicenseInfo,
   useMtaServers,
   usePrimaryBarState,
+  useReadUnreadNotification,
   useRelativePathname,
   useRemoveLicense,
   useServerVersion,
@@ -337,3 +346,4 @@ export type {
   MaintenanceStatus,
   ModuleLicenseInfo,
 };
+export type { Notification };

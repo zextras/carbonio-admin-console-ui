@@ -5,7 +5,7 @@
  */
 import { Button, Input } from '@zextras/ui-components';
 import { useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
@@ -40,18 +40,15 @@ export const ActivateSubscription = (): React.JSX.Element => {
     .trim()
     .min(1, t('subscription.activate.error.empty', 'Please enter your activation token'));
 
-  const validate = useCallback(
-    (value: string): boolean => {
-      const result = activationTokenSchema.safeParse(value);
-      if (!result.success) {
-        setValidationError(result.error.issues[0]?.message);
-        return false;
-      }
-      setValidationError(null);
-      return true;
-    },
-    [activationTokenSchema],
-  );
+  const validate = (value: string): boolean => {
+    const result = activationTokenSchema.safeParse(value);
+    if (!result.success) {
+      setValidationError(result.error.issues[0]?.message);
+      return false;
+    }
+    setValidationError(null);
+    return true;
+  };
 
   const activateLicence = (): void => {
     if (!validate(licenseKey)) return;
@@ -59,11 +56,11 @@ export const ActivateSubscription = (): React.JSX.Element => {
     activateLicenseMutation.mutate({ token: licenseKey, renewal: false });
   };
 
-  const handleProgressComplete = useCallback((): void => {
+  const handleProgressComplete = (): void => {
     setShowResult(true);
-  }, []);
+  };
 
-  const handleSuccessComplete = useCallback((): void => {}, []);
+  const handleSuccessComplete = (): void => {};
 
   return (
     <div className={styles.outer}>

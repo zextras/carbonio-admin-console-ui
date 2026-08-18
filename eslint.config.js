@@ -30,6 +30,7 @@ export default tseslint.config(
       '**/dist-types/**',
       '**/build/**',
       '**/coverage/**',
+      'package/**',
       '**/*vitest*',
       '**/*.config.*',
       '**/.prettierrc.js',
@@ -102,7 +103,10 @@ export default tseslint.config(
       'apps/admin-ui-operations/**',
       'apps/admin-ui-mta/**/*',
       'apps/admin-ui-cos/**/*',
+      'apps/admin-ui-notifications/**',
       'apps/admin-ui-backup/**',
+      'apps/admin-ui-subscription/**',
+      'apps/admin-ui-storage/**/*',
     ],
     plugins: {
       'react-compiler': reactCompiler,
@@ -118,19 +122,6 @@ export default tseslint.config(
       'react-hooks/use-memo': 'error',
       'react-hooks/static-components': 'error',
       'react-hooks/exhaustive-deps': 'error',
-      'react-compiler/react-compiler': 'error',
-      ...jsxA11y.configs.recommended.rules,
-      ...reactYouMightNotNeedAnEffect.configs.strict.rules,
-    },
-  },
-  {
-    files: ['apps/admin-ui-subscription/**/*', 'apps/admin-ui-storage/**/*'],
-    plugins: {
-      'react-compiler': reactCompiler,
-      'jsx-a11y': jsxA11y,
-      'react-you-might-not-need-an-effect': reactYouMightNotNeedAnEffect,
-    },
-    rules: {
       'react-compiler/react-compiler': 'error',
       ...jsxA11y.configs.recommended.rules,
       ...reactYouMightNotNeedAnEffect.configs.strict.rules,
