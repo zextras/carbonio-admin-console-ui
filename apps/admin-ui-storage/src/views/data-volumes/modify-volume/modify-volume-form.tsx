@@ -18,7 +18,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { type S3ConnectorVolume, type Volume } from '../../../../types';
@@ -73,6 +73,13 @@ function buildConnectorSelectItems(
 
 function getVolumeConnectorConfigurationId(volume: Volume | undefined): string | undefined {
   return volume?.bucketConfigurationId ?? volume?.uuid;
+}
+
+function openDocumentation(url: string): void {
+  if (globalThis.window === undefined) {
+    return;
+  }
+  globalThis.window.open(url, '_blank', 'noopener,noreferrer');
 }
 
 function mapS3Connectors(s3Connectors: Array<S3ConnectorVolume>): Array<S3ConnectorVolume> {
@@ -197,13 +204,6 @@ export function ModifyVolumeForm({
   const getConnectorTypeLabel = (storeTypeValue: string | undefined): string | undefined =>
     connectorTypeItems?.find((item) => item?.value?.toLowerCase() === storeTypeValue?.toLowerCase())
       ?.label;
-
-  const openDocumentation = useCallback((url: string): void => {
-    if (globalThis.window === undefined) {
-      return;
-    }
-    globalThis.window.open(url, '_blank', 'noopener,noreferrer');
-  }, []);
 
   const currentConnectorId = getVolumeConnectorConfigurationId(externalVolDetail);
 

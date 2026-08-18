@@ -35,7 +35,7 @@ function reset() {
       colorLog(step.name, 'blue');
       execSync(step.command, execOptions);
     }
-  } catch (error) {
+  } catch {
     colorLog('Reset failed.', 'red');
     process.exit(1);
   }

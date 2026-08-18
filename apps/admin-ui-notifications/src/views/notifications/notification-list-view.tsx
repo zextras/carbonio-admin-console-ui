@@ -5,14 +5,11 @@
  */
 
 import { Container, ListRow, NotificationView } from '@zextras/ui-components';
-import { FC } from 'react';
 
-const NotificationListView: FC = () => (
+export const NotificationListView = () => (
 	<Container background="gray6" height="auto" padding={{ top: 'large' }}>
 		<ListRow>
 			<NotificationView isShowTitle isAddPadding />
 		</ListRow>
 	</Container>
 );
-
-export default NotificationListView;

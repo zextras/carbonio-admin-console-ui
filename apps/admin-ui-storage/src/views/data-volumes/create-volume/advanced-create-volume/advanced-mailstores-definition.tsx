@@ -5,7 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, Input, Padding, Row, Select } from '@zextras/ui-components';
-import { type ChangeEvent, useContext, useEffect, useState } from 'react';
+import { type ChangeEvent, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { S3ConnectorVolume, VolumeAllocationItem } from '../../../../../types';
@@ -30,7 +30,7 @@ export function AdvancedMailstoresDefinition({
   const { t } = useTranslation();
   const { form: volumeForm } = useContext(VolumeContext);
   const { form } = useAdvancedVolumeContext();
-  const { data: connectors = [] } = useListS3Connectors();
+  const { data: connectors = [], isPending } = useListS3Connectors();
   const volAllocationList = volumeAllocationList(t);
   const [errName, setErrName] = useState(true);
 
@@ -63,7 +63,6 @@ export function AdvancedMailstoresDefinition({
   );
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
-  const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);
   const bucketId = useSelector(form.store, (s) => s.values.bucketId);
   const basicVolumeAllocation = useSelector(volumeForm.store, (s) => s.values.volumeAllocation);
 
@@ -92,20 +91,16 @@ export function AdvancedMailstoresDefinition({
       (item: VolumeAllocationItem) => item?.value === v,
     )?.label;
     form.setFieldValue('volumeAllocation', volumeTypeObject ?? '');
+
+    if (v === EXTERNAL_TYPE_VALUE && !bucketId) {
+      const defaultConnector = backupUnusedConnectorList?.[0]?.value;
+      if (typeof defaultConnector === 'string' && defaultConnector !== '') {
+        onUnusedConnectorListChange(defaultConnector);
+      }
+    }
   };
 
-  useEffect(() => {
-    if (form.state.values.volumeAllocation) {
-      return;
-    }
-
-    const defaultAllocation = volAllocationList?.[0]?.value;
-    if (typeof defaultAllocation === 'number') {
-      onVolAllocationChange(defaultAllocation);
-    }
-  }, [onVolAllocationChange, volAllocationList, volumeAllocation]);
-
-  const onUnusedConnectorListChange = (e: unknown): void => {
+  function onUnusedConnectorListChange(e: unknown): void {
     if (typeof e !== 'string') {
       return;
     }
@@ -121,22 +116,11 @@ export function AdvancedMailstoresDefinition({
       form.setFieldValue('useInfrequentAccess', false);
       form.setFieldValue('useIntelligentTiering', false);
     }
-  };
+  }
 
-  useEffect(() => {
-    if (basicVolumeAllocation !== EXTERNAL_TYPE_VALUE) {
-      return;
-    }
-
-    if (bucketId) {
-      return;
-    }
-
-    const defaultConnector = backupUnusedConnectorList?.[0]?.value;
-    if (typeof defaultConnector === 'string' && defaultConnector !== '') {
-      onUnusedConnectorListChange(defaultConnector);
-    }
-  }, [bucketId, backupUnusedConnectorList, onUnusedConnectorListChange, basicVolumeAllocation]);
+  if (isPending) {
+    return <ds-page-shimmer />;
+  }
 
   return (
     <Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>

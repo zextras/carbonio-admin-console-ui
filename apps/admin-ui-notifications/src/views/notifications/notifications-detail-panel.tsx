@@ -5,13 +5,12 @@
  */
 
 import { Container } from '@zextras/ui-components';
-import { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
 import { LIST } from '../../constants';
-import NotificationListView from './notification-list-view';
+import { NotificationListView } from './notification-list-view';
 
-const NotificationsDetailPanel: FC = () => {
+export const NotificationsDetailPanel = () => {
   return (
     <Container
       orientation="column"
@@ -28,5 +27,3 @@ const NotificationsDetailPanel: FC = () => {
     </Container>
   );
 };
-
-export default NotificationsDetailPanel;

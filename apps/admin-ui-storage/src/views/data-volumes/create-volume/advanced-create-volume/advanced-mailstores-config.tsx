@@ -14,7 +14,7 @@ import {
   Switch,
   Tooltip,
 } from '@zextras/ui-components';
-import { type ChangeEvent, useCallback, useEffect } from 'react';
+import { type ChangeEvent, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { AdvancedMailstoresConfigProps } from '../../../../../types';
@@ -30,6 +30,13 @@ import {
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 import styles from './create-volume.module.css';
 
+function openDocumentation(url: string): void {
+  if (globalThis.window === undefined) {
+    return;
+  }
+  globalThis.window.open(url, '_blank', 'noopener,noreferrer');
+}
+
 function CompressionThresholdIcon() {
   return (
     <ds-text as="span" color="secondary">
@@ -44,13 +51,6 @@ export function AdvancedMailstoresConfig({
 }: AdvancedMailstoresConfigProps) {
   const { form } = useAdvancedVolumeContext();
   const { t } = useTranslation();
-
-  const openDocumentation = useCallback((url: string): void => {
-    if (globalThis.window === undefined) {
-      return;
-    }
-    globalThis.window.open(url, '_blank', 'noopener,noreferrer');
-  }, []);
 
   const volumeName = useSelector(form.store, (s) => s.values.volumeName);
   const volumeAllocation = useSelector(form.store, (s) => s.values.volumeAllocation);

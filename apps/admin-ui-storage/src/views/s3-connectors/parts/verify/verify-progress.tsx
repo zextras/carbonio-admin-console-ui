@@ -81,7 +81,7 @@ export const VerifyProgress = ({
         timeoutRef.current = null;
       }
     };
-  }, [isPending]);
+  }, [isPending, minDisplayMs]);
 
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
