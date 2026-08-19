@@ -5,7 +5,6 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { useSelector } from '@tanstack/react-store';
 import {
   flushCache,
   setCoreAttributes,
@@ -61,7 +60,6 @@ import {
   AccountFormContext,
   type AccountFormContextValue,
   type AccountFormValues,
-  useAccountForm,
 } from './account-form-context';
 
 export function buildAccountFormValues(detail: FlattenedAccount | undefined): AccountFormValues {
@@ -544,9 +542,4 @@ export const AccountFormProvider = ({
   return (
     <AccountFormContext.Provider value={contextValue}>{children}</AccountFormContext.Provider>
   );
-};
-
-export const useIsAccountDirty = (): boolean => {
-  const { form } = useAccountForm();
-  return useSelector(form.store, (s) => !s.isDefaultValue);
 };

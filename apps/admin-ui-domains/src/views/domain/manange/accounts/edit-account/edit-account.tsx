@@ -36,7 +36,7 @@ import { getDelegateAuthRequest } from '../../../../../services/get-delegate-aut
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getAccountStatusColors } from '../../../constants/account-status-colors';
 import { useAccountForm } from './account-form-context';
-import { AccountFormProvider, useIsAccountDirty } from './account-form-provider';
+import { AccountFormProvider } from './account-form-provider';
 import EditAccountAdministrationSection from './edit-account-administration-section';
 import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';
@@ -86,7 +86,7 @@ const EditAccountContent = ({ account, onClose, onDeleted, defaultTab }: EditAcc
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const { form, isSaving, resetToSaved } = useAccountForm();
-  const isDirty = useIsAccountDirty();
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
   const { data: rights = [] } = useCurrentUserRights();
@@ -341,7 +341,11 @@ const EditAccountContent = ({ account, onClose, onDeleted, defaultTab }: EditAcc
                 background="gray6"
               >
                 <Padding right="small">
-                  <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={resetToSaved} />
+                  <Button
+                    label={t('label.cancel', 'Cancel')}
+                    color="secondary"
+                    onClick={resetToSaved}
+                  />
                 </Padding>
                 <Padding right="small">
                   <Button
@@ -579,8 +583,7 @@ const EditAccountContent = ({ account, onClose, onDeleted, defaultTab }: EditAcc
                 }}
                 disabled={
                   isRequestInProgress ||
-                  STATUS_COLOR[account?.zimbraAccountStatus]?.label ===
-                    STATUS_COLOR?.closed?.label
+                  STATUS_COLOR[account?.zimbraAccountStatus]?.label === STATUS_COLOR?.closed?.label
                 }
               />
             </Container>
@@ -611,7 +614,13 @@ const EditAccountContent = ({ account, onClose, onDeleted, defaultTab }: EditAcc
   );
 };
 
-export const EditAccount = ({ account, onClose, onSaved, onDeleted, defaultTab }: EditAccountProps) => (
+export const EditAccount = ({
+  account,
+  onClose,
+  onSaved,
+  onDeleted,
+  defaultTab,
+}: EditAccountProps) => (
   <AccountFormProvider account={account} onSaved={onSaved} onDomainRenamed={onClose}>
     <EditAccountContent
       account={account}

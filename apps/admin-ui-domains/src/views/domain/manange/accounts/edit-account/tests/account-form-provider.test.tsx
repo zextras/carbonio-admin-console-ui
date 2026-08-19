@@ -25,7 +25,9 @@ import { useCredentialList, useOtpList } from '../../../../../../services/use-ot
 import { useSignatures } from '../../../../../../services/use-signatures';
 import { useUserSessions } from '../../../../../../services/use-user-sessions';
 import { useAccountForm } from '../account-form-context';
-import { AccountFormProvider, useIsAccountDirty } from '../account-form-provider';
+import { useSelector } from '@tanstack/react-store';
+
+import { AccountFormProvider } from '../account-form-provider';
 
 vi.mock('@zextras/ui-shared', () => ({
   flushCache: vi.fn(),
@@ -110,7 +112,7 @@ const setupMocks = (): void => {
 
 const Probe = () => {
   const { form } = useAccountForm();
-  const isDirty = useIsAccountDirty();
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
   return (
     <div>
       <span role="status">{String(isDirty)}</span>
