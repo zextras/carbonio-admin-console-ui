@@ -28,13 +28,14 @@ import {
 import { useAccountForm, useSetAccountValues } from './account-form-context';
 import { SignatureDetail } from './signature-detail';
 
+function discardSignatureListUpdate(): void {}
+
 const EditAccountUserPrefrencesSection: FC = () => {
   const [t] = useTranslation();
   const { form, cosDetail, accSpecificDetail, signatureList } = useAccountForm();
   const setAccountValues = useSetAccountValues();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const [signatureItems, setSignatureItems] = useState<any[]>([]);
-  const [, setSignatureList] = useState<any[]>([]);
   const accountDetail = values;
   const [outOfOfficeCacheDurationNum, setOutOfOfficeCacheDurationNum] = useState<string>(
     values?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1),
@@ -190,19 +191,34 @@ const EditAccountUserPrefrencesSection: FC = () => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefTimeZoneId: v }));
   };
   const onCalendarDefaultApptDurationChange = (v: string): void => {
-    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarDefaultApptDuration: v }));
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefCalendarDefaultApptDuration: v,
+    }));
   };
   const onReminderWarningTimeChange = (v: string): void => {
-    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarApptReminderWarningTime: v }));
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefCalendarApptReminderWarningTime: v,
+    }));
   };
   const onCalendarInitialViewChange = (v: string): void => {
-    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarInitialView: v }));
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefCalendarInitialView: v,
+    }));
   };
   const onFirstDayOfWeekChange = (v: string): void => {
-    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarFirstDayOfWeek: v }));
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefCalendarFirstDayOfWeek: v,
+    }));
   };
   const onAppointmentVisibilityChange = (v: string): void => {
-    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarApptVisibility: v }));
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefCalendarApptVisibility: v,
+    }));
   };
   const changeSwitchOption = useCallback(
     (key: string): void => {
@@ -218,13 +234,23 @@ const EditAccountUserPrefrencesSection: FC = () => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefGroupMailBy: v }));
   };
   const onCharactorSetChange = (v: string): void => {
-    if (v) setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
+    if (v)
+      setAccountValues((prev: Record<string, any>) => ({
+        ...prev,
+        zimbraPrefMailDefaultCharset: v,
+      }));
   };
   const onPollingIntervalChange = (v: string): void => {
-    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefMailPollingInterval: v,
+    }));
   };
   const onReadReceiptChange = (v: string): void => {
-    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefMailSendReadReceipts: v }));
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefMailSendReadReceipts: v,
+    }));
   };
 
   const setEmptyValue = useCallback(
@@ -497,7 +523,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
       <SignatureDetail
         isEditable
         signatureList={signatureList}
-        setSignatureList={setSignatureList}
+        setSignatureList={discardSignatureListUpdate}
         signatureItems={signatureItems}
         setSignatureItems={setSignatureItems}
         accountId={accountDetail?.zimbraId}
