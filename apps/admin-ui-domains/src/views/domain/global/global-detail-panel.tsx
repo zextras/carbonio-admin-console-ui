@@ -8,7 +8,6 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   ChipInput,
-  ChipItem,
   Container,
   Input,
   ListRow,
@@ -36,7 +35,7 @@ import { isValidEmail } from '../../utility/utils';
 
 type GlobalSettingsFormValues = {
   carbonioNotificationFrom: string;
-  carbonioNotificationRecipients: Array<ChipItem>;
+  carbonioNotificationRecipients: Array<{ label?: string }>;
   zimbraDomainMandatoryMailSignatureEnabled: boolean;
   zimbraAmavisOutboundDisclaimersOnly: boolean;
   carbonioSearchAllDomainsByFeature: boolean;
@@ -48,7 +47,7 @@ const globalSettingsSchema = z.object({
     .refine((value) => value === '' || isValidEmail(value), {
       message: 'label.notification_error_msg',
     }),
-  carbonioNotificationRecipients: z.array(z.any()),
+  carbonioNotificationRecipients: z.array(z.object({ label: z.string().optional() })),
   zimbraDomainMandatoryMailSignatureEnabled: z.boolean(),
   zimbraAmavisOutboundDisclaimersOnly: z.boolean(),
   carbonioSearchAllDomainsByFeature: z.boolean(),
@@ -80,8 +79,8 @@ function mapFormValuesToAttributes(values: GlobalSettingsFormValues): Array<Attr
   const attributes: Array<Attribute> = [
     { n: 'carbonioNotificationFrom', _content: values.carbonioNotificationFrom },
   ];
-  values.carbonioNotificationRecipients.forEach((item: ChipItem): void => {
-    attributes.push({ n: 'carbonioNotificationRecipients', _content: item?.label });
+  values.carbonioNotificationRecipients.forEach((item: { label?: string }): void => {
+    attributes.push({ n: 'carbonioNotificationRecipients', _content: item?.label ?? '' });
   });
   attributes.push({
     n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
@@ -275,7 +274,7 @@ const GlobalDetailPanelContent = ({
                   placeholder={t('label.send_notifications_to', 'Send notifications to...')}
                   background="gray5"
                   value={field.state.value}
-                  onChange={(emails: Array<ChipItem>): void => {
+                  onChange={(emails: Array<{ label?: string }>): void => {
                     field.handleChange(
                       emails.filter((email) => isValidEmail(email.label ?? '')),
                     );

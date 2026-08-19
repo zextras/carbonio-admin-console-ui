@@ -93,7 +93,9 @@ function MockDomainAddressBook() {
 
 vi.mock('../domain/domain-detail-panel', () => ({ DomainDetailPanel: MockDetailPanel }));
 vi.mock('../domain/create-new-domain', () => ({ default: MockCreateNewDomain }));
-vi.mock('../domain/global/global-detail-panel', () => ({ default: MockGlobalDetailPanel }));
+vi.mock('../domain/global/global-detail-panel', () => ({
+  GlobalDetailPanel: MockGlobalDetailPanel,
+}));
 vi.mock('../domain/global/global-theme', () => ({ default: MockGlobalTheme }));
 vi.mock('../domain/global/global-two-factor-auth', () => ({ default: MockGlobalTwoFactorAuth }));
 vi.mock('../domain/global/global-active-sync', () => ({ default: MockGlobalActiveSync }));
