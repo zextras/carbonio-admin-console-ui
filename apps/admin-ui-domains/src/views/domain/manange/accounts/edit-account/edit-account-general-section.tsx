@@ -6,7 +6,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Button, ChipInput, Container, CustomHeaderFactory, CustomTextArea, DropDownInput, HoverableRowFactory, InheritedSelect, Input, LabeledValue, Modal, Padding, Paging, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
-import { useCosList, useIsAdvanced } from '@zextras/ui-shared';
+import { useCosList, useDebouncedValue, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
 import React, {
   ChangeEvent,
@@ -14,7 +14,6 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -181,13 +180,18 @@ export const EditAccountGeneralSection: FC<{
     [form],
   );
 
-  const searchDomainTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const searchDomain = (domain: string | undefined): void => {
-    clearTimeout(searchDomainTimeoutRef.current);
-    searchDomainTimeoutRef.current = setTimeout((): void => {
-      getDomainLists(domain);
-    }, 700);
-  };
+  const debouncedSearchDomain = useDebouncedValue(searchDomainName, 700);
+
+  useEffect(() => {
+    // skip when the search text matches the current domain (initial mount and
+    // post-selection) — those fetches are already handled elsewhere
+    if (
+      debouncedSearchDomain !== domainName &&
+      debouncedSearchDomain !== values?.domainName
+    ) {
+      getDomainLists(debouncedSearchDomain);
+    }
+  }, [debouncedSearchDomain, domainName, values?.domainName, getDomainLists]);
 
   const changeSwitchOption = useCallback(
     (key: string): void => {
@@ -570,7 +574,6 @@ export const EditAccountGeneralSection: FC<{
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   setIsDomainSelect(false);
                   setSearchDomainName(ev.target.value);
-                  searchDomain(ev.target.value);
                 }}
                 inputValue={searchDomainName}
                 isCustomIcon={false}
