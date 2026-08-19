@@ -5,7 +5,7 @@
  */
 import React, { ComponentProps, Dispatch, SetStateAction, useCallback } from 'react';
 
-import { AccountDetail, CosDetail } from '../../account-context';
+import { AccountDetail, CosDetail } from '../../account-detail-types';
 import { EditAccountQuotaInputsNew } from './edit-account-quota-inputs-new';
 
 type EditAccountQuotaInputsProps = {
