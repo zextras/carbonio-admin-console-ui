@@ -14,7 +14,7 @@ import {
   useUserSettings,
 } from '@zextras/ui-shared';
 import { differenceBy, isEqual, reduce, remove } from 'lodash-es';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -38,6 +38,7 @@ import { addAccountAliasRequest } from '../../../../../services/add-account-alia
 import { checkRightRequest } from '../../../../../services/check-right';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
 import { domainQueryKeys } from '../../../../../services/domain-query-keys';
+import { type GetAccountQuotaResponse } from '../../../../../services/get-account-quota';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
@@ -91,6 +92,18 @@ export function splitMembership(dl: Array<any> = []): {
   return { direct, inDirect };
 }
 
+function buildQuotaValues(
+  quota: Extract<GetAccountQuotaResponse, { type: 'success' }>,
+): Record<string, unknown> {
+  return {
+    [TOTAL_COMPUTED_QUOTA_LIMIT]: quota.totalComputedLimit,
+    [TOTAL_QUOTA_USED]: quota.totalUsed,
+    [TOTAL_QUOTA_USED_BY_MODULE]: quota.usedByModules,
+    [TOTAL_QUOTA_SOURCE]: quota.totalLimitSource,
+    [TOTAL_QUOTA_STATUS]: quota.totalStatus,
+  };
+}
+
 type AccountFormProviderProps = {
   account: { id: string; name: string; [key: string]: any };
   children: React.ReactNode;
@@ -113,6 +126,7 @@ export const AccountFormProvider = ({
   const [isSaving, setIsSaving] = useState(false);
   const [allowedDeletePassword, setAllowedDeletePassword] = useState(false);
   const [folderList, setFolderList] = useState<Array<any>>([]);
+  const [folderListSeed, setFolderListSeed] = useState<Array<any> | undefined>(undefined);
   const [deligateDetail, setDeligateDetail] = useState<Record<string, any>>({});
 
   const { data: accountDetailData } = useAccountDetail(account.id);
@@ -127,14 +141,13 @@ export const AccountFormProvider = ({
   const { data: accountQuota } = useAccountQuota(isAdvanced ? account.id : undefined);
   const membership = splitMembership(membershipDl);
 
-  const savedValuesRef = useRef<Record<string, any>>({});
-  const [savedValues, setSavedValues] = useState<AccountFormValues>({});
-  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
-
-  const commitSaved = (v: Record<string, any>): void => {
-    savedValuesRef.current = v;
-    setSavedValues(v as AccountFormValues);
+  type SavedValuesBaseline = {
+    detail: FlattenedAccount | undefined;
+    quota: typeof accountQuota;
+    values: AccountFormValues;
   };
+  const [baseline, setBaseline] = useState<SavedValuesBaseline | null>(null);
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
   const errorSnackbar = (label: string): void => {
     createSnackbar({
@@ -162,7 +175,7 @@ export const AccountFormProvider = ({
     defaultValues: buildAccountFormValues(accountDetailData) as AccountFormValues,
     onSubmit: async ({ value }) => {
       const values = { ...value } as Record<string, any>;
-      const saved = savedValuesRef.current;
+      const saved = (baseline?.values ?? {}) as Record<string, any>;
       setIsSaving(true);
       try {
         const modifiedKeys: string[] = reduce(
@@ -243,7 +256,10 @@ export const AccountFormProvider = ({
           await renameAccountRequest(saved.zimbraId, `${values.uid}@${values.domainName}`)
             .then(() => {
               successSnackbar(
-                t('label.the_last_changes_has_been_saved_successfully', 'Changes have been saved successfully'),
+                t(
+                  'label.the_last_changes_has_been_saved_successfully',
+                  'Changes have been saved successfully',
+                ),
               );
               if (isGlobalAdmin) {
                 flushCache('account', 'id', saved.zimbraId);
@@ -295,7 +311,10 @@ export const AccountFormProvider = ({
           await setCoreAttributes(body)
             .then(() => {
               successSnackbar(
-                t('label.the_last_changes_has_been_saved_successfully', 'Changes have been saved successfully'),
+                t(
+                  'label.the_last_changes_has_been_saved_successfully',
+                  'Changes have been saved successfully',
+                ),
               );
             })
             .catch((error) => {
@@ -332,7 +351,10 @@ export const AccountFormProvider = ({
                 errorSnackbar(
                   error?.message
                     ? error?.message
-                    : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+                    : t(
+                        'label.something_wrong_error_msg',
+                        'Something went wrong. Please try again.',
+                      ),
                 );
               });
           });
@@ -348,7 +370,10 @@ export const AccountFormProvider = ({
                 errorSnackbar(
                   error?.message
                     ? error?.message
-                    : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+                    : t(
+                        'label.something_wrong_error_msg',
+                        'Something went wrong. Please try again.',
+                      ),
                 );
               });
           });
@@ -365,7 +390,10 @@ export const AccountFormProvider = ({
           ) => {
             if (response.type === 'success') {
               successSnackbar(
-                t('label.the_last_changes_has_been_saved_successfully', 'Changes have been saved successfully'),
+                t(
+                  'label.the_last_changes_has_been_saved_successfully',
+                  'Changes have been saved successfully',
+                ),
               );
             } else {
               createSnackbar({
@@ -413,7 +441,11 @@ export const AccountFormProvider = ({
 
         const finalize = (): void => {
           form.reset(values as AccountFormValues, { keepDefaultValues: true });
-          commitSaved(values);
+          setBaseline({
+            detail: accountDetailData,
+            quota: accountQuota,
+            values: values as AccountFormValues,
+          });
           onSaved();
           void queryClient.invalidateQueries({
             queryKey: domainQueryKeys.accountDetail(account.id),
@@ -428,7 +460,10 @@ export const AccountFormProvider = ({
                   await flushCache('account', 'id', saved.zimbraId);
                 }
                 successSnackbar(
-                  t('label.the_last_changes_has_been_saved_successfully', 'Changes have been saved successfully'),
+                  t(
+                    'label.the_last_changes_has_been_saved_successfully',
+                    'Changes have been saved successfully',
+                  ),
                 );
                 finalize();
               }
@@ -456,6 +491,25 @@ export const AccountFormProvider = ({
     },
   });
 
+  const formUntouched = !form.state.isTouched && !form.state.isDirty;
+  if (formUntouched && accountDetailData !== undefined && accountDetailData !== baseline?.detail) {
+    const quotaIsNew = accountQuota !== undefined && accountQuota !== baseline?.quota;
+    setBaseline({
+      detail: accountDetailData,
+      quota: accountQuota,
+      values: {
+        ...buildAccountFormValues(accountDetailData),
+        ...(quotaIsNew ? buildQuotaValues(accountQuota) : {}),
+      },
+    });
+  } else if (formUntouched && accountQuota !== undefined && accountQuota !== baseline?.quota) {
+    setBaseline({
+      detail: baseline?.detail,
+      quota: accountQuota,
+      values: { ...(baseline?.values ?? {}), ...buildQuotaValues(accountQuota) },
+    });
+  }
+
   // sync form with server data while the user has not touched it yet
   useEffect(() => {
     if (!accountDetailData) {
@@ -464,9 +518,7 @@ export const AccountFormProvider = ({
     if (form.state.isTouched || form.state.isDirty) {
       return;
     }
-    const built = buildAccountFormValues(accountDetailData);
-    form.reset(built, { keepDefaultValues: false });
-    commitSaved(built);
+    form.reset(buildAccountFormValues(accountDetailData), { keepDefaultValues: false });
   }, [accountDetailData, form]);
 
   // merge quota data once it lands (while untouched)
@@ -479,14 +531,9 @@ export const AccountFormProvider = ({
     }
     const quotaValues = {
       ...form.state.values,
-      [TOTAL_COMPUTED_QUOTA_LIMIT]: accountQuota.totalComputedLimit,
-      [TOTAL_QUOTA_USED]: accountQuota.totalUsed,
-      [TOTAL_QUOTA_USED_BY_MODULE]: accountQuota.usedByModules,
-      [TOTAL_QUOTA_SOURCE]: accountQuota.totalLimitSource,
-      [TOTAL_QUOTA_STATUS]: accountQuota.totalStatus,
+      ...buildQuotaValues(accountQuota),
     };
     form.reset(quotaValues as AccountFormValues, { keepDefaultValues: false });
-    commitSaved(quotaValues);
   }, [accountQuota, form]);
 
   useEffect(() => {
@@ -501,17 +548,16 @@ export const AccountFormProvider = ({
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account.name]);
+  }, [account.name, currentUser?.name]);
 
-  // delegates wizard: keep a mutable draft of folder selection, reseeded when
-  // grants are (re)fetched so selection resets after mutations
-  useEffect(() => {
-    setFolderList(grants?.folderList ?? []);
-  }, [grants?.folderList]);
+  const grantsFolderList = grants?.folderList;
+  if (grantsFolderList !== folderListSeed) {
+    setFolderListSeed(grantsFolderList);
+    setFolderList(grantsFolderList ?? []);
+  }
 
   const resetToSaved = (): void => {
-    form.reset(savedValuesRef.current as AccountFormValues, { keepDefaultValues: true });
+    form.reset((baseline?.values ?? {}) as AccountFormValues, { keepDefaultValues: true });
   };
 
   const contextValue: AccountFormContextValue = {
@@ -519,7 +565,7 @@ export const AccountFormProvider = ({
     account,
     resetToSaved,
     isSaving,
-    savedValues,
+    savedValues: baseline?.values ?? {},
     cosDetail,
     accSpecificDetail,
     signatureList,
@@ -539,7 +585,5 @@ export const AccountFormProvider = ({
     allowedDeletePassword,
   };
 
-  return (
-    <AccountFormContext.Provider value={contextValue}>{children}</AccountFormContext.Provider>
-  );
+  return <AccountFormContext.Provider value={contextValue}>{children}</AccountFormContext.Provider>;
 };

@@ -183,15 +183,8 @@ export const EditAccountGeneralSection: FC<{
   const debouncedSearchDomain = useDebouncedValue(searchDomainName, 700);
 
   useEffect(() => {
-    // skip when the search text matches the current domain (initial mount and
-    // post-selection) — those fetches are already handled elsewhere
-    if (
-      debouncedSearchDomain !== domainName &&
-      debouncedSearchDomain !== values?.domainName
-    ) {
-      getDomainLists(debouncedSearchDomain);
-    }
-  }, [debouncedSearchDomain, domainName, values?.domainName, getDomainLists]);
+    getDomainLists(debouncedSearchDomain);
+  }, [debouncedSearchDomain, getDomainLists]);
 
   const changeSwitchOption = useCallback(
     (key: string): void => {
@@ -366,13 +359,6 @@ export const EditAccountGeneralSection: FC<{
     setIsDomainSelect(true);
     setSearchDomainName(values?.domainName);
   }
-
-  useEffect(() => {
-    if (domainName) {
-      form.setFieldValue('domainName', domainName);
-    }
-    getDomainLists(domainName);
-  }, [domainName, getDomainLists, form]);
 
   const accountUserType = useMemo((): string => {
     if (values?.zimbraIsAdminAccount === 'TRUE') return 'Admin';
