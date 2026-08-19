@@ -3,8 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import { Button, ChipInput, Container, CustomHeaderFactory, DatePicker, HorizontalWizard, HoverableRowFactory, InheritedInput, InheritedSelect, InheritedSwitch, Input, ListRow, Modal, Padding, Row, Select, Switch, Table, Tooltip, useSnackbar, WizardInSection, } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
+import { format } from 'date-fns';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
 import {
@@ -12,7 +15,6 @@ import {
   FC,
   ReactElement,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -22,19 +24,33 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED, FALSE, ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
+import { domainQueryKeys } from '../../../../../services/domain-query-keys';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import CustomChip from '../../../../components/customChip';
 import { isValidEmail } from '../../../../utility/utils';
-import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
+import { useAccountForm, useSetAccountValues } from './account-form-context';
 import styles from './edit-account-security-section.module.css';
 import { ServicesPassphrase } from './services-passphrase';
 
 const EditAccountSecuritySection: FC = () => {
-  const context = useContext(AccountContext);
-  const { otpList, accountDetail, setAccountDetail, getListOtp, accSpecificDetail, cosDetail } =
-    context;
+  const {
+    form,
+    otpList,
+    accSpecificDetail,
+    cosDetail,
+    account,
+  } = useAccountForm();
+  const setAccountValues = useSetAccountValues();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
+  const queryClient = useQueryClient();
+  const getListOtp = useCallback(
+    (_accountName?: string): void => {
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.otpList(account.name) });
+    },
+    [queryClient, account.name],
+  );
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
   const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
@@ -54,8 +70,8 @@ const EditAccountSecuritySection: FC = () => {
     const emailRecipients = [
       {
         t: 'f',
-        a: `${accountDetail?.name}@${domainName}`,
-        d: accountDetail?.name,
+        a: `${values?.name}@${domainName}`,
+        d: values?.name,
       },
       ...map(sendEmailTo, (email: any) => ({ t: 't', a: email.label, d: '' })),
     ];
@@ -98,7 +114,7 @@ const EditAccountSecuritySection: FC = () => {
           replace: true,
         });
       });
-  }, [accountDetail?.name, domainName, sendEmailTo, pinCodes, secrateCode, createSnackbar, t]);
+  }, [values?.name, domainName, sendEmailTo, pinCodes, secrateCode, createSnackbar, t]);
 
   const handleEmailChange = useCallback((contacts: any): void => {
     const data = map(contacts, (contact) => {
@@ -298,14 +314,14 @@ const EditAccountSecuritySection: FC = () => {
     ],
   );
   const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
-    accountDetail?.zimbraPasswordLockoutDuration?.slice(0, -1),
+    values?.zimbraPasswordLockoutDuration?.slice(0, -1),
   );
   const zimbraPasswordLockoutDurationType =
-    accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || '';
+    values?.zimbraPasswordLockoutDuration?.slice(-1) || '';
   const [zimbraPasswordLockoutFailureLifetimeNum, setZimbraPasswordLockoutFailureLifetimeNum] =
-    useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1));
+    useState(values?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1));
   const zimbraPasswordLockoutFailureLifetimeType =
-    accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '';
+    values?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '';
   const [recoveryEmailError, setRecoveryEmailError] = useState<boolean>(false);
 
   const headers: any = useMemo(
@@ -356,20 +372,32 @@ const EditAccountSecuritySection: FC = () => {
 
   const otpRows = useMemo(
     () =>
-      map(otpList, (otpRow: any) => {
-        const isDisabledOtp = otpRow?.item?.enabled === false;
-        const visibleColumns = (otpRow?.columns ?? []).slice(0, 4);
+      map(otpList, (otpEntry: any) => {
+        const isDisabledOtp = otpEntry?.enabled === false;
         return {
-          ...otpRow,
+          id: otpEntry?.id,
           columns: [
-            ...visibleColumns,
+            <ds-text as="span" size="medium" key={`${otpEntry?.id}-label`} color="gray0">
+              {otpEntry?.label || ' '}
+            </ds-text>,
+            <ds-text as="span" size="medium" key={`${otpEntry?.id}-status`} color="gray0">
+              {otpEntry?.enabled
+                ? t('label.enabled', 'Enabled')
+                : t('label.disabled', 'Disabled')}
+            </ds-text>,
+            <ds-text as="span" size="medium" key={`${otpEntry?.id}-failed`}>
+              {otpEntry?.failed_attempts}
+            </ds-text>,
+            <ds-text as="span" size="medium" key={`${otpEntry?.id}-created`}>
+              {otpEntry?.created ? format(new Date(otpEntry?.created), 'dd/MMM/yyyy') : ''}
+            </ds-text>,
             isDisabledOtp ? (
               <Tooltip label={t('domain.editAccount.restoreOtpTooltip', "Restore OTP's")}>
                 <button
                   type="button"
                   className={styles.restoreOtpAction}
-                  onClick={(): void => openRestoreOtpModal(otpRow.id)}
-                  data-testid={`restore-otp-${otpRow.id}`}
+                  onClick={(): void => openRestoreOtpModal(otpEntry.id)}
+                  data-testid={`restore-otp-${otpEntry.id}`}
                 >
                   <ds-icon icon="RefreshOutline"></ds-icon>
                 </button>
@@ -424,7 +452,7 @@ const EditAccountSecuritySection: FC = () => {
       _jsns: ZIMBRA_ADMIN_URN,
       module: 'ZxAuth',
       action: 'totp_generate_command',
-      account: `${accountDetail?.uid}@${domainName}`,
+      account: `${values?.uid}@${domainName}`,
     }).then((res: any) => {
       if (res.ok) {
         setQrData(
@@ -437,7 +465,7 @@ const EditAccountSecuritySection: FC = () => {
         setSecrateCode(res.response.secret);
         setPinCodes(res.response.static_otp_codes);
         setShowCreateOTP(true);
-        getListOtp(`${accountDetail?.uid}@${domainName}`);
+        getListOtp(`${values?.uid}@${domainName}`);
       }
     });
   };
@@ -446,7 +474,7 @@ const EditAccountSecuritySection: FC = () => {
       _jsns: ZIMBRA_ADMIN_URN,
       module: 'ZxAuth',
       action: 'delete_totp_command',
-      account: `${accountDetail?.uid}@${domainName}`,
+      account: `${values?.uid}@${domainName}`,
       id: selectedRows?.[0],
     }).then((res: any) => {
       if (res.ok) {
@@ -459,7 +487,7 @@ const EditAccountSecuritySection: FC = () => {
           hideButton: true,
           replace: true,
         });
-        getListOtp(`${accountDetail?.uid}@${domainName}`);
+        getListOtp(`${values?.uid}@${domainName}`);
       } else {
         createSnackbar({
           key: 'error',
@@ -483,7 +511,7 @@ const EditAccountSecuritySection: FC = () => {
       _jsns: ZIMBRA_ADMIN_URN,
       module: 'ZxAuth',
       action: 'restore-otp',
-      account: `${accountDetail?.uid}@${domainName}`,
+      account: `${values?.uid}@${domainName}`,
       id: selectedOtpIdForRestore,
     })
       .then(
@@ -524,7 +552,7 @@ const EditAccountSecuritySection: FC = () => {
               replace: true,
             });
             closeRestoreOtpModal();
-            getListOtp(`${accountDetail?.uid}@${domainName}`);
+            getListOtp(`${values?.uid}@${domainName}`);
             return;
           }
 
@@ -553,7 +581,7 @@ const EditAccountSecuritySection: FC = () => {
       });
   }, [
     selectedOtpIdForRestore,
-    accountDetail?.uid,
+    values?.uid,
     domainName,
     createSnackbar,
     t,
@@ -563,52 +591,52 @@ const EditAccountSecuritySection: FC = () => {
 
   const changeValue = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+      setAccountValues((prev: Record<string, any>) => ({ ...prev, [e.target.name]: e.target.value }));
     },
-    [setAccountDetail],
+    [setAccountValues],
   );
 
   const setEmptyValue = useCallback(
     (keyName: string) => {
-      setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+      setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
     },
-    [setAccountDetail],
+    [setAccountValues],
   );
 
   const changeSwitchOption = useCallback(
     (key: string): void => {
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
-        [key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+        [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
       }));
     },
-    [accountDetail, setAccountDetail],
+    [setAccountValues],
   );
 
   const changeSwitchOptionBoolean = useCallback(
     (key: string): void => {
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
-        [key]: !accountDetail[key],
+        [key]: !prev[key],
       }));
     },
-    [accountDetail, setAccountDetail],
+    [setAccountValues],
   );
 
   const onZimbraPasswordLockoutDurationTypeChange = useCallback(
     (v: string) => {
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
         zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
           ? `${zimbraPasswordLockoutDurationNum}${v}`
           : '',
       }));
     },
-    [zimbraPasswordLockoutDurationNum, setAccountDetail],
+    [zimbraPasswordLockoutDurationNum, setAccountValues],
   );
   const onZimbraPasswordLockoutDurationNumChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
         zimbraPasswordLockoutDuration: e.target.value
           ? `${e.target.value}${zimbraPasswordLockoutDurationType}`
@@ -616,23 +644,23 @@ const EditAccountSecuritySection: FC = () => {
       }));
       setZimbraPasswordLockoutDurationNum(e.target.value);
     },
-    [zimbraPasswordLockoutDurationType, setAccountDetail],
+    [zimbraPasswordLockoutDurationType, setAccountValues],
   );
 
   const onZimbraPasswordLockoutFailureLifetimeTypeChange = useCallback(
     (v: string) => {
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
         zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
           ? `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
           : '',
       }));
     },
-    [zimbraPasswordLockoutFailureLifetimeNum, setAccountDetail],
+    [zimbraPasswordLockoutFailureLifetimeNum, setAccountValues],
   );
   const onZimbraPasswordLockoutFailureLifetimeNumChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
         zimbraPasswordLockoutFailureLifetime: e.target.value
           ? `${e.target.value}${zimbraPasswordLockoutFailureLifetimeType}`
@@ -640,29 +668,29 @@ const EditAccountSecuritySection: FC = () => {
       }));
       setZimbraPasswordLockoutFailureLifetimeNum(e.target.value);
     },
-    [zimbraPasswordLockoutFailureLifetimeType, setAccountDetail],
+    [zimbraPasswordLockoutFailureLifetimeType, setAccountValues],
   );
 
   const onRecoveryStatusChange = (v: unknown): void => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefPasswordRecoveryAddressStatus: v }));
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefPasswordRecoveryAddressStatus: v }));
   };
 
   const changeRecoverOption = useCallback(
     (key: string): void => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
-        [key]: accountDetail[key] === ENABLED ? DISABLED : ENABLED,
+        [key]: prev[key] === ENABLED ? DISABLED : ENABLED,
       }));
     },
-    [accountDetail, setAccountDetail],
+    [setAccountValues],
   );
 
   const gracePeriodDefaultDate = useMemo(() => {
     const gentimeValue =
       accSpecificDetail?.carbonioOtpGracePeriodEndingTime ??
-      accountDetail?.carbonioOtpGracePeriodEndingTime;
+      values?.carbonioOtpGracePeriodEndingTime;
     if (gentimeValue) {
       const match = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})Z$/.exec(gentimeValue);
       if (match) {
@@ -678,7 +706,7 @@ const EditAccountSecuritySection: FC = () => {
         );
       }
     }
-    if (accountDetail?.carbonioOtpGracePeriodEnabled) {
+    if (values?.carbonioOtpGracePeriodEnabled) {
       const date = new Date();
       date.setMonth(date.getMonth() + 1);
       return date;
@@ -686,8 +714,8 @@ const EditAccountSecuritySection: FC = () => {
     return null;
   }, [
     accSpecificDetail?.carbonioOtpGracePeriodEndingTime,
-    accountDetail?.carbonioOtpGracePeriodEndingTime,
-    accountDetail?.carbonioOtpGracePeriodEnabled,
+    values?.carbonioOtpGracePeriodEndingTime,
+    values?.carbonioOtpGracePeriodEnabled,
   ]);
 
   const [fromDate, setFromDate] = useState<Date | null>(gracePeriodDefaultDate);
@@ -697,15 +725,15 @@ const EditAccountSecuritySection: FC = () => {
   }, [gracePeriodDefaultDate]);
 
   const isGracePeriodEnabled =
-    accountDetail?.carbonioOtpGracePeriodEnabled === 'TRUE' &&
-    accountDetail?.carbonioOtpWizardFromUntrusted === 'TRUE' &&
-    accountDetail?.carbonioFeatureOTPMgmtEnabled === 'TRUE';
+    values?.carbonioOtpGracePeriodEnabled === 'TRUE' &&
+    values?.carbonioOtpWizardFromUntrusted === 'TRUE' &&
+    values?.carbonioFeatureOTPMgmtEnabled === 'TRUE';
 
   const handleFromDateChange = useCallback(
     (d: Date | null) => {
       setFromDate(d);
       if (!d) {
-        setAccountDetail((prev: any) => ({
+        setAccountValues((prev: Record<string, any>) => ({
           ...prev,
           carbonioOtpGracePeriodEndingTime: '',
         }));
@@ -716,12 +744,12 @@ const EditAccountSecuritySection: FC = () => {
       ).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}${String(
         d.getUTCMinutes(),
       ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
         carbonioOtpGracePeriodEndingTime: gentime,
       }));
     },
-    [setAccountDetail],
+    [setAccountValues],
   );
 
   return (
@@ -749,7 +777,7 @@ const EditAccountSecuritySection: FC = () => {
                       </ds-text>
                       <Row padding={{ top: 'large' }}></Row>
                       <InheritedSwitch
-                        subValue={accountDetail?.carbonioFeatureOTPMgmtEnabled}
+                        subValue={values?.carbonioFeatureOTPMgmtEnabled}
                         onChange={changeSwitchOption}
                         label={t(
                           'domain.accounts.allowUsersToConfigure2FA',
@@ -947,13 +975,13 @@ const EditAccountSecuritySection: FC = () => {
               <ListRow>
                 <Container crossAlignment="flex-start">
                   <InheritedSwitch
-                    subValue={accountDetail?.carbonioOtpWizardFromUntrusted}
+                    subValue={values?.carbonioOtpWizardFromUntrusted}
                     onChange={changeSwitchOption}
                     label={t(
                       'domain.accounts.allowSetupFromUntrustedNetworks',
                       'Allow 2FA setup from untrusted networks',
                     )}
-                    disabled={accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE}
+                    disabled={values?.carbonioFeatureOTPMgmtEnabled === FALSE}
                     iconColor="primary"
                     inheritedValue={cosDetail.carbonioOtpWizardFromUntrusted}
                     fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
@@ -967,7 +995,7 @@ const EditAccountSecuritySection: FC = () => {
                         color="gray1"
                         size="small"
                         overflow="break-word"
-                        disabled={accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE}
+                        disabled={values?.carbonioFeatureOTPMgmtEnabled === FALSE}
                       >
                         {t(
                           'domain.accounts.allowSetupFromUntrustedNetworksInfo',
@@ -981,15 +1009,15 @@ const EditAccountSecuritySection: FC = () => {
               <ListRow padding={{ top: 'large' }}>
                 <Container crossAlignment="flex-start">
                   <InheritedSwitch
-                    subValue={accountDetail?.carbonioOtpGracePeriodEnabled}
+                    subValue={values?.carbonioOtpGracePeriodEnabled}
                     onChange={changeSwitchOption}
                     label={t(
                       'domain.accounts.allowSetupDeferralDuringGracePeriod',
                       'Allow setup deferral during grace period',
                     )}
                     disabled={
-                      accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
-                      accountDetail?.carbonioOtpWizardFromUntrusted === FALSE
+                      values?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                      values?.carbonioOtpWizardFromUntrusted === FALSE
                     }
                     iconColor="primary"
                     inheritedValue={cosDetail.carbonioOtpGracePeriodEnabled}
@@ -1005,8 +1033,8 @@ const EditAccountSecuritySection: FC = () => {
                         size="small"
                         overflow="break-word"
                         disabled={
-                          accountDetail?.carbonioFeatureOTPMgmtEnabled === FALSE ||
-                          accountDetail?.carbonioOtpWizardFromUntrusted === FALSE
+                          values?.carbonioFeatureOTPMgmtEnabled === FALSE ||
+                          values?.carbonioOtpWizardFromUntrusted === FALSE
                         }
                       >
                         {t(
@@ -1055,7 +1083,7 @@ const EditAccountSecuritySection: FC = () => {
               <ListRow>
                 <Container crossAlignment="flex-start">
                   <Switch
-                    value={accountDetail?.backupSelfUndeleteAllowed}
+                    value={values?.backupSelfUndeleteAllowed}
                     onClick={(): void => changeSwitchOptionBoolean('backupSelfUndeleteAllowed')}
                     label={t('label.allow_restore_message', 'Allow user to restore messages')}
                     iconColor="primary"
@@ -1128,7 +1156,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container crossAlignment="flex-start">
                     <InheritedSwitch
-                      subValue={accountDetail?.zimbraPasswordLocked}
+                      subValue={values?.zimbraPasswordLocked}
                       onChange={changeSwitchOption}
                       label={t(
                         'cos.prevent_user_from_changing_password',
@@ -1156,7 +1184,7 @@ const EditAccountSecuritySection: FC = () => {
                     <InheritedInput
                       isRequired
                       label={t('cos.minimum_password_length', 'Minimum password length')}
-                      subValue={accountDetail.zimbraPasswordMinLength}
+                      subValue={values.zimbraPasswordMinLength}
                       inheritedValue={cosDetail.zimbraPasswordMinLength}
                       fromSubValue={accSpecificDetail?.zimbraPasswordMinLength}
                       background="gray5"
@@ -1169,7 +1197,7 @@ const EditAccountSecuritySection: FC = () => {
                     <InheritedInput
                       isRequired
                       label={t('cos.maximum_password_length', 'Maximum password length')}
-                      subValue={accountDetail.zimbraPasswordMaxLength}
+                      subValue={values.zimbraPasswordMaxLength}
                       inheritedValue={cosDetail.zimbraPasswordMaxLength}
                       fromSubValue={accSpecificDetail?.zimbraPasswordMaxLength}
                       background="gray5"
@@ -1196,7 +1224,7 @@ const EditAccountSecuritySection: FC = () => {
                         'cos.minimum_upper_case_characters',
                         'Minimum upper case characters',
                       )}
-                      subValue={accountDetail.zimbraPasswordMinUpperCaseChars}
+                      subValue={values.zimbraPasswordMinUpperCaseChars}
                       inheritedValue={cosDetail.zimbraPasswordMinUpperCaseChars}
                       fromSubValue={accSpecificDetail?.zimbraPasswordMinUpperCaseChars}
                       background="gray5"
@@ -1212,7 +1240,7 @@ const EditAccountSecuritySection: FC = () => {
                         'cos.minimum_lower_case_characters',
                         'Minimum lower case characters',
                       )}
-                      subValue={accountDetail.zimbraPasswordMinLowerCaseChars}
+                      subValue={values.zimbraPasswordMinLowerCaseChars}
                       inheritedValue={cosDetail.zimbraPasswordMinLowerCaseChars}
                       fromSubValue={accSpecificDetail?.zimbraPasswordMinLowerCaseChars}
                       background="gray5"
@@ -1236,7 +1264,7 @@ const EditAccountSecuritySection: FC = () => {
                     <InheritedInput
                       isRequired
                       label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
-                      subValue={accountDetail.zimbraPasswordMinPunctuationChars}
+                      subValue={values.zimbraPasswordMinPunctuationChars}
                       inheritedValue={cosDetail.zimbraPasswordMinPunctuationChars}
                       fromSubValue={accSpecificDetail?.zimbraPasswordMinPunctuationChars}
                       background="gray5"
@@ -1249,7 +1277,7 @@ const EditAccountSecuritySection: FC = () => {
                     <InheritedInput
                       isRequired
                       label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
-                      subValue={accountDetail.zimbraPasswordMinNumericChars}
+                      subValue={values.zimbraPasswordMinNumericChars}
                       inheritedValue={cosDetail.zimbraPasswordMinNumericChars}
                       fromSubValue={accSpecificDetail?.zimbraPasswordMinNumericChars}
                       background="gray5"
@@ -1273,7 +1301,7 @@ const EditAccountSecuritySection: FC = () => {
                     <InheritedInput
                       isRequired
                       label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
-                      subValue={accountDetail.zimbraPasswordMinAge}
+                      subValue={values.zimbraPasswordMinAge}
                       inheritedValue={cosDetail.zimbraPasswordMinAge}
                       fromSubValue={accSpecificDetail?.zimbraPasswordMinAge}
                       background="gray5"
@@ -1286,7 +1314,7 @@ const EditAccountSecuritySection: FC = () => {
                     <InheritedInput
                       isRequired
                       label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
-                      subValue={accountDetail.zimbraPasswordMaxAge}
+                      subValue={values.zimbraPasswordMaxAge}
                       inheritedValue={cosDetail.zimbraPasswordMaxAge}
                       fromSubValue={accSpecificDetail?.zimbraPasswordMaxAge}
                       background="gray5"
@@ -1313,7 +1341,7 @@ const EditAccountSecuritySection: FC = () => {
                         'cos.minimum_numeric_characters_or_punctuation_symbols',
                         'Minimum numeric characters or punctuation symbols',
                       )}
-                      subValue={accountDetail.zimbraPasswordMinDigitsOrPuncs}
+                      subValue={values.zimbraPasswordMinDigitsOrPuncs}
                       inheritedValue={cosDetail.zimbraPasswordMinDigitsOrPuncs}
                       fromSubValue={accSpecificDetail?.zimbraPasswordMinDigitsOrPuncs}
                       background="gray5"
@@ -1329,7 +1357,7 @@ const EditAccountSecuritySection: FC = () => {
                         'cos.minimum_number_of_unique_password_history',
                         'Minimum number of unique passwords history',
                       )}
-                      subValue={accountDetail.zimbraPasswordEnforceHistory}
+                      subValue={values.zimbraPasswordEnforceHistory}
                       inheritedValue={cosDetail.zimbraPasswordEnforceHistory}
                       fromSubValue={accSpecificDetail?.zimbraPasswordEnforceHistory}
                       background="gray5"
@@ -1346,7 +1374,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container crossAlignment="flex-start" padding={{ top: 'large' }}>
                     <InheritedSwitch
-                      subValue={accountDetail?.zimbraPasswordBlockCommonEnabled}
+                      subValue={values?.zimbraPasswordBlockCommonEnabled}
                       onChange={changeSwitchOption}
                       label={t('cos.reject_common_passwords', 'Reject common passwords')}
                       iconColor="primary"
@@ -1379,7 +1407,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container crossAlignment="flex-start" width="30%" padding={{ right: 'small' }}>
                     <Switch
-                      value={accountDetail?.zimbraFeatureResetPasswordStatus === 'enabled'}
+                      value={values?.zimbraFeatureResetPasswordStatus === 'enabled'}
                       onClick={(): void => changeRecoverOption('zimbraFeatureResetPasswordStatus')}
                       label={t(
                         'label.user_can_ask_for_forgotten_password_token',
@@ -1392,7 +1420,7 @@ const EditAccountSecuritySection: FC = () => {
                     <Input
                       backgroundColor="gray5"
                       label={t('label.user_recovery_email', 'User Recovery Email')}
-                      defaultValue={accountDetail?.zimbraPrefPasswordRecoveryAddress || ''}
+                      defaultValue={values?.zimbraPrefPasswordRecoveryAddress || ''}
                       onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                         if (isValidEmail(e?.target?.value)) {
                           changeValue(e);
@@ -1419,7 +1447,7 @@ const EditAccountSecuritySection: FC = () => {
                       defaultSelection={recoveryStatus.find(
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         (item: any) =>
-                          item.value === accountDetail?.zimbraPrefPasswordRecoveryAddressStatus,
+                          item.value === values?.zimbraPrefPasswordRecoveryAddressStatus,
                       )}
                     />
                   </Container>
@@ -1446,7 +1474,7 @@ const EditAccountSecuritySection: FC = () => {
                 <ListRow>
                   <Container crossAlignment="flex-start">
                     <InheritedSwitch
-                      subValue={accountDetail?.zimbraPasswordLockoutEnabled}
+                      subValue={values?.zimbraPasswordLockoutEnabled}
                       onChange={changeSwitchOption}
                       label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
                       iconColor="primary"
@@ -1474,14 +1502,14 @@ const EditAccountSecuritySection: FC = () => {
                         'cos.number_of_consecutive_failed_login_allowed',
                         'Number of consecutive failed logins allowed',
                       )}
-                      subValue={accountDetail.zimbraPasswordLockoutMaxFailures}
+                      subValue={values.zimbraPasswordLockoutMaxFailures}
                       inheritedValue={cosDetail.zimbraPasswordLockoutMaxFailures}
                       fromSubValue={accSpecificDetail?.zimbraPasswordLockoutMaxFailures}
                       background="gray5"
                       inputName="zimbraPasswordLockoutMaxFailures"
                       onChange={changeValue}
                       onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutMaxFailures')}
-                      disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
+                      disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
                     />
                   </Container>
                 </ListRow>
@@ -1499,28 +1527,28 @@ const EditAccountSecuritySection: FC = () => {
                     <InheritedInput
                       isRequired
                       label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
-                      subValue={accountDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
+                      subValue={values.zimbraPasswordLockoutDuration?.slice(0, -1)}
                       inheritedValue={cosDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
                       fromSubValue={accSpecificDetail?.zimbraPasswordLockoutDuration}
                       background="gray5"
                       inputName="zimbraPasswordLockoutDuration"
                       onChange={onZimbraPasswordLockoutDurationNumChange}
                       onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
-                      disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
+                      disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
                     />
                   </Container>
                   <Container width="25%" padding={{ left: 'small' }}>
                     <InheritedSelect
                       label={t('cos.time_range', 'Time Range')}
                       items={timeItems}
-                      subValue={accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || ''}
+                      subValue={values?.zimbraPasswordLockoutDuration?.slice(-1) || ''}
                       inheritedValue={cosDetail.zimbraPasswordLockoutDuration?.slice(-1) || ''}
                       fromSubValue={accSpecificDetail?.zimbraPasswordLockoutDuration}
                       background="gray5"
                       selectName="zimbraPasswordLockoutDuration"
                       onChange={onZimbraPasswordLockoutDurationTypeChange}
                       onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
-                      disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
+                      disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
                     />
                   </Container>
                 </ListRow>
@@ -1541,7 +1569,7 @@ const EditAccountSecuritySection: FC = () => {
                         'cos.time_window_failed_logins_must_occur_to_lock_account',
                         'Time window in which the failed logins must occur to lock the account:',
                       )}
-                      subValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
+                      subValue={values.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
                       inheritedValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
                       fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
                       background="gray5"
@@ -1550,7 +1578,7 @@ const EditAccountSecuritySection: FC = () => {
                       onChangeReset={(): void =>
                         setEmptyValue('zimbraPasswordLockoutFailureLifetime')
                       }
-                      disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
+                      disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
                     />
                   </Container>
                   <Container width="25%" padding={{ left: 'small' }}>
@@ -1558,7 +1586,7 @@ const EditAccountSecuritySection: FC = () => {
                       label={t('cos.time_range', 'Time Range')}
                       items={timeItems}
                       subValue={
-                        accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''
+                        values?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''
                       }
                       inheritedValue={
                         cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''
@@ -1570,7 +1598,7 @@ const EditAccountSecuritySection: FC = () => {
                       onChangeReset={(): void =>
                         setEmptyValue('zimbraPasswordLockoutFailureLifetime')
                       }
-                      disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
+                      disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
                     />
                   </Container>
                 </ListRow>

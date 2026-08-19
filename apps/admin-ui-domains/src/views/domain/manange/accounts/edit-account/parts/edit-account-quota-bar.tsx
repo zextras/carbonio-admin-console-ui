@@ -4,31 +4,42 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { AccountContext } from '../../account-context';
+import { useAccountForm } from '../account-form-context';
 import { EditAccountQuotaBarNew } from './edit-account-quota-bar-new';
 
 export const EditAccountQuotaBar = (): React.JSX.Element | null => {
   const isAdvanced = useIsAdvanced();
 
-  const { initAccountDetail } = useContext(AccountContext);
-  const {
-    totalQuotaUsed: used,
-    totalComputedQuotaLimit: limit,
-    totalQuotaUsedByModule: usedByModule,
-    totalQuotaSource: source,
-    totalQuotaStatus: status,
-  } = initAccountDetail;
+  const { form } = useAccountForm();
+  const { totalQuotaUsed, totalComputedQuotaLimit, totalQuotaUsedByModule, totalQuotaSource, totalQuotaStatus } = useSelector(
+    form.store,
+    (s) =>
+      s.values as {
+        totalQuotaUsed?: number;
+        totalComputedQuotaLimit?: any;
+        totalQuotaUsedByModule?: Record<string, number>;
+        totalQuotaSource?: any;
+        totalQuotaStatus?: any;
+      },
+  );
   const dataMissing = useMemo(
     () =>
-      used === undefined ||
-      limit === undefined ||
-      usedByModule === undefined ||
-      source === undefined ||
-      status === undefined,
-    [used, limit, usedByModule, source, status],
+      totalQuotaUsed === undefined ||
+      totalComputedQuotaLimit === undefined ||
+      totalQuotaUsedByModule === undefined ||
+      totalQuotaSource === undefined ||
+      totalQuotaStatus === undefined,
+    [
+      totalQuotaUsed,
+      totalComputedQuotaLimit,
+      totalQuotaUsedByModule,
+      totalQuotaSource,
+      totalQuotaStatus,
+    ],
   );
 
   if (!isAdvanced || dataMissing) {
@@ -36,11 +47,11 @@ export const EditAccountQuotaBar = (): React.JSX.Element | null => {
   }
   return (
     <EditAccountQuotaBarNew
-      used={used!}
-      limit={limit!}
-      usedByModule={usedByModule!}
-      source={source!}
-      status={status!}
+      used={totalQuotaUsed!}
+      limit={totalComputedQuotaLimit!}
+      usedByModule={totalQuotaUsedByModule!}
+      source={totalQuotaSource!}
+      status={totalQuotaStatus!}
     />
   );
 };

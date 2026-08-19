@@ -25,6 +25,7 @@ export type AccountFormContextValue = {
   account: { id: string; name: string; [key: string]: any };
   resetToSaved: () => void;
   isSaving: boolean;
+  savedValues: AccountFormValues;
   cosDetail: Record<string, any>;
   accSpecificDetail: Record<string, any>;
   signatureList: Array<any>;

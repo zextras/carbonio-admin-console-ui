@@ -12,12 +12,11 @@ import {
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { AccountContext } from '../../account-context';
 import { EditAccountGeneralSection } from '../edit-account-general-section';
+import { AccountFormTestProvider } from './account-form-test-provider';
 
-function buildMockContext(overrides: Record<string, unknown> = {}): Record<string, unknown> {
+function buildMockAccountDetail(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
-    accountDetail: {
       uid: 'test-user',
       name: 'test-user@test-domain.com',
       sn: 'User',
@@ -45,59 +44,13 @@ function buildMockContext(overrides: Record<string, unknown> = {}): Record<strin
       description: 'A test account',
       zimbraNotes: 'Some notes',
       ...overrides,
-    },
-    cosDetail: {
-      zimbraMailQuota: 5368709120,
-      zimbraPrefLocale: 'en',
-    },
-    accSpecificDetail: {},
-    directMemberList: [],
-    inDirectMemberList: [],
-    setSignatureItems: vi.fn(),
-    setSignatureList: vi.fn(),
-    setAccountDetail: vi.fn(),
-    setAccSpecificDetail: vi.fn(),
-    setDirectMemberList: vi.fn(),
-    setInDirectMemberList: vi.fn(),
-    setInitAccountDetail: vi.fn(),
-    initAccountDetail: {
-      zimbraMailQuota: 10737418240,
-      mailboxQuotaUsed: 2147483648,
-      zimbraCreateTimestamp: '20250115100000.000Z',
-      zimbraLastLogonTimestamp: '20260320143000.000Z',
-      domainName: 'test-domain.com',
-    },
-    otpList: [],
-    identitiesList: [],
-    folderList: [],
-    setFolderList: vi.fn(),
-    getListOtp: vi.fn(),
-    getIdentitiesList: vi.fn(),
-    deligateDetail: {},
-    setDeligateDetail: vi.fn(),
-    credentialList: [],
-    getCredentialList: vi.fn(),
-    initialGlobalRights: {},
-    setinitialGlobalRights: vi.fn(),
-    globalRights: {},
-    setGlobalRights: vi.fn(),
-    deleteAdministrationRights: [],
-    setDeleteAdministrationRights: vi.fn(),
-    userSessionList: [],
-    setAllUserSessionList: vi.fn(),
-    allUserSessionList: [],
-    setUserSessionList: vi.fn(),
-    defaultCOS: false,
-    setDefaultCOS: vi.fn(),
-    allowedDeletePassword: false,
-    setAllowedDeletePassword: vi.fn(),
-  };
+    };
 }
 
 function setupTest(contextOverrides: Record<string, unknown> = {}) {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['advanced-supported'], { supported: true });
-  const mockContext = buildMockContext(contextOverrides);
+  const accountDetail = buildMockAccountDetail(contextOverrides);
 
   createBrowserSoapAPIInterceptor('SearchDirectory', {
     searchTotal: 1,
@@ -105,9 +58,9 @@ function setupTest(contextOverrides: Record<string, unknown> = {}) {
   });
 
   return setupBrowserTest(
-    <AccountContext.Provider value={mockContext as any}>
+    <AccountFormTestProvider values={accountDetail}>
       <EditAccountGeneralSection setChange={vi.fn()} onQuotaErrorChange={vi.fn()} />
-    </AccountContext.Provider>,
+    </AccountFormTestProvider>,
     { queryClient },
   );
 }

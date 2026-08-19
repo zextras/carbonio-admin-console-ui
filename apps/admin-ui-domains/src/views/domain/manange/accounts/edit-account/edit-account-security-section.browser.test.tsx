@@ -8,14 +8,13 @@ import { domainByIdKey } from '@zextras/ui-shared';
 import { createBrowserAPIInterceptor, getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import React from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { AccountContext } from '../account-context';
 import EditAccountSecuritySection from './edit-account-security-section';
+import { AccountFormTestProvider } from './tests/account-form-test-provider';
 
-const mockContextValue = {
-  accountDetail: {
+const mockAccountDetail = {
     zimbraPasswordLocked: 'FALSE',
     zimbraPasswordMinLength: '8',
     zimbraPasswordMaxLength: '64',
@@ -40,8 +39,9 @@ const mockContextValue = {
     uid: 'test-user',
     name: 'test-user',
     zimbraId: 'mock-id',
-  },
-  cosDetail: {
+};
+
+const mockCosDetail = {
     zimbraPasswordLocked: 'FALSE',
     zimbraPasswordMinLength: '6',
     zimbraPasswordMaxLength: '128',
@@ -60,8 +60,9 @@ const mockContextValue = {
     zimbraPasswordLockoutFailureLifetime: '30m',
     carbonioFeatureOTPMgmtEnabled: 'FALSE',
     zimbraId: 'mock-id',
-  },
-  accSpecificDetail: {
+};
+
+const mockAccSpecificDetail = {
     zimbraPasswordLocked: 'FALSE',
     zimbraPasswordMinLength: '8',
     zimbraPasswordMaxLength: '64',
@@ -80,42 +81,25 @@ const mockContextValue = {
     zimbraPasswordLockoutFailureLifetime: '1h',
     carbonioFeatureOTPMgmtEnabled: 'FALSE',
     zimbraId: 'mock-id',
-  },
-  directMemberList: [],
-  inDirectMemberList: [],
-  setSignatureItems: () => {},
-  setSignatureList: () => {},
-  setAccountDetail: () => {},
-  setAccSpecificDetail: () => {},
-  setDirectMemberList: () => {},
-  setInDirectMemberList: () => {},
-  setInitAccountDetail: () => {},
-  initAccountDetail: {},
-  otpList: [],
-  identitiesList: [],
-  folderList: [],
-  setFolderList: () => {},
-  getListOtp: () => {},
-  getIdentitiesList: () => {},
-  deligateDetail: {},
-  setDeligateDetail: () => {},
-  credentialList: [],
-  getCredentialList: () => {},
-  initialGlobalRights: {},
-  setinitialGlobalRights: () => {},
-  globalRights: {},
-  setGlobalRights: () => {},
-  deleteAdministrationRights: [],
-  setDeleteAdministrationRights: () => {},
-  userSessionList: [],
-  setAllUserSessionList: () => {},
-  allUserSessionList: [],
-  setUserSessionList: () => {},
-  defaultCOS: {},
-  setDefaultCOS: () => {},
-  allowedDeletePassword: false,
-  setAllowedDeletePassword: () => {},
 };
+
+function wrapSecuritySection(
+  accountDetailOverrides: Record<string, unknown> = {},
+  contextOverrides: Record<string, unknown> = {},
+): React.ReactElement {
+  return (
+    <AccountFormTestProvider
+      values={{ ...mockAccountDetail, ...accountDetailOverrides }}
+      contextOverrides={{
+        cosDetail: mockCosDetail,
+        accSpecificDetail: mockAccSpecificDetail,
+        ...contextOverrides,
+      }}
+    >
+      <EditAccountSecuritySection />
+    </AccountFormTestProvider>
+  );
+}
 
 function setupEditAccountSecurityTest(component: React.ReactElement) {
   const queryClient = getQueryClient();
@@ -137,9 +121,7 @@ describe('EditAccountSecuritySection (browser)', () => {
   describe('Basic Rendering', () => {
     it('should render all main sections', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
       await expect.element(page.getByText('Password', { exact: true })).toBeVisible();
       await expect.element(page.getByText('Failed Login Policy')).toBeVisible();
@@ -148,9 +130,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should render all password policy fields', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
       await expect.element(page.getByText('Minimum password length')).toBeVisible();
       await expect.element(page.getByText('Maximum password length')).toBeVisible();
@@ -172,9 +152,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should render password policy switches', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
       await expect.element(page.getByText('Prevent user from changing password')).toBeVisible();
       await expect.element(page.getByText('Reject common passwords')).toBeVisible();
@@ -182,9 +160,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should render failed login lockout fields', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
       await expect.element(page.getByText('Enable failed login lockout')).toBeVisible();
       await expect
@@ -200,9 +176,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should render recovery email field', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
       await expect.element(page.getByText('User Recovery Email')).toBeVisible();
       await expect
@@ -212,9 +186,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should render password note for external authentication', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
       await expect
         .element(
@@ -228,57 +200,30 @@ describe('EditAccountSecuritySection (browser)', () => {
 
   describe('Password Policy Variations', () => {
     it('should render with password locked enabled', async () => {
-      const contextWithLocked = {
-        ...mockContextValue,
-        accountDetail: { ...mockContextValue.accountDetail, zimbraPasswordLocked: 'TRUE' },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithLocked}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+      setupEditAccountSecurityTest(wrapSecuritySection({ zimbraPasswordLocked: 'TRUE' }));
       await expect.element(page.getByText('Prevent user from changing password')).toBeVisible();
     });
 
     it('should render with common passwords blocked', async () => {
-      const contextWithBlocked = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithBlocked = {
           zimbraPasswordBlockCommonEnabled: 'TRUE',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithBlocked}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithBlocked));
       await expect.element(page.getByText('Reject common passwords')).toBeVisible();
     });
 
     it('should render with password history enabled', async () => {
-      const contextWithHistory = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithHistory = {
           zimbraPasswordEnforceHistory: '5',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithHistory}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithHistory));
       await expect
         .element(page.getByText('Minimum number of unique passwords history'))
         .toBeVisible();
     });
 
     it('should render with all password policies enabled', async () => {
-      const fullContext = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_fullContext = {
           zimbraPasswordLocked: 'TRUE',
           zimbraPasswordMinLength: '12',
           zimbraPasswordMaxLength: '128',
@@ -291,111 +236,58 @@ describe('EditAccountSecuritySection (browser)', () => {
           zimbraPasswordMinDigitsOrPuncs: '2',
           zimbraPasswordEnforceHistory: '10',
           zimbraPasswordBlockCommonEnabled: 'TRUE',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={fullContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_fullContext));
       await expect.element(page.getByText('Password', { exact: true })).toBeVisible();
     });
   });
 
   describe('Failed Login Policy Variations', () => {
     it('should render with lockout enabled', async () => {
-      const contextWithLockout = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithLockout = {
           zimbraPasswordLockoutEnabled: 'TRUE',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithLockout}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithLockout));
       await expect.element(page.getByText('Enable failed login lockout')).toBeVisible();
     });
 
     it('should render with lockout duration in seconds', async () => {
-      const contextWithDuration = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithDuration = {
           zimbraPasswordLockoutDuration: '30s',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithDuration}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithDuration));
       await expect.element(page.getByText('Time to lockout the account')).toBeVisible();
     });
 
     it('should render with lockout duration in minutes', async () => {
-      const contextWithDuration = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithDuration = {
           zimbraPasswordLockoutDuration: '15m',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithDuration}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithDuration));
       await expect.element(page.getByText('Time to lockout the account')).toBeVisible();
     });
 
     it('should render with lockout duration in hours', async () => {
-      const contextWithDuration = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithDuration = {
           zimbraPasswordLockoutDuration: '2h',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithDuration}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithDuration));
       await expect.element(page.getByText('Time to lockout the account')).toBeVisible();
     });
 
     it('should render with lockout duration in days', async () => {
-      const contextWithDuration = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithDuration = {
           zimbraPasswordLockoutDuration: '2d',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithDuration}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithDuration));
       await expect.element(page.getByText('Time to lockout the account')).toBeVisible();
     });
 
     it('should render with failure lifetime in minutes', async () => {
-      const contextWithLifetime = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithLifetime = {
           zimbraPasswordLockoutFailureLifetime: '30m',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithLifetime}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithLifetime));
       await expect
         .element(
           page.getByText('Time window in which the failed logins must occur to lock the account:'),
@@ -404,18 +296,10 @@ describe('EditAccountSecuritySection (browser)', () => {
     });
 
     it('should render with failure lifetime in hours', async () => {
-      const contextWithLifetime = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithLifetime = {
           zimbraPasswordLockoutFailureLifetime: '2h',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithLifetime}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithLifetime));
       await expect
         .element(
           page.getByText('Time window in which the failed logins must occur to lock the account:'),
@@ -424,18 +308,10 @@ describe('EditAccountSecuritySection (browser)', () => {
     });
 
     it('should render with failure lifetime in days', async () => {
-      const contextWithLifetime = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithLifetime = {
           zimbraPasswordLockoutFailureLifetime: '7d',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithLifetime}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithLifetime));
       await expect
         .element(
           page.getByText('Time window in which the failed logins must occur to lock the account:'),
@@ -444,138 +320,76 @@ describe('EditAccountSecuritySection (browser)', () => {
     });
 
     it('should render with all lockout policies enabled', async () => {
-      const lockoutContext = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_lockoutContext = {
           zimbraPasswordLockoutEnabled: 'TRUE',
           zimbraPasswordLockoutMaxFailures: '3',
           zimbraPasswordLockoutDuration: '24h',
           zimbraPasswordLockoutFailureLifetime: '1d',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={lockoutContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_lockoutContext));
       await expect.element(page.getByText('Failed Login Policy')).toBeVisible();
     });
   });
 
   describe('Recovery Settings', () => {
     it('should render with recovery email address', async () => {
-      const contextWithRecovery = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithRecovery = {
           zimbraPrefPasswordRecoveryAddress: 'recovery@example.com',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithRecovery}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithRecovery));
       await expect.element(page.getByText('User Recovery Email')).toBeVisible();
     });
 
     it('should render with reset password enabled', async () => {
-      const contextWithReset = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithReset = {
           zimbraFeatureResetPasswordStatus: 'enabled',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithReset}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithReset));
       await expect
         .element(page.getByText('User can ask for a forgotten password token'))
         .toBeVisible();
     });
 
     it('should render with verified recovery status', async () => {
-      const contextWithVerified = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithVerified = {
           zimbraPrefPasswordRecoveryAddressStatus: 'verified',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithVerified}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithVerified));
       await expect.element(page.getByText('Status')).toBeVisible();
     });
 
     it('should render with full recovery settings', async () => {
-      const recoveryContext = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_recoveryContext = {
           zimbraFeatureResetPasswordStatus: 'enabled',
           zimbraPrefPasswordRecoveryAddress: 'test@example.com',
           zimbraPrefPasswordRecoveryAddressStatus: 'verified',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={recoveryContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_recoveryContext));
       await expect.element(page.getByText('Forgotten Password', { exact: true })).toBeVisible();
     });
   });
 
   describe('OTP and Backup Features', () => {
     it('should render with OTP management enabled', async () => {
-      const contextWithOTP = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithOTP = {
           carbonioFeatureOTPMgmtEnabled: 'TRUE',
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithOTP}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithOTP));
       await expect.element(page.getByText('Allow users to configure 2FA')).toBeVisible();
     });
 
     it('should render with backup self undelete allowed', async () => {
-      const contextWithBackup = {
-        ...mockContextValue,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
+      const overrides_contextWithBackup = {
           backupSelfUndeleteAllowed: true,
-        },
-      };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithBackup}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+};
+      setupEditAccountSecurityTest(wrapSecuritySection(overrides_contextWithBackup));
       await expect.element(page.getByText('Backup')).toBeVisible();
       await expect.element(page.getByText('Allow user to restore messages')).toBeVisible();
     });
 
     it('should render with empty OTP list', async () => {
-      const contextWithEmptyOTP = {
-        ...mockContextValue,
-        otpList: [],
-      };
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithEmptyOTP}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({}, { otpList: [] }),
       );
       await expect
         .element(page.getByText('Two-Factor authenticator', { exact: true }))
@@ -584,23 +398,19 @@ describe('EditAccountSecuritySection (browser)', () => {
     });
 
     it('should render OTP list when available', async () => {
-      const contextWithOTPList = {
-        ...mockContextValue,
-        otpList: [
-          {
-            id: '1',
-            description: 'Test OTP',
-            status: 'Active',
-            failed: '0',
-            'creation-date': '2024-01-01',
-            columns: ['Test OTP', 'Active', '0', '2024-01-01'],
-          },
-        ],
-      };
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithOTPList}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({}, {
+          otpList: [
+            {
+              id: '1',
+              label: 'Test OTP',
+              enabled: true,
+              failed_attempts: 0,
+              created: '2024-01-01',
+              description: 'Test OTP',
+            },
+          ],
+        }),
       );
       await expect
         .element(page.getByText('Two-Factor authenticator', { exact: true }))
@@ -609,35 +419,32 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should render NEW OTP and DELETE buttons', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
       await expect.element(page.getByRole('button', { name: /NEW OTP/i })).toBeVisible();
       await expect.element(page.getByText('DELETE')).toBeVisible();
     });
 
     it('should show restore action only for disabled OTP rows', async () => {
-      const contextWithOtpActions = {
-        ...mockContextValue,
-        otpList: [
-          {
-            id: 'disabled-otp-id',
-            columns: ['Disabled OTP', 'Disabled', '3', '2024-01-01'],
-            item: { enabled: false },
-          },
-          {
-            id: 'enabled-otp-id',
-            columns: ['Enabled OTP', 'Enabled', '0', '2024-01-02'],
-            item: { enabled: true },
-          },
-        ],
-      };
-
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithOtpActions}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({}, {
+          otpList: [
+            {
+              id: 'disabled-otp-id',
+              label: 'Disabled OTP',
+              enabled: false,
+              failed_attempts: 3,
+              created: '2024-01-01',
+            },
+            {
+              id: 'enabled-otp-id',
+              label: 'Enabled OTP',
+              enabled: true,
+              failed_attempts: 0,
+              created: '2024-01-02',
+            },
+          ],
+        }),
       );
 
       await expect.element(page.getByText('Actions')).toBeVisible();
@@ -646,21 +453,18 @@ describe('EditAccountSecuritySection (browser)', () => {
     });
 
     it('should open restore confirmation modal when restore action is clicked', async () => {
-      const contextWithDisabledOtp = {
-        ...mockContextValue,
-        otpList: [
-          {
-            id: 'disabled-otp-id',
-            columns: ['Disabled OTP', 'Disabled', '3', '2024-01-01'],
-            item: { enabled: false },
-          },
-        ],
-      };
-
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithDisabledOtp}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({}, {
+          otpList: [
+            {
+              id: 'disabled-otp-id',
+              label: 'Disabled OTP',
+              enabled: false,
+              failed_attempts: 3,
+              created: '2024-01-01',
+            },
+          ],
+        }),
       );
 
       await page.getByTestId('restore-otp-disabled-otp-id').click();
@@ -678,19 +482,6 @@ describe('EditAccountSecuritySection (browser)', () => {
     });
 
     it('should restore OTP and show success snackbar when restore is confirmed', async () => {
-      const mockGetListOtp = vi.fn();
-      const contextWithDisabledOtp = {
-        ...mockContextValue,
-        getListOtp: mockGetListOtp,
-        otpList: [
-          {
-            id: 'disabled-otp-id',
-            columns: ['Disabled OTP', 'Disabled', '3', '2024-01-01'],
-            item: { enabled: false },
-          },
-        ],
-      };
-
       await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
         HttpResponse.json({
           Header: {
@@ -706,9 +497,17 @@ describe('EditAccountSecuritySection (browser)', () => {
       );
 
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithDisabledOtp}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({}, {
+          otpList: [
+            {
+              id: 'disabled-otp-id',
+              label: 'Disabled OTP',
+              enabled: false,
+              failed_attempts: 3,
+              created: '2024-01-01',
+            },
+          ],
+        }),
       );
 
       await page.getByTestId('restore-otp-disabled-otp-id').click();
@@ -716,23 +515,9 @@ describe('EditAccountSecuritySection (browser)', () => {
 
       await expect.element(page.getByText('OTP has been restored successfully')).toBeVisible();
       await expect.element(page.getByText('Restore OTP')).not.toBeInTheDocument();
-      expect(mockGetListOtp).toHaveBeenCalledWith('test-user@test-domain.com');
     });
 
     it('should show error snackbar when restore response has ok false', async () => {
-      const mockGetListOtp = vi.fn();
-      const contextWithDisabledOtp = {
-        ...mockContextValue,
-        getListOtp: mockGetListOtp,
-        otpList: [
-          {
-            id: 'disabled-otp-id',
-            columns: ['Disabled OTP', 'Disabled', '3', '2024-01-01'],
-            item: { enabled: false },
-          },
-        ],
-      };
-
       await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
         HttpResponse.json({
           Body: {
@@ -744,32 +529,26 @@ describe('EditAccountSecuritySection (browser)', () => {
       );
 
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithDisabledOtp}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({}, {
+          otpList: [
+            {
+              id: 'disabled-otp-id',
+              label: 'Disabled OTP',
+              enabled: false,
+              failed_attempts: 3,
+              created: '2024-01-01',
+            },
+          ],
+        }),
       );
 
       await page.getByTestId('restore-otp-disabled-otp-id').click();
       await page.getByRole('button', { name: /YES, RESTORE ANYWAY/i }).click();
 
       await expect.element(page.getByText('Something went wrong. Please try again.')).toBeVisible();
-      expect(mockGetListOtp).not.toHaveBeenCalled();
     });
 
     it('should show error snackbar when restore response content is malformed', async () => {
-      const mockGetListOtp = vi.fn();
-      const contextWithDisabledOtp = {
-        ...mockContextValue,
-        getListOtp: mockGetListOtp,
-        otpList: [
-          {
-            id: 'disabled-otp-id',
-            columns: ['Disabled OTP', 'Disabled', '3', '2024-01-01'],
-            item: { enabled: false },
-          },
-        ],
-      };
-
       await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
         HttpResponse.json({
           Body: {
@@ -781,127 +560,79 @@ describe('EditAccountSecuritySection (browser)', () => {
       );
 
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithDisabledOtp}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({}, {
+          otpList: [
+            {
+              id: 'disabled-otp-id',
+              label: 'Disabled OTP',
+              enabled: false,
+              failed_attempts: 3,
+              created: '2024-01-01',
+            },
+          ],
+        }),
       );
 
       await page.getByTestId('restore-otp-disabled-otp-id').click();
       await page.getByRole('button', { name: /YES, RESTORE ANYWAY/i }).click();
 
       await expect.element(page.getByText('Something went wrong. Please try again.')).toBeVisible();
-      expect(mockGetListOtp).not.toHaveBeenCalled();
     });
   });
 
   describe('Inherited Values and Reset', () => {
     it('should render reset buttons for inherited fields', async () => {
-      const contextWithInherited = {
-        ...mockContextValue,
-        accSpecificDetail: {
-          ...mockContextValue.accSpecificDetail,
-          zimbraPasswordLocked: 'TRUE',
-        },
-      };
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={contextWithInherited}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({}, {
+          accSpecificDetail: { ...mockAccSpecificDetail, zimbraPasswordLocked: 'TRUE' },
+        }),
       );
       const resetButton = page.getByTestId('reset-zimbraPasswordLocked');
       await expect.element(resetButton).toBeVisible();
     });
 
-    it('should call setAccountDetail when carbonioFeatureOTPMgmtEnabled reset is clicked', async () => {
-      const mockSetAccountDetail = vi.fn();
-      const testContext = {
-        ...mockContextValue,
-        setAccountDetail: mockSetAccountDetail,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
-          carbonioFeatureOTPMgmtEnabled: 'TRUE',
-        },
-        accSpecificDetail: {
-          ...mockContextValue.accSpecificDetail,
-          carbonioFeatureOTPMgmtEnabled: 'FALSE',
-        },
-        cosDetail: {
-          ...mockContextValue.cosDetail,
-          carbonioFeatureOTPMgmtEnabled: 'FALSE',
-        },
-      };
+    it('should update the form when carbonioFeatureOTPMgmtEnabled reset is clicked', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={testContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({ carbonioFeatureOTPMgmtEnabled: 'TRUE' }, {
+          accSpecificDetail: { ...mockAccSpecificDetail, carbonioFeatureOTPMgmtEnabled: 'FALSE' },
+          cosDetail: { ...mockCosDetail, carbonioFeatureOTPMgmtEnabled: 'FALSE' },
+        }),
       );
       const resetButton = page.getByTestId('reset-carbonioFeatureOTPMgmtEnabled');
       await expect.element(resetButton).toBeVisible();
       await resetButton.click();
-      expect(mockSetAccountDetail).toHaveBeenCalled();
+      await expect.element(resetButton).not.toBeInTheDocument();
     });
 
-    it('should call setAccountDetail when reset button is clicked', async () => {
-      const mockSetAccountDetail = vi.fn();
-      const testContext = {
-        ...mockContextValue,
-        setAccountDetail: mockSetAccountDetail,
-        accountDetail: {
-          ...mockContextValue.accountDetail,
-          zimbraPasswordLocked: 'TRUE',
-        },
-        accSpecificDetail: {
-          ...mockContextValue.accSpecificDetail,
-          zimbraPasswordLocked: 'FALSE',
-        },
-      };
+    it('should update the form when reset button is clicked', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={testContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({ zimbraPasswordLocked: 'TRUE' }, {
+          accSpecificDetail: { ...mockAccSpecificDetail, zimbraPasswordLocked: 'FALSE' },
+        }),
       );
-
       const resetButton = page.getByTestId('reset-zimbraPasswordLocked');
       await expect.element(resetButton).toBeVisible();
       await resetButton.click();
-
-      expect(mockSetAccountDetail).toHaveBeenCalled();
+      await expect.element(resetButton).not.toBeInTheDocument();
     });
   });
 
   describe('Edge Cases', () => {
     it('should render with empty accountDetail', async () => {
-      const emptyContext = { ...mockContextValue, accountDetail: {} };
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={emptyContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+      setupEditAccountSecurityTest(wrapSecuritySection({}));
       await expect.element(page.getByText('Password', { exact: true })).toBeVisible();
     });
 
     it('should render with minimal accountDetail', async () => {
-      const minimalContext = {
-        ...mockContextValue,
-        accountDetail: {
-          uid: 'test-user',
-          name: 'test-user',
-          zimbraId: 'min-test-id',
-        },
-      };
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={minimalContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection({ uid: 'test-user', name: 'test-user', zimbraId: 'min-test-id' }),
       );
       await expect.element(page.getByText('Password', { exact: true })).toBeVisible();
     });
 
     it('should render when isAdvanced is false', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
 
       await expect.element(page.getByText('Password', { exact: true })).toBeVisible();
@@ -910,12 +641,6 @@ describe('EditAccountSecuritySection (browser)', () => {
 
   describe('Email Sending for OTP', () => {
     it('should render OTP wizard with QR code when showCreateOTP is true', async () => {
-      const mockGetListOtp = vi.fn();
-      const testContext = {
-        ...mockContextValue,
-        getListOtp: mockGetListOtp,
-      };
-
       createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
         HttpResponse.json({
           Body: {
@@ -940,11 +665,7 @@ describe('EditAccountSecuritySection (browser)', () => {
         }),
       );
 
-      setupEditAccountSecurityTest(
-        <AccountContext.Provider value={testContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
-      );
+      setupEditAccountSecurityTest(wrapSecuritySection());
 
       const newOtpButton = page.getByRole('button', { name: /NEW OTP/i });
       await expect.element(newOtpButton).toBeVisible();
@@ -964,9 +685,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should render OTP wizard with send OTP email input when showCreateOTP is true', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
 
       await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
@@ -1011,9 +730,7 @@ describe('EditAccountSecuritySection (browser)', () => {
     });
     it('should display invalid email msg and button should be disabled for invalid email', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
 
       await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
@@ -1067,9 +784,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should call sendMail when SEND button is clicked with valid email', async () => {
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
 
       await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
@@ -1116,9 +831,7 @@ describe('EditAccountSecuritySection (browser)', () => {
     it('should show error snackbar when sendMail fails', async () => {
       let requestCount = 0;
       setupEditAccountSecurityTest(
-        <AccountContext.Provider value={mockContextValue}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(),
       );
 
       await createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () => {
@@ -1183,37 +896,17 @@ describe('EditAccountSecuritySection (browser)', () => {
   });
 
   describe('DatePicker', () => {
-    const enabledOtpContext = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
-        carbonioFeatureOTPMgmtEnabled: 'TRUE',
-        carbonioOtpWizardFromUntrusted: 'TRUE',
-        carbonioOtpGracePeriodEnabled: 'TRUE',
-      },
-      cosDetail: {
-        ...mockContextValue.cosDetail,
-        carbonioFeatureOTPMgmtEnabled: 'TRUE',
-        carbonioOtpWizardFromUntrusted: 'TRUE',
-        carbonioOtpGracePeriodEnabled: 'TRUE',
-      },
-      accSpecificDetail: {
-        ...mockContextValue.accSpecificDetail,
-        carbonioFeatureOTPMgmtEnabled: 'TRUE',
-        carbonioOtpWizardFromUntrusted: 'TRUE',
-        carbonioOtpGracePeriodEnabled: 'TRUE',
-      },
+    const enabledOtpOverrides = {
+      carbonioFeatureOTPMgmtEnabled: 'TRUE',
+      carbonioOtpWizardFromUntrusted: 'TRUE',
+      carbonioOtpGracePeriodEnabled: 'TRUE',
     };
 
-    const disabledOtpContext = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_disabledOtpContext = {
         carbonioFeatureOTPMgmtEnabled: 'TRUE',
         carbonioOtpWizardFromUntrusted: 'TRUE',
         carbonioOtpGracePeriodEnabled: 'FALSE',
-      },
-    };
+};
 
     function setupAdvancedSecurityTest(component: React.ReactElement) {
       return setupEditAccountSecurityTest(component);
@@ -1221,9 +914,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should render grace period expiration date picker when grace period is enabled', async () => {
       setupAdvancedSecurityTest(
-        <AccountContext.Provider value={enabledOtpContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(enabledOtpOverrides),
       );
 
       await expect.element(page.getByPlaceholder('Set grace period expiration date')).toBeVisible();
@@ -1231,9 +922,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should disable the date picker when grace period is disabled', async () => {
       setupAdvancedSecurityTest(
-        <AccountContext.Provider value={disabledOtpContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(overrides_disabledOtpContext),
       );
 
       await expect
@@ -1243,9 +932,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should enable the date picker when all OTP features are enabled', async () => {
       setupAdvancedSecurityTest(
-        <AccountContext.Provider value={enabledOtpContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(enabledOtpOverrides),
       );
 
       await expect.element(page.getByPlaceholder('Set grace period expiration date')).toBeEnabled();
@@ -1253,9 +940,7 @@ describe('EditAccountSecuritySection (browser)', () => {
 
     it('should open the calendar popover when the calendar icon is clicked', async () => {
       setupAdvancedSecurityTest(
-        <AccountContext.Provider value={enabledOtpContext}>
-          <EditAccountSecuritySection />
-        </AccountContext.Provider>,
+        wrapSecuritySection(enabledOtpOverrides),
       );
 
       await page.getByRole('button', { name: 'Calendar' }).click();

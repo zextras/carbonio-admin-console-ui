@@ -128,7 +128,13 @@ export const AccountFormProvider = ({
   const membership = splitMembership(membershipDl);
 
   const savedValuesRef = useRef<Record<string, any>>({});
+  const [savedValues, setSavedValues] = useState<AccountFormValues>({});
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
+
+  const commitSaved = (v: Record<string, any>): void => {
+    savedValuesRef.current = v;
+    setSavedValues(v as AccountFormValues);
+  };
 
   const errorSnackbar = (label: string): void => {
     createSnackbar({
@@ -407,7 +413,7 @@ export const AccountFormProvider = ({
 
         const finalize = (): void => {
           form.reset(values as AccountFormValues, { keepDefaultValues: true });
-          savedValuesRef.current = values;
+          commitSaved(values);
           onSaved();
           void queryClient.invalidateQueries({
             queryKey: domainQueryKeys.accountDetail(account.id),
@@ -460,7 +466,7 @@ export const AccountFormProvider = ({
     }
     const built = buildAccountFormValues(accountDetailData);
     form.reset(built, { keepDefaultValues: false });
-    savedValuesRef.current = built;
+    commitSaved(built);
   }, [accountDetailData, form]);
 
   // merge quota data once it lands (while untouched)
@@ -480,7 +486,7 @@ export const AccountFormProvider = ({
       [TOTAL_QUOTA_STATUS]: accountQuota.totalStatus,
     };
     form.reset(quotaValues as AccountFormValues, { keepDefaultValues: false });
-    savedValuesRef.current = quotaValues;
+    commitSaved(quotaValues);
   }, [accountQuota, form]);
 
   useEffect(() => {
@@ -507,6 +513,7 @@ export const AccountFormProvider = ({
     account,
     resetToSaved,
     isSaving,
+    savedValues,
     cosDetail,
     accSpecificDetail,
     signatureList,

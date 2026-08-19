@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
@@ -13,14 +15,15 @@ import {
   Select,
   useSnackbar,
 } from '@zextras/ui-components';
-import React, { ChangeEvent, FC, useCallback, useContext, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../../../../../constants';
 import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
+import { domainQueryKeys } from '../../../../../services/domain-query-keys';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
-import { AccountContext } from '../account-context';
+import { useAccountForm } from './account-form-context';
 
 interface CredentialTextDataType {
   password?: string;
@@ -55,8 +58,12 @@ interface AddCredentialApiType {
 }
 
 export const ServicesPassphrase: FC = () => {
-  const context = useContext(AccountContext);
-  const { accountDetail, credentialList, getCredentialList } = context;
+  const { form, credentialList, account } = useAccountForm();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
+  const queryClient = useQueryClient();
+  const getCredentialList = (_accountName?: string): void => {
+    void queryClient.invalidateQueries({ queryKey: domainQueryKeys.credentialList(account.name) });
+  };
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
   const [t] = useTranslation();
@@ -92,7 +99,7 @@ export const ServicesPassphrase: FC = () => {
       module: 'ZxAuth',
       action: 'credential',
       request: 'add',
-      account: `${accountDetail?.uid}@${domainName}`,
+      account: `${values?.uid}@${domainName}`,
       ...createCredential,
     }).then((res: AddCredentialApiType) => {
       if (res.ok) {
@@ -102,7 +109,7 @@ export const ServicesPassphrase: FC = () => {
           text_data: res?.response?.text_data,
         });
         setCreateCredential((prev: CredentialType) => ({ ...prev, label: '' }));
-        getCredentialList(`${accountDetail?.uid}@${domainName}`);
+        getCredentialList(`${values?.uid}@${domainName}`);
         setCreateCredential({
           label: '',
           services: SERVICE_PASSPHRASE_SERVICES[0].value,
@@ -132,7 +139,7 @@ export const ServicesPassphrase: FC = () => {
     });
   }, [
     SERVICE_PASSPHRASE_SERVICES,
-    accountDetail?.uid,
+    values?.uid,
     createCredential,
     createSnackbar,
     domainName,
@@ -148,11 +155,11 @@ export const ServicesPassphrase: FC = () => {
         action: 'credential',
         request: 'delete',
         password_id: cred.id,
-        account: `${accountDetail?.uid}@${domainName}`,
+        account: `${values?.uid}@${domainName}`,
         ...createCredential,
       }).then((res: AddCredentialApiType) => {
         if (res.ok) {
-          getCredentialList(`${accountDetail?.uid}@${domainName}`);
+          getCredentialList(`${values?.uid}@${domainName}`);
           createSnackbar({
             key: 'success',
             severity: 'success',
@@ -176,7 +183,7 @@ export const ServicesPassphrase: FC = () => {
         }
       });
     },
-    [accountDetail?.uid, createCredential, createSnackbar, domainName, getCredentialList, t],
+    [values?.uid, createCredential, createSnackbar, domainName, getCredentialList, t],
   );
 
   return (

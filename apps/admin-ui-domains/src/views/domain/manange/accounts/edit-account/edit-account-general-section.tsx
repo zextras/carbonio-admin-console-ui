@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useQueryClient } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import { Button, ChipInput, Container, CustomHeaderFactory, CustomTextArea, DropDownInput, HoverableRowFactory, InheritedSelect, Input, LabeledValue, Modal, Padding, Paging, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
 import { useCosList, useIsAdvanced } from '@zextras/ui-shared';
 import { debounce, map } from 'lodash-es';
@@ -10,7 +12,6 @@ import React, {
   ChangeEvent,
   FC,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -20,6 +21,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Attribute, objectType } from '../../../../../../types';
 import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY } from '../../../../../constants';
 import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
+import { domainQueryKeys } from '../../../../../services/domain-query-keys';
 import { endSession } from '../../../../../services/end-session';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
@@ -34,8 +36,7 @@ import {
   formatZimbraDate,
   localeList,
 } from '../../../../utility/utils';
-import { AccountContext } from '../account-context';
-import { AccountType } from '../account-types/account-types';
+import { useAccountForm, useSetAccountValues } from './account-form-context';
 import { EditAccountQuotaBar } from './parts/edit-account-quota-bar';
 import { EditAccountQuotaInputs } from './parts/edit-account-quota-inputs';
 
@@ -58,22 +59,21 @@ export const EditAccountGeneralSection: FC<{
   onQuotaErrorChange: (hasError: boolean) => void;
 }> = ({ setChange, onQuotaErrorChange }) => {
   const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
   const {
-    accountDetail,
-    initAccountDetail,
-    setAccountDetail,
+    form,
+    cosDetail,
+    accSpecificDetail,
+    otpList,
     directMemberList,
     inDirectMemberList,
-    setInitAccountDetail,
-    accSpecificDetail,
-    cosDetail,
-    otpList,
-    allUserSessionList,
-    setAllUserSessionList,
-    userSessionList,
-    setUserSessionList,
+    sessions,
     allowedDeletePassword,
-  } = useContext(AccountContext);
+    savedValues,
+    account,
+  } = useAccountForm();
+  const setAccountValues = useSetAccountValues();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const { data: domain } = useSelectedDomain();
   const domainInformation = domain?.a;
   const domainName = domain?.name;
@@ -95,6 +95,17 @@ export const EditAccountGeneralSection: FC<{
   const [searchDomainName, setSearchDomainName] = useState(domainName);
   const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
   const [selectedSession, setSelectedSession] = useState<any>([]);
+  const [sessionFilter, setSessionFilter] = useState('');
+  const [endedSids, setEndedSids] = useState<Array<string>>([]);
+  const allUserSessionList = sessions.filter(
+    (item: UserSession) => !endedSids.includes(item?.sid),
+  );
+  const userSessionList = sessionFilter
+    ? allUserSessionList.filter(
+        (item: UserSession) =>
+          item?.name.includes(sessionFilter) || item?.sid.includes(sessionFilter),
+      )
+    : allUserSessionList;
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const isAdvanced = useIsAdvanced();
   const [defaultCosId, setDefaultCosId] = useState('');
@@ -167,9 +178,9 @@ export const EditAccountGeneralSection: FC<{
     (domain: string) => {
       setIsDomainSelect(true);
       setSearchDomainName(domain);
-      setAccountDetail((prev: AccountType) => ({ ...prev, domainName: domain }));
+      form.setFieldValue('domainName', domain);
     },
-    [setAccountDetail],
+    [form],
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -188,35 +199,35 @@ export const EditAccountGeneralSection: FC<{
 
   const changeSwitchOption = useCallback(
     (key: string): void => {
-      setAccountDetail((prev: AccountType) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
-        [key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+        [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
       }));
     },
-    [accountDetail, setAccountDetail],
+    [setAccountValues],
   );
   const changeAccDetail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
+      setAccountValues((prev: Record<string, any>) => ({ ...prev, [e.target.name]: e.target.value }));
     },
-    [setAccountDetail],
+    [setAccountValues],
   );
   const changeUserNaneDetail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountDetail((prev: AccountType) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
         uid: e.target.value?.replaceAll(' ', '')?.toLowerCase(),
       }));
     },
-    [setAccountDetail],
+    [setAccountValues],
   );
 
   useEffect(() => {
-    if (accountDetail?.mail) {
-      const aliaes = accountDetail.mail.split(', ').map((ele: string) => ({ label: ele }));
+    if (values?.mail) {
+      const aliaes = values.mail.split(', ').map((ele: string) => ({ label: ele }));
       setAccountAliases(aliaes);
     }
-  }, [accountDetail?.mail]);
+  }, [values?.mail]);
 
   useEffect(() => {
     if (!!cosList && cosList.length > 0) {
@@ -232,64 +243,58 @@ export const EditAccountGeneralSection: FC<{
   }, [cosList]);
 
   useEffect(() => {
-    if (accountDetail?.zimbraCOSId) {
+    if (values?.zimbraCOSId) {
       const cosId = cosItems.find((item: any) => item.label === DEFAULT);
       setDefaultCosId(cosId?.value);
-      if (accountDetail?.zimbraCOSId === cosId?.value && !cosDefaultStateSet) {
+      if (values?.zimbraCOSId === cosId?.value && !cosDefaultStateSet) {
         setDefaultCOS(true);
         setCosDefaultStateSet(true);
       }
     }
-  }, [accountDetail, cosItems, defaultCOS, setDefaultCOS, cosDefaultStateSet]);
+  }, [values, cosItems, defaultCOS, cosDefaultStateSet]);
 
   const selection = useMemo(
-    () => cosItems.find((item: any) => item.value === accountDetail?.zimbraCOSId),
-    [accountDetail, cosItems],
+    () => cosItems.find((item: any) => item.value === values?.zimbraCOSId),
+    [values, cosItems],
   );
 
   const onAccountStatusChange = (v: any): any => {
-    setAccountDetail((prev: AccountType) => ({ ...prev, zimbraAccountStatus: v }));
+    form.setFieldValue('zimbraAccountStatus', v);
   };
   const onAccountABQStatusChange = (v: any): any => {
-    setAccountDetail((prev: AccountType) => ({ ...prev, abqMode: v }));
+    form.setFieldValue('abqMode', v);
   };
   const onAccountBackupEnabledStatusChange = (v: any): any => {
-    setAccountDetail((prev: AccountType) => ({ ...prev, backupEnabled: v }));
+    form.setFieldValue('backupEnabled', v);
   };
   const onPrefLocaleChange = (v: string): void => {
-    v && setAccountDetail((prev: AccountType) => ({ ...prev, zimbraPrefLocale: v }));
+    if (v) form.setFieldValue('zimbraPrefLocale', v);
   };
   const onCOSIdChange = (v: any): void => {
-    setAccountDetail((prev: AccountType) => ({ ...prev, zimbraCOSId: v }));
+    form.setFieldValue('zimbraCOSId', v);
   };
   const onCOSSwitchChanges = (): void => {
     if (!defaultCOS) {
-      setAccountDetail((prev: AccountType) => ({
-        ...prev,
-        zimbraCOSId: defaultCosId,
-      }));
+      form.setFieldValue('zimbraCOSId', defaultCosId);
     } else {
-      setAccountDetail((prev: AccountType) => ({ ...prev, zimbraCOSId: cosItems[0]?.value }));
+      form.setFieldValue('zimbraCOSId', cosItems[0]?.value);
     }
     setDefaultCOS(!defaultCOS);
   };
 
   const deleteUserPassword = (): void => {
     setShowDeletePasswordModal(false);
-    modifyAccountRequest(accountDetail?.zimbraId, { userPassword: '' })
+    modifyAccountRequest(values?.zimbraId, { userPassword: '' })
       .then((data) => {
-        setAccountDetail((prev: AccountType) => ({
+        setAccountValues((prev: Record<string, any>) => ({
           ...prev,
           userPassword: '',
           password: '',
           repeatPassword: '',
         }));
-        setInitAccountDetail((prev: AccountType) => ({
-          ...prev,
-          userPassword: '',
-          password: '',
-          repeatPassword: '',
-        }));
+        void queryClient.invalidateQueries({
+          queryKey: domainQueryKeys.accountDetail(account.id),
+        });
         if (data) {
           createSnackbar({
             key: 'success',
@@ -317,9 +322,9 @@ export const EditAccountGeneralSection: FC<{
 
   const setEmptyValue = useCallback(
     (keyName: string) => {
-      setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+      setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
     },
-    [setAccountDetail],
+    [setAccountValues],
   );
 
   const items = useMemo(() => {
@@ -368,26 +373,27 @@ export const EditAccountGeneralSection: FC<{
   }, [domainList, selectedDomain, t]);
 
   useEffect(() => {
-    selectedDomain(accountDetail?.domainName);
-  }, [accountDetail?.domainName, selectedDomain]);
+    selectedDomain(values?.domainName);
+  }, [values?.domainName, selectedDomain]);
 
   useEffect(() => {
-    setAccountDetail((prev: AccountType) => ({ ...prev, domainName }));
-    setInitAccountDetail((prev: Record<string, string>) => ({ ...prev, domainName }));
+    if (domainName) {
+      form.setFieldValue('domainName', domainName);
+    }
     getDomainLists(domainName);
-  }, [domainName, getDomainLists, setAccountDetail, setInitAccountDetail]);
+  }, [domainName, getDomainLists, form]);
 
   const accountUserType = useMemo((): string => {
-    if (accountDetail.zimbraIsAdminAccount === 'TRUE') return 'Admin';
-    if (accountDetail.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
-    if (accountDetail.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
-    if (accountDetail.zimbraIsSystemAccount === 'TRUE') return 'System';
+    if (values?.zimbraIsAdminAccount === 'TRUE') return 'Admin';
+    if (values?.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
+    if (values?.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
+    if (values?.zimbraIsSystemAccount === 'TRUE') return 'System';
     return 'Normal';
   }, [
-    accountDetail.zimbraIsAdminAccount,
-    accountDetail.zimbraIsDelegatedAdminAccount,
-    accountDetail.zimbraIsExternalVirtualAccount,
-    accountDetail.zimbraIsSystemAccount,
+    values?.zimbraIsAdminAccount,
+    values?.zimbraIsDelegatedAdminAccount,
+    values?.zimbraIsExternalVirtualAccount,
+    values?.zimbraIsSystemAccount,
   ]);
 
   const addSelection = useCallback((item: UserSession) => {
@@ -468,17 +474,12 @@ export const EditAccountGeneralSection: FC<{
     [createSnackbar, t],
   );
   const setUserSessionListState = useCallback((): void => {
-    setUserSessionList((prev: any) =>
-      prev.filter((item: UserSession) => item?.sid !== selectedSession[0]),
-    );
-    setAllUserSessionList((prev: any) =>
-      prev.filter((item: UserSession) => item?.sid !== selectedSession[0]),
-    );
-  }, [selectedSession, setAllUserSessionList, setUserSessionList]);
+    setEndedSids((prev) => [...prev, selectedSession[0]]);
+  }, [selectedSession]);
 
   const handleEndSession = useCallback(
     (token: string) => {
-      endSession(selectedSession[0], accountDetail?.name, token)
+      endSession(selectedSession[0], values?.name, token)
         .then((resp: any) => {
           if (!resp?._jsns) throw new Error('Session end failed');
           setUserSessionListState();
@@ -496,7 +497,7 @@ export const EditAccountGeneralSection: FC<{
     },
     [
       selectedSession,
-      accountDetail?.name,
+      values?.name,
       handleEndSessionError,
       setUserSessionListState,
       createSnackbar,
@@ -506,23 +507,19 @@ export const EditAccountGeneralSection: FC<{
 
   const onEndSession = useCallback(() => {
     setIsRequestInProgress(true);
-    getDelegateAuthRequest(accountDetail?.zimbraId)
+    getDelegateAuthRequest(values?.zimbraId)
       .then((res: any) => res?.authToken[0]?._content)
       .then(handleEndSession)
       .catch(handleEndSessionError)
       .finally(() => setIsRequestInProgress(false));
-  }, [accountDetail?.zimbraId, handleEndSession, handleEndSessionError, setIsRequestInProgress]);
+  }, [values?.zimbraId, handleEndSession, handleEndSessionError]);
 
   const onSessionFilterInputChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
       setSelectedSession([]);
-      const value = ev?.target?.value || '';
-      const filterdSession = allUserSessionList.filter(
-        (item: UserSession) => item?.name.includes(value) || item?.sid.includes(value),
-      );
-      setUserSessionList(filterdSession);
+      setSessionFilter(ev?.target?.value || '');
     },
-    [allUserSessionList, setUserSessionList],
+    [],
   );
 
   const renderSwitchRow = (
@@ -558,7 +555,7 @@ export const EditAccountGeneralSection: FC<{
               backgroundColor="gray5"
               onChange={changeAccDetail}
               inputName="sn"
-              value={accountDetail?.sn || ''}
+              value={values?.sn || ''}
             />
           </Row>
           <Row width="32%" mainAlignment="space-between">
@@ -568,7 +565,7 @@ export const EditAccountGeneralSection: FC<{
               backgroundColor="gray5"
               onChange={changeAccDetail}
               inputName="initials"
-              value={accountDetail?.initials || ''}
+              value={values?.initials || ''}
             />
           </Row>
           <Row width="32%" mainAlignment="space-between">
@@ -578,7 +575,7 @@ export const EditAccountGeneralSection: FC<{
               backgroundColor="gray5"
               onChange={changeAccDetail}
               inputName="givenName"
-              value={accountDetail?.givenName || ''}
+              value={values?.givenName || ''}
             />
           </Row>
         </Row>
@@ -589,7 +586,7 @@ export const EditAccountGeneralSection: FC<{
               label={t('label.advance_edit_user', 'User')}
               onChange={changeUserNaneDetail}
               inputName="uid"
-              value={accountDetail?.uid}
+              value={values?.uid}
               autoComplete="new-password"
             />
           </Row>
@@ -625,7 +622,7 @@ export const EditAccountGeneralSection: FC<{
               listAliases={accountAliases}
               setListAliases={setAccountAliases}
               setAliasChange={(aliaes): void =>
-                setAccountDetail((prev: AccountType) => ({
+                setAccountValues((prev: Record<string, any>) => ({
                   ...prev,
                   mail: map(aliaes, 'label').join(', '),
                 }))
@@ -653,7 +650,7 @@ export const EditAccountGeneralSection: FC<{
             <Input
               label={t('label.advance_edit_display_name', 'Display Name')}
               backgroundColor="gray5"
-              value={accountDetail?.displayName || ''}
+              value={values?.displayName || ''}
               defaultValue={''}
               onChange={changeAccDetail}
               inputName="displayName"
@@ -675,21 +672,21 @@ export const EditAccountGeneralSection: FC<{
           <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
             <Row width="49%" mainAlignment="flex-start">
               <Select
-                disabled={!accountDetail?.abqMode}
+                disabled={!values?.abqMode}
                 items={ABQ_STATUS}
                 background="gray5"
                 label={t('account_details.abq_status', 'ABQ Status')}
                 showCheckbox={false}
                 onChange={onAccountABQStatusChange}
                 selection={
-                  ABQ_STATUS.find((item: any) => item.value === accountDetail?.abqMode) ||
+                  ABQ_STATUS.find((item: any) => item.value === values?.abqMode) ||
                   ABQ_STATUS[0]
                 }
               />
             </Row>
             <Row width="49%" mainAlignment="flex-start">
               <Select
-                disabled={accountDetail?.backupEnabled === undefined}
+                disabled={values?.backupEnabled === undefined}
                 items={BACKUP_ENABLED_STATUS}
                 background="gray5"
                 label={t('account_details.included_in_backup', 'Included in Backup')}
@@ -697,7 +694,7 @@ export const EditAccountGeneralSection: FC<{
                 onChange={onAccountBackupEnabledStatusChange}
                 selection={
                   BACKUP_ENABLED_STATUS.find(
-                    (item: any) => item.value === accountDetail?.backupEnabled,
+                    (item: any) => item.value === values?.backupEnabled,
                   ) || BACKUP_ENABLED_STATUS[0]
                 }
               />
@@ -706,9 +703,9 @@ export const EditAccountGeneralSection: FC<{
         )}
         <EditAccountQuotaInputs
           cosDetail={cosDetail}
-          accountDetail={accountDetail}
-          initialAccountDetail={initAccountDetail}
-          setAccountDetail={setAccountDetail}
+          accountDetail={values}
+          initialAccountDetail={savedValues}
+          setAccountDetail={setAccountValues}
           onQuotaErrorChange={onQuotaErrorChange}
         />
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -716,11 +713,11 @@ export const EditAccountGeneralSection: FC<{
             <LabeledValue
               label={t('label.server', 'Server')}
               backgroundColor="gray5"
-              value={accountDetail?.zimbraMailHost}
+              value={values?.zimbraMailHost}
             />
           </Row>
           <Row width="49%" mainAlignment="flex-start">
-            <LabeledValue label="ID" backgroundColor="gray5" value={accountDetail?.zimbraId} />
+            <LabeledValue label="ID" backgroundColor="gray5" value={values?.zimbraId} />
           </Row>
         </Row>
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -729,8 +726,8 @@ export const EditAccountGeneralSection: FC<{
               label={t('label.creation_date', 'Creation Date')}
               backgroundColor="gray6"
               value={
-                accountDetail?.zimbraCreateTimestamp
-                  ? formatZimbraDate(accountDetail?.zimbraCreateTimestamp)
+                values?.zimbraCreateTimestamp
+                  ? formatZimbraDate(values?.zimbraCreateTimestamp)
                   : t('label.not_available', 'Not Available')
               }
             />
@@ -740,8 +737,8 @@ export const EditAccountGeneralSection: FC<{
               label={t('label.last_access', 'Last Access')}
               backgroundColor="gray6"
               value={
-                accountDetail?.zimbraLastLogonTimestamp
-                  ? formatZimbraDate(accountDetail?.zimbraLastLogonTimestamp)
+                values?.zimbraLastLogonTimestamp
+                  ? formatZimbraDate(values?.zimbraLastLogonTimestamp)
                   : t('label.never_logged_in', 'Never logged in')
               }
               defaultValue={t('label.never_logged_in', 'Never logged in')}
@@ -751,7 +748,7 @@ export const EditAccountGeneralSection: FC<{
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="27%" mainAlignment="flex-start">
             <Switch
-              value={accountDetail?.zimbraHideInGal === 'TRUE'}
+              value={values?.zimbraHideInGal === 'TRUE'}
               onClick={(): void => changeSwitchOption('zimbraHideInGal')}
               label={t('account_details.hidden_in_gal', 'Hidden in GAL')}
               iconColor="primary"
@@ -768,7 +765,7 @@ export const EditAccountGeneralSection: FC<{
           </Row>
           {renderSwitchRow(
             t('account_details.this_user_must_change_password', 'This user must change password'),
-            accountDetail?.zimbraPasswordMustChange === 'TRUE',
+            values?.zimbraPasswordMustChange === 'TRUE',
             () => changeSwitchOption('zimbraPasswordMustChange'),
           )}
         </Row>
@@ -792,7 +789,7 @@ export const EditAccountGeneralSection: FC<{
                     inputName="password"
                     type="password"
                     autoComplete="new-password"
-                    value={accountDetail?.password}
+                    value={values?.password}
                     disabled={isHidePassword}
                   />
                 </Tooltip>
@@ -813,7 +810,7 @@ export const EditAccountGeneralSection: FC<{
                     inputName="repeatPassword"
                     type="password"
                     autoComplete="new-password"
-                    value={accountDetail?.repeatPassword}
+                    value={values?.repeatPassword}
                     disabled={isHidePassword}
                   />
                 </Tooltip>
@@ -830,7 +827,7 @@ export const EditAccountGeneralSection: FC<{
                   inputName="password"
                   type="password"
                   autoComplete="new-password"
-                  value={accountDetail?.password}
+                  value={values?.password}
                   disabled={isHidePassword}
                 />
               </Row>
@@ -843,7 +840,7 @@ export const EditAccountGeneralSection: FC<{
                   inputName="repeatPassword"
                   type="password"
                   autoComplete="new-password"
-                  value={accountDetail?.repeatPassword}
+                  value={values?.repeatPassword}
                   disabled={isHidePassword}
                 />
               </Row>
@@ -919,7 +916,7 @@ export const EditAccountGeneralSection: FC<{
                   backgroundColor="gray5"
                   onChange={changeAccDetail}
                   inputName="zimbraAuthLdapExternalDn"
-                  value={accountDetail?.zimbraAuthLdapExternalDn || ''}
+                  value={values?.zimbraAuthLdapExternalDn || ''}
                 />
               </Row>
             </Row>
@@ -937,7 +934,7 @@ export const EditAccountGeneralSection: FC<{
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="49%" mainAlignment="flex-start">
-            {accountDetail?.zimbraId ? (
+            {values?.zimbraId ? (
               <Select
                 items={ACCOUNT_STATUS}
                 background="gray5"
@@ -947,7 +944,7 @@ export const EditAccountGeneralSection: FC<{
                 selection={
                   ACCOUNT_STATUS.find(
                     (item: { value: string; label: string }) =>
-                      item.value === accountDetail?.zimbraAccountStatus,
+                      item.value === values?.zimbraAccountStatus,
                   ) ?? ACCOUNT_STATUS[0]
                 }
               />
@@ -956,11 +953,11 @@ export const EditAccountGeneralSection: FC<{
             )}
           </Row>
           <Row width="49%" mainAlignment="flex-start">
-            {accountDetail?.zimbraId && localeZone?.length ? (
+            {values?.zimbraId && localeZone?.length ? (
               <InheritedSelect
                 label={t('label.language', 'Language')}
                 items={localeZone}
-                subValue={accountDetail.zimbraPrefLocale}
+                subValue={values.zimbraPrefLocale}
                 inheritedValue={cosDetail.zimbraPrefLocale}
                 fromSubValue={accSpecificDetail?.zimbraPrefLocale}
                 background="gray5"
@@ -1058,7 +1055,7 @@ export const EditAccountGeneralSection: FC<{
           <Input
             backgroundColor="gray5"
             label={t('label.description', 'Description')}
-            value={accountDetail?.description || ''}
+            value={values?.description || ''}
             defaultValue={''}
             onChange={changeAccDetail}
             inputName="description"
@@ -1072,7 +1069,7 @@ export const EditAccountGeneralSection: FC<{
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
           <CustomTextArea
             label={t('label.notes', 'Notes')}
-            value={accountDetail?.zimbraNotes || ''}
+            value={values?.zimbraNotes || ''}
             backgroundColor="gray5"
             inputName="zimbraNotes"
             onChange={changeAccDetail}
@@ -1152,7 +1149,7 @@ export const EditAccountGeneralSection: FC<{
       <Modal
         size="small"
         title={t('account_details.delete_password', 'Delete Password', {
-          name: accountDetail?.givenName,
+          name: values?.givenName,
         })}
         open={showDeletePasswordModal}
         customFooter={
@@ -1184,7 +1181,7 @@ export const EditAccountGeneralSection: FC<{
             defaults="You are deleting the password of <bold>{{name}}</bold> from the LDAP. Are you sure you want to delete it?"
             components={{ bold: <strong /> }}
             values={{
-              name: accountDetail?.givenName,
+              name: values?.givenName,
             }}
           />
         </ds-text>
