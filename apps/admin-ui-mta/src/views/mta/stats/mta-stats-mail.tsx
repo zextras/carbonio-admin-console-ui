@@ -1,36 +1,22 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Button,
-  Container,
-  CustomHeaderFactory,
-  DefaultTabBarItem,
-  type DefaultTabBarItemProps,
-  HoverableRowFactory,
-  Paging,
-  Row,
-  TabBar,
-  Table,
-  TrackNumberPerPage,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button, Container, Row, TabBar } from '@zextras/ui-components';
 import { format } from 'date-fns';
-import { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
   MailQueueActionRequest,
   MailQueueInfo,
   MtaMailQueueItem,
-  MtaStats,
   mtaStats,
   TRow,
 } from '../../../../types';
-import logo from '../../../assets/gardian.svg';
 import {
   ACTIVE,
   CORRUPT,
@@ -43,430 +29,184 @@ import {
   REQUEUE,
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
-import { batchService } from '../../../services/batch-service';
-import { getMailQueue } from '../../../services/get-mail-queue';
-import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
+import { mtaQueryKeys } from '../../../services/mta-query-keys';
+import { useBatchMailQueueAction } from '../../../services/use-batch-mail-queue-action';
+import { useMailQueue } from '../../../services/use-mail-queue';
+import { useMailQueueInfo } from '../../../services/use-mail-queue-info';
+import { MailQueueActions } from './sections/mail-queue-actions';
+import { MailQueueTable } from './sections/mail-queue-table';
+import { ReusedDefaultTabBar } from './sections/reused-default-tab-bar';
 
-const ReusedDefaultTabBar: FC<DefaultTabBarItemProps> = ({ item, selected, onClick }): ReactElement => {
-  const count = (item as { count?: number }).count;
-  return (
-  <DefaultTabBarItem
-    item={item}
-    selected={selected}
-    onClick={onClick}
-    orientation="horizontal"
-    background={'transparent'}
-    underlineColor={'primary'}
-    forceWidthEquallyDistributed={false}
-  >
-    <Container
-      orientation="horizontal"
-      mainAlignment="flex-end"
-      crossAlignment="flex-end"
-      padding={{ all: 'medium' }}
-      width="100%"
-    >
-      <Container mainAlignment="flex-end" crossAlignment="flex-end" width="100%" height="auto">
-        <ds-text as="span" size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
-          {item.label} ({count ?? 0})
-        </ds-text>
-      </Container>
-    </Container>
-  </DefaultTabBarItem>
-  );
-};
-
-const MTAStatsMail: FC<{
+type MTAStatsMailProps = Readonly<{
   serverState: mtaStats | undefined;
-  updateMailCount: (stat: MtaStats) => void;
   closeDialogMail: (val?: boolean) => void;
   flushQueues: () => void;
   requestInprogress: boolean;
   flushRequestInProgress: boolean;
-}> = ({
+}>;
+
+function buildTableRows(queueItems: Array<MtaMailQueueItem>): Array<TRow> {
+  return queueItems.map((item: MtaMailQueueItem) => ({
+    id: item?.id,
+    columns: [
+      <Container crossAlignment="flex-start" key={item?.id}>
+        <ds-text as="span" color="gray0" weight="regular">{item?.id}</ds-text>
+      </Container>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {format(new Date(Number.parseInt(item?.arrivalTime, 10)), 'dd/MM/yy - HH:mm')}
+      </ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.size}</ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.fromDomain}</ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.toDomain}</ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.sender}</ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.receiver}</ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.host}</ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.ip}</ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.reason}</ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.filter}</ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.receiveid}</ds-text>,
+    ],
+  }));
+}
+
+function extractQueueCounts(queue: Array<MailQueueInfo>): Record<string, number> {
+  return {
+    queued: queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n || 0,
+    corrupted: queue.find((item: Record<string, string | number>) => item?.name === CORRUPT)?.n || 0,
+    deferred: queue.find((item: Record<string, string | number>) => item?.name === DEFERRED)?.n || 0,
+    incoming: queue.find((item: Record<string, string | number>) => item?.name === INCOMING)?.n || 0,
+    onhold: queue.find((item: Record<string, string | number>) => item?.name === HOLD)?.n || 0,
+  };
+}
+
+function parseQueueItems(serverData: { queue?: Array<{ qi?: Array<Record<string, string>>; total?: number }> } | undefined): { items: Array<MtaMailQueueItem>; total: number } {
+  const queue = serverData?.queue?.[0];
+  const total = queue?.total ?? 0;
+  const items: Array<MtaMailQueueItem> = [];
+
+  if (queue?.qi && Array.isArray(queue.qi)) {
+    queue.qi.forEach((qItem: Record<string, string>) => {
+      items.push({
+        arrivalTime: qItem?.time,
+        filter: qItem?.filter,
+        fromDomain: qItem?.fromdomain,
+        host: qItem?.host,
+        id: qItem?.id,
+        ip: qItem?.ip || '',
+        reason: qItem?.reason,
+        receiveid: qItem?.received,
+        receiver: qItem?.receiver || '',
+        sender: qItem?.from,
+        size: qItem?.size,
+        toDomain: qItem?.todomain,
+      });
+    });
+  }
+
+  return { items, total };
+}
+
+export const MTAStatsMail = ({
   serverState,
-  updateMailCount,
   closeDialogMail,
   flushQueues,
   requestInprogress,
   flushRequestInProgress,
-}) => {
+}: MTAStatsMailProps) => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
+  const { mutateAsync: batchMailQueueActionAsync } = useBatchMailQueueAction();
   const [change, setChange] = useState(ACTIVE);
   const [selectedRow, setSelectedRow] = useState<Array<string>>([]);
-  const [mailRows, setMailRows] = useState<Array<TRow>>([]);
-  const [mailStatCount, setMailStatCount] = useState<Record<string, number>>({
-    queued: serverState?.active ? Number.parseInt(serverState?.active, 10) : 0,
-    corrupted: serverState?.corrupt ? Number.parseInt(serverState?.corrupt, 10) : 0,
-    deferred: serverState?.deferred ? Number.parseInt(serverState?.deferred, 10) : 0,
-    incoming: serverState?.incoming ? Number.parseInt(serverState?.incoming, 10) : 0,
-    onhold: serverState?.hold ? Number.parseInt(serverState?.hold, 10) : 0,
-  });
-  const [isMailQueueLoading, setIsMailQueueLoading] = useState<boolean>(false);
   const [holdInProgress, setHoldInProgress] = useState<boolean>(false);
   const [releaseInProgress, setReleaseInProgress] = useState<boolean>(false);
   const [requeueInProgress, setRequeueInProgress] = useState<boolean>(false);
   const [deleteInProgress, setDeleteInProgress] = useState<boolean>(false);
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
-  const [totalAccount, setTotalAccount] = useState<number>(0);
 
-  const items = useMemo(
-    () => [
-      {
-        id: ACTIVE,
-        label: t('mta.queued', 'Queued'),
-        count: mailStatCount?.queued,
-        CustomComponent: ReusedDefaultTabBar,
-      },
-      {
-        id: CORRUPT,
-        label: t('mta.corrupted', 'Corrupted'),
-        count: mailStatCount?.corrupted,
-        CustomComponent: ReusedDefaultTabBar,
-      },
-      {
-        id: DEFERRED,
-        label: t('mta.deferred', 'Deferred'),
-        count: mailStatCount?.deferred,
-        CustomComponent: ReusedDefaultTabBar,
-      },
-      {
-        id: INCOMING,
-        label: t('mta.incoming', 'Incoming'),
-        count: mailStatCount?.incoming,
-        CustomComponent: ReusedDefaultTabBar,
-      },
-      {
-        id: HOLD,
-        label: t('mta.onhold', 'On Hold'),
-        count: mailStatCount?.onhold,
-        CustomComponent: ReusedDefaultTabBar,
-      },
-    ],
-    [t, mailStatCount],
-  );
+  const serverName = serverState?.serverName ?? '';
 
-  const headers = useMemo(
-    () => [
-      {
-        id: 'id',
-        label: t('label.ID', 'ID'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'arrivaltime',
-        label: t('label.arrival_time', 'Arrival Time'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'size',
-        label: t('label.size_kb', 'Size (KB)'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'fromdomain',
-        label: t('label.from_domain', 'FromDomain'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'todomain',
-        label: t('label.to_domain', 'ToDomain'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'sender',
-        label: t('label.sender', 'Sender'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'receiver',
-        label: t('label.receiver', 'Receiver'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'hostorigin',
-        label: t('label.host_origin', 'Host (Origin)'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'iporigin',
-        label: t('label.ip_origin', 'IP (Origin)'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'reason',
-        label: t('label.reason', 'Reason'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'filter',
-        label: t('label.filter', 'Filter'),
-        width: '12%',
-        bold: true,
-      },
-      {
-        id: 'received',
-        label: t('label.received', 'Received'),
-        width: '12%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
+  const { data: queueInfoData } = useMailQueueInfo(serverName, Boolean(serverName));
 
-  const setToTable = useCallback((qi: Array<MtaMailQueueItem>) => {
-    if (qi.length === 0) {
-      setMailRows([]);
-    } else {
-      const quotaData: Array<TRow> = [];
-      qi.forEach((item: MtaMailQueueItem) => {
-        quotaData.push({
-          id: item?.id,
-          columns: [
-            <Container crossAlignment="flex-start" key={item?.id}>
-              <ds-text as="span" color="gray0" weight="regular">
-                {item?.id}
-              </ds-text>
-            </Container>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {format(new Date(Number.parseInt(item?.arrivalTime, 10)), 'dd/MM/yy - HH:mm')}
-            </ds-text>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {item?.size}
-            </ds-text>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {item?.fromDomain}
-            </ds-text>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {item?.toDomain}
-            </ds-text>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {item?.sender}
-            </ds-text>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {item?.receiver}
-            </ds-text>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {item?.host}
-            </ds-text>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {item?.ip}
-            </ds-text>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {item?.reason}
-            </ds-text>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {item?.filter}
-            </ds-text>,
-            <ds-text as="span" color="gray0" weight="light" key={item?.id}>
-              {item?.receiveid}
-            </ds-text>,
-          ],
-        });
-      });
-      setMailRows(quotaData);
-    }
-  }, []);
+  const {
+    data: mailQueueData,
+    isLoading: isMailQueueLoading,
+  } = useMailQueue(serverName, change, offset, limit, Boolean(serverName));
 
-  const setMailStateCountData = useCallback((queue: Array<MailQueueInfo>) => {
-    setMailStatCount({
-      queued: queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n || 0,
-      corrupted:
-        queue.find((item: Record<string, string | number>) => item?.name === CORRUPT)?.n || 0,
-      deferred:
-        queue.find((item: Record<string, string | number>) => item?.name === DEFERRED)?.n || 0,
-      incoming:
-        queue.find((item: Record<string, string | number>) => item?.name === INCOMING)?.n || 0,
-      onhold: queue.find((item: Record<string, string | number>) => item?.name === HOLD)?.n || 0,
-    });
-  }, []);
+  const queueInfo = queueInfoData?.server?.[0]?.queue ?? [];
+  const mailStatCount = extractQueueCounts(queueInfo);
 
-  const getMailQueueCount = useCallback(() => {
-    if (serverState?.serverName) {
-      getMailqueueInformation(serverState?.serverName)
-        .then((data) => {
-          if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
-            const queue = data?.server[0]?.queue;
-            if (queue && queue?.length > 0) {
-              setMailStateCountData(queue);
-            }
-          }
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error
-              ? error?.error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
-    }
-  }, [createSnackbar, serverState?.serverName, setMailStateCountData, t]);
+  const serverQueueData = mailQueueData?.server?.[0];
+  const { items: queueItems, total: totalAccount } = parseQueueItems(serverQueueData);
+  const mailRows = buildTableRows(queueItems);
 
-  const getMailFromMailQueue = useCallback(() => {
-    setIsMailQueueLoading(true);
-    getMailQueue(serverState?.serverName || '', change, offset, limit)
-      .then((data) => {
-        setIsMailQueueLoading(false);
-        if (data?.server && Array.isArray(data?.server)) {
-          const queue = data?.server[0]?.queue[0];
-          if (queue?.total) {
-            setTotalAccount(queue?.total);
-          }
-          const queueItem: Array<MtaMailQueueItem> = [];
-          if (queue?.qi && Array.isArray(queue?.qi)) {
-            queue?.qi.forEach((qItem: Record<string, string>) => {
-              queueItem.push({
-                arrivalTime: qItem?.time,
-                filter: qItem?.filter,
-                fromDomain: qItem?.fromdomain,
-                host: qItem?.host,
-                id: qItem?.id,
-                ip: qItem?.ip || '',
-                reason: qItem?.reason,
-                receiveid: qItem?.received,
-                receiver: qItem?.receiver || '',
-                sender: qItem?.from,
-                size: qItem?.size,
-                toDomain: qItem?.todomain,
-              });
-            });
-          }
-          setToTable(queueItem);
-        }
-      })
-      .catch(() => {
-        setIsMailQueueLoading(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  }, [createSnackbar, limit, offset, change, serverState?.serverName, setToTable, t]);
+  const items = [
+    { id: ACTIVE, label: t('mta.queued', 'Queued'), count: mailStatCount?.queued, CustomComponent: ReusedDefaultTabBar },
+    { id: CORRUPT, label: t('mta.corrupted', 'Corrupted'), count: mailStatCount?.corrupted, CustomComponent: ReusedDefaultTabBar },
+    { id: DEFERRED, label: t('mta.deferred', 'Deferred'), count: mailStatCount?.deferred, CustomComponent: ReusedDefaultTabBar },
+    { id: INCOMING, label: t('mta.incoming', 'Incoming'), count: mailStatCount?.incoming, CustomComponent: ReusedDefaultTabBar },
+    { id: HOLD, label: t('mta.onhold', 'On Hold'), count: mailStatCount?.onhold, CustomComponent: ReusedDefaultTabBar },
+  ];
 
-  useEffect(() => {
-    getMailQueueCount();
-  }, [getMailQueueCount]);
-
-  useEffect(() => {
-    getMailFromMailQueue();
-  }, [getMailFromMailQueue]);
-
-  const callAllRequest = useCallback(
-    (request: Array<MailQueueActionRequest>) => {
-      batchService({
+  async function callAllRequest(request: Array<MailQueueActionRequest>) {
+    try {
+      await batchMailQueueActionAsync({
+        serverName,
         MailQueueActionRequest: request,
-        _jsns: 'urn:zimbra',
-      }).then(() => {
-        getMailFromMailQueue();
-        getMailQueueCount();
-        setSelectedRow([]);
-        setHoldInProgress(false);
-        setReleaseInProgress(false);
-        setRequeueInProgress(false);
-        setDeleteInProgress(false);
       });
-    },
-    [getMailFromMailQueue, getMailQueueCount],
-  );
+      await queryClient.invalidateQueries({ queryKey: mtaQueryKeys.mailQueue(serverName, change, offset, limit) });
+      await queryClient.invalidateQueries({ queryKey: mtaQueryKeys.mailQueueInfo(serverName) });
+      setSelectedRow([]);
+    } catch {
+      // Error snackbar is already shown by the hook
+    } finally {
+      setHoldInProgress(false);
+      setReleaseInProgress(false);
+      setRequeueInProgress(false);
+      setDeleteInProgress(false);
+    }
+  }
 
-  const mailQueAction = useCallback(
-    (operation: string) => {
-      const mailActionRequestData: {
-        _jsns: string;
-        server: {
-          name: string;
-          queue: { name: string; action: { op: string; by: string; _content: string } };
-        };
-      }[] = [];
-      if (serverState?.serverName) {
-        selectedRow.forEach((item) => {
-          mailActionRequestData.push({
-            _jsns: ZIMBRA_ADMIN_URN,
-            server: {
-              name: serverState?.serverName,
-              queue: {
-                name: change,
-                action: {
-                  op: operation,
-                  by: 'id',
-                  _content: item,
-                },
-              },
-            },
-          });
+  function mailQueAction(operation: string) {
+    const mailActionRequestData: Array<MailQueueActionRequest> = [];
+    if (serverName) {
+      selectedRow.forEach((item) => {
+        mailActionRequestData.push({
+          _jsns: ZIMBRA_ADMIN_URN,
+          server: {
+            name: serverName,
+            queue: { name: change, action: { op: operation, by: 'id', _content: item } },
+          },
         });
-        callAllRequest(mailActionRequestData);
-      }
-    },
-    [callAllRequest, change, selectedRow, serverState?.serverName],
-  );
+      });
+      callAllRequest(mailActionRequestData);
+    }
+  }
 
-  const onHoldPress = useCallback(() => {
+  function onHoldPress() {
     setHoldInProgress(true);
     mailQueAction(HOLD);
-  }, [mailQueAction]);
+  }
 
-  const onReleasePress = useCallback(() => {
+  function onReleasePress() {
     setReleaseInProgress(true);
     mailQueAction(RELEASE);
-  }, [mailQueAction]);
+  }
 
-  const onRequeuePress = useCallback(() => {
+  function onRequeuePress() {
     setRequeueInProgress(true);
     mailQueAction(REQUEUE);
-  }, [mailQueAction]);
+  }
 
-  const onDeletePress = useCallback(() => {
+  function onDeletePress() {
     setDeleteInProgress(true);
     mailQueAction(DELETE);
-  }, [mailQueAction]);
+  }
 
-  const closeDialog = useCallback(
-    (closeDetailDialog?: boolean) => {
-      updateMailCount({
-        serverName: serverState?.serverName || '',
-        incoming: mailStatCount.incoming.toString() || '0',
-        active: mailStatCount.queued.toString() || '0',
-        corrupt: mailStatCount?.corrupted.toString() || '0',
-        deferred: mailStatCount?.deferred.toString() || '0',
-        hold: mailStatCount?.onhold.toString() || '0',
-        id: serverState?.id || '',
-      });
-      closeDialogMail(closeDetailDialog);
-    },
-    [
-      closeDialogMail,
-      mailStatCount?.corrupted,
-      mailStatCount?.deferred,
-      mailStatCount.incoming,
-      mailStatCount?.onhold,
-      mailStatCount.queued,
-      serverState?.id,
-      serverState?.serverName,
-      updateMailCount,
-    ],
-  );
+  function closeDialog(closeDetailDialog?: boolean) {
+    closeDialogMail(closeDetailDialog);
+  }
 
   return (
     <Container
@@ -527,7 +267,6 @@ const MTAStatsMail: FC<{
             selected={change}
             onChange={(ev: unknown, selectedId: string): void => {
               setOffset(0);
-              setTotalAccount(0);
               setChange(selectedId);
             }}
             underlineColor="primary"
@@ -536,137 +275,32 @@ const MTAStatsMail: FC<{
           />
         </Container>
 
-        <Container
-          height="auto"
-          crossAlignment="flex-end"
-          mainAlignment="flex-end"
-          orientation="horizontal"
-          padding={{ top: 'large', bottom: 'large' }}
-        >
-          <Container height="auto" width="auto" padding={{ right: 'medium' }}>
-            <Button
-              label={t('mta.hold', 'Hold')}
-              color="primary"
-              size="large"
-              type="outlined"
-              onClick={onHoldPress}
-              loading={holdInProgress}
-              disabled={holdInProgress || selectedRow.length === 0}
-            />
-          </Container>
-          <Container height="auto" width="auto" padding={{ right: 'medium' }}>
-            <Button
-              label={t('mta.release', 'Release')}
-              color="primary"
-              size="large"
-              type="outlined"
-              onClick={onReleasePress}
-              loading={releaseInProgress}
-              disabled={releaseInProgress || selectedRow.length === 0}
-            />
-          </Container>
-          <Container height="auto" width="auto" padding={{ right: 'medium' }}>
-            <Button
-              label={t('mta.requeue', 'Requeue')}
-              color="primary"
-              size="large"
-              type="outlined"
-              onClick={onRequeuePress}
-              loading={requeueInProgress}
-              disabled={requeueInProgress || selectedRow.length === 0}
-            />
-          </Container>
+        <MailQueueActions
+          selectedRowCount={selectedRow.length}
+          holdInProgress={holdInProgress}
+          releaseInProgress={releaseInProgress}
+          requeueInProgress={requeueInProgress}
+          deleteInProgress={deleteInProgress}
+          requestInprogress={requestInprogress}
+          flushRequestInProgress={flushRequestInProgress}
+          onHoldPress={onHoldPress}
+          onReleasePress={onReleasePress}
+          onRequeuePress={onRequeuePress}
+          onDeletePress={onDeletePress}
+          flushQueues={flushQueues}
+        />
 
-          <Container height="auto" width="auto" padding={{ right: 'medium' }}>
-            <Button
-              label={t('label.delete', 'Delete')}
-              color="error"
-              size="large"
-              type="outlined"
-              onClick={onDeletePress}
-              loading={deleteInProgress}
-              disabled={deleteInProgress || selectedRow.length === 0}
-            />
-          </Container>
-          <Container height="auto" width="auto" padding={{ right: 'medium' }}>
-            <Button
-              label={t('mta.flush_queues', 'Flush queues')}
-              color="primary"
-              size="large"
-              type="outlined"
-              onClick={flushQueues}
-              disabled={requestInprogress || flushRequestInProgress}
-              loading={requestInprogress || flushRequestInProgress}
-            />
-          </Container>
-        </Container>
-
-        <Container
-          height="auto"
-          style={{
-            height: mailRows.length === 0 ? '10rem' : 'calc(100vh - 17.25rem)',
-            position: 'relative',
-          }}
-        >
-          <Table
-            selectedRows={selectedRow}
-            rows={mailRows}
-            headers={headers}
-            onSelectionChange={(selected: Array<string>): void => {
-              setSelectedRow(selected);
-            }}
-            style={{ overflow: 'auto', height: '100%', width: 'auto' }}
-            RowFactory={HoverableRowFactory}
-            HeaderFactory={CustomHeaderFactory}
-          />
-          {isMailQueueLoading && (
-            <Container
-              crossAlignment="center"
-              mainAlignment="flex-start"
-              height="auto"
-              style={{ position: 'absolute' }}
-              padding={{ top: 'medium' }}
-            >
-              <ds-spinner></ds-spinner>
-            </Container>
-          )}
-        </Container>
-        <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          width="100%"
-          height="auto"
-          padding={{ top: 'medium' }}
-        >
-          <Container crossAlignment="flex-start">
-            {mailRows && mailRows.length > 0 && (
-              <Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-            )}
-          </Container>
-
-          <Container crossAlignment="flex-end" orientation="horizontal" mainAlignment="flex-end">
-            {mailRows && mailRows.length > 0 && <TrackNumberPerPage setPageSize={setLimit} />}
-          </Container>
-        </Container>
-        {mailRows.length === 0 && !isMailQueueLoading && (
-          <Container orientation="column" crossAlignment="center" mainAlignment="center">
-            <Row>
-              <img src={logo} alt="logo" />
-            </Row>
-            <Row
-              padding={{ top: 'extralarge' }}
-              orientation="vertical"
-              crossAlignment="center"
-              style={{ textAlign: 'center' }}
-            >
-              <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
-                {t('label.this_list_is_empty', 'This list is empty.')}
-              </ds-text>
-            </Row>
-          </Container>
-        )}
+        <MailQueueTable
+          mailRows={mailRows}
+          selectedRow={selectedRow}
+          isMailQueueLoading={isMailQueueLoading}
+          totalAccount={totalAccount}
+          limit={limit}
+          setOffset={setOffset}
+          setLimit={setLimit}
+          onSelectionChange={(selected: Array<string>): void => setSelectedRow(selected)}
+        />
       </Container>
     </Container>
   );
-};
-export default MTAStatsMail;
+}

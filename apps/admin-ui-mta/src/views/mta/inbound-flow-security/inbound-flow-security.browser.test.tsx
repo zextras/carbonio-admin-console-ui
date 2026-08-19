@@ -6,13 +6,15 @@
 
 import {
   createBrowserSoapAPIInterceptor,
+  getAllConfigRightsResponseMock,
+  getGetInfoResponseMock,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import MTAInboundFlowSecurity from './inbound-flow-security';
+import { MTAInboundFlowSecurity } from './inbound-flow-security';
 
 type SoapAttribute = {
   n: string;
@@ -67,8 +69,19 @@ function getAllConfigResponse() {
   };
 }
 
+async function toggleRejectUnlistedSenderSwitch() {
+  const rejectUnlistedSenderSwitch = page.getByRole('switch', { name: 'Reject unlisted Sender' });
+  await expect.element(rejectUnlistedSenderSwitch).toBeVisible();
+  await expect
+    .poll(() => rejectUnlistedSenderSwitch.element().getAttribute('aria-disabled'))
+    .toBeNull();
+  await rejectUnlistedSenderSwitch.click();
+}
+
 describe('MTAInboundFlowSecurity', () => {
   beforeEach(async () => {
+    createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    createBrowserSoapAPIInterceptor('GetAllEffectiveRights', getAllConfigRightsResponseMock());
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse());
   });
 
@@ -94,9 +107,7 @@ describe('MTAInboundFlowSecurity', () => {
   it('shows Save and Cancel when a switch changes', async () => {
     await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
 
-    const rejectUnlistedSenderSwitch = page.getByText('Reject unlisted Sender');
-    await expect.element(rejectUnlistedSenderSwitch).toBeVisible();
-    await rejectUnlistedSenderSwitch.click();
+    await toggleRejectUnlistedSenderSwitch();
 
     await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
@@ -105,7 +116,7 @@ describe('MTAInboundFlowSecurity', () => {
   it('resets dirty state when Cancel is clicked', async () => {
     await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
 
-    await page.getByText('Reject unlisted Sender').click();
+    await toggleRejectUnlistedSenderSwitch();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Cancel' }).click();
@@ -119,7 +130,7 @@ describe('MTAInboundFlowSecurity', () => {
 
     await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
 
-    await page.getByText('Reject unlisted Sender').click();
+    await toggleRejectUnlistedSenderSwitch();
 
     const saveButton = page.getByRole('button', { name: 'Save' });
     await expect.element(saveButton).toBeVisible();
@@ -138,5 +149,48 @@ describe('MTAInboundFlowSecurity', () => {
         }),
       ]),
     );
+
+    const secondModifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    const secondCallSettled = await Promise.race([
+      secondModifyConfigInterceptor.then(() => true),
+      new Promise<boolean>((resolve) => {
+        setTimeout(() => resolve(false), 2000);
+      }),
+    ]);
+    expect(secondCallSettled).toBe(false);
   }, 20000);
+
+  it('does not call ModifyConfig when adding commonly blocked extensions until Save', async () => {
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+
+    await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
+
+    await page.getByRole('button', { name: 'Add commonly blocked extensions' }).click();
+
+    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    await expect.element(page.getByText('zip', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('js', { exact: true })).toBeVisible();
+
+    const settledEarly = await Promise.race([
+      modifyConfigInterceptor.then(() => true),
+      new Promise<boolean>((resolve) => {
+        setTimeout(() => resolve(false), 2000);
+      }),
+    ]);
+    expect(settledEarly).toBe(false);
+
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    const request = await modifyConfigInterceptor;
+    const attributes = extractModifyAttributes(request);
+
+    expect(attributes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ n: 'zimbraMtaBlockedExtension', _content: 'exe' }),
+        expect.objectContaining({ n: 'zimbraMtaBlockedExtension', _content: 'bat' }),
+        expect.objectContaining({ n: 'zimbraMtaBlockedExtension', _content: 'zip' }),
+        expect.objectContaining({ n: 'zimbraMtaBlockedExtension', _content: 'js' }),
+      ]),
+    );
+  }, 20_000);
 });
