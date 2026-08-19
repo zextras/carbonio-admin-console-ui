@@ -651,7 +651,6 @@ export const EditAccountGeneralSection: FC<{
               label={t('label.advance_edit_display_name', 'Display Name')}
               backgroundColor="gray5"
               value={values?.displayName || ''}
-              defaultValue={''}
               onChange={changeAccDetail}
               inputName="displayName"
               autoComplete="new-password"
@@ -1020,7 +1019,6 @@ export const EditAccountGeneralSection: FC<{
             background="gray4"
             disabled
             value={directMemberList}
-            defaultValue={[]}
             ChipComponent={CustomChip}
             maxChips={null}
           />
@@ -1037,7 +1035,6 @@ export const EditAccountGeneralSection: FC<{
             disabled
             value={inDirectMemberList}
             ChipComponent={CustomChip}
-            defaultValue={[]}
             maxChips={null}
           />
         </Row>
@@ -1056,7 +1053,6 @@ export const EditAccountGeneralSection: FC<{
             backgroundColor="gray5"
             label={t('label.description', 'Description')}
             value={values?.description || ''}
-            defaultValue={''}
             onChange={changeAccDetail}
             inputName="description"
           />
@@ -1073,7 +1069,6 @@ export const EditAccountGeneralSection: FC<{
             backgroundColor="gray5"
             inputName="zimbraNotes"
             onChange={changeAccDetail}
-            defaultValue={''}
           />
         </Row>
       </Row>

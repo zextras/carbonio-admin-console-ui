@@ -46,7 +46,8 @@ const EditAccountSecuritySection: FC = () => {
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const queryClient = useQueryClient();
   const getListOtp = useCallback(
-    (_accountName?: string): void => {
+    // account name is taken from context; queries are invalidated by key
+    (): void => {
       void queryClient.invalidateQueries({ queryKey: domainQueryKeys.otpList(account.name) });
     },
     [queryClient, account.name],
@@ -258,7 +259,6 @@ const EditAccountSecuritySection: FC = () => {
                 <ChipInput
                   placeholder={t('account_details.send_the_otp_to', 'Send the OTP to')}
                   onChange={handleEmailChange}
-                  defaultValue={sendEmailTo}
                   value={sendEmailTo}
                   background="gray5"
                   ChipComponent={CustomChip}
@@ -465,7 +465,7 @@ const EditAccountSecuritySection: FC = () => {
         setSecrateCode(res.response.secret);
         setPinCodes(res.response.static_otp_codes);
         setShowCreateOTP(true);
-        getListOtp(`${values?.uid}@${domainName}`);
+        getListOtp();
       }
     });
   };
@@ -487,7 +487,7 @@ const EditAccountSecuritySection: FC = () => {
           hideButton: true,
           replace: true,
         });
-        getListOtp(`${values?.uid}@${domainName}`);
+        getListOtp();
       } else {
         createSnackbar({
           key: 'error',
@@ -552,7 +552,7 @@ const EditAccountSecuritySection: FC = () => {
               replace: true,
             });
             closeRestoreOtpModal();
-            getListOtp(`${values?.uid}@${domainName}`);
+            getListOtp();
             return;
           }
 
@@ -1420,7 +1420,7 @@ const EditAccountSecuritySection: FC = () => {
                     <Input
                       backgroundColor="gray5"
                       label={t('label.user_recovery_email', 'User Recovery Email')}
-                      defaultValue={values?.zimbraPrefPasswordRecoveryAddress || ''}
+                      value={values?.zimbraPrefPasswordRecoveryAddress || ''}
                       onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                         if (isValidEmail(e?.target?.value)) {
                           changeValue(e);

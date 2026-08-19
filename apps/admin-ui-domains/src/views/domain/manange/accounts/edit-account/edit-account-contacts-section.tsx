@@ -64,7 +64,6 @@ const EditAccountContactsSection: React.FC = () => {
                 inputName="telephoneNumber"
                 label={t('label.phone', 'Phone')}
                 backgroundColor="gray5"
-                defaultValue={''}
                 value={values?.telephoneNumber || ''}
               />
             </Tooltip>
@@ -87,7 +86,6 @@ const EditAccountContactsSection: React.FC = () => {
                 }}
                 hasError={!isValidHomePhone}
                 inputName="homePhone"
-                defaultValue={''}
                 value={values?.homePhone || ''}
               />
             </Tooltip>
@@ -112,7 +110,6 @@ const EditAccountContactsSection: React.FC = () => {
                 }}
                 hasError={!isValidMobile}
                 inputName="mobile"
-                defaultValue={''}
                 value={values?.mobile || ''}
               />
             </Tooltip>
@@ -135,7 +132,6 @@ const EditAccountContactsSection: React.FC = () => {
                 }}
                 hasError={!isValidPager}
                 inputName="pager"
-                defaultValue={''}
                 value={values?.pager || ''}
               />
             </Tooltip>
@@ -160,7 +156,6 @@ const EditAccountContactsSection: React.FC = () => {
                 }}
                 hasError={!isValidFaxNumber}
                 inputName="facsimileTelephoneNumber"
-                defaultValue={''}
                 value={values?.facsimileTelephoneNumber || ''}
               />
             </Tooltip>
@@ -180,7 +175,6 @@ const EditAccountContactsSection: React.FC = () => {
               label={t('label.company', 'Company')}
               onChange={changeAccDetail}
               inputName="company"
-              defaultValue={''}
               value={values?.company || ''}
             />
           </Row>
@@ -190,7 +184,6 @@ const EditAccountContactsSection: React.FC = () => {
               label={t('label.job_title', 'Job Title')}
               onChange={changeAccDetail}
               inputName="title"
-              defaultValue={''}
               value={values?.title || ''}
             />
           </Row>
@@ -209,7 +202,6 @@ const EditAccountContactsSection: React.FC = () => {
               label={t('label.country', 'Country')}
               onChange={changeAccDetail}
               inputName="co"
-              defaultValue={''}
               value={values?.co || ''}
             />
           </Row>
@@ -219,7 +211,6 @@ const EditAccountContactsSection: React.FC = () => {
               label={t('label.state', 'State')}
               onChange={changeAccDetail}
               inputName="st"
-              defaultValue={''}
               value={values?.st || ''}
             />
           </Row>
@@ -231,7 +222,6 @@ const EditAccountContactsSection: React.FC = () => {
               label={t('label.city', 'City')}
               onChange={changeAccDetail}
               inputName="l"
-              defaultValue={''}
               value={values?.l || ''}
             />
           </Row>
@@ -241,7 +231,6 @@ const EditAccountContactsSection: React.FC = () => {
               label={t('label.postal_code', 'Postal Code')}
               onChange={changeAccDetail}
               inputName="postalCode"
-              defaultValue={''}
               value={values?.postalCode || ''}
             />
           </Row>
@@ -253,7 +242,6 @@ const EditAccountContactsSection: React.FC = () => {
               label={t('label.address', 'Address')}
               onChange={changeAccDetail}
               inputName="street"
-              defaultValue={''}
               value={values?.street || ''}
             />
           </Row>
