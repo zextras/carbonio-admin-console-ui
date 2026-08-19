@@ -18,7 +18,7 @@ import {
 import { DomainList } from './domain/domain-list/domain-list';
 import GlobalActiveSync from './domain/global/global-active-sync';
 import { GlobalAddressBook } from './domain/global/global-address-book';
-import GlobalDetailPanel from './domain/global/global-detail-panel';
+import { GlobalDetailPanel } from './domain/global/global-detail-panel';
 import GlobalTheme from './domain/global/global-theme';
 import GlobalTwoFactorAuthentcation from './domain/global/global-two-factor-auth';
 import GlobalDelegates from './domain/global-delegates';

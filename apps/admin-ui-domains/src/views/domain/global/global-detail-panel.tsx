@@ -1,8 +1,10 @@
 /*
- * SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   ChipInput,
@@ -16,11 +18,12 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { useAllConfig } from '@zextras/ui-shared';
-import { filter, isEqual, map } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import { filter } from 'lodash-es';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
-import { Attribute, GlobalDisclaimerType } from '../../../../types';
+import { Attribute } from '../../../../types';
 import {
   CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
   FALSE,
@@ -31,265 +34,153 @@ import {
 import { modifyConfig } from '../../../services/modify-config';
 import { isValidEmail } from '../../utility/utils';
 
-const GlobalDetailPanel: FC = () => {
+type GlobalSettingsFormValues = {
+  carbonioNotificationFrom: string;
+  carbonioNotificationRecipients: Array<ChipItem>;
+  zimbraDomainMandatoryMailSignatureEnabled: boolean;
+  zimbraAmavisOutboundDisclaimersOnly: boolean;
+  carbonioSearchAllDomainsByFeature: boolean;
+};
+
+const globalSettingsSchema = z.object({
+  carbonioNotificationFrom: z
+    .string()
+    .refine((value) => value === '' || isValidEmail(value), {
+      message: 'label.notification_error_msg',
+    }),
+  carbonioNotificationRecipients: z.array(z.any()),
+  zimbraDomainMandatoryMailSignatureEnabled: z.boolean(),
+  zimbraAmavisOutboundDisclaimersOnly: z.boolean(),
+  carbonioSearchAllDomainsByFeature: z.boolean(),
+});
+
+function mapConfigToFormValues(configInformation: Array<Attribute>): GlobalSettingsFormValues {
+  const notificationFrom = filter(configInformation, { n: 'carbonioNotificationFrom' });
+  const notificationRecipients = filter(configInformation, {
+    n: 'carbonioNotificationRecipients',
+  });
+  return {
+    carbonioNotificationFrom: notificationFrom[0]?._content ?? '',
+    carbonioNotificationRecipients: notificationRecipients.map((item) => ({
+      label: item._content,
+    })),
+    zimbraDomainMandatoryMailSignatureEnabled:
+      filter(configInformation, { n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED })[0]
+        ?._content === TRUE,
+    zimbraAmavisOutboundDisclaimersOnly:
+      filter(configInformation, { n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY })[0]?._content ===
+      TRUE,
+    carbonioSearchAllDomainsByFeature:
+      filter(configInformation, { n: CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE })[0]?._content ===
+      TRUE,
+  };
+}
+
+function mapFormValuesToAttributes(values: GlobalSettingsFormValues): Array<Attribute> {
+  const attributes: Array<Attribute> = [
+    { n: 'carbonioNotificationFrom', _content: values.carbonioNotificationFrom },
+  ];
+  values.carbonioNotificationRecipients.forEach((item: ChipItem): void => {
+    attributes.push({ n: 'carbonioNotificationRecipients', _content: item?.label });
+  });
+  attributes.push({
+    n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+    _content: values.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE,
+  });
+  attributes.push({
+    n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
+    _content: values.zimbraAmavisOutboundDisclaimersOnly ? TRUE : FALSE,
+  });
+  attributes.push({
+    n: CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+    _content: values.carbonioSearchAllDomainsByFeature ? TRUE : FALSE,
+  });
+  return attributes;
+}
+
+const GlobalDetailPanelContent = ({
+  configInformation,
+  invalidate,
+}: {
+  configInformation: Array<Attribute>;
+  invalidate: () => void;
+}) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [carbonioNotificationData, setCarbonioNotificationData] = useState<any>({});
-  const [initCarbonioNotificationData, setInitCarbonioNotificationData] = useState<{
-    [key: string]: string | { label: string }[];
-  }>({});
-  const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
 
-  const [globalDisclaimerDetail, setGlobalDisclaimerDetail] = useState<GlobalDisclaimerType>();
-  const [globalDisclaimerInitialDetail, setGlobalDisclaimerInitialDetail] =
-    useState<GlobalDisclaimerType>();
-  const { data: configInformation = [], invalidate } = useAllConfig();
-  const setGlobalInitialValue = useCallback((key: string, value: unknown): void => {
-    setGlobalDisclaimerInitialDetail((prev: any) => ({ ...prev, [key]: value }));
-  }, []);
+  const initialDefaults = mapConfigToFormValues(configInformation);
 
-  const setValue = useCallback((key: string, value: unknown): void => {
-    setGlobalDisclaimerDetail((prev: any) => ({ ...prev, [key]: value }));
-  }, []);
+  const form = useForm({
+    defaultValues: initialDefaults,
+    validators: { onChange: globalSettingsSchema, onSubmit: globalSettingsSchema },
+    onSubmit: async ({ value }) => {
+      try {
+        await modifyConfig(mapFormValuesToAttributes(value));
 
-  const setInitialAndCurrentValue = useCallback(
-    (key: string, value: unknown) => {
-      setGlobalInitialValue(key, value);
-      setValue(key, value);
-    },
-    [setGlobalInitialValue, setValue],
-  );
-
-  useEffect(() => {
-    if (
-      Object.entries(carbonioNotificationData).length !== 0 &&
-      carbonioNotificationData.carbonioNotificationFrom !== '' &&
-      carbonioNotificationData.carbonioNotificationFrom !== undefined &&
-      carbonioNotificationData.carbonioNotificationRecipients?.length !== 0 &&
-      carbonioNotificationData.carbonioNotificationRecipients?.length !== undefined
-    ) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [
-    carbonioNotificationData,
-    carbonioNotificationData.carbonioNotificationFrom,
-    carbonioNotificationData.carbonioNotificationRecipients?.length,
-  ]);
-
-  useEffect(() => {
-    if (!isEqual(carbonioNotificationData, initCarbonioNotificationData)) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [carbonioNotificationData, initCarbonioNotificationData]);
-
-  useEffect(() => {
-    if (globalDisclaimerDetail && !isEqual(globalDisclaimerDetail, globalDisclaimerInitialDetail)) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [globalDisclaimerDetail, globalDisclaimerInitialDetail]);
-
-  const handleOnCancel = (): void => {
-    setHasCarbonioNotificationFromError(false);
-    if (initCarbonioNotificationData) {
-      setCarbonioNotificationData(initCarbonioNotificationData);
-    } else {
-      setCarbonioNotificationData({
-        carbonioNotificationFrom: '',
-        carbonioNotificationRecipients: [],
-      });
-    }
-    setGlobalDisclaimerDetail(globalDisclaimerInitialDetail);
-  };
-
-  useEffect(() => {
-    if (configInformation && configInformation.length > 0) {
-      const propertiesToExtract = ['carbonioNotificationFrom', 'carbonioNotificationRecipients'];
-
-      const obj: { [key: string]: string | { label: string }[] } = {};
-      propertiesToExtract.forEach((property) => {
-        const items = filter(configInformation, { n: property });
-        if (property === 'carbonioNotificationRecipients') {
-          obj[property] = items.map((item) => ({ label: item._content }));
-        } else {
-          const item = items[0];
-          obj[property] = item?._content;
-        }
-      });
-      setCarbonioNotificationData(obj);
-      setInitCarbonioNotificationData(obj);
-
-      const zimbraDomainMandatoryMailSignatureEnabled = configInformation.filter(
-        (item: Record<string, string>) =>
-          item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-      );
-      if (zimbraDomainMandatoryMailSignatureEnabled[0]?._content) {
-        setInitialAndCurrentValue(
-          ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-          zimbraDomainMandatoryMailSignatureEnabled[0]?._content === TRUE,
-        );
-      } else {
-        setInitialAndCurrentValue(ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED, false);
-      }
-
-      const zimbraAmavisOutboundDisclaimersOnly = configInformation.filter(
-        (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
-      );
-      if (zimbraAmavisOutboundDisclaimersOnly[0]?._content) {
-        setInitialAndCurrentValue(
-          ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
-          zimbraAmavisOutboundDisclaimersOnly[0]?._content === TRUE,
-        );
-      } else {
-        setInitialAndCurrentValue(ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY, false);
-      }
-
-      const carbonioSearchAllDomainsByFeature = configInformation.filter(
-        (item: Record<string, string>) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
-      );
-      if (carbonioSearchAllDomainsByFeature[0]?._content) {
-        setInitialAndCurrentValue(
-          CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
-          carbonioSearchAllDomainsByFeature[0]?._content === TRUE,
-        );
-      } else {
-        setInitialAndCurrentValue(CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, false);
-      }
-    }
-  }, [configInformation, setInitialAndCurrentValue]);
-
-  const callRequest = useCallback(
-    (attributes: Attribute[]) => {
-      modifyConfig(attributes)
-        .then(() => {
-          invalidate();
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-
-          if (
-            !isEqual(
-              globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
-              globalDisclaimerInitialDetail?.zimbraDomainMandatoryMailSignatureEnabled,
-            ) &&
-            globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled
-          ) {
-            setTimeout(() => {
-              createSnackbar({
-                key: 'success',
-                severity: 'success',
-                label: t(
-                  'label.mandatory_disclaimer_are_enable_for_all_domain',
-                  'The mandatory disclaimers are enabled for all domains',
-                ),
-                autoHideTimeout: 2000,
-                hideButton: true,
-                replace: true,
-              });
-            }, 2000);
-          }
-          if (
-            !isEqual(
-              globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly,
-              globalDisclaimerInitialDetail?.zimbraAmavisOutboundDisclaimersOnly,
-            ) &&
-            globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly
-          ) {
-            setTimeout(() => {
-              createSnackbar({
-                key: 'success',
-                severity: 'success',
-                label: t(
-                  'label.mandatory_disclaimer_are_enable_only_for_outbound_deliveries',
-                  'The mandatory disclaimers are enabled only for outbound deliveries',
-                ),
-                autoHideTimeout: 3000,
-                hideButton: true,
-                replace: true,
-              });
-            }, 4000);
-          }
-        })
-        .catch(() => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
+        createSnackbar({
+          key: 'success',
+          severity: 'success',
+          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
         });
+
+        if (
+          value.zimbraDomainMandatoryMailSignatureEnabled &&
+          value.zimbraDomainMandatoryMailSignatureEnabled !==
+            initialDefaults.zimbraDomainMandatoryMailSignatureEnabled
+        ) {
+          setTimeout(() => {
+            createSnackbar({
+              key: 'success',
+              severity: 'success',
+              label: t(
+                'label.mandatory_disclaimer_are_enable_for_all_domain',
+                'The mandatory disclaimers are enabled for all domains',
+              ),
+              autoHideTimeout: 2000,
+              hideButton: true,
+              replace: true,
+            });
+          }, 2000);
+        }
+        if (
+          value.zimbraAmavisOutboundDisclaimersOnly &&
+          value.zimbraAmavisOutboundDisclaimersOnly !==
+            initialDefaults.zimbraAmavisOutboundDisclaimersOnly
+        ) {
+          setTimeout(() => {
+            createSnackbar({
+              key: 'success',
+              severity: 'success',
+              label: t(
+                'label.mandatory_disclaimer_are_enable_only_for_outbound_deliveries',
+                'The mandatory disclaimers are enabled only for outbound deliveries',
+              ),
+              autoHideTimeout: 3000,
+              hideButton: true,
+              replace: true,
+            });
+          }, 4000);
+        }
+
+        form.reset(value, { keepDefaultValues: true });
+        invalidate();
+      } catch {
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+      }
     },
-    [
-      createSnackbar,
-      globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature,
-      globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly,
-      globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
-      globalDisclaimerInitialDetail?.zimbraAmavisOutboundDisclaimersOnly,
-      globalDisclaimerInitialDetail?.zimbraDomainMandatoryMailSignatureEnabled,
-      invalidate,
-      t,
-    ],
-  );
+  });
 
-  const handleOnSave = (): void => {
-    const attributes: Attribute[] &
-      {
-        n: string;
-        _content: string[];
-      }[] = [];
-    if (
-      isValidEmail(carbonioNotificationData.carbonioNotificationFrom ?? '') ||
-      carbonioNotificationData.carbonioNotificationFrom === ''
-    ) {
-      attributes.push({
-        n: 'carbonioNotificationFrom',
-        _content: carbonioNotificationData.carbonioNotificationFrom,
-      });
-      carbonioNotificationData.carbonioNotificationRecipients.forEach(
-        (item: { label: string }): void => {
-          attributes.push({
-            n: 'carbonioNotificationRecipients',
-            _content: item?.label,
-          });
-        },
-      );
-      setHasCarbonioNotificationFromError(false);
-    } else {
-      setHasCarbonioNotificationFromError(true);
-    }
-
-    attributes.push({
-      n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-      _content: globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE,
-    });
-
-    attributes.push({
-      n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
-      _content: globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly ? TRUE : FALSE,
-    });
-
-    attributes.push({
-      n: CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
-      _content: globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature ? TRUE : FALSE,
-    });
-
-    if (attributes && attributes.length > 0) {
-      callRequest(attributes);
-    }
-  };
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
   return (
     <Container
@@ -311,12 +202,16 @@ const GlobalDetailPanel: FC = () => {
                   <Button
                     label={t('label.cancel', 'Cancel')}
                     color="secondary"
-                    onClick={handleOnCancel}
+                    onClick={() => form.reset()}
                   />
                 )}
               </Padding>
               {isDirty && (
-                <Button label={t('label.save', 'Save')} color="primary" onClick={handleOnSave} />
+                <Button
+                  label={t('label.save', 'Save')}
+                  color="primary"
+                  onClick={() => form.handleSubmit()}
+                />
               )}
             </Row>
           </Row>
@@ -342,25 +237,29 @@ const GlobalDetailPanel: FC = () => {
             crossAlignment="flex-start"
             padding={{ top: 'large', bottom: 'small' }}
           >
-            <Input
-              isRequired
-              inputName="carbonioNotificationFrom"
-              label={t('label.notification_sender', 'Notification Sender')}
-              backgroundColor="gray5"
-              value={carbonioNotificationData?.carbonioNotificationFrom}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                setCarbonioNotificationData({
-                  ...carbonioNotificationData,
-                  [e.target.name]: e.target.value,
-                });
+            <form.Field name="carbonioNotificationFrom">
+              {(field) => {
+                const hasError = field.state.meta.errors.length > 0;
+                return (
+                  <Input
+                    isRequired
+                    inputName="carbonioNotificationFrom"
+                    label={t('label.notification_sender', 'Notification Sender')}
+                    backgroundColor="gray5"
+                    value={field.state.value}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                      field.handleChange(e.target.value);
+                    }}
+                    hasError={hasError}
+                    description={
+                      hasError
+                        ? t('label.notification_error_msg', 'Enter a valid email address.')
+                        : undefined
+                    }
+                  />
+                );
               }}
-              hasError={hasCarbonioNotificationFromError}
-              description={
-                hasCarbonioNotificationFromError
-                  ? t('label.notification_error_msg', 'Enter a valid email address.')
-                  : undefined
-              }
-            />
+            </form.Field>
           </Container>
         </ListRow>
         <ListRow>
@@ -369,23 +268,21 @@ const GlobalDetailPanel: FC = () => {
             crossAlignment="flex-start"
             padding={{ top: 'large', bottom: 'small' }}
           >
-            <ChipInput
-              isRequired
-              placeholder={t('label.send_notifications_to', 'Send notifications to...')}
-              background="gray5"
-              defaultValue={carbonioNotificationData?.carbonioNotificationRecipients}
-              value={carbonioNotificationData?.carbonioNotificationRecipients}
-              onChange={(emails: ChipItem[]): void => {
-                const data: ChipItem[] = [];
-                map(emails, (email) => {
-                  if (isValidEmail(email.label ?? '')) data.push(email);
-                });
-                setCarbonioNotificationData({
-                  ...carbonioNotificationData,
-                  carbonioNotificationRecipients: data,
-                });
-              }}
-            />
+            <form.Field name="carbonioNotificationRecipients">
+              {(field) => (
+                <ChipInput
+                  isRequired
+                  placeholder={t('label.send_notifications_to', 'Send notifications to...')}
+                  background="gray5"
+                  value={field.state.value}
+                  onChange={(emails: Array<ChipItem>): void => {
+                    field.handleChange(
+                      emails.filter((email) => isValidEmail(email.label ?? '')),
+                    );
+                  }}
+                />
+              )}
+            </form.Field>
           </Container>
         </ListRow>
 
@@ -398,19 +295,18 @@ const GlobalDetailPanel: FC = () => {
               top: 'extralarge',
             }}
           >
-            <Switch
-              label={t(
-                'label.enable_disclaimers_for_all_domains',
-                'Mandatory disclaimer for all domains',
+            <form.Field name="zimbraDomainMandatoryMailSignatureEnabled">
+              {(field) => (
+                <Switch
+                  label={t(
+                    'label.enable_disclaimers_for_all_domains',
+                    'Mandatory disclaimer for all domains',
+                  )}
+                  value={field.state.value}
+                  onClick={(): void => field.handleChange(!field.state.value)}
+                />
               )}
-              value={globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled}
-              onClick={(): void => {
-                setValue(
-                  ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-                  !globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
-                );
-              }}
-            />
+            </form.Field>
           </Container>
           <Container
             crossAlignment="flex-start"
@@ -420,16 +316,18 @@ const GlobalDetailPanel: FC = () => {
               top: 'extralarge',
             }}
           >
-            <Switch
-              label={t('label.only_allow_outbound_disclaimers', 'Only allow outbound disclaimers')}
-              value={globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly}
-              onClick={(): void => {
-                setValue(
-                  ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
-                  !globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly,
-                );
-              }}
-            />
+            <form.Field name="zimbraAmavisOutboundDisclaimersOnly">
+              {(field) => (
+                <Switch
+                  label={t(
+                    'label.only_allow_outbound_disclaimers',
+                    'Only allow outbound disclaimers',
+                  )}
+                  value={field.state.value}
+                  onClick={(): void => field.handleChange(!field.state.value)}
+                />
+              )}
+            </form.Field>
           </Container>
         </ListRow>
 
@@ -442,19 +340,18 @@ const GlobalDetailPanel: FC = () => {
               top: 'extralarge',
             }}
           >
-            <Switch
-              label={t(
-                'domain.globalSettings.allowSearchUserFromAllDomains',
-                `Allow searching users' information in all domains`,
+            <form.Field name="carbonioSearchAllDomainsByFeature">
+              {(field) => (
+                <Switch
+                  label={t(
+                    'domain.globalSettings.allowSearchUserFromAllDomains',
+                    `Allow searching users' information in all domains`,
+                  )}
+                  value={field.state.value}
+                  onClick={(): void => field.handleChange(!field.state.value)}
+                />
               )}
-              value={globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature}
-              onClick={(): void => {
-                setValue(
-                  CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
-                  !globalDisclaimerDetail?.carbonioSearchAllDomainsByFeature,
-                );
-              }}
-            />
+            </form.Field>
           </Container>
         </ListRow>
       </Container>
@@ -462,4 +359,18 @@ const GlobalDetailPanel: FC = () => {
   );
 };
 
-export default GlobalDetailPanel;
+export const GlobalDetailPanel = () => {
+  const { data: configInformation = [], isPending, invalidate } = useAllConfig();
+
+  if (isPending) {
+    return (
+      <Container background="white" mainAlignment="flex-start">
+        <Container mainAlignment="center" height="calc(100vh - 12.5rem)">
+          <ds-spinner></ds-spinner>
+        </Container>
+      </Container>
+    );
+  }
+
+  return <GlobalDetailPanelContent configInformation={configInformation} invalidate={invalidate} />;
+};
