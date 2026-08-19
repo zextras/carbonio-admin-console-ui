@@ -61,7 +61,7 @@ export const ServicesPassphrase: FC = () => {
   const { form, credentialList, account } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const queryClient = useQueryClient();
-  const getCredentialList = (_accountName?: string): void => {
+  const getCredentialList = (): void => {
     void queryClient.invalidateQueries({ queryKey: domainQueryKeys.credentialList(account.name) });
   };
   const { data: domain } = useSelectedDomain();
@@ -109,7 +109,7 @@ export const ServicesPassphrase: FC = () => {
           text_data: res?.response?.text_data,
         });
         setCreateCredential((prev: CredentialType) => ({ ...prev, label: '' }));
-        getCredentialList(`${values?.uid}@${domainName}`);
+        getCredentialList();
         setCreateCredential({
           label: '',
           services: SERVICE_PASSPHRASE_SERVICES[0].value,
@@ -159,7 +159,7 @@ export const ServicesPassphrase: FC = () => {
         ...createCredential,
       }).then((res: AddCredentialApiType) => {
         if (res.ok) {
-          getCredentialList(`${values?.uid}@${domainName}`);
+          getCredentialList();
           createSnackbar({
             key: 'success',
             severity: 'success',

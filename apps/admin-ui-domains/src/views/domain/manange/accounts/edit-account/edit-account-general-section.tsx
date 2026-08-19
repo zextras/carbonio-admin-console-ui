@@ -7,13 +7,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Button, ChipInput, Container, CustomHeaderFactory, CustomTextArea, DropDownInput, HoverableRowFactory, InheritedSelect, Input, LabeledValue, Modal, Padding, Paging, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
 import { useCosList, useIsAdvanced } from '@zextras/ui-shared';
-import { debounce, map } from 'lodash-es';
+import { map } from 'lodash-es';
 import React, {
   ChangeEvent,
   FC,
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -78,7 +79,6 @@ export const EditAccountGeneralSection: FC<{
   const domainInformation = domain?.a;
   const domainName = domain?.name;
   const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
-  const cosList = cosData?.cos ?? [];
   const [t] = useTranslation();
   const localeZone = useMemo(() => localeList(t), [t]);
   const ACCOUNT_STATUS: Array<{ value: string; label: string }> = useMemo(
@@ -87,13 +87,12 @@ export const EditAccountGeneralSection: FC<{
   );
   const ABQ_STATUS = useMemo(() => ABQStatus(t), [t]);
   const BACKUP_ENABLED_STATUS = useMemo(() => backupEnabledStatus(t), [t]);
-  const [cosItems, setCosItems] = useState<any[]>([]);
   const [accountAliases, setAccountAliases] = useState<any[]>([]);
+  const [prevMail, setPrevMail] = useState<string | undefined>(undefined);
   const [showDeletePasswordModal, setShowDeletePasswordModal] = useState<boolean>(false);
   const [domainList, setDomainList] = useState([]);
   const [isDomainSelect, setIsDomainSelect] = useState(false);
   const [searchDomainName, setSearchDomainName] = useState(domainName);
-  const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
   const [selectedSession, setSelectedSession] = useState<any>([]);
   const [sessionFilter, setSessionFilter] = useState('');
   const [endedSids, setEndedSids] = useState<Array<string>>([]);
@@ -108,7 +107,6 @@ export const EditAccountGeneralSection: FC<{
     : allUserSessionList;
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const isAdvanced = useIsAdvanced();
-  const [defaultCosId, setDefaultCosId] = useState('');
   const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
   const [cosDefaultStateSet, setCosDefaultStateSet] = useState<boolean>(false);
 
@@ -183,19 +181,13 @@ export const EditAccountGeneralSection: FC<{
     [form],
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchDomainCall = useCallback(
-    debounce((domain) => {
+  const searchDomainTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const searchDomain = (domain: string | undefined): void => {
+    clearTimeout(searchDomainTimeoutRef.current);
+    searchDomainTimeoutRef.current = setTimeout((): void => {
       getDomainLists(domain);
-    }, 700),
-    [debounce],
-  );
-
-  useEffect(() => {
-    if (!isDomainSelect) {
-      searchDomainCall(searchDomainName);
-    }
-  }, [searchDomainName, isDomainSelect, searchDomainCall]);
+    }, 700);
+  };
 
   const changeSwitchOption = useCallback(
     (key: string): void => {
@@ -222,36 +214,26 @@ export const EditAccountGeneralSection: FC<{
     [setAccountValues],
   );
 
-  useEffect(() => {
-    if (values?.mail) {
-      const aliaes = values.mail.split(', ').map((ele: string) => ({ label: ele }));
-      setAccountAliases(aliaes);
-    }
-  }, [values?.mail]);
+  // adjust during render: reseed the editable alias list when server data changes
+  if (values?.mail !== prevMail) {
+    setPrevMail(values?.mail);
+    setAccountAliases(
+      values?.mail ? values.mail.split(', ').map((ele: string) => ({ label: ele })) : [],
+    );
+  }
 
-  useEffect(() => {
-    if (!!cosList && cosList.length > 0) {
-      const arrayItem: any[] = [];
-      cosList.forEach((item: any) => {
-        arrayItem.push({
-          label: item.name,
-          value: item.id,
-        });
-      });
-      setCosItems(arrayItem);
-    }
-  }, [cosList]);
+  const cosItems = (cosData?.cos ?? []).map((item: any) => ({
+    label: item.name,
+    value: item.id,
+  }));
+  const defaultCosId = cosItems.find((item: any) => item.label === DEFAULT)?.value;
 
-  useEffect(() => {
-    if (values?.zimbraCOSId) {
-      const cosId = cosItems.find((item: any) => item.label === DEFAULT);
-      setDefaultCosId(cosId?.value);
-      if (values?.zimbraCOSId === cosId?.value && !cosDefaultStateSet) {
-        setDefaultCOS(true);
-        setCosDefaultStateSet(true);
-      }
-    }
-  }, [values, cosItems, defaultCOS, cosDefaultStateSet]);
+  // adjust during render: hydrate the Default COS toggle once account and
+  // COS list data are both available
+  if (!cosDefaultStateSet && values?.zimbraCOSId && values.zimbraCOSId === defaultCosId) {
+    setCosDefaultStateSet(true);
+    setDefaultCOS(true);
+  }
 
   const selection = useMemo(
     () => cosItems.find((item: any) => item.value === values?.zimbraCOSId),
@@ -372,9 +354,14 @@ export const EditAccountGeneralSection: FC<{
     }));
   }, [domainList, selectedDomain, t]);
 
-  useEffect(() => {
-    selectedDomain(values?.domainName);
-  }, [values?.domainName, selectedDomain]);
+  // adjust during render: mirror the account's domain into the dropdown label
+  // when server data changes (picking from the dropdown is handled by selectedDomain)
+  const [prevFormDomainName, setPrevFormDomainName] = useState<string | undefined>(undefined);
+  if (values?.domainName !== prevFormDomainName) {
+    setPrevFormDomainName(values?.domainName);
+    setIsDomainSelect(true);
+    setSearchDomainName(values?.domainName);
+  }
 
   useEffect(() => {
     if (domainName) {
@@ -400,17 +387,16 @@ export const EditAccountGeneralSection: FC<{
     setSelectedSession([item?.sid]);
   }, []);
 
-  const handleUserSessionListUpdate = useCallback(() => {
-    const allRows = userSessionList.map((item: UserSession) => ({
-      id: item?.sid,
-      columns: [
+  const sessionListRows = userSessionList.map((item: UserSession) => ({
+    id: item?.sid,
+    columns: [
         <Container
           crossAlignment="flex-start"
           key={item?.zid}
           style={{ cursor: 'pointer' }}
           onClick={(): void => addSelection(item)}
         >
-          <ds-text as="span" size="small" weight="light" color="#828282">
+          <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
             {item?.name}
           </ds-text>
         </Container>,
@@ -444,75 +430,52 @@ export const EditAccountGeneralSection: FC<{
             {''}
           </ds-text>
         </Container>,
-      ],
-    }));
-    setSessionListRows(allRows);
-  }, [addSelection, userSessionList]);
-
-  useEffect(() => {
-    if (userSessionList && userSessionList.length > 0) {
-      handleUserSessionListUpdate();
-    } else {
-      setSessionListRows([]);
-    }
-  }, [addSelection, handleUserSessionListUpdate, userSessionList]);
-
-  const handleEndSessionError = useCallback(
-    (error: { message?: string }): void => {
-      setIsRequestInProgress(false);
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label: error.message
-          ? error.message
-          : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    },
-    [createSnackbar, t],
-  );
-  const setUserSessionListState = useCallback((): void => {
-    setEndedSids((prev) => [...prev, selectedSession[0]]);
-  }, [selectedSession]);
-
-  const handleEndSession = useCallback(
-    (token: string) => {
-      endSession(selectedSession[0], values?.name, token)
-        .then((resp: any) => {
-          if (!resp?._jsns) throw new Error('Session end failed');
-          setUserSessionListState();
-          setSelectedSession([]);
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t('label.session_end_success', 'Session end successfully'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        })
-        .catch(handleEndSessionError);
-    },
-    [
-      selectedSession,
-      values?.name,
-      handleEndSessionError,
-      setUserSessionListState,
-      createSnackbar,
-      t,
     ],
-  );
+  }));
 
-  const onEndSession = useCallback(() => {
+  const handleEndSessionError = (error: { message?: string }): void => {
+    setIsRequestInProgress(false);
+    createSnackbar({
+      key: 'error',
+      severity: 'error',
+      label: error.message
+        ? error.message
+        : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+      autoHideTimeout: 3000,
+      hideButton: true,
+      replace: true,
+    });
+  };
+  const setUserSessionListState = (): void => {
+    setEndedSids((prev) => [...prev, selectedSession[0]]);
+  };
+
+  const handleEndSession = (token: string): void => {
+    endSession(selectedSession[0], values?.name, token)
+      .then((resp: any) => {
+        if (!resp?._jsns) throw new Error('Session end failed');
+        setUserSessionListState();
+        setSelectedSession([]);
+        createSnackbar({
+          key: 'success',
+          severity: 'success',
+          label: t('label.session_end_success', 'Session end successfully'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+      })
+      .catch(handleEndSessionError);
+  };
+
+  const onEndSession = (): void => {
     setIsRequestInProgress(true);
     getDelegateAuthRequest(values?.zimbraId)
       .then((res: any) => res?.authToken[0]?._content)
       .then(handleEndSession)
       .catch(handleEndSessionError)
       .finally(() => setIsRequestInProgress(false));
-  }, [values?.zimbraId, handleEndSession, handleEndSessionError]);
+  };
 
   const onSessionFilterInputChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
@@ -607,6 +570,7 @@ export const EditAccountGeneralSection: FC<{
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   setIsDomainSelect(false);
                   setSearchDomainName(ev.target.value);
+                  searchDomain(ev.target.value);
                 }}
                 inputValue={searchDomainName}
                 isCustomIcon={false}
@@ -987,7 +951,7 @@ export const EditAccountGeneralSection: FC<{
                 background="gray5"
                 label={t('label.default_class_of_service', 'Default Class of Service')}
                 showCheckbox={false}
-                selection={selection}
+                selection={selection ?? cosItems[0]}
                 onChange={onCOSIdChange}
               />
             ) : (
