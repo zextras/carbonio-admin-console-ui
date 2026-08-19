@@ -22,4 +22,14 @@ export const domainQueryKeys = {
   addressBookService: () => [...domainQueryKeys.all, 'address-book-service'] as const,
   antiDosConfig: () => [...domainQueryKeys.all, 'anti-dos-config'] as const,
   samlConfig: (domain: string) => [...domainQueryKeys.all, 'saml-config', domain] as const,
+  accountDetail: (accountId: string) =>
+    [...domainQueryKeys.all, 'account-detail', accountId] as const,
+  accountSpecificDetail: (accountId: string) =>
+    [...domainQueryKeys.all, 'account-specific-detail', accountId] as const,
+  cosDetail: (cosId: string) => [...domainQueryKeys.all, 'cos-detail', cosId] as const,
+  otpList: (accountName: string) => [...domainQueryKeys.all, 'otp-list', accountName] as const,
+  credentialList: (accountName: string) =>
+    [...domainQueryKeys.all, 'credential-list', accountName] as const,
+  accountGrants: (accountId: string) =>
+    [...domainQueryKeys.all, 'account-grants', accountId] as const,
 } as const;
