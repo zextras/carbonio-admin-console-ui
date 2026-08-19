@@ -85,7 +85,7 @@ const ReusedDefaultTabBar = ({
 const EditAccountContent = ({ account, onClose, onDeleted, defaultTab }: EditAccountProps) => {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
-  const { form, isSaving, resetToSaved, signatureList } = useAccountForm();
+  const { form, isSaving, resetToSaved } = useAccountForm();
   const isDirty = useIsAccountDirty();
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
@@ -97,7 +97,6 @@ const EditAccountContent = ({ account, onClose, onDeleted, defaultTab }: EditAcc
 
   const [change, setChange] = useState(defaultTab ?? GENERAL_SECTION);
   const [hasQuotaError, setHasQuotaError] = useState(false);
-  const [signatureItems] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
   const [isOpenDeleteHintModel, setIsOpenDeleteHintModel] = useState(false);
@@ -428,12 +427,7 @@ const EditAccountContent = ({ account, onClose, onDeleted, defaultTab }: EditAcc
           )}
           {change === PROFILE && <EditAccountContactsSection />}
           {change === CONFIGURATION && <EditAccountConfigurationSection />}
-          {change === USER_PREFERENCES && (
-            <EditAccountUserPrefrencesSection
-              signatureItems={signatureItems}
-              signatureList={signatureList}
-            />
-          )}
+          {change === USER_PREFERENCES && <EditAccountUserPrefrencesSection />}
           {change === SECURITY && <EditAccountSecuritySection />}
           {change === DELEGATES && <EditAccountDelegatesSection />}
           {change === 'administration' && (

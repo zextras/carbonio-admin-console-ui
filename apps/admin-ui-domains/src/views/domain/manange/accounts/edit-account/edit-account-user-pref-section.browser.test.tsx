@@ -8,11 +8,8 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { AccountContext } from '../account-context';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
-
-const signatureItems: unknown[] = [];
-const signatureList: unknown[] = [];
+import { AccountFormTestProvider } from './tests/account-form-test-provider';
 
 // Suppress MSW cleanup errors that occur when tests finish
 let unhandledRejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
@@ -46,8 +43,7 @@ beforeEach(() => {
   );
 });
 
-const mockContextValue = {
-  accountDetail: {
+const mockAccountDetail = {
     zimbraPrefMessageViewHtmlPreferred: 'TRUE',
     zimbraPrefGroupMailBy: '',
     zimbraPrefMailDefaultCharset: '',
@@ -75,108 +71,87 @@ const mockContextValue = {
     zimbraPrefCalendarNotifyDelegatedChanges: 'FALSE',
     zimbraPrefAppleIcalDelegationEnabled: 'FALSE',
     zimbraId: 'mock-id',
-  },
-  cosDetail: {
-    zimbraPrefMessageViewHtmlPreferred: 'FALSE',
-    zimbraPrefGroupMailBy: '',
-    zimbraPrefMailDefaultCharset: '',
-    zimbraPrefMailPollingInterval: '',
-    zimbraPrefOutOfOfficeReplyEnabled: 'FALSE',
-    zimbraPrefOutOfOfficeCacheDuration: '1d',
-    zimbraPrefMailSendReadReceipts: 'never',
-    zimbraFeatureReadReceiptsEnabled: 'FALSE',
-    zimbraPrefMailSignatureEnabled: 'FALSE',
-    zimbraPrefAutoAddAddressEnabled: 'FALSE',
-    zimbraPrefGalAutoCompleteEnabled: 'FALSE',
-    zimbraPrefTimeZoneId: '',
-    zimbraPrefCalendarDefaultApptDuration: '',
-    zimbraPrefCalendarApptReminderWarningTime: '',
-    zimbraPrefCalendarInitialView: '',
-    zimbraPrefCalendarFirstDayOfWeek: '',
-    zimbraPrefCalendarApptVisibility: '',
-    zimbraPrefCalendarShowPastDueReminders: 'FALSE',
-    zimbraPrefCalendarAllowCancelEmailToSelf: 'FALSE',
-    zimbraPrefCalendarAllowForwardedInvite: 'FALSE',
-    zimbraPrefCalendarAllowPublishMethodInvite: 'FALSE',
-    zimbraPrefCalendarAutoAddInvites: 'FALSE',
-    zimbraPrefCalendarSendInviteDeniedAutoReply: 'FALSE',
-    zimbraPrefCalendarNotifyDelegatedChanges: 'FALSE',
-    zimbraPrefAppleIcalDelegationEnabled: 'FALSE',
-    zimbraId: 'mock-id',
-  },
-  accSpecificDetail: {
-    zimbraPrefMessageViewHtmlPreferred: 'FALSE',
-    zimbraPrefGroupMailBy: '',
-    zimbraPrefMailDefaultCharset: '',
-    zimbraPrefMailPollingInterval: '',
-    zimbraPrefOutOfOfficeReplyEnabled: 'FALSE',
-    zimbraPrefOutOfOfficeCacheDuration: '1d',
-    zimbraPrefMailSendReadReceipts: 'never',
-    zimbraFeatureReadReceiptsEnabled: 'FALSE',
-    zimbraPrefMailSignatureEnabled: 'FALSE',
-    zimbraPrefAutoAddAddressEnabled: 'FALSE',
-    zimbraPrefGalAutoCompleteEnabled: 'FALSE',
-    zimbraPrefTimeZoneId: '',
-    zimbraPrefCalendarDefaultApptDuration: '',
-    zimbraPrefCalendarApptReminderWarningTime: '',
-    zimbraPrefCalendarInitialView: '',
-    zimbraPrefCalendarFirstDayOfWeek: '',
-    zimbraPrefCalendarApptVisibility: '',
-    zimbraPrefCalendarShowPastDueReminders: 'FALSE',
-    zimbraPrefCalendarAllowCancelEmailToSelf: 'FALSE',
-    zimbraPrefCalendarAllowForwardedInvite: 'FALSE',
-    zimbraPrefCalendarAllowPublishMethodInvite: 'FALSE',
-    zimbraPrefCalendarAutoAddInvites: 'FALSE',
-    zimbraPrefCalendarSendInviteDeniedAutoReply: 'FALSE',
-    zimbraPrefCalendarNotifyDelegatedChanges: 'FALSE',
-    zimbraPrefAppleIcalDelegationEnabled: 'FALSE',
-    zimbraId: 'mock-id',
-  },
-  directMemberList: [],
-  inDirectMemberList: [],
-  setSignatureItems: () => {},
-  setSignatureList: () => {},
-  setAccountDetail: () => {},
-  setAccSpecificDetail: () => {},
-  setDirectMemberList: () => {},
-  setInDirectMemberList: () => {},
-  setInitAccountDetail: () => {},
-  initAccountDetail: {},
-  otpList: {},
-  identitiesList: [],
-  folderList: [],
-  setFolderList: () => {},
-  getListOtp: () => {},
-  getIdentitiesList: () => {},
-  deligateDetail: {},
-  setDeligateDetail: () => {},
-  credentialList: {},
-  getCredentialList: () => {},
-  initialGlobalRights: {},
-  setinitialGlobalRights: () => {},
-  globalRights: {},
-  setGlobalRights: () => {},
-  deleteAdministrationRights: [],
-  setDeleteAdministrationRights: () => {},
-  userSessionList: [],
-  setAllUserSessionList: () => {},
-  allUserSessionList: [],
-  setUserSessionList: () => {},
-  defaultCOS: {},
-  setDefaultCOS: () => {},
-  allowedDeletePassword: false,
-  setAllowedDeletePassword: () => {},
 };
+
+const mockCosDetail = {
+    zimbraPrefMessageViewHtmlPreferred: 'FALSE',
+    zimbraPrefGroupMailBy: '',
+    zimbraPrefMailDefaultCharset: '',
+    zimbraPrefMailPollingInterval: '',
+    zimbraPrefOutOfOfficeReplyEnabled: 'FALSE',
+    zimbraPrefOutOfOfficeCacheDuration: '1d',
+    zimbraPrefMailSendReadReceipts: 'never',
+    zimbraFeatureReadReceiptsEnabled: 'FALSE',
+    zimbraPrefMailSignatureEnabled: 'FALSE',
+    zimbraPrefAutoAddAddressEnabled: 'FALSE',
+    zimbraPrefGalAutoCompleteEnabled: 'FALSE',
+    zimbraPrefTimeZoneId: '',
+    zimbraPrefCalendarDefaultApptDuration: '',
+    zimbraPrefCalendarApptReminderWarningTime: '',
+    zimbraPrefCalendarInitialView: '',
+    zimbraPrefCalendarFirstDayOfWeek: '',
+    zimbraPrefCalendarApptVisibility: '',
+    zimbraPrefCalendarShowPastDueReminders: 'FALSE',
+    zimbraPrefCalendarAllowCancelEmailToSelf: 'FALSE',
+    zimbraPrefCalendarAllowForwardedInvite: 'FALSE',
+    zimbraPrefCalendarAllowPublishMethodInvite: 'FALSE',
+    zimbraPrefCalendarAutoAddInvites: 'FALSE',
+    zimbraPrefCalendarSendInviteDeniedAutoReply: 'FALSE',
+    zimbraPrefCalendarNotifyDelegatedChanges: 'FALSE',
+    zimbraPrefAppleIcalDelegationEnabled: 'FALSE',
+    zimbraId: 'mock-id',
+};
+
+const mockAccSpecificDetail = {
+    zimbraPrefMessageViewHtmlPreferred: 'FALSE',
+    zimbraPrefGroupMailBy: '',
+    zimbraPrefMailDefaultCharset: '',
+    zimbraPrefMailPollingInterval: '',
+    zimbraPrefOutOfOfficeReplyEnabled: 'FALSE',
+    zimbraPrefOutOfOfficeCacheDuration: '1d',
+    zimbraPrefMailSendReadReceipts: 'never',
+    zimbraFeatureReadReceiptsEnabled: 'FALSE',
+    zimbraPrefMailSignatureEnabled: 'FALSE',
+    zimbraPrefAutoAddAddressEnabled: 'FALSE',
+    zimbraPrefGalAutoCompleteEnabled: 'FALSE',
+    zimbraPrefTimeZoneId: '',
+    zimbraPrefCalendarDefaultApptDuration: '',
+    zimbraPrefCalendarApptReminderWarningTime: '',
+    zimbraPrefCalendarInitialView: '',
+    zimbraPrefCalendarFirstDayOfWeek: '',
+    zimbraPrefCalendarApptVisibility: '',
+    zimbraPrefCalendarShowPastDueReminders: 'FALSE',
+    zimbraPrefCalendarAllowCancelEmailToSelf: 'FALSE',
+    zimbraPrefCalendarAllowForwardedInvite: 'FALSE',
+    zimbraPrefCalendarAllowPublishMethodInvite: 'FALSE',
+    zimbraPrefCalendarAutoAddInvites: 'FALSE',
+    zimbraPrefCalendarSendInviteDeniedAutoReply: 'FALSE',
+    zimbraPrefCalendarNotifyDelegatedChanges: 'FALSE',
+    zimbraPrefAppleIcalDelegationEnabled: 'FALSE',
+    zimbraId: 'mock-id',
+};
+
+
+function wrapUserPref(
+  accountDetailOverrides: Record<string, unknown> = {},
+): React.ReactElement {
+  return (
+    <AccountFormTestProvider
+      values={{ ...mockAccountDetail, ...accountDetailOverrides }}
+      contextOverrides={{
+        cosDetail: mockCosDetail,
+        accSpecificDetail: mockAccSpecificDetail,
+      }}
+    >
+      <EditAccountUserPrefrencesSection />
+    </AccountFormTestProvider>
+  );
+}
 
 describe('EditAccountUserPrefrencesSection (browser)', () => {
   it('should render main sections', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect.element(page.getByText('Mail Options')).toBeVisible();
     await expect.element(page.getByText('Receiving Mails')).toBeVisible();
@@ -188,24 +163,14 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 
   it('should render signature section', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect.element(page.getByText('Mail Signature')).toBeVisible();
   });
 
   it('should render select options for "Group by" and "Default Charset"', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect.element(page.getByText('Group by')).toBeVisible();
     await expect.element(page.getByText('Default Charset')).toBeVisible();
@@ -213,47 +178,30 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 
   it('should allow entering allowed sending addresses', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect.element(page.getByText('Allowed sending Addresses')).toBeVisible();
   });
 
   it('should render calendar options section and select time zone', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect.element(page.getByText('Calendar Options')).toBeVisible();
     await expect.element(page.getByText('Time Zone')).toBeVisible();
   });
 
   it('should render with empty accountDetail', async () => {
-    const emptyContext = { ...mockContextValue, accountDetail: {} };
+    const overrides_emptyContext = {};
     setupBrowserTest(
-      <AccountContext.Provider value={emptyContext}>
-        <EditAccountUserPrefrencesSection signatureItems={[]} signatureList={[]} />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_emptyContext)
     );
     await expect.element(page.getByText('Mail Options')).toBeVisible();
   });
 
   it('should render all select options', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     const selects = [
       'Group by',
@@ -275,24 +223,14 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 
   it('should render and interact with ChipInput for allowed sending addresses', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect.element(page.getByText('Allowed sending Addresses')).toBeVisible();
   });
 
   it('should render all mail options switches', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect.element(page.getByText('View mail as HTML')).toBeVisible();
     const resetButton = page.getByTestId('reset-zimbraPrefMessageViewHtmlPreferred');
@@ -303,12 +241,7 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 
   it('should render receiving mails section with switches', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect.element(page.getByText('Can send auto-reply messages')).toBeVisible();
     await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
@@ -316,12 +249,7 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 
   it('should render sending mails section', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect.element(page.getByText('Save to sent')).toBeVisible();
     await expect.element(page.getByText('Allow the user to ask for a read receipt')).toBeVisible();
@@ -331,12 +259,7 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 
   it('should render contact options switches', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect.element(page.getByText('Enable auto-add contacts')).toBeVisible();
     await expect.element(page.getByText('Use GAL to auto-fill')).toBeVisible();
@@ -344,12 +267,7 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
 
   it('should render all calendar switches', async () => {
     setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(),
     );
     await expect
       .element(page.getByText('Enable reminders of appointments in the past'))
@@ -370,90 +288,47 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
   });
 
   it('should handle zimbraAllowFromAddress from accountDetail', async () => {
-    const contextWithAddresses = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithAddresses = {
         zimbraAllowFromAddress: 'test1@example.com, test2@example.com',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithAddresses}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithAddresses)
     );
     await expect.element(page.getByText('Allowed sending Addresses')).toBeVisible();
   });
 
   it('should render with different zimbraPrefMessageViewHtmlPreferred values', async () => {
-    const contextWithFalse = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithFalse = {
         zimbraPrefMessageViewHtmlPreferred: 'FALSE',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithFalse}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithFalse)
     );
     await expect.element(page.getByText('View mail as HTML')).toBeVisible();
   });
 
   it('should render with different zimbraPrefGroupMailBy values', async () => {
-    const contextWithGroupBy = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefGroupMailBy: 'conversation' },
-    };
+    const overrides_contextWithGroupBy = { zimbraPrefGroupMailBy: 'conversation' };
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithGroupBy}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithGroupBy)
     );
     await expect.element(page.getByText('Group by')).toBeVisible();
   });
 
   it('should render with different polling intervals', async () => {
-    const contextWithPolling = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailPollingInterval: '5m' },
-    };
+    const overrides_contextWithPolling = { zimbraPrefMailPollingInterval: '5m' };
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithPolling}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithPolling)
     );
     await expect.element(page.getByText('Check new mail every')).toBeVisible();
   });
 
   it('should render with different read receipt settings', async () => {
-    const contextWithReadReceipt = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithReadReceipt = {
         zimbraPrefMailSendReadReceipts: 'always',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithReadReceipt}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithReadReceipt)
     );
     await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
     const resetButton = page.getByTestId('reset-zimbraPrefMailSendReadReceipts');
@@ -461,207 +336,109 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
   });
 
   it('should render with different out of office cache duration', async () => {
-    const contextWithOOO = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithOOO = {
         zimbraPrefOutOfOfficeCacheDuration: '3h',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithOOO}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithOOO)
     );
     await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
   });
 
   it('should render with different timezone', async () => {
-    const contextWithTz = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithTz = {
         zimbraPrefTimeZoneId: 'America/New_York',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithTz}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithTz)
     );
     await expect.element(page.getByText('Time Zone')).toBeVisible();
   });
 
   it('should render with different calendar default appointment duration', async () => {
-    const contextWithDuration = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithDuration = {
         zimbraPrefCalendarDefaultApptDuration: '60m',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithDuration}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithDuration)
     );
     await expect.element(page.getByText('Calendar Options')).toBeVisible();
   });
 
   it('should render with different calendar reminder warning time', async () => {
-    const contextWithReminder = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithReminder = {
         zimbraPrefCalendarApptReminderWarningTime: '15',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithReminder}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithReminder)
     );
     await expect.element(page.getByText('Appointment Reminder in minutes')).toBeVisible();
   });
 
   it('should render with different calendar initial view', async () => {
-    const contextWithView = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarInitialView: 'week' },
-    };
+    const overrides_contextWithView = { zimbraPrefCalendarInitialView: 'week' };
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithView}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithView)
     );
     await expect.element(page.getByText('Default Calendar View')).toBeVisible();
   });
 
   it('should render with different first day of week', async () => {
-    const contextWithFirstDay = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarFirstDayOfWeek: '1' },
-    };
+    const overrides_contextWithFirstDay = { zimbraPrefCalendarFirstDayOfWeek: '1' };
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithFirstDay}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithFirstDay)
     );
     await expect.element(page.getByText('The Week starts on')).toBeVisible();
   });
 
   it('should render with different appointment visibility', async () => {
-    const contextWithVisibility = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithVisibility = {
         zimbraPrefCalendarApptVisibility: 'private',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithVisibility}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithVisibility)
     );
     await expect.element(page.getByText('Default Appointment visibility')).toBeVisible();
   });
 
   it('should render with enabled mail signature', async () => {
-    const contextWithSignature = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailSignatureEnabled: 'TRUE' },
-    };
+    const overrides_contextWithSignature = { zimbraPrefMailSignatureEnabled: 'TRUE' };
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithSignature}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithSignature)
     );
     await expect.element(page.getByText('Mail Signature')).toBeVisible();
   });
 
   it('should render with enabled read receipts feature', async () => {
-    const contextWithReadReceipt = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithReadReceipt = {
         zimbraFeatureReadReceiptsEnabled: 'TRUE',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithReadReceipt}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithReadReceipt)
     );
     await expect.element(page.getByText('Allow the user to ask for a read receipt')).toBeVisible();
   });
 
   it('should render with enabled auto add contacts', async () => {
-    const contextWithAutoAdd = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefAutoAddAddressEnabled: 'TRUE' },
-    };
+    const overrides_contextWithAutoAdd = { zimbraPrefAutoAddAddressEnabled: 'TRUE' };
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithAutoAdd}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithAutoAdd)
     );
     await expect.element(page.getByText('Enable auto-add contacts')).toBeVisible();
   });
 
   it('should render with enabled GAL autocomplete', async () => {
-    const contextWithGal = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithGal = {
         zimbraPrefGalAutoCompleteEnabled: 'TRUE',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithGal}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithGal)
     );
     await expect.element(page.getByText('Use GAL to auto-fill')).toBeVisible();
   });
 
   it('should render with all calendar preferences enabled', async () => {
-    const contextWithCalendar = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithCalendar = {
         zimbraPrefCalendarShowPastDueReminders: 'TRUE',
         zimbraPrefCalendarAllowCancelEmailToSelf: 'TRUE',
         zimbraPrefCalendarAllowForwardedInvite: 'TRUE',
@@ -670,168 +447,91 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
         zimbraPrefCalendarSendInviteDeniedAutoReply: 'TRUE',
         zimbraPrefCalendarNotifyDelegatedChanges: 'TRUE',
         zimbraPrefAppleIcalDelegationEnabled: 'TRUE',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithCalendar}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithCalendar)
     );
     await expect.element(page.getByText('Calendar Options')).toBeVisible();
   });
 
   it('should render without zimbraId in accountDetail', async () => {
-    const contextWithoutId = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraId: undefined },
-    };
+    const overrides_contextWithoutId = { zimbraId: undefined };
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithoutId}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithoutId)
     );
     await expect.element(page.getByText('Calendar Options')).toBeVisible();
   });
 
   it('should render with different charset', async () => {
-    const contextWithCharset = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailDefaultCharset: 'UTF-8' },
-    };
+    const overrides_contextWithCharset = { zimbraPrefMailDefaultCharset: 'UTF-8' };
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithCharset}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithCharset)
     );
     await expect.element(page.getByText('Default Charset')).toBeVisible();
   });
 
   it('should render with enabled out of office reply', async () => {
-    const contextWithOOO = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithOOO = {
         zimbraPrefOutOfOfficeReplyEnabled: 'TRUE',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithOOO}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithOOO)
     );
     await expect.element(page.getByText('Can send auto-reply messages')).toBeVisible();
   });
 
   it('should render with enabled save to sent', async () => {
-    const contextWithSaveToSent = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefSaveToSent: 'TRUE' },
-    };
+    const overrides_contextWithSaveToSent = { zimbraPrefSaveToSent: 'TRUE' };
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithSaveToSent}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithSaveToSent)
     );
     await expect.element(page.getByText('Save to sent')).toBeVisible();
   });
 
   it('should render with enabled message deduping', async () => {
-    const contextWithDeduping = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithDeduping = {
         zimbraPrefMessageIdDedupingEnabled: 'TRUE',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithDeduping}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithDeduping)
     );
     await expect.element(page.getByText('Auto-Delete duplicate messages')).toBeVisible();
   });
 
   it('should render with enabled mail toaster', async () => {
-    const contextWithToaster = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailToasterEnabled: 'TRUE' },
-    };
+    const overrides_contextWithToaster = { zimbraPrefMailToasterEnabled: 'TRUE' };
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithToaster}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithToaster)
     );
     await expect.element(page.getByText('Enable New Mail Toast Notification')).toBeVisible();
   });
 
   it('should handle undefined zimbraPrefOutOfOfficeCacheDuration', async () => {
-    const contextUndefined = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextUndefined = {
         zimbraPrefOutOfOfficeCacheDuration: undefined,
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextUndefined}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextUndefined)
     );
     await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
   });
 
   it('should render with varying boolean preferences as TRUE', async () => {
-    const contextWithTrue = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_contextWithTrue = {
         zimbraPrefMessageViewHtmlPreferred: 'TRUE',
         zimbraPrefOutOfOfficeReplyEnabled: 'TRUE',
         zimbraPrefMailSignatureEnabled: 'TRUE',
         zimbraPrefAutoAddAddressEnabled: 'TRUE',
         zimbraPrefGalAutoCompleteEnabled: 'TRUE',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={contextWithTrue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_contextWithTrue)
     );
     await expect.element(page.getByText('Mail Options')).toBeVisible();
   });
 
   it('should render with all sections visible', async () => {
-    const fullContext = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_fullContext = {
         zimbraId: 'test-id-123',
         zimbraPrefGroupMailBy: 'conversation',
         zimbraPrefMailDefaultCharset: 'UTF-8',
@@ -842,15 +542,9 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
         zimbraPrefCalendarInitialView: 'week',
         zimbraPrefCalendarFirstDayOfWeek: '1',
         zimbraPrefCalendarApptVisibility: 'public',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={fullContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_fullContext)
     );
     await expect.element(page.getByText('Mail Options')).toBeVisible();
     await expect.element(page.getByText('Receiving Mails')).toBeVisible();
@@ -861,32 +555,17 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
   });
 
   it('should render SignatureDetail component', async () => {
-    const testSignatureItems = [{ id: '1', name: 'Test Signature' }];
-    const testSignatureList = [{ id: '1', content: 'Test content' }];
-    setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={testSignatureItems}
-          signatureList={testSignatureList}
-        />
-      </AccountContext.Provider>,
-    );
+    setupBrowserTest(wrapUserPref());
     await expect.element(page.getByText('Mail Signature')).toBeVisible();
   });
 
   it('should render with empty signatures', async () => {
-    setupBrowserTest(
-      <AccountContext.Provider value={mockContextValue}>
-        <EditAccountUserPrefrencesSection signatureItems={[]} signatureList={[]} />
-      </AccountContext.Provider>,
-    );
+    setupBrowserTest(wrapUserPref());
     await expect.element(page.getByText('Mail Signature')).toBeVisible();
   });
 
   it('should render with all possible preference values set', async () => {
-    const fullPrefsContext = {
-      ...mockContextValue,
-      accountDetail: {
+    const overrides_fullPrefsContext = {
         zimbraId: 'full-test-id',
         zimbraPrefMessageViewHtmlPreferred: 'TRUE',
         zimbraPrefGroupMailBy: 'conversation',
@@ -917,239 +596,111 @@ describe('EditAccountUserPrefrencesSection (browser)', () => {
         zimbraPrefMessageIdDedupingEnabled: 'TRUE',
         zimbraPrefMailToasterEnabled: 'TRUE',
         zimbraPrefSaveToSent: 'TRUE',
-      },
-      cosDetail: mockContextValue.cosDetail,
-      accSpecificDetail: mockContextValue.accSpecificDetail,
     };
-    setupBrowserTest(
-      <AccountContext.Provider value={fullPrefsContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
-    );
+    setupBrowserTest(wrapUserPref(overrides_fullPrefsContext));
     await expect.element(page.getByText('Mail Options')).toBeVisible();
   });
 
   it('should render with minimal accountDetail', async () => {
-    const minimalContext = {
-      ...mockContextValue,
-      accountDetail: {
-        zimbraId: 'min-test-id',
-      },
-    };
-    setupBrowserTest(
-      <AccountContext.Provider value={minimalContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
-    );
+    setupBrowserTest(wrapUserPref({ zimbraId: 'min-test-id' }));
     await expect.element(page.getByText('Mail Options')).toBeVisible();
   });
 
   it('should handle different out of office cache duration with days', async () => {
-    const testContext = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_testContext = {
         zimbraPrefOutOfOfficeCacheDuration: '1d',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_testContext)
     );
     await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
   });
 
   it('should handle different out of office cache duration with hours', async () => {
-    const testContext = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_testContext = {
         zimbraPrefOutOfOfficeCacheDuration: '24h',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_testContext)
     );
     await expect.element(page.getByText('Out of office cache lifetime')).toBeVisible();
   });
 
   it('should render with read receipt option never', async () => {
-    const testContext = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailSendReadReceipts: 'never' },
-    };
+    const overrides_testContext = { zimbraPrefMailSendReadReceipts: 'never' };
     setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_testContext)
     );
     await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
   });
 
   it('should render with read receipt option prompt', async () => {
-    const testContext = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_testContext = {
         zimbraPrefMailSendReadReceipts: 'prompt',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_testContext)
     );
     await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
   });
 
   it('should render with polling interval 500', async () => {
-    const testContext = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailPollingInterval: '500' },
-    };
+    const overrides_testContext = { zimbraPrefMailPollingInterval: '500' };
     setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_testContext)
     );
     await expect.element(page.getByText('Check new mail every')).toBeVisible();
   });
 
   it('should render with polling interval 15m', async () => {
-    const testContext = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefMailPollingInterval: '15m' },
-    };
+    const overrides_testContext = { zimbraPrefMailPollingInterval: '15m' };
     setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_testContext)
     );
     await expect.element(page.getByText('Check new mail every')).toBeVisible();
   });
 
   it('should render with calendar view day', async () => {
-    const testContext = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarInitialView: 'day' },
-    };
+    const overrides_testContext = { zimbraPrefCalendarInitialView: 'day' };
     setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_testContext)
     );
     await expect.element(page.getByText('Default Calendar View')).toBeVisible();
   });
 
   it('should render with calendar view workWeek', async () => {
-    const testContext = {
-      ...mockContextValue,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
+    const overrides_testContext = {
         zimbraPrefCalendarInitialView: 'workWeek',
-      },
-    };
+};
     setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_testContext)
     );
     await expect.element(page.getByText('Default Calendar View')).toBeVisible();
   });
 
   it('should render with first day of week as Tuesday', async () => {
-    const testContext = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarFirstDayOfWeek: '2' },
-    };
+    const overrides_testContext = { zimbraPrefCalendarFirstDayOfWeek: '2' };
     setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_testContext)
     );
     await expect.element(page.getByText('The Week starts on')).toBeVisible();
   });
 
   it('should render with first day of week as Friday', async () => {
-    const testContext = {
-      ...mockContextValue,
-      accountDetail: { ...mockContextValue.accountDetail, zimbraPrefCalendarFirstDayOfWeek: '5' },
-    };
+    const overrides_testContext = { zimbraPrefCalendarFirstDayOfWeek: '5' };
     setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
+      wrapUserPref(overrides_testContext)
     );
     await expect.element(page.getByText('The Week starts on')).toBeVisible();
   });
 
-  it('should call setAccountDetail when zimbraFeatureReadReceiptsEnabled reset button is clicked', async () => {
-    const mockSetAccountDetail = vi.fn();
-    const testContext = {
-      ...mockContextValue,
-      setAccountDetail: mockSetAccountDetail,
-      accountDetail: {
-        ...mockContextValue.accountDetail,
-        zimbraFeatureReadReceiptsEnabled: 'TRUE',
-      },
-      accSpecificDetail: {
-        ...mockContextValue.accSpecificDetail,
-        zimbraFeatureReadReceiptsEnabled: 'FALSE',
-      },
-    };
-    setupBrowserTest(
-      <AccountContext.Provider value={testContext}>
-        <EditAccountUserPrefrencesSection
-          signatureItems={signatureItems}
-          signatureList={signatureList}
-        />
-      </AccountContext.Provider>,
-    );
+  it('should update the form when zimbraFeatureReadReceiptsEnabled reset button is clicked', async () => {
+    setupBrowserTest(wrapUserPref({ zimbraFeatureReadReceiptsEnabled: 'TRUE' }));
 
     const resetButton = page.getByTestId('reset-zimbraFeatureReadReceiptsEnabled');
     await expect.element(resetButton).toBeVisible();
     await resetButton.click();
 
-    // Verify that setAccountDetail was called with a function
-    expect(mockSetAccountDetail).toHaveBeenCalled();
+    await expect.element(resetButton).not.toBeInTheDocument();
   });
 });

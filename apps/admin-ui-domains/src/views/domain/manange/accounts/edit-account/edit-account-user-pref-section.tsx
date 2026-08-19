@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import {
   ChipInput,
   Container,
@@ -13,7 +14,7 @@ import {
   Row,
 } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
-import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import CustomChip from '../../../../components/customChip';
@@ -24,25 +25,19 @@ import {
   isValidEmail,
   timeZoneList,
 } from '../../../../utility/utils';
-import { AccountContext } from '../account-context';
+import { useAccountForm, useSetAccountValues } from './account-form-context';
 import { SignatureDetail } from './signature-detail';
 
-const EditAccountUserPrefrencesSection: FC<{
-  signatureItems: any;
-  signatureList: any;
-}> = ({ signatureItems, signatureList }) => {
-  const context = useContext(AccountContext);
+const EditAccountUserPrefrencesSection: FC = () => {
   const [t] = useTranslation();
-  const {
-    accountDetail,
-    setAccountDetail,
-    setSignatureItems,
-    setSignatureList,
-    cosDetail,
-    accSpecificDetail,
-  } = context;
-  const [outOfOfficeCacheDurationNum, setOutOfOfficeCacheDurationNum] = useState(
-    accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1),
+  const { form, cosDetail, accSpecificDetail, signatureList } = useAccountForm();
+  const setAccountValues = useSetAccountValues();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
+  const [signatureItems, setSignatureItems] = useState<any[]>([]);
+  const [, setSignatureList] = useState<any[]>([]);
+  const accountDetail = values;
+  const [outOfOfficeCacheDurationNum, setOutOfOfficeCacheDurationNum] = useState<string>(
+    values?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1),
   );
   const [zimbraAllowFromAddress, setZimbraAllowFromAddress] = useState<any[]>([]);
 
@@ -51,8 +46,8 @@ const EditAccountUserPrefrencesSection: FC<{
   const APPOINTMENT_REMINDER = useMemo(() => appointmentReminder(t), [t]);
   const CHARACTOR_SET = useMemo(() => charactorSet(), []);
   const outOfOfficeCacheDurationType = useMemo(
-    () => accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) ?? '',
-    [accountDetail],
+    () => values?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) ?? '',
+    [values?.zimbraPrefOutOfOfficeCacheDuration],
   );
   const POLLING_INTERVAL = useMemo(
     () => [
@@ -174,69 +169,69 @@ const EditAccountUserPrefrencesSection: FC<{
 
   const changeOutOfOfficeDurationetail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
         zimbraPrefOutOfOfficeCacheDuration: `${e.target.value}${outOfOfficeCacheDurationType}`,
       }));
       setOutOfOfficeCacheDurationNum(e.target.value);
     },
-    [setAccountDetail, outOfOfficeCacheDurationType],
+    [setAccountValues, outOfOfficeCacheDurationType],
   );
   const onOutOfOfficeCacheDurationTypeChange = useCallback(
     (v: string) => {
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
         zimbraPrefOutOfOfficeCacheDuration: `${outOfOfficeCacheDurationNum}${v}`,
       }));
     },
-    [outOfOfficeCacheDurationNum, setAccountDetail],
+    [outOfOfficeCacheDurationNum, setAccountValues],
   );
   const onPrefTimeZoneChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefTimeZoneId: v }));
   };
   const onCalendarDefaultApptDurationChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefCalendarDefaultApptDuration: v }));
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarDefaultApptDuration: v }));
   };
   const onReminderWarningTimeChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefCalendarApptReminderWarningTime: v }));
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarApptReminderWarningTime: v }));
   };
   const onCalendarInitialViewChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefCalendarInitialView: v }));
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarInitialView: v }));
   };
   const onFirstDayOfWeekChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefCalendarFirstDayOfWeek: v }));
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarFirstDayOfWeek: v }));
   };
   const onAppointmentVisibilityChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefCalendarApptVisibility: v }));
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarApptVisibility: v }));
   };
   const changeSwitchOption = useCallback(
     (key: string): void => {
-      setAccountDetail((prev: any) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
-        [key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+        [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
       }));
     },
-    [accountDetail, setAccountDetail],
+    [setAccountValues],
   );
 
   const onGroupByChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefGroupMailBy: v }));
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefGroupMailBy: v }));
   };
   const onCharactorSetChange = (v: string): void => {
-    v && setAccountDetail((prev: any) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
+    if (v) setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
   };
   const onPollingIntervalChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
   };
   const onReadReceiptChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefMailSendReadReceipts: v }));
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefMailSendReadReceipts: v }));
   };
 
   const setEmptyValue = useCallback(
     (keyName: string) => {
-      setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+      setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
     },
-    [setAccountDetail],
+    [setAccountValues],
   );
 
   return (
@@ -446,7 +441,7 @@ const EditAccountUserPrefrencesSection: FC<{
                 if (isValidEmail(contact.label ?? '')) data.push(contact);
               });
               setZimbraAllowFromAddress(data);
-              setAccountDetail((prev: any) => ({
+              setAccountValues((prev: Record<string, any>) => ({
                 ...prev,
                 zimbraAllowFromAddress: map(data, 'label').join(', '),
               }));

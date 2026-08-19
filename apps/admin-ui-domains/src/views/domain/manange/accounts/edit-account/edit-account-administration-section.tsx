@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
@@ -20,7 +21,7 @@ import {
 } from '@zextras/ui-components';
 import { searchDirectory, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DISPLAYNAME, FETCH_DATA_LIMIT, TRUE } from '../../../../../constants';
@@ -32,14 +33,15 @@ import {
 } from '../../../../../services/get-initialized-domains';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import { AccountContext } from '../account-context';
-import { AccountType } from '../account-types/account-types';
+import { useAccountForm, useSetAccountValues } from './account-form-context';
 
 const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
-  const context = useContext(AccountContext);
   const createSnackbar = useSnackbar();
-  const { accountDetail, setAccountDetail, initAccountDetail, setDeleteAdministrationRights } =
-    context;
+  const { form, savedValues } = useAccountForm();
+  const setAccountValues = useSetAccountValues();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
+  const accountDetail = values;
+  const initAccountDetail = savedValues as Record<string, any>;
   const [isDomainSelect, setIsDomainSelect] = useState(false);
   const [searchDomainName, setSearchDomainName] = useState('');
   const [domainList, setDomainList] = useState<Array<{ id: string; name: string }>>([]);
@@ -93,12 +95,12 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 
   const changeSwitchOption = useCallback(
     (key: string): void => {
-      setAccountDetail((prev: AccountType) => ({
+      setAccountValues((prev: Record<string, any>) => ({
         ...prev,
-        [key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+        [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
       }));
     },
-    [accountDetail, setAccountDetail],
+    [setAccountValues],
   );
 
   const getAccountDistributionList = useCallback(() => {
@@ -332,14 +334,15 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
                 value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
                 onClick={(): void => {
                   if (accountDetail?.zimbraIsAdminAccount === 'FALSE') {
-                    setDeleteAdministrationRights(accountDistributionList);
+                    form.setFieldValue('deleteAdministrationRights', accountDistributionList);
                   } else {
-                    setDeleteAdministrationRights([]);
+                    form.setFieldValue('deleteAdministrationRights', []);
                   }
                   changeSwitchOption('zimbraIsAdminAccount');
-                  setAccountDetail((prev: AccountType) => ({
+                  setAccountValues((prev: Record<string, any>) => ({
                     ...prev,
-                    zimbraIsDelegatedAdminAccount: initAccountDetail?.zimbraIsDelegatedAdminAccount,
+                    zimbraIsDelegatedAdminAccount:
+                      initAccountDetail?.zimbraIsDelegatedAdminAccount,
                   }));
                 }}
                 label={t('account_details.global_administration', 'Global administration')}
