@@ -703,6 +703,9 @@ importers:
       '@posthog/react':
         specifier: ^1.10.3
         version: 1.10.3(@types/react@19.2.18)(posthog-js@1.417.4)(react@19.2.8)
+      '@tanstack/react-form':
+        specifier: ^1.32.0
+        version: 1.33.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/react-query':
         specifier: ^5.90.5
         version: 5.101.4(react@19.2.8)
