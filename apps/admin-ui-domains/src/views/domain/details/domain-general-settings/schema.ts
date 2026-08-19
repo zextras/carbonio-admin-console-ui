@@ -13,7 +13,12 @@ export const DOMAIN_GENERAL_VALIDATION_MESSAGES: Record<string, string> = {
 
 function isValidEmailOrEmpty(value: string): boolean {
   if (value === '') return true;
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  if (/\s/.test(value)) return false;
+  const atIndex = value.indexOf('@');
+  if (atIndex <= 0 || atIndex !== value.lastIndexOf('@')) return false;
+  const domain = value.slice(atIndex + 1);
+  const lastDotIndex = domain.lastIndexOf('.');
+  return lastDotIndex > 0 && lastDotIndex < domain.length - 1;
 }
 
 function isNonNegativeIntegerOrEmpty(value: string): boolean {
