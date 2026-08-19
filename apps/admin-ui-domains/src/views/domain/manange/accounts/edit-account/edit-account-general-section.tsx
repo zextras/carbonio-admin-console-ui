@@ -5,17 +5,30 @@
  */
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
-import { Button, ChipInput, Container, CustomHeaderFactory, CustomTextArea, DropDownInput, HoverableRowFactory, InheritedSelect, Input, LabeledValue, Modal, Padding, Paging, Row, Select, Switch, Table, Tooltip, useSnackbar, } from '@zextras/ui-components';
+import {
+  Button,
+  ChipInput,
+  Container,
+  CustomHeaderFactory,
+  CustomTextArea,
+  DropDownInput,
+  HoverableRowFactory,
+  InheritedSelect,
+  Input,
+  LabeledValue,
+  Modal,
+  Padding,
+  Paging,
+  Row,
+  Select,
+  Switch,
+  Table,
+  Tooltip,
+  useSnackbar,
+} from '@zextras/ui-components';
 import { useCosList, useDebouncedValue, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
-import React, {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../../../types';
@@ -53,6 +66,39 @@ const ZimbraAuthMethod = {
   LDAP: 'ldap',
   EXTERNAL: 'ad',
 } as const;
+
+function domainAttrsToObject(attrs: Array<Attribute>): objectType {
+  const obj: objectType = {};
+  attrs.forEach((item: Attribute) => {
+    obj[item?.n] = item._content;
+  });
+  return obj;
+}
+
+function isLdapAuthWithoutFallback(attrs: Array<Attribute> | undefined): boolean {
+  if (!attrs || attrs.length === 0) {
+    return false;
+  }
+  const obj = domainAttrsToObject(attrs);
+  return obj.zimbraAuthMech === ZimbraAuthMethod.LDAP && obj.zimbraAuthFallbackToLocal !== 'TRUE';
+}
+
+function hasExternalLdapUrl(attrs: Array<Attribute> | undefined): boolean {
+  if (!attrs || attrs.length === 0) {
+    return false;
+  }
+  const obj = domainAttrsToObject(attrs);
+  return obj.zimbraAuthLdapURL !== undefined && obj.zimbraAuthLdapURL !== '';
+}
+
+function filterSessions(list: Array<UserSession>, filter: string): Array<UserSession> {
+  if (!filter) {
+    return list;
+  }
+  return list.filter(
+    (item: UserSession) => item?.name.includes(filter) || item?.sid.includes(filter),
+  );
+}
 
 export const EditAccountGeneralSection: FC<{
   setChange: any;
@@ -95,15 +141,8 @@ export const EditAccountGeneralSection: FC<{
   const [selectedSession, setSelectedSession] = useState<any>([]);
   const [sessionFilter, setSessionFilter] = useState('');
   const [endedSids, setEndedSids] = useState<Array<string>>([]);
-  const allUserSessionList = sessions.filter(
-    (item: UserSession) => !endedSids.includes(item?.sid),
-  );
-  const userSessionList = sessionFilter
-    ? allUserSessionList.filter(
-        (item: UserSession) =>
-          item?.name.includes(sessionFilter) || item?.sid.includes(sessionFilter),
-      )
-    : allUserSessionList;
+  const allUserSessionList = sessions.filter((item: UserSession) => !endedSids.includes(item?.sid));
+  const userSessionList = filterSessions(allUserSessionList, sessionFilter);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const isAdvanced = useIsAdvanced();
   const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
@@ -123,34 +162,12 @@ export const EditAccountGeneralSection: FC<{
     ];
   }, [t]);
 
-  const isHidePassword = useMemo(() => {
-    if (!!domainInformation && domainInformation.length > 0) {
-      const obj: objectType = {};
-      domainInformation.forEach((item: Attribute) => {
-        obj[item?.n] = item._content;
-      });
-      if (
-        obj?.zimbraAuthMech === ZimbraAuthMethod.LDAP &&
-        obj.zimbraAuthFallbackToLocal !== 'TRUE'
-      ) {
-        return true;
-      }
-    }
-    return false;
-  }, [domainInformation]);
+  const isHidePassword = useMemo(
+    () => isLdapAuthWithoutFallback(domainInformation),
+    [domainInformation],
+  );
 
-  const extLdapAuth = useMemo(() => {
-    if (!!domainInformation && domainInformation?.length > 0) {
-      const obj: objectType = {};
-      domainInformation?.forEach((item: Attribute) => {
-        obj[item?.n] = item._content;
-      });
-      if (obj?.zimbraAuthLdapURL !== undefined && obj?.zimbraAuthLdapURL !== '') {
-        return true;
-      }
-    }
-    return false;
-  }, [domainInformation]);
+  const extLdapAuth = useMemo(() => hasExternalLdapUrl(domainInformation), [domainInformation]);
 
   const getDomainLists = useCallback(
     (domain: string | undefined): void => {
@@ -197,7 +214,10 @@ export const EditAccountGeneralSection: FC<{
   );
   const changeAccDetail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountValues((prev: Record<string, any>) => ({ ...prev, [e.target.name]: e.target.value }));
+      setAccountValues((prev: Record<string, any>) => ({
+        ...prev,
+        [e.target.name]: e.target.value,
+      }));
     },
     [setAccountValues],
   );
@@ -380,46 +400,46 @@ export const EditAccountGeneralSection: FC<{
   const sessionListRows = userSessionList.map((item: UserSession) => ({
     id: item?.sid,
     columns: [
-        <Container
-          crossAlignment="flex-start"
-          key={item?.zid}
-          style={{ cursor: 'pointer' }}
-          onClick={(): void => addSelection(item)}
-        >
-          <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
-            {item?.name}
-          </ds-text>
-        </Container>,
-        <Container
-          crossAlignment="flex-start"
-          key={item?.zid}
-          style={{ cursor: 'pointer' }}
-          onClick={(): void => addSelection(item)}
-        >
-          <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
-            {item?.sid}
-          </ds-text>
-        </Container>,
-        <Container
-          crossAlignment="flex-start"
-          key={item?.zid}
-          style={{ cursor: 'pointer' }}
-          onClick={(): void => addSelection(item)}
-        >
-          <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
-            {''}
-          </ds-text>
-        </Container>,
-        <Container
-          crossAlignment="flex-start"
-          key={item?.zid}
-          style={{ cursor: 'pointer' }}
-          onClick={(): void => addSelection(item)}
-        >
-          <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
-            {''}
-          </ds-text>
-        </Container>,
+      <Container
+        crossAlignment="flex-start"
+        key={item?.zid}
+        style={{ cursor: 'pointer' }}
+        onClick={(): void => addSelection(item)}
+      >
+        <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
+          {item?.name}
+        </ds-text>
+      </Container>,
+      <Container
+        crossAlignment="flex-start"
+        key={item?.zid}
+        style={{ cursor: 'pointer' }}
+        onClick={(): void => addSelection(item)}
+      >
+        <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
+          {item?.sid}
+        </ds-text>
+      </Container>,
+      <Container
+        crossAlignment="flex-start"
+        key={item?.zid}
+        style={{ cursor: 'pointer' }}
+        onClick={(): void => addSelection(item)}
+      >
+        <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
+          {''}
+        </ds-text>
+      </Container>,
+      <Container
+        crossAlignment="flex-start"
+        key={item?.zid}
+        style={{ cursor: 'pointer' }}
+        onClick={(): void => addSelection(item)}
+      >
+        <ds-text as="span" size="small" weight="light" key={item?.zid} color="#828282">
+          {''}
+        </ds-text>
+      </Container>,
     ],
   }));
 
@@ -467,13 +487,10 @@ export const EditAccountGeneralSection: FC<{
       .finally(() => setIsRequestInProgress(false));
   };
 
-  const onSessionFilterInputChange = useCallback(
-    (ev: ChangeEvent<HTMLInputElement>) => {
-      setSelectedSession([]);
-      setSessionFilter(ev?.target?.value || '');
-    },
-    [],
-  );
+  const onSessionFilterInputChange = useCallback((ev: ChangeEvent<HTMLInputElement>) => {
+    setSelectedSession([]);
+    setSessionFilter(ev?.target?.value || '');
+  }, []);
 
   const renderSwitchRow = (
     label: string,
@@ -631,8 +648,7 @@ export const EditAccountGeneralSection: FC<{
                 showCheckbox={false}
                 onChange={onAccountABQStatusChange}
                 selection={
-                  ABQ_STATUS.find((item: any) => item.value === values?.abqMode) ||
-                  ABQ_STATUS[0]
+                  ABQ_STATUS.find((item: any) => item.value === values?.abqMode) || ABQ_STATUS[0]
                 }
               />
             </Row>
@@ -645,9 +661,8 @@ export const EditAccountGeneralSection: FC<{
                 showCheckbox={false}
                 onChange={onAccountBackupEnabledStatusChange}
                 selection={
-                  BACKUP_ENABLED_STATUS.find(
-                    (item: any) => item.value === values?.backupEnabled,
-                  ) || BACKUP_ENABLED_STATUS[0]
+                  BACKUP_ENABLED_STATUS.find((item: any) => item.value === values?.backupEnabled) ||
+                  BACKUP_ENABLED_STATUS[0]
                 }
               />
             </Row>
@@ -706,7 +721,8 @@ export const EditAccountGeneralSection: FC<{
               iconColor="primary"
             />
             <Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
-              <ds-text as="span"
+              <ds-text
+                as="span"
                 size="small"
                 color="gray0"
                 style={{ textDecoration: 'underline', cursor: 'default' }}
@@ -1119,7 +1135,8 @@ export const EditAccountGeneralSection: FC<{
         showCloseIcon
         onClick={(): void => setShowDeletePasswordModal(false)}
       >
-        <ds-text as="p"
+        <ds-text
+          as="p"
           size={'extralarge'}
           overflow="break-word"
           style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 1rem' }}
