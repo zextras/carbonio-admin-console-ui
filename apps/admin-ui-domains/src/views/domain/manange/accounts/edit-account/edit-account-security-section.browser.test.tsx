@@ -614,7 +614,6 @@ describe('EditAccountSecuritySection (browser)', () => {
 
       await resetButton.click();
 
-      // the override is cleared, so the switch falls back to the inherited value
       await expect.element(otpSwitch).toHaveAttribute('aria-checked', 'false');
     });
 
@@ -635,7 +634,6 @@ describe('EditAccountSecuritySection (browser)', () => {
 
       await resetButton.click();
 
-      // the override is cleared, so the switch falls back to the inherited value
       await expect.element(lockSwitch).toHaveAttribute('aria-checked', 'false');
     });
   });
