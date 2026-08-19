@@ -55,48 +55,40 @@ const buildAccount = (email: string, id: string, sn: string): AccountEntry => ({
 });
 
 const JANE = buildAccount('jane@example.com', 'acc-1', 'Smith');
+const JANE_SAVED = buildAccount('jane@example.com', 'acc-1', 'Doe');
 
-// the detail query is refetched after save; it must return the persisted
-// surname so the form defaults update and isDirty clears (AGENTS.md pattern)
-let persistedSn = 'Smith';
-
-async function setupEditAccountInterceptors(): Promise<void> {
-  await createBrowserSoapAPIInterceptor('SearchDirectory', {
+function setupEditAccountInterceptors(): void {
+  createBrowserSoapAPIInterceptor('SearchDirectory', {
     account: [JANE],
+    domain: [
+      { id: DOMAIN_ID, name: DOMAIN_NAME, a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }] },
+    ],
     searchTotal: 1,
     more: false,
   });
-  await createBrowserSoapAPIInterceptor('CountAccount', {
+  createBrowserSoapAPIInterceptor('CountAccount', {
     cos: [{ id: 'cos-default-id', name: 'default', _content: '1' }],
   });
-  await createBrowserSoapAPIInterceptor('GetAccount', {
-    account: [
-      {
-        ...JANE,
-        a: JANE.a.map((attr) => (attr.n === 'sn' ? { ...attr, _content: persistedSn } : attr)),
-      },
-    ],
-  });
-  await createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
-  await createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
-  await createBrowserSoapAPIInterceptor('GetSessions', {});
-  await createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
-  await createBrowserSoapAPIInterceptor('GetCos', {
+  createBrowserSoapAPIInterceptor('GetAccount', { account: [JANE] });
+  createBrowserSoapAPIInterceptor('GetSignatures', { signature: [] });
+  createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+  createBrowserSoapAPIInterceptor('GetSessions', {});
+  createBrowserSoapAPIInterceptor('CheckRight', { allow: true });
+  createBrowserSoapAPIInterceptor('GetCos', {
     cos: [{ id: 'cos-default-id', name: 'default', a: [] }],
   });
-  await createBrowserSoapAPIInterceptor('GetGrants', {});
-  await createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
+  createBrowserSoapAPIInterceptor('GetGrants', {});
+  createBrowserSoapAPIInterceptor('GetFolder', { folder: [] });
 }
 
 describe('EditAccount save flow (browser)', () => {
   beforeEach(async () => {
     await advancedSupportedApiForBrowser.withAdvancedNotSupported();
-    persistedSn = 'Smith';
   });
 
   it('edits surname, saves, sends ModifyAccount and clears dirty state', async () => {
-    await setupEditAccountInterceptors();
-    const modifyAccountParams = await createBrowserSoapAPIInterceptor<
+    setupEditAccountInterceptors();
+    const modifyAccountParams = createBrowserSoapAPIInterceptor<
       {
         id: string;
         a: Array<{ n: string; _content: string }>;
@@ -111,6 +103,7 @@ describe('EditAccount save flow (browser)', () => {
 
     // edit the surname on the general tab
     const surnameInput = page.getByLabelText(/surname/i);
+    await expect.element(surnameInput).toHaveValue('Smith');
     await surnameInput.fill('Doe');
 
     // save
@@ -125,9 +118,7 @@ describe('EditAccount save flow (browser)', () => {
     expect(attrs).toContainEqual({ n: 'sn', _content: 'Doe' });
     expect(attrs).toHaveLength(1);
 
-    // post-save: the refetched detail returns the persisted value, defaults
-    // update and the dirty state clears (Save button disappears)
-    persistedSn = 'Doe';
+    createBrowserSoapAPIInterceptor('GetAccount', { account: [JANE_SAVED] });
     await expect.element(saveButton).not.toBeInTheDocument();
   });
 });
