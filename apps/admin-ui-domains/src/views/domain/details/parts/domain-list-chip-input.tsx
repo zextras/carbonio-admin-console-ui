@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChipInput, ChipInputProps, DropdownItem, Row, Tooltip } from '@zextras/ui-components';
+import { ChipInput, type ChipInputProps, type DropdownItem, Row, Tooltip } from '@zextras/ui-components';
 import { useAllConfig } from '@zextras/ui-shared';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DomainsByFeature } from '../../../../../types';
@@ -14,55 +14,52 @@ import { CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, TRUE } from '../../../../consta
 import { getDomainList } from '../../../../services/search-domain-service';
 import { ZimbraDomainResponse } from '../../domain-list/domain-list';
 
-const DomainListChipInput: FC<{
+type DomainListChipInputProps = {
   domainName: string;
-  domainList: DomainsByFeature[];
-  setDomainList: (domainList: DomainsByFeature[]) => void;
-}> = ({ domainList, setDomainList, domainName }) => {
+  domainList: Array<DomainsByFeature>;
+  setDomainList: (domainList: Array<DomainsByFeature>) => void;
+};
+
+export const DomainListChipInput = ({
+  domainList,
+  setDomainList,
+  domainName,
+}: DomainListChipInputProps) => {
   const [t] = useTranslation();
   const { data: config = [] } = useAllConfig();
   const [domainOption, setDomainOption] = useState<Array<DropdownItem>>([]);
-  const getAllDomainList = useCallback(
-    (searchQuery: string): void => {
-      getDomainList(searchQuery, 0, 10).then((data) => {
-        const domainListResponse: ZimbraDomainResponse = data?.domain || [];
-        if (domainListResponse && Array.isArray(domainListResponse)) {
-          const domainListArr = domainListResponse.map((domain) => ({
-            label: domain.name,
-            id: domain.name,
-          }));
 
-          setDomainOption(domainListArr.filter((domain) => domain.id !== domainName));
-        }
-      });
-    },
-    [domainName],
-  );
+  function getAllDomainList(searchQuery: string): void {
+    getDomainList(searchQuery, 0, 10).then((data) => {
+      const domainListResponse: ZimbraDomainResponse = data?.domain || [];
+      if (domainListResponse && Array.isArray(domainListResponse)) {
+        const domainListArr = domainListResponse.map((domain) => ({
+          label: domain.name,
+          id: domain.name,
+        }));
 
-  const onInputType = useCallback<NonNullable<ChipInputProps['onInputType']>>(
-    ({ textContent }: { textContent: any }) => {
-      getAllDomainList(textContent);
-    },
-    [getAllDomainList],
-  );
+        setDomainOption(domainListArr.filter((domain) => domain.id !== domainName));
+      }
+    });
+  }
 
-  const onChange = useCallback<NonNullable<ChipInputProps['onChange']>>(
-    (domainChipList) => {
-      setDomainList(
-        domainChipList.map((domain) => ({
-          label: domain.label,
-        })),
-      );
-    },
-    [setDomainList],
-  );
+  const onInputType: NonNullable<ChipInputProps['onInputType']> = (event) => {
+    getAllDomainList(event.textContent ?? '');
+  };
 
-  const isEnableSearchAllDomainsByFeature: boolean = useMemo(() => {
-    const carbonioSearchAllDomainsByFeature = config.filter(
-      (item: Record<string, string>) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+  const onChange: NonNullable<ChipInputProps['onChange']> = (domainChipList) => {
+    setDomainList(
+      domainChipList.map((domain) => ({
+        label: domain.label,
+      })),
     );
-    return carbonioSearchAllDomainsByFeature[0]?._content === TRUE;
-  }, [config]);
+  };
+
+  const carbonioSearchAllDomainsByFeature = config.filter(
+    (item: { n?: string; _content?: string }) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+  );
+  const isEnableSearchAllDomainsByFeature =
+    carbonioSearchAllDomainsByFeature[0]?._content === TRUE;
 
   return (
     <Tooltip
@@ -92,4 +89,3 @@ const DomainListChipInput: FC<{
     </Tooltip>
   );
 };
-export default DomainListChipInput;

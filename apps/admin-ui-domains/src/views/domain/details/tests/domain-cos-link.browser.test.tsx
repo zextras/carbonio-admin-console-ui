@@ -9,7 +9,7 @@ import { type ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import DomainCosLink from '../domain-cos-link';
+import { DomainCosLink } from '../domain-cos-link';
 
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
@@ -17,7 +17,7 @@ const DOMAIN_NAME = 'example.com';
 function setup(ui: ReactElement) {
 	createBrowserSoapAPIInterceptor('SearchDirectory', {
 		cos: [
-			{ id: 'cos-1', name: 'Default COS', a: [] },
+			{ id: 'cos-1', name: 'Standard COS', a: [] },
 			{ id: 'cos-2', name: 'Premium COS', a: [] },
 		],
 		searchTotal: 2,
@@ -102,7 +102,7 @@ describe('DomainCosLink (browser)', () => {
 				/>,
 			);
 
-			await expect.element(page.getByText('Default COS')).toBeVisible();
+			await expect.element(page.getByText('Standard COS')).toBeVisible();
 			await expect.element(page.getByText('Premium COS')).toBeVisible();
 		});
 
