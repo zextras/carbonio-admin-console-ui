@@ -10,7 +10,7 @@ import { filter, flatMapDeep } from 'lodash-es';
 import { ZIMBRA_ADMIN_URN } from '../constants';
 import { domainQueryKeys } from './domain-query-keys';
 
-const ROOT_FOLDER_IDS = ['1', '2', '7', '10', '4', '5', '6', '3'];
+const ROOT_FOLDER_IDS = new Set(['1', '2', '7', '10', '4', '5', '6', '3']);
 
 function flatten(item: any): any {
   return [item, flatMapDeep(item.folder, flatten)];
@@ -71,7 +71,7 @@ export const useAccountGrants = (account: { id: string; name: string } | undefin
       allFolder.forEach((ele: any) => {
         ele.id = ele.id?.split(':')?.[1];
       });
-      const filteredFolders = filter(allFolder, (ele: any) => ROOT_FOLDER_IDS.includes(ele.id));
+      const filteredFolders = filter(allFolder, (ele: any) => ROOT_FOLDER_IDS.has(ele.id));
       return mergeFolderGrants(filteredFolders, grantsRes?.Body?.GetGrantsResponse?.grant || []);
     },
     enabled: !!account?.id && !!account?.name,
