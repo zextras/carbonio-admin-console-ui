@@ -45,6 +45,7 @@ import { useSignatures } from '../../../../services/use-signatures';
 import { type UserSession, useUserSessions } from '../../../../services/use-user-sessions';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import { getAccountStatusColors } from '../../constants/account-status-colors';
 import { AccountContext, AccountDetail } from './account-context';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
@@ -335,35 +336,7 @@ const ManageAccounts: FC = () => {
     setAllUserSessionList(sessionsData);
   }, [sessionsData]);
 
-  const STATUS_COLOR: any = useMemo(
-    () => ({
-      active: {
-        color: '#8BC34A',
-        label: t('label.active', 'Active'),
-      },
-      maintenance: {
-        color: '#2196D3',
-        label: t('label.in_maintenance', 'In maintenance'),
-      },
-      locked: {
-        color: '#D74942',
-        label: t('label.locked', 'Locked'),
-      },
-      closed: {
-        color: '#828282',
-        label: t('label.closed', 'Closed'),
-      },
-      pending: {
-        color: '#828282',
-        label: t('label.pending', 'Pending'),
-      },
-      lockout: {
-        color: '#D74942',
-        label: t('label.lockout', 'Lockout'),
-      },
-    }),
-    [t],
-  );
+  const STATUS_COLOR = getAccountStatusColors(t);
 
   const accountUserType = useCallback((item: any): string => {
     if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
