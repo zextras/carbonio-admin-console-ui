@@ -181,12 +181,19 @@ const GlobalDetailPanelContent = ({
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
   return (
-    <FormPageLayout
-      title={t('label.settings', 'Settings')}
-      unsavedChanges={isDirty}
-      onCancel={() => form.reset()}
-      onSave={() => form.handleSubmit()}
+    <Container
+      height="calc(100vh - 105px)"
+      background="gray6"
+      crossAlignment="flex-start"
+      mainAlignment="flex-start"
+      style={{ overflowY: 'auto' }}
     >
+      <FormPageLayout
+        title={t('label.settings', 'Settings')}
+        unsavedChanges={isDirty}
+        onCancel={() => form.reset()}
+        onSave={() => form.handleSubmit()}
+      >
       <Row
         mainAlignment="flex-start"
         width="100%"
@@ -320,7 +327,8 @@ const GlobalDetailPanelContent = ({
             </form.Field>
           </Container>
         </ListRow>
-    </FormPageLayout>
+      </FormPageLayout>
+    </Container>
   );
 };
 
