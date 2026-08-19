@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { AnyFormApi } from '@tanstack/react-form';
+import { isEqual } from 'lodash-es';
 import { createContext, useContext } from 'react';
 
 import type { ComputedLimit } from '../../../../../services/get-account-quota';
@@ -46,4 +47,22 @@ export function useAccountForm(): AccountFormContextValue {
     throw new Error('useAccountForm must be used within <AccountFormProvider>');
   }
   return ctx;
+}
+
+/**
+ * setState-style setter shim over the form, for consumers that call the
+ * setter updater-style (`set((prev) => ({ ...prev, key: value }))`).
+ * Only differing keys are written to the form so untouched fields stay untouched.
+ */
+export function useSetAccountValues(): (update: any) => void {
+  const { form } = useAccountForm();
+  return (update: any): void => {
+    const prev = form.state.values as Record<string, any>;
+    const next = typeof update === 'function' ? update(prev) : update;
+    Object.keys(next ?? {}).forEach((key) => {
+      if (!isEqual(prev?.[key], next[key])) {
+        form.setFieldValue(key, next[key]);
+      }
+    });
+  };
 }

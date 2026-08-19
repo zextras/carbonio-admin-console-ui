@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import {
   ChipInput,
   Container,
@@ -13,74 +14,66 @@ import {
   Tooltip,
 } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
-import React, { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { WscSettings } from '../../../../../wsc/wsc-settings';
 import CustomChip from '../../../../components/customChip';
 import { Features } from '../../../../cos/features';
 import { isValidEmail } from '../../../../utility/utils';
-import { AccountContext } from '../account-context';
-import { AccountType } from '../account-types/account-types';
+import { useAccountForm, useSetAccountValues } from './account-form-context';
 
-const EditAccountConfigurationSection: FC = () => {
-  const context = useContext(AccountContext);
+const EditAccountConfigurationSection: React.FC = () => {
+  const { form, cosDetail, accSpecificDetail } = useAccountForm();
+  const setAccountValues = useSetAccountValues();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const [t] = useTranslation();
-  const { accountDetail, setAccountDetail, accSpecificDetail, cosDetail } = context;
   const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useState<any[]>([]);
   const [mailForwardingAddress, setMailForwardingAddress] = useState<any[]>([]);
   const [prefCalendarForwardInvitesTo, setPrefCalendarForwardInvitesTo] = useState<any[]>([]);
 
   useEffect(() => {
     setPrefMailForwardingAddress(
-      accountDetail?.zimbraPrefMailForwardingAddress
-        ? accountDetail.zimbraPrefMailForwardingAddress
+      values?.zimbraPrefMailForwardingAddress
+        ? values.zimbraPrefMailForwardingAddress
             .split(', ')
             .map((ele: string) => ({ label: ele }))
         : [],
     );
-  }, [accountDetail?.zimbraPrefMailForwardingAddress]);
+  }, [values?.zimbraPrefMailForwardingAddress]);
   useEffect(() => {
     setMailForwardingAddress(
-      accountDetail?.zimbraMailForwardingAddress
-        ? accountDetail.zimbraMailForwardingAddress
+      values?.zimbraMailForwardingAddress
+        ? values.zimbraMailForwardingAddress
             .split(', ')
             .map((ele: string) => ({ label: ele }))
         : [],
     );
-  }, [accountDetail?.zimbraMailForwardingAddress]);
+  }, [values?.zimbraMailForwardingAddress]);
   useEffect(() => {
     setPrefCalendarForwardInvitesTo(
-      accountDetail?.zimbraPrefCalendarForwardInvitesTo
-        ? accountDetail.zimbraPrefCalendarForwardInvitesTo
+      values?.zimbraPrefCalendarForwardInvitesTo
+        ? values.zimbraPrefCalendarForwardInvitesTo
             .split(', ')
             .map((ele: string) => ({ label: ele }))
         : [],
     );
-  }, [accountDetail?.zimbraPrefCalendarForwardInvitesTo]);
+  }, [values?.zimbraPrefCalendarForwardInvitesTo]);
 
-  const changeSwitchOption = useCallback(
-    (key: string): void => {
-      setAccountDetail((prev: any) => ({
-        ...prev,
-        [key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
-      }));
-    },
-    [accountDetail, setAccountDetail],
-  );
+  const changeSwitchOption = (key: string): void => {
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+    }));
+  };
 
-  const setEmptyValue = useCallback(
-    (keyName: string) => {
-      setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
-    },
-    [setAccountDetail],
-  );
-  const changeAccDetail = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
-    },
-    [setAccountDetail],
-  );
+  const setEmptyValue = (keyName: string): void => {
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
+  };
+
+  const changeAccDetail = (e: ChangeEvent<HTMLInputElement>): void => {
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   return (
     <Container
@@ -97,7 +90,7 @@ const EditAccountConfigurationSection: FC = () => {
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">
             <InheritedSwitch
-              subValue={accountDetail?.zimbraFeatureMailForwardingEnabled}
+              subValue={values?.zimbraFeatureMailForwardingEnabled}
               onChange={changeSwitchOption}
               label={t(
                 'account_details.user_can_specify_forwarding_address',
@@ -112,7 +105,7 @@ const EditAccountConfigurationSection: FC = () => {
           </Row>
           <Row width="48%" mainAlignment="flex-start">
             <InheritedSwitch
-              subValue={accountDetail?.zimbraPrefMailLocalDeliveryDisabled}
+              subValue={values?.zimbraPrefMailLocalDeliveryDisabled}
               onChange={changeSwitchOption}
               label={t(
                 'account_details.dont_keep_local_copy_of_messages',
@@ -129,7 +122,7 @@ const EditAccountConfigurationSection: FC = () => {
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">
             <InheritedSwitch
-              subValue={accountDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
+              subValue={values?.zimbraFeatureMailForwardingInFiltersEnabled}
               onChange={changeSwitchOption}
               label={t(
                 'account_details.user_can_specify_mail_forwarding_filter',
@@ -158,7 +151,7 @@ const EditAccountConfigurationSection: FC = () => {
                   if (isValidEmail(contact.label ?? '')) data.push(contact);
                 });
                 setPrefMailForwardingAddress(data);
-                setAccountDetail((prev: any) => ({
+                setAccountValues((prev: Record<string, any>) => ({
                   ...prev,
                   zimbraPrefMailForwardingAddress: map(data, 'label').join(', '),
                 }));
@@ -185,7 +178,7 @@ const EditAccountConfigurationSection: FC = () => {
                   if (isValidEmail(contact.label ?? '')) data.push(contact);
                 });
                 setMailForwardingAddress(data);
-                setAccountDetail((prev: any) => ({
+                setAccountValues((prev: Record<string, any>) => ({
                   ...prev,
                   zimbraMailForwardingAddress: map(data, 'label').join(', '),
                 }));
@@ -212,7 +205,7 @@ const EditAccountConfigurationSection: FC = () => {
                   if (isValidEmail(contact.label ?? '')) data.push(contact);
                 });
                 setPrefCalendarForwardInvitesTo(data);
-                setAccountDetail((prev: any) => ({
+                setAccountValues((prev: Record<string, any>) => ({
                   ...prev,
                   zimbraPrefCalendarForwardInvitesTo: map(data, 'label').join(', '),
                 }));
@@ -241,7 +234,7 @@ const EditAccountConfigurationSection: FC = () => {
             label={t('label.mail_transport_map', 'Mail Transport Map')}
             backgroundColor="gray5"
             defaultValue={''}
-            value={accountDetail?.zimbraMailTransport || ''}
+            value={values?.zimbraMailTransport || ''}
             CustomIcon={(): React.ReactElement => (
               <Tooltip
                 placement="top"
@@ -266,8 +259,8 @@ const EditAccountConfigurationSection: FC = () => {
           </ds-text>
         </Row>
         <Features
-          featuresDetail={accountDetail}
-          setFeaturesDetail={setAccountDetail}
+          featuresDetail={values}
+          setFeaturesDetail={setAccountValues}
           cosDetail={cosDetail}
           accSpecificDetail={accSpecificDetail}
           setEmptyValue={setEmptyValue}
@@ -281,8 +274,8 @@ const EditAccountConfigurationSection: FC = () => {
           </ds-text>
         </Row>
         <WscSettings
-          featuresDetail={accountDetail}
-          setFeaturesDetail={setAccountDetail}
+          featuresDetail={values}
+          setFeaturesDetail={setAccountValues}
           cosDetail={cosDetail}
           accSpecificDetail={accSpecificDetail}
           setEmptyValue={setEmptyValue}

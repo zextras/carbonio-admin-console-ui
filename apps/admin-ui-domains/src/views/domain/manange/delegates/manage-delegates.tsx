@@ -32,9 +32,8 @@ import { fetchSoap } from '../../../../services/listOTP-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import { getAccountStatusColors } from '../../constants/account-status-colors';
 import { AccountContext } from '../accounts/account-context';
-import EditAccount from '../accounts/edit-account/edit-account';
+import { EditAccount } from '../accounts/edit-account/edit-account';
 import DisableDelegateAdminModel from './disable-delegate-admin-model';
 
 type UserSession = {
@@ -64,7 +63,7 @@ const ManageDelegates: FC = () => {
   const userSetting = useUserSettings();
   const [cosDetail, setCosDetail] = useState<any>({});
   const [initAccountDetail, setInitAccountDetail] = useState<any>({});
-  const [signatureList, setSignatureList] = useState<any[]>([]);
+  const [, setSignatureList] = useState<any[]>([]);
   const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
   const [selectedAccount, setSelectedAccount] = useState<any>({});
   const [accountDetail, setAccountDetail] = useState<any>({});
@@ -79,14 +78,12 @@ const ManageDelegates: FC = () => {
   const [totalAccount, setTotalAccount] = useState<number>(0);
   const [offset, setOffset] = useState<number>(0);
   const [pageLimit, setPageLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
-  const [signatureItems, setSignatureItems] = useState<any[]>([]);
+  const [, setSignatureItems] = useState<any[]>([]);
   const [deligateDetail, setDeligateDetail] = useState<any>({});
   const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
   const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
   const [defaultTab, setDefaultTab] = useState('general');
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState(false);
-  const [isDirty, setIsDirty] = useState<boolean>(false);
   const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
   const domainInformation = domain?.a;
   const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
@@ -150,8 +147,6 @@ const ManageDelegates: FC = () => {
       generateSignatureList(signatureResponse);
     });
   }, []);
-
-  const STATUS_COLOR = getAccountStatusColors(t);
 
   const getAccountSpecificDetail = useCallback((id: string): void => {
     getAccountRequest(id, '', 0).then((res: any) => {
@@ -1141,20 +1136,18 @@ const ManageDelegates: FC = () => {
             {showEditAccountView && (
               <ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
                 <EditAccount
-                  setShowEditAccountView={setShowEditAccountView}
-                  selectedAccount={selectedAccount}
-                  getAccountList={getAccountList}
-                  signatureList={signatureList}
-                  signatureItems={signatureItems}
-                  getAccountDetail={getAccountDetail}
+                  account={selectedAccount}
+                  onClose={(): void => {
+                    setShowEditAccountView(false);
+                    setDefaultTab('general');
+                  }}
+                  onSaved={(): void => {
+                    getAccountList();
+                  }}
+                  onDeleted={(): void => {
+                    setShowEditAccountView(false);
+                  }}
                   defaultTab={defaultTab}
-                  setDefaultTab={setDefaultTab}
-                  showModal={showModal}
-                  setShowModal={setShowModal}
-                  isDirty={isDirty}
-                  setIsDirty={setIsDirty}
-                  STATUS_COLOR={STATUS_COLOR}
-                  setIsAccountDeleted={false}
                 />
               </ModalOverlay>
             )}

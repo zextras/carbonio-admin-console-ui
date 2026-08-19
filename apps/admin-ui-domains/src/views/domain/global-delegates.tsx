@@ -37,9 +37,8 @@ import { getSingatures } from '../../services/get-signature-service';
 import { fetchSoap } from '../../services/listOTP-service';
 import ScrollContainer from '../components/scrollComponent';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
-import { getAccountStatusColors } from './constants/account-status-colors';
 import { AccountContext } from './manange/accounts/account-context';
-import EditAccount from './manange/accounts/edit-account/edit-account';
+import { EditAccount } from './manange/accounts/edit-account/edit-account';
 
 type UserSession = {
   name: string;
@@ -69,8 +68,6 @@ const GlobalDelegates: FC = () => {
   const [folderList, setFolderList] = useState<any[]>([]);
   const [deligateDetail, setDeligateDetail] = useState<any>({});
   const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [isDirty, setIsDirty] = useState<boolean>(false);
   const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
   const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
   const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
@@ -126,8 +123,8 @@ const GlobalDelegates: FC = () => {
     getGlobalConfig: false,
   });
 
-  const [signatureList, setSignatureList] = useState<any[]>([]);
-  const [signatureItems, setSignatureItems] = useState<any[]>([]);
+  const [, setSignatureList] = useState<any[]>([]);
+  const [, setSignatureItems] = useState<any[]>([]);
 
   const generateSignatureList = (signatureResponse: any): void => {
     if (signatureResponse && Array.isArray(signatureResponse)) {
@@ -140,8 +137,6 @@ const GlobalDelegates: FC = () => {
       generateSignatureList(signatureResponse);
     });
   }, []);
-
-  const STATUS_COLOR = getAccountStatusColors(t);
 
   const accountUserType = useCallback((item: any): string => {
     if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
@@ -816,20 +811,18 @@ const GlobalDelegates: FC = () => {
                 {showEditAccountView && (
                   <ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
                     <EditAccount
-                      setShowEditAccountView={setShowEditAccountView}
-                      selectedAccount={selectedAccount}
-                      getAccountList={getAccountList}
-                      signatureList={signatureList}
-                      signatureItems={signatureItems}
-                      getAccountDetail={getAccountDetail}
+                      account={selectedAccount}
+                      onClose={(): void => {
+                        setShowEditAccountView(false);
+                        setDefaultTab('general');
+                      }}
+                      onSaved={(): void => {
+                        getAccountList();
+                      }}
+                      onDeleted={(): void => {
+                        setShowEditAccountView(false);
+                      }}
                       defaultTab={defaultTab}
-                      setDefaultTab={setDefaultTab}
-                      showModal={showModal}
-                      setShowModal={setShowModal}
-                      isDirty={isDirty}
-                      setIsDirty={setIsDirty}
-                      STATUS_COLOR={STATUS_COLOR}
-                      setIsAccountDeleted={false}
                     />
                   </ModalOverlay>
                 )}

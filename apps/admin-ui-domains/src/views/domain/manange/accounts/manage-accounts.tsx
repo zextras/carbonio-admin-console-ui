@@ -48,7 +48,7 @@ import { generateSnackbarFromError } from '../../../error/generate-snackbar-erro
 import { getAccountStatusColors } from '../../constants/account-status-colors';
 import { AccountContext, AccountDetail } from './account-context';
 import CreateAccount from './create-account/create-account';
-import EditAccount from './edit-account/edit-account';
+import { EditAccount } from './edit-account/edit-account';
 
 type CheckRightResponse = {
   allow: true;
@@ -88,7 +88,6 @@ const ManageAccounts: FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string>('name');
   const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
   const [isTableTooTall, setIsTableTooTall] = useState(false);
@@ -286,9 +285,8 @@ const ManageAccounts: FC = () => {
     getGlobalConfig: false,
   });
 
-  const [signatureList, setSignatureList] = useState<any[]>([]);
-  const [signatureItems, setSignatureItems] = useState<any[]>([]);
-  const [isDirty, setIsDirty] = useState<boolean>(false);
+  const [, setSignatureList] = useState<any[]>([]);
+  const [, setSignatureItems] = useState<any[]>([]);
 
   useEffect(() => {
     setSignatureList(signatureData ?? []);
@@ -1289,20 +1287,18 @@ const ManageAccounts: FC = () => {
                 {showEditAccountView && (
                   <ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
                     <EditAccount
-                      setShowEditAccountView={setShowEditAccountView}
-                      setIsAccountDeleted={setIsAccountDeleted}
-                      selectedAccount={selectedAccount}
-                      getAccountList={getAccountList}
-                      signatureList={signatureList}
-                      signatureItems={signatureItems}
-                      getAccountDetail={getAccountDetail}
+                      account={selectedAccount}
+                      onClose={(): void => {
+                        setShowEditAccountView(false);
+                        setDefaultTab('general');
+                      }}
+                      onSaved={(): void => {
+                        getAccountList();
+                      }}
+                      onDeleted={(): void => {
+                        setIsAccountDeleted(true);
+                      }}
                       defaultTab={defaultTab}
-                      setDefaultTab={setDefaultTab}
-                      showModal={showModal}
-                      setShowModal={setShowModal}
-                      isDirty={isDirty}
-                      setIsDirty={setIsDirty}
-                      STATUS_COLOR={STATUS_COLOR}
                     />
                   </ModalOverlay>
                 )}

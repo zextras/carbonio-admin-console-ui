@@ -3,49 +3,40 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, DefaultTabBarItem, Modal, Padding, RouteLeavingGuard, Row, TabBar, useSnackbar, } from '@zextras/ui-components';
-import { flushCache, setCoreAttributes, useCurrentUserRights, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
-import { differenceBy, find, isEqual, reduce, remove } from 'lodash-es';
-import { FC, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useSelector } from '@tanstack/react-store';
+import {
+  Button,
+  Container,
+  DefaultTabBarItem,
+  Modal,
+  Padding,
+  RouteLeavingGuard,
+  Row,
+  TabBar,
+  useSnackbar,
+} from '@zextras/ui-components';
+import { useCurrentUserRights, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
+import { find } from 'lodash-es';
+import { ReactElement, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
-  ABQ_MODE,
   ACCOUNT,
   ADMIN_LOGIN_AS,
-  ADMINISTRATION,
-  BACKUP_ENABLED,
-  BACKUP_SELF_UNDELETE_ALLOWED,
-  CHANGE_DISPLAY_NAME_BOOLEAN,
-  CHANGE_NAME_BOOLEAN,
   CLOSED,
   CONFIGURATION,
   DELEGATES,
-  DOMAIN_NAME,
   GENERAL_SECTION,
-  IS_DEFAULT_USER_NAME,
   PROFILE,
   SECURITY,
-  TOTAL_COMPUTED_QUOTA_LIMIT,
-  TRUE,
-  UID,
   USER_PREFERENCES,
 } from '../../../../../constants';
-import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
-import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
 import { deleteAccount } from '../../../../../services/delete-account-service';
-import { domainQueryKeys } from '../../../../../services/domain-query-keys';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
-import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
-import { renameAccountRequest } from '../../../../../services/rename-account';
-import { setAccountQuota } from '../../../../../services/set-account-quota';
-import { setPasswordRequest } from '../../../../../services/set-password';
-import { unsetAccountQuota } from '../../../../../services/unset-account-quota';
-import { useAccountQuota } from '../../../../../services/use-account-quota';
-import { AccountContext } from '../account-context';
-import { AccountType } from '../account-types/account-types';
+import { getAccountStatusColors } from '../../../constants/account-status-colors';
+import { useAccountForm } from './account-form-context';
+import { AccountFormProvider, useIsAccountDirty } from './account-form-provider';
 import EditAccountAdministrationSection from './edit-account-administration-section';
 import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';
@@ -54,88 +45,66 @@ import { EditAccountGeneralSection } from './edit-account-general-section';
 import EditAccountSecuritySection from './edit-account-security-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
 
-const EditAccount: FC<{
-  setShowEditAccountView: any;
-  setIsAccountDeleted: any;
-  selectedAccount: any;
-  getAccountList: any;
-  signatureItems: any;
-  signatureList: any;
-  getAccountDetail: any;
-  defaultTab: string;
-  setDefaultTab: any;
-  showModal: boolean;
-  setShowModal: (showModal: boolean) => void;
-  isDirty: boolean;
-  setIsDirty: (isDirty: boolean) => void;
-  STATUS_COLOR: any;
-}> = ({
-  setShowEditAccountView,
-  setIsAccountDeleted,
-  selectedAccount,
-  getAccountList,
-  signatureItems,
-  signatureList,
-  getAccountDetail,
-  defaultTab,
-  setDefaultTab,
-  showModal,
-  setShowModal,
-  isDirty,
-  setIsDirty,
-  STATUS_COLOR,
-}) => {
+export type EditAccountProps = {
+  account: { id: string; name: string; [key: string]: any };
+  onClose: () => void;
+  onSaved: () => void;
+  onDeleted: () => void;
+  defaultTab?: string;
+};
+
+const ReusedDefaultTabBar = ({
+  item,
+  index,
+  selected,
+  onClick,
+}: {
+  item: any;
+  index: any;
+  selected: any;
+  onClick: any;
+}): ReactElement => (
+  <DefaultTabBarItem
+    item={item}
+    tabIndex={index}
+    selected={selected}
+    onClick={onClick}
+    orientation="horizontal"
+    background="gray6"
+    underlineColor="primary"
+    forceWidthEquallyDistributed={false}
+  >
+    <Row padding="small">
+      <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
+        {item.label}
+      </ds-text>
+    </Row>
+  </DefaultTabBarItem>
+);
+
+const EditAccountContent = ({ account, onClose, onDeleted, defaultTab }: EditAccountProps) => {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
-  const [change, setChange] = useState(defaultTab);
-  const [isLoading, setIsLoading] = useState(false);
-  const context = useContext(AccountContext);
-  const {
-    accountDetail,
-    setAccountDetail,
-    initAccountDetail,
-    setInitAccountDetail,
-    deleteAdministrationRights,
-  } = context;
+  const { form, isSaving, resetToSaved, signatureList } = useAccountForm();
+  const isDirty = useIsAccountDirty();
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
-  const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
   const { data: rights = [] } = useCurrentUserRights();
-  const queryClient = useQueryClient();
-  const { data: accountQuota, error: accountQuotaError } = useAccountQuota(
-    isAdvanced ? (accountDetail?.zimbraId as string | undefined) : undefined,
-  );
+  const STATUS_COLOR = getAccountStatusColors(t);
 
-  useEffect(() => {
-    if (!accountQuota) {
-      return;
-    }
-    setInitAccountDetail((prev: any) => ({
-      ...prev,
-      totalComputedQuotaLimit: accountQuota.totalComputedLimit,
-      totalQuotaSource: accountQuota.totalLimitSource,
-    }));
-    setAccountDetail((prev: any) => ({
-      ...prev,
-      totalComputedQuotaLimit: accountQuota.totalComputedLimit,
-      totalQuotaSource: accountQuota.totalLimitSource,
-    }));
-  }, [accountQuota, setAccountDetail, setInitAccountDetail]);
+  const hasName = useSelector(form.store, (s) => !!s.values.name);
+  const zimbraId = useSelector(form.store, (s) => s.values.zimbraId);
 
-  useEffect(() => {
-    if (accountQuotaError) {
-      createSnackbar({
-        key: 'getAccountQuotaError',
-        severity: 'error',
-        label: accountQuotaError.message,
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: false,
-      });
-    }
-  }, [accountQuotaError, createSnackbar]);
+  const [change, setChange] = useState(defaultTab ?? GENERAL_SECTION);
+  const [hasQuotaError, setHasQuotaError] = useState(false);
+  const [signatureItems] = useState<any[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+  const [isOpenDeleteHintModel, setIsOpenDeleteHintModel] = useState(false);
+  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+  const [isSectionLoading, setIsSectionLoading] = useState(false);
 
-  const userType = useMemo(() => {
+  const userType = (() => {
     if (userSetting?.attrs?.zimbraIsDelegatedAdminAccount === 'TRUE') {
       return 'DelegatedAdmin';
     }
@@ -146,76 +115,31 @@ const EditAccount: FC<{
       return 'Admin';
     }
     return 'Normal';
-  }, [userSetting]);
+  })();
 
-  const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
-  const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const [hasQuotaError, setHasQuotaError] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (initAccountDetail?.zimbraId && !isEqual(accountDetail, initAccountDetail)) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [accountDetail, initAccountDetail, setIsDirty]);
-
-  useEffect(() => {
-    if (userSetting?.attrs) {
-      const account = userSetting?.attrs?.zimbraIsAdminAccount;
-      if (account && account === TRUE) {
-        setIsGlobalAdmin(true);
-      }
-    }
-  }, [userSetting?.attrs]);
-
-  const ReusedDefaultTabBar: FC<{
-    item: any;
-    index: any;
-    selected: any;
-    onClick: any;
-  }> = ({ item, index, selected, onClick }): ReactElement => (
-    <DefaultTabBarItem
-      item={item}
-      tabIndex={index}
-      selected={selected}
-      onClick={onClick}
-      orientation="horizontal"
-      background="gray6"
-      underlineColor="primary"
-      forceWidthEquallyDistributed={false}
-    >
-      <Row padding="small">
-        <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
-          {item.label}
-        </ds-text>
-      </Row>
-    </DefaultTabBarItem>
-  );
-  const items: any = [
+  const items: any[] = [
     {
-      id: 'general',
+      id: GENERAL_SECTION,
       label: t('label.general', 'GENERAL'),
       CustomComponent: ReusedDefaultTabBar,
     },
     {
-      id: 'profile',
+      id: PROFILE,
       label: t('label.profile', 'PROFILE'),
       CustomComponent: ReusedDefaultTabBar,
     },
     {
-      id: 'configuration',
+      id: CONFIGURATION,
       label: t('label.configuration', 'CONFIGURATION'),
       CustomComponent: ReusedDefaultTabBar,
     },
     {
-      id: 'user_preferences',
+      id: USER_PREFERENCES,
       label: t('label.user_preferences', 'USER PREFERENCES'),
       CustomComponent: ReusedDefaultTabBar,
     },
     {
-      id: 'security',
+      id: SECURITY,
       label: t('label.security', 'SECURITY'),
       CustomComponent: ReusedDefaultTabBar,
     },
@@ -228,496 +152,26 @@ const EditAccount: FC<{
 
   if (isAdvanced) {
     items.push({
-      id: 'delegates',
+      id: DELEGATES,
       label: t('label.delegates', 'DELEGATES').toLocaleUpperCase(),
       CustomComponent: ReusedDefaultTabBar,
     });
   }
 
-  const onDeleteFromList = useCallback(
-    (lists: any) => {
-      if (lists?.length > 0) {
-        lists.forEach((item: any) => {
-          const id: any = {
-            n: 'id',
-            _content: item.id,
-          };
-          const dlmItem: any = {
-            n: 'dlm',
-            _content: accountDetail?.name,
-          };
-          removeDistributionListMember(id, dlmItem)
-            .then((data: any) => {
-              if (data) {
-                createSnackbar({
-                  key: 'success',
-                  severity: 'success',
-                  label: t(
-                    'account_details.right_for_selected_user_deleted_successfully',
-                    'Right for selected user deleted successfully',
-                  ),
-                  autoHideTimeout: 3000,
-                  hideButton: true,
-                  replace: true,
-                });
-              }
-            })
-            .catch((error: any) => {
-              createSnackbar({
-                key: 'error',
-                severity: 'error',
-                label: error?.message
-                  ? error?.message
-                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-                autoHideTimeout: 3000,
-                hideButton: true,
-                replace: true,
-              });
-            });
-        });
-      }
-    },
-    [t, accountDetail, createSnackbar],
-  );
-
-  const ErrorSnackbar = useCallback(
-    (label: string): void => {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label,
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    },
-    [createSnackbar],
-  );
-
-  function findModifiedKeys(): string[] {
-    return reduce(
-      accountDetail,
-      (result, value, key): any =>
-        isEqual(value, initAccountDetail[key]) ? result : [...result, key],
-      [],
-    );
-  }
-
-  function handleAdministrationRightsDeletion(modifiedKeys: string[]): any {
-    if (deleteAdministrationRights?.length > 0 && modifiedKeys.includes('zimbraIsAdminAccount')) {
-      onDeleteFromList(deleteAdministrationRights);
-    }
-  }
-
-  const handlePasswordChange = useCallback(
-    async (modifiedKeys: string[]): Promise<void> => {
-      if (accountDetail?.password?.length < 6) {
-        ErrorSnackbar(t('label.password_length_msg', 'Password should be more than 5 character'));
-        return;
-      }
-      if (accountDetail?.password !== accountDetail?.repeatPassword) {
-        ErrorSnackbar(t('label.password_and_repeat_password_not_match', 'Passwords do not match'));
-        return;
-      }
-      setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password).then(() => {
-        if (isGlobalAdmin) {
-          flushCache('account', 'id', initAccountDetail?.zimbraId);
-        }
-      });
-      remove(modifiedKeys, (ele) => ele === 'password' || ele === 'repeatPassword');
-    },
-    [
-      ErrorSnackbar,
-      accountDetail?.password,
-      accountDetail?.repeatPassword,
-      initAccountDetail?.zimbraId,
-      isGlobalAdmin,
-      t,
-    ],
-  );
-
-  const handleAccountRename = useCallback(
-    async (modifiedKeys: string[]) => {
-      if (modifiedKeys.includes('uid') || modifiedKeys.includes(DOMAIN_NAME)) {
-        setIsLoading(true);
-        await renameAccountRequest(
-          initAccountDetail?.zimbraId,
-          `${accountDetail?.uid}@${accountDetail?.domainName}`,
-        )
-          .then(() => {
-            createSnackbar({
-              key: 'success',
-              severity: 'success',
-              label: t(
-                'label.the_last_changes_has_been_saved_successfully',
-
-                'Changes have been saved successfully',
-              ),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-            setIsLoading(false);
-            if (isGlobalAdmin) {
-              flushCache('account', 'id', initAccountDetail?.zimbraId);
-            }
-          })
-          .catch((error) => {
-            ErrorSnackbar(
-              error?.message
-                ? error?.message
-                : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            );
-            setIsLoading(false);
-          });
-        await getAccountList();
-        remove(modifiedKeys, (ele) => ele === UID);
-        if (modifiedKeys.includes(DOMAIN_NAME)) {
-          remove(modifiedKeys, (ele) => ele === DOMAIN_NAME);
-          setShowEditAccountView(false);
-        }
-      }
-    },
-    [
-      ErrorSnackbar,
-      accountDetail?.domainName,
-      accountDetail?.uid,
-      createSnackbar,
-      getAccountList,
-      initAccountDetail?.zimbraId,
-      isGlobalAdmin,
-      setShowEditAccountView,
-      t,
-    ],
-  );
-
-  const handleCoreAttributesModification = async (modifiedKeys: string[]): Promise<void> => {
-    if (
-      modifiedKeys.includes(ABQ_MODE) ||
-      modifiedKeys.includes(BACKUP_ENABLED) ||
-      modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)
-    ) {
-      const body: any = {};
-      if (modifiedKeys.includes(ABQ_MODE)) {
-        body.abqMode = {
-          value: accountDetail.abqMode,
-          objectName: accountDetail.zimbraId,
-          configType: ACCOUNT,
-        };
-      }
-      if (modifiedKeys.includes(BACKUP_ENABLED)) {
-        body.backupEnabled = {
-          value: accountDetail.backupEnabled,
-          objectName: accountDetail.zimbraId,
-          configType: ACCOUNT,
-        };
-      }
-
-      if (modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)) {
-        body.backupSelfUndeleteAllowed = {
-          value: accountDetail.backupSelfUndeleteAllowed,
-          objectName: accountDetail.zimbraId,
-          configType: ACCOUNT,
-        };
-      }
-
-      await setCoreAttributes(body)
-        .then(() => {
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t(
-              'label.the_last_changes_has_been_saved_successfully',
-              'Changes have been saved successfully',
-            ),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          ErrorSnackbar(
-            error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          );
-          setIsLoading(false);
-        });
-      remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
-      remove(modifiedKeys, (ele) => ele === ABQ_MODE);
-      remove(modifiedKeys, (ele) => ele === BACKUP_SELF_UNDELETE_ALLOWED);
-    }
+  const accountUserType = (item: any): string => {
+    if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
+    if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
+    if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
+    if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
+    return 'Normal';
   };
 
-  const handleAliasChanges = async (
-    deleteAliasArr: any,
-    addAliasArr: any,
-    modifiedKeys: string[],
-  ): Promise<void> => {
-    deleteAliasArr.forEach(async (aliasName: any) => {
-      await deleteAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`)
-        .then(() => {
-          if (isGlobalAdmin) {
-            flushCache('account', 'id', initAccountDetail?.zimbraId);
-          }
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: `error${aliasName}`,
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: false,
-          });
-          setIsLoading(false);
-        });
-    });
-
-    addAliasArr.forEach(async (aliasName: any) => {
-      addAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`)
-        .then(() => {
-          if (isGlobalAdmin) {
-            flushCache('account', 'id', initAccountDetail?.zimbraId);
-          }
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: `error${aliasName}`,
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: false,
-          });
-          setIsLoading(false);
-        });
-    });
-
-    remove(modifiedKeys, (ele) => ele === 'mail');
+  const onSave = (): void => {
+    void form.handleSubmit();
   };
 
-  const handleTotalComputedQuotaLimitChange = useCallback(
-    (modifiedKeys: string[]) => {
-      if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) || !isAdvanced) {
-        return;
-      }
-
-      const notifyResult = (
-        response:
-          | Awaited<ReturnType<typeof setAccountQuota>>
-          | Awaited<ReturnType<typeof unsetAccountQuota>>,
-      ) => {
-        if (response.type === 'success') {
-          createSnackbar({
-            key: 'setAccountQuotaSuccess',
-            severity: 'success',
-            label: t(
-              'label.the_last_changes_has_been_saved_successfully',
-              'Changes have been saved successfully',
-            ),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        } else {
-          createSnackbar({
-            key: 'setAccountQuotaError',
-            severity: 'error',
-            label: response.error,
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: false,
-          });
-        }
-      };
-
-      /*
-       * If totalComputedQuotaLimit is undefined, it means the quota limit is
-       * being removed, so we call unsetAccountQuota. Otherwise, we set the
-       * new quota limit.
-       * After the operation, we fetch the updated quota limit to get the
-       * possible inherited quota limit
-       */
-      const setOrUnsetPromise =
-        accountDetail.totalComputedQuotaLimit === undefined
-          ? unsetAccountQuota(accountDetail?.zimbraId)
-          : setAccountQuota(accountDetail?.zimbraId, accountDetail.totalComputedQuotaLimit);
-
-      setOrUnsetPromise
-        .then(notifyResult)
-        .then(() => {
-          queryClient.invalidateQueries({
-            queryKey: domainQueryKeys.accountQuota(accountDetail?.zimbraId ?? ''),
-          });
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: 'getAccountQuotaError',
-            severity: 'error',
-            label: error.message,
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: false,
-          });
-        });
-
-      remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
-    },
-    [
-      accountDetail.totalComputedQuotaLimit,
-      accountDetail?.zimbraId,
-      createSnackbar,
-      isAdvanced,
-      setAccountDetail,
-      setInitAccountDetail,
-      t,
-    ],
-  );
-
-  const handleMainModifiedKeys = useCallback(
-    async (initAccountDetails: any, modifiedData: any) => {
-      setIsLoading(true);
-      await modifyAccountRequest(initAccountDetails?.zimbraId, modifiedData)
-        .then(async (data) => {
-          if (data) {
-            // setShowCreateAccountView(false);
-            if (isGlobalAdmin) {
-              await flushCache('account', 'id', initAccountDetails?.zimbraId);
-            }
-            createSnackbar({
-              key: 'success',
-              severity: 'success',
-              label: t(
-                'label.the_last_changes_has_been_saved_successfully',
-                'Changes have been saved successfully',
-              ),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-            setInitAccountDetail({ ...accountDetail });
-            setIsLoading(false);
-            getAccountList();
-            getAccountDetail(initAccountDetails?.zimbraId);
-          }
-        })
-        .catch((error) => {
-          ErrorSnackbar(
-            error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          );
-          setIsLoading(false);
-        });
-    },
-    [
-      ErrorSnackbar,
-      accountDetail,
-      createSnackbar,
-      getAccountDetail,
-      getAccountList,
-      isGlobalAdmin,
-      setInitAccountDetail,
-      t,
-    ],
-  );
-
-  const modifyAccountReq = useCallback(async () => {
-    const modifiedKeys: string[] = findModifiedKeys();
-    handleAdministrationRightsDeletion(modifiedKeys);
-
-    const modifiedData: any = {};
-    let isPasswordChange = false;
-    remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
-    remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
-    remove(modifiedKeys, (ele) => ele === IS_DEFAULT_USER_NAME);
-    if (!accountDetail?.sn?.trim()) {
-      ErrorSnackbar(t('label.surname_required', 'Surname is required'));
-      return;
-    }
-
-    if (accountDetail?.password || accountDetail?.repeatPassword) {
-      if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
-        await handlePasswordChange(modifiedKeys);
-        isPasswordChange = true;
-      }
-    }
-
-    await handleAccountRename(modifiedKeys);
-
-    await handleCoreAttributesModification(modifiedKeys);
-
-    const deleteAliasArr = differenceBy(
-      initAccountDetail.mail.split(','),
-      accountDetail.mail.split(','),
-    );
-    const addAliasArr = differenceBy(
-      accountDetail.mail.split(','),
-      initAccountDetail.mail.split(','),
-    );
-
-    if (modifiedKeys.includes('mail')) {
-      await handleAliasChanges(deleteAliasArr, addAliasArr, modifiedKeys);
-    }
-
-    handleTotalComputedQuotaLimitChange(modifiedKeys);
-
-    modifiedKeys.forEach((ele: any) => {
-      modifiedData[ele] = accountDetail[ele];
-    });
-
-    if (modifiedKeys && modifiedKeys?.length > 0) {
-      await handleMainModifiedKeys(initAccountDetail, modifiedData);
-    } else {
-      if (addAliasArr.length || deleteAliasArr.length) {
-        setInitAccountDetail({ ...accountDetail });
-        setIsLoading(false);
-        getAccountList();
-        getAccountDetail(initAccountDetail?.zimbraId);
-      }
-      if (isPasswordChange) {
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('account_details.user_password_set', 'User password set successfully'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        accountDetail.userPassword = 'VALUE-BLOCKED';
-        accountDetail.zimbraPasswordMustChange = 'FALSE';
-      }
-      setInitAccountDetail({ ...accountDetail });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    ErrorSnackbar,
-    accountDetail,
-    createSnackbar,
-    getAccountDetail,
-    getAccountList,
-    initAccountDetail,
-    isAdvanced,
-    setInitAccountDetail,
-    setShowEditAccountView,
-    deleteAdministrationRights,
-    onDeleteFromList,
-    setIsLoading,
-    isGlobalAdmin,
-    t,
-  ]);
-  const onUndo = (): void => {
-    setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
-    setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
-  };
-  const onViewMail = useCallback(() => {
-    getDelegateAuthRequest(selectedAccount?.id)
+  const onViewMail = (): void => {
+    getDelegateAuthRequest(account?.id)
       .then((data: any) => {
         if (data?.authToken?.[0]) {
           window.open(
@@ -735,7 +189,6 @@ const EditAccount: FC<{
           });
         }
       })
-
       .catch((error) => {
         createSnackbar({
           key: 'error',
@@ -748,31 +201,23 @@ const EditAccount: FC<{
           replace: true,
         });
       });
-  }, [createSnackbar, selectedAccount?.id, t]);
+  };
 
-  const accountUserType = useCallback((item: any): string => {
-    if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
-    if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
-    if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
-    if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
-    return 'Normal';
-  }, []);
-
-  const onDeleteAccount = useCallback(() => {
+  const onDeleteAccount = (): void => {
     if (userType === 'DelegatedAdmin' || userType === 'System') {
-      if (accountUserType(selectedAccount) === 'System') {
-        setisOpenDeleteHintModel(true);
+      if (accountUserType(account) === 'System') {
+        setIsOpenDeleteHintModel(true);
       } else {
         setIsOpenDeleteDialog(true);
       }
     } else if (userType === 'Normal') {
-      setisOpenDeleteHintModel(true);
+      setIsOpenDeleteHintModel(true);
     } else {
       setIsOpenDeleteDialog(true);
     }
-  }, [accountUserType, selectedAccount, userType]);
+  };
 
-  const allowSetPrivacy = useMemo(() => {
+  const allowSetPrivacy = (() => {
     const rightsConfig = find(rights, { type: ACCOUNT }) ?? {
       all: [],
       inDomains: [],
@@ -784,30 +229,28 @@ const EditAccount: FC<{
         (right) => right?.n === ADMIN_LOGIN_AS,
       )
     );
-  }, [rights]);
+  })();
 
-  const closeHandler = useCallback(() => {
+  const closeHandler = (): void => {
     setIsOpenDeleteDialog(false);
-  }, []);
-  const onSuccess = useCallback(
-    (message: string) => {
-      createSnackbar({
-        key: 'success',
-        severity: 'success',
-        label: message,
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-      setIsRequestInProgress(false);
-      closeHandler();
-      getAccountList();
-    },
-    [closeHandler, createSnackbar, getAccountList],
-  );
-  const onDisableAccount = useCallback(() => {
+  };
+
+  const onSuccess = (message: string): void => {
+    createSnackbar({
+      key: 'success',
+      severity: 'success',
+      label: message,
+      autoHideTimeout: 3000,
+      hideButton: true,
+      replace: true,
+    });
+    setIsRequestInProgress(false);
+    closeHandler();
+  };
+
+  const onDisableAccount = (): void => {
     setIsRequestInProgress(true);
-    modifyAccountRequest(accountDetail?.zimbraId, { zimbraAccountStatus: CLOSED })
+    modifyAccountRequest(zimbraId ?? account.id, { zimbraAccountStatus: CLOSED })
       .then((data) => {
         if (data?.account && Array.isArray(data?.account)) {
           onSuccess(
@@ -828,16 +271,15 @@ const EditAccount: FC<{
           replace: true,
         });
       });
-  }, [accountDetail?.zimbraId, createSnackbar, t, onSuccess]);
+  };
 
-  const onDeleteHandler = useCallback(() => {
+  const onDeleteHandler = (): void => {
     setIsRequestInProgress(true);
-    deleteAccount(selectedAccount?.id)
+    deleteAccount(account?.id)
       .then(() => {
         onSuccess(t('label.account_remove_correctly', 'The account has been correctly removed.'));
-        setShowEditAccountView(false);
-        setIsAccountDeleted(true);
-        setDefaultTab('general');
+        onDeleted();
+        onClose();
       })
       .catch((error) => {
         setIsRequestInProgress(false);
@@ -847,42 +289,24 @@ const EditAccount: FC<{
           label: error.message
             ? error.message
             : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
         });
       });
-  }, [
-    selectedAccount?.id,
-    onSuccess,
-    t,
-    setShowEditAccountView,
-    setIsAccountDeleted,
-    setDefaultTab,
-    createSnackbar,
-  ]);
+  };
 
-  const handleCloseWhenDirty = useCallback(() => {
-    setShowModal(true);
-  }, [setShowModal]);
-
-  const handleCloseWhenClean = useCallback(() => {
-    setShowEditAccountView(false);
-    setDefaultTab('general');
-  }, [setDefaultTab, setShowEditAccountView]);
-
-  const handleClose = useCallback(() => {
+  const handleClose = (): void => {
     if (isDirty) {
-      handleCloseWhenDirty();
+      setShowModal(true);
     } else {
-      handleCloseWhenClean();
+      onClose();
     }
-  }, [isDirty, handleCloseWhenDirty, handleCloseWhenClean]);
+  };
 
   return (
     <>
-      {(!accountDetail?.name || isLoading) && <ds-spinner></ds-spinner>}
+      {(!hasName || isSaving || isSectionLoading) && <ds-spinner></ds-spinner>}
       <Container
         background="gray5"
         mainAlignment="flex-start"
@@ -906,7 +330,7 @@ const EditAccount: FC<{
           <Row padding={{ horizontal: 'small' }}></Row>
           <Row takeAvailableSpace mainAlignment="flex-start">
             <ds-text size="medium" overflow="ellipsis" weight="bold" as="h1">
-              {`${selectedAccount?.name}`}
+              {`${account?.name}`}
             </ds-text>
           </Row>
           {isDirty && (
@@ -918,13 +342,13 @@ const EditAccount: FC<{
                 background="gray6"
               >
                 <Padding right="small">
-                  <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
+                  <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={resetToSaved} />
                 </Padding>
                 <Padding right="small">
                   <Button
                     label={t('label.save', 'Save')}
                     color="primary"
-                    onClick={modifyAccountReq}
+                    onClick={onSave}
                     disabled={hasQuotaError}
                   />
                 </Padding>
@@ -940,9 +364,7 @@ const EditAccount: FC<{
                 color="error"
                 onClick={onDeleteAccount}
                 icon="Trash2Outline"
-                disabled={
-                  !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-                }
+                disabled={!zimbraId || zimbraId !== account.id}
                 label={t('label.delete', 'delete')}
               />
             </Row>
@@ -998,7 +420,6 @@ const EditAccount: FC<{
           background="white"
           style={{ overflow: 'auto' }}
         >
-          {/* <Container crossAlignment="flex-start" padding={{ all: '0px' }}> */}
           {change === GENERAL_SECTION && (
             <EditAccountGeneralSection
               setChange={setChange}
@@ -1015,13 +436,12 @@ const EditAccount: FC<{
           )}
           {change === SECURITY && <EditAccountSecuritySection />}
           {change === DELEGATES && <EditAccountDelegatesSection />}
-          {change === ADMINISTRATION && (
-            <EditAccountAdministrationSection setIsLoading={setIsLoading} />
+          {change === 'administration' && (
+            <EditAccountAdministrationSection setIsLoading={setIsSectionLoading} />
           )}
-          {/* </Container> */}
         </Container>
       </Container>
-      <RouteLeavingGuard when={isDirty} onSave={modifyAccountReq} />
+      <RouteLeavingGuard when={isDirty} onSave={onSave} />
       <Modal
         size="small"
         title={t('label.hey_there_are_unsaved_changes_here', 'Hey! There are unsaved changes here')}
@@ -1034,16 +454,16 @@ const EditAccount: FC<{
                 color="primary"
                 type="outlined"
                 onClick={(): void => {
-                  setShowModal && setShowModal(false);
-                  onUndo();
+                  setShowModal(false);
+                  resetToSaved();
                 }}
               />
               <Button
                 label={t('label.save_the_changes', 'Save the changes')}
                 color="primary"
                 onClick={(): void => {
-                  setShowModal && setShowModal(false);
-                  modifyAccountReq();
+                  setShowModal(false);
+                  onSave();
                 }}
               />
             </Row>
@@ -1051,7 +471,7 @@ const EditAccount: FC<{
         }
         showCloseIcon
         onClose={(): void => {
-          setShowModal && setShowModal(false);
+          setShowModal(false);
         }}
       >
         <ds-text
@@ -1070,7 +490,7 @@ const EditAccount: FC<{
         <Modal
           size="medium"
           title={t('label.deleting_account_name', 'You are deleting {{name}} account', {
-            name: selectedAccount?.name,
+            name: account?.name,
           })}
           open={isOpenDeleteDialog}
           customFooter={
@@ -1089,7 +509,7 @@ const EditAccount: FC<{
                   onClick={onDisableAccount}
                   disabled={
                     isRequestInProgress ||
-                    STATUS_COLOR[selectedAccount?.zimbraAccountStatus]?.label ===
+                    STATUS_COLOR[account?.zimbraAccountStatus]?.label ===
                       STATUS_COLOR?.closed?.label
                   }
                 />
@@ -1101,8 +521,8 @@ const EditAccount: FC<{
         >
           <Container>
             {userType === 'Admin' &&
-              (accountUserType(selectedAccount) === 'System' ||
-                accountUserType(selectedAccount) === 'DelegatedAdmin') && (
+              (accountUserType(account) === 'System' ||
+                accountUserType(account) === 'DelegatedAdmin') && (
                 <Padding bottom="medium" top="medium">
                   <ds-text color="warning" overflow="break-word" as="strong">
                     {t(
@@ -1117,7 +537,8 @@ const EditAccount: FC<{
                 <Trans
                   i18nKey="label.deleting_account_content_1"
                   defaults="Are you sure you want to delete <bold>{{name}}</bod> ?"
-                  components={{ bold: <strong />, name: selectedAccount?.name }}
+                  values={{ name: account?.name }}
+                  components={{ bold: <strong /> }}
                 />
               </ds-text>
             </Padding>
@@ -1152,7 +573,7 @@ const EditAccount: FC<{
       {isOpenDeleteHintModel && (
         <Modal
           size="medium"
-          title={selectedAccount?.name}
+          title={account?.name}
           open={isOpenDeleteHintModel}
           customFooter={
             <Container orientation="horizontal" mainAlignment="flex-end">
@@ -1160,11 +581,11 @@ const EditAccount: FC<{
                 label={t('label.close', 'Close')}
                 color="primary"
                 onClick={(): void => {
-                  setisOpenDeleteHintModel(false);
+                  setIsOpenDeleteHintModel(false);
                 }}
                 disabled={
                   isRequestInProgress ||
-                  STATUS_COLOR[selectedAccount?.zimbraAccountStatus]?.label ===
+                  STATUS_COLOR[account?.zimbraAccountStatus]?.label ===
                     STATUS_COLOR?.closed?.label
                 }
               />
@@ -1172,7 +593,7 @@ const EditAccount: FC<{
           }
           showCloseIcon
           onClose={(): void => {
-            setisOpenDeleteHintModel(false);
+            setIsOpenDeleteHintModel(false);
           }}
         >
           <Container>
@@ -1195,4 +616,15 @@ const EditAccount: FC<{
     </>
   );
 };
-export default EditAccount;
+
+export const EditAccount = ({ account, onClose, onSaved, onDeleted, defaultTab }: EditAccountProps) => (
+  <AccountFormProvider account={account} onSaved={onSaved} onDomainRenamed={onClose}>
+    <EditAccountContent
+      account={account}
+      onClose={onClose}
+      onSaved={onSaved}
+      onDeleted={onDeleted}
+      defaultTab={defaultTab}
+    />
+  </AccountFormProvider>
+);
