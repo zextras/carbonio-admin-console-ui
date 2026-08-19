@@ -48,6 +48,10 @@ type UserSession = {
   service: string;
 };
 
+function flatten(item: any): any {
+  return [item, flatMapDeep(item.folder, flatten)];
+}
+
 const GlobalDelegates: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -69,7 +73,6 @@ const GlobalDelegates: FC = () => {
   const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
   const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
   const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
-  const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
   const isAdvanced = useIsAdvanced();
   const tableRef = useRef<HTMLTableElement>(null);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -362,61 +365,58 @@ const GlobalDelegates: FC = () => {
       }
     });
   }, []);
-  const getFolderList = useCallback(
-    (acc: any, delegateList: any): void => {
-      postSoapFetchRequest(
-        `/service/admin/soap/GetFolderRequest`,
-        {
-          _jsns: 'urn:zimbraMail',
-        },
-        'GetFolderRequest',
-        acc.id,
-      ).then((res: any) => {
-        const allFolder =
-          res?.Body?.GetFolderResponse?.folder ||
-          flatMapDeep(res?.Body?.GetFolderResponse?.folder, flatten) ||
-          [];
-        allFolder.forEach((ele: any) => {
-          ele.id = ele.id.split(':')[1];
-          return ele;
-        });
-        const filteredFolders = filter(allFolder, (ele: any) =>
-          ['1', '2', '7', '10', '4', '5', '6', '3'].includes(ele.id),
-        );
-        const userDelegate: any[] = [];
-        filteredFolders.forEach((ele: any) => {
-          ele?.acl?.grant &&
-            ele?.acl?.grant.forEach((el: any) => {
-              userDelegate.push({ ...el, id: ele.id, name: ele.name });
-            });
-        });
-        setFolderList(filteredFolders);
-        userDelegate.forEach((ele: any) => {
-          let found = false;
-          delegateList.forEach((el: any) => {
-            // const folder: any[] = filter(userDelegate, { d: ele?.grantee?.[0]?.name });
-            if (el?.grantee?.[0]?.name === ele?.d) {
-              found = true;
-              if (el?.folder?.length) {
-                el?.folder.push(ele);
-              } else {
-                el.folder = [ele];
-              }
-            }
+  const getFolderList = useCallback((acc: any, delegateList: any): void => {
+    postSoapFetchRequest(
+      `/service/admin/soap/GetFolderRequest`,
+      {
+        _jsns: 'urn:zimbraMail',
+      },
+      'GetFolderRequest',
+      acc.id,
+    ).then((res: any) => {
+      const allFolder =
+        res?.Body?.GetFolderResponse?.folder ||
+        flatMapDeep(res?.Body?.GetFolderResponse?.folder, flatten) ||
+        [];
+      allFolder.forEach((ele: any) => {
+        ele.id = ele.id.split(':')[1];
+        return ele;
+      });
+      const filteredFolders = filter(allFolder, (ele: any) =>
+        ['1', '2', '7', '10', '4', '5', '6', '3'].includes(ele.id),
+      );
+      const userDelegate: any[] = [];
+      filteredFolders.forEach((ele: any) => {
+        ele?.acl?.grant &&
+          ele?.acl?.grant.forEach((el: any) => {
+            userDelegate.push({ ...el, id: ele.id, name: ele.name });
           });
-          if (!found) {
-            delegateList.push({
-              grantee: [{ id: ele.zid, name: ele.d, type: ele.gt }],
-              folder: [ele],
-            });
+      });
+      setFolderList(filteredFolders);
+      userDelegate.forEach((ele: any) => {
+        let found = false;
+        delegateList.forEach((el: any) => {
+          // const folder: any[] = filter(userDelegate, { d: ele?.grantee?.[0]?.name });
+          if (el?.grantee?.[0]?.name === ele?.d) {
+            found = true;
+            if (el?.folder?.length) {
+              el?.folder.push(ele);
+            } else {
+              el.folder = [ele];
+            }
           }
         });
-
-        setIdentitiesList(delegateList);
+        if (!found) {
+          delegateList.push({
+            grantee: [{ id: ele.zid, name: ele.d, type: ele.gt }],
+            folder: [ele],
+          });
+        }
       });
-    },
-    [flatten],
-  );
+
+      setIdentitiesList(delegateList);
+    });
+  }, []);
   const getIdentitiesList = useCallback(
     (acc: any): void => {
       const request: any = {
@@ -683,7 +683,7 @@ const GlobalDelegates: FC = () => {
   }, [accountUserType, limit, offset, openDetailView, t, createSnackbar]);
 
   useEffect(() => {
-    getAccountList();
+    void Promise.resolve().then(getAccountList);
   }, [offset, getAccountList]);
 
   return (
