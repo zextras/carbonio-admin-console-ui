@@ -104,6 +104,8 @@ function buildQuotaValues(
   };
 }
 
+const VALUE_BLOCKED = 'VALUE-BLOCKED';
+
 type AccountFormProviderProps = {
   account: { id: string; name: string; [key: string]: any };
   children: React.ReactNode;
@@ -171,8 +173,292 @@ export const AccountFormProvider = ({
     });
   };
 
+  const notifySaveError = (error?: { message?: string }): void => {
+    errorSnackbar(
+      error?.message ||
+        t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+    );
+  };
+
+  const removeAdministrationRights = (
+    values: Record<string, any>,
+    modifiedKeys: Array<string>,
+  ): void => {
+    if (
+      values.deleteAdministrationRights?.length > 0 &&
+      modifiedKeys.includes('zimbraIsAdminAccount')
+    ) {
+      values.deleteAdministrationRights.forEach((item: any) => {
+        removeDistributionListMember(
+          { n: 'id', _content: item.id } as any,
+          { n: 'dlm', _content: values.name } as any,
+        )
+          .then((data: any) => {
+            if (data) {
+              successSnackbar(
+                t(
+                  'account_details.right_for_selected_user_deleted_successfully',
+                  'Right for selected user deleted successfully',
+                ),
+              );
+            }
+          })
+          .catch((error: any) => {
+            notifySaveError(error);
+          });
+      });
+    }
+  };
+
+  const applyPasswordChange = async (
+    values: Record<string, any>,
+    saved: Record<string, any>,
+    modifiedKeys: Array<string>,
+  ): Promise<'skipped' | 'changed' | 'invalid'> => {
+    if (!values.password && !values.repeatPassword) {
+      return 'skipped';
+    }
+    if (!modifiedKeys.includes('password') && !modifiedKeys.includes('repeatPassword')) {
+      return 'skipped';
+    }
+    if (values.password?.length < 6) {
+      errorSnackbar(t('label.password_length_msg', 'Password should be more than 5 character'));
+      return 'invalid';
+    }
+    if (values.password !== values.repeatPassword) {
+      errorSnackbar(t('label.password_and_repeat_password_not_match', 'Passwords do not match'));
+      return 'invalid';
+    }
+    await setPasswordRequest(saved.zimbraId, values.password).then(() => {
+      if (isGlobalAdmin) {
+        flushCache('account', 'id', saved.zimbraId);
+      }
+    });
+    remove(modifiedKeys, (ele) => ele === 'password' || ele === 'repeatPassword');
+    return 'changed';
+  };
+
+  const applyAccountRename = async (
+    values: Record<string, any>,
+    saved: Record<string, any>,
+    modifiedKeys: Array<string>,
+  ): Promise<void> => {
+    if (!modifiedKeys.includes(UID) && !modifiedKeys.includes(DOMAIN_NAME)) {
+      return;
+    }
+    await renameAccountRequest(saved.zimbraId, `${values.uid}@${values.domainName}`)
+      .then(() => {
+        successSnackbar(
+          t(
+            'label.the_last_changes_has_been_saved_successfully',
+            'Changes have been saved successfully',
+          ),
+        );
+        if (isGlobalAdmin) {
+          flushCache('account', 'id', saved.zimbraId);
+        }
+      })
+      .catch((error) => {
+        notifySaveError(error);
+      });
+    onSaved();
+    remove(modifiedKeys, (ele) => ele === UID);
+    if (modifiedKeys.includes(DOMAIN_NAME)) {
+      remove(modifiedKeys, (ele) => ele === DOMAIN_NAME);
+      onDomainRenamed();
+    }
+  };
+
+  const applyCoreAttributes = async (
+    values: Record<string, any>,
+    modifiedKeys: Array<string>,
+  ): Promise<void> => {
+    const shouldApply =
+      modifiedKeys.includes(ABQ_MODE) ||
+      modifiedKeys.includes(BACKUP_ENABLED) ||
+      modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED);
+    if (!shouldApply) {
+      return;
+    }
+    const body: any = {};
+    if (modifiedKeys.includes(ABQ_MODE)) {
+      body.abqMode = { value: values.abqMode, objectName: values.zimbraId, configType: ACCOUNT };
+    }
+    if (modifiedKeys.includes(BACKUP_ENABLED)) {
+      body.backupEnabled = {
+        value: values.backupEnabled,
+        objectName: values.zimbraId,
+        configType: ACCOUNT,
+      };
+    }
+    if (modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)) {
+      body.backupSelfUndeleteAllowed = {
+        value: values.backupSelfUndeleteAllowed,
+        objectName: values.zimbraId,
+        configType: ACCOUNT,
+      };
+    }
+    await setCoreAttributes(body)
+      .then(() => {
+        successSnackbar(
+          t(
+            'label.the_last_changes_has_been_saved_successfully',
+            'Changes have been saved successfully',
+          ),
+        );
+      })
+      .catch((error) => {
+        notifySaveError(error);
+      });
+    remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
+    remove(modifiedKeys, (ele) => ele === ABQ_MODE);
+    remove(modifiedKeys, (ele) => ele === BACKUP_SELF_UNDELETE_ALLOWED);
+  };
+
+  const applyAliasChanges = (
+    values: Record<string, any>,
+    saved: Record<string, any>,
+    modifiedKeys: Array<string>,
+  ): void => {
+    if (!modifiedKeys.includes('mail')) {
+      return;
+    }
+    differenceBy(`${saved.mail ?? ''}`.split(','), `${values.mail ?? ''}`.split(',')).forEach(
+      async (aliasName: any) => {
+        await deleteAccountAliasRequest(saved.zimbraId, `${aliasName}`)
+          .then(() => {
+            if (isGlobalAdmin) {
+              flushCache('account', 'id', saved.zimbraId);
+            }
+          })
+          .catch((error) => {
+            notifySaveError(error);
+          });
+      },
+    );
+    differenceBy(`${values.mail ?? ''}`.split(','), `${saved.mail ?? ''}`.split(',')).forEach(
+      (aliasName: any) => {
+        addAccountAliasRequest(saved.zimbraId, `${aliasName}`)
+          .then(() => {
+            if (isGlobalAdmin) {
+              flushCache('account', 'id', saved.zimbraId);
+            }
+          })
+          .catch((error) => {
+            notifySaveError(error);
+          });
+      },
+    );
+    remove(modifiedKeys, (ele) => ele === 'mail');
+  };
+
+  const applyQuotaChange = (values: Record<string, any>, modifiedKeys: Array<string>): void => {
+    if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) || !isAdvanced) {
+      return;
+    }
+    const notifyResult = (
+      response:
+        | Awaited<ReturnType<typeof setAccountQuota>>
+        | Awaited<ReturnType<typeof unsetAccountQuota>>,
+    ) => {
+      if (response.type === 'success') {
+        successSnackbar(
+          t(
+            'label.the_last_changes_has_been_saved_successfully',
+            'Changes have been saved successfully',
+          ),
+        );
+      } else {
+        createSnackbar({
+          key: 'setAccountQuotaError',
+          severity: 'error',
+          label: response.error,
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: false,
+        });
+      }
+    };
+    const setOrUnsetPromise =
+      values.totalComputedQuotaLimit === undefined
+        ? unsetAccountQuota(values.zimbraId)
+        : setAccountQuota(values.zimbraId, values.totalComputedQuotaLimit);
+    setOrUnsetPromise
+      .then(notifyResult)
+      .then(() => {
+        void queryClient.invalidateQueries({
+          queryKey: domainQueryKeys.accountQuota(values.zimbraId ?? ''),
+        });
+      })
+      .catch((error) => {
+        createSnackbar({
+          key: 'getAccountQuotaError',
+          severity: 'error',
+          label: error.message,
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: false,
+        });
+      });
+    remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
+  };
+
+  const applyRemainingAttributes = async (
+    values: Record<string, any>,
+    saved: Record<string, any>,
+    modifiedKeys: Array<string>,
+    isPasswordChange: boolean,
+  ): Promise<void> => {
+    const modifiedData: Record<string, any> = {};
+    modifiedKeys.forEach((ele) => {
+      modifiedData[ele] = values[ele];
+    });
+
+    const finalize = (): void => {
+      form.reset(values as AccountFormValues, { keepDefaultValues: true });
+      setBaseline({
+        detail: accountDetailData,
+        quota: accountQuota,
+        values: values as AccountFormValues,
+      });
+      onSaved();
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.accountDetail(account.id),
+      });
+    };
+
+    if (modifiedKeys.length === 0) {
+      if (isPasswordChange) {
+        successSnackbar(t('account_details.user_password_set', 'User password set successfully'));
+        values.userPassword = VALUE_BLOCKED;
+        values.zimbraPasswordMustChange = 'FALSE';
+      }
+      finalize();
+      return;
+    }
+
+    await modifyAccountRequest(saved.zimbraId, modifiedData)
+      .then(async (data) => {
+        if (data) {
+          if (isGlobalAdmin) {
+            await flushCache('account', 'id', saved.zimbraId);
+          }
+          successSnackbar(
+            t(
+              'label.the_last_changes_has_been_saved_successfully',
+              'Changes have been saved successfully',
+            ),
+          );
+          finalize();
+        }
+      })
+      .catch((error) => {
+        notifySaveError(error);
+      });
+  };
+
   const form = useForm({
-    defaultValues: buildAccountFormValues(accountDetailData) as AccountFormValues,
+    defaultValues: buildAccountFormValues(accountDetailData),
     onSubmit: async ({ value }) => {
       const values = { ...value } as Record<string, any>;
       const saved = (baseline?.values ?? {}) as Record<string, any>;
@@ -184,38 +470,7 @@ export const AccountFormProvider = ({
           [],
         );
 
-        // administration rights deletion (remove-from-DL before attr save)
-        if (
-          values.deleteAdministrationRights?.length > 0 &&
-          modifiedKeys.includes('zimbraIsAdminAccount')
-        ) {
-          values.deleteAdministrationRights.forEach((item: any) => {
-            removeDistributionListMember(
-              { n: 'id', _content: item.id } as any,
-              { n: 'dlm', _content: values.name } as any,
-            )
-              .then((data: any) => {
-                if (data) {
-                  successSnackbar(
-                    t(
-                      'account_details.right_for_selected_user_deleted_successfully',
-                      'Right for selected user deleted successfully',
-                    ),
-                  );
-                }
-              })
-              .catch((error: any) => {
-                errorSnackbar(
-                  error?.message
-                    ? error?.message
-                    : t(
-                        'label.something_wrong_error_msg',
-                        'Something went wrong. Please try again.',
-                      ),
-                );
-              });
-          });
-        }
+        removeAdministrationRights(values, modifiedKeys);
 
         remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
         remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
@@ -226,265 +481,16 @@ export const AccountFormProvider = ({
           return;
         }
 
-        let isPasswordChange = false;
-        if (values.password || values.repeatPassword) {
-          if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
-            if (values.password?.length < 6) {
-              errorSnackbar(
-                t('label.password_length_msg', 'Password should be more than 5 character'),
-              );
-              return;
-            }
-            if (values.password !== values.repeatPassword) {
-              errorSnackbar(
-                t('label.password_and_repeat_password_not_match', 'Passwords do not match'),
-              );
-              return;
-            }
-            await setPasswordRequest(saved.zimbraId, values.password).then(() => {
-              if (isGlobalAdmin) {
-                flushCache('account', 'id', saved.zimbraId);
-              }
-            });
-            remove(modifiedKeys, (ele) => ele === 'password' || ele === 'repeatPassword');
-            isPasswordChange = true;
-          }
+        const passwordChange = await applyPasswordChange(values, saved, modifiedKeys);
+        if (passwordChange === 'invalid') {
+          return;
         }
 
-        // account rename (uid / domain change)
-        if (modifiedKeys.includes(UID) || modifiedKeys.includes(DOMAIN_NAME)) {
-          await renameAccountRequest(saved.zimbraId, `${values.uid}@${values.domainName}`)
-            .then(() => {
-              successSnackbar(
-                t(
-                  'label.the_last_changes_has_been_saved_successfully',
-                  'Changes have been saved successfully',
-                ),
-              );
-              if (isGlobalAdmin) {
-                flushCache('account', 'id', saved.zimbraId);
-              }
-            })
-            .catch((error) => {
-              errorSnackbar(
-                error?.message
-                  ? error?.message
-                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-              );
-            });
-          onSaved();
-          remove(modifiedKeys, (ele) => ele === UID);
-          if (modifiedKeys.includes(DOMAIN_NAME)) {
-            remove(modifiedKeys, (ele) => ele === DOMAIN_NAME);
-            onDomainRenamed();
-          }
-        }
-
-        // core attributes (abqMode, backup flags)
-        if (
-          modifiedKeys.includes(ABQ_MODE) ||
-          modifiedKeys.includes(BACKUP_ENABLED) ||
-          modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)
-        ) {
-          const body: any = {};
-          if (modifiedKeys.includes(ABQ_MODE)) {
-            body.abqMode = {
-              value: values.abqMode,
-              objectName: values.zimbraId,
-              configType: ACCOUNT,
-            };
-          }
-          if (modifiedKeys.includes(BACKUP_ENABLED)) {
-            body.backupEnabled = {
-              value: values.backupEnabled,
-              objectName: values.zimbraId,
-              configType: ACCOUNT,
-            };
-          }
-          if (modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)) {
-            body.backupSelfUndeleteAllowed = {
-              value: values.backupSelfUndeleteAllowed,
-              objectName: values.zimbraId,
-              configType: ACCOUNT,
-            };
-          }
-          await setCoreAttributes(body)
-            .then(() => {
-              successSnackbar(
-                t(
-                  'label.the_last_changes_has_been_saved_successfully',
-                  'Changes have been saved successfully',
-                ),
-              );
-            })
-            .catch((error) => {
-              errorSnackbar(
-                error?.message
-                  ? error?.message
-                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-              );
-            });
-          remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
-          remove(modifiedKeys, (ele) => ele === ABQ_MODE);
-          remove(modifiedKeys, (ele) => ele === BACKUP_SELF_UNDELETE_ALLOWED);
-        }
-
-        // aliases diff
-        const deleteAliasArr = differenceBy(
-          `${saved.mail ?? ''}`.split(','),
-          `${values.mail ?? ''}`.split(','),
-        );
-        const addAliasArr = differenceBy(
-          `${values.mail ?? ''}`.split(','),
-          `${saved.mail ?? ''}`.split(','),
-        );
-
-        if (modifiedKeys.includes('mail')) {
-          deleteAliasArr.forEach(async (aliasName: any) => {
-            await deleteAccountAliasRequest(saved.zimbraId, `${aliasName}`)
-              .then(() => {
-                if (isGlobalAdmin) {
-                  flushCache('account', 'id', saved.zimbraId);
-                }
-              })
-              .catch((error) => {
-                errorSnackbar(
-                  error?.message
-                    ? error?.message
-                    : t(
-                        'label.something_wrong_error_msg',
-                        'Something went wrong. Please try again.',
-                      ),
-                );
-              });
-          });
-
-          addAliasArr.forEach(async (aliasName: any) => {
-            addAccountAliasRequest(saved.zimbraId, `${aliasName}`)
-              .then(() => {
-                if (isGlobalAdmin) {
-                  flushCache('account', 'id', saved.zimbraId);
-                }
-              })
-              .catch((error) => {
-                errorSnackbar(
-                  error?.message
-                    ? error?.message
-                    : t(
-                        'label.something_wrong_error_msg',
-                        'Something went wrong. Please try again.',
-                      ),
-                );
-              });
-          });
-
-          remove(modifiedKeys, (ele) => ele === 'mail');
-        }
-
-        // quota
-        if (modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) && isAdvanced) {
-          const notifyResult = (
-            response:
-              | Awaited<ReturnType<typeof setAccountQuota>>
-              | Awaited<ReturnType<typeof unsetAccountQuota>>,
-          ) => {
-            if (response.type === 'success') {
-              successSnackbar(
-                t(
-                  'label.the_last_changes_has_been_saved_successfully',
-                  'Changes have been saved successfully',
-                ),
-              );
-            } else {
-              createSnackbar({
-                key: 'setAccountQuotaError',
-                severity: 'error',
-                label: response.error,
-                autoHideTimeout: 3000,
-                hideButton: true,
-                replace: false,
-              });
-            }
-          };
-
-          const setOrUnsetPromise =
-            values.totalComputedQuotaLimit === undefined
-              ? unsetAccountQuota(values.zimbraId)
-              : setAccountQuota(values.zimbraId, values.totalComputedQuotaLimit);
-
-          setOrUnsetPromise
-            .then(notifyResult)
-            .then(() => {
-              void queryClient.invalidateQueries({
-                queryKey: domainQueryKeys.accountQuota(values.zimbraId ?? ''),
-              });
-            })
-            .catch((error) => {
-              createSnackbar({
-                key: 'getAccountQuotaError',
-                severity: 'error',
-                label: error.message,
-                autoHideTimeout: 3000,
-                hideButton: true,
-                replace: false,
-              });
-            });
-
-          remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
-        }
-
-        // remaining attribute modifications
-        const modifiedData: Record<string, any> = {};
-        modifiedKeys.forEach((ele) => {
-          modifiedData[ele] = values[ele];
-        });
-
-        const finalize = (): void => {
-          form.reset(values as AccountFormValues, { keepDefaultValues: true });
-          setBaseline({
-            detail: accountDetailData,
-            quota: accountQuota,
-            values: values as AccountFormValues,
-          });
-          onSaved();
-          void queryClient.invalidateQueries({
-            queryKey: domainQueryKeys.accountDetail(account.id),
-          });
-        };
-
-        if (modifiedKeys.length > 0) {
-          await modifyAccountRequest(saved.zimbraId, modifiedData)
-            .then(async (data) => {
-              if (data) {
-                if (isGlobalAdmin) {
-                  await flushCache('account', 'id', saved.zimbraId);
-                }
-                successSnackbar(
-                  t(
-                    'label.the_last_changes_has_been_saved_successfully',
-                    'Changes have been saved successfully',
-                  ),
-                );
-                finalize();
-              }
-            })
-            .catch((error) => {
-              errorSnackbar(
-                error?.message
-                  ? error?.message
-                  : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-              );
-            });
-        } else {
-          if (isPasswordChange) {
-            successSnackbar(
-              t('account_details.user_password_set', 'User password set successfully'),
-            );
-            values.userPassword = 'VALUE-BLOCKED';
-            values.zimbraPasswordMustChange = 'FALSE';
-          }
-          finalize();
-        }
+        await applyAccountRename(values, saved, modifiedKeys);
+        await applyCoreAttributes(values, modifiedKeys);
+        applyAliasChanges(values, saved, modifiedKeys);
+        applyQuotaChange(values, modifiedKeys);
+        await applyRemainingAttributes(values, saved, modifiedKeys, passwordChange === 'changed');
       } finally {
         setIsSaving(false);
       }
@@ -506,7 +512,7 @@ export const AccountFormProvider = ({
     setBaseline({
       detail: baseline?.detail,
       quota: accountQuota,
-      values: { ...(baseline?.values ?? {}), ...buildQuotaValues(accountQuota) },
+      values: { ...baseline?.values, ...buildQuotaValues(accountQuota) },
     });
   }
 
@@ -557,7 +563,7 @@ export const AccountFormProvider = ({
   }
 
   const resetToSaved = (): void => {
-    form.reset((baseline?.values ?? {}) as AccountFormValues, { keepDefaultValues: true });
+    form.reset(baseline?.values ?? {}, { keepDefaultValues: true });
   };
 
   const contextValue: AccountFormContextValue = {
