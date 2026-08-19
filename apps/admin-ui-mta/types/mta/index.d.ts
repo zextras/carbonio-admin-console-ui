@@ -91,7 +91,7 @@ export type MtaAdvanced = {
 	zimbraMilterNumThreads: string;
 	zimbraMtaMaxMessageSize: string;
 	zimbraMilterMaxConnections: string;
-	zimbraMtaSmtpSaslAuthEnable: string;
+	zimbraMtaSmtpSaslAuthEnable: boolean;
 	zimbraMtaSmtpdSenderLoginMaps: string;
 };
 

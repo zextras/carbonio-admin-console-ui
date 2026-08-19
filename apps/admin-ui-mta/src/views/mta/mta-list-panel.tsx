@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -7,12 +7,11 @@ import {
   Container,
   DropDownInput,
   ListItems,
-  ListPanelItem,
   Padding,
   Row,
 } from '@zextras/ui-components';
 import { replaceHistory, useMtaServers, useRelativePathname } from '@zextras/ui-shared';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 
@@ -22,9 +21,10 @@ import {
   MTA_SERVER_GENERAL,
 } from '../../constants';
 import type { DropdownItem, MtaServer } from '../../types/mta';
+import { ListPanelItem } from '../list/list-panel-item';
 import { SECTION_ROUTES } from './mta-section-routes';
 
-const MTAListPanel: FC = () => {
+export const MTAListPanel = () => {
   const [t] = useTranslation();
 
   const [isMtaSettingsExpanded, setIsMtaSettingsExpanded] = useState(true);
@@ -40,75 +40,58 @@ const MTAListPanel: FC = () => {
   const isServerSelect = !!serverMatch;
 
   const [searchServer, setSearchServer] = useState('');
-  const [isShowError, setIsShowError] = useState(false);
 
   const { data: mtaServerList = [] } = useMtaServers();
 
-  const filteredServers = useMemo(
-    () => mtaServerList.filter((item: MtaServer) => item.name?.includes(searchServer)),
-    [mtaServerList, searchServer],
+  const filteredServers = mtaServerList.filter((item: MtaServer) =>
+    item.name?.includes(searchServer),
   );
 
-  const serverDropdownItems = useMemo(
-    () =>
-      filteredServers.map((serverItem: MtaServer) => ({
-        id: serverItem.id || '',
-        label: serverItem.name || '',
-        customComponent: (
-          <Row
-            style={{
-              display: 'block',
-              textAlign: 'left',
-              height: 'inherit',
-              padding: '0.18rem',
-              width: 'inherit',
-            }}
-            onClick={(): void => {
-              const serverName = serverItem.name || '';
-              setSearchServer(serverName);
-              replaceHistory(`/${serverName}/${MTA_SERVER_GENERAL}`);
-            }}
-          >
-            {serverItem.name}
-          </Row>
-        ),
-      })) as Array<DropdownItem>,
-    [filteredServers],
+  const isShowError =
+    mtaServerList.length > 0 && filteredServers.length === 0 && searchServer !== '';
+
+  const serverDropdownItems = filteredServers.map((serverItem: MtaServer) => ({
+    id: serverItem.id || '',
+    label: serverItem.name || '',
+    customComponent: (
+      <Row
+        style={{
+          display: 'block',
+          textAlign: 'left',
+          height: 'inherit',
+          padding: '0.18rem',
+          width: 'inherit',
+        }}
+        onClick={(): void => {
+          const serverName = serverItem.name || '';
+          setSearchServer(serverName);
+          replaceHistory(`/${serverName}/${MTA_SERVER_GENERAL}`);
+        }}
+      >
+        {serverItem.name}
+      </Row>
+    ),
+  })) as Array<DropdownItem>;
+
+  const mailTransferAgentOptions = SECTION_ROUTES.filter((route) => !route.prefix).map((route) => ({
+    id: route.id,
+    name: t(route.labelKey, route.labelDefault),
+    isSelected: true,
+  }));
+
+  const serverOptions = SECTION_ROUTES.filter((route) => route.prefix === ':server').map(
+    (route) => ({
+      id: route.id,
+      name: t(route.labelKey, route.labelDefault),
+      isSelected: isServerSelect,
+    }),
   );
 
-  useEffect(() => {
-    if (mtaServerList.length > 0 && filteredServers.length === 0 && searchServer !== '') {
-      setIsShowError(true);
-    } else {
-      setIsShowError(false);
-    }
-  }, [mtaServerList.length, filteredServers.length, searchServer]);
-
-  const mailTransferAgentOptions = useMemo(
-    () =>
-      SECTION_ROUTES.filter((route) => !route.prefix).map((route) => ({
-        id: route.id,
-        name: t(route.labelKey, route.labelDefault),
-        isSelected: true,
-      })),
-    [t],
-  );
-
-  const serverOptions = useMemo(
-    () =>
-      SECTION_ROUTES.filter((route) => route.prefix === ':server').map((route) => ({
-        id: route.id,
-        name: t(route.labelKey, route.labelDefault),
-        isSelected: isServerSelect,
-      })),
-    [t, isServerSelect],
-  );
-
-  const toggleDefaultSettingsView = useCallback((): void => {
+  function toggleDefaultSettingsView(): void {
     setIsMtaSettingsExpanded((prev) => !prev);
-  }, []);
+  }
 
-  const toggleServerSpecific = useCallback((): void => {
+  function toggleServerSpecific(): void {
     const newExpandedState = !isServerSpecificsExpanded;
 
     if (newExpandedState) {
@@ -118,39 +101,31 @@ const MTAListPanel: FC = () => {
     }
 
     setIsServerSpecificsExpanded(newExpandedState);
-  }, [isServerSpecificsExpanded]);
+  }
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
-    setIsShowError(false);
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>): void {
     setSearchServer(e.target.value);
-  }, []);
+  }
 
-  const handleCustomIconClick = useCallback((): void => {
-    setIsShowError(false);
+  function handleCustomIconClick(): void {
     if (searchServer !== '') {
       setSearchServer('');
       replaceHistory(`/${INBOUND_FLOW_SECURITY}`);
     }
-  }, [searchServer]);
+  }
 
-  const customIconDetail = useMemo(
-    () => ({
-      icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
-      onClick: handleCustomIconClick,
-    }),
-    [searchServer, handleCustomIconClick],
-  );
+  const customIconDetail = {
+    icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
+    onClick: handleCustomIconClick,
+  };
 
-  const handleSelectOperation = useCallback(
-    (id: string): void => {
-      if (id === MTA_SERVER_GENERAL) {
-        replaceHistory(`/${selectedServer}/${id}`);
-      } else {
-        replaceHistory(`/${id}`);
-      }
-    },
-    [selectedServer],
-  );
+  function handleSelectOperation(id: string): void {
+    if (id === MTA_SERVER_GENERAL) {
+      replaceHistory(`/${selectedServer}/${id}`);
+    } else {
+      replaceHistory(`/${id}`);
+    }
+  }
 
   return (
     <Container
@@ -220,6 +195,4 @@ const MTAListPanel: FC = () => {
       </Container>
     </Container>
   );
-};
-
-export default MTAListPanel;
+}

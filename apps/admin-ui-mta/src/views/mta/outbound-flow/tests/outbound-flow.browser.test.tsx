@@ -6,13 +6,15 @@
 
 import {
   createBrowserSoapAPIInterceptor,
+  getAllConfigRightsResponseMock,
+  getGetInfoResponseMock,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import MTAOutBoundFlow from '../outbound-flow';
+import { MTAOutBoundFlow } from '../outbound-flow';
 
 function getAllConfigResponse() {
   return {
@@ -73,8 +75,17 @@ async function expectInstancesSectionVisible() {
   await expect.element(page.getByText('DKIM', { exact: true })).toBeVisible();
 }
 
+async function toggleAddClientIpSwitch() {
+  const addClientIpSwitch = page.getByRole('switch', { name: 'Add client IP to the header' });
+  await expect.element(addClientIpSwitch).toBeVisible();
+  await expect.poll(() => addClientIpSwitch.element().getAttribute('aria-disabled')).toBeNull();
+  await addClientIpSwitch.click();
+}
+
 describe('MTAOutBoundFlow', () => {
   beforeEach(async () => {
+    createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    createBrowserSoapAPIInterceptor('GetAllEffectiveRights', getAllConfigRightsResponseMock());
     createBrowserSoapAPIInterceptor('GetAllConfig', getAllConfigResponse());
     createBrowserSoapAPIInterceptor('GetAllServers', getAllServersResponse());
   });
@@ -133,9 +144,7 @@ describe('MTAOutBoundFlow', () => {
   it('shows Save and Cancel when a switch changes', async () => {
     await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
-    const addClientIpSwitch = page.getByText('Add client IP to the header');
-    await expect.element(addClientIpSwitch).toBeVisible();
-    await addClientIpSwitch.click();
+    await toggleAddClientIpSwitch();
 
     await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
@@ -144,12 +153,34 @@ describe('MTAOutBoundFlow', () => {
   it('resets dirty state when Cancel is clicked', async () => {
     await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
 
-    await page.getByText('Add client IP to the header').click();
+    await toggleAddClientIpSwitch();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Cancel' }).click();
 
     await expect.poll(() => page.getByRole('button', { name: 'Save' }).elements().length).toBe(0);
     await expect.poll(() => page.getByRole('button', { name: 'Cancel' }).elements().length).toBe(0);
+  });
+
+  it('submits ModifyConfig only once on Save', async () => {
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+
+    await setupBrowserTest(<MTAOutBoundFlow />, { grantRights: 'config' });
+
+    await toggleAddClientIpSwitch();
+    const saveButton = page.getByRole('button', { name: 'Save' });
+    await expect.element(saveButton).toBeVisible();
+    await saveButton.click();
+
+    await modifyConfigInterceptor;
+
+    const secondModifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    const secondCallSettled = await Promise.race([
+      secondModifyConfigInterceptor.then(() => true),
+      new Promise<boolean>((resolve) => {
+        setTimeout(() => resolve(false), 2000);
+      }),
+    ]);
+    expect(secondCallSettled).toBe(false);
   });
 }, 20_000);
