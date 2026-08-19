@@ -15,7 +15,13 @@ export const EditAccountQuotaBar = (): React.JSX.Element | null => {
   const isAdvanced = useIsAdvanced();
 
   const { form } = useAccountForm();
-  const { totalQuotaUsed, totalComputedQuotaLimit, totalQuotaUsedByModule, totalQuotaSource, totalQuotaStatus } = useSelector(
+  const {
+    totalQuotaUsed,
+    totalComputedQuotaLimit,
+    totalQuotaUsedByModule,
+    totalQuotaSource,
+    totalQuotaStatus,
+  } = useSelector(
     form.store,
     (s) =>
       s.values as {
@@ -48,10 +54,10 @@ export const EditAccountQuotaBar = (): React.JSX.Element | null => {
   return (
     <EditAccountQuotaBarNew
       used={totalQuotaUsed!}
-      limit={totalComputedQuotaLimit!}
+      limit={totalComputedQuotaLimit}
       usedByModule={totalQuotaUsedByModule!}
-      source={totalQuotaSource!}
-      status={totalQuotaStatus!}
+      source={totalQuotaSource}
+      status={totalQuotaStatus}
     />
   );
 };
