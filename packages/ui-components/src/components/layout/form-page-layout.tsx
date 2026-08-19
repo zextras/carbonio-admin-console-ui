@@ -37,7 +37,7 @@ export const FormPageLayout = ({
     >
       <div className={styles.stickyHeader}>
         <div className={styles.header}>
-          <ds-text as="strong" weight="bold" color="gray0" className={styles.title}>
+          <ds-text as="h2" weight="bold" color="gray0" className={styles.title}>
             {title}
           </ds-text>
           {unsavedChanges && (

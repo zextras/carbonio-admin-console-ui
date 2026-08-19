@@ -6,12 +6,11 @@
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import {
-  Button,
   ChipInput,
   Container,
+  FormPageLayout,
   Input,
   ListRow,
-  Padding,
   Row,
   Switch,
   useSnackbar,
@@ -182,54 +181,22 @@ const GlobalDetailPanelContent = ({
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
   return (
-    <Container
-      orientation="column"
-      crossAlignment="flex-start"
-      mainAlignment="flex-start"
-      style={{ overflowY: 'auto', position: 'relative' }}
-      background="white"
+    <FormPageLayout
+      title={t('label.settings', 'Settings')}
+      unsavedChanges={isDirty}
+      onCancel={() => form.reset()}
+      onSave={() => form.handleSubmit()}
     >
-      <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
-        <Container orientation="vertical" mainAlignment="space-around" height="1.9rem">
-          <Row orientation="horizontal" width="100%">
-            <Row mainAlignment="flex-start" width="50%" crossAlignment="center">
-              <ds-text as="h1" weight="bold">{t('label.settings', 'Settings')}</ds-text>
-            </Row>
-            <Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-              <Padding right="small">
-                {isDirty && (
-                  <Button
-                    label={t('label.cancel', 'Cancel')}
-                    color="secondary"
-                    onClick={() => form.reset()}
-                  />
-                )}
-              </Padding>
-              {isDirty && (
-                <Button
-                  label={t('label.save', 'Save')}
-                  color="primary"
-                  onClick={() => form.handleSubmit()}
-                />
-              )}
-            </Row>
-          </Row>
-        </Container>
-      </Row>
-      <ds-divider></ds-divider>
-      <Container
-        orientation="column"
-        crossAlignment="flex-start"
+      <Row
         mainAlignment="flex-start"
         width="100%"
-        height="calc(100vh - 12.5rem)"
-        padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
+        background="gray6"
+        padding={{ top: 'small' }}
       >
-        <Row mainAlignment="flex-start" width="100%" background="gray6" padding={{ top: 'small' }}>
-          <ds-text as="h2" size="small" weight="bold" color="gray0">
-            {t('label.domain_system_notifications', 'Domain System Notifications')}
-          </ds-text>
-        </Row>
+        <ds-text as="h2" size="small" weight="bold" color="gray0">
+          {t('label.domain_system_notifications', 'Domain System Notifications')}
+        </ds-text>
+      </Row>
         <ListRow>
           <Container
             mainAlignment="flex-start"
@@ -353,8 +320,7 @@ const GlobalDetailPanelContent = ({
             </form.Field>
           </Container>
         </ListRow>
-      </Container>
-    </Container>
+    </FormPageLayout>
   );
 };
 
