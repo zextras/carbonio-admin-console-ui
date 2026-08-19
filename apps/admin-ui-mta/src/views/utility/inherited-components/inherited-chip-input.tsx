@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -12,22 +12,12 @@ import {
 	Tooltip,
 } from '@zextras/ui-components';
 import { map } from 'lodash-es';
-import { FC } from 'react';
+import type { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type ChipValue = Array<{ label?: string }> | string | undefined;
 
-function normalizeChipValue(value: ChipValue): Array<{ label?: string }> {
-	if (Array.isArray(value)) {
-		return value;
-	}
-	if (typeof value === 'string' && value.length > 0) {
-		return [{ label: value }];
-	}
-	return [];
-}
-
-const InheritedChipInput: FC<{
+type InheritedChipInputProps = Readonly<{
 	subValue: ChipValue;
 	inheritedValue: ChipValue;
 	background?: string;
@@ -40,8 +30,20 @@ const InheritedChipInput: FC<{
 	pref?: Record<string, unknown>;
 	description?: string;
 	placeholder?: string;
-	ChipComponent?: FC;
-}> = ({
+	ChipComponent?: ComponentType;
+}>;
+
+function normalizeChipValue(value: ChipValue): Array<{ label?: string }> {
+	if (Array.isArray(value)) {
+		return value;
+	}
+	if (typeof value === 'string' && value.length > 0) {
+		return [{ label: value }];
+	}
+	return [];
+}
+
+export const InheritedChipInput = ({
 	placeholder,
 	requireUniqueChips,
 	subValue,
@@ -54,8 +56,8 @@ const InheritedChipInput: FC<{
 	hasError = false,
 	pref = {},
 	description,
-	ChipComponent
-}) => {
+	ChipComponent,
+}: InheritedChipInputProps) => {
 	const [t] = useTranslation();
 
 	return (
@@ -115,5 +117,4 @@ const InheritedChipInput: FC<{
 			)}
 		</Container>
 	);
-};
-export default InheritedChipInput;
+}

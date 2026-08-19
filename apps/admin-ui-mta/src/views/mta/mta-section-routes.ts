@@ -14,13 +14,13 @@ import {
   POSTSCREEN_TUNING,
   QUEUE,
 } from '../../constants';
-import MTAAntiVirusAndAntiSpam from './antvirus-and-antispam/antivirus-and-antispam';
-import MTAInboundFlowSecurity from './inbound-flow-security/inbound-flow-security';
-import MTAAdvanced from './mta-advanced/mta-advanced';
-import MTAOutBoundFlow from './outbound-flow/outbound-flow';
-import MTAPostScreenTuning from './post-screen-tuning/post-screen-tuning';
-import MTAServerGeneral from './server/general/mta-server-general';
-import MTAStats from './stats/mta-stats';
+import { MTAAntiVirusAndAntiSpam } from './antivirus-and-antispam/antivirus-and-antispam';
+import { MTAInboundFlowSecurity } from './inbound-flow-security/inbound-flow-security';
+import { MTAAdvanced } from './mta-advanced/mta-advanced';
+import { MTAOutBoundFlow } from './outbound-flow/outbound-flow';
+import { MTAPostScreenTuning } from './post-screen-tuning/post-screen-tuning';
+import { MTAServerGeneral } from './server/general/mta-server-general';
+import { MTAStats } from './stats/mta-stats';
 
 export type SectionRoute = {
   id: string;

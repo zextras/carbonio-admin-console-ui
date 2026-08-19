@@ -31,7 +31,7 @@ import {
   OUTBOUND_FLOW,
   QUEUE,
 } from '../../../constants';
-import MTAListPanel from '../mta-list-panel';
+import { MTAListPanel } from '../mta-list-panel';
 
 const mockedReplaceHistory = vi.mocked(replaceHistory);
 

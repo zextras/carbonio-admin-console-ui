@@ -1,19 +1,20 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { buildSectionMenu, Container,PageHeader } from '@zextras/ui-components';
+
+import { buildSectionMenu, Container, PageHeader } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
+import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useLocation } from 'react-router';
 
 import { MTADetailPanel } from './mta/mta-detail-panel';
-import MTAListPanel from './mta/mta-list-panel';
+import { MTAListPanel } from './mta/mta-list-panel';
 import { SECTION_ROUTES } from './mta/mta-section-routes';
 
-export const AppView: FC = () => {
+export const AppView = () => {
   const [t] = useTranslation();
   const { pathname } = useLocation();
   const detailViewMaxWidth = useDetailViewMaxWidth();
@@ -79,5 +80,4 @@ export const AppView: FC = () => {
       </Routes>
     </Container>
   );
-};
-
+}

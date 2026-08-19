@@ -12,7 +12,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import MTAPostScreenTuning from '../post-screen-tuning';
+import { MTAPostScreenTuning } from '../post-screen-tuning';
 
 function getAllConfigResponse() {
   return {
@@ -133,14 +133,14 @@ describe('MTAPostScreenTuning', () => {
   it('renders Action selects and Command Time to Live inputs in the Tuning section', async () => {
     await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
-    const actionLabels = page.getByText('Action', { exact: true }).all();
-    expect(actionLabels.length).toBeGreaterThanOrEqual(3);
-
-    const ttlLabels = page.getByText('Command Time to Live (value)').all();
-    expect(ttlLabels.length).toBeGreaterThanOrEqual(3);
-
-    const intervalLabels = page.getByText('Interval', { exact: true }).all();
-    expect(intervalLabels.length).toBeGreaterThanOrEqual(3);
+    await expect.element(page.getByText('Tuning', { exact: true })).toBeVisible();
+    await expect.poll(() => page.getByText('Action', { exact: true }).elements().length).toBeGreaterThanOrEqual(3);
+    await expect
+      .poll(() => page.getByText('Command Time to Live (value)').elements().length)
+      .toBeGreaterThanOrEqual(3);
+    await expect
+      .poll(() => page.getByText('Interval', { exact: true }).elements().length)
+      .toBeGreaterThanOrEqual(3);
   });
 
   it('does not render Save and Cancel buttons when no changes are made', async () => {
@@ -174,6 +174,28 @@ describe('MTAPostScreenTuning', () => {
     await expect.poll(() => page.getByRole('button', { name: 'Cancel' }).elements().length).toBe(0);
   });
 
+  it('submits ModifyConfig only once on Save', async () => {
+    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+
+    await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
+
+    await page.getByText('Bare Newline').click();
+    const saveButton = page.getByRole('button', { name: 'Save' });
+    await expect.element(saveButton).toBeVisible();
+    await saveButton.click();
+
+    await modifyConfigInterceptor;
+
+    const secondModifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    const secondCallSettled = await Promise.race([
+      secondModifyConfigInterceptor.then(() => true),
+      new Promise<boolean>((resolve) => {
+        setTimeout(() => resolve(false), 2000);
+      }),
+    ]);
+    expect(secondCallSettled).toBe(false);
+  });
+
   it('dismisses the greylisting info banner when close is clicked', async () => {
     await setupBrowserTest(<MTAPostScreenTuning />, { grantRights: 'config' });
 
@@ -185,7 +207,7 @@ describe('MTAPostScreenTuning', () => {
       )
       .toBeVisible();
 
-    await page.getByTestId('icon: CloseOutline').click();
+    await page.getByRole('button', { name: 'Close' }).click();
 
     await expect
       .poll(
