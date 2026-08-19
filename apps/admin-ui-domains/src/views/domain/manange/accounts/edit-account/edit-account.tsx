@@ -82,7 +82,14 @@ const ReusedDefaultTabBar = ({
   </DefaultTabBarItem>
 );
 
-const EditAccountContent = ({ account, onClose, onDeleted, defaultTab }: EditAccountProps) => {
+type EditAccountContentProps = Omit<EditAccountProps, 'onSaved'>;
+
+const EditAccountContent = ({
+  account,
+  onClose,
+  onDeleted,
+  defaultTab,
+}: EditAccountContentProps) => {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const { form, isSaving, resetToSaved } = useAccountForm();
@@ -625,7 +632,6 @@ export const EditAccount = ({
     <EditAccountContent
       account={account}
       onClose={onClose}
-      onSaved={onSaved}
       onDeleted={onDeleted}
       defaultTab={defaultTab}
     />
