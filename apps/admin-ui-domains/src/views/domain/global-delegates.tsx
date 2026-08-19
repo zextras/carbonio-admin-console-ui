@@ -226,7 +226,7 @@ const GlobalDelegates: FC = () => {
               }}
             >
               <Table
-                rows={!isFetching ? accountList : []}
+                rows={isFetching ? [] : accountList}
                 headers={headers}
                 showCheckbox={false}
                 multiSelect={false}
