@@ -98,6 +98,7 @@ export default tseslint.config(
       'apps/admin-ui-domains/src/views/domain/domain-list-panel.tsx',
       'apps/admin-ui-domains/src/views/domain/global/global-detail-panel.tsx',
       'apps/admin-ui-domains/src/views/domain/global-delegates.tsx',
+      'apps/admin-ui-domains/src/views/domain/manange/accounts/edit-account/edit-account-general-section.tsx',
       'apps/admin-ui-dashboard/**',
       'apps/admin-ui-legalhold/**',
       'apps/admin-ui-bootstrap/**',
