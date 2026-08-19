@@ -3,9 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useSelector } from '@tanstack/react-store';
 import { Checkbox, Container, Radio, RadioGroup, Row, Select } from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
-import { FC, useContext, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -16,14 +17,15 @@ import {
   SEND_READ_MANAGE_MAILS,
 } from '../../../../../../constants';
 import { delegateRightsType } from '../../../../../utility/utils';
-import { AccountContext } from '../../account-context';
+import { useAccountForm } from '../account-form-context';
 
 const DelegateSetRightsSection: FC = () => {
   const [t] = useTranslation();
   const sendingOption = '';
   const DELEGETES_RIGHTS_TYPE = useMemo(() => delegateRightsType(t), [t]);
-  const context = useContext(AccountContext);
-  const { accountDetail, deligateDetail, setDeligateDetail, folderList, setFolderList } = context;
+  const { form, deligateDetail, setDeligateDetail, folderList, setFolderList } = useAccountForm();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
+  const accountDetail = values;
 
   const onWhoDelegateChange = (v: any): any => {
     setDeligateDetail((prev: any) => ({ ...prev, delegeteRights: v }));

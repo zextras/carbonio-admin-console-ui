@@ -3,15 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useSelector } from '@tanstack/react-store';
 import { Container, DropDownInput, Row, Select, useSnackbar } from '@zextras/ui-components';
 import { debounce } from 'lodash-es';
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { accountListDirectory } from '../../../../../../services/account-list-directory-service';
 import { generateSnackbarFromError } from '../../../../../error/generate-snackbar-error';
 import { delegateType } from '../../../../../utility/utils';
-import { AccountContext } from '../../account-context';
+import { useAccountForm } from '../account-form-context';
 
 const DelegateSelectModeSection: FC = () => {
   const [t] = useTranslation();
@@ -23,8 +24,9 @@ const DelegateSelectModeSection: FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const offset = 0;
   const limit = 20;
-  const context = useContext(AccountContext);
-  const { deligateDetail, setDeligateDetail, accountDetail } = context;
+  const { form, deligateDetail, setDeligateDetail } = useAccountForm();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
+  const accountDetail = values;
 
   const searchAccountList = useCallback(
     debounce((searchText, type) => {

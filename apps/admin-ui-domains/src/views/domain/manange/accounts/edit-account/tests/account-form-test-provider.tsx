@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useForm } from '@tanstack/react-form';
-import type { ReactElement } from 'react';
+import { type ReactElement,useState } from 'react';
 
 import { AccountFormContext, type AccountFormContextValue } from '../account-form-context';
 
@@ -27,6 +27,8 @@ export const AccountFormTestProvider = ({
     defaultValues: values,
     onSubmit: async () => {},
   });
+  const [folderList, setFolderList] = useState<Array<any>>([]);
+  const [deligateDetail, setDeligateDetail] = useState<Record<string, any>>({});
   const contextValue: AccountFormContextValue = {
     form,
     account: { id: values?.zimbraId ?? 'mock-zimbra-id', name: values?.name ?? '' },
@@ -41,11 +43,17 @@ export const AccountFormTestProvider = ({
     otpList: [],
     credentialList: [],
     identitiesList: [],
-    folderList: [],
+    folderList,
+    setFolderList,
+    deligateDetail,
+    setDeligateDetail,
     sessions: [],
     refetchGrants: () => {},
     allowedDeletePassword: false,
-    ...contextOverrides,
   };
-  return <AccountFormContext.Provider value={contextValue}>{children}</AccountFormContext.Provider>;
+  return (
+    <AccountFormContext.Provider value={{ ...contextValue, ...contextOverrides }}>
+      {children}
+    </AccountFormContext.Provider>
+  );
 };

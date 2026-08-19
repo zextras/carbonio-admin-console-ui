@@ -114,6 +114,8 @@ export const AccountFormProvider = ({
   const currentUser = useUserAccount();
   const [isSaving, setIsSaving] = useState(false);
   const [allowedDeletePassword, setAllowedDeletePassword] = useState(false);
+  const [folderList, setFolderList] = useState<Array<any>>([]);
+  const [deligateDetail, setDeligateDetail] = useState<Record<string, any>>({});
 
   const { data: accountDetailData } = useAccountDetail(account.id);
   const { data: accSpecificDetail = {} } = useAccountSpecificDetail(account.id);
@@ -504,6 +506,12 @@ export const AccountFormProvider = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account.name]);
 
+  // delegates wizard: keep a mutable draft of folder selection, reseeded when
+  // grants are (re)fetched so selection resets after mutations
+  useEffect(() => {
+    setFolderList(grants?.folderList ?? []);
+  }, [grants?.folderList]);
+
   const resetToSaved = (): void => {
     form.reset(savedValuesRef.current as AccountFormValues, { keepDefaultValues: true });
   };
@@ -522,7 +530,10 @@ export const AccountFormProvider = ({
     otpList: otps ?? [],
     credentialList: credentials ?? [],
     identitiesList: grants?.identitiesList ?? [],
-    folderList: grants?.folderList ?? [],
+    folderList,
+    setFolderList,
+    deligateDetail,
+    setDeligateDetail,
     sessions,
     refetchGrants: (): void => {
       void refetchGrants();

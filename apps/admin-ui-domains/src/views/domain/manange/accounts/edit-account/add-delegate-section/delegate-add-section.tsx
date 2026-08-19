@@ -3,19 +3,21 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useSelector } from '@tanstack/react-store';
 import { Container, LabeledValue, Row } from '@zextras/ui-components';
-import { FC, useContext, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { READ_MAILS_ONLY } from '../../../../../../constants';
 import { delegateRightsType } from '../../../../../utility/utils';
-import { AccountContext } from '../../account-context';
+import { useAccountForm } from '../account-form-context';
 
 const DelegateAddSection: FC = () => {
   const [t] = useTranslation();
   const DELEGETES_RIGHTS_TYPE = useMemo(() => delegateRightsType(t), [t]);
-  const context = useContext(AccountContext);
-  const { accountDetail, deligateDetail } = context;
+  const { form, deligateDetail } = useAccountForm();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
+  const accountDetail = values;
 
   return (
     <>

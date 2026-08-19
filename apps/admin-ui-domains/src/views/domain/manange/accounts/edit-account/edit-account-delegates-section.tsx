@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import {
 	Button,
 	Checkbox,
@@ -26,7 +27,6 @@ import {
   FC,
   ReactElement,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -48,24 +48,26 @@ import { batchService } from '../../../../../services/batch-service';
 import CustomChip from '../../../../components/customChip';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
-import { AccountContext } from '../account-context';
+import { useAccountForm, useSetAccountValues } from './account-form-context';
 import DelegateAddSection from './add-delegate-section/delegate-add-section';
 import DelegateSelectModeSection from './add-delegate-section/delegate-selectmode-section';
 import DelegateSetRightsSection from './add-delegate-section/delegate-setright-section';
 
 const EditAccountDelegatesSection: FC = () => {
-  const context = useContext(AccountContext);
   const {
+    form,
     identitiesList,
-    accountDetail,
-    getIdentitiesList,
     deligateDetail,
     setDeligateDetail,
     folderList,
-    setAccountDetail,
+    refetchGrants,
     cosDetail,
     accSpecificDetail,
-  } = context;
+  } = useAccountForm();
+  const setAccountValues = useSetAccountValues();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
+  const accountDetail = values;
+  const getIdentitiesList = refetchGrants;
   const [showCreateIdentity, setShowCreateIdentity] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -84,8 +86,8 @@ const EditAccountDelegatesSection: FC = () => {
   const [sendRightCheck, setSendRightCheck] = useState<boolean>(false);
   const [sendBehalfRightCheck, setSendBehalfRightCheck] = useState<boolean>(false);
   const DELEGATE_SEND_SETTINGS = useMemo(
-    () => deligateSendSettings(t, context?.accSpecificDetail?.mail),
-    [context?.accSpecificDetail?.mail, t],
+    () => deligateSendSettings(t, accSpecificDetail?.mail),
+    [accSpecificDetail?.mail, t],
   );
 
   useEffect(() => {
@@ -248,10 +250,7 @@ const EditAccountDelegatesSection: FC = () => {
 
         if (revokeUsrRigths.length > 0) setShowCreateIdentity(false);
 
-        getIdentitiesList({
-          id: accountDetail?.zimbraId,
-          name: accountDetail?.zimbraMailDeliveryAddress,
-        });
+        getIdentitiesList();
       }
 
       if (!editMode) {
@@ -350,10 +349,7 @@ const EditAccountDelegatesSection: FC = () => {
         },
         accountDetail?.zimbraMailDeliveryAddress,
       ).then(() => {
-        getIdentitiesList({
-          id: accountDetail?.zimbraId,
-          name: accountDetail?.zimbraMailDeliveryAddress,
-        });
+        getIdentitiesList();
         setShowCreateIdentity(false);
 
         createSnackbar({
@@ -589,10 +585,7 @@ const EditAccountDelegatesSection: FC = () => {
       },
       accountDetail?.zimbraMailDeliveryAddress,
     ).then(() => {
-      getIdentitiesList({
-        id: accountDetail?.zimbraId,
-        name: accountDetail?.zimbraMailDeliveryAddress,
-      });
+      getIdentitiesList();
       setShowCreateIdentity(false);
     });
     setSelectedAccounts([]);
@@ -702,10 +695,7 @@ const EditAccountDelegatesSection: FC = () => {
           },
           accountDetail?.zimbraMailDeliveryAddress,
         ).then(() => {
-          getIdentitiesList({
-            id: accountDetail?.zimbraId,
-            name: accountDetail?.zimbraMailDeliveryAddress,
-          });
+          getIdentitiesList();
           if (revokeUsrRigths.length > 0) setShowCreateIdentity(false);
         });
 
@@ -773,13 +763,16 @@ const EditAccountDelegatesSection: FC = () => {
     if (searchQuery.length > 2) getAccountList();
   }, [getAccountList, searchQuery]);
   const onDeligateSendSettingsChange = (v: string): void => {
-    setAccountDetail((prev: any) => ({ ...prev, zimbraPrefDelegatedSendSaveTarget: v }));
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefDelegatedSendSaveTarget: v,
+    }));
   };
   const setEmptyValue = useCallback(
     (keyName: string) => {
-      setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+      setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
     },
-    [setAccountDetail],
+    [setAccountValues],
   );
   return (
     <Container
