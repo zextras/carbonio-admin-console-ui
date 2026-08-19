@@ -55,6 +55,7 @@ export const DomainDeleteSection = ({
     alias: [],
     calresource: [],
   });
+  const isDomainClosed = domainStatusValue === closedStatusValue;
 
   function deleteOnlyDomain(): void {
     deleteDomainMutation.mutateAsync().then(() => {
@@ -231,14 +232,12 @@ export const DomainDeleteSection = ({
                     disabled={isRequestInProgress}
                   />
                 </Padding>
-                {domainStatusValue !== closedStatusValue ? (
+                {isDomainClosed ? null : (
                   <Button
                     label={t('label.close_domain', 'CLOSE DOMAIN')}
                     color="primary"
                     onClick={onCloseDomain}
                   />
-                ) : (
-                  <></>
                 )}
               </Container>
             </Container>
@@ -289,7 +288,17 @@ export const DomainDeleteSection = ({
               <></>
             )}
             <br />
-            {domainStatusValue !== closedStatusValue ? (
+            {isDomainClosed ? (
+              <>
+                <ds-text as="p" overflow="break-word" weight="regular">
+                  {t('label.permanently_delete_domain_with_all_resources_permanently_remove', {
+                    defaultValue:
+                      'Permanently remove all the accounts and domain objects. This operation cannot be reverted.',
+                  })}
+                </ds-text>
+                <br />
+              </>
+            ) : (
               <>
                 <ds-text as="p" overflow="break-word" weight="regular">
                   {t('label.delete_domain_with_all_resources_close_domain', {
@@ -302,16 +311,6 @@ export const DomainDeleteSection = ({
                   {t('label.delete_domain_with_all_resources_permanently_remove', {
                     defaultValue:
                       'Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.',
-                  })}
-                </ds-text>
-                <br />
-              </>
-            ) : (
-              <>
-                <ds-text as="p" overflow="break-word" weight="regular">
-                  {t('label.permanently_delete_domain_with_all_resources_permanently_remove', {
-                    defaultValue:
-                      'Permanently remove all the accounts and domain objects. This operation cannot be reverted.',
                   })}
                 </ds-text>
                 <br />
