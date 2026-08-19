@@ -41,11 +41,9 @@ type GlobalSettingsFormValues = {
 };
 
 const globalSettingsSchema = z.object({
-  carbonioNotificationFrom: z
-    .string()
-    .refine((value) => value === '' || isValidEmail(value), {
-      message: 'label.notification_error_msg',
-    }),
+  carbonioNotificationFrom: z.string().refine((value) => value === '' || isValidEmail(value), {
+    message: 'label.notification_error_msg',
+  }),
   carbonioNotificationRecipients: z.array(z.object({ label: z.string().optional() })),
   zimbraDomainMandatoryMailSignatureEnabled: z.boolean(),
   zimbraAmavisOutboundDisclaimersOnly: z.boolean(),
@@ -194,16 +192,11 @@ const GlobalDetailPanelContent = ({
         onCancel={() => form.reset()}
         onSave={() => form.handleSubmit()}
       >
-      <Row
-        mainAlignment="flex-start"
-        width="100%"
-        background="gray6"
-        padding={{ top: 'small' }}
-      >
-        <ds-text as="h2" size="small" weight="bold" color="gray0">
-          {t('label.domain_system_notifications', 'Domain System Notifications')}
-        </ds-text>
-      </Row>
+        <Row mainAlignment="flex-start" width="100%" background="gray6" padding={{ top: 'small' }}>
+          <ds-text as="h2" size="small" weight="bold" color="gray0">
+            {t('label.domain_system_notifications', 'Domain System Notifications')}
+          </ds-text>
+        </Row>
         <ListRow>
           <Container
             mainAlignment="flex-start"
@@ -249,9 +242,7 @@ const GlobalDetailPanelContent = ({
                   background="gray5"
                   value={field.state.value}
                   onChange={(emails: Array<{ label?: string }>): void => {
-                    field.handleChange(
-                      emails.filter((email) => isValidEmail(email.label ?? '')),
-                    );
+                    field.handleChange(emails.filter((email) => isValidEmail(email.label ?? '')));
                   }}
                 />
               )}
@@ -275,6 +266,7 @@ const GlobalDetailPanelContent = ({
                     'label.enable_disclaimers_for_all_domains',
                     'Mandatory disclaimer for all domains',
                   )}
+                  iconColor="primary"
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
                 />
@@ -296,6 +288,7 @@ const GlobalDetailPanelContent = ({
                     'label.only_allow_outbound_disclaimers',
                     'Only allow outbound disclaimers',
                   )}
+                  iconColor="primary"
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
                 />
@@ -320,6 +313,7 @@ const GlobalDetailPanelContent = ({
                     'domain.globalSettings.allowSearchUserFromAllDomains',
                     `Allow searching users' information in all domains`,
                   )}
+                  iconColor="primary"
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
                 />
