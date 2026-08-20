@@ -7,7 +7,6 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
-  DefaultTabBarItem,
   Modal,
   Padding,
   RouteLeavingGuard,
@@ -17,7 +16,7 @@ import {
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { ReactElement, useState } from 'react';
+import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -44,6 +43,7 @@ import EditAccountDelegatesSection from './edit-account-delegates-section';
 import { EditAccountGeneralSection } from './edit-account-general-section';
 import EditAccountSecuritySection from './edit-account-security-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
+import { ReusedDefaultTabBar } from './parts/reused-default-tab-bar';
 
 export type EditAccountProps = {
   account: { id: string; name: string; [key: string]: any };
@@ -52,35 +52,6 @@ export type EditAccountProps = {
   onDeleted: () => void;
   defaultTab?: string;
 };
-
-const ReusedDefaultTabBar = ({
-  item,
-  index,
-  selected,
-  onClick,
-}: {
-  item: any;
-  index: any;
-  selected: any;
-  onClick: any;
-}): ReactElement => (
-  <DefaultTabBarItem
-    item={item}
-    tabIndex={index}
-    selected={selected}
-    onClick={onClick}
-    orientation="horizontal"
-    background="gray6"
-    underlineColor="primary"
-    forceWidthEquallyDistributed={false}
-  >
-    <Row padding="small">
-      <ds-text size="small" color={selected ? 'primary' : 'gray'} as="span">
-        {item.label}
-      </ds-text>
-    </Row>
-  </DefaultTabBarItem>
-);
 
 type EditAccountContentProps = Omit<EditAccountProps, 'onSaved'>;
 
