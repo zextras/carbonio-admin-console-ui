@@ -136,7 +136,7 @@ export const SimplifiedRightsPanel = ({
 		} else if (rightsType === 'read') {
 			setReadSelectedRows([]);
 		} else if (rightsType === 'send') {
-			setReadSelectedRows([]);
+			setSendSelectedRows([]);
 		}
 
 		const { revokeUsrRigths, folderUsrRights } = buildSimplifiedRevokeBatch(
