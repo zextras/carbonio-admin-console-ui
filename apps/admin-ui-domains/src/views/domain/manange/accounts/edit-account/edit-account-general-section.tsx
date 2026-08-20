@@ -49,7 +49,7 @@ import {
   formatZimbraDate,
   localeList,
 } from '../../../../utility/utils';
-import { useAccountForm, useSetAccountValues } from './account-form-context';
+import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
 import { EditAccountQuotaBar } from './parts/edit-account-quota-bar';
 import { EditAccountQuotaInputs } from './parts/edit-account-quota-inputs';
 
@@ -137,6 +137,7 @@ export const EditAccountGeneralSection = ({
     account,
   } = useAccountForm();
   const setAccountValues = useSetAccountValues();
+  const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const { data: domain } = useSelectedDomain();
   const domainInformation = domain?.a;
@@ -221,15 +222,6 @@ export const EditAccountGeneralSection = ({
     getDomainLists(debouncedSearchDomain);
   }, [debouncedSearchDomain, getDomainLists]);
 
-  const changeSwitchOption = useCallback(
-    (key: string): void => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
-      }));
-    },
-    [setAccountValues],
-  );
   const changeAccDetail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setAccountValues((prev: Record<string, any>) => ({
@@ -737,7 +729,7 @@ export const EditAccountGeneralSection = ({
           <Row width="27%" mainAlignment="flex-start">
             <Switch
               value={values?.zimbraHideInGal === 'TRUE'}
-              onClick={(): void => changeSwitchOption('zimbraHideInGal')}
+              onClick={(): void => toggleAccountValue('zimbraHideInGal')}
               label={t('account_details.hidden_in_gal', 'Hidden in GAL')}
               iconColor="primary"
             />
@@ -755,7 +747,7 @@ export const EditAccountGeneralSection = ({
           {renderSwitchRow(
             t('account_details.this_user_must_change_password', 'This user must change password'),
             values?.zimbraPasswordMustChange === 'TRUE',
-            () => changeSwitchOption('zimbraPasswordMustChange'),
+            () => toggleAccountValue('zimbraPasswordMustChange'),
           )}
         </Row>
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">

@@ -25,13 +25,14 @@ import {
   isValidEmail,
   timeZoneList,
 } from '../../../../utility/utils';
-import { useAccountForm, useSetAccountValues } from './account-form-context';
+import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
 import { SignatureDetail } from './signature-detail';
 
 const EditAccountUserPrefrencesSection: FC = () => {
   const [t] = useTranslation();
   const { form, cosDetail, accSpecificDetail, signatureList } = useAccountForm();
   const setAccountValues = useSetAccountValues();
+  const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const [signatureItems, setSignatureItems] = useState<any[]>([]);
   const accountDetail = values;
@@ -218,16 +219,6 @@ const EditAccountUserPrefrencesSection: FC = () => {
       zimbraPrefCalendarApptVisibility: v,
     }));
   };
-  const changeSwitchOption = useCallback(
-    (key: string): void => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
-      }));
-    },
-    [setAccountValues],
-  );
-
   const onGroupByChange = (v: string): void => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefGroupMailBy: v }));
   };
@@ -275,7 +266,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefMessageViewHtmlPreferred}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t('account_details.view_mail_as_html', 'View mail as HTML')}
             iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefMessageViewHtmlPreferred}
@@ -317,7 +308,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefMessageIdDedupingEnabled}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'account_details.auto_delete_duplicate_messages',
               'Auto-Delete duplicate messages',
@@ -332,7 +323,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefMailToasterEnabled}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'account_details.enable_new_mail_toast_notification',
               `Enable New Mail Toast Notification`,
@@ -374,7 +365,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefOutOfOfficeReplyEnabled}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'account_details.can_send_auto_reply_messages',
               `Can send auto-reply messages`,
@@ -444,7 +435,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="100%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefSaveToSent}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t('account_details.save_to_sent', 'Save to sent')}
             iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefSaveToSent}
@@ -481,7 +472,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="100%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraFeatureReadReceiptsEnabled}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'domain.accounts.editAccount.allowTheUserToAskForAReadReceipt',
               `Allow the user to ask for a read receipt`,
@@ -508,7 +499,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefMailSignatureEnabled}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t('account_details.mail_signature', 'Mail Signature')}
             iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefMailSignatureEnabled}
@@ -540,7 +531,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefAutoAddAddressEnabled}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t('account_details.enable_auto_add_contacts', `Enable auto-add contacts`)}
             iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefAutoAddAddressEnabled}
@@ -552,7 +543,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefGalAutoCompleteEnabled}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t('account_details.use_gal_to_auto_fill', 'Use GAL to auto-fill')}
             iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefGalAutoCompleteEnabled}
@@ -668,7 +659,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefCalendarShowPastDueReminders}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'account_details.enable_past_due_reminders',
               'Enable reminders of appointments in the past',
@@ -684,7 +675,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefCalendarAllowCancelEmailToSelf}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'account_details.allow_sending_cancellation_mail',
               'Allow sending cancellation mail',
@@ -701,7 +692,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefCalendarAllowForwardedInvite}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'account_details.add_forwarded_invites_to_calendar',
               'Automatically add forwarded appointments to the calendar',
@@ -716,7 +707,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefCalendarAllowPublishMethodInvite}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'account_details.add_invites_with_publish_method',
               `Add invites with PUBLISH method`,
@@ -733,7 +724,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefCalendarAutoAddInvites}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'label.add_appointments_when_invited',
               'Automatically add appointments when the user is invited',
@@ -748,7 +739,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefCalendarSendInviteDeniedAutoReply}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'account_details.auto_decline_if_inviter_is_blacklisted',
               `Auto-decline if the sender is blacklisted`,
@@ -769,7 +760,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefCalendarNotifyDelegatedChanges}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'account_details.notify_changes_by_delegated_access',
               `Notify changes made by delegated accounts`,
@@ -784,7 +775,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
         <Row width="48%" mainAlignment="flex-start">
           <InheritedSwitch
             subValue={accountDetail?.zimbraPrefAppleIcalDelegationEnabled}
-            onChange={changeSwitchOption}
+            onChange={toggleAccountValue}
             label={t(
               'account_details.use_ical_delegation_model_for_shared_calendars',
               'Use iCal delegation model for shared calendars',

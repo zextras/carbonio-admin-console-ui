@@ -30,7 +30,7 @@ import { sendMail } from '../../../../../services/send-mail-service';
 import CustomChip from '../../../../components/customChip';
 import { isValidEmail } from '../../../../utility/utils';
 import { emailContent } from '../create-account/email-content';
-import { useAccountForm, useSetAccountValues } from './account-form-context';
+import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
 import styles from './edit-account-security-section.module.css';
 import { ServicesPassphrase } from './services-passphrase';
 
@@ -43,6 +43,7 @@ const EditAccountSecuritySection: FC = () => {
     account,
   } = useAccountForm();
   const setAccountValues = useSetAccountValues();
+  const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const queryClient = useQueryClient();
   const getListOtp = useCallback(
@@ -603,26 +604,6 @@ const EditAccountSecuritySection: FC = () => {
     [setAccountValues],
   );
 
-  const changeSwitchOption = useCallback(
-    (key: string): void => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
-      }));
-    },
-    [setAccountValues],
-  );
-
-  const changeSwitchOptionBoolean = useCallback(
-    (key: string): void => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        [key]: !prev[key],
-      }));
-    },
-    [setAccountValues],
-  );
-
   const onZimbraPasswordLockoutDurationTypeChange = useCallback(
     (v: string) => {
       setAccountValues((prev: Record<string, any>) => ({
@@ -675,17 +656,6 @@ const EditAccountSecuritySection: FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefPasswordRecoveryAddressStatus: v }));
   };
-
-  const changeRecoverOption = useCallback(
-    (key: string): void => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        [key]: prev[key] === ENABLED ? DISABLED : ENABLED,
-      }));
-    },
-    [setAccountValues],
-  );
 
   const gracePeriodDefaultDate = useMemo(() => {
     const gentimeValue =
@@ -778,7 +748,7 @@ const EditAccountSecuritySection: FC = () => {
                       <Row padding={{ top: 'large' }}></Row>
                       <InheritedSwitch
                         subValue={values?.carbonioFeatureOTPMgmtEnabled}
-                        onChange={changeSwitchOption}
+                        onChange={toggleAccountValue}
                         label={t(
                           'domain.accounts.allowUsersToConfigure2FA',
                           'Allow users to configure 2FA',
@@ -976,7 +946,7 @@ const EditAccountSecuritySection: FC = () => {
                 <Container crossAlignment="flex-start">
                   <InheritedSwitch
                     subValue={values?.carbonioOtpWizardFromUntrusted}
-                    onChange={changeSwitchOption}
+                    onChange={toggleAccountValue}
                     label={t(
                       'domain.accounts.allowSetupFromUntrustedNetworks',
                       'Allow 2FA setup from untrusted networks',
@@ -1010,7 +980,7 @@ const EditAccountSecuritySection: FC = () => {
                 <Container crossAlignment="flex-start">
                   <InheritedSwitch
                     subValue={values?.carbonioOtpGracePeriodEnabled}
-                    onChange={changeSwitchOption}
+                    onChange={toggleAccountValue}
                     label={t(
                       'domain.accounts.allowSetupDeferralDuringGracePeriod',
                       'Allow setup deferral during grace period',
@@ -1084,7 +1054,7 @@ const EditAccountSecuritySection: FC = () => {
                 <Container crossAlignment="flex-start">
                   <Switch
                     value={values?.backupSelfUndeleteAllowed}
-                    onClick={(): void => changeSwitchOptionBoolean('backupSelfUndeleteAllowed')}
+                    onClick={(): void => toggleAccountValue('backupSelfUndeleteAllowed', true, false)}
                     label={t('label.allow_restore_message', 'Allow user to restore messages')}
                     iconColor="primary"
                   />
@@ -1157,7 +1127,7 @@ const EditAccountSecuritySection: FC = () => {
                   <Container crossAlignment="flex-start">
                     <InheritedSwitch
                       subValue={values?.zimbraPasswordLocked}
-                      onChange={changeSwitchOption}
+                      onChange={toggleAccountValue}
                       label={t(
                         'cos.prevent_user_from_changing_password',
                         'Prevent user from changing password',
@@ -1375,7 +1345,7 @@ const EditAccountSecuritySection: FC = () => {
                   <Container crossAlignment="flex-start" padding={{ top: 'large' }}>
                     <InheritedSwitch
                       subValue={values?.zimbraPasswordBlockCommonEnabled}
-                      onChange={changeSwitchOption}
+                      onChange={toggleAccountValue}
                       label={t('cos.reject_common_passwords', 'Reject common passwords')}
                       iconColor="primary"
                       inheritedValue={cosDetail.zimbraPasswordBlockCommonEnabled}
@@ -1408,7 +1378,7 @@ const EditAccountSecuritySection: FC = () => {
                   <Container crossAlignment="flex-start" width="30%" padding={{ right: 'small' }}>
                     <Switch
                       value={values?.zimbraFeatureResetPasswordStatus === 'enabled'}
-                      onClick={(): void => changeRecoverOption('zimbraFeatureResetPasswordStatus')}
+                      onClick={(): void => toggleAccountValue('zimbraFeatureResetPasswordStatus', ENABLED, DISABLED)}
                       label={t(
                         'label.user_can_ask_for_forgotten_password_token',
                         'User can ask for a forgotten password token',
@@ -1475,7 +1445,7 @@ const EditAccountSecuritySection: FC = () => {
                   <Container crossAlignment="flex-start">
                     <InheritedSwitch
                       subValue={values?.zimbraPasswordLockoutEnabled}
-                      onChange={changeSwitchOption}
+                      onChange={toggleAccountValue}
                       label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
                       iconColor="primary"
                       inheritedValue={cosDetail.zimbraPasswordLockoutEnabled}

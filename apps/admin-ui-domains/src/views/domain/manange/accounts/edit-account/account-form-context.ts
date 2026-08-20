@@ -54,6 +54,45 @@ export function useAccountForm(): AccountFormContextValue {
 }
 
 /**
+ * Pure toggle semantics shared by every boolean-ish switch in the edit-account
+ * sections. Flips between `on` and `off`, but when the flipped value is
+ * visually identical to the saved one, restores the exact saved value
+ * (including `undefined`, i.e. "no override / inherited"), so toggling back
+ * clears the dirty state instead of leaving a sticky sentinel behind.
+ */
+export function computeToggledValue<T>(
+  prev: unknown,
+  saved: unknown,
+  on: T,
+  off: T,
+): unknown {
+  const next = prev === on ? off : on;
+  const backToSaved = (next === on) === (saved === on);
+  return backToSaved ? saved : next;
+}
+
+/**
+ * Baseline-anchored toggle over the account form, replacing the per-section
+ * `changeSwitchOption` copies. Use `useToggleAccountValue()('zimbraAttr')`
+ * for TRUE/FALSE attrs; pass custom sentinels for other pairs
+ * (e.g. ENABLED/DISABLED or true/false).
+ */
+export function useToggleAccountValue(): (
+  key: string,
+  on?: string | boolean,
+  off?: string | boolean,
+) => void {
+  const { form, savedValues } = useAccountForm();
+  return (key, on = 'TRUE', off = 'FALSE'): void => {
+    const prev = (form.state.values as Record<string, unknown>)[key];
+    const next = computeToggledValue(prev, (savedValues as Record<string, unknown>)[key], on, off);
+    if (!isEqual(prev, next)) {
+      form.setFieldValue(key, next);
+    }
+  };
+}
+
+/**
  * setState-style setter shim over the form, for consumers that call the
  * setter updater-style (`set((prev) => ({ ...prev, key: value }))`).
  * Only differing keys are written to the form so untouched fields stay untouched.

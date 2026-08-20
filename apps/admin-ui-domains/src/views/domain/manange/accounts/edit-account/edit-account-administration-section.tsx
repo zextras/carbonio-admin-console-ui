@@ -33,7 +33,7 @@ import {
 } from '../../../../../services/get-initialized-domains';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import { useAccountForm, useSetAccountValues } from './account-form-context';
+import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
 
 type EditAccountAdministrationSectionProps = {
   onLoadingChange: (isLoading: boolean) => void;
@@ -45,6 +45,7 @@ export const EditAccountAdministrationSection = ({
   const createSnackbar = useSnackbar();
   const { form, savedValues } = useAccountForm();
   const setAccountValues = useSetAccountValues();
+  const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const accountDetail = values;
   const initAccountDetail = savedValues as Record<string, any>;
@@ -98,16 +99,6 @@ export const EditAccountAdministrationSection = ({
     const it = options.find((item: any) => item.value === v);
     setSelectedOption(it);
   };
-
-  const changeSwitchOption = useCallback(
-    (key: string): void => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
-      }));
-    },
-    [setAccountValues],
-  );
 
   const getAccountDistributionList = useCallback(() => {
     getAccountMembershipRequest(accountDetail?.zimbraId).then((res) => {
@@ -344,7 +335,7 @@ export const EditAccountAdministrationSection = ({
                   } else {
                     form.setFieldValue('deleteAdministrationRights', []);
                   }
-                  changeSwitchOption('zimbraIsAdminAccount');
+                  toggleAccountValue('zimbraIsAdminAccount');
                   setAccountValues((prev: Record<string, any>) => ({
                     ...prev,
                     zimbraIsDelegatedAdminAccount:
@@ -365,7 +356,7 @@ export const EditAccountAdministrationSection = ({
                 <Switch
                   disabled={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
                   value={accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE'}
-                  onClick={(): void => changeSwitchOption('zimbraIsDelegatedAdminAccount')}
+                  onClick={(): void => toggleAccountValue('zimbraIsDelegatedAdminAccount')}
                   label={t('account_details.delegated_administration', 'Delegated administration')}
                   iconColor="primary"
                 />

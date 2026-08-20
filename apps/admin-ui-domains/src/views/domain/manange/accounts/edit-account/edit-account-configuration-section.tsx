@@ -21,11 +21,12 @@ import { WscSettings } from '../../../../../wsc/wsc-settings';
 import CustomChip from '../../../../components/customChip';
 import { Features } from '../../../../cos/features';
 import { isValidEmail } from '../../../../utility/utils';
-import { useAccountForm, useSetAccountValues } from './account-form-context';
+import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
 
 const EditAccountConfigurationSection: React.FC = () => {
   const { form, cosDetail, accSpecificDetail } = useAccountForm();
   const setAccountValues = useSetAccountValues();
+  const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const [t] = useTranslation();
   const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useState<any[]>([]);
@@ -60,13 +61,6 @@ const EditAccountConfigurationSection: React.FC = () => {
     );
   }, [values?.zimbraPrefCalendarForwardInvitesTo]);
 
-  const changeSwitchOption = (key: string): void => {
-    setAccountValues((prev: Record<string, any>) => ({
-      ...prev,
-      [key]: prev[key] === 'TRUE' ? 'FALSE' : 'TRUE',
-    }));
-  };
-
   const setEmptyValue = (keyName: string): void => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
   };
@@ -91,7 +85,7 @@ const EditAccountConfigurationSection: React.FC = () => {
           <Row width="48%" mainAlignment="flex-start">
             <InheritedSwitch
               subValue={values?.zimbraFeatureMailForwardingEnabled}
-              onChange={changeSwitchOption}
+              onChange={toggleAccountValue}
               label={t(
                 'account_details.user_can_specify_forwarding_address',
                 'User can specify forwarding address',
@@ -106,7 +100,7 @@ const EditAccountConfigurationSection: React.FC = () => {
           <Row width="48%" mainAlignment="flex-start">
             <InheritedSwitch
               subValue={values?.zimbraPrefMailLocalDeliveryDisabled}
-              onChange={changeSwitchOption}
+              onChange={toggleAccountValue}
               label={t(
                 'account_details.dont_keep_local_copy_of_messages',
                 `Don't Keep local copy of messages`,
@@ -123,7 +117,7 @@ const EditAccountConfigurationSection: React.FC = () => {
           <Row width="48%" mainAlignment="flex-start">
             <InheritedSwitch
               subValue={values?.zimbraFeatureMailForwardingInFiltersEnabled}
-              onChange={changeSwitchOption}
+              onChange={toggleAccountValue}
               label={t(
                 'account_details.user_can_specify_mail_forwarding_filter',
                 'User can specify mail forwarding filter',
