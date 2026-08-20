@@ -24,6 +24,11 @@ import { SignatureEditorDialog } from './signature-editor-dialog';
 import { SignatureTable } from './signature-table';
 import { filterSignatures, type Signature } from './utils';
 
+/** Funnel icon shown in the signature search box. */
+const SearchFunnelIcon = (): React.ReactElement => (
+	<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
+
 type SignatureDetailProps = {
   isEditable: boolean;
   /** Server truth (React Query data via the account form context). */
@@ -169,9 +174,7 @@ export const SignatureDetail = ({
                 label={t('label.search_a_signature', 'Search for a signature')}
                 backgroundColor="gray5"
                 value={searchSignatureName}
-                CustomIcon={(): any => (
-                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                )}
+                CustomIcon={SearchFunnelIcon}
                 onChange={(e: any): any => {
                   setSearchSignatureName(e.target.value);
                 }}
