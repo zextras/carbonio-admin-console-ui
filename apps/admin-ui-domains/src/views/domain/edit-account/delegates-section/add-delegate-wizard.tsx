@@ -3,13 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, HorizontalWizard, WizardInSection } from '@zextras/ui-components';
-import { ReactElement } from 'react';
+import { HorizontalWizard, WizardInSection } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import DelegateAddSection from '../add-delegate-section/delegate-add-section';
 import { DelegateSelectModeSection } from '../add-delegate-section/delegate-selectmode-section';
 import DelegateSetRightsSection from '../add-delegate-section/delegate-setright-section';
+import { createWizardStepButtons } from './wizard-step-buttons';
 
 type AddDelegateWizardProps = {
 	onCancel: () => void;
@@ -20,6 +20,9 @@ type AddDelegateWizardProps = {
 export const AddDelegateWizard = ({ onCancel, onAdd }: AddDelegateWizardProps) => {
 	const [t] = useTranslation();
 
+	const { CancelButton, EmptyPrevButton, NextButton, PrevButton, AddButton } =
+		createWizardStepButtons(t, onCancel, onAdd);
+
 	const wizardSteps = [
 		{
 			name: 'select-mode',
@@ -27,27 +30,9 @@ export const AddDelegateWizard = ({ onCancel, onAdd }: AddDelegateWizardProps) =
 			icon: 'PlusOutline',
 			view: DelegateSelectModeSection,
 			clickDisabled: true,
-			CancelButton: (props: any) => (
-				<Button
-					{...props}
-					type="outlined"
-					key="wizard-cancel"
-					label={t('label.volume_cancel_button', 'CANCEL')}
-					icon={'CloseOutline'}
-					iconPlacement="right"
-					color="secondary"
-					onClick={onCancel}
-				/>
-			),
-			PrevButton: (): ReactElement => <></>,
-			NextButton: (props: any) => (
-				<Button
-					{...props}
-					label={t('account_details.NEXT', 'NEXT')}
-					icon="ChevronRightOutline"
-					iconPlacement="right"
-				/>
-			),
+			CancelButton,
+			PrevButton: EmptyPrevButton,
+			NextButton,
 		},
 		{
 			name: 'set-rights',
@@ -55,36 +40,9 @@ export const AddDelegateWizard = ({ onCancel, onAdd }: AddDelegateWizardProps) =
 			icon: 'OptionsOutline',
 			view: DelegateSetRightsSection,
 			clickDisabled: true,
-			CancelButton: (props: any) => (
-				<Button
-					{...props}
-					type="outlined"
-					key="wizard-cancel"
-					label={t('label.volume_cancel_button', 'CANCEL')}
-					icon={'CloseOutline'}
-					iconPlacement="right"
-					color="secondary"
-					onClick={onCancel}
-				/>
-			),
-			PrevButton: (props: any): any => (
-				<Button
-					{...props}
-					label={t('label.volume_back_button', 'BACK')}
-					icon={'ChevronLeftOutline'}
-					iconPlacement="left"
-					disable={props.completeLoading}
-					color="secondary"
-				/>
-			),
-			NextButton: (props: any) => (
-				<Button
-					{...props}
-					label={t('account_details.NEXT', 'NEXT')}
-					icon="ChevronRightOutline"
-					iconPlacement="right"
-				/>
-			),
+			CancelButton,
+			PrevButton,
+			NextButton,
 		},
 		{
 			name: 'add-delegate',
@@ -92,37 +50,9 @@ export const AddDelegateWizard = ({ onCancel, onAdd }: AddDelegateWizardProps) =
 			icon: 'KeyOutline',
 			view: DelegateAddSection,
 			clickDisabled: true,
-			CancelButton: (props: any) => (
-				<Button
-					{...props}
-					type="outlined"
-					key="wizard-cancel"
-					label={t('label.volume_cancel_button', 'CANCEL')}
-					icon={'CloseOutline'}
-					iconPlacement="right"
-					color="secondary"
-					onClick={onCancel}
-				/>
-			),
-			PrevButton: (props: any): any => (
-				<Button
-					{...props}
-					label={t('label.volume_back_button', 'BACK')}
-					icon={'ChevronLeftOutline'}
-					iconPlacement="left"
-					disable={props.completeLoading}
-					color="secondary"
-				/>
-			),
-			NextButton: (props: any) => (
-				<Button
-					{...props}
-					label={t('account_details.ADD', 'ADD')}
-					icon="PersonOutline"
-					iconPlacement="right"
-					onClick={onAdd}
-				/>
-			),
+			CancelButton,
+			PrevButton,
+			NextButton: AddButton,
 		},
 	];
 
