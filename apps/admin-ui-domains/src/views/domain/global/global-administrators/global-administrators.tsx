@@ -87,74 +87,66 @@ export const GlobalAdministrators = () => {
 
 	return (
 		<div className={styles.root}>
-			<div className={styles.headerInner}>
-				<div className={styles.headerBlock}>
-					<div className={styles.headerInner}>
-						<ds-text as="h1" size="medium" weight="bold" color="gray0">
-							{t('label.administrators', 'Administrators')}
-						</ds-text>
-					</div>
-				</div>
+			<div className={styles.header}>
+				<ds-text as="h1" size="medium" weight="bold" color="gray0">
+					{t('label.administrators', 'Administrators')}
+				</ds-text>
 			</div>
 			<div className={styles.dividerRow}>
 				<ds-divider></ds-divider>
 			</div>
-			<div className={styles.contentWrapper}>
-				<div className={styles.tableSection}>
-					<div className={styles.tableCard}>
-						<div className={styles.subtitleRow}>
-							<ds-text as="h2" size="small" weight="bold" color="gray0">
-								{t('domain.administration_rights', 'Administration Rights')}
-							</ds-text>
+		<div className={styles.contentWrapper}>
+			<div className={styles.tableCard}>
+				<div className={styles.subtitleRow}>
+					<ds-text as="h2" size="small" weight="bold" color="gray0">
+						{t('domain.administration_rights', 'Administration Rights')}
+					</ds-text>
+				</div>
+				<div className={styles.tableArea}>
+					<Table
+						rows={isFetching ? [] : accountList}
+						headers={headers}
+						showCheckbox={false}
+						multiSelect={false}
+						style={{
+							overflow: 'auto',
+							height: isFetching || accountList.length === 0 ? '50%' : '100%',
+						}}
+						RowFactory={HoverableRowFactory}
+						HeaderFactory={CustomHeaderFactory}
+					/>
+					{isFetching && (
+						<div className={styles.spinner}>
+							<ds-spinner></ds-spinner>
 						</div>
-						<div className={styles.tableArea}>
-							<Table
-								rows={isFetching ? [] : accountList}
-								headers={headers}
-								showCheckbox={false}
-								multiSelect={false}
-								style={{
-									overflow: 'auto',
-									height: isFetching || accountList.length === 0 ? '50%' : '100%',
+					)}
+					{accountList.length === 0 && !isFetching && <AdministratorsEmptyState />}
+					{accountList.length !== 0 && (
+						<div className={styles.footer}>
+							<div className={styles.paging}>
+								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+							</div>
+							<div className={styles.perPage}>
+								<TrackNumberPerPage setPageSize={setLimit} />
+							</div>
+						</div>
+					)}
+					{showEditAccountView && selectedAccount && (
+						<ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
+							<EditAccount
+								account={selectedAccount}
+								onClose={(): void => {
+									setShowEditAccountView(false);
 								}}
-								RowFactory={HoverableRowFactory}
-								HeaderFactory={CustomHeaderFactory}
+								onSaved={invalidateAdminAccountList}
+								onDeleted={invalidateAdminAccountList}
+								defaultTab="general"
 							/>
-							{isFetching && (
-								<div className={styles.spinner}>
-									<ds-spinner></ds-spinner>
-								</div>
-							)}
-							{accountList.length === 0 && !isFetching && <AdministratorsEmptyState />}
-							{accountList.length !== 0 && (
-								<div className={styles.footer}>
-									<div className={styles.footerInner}>
-										<div className={styles.paging}>
-											<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-										</div>
-										<div className={styles.perPage}>
-											<TrackNumberPerPage setPageSize={setLimit} />
-										</div>
-									</div>
-								</div>
-							)}
-							{showEditAccountView && selectedAccount && (
-								<ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
-									<EditAccount
-										account={selectedAccount}
-										onClose={(): void => {
-											setShowEditAccountView(false);
-										}}
-										onSaved={invalidateAdminAccountList}
-										onDeleted={invalidateAdminAccountList}
-										defaultTab="general"
-									/>
-								</ModalOverlay>
-							)}
-						</div>
-					</div>
+						</ModalOverlay>
+					)}
 				</div>
 			</div>
+		</div>
 		</div>
 	);
 };
