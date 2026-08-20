@@ -11,11 +11,13 @@ import { useTranslation } from 'react-i18next';
 import { ACCOUNT, ADMIN_LOGIN_AS } from '../../../../../../constants';
 import { useDelegateAuth } from '../../../../../../services/use-delegate-auth';
 
-type ViewMailButtonProps = {
+type AccountHeaderActionsProps = {
   accountId: string;
+  zimbraId: string | undefined;
+  onDelete: () => void;
 };
 
-export const ViewMailButton = ({ accountId }: ViewMailButtonProps) => {
+export const AccountHeaderActions = ({ accountId, zimbraId, onDelete }: AccountHeaderActionsProps) => {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const { data: rights = [] } = useCurrentUserRights();
@@ -65,16 +67,29 @@ export const ViewMailButton = ({ accountId }: ViewMailButtonProps) => {
   };
 
   return (
-    <div className="pr-md">
-      <Button
-        size="medium"
-        type="outlined"
-        color="primary"
-        onClick={onViewMail}
-        icon="MailModOutline"
-        disabled={!allowSetPrivacy || viewMailMutation.isPending}
-        label={t('label.view_mail', 'VIEW MAIL')}
-      />
-    </div>
+    <>
+      <div className="pr-md">
+        <Button
+          size="medium"
+          type="outlined"
+          color="error"
+          onClick={onDelete}
+          icon="Trash2Outline"
+          disabled={!zimbraId || zimbraId !== accountId}
+          label={t('label.delete', 'delete')}
+        />
+      </div>
+      <div className="pr-md">
+        <Button
+          size="medium"
+          type="outlined"
+          color="primary"
+          onClick={onViewMail}
+          icon="MailModOutline"
+          disabled={!allowSetPrivacy || viewMailMutation.isPending}
+          label={t('label.view_mail', 'VIEW MAIL')}
+        />
+      </div>
+    </>
   );
 };

@@ -12,12 +12,10 @@ import {
   setupBrowserTest as _setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
-import { type ReactElement } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
-import { type RenderResult } from 'vitest-browser-react';
 
-import { ViewMailButton } from '../view-mail-button';
+import { AccountHeaderActions } from '../account-header-actions';
 
 const ACCOUNT_ID = 'acc-1';
 const USER_NAME = 'test@example.com';
@@ -36,32 +34,42 @@ const rightsWithoutAdminLoginAs = [
   },
 ];
 
-async function setupViewMailButton(
-  ui: ReactElement = <ViewMailButton accountId={ACCOUNT_ID} />,
-  rights: Array<unknown> = rightsWithAdminLoginAs,
-): Promise<RenderResult> {
+type SetupOptions = {
+  rights?: Array<unknown>;
+  zimbraId?: string;
+};
+
+async function setupAccountHeaderActions(
+  { rights = rightsWithAdminLoginAs, zimbraId = ACCOUNT_ID }: SetupOptions = {},
+  onDelete = vi.fn(),
+): Promise<() => void> {
   const queryClient = getQueryClient();
   await setupAccount(queryClient);
   queryClient.setQueryData(['effective-rights', USER_NAME], rights);
-  return _setupBrowserTest(ui, { queryClient });
+  await _setupBrowserTest(
+    <AccountHeaderActions accountId={ACCOUNT_ID} zimbraId={zimbraId} onDelete={onDelete} />,
+    { queryClient },
+  );
+  return onDelete;
 }
 
 const viewMailButton = () => page.getByRole('button', { name: 'VIEW MAIL' });
+const deleteButton = () => page.getByRole('button', { name: 'delete' });
 
-describe('ViewMailButton (browser)', () => {
+describe('AccountHeaderActions (browser)', () => {
   beforeEach(() => {
     const openSpy = vi.fn();
     vi.stubGlobal('open', openSpy);
   });
 
-  it('is disabled when the user lacks the adminLoginAs right', async () => {
-    await setupViewMailButton(<ViewMailButton accountId={ACCOUNT_ID} />, rightsWithoutAdminLoginAs);
+  it('disables view mail when the user lacks the adminLoginAs right', async () => {
+    await setupAccountHeaderActions({ rights: rightsWithoutAdminLoginAs });
 
     await expect.element(viewMailButton()).toBeDisabled();
   });
 
   it('applies theme padding via the pr-md tailwind utility', async () => {
-    await setupViewMailButton();
+    await setupAccountHeaderActions();
 
     const buttonElement = await viewMailButton().element();
     const wrapper = buttonElement.closest('div.pr-md');
@@ -82,7 +90,7 @@ describe('ViewMailButton (browser)', () => {
       authToken: [{ _content: 'tok-123' }],
     });
 
-    await setupViewMailButton();
+    await setupAccountHeaderActions();
 
     await expect.element(viewMailButton()).toBeEnabled();
     await viewMailButton().click();
@@ -103,7 +111,7 @@ describe('ViewMailButton (browser)', () => {
   it('shows an error snackbar when the response has no authToken', async () => {
     createBrowserSoapAPIInterceptor('DelegateAuth', {});
 
-    await setupViewMailButton();
+    await setupAccountHeaderActions();
     await viewMailButton().click();
 
     await expect
@@ -127,7 +135,7 @@ describe('ViewMailButton (browser)', () => {
         }),
     );
 
-    await setupViewMailButton();
+    await setupAccountHeaderActions();
     await viewMailButton().click();
 
     await expect.element(page.getByText('delegate auth failed')).toBeVisible();
@@ -137,11 +145,32 @@ describe('ViewMailButton (browser)', () => {
   it('is disabled while the DelegateAuth request is in flight', async () => {
     delayedSoapApiForBrowser('DelegateAuth', { authToken: [{ _content: 'tok-123' }] }, 1000);
 
-    await setupViewMailButton();
+    await setupAccountHeaderActions();
 
     await expect.element(viewMailButton()).toBeEnabled();
     await viewMailButton().click();
 
     await expect.element(viewMailButton()).toBeDisabled();
+  });
+
+  it('disables delete when zimbraId is undefined', async () => {
+    await setupAccountHeaderActions({ zimbraId: undefined });
+
+    await expect.element(deleteButton()).toBeDisabled();
+  });
+
+  it('disables delete when zimbraId does not match the account id', async () => {
+    await setupAccountHeaderActions({ zimbraId: 'another-account-id' });
+
+    await expect.element(deleteButton()).toBeDisabled();
+  });
+
+  it('calls onDelete when the delete button is clicked', async () => {
+    const onDelete = await setupAccountHeaderActions();
+
+    await expect.element(deleteButton()).toBeEnabled();
+    await deleteButton().click();
+
+    expect(onDelete).toHaveBeenCalledTimes(1);
   });
 });

@@ -39,8 +39,8 @@ import EditAccountDelegatesSection from './edit-account-delegates-section';
 import { EditAccountGeneralSection } from './edit-account-general-section';
 import EditAccountSecuritySection from './edit-account-security-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
+import { AccountHeaderActions } from './parts/account-header-actions';
 import { ReusedDefaultTabBar } from './parts/reused-default-tab-bar';
-import { ViewMailButton } from './parts/view-mail-button';
 
 export type EditAccountProps = {
   account: { id: string; name: string; [key: string]: any };
@@ -287,19 +287,12 @@ const EditAccountContent = ({
           )}
 
           {!isDirty && (
-            <Row padding={{ right: 'medium' }}>
-              <Button
-                size="medium"
-                type="outlined"
-                color="error"
-                onClick={onDeleteAccount}
-                icon="Trash2Outline"
-                disabled={!zimbraId || zimbraId !== account.id}
-                label={t('label.delete', 'delete')}
-              />
-            </Row>
+            <AccountHeaderActions
+              accountId={account.id}
+              zimbraId={zimbraId}
+              onDelete={onDeleteAccount}
+            />
           )}
-          {!isDirty && <ViewMailButton accountId={account.id} />}
           <Row padding={{ right: 'large' }}>
             <Button
               size="medium"
