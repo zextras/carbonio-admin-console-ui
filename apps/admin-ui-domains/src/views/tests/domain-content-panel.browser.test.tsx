@@ -106,7 +106,7 @@ vi.mock('../domain/global-delegates', () => ({ default: MockGlobalDelegates }));
 vi.mock('../domain/domain-list/domain-list', () => ({ DomainList: MockDomainList }));
 vi.mock('../quarantine/quarantine-list', () => ({ default: MockQuarantineList }));
 vi.mock('../domain/details/domain-general-settings', () => ({
-  default: MockDomainGeneralSettings,
+  DomainGeneralSettings: MockDomainGeneralSettings,
 }));
 vi.mock('../domain/details/domain-gal-settings', () => ({ default: MockDomainGalSettings }));
 vi.mock('../domain/details/domain-authentication', () => ({ default: MockDomainAuthentication }));
