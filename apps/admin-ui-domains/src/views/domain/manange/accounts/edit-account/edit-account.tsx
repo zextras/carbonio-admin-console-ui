@@ -14,14 +14,11 @@ import {
   TabBar,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useCurrentUserRights, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
-import { find } from 'lodash-es';
+import { useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
-  ACCOUNT,
-  ADMIN_LOGIN_AS,
   CLOSED,
   CONFIGURATION,
   DELEGATES,
@@ -31,7 +28,6 @@ import {
   USER_PREFERENCES,
 } from '../../../../../constants';
 import { deleteAccount } from '../../../../../services/delete-account-service';
-import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getAccountStatusColors } from '../../../constants/account-status-colors';
 import { useAccountForm } from './account-form-context';
@@ -44,6 +40,7 @@ import { EditAccountGeneralSection } from './edit-account-general-section';
 import EditAccountSecuritySection from './edit-account-security-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
 import { ReusedDefaultTabBar } from './parts/reused-default-tab-bar';
+import { ViewMailButton } from './parts/view-mail-button';
 
 export type EditAccountProps = {
   account: { id: string; name: string; [key: string]: any };
@@ -67,7 +64,6 @@ const EditAccountContent = ({
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
-  const { data: rights = [] } = useCurrentUserRights();
   const STATUS_COLOR = getAccountStatusColors(t);
 
   const hasName = useSelector(form.store, (s) => !!s.values.name);
@@ -94,7 +90,7 @@ const EditAccountContent = ({
     return 'Normal';
   })();
 
-  const items: any[] = [
+  const items = [
     {
       id: GENERAL_SECTION,
       label: t('label.general', 'GENERAL'),
@@ -147,39 +143,6 @@ const EditAccountContent = ({
     void form.handleSubmit();
   };
 
-  const onViewMail = (): void => {
-    getDelegateAuthRequest(account?.id)
-      .then((data: any) => {
-        if (data?.authToken?.[0]) {
-          window.open(
-            `https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
-            'blank',
-          );
-        } else {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  };
-
   const onDeleteAccount = (): void => {
     if (userType === 'DelegatedAdmin' || userType === 'System') {
       if (accountUserType(account) === 'System') {
@@ -193,20 +156,6 @@ const EditAccountContent = ({
       setIsOpenDeleteDialog(true);
     }
   };
-
-  const allowSetPrivacy = (() => {
-    const rightsConfig = find(rights, { type: ACCOUNT }) ?? {
-      all: [],
-      inDomains: [],
-      type: ACCOUNT,
-    };
-    return (
-      !!rightsConfig?.all?.[0]?.right?.find((right) => right?.n === ADMIN_LOGIN_AS) ||
-      !!rightsConfig?.inDomains?.[0]?.rights?.[0].right?.find(
-        (right) => right?.n === ADMIN_LOGIN_AS,
-      )
-    );
-  })();
 
   const closeHandler = (): void => {
     setIsOpenDeleteDialog(false);
@@ -350,19 +299,7 @@ const EditAccountContent = ({
               />
             </Row>
           )}
-          {!isDirty && (
-            <Row padding={{ right: 'medium' }}>
-              <Button
-                size="medium"
-                type="outlined"
-                color="primary"
-                onClick={onViewMail}
-                icon="MailModOutline"
-                disabled={!allowSetPrivacy}
-                label={t('label.view_mail', 'VIEW MAIL')}
-              />
-            </Row>
-          )}
+          {!isDirty && <ViewMailButton accountId={account.id} />}
           <Row padding={{ right: 'large' }}>
             <Button
               size="medium"
