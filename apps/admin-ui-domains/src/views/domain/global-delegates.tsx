@@ -15,8 +15,7 @@ import {
   Table,
   TrackNumberPerPage,
 } from '@zextras/ui-components';
-import { debounce } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
@@ -25,7 +24,6 @@ import {
   adminAccountListQueryKeys,
   useAdminAccountList,
 } from '../../services/use-admin-account-list';
-import ScrollContainer from '../components/scrollComponent';
 import { EditAccount } from './manange/accounts/edit-account/edit-account';
 
 const GlobalDelegates: FC = () => {
@@ -37,8 +35,6 @@ const GlobalDelegates: FC = () => {
   const [selectedAccount, setSelectedAccount] = useState<any>({});
   const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
   const tableRef = useRef<HTMLTableElement>(null);
-  const [isTableTooTall, setIsTableTooTall] = useState(false);
-  const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   const { data, isFetching } = useAdminAccountList(offset, limit);
   const accounts = data?.accounts ?? [];
@@ -143,31 +139,6 @@ const GlobalDelegates: FC = () => {
     item,
     clickable: true,
   }));
-
-  useEffect(() => {
-    const table = tableRef.current;
-
-    const handleResize = debounce((): void => {
-      if (table) {
-        const tableHeight = table.clientHeight + 375;
-        const viewportHeight = window.innerHeight;
-        setIsTableTooTall(tableHeight > viewportHeight);
-      }
-    }, 100);
-
-    if (table && !resizeObserverRef.current) {
-      const observer = new ResizeObserver(handleResize);
-      resizeObserverRef.current = observer;
-      observer.observe(table);
-    }
-
-    return () => {
-      if (resizeObserverRef.current) {
-        resizeObserverRef.current.disconnect();
-        resizeObserverRef.current = null;
-      }
-    };
-  }, []);
 
   return (
     <Container
@@ -296,10 +267,9 @@ const GlobalDelegates: FC = () => {
                 <Container
                   style={{
                     position: 'sticky',
-                    bottom: isTableTooTall ? '0' : '-4rem',
+                    bottom: '-4rem',
                   }}
                 >
-                  <ScrollContainer isVisible={isTableTooTall} />
                   <Container
                     orientation="horizontal"
                     mainAlignment="space-between"
