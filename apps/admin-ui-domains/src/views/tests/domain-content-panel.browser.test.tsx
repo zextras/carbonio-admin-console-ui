@@ -102,7 +102,7 @@ vi.mock('../domain/global/global-active-sync', () => ({ default: MockGlobalActiv
 vi.mock('../domain/global/global-address-book', () => ({
   GlobalAddressBook: MockGlobalAddressBook,
 }));
-vi.mock('../domain/global/global-administrators', () => ({
+vi.mock('../domain/global/global-administrators/global-administrators', () => ({
     GlobalAdministrators: MockGlobalAdministrators,
   }));
 vi.mock('../domain/domain-list/domain-list', () => ({ DomainList: MockDomainList }));

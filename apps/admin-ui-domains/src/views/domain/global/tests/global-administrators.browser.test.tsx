@@ -8,7 +8,7 @@ import { createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { GlobalAdministrators } from '../global-administrators';
+import { GlobalAdministrators } from '../global-administrators/global-administrators';
 
 type AccountEntry = {
 	name: string;
@@ -177,6 +177,25 @@ describe('GlobalAdministrators (browser)', () => {
 			const requestParams = (await interceptor) as any;
 			expect(requestParams.offset).toBe(0);
 			expect(requestParams.limit).toBe(10);
+		});
+	});
+
+	describe('Edit account flow', () => {
+		it('should open the edit-account view when a row is clicked', async () => {
+			setupSearchDirectoryInterceptor();
+			// minimal hydration for the edit-account form
+			createBrowserSoapAPIInterceptor('GetAccount', {
+				account: [ADMIN_ACCOUNTS[0]],
+			});
+
+			setupBrowserTest(<GlobalAdministrators />);
+
+			await page.getByText('admin@example.com').click();
+
+			// the edit view shows the account name as its title
+			await vi.waitFor(() =>
+				expect.element(page.getByRole('heading', { name: 'admin@example.com' })).toBeVisible(),
+			);
 		});
 	});
 
