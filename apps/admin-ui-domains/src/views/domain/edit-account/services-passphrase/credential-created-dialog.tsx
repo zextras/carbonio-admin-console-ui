@@ -7,6 +7,25 @@ import { Button, Container, LabeledValue, Modal, Row } from '@zextras/ui-compone
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+/** Copy-to-clipboard icon for the one-time service password (module-level factory: S6478). */
+function createCopyPasswordIcon(password?: string): React.ComponentType {
+	return function CopyPasswordIcon() {
+		return (
+			<ds-icon
+				icon="CopyOutline"
+				size="large"
+				color="Gray0"
+				onClick={(e: React.MouseEvent): void => {
+					e.preventDefault();
+					e.stopPropagation();
+					navigator.clipboard.writeText(password || '');
+				}}
+				style={{ cursor: 'pointer' }}
+			></ds-icon>
+		);
+	};
+}
+
 type CredentialCreatedDialogProps = {
   /** Service label of the created credential (dialog title). */
   serviceLabel?: string;
@@ -78,19 +97,7 @@ export const CredentialCreatedDialog = ({
             label={t('account_details.service_password', 'Service Password')}
             backgroundColor="gray5"
             value={password}
-            CustomIcon={(): any => (
-              <ds-icon
-                icon="CopyOutline"
-                size="large"
-                color="Gray0"
-                onClick={(e: React.MouseEvent): void => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  navigator.clipboard.writeText(password || '');
-                }}
-                style={{ cursor: 'pointer' }}
-              ></ds-icon>
-            )}
+            CustomIcon={createCopyPasswordIcon(password)}
             textColor={'gray1'}
           />
         </Row>

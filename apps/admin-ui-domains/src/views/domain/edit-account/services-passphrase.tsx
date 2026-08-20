@@ -152,9 +152,9 @@ export const ServicesPassphrase = () => {
             {t('account_details.services_passphrase', 'Services Passphrase')}
           </ds-text>
         </Row>
-        {credentialList.map((item: CredentialType, index: number) => (
+        {credentialList.map((item: CredentialType) => (
           <Row
-            key={`credentialList${index}`}
+            key={item.id ?? item.label}
             padding={{ top: 'large', left: 'large' }}
             width="100%"
             mainAlignment="space-between"
@@ -192,11 +192,9 @@ export const ServicesPassphrase = () => {
                 background="gray5"
                 label={t('account_details.status', 'Status')}
                 showCheckbox={false}
-                defaultSelection={
-                  SERVICE_PASSPHRASE_STATUS.filter(
-                    (el: SelectStatusType) => el.value === item?.enabled,
-                  )[0]
-                }
+                defaultSelection={SERVICE_PASSPHRASE_STATUS.find(
+                  (el: SelectStatusType) => el.value === item?.enabled,
+                )}
                 onChange={(): null => null}
                 style={{ paddingRight: 'medium' }}
                 disabled
