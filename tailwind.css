@@ -1,0 +1,19 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/*
+ * Test-global Tailwind stylesheet. Mirrors the imports of
+ * apps/admin-ui-bootstrap/src/index.css but WITHOUT preflight and app-global
+ * rules (html/body/#app), so importing it in browser tests cannot shift
+ * existing screenshot baselines. The production shell compiles the same
+ * utilities via @tailwindcss/vite + bootstrap's index.css.
+ */
+@import '@zextras/ui-components/theme/theme.css';
+@import 'tailwindcss/theme';
+@import 'tailwindcss/utilities';
+@import '@zextras/ui-components/theme/tailwind-theme.css';
+@source './apps/**/src/**/*.{ts,tsx}';
+@source './packages/**/src/**/*.{ts,tsx}';

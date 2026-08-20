@@ -7,6 +7,7 @@ import { defineConfig } from 'vitest/config';
 import path from 'node:path';
 import { playwright } from '@vitest/browser-playwright';
 import svgr from 'vite-plugin-svgr';
+import tailwindcss from '@tailwindcss/vite';
 import babel from '@rolldown/plugin-babel';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 
@@ -15,6 +16,7 @@ const isCI = !!process.env.CI;
 function getPlugins() {
   return [
     react(),
+    tailwindcss(),
     babel({
       presets: [reactCompilerPreset({ panicThreshold: 'none' })],
       plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
