@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Button, Container, RouteLeavingGuard, Row, TabBar } from '@zextras/ui-components';
+import { Button, RouteLeavingGuard, TabBar } from '@zextras/ui-components';
 import { useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,7 @@ import {
 } from '../../../../../constants';
 import { AccountFormContext } from './account-form-context';
 import { useAccountFormProvider } from './account-form-provider';
+import styles from './edit-account.module.css';
 import EditAccountAdministrationSection from './edit-account-administration-section';
 import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';
@@ -156,32 +157,14 @@ export const EditAccount = ({
   return (
     <AccountFormContext.Provider value={accountForm}>
       {(!hasName || isSaving || isSectionLoading) && <ds-spinner></ds-spinner>}
-      <Container
-        background="gray5"
-        mainAlignment="flex-start"
-        style={{
-          position: 'absolute',
-          top: '0rem',
-          height: 'auto',
-          overflow: 'hidden',
-          transition: 'left 0.2s ease-in-out',
-          maxHeight: '100%',
-        }}
-      >
-        <Row
-          mainAlignment="flex-start"
-          crossAlignment="center"
-          orientation="horizontal"
-          background="white"
-          width="fill"
-          height="56px"
-        >
-          <Row padding={{ horizontal: 'small' }}></Row>
-          <Row takeAvailableSpace mainAlignment="flex-start">
+      <div className={styles.root}>
+        <div className={styles.header}>
+          <div className={styles.headerSpacer}></div>
+          <div className={styles.title}>
             <ds-text size="medium" overflow="ellipsis" weight="bold" as="h1">
               {`${account?.name}`}
             </ds-text>
-          </Row>
+          </div>
           {isDirty && (
             <AccountSaveCancelActions
               hasQuotaError={hasQuotaError}
@@ -196,7 +179,7 @@ export const EditAccount = ({
               onDelete={onDeleteAccount}
             />
           )}
-          <Row padding={{ right: 'large' }}>
+          <div className={styles.closeWrapper}>
             <Button
               size="medium"
               type="ghost"
@@ -204,17 +187,12 @@ export const EditAccount = ({
               icon="CloseOutline"
               onClick={handleClose}
             />
-          </Row>
-        </Row>
-        <Row>
+          </div>
+        </div>
+        <div>
           <ds-divider color="gray3"></ds-divider>
-        </Row>
-        <Container
-          padding={{ all: 'small' }}
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          background="white"
-        >
+        </div>
+        <div className={styles.tabBarSection}>
           <TabBar
             items={items}
             selected={change}
@@ -225,15 +203,8 @@ export const EditAccount = ({
             background="gray6"
           />
           <ds-divider></ds-divider>
-        </Container>
-        <Container
-          padding={{ left: 'large', right: 'large' }}
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          height="calc(100vh - 3.6rem)"
-          background="white"
-          style={{ overflow: 'auto' }}
-        >
+        </div>
+        <div className={styles.sectionsPanel}>
           {change === GENERAL_SECTION && (
             <EditAccountGeneralSection
               setChange={setChange}
@@ -248,8 +219,8 @@ export const EditAccount = ({
           {change === 'administration' && (
             <EditAccountAdministrationSection setIsLoading={setIsSectionLoading} />
           )}
-        </Container>
-      </Container>
+        </div>
+      </div>
       <RouteLeavingGuard when={isDirty} onSave={onSave} />
       <UnsavedChangesModal
         open={showModal}
