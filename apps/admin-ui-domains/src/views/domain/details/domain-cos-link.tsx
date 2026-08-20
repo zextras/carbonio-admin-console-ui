@@ -3,543 +3,242 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, CustomHeaderFactory, DropDownInput, HoverableRowFactory, Input, ListRow, Padding, Row, Table, useSnackbar, } from '@zextras/ui-components';
-import { domainByIdKey, flushCache, getCosList, postSoapFetchRequest, useUserSettings } from '@zextras/ui-shared';
-import { debounce } from 'lodash-es';
-import React, { FC, KeyboardEvent, useCallback, useEffect, useMemo, useState } from 'react';
+
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  DropDownInput,
+  HoverableRowFactory,
+  Input,
+  ListRow,
+  Padding,
+  Row,
+  Table,
+  type THeader,
+  type TRow,
+} from '@zextras/ui-components';
+import { useCosList, useDebouncedValue, useUserSettings } from '@zextras/ui-shared';
+import { type ChangeEvent, type KeyboardEvent, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Attribute } from '../../../../types/attribute';
-import { Cos } from '../../../../types/cos';
-import { CosMaxAccountValues } from '../../../../types/domain';
-import { HELPDESK_ADMINS, MAX_COS_DISPLAY, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
-import { copyCos } from '../../../services/copy-cos-service';
-import { modifyDomain } from '../../../services/modify-domain-service';
-import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
+import type { Attribute } from '../../../../types/attribute';
+import type { CosMaxAccountValues } from '../../../../types/domain';
+import { MAX_COS_DISPLAY, TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
+import { useCopyCos } from '../../../services/use-copy-cos';
+import { useGrantCosRights, useRevokeCosRights } from '../../../services/use-grant-cos-rights';
+import { useModifyDomain } from '../../../services/use-modify-domain';
 
-const DomainCosLink: FC<{
+type CosLinkTableRow = TRow & {
+  hoverContent?: ReactNode;
+};
+
+type CosDropdownItem = {
+  id?: string;
+  label?: string;
+  customComponent: ReactNode;
+};
+
+type DomainCosLinkProps = {
   cosMaxAccountList: Array<CosMaxAccountValues>;
   defaultCosId: string;
   domainId: string;
   domainName: string;
-}> = ({ cosMaxAccountList, defaultCosId, domainId, domainName }) => {
+};
+
+export const DomainCosLink = ({
+  cosMaxAccountList,
+  defaultCosId,
+  domainId,
+  domainName,
+}: DomainCosLinkProps) => {
   const [t] = useTranslation();
   const [isCosSelect, setIsCosSelect] = useState(false);
-  const [cosList, setCosList] = useState<Array<Cos>>([]);
   const [isCosListExpand, setIsCosListExpand] = useState(false);
   const [searchCosName, setSearchCosName] = useState('');
   const [cosId, setCosId] = useState('');
   const [maxAccountValue, setMaxAccountValue] = useState('');
-  const [domainCosMaxAccountList, setDomainCosMaxAccountList] = useState<Array<any>>([]);
-  const [cosMaxAccountListRow, setCosMaxAccountListRow] = useState<Array<any>>([]);
-  const queryClient = useQueryClient();
-  const createSnackbar = useSnackbar();
+  const modifyDomainMutation = useModifyDomain(domainId);
+  const copyCosMutation = useCopyCos();
+  const grantCosRightsMutation = useGrantCosRights();
+  const revokeCosRightsMutation = useRevokeCosRights();
   const userSetting = useUserSettings();
-  const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
-  useEffect(() => {
-    if (userSetting?.attrs) {
-      const account = userSetting?.attrs?.zimbraIsAdminAccount;
-      if (account && account === TRUE) {
-        setIsGlobalAdmin(true);
-      }
-    }
-  }, [userSetting?.attrs]);
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
+
+  const debouncedSearch = useDebouncedValue(searchCosName, 700);
+  const { data: cosData } = useCosList({
+    searchQuery: debouncedSearch,
+    limit: 0,
+    offset: 0,
+    enabled: !isCosSelect,
+  });
+  const cosList = cosData?.cos ?? [];
+
+  const domainCosMaxAccountList = cosMaxAccountList.map((item) => ({
+    id: item.id,
+    name: cosList.find((cos) => cos.id === item.id)?.name,
+    value: item.value,
+  }));
 
   const customIconDetail = {
     icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
-    onClick: (): void => {
+    onClick: () => {
       setIsCosListExpand(!isCosListExpand);
     },
-    style: {
-      width: '1.25rem',
-      height: '1.25rem',
-    },
+    style: { width: '1.25rem', height: '1.25rem' },
   };
 
-  useEffect(() => {
-    const domainMaxAccountList: Array<CosMaxAccountValues> = [];
-    cosMaxAccountList.forEach((item) => {
-      domainMaxAccountList.push({
-        id: item?.id,
-        name: cosList.find((c) => c.id === item.id)?.name,
-        value: item?.value,
-      });
-    });
-    if (domainMaxAccountList.length > 0) {
-      setDomainCosMaxAccountList(domainMaxAccountList);
-    } else {
-      setDomainCosMaxAccountList([]);
-    }
-  }, [cosMaxAccountList, cosList]);
-
-  const getCosLists = useCallback(
-    (cos: string) => {
-      getCosList(cos, 0)
-        .then((data) => {
-          const searchResponse: any = data;
-          if (!!searchResponse && searchResponse?.searchTotal > 0) {
-            setCosList(searchResponse?.cos);
-          } else {
-            setCosList([]);
-          }
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, t],
-  );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchCosCall = useCallback(
-    debounce((cos) => {
-      getCosLists(cos);
-    }, 700),
-    [debounce],
-  );
-
-  useEffect(() => {
-    if (!isCosSelect) {
-      searchCosCall(searchCosName);
-    }
-  }, [searchCosName, isCosSelect, searchCosCall]);
-
-  const selectedCos = useCallback((cos: any) => {
+  function selectedCos(id: string, name: string): void {
     setIsCosSelect(true);
-    setSearchCosName(cos?.name);
+    setSearchCosName(name);
     setIsCosListExpand(false);
-    setCosId(cos?.id);
-  }, []);
+    setCosId(id);
+  }
 
-  const onSaveCosLinkToDomain = useCallback(
-    (cId: string, cosMaxAccValue: string): void => {
-      if (!cId || !cosMaxAccValue) {
-        return;
-      }
-      const body: {
-        id?: string;
-        _jsns?: string;
-        a?: { n: string; _content?: string }[];
-      } = {};
-      const attributes: Attribute[] = [];
-      body.id = domainId;
+  function onSaveCosLinkToDomain(cId: string, cosMaxAccValue: string): void {
+    if (!cId || !cosMaxAccValue) return;
 
-      body._jsns = ZIMBRA_ADMIN_URN;
-      const isOverride = cosMaxAccountList.some((item) => item.id === cId);
-      if (isOverride) {
-        cosMaxAccountList.forEach((item) => {
-          if (item.id !== cId) {
-            attributes.push({
-              n: 'zimbraDomainCOSMaxAccounts',
-              _content: `${item.id}:${item.value}`,
-            });
-          }
-        });
-        attributes.push({
-          n: 'zimbraDomainCOSMaxAccounts',
-          _content: `${cId}:${cosMaxAccValue}`,
-        });
-      } else {
-        attributes.push({
-          n: '+zimbraDomainCOSMaxAccounts',
-          _content: `${cId}:${cosMaxAccValue}`,
-        });
-      }
+    const attributes: Array<Attribute> = [];
+    const isOverride = cosMaxAccountList.some((item) => item.id === cId);
 
-      body.a = attributes;
-      const target = {
-        _content: cId,
-        type: 'cos',
-        by: 'id',
-      };
-      const grantee = {
-        by: 'name',
-        type: 'grp',
-        _content: `${HELPDESK_ADMINS}@${domainName}`,
-      };
-      modifyDomain(body)
-        .then((data) => {
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-
-            label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          if (isGlobalAdmin) {
-            flushCache('domain', 'id', domainId);
-          }
-          const domain: any = data?.domain[0];
-          if (domain) {
-            queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
-          }
-          setMaxAccountValue('');
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
-      // If it override that case no need to assign further rights
-      if (!isOverride) {
-        postSoapFetchRequest(
-          `/service/admin/soap/GrantRightRequest`,
-          {
-            _jsns: ZIMBRA_ADMIN_URN,
-            target,
-            grantee,
-            right: {
-              _content: 'getCos',
-            },
-          },
-          'GrantRightRequest',
-        ).then(() => {
-          postSoapFetchRequest(
-            `/service/admin/soap/GrantRightRequest`,
-            {
-              _jsns: ZIMBRA_ADMIN_URN,
-              target,
-              grantee,
-              right: {
-                _content: 'listCos',
-              },
-            },
-            'GrantRightRequest',
-          ).then(() => {
-            postSoapFetchRequest(
-              `/service/admin/soap/GrantRightRequest`,
-              {
-                _jsns: ZIMBRA_ADMIN_URN,
-                target,
-                grantee,
-                right: {
-                  _content: 'assignCos',
-                },
-              },
-              'GrantRightRequest',
-            ).then(() => {});
-          });
-        });
-      }
-    },
-    [cosMaxAccountList, createSnackbar, domainId, domainName, isGlobalAdmin, queryClient, t],
-  );
-
-  const onDuplicate = useCallback(
-    (cId: string, cosMaxAccValue: string, cosName: string): void => {
-      if (!cId || !cosMaxAccValue) {
-        return;
-      }
-      const newName = `${cosName}.${domainName}`;
-      copyCos(newName, cId)
-        .then((data) => {
-          const cosDetail = data?.cos[0];
-          getCosLists('');
-          setTimeout(() => {
-            onSaveCosLinkToDomain(cosDetail?.id, cosMaxAccValue);
-          }, 1500);
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
-    },
-    [domainName, getCosLists, onSaveCosLinkToDomain, createSnackbar, t],
-  );
-
-  const onRemoveCosLinkToDomain = useCallback(
-    (cId: string, cosMaxAccValue: string): void => {
-      if (!cId || !cosMaxAccValue) {
-        return;
-      }
-      const body: {
-        id?: string;
-        _jsns?: string;
-        a?: { n: string; _content?: string }[];
-      } = {};
-      const attributes: Attribute[] = [];
-      body.id = domainId;
-      body._jsns = ZIMBRA_ADMIN_URN;
-      attributes.push({
-        n: '-zimbraDomainCOSMaxAccounts',
-        _content: `${cId}:${cosMaxAccValue}`,
+    if (isOverride) {
+      cosMaxAccountList.forEach((item) => {
+        if (item.id !== cId) {
+          attributes.push({ n: 'zimbraDomainCOSMaxAccounts', _content: `${item.id}:${item.value}` });
+        }
       });
-      body.a = attributes;
-      const target = {
-        _content: cId,
-        type: 'cos',
-        by: 'id',
-      };
-      const grantee = {
-        by: 'name',
-        type: 'grp',
-        _content: `${HELPDESK_ADMINS}@${domainName}`,
-      };
-      modifyDomain(body)
-        .then((data) => {
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          if (isGlobalAdmin) {
-            flushCache('domain', 'id', domainId);
-          }
-          const domain: any = data?.domain[0];
-          if (domain) {
-            queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
-          }
-          setMaxAccountValue('');
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
-      postSoapFetchRequest(
-        `/service/admin/soap/RevokeRightRequest`,
-        {
-          _jsns: ZIMBRA_ADMIN_URN,
-          target,
-          grantee,
-          right: {
-            _content: 'getCos',
-          },
-        },
-        'RevokeRightRequest',
-      ).then(() => {
-        postSoapFetchRequest(
-          `/service/admin/soap/RevokeRightRequest`,
-          {
-            _jsns: ZIMBRA_ADMIN_URN,
-            target,
-            grantee,
-            right: {
-              _content: 'listCos',
-            },
-          },
-          'RevokeRightRequest',
-        ).then(() => {
-          postSoapFetchRequest(
-            `/service/admin/soap/RevokeRightRequest`,
-            {
-              _jsns: ZIMBRA_ADMIN_URN,
-              target,
-              grantee,
-              right: {
-                _content: 'assignCos',
-              },
-            },
-            'RevokeRightRequest',
-          ).then(() => {});
-        });
-      });
+      attributes.push({ n: 'zimbraDomainCOSMaxAccounts', _content: `${cId}:${cosMaxAccValue}` });
+    } else {
+      attributes.push({ n: '+zimbraDomainCOSMaxAccounts', _content: `${cId}:${cosMaxAccValue}` });
+    }
+
+    modifyDomainMutation.mutateAsync({ id: domainId, _jsns: ZIMBRA_ADMIN_URN, a: attributes }).then(() => {
+      setMaxAccountValue('');
+    });
+
+    if (!isOverride) {
+      grantCosRightsMutation.mutate({ cosId: cId, domainName });
+    }
+  }
+
+  function onDuplicate(cId: string, cosMaxAccValue: string, cosName: string): void {
+    if (!cId || !cosMaxAccValue) return;
+    const newName = `${cosName}.${domainName}`;
+    copyCosMutation
+      .mutateAsync({ newName, cosId: cId })
+      .then((data) => {
+        const copiedCosId = data.cos?.[0]?.id;
+        if (!copiedCosId) return;
+        setTimeout(() => {
+          onSaveCosLinkToDomain(copiedCosId, cosMaxAccValue);
+        }, 1500);
+      })
+      .catch(() => {});
+  }
+
+  function onRemoveCosLinkToDomain(cId: string, cosMaxAccValue: string): void {
+    if (!cId || !cosMaxAccValue) return;
+
+    const attributes: Array<Attribute> = [
+      { n: '-zimbraDomainCOSMaxAccounts', _content: `${cId}:${cosMaxAccValue}` },
+    ];
+
+    modifyDomainMutation.mutateAsync({ id: domainId, _jsns: ZIMBRA_ADMIN_URN, a: attributes }).then(() => {
+      setMaxAccountValue('');
+    });
+
+    revokeCosRightsMutation.mutate({ cosId: cId, domainName });
+  }
+
+  function markAsDefaultCos(cId: string): void {
+    if (!cId) return;
+    modifyDomainMutation.mutateAsync({
+      id: domainId,
+      _jsns: ZIMBRA_ADMIN_URN,
+      a: [{ n: 'zimbraDomainDefaultCOSId', _content: cId }],
+    });
+  }
+
+  const headers: Array<THeader> = [
+    {
+      id: 'cos_list',
+      label: t('label.cos_list', 'Cos List'),
+      width: '35%',
+      bold: true,
     },
-    [createSnackbar, domainId, domainName, isGlobalAdmin, queryClient, t],
-  );
-
-  const markAsDefaultCos = useCallback(
-    (cId: string): void => {
-      if (!cId) {
-        return;
-      }
-      const body: {
-        id?: string;
-        _jsns?: string;
-        a?: { n: string; _content?: string }[];
-      } = {};
-      const attributes: Attribute[] = [];
-      body.id = domainId;
-      body._jsns = ZIMBRA_ADMIN_URN;
-      attributes.push({
-        n: 'zimbraDomainDefaultCOSId',
-        _content: `${cId}`,
-      });
-      body.a = attributes;
-      modifyDomain(body)
-        .then((data) => {
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          if (isGlobalAdmin) {
-            flushCache('domain', 'id', domainId);
-          }
-          const domain: any = data?.domain[0];
-          if (domain) {
-            queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
-          }
-        })
-        .catch((error) => {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
+    {
+      id: 'accounts',
+      label: t('label.how_many_accounts_handled', 'How many accounts are handled? (-1 if unlimited)'),
+      width: '45%',
+      bold: true,
     },
-    [createSnackbar, domainId, isGlobalAdmin, queryClient, t],
-  );
-
-  const removeCosLinkRows = useCallback(
-    (item: CosMaxAccountValues) => {
-      if (item) {
-        onRemoveCosLinkToDomain(item?.id, item?.value);
-      }
+    {
+      id: 'description',
+      label: '',
+      width: '20%',
+      bold: true,
     },
-    [onRemoveCosLinkToDomain],
-  );
+  ];
 
-  const markAsDefaultCosToDomain = useCallback(
-    (cId: string) => {
-      if (cId) {
-        markAsDefaultCos(cId);
-      }
-    },
-    [markAsDefaultCos],
-  );
-
-  const generateCosLinkTable = useCallback(
-    (cosMaxAccValue: Array<CosMaxAccountValues>, defaultDomainCosId?: string): void => {
-      if (cosMaxAccValue) {
-        const cosLinkRows: Array<any> = [];
-        cosMaxAccValue.forEach((item: CosMaxAccountValues, index) => {
-          cosLinkRows.push({
-            id: index.toString(),
-            columns: [
-              <Container crossAlignment="flex-start" mainAlignment="center" key={index}>
-                <ds-text as="span" size="medium" weight="light" color="gray0">
-                  {item?.name}
-                </ds-text>
-              </Container>,
-              <Container crossAlignment="flex-start" mainAlignment="center" key={index}>
-                <ds-text as="span" size="medium" weight="light" color="gray0">
-                  {item?.value}
-                </ds-text>
-              </Container>,
-              <Container key={index}>
-                {defaultDomainCosId === item.id && (
-                  <Row>
-                    <Padding right="small">
-                      <ds-text as="span" size="medium" weight="light" color="gray0">
-                        {t('label.default_cos', 'Default COS')}
-                      </ds-text>
-                    </Padding>
-                    <ds-icon icon="Star" color="primary"></ds-icon>
-                  </Row>
-                )}
-              </Container>,
-            ],
-            hoverContent:
-              defaultDomainCosId !== item.id && isGlobalAdmin ? (
-                <Container>
-                  <Row>
-                    <Padding right="small">
-                      <ds-text as="span">{t('label.set_as_default', 'Set as Default')}</ds-text>
-                    </Padding>
-                    <Padding right="small">
-                      <ds-icon
-                        icon="StarOutline"
-                        color="primary"
-                        onClick={(event: { stopPropagation: () => void }): void => {
-                          event.stopPropagation();
-                          markAsDefaultCosToDomain(item?.id);
-                        }}
-                      ></ds-icon>
-                    </Padding>
-                    <ds-icon
-                      icon="Close"
-                      color="primary"
-                      onClick={(event: { stopPropagation: () => void }): void => {
-                        event.stopPropagation();
-                        removeCosLinkRows(item);
-                      }}
-                    ></ds-icon>
-                  </Row>
-                </Container>
-              ) : (
-                ''
-              ),
-          });
-        });
-        setCosMaxAccountListRow(cosLinkRows);
-      } else {
-        setCosMaxAccountListRow([]);
-      }
-    },
-    [isGlobalAdmin, markAsDefaultCosToDomain, removeCosLinkRows, t],
-  );
-
-  useEffect(() => {
-    generateCosLinkTable(domainCosMaxAccountList, defaultCosId);
-  }, [generateCosLinkTable, domainCosMaxAccountList, defaultCosId]);
-
-  const headers: any[] = useMemo(
-    () => [
-      {
-        id: 'cos_list',
-        label: t('label.cos_list', 'Cos List'),
-        width: '35%',
-        bold: true,
-      },
-      {
-        id: 'accounts',
-        label: t(
-          'label.how_many_accounts_handled',
-          'How many accounts are handled? (-1 if unlimited)',
-        ),
-        width: '45%',
-        bold: true,
-      },
-      {
-        id: 'description',
-        label: '',
-        width: '20%',
-        bold: true,
-      },
+  const cosMaxAccountListRow: Array<CosLinkTableRow> = domainCosMaxAccountList.map((item, index) => ({
+    id: index.toString(),
+    columns: [
+      <Container crossAlignment="flex-start" mainAlignment="center" key={`${item.id}-name`}>
+        <ds-text as="span" size="medium" weight="light" color="gray0">
+          {item.name}
+        </ds-text>
+      </Container>,
+      <Container crossAlignment="flex-start" mainAlignment="center" key={`${item.id}-value`}>
+        <ds-text as="span" size="medium" weight="light" color="gray0">
+          {item.value}
+        </ds-text>
+      </Container>,
+      <Container key={`${item.id}-default`}>
+        {defaultCosId === item.id && (
+          <Row>
+            <Padding right="small">
+              <ds-text as="span" size="medium" weight="light" color="gray0">
+                {t('label.default_cos', 'Default COS')}
+              </ds-text>
+            </Padding>
+            <ds-icon icon="Star" color="primary"></ds-icon>
+          </Row>
+        )}
+      </Container>,
     ],
-    [t],
-  );
+    hoverContent:
+      defaultCosId !== item.id && isGlobalAdmin ? (
+        <Container>
+          <Row>
+            <Padding right="small">
+              <ds-text as="span">{t('label.set_as_default', 'Set as Default')}</ds-text>
+            </Padding>
+            <Padding right="small">
+              <ds-icon
+                icon="StarOutline"
+                color="primary"
+                onClick={(event: { stopPropagation: () => void }) => {
+                  event.stopPropagation();
+                  markAsDefaultCos(item.id);
+                }}
+              ></ds-icon>
+            </Padding>
+            <ds-icon
+              icon="Close"
+              color="primary"
+              onClick={(event: { stopPropagation: () => void }) => {
+                event.stopPropagation();
+                onRemoveCosLinkToDomain(item.id, item.value);
+              }}
+            ></ds-icon>
+          </Row>
+        </Container>
+      ) : (
+        ''
+      ),
+  }));
 
-  const items =
+  const items: Array<CosDropdownItem> =
     cosList.length > MAX_COS_DISPLAY
       ? [
           {
@@ -547,19 +246,10 @@ const DomainCosLink: FC<{
               <>
                 <Row mainAlignment="flex-start">
                   <Padding horizontal="small">
-                    <ds-icon
-                      icon="InfoOutline"
-                      style={{ width: '1.25rem', height: '1.25rem' }}
-                    ></ds-icon>
+                    <ds-icon icon="InfoOutline" style={{ width: '1.25rem', height: '1.25rem' }}></ds-icon>
                   </Padding>
                 </Row>
-                <Row
-                  mainAlignment="flex-start"
-                  width="100%"
-                  padding={{
-                    all: 'small',
-                  }}
-                >
+                <Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
                   <ds-text as="p" overflow="break-word">
                     {t(
                       'many_cos_info_msg',
@@ -571,7 +261,7 @@ const DomainCosLink: FC<{
             ),
           },
         ]
-      : cosList.map((cos: any) => ({
+      : cosList.map((cos) => ({
           id: cos.id,
           label: cos.name,
           customComponent: (
@@ -583,11 +273,11 @@ const DomainCosLink: FC<{
                 padding: '0.188rem',
                 width: 'inherit',
               }}
-              onClick={(): void => {
-                selectedCos(cos);
+              onClick={() => {
+                selectedCos(cos.id, cos.name);
               }}
             >
-              {cos?.name}
+              {cos.name}
             </Row>
           ),
         }));
@@ -614,7 +304,7 @@ const DomainCosLink: FC<{
                 'cos.select_cos_to_include_in_domain',
                 'Select a COS to include in this domain',
               )}
-              onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+              onChange={(ev: ChangeEvent<HTMLInputElement>) => {
                 setIsCosSelect(false);
                 setSearchCosName(ev.target.value);
               }}
@@ -630,7 +320,7 @@ const DomainCosLink: FC<{
               value={maxAccountValue}
               backgroundColor="gray6"
               type="number"
-              onKeyDown={(e: KeyboardEvent<HTMLInputElement>): void => {
+              onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
                 if (
                   ![
                     'Backspace',
@@ -653,28 +343,23 @@ const DomainCosLink: FC<{
                   e.preventDefault();
                 }
               }}
-              onChange={(e: any): any => {
-                if (e.target.value < -1) {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                if (Number(e.target.value) < -1) {
                   setMaxAccountValue('-1');
                 } else {
-                  setMaxAccountValue(e.target.value.toString());
+                  setMaxAccountValue(e.target.value);
                 }
               }}
             />
           </Container>
-          <Container
-            crossAlignment="flex-end"
-            padding={{ all: 'small' }}
-            width="17%"
-            minWidth="11.5rem"
-          >
+          <Container crossAlignment="flex-end" padding={{ all: 'small' }} width="17%" minWidth="11.5rem">
             <Row>
               <Padding right="large">
                 <Button
                   type="outlined"
                   label={t('label.duplicate', 'Duplicate')}
                   color="primary"
-                  onClick={(event: { stopPropagation: () => void }): void => {
+                  onClick={(event: { stopPropagation: () => void }) => {
                     event.stopPropagation();
                     onDuplicate(cosId, maxAccountValue, searchCosName);
                   }}
@@ -684,7 +369,7 @@ const DomainCosLink: FC<{
                 type="outlined"
                 label={t('label.link', 'Link')}
                 color="primary"
-                onClick={(event: { stopPropagation: () => void }): void => {
+                onClick={(event: { stopPropagation: () => void }) => {
                   event.stopPropagation();
                   onSaveCosLinkToDomain(cosId, maxAccountValue);
                 }}
@@ -704,11 +389,7 @@ const DomainCosLink: FC<{
           HeaderFactory={CustomHeaderFactory}
         />
         {cosMaxAccountListRow.length === 0 && (
-          <Container
-            crossAlignment="center"
-            mainAlignment="flex-start"
-            style={{ marginTop: '1rem' }}
-          >
+          <Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '1rem' }}>
             <Padding all="medium" width="30.875rem">
               <ds-text
                 as="p"
@@ -730,5 +411,3 @@ const DomainCosLink: FC<{
     </Container>
   );
 };
-
-export default DomainCosLink;
