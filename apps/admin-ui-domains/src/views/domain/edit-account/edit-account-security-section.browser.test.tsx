@@ -118,6 +118,41 @@ function setupEditAccountSecurityTest(component: React.ReactElement) {
 }
 
 describe('EditAccountSecuritySection (browser)', () => {
+  describe('Grace period expiration date', () => {
+    const GRACE_FLAGS = {
+      carbonioOtpGracePeriodEnabled: 'TRUE',
+      carbonioOtpWizardFromUntrusted: 'TRUE',
+      carbonioFeatureOTPMgmtEnabled: 'TRUE',
+    };
+
+    it('shows the date parsed from the stored grace period ending time', async () => {
+      setupEditAccountSecurityTest(
+        wrapSecuritySection({
+          ...GRACE_FLAGS,
+          carbonioOtpGracePeriodEndingTime: '20260615100000Z',
+        }),
+      );
+
+      await expect
+        .element(page.getByRole('textbox', { name: /set grace period expiration date/i }))
+        .toHaveValue('15/06/2026');
+    });
+
+    it('falls back to one month from now when enabled without a stored value', async () => {
+      setupEditAccountSecurityTest(wrapSecuritySection({ ...GRACE_FLAGS }));
+
+      const expected = new Date();
+      expected.setMonth(expected.getMonth() + 1);
+      const expectedText = `${String(expected.getDate()).padStart(2, '0')}/${String(
+        expected.getMonth() + 1,
+      ).padStart(2, '0')}/${expected.getFullYear()}`;
+
+      await expect
+        .element(page.getByRole('textbox', { name: /set grace period expiration date/i }))
+        .toHaveValue(expectedText);
+    });
+  });
+
   describe('Basic Rendering', () => {
     it('should render all main sections', async () => {
       setupEditAccountSecurityTest(wrapSecuritySection());

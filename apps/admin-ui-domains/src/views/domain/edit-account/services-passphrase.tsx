@@ -3,27 +3,24 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import {
   Button,
-  Container,
   Input,
   LabeledValue,
-  Modal,
   Row,
   Select,
   useSnackbar,
 } from '@zextras/ui-components';
-import React, { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { ZIMBRA_ADMIN_URN } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
-import { domainQueryKeys } from '../../../services/domain-query-keys';
-import { fetchSoap } from '../../../services/generateOTP-service';
+import { useAddCredential } from '../../../services/use-add-credential';
+import { useDeleteCredential } from '../../../services/use-delete-credential';
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../utility/utils';
 import { useAccountForm } from './account-form-context';
+import { CredentialCreatedDialog } from './services-passphrase/credential-created-dialog';
 
 interface CredentialTextDataType {
   password?: string;
@@ -48,30 +45,17 @@ interface SelectStatusType {
   value?: boolean;
 }
 
-interface AddCredentialApiType {
-  ok?: boolean;
-  response?: {
-    list?: CredentialType;
-
-    text_data: { password: '' };
-  };
-}
-
-export const ServicesPassphrase: FC = () => {
-  const { form, credentialList, account } = useAccountForm();
+export const ServicesPassphrase = () => {
+  const { form, credentialList } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
-  const queryClient = useQueryClient();
-  const getCredentialList = (): void => {
-    void queryClient.invalidateQueries({ queryKey: domainQueryKeys.credentialList(account.name) });
-  };
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [createCredentialModal, setCreateCredentialModal] = useState<boolean>(false);
 
-  const SERVICE_PASSPHRASE_STATUS = useMemo(() => ServicesPassphraseStatus(t), [t]);
-  const SERVICE_PASSPHRASE_SERVICES: any = useMemo(() => ServicesPassphraseServices(), []);
+  const SERVICE_PASSPHRASE_STATUS = ServicesPassphraseStatus(t);
+  const SERVICE_PASSPHRASE_SERVICES: any = ServicesPassphraseServices();
   const [createCredential, setCreateCredential] = useState<CredentialType>({
     label: '',
     services: SERVICE_PASSPHRASE_SERVICES[0].value,
@@ -82,109 +66,83 @@ export const ServicesPassphrase: FC = () => {
     services: '',
   });
 
-  const changeCredLabel = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setCreateCredential((prev: CredentialType) => ({ ...prev, [e.target.name]: e.target.value }));
-    },
-    [setCreateCredential],
-  );
+  const accountAddress = `${values?.uid}@${domainName}`;
+  const addMutation = useAddCredential(accountAddress);
+  const deleteMutation = useDeleteCredential(accountAddress);
+
+  const changeCredLabel = (e: ChangeEvent<HTMLInputElement>): void => {
+    setCreateCredential((prev: CredentialType) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const onServicesPassphraseServicesChange = (v: any): void => {
     setCreateCredential((prev: CredentialType) => ({ ...prev, services: v }));
   };
 
-  const onSave = useCallback((): void => {
-    fetchSoap('zextras', {
-      _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxAuth',
-      action: 'credential',
-      request: 'add',
-      account: `${values?.uid}@${domainName}`,
-      ...createCredential,
-    }).then((res: AddCredentialApiType) => {
-      if (res.ok) {
-        setCreateCredentialResponse({
-          label: res?.response?.list?.label,
-          services: res?.response?.list?.label,
-          text_data: res?.response?.text_data,
-        });
-        setCreateCredential((prev: CredentialType) => ({ ...prev, label: '' }));
-        getCredentialList();
-        setCreateCredential({
-          label: '',
-          services: SERVICE_PASSPHRASE_SERVICES[0].value,
-        });
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t(
-            'account_details.services_passphrase_created_successfully',
-            'Services Passphrase created successfully',
-          ),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        setCreateCredentialModal(true);
-      } else {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      }
+  const successSnackbar = (label: string): void => {
+    createSnackbar({
+      key: 'success',
+      severity: 'success',
+      label,
+      autoHideTimeout: 3000,
+      hideButton: true,
+      replace: true,
     });
-  }, [
-    SERVICE_PASSPHRASE_SERVICES,
-    values?.uid,
-    createCredential,
-    createSnackbar,
-    domainName,
-    getCredentialList,
-    t,
-  ]);
+  };
 
-  const onDelete = useCallback(
-    (cred: CredentialType): void => {
-      fetchSoap('zextras', {
-        _jsns: ZIMBRA_ADMIN_URN,
-        module: 'ZxAuth',
-        action: 'credential',
-        request: 'delete',
-        password_id: cred.id,
-        account: `${values?.uid}@${domainName}`,
-        ...createCredential,
-      }).then((res: AddCredentialApiType) => {
-        if (res.ok) {
-          getCredentialList();
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t(
+  const errorSnackbar = (): void => {
+    createSnackbar({
+      key: 'error',
+      severity: 'error',
+      label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+      autoHideTimeout: 3000,
+      hideButton: true,
+      replace: true,
+    });
+  };
+
+  const onSave = (): void => {
+    addMutation.mutate(
+      { label: createCredential.label ?? '', services: createCredential.services ?? '' },
+      {
+        onSuccess: (res): void => {
+          setCreateCredentialResponse({
+            label: res?.response?.list?.label,
+            services: res?.response?.list?.label,
+            text_data: res?.response?.text_data,
+          });
+          setCreateCredential({
+            label: '',
+            services: SERVICE_PASSPHRASE_SERVICES[0].value,
+          });
+          successSnackbar(
+            t(
+              'account_details.services_passphrase_created_successfully',
+              'Services Passphrase created successfully',
+            ),
+          );
+          setCreateCredentialModal(true);
+        },
+        onError: errorSnackbar,
+      },
+    );
+  };
+
+  const onDelete = (cred: CredentialType): void => {
+    deleteMutation.mutate(
+      { passwordId: cred.id ?? '' },
+      {
+        onSuccess: (): void => {
+          successSnackbar(
+            t(
               'account_details.services_passphrase_deleted_successfully',
               'Services Passphrase deleted successfully',
             ),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        } else {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
-      });
-    },
-    [values?.uid, createCredential, createSnackbar, domainName, getCredentialList, t],
-  );
+          );
+        },
+        onError: errorSnackbar,
+      },
+    );
+  };
 
   return (
     <>
@@ -225,9 +183,7 @@ export const ServicesPassphrase: FC = () => {
                     el.value?.toLowerCase() === item.services?.toLowerCase(),
                 )}
                 disabled
-                onChange={(): void => {
-                  // console.log('__');
-                }}
+                onChange={(): void => undefined}
               />
             </Row>
             <Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
@@ -297,77 +253,13 @@ export const ServicesPassphrase: FC = () => {
           <Row width="19%" mainAlignment="space-between"></Row>
         </Row>
       </Row>
-      <Modal
-        size="medium"
-        title={t('account_details.service_label_password', ' {{ service_label }}’s Password', {
-          service_label: createCredentialResponse?.label,
-        })}
-        open={createCredentialModal}
-        customFooter={
-          <Container orientation="horizontal" mainAlignment="flex-end">
-            <Row style={{ gap: '1rem' }}>
-              <Button
-                label={t(
-                  'account_details.i_have_copied_the_password',
-                  'I HAVE COPIED THE PASSWORD',
-                )}
-                color="primary"
-                onClick={(): void => setCreateCredentialModal(false)}
-              />
-            </Row>
-          </Container>
-        }
-        showCloseIcon
-        onClose={(): void => setCreateCredentialModal(false)}
-      >
-        <Row padding={{ vertical: 'extralarge' }} mainAlignment="center" crossAlignment="center">
-          <Row
-            width="80%"
-            mainAlignment="center"
-            crossAlignment="center"
-            padding={{ bottom: 'large' }}
-          >
-            <ds-text size={'extralarge'} overflow="break-word" as="p">
-              {t(
-                'account_details.password_allow_once_user_to_connect',
-                `This password will allow user to connect to this service without the 2FA even from an un-trusted network.`,
-              )}
-            </ds-text>
-          </Row>
-          <Row width="80%" mainAlignment="center" crossAlignment="center">
-            <ds-text size={'extralarge'} overflow="break-word" as="p">
-              <Trans
-                i18nKey="account_details.able_to_see_password_once"
-                defaults=" Please note: you'll be able to see the password <bold>just once.</bold>"
-                components={{ bold: <strong /> }}
-              />
-            </ds-text>
-          </Row>
-          <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-            <LabeledValue
-              label={t('account_details.service_password', 'Service Password')}
-              backgroundColor="gray5"
-              value={createCredentialResponse.text_data?.password}
-              CustomIcon={(): any => (
-                <ds-icon
-                  icon="CopyOutline"
-                  size="large"
-                  color="Gray0"
-                  onClick={(e: React.MouseEvent): void => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    navigator.clipboard.writeText(
-                      createCredentialResponse.text_data?.password || '',
-                    );
-                  }}
-                  style={{ cursor: 'pointer' }}
-                ></ds-icon>
-              )}
-              textColor={'gray1'}
-            />
-          </Row>
-        </Row>
-      </Modal>
+      {createCredentialModal && (
+        <CredentialCreatedDialog
+          serviceLabel={createCredentialResponse?.label}
+          password={createCredentialResponse.text_data?.password}
+          onClose={(): void => setCreateCredentialModal(false)}
+        />
+      )}
     </>
   );
 };

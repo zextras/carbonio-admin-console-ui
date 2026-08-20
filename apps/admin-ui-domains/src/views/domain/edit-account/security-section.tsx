@@ -15,7 +15,6 @@ import {
   FC,
   ReactElement,
   useCallback,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -33,6 +32,34 @@ import { emailContent } from '../manange/accounts/create-account/email-content';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
 import styles from './security-section.module.css';
 import { ServicesPassphrase } from './services-passphrase';
+
+/** Default grace-period date: the stored ending time when parseable, else one month out when enabled. */
+function computeGracePeriodDefaultDate(
+	gentimeValue: string | undefined,
+	enabled: string | undefined,
+): Date | null {
+	if (gentimeValue) {
+		const match = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})Z$/.exec(gentimeValue);
+		if (match) {
+			return new Date(
+				Date.UTC(
+					Number(match[1]),
+					Number(match[2]) - 1,
+					Number(match[3]),
+					Number(match[4]),
+					Number(match[5]),
+					Number(match[6]),
+				),
+			);
+		}
+	}
+	if (enabled) {
+		const date = new Date();
+		date.setMonth(date.getMonth() + 1);
+		return date;
+	}
+	return null;
+}
 
 const EditAccountSecuritySection: FC = () => {
   const {
@@ -657,42 +684,24 @@ const EditAccountSecuritySection: FC = () => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefPasswordRecoveryAddressStatus: v }));
   };
 
-  const gracePeriodDefaultDate = useMemo(() => {
-    const gentimeValue =
-      accSpecificDetail?.carbonioOtpGracePeriodEndingTime ??
-      values?.carbonioOtpGracePeriodEndingTime;
-    if (gentimeValue) {
-      const match = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})Z$/.exec(gentimeValue);
-      if (match) {
-        return new Date(
-          Date.UTC(
-            Number(match[1]),
-            Number(match[2]) - 1,
-            Number(match[3]),
-            Number(match[4]),
-            Number(match[5]),
-            Number(match[6]),
-          ),
-        );
-      }
-    }
-    if (values?.carbonioOtpGracePeriodEnabled) {
-      const date = new Date();
-      date.setMonth(date.getMonth() + 1);
-      return date;
-    }
-    return null;
-  }, [
-    accSpecificDetail?.carbonioOtpGracePeriodEndingTime,
-    values?.carbonioOtpGracePeriodEndingTime,
-    values?.carbonioOtpGracePeriodEnabled,
-  ]);
+  const graceGentime =
+    accSpecificDetail?.carbonioOtpGracePeriodEndingTime ??
+    values?.carbonioOtpGracePeriodEndingTime;
+  const graceEnabled = values?.carbonioOtpGracePeriodEnabled;
+  const gracePeriodDefaultDate = computeGracePeriodDefaultDate(graceGentime, graceEnabled);
 
-  const [fromDate, setFromDate] = useState<Date | null>(gracePeriodDefaultDate);
-
-  useEffect(() => {
+  const [fromDate, setFromDate] = useState<Date | null>(() =>
+    computeGracePeriodDefaultDate(graceGentime, graceEnabled),
+  );
+  // adjust during render: reseed the picked date when the default inputs change
+  // (keyed on the inputs: Date objects have unstable identity across renders)
+  const [prevGraceGentime, setPrevGraceGentime] = useState(graceGentime);
+  const [prevGraceEnabled, setPrevGraceEnabled] = useState(graceEnabled);
+  if (prevGraceGentime !== graceGentime || prevGraceEnabled !== graceEnabled) {
+    setPrevGraceGentime(graceGentime);
+    setPrevGraceEnabled(graceEnabled);
     setFromDate(gracePeriodDefaultDate);
-  }, [gracePeriodDefaultDate]);
+  }
 
   const isGracePeriodEnabled =
     values?.carbonioOtpGracePeriodEnabled === 'TRUE' &&
