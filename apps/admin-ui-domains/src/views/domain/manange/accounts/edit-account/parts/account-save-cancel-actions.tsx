@@ -20,7 +20,7 @@ export const AccountSaveCancelActions = ({
   const { t } = useTranslation();
 
   return (
-    <div className="flex h-full w-full items-center justify-center bg-gray6">
+    <div className="flex items-center justify-center rounded-[var(--border-radius)] bg-gray6">
       <div className="pr-sm">
         <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
       </div>
