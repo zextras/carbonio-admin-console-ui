@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+  ADMINISTRATION,
   CONFIGURATION,
   DELEGATES,
   GENERAL_SECTION,
@@ -20,7 +21,7 @@ import {
 import { AccountFormContext } from './account-form-context';
 import { useAccountFormProvider } from './account-form-provider';
 import styles from './edit-account.module.css';
-import EditAccountAdministrationSection from './edit-account-administration-section';
+import { EditAccountAdministrationSection } from './edit-account-administration-section';
 import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';
 import EditAccountDelegatesSection from './edit-account-delegates-section';
@@ -106,7 +107,7 @@ export const EditAccount = ({
       CustomComponent: ReusedDefaultTabBar,
     },
     {
-      id: 'administration',
+      id: ADMINISTRATION,
       label: t('label.administration', 'ADMINISTRATION'),
       CustomComponent: ReusedDefaultTabBar,
     },
@@ -207,7 +208,7 @@ export const EditAccount = ({
         <div className={styles.sectionsPanel}>
           {change === GENERAL_SECTION && (
             <EditAccountGeneralSection
-              setChange={setChange}
+              onNavigateToAdministration={(): void => setChange(ADMINISTRATION)}
               onQuotaErrorChange={setHasQuotaError}
             />
           )}
@@ -216,8 +217,8 @@ export const EditAccount = ({
           {change === USER_PREFERENCES && <EditAccountUserPrefrencesSection />}
           {change === SECURITY && <EditAccountSecuritySection />}
           {change === DELEGATES && <EditAccountDelegatesSection />}
-          {change === 'administration' && (
-            <EditAccountAdministrationSection setIsLoading={setIsSectionLoading} />
+          {change === ADMINISTRATION && (
+            <EditAccountAdministrationSection onLoadingChange={setIsSectionLoading} />
           )}
         </div>
       </div>

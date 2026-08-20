@@ -59,7 +59,10 @@ function setupTest(contextOverrides: Record<string, unknown> = {}) {
 
   return setupBrowserTest(
     <AccountFormTestProvider values={accountDetail}>
-      <EditAccountGeneralSection setChange={vi.fn()} onQuotaErrorChange={vi.fn()} />
+      <EditAccountGeneralSection
+        onNavigateToAdministration={vi.fn()}
+        onQuotaErrorChange={vi.fn()}
+      />
     </AccountFormTestProvider>,
     { queryClient },
   );

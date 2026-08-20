@@ -28,11 +28,11 @@ import {
 } from '@zextras/ui-components';
 import { useCosList, useDebouncedValue, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../../../types';
-import { ADMINISTRATION, DEFAULT, MAX_DOMAIN_DISPLAY } from '../../../../../constants';
+import { DEFAULT, MAX_DOMAIN_DISPLAY } from '../../../../../constants';
 import { useSelectedDomain } from '../../../../../hooks/use-selected-domain';
 import { domainQueryKeys } from '../../../../../services/domain-query-keys';
 import { endSession } from '../../../../../services/end-session';
@@ -113,10 +113,15 @@ function filterSessions(list: Array<UserSession>, filter: string): Array<UserSes
   );
 }
 
-export const EditAccountGeneralSection: FC<{
-  setChange: any;
+type EditAccountGeneralSectionProps = {
+  onNavigateToAdministration: () => void;
   onQuotaErrorChange: (hasError: boolean) => void;
-}> = ({ setChange, onQuotaErrorChange }) => {
+};
+
+export const EditAccountGeneralSection = ({
+  onNavigateToAdministration,
+  onQuotaErrorChange,
+}: EditAccountGeneralSectionProps) => {
   const createSnackbar = useSnackbar();
   const queryClient = useQueryClient();
   const {
@@ -622,7 +627,7 @@ export const EditAccountGeneralSection: FC<{
               CustomIcon={(): any => (
                 <ds-icon
                   icon="DiagonalArrowRightUp"
-                  onClick={(): void => setChange(ADMINISTRATION)}
+                  onClick={(): void => onNavigateToAdministration()}
                   style={{ cursor: 'pointer' }}
                   size="large"
                   onChange={(): null => null}

@@ -21,7 +21,7 @@ import {
 } from '@zextras/ui-components';
 import { searchDirectory, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DISPLAYNAME, FETCH_DATA_LIMIT, TRUE } from '../../../../../constants';
@@ -35,7 +35,13 @@ import { removeDistributionListMember } from '../../../../../services/remove-dis
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { useAccountForm, useSetAccountValues } from './account-form-context';
 
-const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
+type EditAccountAdministrationSectionProps = {
+  onLoadingChange: (isLoading: boolean) => void;
+};
+
+export const EditAccountAdministrationSection = ({
+  onLoadingChange,
+}: EditAccountAdministrationSectionProps) => {
   const createSnackbar = useSnackbar();
   const { form, savedValues } = useAccountForm();
   const setAccountValues = useSetAccountValues();
@@ -116,7 +122,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
   }, [accountDetail?.zimbraId]);
 
   const onAdd = useCallback((): void => {
-    setIsLoading(true);
+    onLoadingChange(true);
     const id: any = {
       n: 'id',
       _content: selectedOption.value,
@@ -140,7 +146,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
             replace: true,
           });
           getAccountDistributionList();
-          setIsLoading(false);
+          onLoadingChange(false);
         }
       })
       .catch((error) => {
@@ -154,10 +160,10 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
           hideButton: true,
           replace: true,
         });
-        setIsLoading(false);
+        onLoadingChange(false);
       });
   }, [
-    setIsLoading,
+    onLoadingChange,
     selectedOption.value,
     accountDetail?.name,
     createSnackbar,
@@ -224,7 +230,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
   const onDeleteFromList = useCallback(
     (lists: any, type: string) => {
       if (lists?.length > 0) {
-        setIsLoading(true);
+        onLoadingChange(true);
         lists.forEach((item: any) => {
           const id: any = {
             n: 'id',
@@ -249,7 +255,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
                   replace: true,
                 });
                 getAccountDistributionList();
-                setIsLoading(false);
+                onLoadingChange(false);
               }
             })
             .catch((error) => {
@@ -263,13 +269,13 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
                 hideButton: true,
                 replace: true,
               });
-              setIsLoading(false);
+              onLoadingChange(false);
             });
         });
       }
       setSendSelectedRows([]);
     },
-    [setIsLoading, accountDetail?.name, createSnackbar, t, getAccountDistributionList],
+    [onLoadingChange, accountDetail?.name, createSnackbar, t, getAccountDistributionList],
   );
 
   function setDomains(response: GetInitializedDomainsResponse): void {
@@ -496,5 +502,3 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
     </Container>
   );
 };
-
-export default EditAccountAdministrationSection;
