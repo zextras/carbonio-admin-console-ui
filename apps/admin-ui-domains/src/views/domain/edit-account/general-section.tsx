@@ -113,6 +113,56 @@ function filterSessions(list: Array<UserSession>, filter: string): Array<UserSes
   );
 }
 
+/** Dropdown items for the domain picker; collapses to a filter hint past the display limit. */
+function buildDomainDropdownItems(
+  domainList: Array<objectType>,
+  onSelectedDomain: (domain: string) => void,
+  t: ReturnType<typeof useTranslation>[0],
+): Array<{ id?: string; label?: string; customComponent: React.ReactElement }> {
+  if (domainList.length > MAX_DOMAIN_DISPLAY) {
+    return [
+      {
+        customComponent: (
+          <>
+            <Row mainAlignment="flex-start">
+              <Padding horizontal="small">
+                <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
+              </Padding>
+            </Row>
+            <Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
+              <ds-text as="p" overflow="break-word">
+                {t(
+                  'many_domain_info_msg',
+                  'So many domains! Which one would you like to see? Start typing to filter.',
+                )}
+              </ds-text>
+            </Row>
+          </>
+        ),
+      },
+    ];
+  }
+
+  return domainList.map((domain: objectType) => ({
+    id: domain.id,
+    label: domain.name,
+    customComponent: (
+      <Row
+        style={{
+          display: 'block',
+          textAlign: 'left',
+          height: 'inherit',
+          padding: '3px',
+          width: 'inherit',
+        }}
+        onClick={(): void => onSelectedDomain(domain?.name)}
+      >
+        {domain?.name}
+      </Row>
+    ),
+  }));
+}
+
 type EditAccountGeneralSectionProps = {
   onNavigateToAdministration: () => void;
 };
@@ -334,50 +384,7 @@ export const EditAccountGeneralSection = ({
     [setAccountValues],
   );
 
-  const items = useMemo(() => {
-    if (domainList.length > MAX_DOMAIN_DISPLAY) {
-      return [
-        {
-          customComponent: (
-            <>
-              <Row mainAlignment="flex-start">
-                <Padding horizontal="small">
-                  <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
-                </Padding>
-              </Row>
-              <Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
-                <ds-text as="p" overflow="break-word">
-                  {t(
-                    'many_domain_info_msg',
-                    'So many domains! Which one would you like to see? Start typing to filter.',
-                  )}
-                </ds-text>
-              </Row>
-            </>
-          ),
-        },
-      ];
-    }
-
-    return domainList.map((domain: objectType) => ({
-      id: domain.id,
-      label: domain.name,
-      customComponent: (
-        <Row
-          style={{
-            display: 'block',
-            textAlign: 'left',
-            height: 'inherit',
-            padding: '3px',
-            width: 'inherit',
-          }}
-          onClick={(): void => selectedDomain(domain?.name)}
-        >
-          {domain?.name}
-        </Row>
-      ),
-    }));
-  }, [domainList, selectedDomain, t]);
+  const items = buildDomainDropdownItems(domainList, selectedDomain, t);
 
   // adjust during render: mirror the account's domain into the dropdown label
   // when server data changes (picking from the dropdown is handled by selectedDomain)
