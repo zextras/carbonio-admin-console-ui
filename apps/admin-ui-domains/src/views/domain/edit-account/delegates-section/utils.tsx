@@ -91,18 +91,8 @@ export type DelegateTarget = {
 	right: string;
 };
 
-/** SOAP RevokeRight envelope for an admin right (sendAs / sendOnBehalfOf). */
-export function buildRevokeRight(target: DelegateTarget): any {
-	return {
-		_jsns: ZIMBRA_ADMIN_URN,
-		target: { _content: target.targetName, type: 'account', by: 'name' },
-		grantee: { by: 'name', type: target.granteeType, _content: target.granteeName },
-		right: { _content: target.right },
-	};
-}
-
-/** SOAP GrantRight envelope for an admin right (sendAs / sendOnBehalfOf). */
-export function buildGrantRight(target: DelegateTarget): any {
+/** SOAP GrantRight/RevokeRight envelope for an admin right (sendAs / sendOnBehalfOf). */
+export function buildAdminRightEnvelope(target: DelegateTarget): any {
 	return {
 		_jsns: ZIMBRA_ADMIN_URN,
 		target: { _content: target.targetName, type: 'account', by: 'name' },
@@ -167,9 +157,9 @@ export function buildSimplifiedGrantBatch(
 				right: checks.sendRightCheck ? 'sendAs' : 'sendOnBehalfOf',
 			};
 			revokeUsrRigths.push(
-				buildRevokeRight({ ...target, right: checks.sendRightCheck ? 'sendOnBehalfOf' : 'sendAs' }),
+				buildAdminRightEnvelope({ ...target, right: checks.sendRightCheck ? 'sendOnBehalfOf' : 'sendAs' }),
 			);
-			grantUsrRigths.push(buildGrantRight(target));
+			grantUsrRigths.push(buildAdminRightEnvelope(target));
 		}
 		if (checks.readWriteRightCheck || checks.readRightCheck) {
 			folderUsrRights.push(
@@ -207,7 +197,7 @@ export function buildSimplifiedRevokeBatch(
 			}
 			if (rightsType === 'send' && selectedDelegate?.right?.[0]?._content) {
 				revokeUsrRigths.push(
-					buildRevokeRight({
+					buildAdminRightEnvelope({
 						targetName,
 						granteeType: selectedDelegate?.grantee?.[0]?.type,
 						granteeName: selectedDelegate?.grantee?.[0]?.name,

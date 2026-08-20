@@ -6,12 +6,11 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+	buildAdminRightEnvelope,
 	buildDelegateRows,
 	buildDelegateSearchQuery,
 	buildFolderGrant,
 	buildFolderRevoke,
-	buildGrantRight,
-	buildRevokeRight,
 	buildSimplifiedGrantBatch,
 	buildSimplifiedRevokeBatch,
 	parseDelegateDirectoryOptions,
@@ -93,8 +92,8 @@ describe('parseDelegateDirectoryOptions', () => {
 describe('batch envelope builders', () => {
 	const target = { targetName: 'jane@example.com', granteeType: 'usr', granteeName: 'bob@example.com', right: 'sendAs' };
 
-	it('should build the revoke envelope', () => {
-		expect(buildRevokeRight(target)).toEqual({
+	it('should build the admin-right envelope', () => {
+		expect(buildAdminRightEnvelope(target)).toEqual({
 			_jsns: 'urn:zimbraAdmin',
 			target: { _content: 'jane@example.com', type: 'account', by: 'name' },
 			grantee: { by: 'name', type: 'usr', _content: 'bob@example.com' },
@@ -115,9 +114,6 @@ describe('batch envelope builders', () => {
 		});
 	});
 
-	it('should build the grant envelope symmetric to revoke', () => {
-		expect(buildGrantRight(target)).toEqual(buildRevokeRight(target));
-	});
 });
 
 describe('buildSimplifiedGrantBatch', () => {

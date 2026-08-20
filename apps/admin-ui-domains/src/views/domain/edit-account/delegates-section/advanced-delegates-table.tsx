@@ -29,10 +29,9 @@ import { batchService } from '../../../../services/batch-service';
 import { useAccountForm } from '../account-form-context';
 import { AddDelegateWizard } from './add-delegate-wizard';
 import {
+	buildAdminRightEnvelope,
 	buildFolderGrant,
 	buildFolderRevoke,
-	buildGrantRight,
-	buildRevokeRight,
 	type DelegateRow,
 } from './utils';
 
@@ -112,7 +111,7 @@ export const AdvancedDelegatesTable = ({
 			}
 			if (selectedDelegate?.right?.[0]?._content) {
 				revokeUsrRigths.push(
-					buildRevokeRight({
+					buildAdminRightEnvelope({
 						targetName: accountDetail?.zimbraMailDeliveryAddress,
 						granteeType: selectedDelegate?.grantee?.[0]?.type,
 						granteeName: selectedDelegate?.grantee?.[0]?.name,
@@ -167,7 +166,7 @@ export const AdvancedDelegatesTable = ({
 				deligateDetail?.delegeteRights === 'send_read_manage_mails')
 		) {
 			grantUsrRigths.push(
-				buildGrantRight({
+				buildAdminRightEnvelope({
 					targetName: accountDetail?.zimbraMailDeliveryAddress,
 					granteeType: deligateDetail?.grantee?.[0]?.type,
 					granteeName: deligateDetail?.grantee?.[0]?.name,
