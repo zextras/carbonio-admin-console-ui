@@ -49,10 +49,10 @@ export function buildAdminGroupRows(
 		id: group.id,
 		columns: [
 			<ds-text key={`${group.id}-name`} weight="light" as="span">
-				{group.name.replace(new RegExp('__', 'g'), '').split('@')[0]}
+				{group.name.replaceAll('__', '').split('@')[0]}
 			</ds-text>,
 			<ds-text color="text" key={`${group.id}-domain`} weight="light" as="span">
-				{group.name.replace(new RegExp('__', 'g'), '').split('@')[1]}
+				{group.name.replaceAll('__', '').split('@')[1]}
 			</ds-text>,
 		],
 		clickable: true,
@@ -159,10 +159,9 @@ export const AdminRightsSection = ({
 		id: domain.id,
 		label: domain.name,
 		customComponent: (
-			<div
+			<button
 				key={domain.id}
-				role="button"
-				tabIndex={0}
+				type="button"
 				className={styles.domainItem}
 				onClick={(): void => {
 					setDomainId(domain?.id);
@@ -170,17 +169,9 @@ export const AdminRightsSection = ({
 					setIsDomainSelect(true);
 					fetchDistributionList(domain?.name);
 				}}
-				onKeyDown={(e): void => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						setDomainId(domain?.id);
-						setSearchDomainName(domain?.name);
-						setIsDomainSelect(true);
-						fetchDistributionList(domain?.name);
-					}
-				}}
 			>
 				{domain?.name}
-			</div>
+			</button>
 		),
 	}));
 
