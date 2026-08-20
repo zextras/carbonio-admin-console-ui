@@ -45,7 +45,6 @@ type ContainerElProps = {
   ref?: React.Ref<HTMLDivElement>;
 };
 
-/** @deprecated Use a plain `<div>` with CSS modules instead (see AGENTS.md). */
 export type ContainerProps = Omit<ContainerElProps, 'orientation'> &
   Omit<HTMLAttributes<HTMLDivElement>, keyof ContainerElProps> & {
     orientation?: 'vertical' | 'horizontal' | ContainerElProps['orientation'];
@@ -82,7 +81,6 @@ function resolveOrientation(o: string): ContainerElProps['orientation'] {
     .replace('vertical', 'column') as ContainerElProps['orientation'];
 }
 
-/** @deprecated Use a plain `<div>` with CSS modules instead (see AGENTS.md). */
 export const Container = ({
   orientation = 'vertical',
   borderRadius = 'regular',

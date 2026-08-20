@@ -9,7 +9,6 @@ import { useMemo } from 'react';
 import { Container, type ContainerProps } from './Container';
 import styles from './Row.module.css';
 
-/** @deprecated Use a plain `<div>` with CSS modules instead (see AGENTS.md). */
 type RowProps = ContainerProps & {
   display?: string;
   order?: 'unset' | number;
@@ -17,7 +16,6 @@ type RowProps = ContainerProps & {
   ref?: React.Ref<HTMLDivElement>;
 };
 
-/** @deprecated Use a plain `<div>` with CSS modules instead (see AGENTS.md). */
 const Row = ({
   display = 'flex',
   orientation = 'horizontal',

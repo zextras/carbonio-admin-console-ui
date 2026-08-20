@@ -18,7 +18,6 @@ type PaddingComponentProps = {
   ref?: React.Ref<HTMLDivElement>;
 } & PaddingVarObj;
 
-/** @deprecated Use a plain `<div>` with CSS modules instead (see AGENTS.md). */
 type PaddingProps = PaddingComponentProps &
   Omit<HTMLAttributes<HTMLDivElement>, keyof PaddingComponentProps>;
 
@@ -85,7 +84,6 @@ const paddingObjKeys = Object.keys({
   vertical: undefined,
 } satisfies Record<AllKeys<PaddingVarObj>, undefined>);
 
-/** @deprecated Use a plain `<div>` with CSS modules instead (see AGENTS.md). */
 const Padding = ({
   children,
   width = 'fit-content',
