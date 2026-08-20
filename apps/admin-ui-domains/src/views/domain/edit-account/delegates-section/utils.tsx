@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { filter } from 'lodash-es';
+
 import { ZIMBRA_ADMIN_URN } from '../../../../constants';
 
 export type DelegateIdentity = {
@@ -142,7 +144,7 @@ export function buildFolderRevoke(folder: { id: string; zid: string }): any {
 export type SimplifiedRightsChecks = {
 	sendRightCheck: boolean;
 	sendBehalfRightCheck: boolean;
-	readRightWriteCheck: boolean;
+	readWriteRightCheck: boolean;
 	readRightCheck: boolean;
 };
 
@@ -169,13 +171,13 @@ export function buildSimplifiedGrantBatch(
 			);
 			grantUsrRigths.push(buildGrantRight(target));
 		}
-		if (checks.readRightWriteCheck || checks.readRightCheck) {
+		if (checks.readWriteRightCheck || checks.readRightCheck) {
 			folderUsrRights.push(
 				buildFolderGrant({
 					folderIds: '1',
 					granteeType: item?.type,
 					granteeName: item?.ele?.name,
-					perm: checks.readRightWriteCheck ? 'rwidxa' : 'r',
+					perm: checks.readWriteRightCheck ? 'rwidxa' : 'r',
 				}),
 			);
 		}
@@ -217,4 +219,38 @@ export function buildSimplifiedRevokeBatch(
 	});
 
 	return { revokeUsrRigths, folderUsrRights };
+}
+
+export type DelegateRightsType = 'readWrite' | 'read' | 'send';
+
+type RightsSelectionSpec = {
+	/** lodash-style filter over the derived rows for "remove all". */
+	allFilter: Partial<{ writeFolder: boolean; readFolder: boolean; sendRights: boolean }>;
+};
+
+const RIGHTS_SELECTION_SPECS: Record<DelegateRightsType, RightsSelectionSpec> = {
+	readWrite: { allFilter: { writeFolder: true, readFolder: true } },
+	read: { allFilter: { writeFolder: false, readFolder: true } },
+	send: { allFilter: { sendRights: true } },
+};
+
+/**
+ * Identities selected for a simplified-view removal: the single selection of
+ * the matching table when `single` is true, otherwise every row matching the
+ * rights type.
+ */
+export function selectDelegatesForRemoval(
+	rightsType: DelegateRightsType,
+	single: boolean,
+	selectedRowId: string | undefined,
+	identitiesList: Array<DelegateIdentity>,
+	identityRows: Array<DelegateRow>,
+): Array<DelegateIdentity> {
+	if (single && selectedRowId) {
+		const found = identitiesList.find((o) => o?.grantee?.[0].id === selectedRowId);
+		return found ? [found] : [];
+	}
+	return (
+		filter(identityRows, RIGHTS_SELECTION_SPECS[rightsType].allFilter) as Array<DelegateRow>
+	).map((row) => row.identity);
 }

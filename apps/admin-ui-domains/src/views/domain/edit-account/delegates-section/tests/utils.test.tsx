@@ -15,6 +15,7 @@ import {
 	buildSimplifiedGrantBatch,
 	buildSimplifiedRevokeBatch,
 	parseDelegateDirectoryOptions,
+	selectDelegatesForRemoval,
 } from '../utils';
 
 const IDENTITIES = [
@@ -125,7 +126,7 @@ describe('buildSimplifiedGrantBatch', () => {
 	it('should build revoke+grant send rights when a send option is checked', () => {
 		const batch = buildSimplifiedGrantBatch(
 			selected,
-			{ sendRightCheck: true, sendBehalfRightCheck: false, readRightWriteCheck: false, readRightCheck: false },
+			{ sendRightCheck: true, sendBehalfRightCheck: false, readWriteRightCheck: false, readRightCheck: false },
 			'jane@example.com',
 		);
 		expect(batch.revokeUsrRigths).toHaveLength(1);
@@ -138,7 +139,7 @@ describe('buildSimplifiedGrantBatch', () => {
 	it('should build a read/write folder grant when a read option is checked', () => {
 		const batch = buildSimplifiedGrantBatch(
 			selected,
-			{ sendRightCheck: false, sendBehalfRightCheck: false, readRightWriteCheck: true, readRightCheck: false },
+			{ sendRightCheck: false, sendBehalfRightCheck: false, readWriteRightCheck: true, readRightCheck: false },
 			'jane@example.com',
 		);
 		expect(batch.revokeUsrRigths).toHaveLength(0);
@@ -173,5 +174,30 @@ describe('buildSimplifiedRevokeBatch', () => {
 		expect(batch.revokeUsrRigths).toHaveLength(1);
 		expect(batch.revokeUsrRigths[0].right._content).toBe('sendAs');
 		expect(batch.folderUsrRights).toHaveLength(0);
+	});
+});
+
+describe('selectDelegatesForRemoval', () => {
+	const rows = buildDelegateRows(IDENTITIES);
+
+	it('should return the single selected identity for row removals', () => {
+		const selected = selectDelegatesForRemoval('send', true, 'g-1', IDENTITIES, rows);
+		expect(selected).toEqual([IDENTITIES[0]]);
+	});
+
+	it('should return an empty list when the single selection is not found', () => {
+		expect(selectDelegatesForRemoval('send', true, 'missing', IDENTITIES, rows)).toEqual([]);
+	});
+
+	it('should return the matching identities for remove-all by rights type', () => {
+		expect(selectDelegatesForRemoval('readWrite', false, undefined, IDENTITIES, rows)).toEqual([
+			IDENTITIES[1],
+		]);
+		expect(selectDelegatesForRemoval('read', false, undefined, IDENTITIES, rows)).toEqual([
+			IDENTITIES[2],
+		]);
+		expect(selectDelegatesForRemoval('send', false, undefined, IDENTITIES, rows)).toEqual([
+			IDENTITIES[0],
+		]);
 	});
 });

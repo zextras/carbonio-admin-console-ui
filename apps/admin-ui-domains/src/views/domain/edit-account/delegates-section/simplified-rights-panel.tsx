@@ -29,7 +29,9 @@ import {
 	buildDelegateSearchQuery,
 	buildSimplifiedGrantBatch,
 	buildSimplifiedRevokeBatch,
+	type DelegateRightsType,
 	parseDelegateDirectoryOptions,
+	selectDelegatesForRemoval,
 } from './utils';
 
 const DELEGATE_SEARCH_ATTRS =
@@ -58,7 +60,7 @@ export const SimplifiedRightsPanel = ({
 	const [selectedAccounts, setSelectedAccounts] = useState<any>([]);
 	const [simpleSelectedList, setSimpleSelectedList] = useState<any>([]);
 	const [readRightCheck, setReadRightCheck] = useState<boolean>(false);
-	const [readRightWriteCheck, setReadWriteRightCheck] = useState<boolean>(false);
+	const [readWriteRightCheck, setReadWriteRightCheck] = useState<boolean>(false);
 	const [sendRightCheck, setSendRightCheck] = useState<boolean>(false);
 	const [sendBehalfRightCheck, setSendBehalfRightCheck] = useState<boolean>(false);
 	const [readWriteSelectedRows, setReadWriteSelectedRows] = useState<Array<string>>([]);
@@ -93,7 +95,7 @@ export const SimplifiedRightsPanel = ({
 	const addAccountGroupRights = (): void => {
 		const { revokeUsrRigths, grantUsrRigths, folderUsrRights } = buildSimplifiedGrantBatch(
 			simpleSelectedList,
-			{ sendRightCheck, sendBehalfRightCheck, readRightWriteCheck, readRightCheck },
+			{ sendRightCheck, sendBehalfRightCheck, readWriteRightCheck, readRightCheck },
 			accountDetail?.zimbraMailDeliveryAddress,
 		);
 
@@ -115,37 +117,25 @@ export const SimplifiedRightsPanel = ({
 		setSendRightCheck(false);
 	};
 
-	const handleSimpleDeleteDelegate = (single: boolean, rightsType: string): void => {
-		const selectedDelegateArr: Array<any> = [];
+	const handleSimpleDeleteDelegate = (single: boolean, rightsType: DelegateRightsType): void => {
+		const selectedRowId =
+			rightsType === 'readWrite'
+				? readWriteSelectedRows[0]
+				: rightsType === 'read'
+					? readSelectedRows[0]
+					: sendSelectedRows[0];
+		const selectedDelegateArr = selectDelegatesForRemoval(
+			rightsType,
+			single,
+			selectedRowId,
+			identitiesList,
+			identityRows,
+		);
 		if (rightsType === 'readWrite') {
-			if (single) {
-				const found = find(identitiesList, (o) => o?.grantee?.[0].id === readWriteSelectedRows[0]);
-				if (found) {
-					selectedDelegateArr.push(found);
-				}
-			} else {
-				selectedDelegateArr.push(...filter(identityRows, { writeFolder: true, readFolder: true }));
-			}
 			setReadWriteSelectedRows([]);
 		} else if (rightsType === 'read') {
-			if (single) {
-				const found = find(identitiesList, (o) => o?.grantee?.[0].id === readSelectedRows[0]);
-				if (found) {
-					selectedDelegateArr.push(found);
-				}
-			} else {
-				selectedDelegateArr.push(...filter(identityRows, { writeFolder: false, readFolder: true }));
-			}
 			setReadSelectedRows([]);
 		} else if (rightsType === 'send') {
-			if (single) {
-				const found = find(identitiesList, (o) => o?.grantee?.[0].id === sendSelectedRows[0]);
-				if (found) {
-					selectedDelegateArr.push(found);
-				}
-			} else {
-				selectedDelegateArr.push(...filter(identityRows, { sendRights: true }));
-			}
 			setReadSelectedRows([]);
 		}
 
@@ -249,12 +239,12 @@ export const SimplifiedRightsPanel = ({
 					<Row width="25%" mainAlignment="flex-start">
 						<Checkbox
 							iconColor="primary"
-							value={readRightWriteCheck}
+							value={readWriteRightCheck}
 							onClick={(): void => {
-								if (!readRightWriteCheck) {
+								if (!readWriteRightCheck) {
 									setReadRightCheck(false);
 								}
-								setReadWriteRightCheck(!readRightWriteCheck);
+								setReadWriteRightCheck(!readWriteRightCheck);
 							}}
 							label={t('account_details.read_write', 'Read / Write')}
 						/>
@@ -314,7 +304,7 @@ export const SimplifiedRightsPanel = ({
 							!(
 								sendRightCheck ||
 								readRightCheck ||
-								readRightWriteCheck ||
+								readWriteRightCheck ||
 								sendBehalfRightCheck
 							) || !selectedAccounts?.length
 						}
