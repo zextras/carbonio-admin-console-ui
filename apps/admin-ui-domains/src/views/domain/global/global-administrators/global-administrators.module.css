@@ -14,7 +14,7 @@
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  height: fit-content;
+  height: 100%;
   background: var(--color-gray6-regular);
   padding: var(--padding-size-large) var(--padding-size-large) 0 var(--padding-size-large);
 }
