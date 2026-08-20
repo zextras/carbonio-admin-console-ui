@@ -108,10 +108,6 @@ export const GlobalAdministrators = () => {
 						headers={headers}
 						showCheckbox={false}
 						multiSelect={false}
-						style={{
-							overflow: 'auto',
-							height: isFetching || accountList.length === 0 ? '50%' : '100%',
-						}}
 						RowFactory={HoverableRowFactory}
 						HeaderFactory={CustomHeaderFactory}
 					/>
