@@ -3,7 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, IconCheckbox, Input, Padding, Row, Switch, SwitchProps, Tooltip, } from '@zextras/ui-components';
+import {
+  Container,
+  IconCheckbox,
+  Input,
+  Padding,
+  Row,
+  Switch,
+  SwitchProps,
+  Tooltip,
+} from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import React, { useState } from 'react';
@@ -35,7 +44,8 @@ function getInputDescription(
     return undefined;
   }
   const quotaValueInBytes = typeof quotaValue === 'number' ? GbToBytes(quotaValue) : undefined;
-  const exceedsConstraint = quotaValueInBytes !== undefined && quotaValueInBytes > domainQuotaConstraint;
+  const exceedsConstraint =
+    quotaValueInBytes !== undefined && quotaValueInBytes > domainQuotaConstraint;
 
   if (exceedsConstraint) {
     return t('label.exceeds_domain_limit', {
@@ -65,11 +75,13 @@ function getInheritedValue(
     }
     return BytesToGB(domainQuotaConstraint);
   }
-  return cosComputedLimit === 'unlimited'
-    ? t('account_details.unlimited', 'Unlimited')
-    : typeof cosComputedLimit === 'number'
-    ? BytesToGB(cosComputedLimit)
-    : undefined;
+  if (cosComputedLimit === 'unlimited') {
+    return t('account_details.unlimited', 'Unlimited');
+  }
+  if (typeof cosComputedLimit === 'number') {
+    return BytesToGB(cosComputedLimit);
+  }
+  return undefined;
 }
 
 export const EditAccountQuotaInputsNew = ({
@@ -150,7 +162,9 @@ export const EditAccountQuotaInputsNew = ({
             })}
           </ds-text>
           <Padding top="small">
-            <ds-text weight="bold" as="span">{t('account_details.click_to_revert', 'Click to revert.')}</ds-text>
+            <ds-text weight="bold" as="span">
+              {t('account_details.click_to_revert', 'Click to revert.')}
+            </ds-text>
           </Padding>
         </>
       }
@@ -178,7 +192,9 @@ export const EditAccountQuotaInputsNew = ({
             value={switchValue}
             disabled={typeof domainQuotaConstraint === 'number'}
           />
-          <ds-text size="medium" as="label">{t('label.unlimited_quota', 'Unlimited quota')}</ds-text>
+          <ds-text size="medium" as="label">
+            {t('label.unlimited_quota', 'Unlimited quota')}
+          </ds-text>
         </Container>
       </Padding>
       <Row
