@@ -86,6 +86,15 @@ describe('useInitializedDomains', () => {
 		);
 	});
 
+	it('should not fetch while disabled', async () => {
+		renderHook(() => useInitializedDomains('example', false), {
+			wrapper: makeWrapper(new QueryClient()),
+		});
+
+		await new Promise((resolve) => setTimeout(resolve, 50));
+		expect(mockGetInitializedDomains).not.toHaveBeenCalled();
+	});
+
 	it('should surface service errors', async () => {
 		mockGetInitializedDomains.mockRejectedValue(new Error('boom'));
 

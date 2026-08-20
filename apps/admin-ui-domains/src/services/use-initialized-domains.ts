@@ -12,12 +12,14 @@ import { getInitializedDomains } from './get-initialized-domains';
 /**
  * Initialized domains matching `search`. Pass a debounced search string
  * (useDebouncedValue) so the query key drives refetching; previous results
- * stay visible while the new search resolves.
+ * stay visible while the new search resolves. Pass `enabled: false` to
+ * skip fetching (e.g. while a domain was picked from the list).
  */
-export const useInitializedDomains = (search: string) =>
+export const useInitializedDomains = (search: string, enabled = true) =>
 	useQuery({
 		queryKey: domainQueryKeys.initializedDomains(search),
 		queryFn: () => getInitializedDomains({ domainName: search }),
+		enabled,
 		staleTime: 30_000,
 		retry: 1,
 		placeholderData: keepPreviousData,

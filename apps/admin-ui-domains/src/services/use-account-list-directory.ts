@@ -41,9 +41,13 @@ export function parseAccountListDirectory(res: any): Array<AccountListEntry> {
 /**
  * SearchDirectory query. Pass a debounced search string in `query`
  * (useDebouncedValue) so the query key drives refetching; previous results
- * stay visible while the next search resolves.
+ * stay visible while the next search resolves. Pass `enabled: false` to
+ * skip fetching (e.g. while the search text is too short).
  */
-export const useAccountListDirectory = (params: AccountListDirectoryParams) =>
+export const useAccountListDirectory = (
+  params: AccountListDirectoryParams,
+  enabled = true,
+) =>
 	useQuery({
 		queryKey: domainQueryKeys.accountListDirectory(params),
 		queryFn: () =>
@@ -57,6 +61,7 @@ export const useAccountListDirectory = (params: AccountListDirectoryParams) =>
 				params.sortBy,
 				params.sortAscending,
 			).then(parseAccountListDirectory),
+		enabled,
 		staleTime: 30_000,
 		retry: 1,
 		placeholderData: keepPreviousData,

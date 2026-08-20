@@ -6,20 +6,20 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { addDistributionListMember } from './add-distributionlist-member-service';
 import { domainQueryKeys } from './domain-query-keys';
-import { removeDistributionListMember } from './remove-distributionlist-member-service';
 
 /**
- * Removes `member` from a distribution list. `accountId` is the account whose
- * membership view must refresh; the hook owns that invalidation only, with
- * snackbars at the call site via `mutate(vars, { onSuccess, onError })`
- * (recorded repo convention).
+ * Adds `accountName` as a member of a distribution list (admin-group grant).
+ * `accountId` is the account whose membership view must refresh; the hook
+ * owns that invalidation only, with snackbars at the call site via
+ * `mutate(vars, { onSuccess, onError })` (recorded repo convention).
  */
-export const useRemoveDistributionListMember = (accountId: string) => {
+export const useAddDistributionListMember = (accountId: string) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: ({ listId, member }: { listId: string; member: string }) =>
-			removeDistributionListMember(
+			addDistributionListMember(
 				{ n: 'id', _content: listId },
 				{ n: 'dlm', _content: member },
 			),

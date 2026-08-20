@@ -50,7 +50,7 @@ import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { deligateSendSettings, isValidEmail } from '../../utility/utils';
 import { useAccountForm, useSetAccountValues } from './account-form-context';
 import DelegateAddSection from './add-delegate-section/delegate-add-section';
-import DelegateSelectModeSection from './add-delegate-section/delegate-selectmode-section';
+import { DelegateSelectModeSection } from './add-delegate-section/delegate-selectmode-section';
 import DelegateSetRightsSection from './add-delegate-section/delegate-setright-section';
 
 const EditAccountDelegatesSection: FC = () => {

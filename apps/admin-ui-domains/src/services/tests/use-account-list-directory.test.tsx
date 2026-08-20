@@ -123,6 +123,17 @@ describe('useAccountListDirectory', () => {
 		);
 	});
 
+	it('should not fetch while disabled', async () => {
+		mockAccountListDirectory.mockResolvedValue({ account: [] });
+
+		renderHook(() => useAccountListDirectory(PARAMS, false), {
+			wrapper: makeWrapper(new QueryClient()),
+		});
+
+		await new Promise((resolve) => setTimeout(resolve, 50));
+		expect(mockAccountListDirectory).not.toHaveBeenCalled();
+	});
+
 	it('should surface service errors', async () => {
 		mockAccountListDirectory.mockRejectedValue(new Error('boom'));
 

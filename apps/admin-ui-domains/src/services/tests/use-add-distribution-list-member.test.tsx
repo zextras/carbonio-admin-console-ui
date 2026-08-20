@@ -9,14 +9,14 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { type ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockRemoveDistributionListMember = vi.hoisted(() => vi.fn());
+const mockAddDistributionListMember = vi.hoisted(() => vi.fn());
 
-vi.mock('../remove-distributionlist-member-service', () => ({
-	removeDistributionListMember: mockRemoveDistributionListMember,
+vi.mock('../add-distributionlist-member-service', () => ({
+	addDistributionListMember: mockAddDistributionListMember,
 }));
 
 import { domainQueryKeys } from '../domain-query-keys';
-import { useRemoveDistributionListMember } from '../use-remove-distribution-list-member';
+import { useAddDistributionListMember } from '../use-add-distribution-list-member';
 
 function makeWrapper(queryClient: QueryClient) {
 	return function QueryWrapper({ children }: { children: ReactNode }): ReactNode {
@@ -26,24 +26,24 @@ function makeWrapper(queryClient: QueryClient) {
 
 const INPUT = { listId: 'dl-1', member: 'jane@example.com' };
 
-describe('useRemoveDistributionListMember', () => {
+describe('useAddDistributionListMember', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
 	it('should call the service and invalidate the membership query', async () => {
-		mockRemoveDistributionListMember.mockResolvedValue({ Body: {} });
+		mockAddDistributionListMember.mockResolvedValue({});
 		const queryClient = new QueryClient();
 		const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
 
-		const { result } = renderHook(() => useRemoveDistributionListMember('account-1'), {
+		const { result } = renderHook(() => useAddDistributionListMember('account-1'), {
 			wrapper: makeWrapper(queryClient),
 		});
 
 		await act(async () => result.current.mutate(INPUT));
 		await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-		expect(mockRemoveDistributionListMember).toHaveBeenCalledWith(
+		expect(mockAddDistributionListMember).toHaveBeenCalledWith(
 			{ n: 'id', _content: 'dl-1' },
 			{ n: 'dlm', _content: 'jane@example.com' },
 		);
@@ -53,8 +53,8 @@ describe('useRemoveDistributionListMember', () => {
 	});
 
 	it('should surface service errors', async () => {
-		mockRemoveDistributionListMember.mockRejectedValue(new Error('boom'));
-		const { result } = renderHook(() => useRemoveDistributionListMember('account-1'), {
+		mockAddDistributionListMember.mockRejectedValue(new Error('boom'));
+		const { result } = renderHook(() => useAddDistributionListMember('account-1'), {
 			wrapper: makeWrapper(new QueryClient()),
 		});
 

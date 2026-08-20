@@ -4,194 +4,166 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, DropDownInput, Row, Select, useSnackbar } from '@zextras/ui-components';
-import { debounce } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Container, DropDownInput, Row, Select } from '@zextras/ui-components';
+import { useDebouncedValue } from '@zextras/ui-shared';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { accountListDirectory } from '../../../../services/account-list-directory-service';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import { useAccountListDirectory } from '../../../../services/use-account-list-directory';
 import { delegateType } from '../../../utility/utils';
 import { useAccountForm } from '../account-form-context';
 
-const DelegateSelectModeSection: FC = () => {
-  const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-  const [delegateAccountList, setDelegateAccountList] = useState<any[]>([]);
-  const [searchDelegateAccountName, setSearchDelegateAccountName] = useState(undefined);
-  const [isDelegateAccountListExpand, setIsDelegateAccountListExpand] = useState(false);
-  const DELEGETES_TYPE = useMemo(() => delegateType(t), [t]);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const offset = 0;
-  const limit = 20;
-  const { form, deligateDetail, setDeligateDetail } = useAccountForm();
-  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
-  const accountDetail = values;
+const DELEGATE_SEARCH_ATTRS =
+	'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
 
-  const searchAccountList = useCallback(
-    debounce((searchText, type) => {
-      if (searchText) {
-        if (type === 'distributionlists') {
-          setSearchQuery(`(&(objectClass=zimbraDistributionList)(mail=*${searchText}*))`);
-        } else {
-          setSearchQuery(
-            `(&(objectClass=zimbraAccount)(zimbraMailDeliveryAddress=*${searchText}*))`,
-          );
-        }
-      } else {
-        setSearchQuery('');
-      }
-    }, 700),
-    [debounce],
-  );
+type DelegateAccount = { id: string; name: string };
 
-  useEffect(() => {
-    const type = deligateDetail?.grantee?.[0]?.type === 'grp' ? 'distributionlists' : 'accounts';
-    searchAccountList(searchDelegateAccountName, type);
-  }, [searchAccountList, searchDelegateAccountName, deligateDetail]);
+/** LDAP filter for the delegate search over accounts or distribution lists. */
+export function buildDelegateSearchQuery(search: string, type: string): string {
+	if (!search) {
+		return '';
+	}
+	return type === 'distributionlists'
+		? `(&(objectClass=zimbraDistributionList)(mail=*${search}*))`
+		: `(&(objectClass=zimbraAccount)(zimbraMailDeliveryAddress=*${search}*))`;
+}
 
-  const selectedDelegateAccount = useCallback(
-    (v: any): void => {
-      setSearchDelegateAccountName(v.name);
-      setDeligateDetail((prev: any) => ({
-        ...prev,
-        grantee: [{ name: v.name, type: deligateDetail?.grantee?.[0]?.type || '' }],
-      }));
-    },
-    [deligateDetail, setDeligateDetail],
-  );
+/** Dropdown items for the delegate search; the edited account is excluded. */
+export function buildDelegateAccountItems(
+	list: Array<DelegateAccount>,
+	selfId: string | undefined,
+	onSelect: (entry: DelegateAccount) => void,
+): Array<{ id: string; label: string; customComponent: React.ReactElement }> {
+	return list
+		.filter((entry) => entry.id !== selfId)
+		.map((entry) => ({
+			id: entry.id,
+			label: entry.name,
+			customComponent: (
+				<Row
+					style={{
+						display: 'block',
+						textAlign: 'left',
+						height: 'inherit',
+						width: 'inherit',
+					}}
+					onClick={(): void => onSelect(entry)}
+				>
+					{entry?.name}
+				</Row>
+			),
+		}));
+}
 
-  const getAccountList = useCallback((): void => {
-    const type = deligateDetail?.grantee?.[0]?.type === 'grp' ? 'distributionlists' : 'accounts';
-    const attrs =
-      'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-    accountListDirectory(attrs, type, '', searchQuery, offset, limit)
-      .then((data) => {
-        const accountListResponse: any = data?.account || [];
+export const DelegateSelectModeSection = () => {
+	const [t] = useTranslation();
+	const [searchDelegateAccountName, setSearchDelegateAccountName] = useState<
+		string | undefined
+	>(undefined);
+	const DELEGETES_TYPE = delegateType(t);
+	const { form, deligateDetail, setDeligateDetail } = useAccountForm();
+	const values = useSelector(form.store, (s) => s.values as Record<string, any>);
+	const accountDetail = values;
 
-        if (accountListResponse && Array.isArray(accountListResponse)) {
-          const accountListArr: any[] = [];
-          if (data?.dl?.length) {
-            data.account = data?.dl;
-          }
-          data?.account.map(
-            (delegateAccount: any) =>
-              delegateAccount.id !== accountDetail.zimbraId &&
-              accountListArr.push({
-                id: delegateAccount.id,
-                label: delegateAccount.name,
-                customComponent: (
-                  <Row
-                    style={{
-                      display: 'block',
-                      textAlign: 'left',
-                      height: 'inherit',
-                      width: 'inherit',
-                    }}
-                    onClick={(): void => {
-                      selectedDelegateAccount(delegateAccount);
-                    }}
-                  >
-                    {delegateAccount?.name}
-                  </Row>
-                ),
-              }),
-          );
-          setDelegateAccountList(accountListArr);
-        }
-      })
-      .catch((error) => {
-        const snackbarConfig = generateSnackbarFromError(error, t);
-        createSnackbar(snackbarConfig);
-      });
-  }, [
-    deligateDetail?.grantee,
-    searchQuery,
-    offset,
-    limit,
-    accountDetail.zimbraId,
-    selectedDelegateAccount,
-    t,
-    createSnackbar,
-  ]);
+	const searchType =
+		deligateDetail?.grantee?.[0]?.type === 'grp' ? 'distributionlists' : 'accounts';
+	const debouncedSearch = useDebouncedValue(searchDelegateAccountName, 700);
+	const searchQuery = buildDelegateSearchQuery(debouncedSearch ?? '', searchType);
 
-  useEffect(() => {
-    if (searchQuery.length > 2) getAccountList();
-  }, [getAccountList, searchQuery]);
+	const { data: delegateAccounts = [] } = useAccountListDirectory(
+		{
+			attr: DELEGATE_SEARCH_ATTRS,
+			type: searchType,
+			domainName: '',
+			query: searchQuery,
+			offset: 0,
+			limit: 20,
+		},
+		searchQuery.length > 2,
+	);
 
-  const onGroupByChange = (v: any): any => {
-    setDeligateDetail((prev: any) => ({
-      ...prev,
-      grantee: [{ type: v, name: deligateDetail?.grantee?.[0]?.name || '' }],
-    }));
-    setSearchDelegateAccountName(undefined);
-    if (searchQuery.length > 2) getAccountList();
-  };
+	const selectedDelegateAccount = (v: DelegateAccount): void => {
+		setSearchDelegateAccountName(v.name);
+		setDeligateDetail((prev: any) => ({
+			...prev,
+			grantee: [{ name: v.name, type: deligateDetail?.grantee?.[0]?.type || '' }],
+		}));
+	};
 
-  const customIconDetail = {
-    icon: 'GlobeOutline' as const,
-    color: 'text',
-    onClick: (): void => {
-      setIsDelegateAccountListExpand(!isDelegateAccountListExpand);
-    },
-    style: {
-      width: '20px',
-      height: '20px',
-    },
-  };
-  return (
-    <>
-      <Container
-        mainAlignment="flex-start"
-        padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
-      >
-        <Row mainAlignment="flex-start" width="100%">
-          <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <ds-text size="small" color="gray0" weight="bold" as="h3">
-              {t('account_details.i_want_to_create_a_delegate_for', `I want to create a delegate`)}
-            </ds-text>
-          </Row>
-        </Row>
-        <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-          <Row width="100%" mainAlignment="flex-start">
-            <Select
-              background="gray5"
-              label={t('account_details.who_will_be_delegates', 'Who will be the delegates?')}
-              showCheckbox={false}
-              defaultSelection={DELEGETES_TYPE.find(
-                (item: any) => item.value === deligateDetail?.grantee?.[0]?.type,
-              )}
-              onChange={onGroupByChange}
-              items={DELEGETES_TYPE}
-            />
-          </Row>
-        </Row>
-        <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-          <Row width="100%" mainAlignment="flex-start">
-            <DropDownInput
-              items={delegateAccountList}
-              maxWidth="19rem"
-              width="17rem"
-              inputLabel={t(
-                'account_details.search_here_for_an_account',
-                'Search here for an Account',
-              )}
-              onChange={(ev: any): void => {
-                setSearchDelegateAccountName(ev.target.value);
-              }}
-              inputValue={
-                searchDelegateAccountName === undefined
-                  ? deligateDetail?.grantee?.[0]?.name || ''
-                  : searchDelegateAccountName
-              }
-              isCustomIcon
-              customIconDetail={customIconDetail}
-            />
-          </Row>
-        </Row>
-      </Container>
-    </>
-  );
+	const delegateAccountList = buildDelegateAccountItems(
+		delegateAccounts,
+		accountDetail.zimbraId,
+		selectedDelegateAccount,
+	);
+
+	const onGroupByChange = (v: any): any => {
+		setDeligateDetail((prev: any) => ({
+			...prev,
+			grantee: [{ type: v, name: deligateDetail?.grantee?.[0]?.name || '' }],
+		}));
+		setSearchDelegateAccountName(undefined);
+	};
+
+	const customIconDetail = {
+		icon: 'GlobeOutline' as const,
+		color: 'text',
+		onClick: (): void => undefined,
+		style: {
+			width: '20px',
+			height: '20px',
+		},
+	};
+	return (
+		<>
+			<Container
+				mainAlignment="flex-start"
+				padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+			>
+				<Row mainAlignment="flex-start" width="100%">
+					<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+						<ds-text size="small" color="gray0" weight="bold" as="h3">
+							{t('account_details.i_want_to_create_a_delegate_for', `I want to create a delegate`)}
+						</ds-text>
+					</Row>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="100%" mainAlignment="flex-start">
+						<Select
+							background="gray5"
+							label={t('account_details.who_will_be_delegates', 'Who will be the delegates?')}
+							showCheckbox={false}
+							defaultSelection={DELEGETES_TYPE.find(
+								(item: any) => item.value === deligateDetail?.grantee?.[0]?.type,
+							)}
+							onChange={onGroupByChange}
+							items={DELEGETES_TYPE}
+						/>
+					</Row>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="100%" mainAlignment="flex-start">
+						<DropDownInput
+							items={delegateAccountList}
+							maxWidth="19rem"
+							width="17rem"
+							inputLabel={t(
+								'account_details.search_here_for_an_account',
+								'Search here for an Account',
+							)}
+							onChange={(ev: any): void => {
+								setSearchDelegateAccountName(ev.target.value);
+							}}
+							inputValue={
+								searchDelegateAccountName === undefined
+									? deligateDetail?.grantee?.[0]?.name || ''
+									: searchDelegateAccountName
+							}
+							isCustomIcon
+							customIconDetail={customIconDetail}
+						/>
+					</Row>
+				</Row>
+			</Container>
+		</>
+	);
 };
-
-export default DelegateSelectModeSection;
