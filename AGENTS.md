@@ -179,6 +179,16 @@ Theme tokens are plain CSS variables and work directly in stylesheets:
 - Padding sizes: `var(--padding-size-extrasmall | small | medium | large | extralarge)`
 - Border radius: `var(--border-radius)`
 
+### Tailwind Utilities
+Tailwind v4 utilities are available in every app **and in browser tests** (the vitest pipeline compiles them via `@tailwindcss/vite` in `vitest.config.base.ts` + root `tailwind.css` imported by `vitest-browser-setup.ts`; the production shell compiles the same utilities via `apps/admin-ui-bootstrap/src/index.css`).
+
+- For tiny one-off styles (a single padding/margin/gap/color), prefer a Tailwind class over creating a `.module.css` file, e.g. `<div className="pr-md">` instead of a whole CSS module
+- For anything multi-rule, keep using CSS modules (theme tokens work directly in them, see above)
+- Theme tokens are mapped to Tailwind utilities by `packages/ui-components/src/theme/tailwind-theme.css`:
+  - Spacing: `--spacing-xs|sm|md|lg|xl` → `--padding-size-extrasmall|small|medium|large|extralarge` (e.g. `p-sm` = `var(--padding-size-small)`)
+  - Colors: `text-primary`, `bg-gray5`, … resolve to `var(--color-<name>-regular)`
+- Never import `tailwindcss/preflight` — it would globally reset styles and shift screenshot baselines
+
 Existing call sites (~3,300) are migrated incrementally. When modifying a file that still uses these components, migrate it opportunistically.
 
 ### Testing
