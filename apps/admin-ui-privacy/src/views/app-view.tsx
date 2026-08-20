@@ -13,7 +13,7 @@ import { PrivacyView } from './privacy/privacy-view';
 export function AppView() {
   const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
-    <Container height={'fit'}>
+    <Container>
       <PageHeader />
       <Container orientation="horizontal" mainAlignment="flex-start">
         <Container style={{ maxWidth: '100%' }}>
