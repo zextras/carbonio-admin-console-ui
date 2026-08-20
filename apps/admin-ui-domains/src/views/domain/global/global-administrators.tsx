@@ -15,18 +15,18 @@ import {
   Table,
   TrackNumberPerPage,
 } from '@zextras/ui-components';
-import { FC, useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import logo from '../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../constants';
+import logo from '../../../assets/gardian.svg';
+import { RECORD_DISPLAY_LIMIT } from '../../../constants';
 import {
   adminAccountListQueryKeys,
   useAdminAccountList,
-} from '../../services/use-admin-account-list';
-import { EditAccount } from './edit-account/edit-account';
+} from '../../../services/use-admin-account-list';
+import { EditAccount } from '../edit-account/edit-account';
 
-const GlobalDelegates: FC = () => {
+export const GlobalAdministrators = () => {
   const [t] = useTranslation();
   const queryClient = useQueryClient();
   const [defaultTab, setDefaultTab] = useState('general');
@@ -321,5 +321,3 @@ const GlobalDelegates: FC = () => {
     </Container>
   );
 };
-
-export default GlobalDelegates;

@@ -8,7 +8,7 @@ import { createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import GlobalDelegates from '../global-delegates';
+import { GlobalAdministrators } from '../global-administrators';
 
 type AccountEntry = {
 	name: string;
@@ -49,7 +49,7 @@ function setupSearchDirectoryInterceptor(
 	});
 }
 
-describe('GlobalDelegates (browser)', () => {
+describe('GlobalAdministrators (browser)', () => {
 	beforeEach(() => {
 		// Intercept the catalog service check to prevent MSW warnings
 		createBrowserSoapAPIInterceptor('GetInfo', {
@@ -61,7 +61,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should render the Administrators header', async () => {
 			setupSearchDirectoryInterceptor();
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			await expect.element(page.getByText('Administrators')).toBeVisible();
 		});
@@ -69,7 +69,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should render the Administration Rights subtitle', async () => {
 			setupSearchDirectoryInterceptor();
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			await expect.element(page.getByText('Administration Rights')).toBeVisible();
 		});
@@ -77,7 +77,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should render table headers', async () => {
 			setupSearchDirectoryInterceptor();
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			await expect.element(page.getByText('Account', { exact: true })).toBeVisible();
 			await expect.element(page.getByText('Type', { exact: true })).toBeVisible();
@@ -90,7 +90,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should display admin accounts after loading', async () => {
 			setupSearchDirectoryInterceptor();
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			await expect.element(page.getByText('admin@example.com')).toBeVisible();
 			await expect.element(page.getByText('delegated@example.com')).toBeVisible();
@@ -100,7 +100,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should show correct account types', async () => {
 			setupSearchDirectoryInterceptor();
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			await expect.element(page.getByText('Admin', { exact: true })).toBeVisible();
 			await expect
@@ -111,7 +111,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should show domain extracted from account name', async () => {
 			setupSearchDirectoryInterceptor();
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			await expect
 				.element(page.getByText('example.com', { exact: true }).first())
@@ -124,7 +124,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should show account descriptions', async () => {
 			setupSearchDirectoryInterceptor();
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			await expect
 				.element(page.getByText('Global admin account'))
@@ -139,7 +139,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should show empty state when no admin accounts exist', async () => {
 			setupSearchDirectoryInterceptor([]);
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			await expect
 				.element(page.getByText('This list is empty.'))
@@ -149,7 +149,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should show help text in empty state', async () => {
 			setupSearchDirectoryInterceptor([]);
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			await expect
 				.element(page.getByText(/You can create a new Account/))
@@ -161,7 +161,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should send SearchDirectory request with admin filter query', async () => {
 			const interceptor = setupSearchDirectoryInterceptor();
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			const requestParams = (await interceptor) as any;
 			expect(requestParams.types).toBe('accounts');
@@ -172,7 +172,7 @@ describe('GlobalDelegates (browser)', () => {
 		it('should request correct offset and limit', async () => {
 			const interceptor = setupSearchDirectoryInterceptor();
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			const requestParams = (await interceptor) as any;
 			expect(requestParams.offset).toBe(0);
@@ -185,7 +185,7 @@ describe('GlobalDelegates (browser)', () => {
 			const singleAdmin = [buildAdminAccount('root@test.org', 'acc-root-1', true)];
 			setupSearchDirectoryInterceptor(singleAdmin);
 
-			setupBrowserTest(<GlobalDelegates />);
+			setupBrowserTest(<GlobalAdministrators />);
 
 			await expect.element(page.getByText('root@test.org')).toBeVisible();
 			await expect.element(page.getByText('Admin', { exact: true })).toBeVisible();

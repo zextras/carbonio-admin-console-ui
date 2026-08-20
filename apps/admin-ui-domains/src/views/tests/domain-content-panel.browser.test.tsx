@@ -36,8 +36,8 @@ function MockGlobalActiveSync() {
 function MockGlobalAddressBook() {
   return <div>VIEW:global-address-book</div>;
 }
-function MockGlobalDelegates() {
-  return <div>VIEW:global-delegates</div>;
+function MockGlobalAdministrators() {
+  return <div>VIEW:global-administrators</div>;
 }
 function MockDomainList() {
   return <div>VIEW:domain-list</div>;
@@ -102,7 +102,9 @@ vi.mock('../domain/global/global-active-sync', () => ({ default: MockGlobalActiv
 vi.mock('../domain/global/global-address-book', () => ({
   GlobalAddressBook: MockGlobalAddressBook,
 }));
-vi.mock('../domain/global-delegates', () => ({ default: MockGlobalDelegates }));
+vi.mock('../domain/global/global-administrators', () => ({
+    GlobalAdministrators: MockGlobalAdministrators,
+  }));
 vi.mock('../domain/domain-list/domain-list', () => ({ DomainList: MockDomainList }));
 vi.mock('../quarantine/quarantine-list', () => ({ default: MockQuarantineList }));
 vi.mock('../domain/details/domain-general-settings', () => ({
@@ -140,7 +142,7 @@ const globalRoutes: Array<[string, string]> = [
   ['/global/2-factor-authentication', 'VIEW:global-two-factor-auth'],
   ['/global/quarantine', 'VIEW:quarantine-list'],
   ['/global/domains', 'VIEW:domain-list'],
-  ['/global/administrators', 'VIEW:global-delegates'],
+  ['/global/administrators', 'VIEW:global-administrators'],
   ['/global/active_sync', 'VIEW:global-active-sync'],
   ['/global/address_book', 'VIEW:global-address-book'],
 ];
