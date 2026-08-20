@@ -97,7 +97,7 @@ export default tseslint.config(
       'packages/ui-components/src/components/custom/breadcrumb.tsx',
       'apps/admin-ui-domains/src/views/domain/domain-list-panel.tsx',
       'apps/admin-ui-domains/src/views/domain/global/global-detail-panel.tsx',
-      'apps/admin-ui-domains/src/views/domain/global-delegates.tsx',
+      'apps/admin-ui-domains/src/views/domain/global/global-administrators.tsx',
       'apps/admin-ui-domains/src/views/domain/edit-account/**',
       'apps/admin-ui-dashboard/**',
       'apps/admin-ui-legalhold/**',
