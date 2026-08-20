@@ -152,6 +152,35 @@ Year is auto-updated by eslint. The header is required in all files except:
 - **Conditional props** (one or the other, not both): use `never` — `{ foo: string; bar?: never } | { bar: string; foo?: never }`
 - **Discriminated unions** for props that vary by type: `{ type: 'button'; onClick: () => void } | { type: 'link'; href: string }`
 
+### Deprecated Layout Components
+`Container`, `Row`, and `Padding` from `@zextras/ui-components` (and their `*Props` types) are **deprecated**. Do not add new usages, including in tests. They are thin wrappers over `<div>` that compile layout props into inline styles at runtime (unoverrideable without `!important`). Use a plain `<div>` with CSS modules instead:
+
+```tsx
+// Don't
+<Row mainAlignment="space-between" padding={{ all: 'small' }}>...</Row>
+
+// Do
+import styles from './my-component.module.css';
+
+<div className={styles.header}>...</div>
+```
+
+```css
+/* my-component.module.css */
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--padding-size-small);
+}
+```
+
+Theme tokens are plain CSS variables and work directly in stylesheets:
+- Colors: `var(--color-<name>-regular)` / `var(--color-<name>-<state>)`, e.g. `var(--color-gray3-regular)`
+- Padding sizes: `var(--padding-size-extrasmall | small | medium | large | extralarge)`
+- Border radius: `var(--border-radius)`
+
+Existing call sites (~3,300) are migrated incrementally. When modifying a file that still uses these components, migrate it opportunistically.
+
 ### Testing
 - Always add timeout instruction when running tests: `testTimeout: 10_000` (default) or `20_000` for CI
 - **Never** remove `.test.only` or `it.only` - they are intentional
