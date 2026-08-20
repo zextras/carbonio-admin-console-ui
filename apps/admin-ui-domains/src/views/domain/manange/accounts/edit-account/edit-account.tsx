@@ -40,6 +40,7 @@ import { EditAccountGeneralSection } from './edit-account-general-section';
 import EditAccountSecuritySection from './edit-account-security-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
 import { AccountHeaderActions } from './parts/account-header-actions';
+import { AccountSaveCancelActions } from './parts/account-save-cancel-actions';
 import { ReusedDefaultTabBar } from './parts/reused-default-tab-bar';
 
 export type EditAccountProps = {
@@ -260,32 +261,12 @@ const EditAccountContent = ({
             </ds-text>
           </Row>
           {isDirty && (
-            <Row>
-              <Container
-                orientation="horizontal"
-                mainAlignment="center"
-                crossAlignment="center"
-                background="gray6"
-              >
-                <Padding right="small">
-                  <Button
-                    label={t('label.cancel', 'Cancel')}
-                    color="secondary"
-                    onClick={resetToSaved}
-                  />
-                </Padding>
-                <Padding right="small">
-                  <Button
-                    label={t('label.save', 'Save')}
-                    color="primary"
-                    onClick={onSave}
-                    disabled={hasQuotaError}
-                  />
-                </Padding>
-              </Container>
-            </Row>
+            <AccountSaveCancelActions
+              hasQuotaError={hasQuotaError}
+              onSave={onSave}
+              onCancel={resetToSaved}
+            />
           )}
-
           {!isDirty && (
             <AccountHeaderActions
               accountId={account.id}

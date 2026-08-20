@@ -40,9 +40,12 @@ type SetupOptions = {
 };
 
 async function setupAccountHeaderActions(
-  { rights = rightsWithAdminLoginAs, zimbraId = ACCOUNT_ID }: SetupOptions = {},
+  options: SetupOptions = {},
   onDelete = vi.fn(),
 ): Promise<() => void> {
+  const rights = options.rights ?? rightsWithAdminLoginAs;
+  // An explicitly passed undefined must not fall back to ACCOUNT_ID
+  const zimbraId = 'zimbraId' in options ? options.zimbraId : ACCOUNT_ID;
   const queryClient = getQueryClient();
   await setupAccount(queryClient);
   queryClient.setQueryData(['effective-rights', USER_NAME], rights);
