@@ -106,7 +106,7 @@ Examples:
   pnpm sonarlint --file cos-list-panel.tsx
   pnpm sonarlint --severity BLOCKER,CRITICAL
   pnpm sonarlint --rule S7735
-  pnpm sonarlint --branch devel --app admin-ui-cos
+  pnpm sonarlint --branch main --app admin-ui-cos
 `);
 }
 
@@ -114,8 +114,8 @@ function getGitBranch(): string {
 	try {
 		return execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
 	} catch {
-		colorLog('Warning: Could not detect git branch, using "devel"', 'orange');
-		return 'devel';
+		colorLog('Warning: Could not detect git branch, using "main"', 'orange');
+		return 'main';
 	}
 }
 
