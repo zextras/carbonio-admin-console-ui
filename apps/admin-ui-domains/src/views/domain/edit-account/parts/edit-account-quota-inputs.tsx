@@ -7,13 +7,13 @@ import React, { ComponentProps, Dispatch, SetStateAction, useCallback } from 're
 
 import { AccountDetail, CosDetail } from '../../manange/accounts/account-detail-types';
 import { EditAccountQuotaInputsNew } from './edit-account-quota-inputs-new';
+import { computedLimitToLimit } from './quota-utils';
 
 type EditAccountQuotaInputsProps = {
   accountDetail: AccountDetail;
   cosDetail: CosDetail;
   initialAccountDetail: AccountDetail;
   setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
-  onQuotaErrorChange: (hasError: boolean) => void;
 };
 
 export const EditAccountQuotaInputs = ({
@@ -21,7 +21,6 @@ export const EditAccountQuotaInputs = ({
   cosDetail,
   initialAccountDetail,
   setAccountDetail,
-  onQuotaErrorChange,
 }: EditAccountQuotaInputsProps): React.JSX.Element => {
   const onTotalComputedQuotaLimitChange: ComponentProps<
     typeof EditAccountQuotaInputsNew
@@ -34,30 +33,13 @@ export const EditAccountQuotaInputs = ({
 
   return (
     <EditAccountQuotaInputsNew
-      cosComputedLimit={
-        cosDetail.totalComputedQuotaLimit === undefined
-          ? undefined
-          : cosDetail.totalComputedQuotaLimit.type === 'unlimited'
-          ? 'unlimited'
-          : cosDetail.totalComputedQuotaLimit.value
-      }
-      totalComputedQuotaLimit={
-        accountDetail.totalComputedQuotaLimit === undefined
-          ? undefined
-          : accountDetail.totalComputedQuotaLimit.type === 'unlimited'
-          ? 'unlimited'
-          : accountDetail.totalComputedQuotaLimit.value
-      }
-      initialTotalComputedQuotaLimit={
-        initialAccountDetail.totalComputedQuotaLimit === undefined
-          ? undefined
-          : initialAccountDetail.totalComputedQuotaLimit.type === 'unlimited'
-          ? 'unlimited'
-          : initialAccountDetail.totalComputedQuotaLimit.value
-      }
+      cosComputedLimit={computedLimitToLimit(cosDetail.totalComputedQuotaLimit)}
+      totalComputedQuotaLimit={computedLimitToLimit(accountDetail.totalComputedQuotaLimit)}
+      initialTotalComputedQuotaLimit={computedLimitToLimit(
+        initialAccountDetail.totalComputedQuotaLimit,
+      )}
       totalQuotaSource={accountDetail.totalQuotaSource}
       onChange={onTotalComputedQuotaLimitChange}
-      onQuotaErrorChange={onQuotaErrorChange}
     />
   );
 };

@@ -115,12 +115,10 @@ function filterSessions(list: Array<UserSession>, filter: string): Array<UserSes
 
 type EditAccountGeneralSectionProps = {
   onNavigateToAdministration: () => void;
-  onQuotaErrorChange: (hasError: boolean) => void;
 };
 
 export const EditAccountGeneralSection = ({
   onNavigateToAdministration,
-  onQuotaErrorChange,
 }: EditAccountGeneralSectionProps) => {
   const createSnackbar = useSnackbar();
   const queryClient = useQueryClient();
@@ -686,7 +684,6 @@ export const EditAccountGeneralSection = ({
           accountDetail={values}
           initialAccountDetail={savedValues}
           setAccountDetail={setAccountValues}
-          onQuotaErrorChange={onQuotaErrorChange}
         />
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="49%" mainAlignment="flex-start">

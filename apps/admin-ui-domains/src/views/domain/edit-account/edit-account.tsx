@@ -8,6 +8,7 @@ import { Button, RouteLeavingGuard, TabBar } from '@zextras/ui-components';
 import { useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import {
   ADMINISTRATION,
@@ -18,10 +19,12 @@ import {
   SECURITY,
   USER_PREFERENCES,
 } from '../../../constants';
+import { ComputedLimit } from '../../../services/get-account-quota';
+import { useDomainQuota } from '../../../services/use-domain-quota';
 import { AccountFormContext } from './account-form-context';
 import { useAccountFormProvider } from './account-form-provider';
 import { EditAccountAdministrationSection } from './administration-section';
-import EditAccountConfigurationSection from './configuration-section';
+import { EditAccountConfigurationSection } from './configuration-section';
 import EditAccountContactsSection from './contacts-section';
 import EditAccountDelegatesSection from './delegates-section';
 import styles from './edit-account.module.css';
@@ -30,6 +33,11 @@ import { AccountHeaderActions } from './parts/account-header-actions';
 import { AccountSaveCancelActions } from './parts/account-save-cancel-actions';
 import { DeleteAccountDialog } from './parts/delete-account-dialog';
 import { DeleteAccountHintModal } from './parts/delete-account-hint-modal';
+import {
+  computedLimitToLimit,
+  quotaExceedsDomainLimit,
+  quotaValueFromLimit,
+} from './parts/quota-utils';
 import { ReusedDefaultTabBar } from './parts/reused-default-tab-bar';
 import { UnsavedChangesModal } from './parts/unsaved-changes-modal';
 import EditAccountSecuritySection from './security-section';
@@ -61,11 +69,22 @@ export const EditAccount = ({
   const zimbraId = useSelector(form.store, (s) => s.values.zimbraId);
 
   const [change, setChange] = useState(defaultTab ?? GENERAL_SECTION);
-  const [hasQuotaError, setHasQuotaError] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
   const [isOpenDeleteHintModel, setIsOpenDeleteHintModel] = useState(false);
   const [isSectionLoading, setIsSectionLoading] = useState(false);
+
+  const { domainId } = useParams();
+  const { data: quotaData } = useDomainQuota(domainId);
+  const domainQuotaConstraint = quotaData?.type === 'success' ? quotaData.limit : 'not-set';
+  const totalComputedQuotaLimit = useSelector(
+    form.store,
+    (s) => s.values.totalComputedQuotaLimit as ComputedLimit | undefined,
+  );
+  const hasQuotaError = quotaExceedsDomainLimit(
+    quotaValueFromLimit(computedLimitToLimit(totalComputedQuotaLimit)),
+    domainQuotaConstraint,
+  );
 
   const userType = (() => {
     if (userSetting?.attrs?.zimbraIsDelegatedAdminAccount === 'TRUE') {
@@ -209,7 +228,6 @@ export const EditAccount = ({
           {change === GENERAL_SECTION && (
             <EditAccountGeneralSection
               onNavigateToAdministration={(): void => setChange(ADMINISTRATION)}
-              onQuotaErrorChange={setHasQuotaError}
             />
           )}
           {change === PROFILE && <EditAccountContactsSection />}

@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { WscSettings } from '../../../wsc/wsc-settings';
@@ -22,44 +22,23 @@ import CustomChip from '../../components/customChip';
 import { Features } from '../../cos/features';
 import { isValidEmail } from '../../utility/utils';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
+import { chipsToValue, useChipList } from './use-chip-list';
 
-const EditAccountConfigurationSection: React.FC = () => {
+export const EditAccountConfigurationSection = () => {
   const { form, cosDetail, accSpecificDetail } = useAccountForm();
   const setAccountValues = useSetAccountValues();
   const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const [t] = useTranslation();
-  const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useState<any[]>([]);
-  const [mailForwardingAddress, setMailForwardingAddress] = useState<any[]>([]);
-  const [prefCalendarForwardInvitesTo, setPrefCalendarForwardInvitesTo] = useState<any[]>([]);
-
-  useEffect(() => {
-    setPrefMailForwardingAddress(
-      values?.zimbraPrefMailForwardingAddress
-        ? values.zimbraPrefMailForwardingAddress
-            .split(', ')
-            .map((ele: string) => ({ label: ele }))
-        : [],
-    );
-  }, [values?.zimbraPrefMailForwardingAddress]);
-  useEffect(() => {
-    setMailForwardingAddress(
-      values?.zimbraMailForwardingAddress
-        ? values.zimbraMailForwardingAddress
-            .split(', ')
-            .map((ele: string) => ({ label: ele }))
-        : [],
-    );
-  }, [values?.zimbraMailForwardingAddress]);
-  useEffect(() => {
-    setPrefCalendarForwardInvitesTo(
-      values?.zimbraPrefCalendarForwardInvitesTo
-        ? values.zimbraPrefCalendarForwardInvitesTo
-            .split(', ')
-            .map((ele: string) => ({ label: ele }))
-        : [],
-    );
-  }, [values?.zimbraPrefCalendarForwardInvitesTo]);
+  const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useChipList(
+    values?.zimbraPrefMailForwardingAddress,
+  );
+  const [mailForwardingAddress, setMailForwardingAddress] = useChipList(
+    values?.zimbraMailForwardingAddress,
+  );
+  const [prefCalendarForwardInvitesTo, setPrefCalendarForwardInvitesTo] = useChipList(
+    values?.zimbraPrefCalendarForwardInvitesTo,
+  );
 
   const setEmptyValue = (keyName: string): void => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
@@ -147,7 +126,7 @@ const EditAccountConfigurationSection: React.FC = () => {
                 setPrefMailForwardingAddress(data);
                 setAccountValues((prev: Record<string, any>) => ({
                   ...prev,
-                  zimbraPrefMailForwardingAddress: map(data, 'label').join(', '),
+                  zimbraPrefMailForwardingAddress: chipsToValue(data),
                 }));
               }}
               ChipComponent={CustomChip}
@@ -173,7 +152,7 @@ const EditAccountConfigurationSection: React.FC = () => {
                 setMailForwardingAddress(data);
                 setAccountValues((prev: Record<string, any>) => ({
                   ...prev,
-                  zimbraMailForwardingAddress: map(data, 'label').join(', '),
+                  zimbraMailForwardingAddress: chipsToValue(data),
                 }));
               }}
               value={mailForwardingAddress}
@@ -199,7 +178,7 @@ const EditAccountConfigurationSection: React.FC = () => {
                 setPrefCalendarForwardInvitesTo(data);
                 setAccountValues((prev: Record<string, any>) => ({
                   ...prev,
-                  zimbraPrefCalendarForwardInvitesTo: map(data, 'label').join(', '),
+                  zimbraPrefCalendarForwardInvitesTo: chipsToValue(data),
                 }));
               }}
               value={prefCalendarForwardInvitesTo}
@@ -275,4 +254,3 @@ const EditAccountConfigurationSection: React.FC = () => {
   );
 };
 
-export default EditAccountConfigurationSection;

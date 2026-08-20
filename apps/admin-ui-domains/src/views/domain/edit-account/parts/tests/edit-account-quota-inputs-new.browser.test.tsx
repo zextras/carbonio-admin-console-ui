@@ -41,7 +41,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
 
@@ -53,7 +52,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
 
@@ -65,7 +63,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -79,7 +76,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={0}
         onChange={vi.fn()}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -92,7 +88,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={undefined}
         onChange={vi.fn()}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -105,7 +100,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={0}
         onChange={vi.fn()}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -119,7 +113,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={20000}
         onChange={vi.fn()}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -134,7 +127,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -153,7 +145,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -168,7 +159,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
     const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
@@ -183,7 +173,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
-        onQuotaErrorChange={vi.fn()}
       />,
       10737418240,
     );
@@ -200,7 +189,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
 
@@ -218,7 +206,6 @@ describe('EditAccountQuotaInputsNew', () => {
         totalComputedQuotaLimit={defaultQuotaLimit}
         totalQuotaSource="account"
         onChange={onChangeMock}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
 
@@ -238,7 +225,6 @@ describe('EditAccountQuotaInputsNew', () => {
           totalComputedQuotaLimit={defaultQuotaLimit}
           totalQuotaSource={source}
           onChange={onChangeMock}
-          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -255,7 +241,6 @@ describe('EditAccountQuotaInputsNew', () => {
       <EditAccountQuotaInputsNew
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
-        onQuotaErrorChange={vi.fn()}
       />,
     );
 
@@ -274,7 +259,6 @@ describe('EditAccountQuotaInputsNew', () => {
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
-          onQuotaErrorChange={vi.fn()}
         />,
         domainConstraint,
       );
@@ -291,7 +275,6 @@ describe('EditAccountQuotaInputsNew', () => {
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
-          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -305,7 +288,6 @@ describe('EditAccountQuotaInputsNew', () => {
         <EditAccountQuotaInputsNew
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
-          onQuotaErrorChange={vi.fn()}
         />,
         domainConstraint,
       );
@@ -334,7 +316,6 @@ describe('EditAccountQuotaInputsNew', () => {
           totalComputedQuotaLimit={defaultQuotaLimit}
           totalQuotaSource="account"
           onChange={vi.fn()}
-          onQuotaErrorChange={vi.fn()}
         />,
         domainConstraint,
       );
@@ -355,7 +336,6 @@ describe('EditAccountQuotaInputsNew', () => {
           cosComputedLimit={cosLimit}
           totalQuotaSource="account"
           onChange={vi.fn()}
-          onQuotaErrorChange={vi.fn()}
         />,
       );
 
@@ -375,7 +355,6 @@ describe('EditAccountQuotaInputsNew', () => {
           cosComputedLimit={cosLimit}
           totalQuotaSource="account"
           onChange={vi.fn()}
-          onQuotaErrorChange={vi.fn()}
         />,
         domainConstraint,
       );
@@ -396,7 +375,6 @@ describe('EditAccountQuotaInputsNew', () => {
           cosComputedLimit={cosLimit}
           totalQuotaSource="account"
           onChange={vi.fn()}
-          onQuotaErrorChange={vi.fn()}
         />,
         domainConstraint,
       );
@@ -415,7 +393,6 @@ describe('EditAccountQuotaInputsNew', () => {
           totalComputedQuotaLimit={defaultQuotaLimit}
           totalQuotaSource="domain"
           onChange={vi.fn()}
-          onQuotaErrorChange={vi.fn()}
         />,
         domainConstraint,
       );

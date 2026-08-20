@@ -5,13 +5,14 @@
  */
 import { Container, IconCheckbox, Input, Padding, Row, Switch, SwitchProps, Tooltip, } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { ComputedLimit, QuotaSource } from '../../../../services/get-account-quota';
 import { useDomainQuota } from '../../../../services/use-domain-quota';
 import { BytesToGB, GbToBytes } from '../../../utility/utils';
+import { quotaExceedsDomainLimit, quotaValueFromLimit } from './quota-utils';
 import { TotalQuotaSourceIcon } from './total-quota-source-icon';
 
 type EditAccountQuotaInputsNewProps = {
@@ -20,7 +21,6 @@ type EditAccountQuotaInputsNewProps = {
   cosComputedLimit?: number | 'unlimited';
   totalQuotaSource?: QuotaSource;
   onChange: (value?: ComputedLimit) => void;
-  onQuotaErrorChange: (hasError: boolean) => void;
 };
 
 export const EditAccountQuotaInputsNew = ({
@@ -29,23 +29,21 @@ export const EditAccountQuotaInputsNew = ({
   cosComputedLimit,
   totalQuotaSource,
   onChange,
-  onQuotaErrorChange,
 }: EditAccountQuotaInputsNewProps): React.JSX.Element | null => {
-  const [quotaValue, setQuotaValue] = useState<number | 'unlimited' | undefined>(undefined);
+  const [quotaValue, setQuotaValue] = useState<number | 'unlimited' | undefined>(() =>
+    quotaValueFromLimit(totalComputedQuotaLimit),
+  );
+  const [prevLimit, setPrevLimit] = useState(totalComputedQuotaLimit);
 
   const { domainId } = useParams();
   const { data: quotaData } = useDomainQuota(domainId);
   const domainQuotaConstraint = quotaData?.type === 'success' ? quotaData.limit : 'not-set';
 
-  useEffect(() => {
-    setQuotaValue(
-      typeof totalComputedQuotaLimit === 'number'
-        ? totalComputedQuotaLimit > 0
-          ? BytesToGB(totalComputedQuotaLimit)
-          : undefined
-        : totalComputedQuotaLimit,
-    );
-  }, [totalComputedQuotaLimit]);
+  // adjust during render: reseed the editable GB value when the limit changes
+  if (prevLimit !== totalComputedQuotaLimit) {
+    setPrevLimit(totalComputedQuotaLimit);
+    setQuotaValue(quotaValueFromLimit(totalComputedQuotaLimit));
+  }
 
   const inputOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,17 +112,7 @@ export const EditAccountQuotaInputsNew = ({
     return undefined;
   }, [domainQuotaConstraint, quotaValue, t]);
 
-  const hasError = useMemo(() => {
-    if (typeof domainQuotaConstraint === 'number' && typeof quotaValue === 'number') {
-      const quotaValueInBytes = GbToBytes(quotaValue);
-      return quotaValueInBytes > domainQuotaConstraint;
-    }
-    return false;
-  }, [domainQuotaConstraint, quotaValue]);
-
-  useEffect(() => {
-    onQuotaErrorChange(hasError);
-  }, [hasError, onQuotaErrorChange]);
+  const hasError = quotaExceedsDomainLimit(quotaValue, domainQuotaConstraint);
 
   const onChangeReset = useCallback(() => {
     setQuotaValue(undefined);

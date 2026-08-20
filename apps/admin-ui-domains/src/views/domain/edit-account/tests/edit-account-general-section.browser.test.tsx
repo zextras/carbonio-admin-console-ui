@@ -61,7 +61,6 @@ function setupTest(contextOverrides: Record<string, unknown> = {}) {
     <AccountFormTestProvider values={accountDetail}>
       <EditAccountGeneralSection
         onNavigateToAdministration={vi.fn()}
-        onQuotaErrorChange={vi.fn()}
       />
     </AccountFormTestProvider>,
     { queryClient },
