@@ -121,4 +121,30 @@ describe('EditAccount save flow (browser)', () => {
     createBrowserSoapAPIInterceptor('GetAccount', { account: [JANE_SAVED] });
     await expect.element(saveButton).not.toBeInTheDocument();
   });
+
+  it.each([
+    ['Hidden in GAL', 'zimbraHideInGal'],
+    ['This user must change password', 'zimbraPasswordMustChange'],
+  ])(
+    'clears the dirty state when the "%s" switch (%s) is toggled back to its original value',
+    async (switchLabel) => {
+      setupEditAccountInterceptors();
+      await setupBrowserTest(<ManageAccounts />);
+
+      // open the edit view from the list; the mocked account has no
+      // zimbraHideInGal/zimbraPasswordMustChange attr (absent = FALSE)
+      await page.getByText('jane@example.com').click();
+
+      const switchControl = page.getByRole('switch', { name: switchLabel });
+      await switchControl.click();
+
+      // editing made the form dirty: save/cancel actions appear
+      const saveButton = page.getByRole('button', { name: 'Save' });
+      await expect.element(saveButton).toBeVisible();
+
+      // toggling back restores the original value: actions must disappear
+      await switchControl.click();
+      await expect.element(saveButton).not.toBeInTheDocument();
+    },
+  );
 });

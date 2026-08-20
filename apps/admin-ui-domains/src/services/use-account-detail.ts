@@ -44,6 +44,12 @@ export function parseAccountDetail(res: any): FlattenedAccount {
   if (obj.zimbraIsDelegatedAdminAccount === undefined) {
     obj.zimbraIsDelegatedAdminAccount = 'FALSE';
   }
+  if (obj.zimbraHideInGal === undefined) {
+    obj.zimbraHideInGal = 'FALSE';
+  }
+  if (obj.zimbraPasswordMustChange === undefined) {
+    obj.zimbraPasswordMustChange = 'FALSE';
+  }
   return obj;
 }
 

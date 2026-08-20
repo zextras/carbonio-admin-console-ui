@@ -38,6 +38,23 @@ describe('parseAccountDetail', () => {
     expect(parsed.password).toBe('');
     expect(parsed.repeatPassword).toBe('');
   });
+
+  it('defaults boolean switch attrs to FALSE when absent from the server response', () => {
+    const parsed = parseAccountDetail(getAccountResponse([{ n: 'sn', _content: 'Smith' }]));
+    expect(parsed.zimbraHideInGal).toBe('FALSE');
+    expect(parsed.zimbraPasswordMustChange).toBe('FALSE');
+  });
+
+  it('keeps explicit boolean switch attrs as returned by the server', () => {
+    const parsed = parseAccountDetail(
+      getAccountResponse([
+        { n: 'zimbraHideInGal', _content: 'TRUE' },
+        { n: 'zimbraPasswordMustChange', _content: 'TRUE' },
+      ]),
+    );
+    expect(parsed.zimbraHideInGal).toBe('TRUE');
+    expect(parsed.zimbraPasswordMustChange).toBe('TRUE');
+  });
 });
 
 describe('flattenAccountAttrs', () => {
