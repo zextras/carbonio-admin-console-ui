@@ -4,13 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import {
-  Button,
-  Container,
-  RouteLeavingGuard,
-  Row,
-  TabBar,
-} from '@zextras/ui-components';
+import { Button, Container, RouteLeavingGuard, Row, TabBar } from '@zextras/ui-components';
 import { useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,8 +17,8 @@ import {
   SECURITY,
   USER_PREFERENCES,
 } from '../../../../../constants';
-import { useAccountForm } from './account-form-context';
-import { AccountFormProvider } from './account-form-provider';
+import { AccountFormContext } from './account-form-context';
+import { useAccountFormProvider } from './account-form-provider';
 import EditAccountAdministrationSection from './edit-account-administration-section';
 import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';
@@ -47,16 +41,16 @@ export type EditAccountProps = {
   defaultTab?: string;
 };
 
-type EditAccountContentProps = Omit<EditAccountProps, 'onSaved'>;
-
-const EditAccountContent = ({
+export const EditAccount = ({
   account,
   onClose,
+  onSaved,
   onDeleted,
   defaultTab,
-}: EditAccountContentProps) => {
+}: EditAccountProps) => {
+  const accountForm = useAccountFormProvider({ account, onSaved, onDomainRenamed: onClose });
   const { t } = useTranslation();
-  const { form, isSaving, resetToSaved } = useAccountForm();
+  const { form, isSaving, resetToSaved } = accountForm;
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
@@ -160,7 +154,7 @@ const EditAccountContent = ({
   };
 
   return (
-    <>
+    <AccountFormContext.Provider value={accountForm}>
       {(!hasName || isSaving || isSectionLoading) && <ds-spinner></ds-spinner>}
       <Container
         background="gray5"
@@ -292,23 +286,6 @@ const EditAccountContent = ({
           }}
         />
       )}
-    </>
+    </AccountFormContext.Provider>
   );
 };
-
-export const EditAccount = ({
-  account,
-  onClose,
-  onSaved,
-  onDeleted,
-  defaultTab,
-}: EditAccountProps) => (
-  <AccountFormProvider account={account} onSaved={onSaved} onDomainRenamed={onClose}>
-    <EditAccountContent
-      account={account}
-      onClose={onClose}
-      onDeleted={onDeleted}
-      defaultTab={defaultTab}
-    />
-  </AccountFormProvider>
-);

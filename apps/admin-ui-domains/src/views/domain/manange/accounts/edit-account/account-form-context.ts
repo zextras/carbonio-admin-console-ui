@@ -48,7 +48,7 @@ export const AccountFormContext = createContext<AccountFormContextValue | null>(
 export function useAccountForm(): AccountFormContextValue {
   const ctx = useContext(AccountFormContext);
   if (!ctx) {
-    throw new Error('useAccountForm must be used within <AccountFormProvider>');
+    throw new Error('useAccountForm must be used within an AccountFormContext provider');
   }
   return ctx;
 }

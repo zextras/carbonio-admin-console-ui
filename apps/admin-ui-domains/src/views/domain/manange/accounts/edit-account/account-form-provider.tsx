@@ -57,11 +57,7 @@ import { useCosDetail } from '../../../../../services/use-cos-detail';
 import { useCredentialList, useOtpList } from '../../../../../services/use-otp-credential-list';
 import { useSignatures } from '../../../../../services/use-signatures';
 import { useUserSessions } from '../../../../../services/use-user-sessions';
-import {
-  AccountFormContext,
-  type AccountFormContextValue,
-  type AccountFormValues,
-} from './account-form-context';
+import { type AccountFormContextValue, type AccountFormValues } from './account-form-context';
 
 export function buildAccountFormValues(detail: FlattenedAccount | undefined): AccountFormValues {
   if (!detail) {
@@ -106,19 +102,17 @@ function buildQuotaValues(
 
 const VALUE_BLOCKED = 'VALUE-BLOCKED';
 
-type AccountFormProviderProps = {
+type AccountFormProviderParams = {
   account: { id: string; name: string; [key: string]: any };
-  children: React.ReactNode;
   onSaved: () => void;
   onDomainRenamed: () => void;
 };
 
-export const AccountFormProvider = ({
+export function useAccountFormProvider({
   account,
-  children,
   onSaved,
   onDomainRenamed,
-}: AccountFormProviderProps) => {
+}: AccountFormProviderParams): AccountFormContextValue {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const queryClient = useQueryClient();
@@ -591,5 +585,5 @@ export const AccountFormProvider = ({
     allowedDeletePassword,
   };
 
-  return <AccountFormContext.Provider value={contextValue}>{children}</AccountFormContext.Provider>;
-};
+  return contextValue;
+}
