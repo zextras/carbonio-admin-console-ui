@@ -26,7 +26,7 @@ import { InitDomainForDelegation } from '../../../../services/init-domain-for-de
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import { EditAccount } from '../accounts/edit-account/edit-account';
+import { EditAccount } from '../../edit-account/edit-account';
 import DisableDelegateAdminModel from './disable-delegate-admin-model';
 
 const ManageDelegates: FC = () => {

@@ -20,8 +20,8 @@ import { countAccount } from '../../../../services/count-account-service';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { getAccountStatusColors } from '../../constants/account-status-colors';
+import { EditAccount } from '../../edit-account/edit-account';
 import CreateAccount from './create-account/create-account';
-import { EditAccount } from './edit-account/edit-account';
 
 type Timer = ReturnType<typeof setTimeout>;
 const ManageAccounts: FC = () => {

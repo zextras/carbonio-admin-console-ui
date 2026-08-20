@@ -24,7 +24,7 @@ import {
   adminAccountListQueryKeys,
   useAdminAccountList,
 } from '../../services/use-admin-account-list';
-import { EditAccount } from './manange/accounts/edit-account/edit-account';
+import { EditAccount } from './edit-account/edit-account';
 
 const GlobalDelegates: FC = () => {
   const [t] = useTranslation();
