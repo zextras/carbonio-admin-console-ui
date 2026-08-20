@@ -15,6 +15,7 @@ This file provides guidance for agentic coding assistants working in this reposi
 - `pnpm lint:fix` - Auto-fix ESLint issues
 - `pnpm type-lint` - Type check + lint combined
 - `pnpm reset` - Full clean reinstall (removes node_modules, lock file, cache)
+- `pnpm sonarlint` - Fetch the SonarQube report for the current PR (see "SonarLint-sensitive patterns" below; do not re-run it to verify fixes — it caches results and shows stale output)
 
 ### App/Package Specific
 - `pnpm build` - SDK build (within app directory)
@@ -258,6 +259,20 @@ placeholderData: keepPreviousData,
 - Service files contain API request functions
 - React Query hooks wrap service functions with caching and refetching
 - Error handling: use snackbar feedback for user-facing errors
+
+### SonarLint-sensitive patterns
+`pnpm sonarlint` reports these rules on PRs — write code that avoids them from the start:
+- **No component definitions inside components** (S6478): define subcomponents at module level. When they must capture parent data (handlers, values), use a module-level *factory* (`function createXButtons(dep) { return function XButton() {...} }`) or pass data as props. This applies to `CustomIcon`-style render props too.
+- **No array-index keys** (S6479): key by a stable id (`item.id ?? item.label`), never `` `list${index}` ``.
+- **`.find(…)` over `.filter(…)[0]`** (S7750).
+- **`??` over undefined-check ternaries** (S6606).
+- **`replaceAll()` / regex literals** over `new RegExp(...)` + `replace` (S6325/S7781).
+- **Real `<button type="button">`** instead of `div role="button"` + manual `onKeyDown` (S6819) — native buttons get keyboard activation for free (add button-reset CSS).
+- **Alias repeated union types** (S4323): `type QuotaLimitValue = number | 'unlimited' | undefined;` once, use everywhere.
+- **`globalThis` over `window`** (S7764).
+- **Cognitive complexity ≤ 15 per function** (S3776): extract duplicated if/else branches into module-level pure helpers with lookup tables; keep components as thin orchestrators.
+- **Destructure `useState` into matching names** (S6754): value and setter must share their name stem (`x` / `setX`).
+- **No single-child fragments** (S6749) and **no identical duplicate functions** (S4144 — merge them).
 
 ### Formatting (Prettier)
 - Print width: 100
