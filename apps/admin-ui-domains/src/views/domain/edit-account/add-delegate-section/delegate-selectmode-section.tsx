@@ -114,56 +114,50 @@ export const DelegateSelectModeSection = () => {
 		},
 	};
 	return (
-		<>
-			<Container
-				mainAlignment="flex-start"
-				padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
-			>
-				<Row mainAlignment="flex-start" width="100%">
-					<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-						<ds-text size="small" color="gray0" weight="bold" as="h3">
-							{t('account_details.i_want_to_create_a_delegate_for', `I want to create a delegate`)}
-						</ds-text>
-					</Row>
+		<Container
+			mainAlignment="flex-start"
+			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+		>
+			<Row mainAlignment="flex-start" width="100%">
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<ds-text size="small" color="gray0" weight="bold" as="h3">
+						{t('account_details.i_want_to_create_a_delegate_for', `I want to create a delegate`)}
+					</ds-text>
 				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
-						<Select
-							background="gray5"
-							label={t('account_details.who_will_be_delegates', 'Who will be the delegates?')}
-							showCheckbox={false}
-							defaultSelection={DELEGETES_TYPE.find(
-								(item: any) => item.value === deligateDetail?.grantee?.[0]?.type,
-							)}
-							onChange={onGroupByChange}
-							items={DELEGETES_TYPE}
-						/>
-					</Row>
+			</Row>
+			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+				<Row width="100%" mainAlignment="flex-start">
+					<Select
+						background="gray5"
+						label={t('account_details.who_will_be_delegates', 'Who will be the delegates?')}
+						showCheckbox={false}
+						defaultSelection={DELEGETES_TYPE.find(
+							(item: any) => item.value === deligateDetail?.grantee?.[0]?.type,
+						)}
+						onChange={onGroupByChange}
+						items={DELEGETES_TYPE}
+					/>
 				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
-						<DropDownInput
-							items={delegateAccountList}
-							maxWidth="19rem"
-							width="17rem"
-							inputLabel={t(
-								'account_details.search_here_for_an_account',
-								'Search here for an Account',
-							)}
-							onChange={(ev: any): void => {
-								setSearchDelegateAccountName(ev.target.value);
-							}}
-							inputValue={
-								searchDelegateAccountName === undefined
-									? deligateDetail?.grantee?.[0]?.name || ''
-									: searchDelegateAccountName
-							}
-							isCustomIcon
-							customIconDetail={customIconDetail}
-						/>
-					</Row>
+			</Row>
+			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+				<Row width="100%" mainAlignment="flex-start">
+					<DropDownInput
+						items={delegateAccountList}
+						maxWidth="19rem"
+						width="17rem"
+						inputLabel={t(
+							'account_details.search_here_for_an_account',
+							'Search here for an Account',
+						)}
+						onChange={(ev: any): void => {
+							setSearchDelegateAccountName(ev.target.value);
+						}}
+					inputValue={searchDelegateAccountName ?? (deligateDetail?.grantee?.[0]?.name || '')}
+						isCustomIcon
+						customIconDetail={customIconDetail}
+					/>
 				</Row>
-			</Container>
-		</>
+			</Row>
+		</Container>
 	);
 };
