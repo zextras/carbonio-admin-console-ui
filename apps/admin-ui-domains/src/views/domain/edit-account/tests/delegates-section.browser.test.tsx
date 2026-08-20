@@ -62,6 +62,7 @@ function setupTest(contextOverrides: Record<string, unknown> = {}): void {
 describe('EditAccountDelegatesSection (browser)', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		mockBatchService.mockResolvedValue({});
 	});
 
 	it('renders the simplified view by default with rights tables and send settings', async () => {
