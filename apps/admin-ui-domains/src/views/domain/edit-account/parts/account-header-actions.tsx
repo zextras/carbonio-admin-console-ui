@@ -53,7 +53,7 @@ export const AccountHeaderActions = ({ accountId, zimbraId, onDelete }: AccountH
       onSuccess: (authToken) => {
         if (authToken) {
           window.open(
-            `https://${window.location.hostname}/service/preauth?authtoken=${authToken}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
+            `https://${globalThis.location.hostname}/service/preauth?authtoken=${authToken}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
             'blank',
           );
         } else {

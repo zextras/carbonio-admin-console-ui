@@ -6,13 +6,16 @@
 import { ComputedLimit } from '../../../../services/get-account-quota';
 import { BytesToGB, GbToBytes } from '../../../utility/utils';
 
+/** Plain limit representation used by the quota inputs. */
+export type QuotaLimitValue = number | 'unlimited' | undefined;
+
 /**
  * Converts the stored `ComputedLimit` into the plain limit representation
- * used by the quota inputs (`number | 'unlimited' | undefined`).
+ * used by the quota inputs.
  */
 export function computedLimitToLimit(
   computed: ComputedLimit | undefined,
-): number | 'unlimited' | undefined {
+): QuotaLimitValue {
   if (computed === undefined) {
     return undefined;
   }
@@ -20,12 +23,9 @@ export function computedLimitToLimit(
 }
 
 /**
- * Converts a byte/`'unlimited'` limit into the editable GB value
- * (`number | 'unlimited' | undefined`).
+ * Converts a byte/`'unlimited'` limit into the editable GB value.
  */
-export function quotaValueFromLimit(
-  limit: number | 'unlimited' | undefined,
-): number | 'unlimited' | undefined {
+export function quotaValueFromLimit(limit: QuotaLimitValue): QuotaLimitValue {
   if (typeof limit === 'number') {
     return limit > 0 ? BytesToGB(limit) : undefined;
   }
@@ -36,7 +36,7 @@ export function quotaValueFromLimit(
  * True when the quota value (in GB) exceeds a numeric domain quota constraint.
  */
 export function quotaExceedsDomainLimit(
-  quotaValue: number | 'unlimited' | undefined,
+  quotaValue: QuotaLimitValue,
   domainQuotaConstraint: number | 'not-set',
 ): boolean {
   if (typeof domainQuotaConstraint !== 'number' || typeof quotaValue !== 'number') {
