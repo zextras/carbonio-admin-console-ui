@@ -7,6 +7,7 @@
 /* migrated 1:1 from deprecated Container/Row layout props */
 
 .root {
+  box-sizing: border-box;
   position: absolute;
   top: 0rem;
   height: auto;
@@ -23,6 +24,7 @@
 }
 
 .header {
+  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -48,6 +50,7 @@
 }
 
 .closeWrapper {
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -57,6 +60,7 @@
 }
 
 .tabBarSection {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -69,6 +73,7 @@
 }
 
 .sectionsPanel {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
