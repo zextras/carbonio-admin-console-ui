@@ -91,6 +91,16 @@ Year is auto-updated by eslint. The header is required in all files except:
 - Do not use `FC` — use arrow function consts with an explicit props type, directly exported
 - Return type is inferred; do not annotate it explicitly
 - Example: `export const ComponentName = ({ title }: ComponentNameProps) => { ... };`
+- **Visibility belongs to the parent** — a component must not receive an `isDirty`/`isVisible`/`shouldRender`-style flag and return `null` from it. That hides the rendered structure from the call site and produces a component that lies about its own purpose. Conditionally render at the usage site instead:
+  ```tsx
+  // Don't — component internally decides to render nothing
+  <AccountSaveCancelActions isDirty={isDirty} ... />
+  // (inside the component: if (!isDirty) return null;)
+
+  // Do — parent owns the decision, JSX reads truthfully
+  {isDirty && <AccountSaveCancelActions ... />}
+  ```
+  Legit internal nulls are ones the component derives itself (e.g. no data after its own query), never a mirrored parent condition passed as a prop.
 
 #### Typing Component Props
 - `children?: React.ReactNode` — accepts everything React can render (preferred over `JSX.Element`)
