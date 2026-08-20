@@ -14,7 +14,7 @@ import {
   Row,
 } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
-import { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import CustomChip from '../../components/customChip';
@@ -42,75 +42,57 @@ const EditAccountUserPreferencesSection: FC = () => {
     values?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1),
   );
 
-  const GROUP_BY = useMemo(() => conversationGroupBy(t), [t]);
-  const CHARACTOR_SET = useMemo(() => charactorSet(), []);
-  const outOfOfficeCacheDurationType = useMemo(
-    () => values?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) ?? '',
-    [values?.zimbraPrefOutOfOfficeCacheDuration],
-  );
-  const POLLING_INTERVAL = useMemo(
-    () => [
-      {
-        label: t('account_details.manuallly', 'Manually'),
-        value: '31536000',
-      },
-      {
-        label: t('account_details.as_new_email_arrives', 'As new e-mail arrives'),
-        value: '500',
-      },
-
-      { label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
-      { label: `3 ${t('label.minutes', 'minutes')}`, value: '3m' },
-      { label: `4 ${t('label.minutes', 'minutes')}`, value: '4m' },
-      { label: `5 ${t('label.minutes', 'minutes')}`, value: '5m' },
-      { label: `6 ${t('label.minutes', 'minutes')}`, value: '6m' },
-      { label: `7 ${t('label.minutes', 'minutes')}`, value: '7m' },
-      { label: `8 ${t('label.minutes', 'minutes')}`, value: '8m' },
-      { label: `9 ${t('label.minutes', 'minutes')}`, value: '9m' },
-      { label: `10 ${t('label.minutes', 'minutes')}`, value: '10m' },
-      { label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' },
-    ],
-    [t],
-  );
-  const TIME_TYPES = useMemo(
-    () => [
-      { label: `${t('label.days', 'Days')}`, value: 'd' },
-      { label: `${t('label.hours', 'Hours')}`, value: 'h' },
-      { label: `${t('label.minutes', 'Minutes')}`, value: 'm' },
-      { label: `${t('label.seconds', 'Seconds')}`, value: 's' },
-    ],
-    [t],
-  );
-
-  const SEND_READ_RECEIPTS = useMemo(
-    () => [
-      { label: t('label.never_send_read_receipt', 'Never send a read receipt'), value: 'never' },
-      { label: t('label.always_send_read_receipt', 'Always send a read receipt'), value: 'always' },
-      { label: t('label.ask_me', 'Ask me'), value: 'prompt' },
-    ],
-    [t],
-  );
-
-
-  const changeOutOfOfficeDurationetail = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        zimbraPrefOutOfOfficeCacheDuration: `${e.target.value}${outOfOfficeCacheDurationType}`,
-      }));
-      setOutOfOfficeCacheDurationNum(e.target.value);
+  const GROUP_BY = conversationGroupBy(t);
+  const CHARACTOR_SET = charactorSet();
+  const outOfOfficeCacheDurationType = values?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) ?? '';
+  const POLLING_INTERVAL = [
+    {
+      label: t('account_details.manuallly', 'Manually'),
+      value: '31536000',
     },
-    [setAccountValues, outOfOfficeCacheDurationType],
-  );
-  const onOutOfOfficeCacheDurationTypeChange = useCallback(
-    (v: string) => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        zimbraPrefOutOfOfficeCacheDuration: `${outOfOfficeCacheDurationNum}${v}`,
-      }));
+    {
+      label: t('account_details.as_new_email_arrives', 'As new e-mail arrives'),
+      value: '500',
     },
-    [outOfOfficeCacheDurationNum, setAccountValues],
-  );
+
+    { label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
+    { label: `3 ${t('label.minutes', 'minutes')}`, value: '3m' },
+    { label: `4 ${t('label.minutes', 'minutes')}`, value: '4m' },
+    { label: `5 ${t('label.minutes', 'minutes')}`, value: '5m' },
+    { label: `6 ${t('label.minutes', 'minutes')}`, value: '6m' },
+    { label: `7 ${t('label.minutes', 'minutes')}`, value: '7m' },
+    { label: `8 ${t('label.minutes', 'minutes')}`, value: '8m' },
+    { label: `9 ${t('label.minutes', 'minutes')}`, value: '9m' },
+    { label: `10 ${t('label.minutes', 'minutes')}`, value: '10m' },
+    { label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' },
+  ];
+  const TIME_TYPES = [
+    { label: `${t('label.days', 'Days')}`, value: 'd' },
+    { label: `${t('label.hours', 'Hours')}`, value: 'h' },
+    { label: `${t('label.minutes', 'Minutes')}`, value: 'm' },
+    { label: `${t('label.seconds', 'Seconds')}`, value: 's' },
+  ];
+
+  const SEND_READ_RECEIPTS = [
+    { label: t('label.never_send_read_receipt', 'Never send a read receipt'), value: 'never' },
+    { label: t('label.always_send_read_receipt', 'Always send a read receipt'), value: 'always' },
+    { label: t('label.ask_me', 'Ask me'), value: 'prompt' },
+  ];
+
+
+  const changeOutOfOfficeDurationetail = (e: ChangeEvent<HTMLInputElement>) => {
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefOutOfOfficeCacheDuration: `${e.target.value}${outOfOfficeCacheDurationType}`,
+    }));
+    setOutOfOfficeCacheDurationNum(e.target.value);
+  };
+  const onOutOfOfficeCacheDurationTypeChange = (v: string) => {
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefOutOfOfficeCacheDuration: `${outOfOfficeCacheDurationNum}${v}`,
+    }));
+  };
   const onGroupByChange = (v: string): void => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefGroupMailBy: v }));
   };
@@ -134,12 +116,9 @@ const EditAccountUserPreferencesSection: FC = () => {
     }));
   };
 
-  const setEmptyValue = useCallback(
-    (keyName: string) => {
-      setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
-    },
-    [setAccountValues],
-  );
+  const setEmptyValue = (keyName: string) => {
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
+  };
 
   return (
     <Container

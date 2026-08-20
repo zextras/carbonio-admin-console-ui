@@ -10,14 +10,7 @@ import { useIsAdvanced } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
-import {
-  ChangeEvent,
-  FC,
-  ReactElement,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
+import { ChangeEvent, FC, ReactElement, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
@@ -73,13 +66,10 @@ const EditAccountSecuritySection: FC = () => {
   const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const queryClient = useQueryClient();
-  const getListOtp = useCallback(
-    // account name is taken from context; queries are invalidated by key
-    (): void => {
-      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.otpList(account.name) });
-    },
-    [queryClient, account.name],
-  );
+  // account name is taken from context; queries are invalidated by key
+  const getListOtp = (): void => {
+    void queryClient.invalidateQueries({ queryKey: domainQueryKeys.otpList(account.name) });
+  };
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
   const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
@@ -95,7 +85,7 @@ const EditAccountSecuritySection: FC = () => {
   const createSnackbar = useSnackbar();
   const isAdvanced = useIsAdvanced();
 
-  const handleSendOTPEmail = useCallback((): void => {
+  const handleSendOTPEmail = (): void => {
     const emailRecipients = [
       {
         t: 'f',
@@ -143,9 +133,9 @@ const EditAccountSecuritySection: FC = () => {
           replace: true,
         });
       });
-  }, [values?.name, domainName, sendEmailTo, pinCodes, secrateCode, createSnackbar, t]);
+  };
 
-  const handleEmailChange = useCallback((contacts: any): void => {
+  const handleEmailChange = (contacts: any): void => {
     const data = map(contacts, (contact) => {
       const isValid = isValidEmail(contact.label ?? '');
       return {
@@ -154,20 +144,13 @@ const EditAccountSecuritySection: FC = () => {
       };
     });
     setSendEmailTo(data);
-  }, []);
+  };
 
-  const hasEmailError = useMemo(
-    () => sendEmailTo?.some((contact: any) => contact.error),
-    [sendEmailTo],
-  );
+  const hasEmailError = sendEmailTo?.some((contact: any) => contact.error);
 
-  const isSendDisabled = useMemo(
-    () => sendEmailTo.length === 0 || hasEmailError,
-    [sendEmailTo, hasEmailError],
-  );
+  const isSendDisabled = sendEmailTo.length === 0 || hasEmailError;
 
-  const wizardSteps = useMemo(
-    () => [
+  const wizardSteps = [
       {
         name: 'otp',
         label: t('label.create_otp', 'CREATE OTP'),
@@ -328,19 +311,7 @@ const EditAccountSecuritySection: FC = () => {
           />
         ),
       },
-    ],
-    [
-      handleEmailChange,
-      handleSendOTPEmail,
-      hasEmailError,
-      isSendDisabled,
-      pinCodes,
-      qrData,
-      secrateCode,
-      sendEmailTo,
-      t,
-    ],
-  );
+  ];
   const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
     values?.zimbraPasswordLockoutDuration?.slice(0, -1),
   );
@@ -352,128 +323,113 @@ const EditAccountSecuritySection: FC = () => {
     values?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '';
   const [recoveryEmailError, setRecoveryEmailError] = useState<boolean>(false);
 
-  const headers: any = useMemo(
-    () => [
-      {
-        id: 'description',
-        label: t('label.description', 'Description'),
-        width: '40%',
-        bold: true,
-      },
-      {
-        id: 'status',
-        label: t('label.status', 'Status'),
-        width: '20%',
-        bold: true,
-      },
-      {
-        id: 'failed',
-        label: t('label.failed', 'Failed'),
-        width: '20%',
-        bold: true,
-      },
-      {
-        id: 'creation-date',
-        label: t('label.creation_date', 'Creation Date'),
-        width: '15%',
-        bold: true,
-      },
-      {
-        id: 'actions',
-        label: t('label.actions', 'Actions'),
-        width: '15%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
+  const headers: any = [
+    {
+      id: 'description',
+      label: t('label.description', 'Description'),
+      width: '40%',
+      bold: true,
+    },
+    {
+      id: 'status',
+      label: t('label.status', 'Status'),
+      width: '20%',
+      bold: true,
+    },
+    {
+      id: 'failed',
+      label: t('label.failed', 'Failed'),
+      width: '20%',
+      bold: true,
+    },
+    {
+      id: 'creation-date',
+      label: t('label.creation_date', 'Creation Date'),
+      width: '15%',
+      bold: true,
+    },
+    {
+      id: 'actions',
+      label: t('label.actions', 'Actions'),
+      width: '15%',
+      bold: true,
+    },
+  ];
 
-  const openRestoreOtpModal = useCallback((otpId: string): void => {
+  const openRestoreOtpModal = (otpId: string): void => {
     setSelectedOtpIdForRestore(otpId);
     setIsRestoreOtpModalOpen(true);
-  }, []);
+  };
 
-  const closeRestoreOtpModal = useCallback((): void => {
+  const closeRestoreOtpModal = (): void => {
     setSelectedOtpIdForRestore(undefined);
     setIsRestoreOtpModalOpen(false);
-  }, []);
+  };
 
-  const otpRows = useMemo(
-    () =>
-      map(otpList, (otpEntry: any) => {
-        const isDisabledOtp = otpEntry?.enabled === false;
-        return {
-          id: otpEntry?.id,
-          columns: [
-            <ds-text as="span" size="medium" key={`${otpEntry?.id}-label`} color="gray0">
-              {otpEntry?.label || ' '}
-            </ds-text>,
-            <ds-text as="span" size="medium" key={`${otpEntry?.id}-status`} color="gray0">
-              {otpEntry?.enabled
-                ? t('label.enabled', 'Enabled')
-                : t('label.disabled', 'Disabled')}
-            </ds-text>,
-            <ds-text as="span" size="medium" key={`${otpEntry?.id}-failed`}>
-              {otpEntry?.failed_attempts}
-            </ds-text>,
-            <ds-text as="span" size="medium" key={`${otpEntry?.id}-created`}>
-              {otpEntry?.created ? format(new Date(otpEntry?.created), 'dd/MMM/yyyy') : ''}
-            </ds-text>,
-            isDisabledOtp ? (
-              <Tooltip label={t('domain.editAccount.restoreOtpTooltip', "Restore OTP's")}>
-                <button
-                  type="button"
-                  className={styles.restoreOtpAction}
-                  onClick={(): void => openRestoreOtpModal(otpEntry.id)}
-                  data-testid={`restore-otp-${otpEntry.id}`}
-                >
-                  <ds-icon icon="RefreshOutline"></ds-icon>
-                </button>
-              </Tooltip>
-            ) : (
-              <>&nbsp;</>
-            ),
-          ],
-        };
-      }),
-    [otpList, t, openRestoreOtpModal],
-  );
+  const otpRows = map(otpList, (otpEntry: any) => {
+    const isDisabledOtp = otpEntry?.enabled === false;
+    return {
+      id: otpEntry?.id,
+      columns: [
+        <ds-text as="span" size="medium" key={`${otpEntry?.id}-label`} color="gray0">
+          {otpEntry?.label || ' '}
+        </ds-text>,
+        <ds-text as="span" size="medium" key={`${otpEntry?.id}-status`} color="gray0">
+          {otpEntry?.enabled ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+        </ds-text>,
+        <ds-text as="span" size="medium" key={`${otpEntry?.id}-failed`}>
+          {otpEntry?.failed_attempts}
+        </ds-text>,
+        <ds-text as="span" size="medium" key={`${otpEntry?.id}-created`}>
+          {otpEntry?.created ? format(new Date(otpEntry?.created), 'dd/MMM/yyyy') : ''}
+        </ds-text>,
+        isDisabledOtp ? (
+          <Tooltip label={t('domain.editAccount.restoreOtpTooltip', "Restore OTP's")}>
+            <button
+              type="button"
+              className={styles.restoreOtpAction}
+              onClick={(): void => openRestoreOtpModal(otpEntry.id)}
+              data-testid={`restore-otp-${otpEntry.id}`}
+            >
+              <ds-icon icon="RefreshOutline"></ds-icon>
+            </button>
+          </Tooltip>
+        ) : (
+          <>&nbsp;</>
+        ),
+      ],
+    };
+  });
 
-  const timeItems: any[] = useMemo(
-    () => [
-      {
-        label: t('label.days', 'Days'),
-        value: 'd',
-      },
-      {
-        label: t('label.hours', 'Hours'),
-        value: 'h',
-      },
-      {
-        label: t('label.minutes', 'Minutes'),
-        value: 'm',
-      },
-      {
-        label: t('label.seconds', 'Seconds'),
-        value: 's',
-      },
-    ],
-    [t],
-  );
+  const timeItems: any[] = [
+    {
+      label: t('label.days', 'Days'),
+      value: 'd',
+    },
+    {
+      label: t('label.hours', 'Hours'),
+      value: 'h',
+    },
+    {
+      label: t('label.minutes', 'Minutes'),
+      value: 'm',
+    },
+    {
+      label: t('label.seconds', 'Seconds'),
+      value: 's',
+    },
+  ];
 
-  const recoveryStatus: any[] = useMemo(
-    () => [
-      {
-        label: t('label.pending', 'Pending'),
-        value: 'pending',
-      },
-      {
-        label: t('label.verified', 'Verified'),
-        value: 'verified',
-      },
-    ],
-    [t],
-  );
+  const recoveryStatus: any[] = [
+    {
+      label: t('label.pending', 'Pending'),
+      value: 'pending',
+    },
+    {
+      label: t('label.verified', 'Verified'),
+      value: 'verified',
+    },
+  ];
 
   const handleOnGenerateOTP = (): void => {
     fetchSoap('zextras', {
@@ -529,7 +485,7 @@ const EditAccountSecuritySection: FC = () => {
     });
   };
 
-  const handleRestoreOTP = useCallback((): void => {
+  const handleRestoreOTP = (): void => {
     if (!selectedOtpIdForRestore) {
       return;
     }
@@ -607,77 +563,51 @@ const EditAccountSecuritySection: FC = () => {
       .finally(() => {
         setIsRestoreOtpInProgress(false);
       });
-  }, [
-    selectedOtpIdForRestore,
-    values?.uid,
-    domainName,
-    createSnackbar,
-    t,
-    closeRestoreOtpModal,
-    getListOtp,
-  ]);
+  };
 
-  const changeValue = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountValues((prev: Record<string, any>) => ({ ...prev, [e.target.name]: e.target.value }));
-    },
-    [setAccountValues],
-  );
+  const changeValue = (e: ChangeEvent<HTMLInputElement>) => {
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-  const setEmptyValue = useCallback(
-    (keyName: string) => {
-      setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
-    },
-    [setAccountValues],
-  );
+  const setEmptyValue = (keyName: string) => {
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
+  };
 
-  const onZimbraPasswordLockoutDurationTypeChange = useCallback(
-    (v: string) => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
-          ? `${zimbraPasswordLockoutDurationNum}${v}`
-          : '',
-      }));
-    },
-    [zimbraPasswordLockoutDurationNum, setAccountValues],
-  );
-  const onZimbraPasswordLockoutDurationNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        zimbraPasswordLockoutDuration: e.target.value
-          ? `${e.target.value}${zimbraPasswordLockoutDurationType}`
-          : '',
-      }));
-      setZimbraPasswordLockoutDurationNum(e.target.value);
-    },
-    [zimbraPasswordLockoutDurationType, setAccountValues],
-  );
+  const onZimbraPasswordLockoutDurationTypeChange = (v: string) => {
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
+        ? `${zimbraPasswordLockoutDurationNum}${v}`
+        : '',
+    }));
+  };
+  const onZimbraPasswordLockoutDurationNumChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPasswordLockoutDuration: e.target.value
+        ? `${e.target.value}${zimbraPasswordLockoutDurationType}`
+        : '',
+    }));
+    setZimbraPasswordLockoutDurationNum(e.target.value);
+  };
 
-  const onZimbraPasswordLockoutFailureLifetimeTypeChange = useCallback(
-    (v: string) => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
-          ? `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
-          : '',
-      }));
-    },
-    [zimbraPasswordLockoutFailureLifetimeNum, setAccountValues],
-  );
-  const onZimbraPasswordLockoutFailureLifetimeNumChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        zimbraPasswordLockoutFailureLifetime: e.target.value
-          ? `${e.target.value}${zimbraPasswordLockoutFailureLifetimeType}`
-          : '',
-      }));
-      setZimbraPasswordLockoutFailureLifetimeNum(e.target.value);
-    },
-    [zimbraPasswordLockoutFailureLifetimeType, setAccountValues],
-  );
+  const onZimbraPasswordLockoutFailureLifetimeTypeChange = (v: string) => {
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
+        ? `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
+        : '',
+    }));
+  };
+  const onZimbraPasswordLockoutFailureLifetimeNumChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPasswordLockoutFailureLifetime: e.target.value
+        ? `${e.target.value}${zimbraPasswordLockoutFailureLifetimeType}`
+        : '',
+    }));
+    setZimbraPasswordLockoutFailureLifetimeNum(e.target.value);
+  };
 
   const onRecoveryStatusChange = (v: unknown): void => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -708,28 +638,25 @@ const EditAccountSecuritySection: FC = () => {
     values?.carbonioOtpWizardFromUntrusted === 'TRUE' &&
     values?.carbonioFeatureOTPMgmtEnabled === 'TRUE';
 
-  const handleFromDateChange = useCallback(
-    (d: Date | null) => {
-      setFromDate(d);
-      if (!d) {
-        setAccountValues((prev: Record<string, any>) => ({
-          ...prev,
-          carbonioOtpGracePeriodEndingTime: '',
-        }));
-        return;
-      }
-      const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(
-        d.getUTCDate(),
-      ).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}${String(
-        d.getUTCMinutes(),
-      ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
+  const handleFromDateChange = (d: Date | null) => {
+    setFromDate(d);
+    if (!d) {
       setAccountValues((prev: Record<string, any>) => ({
         ...prev,
-        carbonioOtpGracePeriodEndingTime: gentime,
+        carbonioOtpGracePeriodEndingTime: '',
       }));
-    },
-    [setAccountValues],
-  );
+      return;
+    }
+    const gentime = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(
+      d.getUTCDate(),
+    ).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}${String(
+      d.getUTCMinutes(),
+    ).padStart(2, '0')}${String(d.getUTCSeconds()).padStart(2, '0')}Z`;
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      carbonioOtpGracePeriodEndingTime: gentime,
+    }));
+  };
 
   return (
     <Container

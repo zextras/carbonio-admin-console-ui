@@ -5,7 +5,7 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import { Container, LabeledValue, Row } from '@zextras/ui-components';
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { READ_MAILS_ONLY } from '../../../../constants';
@@ -14,7 +14,7 @@ import { useAccountForm } from '../account-form-context';
 
 const DelegateAddSection: FC = () => {
   const [t] = useTranslation();
-  const DELEGETES_RIGHTS_TYPE = useMemo(() => delegateRightsType(t), [t]);
+  const DELEGETES_RIGHTS_TYPE = delegateRightsType(t);
   const { form, deligateDetail } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const accountDetail = values;

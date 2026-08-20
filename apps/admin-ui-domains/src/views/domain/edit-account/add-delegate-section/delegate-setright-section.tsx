@@ -6,7 +6,7 @@
 import { useSelector } from '@tanstack/react-store';
 import { Checkbox, Container, Radio, RadioGroup, Row, Select } from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -22,7 +22,7 @@ import { useAccountForm } from '../account-form-context';
 const DelegateSetRightsSection: FC = () => {
   const [t] = useTranslation();
   const sendingOption = '';
-  const DELEGETES_RIGHTS_TYPE = useMemo(() => delegateRightsType(t), [t]);
+  const DELEGETES_RIGHTS_TYPE = delegateRightsType(t);
   const { form, deligateDetail, setDeligateDetail, folderList, setFolderList } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const accountDetail = values;

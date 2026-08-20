@@ -5,7 +5,8 @@
  */
 import { Container, IconCheckbox, Input, Padding, Row, Switch, SwitchProps, Tooltip, } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import React, { useCallback, useMemo, useState } from 'react';
+import { TFunction } from 'i18next';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -22,6 +23,54 @@ type EditAccountQuotaInputsNewProps = {
   totalQuotaSource?: QuotaSource;
   onChange: (value?: ComputedLimit) => void;
 };
+
+type QuotaValue = number | 'unlimited' | undefined;
+
+function getInputDescription(
+  domainQuotaConstraint: number | 'not-set',
+  quotaValue: QuotaValue,
+  t: TFunction,
+): string | undefined {
+  if (typeof domainQuotaConstraint !== 'number') {
+    return undefined;
+  }
+  const quotaValueInBytes = typeof quotaValue === 'number' ? GbToBytes(quotaValue) : undefined;
+  const exceedsConstraint = quotaValueInBytes !== undefined && quotaValueInBytes > domainQuotaConstraint;
+
+  if (exceedsConstraint) {
+    return t('label.exceeds_domain_limit', {
+      defaultValue: `This value exceeds the domain limit (${BytesToGB(
+        domainQuotaConstraint,
+      )} GB). Please enter a lower value.`,
+      limit: BytesToGB(domainQuotaConstraint),
+    });
+  }
+
+  return t('label.maximum_allowed_value', {
+    defaultValue: `The maximum allowed value is ${BytesToGB(
+      domainQuotaConstraint,
+    )} GB. Unlimited is not available.`,
+    value: BytesToGB(domainQuotaConstraint),
+  });
+}
+
+function getInheritedValue(
+  domainQuotaConstraint: number | 'not-set',
+  cosComputedLimit: number | 'unlimited' | undefined,
+  t: TFunction,
+): string | number | undefined {
+  if (typeof domainQuotaConstraint === 'number') {
+    if (typeof cosComputedLimit === 'number') {
+      return BytesToGB(Math.min(domainQuotaConstraint, cosComputedLimit));
+    }
+    return BytesToGB(domainQuotaConstraint);
+  }
+  return cosComputedLimit === 'unlimited'
+    ? t('account_details.unlimited', 'Unlimited')
+    : typeof cosComputedLimit === 'number'
+    ? BytesToGB(cosComputedLimit)
+    : undefined;
+}
 
 export const EditAccountQuotaInputsNew = ({
   totalComputedQuotaLimit,
@@ -45,20 +94,17 @@ export const EditAccountQuotaInputsNew = ({
     setQuotaValue(quotaValueFromLimit(totalComputedQuotaLimit));
   }
 
-  const inputOnChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const filteredStringValue = e.target.value.replaceAll(/\D/g, '');
-      const parsedValue =
-        filteredStringValue === '' ? undefined : Number.parseInt(filteredStringValue, 10);
-      const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
-      const valueInBytes = valueInGB === undefined ? undefined : (GbToBytes(valueInGB) as number);
-      onChange(valueInBytes ? { type: 'limited', value: valueInBytes } : undefined);
-      setQuotaValue(valueInGB);
-    },
-    [onChange],
-  );
+  const inputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filteredStringValue = e.target.value.replaceAll(/\D/g, '');
+    const parsedValue =
+      filteredStringValue === '' ? undefined : Number.parseInt(filteredStringValue, 10);
+    const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
+    const valueInBytes = valueInGB === undefined ? undefined : (GbToBytes(valueInGB) as number);
+    onChange(valueInBytes ? { type: 'limited', value: valueInBytes } : undefined);
+    setQuotaValue(valueInGB);
+  };
 
-  const switchOnChange = useCallback<NonNullable<SwitchProps['onClick']>>(() => {
+  const switchOnChange: NonNullable<SwitchProps['onClick']> = () => {
     setQuotaValue((prevState) => {
       if (prevState === 'unlimited') {
         if (typeof initialTotalComputedQuotaLimit === 'number') {
@@ -73,65 +119,26 @@ export const EditAccountQuotaInputsNew = ({
         return 'unlimited';
       }
     });
-  }, [initialTotalComputedQuotaLimit, onChange]);
+  };
 
   const isAdvanced = useIsAdvanced();
   const [t] = useTranslation();
 
-  const switchValue = useMemo(() => {
-    return quotaValue === 'unlimited';
-  }, [quotaValue]);
+  const switchValue = quotaValue === 'unlimited';
 
-  const inputValue = useMemo(() => {
-    // change between defined and undefined value breaks the input component, so we need to set it to empty string when it's undefined
-    return typeof quotaValue === 'number' ? quotaValue : '';
-  }, [quotaValue]);
+  // change between defined and undefined value breaks the input component, so we need to set it to empty string when it's undefined
+  const inputValue = typeof quotaValue === 'number' ? quotaValue : '';
 
-  const inputDescription = useMemo(() => {
-    if (typeof domainQuotaConstraint === 'number') {
-      const quotaValueInBytes = typeof quotaValue === 'number' ? GbToBytes(quotaValue) : undefined;
-      const exceedsConstraint =
-        quotaValueInBytes !== undefined && quotaValueInBytes > domainQuotaConstraint;
-
-      if (exceedsConstraint) {
-        return t('label.exceeds_domain_limit', {
-          defaultValue: `This value exceeds the domain limit (${BytesToGB(
-            domainQuotaConstraint,
-          )} GB). Please enter a lower value.`,
-          limit: BytesToGB(domainQuotaConstraint),
-        });
-      }
-
-      return t('label.maximum_allowed_value', {
-        defaultValue: `The maximum allowed value is ${BytesToGB(
-          domainQuotaConstraint,
-        )} GB. Unlimited is not available.`,
-        value: BytesToGB(domainQuotaConstraint),
-      });
-    }
-    return undefined;
-  }, [domainQuotaConstraint, quotaValue, t]);
+  const inputDescription = getInputDescription(domainQuotaConstraint, quotaValue, t);
 
   const hasError = quotaExceedsDomainLimit(quotaValue, domainQuotaConstraint);
 
-  const onChangeReset = useCallback(() => {
+  const onChangeReset = () => {
     setQuotaValue(undefined);
     onChange(undefined);
-  }, [onChange]);
+  };
 
-  const inheritedValue = useMemo(() => {
-    if (typeof domainQuotaConstraint === 'number') {
-      if (typeof cosComputedLimit === 'number') {
-        return BytesToGB(Math.min(domainQuotaConstraint, cosComputedLimit));
-      }
-      return BytesToGB(domainQuotaConstraint);
-    }
-    return cosComputedLimit === 'unlimited'
-      ? t('account_details.unlimited', 'Unlimited')
-      : typeof cosComputedLimit === 'number'
-      ? BytesToGB(cosComputedLimit)
-      : undefined;
-  }, [cosComputedLimit, domainQuotaConstraint, t]);
+  const inheritedValue = getInheritedValue(domainQuotaConstraint, cosComputedLimit, t);
 
   const CustomElement = () => (
     <Tooltip

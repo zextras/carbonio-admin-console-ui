@@ -28,7 +28,7 @@ import {
 } from '@zextras/ui-components';
 import { useCosList, useDebouncedValue, useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
-import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Attribute, objectType } from '../../../../types';
@@ -214,13 +214,10 @@ export const EditAccountGeneralSection = ({
   const domainName = domain?.name;
   const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
   const [t] = useTranslation();
-  const localeZone = useMemo(() => localeList(t), [t]);
-  const ACCOUNT_STATUS: Array<{ value: string; label: string }> = useMemo(
-    () => AccountStatus(t),
-    [t],
-  );
-  const ABQ_STATUS = useMemo(() => ABQStatus(t), [t]);
-  const BACKUP_ENABLED_STATUS = useMemo(() => backupEnabledStatus(t), [t]);
+  const localeZone = localeList(t);
+  const ACCOUNT_STATUS: Array<{ value: string; label: string }> = AccountStatus(t);
+  const ABQ_STATUS = ABQStatus(t);
+  const BACKUP_ENABLED_STATUS = backupEnabledStatus(t);
   const [accountAliases, setAccountAliases] = useState<any[]>([]);
   const [prevMail, setPrevMail] = useState<string | undefined>(undefined);
   const [showDeletePasswordModal, setShowDeletePasswordModal] = useState<boolean>(false);
@@ -237,79 +234,58 @@ export const EditAccountGeneralSection = ({
   const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
   const [cosDefaultStateSet, setCosDefaultStateSet] = useState<boolean>(false);
 
-  const sessionTableHeader: any[] = useMemo(() => {
-    const accountsLabel = t('label.accounts', 'Accounts');
-    const sessionIdLabel = t('label.session_id', 'Session ID');
-    const ipLabel = t('label.ip', 'IP');
-    const serviceLabel = t('label.service', 'Service');
+  const accountsLabel = t('label.accounts', 'Accounts');
+  const sessionIdLabel = t('label.session_id', 'Session ID');
+  const ipLabel = t('label.ip', 'IP');
+  const serviceLabel = t('label.service', 'Service');
 
-    return [
-      { id: 'accounts', label: accountsLabel, width: '25%', bold: true },
-      { id: 'session_id', label: sessionIdLabel, width: '25%', bold: true },
-      { id: 'ip', label: ipLabel, width: '25%', bold: true },
-      { id: 'service', label: serviceLabel, width: '25%', bold: true },
-    ];
-  }, [t]);
+  const sessionTableHeader: any[] = [
+    { id: 'accounts', label: accountsLabel, width: '25%', bold: true },
+    { id: 'session_id', label: sessionIdLabel, width: '25%', bold: true },
+    { id: 'ip', label: ipLabel, width: '25%', bold: true },
+    { id: 'service', label: serviceLabel, width: '25%', bold: true },
+  ];
 
-  const isHidePassword = useMemo(
-    () => isLdapAuthWithoutFallback(domainInformation),
-    [domainInformation],
-  );
+  const isHidePassword = isLdapAuthWithoutFallback(domainInformation);
 
-  const extLdapAuth = useMemo(() => hasExternalLdapUrl(domainInformation), [domainInformation]);
+  const extLdapAuth = hasExternalLdapUrl(domainInformation);
 
-  const getDomainLists = useCallback(
-    (domain: string | undefined): void => {
-      getDomainList(domain, 0)
-        .then((data) => {
-          const searchResponse = data;
-          if (!!searchResponse && searchResponse?.searchTotal > 0) {
-            setDomainList(searchResponse?.domain);
-          } else {
-            setDomainList([]);
-          }
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, t],
-  );
-
-  const selectedDomain = useCallback(
-    (domain: string) => {
-      setIsDomainSelect(true);
-      setSearchDomainName(domain);
-      form.setFieldValue('domainName', domain);
-    },
-    [form],
-  );
+  const selectedDomain = (domain: string) => {
+    setIsDomainSelect(true);
+    setSearchDomainName(domain);
+    form.setFieldValue('domainName', domain);
+  };
 
   const debouncedSearchDomain = useDebouncedValue(searchDomainName, 700);
 
   useEffect(() => {
-    getDomainLists(debouncedSearchDomain);
-  }, [debouncedSearchDomain, getDomainLists]);
+    getDomainList(debouncedSearchDomain, 0)
+      .then((data) => {
+        const searchResponse = data;
+        if (!!searchResponse && searchResponse?.searchTotal > 0) {
+          setDomainList(searchResponse?.domain);
+        } else {
+          setDomainList([]);
+        }
+      })
+      .catch((error) => {
+        const snackbarConfig = generateSnackbarFromError(error, t);
+        createSnackbar(snackbarConfig);
+      });
+  }, [debouncedSearchDomain, createSnackbar, t]);
 
-  const changeAccDetail = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        [e.target.name]: e.target.value,
-      }));
-    },
-    [setAccountValues],
-  );
-  const changeUserNaneDetail = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAccountValues((prev: Record<string, any>) => ({
-        ...prev,
-        uid: e.target.value?.replaceAll(' ', '')?.toLowerCase(),
-      }));
-    },
-    [setAccountValues],
-  );
+  const changeAccDetail = (e: ChangeEvent<HTMLInputElement>) => {
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const changeUserNaneDetail = (e: ChangeEvent<HTMLInputElement>) => {
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      uid: e.target.value?.replaceAll(' ', '')?.toLowerCase(),
+    }));
+  };
 
   // adjust during render: reseed the editable alias list when server data changes
   if (values?.mail !== prevMail) {
@@ -332,10 +308,7 @@ export const EditAccountGeneralSection = ({
     setDefaultCOS(true);
   }
 
-  const selection = useMemo(
-    () => cosItems.find((item: any) => item.value === values?.zimbraCOSId),
-    [values, cosItems],
-  );
+  const selection = cosItems.find((item: any) => item.value === values?.zimbraCOSId);
 
   const onAccountStatusChange = (v: any): any => {
     form.setFieldValue('zimbraAccountStatus', v);
@@ -390,12 +363,9 @@ export const EditAccountGeneralSection = ({
       });
   };
 
-  const setEmptyValue = useCallback(
-    (keyName: string) => {
-      setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
-    },
-    [setAccountValues],
-  );
+  const setEmptyValue = (keyName: string) => {
+    setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
+  };
 
   const items = buildDomainDropdownItems(domainList, selectedDomain, t);
 
@@ -408,25 +378,16 @@ export const EditAccountGeneralSection = ({
     setSearchDomainName(values?.domainName);
   }
 
-  const accountUserType = useMemo(
-    () =>
-      getAccountUserType(
-        values?.zimbraIsAdminAccount === 'TRUE',
-        values?.zimbraIsDelegatedAdminAccount === 'TRUE',
-        values?.zimbraIsExternalVirtualAccount === 'TRUE',
-        values?.zimbraIsSystemAccount === 'TRUE',
-      ),
-    [
-      values?.zimbraIsAdminAccount,
-      values?.zimbraIsDelegatedAdminAccount,
-      values?.zimbraIsExternalVirtualAccount,
-      values?.zimbraIsSystemAccount,
-    ],
+  const accountUserType = getAccountUserType(
+    values?.zimbraIsAdminAccount === 'TRUE',
+    values?.zimbraIsDelegatedAdminAccount === 'TRUE',
+    values?.zimbraIsExternalVirtualAccount === 'TRUE',
+    values?.zimbraIsSystemAccount === 'TRUE',
   );
 
-  const addSelection = useCallback((item: UserSession) => {
+  const addSelection = (item: UserSession) => {
     setSelectedSession([item?.sid]);
-  }, []);
+  };
 
   const sessionListRows = userSessionList.map((item: UserSession) => ({
     id: item?.sid,
@@ -509,10 +470,10 @@ export const EditAccountGeneralSection = ({
       .finally(() => setIsRequestInProgress(false));
   };
 
-  const onSessionFilterInputChange = useCallback((ev: ChangeEvent<HTMLInputElement>) => {
+  const onSessionFilterInputChange = (ev: ChangeEvent<HTMLInputElement>) => {
     setSelectedSession([]);
     setSessionFilter(ev?.target?.value || '');
-  }, []);
+  };
 
   const renderSwitchRow = (
     label: string,

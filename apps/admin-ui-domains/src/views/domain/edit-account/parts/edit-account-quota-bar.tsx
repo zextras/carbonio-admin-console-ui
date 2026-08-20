@@ -6,7 +6,6 @@
 
 import { useSelector } from '@tanstack/react-store';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { useMemo } from 'react';
 
 import { useAccountForm } from '../account-form-context';
 import { EditAccountQuotaBarNew } from './edit-account-quota-bar-new';
@@ -32,21 +31,12 @@ export const EditAccountQuotaBar = (): React.JSX.Element | null => {
         totalQuotaStatus?: any;
       },
   );
-  const dataMissing = useMemo(
-    () =>
-      totalQuotaUsed === undefined ||
-      totalComputedQuotaLimit === undefined ||
-      totalQuotaUsedByModule === undefined ||
-      totalQuotaSource === undefined ||
-      totalQuotaStatus === undefined,
-    [
-      totalQuotaUsed,
-      totalComputedQuotaLimit,
-      totalQuotaUsedByModule,
-      totalQuotaSource,
-      totalQuotaStatus,
-    ],
-  );
+  const dataMissing =
+    totalQuotaUsed === undefined ||
+    totalComputedQuotaLimit === undefined ||
+    totalQuotaUsedByModule === undefined ||
+    totalQuotaSource === undefined ||
+    totalQuotaStatus === undefined;
 
   if (!isAdvanced || dataMissing) {
     return null;

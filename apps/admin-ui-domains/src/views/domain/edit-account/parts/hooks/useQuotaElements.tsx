@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Tooltip } from '@zextras/ui-components';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ComputedLimit } from '../../../../../services/get-account-quota';
@@ -59,11 +59,8 @@ export const useQuotaElements = (
     );
   }
 
-  return useMemo(
-    () => ({
-      quotaBarSegmentsNodes,
-      quotaLegendEntryNodes,
-    }),
-    [quotaBarSegmentsNodes, quotaLegendEntryNodes],
-  );
+  return {
+    quotaBarSegmentsNodes,
+    quotaLegendEntryNodes,
+  };
 };

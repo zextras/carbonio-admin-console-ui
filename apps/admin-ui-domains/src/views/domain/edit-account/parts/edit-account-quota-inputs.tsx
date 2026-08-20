@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { ComponentProps, Dispatch, SetStateAction, useCallback } from 'react';
+import React, { ComponentProps, Dispatch, SetStateAction } from 'react';
 
 import { AccountDetail, CosDetail } from '../../manange/accounts/account-detail-types';
 import { EditAccountQuotaInputsNew } from './edit-account-quota-inputs-new';
@@ -24,12 +24,9 @@ export const EditAccountQuotaInputs = ({
 }: EditAccountQuotaInputsProps): React.JSX.Element => {
   const onTotalComputedQuotaLimitChange: ComponentProps<
     typeof EditAccountQuotaInputsNew
-  >['onChange'] = useCallback(
-    (value) => {
-      setAccountDetail((prev) => ({ ...prev, totalComputedQuotaLimit: value }));
-    },
-    [setAccountDetail],
-  );
+  >['onChange'] = (value) => {
+    setAccountDetail((prev) => ({ ...prev, totalComputedQuotaLimit: value }));
+  };
 
   return (
     <EditAccountQuotaInputsNew
