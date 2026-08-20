@@ -13,7 +13,7 @@ import {
   InheritedSwitch,
   Row,
 } from '@zextras/ui-components';
-import { map, some } from 'lodash-es';
+import { map, noop, some } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,8 +27,6 @@ import {
 } from '../../../../utility/utils';
 import { useAccountForm, useSetAccountValues } from './account-form-context';
 import { SignatureDetail } from './signature-detail';
-
-function discardSignatureListUpdate(): void {}
 
 const EditAccountUserPrefrencesSection: FC = () => {
   const [t] = useTranslation();
@@ -523,7 +521,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
       <SignatureDetail
         isEditable
         signatureList={signatureList}
-        setSignatureList={discardSignatureListUpdate}
+        setSignatureList={noop}
         signatureItems={signatureItems}
         setSignatureItems={setSignatureItems}
         accountId={accountDetail?.zimbraId}

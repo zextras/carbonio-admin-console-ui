@@ -91,6 +91,19 @@ function hasExternalLdapUrl(attrs: Array<Attribute> | undefined): boolean {
   return obj.zimbraAuthLdapURL !== undefined && obj.zimbraAuthLdapURL !== '';
 }
 
+function getAccountUserType(
+  isAdmin: boolean,
+  isDelegatedAdmin: boolean,
+  isExternal: boolean,
+  isSystem: boolean,
+): string {
+  if (isAdmin) return 'Admin';
+  if (isDelegatedAdmin) return 'DelegatedAdmin';
+  if (isExternal) return 'External';
+  if (isSystem) return 'System';
+  return 'Normal';
+}
+
 function filterSessions(list: Array<UserSession>, filter: string): Array<UserSession> {
   if (!filter) {
     return list;
@@ -380,18 +393,21 @@ export const EditAccountGeneralSection: FC<{
     setSearchDomainName(values?.domainName);
   }
 
-  const accountUserType = useMemo((): string => {
-    if (values?.zimbraIsAdminAccount === 'TRUE') return 'Admin';
-    if (values?.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
-    if (values?.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
-    if (values?.zimbraIsSystemAccount === 'TRUE') return 'System';
-    return 'Normal';
-  }, [
-    values?.zimbraIsAdminAccount,
-    values?.zimbraIsDelegatedAdminAccount,
-    values?.zimbraIsExternalVirtualAccount,
-    values?.zimbraIsSystemAccount,
-  ]);
+  const accountUserType = useMemo(
+    () =>
+      getAccountUserType(
+        values?.zimbraIsAdminAccount === 'TRUE',
+        values?.zimbraIsDelegatedAdminAccount === 'TRUE',
+        values?.zimbraIsExternalVirtualAccount === 'TRUE',
+        values?.zimbraIsSystemAccount === 'TRUE',
+      ),
+    [
+      values?.zimbraIsAdminAccount,
+      values?.zimbraIsDelegatedAdminAccount,
+      values?.zimbraIsExternalVirtualAccount,
+      values?.zimbraIsSystemAccount,
+    ],
+  );
 
   const addSelection = useCallback((item: UserSession) => {
     setSelectedSession([item?.sid]);
