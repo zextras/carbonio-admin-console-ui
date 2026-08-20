@@ -5,13 +5,12 @@
  */
 import {
   Container,
-  IconCheckbox,
   Input,
+  InputProps,
   Padding,
   Row,
   Switch,
   SwitchProps,
-  Tooltip,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
@@ -22,6 +21,7 @@ import { useParams } from 'react-router';
 import { ComputedLimit, QuotaSource } from '../../../../services/get-account-quota';
 import { useDomainQuota } from '../../../../services/use-domain-quota';
 import { BytesToGB, GbToBytes } from '../../../utility/utils';
+import { EditAccountQuotaRevertIcon } from './edit-account-quota-revert-icon';
 import { quotaExceedsDomainLimit, quotaValueFromLimit } from './quota-utils';
 import { TotalQuotaSourceIcon } from './total-quota-source-icon';
 
@@ -82,6 +82,15 @@ function getInheritedValue(
     return BytesToGB(cosComputedLimit);
   }
   return undefined;
+}
+
+function createRevertIcon(
+  inheritedValue: string | number | undefined,
+  onClick: () => void,
+): InputProps['CustomIcon'] {
+  return function RevertIcon() {
+    return <EditAccountQuotaRevertIcon inheritedValue={inheritedValue} onClick={onClick} />;
+  };
 }
 
 export const EditAccountQuotaInputsNew = ({
@@ -152,31 +161,7 @@ export const EditAccountQuotaInputsNew = ({
 
   const inheritedValue = getInheritedValue(domainQuotaConstraint, cosComputedLimit, t);
 
-  const CustomElement = () => (
-    <Tooltip
-      label={
-        <>
-          <ds-text weight="bold" as="span">
-            {t('account_details.inherited_value_was', 'The inherited value was: {{value}}', {
-              value: inheritedValue || '',
-            })}
-          </ds-text>
-          <Padding top="small">
-            <ds-text weight="bold" as="span">
-              {t('account_details.click_to_revert', 'Click to revert.')}
-            </ds-text>
-          </Padding>
-        </>
-      }
-    >
-      <IconCheckbox
-        icon="RefreshOutline"
-        onClick={onChangeReset}
-        style={{ cursor: 'pointer' }}
-        onChange={(): null => null}
-      />
-    </Tooltip>
-  );
+  const revertIcon = createRevertIcon(inheritedValue, onChangeReset);
 
   if (!isAdvanced) {
     return null;
@@ -219,7 +204,7 @@ export const EditAccountQuotaInputsNew = ({
             value={inputValue}
             disabled={switchValue}
             hasError={hasError}
-            CustomIcon={totalQuotaSource === 'account' ? CustomElement : undefined}
+            CustomIcon={totalQuotaSource === 'account' ? revertIcon : undefined}
           />
           {totalQuotaSource !== undefined && (
             <Padding top={'medium'}>
