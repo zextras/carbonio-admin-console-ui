@@ -12,6 +12,7 @@ import { CLOSED } from '../../../../constants';
 import { deleteAccount } from '../../../../services/delete-account-service';
 import { modifyAccountRequest } from '../../../../services/modify-account';
 import { getAccountStatusColors } from '../../constants/account-status-colors';
+import { getUserTypeFromAttrs } from '../user-type-utils';
 
 type DeleteAccountDialogProps = {
   account: { id: string; name: string; [key: string]: any };
@@ -32,18 +33,7 @@ export const DeleteAccountDialog = ({
   const STATUS_COLOR = getAccountStatusColors(t);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
-  const userType = (() => {
-    if (userSetting?.attrs?.zimbraIsDelegatedAdminAccount === 'TRUE') {
-      return 'DelegatedAdmin';
-    }
-    if (userSetting?.attrs?.zimbraIsSystemAdminAccount === 'TRUE') {
-      return 'System';
-    }
-    if (userSetting?.attrs?.zimbraIsAdminAccount === 'TRUE') {
-      return 'Admin';
-    }
-    return 'Normal';
-  })();
+  const userType = getUserTypeFromAttrs(userSetting?.attrs);
 
   const accountUserType = (item: any): string => {
     if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';

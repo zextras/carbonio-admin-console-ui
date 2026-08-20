@@ -17,25 +17,29 @@ type AccountHeaderActionsProps = {
   onDelete: () => void;
 };
 
+function hasAdminLoginAsRight(
+  rights: NonNullable<ReturnType<typeof useCurrentUserRights>['data']>,
+): boolean {
+  const rightsConfig = find(rights, { type: ACCOUNT }) ?? {
+    all: [],
+    inDomains: [],
+    type: ACCOUNT,
+  };
+  return (
+    !!rightsConfig?.all?.[0]?.right?.find((right) => right?.n === ADMIN_LOGIN_AS) ||
+    !!rightsConfig?.inDomains?.[0]?.rights?.[0].right?.find(
+      (right) => right?.n === ADMIN_LOGIN_AS,
+    )
+  );
+}
+
 export const AccountHeaderActions = ({ accountId, zimbraId, onDelete }: AccountHeaderActionsProps) => {
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const { data: rights = [] } = useCurrentUserRights();
   const viewMailMutation = useDelegateAuth();
 
-  const allowSetPrivacy = (() => {
-    const rightsConfig = find(rights, { type: ACCOUNT }) ?? {
-      all: [],
-      inDomains: [],
-      type: ACCOUNT,
-    };
-    return (
-      !!rightsConfig?.all?.[0]?.right?.find((right) => right?.n === ADMIN_LOGIN_AS) ||
-      !!rightsConfig?.inDomains?.[0]?.rights?.[0].right?.find(
-        (right) => right?.n === ADMIN_LOGIN_AS,
-      )
-    );
-  })();
+  const allowSetPrivacy = hasAdminLoginAsRight(rights);
 
   const showErrorMessage = (message?: string): void => {
     createSnackbar({

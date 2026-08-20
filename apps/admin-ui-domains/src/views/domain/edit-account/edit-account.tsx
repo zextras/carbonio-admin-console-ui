@@ -42,6 +42,7 @@ import { ReusedDefaultTabBar } from './parts/reused-default-tab-bar';
 import { UnsavedChangesModal } from './parts/unsaved-changes-modal';
 import EditAccountSecuritySection from './security-section';
 import EditAccountUserPreferencesSection from './user-pref-section';
+import { getUserTypeFromAttrs } from './user-type-utils';
 
 export type EditAccountProps = {
   account: { id: string; name: string; [key: string]: any };
@@ -86,18 +87,7 @@ export const EditAccount = ({
     domainQuotaConstraint,
   );
 
-  const userType = (() => {
-    if (userSetting?.attrs?.zimbraIsDelegatedAdminAccount === 'TRUE') {
-      return 'DelegatedAdmin';
-    }
-    if (userSetting?.attrs?.zimbraIsSystemAdminAccount === 'TRUE') {
-      return 'System';
-    }
-    if (userSetting?.attrs?.zimbraIsAdminAccount === 'TRUE') {
-      return 'Admin';
-    }
-    return 'Normal';
-  })();
+  const userType = getUserTypeFromAttrs(userSetting?.attrs);
 
   const items = [
     {
