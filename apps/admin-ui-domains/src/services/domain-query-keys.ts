@@ -32,4 +32,28 @@ export const domainQueryKeys = {
     [...domainQueryKeys.all, 'credential-list', accountName] as const,
   accountGrants: (accountId: string) =>
     [...domainQueryKeys.all, 'account-grants', accountId] as const,
+  initializedDomains: (search: string) =>
+    [...domainQueryKeys.all, 'initialized-domains', search] as const,
+  accountListDirectory: (params: {
+    attr: string;
+    type: string;
+    domainName?: string;
+    query: string;
+    offset: number;
+    limit: number;
+    sortBy?: string;
+    sortAscending?: string;
+  }) =>
+    [
+      ...domainQueryKeys.all,
+      'account-list-directory',
+      params.attr,
+      params.type,
+      params.domainName ?? '',
+      params.query,
+      params.offset,
+      params.limit,
+      params.sortBy ?? '',
+      params.sortAscending ?? '',
+    ] as const,
 } as const;

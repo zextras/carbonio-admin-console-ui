@@ -6,7 +6,7 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const removeDistributionListMember = async (id: JSON, dlm: JSON): Promise<any> => {
+export const removeDistributionListMember = async (id: string, dlm: string): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
 		id
