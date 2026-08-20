@@ -43,9 +43,9 @@ export const EditAccountQuotaBar = (): React.JSX.Element | null => {
   }
   return (
     <EditAccountQuotaBarNew
-      used={totalQuotaUsed!}
+      used={totalQuotaUsed}
       limit={totalComputedQuotaLimit}
-      usedByModule={totalQuotaUsedByModule!}
+      usedByModule={totalQuotaUsedByModule}
       source={totalQuotaSource}
       status={totalQuotaStatus}
     />
