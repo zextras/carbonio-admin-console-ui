@@ -6,7 +6,7 @@
 /* eslint-disable no-console */
 import { execSync } from 'child_process';
 
-import { colorLog } from './utils';
+import { colorLog, type ColorName } from './utils';
 
 const SONAR_URL = 'https://sonar.zextras.tools';
 const PROJECT_KEY = 'carbonio-admin-console-ui';
@@ -14,7 +14,7 @@ const PAGE_SIZE = 500;
 
 type Severity = 'BLOCKER' | 'CRITICAL' | 'MAJOR' | 'MINOR' | 'INFO';
 
-const SEVERITY_COLORS: Record<Severity, string> = {
+const SEVERITY_COLORS: Record<Severity, ColorName> = {
 	BLOCKER: 'red',
 	CRITICAL: 'red',
 	MAJOR: 'orange',

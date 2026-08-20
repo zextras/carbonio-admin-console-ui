@@ -27,7 +27,7 @@ const colors = {
   reset: '\x1b[0m',
 } as const;
 
-type ColorName = keyof typeof colors;
+export type ColorName = keyof typeof colors;
 
 /**
  * Logs a message to the Node.js terminal with a specific hex-based color.
