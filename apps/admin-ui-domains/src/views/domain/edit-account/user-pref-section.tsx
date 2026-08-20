@@ -13,7 +13,7 @@ import {
   InheritedSwitch,
   Row,
 } from '@zextras/ui-components';
-import { map, noop, some } from 'lodash-es';
+import { map, some } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,7 +24,7 @@ import {
   isValidEmail,
 } from '../../utility/utils';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
-import { SignatureDetail } from './signature-detail';
+import { SignatureDetail } from './signature-detail/signature-detail';
 import { chipsToValue, useChipList } from './use-chip-list';
 import { CalendarOptionsSection } from './user-pref-section/calendar-options';
 
@@ -34,7 +34,6 @@ const EditAccountUserPreferencesSection: FC = () => {
   const setAccountValues = useSetAccountValues();
   const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
-  const [signatureItems, setSignatureItems] = useState<any[]>([]);
   const accountDetail = values;
   const [zimbraAllowFromAddress, setZimbraAllowFromAddress] = useChipList(
     accountDetail?.zimbraAllowFromAddress,
@@ -405,9 +404,6 @@ const EditAccountUserPreferencesSection: FC = () => {
       <SignatureDetail
         isEditable
         signatureList={signatureList}
-        setSignatureList={noop}
-        signatureItems={signatureItems}
-        setSignatureItems={setSignatureItems}
         accountId={accountDetail?.zimbraId}
       />
       <Row width="100%" padding={{ top: 'medium' }}>
