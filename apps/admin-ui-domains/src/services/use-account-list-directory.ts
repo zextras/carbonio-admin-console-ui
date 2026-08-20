@@ -18,6 +18,8 @@ export type AccountListDirectoryParams = {
 	limit: number;
 	sortBy?: string;
 	sortAscending?: string;
+	/** Consumer-specific projection over the raw SearchDirectory response. */
+	select?: (res: any) => any;
 };
 
 export type AccountListEntry = {
@@ -45,8 +47,8 @@ export function parseAccountListDirectory(res: any): Array<AccountListEntry> {
  * skip fetching (e.g. while the search text is too short).
  */
 export const useAccountListDirectory = (
-  params: AccountListDirectoryParams,
-  enabled = true,
+	params: AccountListDirectoryParams,
+	enabled = true,
 ) =>
 	useQuery({
 		queryKey: domainQueryKeys.accountListDirectory(params),
@@ -60,7 +62,8 @@ export const useAccountListDirectory = (
 				params.limit,
 				params.sortBy,
 				params.sortAscending,
-			).then(parseAccountListDirectory),
+			),
+		select: params.select ?? parseAccountListDirectory,
 		enabled,
 		staleTime: 30_000,
 		retry: 1,

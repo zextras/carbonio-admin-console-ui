@@ -26,7 +26,7 @@ import { useAccountFormProvider } from './account-form-provider';
 import { EditAccountAdministrationSection } from './administration-section';
 import { EditAccountConfigurationSection } from './configuration-section';
 import EditAccountContactsSection from './contacts-section';
-import EditAccountDelegatesSection from './delegates-section';
+import { EditAccountDelegatesSection } from './delegates-section/delegates-section';
 import styles from './edit-account.module.css';
 import { EditAccountGeneralSection } from './general-section';
 import { AccountHeaderActions } from './parts/account-header-actions';

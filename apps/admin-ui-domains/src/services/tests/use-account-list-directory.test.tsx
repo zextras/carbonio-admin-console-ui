@@ -134,6 +134,33 @@ describe('useAccountListDirectory', () => {
 		expect(mockAccountListDirectory).not.toHaveBeenCalled();
 	});
 
+	it('should apply a custom select over the raw response', async () => {
+		mockAccountListDirectory.mockResolvedValue({
+			account: [{ id: 'acc-1', name: 'jane@example.com' }],
+			dl: [{ id: 'dl-1', name: 'team@example.com' }],
+		});
+
+		const { result } = renderHook(() =>
+			useAccountListDirectory({
+				...PARAMS,
+				select: (res: any) => [
+					...res.account.map((a: any) => ({ id: a.id, kind: 'usr' })),
+					...res.dl.map((d: any) => ({ id: d.id, kind: 'grp' })),
+				],
+			}),
+			{
+				wrapper: makeWrapper(new QueryClient()),
+			},
+		);
+
+		await waitFor(() =>
+			expect(result.current.data).toEqual([
+				{ id: 'acc-1', kind: 'usr' },
+				{ id: 'dl-1', kind: 'grp' },
+			]),
+		);
+	});
+
 	it('should surface service errors', async () => {
 		mockAccountListDirectory.mockRejectedValue(new Error('boom'));
 
