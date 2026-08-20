@@ -118,12 +118,12 @@ export const SimplifiedRightsPanel = ({
 	};
 
 	const handleSimpleDeleteDelegate = (single: boolean, rightsType: DelegateRightsType): void => {
-		const selectedRowId =
-			rightsType === 'readWrite'
-				? readWriteSelectedRows[0]
-				: rightsType === 'read'
-					? readSelectedRows[0]
-					: sendSelectedRows[0];
+		const selectedRowsByType: Record<DelegateRightsType, Array<string>> = {
+			readWrite: readWriteSelectedRows,
+			read: readSelectedRows,
+			send: sendSelectedRows,
+		};
+		const selectedRowId = selectedRowsByType[rightsType][0];
 		const selectedDelegateArr = selectDelegatesForRemoval(
 			rightsType,
 			single,

@@ -113,6 +113,28 @@ function filterSessions(list: Array<UserSession>, filter: string): Array<UserSes
   );
 }
 
+/** Formats a zimbra timestamp, falling back to the given label when missing. */
+function formatZimbraDateOr(timestamp: string | undefined | null, fallback: string): string {
+  return timestamp ? formatZimbraDate(timestamp) : fallback;
+}
+
+/** Shows the shared "something went wrong" snackbar, preferring the error message. */
+function showSomethingWrongSnackbar(
+  createSnackbar: ReturnType<typeof useSnackbar>,
+  error: { message?: string },
+  t: ReturnType<typeof useTranslation>[0],
+): void {
+  createSnackbar({
+    key: 'error',
+    severity: 'error',
+    label:
+      error?.message ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+    autoHideTimeout: 3000,
+    hideButton: true,
+    replace: true,
+  });
+}
+
 /** Dropdown items for the domain picker; collapses to a filter hint past the display limit. */
 function buildDomainDropdownItems(
   domainList: Array<objectType>,
@@ -331,10 +353,10 @@ export const EditAccountGeneralSection = ({
     form.setFieldValue('zimbraCOSId', v);
   };
   const onCOSSwitchChanges = (): void => {
-    if (!defaultCOS) {
-      form.setFieldValue('zimbraCOSId', defaultCosId);
-    } else {
+    if (defaultCOS) {
       form.setFieldValue('zimbraCOSId', cosItems[0]?.value);
+    } else {
+      form.setFieldValue('zimbraCOSId', defaultCosId);
     }
     setDefaultCOS(!defaultCOS);
   };
@@ -364,16 +386,7 @@ export const EditAccountGeneralSection = ({
         }
       })
       .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
+        showSomethingWrongSnackbar(createSnackbar, error, t);
       });
   };
 
@@ -463,16 +476,7 @@ export const EditAccountGeneralSection = ({
 
   const handleEndSessionError = (error: { message?: string }): void => {
     setIsRequestInProgress(false);
-    createSnackbar({
-      key: 'error',
-      severity: 'error',
-      label: error.message
-        ? error.message
-        : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-      autoHideTimeout: 3000,
-      hideButton: true,
-      replace: true,
-    });
+    showSomethingWrongSnackbar(createSnackbar, error, t);
   };
   const setUserSessionListState = (): void => {
     setEndedSids((prev) => [...prev, selectedSession[0]]);
@@ -709,22 +713,20 @@ export const EditAccountGeneralSection = ({
             <LabeledValue
               label={t('label.creation_date', 'Creation Date')}
               backgroundColor="gray6"
-              value={
-                values?.zimbraCreateTimestamp
-                  ? formatZimbraDate(values?.zimbraCreateTimestamp)
-                  : t('label.not_available', 'Not Available')
-              }
+              value={formatZimbraDateOr(
+                values?.zimbraCreateTimestamp,
+                t('label.not_available', 'Not Available'),
+              )}
             />
           </Row>
           <Row width="49%" mainAlignment="flex-start">
             <LabeledValue
               label={t('label.last_access', 'Last Access')}
               backgroundColor="gray6"
-              value={
-                values?.zimbraLastLogonTimestamp
-                  ? formatZimbraDate(values?.zimbraLastLogonTimestamp)
-                  : t('label.never_logged_in', 'Never logged in')
-              }
+              value={formatZimbraDateOr(
+                values?.zimbraLastLogonTimestamp,
+                t('label.never_logged_in', 'Never logged in'),
+              )}
               defaultValue={t('label.never_logged_in', 'Never logged in')}
             />
           </Row>
