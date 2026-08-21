@@ -236,6 +236,7 @@ export const EditAccount = ({
         onDiscard={(): void => {
           setShowModal(false);
           resetToSaved();
+          onClose();
         }}
         onSave={(): void => {
           setShowModal(false);
