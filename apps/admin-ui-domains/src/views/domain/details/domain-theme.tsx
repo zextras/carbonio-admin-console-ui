@@ -3,27 +3,44 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Container, Padding, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
-import { domainByIdKey, flushCache, getDomainInformation, useAllConfig, useUserSettings } from '@zextras/ui-shared';
-import { cloneDeep, isEqual, reduce } from 'lodash-es';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { useSelector } from '@tanstack/react-store';
+import {
+  Button,
+  Container,
+  Padding,
+  RouteLeavingGuard,
+  Row,
+  useSnackbar,
+} from '@zextras/ui-components';
+import {
+  domainByIdKey,
+  flushCache,
+  getDomainInformation,
+  useAllConfig,
+  useUserSettings,
+} from '@zextras/ui-shared';
+import { isEqual } from 'lodash-es';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { themeConfigStore } from '../../../../types/domain';
 import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { isValidHexColor } from '../../utility/utils';
 import { ThemeConfigs } from '../theme/theme-configs';
 import { ResetTheme } from '../theme/theme-reset';
-const DomainTheme: FC = () => {
+import {
+  buildDomainResetValues,
+  buildDomainWhiteLabelResetAttributes,
+  pickThemeValues,
+} from '../theme/white-label-defaults';
+import { whiteLabelSchema } from '../theme/white-label-schema';
+
+const DomainTheme = () => {
   const [t] = useTranslation();
-  const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
-  const [domainTheme, setDomainTheme] = useState<themeConfigStore>({});
-  const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
   const { data: configInformation = [] } = useAllConfig();
   const { data: domainWithoutConfig } = useSelectedDomain(0);
   const domainInformation = domainWithoutConfig?.a;
@@ -31,198 +48,127 @@ const DomainTheme: FC = () => {
   const domainName = selectedDomain?.name;
   const queryClient = useQueryClient();
   const { domainId } = useParams();
-  const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
   const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
-  const [isValidated, setIsValidated] = useState<boolean>(true);
-  const [zimbraId, setZimbraId] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+
   const userSetting = useUserSettings();
-  useEffect(() => {
-    if (userSetting?.attrs) {
-      const account = userSetting?.attrs?.zimbraIsAdminAccount;
-      if (account && account === TRUE) {
-        setIsGlobalAdmin(true);
-      }
-    }
-  }, [userSetting?.attrs]);
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
-  useEffect(() => {
-    if (!!domainInformation && domainInformation.length > 0) {
-      const obj: any = {};
-      domainInformation.forEach((item: any) => {
-        obj[item?.n] = item._content;
-      });
-      setZimbraId(obj?.zimbraId);
-      setIntialThemeConfig(cloneDeep(obj));
-      setDomainTheme(cloneDeep(obj));
-      setIsDirty(false);
-    }
-    if (!!configInformation && configInformation.length > 0) {
-      const obj: any = {};
-      configInformation.forEach((item: any) => {
-        obj[item?.n] = item._content;
-      });
-      setGlobalTheme(cloneDeep(obj));
-    }
-  }, [configInformation, domainInformation]);
+  const domainValues = pickThemeValues(domainInformation ?? []);
+  const globalTheme = pickThemeValues(configInformation);
+  const zimbraId = domainInformation?.find((item) => item.n === 'zimbraId')?._content ?? '';
+  // last known server state: the diff baseline for the save payload
+  const savedValues = domainValues;
 
-  useEffect(() => {
-    if (domainTheme && !isEqual(domainTheme, intialThemeConfig)) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [domainTheme, intialThemeConfig]);
-
-  const modifyDomainRequest = (body: any): void => {
+  const modifyDomainRequest = async (body: {
+    id: string;
+    _jsns: string;
+    a: Array<{ n: string; _content: string }>;
+  }): Promise<void> => {
     setIsLoading(true);
-    modifyDomain(body)
-      .then((data) => {
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        if (isGlobalAdmin) {
-          flushCache('domain', 'id', body.id);
-        }
-        const domain: any = data?.domain[0];
-        if (domain) {
-          queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
-          getDomainInformation(domain.id, 0).then((res) => {
-            const domainData = res?.domain[0];
-            if (domainData) {
-              queryClient.setQueryData(domainByIdKey(domainId, 0), domainData);
-            }
-          });
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        setIsLoading(false);
-      });
-  };
-
-  const showErrorMessage = useCallback(
-    (msg: string) => {
+    try {
+      const data = await modifyDomain(body);
       createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label: msg,
+        key: 'success',
+        severity: 'success',
+        label: t('label.change_save_success_msg', 'The change has been saved successfully'),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
       });
+      if (isGlobalAdmin) {
+        flushCache('domain', 'id', body.id);
+      }
+      const domain = data?.domain?.[0];
+      if (domain) {
+        queryClient.setQueryData(domainByIdKey(domainId, 1), domain);
+        getDomainInformation(domain.id, 0).then((res) => {
+          const domainData = res?.domain?.[0];
+          if (domainData) {
+            queryClient.setQueryData(domainByIdKey(domainId, 0), domainData);
+          }
+        });
+      }
+    } catch (error) {
+      createSnackbar({
+        key: 'error',
+        severity: 'error',
+        label:
+          (error as { message?: string })?.message ??
+          t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const form = useForm({
+    defaultValues: domainValues,
+    validators: { onChange: whiteLabelSchema, onSubmit: whiteLabelSchema },
+    onSubmit: async ({ value }) => {
+      const modified = Object.entries(value).filter(
+        ([key, val]) => !isEqual(val, (savedValues as Record<string, unknown>)[key]),
+      );
+      if (modified.length === 0) {
+        return;
+      }
+      const body = {
+        id: zimbraId,
+        _jsns: ZIMBRA_ADMIN_URN,
+        a: modified.map(([n, _content]) => ({ n, _content: _content as string })),
+      };
+      await modifyDomainRequest(body);
+      form.reset(value, { keepDefaultValues: true });
     },
-    [createSnackbar],
-  );
+  });
+
+  // sync form with server data while the user has not touched it yet
+  useEffect(() => {
+    if (!domainInformation) {
+      return;
+    }
+    if (form.state.isTouched || form.state.isDirty) {
+      return;
+    }
+    form.reset(pickThemeValues(domainInformation), { keepDefaultValues: false });
+  }, [domainInformation, form]);
+
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const canSubmit = useSelector(form.store, (s) => s.canSubmit);
 
   const onSave = (): void => {
-    if (
-      domainTheme?.carbonioWebUiPrimaryColor &&
-      !isValidHexColor(domainTheme?.carbonioWebUiPrimaryColor)
-    ) {
-      showErrorMessage(
-        t('label.invalid_primary_color_light_mode', 'Primary Color for Light Mode is not valid'),
-      );
-      return;
-    }
-    if (
-      domainTheme?.carbonioWebUiDarkPrimaryColor &&
-      !isValidHexColor(domainTheme?.carbonioWebUiDarkPrimaryColor)
-    ) {
-      showErrorMessage(
-        t('label.invalid_primary_color_dark_mode', 'Primary Color for Dark Mode is not valid'),
-      );
-      return;
-    }
-    const body: any = {};
-    const attributes: any[] = [];
-    body.id = zimbraId;
-    body._jsns = ZIMBRA_ADMIN_URN;
-    const modifiedKeys: any = reduce(
-      domainTheme,
-      function (result, value, key): any {
-        // @ts-expect-error - needs a fix
-        return isEqual(value, intialThemeConfig[key]) ? result : [...result, key];
-      },
-      [],
-    );
-    modifiedKeys.forEach((ele: any) => {
-      // @ts-expect-error - needs a fix
-      attributes.push({ n: ele, _content: domainTheme[ele] });
-    });
-    body.a = attributes;
-    modifyDomainRequest(body);
+    void form.handleSubmit();
   };
 
   const onCancel = (): void => {
-    setDomainTheme(cloneDeep(intialThemeConfig));
-    setIsDirty(false);
+    form.reset();
   };
 
-  const onResetTheme = useCallback(() => {
+  const onResetTheme = (): void => {
     setIsOpenResetDialog(true);
-  }, []);
+  };
 
-  const closeHandler: () => void = useCallback(() => {
+  const closeHandler = (): void => {
     setIsOpenResetDialog(false);
-  }, []);
+  };
 
   const onResetHandler = (): void => {
     setIsOpenResetDialog(false);
-    const body: any = {};
-    const attributes: any[] = [];
-    body.id = zimbraId;
-    body._jsns = ZIMBRA_ADMIN_URN;
-    const domainDefaultElements: any = {
-      carbonioWebUiDarkMode: '',
-      carbonioWebUiLoginLogo: '',
-      carbonioWebUiDarkLoginLogo: '',
-      carbonioWebUiLoginBackground: '',
-      carbonioWebUiDarkLoginBackground: '',
-      carbonioWebUiAppLogo: '',
-      carbonioWebUiDarkAppLogo: '',
-      carbonioWebUiFavicon: '',
-      carbonioWebUiTitle: '',
-      carbonioWebUiDescription: '',
-      carbonioAdminUiLoginLogo: '',
-      carbonioAdminUiDarkLoginLogo: '',
-      carbonioAdminUiAppLogo: '',
-      carbonioAdminUiDarkAppLogo: '',
-      carbonioAdminUiBackground: '',
-      carbonioAdminUiDarkBackground: '',
-      carbonioAdminUiFavicon: '',
-      carbonioAdminUiTitle: '',
-      carbonioAdminUiDescription: '',
-      carbonioLogoUrl: '',
-      carbonioWebUiPrimaryColor: '',
-      carbonioWebUiDarkPrimaryColor: '',
-      carbonioWebUILoginURL: '',
-      carbonioWebUILogoutURL: '',
-      carbonioAdminUILoginURL: '',
-      carbonioAdminUILogoutURL: '',
-      carbonioAdminDocumentationUrl: '',
-    };
-    Object.keys(domainDefaultElements).forEach((ele: any) =>
-      attributes.push({ n: ele, _content: domainDefaultElements[ele] }),
-    );
-    body.a = attributes;
-    modifyDomainRequest(body);
+    void modifyDomainRequest({
+      id: zimbraId,
+      _jsns: ZIMBRA_ADMIN_URN,
+      a: buildDomainWhiteLabelResetAttributes(),
+    })
+      .then(() => {
+        form.reset(buildDomainResetValues(), { keepDefaultValues: true });
+      })
+      .catch(() => {
+        // errors already surfaced via snackbar inside modifyDomainRequest
+      });
   };
 
   return (
@@ -268,7 +214,7 @@ const DomainTheme: FC = () => {
                       label={t('label.save', 'Save')}
                       color="primary"
                       onClick={onSave}
-                      disabled={!isValidated}
+                      disabled={!canSubmit}
                     />
                   )}
                 </Row>
@@ -277,22 +223,16 @@ const DomainTheme: FC = () => {
             <ds-divider></ds-divider>
           </Row>
           <ThemeConfigs
-            themeConfig={domainTheme}
+            form={form}
             globalTheme={globalTheme}
-            setThemeConfig={setDomainTheme}
-            setIsValidated={setIsValidated}
             onResetTheme={onResetTheme}
           />
         </Container>
         {isOpenResetDialog && (
           <ResetTheme
-            title={t(
-              'label.reset_domain_whitelabel_settings',
-              'Reset {{name}} whitelabel settings',
-              {
-                name: domainName,
-              },
-            )}
+            title={t('label.reset_domain_whitelabel_settings', 'Reset {{name}} whitelabel settings', {
+              name: domainName,
+            })}
             isOpenResetDialog={isOpenResetDialog}
             closeHandler={closeHandler}
             onResetHandler={onResetHandler}

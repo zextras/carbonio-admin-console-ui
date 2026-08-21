@@ -3,89 +3,83 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
+import { keepPreviousData } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
   Padding,
   RouteLeavingGuard,
   Row,
-  useSnackbar,
 } from '@zextras/ui-components';
-import { useAllConfig, useModifyConfig } from '@zextras/ui-shared';
-import { isEqual } from 'lodash-es';
-import { useEffect, useState } from 'react';
+import { type ConfigAttribute,useAllConfig, useModifyConfig } from '@zextras/ui-shared';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { themeConfigStore } from '../../../../../types/domain';
-import { isValidHexColor } from '../../../utility/utils';
 import { ThemeConfigs } from '../../theme/theme-configs';
 import { ResetTheme } from '../../theme/theme-reset';
 import {
+  buildGlobalResetValues,
   buildWhiteLabelConfig,
   buildWhiteLabelResetAttributes,
 } from '../../theme/white-label-defaults';
+import { whiteLabelSchema } from '../../theme/white-label-schema';
 
 /**
  * Global white-label view: global whitelabel settings (logos, colors,
  * login URLs), saved via ModifyConfig.
  */
 export const GlobalWhiteLabel = () => {
+  const { data: configInformation = [], isPending, invalidate } = useAllConfig({
+    placeholderData: keepPreviousData,
+  });
+
+  if (isPending) {
+    return <ds-spinner></ds-spinner>;
+  }
+
+  return (
+    <GlobalWhiteLabelContent configInformation={configInformation} invalidate={invalidate} />
+  );
+};
+
+const GlobalWhiteLabelContent = ({
+  configInformation,
+  invalidate,
+}: {
+  configInformation: Array<ConfigAttribute>;
+  invalidate: () => void;
+}) => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-  const [themeConfig, setThemeConfig] = useState<themeConfigStore>({});
   const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
-  const [isValidated, setIsValidated] = useState<boolean>(true);
-  const { data: configInformation = [] } = useAllConfig();
   const modifyConfigMutation = useModifyConfig();
 
-  const savedThemeConfig =
-    configInformation.length > 0 ? buildWhiteLabelConfig(configInformation) : {};
+  const savedThemeConfig = buildWhiteLabelConfig(configInformation);
 
-  useEffect(() => {
-    setThemeConfig(savedThemeConfig);
-  }, [savedThemeConfig]);
+  const form = useForm({
+    defaultValues: savedThemeConfig,
+    validators: { onChange: whiteLabelSchema, onSubmit: whiteLabelSchema },
+    onSubmit: async ({ value }) => {
+      const attributes = Object.entries(value).map(([n, _content]) => ({
+        n,
+        _content: _content as string,
+      }));
+      await modifyConfigMutation.mutateAsync(attributes);
+      form.reset(value, { keepDefaultValues: true });
+      invalidate();
+    },
+  });
 
-  const isDirty = !isEqual(themeConfig, savedThemeConfig);
-
-  const showErrorMessage = (msg: string): void => {
-    createSnackbar({
-      key: 'error',
-      severity: 'error',
-      label: msg,
-      autoHideTimeout: 3000,
-      hideButton: true,
-      replace: true,
-    });
-  };
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const canSubmit = useSelector(form.store, (s) => s.canSubmit);
 
   const onSave = (): void => {
-    if (
-      themeConfig?.carbonioWebUiPrimaryColor &&
-      !isValidHexColor(themeConfig?.carbonioWebUiPrimaryColor)
-    ) {
-      showErrorMessage(
-        t('label.invalid_primary_color_light_mode', 'Primary Color for Light Mode is not valid'),
-      );
-      return;
-    }
-    if (
-      themeConfig?.carbonioWebUiDarkPrimaryColor &&
-      !isValidHexColor(themeConfig?.carbonioWebUiDarkPrimaryColor)
-    ) {
-      showErrorMessage(
-        t('label.invalid_primary_color_dark_mode', 'Primary Color for Dark Mode is not valid'),
-      );
-      return;
-    }
-    const attributes = Object.entries(themeConfig).map(([n, _content]) => ({
-      n,
-      _content: _content as string,
-    }));
-    modifyConfigMutation.mutate(attributes);
+    void form.handleSubmit();
   };
 
   const onCancel = (): void => {
-    setThemeConfig(savedThemeConfig);
+    form.reset();
   };
 
   const onResetTheme = (): void => {
@@ -98,7 +92,12 @@ export const GlobalWhiteLabel = () => {
 
   const onResetHandler = (): void => {
     setIsOpenResetDialog(false);
-    modifyConfigMutation.mutate(buildWhiteLabelResetAttributes());
+    modifyConfigMutation.mutate(buildWhiteLabelResetAttributes(), {
+      onSuccess: () => {
+        form.reset(buildGlobalResetValues(), { keepDefaultValues: true });
+        invalidate();
+      },
+    });
   };
 
   return (
@@ -144,7 +143,7 @@ export const GlobalWhiteLabel = () => {
                       label={t('label.save', 'Save')}
                       color="primary"
                       onClick={onSave}
-                      disabled={!isValidated}
+                      disabled={!canSubmit}
                     />
                   )}
                 </Row>
@@ -152,13 +151,7 @@ export const GlobalWhiteLabel = () => {
             </Container>
             <ds-divider></ds-divider>
           </Row>
-          <ThemeConfigs
-            isGlobalTheme
-            themeConfig={themeConfig}
-            setThemeConfig={setThemeConfig}
-            setIsValidated={setIsValidated}
-            onResetTheme={onResetTheme}
-          />
+          <ThemeConfigs form={form} isGlobalTheme onResetTheme={onResetTheme} />
         </Container>
         {isOpenResetDialog && (
           <ResetTheme

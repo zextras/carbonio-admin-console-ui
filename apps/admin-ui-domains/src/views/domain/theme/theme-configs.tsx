@@ -3,34 +3,41 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { AnyFormApi } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
   DefaultTabBarItem,
-  InheritedInput,
   InheritedSelect,
+  type Item as TabBarItem,
   ListRow,
   Padding,
   Row,
-  SelectItem,
   TabBar,
 } from '@zextras/ui-components';
 import { getAllRights, useCurrentUserRights } from '@zextras/ui-shared';
 import { noop } from 'lodash-es';
-import { ChangeEvent, FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { themeConfigStore } from '../../../../types/domain';
 import { CONFIG, PRIMARY_COLOR_CODE_EX } from '../../../constants';
-import AdminPanelThemeConfig from './admin-panel-theme-configs';
-import EndUserThemeConfigs from './end-user-theme-configs';
+import { AdminPanelThemeConfig } from './admin-panel-theme-configs';
+import { EndUserThemeConfigs } from './end-user-theme-configs';
+import { ThemeFieldInput } from './theme-field-input';
+import {
+  DARK_PRIMARY_COLOR_ERROR_LABEL,
+  LIGHT_PRIMARY_COLOR_ERROR_LABEL,
+} from './white-label-schema';
 
-const ReusedDefaultTabBar: FC<{
-  item: any;
-  index: any;
-  selected: any;
-  onClick: any;
-}> = ({ item, selected, onClick }): ReactElement => (
+type ReusedDefaultTabBarProps = {
+  item: TabBarItem;
+  selected: boolean;
+  onClick: (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent) => void;
+};
+
+const ReusedDefaultTabBar = ({ item, selected, onClick }: ReusedDefaultTabBarProps) => (
   <DefaultTabBarItem
     item={item}
     selected={selected}
@@ -48,69 +55,39 @@ const ReusedDefaultTabBar: FC<{
   </DefaultTabBarItem>
 );
 
-export const ThemeConfigs: FC<{
-  themeConfig: themeConfigStore;
-  globalTheme?: themeConfigStore | undefined;
-  setThemeConfig: CallableFunction;
-  setIsValidated: CallableFunction;
-  onResetTheme: any;
-  isGlobalTheme?: boolean;
-}> = ({
-  themeConfig,
+function computeHasGlobalModifyRights(rights: unknown): boolean {
+  if (!rights || !Array.isArray(rights) || rights.length === 0) {
+    return false;
+  }
+  const allRights = getAllRights(rights as never, CONFIG);
+  const right = allRights?.[0];
+  const setAttrs = right?.all?.[0]?.setAttrs ?? [];
+  return setAttrs.some((item: Record<string, unknown>) => item?.all === true);
+}
+
+export const ThemeConfigs = ({
+  form,
   globalTheme = undefined,
-  setThemeConfig,
-  setIsValidated,
-  onResetTheme,
   isGlobalTheme = false,
+  onResetTheme,
+}: {
+  form: AnyFormApi;
+  globalTheme?: themeConfigStore | undefined;
+  isGlobalTheme?: boolean;
+  onResetTheme: () => void;
 }) => {
   const [t] = useTranslation();
-  const [allData, setAllData] = useState({
-    isValidCarbonioAdminUiLoginLogo: true,
-    isValidCarbonioAdminUiDarkLoginLogo: true,
-    isValidCarbonioAdminUiAppLogo: true,
-    isValidCarbonioAdminUiDarkAppLogo: true,
-    isValidCarbonioAdminUiBackground: true,
-    isValidCarbonioAdminUiDarkBackground: true,
-    isValidCarbonioAdminUiFavicon: true,
-    isValidCarbonioAdminLogoutURL: true,
-    isValidCarbonioWebClientLogoutURL: true,
-    isValidCarbonioAdminDocumentationUrl: true,
-    isValidCarbonioWebUiAppLogo: true,
-    isValidCarbonioWebUiDarkAppLogo: true,
-    isValidCarbonioWebUiDarkLoginBackground: true,
-    isValidCarbonioWebUiDarkLoginLogo: true,
-    isValidCarbonioWebUiFavicon: true,
-    isValidCarbonioWebUiLoginBackground: true,
-    isValidCarbonioWebUiLoginLogo: true,
-  });
   const [change, setChange] = useState('end_user');
 
-  const [hasModifyRights, setHasModifyRights] = useState<boolean>(false);
   const { data: rights } = useCurrentUserRights();
+  const hasModifyRights = !isGlobalTheme || computeHasGlobalModifyRights(rights);
 
-  useEffect(() => {
-    if (rights && rights.length > 0 && isGlobalTheme) {
-      const allRights = getAllRights(rights, CONFIG);
-      if (allRights && allRights.length > 0) {
-        const right = allRights[0];
-        if (
-          right?.all &&
-          Array.isArray(right?.all) &&
-          right?.all.length > 0 &&
-          right?.all[0].setAttrs &&
-          right?.all[0].setAttrs.length > 0
-        ) {
-          right?.all[0].setAttrs.forEach((item: Record<string, unknown>) => {
-            if (item?.all && item?.all === true) {
-              setHasModifyRights(true);
-            }
-          });
-        }
-      }
-    }
-  }, [rights, isGlobalTheme]);
+  const darkMode = useSelector(
+    form.store,
+    (s) => (s.values as themeConfigStore).carbonioWebUiDarkMode,
+  );
 
-  const items: any = [
+  const items = [
     {
       id: 'end_user',
       label: `${t('label.end_user_title', 'END USER')}`,
@@ -123,79 +100,11 @@ export const ThemeConfigs: FC<{
     },
   ];
 
-  const THEME_MODE: any = useMemo(
-    () => [
-      { label: `${t('label.disabled', 'Disabled')}`, value: 'FALSE' },
-      { label: `${t('label.enabled', 'Enabled')}`, value: 'TRUE' },
-    ],
-    [t],
-  );
+  const THEME_MODE = [
+    { label: `${t('label.disabled', 'Disabled')}`, value: 'FALSE' },
+    { label: `${t('label.enabled', 'Enabled')}`, value: 'TRUE' },
+  ];
 
-  const onThemeModeChange = useCallback(
-    (v: SelectItem[] | string | null): void => {
-      setThemeConfig((prev: any) => ({ ...prev, carbonioWebUiDarkMode: v }));
-    },
-    [setThemeConfig],
-  );
-
-  const onChangeDomainThemeDetail = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setThemeConfig((prev: any) => ({
-        ...prev,
-        [e.target.name]: e.target.value,
-      }));
-    },
-    [setThemeConfig],
-  );
-
-  useEffect(() => {
-    if (
-      allData.isValidCarbonioAdminUiAppLogo &&
-      allData.isValidCarbonioAdminUiBackground &&
-      allData.isValidCarbonioAdminUiDarkAppLogo &&
-      allData.isValidCarbonioAdminUiDarkBackground &&
-      allData.isValidCarbonioAdminUiDarkLoginLogo &&
-      allData.isValidCarbonioAdminUiFavicon &&
-      allData.isValidCarbonioAdminUiLoginLogo &&
-      allData.isValidCarbonioWebUiAppLogo &&
-      allData.isValidCarbonioWebUiDarkAppLogo &&
-      allData.isValidCarbonioWebUiDarkLoginBackground &&
-      allData.isValidCarbonioWebUiDarkLoginLogo &&
-      allData.isValidCarbonioWebUiFavicon &&
-      allData.isValidCarbonioWebUiLoginBackground &&
-      allData.isValidCarbonioWebUiLoginLogo &&
-      allData.isValidCarbonioAdminLogoutURL &&
-      allData.isValidCarbonioWebClientLogoutURL
-    ) {
-      setIsValidated(true);
-    } else {
-      setIsValidated(false);
-    }
-  }, [
-    allData.isValidCarbonioAdminLogoutURL,
-    allData.isValidCarbonioAdminUiAppLogo,
-    allData.isValidCarbonioAdminUiBackground,
-    allData.isValidCarbonioAdminUiDarkAppLogo,
-    allData.isValidCarbonioAdminUiDarkBackground,
-    allData.isValidCarbonioAdminUiDarkLoginLogo,
-    allData.isValidCarbonioAdminUiFavicon,
-    allData.isValidCarbonioAdminUiLoginLogo,
-    allData.isValidCarbonioWebClientLogoutURL,
-    allData.isValidCarbonioWebUiAppLogo,
-    allData.isValidCarbonioWebUiDarkAppLogo,
-    allData.isValidCarbonioWebUiDarkLoginBackground,
-    allData.isValidCarbonioWebUiDarkLoginLogo,
-    allData.isValidCarbonioWebUiFavicon,
-    allData.isValidCarbonioWebUiLoginBackground,
-    allData.isValidCarbonioWebUiLoginLogo,
-    setIsValidated,
-  ]);
-  const setEmptyValue = useCallback(
-    (keyName: string) => {
-      setThemeConfig((prev: any) => ({ ...prev, [keyName]: undefined }));
-    },
-    [setThemeConfig],
-  );
   return (
     <Container
       orientation="column"
@@ -223,13 +132,17 @@ export const ThemeConfigs: FC<{
             <InheritedSelect
               label={t('cos.dark_mode', 'Dark Mode')}
               items={THEME_MODE}
-              subValue={themeConfig.carbonioWebUiDarkMode}
+              subValue={darkMode}
               inheritedValue={globalTheme?.carbonioWebUiDarkMode}
-              fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkMode : ''}
+              fromSubValue={globalTheme ? darkMode : ''}
               background="gray5"
               selectName="carbonioWebUiDarkMode"
-              onChange={onThemeModeChange}
-              onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkMode')}
+              onChange={(v): void => {
+                form.setFieldValue('carbonioWebUiDarkMode', v as string | undefined);
+              }}
+              onChangeReset={(): void => {
+                form.setFieldValue('carbonioWebUiDarkMode', undefined);
+              }}
             />
           </ListRow>
           <ListRow>
@@ -240,17 +153,14 @@ export const ThemeConfigs: FC<{
             </Padding>
           </ListRow>
           <ListRow>
-            <InheritedInput
+            <ThemeFieldInput
+              form={form}
+              name="carbonioLogoUrl"
               label={t(
                 'label.logo_redirection_title',
                 'Clicking on the Logo will redirect the users to...',
               )}
-              subValue={themeConfig.carbonioLogoUrl}
-              inheritedValue={globalTheme?.carbonioLogoUrl}
-              fromSubValue={globalTheme ? themeConfig.carbonioLogoUrl : ''}
-              inputName="carbonioLogoUrl"
-              onChange={onChangeDomainThemeDetail}
-              onChangeReset={(): void => setEmptyValue('carbonioLogoUrl')}
+              globalTheme={globalTheme}
             />
           </ListRow>
           <ListRow>
@@ -300,29 +210,23 @@ export const ThemeConfigs: FC<{
           </ListRow>
           <ListRow>
             <Container padding={{ all: 'small' }}>
-              <InheritedInput
+              <ThemeFieldInput
+                form={form}
+                name="carbonioWebUiPrimaryColor"
                 label={PRIMARY_COLOR_CODE_EX}
-                subValue={themeConfig.carbonioWebUiPrimaryColor}
-                inheritedValue={globalTheme?.carbonioWebUiPrimaryColor}
-                fromSubValue={globalTheme ? themeConfig.carbonioWebUiPrimaryColor : ''}
-                inputName="carbonioWebUiPrimaryColor"
-                onChange={(e: any): any => {
-                  onChangeDomainThemeDetail(e);
-                }}
-                onChangeReset={(): void => setEmptyValue('carbonioWebUiPrimaryColor')}
+                globalTheme={globalTheme}
+                errorLabel={LIGHT_PRIMARY_COLOR_ERROR_LABEL}
+                errorLabelDefault="Primary Color for Light Mode is not valid"
               />
             </Container>
             <Container padding={{ all: 'small' }}>
-              <InheritedInput
+              <ThemeFieldInput
+                form={form}
+                name="carbonioWebUiDarkPrimaryColor"
                 label={PRIMARY_COLOR_CODE_EX}
-                subValue={themeConfig.carbonioWebUiDarkPrimaryColor}
-                inheritedValue={globalTheme?.carbonioWebUiDarkPrimaryColor}
-                fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkPrimaryColor : ''}
-                inputName="carbonioWebUiDarkPrimaryColor"
-                onChange={(e: any): any => {
-                  onChangeDomainThemeDetail(e);
-                }}
-                onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkPrimaryColor')}
+                globalTheme={globalTheme}
+                errorLabel={DARK_PRIMARY_COLOR_ERROR_LABEL}
+                errorLabelDefault="Primary Color for Dark Mode is not valid"
               />
             </Container>
           </ListRow>
@@ -349,26 +253,18 @@ export const ThemeConfigs: FC<{
           <Container crossAlignment="flex-start" padding={{ all: '0px' }}>
             {change === 'end_user' && (
               <EndUserThemeConfigs
-                themeConfig={themeConfig}
+                form={form}
                 globalTheme={globalTheme}
-                onChangeDomainThemeDetail={onChangeDomainThemeDetail}
-                setEmptyValue={setEmptyValue}
                 isGlobalTheme={isGlobalTheme}
                 hasModifyRights={hasModifyRights}
-                allData={allData}
-                setAllData={setAllData}
               />
             )}
             {change === 'admin_panel' && (
               <AdminPanelThemeConfig
-                themeConfig={themeConfig}
+                form={form}
                 globalTheme={globalTheme}
-                onChangeDomainThemeDetail={onChangeDomainThemeDetail}
-                setEmptyValue={setEmptyValue}
                 isGlobalTheme={isGlobalTheme}
                 hasModifyRights={hasModifyRights}
-                allData={allData}
-                setAllData={setAllData}
               />
             )}
           </Container>
