@@ -12,7 +12,7 @@ import {
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import GlobalTheme from '../global-theme';
+import { GlobalWhiteLabel } from '../global-white-label/global-white-label';
 
 type ConfigItem = { n: string; _content: string };
 
@@ -29,13 +29,13 @@ async function setup(): Promise<void> {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['all-config'], CONFIG_DATA);
   createBrowserSoapAPIInterceptor('GetAllConfig', { a: CONFIG_DATA });
-  await setupBrowserTest(<GlobalTheme />, {
+  await setupBrowserTest(<GlobalWhiteLabel />, {
     queryClient,
     grantRights: 'config',
   });
 }
 
-describe('GlobalTheme', () => {
+describe('GlobalWhiteLabel', () => {
 
   describe('Rendering', () => {
     it('should render the Whitelabel Settings header', async () => {

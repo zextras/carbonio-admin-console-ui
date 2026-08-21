@@ -24,8 +24,8 @@ function MockCreateNewDomain() {
 function MockGlobalDetailPanel() {
   return <div>VIEW:global-detail-panel</div>;
 }
-function MockGlobalTheme() {
-  return <div>VIEW:global-theme</div>;
+function MockGlobalWhiteLabel() {
+  return <div>VIEW:global-white-label</div>;
 }
 function MockGlobalTwoFactorAuth() {
   return <div>VIEW:global-two-factor-auth</div>;
@@ -96,7 +96,9 @@ vi.mock('../domain/create-new-domain', () => ({ default: MockCreateNewDomain }))
 vi.mock('../domain/global/global-detail-panel', () => ({
   GlobalDetailPanel: MockGlobalDetailPanel,
 }));
-vi.mock('../domain/global/global-theme', () => ({ default: MockGlobalTheme }));
+vi.mock('../domain/global/global-white-label/global-white-label', () => ({
+  GlobalWhiteLabel: MockGlobalWhiteLabel,
+}));
 vi.mock('../domain/global/global-two-factor-auth', () => ({ default: MockGlobalTwoFactorAuth }));
 vi.mock('../domain/global/global-active-sync', () => ({ default: MockGlobalActiveSync }));
 vi.mock('../domain/global/global-address-book', () => ({
@@ -138,7 +140,7 @@ const DOMAIN_ID = 'dom-1';
 const globalRoutes: Array<[string, string]> = [
   ['/global', 'VIEW:global-detail-panel'],
   ['/global/settings', 'VIEW:global-detail-panel'],
-  ['/global/whitelabel_settings', 'VIEW:global-theme'],
+  ['/global/whitelabel_settings', 'VIEW:global-white-label'],
   ['/global/2-factor-authentication', 'VIEW:global-two-factor-auth'],
   ['/global/quarantine', 'VIEW:quarantine-list'],
   ['/global/domains', 'VIEW:domain-list'],
