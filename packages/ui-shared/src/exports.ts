@@ -36,8 +36,8 @@ export type { II18nFactory } from '../types/misc';
 export type { ThemeExtension } from '../types/theme';
 export type { ResponsiveContainerOptions } from './hooks/responsive-container';
 export type { Breakpoint } from './hooks/use-breakpoint';
-export type { ConfigAttribute } from './react-query/use-modify-config';
 export { default as I18nFactory } from './i18n/i18n-factory';
+export type { ConfigAttribute } from './react-query/use-modify-config';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext, registerApp } from './apps/loader';
 
@@ -93,11 +93,11 @@ import { useCosList } from './react-query/use-cos-list';
 import { domainByIdKey, useDomainById } from './react-query/use-domain-by-id';
 import { useDomainInformation } from './react-query/use-domain-information';
 import { useDomainSearch } from './react-query/use-domain-search';
-import { useModifyConfig } from './react-query/use-modify-config';
 import { useGlobalCarbonioSendAnalytics, useGlobalSettings } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
 import { useMailstoreServers } from './react-query/use-mailstore-servers';
+import { useModifyConfig } from './react-query/use-modify-config';
 import {
 	type Notification,
 	notificationsQueryKeys,
@@ -307,8 +307,8 @@ export {
   useLoginConfigStore,
   useMailstoreServers,
   useMediaQuery,
-  useModuleCrumbMenu,
   useModifyConfig,
+  useModuleCrumbMenu,
   useModuleLicenseInfo,
   useMtaServers,
   usePrimaryBarState,
