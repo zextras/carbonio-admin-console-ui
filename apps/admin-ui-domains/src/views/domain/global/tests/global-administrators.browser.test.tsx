@@ -193,9 +193,9 @@ describe('GlobalAdministrators (browser)', () => {
 			await page.getByText('admin@example.com').click();
 
 			// the edit view shows the account name as its title
-			await vi.waitFor(() =>
-				expect.element(page.getByRole('heading', { name: 'admin@example.com' })).toBeVisible(),
-			);
+			await expect
+				.element(page.getByRole('heading', { name: 'admin@example.com' }))
+				.toBeVisible();
 		});
 	});
 
