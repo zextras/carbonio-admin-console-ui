@@ -33,6 +33,43 @@ type ResourceEntry = {
   a: Array<{ n: string; _content: string }>;
 };
 
+type ResourceAttr = ResourceEntry['a'][number];
+
+function getAttr(attrs: Array<ResourceAttr> | undefined, name: string): string | undefined {
+  return attrs?.find((a) => a.n === name)?._content;
+}
+
+function formatLastAccess(timestamp: string | undefined, neverLabel: string): string {
+  if (!timestamp) return neverLabel;
+  return format(parse(timestamp, 'yyyyMMddHHmmss.SSSX', new Date()), 'yy/MM/dd | hh:mm');
+}
+
+type ResourceTableCellProps = {
+  onActivate: (detail: number) => void;
+  children: React.ReactNode;
+};
+
+/** Module-level cell so table rows do not define components inside DomainResources (S6478). */
+function ResourceTableCell({ onActivate, children }: ResourceTableCellProps) {
+  return (
+    <Container
+      crossAlignment="flex-start"
+      onClick={(e: { stopPropagation: () => void; detail: number }) => {
+        e.stopPropagation();
+        onActivate(e.detail);
+      }}
+    >
+      <ds-text as="span" size="small" weight="light" color="gray0">
+        {children}
+      </ds-text>
+    </Container>
+  );
+}
+
+const SearchFunnelIcon = (): React.ReactElement => (
+  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
+
 function buildStatusFilter(selectedItems: Array<{ value: string }>): string {
   if (!selectedItems || selectedItems.length === 0) return '';
   if (selectedItems.length === 1) return selectedItems[0].value;
@@ -146,82 +183,35 @@ export const DomainResources = () => {
     }
   }
 
-  const tableRows = resourceList.map((item) => ({
-    id: item.id,
-    columns: [
-      <Container
-        key={`dn-${item.id}`}
-        crossAlignment="flex-start"
-        onClick={(e: { stopPropagation: () => void; detail: number }) => {
-          e.stopPropagation();
-          handleRowClick(item, e.detail);
-        }}
-      >
-        <ds-text as="span" size="small" weight="light" color="gray0">
-          {item.a?.find((a) => a.n === 'displayName')?._content}
-        </ds-text>
-      </Container>,
-      <Container
-        key={`nm-${item.id}`}
-        crossAlignment="flex-start"
-        onClick={(e: { stopPropagation: () => void; detail: number }) => {
-          e.stopPropagation();
-          handleRowClick(item, e.detail);
-        }}
-      >
-        <ds-text as="span" size="small" weight="light" color="gray0">
+  const neverLoggedIn = t('label.never_logged_in', 'Never logged In');
+
+  const tableRows = resourceList.map((item) => {
+    const onActivate = (detail: number): void => {
+      handleRowClick(item, detail);
+    };
+    return {
+      id: item.id,
+      columns: [
+        <ResourceTableCell key={`dn-${item.id}`} onActivate={onActivate}>
+          {getAttr(item.a, 'displayName')}
+        </ResourceTableCell>,
+        <ResourceTableCell key={`nm-${item.id}`} onActivate={onActivate}>
           {item.name}
-        </ds-text>
-      </Container>,
-      <Container
-        key={`st-${item.id}`}
-        crossAlignment="flex-start"
-        onClick={(e: { stopPropagation: () => void; detail: number }) => {
-          e.stopPropagation();
-          handleRowClick(item, e.detail);
-        }}
-      >
-        <ds-text as="span" size="small" weight="light" color="gray0">
-          {item.a?.find((a) => a.n === 'zimbraAccountStatus')?._content}
-        </ds-text>
-      </Container>,
-      <Container
-        key={`la-${item.id}`}
-        crossAlignment="flex-start"
-        onClick={(e: { stopPropagation: () => void; detail: number }) => {
-          e.stopPropagation();
-          handleRowClick(item, e.detail);
-        }}
-      >
-        <ds-text as="span" size="small" weight="light" color="gray0">
-          {item.a?.find((a) => a.n === 'zimbraLastLogonTimestamp')?._content
-            ? format(
-                parse(
-                  item.a.find((a) => a.n === 'zimbraLastLogonTimestamp')!._content,
-                  'yyyyMMddHHmmss.SSSX',
-                  new Date(),
-                ),
-                'yy/MM/dd | hh:mm',
-              )
-            : t('label.never_logged_in', 'Never logged In')}
-        </ds-text>
-      </Container>,
-      <Container
-        key={`desc-${item.id}`}
-        crossAlignment="flex-start"
-        onClick={(e: { stopPropagation: () => void; detail: number }) => {
-          e.stopPropagation();
-          handleRowClick(item, e.detail);
-        }}
-      >
-        <ds-text as="span" size="small" weight="light" color="gray0">
-          {item.a?.find((a) => a.n === 'description')?._content}
-        </ds-text>
-      </Container>,
-    ],
-    item,
-    clickable: true,
-  }));
+        </ResourceTableCell>,
+        <ResourceTableCell key={`st-${item.id}`} onActivate={onActivate}>
+          {getAttr(item.a, 'zimbraAccountStatus')}
+        </ResourceTableCell>,
+        <ResourceTableCell key={`la-${item.id}`} onActivate={onActivate}>
+          {formatLastAccess(getAttr(item.a, 'zimbraLastLogonTimestamp'), neverLoggedIn)}
+        </ResourceTableCell>,
+        <ResourceTableCell key={`desc-${item.id}`} onActivate={onActivate}>
+          {getAttr(item.a, 'description')}
+        </ResourceTableCell>,
+      ],
+      item,
+      clickable: true,
+    };
+  });
 
   return (
     <Container
@@ -284,9 +274,7 @@ export const DomainResources = () => {
                   backgroundColor="gray5"
                   label={t('label.search_dot', 'Search…')}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value)}
-                  CustomIcon={() => (
-                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                  )}
+                  CustomIcon={SearchFunnelIcon}
                 />
               </Container>
             </Row>
@@ -298,7 +286,7 @@ export const DomainResources = () => {
               width="fill"
             >
               <Table
-                rows={!isFetching ? tableRows : []}
+                rows={isFetching ? [] : tableRows}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 headers={headers as any}
                 showCheckbox

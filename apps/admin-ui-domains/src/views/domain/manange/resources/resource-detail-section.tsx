@@ -29,6 +29,25 @@ import { useResourceForm } from './resource-form-context';
 
 type SelectOption = { label: string; value: string | number };
 
+/** Shared Select onChange value type (Sonar S4323). */
+type SelectChangeValue = string | number | null;
+
+function resolveGeneratedName(
+  changeNameBool: boolean,
+  displayName: string | undefined,
+  name: string | undefined,
+): string {
+  if (changeNameBool) {
+    return name ?? '';
+  }
+  const userNameStr = getModifiedName((displayName ?? '').trim());
+  const asciiValue = convertToAscii(userNameStr);
+  if (userNameStr.length === asciiValue.length && checkValidUserName(asciiValue)) {
+    return asciiValue;
+  }
+  return '';
+}
+
 export const ResourceDetailSection = () => {
   const { t } = useTranslation();
   const form = useResourceForm();
@@ -112,17 +131,7 @@ export const ResourceDetailSection = () => {
   );
   const selectedSchedulePolicy = schedulePolicyItems.find((o) => o.value === schedulePolicyType);
 
-  const generatedName: string = (() => {
-    if (!changeNameBool) {
-      const userNameStr = getModifiedName((displayName ?? '').trim());
-      const asciiValue = convertToAscii(userNameStr);
-      if (userNameStr.length === asciiValue.length && checkValidUserName(asciiValue)) {
-        return asciiValue;
-      }
-      return '';
-    }
-    return name ?? '';
-  })();
+  const generatedName = resolveGeneratedName(changeNameBool, displayName, name);
 
   useEffect(() => {
     if (domainName) {
@@ -134,7 +143,7 @@ export const ResourceDetailSection = () => {
     if (!changeNameBool) {
       form.setFieldValue('name', generatedName);
     }
-  }, [generatedName, changeNameBool, form]);  
+  }, [generatedName, changeNameBool, form]);
 
   function changeDisplayName(e: ChangeEvent<HTMLInputElement>): void {
     form.setFieldValue('displayName', e.target.value);
@@ -158,23 +167,23 @@ export const ResourceDetailSection = () => {
     form.setFieldValue('name', cleaned);
   }
 
-  function onResourceTypeChange(v: string | number | null): void {
+  function onResourceTypeChange(v: SelectChangeValue): void {
     if (v !== null) form.setFieldValue('zimbraCalResType', String(v));
   }
 
-  function onAccountStatusChange(v: string | number | null): void {
+  function onAccountStatusChange(v: SelectChangeValue): void {
     if (v !== null) form.setFieldValue('zimbraAccountStatus', String(v));
   }
 
-  function onAutoRefuseChange(v: string | number | null): void {
+  function onAutoRefuseChange(v: SelectChangeValue): void {
     if (v !== null) form.setFieldValue('zimbraCalResAutoDeclineRecurring', String(v));
   }
 
-  function onCOSIdChange(v: string | number | null): void {
-    form.setFieldValue('zimbraCOSId', v !== null ? String(v) : '');
+  function onCOSIdChange(v: SelectChangeValue): void {
+    form.setFieldValue('zimbraCOSId', v === null ? '' : String(v));
   }
 
-  function onSchedulePolicyChange(v: string | number | null): void {
+  function onSchedulePolicyChange(v: SelectChangeValue): void {
     if (v !== null) form.setFieldValue('schedulePolicyType', Number(v));
   }
 

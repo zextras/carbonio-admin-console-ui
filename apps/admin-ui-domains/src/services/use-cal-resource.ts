@@ -329,8 +329,8 @@ export function useDelegateAuth() {
     onSuccess: (data: { authToken?: Array<{ _content: string }> }) => {
       const authToken = data?.authToken?.[0]?._content;
       if (authToken) {
-        window.open(
-          `https://${window.location.hostname}/service/preauth?authtoken=${authToken}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
+        globalThis.open(
+          `https://${globalThis.location.hostname}/service/preauth?authtoken=${authToken}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
           'blank',
         );
       } else {

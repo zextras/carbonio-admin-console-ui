@@ -11,7 +11,8 @@ import {
   HorizontalWizard,
   WizardInSection,
 } from '@zextras/ui-components';
-import { type ComponentProps } from 'react';
+import { type TFunction } from 'i18next';
+import { type ComponentProps, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useCreateCalResource } from '../../../../services/use-cal-resource';
@@ -26,6 +27,79 @@ import { useCreateResourceForm } from './use-create-resource-form';
 type CreateResourceProps = {
   onClose: () => void;
 };
+
+type WizardButtonProps = ComponentProps<typeof Button>;
+
+type CreateResourceWizardButtons = {
+  CancelButton: (props: WizardButtonProps) => ReactElement;
+  DisabledPrevButton: (props: WizardButtonProps) => ReactElement;
+  PrevButton: (props: WizardButtonProps) => ReactElement;
+  NextButton: (props: WizardButtonProps) => ReactElement;
+  CreateButton: (props: WizardButtonProps) => ReactElement;
+};
+
+function createResourceWizardButtons(
+  t: TFunction,
+  onClose: () => void,
+  onCreate: () => void,
+  isCreateDisabled: boolean,
+): CreateResourceWizardButtons {
+  const CancelButton = (props: WizardButtonProps): ReactElement => (
+    <Button
+      {...props}
+      type="outlined"
+      key="wizard-cancel"
+      label="CANCEL"
+      color="secondary"
+      icon="CloseOutline"
+      iconPlacement="right"
+      onClick={onClose}
+    />
+  );
+
+  const DisabledPrevButton = (props: WizardButtonProps): ReactElement => (
+    <Button
+      {...props}
+      label={t('label.back', 'BACK')}
+      icon="ChevronLeftOutline"
+      color="secondary"
+      iconPlacement="left"
+      disabled
+    />
+  );
+
+  const PrevButton = (props: WizardButtonProps): ReactElement => (
+    <Button
+      {...props}
+      label={t('label.back', 'BACK')}
+      icon="ChevronLeftOutline"
+      color="secondary"
+      iconPlacement="left"
+    />
+  );
+
+  const NextButton = (props: WizardButtonProps): ReactElement => (
+    <Button
+      {...props}
+      label={t('label.next', 'NEXT')}
+      icon="ChevronRightOutline"
+      iconPlacement="right"
+    />
+  );
+
+  const CreateButton = (props: WizardButtonProps): ReactElement => (
+    <Button
+      {...props}
+      label={t('label.create', 'CREATE')}
+      icon="PowerOutline"
+      iconPlacement="right"
+      disabled={isCreateDisabled}
+      onClick={onCreate}
+    />
+  );
+
+  return { CancelButton, DisabledPrevButton, PrevButton, NextButton, CreateButton };
+}
 
 function buildAttributeList(values: CreateResourceFormValues): Array<{ n: string; _content: string }> {
   const schedulePolicyValue = values.schedulePolicyType;
@@ -83,114 +157,46 @@ export const CreateResource = ({ onClose }: CreateResourceProps) => {
     );
   }
 
+  const {
+    CancelButton,
+    DisabledPrevButton,
+    PrevButton,
+    NextButton,
+    CreateButton,
+  } = createResourceWizardButtons(
+    t,
+    onClose,
+    handleCreate,
+    !displayName || !isFormValid || createResource.isPending,
+  );
+
   const wizardSteps = [
     {
       name: 'details',
       label: t('label.details', 'DETAILS'),
       icon: 'InfoOutline',
       view: ResourceDetailSection,
-      CancelButton: (props: ComponentProps<typeof Button>) => (
-        <Button
-          {...props}
-          type="outlined"
-          key="wizard-cancel"
-          label="CANCEL"
-          color="secondary"
-          icon="CloseOutline"
-          iconPlacement="right"
-          onClick={onClose}
-        />
-      ),
-      PrevButton: (props: ComponentProps<typeof Button>) => (
-        <Button
-          {...props}
-          label={t('label.back', 'BACK')}
-          icon="ChevronLeftOutline"
-          color="secondary"
-          iconPlacement="left"
-          disabled
-        />
-      ),
-      NextButton: (props: ComponentProps<typeof Button>) => (
-        <Button
-          {...props}
-          label={t('label.next', 'NEXT')}
-          icon="ChevronRightOutline"
-          iconPlacement="right"
-        />
-      ),
+      CancelButton,
+      PrevButton: DisabledPrevButton,
+      NextButton,
     },
     {
       name: 'sharing',
       label: t('label.sharing', 'SHARING'),
       icon: 'SignatureOutline',
       view: ResourceSharingSection,
-      CancelButton: (props: ComponentProps<typeof Button>) => (
-        <Button
-          {...props}
-          type="outlined"
-          key="wizard-cancel"
-          label="CANCEL"
-          color="secondary"
-          icon="CloseOutline"
-          iconPlacement="right"
-          onClick={onClose}
-        />
-      ),
-      PrevButton: (props: ComponentProps<typeof Button>) => (
-        <Button
-          {...props}
-          label={t('label.back', 'BACK')}
-          icon="ChevronLeftOutline"
-          color="secondary"
-          iconPlacement="left"
-        />
-      ),
-      NextButton: (props: ComponentProps<typeof Button>) => (
-        <Button
-          {...props}
-          label={t('label.next', 'NEXT')}
-          icon="ChevronRightOutline"
-          iconPlacement="right"
-        />
-      ),
+      CancelButton,
+      PrevButton,
+      NextButton,
     },
     {
       name: 'create',
       label: t('label.create', 'CREATE'),
       icon: 'PowerOutline',
       view: ResourceCreateSection,
-      CancelButton: (props: ComponentProps<typeof Button>) => (
-        <Button
-          {...props}
-          type="outlined"
-          key="wizard-cancel"
-          label="CANCEL"
-          color="secondary"
-          icon="CloseOutline"
-          iconPlacement="right"
-          onClick={onClose}
-        />
-      ),
-      PrevButton: (props: ComponentProps<typeof Button>) => (
-        <Button
-          {...props}
-          label={t('label.back', 'BACK')}
-          icon="ChevronLeftOutline"
-          color="secondary"
-          iconPlacement="left"
-        />
-      ),
-      NextButton: (props: ComponentProps<typeof Button>) => (
-        <Button
-          {...props}
-          label={t('label.create', 'CREATE')}
-          icon="PowerOutline"
-          iconPlacement="right"
-          disabled={!displayName || !isFormValid || createResource.isPending}
-          onClick={handleCreate}
-        />
-      ),
+      CancelButton,
+      PrevButton,
+      NextButton: CreateButton,
     },
   ];
 

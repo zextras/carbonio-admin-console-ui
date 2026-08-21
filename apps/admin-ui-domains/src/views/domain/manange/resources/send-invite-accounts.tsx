@@ -19,7 +19,7 @@ import {
 } from '@zextras/ui-components';
 import { searchDirectory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, type ReactElement,useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
@@ -36,6 +36,10 @@ type SendInviteAccountsProps = {
   hideSearchBar?: boolean;
   hideHeaderBar?: boolean;
 };
+
+const SearchFunnelIcon = (): ReactElement => (
+  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
 
 export const SendInviteAccounts = ({
   isEditable,
@@ -75,8 +79,8 @@ export const SendInviteAccounts = ({
 
   function addSendInviteAccount(): void {
     if (newSentInviteValue) {
-      const lastId = sendInviteList.length > 0 ? sendInviteList[sendInviteList.length - 1].id : '0';
-      const newId = (parseInt(lastId, 10) + 1).toString();
+      const lastId = sendInviteList.length > 0 ? sendInviteList.at(-1)!.id : '0';
+      const newId = (Number.parseInt(lastId, 10) + 1).toString();
       const item: SendInviteItem = {
         id: newId,
         n: 'zimbraPrefCalendarForwardInvitesTo',
@@ -245,9 +249,7 @@ export const SendInviteAccounts = ({
                 label={t('label.search_an_account', 'Search for an account')}
                 backgroundColor="gray5"
                 value={searchAccountName}
-                CustomIcon={() => (
-                  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                )}
+                CustomIcon={SearchFunnelIcon}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setSearchAccountName(e.target.value);
                 }}
