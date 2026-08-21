@@ -16,9 +16,9 @@ export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
 
   return (
-    <Container height={'fit'}>
+    <Container>
       <DomainPageHeader />
-      <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
+      <Container orientation="horizontal" mainAlignment="flex-start" style={{ overflow: 'hidden' }}>
         <Container style={{ maxWidth: '265px' }}>
           <Suspense fallback={<ds-spinner />}>
             <DomainListPanel />

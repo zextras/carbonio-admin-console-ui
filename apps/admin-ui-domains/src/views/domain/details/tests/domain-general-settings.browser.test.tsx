@@ -5,11 +5,17 @@
  */
 
 import { domainByIdKey } from '@zextras/ui-shared';
-import { createBrowserSoapAPIInterceptor, getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
+import {
+  createBrowserSoapAPIInterceptor,
+  getQueryClient,
+  setupBrowserTest,
+  worker,
+} from 'admin-ui-test-utils';
+import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import DomainGeneralSettings from '../domain-general-settings';
+import { DomainGeneralSettings } from '../domain-general-settings';
 
 const DOMAIN_ID = 'test-domain-id-123';
 const DOMAIN_NAME = 'example.com';
@@ -171,12 +177,75 @@ describe('DomainGeneralSettings (browser)', () => {
       const saveButton = page.getByRole('button', { name: /save/i });
       await saveButton.click();
 
-      const requestParams = (await modifyDomainInterceptor) as any;
+      const requestParams = (await modifyDomainInterceptor) as {
+        id?: string;
+        a?: Array<{ n: string; _content?: string }>;
+      };
       expect(requestParams.id).toBe(DOMAIN_ID);
       expect(requestParams.a).toBeDefined();
 
-      const descriptionAttr = requestParams.a.find((attr: any) => attr.n === 'description');
-      expect(descriptionAttr._content).toBe('New description');
+      const descriptionAttr = requestParams.a?.find((attr) => attr.n === 'description');
+      expect(descriptionAttr?._content).toBe('New description');
+    });
+
+    it('should hide Save and Cancel after a successful save', async () => {
+      createBrowserSoapAPIInterceptor('ModifyDomain', {
+        domain: [
+          {
+            name: DOMAIN_NAME,
+            id: DOMAIN_ID,
+            a: buildDomainAttributes([{ n: 'description', _content: 'New description' }]),
+          },
+        ],
+      });
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserSoapAPIInterceptor('GetDomain', {
+        domain: [
+          {
+            name: DOMAIN_NAME,
+            id: DOMAIN_ID,
+            a: buildDomainAttributes([{ n: 'description', _content: 'New description' }]),
+          },
+        ],
+      });
+
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+      const descriptionInput = page.getByLabelText(/description/i);
+      await userEvent.clear(descriptionInput);
+      await userEvent.type(descriptionInput, 'New description');
+
+      const saveButton = page.getByRole('button', { name: /save/i });
+      await saveButton.click();
+
+      await expect
+        .element(page.getByText('The change has been saved successfully'))
+        .toBeVisible();
+      await expect.element(page.getByRole('button', { name: /save/i })).not.toBeInTheDocument();
+      await expect.element(page.getByRole('button', { name: /cancel/i })).not.toBeInTheDocument();
+    });
+
+    it('should keep Save visible and show an error snackbar when ModifyDomain fails', async () => {
+      worker.use(
+        http.post('/service/admin/soap/ModifyDomainRequest', () =>
+          HttpResponse.json(
+            { Body: { Fault: { Reason: { Text: 'ModifyDomain failed' } } } },
+            { status: 500 },
+          ),
+        ),
+      );
+
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+      const descriptionInput = page.getByLabelText(/description/i);
+      await userEvent.clear(descriptionInput);
+      await userEvent.type(descriptionInput, 'Broken description');
+
+      const saveButton = page.getByRole('button', { name: /save/i });
+      await saveButton.click();
+
+      await expect.element(page.getByText('ModifyDomain failed')).toBeVisible();
+      await expect.element(page.getByRole('button', { name: /save/i })).toBeVisible();
     });
 
     it('should show error when notification sender has invalid email', async () => {
@@ -252,6 +321,154 @@ describe('DomainGeneralSettings (browser)', () => {
       await expect.element(page.getByText(/is not empty and contains/i)).toBeVisible();
       await expect.element(page.getByText(/2 Accounts/)).toBeVisible();
       await expect.element(page.getByText(/1 Distribution List/)).toBeVisible();
+    });
+
+    it('should call DeleteDomain exactly once for empty domain', async () => {
+      createBrowserSoapAPIInterceptor('SearchDirectory', {
+        searchTotal: 0,
+        more: false,
+        account: [],
+        dl: [],
+        alias: [],
+        calresource: [],
+      });
+
+      const deleteDomainInterceptor = createBrowserSoapAPIInterceptor('DeleteDomain', {});
+
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+      const deleteButton = page.getByRole('button', { name: /delete domain/i });
+      await deleteButton.click();
+
+      await deleteDomainInterceptor;
+
+      const secondDeleteInterceptor = createBrowserSoapAPIInterceptor('DeleteDomain', {});
+      const secondCallSettled = await Promise.race([
+        secondDeleteInterceptor.then(() => true),
+        new Promise<boolean>((resolve) => {
+          setTimeout(() => resolve(false), 2000);
+        }),
+      ]);
+      expect(secondCallSettled).toBe(false);
+    });
+  });
+
+  describe('Quota (advanced + global admin)', () => {
+    function setupAdvancedGlobalAdmin(): ReturnType<typeof getQueryClient> {
+      const qc = setupDomainStore();
+      qc.setQueryData(['advanced-supported'], { supported: true });
+      qc.setQueryData(['account', 'settings'], {
+        attrs: { zimbraIsAdminAccount: 'TRUE' },
+      });
+      return qc;
+    }
+
+    it('should render quota section when advanced is enabled', async () => {
+      const qc = setupAdvancedGlobalAdmin();
+      worker.use(
+        http.get('/services/storages/admin/quota/config/domains/:domainId', () =>
+          HttpResponse.json({ limit: 10737418240 }),
+        ),
+      );
+
+      setupBrowserTest(<DomainGeneralSettings />, {
+        queryClient: qc,
+        initialRouterEntry: `/${DOMAIN_ID}/general-settings`,
+        withDomainIdRoute: true,
+      });
+
+      await expect
+        .element(page.getByLabelText(/max quota per account in this domain/i))
+        .toBeVisible();
+    });
+
+    it('should call PUT quota endpoint on save when quota changed', async () => {
+      const qc = setupAdvancedGlobalAdmin();
+      let putCalled = false;
+      worker.use(
+        http.get('/services/storages/admin/quota/config/domains/:domainId', () =>
+          HttpResponse.json({ limit: 5368709120 }),
+        ),
+        http.put('/services/storages/admin/quota/config/domains/:domainId', () => {
+          putCalled = true;
+          return new HttpResponse(null, { status: 200 });
+        }),
+      );
+
+      setupBrowserTest(<DomainGeneralSettings />, {
+        queryClient: qc,
+        initialRouterEntry: `/${DOMAIN_ID}/general-settings`,
+        withDomainIdRoute: true,
+      });
+
+      const quotaInput = page.getByLabelText(/max quota per account in this domain/i);
+      await expect.element(quotaInput).toBeVisible();
+      await userEvent.clear(quotaInput);
+      await userEvent.type(quotaInput, '20');
+
+      const saveButton = page.getByRole('button', { name: /save/i });
+      await saveButton.click();
+
+      await expect.poll(() => putCalled, { timeout: 5000 }).toBe(true);
+    });
+
+    it('should call DELETE quota endpoint when quota is cleared', async () => {
+      const qc = setupAdvancedGlobalAdmin();
+      let deleteCalled = false;
+      worker.use(
+        http.get('/services/storages/admin/quota/config/domains/:domainId', () =>
+          HttpResponse.json({ limit: 5368709120 }),
+        ),
+        http.delete('/services/storages/admin/quota/config/domains/:domainId', () => {
+          deleteCalled = true;
+          return new HttpResponse(null, { status: 200 });
+        }),
+      );
+
+      setupBrowserTest(<DomainGeneralSettings />, {
+        queryClient: qc,
+        initialRouterEntry: `/${DOMAIN_ID}/general-settings`,
+        withDomainIdRoute: true,
+      });
+
+      const quotaInput = page.getByLabelText(/max quota per account in this domain/i);
+      await expect.element(quotaInput).toBeVisible();
+      await userEvent.clear(quotaInput);
+
+      const saveButton = page.getByRole('button', { name: /save/i });
+      await saveButton.click();
+
+      await expect.poll(() => deleteCalled, { timeout: 5000 }).toBe(true);
+    });
+
+    it('should show error snackbar when quota save fails', async () => {
+      const qc = setupAdvancedGlobalAdmin();
+      worker.use(
+        http.get('/services/storages/admin/quota/config/domains/:domainId', () =>
+          HttpResponse.json({ limit: 5368709120 }),
+        ),
+        http.put('/services/storages/admin/quota/config/domains/:domainId', () =>
+          new HttpResponse(null, { status: 500, statusText: 'Internal Server Error' }),
+        ),
+      );
+
+      setupBrowserTest(<DomainGeneralSettings />, {
+        queryClient: qc,
+        initialRouterEntry: `/${DOMAIN_ID}/general-settings`,
+        withDomainIdRoute: true,
+      });
+
+      const quotaInput = page.getByLabelText(/max quota per account in this domain/i);
+      await expect.element(quotaInput).toBeVisible();
+      await userEvent.clear(quotaInput);
+      await userEvent.type(quotaInput, '20');
+
+      const saveButton = page.getByRole('button', { name: /save/i });
+      await saveButton.click();
+
+      await expect
+        .element(page.getByText(/something went wrong/i), { timeout: 5000 })
+        .toBeVisible();
     });
   });
 });
