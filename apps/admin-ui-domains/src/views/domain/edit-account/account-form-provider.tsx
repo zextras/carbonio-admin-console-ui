@@ -46,6 +46,10 @@ import { setAccountQuota } from '../../../services/set-account-quota';
 import { setPasswordRequest } from '../../../services/set-password';
 import { unsetAccountQuota } from '../../../services/unset-account-quota';
 import {
+  type AccountCoreAttributes,
+  useAccountCoreAttributes,
+} from '../../../services/use-account-core-attributes';
+import {
   type FlattenedAccount,
   useAccountDetail,
   useAccountSpecificDetail,
@@ -100,6 +104,14 @@ function buildQuotaValues(
   };
 }
 
+function buildCoreAttrValues(coreAttrs: AccountCoreAttributes): Record<string, unknown> {
+  return {
+    [ABQ_MODE]: coreAttrs.abqMode,
+    [BACKUP_ENABLED]: coreAttrs.backupEnabled,
+    [BACKUP_SELF_UNDELETE_ALLOWED]: coreAttrs.backupSelfUndeleteAllowed,
+  };
+}
+
 const VALUE_BLOCKED = 'VALUE-BLOCKED';
 
 type AccountFormProviderParams = {
@@ -135,11 +147,15 @@ export function useAccountFormProvider({
   const { data: credentials } = useCredentialList(account.name);
   const { data: grants, refetch: refetchGrants } = useAccountGrants(account);
   const { data: accountQuota } = useAccountQuota(isAdvanced ? account.id : undefined);
+  const { data: accountCoreAttributes } = useAccountCoreAttributes(
+    isAdvanced ? account.id : undefined,
+  );
   const membership = splitMembership(membershipDl);
 
   type SavedValuesBaseline = {
     detail: FlattenedAccount | undefined;
     quota: typeof accountQuota;
+    coreAttrs: AccountCoreAttributes | undefined;
     values: AccountFormValues;
   };
   const [baseline, setBaseline] = useState<SavedValuesBaseline | null>(null);
@@ -413,11 +429,15 @@ export function useAccountFormProvider({
       setBaseline({
         detail: accountDetailData,
         quota: accountQuota,
+        coreAttrs: accountCoreAttributes,
         values: values as AccountFormValues,
       });
       onSaved();
       void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountDetail(account.id),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.accountCoreAttributes(account.id),
       });
     };
 
@@ -452,7 +472,10 @@ export function useAccountFormProvider({
   };
 
   const form = useForm({
-    defaultValues: buildAccountFormValues(accountDetailData),
+    defaultValues: {
+      ...buildAccountFormValues(accountDetailData),
+      ...(accountCoreAttributes ? buildCoreAttrValues(accountCoreAttributes) : {}),
+    },
     onSubmit: async ({ value }) => {
       const values = { ...value } as Record<string, any>;
       const saved = (baseline?.values ?? {}) as Record<string, any>;
@@ -494,19 +517,35 @@ export function useAccountFormProvider({
   const formUntouched = !form.state.isTouched && !form.state.isDirty;
   if (formUntouched && accountDetailData !== undefined && accountDetailData !== baseline?.detail) {
     const quotaIsNew = accountQuota !== undefined && accountQuota !== baseline?.quota;
+    const coreAttrsAreNew =
+      accountCoreAttributes !== undefined && accountCoreAttributes !== baseline?.coreAttrs;
     setBaseline({
       detail: accountDetailData,
       quota: accountQuota,
+      coreAttrs: accountCoreAttributes,
       values: {
         ...buildAccountFormValues(accountDetailData),
         ...(quotaIsNew ? buildQuotaValues(accountQuota) : {}),
+        ...(coreAttrsAreNew ? buildCoreAttrValues(accountCoreAttributes) : {}),
       },
     });
   } else if (formUntouched && accountQuota !== undefined && accountQuota !== baseline?.quota) {
     setBaseline({
       detail: baseline?.detail,
       quota: accountQuota,
+      coreAttrs: baseline?.coreAttrs,
       values: { ...baseline?.values, ...buildQuotaValues(accountQuota) },
+    });
+  } else if (
+    formUntouched &&
+    accountCoreAttributes !== undefined &&
+    accountCoreAttributes !== baseline?.coreAttrs
+  ) {
+    setBaseline({
+      detail: baseline?.detail,
+      quota: baseline?.quota,
+      coreAttrs: accountCoreAttributes,
+      values: { ...baseline?.values, ...buildCoreAttrValues(accountCoreAttributes) },
     });
   }
 

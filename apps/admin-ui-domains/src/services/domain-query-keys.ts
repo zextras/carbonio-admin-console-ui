@@ -24,6 +24,8 @@ export const domainQueryKeys = {
   samlConfig: (domain: string) => [...domainQueryKeys.all, 'saml-config', domain] as const,
   accountDetail: (accountId: string) =>
     [...domainQueryKeys.all, 'account-detail', accountId] as const,
+  accountCoreAttributes: (accountId: string) =>
+    [...domainQueryKeys.all, 'account-core-attributes', accountId] as const,
   accountSpecificDetail: (accountId: string) =>
     [...domainQueryKeys.all, 'account-specific-detail', accountId] as const,
   cosDetail: (cosId: string) => [...domainQueryKeys.all, 'cos-detail', cosId] as const,
