@@ -5,18 +5,35 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useSnackbar } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { modifyConfig } from './modify-config';
+import { ZIMBRA_ADMIN_URN } from '../constants';
+import { useSnackbar } from '../hooks/useSnackbar';
+import { soapFetch } from '../network/fetch';
 
-export function useModifyConfig() {
+export type ConfigAttribute = { n: string; _content?: string };
+
+const modifyConfigRequest = (a: Array<ConfigAttribute>): Promise<unknown> =>
+  soapFetch('ModifyConfig', {
+    _jsns: ZIMBRA_ADMIN_URN,
+    a,
+  });
+
+/**
+ * Mutation for SOAP ModifyConfig with success/error snackbars and
+ * invalidation of the ['all-config'] query. Pass a custom mutationFn to
+ * reuse the snackbar/invalidation behavior with a typed payload.
+ */
+export function useModifyConfig<TVariables = Array<ConfigAttribute>>(
+  mutationFn?: (variables: TVariables) => Promise<unknown>,
+) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const queryClient = useQueryClient();
 
-  return useMutation<Record<string, unknown>, Error, Array<Record<string, string>>>({
-    mutationFn: (attributes) => modifyConfig(attributes),
+  return useMutation<unknown, Error, TVariables>({
+    mutationFn: (variables) =>
+      mutationFn ? mutationFn(variables) : modifyConfigRequest(variables as Array<ConfigAttribute>),
     onSuccess: () => {
       createSnackbar({
         key: 'success',

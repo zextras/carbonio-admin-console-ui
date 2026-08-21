@@ -3,45 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, InheritedInput, ListRow, Padding } from '@zextras/ui-components';
-import React, { FC } from 'react';
+import type { AnyFormApi } from '@tanstack/react-form';
+import { Container, ListRow, Padding } from '@zextras/ui-components';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { themeConfigStore } from '../../../../types';
-import { isValidHttpsUrl } from '../../utility/utils';
+import { ThemeFieldInput } from './theme-field-input';
+import { HTTPS_URL_ERROR_LABEL } from './white-label-schema';
 
-const HttpsErrorMessage: FC = () => {
-  const [t] = useTranslation();
-  return (
-    <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-      <Padding top="small">
-        <ds-text as="span" size="extrasmall" weight="regular" color="error">
-          {t('label.use_https_protocol_message', 'You need to use the HTTPS protocol')}
-        </ds-text>
-      </Padding>
-    </Container>
-  );
+type EndUserThemeConfigsProps = {
+  form: AnyFormApi;
+  globalTheme?: themeConfigStore;
+  isGlobalTheme?: boolean;
+  hasModifyRights?: boolean;
 };
 
-const EndUserThemeConfigs: FC<{
-  themeConfig: themeConfigStore;
-  globalTheme?: themeConfigStore;
-  onChangeDomainThemeDetail: any;
-  setEmptyValue: any;
-  isGlobalTheme?: boolean;
-  hasModifyRights: any;
-  allData: any;
-  setAllData: any;
-}> = ({
-  themeConfig,
+export const EndUserThemeConfigs = ({
+  form,
   globalTheme,
-  onChangeDomainThemeDetail,
-  setEmptyValue,
   isGlobalTheme,
   hasModifyRights,
-  allData,
-  setAllData,
-}) => {
+}: EndUserThemeConfigsProps) => {
   const [t] = useTranslation();
 
   return (
@@ -81,23 +63,19 @@ const EndUserThemeConfigs: FC<{
           padding={{ all: 'small' }}
         >
           <ds-text as="p" size="small" color="gray0">
-            {t(
-              'label.title_theme_note',
-              'The title is the name that will appear on the browser tab',
-            )}
+            {t('label.title_theme_note', 'The title is the name that will appear on the browser tab')}
           </ds-text>
         </Container>
       </ListRow>
       <ListRow>
         <Container padding={{ all: 'small' }}>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUiTitle"
             label={t('label.title', 'Title')}
-            subValue={themeConfig.carbonioWebUiTitle}
-            inheritedValue={globalTheme?.carbonioWebUiTitle}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUiTitle : ''}
-            inputName="carbonioWebUiTitle"
-            onChange={onChangeDomainThemeDetail}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUiTitle')}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
           />
         </Container>
       </ListRow>
@@ -117,14 +95,13 @@ const EndUserThemeConfigs: FC<{
       </ListRow>
       <ListRow>
         <Container padding={{ all: 'small' }}>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUiDescription"
             label={t('label.copyrights_information', 'Copyrights information')}
-            subValue={themeConfig.carbonioWebUiDescription}
-            inheritedValue={globalTheme?.carbonioWebUiDescription}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUiDescription : ''}
-            inputName="carbonioWebUiDescription"
-            onChange={onChangeDomainThemeDetail}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUiDescription')}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
           />
         </Container>
       </ListRow>
@@ -164,11 +141,7 @@ const EndUserThemeConfigs: FC<{
               defaults="<bold>Light</bold> Mode"
               components={{ bold: <strong /> }}
             />{' '}
-            {t(
-              'label.logo_for_login_page',
-
-              'Logo for Login Page',
-            )}
+            {t('label.logo_for_login_page', 'Logo for Login Page')}
           </ds-text>
         </Container>
         <Container
@@ -188,60 +161,28 @@ const EndUserThemeConfigs: FC<{
       </ListRow>
       <ListRow>
         <Container padding={{ all: 'small' }}>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUiLoginLogo"
             label="Ex. https://upload.yourlogo.com/"
-            subValue={themeConfig.carbonioWebUiLoginLogo}
-            inheritedValue={globalTheme?.carbonioWebUiLoginLogo}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUiLoginLogo : ''}
-            inputName="carbonioWebUiLoginLogo"
-            onChange={(e: any): any => {
-              if (e.target.value) {
-                const isValid = isValidHttpsUrl(e.target.value);
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiLoginLogo: isValid,
-                });
-              } else {
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiLoginLogo: true,
-                });
-              }
-              onChangeDomainThemeDetail(e);
-            }}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUiLoginLogo')}
-            hasError={!allData?.isValidCarbonioWebUiLoginLogo}
-            disabled={isGlobalTheme && !hasModifyRights}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
+            errorLabel={HTTPS_URL_ERROR_LABEL}
+            errorLabelDefault="You need to use the HTTPS protocol"
           />
-          {!allData?.isValidCarbonioWebUiLoginLogo && <HttpsErrorMessage />}
         </Container>
         <Container padding={{ all: 'small' }}>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUiDarkLoginLogo"
             label="Ex. https://upload.yourlogo.com/"
-            subValue={themeConfig.carbonioWebUiDarkLoginLogo}
-            inheritedValue={globalTheme?.carbonioWebUiDarkLoginLogo}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkLoginLogo : ''}
-            inputName="carbonioWebUiDarkLoginLogo"
-            onChange={(e: any): any => {
-              if (e.target.value) {
-                const isValid = isValidHttpsUrl(e.target.value);
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiDarkLoginLogo: isValid,
-                });
-              } else {
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiDarkLoginLogo: true,
-                });
-              }
-              onChangeDomainThemeDetail(e);
-            }}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkLoginLogo')}
-            hasError={!allData?.isValidCarbonioWebUiLoginLogo}
-            disabled={isGlobalTheme && !hasModifyRights}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
+            errorLabel={HTTPS_URL_ERROR_LABEL}
+            errorLabelDefault="You need to use the HTTPS protocol"
           />
-          {!allData?.isValidCarbonioWebUiDarkLoginLogo && <HttpsErrorMessage />}
         </Container>
       </ListRow>
       <ListRow>
@@ -256,11 +197,7 @@ const EndUserThemeConfigs: FC<{
               defaults="<bold>Light</bold> Mode"
               components={{ bold: <strong /> }}
             />{' '}
-            {t(
-              'label.logo_for_webapp',
-
-              'Logo for WebApp',
-            )}
+            {t('label.logo_for_webapp', 'Logo for WebApp')}
           </ds-text>
         </Container>
         <Container
@@ -280,60 +217,28 @@ const EndUserThemeConfigs: FC<{
       </ListRow>
       <ListRow>
         <Container padding={{ all: 'small' }}>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUiAppLogo"
             label="Ex. https://upload.yourlogo.com/"
-            subValue={themeConfig.carbonioWebUiAppLogo}
-            inheritedValue={globalTheme?.carbonioWebUiAppLogo}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUiAppLogo : ''}
-            inputName="carbonioWebUiAppLogo"
-            onChange={(e: any): any => {
-              if (e.target.value) {
-                const isValid = isValidHttpsUrl(e.target.value);
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiAppLogo: isValid,
-                });
-              } else {
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiAppLogo: true,
-                });
-              }
-              onChangeDomainThemeDetail(e);
-            }}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUiAppLogo')}
-            hasError={!allData?.isValidCarbonioWebUiAppLogo}
-            disabled={isGlobalTheme && !hasModifyRights}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
+            errorLabel={HTTPS_URL_ERROR_LABEL}
+            errorLabelDefault="You need to use the HTTPS protocol"
           />
-          {!allData?.isValidCarbonioWebUiAppLogo && <HttpsErrorMessage />}
         </Container>
         <Container padding={{ all: 'small' }}>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUiDarkAppLogo"
             label="Ex. https://upload.yourlogo.com/"
-            subValue={themeConfig.carbonioWebUiDarkAppLogo}
-            inheritedValue={globalTheme?.carbonioWebUiDarkAppLogo}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkAppLogo : ''}
-            inputName="carbonioWebUiDarkAppLogo"
-            onChange={(e: any): any => {
-              if (e.target.value) {
-                const isValid = isValidHttpsUrl(e.target.value);
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiDarkAppLogo: isValid,
-                });
-              } else {
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiDarkAppLogo: true,
-                });
-              }
-              onChangeDomainThemeDetail(e);
-            }}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkAppLogo')}
-            hasError={!allData?.isValidCarbonioWebUiDarkAppLogo}
-            disabled={isGlobalTheme && !hasModifyRights}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
+            errorLabel={HTTPS_URL_ERROR_LABEL}
+            errorLabelDefault="You need to use the HTTPS protocol"
           />
-          {!allData?.isValidCarbonioWebUiDarkAppLogo && <HttpsErrorMessage />}
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
@@ -362,32 +267,16 @@ const EndUserThemeConfigs: FC<{
       </ListRow>
       <ListRow>
         <Container padding={{ all: 'small' }}>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUiFavicon"
             label="Ex. https://upload.yourlogo.com/"
-            subValue={themeConfig.carbonioWebUiFavicon}
-            inheritedValue={globalTheme?.carbonioWebUiFavicon}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUiFavicon : ''}
-            inputName="carbonioWebUiFavicon"
-            onChange={(e: any): any => {
-              if (e.target.value) {
-                const isValid = isValidHttpsUrl(e.target.value);
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiFavicon: isValid,
-                });
-              } else {
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiFavicon: true,
-                });
-              }
-              onChangeDomainThemeDetail(e);
-            }}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUiFavicon')}
-            hasError={!allData?.isValidCarbonioWebUiFavicon}
-            disabled={isGlobalTheme && !hasModifyRights}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
+            errorLabel={HTTPS_URL_ERROR_LABEL}
+            errorLabelDefault="You need to use the HTTPS protocol"
           />
-          {!allData?.isValidCarbonioWebUiFavicon && <HttpsErrorMessage />}
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
@@ -426,11 +315,7 @@ const EndUserThemeConfigs: FC<{
               defaults="<bold>Light</bold> Mode"
               components={{ bold: <strong /> }}
             />{' '}
-            {t(
-              'label.background_login_page',
-
-              'Background Login Page',
-            )}
+            {t('label.background_login_page', 'Background Login Page')}
           </ds-text>
         </Container>
         <Container
@@ -450,60 +335,28 @@ const EndUserThemeConfigs: FC<{
       </ListRow>
       <ListRow>
         <Container padding={{ all: 'small' }}>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUiLoginBackground"
             label="Ex. https://upload.yourlogo.com/"
-            subValue={themeConfig.carbonioWebUiLoginBackground}
-            inheritedValue={globalTheme?.carbonioWebUiLoginBackground}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUiLoginBackground : ''}
-            inputName="carbonioWebUiLoginBackground"
-            onChange={(e: any): any => {
-              if (e.target.value) {
-                const isValid = isValidHttpsUrl(e.target.value);
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiLoginBackground: isValid,
-                });
-              } else {
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiLoginBackground: true,
-                });
-              }
-              onChangeDomainThemeDetail(e);
-            }}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUiLoginBackground')}
-            hasError={!allData?.isValidCarbonioWebUiLoginBackground}
-            disabled={isGlobalTheme && !hasModifyRights}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
+            errorLabel={HTTPS_URL_ERROR_LABEL}
+            errorLabelDefault="You need to use the HTTPS protocol"
           />
-          {!allData?.isValidCarbonioWebUiLoginBackground && <HttpsErrorMessage />}
         </Container>
         <Container padding={{ all: 'small' }}>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUiDarkLoginBackground"
             label="Ex. https://upload.yourlogo.com/"
-            subValue={themeConfig.carbonioWebUiDarkLoginBackground}
-            inheritedValue={globalTheme?.carbonioWebUiDarkLoginBackground}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkLoginBackground : ''}
-            inputName="carbonioWebUiDarkLoginBackground"
-            onChange={(e: any): any => {
-              if (e.target.value) {
-                const isValid = isValidHttpsUrl(e.target.value);
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiDarkLoginBackground: isValid,
-                });
-              } else {
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebUiDarkLoginBackground: true,
-                });
-              }
-              onChangeDomainThemeDetail(e);
-            }}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkLoginBackground')}
-            hasError={!allData?.isValidCarbonioWebUiDarkLoginBackground}
-            disabled={isGlobalTheme && !hasModifyRights}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
+            errorLabel={HTTPS_URL_ERROR_LABEL}
+            errorLabelDefault="You need to use the HTTPS protocol"
           />
-          {!allData?.isValidCarbonioWebUiDarkLoginBackground && <HttpsErrorMessage />}
         </Container>
       </ListRow>
       <Container padding={{ top: 'small' }}>
@@ -539,32 +392,16 @@ const EndUserThemeConfigs: FC<{
               </ds-text>
             </Padding>
           </ListRow>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUILoginURL"
             label={t('label.enduser_login_redirect_url', 'LogIn redirect destination (URL)')}
-            subValue={themeConfig.carbonioWebUILoginURL}
-            inheritedValue={globalTheme?.carbonioWebUILoginURL}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUILoginURL : ''}
-            inputName="carbonioWebUILoginURL"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              if (e.target.value) {
-                const isValid = isValidHttpsUrl(e.target.value);
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebClientLogoutURL: isValid,
-                });
-              } else {
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebClientLogoutURL: true,
-                });
-              }
-              onChangeDomainThemeDetail(e);
-            }}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUILoginURL')}
-            hasError={!allData?.isValidCarbonioWebClientLogoutURL}
-            disabled={isGlobalTheme && !hasModifyRights}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
+            errorLabel={HTTPS_URL_ERROR_LABEL}
+            errorLabelDefault="You need to use the HTTPS protocol"
           />
-          {!allData?.isValidCarbonioWebClientLogoutURL && <HttpsErrorMessage />}
         </Container>
         <Container padding={{ bottom: 'small', horizontal: 'small' }}>
           <ListRow>
@@ -574,36 +411,18 @@ const EndUserThemeConfigs: FC<{
               </ds-text>
             </Padding>
           </ListRow>
-          <InheritedInput
+          <ThemeFieldInput
+            form={form}
+            name="carbonioWebUILogoutURL"
             label={t('label.enduser_logout_redirect_url', 'On Logout, redirect the User to (URL)')}
-            subValue={themeConfig.carbonioWebUILogoutURL}
-            inheritedValue={globalTheme?.carbonioWebUILogoutURL}
-            fromSubValue={globalTheme ? themeConfig.carbonioWebUILogoutURL : ''}
-            inputName="carbonioWebUILogoutURL"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              if (e.target.value) {
-                const isValid = isValidHttpsUrl(e.target.value);
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebClientLogoutURL: isValid,
-                });
-              } else {
-                setAllData({
-                  ...allData,
-                  isValidCarbonioWebClientLogoutURL: true,
-                });
-              }
-              onChangeDomainThemeDetail(e);
-            }}
-            onChangeReset={(): void => setEmptyValue('carbonioWebUILogoutURL')}
-            hasError={!allData?.isValidCarbonioWebClientLogoutURL}
-            disabled={isGlobalTheme && !hasModifyRights}
+            globalTheme={globalTheme}
+            isGlobalTheme={isGlobalTheme}
+            hasModifyRights={hasModifyRights}
+            errorLabel={HTTPS_URL_ERROR_LABEL}
+            errorLabelDefault="You need to use the HTTPS protocol"
           />
-          {!allData?.isValidCarbonioWebClientLogoutURL && <HttpsErrorMessage />}
         </Container>
       </ListRow>
     </>
   );
 };
-
-export default EndUserThemeConfigs;

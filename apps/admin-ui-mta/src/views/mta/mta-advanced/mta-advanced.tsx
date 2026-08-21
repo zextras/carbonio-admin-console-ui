@@ -7,7 +7,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, useSnackbar } from '@zextras/ui-components';
-import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
+import { type ConfigAttribute, useAllConfig, useCurrentUserRights, useModifyConfig } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,6 @@ import {
   ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
   ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 } from '../../../constants';
-import { useModifyConfig } from '../../../services/use-modify-config';
 import { bytesToMB, isValidProxy, mbToBytes } from '../../utility/utils';
 import { LoggingSection } from './sections/logging-section';
 import { MailMessageSizeSection } from './sections/mail-message-size-section';
@@ -80,7 +79,7 @@ function buildInitialState(
 function buildMessageSizeAttributes(
   limitMaxMessageSize: boolean,
   zimbraMtaMaxMessageSize: string,
-): Array<Record<string, string>> {
+): Array<ConfigAttribute> {
   if (limitMaxMessageSize === false) {
     return [{ n: ZIMBRA_MTA_MESSAGE_SIZE, _content: '' }];
   }
@@ -122,7 +121,7 @@ const MTAAdvancedForm = ({ configInformation }: MTAAdvancedFormProps) => {
         return;
       }
 
-      const attributes: Array<Record<string, string>> = [];
+      const attributes: Array<ConfigAttribute> = [];
       attributes.push(
         {
           n: ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,

@@ -7,12 +7,13 @@
 import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
+  setupAccount,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import GlobalTheme from '../global-theme';
+import { GlobalWhiteLabel } from '../global-white-label/global-white-label';
 
 type ConfigItem = { n: string; _content: string };
 
@@ -25,17 +26,25 @@ const CONFIG_DATA: Array<ConfigItem> = [
   { n: 'carbonioWebUiDescription', _content: 'Example Description' },
 ];
 
-async function setup(): Promise<void> {
+async function setup(
+  configData: Array<ConfigItem> = CONFIG_DATA,
+  restrictedRights = false,
+): Promise<ReturnType<typeof getQueryClient>> {
   const queryClient = getQueryClient();
-  queryClient.setQueryData(['all-config'], CONFIG_DATA);
-  createBrowserSoapAPIInterceptor('GetAllConfig', { a: CONFIG_DATA });
-  await setupBrowserTest(<GlobalTheme />, {
+  queryClient.setQueryData(['all-config'], configData);
+  createBrowserSoapAPIInterceptor('GetAllConfig', { a: configData });
+  if (restrictedRights) {
+    await setupAccount(queryClient);
+    queryClient.setQueryData(['effective-rights', 'test@example.com'], []);
+  }
+  await setupBrowserTest(<GlobalWhiteLabel />, {
     queryClient,
-    grantRights: 'config',
+    grantRights: restrictedRights ? undefined : 'config',
   });
+  return queryClient;
 }
 
-describe('GlobalTheme', () => {
+describe('GlobalWhiteLabel', () => {
 
   describe('Rendering', () => {
     it('should render the Whitelabel Settings header', async () => {
@@ -67,10 +76,27 @@ describe('GlobalTheme', () => {
 
     it('should load the primary color value from config', async () => {
       await setup();
-      const input = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const input = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await expect.element(input).toHaveValue('#225CA8');
+    });
+  });
+
+  describe('Restricted admin', () => {
+    it('should disable theme fields when the admin lacks global config modify rights', async () => {
+      await setup(CONFIG_DATA, true);
+
+      await expect
+        .element(page.getByRole('textbox', { name: /clicking on the logo will redirect/i }))
+        .toBeDisabled();
+      await expect
+        .element(page.getByRole('textbox', { name: 'ex. #225CA8' }).first())
+        .toBeDisabled();
+      await expect
+        .element(page.getByRole('textbox', { name: 'ex. #225CA8' }).last())
+        .toBeDisabled();
+      await expect
+        .element(page.getByRole('button', { name: /empty all fields/i }))
+        .toBeDisabled();
     });
   });
 
@@ -79,9 +105,7 @@ describe('GlobalTheme', () => {
       const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#FF0000');
 
@@ -101,9 +125,7 @@ describe('GlobalTheme', () => {
       createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#00FF00');
 
@@ -113,15 +135,45 @@ describe('GlobalTheme', () => {
         .element(page.getByText('The change has been saved successfully'))
         .toBeVisible();
     });
+
+    it('should clear dirty state after a successful save', async () => {
+      // stateful server config so the post-save refetch returns the saved values
+      const serverConfig: Array<ConfigItem> = CONFIG_DATA.map((item) => ({ ...item }));
+      const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+      void modifyConfigInterceptor.then((params) => {
+        const attributes = (params as { a: Array<ConfigItem> }).a;
+        attributes.forEach((attr) => {
+          const item = serverConfig.find((config) => config.n === attr.n);
+          if (item) {
+            item._content = attr._content;
+          } else {
+            serverConfig.push(attr);
+          }
+        });
+      });
+      await setup(serverConfig);
+
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
+      await userEvent.clear(primaryColorInput);
+      await userEvent.type(primaryColorInput, '#00FF00');
+
+      await page.getByRole('button', { name: /^save$/i }).click();
+
+      // wait for the save + refetch to converge before asserting the dirty state cleared
+      await vi.waitFor(
+        () => {
+          expect(page.getByRole('button', { name: /^save$/i }).elements().length).toBe(0);
+        },
+        { timeout: 5000 },
+      );
+    });
   });
 
   describe('Cancel editing', () => {
     it('should revert changes and hide Save/Cancel when Cancel is clicked', async () => {
       await setup();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#00FF00');
 
@@ -178,21 +230,18 @@ describe('GlobalTheme', () => {
   });
 
   describe('Validation', () => {
-    it('should show error and not save when light primary color is invalid hex', async () => {
+    it('should show inline error and disable save when light primary color is invalid hex', async () => {
       const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, 'INVALID');
-
-      await page.getByRole('button', { name: /^save$/i }).click();
 
       await expect
         .element(page.getByText('Primary Color for Light Mode is not valid'))
         .toBeVisible();
+      await expect.element(page.getByRole('button', { name: /^save$/i })).toBeDisabled();
 
       const settled = await Promise.race([
         modifyConfigInterceptor.then(() => true),
@@ -201,21 +250,18 @@ describe('GlobalTheme', () => {
       expect(settled).toBe(false);
     });
 
-    it('should show error and not save when dark primary color is invalid hex', async () => {
+    it('should show inline error and disable save when dark primary color is invalid hex', async () => {
       const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
-      const darkColorInput = page
-        .getByTestId('inherited-carbonioWebUiDarkPrimaryColor')
-        .getByRole('textbox');
+      const darkColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).last();
       await userEvent.clear(darkColorInput);
       await userEvent.type(darkColorInput, 'NOTHEX');
-
-      await page.getByRole('button', { name: /^save$/i }).click();
 
       await expect
         .element(page.getByText('Primary Color for Dark Mode is not valid'))
         .toBeVisible();
+      await expect.element(page.getByRole('button', { name: /^save$/i })).toBeDisabled();
 
       const settled = await Promise.race([
         modifyConfigInterceptor.then(() => true),

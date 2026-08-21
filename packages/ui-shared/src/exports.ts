@@ -37,6 +37,7 @@ export type { ThemeExtension } from '../types/theme';
 export type { ResponsiveContainerOptions } from './hooks/responsive-container';
 export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
+export type { ConfigAttribute } from './react-query/use-modify-config';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext, registerApp } from './apps/loader';
 
@@ -96,6 +97,7 @@ import { useGlobalCarbonioSendAnalytics, useGlobalSettings } from './react-query
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
 import { useMailstoreServers } from './react-query/use-mailstore-servers';
+import { useModifyConfig } from './react-query/use-modify-config';
 import {
 	type Notification,
 	notificationsQueryKeys,
@@ -305,6 +307,7 @@ export {
   useLoginConfigStore,
   useMailstoreServers,
   useMediaQuery,
+  useModifyConfig,
   useModuleCrumbMenu,
   useModuleLicenseInfo,
   useMtaServers,
