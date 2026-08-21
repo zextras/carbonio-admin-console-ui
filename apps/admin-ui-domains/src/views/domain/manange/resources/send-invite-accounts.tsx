@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -14,11 +14,12 @@ import {
   Padding,
   Row,
   Table,
+  type TRow,
   useSnackbar,
 } from '@zextras/ui-components';
 import { searchDirectory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
@@ -26,144 +27,124 @@ import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { isValidEmail } from '../../../utility/utils';
 
-export const SendInviteAccounts: FC<any> = ({
+type SendInviteItem = { id: string; n: string; _content: string };
+
+type SendInviteAccountsProps = {
+  isEditable: boolean;
+  sendInviteList: Array<SendInviteItem>;
+  setSendInviteList: (list: Array<SendInviteItem>) => void;
+  hideSearchBar?: boolean;
+  hideHeaderBar?: boolean;
+};
+
+export const SendInviteAccounts = ({
   isEditable,
   sendInviteList,
   setSendInviteList,
   hideSearchBar,
   hideHeaderBar,
-}) => {
+}: SendInviteAccountsProps) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [newSentInviteValue, setNewSentInviteValue] = useState<string>('');
-  const [selectedSendInvite, setSelectedSendInvite] = useState<any>([]);
+  const [selectedSendInvite, setSelectedSendInvite] = useState<Array<string>>([]);
   const [sendInviteAddBtnDisabled, setSendInviteAddBtnDisabled] = useState(true);
   const [sendInviteDeleteBtnDisabled, setSendInviteDeleteBtnDisabled] = useState(true);
-  const [searchAccountName, setSearchAccountName]: any = useState('');
-  const [sendInviteRows, setSendInviteRows] = useState<any[]>([]);
-  const [defaultSendInviteList, setDefaultSendInviteList] = useState<any[]>([]);
-  const [isAssignDefaultList, setIsAssignDefaultList] = useState<boolean>(true);
-  const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
-
-  useEffect(() => {
-    if (sendInviteList && sendInviteList.length > 0 && isAssignDefaultList) {
-      setDefaultSendInviteList(sendInviteList);
-      setIsAssignDefaultList(false);
-    }
-  }, [sendInviteList, isAssignDefaultList]);
-
-  const sendInviteHeaders: any[] = useMemo(
-    () => [
-      {
-        id: 'account',
-        label: t('label.accounts', 'Accounts'),
-        width: '100%',
-        bold: true,
-      },
-    ],
-    [t],
+  const [searchAccountName, setSearchAccountName] = useState<string>('');
+  const [searchMemberResult, setSearchMemberResult] = useState<Array<{ id: string; name: string }>>(
+    [],
   );
 
-  useEffect(() => {
-    const sList: any[] = [];
-    sendInviteList.forEach((item: any, index: number) => {
-      sList.push({
-        id: index?.toString(),
-        columns: [
-          <ds-text as="span" size="medium" weight="light" key={index} color="gray0">
-            {item?._content}
-          </ds-text>,
-        ],
-        item,
-        label: item?._content,
-        clickable: true,
-      });
-    });
-    setSendInviteRows(sList);
-  }, [sendInviteList]);
+  const sendInviteHeaders = [
+    { id: 'account', label: t('label.accounts', 'Accounts'), width: '100%', bold: true },
+  ];
 
-  useEffect(() => {
-    const filterList = defaultSendInviteList.filter((item: any) =>
-      item?._content?.includes(searchAccountName),
-    );
-    setSendInviteList(filterList);
-  }, [setSendInviteList, searchAccountName, defaultSendInviteList]);
+  const filteredInviteList = searchAccountName
+    ? sendInviteList.filter((item) => item._content?.includes(searchAccountName))
+    : sendInviteList;
 
-  const addSendInviteAccount = useCallback((): void => {
+  const sendInviteRows: Array<TRow> = filteredInviteList.map((item, index) => ({
+    id: index.toString(),
+    columns: [
+      <ds-text as="span" size="medium" weight="light" key={index} color="gray0">
+        {item._content}
+      </ds-text>,
+    ],
+    clickable: true,
+  }));
+
+  function addSendInviteAccount(): void {
     if (newSentInviteValue) {
-      const lastId = sendInviteList.length > 0 ? sendInviteList[sendInviteList.length - 1].id : 0;
-      const newId = +lastId + 1;
-      const item = {
-        id: newId.toString(),
+      const lastId = sendInviteList.length > 0 ? sendInviteList[sendInviteList.length - 1].id : '0';
+      const newId = (parseInt(lastId, 10) + 1).toString();
+      const item: SendInviteItem = {
+        id: newId,
         n: 'zimbraPrefCalendarForwardInvitesTo',
         _content: newSentInviteValue,
       };
       setSendInviteList([...sendInviteList, item]);
-      setDefaultSendInviteList([...sendInviteList, item]);
       setSendInviteAddBtnDisabled(true);
       setNewSentInviteValue('');
     }
-  }, [newSentInviteValue, sendInviteList, setDefaultSendInviteList, setSendInviteList]);
+  }
 
-  const deleteSendInviteAccount = useCallback((): void => {
-    if (selectedSendInvite && selectedSendInvite.length > 0) {
-      const filterItems = sendInviteList.filter(
-        (item: any, index: any) => !selectedSendInvite.includes(index.toString()),
+  function deleteSendInviteAccount(): void {
+    if (selectedSendInvite.length > 0) {
+      const selectedContents = new Set(
+        selectedSendInvite.map((idx) => filteredInviteList[Number(idx)]?._content).filter(Boolean),
       );
-      setSendInviteList(filterItems);
-      setDefaultSendInviteList(filterItems);
+      setSendInviteList(sendInviteList.filter((item) => !selectedContents.has(item._content)));
       setSendInviteDeleteBtnDisabled(true);
       setSelectedSendInvite([]);
     }
-  }, [selectedSendInvite, sendInviteList, setDefaultSendInviteList, setSendInviteList]);
+  }
 
-  const getSearchMemberList = useCallback(
-    (mem: string) => {
-      const attrs =
-        'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-      const types = 'accounts,distributionlists,aliases';
-      const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
+  function getSearchMemberList(mem: string): void {
+    const attrs =
+      'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
+    const types = 'accounts,distributionlists,aliases';
+    const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
 
-      searchDirectory({ attr: attrs, type: types, domainName: '', query, offset: 0, limit: RECORD_DISPLAY_LIMIT, sortBy: 'name' })
-        .then((data) => {
-          const result: any[] = [];
-          const dl = data?.dl;
-          const account = data?.account;
-          const alias = data?.alias;
-          if (dl) {
-            dl.map((item: any) => result.push(item));
-          }
-          if (account) {
-            account.map((item: any) => result.push(item));
-          }
-          if (alias) {
-            alias.map((item: any) => result.push(item));
-          }
+    searchDirectory({
+      attr: attrs,
+      type: types,
+      domainName: '',
+      query,
+      offset: 0,
+      limit: RECORD_DISPLAY_LIMIT,
+      sortBy: 'name',
+    })
+      .then(
+        (data: {
+          dl?: Array<{ id: string; name: string }>;
+          account?: Array<{ id: string; name: string }>;
+          alias?: Array<{ id: string; name: string }>;
+        }) => {
+          const result: Array<{ id: string; name: string }> = [
+            ...(data?.dl ?? []),
+            ...(data?.account ?? []),
+            ...(data?.alias ?? []),
+          ];
           setSearchMemberResult(result);
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-        });
-    },
-    [createSnackbar, t],
-  );
+        },
+      )
+      .catch((error: Error) => {
+        const snackbarConfig = generateSnackbarFromError(error, t);
+        createSnackbar(snackbarConfig);
+      });
+  }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchMemberCall = useCallback(
-    debounce((mem) => {
-      getSearchMemberList(mem);
-    }, 700),
-    [debounce],
-  );
+  const searchMemberCall = debounce((mem: string) => {
+    getSearchMemberList(mem);
+  }, 700);
 
   useEffect(() => {
     if (newSentInviteValue !== '') {
       searchMemberCall(newSentInviteValue);
     }
-  }, [newSentInviteValue, searchMemberCall]);
+  }, [newSentInviteValue]);
 
-  const searchMemberItems = searchMemberResult.map((item: any) => ({
+  const searchMemberItems = searchMemberResult.map((item) => ({
     id: item.id,
     label: item.name,
     customComponent: (
@@ -175,16 +156,12 @@ export const SendInviteAccounts: FC<any> = ({
           padding: '3px',
           width: 'inherit',
         }}
-        onClick={(): void => {
-          setNewSentInviteValue(item?.name);
-          if (isValidEmail(item?.name)) {
-            setSendInviteAddBtnDisabled(false);
-          } else {
-            setSendInviteAddBtnDisabled(true);
-          }
+        onClick={() => {
+          setNewSentInviteValue(item.name);
+          setSendInviteAddBtnDisabled(!isValidEmail(item.name));
         }}
       >
-        {item?.name}
+        {item.name}
       </Row>
     ),
   }));
@@ -214,13 +191,9 @@ export const SendInviteAccounts: FC<any> = ({
                 width="19rem"
                 items={searchMemberItems}
                 inputLabel={t('label.enter_email_address', 'Enter E-mail address')}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setNewSentInviteValue(e.target.value);
-                  if (isValidEmail(e.target.value)) {
-                    setSendInviteAddBtnDisabled(false);
-                  } else {
-                    setSendInviteAddBtnDisabled(true);
-                  }
+                  setSendInviteAddBtnDisabled(!isValidEmail(e.target.value));
                 }}
                 inputValue={newSentInviteValue}
                 isCustomIcon={false}
@@ -268,14 +241,14 @@ export const SendInviteAccounts: FC<any> = ({
           >
             <Row width="100%">
               <Input
-                disabled={sendInviteRows.length === 0 && searchAccountName.length === 0}
+                disabled={sendInviteList.length === 0 && searchAccountName.length === 0}
                 label={t('label.search_an_account', 'Search for an account')}
                 backgroundColor="gray5"
                 value={searchAccountName}
-                CustomIcon={(): any => (
+                CustomIcon={() => (
                   <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                 )}
-                onChange={(e: any): any => {
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setSearchAccountName(e.target.value);
                 }}
               />
@@ -296,20 +269,16 @@ export const SendInviteAccounts: FC<any> = ({
             showCheckbox={!!isEditable}
             style={{ overflow: 'auto', height: '100%' }}
             selectedRows={selectedSendInvite}
-            onSelectionChange={(selected: any): any => {
+            onSelectionChange={(selected: Array<string>) => {
               setSelectedSendInvite(selected);
-              if (selected && selected.length > 0) {
-                setSendInviteDeleteBtnDisabled(false);
-              } else {
-                setSendInviteDeleteBtnDisabled(true);
-              }
+              setSendInviteDeleteBtnDisabled(!selected || selected.length === 0);
             }}
             RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
           />
         </Container>
       </ListRow>
-      {sendInviteRows?.length === 0 && (
+      {sendInviteRows.length === 0 && (
         <ListRow>
           <Container
             orientation="column"

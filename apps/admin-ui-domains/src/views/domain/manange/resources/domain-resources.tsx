@@ -1,462 +1,227 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, Padding, Paging, Row, Table, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
-import { searchDirectory } from '@zextras/ui-shared';
+import {
+  Button,
+  Container,
+  CustomHeaderFactory,
+  HoverableRowFactory,
+  Input,
+  Padding,
+  Paging,
+  Row,
+  Table,
+  TrackNumberPerPage,
+} from '@zextras/ui-components';
 import { format, parse } from 'date-fns';
-import { debounce } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
 import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
-import { createResource } from '../../../../services/create-cal-resource-service';
-import { createSignature } from '../../../../services/create-signature-service';
-import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
+import { useCalResourceList } from '../../../../services/use-cal-resource';
 import ScrollContainer from '../../../components/scrollComponent';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import CreateResource from './create-resource';
-import ResourceEditDetailView from './resource-edit-detail-view';
+import { CreateResource } from './create-resource';
+import { ResourceEditDetailView } from './resource-edit-detail-view';
 
-type Timeout = ReturnType<typeof setTimeout>;
+type ResourceEntry = {
+  id: string;
+  name: string;
+  a: Array<{ n: string; _content: string }>;
+};
 
-const DomainResources: FC = () => {
+function buildStatusFilter(selectedItems: Array<{ value: string }>): string {
+  if (!selectedItems || selectedItems.length === 0) return '';
+  if (selectedItems.length === 1) return selectedItems[0].value;
+  return `(|${selectedItems.map((i) => i.value).join('')})`;
+}
+
+function buildSearchQuery(searchStr: string, statusFilter: string): string {
+  let filterQuery = '';
+  if (statusFilter) filterQuery += statusFilter;
+  if (searchStr) {
+    filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
+  }
+  if (statusFilter && searchStr) return `(&${filterQuery})`;
+  return filterQuery;
+}
+
+export const DomainResources = () => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-  const [resourceList, setResourceList] = useState<any[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
-  const [totalAccount, setTotalAccount] = useState<number>(0);
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
   const [searchString, setSearchString] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedResourceList, setSelectedResourceList] = useState<any>({});
-  const [showResourceEditDetailView, setShowResourceEditDetailView] = useState<boolean>(false);
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
-  const [showCreateResourceView, setShowCreateResourceView] = useState<boolean>(false);
   const [statusFilter, setStatusFilter] = useState<string>('');
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-
-  const timer = useRef<Timeout | undefined>(undefined);
+  const [selectedResource, setSelectedResource] = useState<ResourceEntry | null>(null);
+  const [showEditView, setShowEditView] = useState<boolean>(false);
+  const [showCreateView, setShowCreateView] = useState<boolean>(false);
   const [sortedColumn, setSortedColumn] = useState<string>('displayName');
   const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
-  const tableRef = useRef<HTMLTableElement>(null);
-  const [isTableTooTall, setIsTableTooTall] = useState(false);
-  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const [isTableTooTall] = useState(false);
 
-  const resourceStatusFilter: any[] = useMemo(
-    () => [
-      {
-        label: t('label.active', 'Active'),
-        value: '(&(zimbraAccountStatus=active))',
+  const searchQuery = buildSearchQuery(searchString, statusFilter);
+
+  const { data, isFetching } = useCalResourceList({
+    domainName,
+    query: searchQuery,
+    sortBy: sortedColumn,
+    sortOrder,
+    offset,
+    limit,
+  });
+
+  const resourceList: Array<ResourceEntry> = data?.calresource ?? [];
+  const totalAccount: number = data?.searchTotal ?? 0;
+
+  const resourceStatusFilter = [
+    { label: t('label.active', 'Active'), value: '(&(zimbraAccountStatus=active))' },
+    { label: t('label.closed', 'Closed'), value: '(&(zimbraAccountStatus=closed))' },
+  ];
+
+  const headers = [
+    {
+      id: 'displayName',
+      label: t('label.resource', 'Resource'),
+      width: '15%',
+      bold: true,
+      sortable: true,
+      onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+        setSortOrder(order);
+        setSortedColumn(id);
       },
-      {
-        label: t('label.closed', 'Closed'),
-        value: '(&(zimbraAccountStatus=closed))',
+    },
+    {
+      id: 'name',
+      label: t('label.email', 'Email'),
+      width: '25%',
+      bold: true,
+      sortable: true,
+      onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+        setSortOrder(order);
+        setSortedColumn(id);
       },
+    },
+    {
+      id: 'status',
+      label: t('label.status', 'Status'),
+      width: '10%',
+      i18nAllLabel: t('label.all', 'All'),
+      bold: true,
+      items: resourceStatusFilter,
+      onChange: (e: Array<{ value: string }>) => {
+        setStatusFilter(buildStatusFilter(e));
+      },
+    },
+    {
+      id: 'last_access',
+      label: t('label.last_access', 'Last Access'),
+      width: '15%',
+      bold: true,
+    },
+    {
+      id: 'description',
+      label: t('label.description', 'Description'),
+      width: '35%',
+      bold: true,
+    },
+  ];
+
+  let clickTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function handleRowClick(item: ResourceEntry, detail: number): void {
+    clearTimeout(clickTimer);
+    if (detail === 2) {
+      setSelectedResource(item);
+      setShowEditView(true);
+    } else {
+      clickTimer = setTimeout(() => {
+        setSelectedResource(item);
+        setShowEditView(true);
+      }, 300);
+    }
+  }
+
+  const tableRows = resourceList.map((item) => ({
+    id: item.id,
+    columns: [
+      <Container
+        key={`dn-${item.id}`}
+        crossAlignment="flex-start"
+        onClick={(e: { stopPropagation: () => void; detail: number }) => {
+          e.stopPropagation();
+          handleRowClick(item, e.detail);
+        }}
+      >
+        <ds-text as="span" size="small" weight="light" color="gray0">
+          {item.a?.find((a) => a.n === 'displayName')?._content}
+        </ds-text>
+      </Container>,
+      <Container
+        key={`nm-${item.id}`}
+        crossAlignment="flex-start"
+        onClick={(e: { stopPropagation: () => void; detail: number }) => {
+          e.stopPropagation();
+          handleRowClick(item, e.detail);
+        }}
+      >
+        <ds-text as="span" size="small" weight="light" color="gray0">
+          {item.name}
+        </ds-text>
+      </Container>,
+      <Container
+        key={`st-${item.id}`}
+        crossAlignment="flex-start"
+        onClick={(e: { stopPropagation: () => void; detail: number }) => {
+          e.stopPropagation();
+          handleRowClick(item, e.detail);
+        }}
+      >
+        <ds-text as="span" size="small" weight="light" color="gray0">
+          {item.a?.find((a) => a.n === 'zimbraAccountStatus')?._content}
+        </ds-text>
+      </Container>,
+      <Container
+        key={`la-${item.id}`}
+        crossAlignment="flex-start"
+        onClick={(e: { stopPropagation: () => void; detail: number }) => {
+          e.stopPropagation();
+          handleRowClick(item, e.detail);
+        }}
+      >
+        <ds-text as="span" size="small" weight="light" color="gray0">
+          {item.a?.find((a) => a.n === 'zimbraLastLogonTimestamp')?._content
+            ? format(
+                parse(
+                  item.a.find((a) => a.n === 'zimbraLastLogonTimestamp')!._content,
+                  'yyyyMMddHHmmss.SSSX',
+                  new Date(),
+                ),
+                'yy/MM/dd | hh:mm',
+              )
+            : t('label.never_logged_in', 'Never logged In')}
+        </ds-text>
+      </Container>,
+      <Container
+        key={`desc-${item.id}`}
+        crossAlignment="flex-start"
+        onClick={(e: { stopPropagation: () => void; detail: number }) => {
+          e.stopPropagation();
+          handleRowClick(item, e.detail);
+        }}
+      >
+        <ds-text as="span" size="small" weight="light" color="gray0">
+          {item.a?.find((a) => a.n === 'description')?._content}
+        </ds-text>
+      </Container>,
     ],
-    [t],
-  );
-
-  const headers: any[] = useMemo(
-    () => [
-      {
-        id: 'displayName',
-        label: t('label.resource', 'Resource'),
-        width: '15%',
-        bold: true,
-        sortable: true,
-        onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
-          setSortOrder(order);
-          setSortedColumn(id);
-        },
-      },
-      {
-        id: 'name',
-        label: t('label.email', 'Email'),
-        width: '25%',
-        bold: true,
-        sortable: true,
-        onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
-          setSortOrder(order);
-          setSortedColumn(id);
-        },
-      },
-      {
-        id: 'status',
-        label: t('label.status', 'Status'),
-        width: '10%',
-        i18nAllLabel: t('label.all', 'All'),
-        bold: true,
-        items: [
-          {
-            label: resourceStatusFilter[0].label,
-            value: resourceStatusFilter[0].value,
-          },
-          {
-            label: resourceStatusFilter[1].label,
-            value: resourceStatusFilter[1].value,
-          },
-        ],
-
-        onChange: (e: any) => {
-          if (e?.length > 0) {
-            let statusQuery = '';
-            e.forEach((item: { value: string }) => {
-              statusQuery += item.value;
-            });
-            if (e?.length > 1) {
-              statusQuery = `(|${statusQuery})`;
-            }
-            setStatusFilter(statusQuery);
-          } else {
-            setStatusFilter('');
-          }
-        },
-      },
-      {
-        id: 'last_access',
-        label: t('label.last_access', 'Last Access'),
-        width: '15%',
-        bold: true,
-      },
-      {
-        id: 'description',
-        label: t('label.description', 'Description'),
-        width: '35%',
-        bold: true,
-      },
-    ],
-    [resourceStatusFilter, t],
-  );
-
-  const doClickAction = useCallback((): void => {
-    setIsEditMode(false);
-    setShowResourceEditDetailView(true);
-  }, []);
-
-  const doDoubleClickAction = useCallback((): void => {
-    setIsEditMode(true);
-    setShowResourceEditDetailView(true);
-  }, []);
-
-  const handleClick = useCallback(
-    (event: any) => {
-      event.stopPropagation();
-      clearTimeout(timer.current);
-      if (event.detail === 1) {
-        timer.current = setTimeout(doClickAction, 300);
-      } else if (event.detail === 2) {
-        doDoubleClickAction();
-      }
-    },
-    [doClickAction, doDoubleClickAction],
-  );
-
-  const getResourceList = useCallback(
-    (
-      zimbraDomainName: any,
-      queryString: any,
-      sortBy: string,
-      sortAsceding: typeof ASC | typeof DESC,
-    ): void => {
-      const attrs =
-        'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraLastLogonTimestamp,zimbraAccountStatus';
-      const types = 'resources';
-      const query = `${queryString}(&(!(zimbraIsSystemAccount=TRUE)))`;
-      setIsRequestInProgress(true);
-      searchDirectory({ attr: attrs, type: types, domainName: zimbraDomainName, query, offset, limit, sortBy, sortAscending: sortAsceding })
-        .then((data) => {
-          const resourceListResponse = data?.calresource || [];
-          if (resourceListResponse && Array.isArray(resourceListResponse)) {
-            setTotalAccount(data?.searchTotal || 0);
-            const rList: any[] = [];
-            resourceListResponse.forEach((item: any) => {
-              rList.push({
-                id: item?.id,
-                columns: [
-                  <Container
-                    key={item?.id}
-                    crossAlignment="flex-start"
-                    onClick={(e: { stopPropagation: () => void }): void => {
-                      e.stopPropagation();
-                      setSelectedResourceList(item);
-                      handleClick(e);
-                    }}
-                  >
-                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
-                      {item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-                    </ds-text>
-                  </Container>,
-                  <Container
-                    key={item?.id}
-                    crossAlignment="flex-start"
-                    onClick={(e: { stopPropagation: () => void }): void => {
-                      e.stopPropagation();
-                      setSelectedResourceList(item);
-                      handleClick(e);
-                    }}
-                  >
-                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
-                      {item?.name}
-                    </ds-text>
-                  </Container>,
-                  <Container
-                    key={item?.id}
-                    crossAlignment="flex-start"
-                    onClick={(e: { stopPropagation: () => void }): void => {
-                      e.stopPropagation();
-                      setSelectedResourceList(item);
-                      handleClick(e);
-                    }}
-                  >
-                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
-                      {item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
-                    </ds-text>
-                  </Container>,
-                  <Container
-                    key={item?.id}
-                    crossAlignment="flex-start"
-                    onClick={(e: { stopPropagation: () => void }): void => {
-                      e.stopPropagation();
-                      setSelectedResourceList(item);
-                      handleClick(e);
-                    }}
-                  >
-                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
-                      {item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
-                        ? format(
-                            parse(
-                              item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')
-                                ?._content,
-                              'yyyyMMddHHmmss.SSSX',
-                              new Date(),
-                            ),
-                            'yy/MM/dd | hh:mm',
-                          )
-                        : t('label.never_logged_in', 'Never logged In')}
-                    </ds-text>
-                  </Container>,
-                  <Container
-                    key={item?.id}
-                    crossAlignment="flex-start"
-                    onClick={(e: { stopPropagation: () => void }): void => {
-                      e.stopPropagation();
-                      setSelectedResourceList(item);
-                      handleClick(e);
-                    }}
-                  >
-                    <ds-text as="span" size="small" weight="light" key={item?.id} color="gray0">
-                      {item?.a?.find((a: any) => a?.n === 'description')?._content}
-                    </ds-text>
-                  </Container>,
-                ],
-                item,
-                clickable: true,
-              });
-            });
-            setResourceList(rList);
-            setIsUpdateRecord(false);
-          }
-          setIsRequestInProgress(false);
-        })
-        .catch((error) => {
-          const snackbarConfig = generateSnackbarFromError(error, t);
-          createSnackbar(snackbarConfig);
-          setIsRequestInProgress(false);
-        });
-    },
-    [offset, limit, t, handleClick, createSnackbar],
-  );
-
-  useEffect(() => {
-    getResourceList(domainName, searchQuery, sortedColumn, sortOrder);
-  }, [getResourceList, domainName, searchQuery, sortedColumn, sortOrder]);
-
-  useEffect(() => {
-    if (isUpdateRecord) {
-      getResourceList(domainName, searchQuery, sortedColumn, sortOrder);
-    }
-  }, [isUpdateRecord, getResourceList, domainName, searchQuery, sortedColumn, sortOrder]);
-
-  const generateSearchFilterQuery = useCallback((searchStr: string, sfilter: string): string => {
-    let filterQuery = '';
-    if (sfilter) {
-      filterQuery += sfilter;
-    }
-    if (searchStr) {
-      filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
-    }
-    if (sfilter && searchStr) {
-      return `(&${filterQuery})`;
-    }
-    return filterQuery;
-  }, []);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchResourceQuery = useCallback(
-    debounce((searchStr: string, sfilter: string) => {
-      setSearchQuery(generateSearchFilterQuery(searchStr, sfilter));
-    }, 700),
-    [debounce, generateSearchFilterQuery],
-  );
-
-  useEffect(() => {
-    searchResourceQuery(searchString, statusFilter);
-  }, [searchString, searchResourceQuery, statusFilter]);
-
-  const successSnackBar = useCallback(
-    (resourceName: any): void => {
-      createSnackbar({
-        key: 'success',
-        severity: 'success',
-        label: t('label.create_resource_success_msg', {
-          resourceName,
-          defaultValue: '{{resourceName}} has been created successfully',
-        }),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    },
-    [createSnackbar, t],
-  );
-
-  const errorSnackBar = useCallback(
-    (text?: any): void => {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label:
-          text || t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    },
-    [createSnackbar, t],
-  );
-
-  const createResourceReq = useCallback(
-    (
-      name: string,
-      password: string,
-      attr: any,
-      resourceName: string,
-      signatureList: any[],
-      zimbraPrefCalendarAutoAcceptSignatureId: any,
-      zimbraPrefCalendarAutoDeclineSignatureId: any,
-      zimbraPrefCalendarAutoDenySignatureId: any,
-    ): void => {
-      createResource(name, password, attr)
-        .then((data) => {
-          const resourceId = data?.calresource[0]?.id;
-          if (resourceId) {
-            if (signatureList && signatureList.length > 0) {
-              const requests: any[] = [];
-              signatureList.forEach((item: any) => {
-                requests.push(createSignature(resourceId, item?.name, item?.content[0]?._content));
-              });
-              Promise.all(requests)
-                .then((responses) => Promise.all(responses))
-                .then((resData) => {
-                  if (
-                    zimbraPrefCalendarAutoAcceptSignatureId?.value === '' &&
-                    zimbraPrefCalendarAutoDeclineSignatureId?.value === '' &&
-                    zimbraPrefCalendarAutoDenySignatureId?.value === ''
-                  ) {
-                    setShowCreateResourceView(false);
-                    successSnackBar(resourceName);
-                    setIsUpdateRecord(true);
-                  } else {
-                    const signatureRes: any[] = [];
-                    resData.forEach((res: any) => {
-                      signatureRes.push(res?.Body?.CreateSignatureResponse?.signature[0]);
-                    });
-                    const signtureAttr: any = {
-                      zimbraPrefCalendarAutoAcceptSignatureId:
-                        zimbraPrefCalendarAutoAcceptSignatureId?.value
-                          ? signatureRes.filter(
-                              (item: any) =>
-                                item.name === zimbraPrefCalendarAutoAcceptSignatureId?.label,
-                            )[0]?.id
-                          : '',
-                      zimbraPrefCalendarAutoDeclineSignatureId:
-                        zimbraPrefCalendarAutoDeclineSignatureId?.value
-                          ? signatureRes.filter(
-                              (item: any) =>
-                                item.name === zimbraPrefCalendarAutoDeclineSignatureId?.label,
-                            )[0]?.id
-                          : '',
-                      zimbraPrefCalendarAutoDenySignatureId:
-                        zimbraPrefCalendarAutoDenySignatureId?.value
-                          ? signatureRes.filter(
-                              (item: any) =>
-                                item.name === zimbraPrefCalendarAutoDenySignatureId?.label,
-                            )[0]?.id
-                          : '',
-                    };
-                    const attrList: { n: string; _content: string }[] = [];
-                    Object.keys(signtureAttr).forEach((ele: any) =>
-                      attrList.push({ n: ele, _content: signtureAttr[ele] }),
-                    );
-                    modifyCalendarResource(resourceId, attrList)
-                      .then(() => {
-                        setShowCreateResourceView(false);
-                        successSnackBar(resourceName);
-                        setIsUpdateRecord(true);
-                      })
-                      .catch((error) => {
-                        errorSnackBar(error?.message);
-                      });
-                  }
-                })
-                .catch(() => {
-                  errorSnackBar();
-                });
-            } else {
-              setShowCreateResourceView(false);
-              successSnackBar(resourceName);
-              setIsUpdateRecord(true);
-            }
-          }
-        })
-        .catch((error) => {
-          errorSnackBar(error?.message);
-        });
-    },
-    [errorSnackBar, successSnackBar],
-  );
-
-  useEffect(() => {
-    const table = tableRef.current;
-
-    const handleResize = debounce((): void => {
-      if (table) {
-        const tableHeight = table.clientHeight + 375;
-        const viewportHeight = window.innerHeight;
-        setIsTableTooTall(tableHeight > viewportHeight);
-      }
-    }, 100);
-
-    if (table && !resizeObserverRef.current) {
-      const observer = new ResizeObserver(handleResize);
-      resizeObserverRef.current = observer;
-      observer.observe(table);
-    }
-
-    return () => {
-      if (resizeObserverRef.current) {
-        resizeObserverRef.current.disconnect();
-        resizeObserverRef.current = null;
-      }
-    };
-  }, []);
+    item,
+    clickable: true,
+  }));
 
   return (
     <Container
@@ -482,9 +247,8 @@ const DomainResources: FC = () => {
                 <Button
                   color="primary"
                   icon="Plus"
-                  onClick={(): void => {
-                    setShowCreateResourceView(true);
-                  }}
+                  aria-label={t('label.create_resource', 'Create resource')}
+                  onClick={() => setShowCreateView(true)}
                 />
               </Padding>
             </Row>
@@ -499,10 +263,7 @@ const DomainResources: FC = () => {
         crossAlignment="flex-start"
         mainAlignment="flex-start"
         width="100%"
-        style={{
-          position: 'relative',
-          overflow: 'auto',
-        }}
+        style={{ position: 'relative', overflow: 'auto' }}
       >
         <Row
           mainAlignment="flex-start"
@@ -522,10 +283,8 @@ const DomainResources: FC = () => {
                   disabled={resourceList.length === 0 && searchString.length === 0}
                   backgroundColor="gray5"
                   label={t('label.search_dot', 'Search…')}
-                  onChange={(e: any): any => {
-                    setSearchString(e.target.value);
-                  }}
-                  CustomIcon={(): any => (
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value)}
+                  CustomIcon={() => (
                     <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                   )}
                 />
@@ -539,18 +298,18 @@ const DomainResources: FC = () => {
               width="fill"
             >
               <Table
-                rows={!isRequestInProgress ? resourceList : []}
-                headers={headers}
+                rows={!isFetching ? tableRows : []}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                headers={headers as any}
                 showCheckbox
-                ref={tableRef}
                 style={{
                   overflow: 'auto',
-                  height: isRequestInProgress || resourceList.length === 0 ? '50%' : '100%',
+                  height: isFetching || resourceList.length === 0 ? '50%' : '100%',
                 }}
                 RowFactory={HoverableRowFactory}
                 HeaderFactory={CustomHeaderFactory}
               />
-              {isRequestInProgress && (
+              {isFetching && (
                 <Container
                   crossAlignment="center"
                   mainAlignment="center"
@@ -560,7 +319,7 @@ const DomainResources: FC = () => {
                   <ds-spinner></ds-spinner>
                 </Container>
               )}
-              {resourceList.length === 0 && !isRequestInProgress && (
+              {resourceList.length === 0 && !isFetching && (
                 <Container orientation="column" crossAlignment="center" mainAlignment="center">
                   <Row>
                     <img src={logo} alt="logo" />
@@ -571,7 +330,13 @@ const DomainResources: FC = () => {
                     crossAlignment="center"
                     style={{ textAlign: 'center' }}
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text
+                      as="p"
+                      weight="light"
+                      color="#828282"
+                      size="large"
+                      overflow="break-word"
+                    >
                       {t('label.this_list_is_empty', 'This list is empty.')}
                     </ds-text>
                   </Row>
@@ -582,7 +347,13 @@ const DomainResources: FC = () => {
                     padding={{ top: 'small' }}
                     width="53%"
                   >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
+                    <ds-text
+                      as="p"
+                      weight="light"
+                      color="#828282"
+                      size="large"
+                      overflow="break-word"
+                    >
                       <Trans
                         i18nKey="label.create_resource_msg"
                         defaults="You can create a new resource by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
@@ -594,7 +365,7 @@ const DomainResources: FC = () => {
               )}
             </Row>
 
-            {resourceList && resourceList.length > 0 && (
+            {resourceList.length > 0 && (
               <Container
                 style={{
                   position: 'sticky',
@@ -627,20 +398,14 @@ const DomainResources: FC = () => {
           </Container>
         </Row>
       </Container>
-      {showResourceEditDetailView && (
+      {showEditView && selectedResource && (
         <ResourceEditDetailView
-          selectedResourceList={selectedResourceList}
-          setShowResourceEditDetailView={setShowResourceEditDetailView}
-          isEditMode={isEditMode}
-          setIsEditMode={setIsEditMode}
-          setIsUpdateRecord={setIsUpdateRecord}
+          selectedResource={selectedResource}
+          onClose={() => setShowEditView(false)}
         />
       )}
-      {showCreateResourceView && (
-        <CreateResource
-          setShowCreateResourceView={setShowCreateResourceView}
-          createResourceReq={createResourceReq}
-        />
+      {showCreateView && (
+        <CreateResource onClose={() => setShowCreateView(false)} />
       )}
     </Container>
   );
