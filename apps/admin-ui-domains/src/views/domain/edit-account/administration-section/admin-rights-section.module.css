@@ -1,0 +1,74 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/* Faithful port of the extracted Container/Row layout. */
+
+.addRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 100%;
+  padding: var(--padding-size-large) 0 var(--padding-size-large)
+    var(--padding-size-large);
+}
+
+.addCol {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 45%;
+  padding: var(--padding-size-large) var(--padding-size-large) 0 0;
+}
+
+.dividerRow {
+  width: 100%;
+  padding-top: 2rem;
+}
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--padding-size-large) 0 0 var(--padding-size-small);
+}
+
+.tableRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding-top: var(--padding-size-large);
+}
+
+.removeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding: var(--padding-size-large) 0 3rem;
+}
+
+.removeCol {
+  display: flex;
+  flex-wrap: wrap;
+  width: 49%;
+  padding-right: var(--padding-size-small);
+}
+
+.domainItem {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}

@@ -5,6 +5,7 @@
  */
 
 .staticCodesWrapper {
+  box-sizing: border-box;
   position: relative;
   width: 100%;
   column-count: 2;

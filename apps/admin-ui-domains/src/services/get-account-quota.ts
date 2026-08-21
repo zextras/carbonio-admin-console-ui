@@ -29,7 +29,7 @@ export type GetAccountQuotaRawResponse = {
   };
 };
 
-type GetAccountQuotaResponse =
+export type GetAccountQuotaResponse =
   | {
       type: 'success';
       totalComputedLimit: ComputedLimit;

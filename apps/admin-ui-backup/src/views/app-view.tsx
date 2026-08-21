@@ -16,7 +16,7 @@ export const AppView = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
 
   return (
-    <Container height={'fit'}>
+    <Container>
       <BackupPageHeader />
       <Routes>
         <Route

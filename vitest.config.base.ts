@@ -7,15 +7,16 @@ import { defineConfig } from 'vitest/config';
 import path from 'node:path';
 import { playwright } from '@vitest/browser-playwright';
 import svgr from 'vite-plugin-svgr';
+import tailwindcss from '@tailwindcss/vite';
 import babel from '@rolldown/plugin-babel';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
-import { getOptimizeDepsInclude } from './vitest.config.utils';
 
 const isCI = !!process.env.CI;
 
 function getPlugins() {
   return [
     react(),
+    tailwindcss(),
     babel({
       presets: [reactCompilerPreset({ panicThreshold: 'none' })],
       plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
@@ -32,7 +33,50 @@ function getPlugins() {
   ];
 }
 
-const tinymceNoopPath = path.resolve(__dirname, './__mocks__/tinymce-noop.js');
+function getOptimizeDepsInclude(): Array<string> {
+  return [
+    'react',
+    'react-dom',
+    'react-dom/client',
+    'react/jsx-runtime',
+    'react/jsx-dev-runtime',
+    'i18next',
+    'react-i18next',
+    'react-router',
+    'ua-parser-js',
+    'i18next-http-backend',
+    'lodash-es',
+    // date-fns locales
+    'date-fns/locale/zh-CN',
+    'date-fns/locale/nl',
+    'date-fns/locale/en-US',
+    'date-fns/locale/de',
+    'date-fns/locale/hi',
+    'date-fns/locale/hu',
+    'date-fns/locale/it',
+    'date-fns/locale/ja',
+    'date-fns/locale/pt',
+    'date-fns/locale/pl',
+    'date-fns/locale/ro',
+    'date-fns/locale/ru',
+    'date-fns/locale/es',
+    'date-fns/locale/th',
+    'date-fns/locale/tr',
+    'date-fns/locale/fr',
+    'date-fns/locale/vi',
+    'date-fns/locale/bs',
+    'date-fns/locale/sl',
+    'lit',
+    'lit/decorators.js',
+    'lit/directives/repeat.js',
+    'lit/directives/style-map.js',
+    'lit/directives/unsafe-svg.js',
+    'msw',
+    'msw/browser',
+  ];
+}
+
+const tinymceNoopPath = path.resolve(import.meta.dirname, './__mocks__/tinymce-noop.js');
 const tinymcePlugins = [
   'advlist',
   'anchor',
@@ -61,7 +105,7 @@ const tinymceSkins = [
   'tinymce/skins/ui/oxide/content',
 ];
 const tinymceAliases = {
-  'tinymce/tinymce': path.resolve(__dirname, './__mocks__/tinymce.js'),
+  'tinymce/tinymce': path.resolve(import.meta.dirname, './__mocks__/tinymce.js'),
   'tinymce/models/dom': tinymceNoopPath,
   'tinymce/themes/silver': tinymceNoopPath,
   'tinymce/icons/default': tinymceNoopPath,
@@ -76,12 +120,12 @@ function jsdomProjectConfig() {
     test: {
       name: 'unit',
       environment: 'jsdom',
-      setupFiles: [path.resolve(__dirname, './vitest-jsdom-setup.ts')],
+      setupFiles: [path.resolve(import.meta.dirname, './vitest-jsdom-setup.ts')],
       sequence: { groupOrder: 1 },
       env: { TZ: 'UTC' },
       alias: {
-        'admin-ui-test-utils': path.resolve(__dirname, './packages/test-utils/src/index.jsdom.ts'),
-        '@zextras/ui-shared': path.resolve(__dirname, './__mocks__/@zextras/ui-shared.js'),
+        'admin-ui-test-utils': path.resolve(import.meta.dirname, './packages/test-utils/src/index.jsdom.ts'),
+        '@zextras/ui-shared': path.resolve(import.meta.dirname, './__mocks__/@zextras/ui-shared.js'),
       },
       include: ['src/**/*.test.{ts,tsx}', './fonts.d.ts'],
       exclude: ['dist/**', 'node_modules/**', '**/*.browser.test.{ts,tsx}'],
@@ -102,7 +146,7 @@ function browserProjectConfig() {
     define: { BASE_PATH: JSON.stringify('') },
     test: {
       name: 'browser',
-      setupFiles: [path.resolve(__dirname, './vitest-browser-setup.ts')],
+      setupFiles: [path.resolve(import.meta.dirname, './vitest-browser-setup.ts')],
       sequence: { groupOrder: 2 },
       fileParallelism: true,
       maxWorkers: '50%',
@@ -130,7 +174,7 @@ function browserProjectConfig() {
       hookTimeout: 15_000,
       alias: {
         'admin-ui-test-utils': path.resolve(
-          __dirname,
+          import.meta.dirname,
           './packages/test-utils/src/index.browser.ts',
         ),
         ...tinymceAliases,
