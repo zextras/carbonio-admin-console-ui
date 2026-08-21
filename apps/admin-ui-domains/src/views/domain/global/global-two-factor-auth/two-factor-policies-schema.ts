@@ -12,8 +12,8 @@ const trustedIpSchema = z.string().refine(isValidIpRange, {
 });
 
 const policyEntrySchema = z.object({
-  trustedDevice: z.number(),
-  trustedIpRange: z.array(trustedIpSchema),
+  trustedDevice: z.number().optional(),
+  trustedIpRange: z.array(trustedIpSchema).optional(),
 });
 
 /**

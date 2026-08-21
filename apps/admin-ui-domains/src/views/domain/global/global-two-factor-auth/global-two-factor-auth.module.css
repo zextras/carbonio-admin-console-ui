@@ -1,0 +1,88 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/* Faithful port of the extracted Container/Row/Padding layout of the legacy
+   2fa-config view (Container defaults: box-sizing border-box, flex, 100% size;
+   Row defaults: flex, wrap). */
+
+.form {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  height: calc(100vh - 9.375rem);
+  overflow: auto;
+}
+
+.card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  height: fit-content;
+  padding: var(--padding-size-small);
+  background: var(--color-gray6-regular);
+}
+
+.sectionTitle {
+  width: 100%;
+  padding-top: var(--padding-size-large);
+}
+
+.helpText {
+  width: 100%;
+  padding-top: var(--padding-size-large);
+}
+
+.applyAllRow {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  padding-top: var(--padding-size-large);
+}
+
+.applyAllSelect {
+  box-sizing: border-box;
+  width: 30%;
+  padding-right: var(--padding-size-large);
+}
+
+.applyAllChips {
+  box-sizing: border-box;
+  width: 70%;
+}
+
+.applyAllButtonRow {
+  width: 100%;
+  padding-top: var(--padding-size-large);
+}
+
+.serviceRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  padding-top: var(--padding-size-large);
+}
+
+.serviceLabel {
+  width: 15%;
+}
+
+.serviceSelect {
+  box-sizing: border-box;
+  width: 30%;
+  padding-right: var(--padding-size-large);
+}
+
+.serviceChips {
+  box-sizing: border-box;
+  width: 65%;
+}
