@@ -25,14 +25,17 @@ const CONFIG_DATA: Array<ConfigItem> = [
   { n: 'carbonioWebUiDescription', _content: 'Example Description' },
 ];
 
-async function setup(): Promise<void> {
+async function setup(configData: Array<ConfigItem> = CONFIG_DATA): Promise<
+  ReturnType<typeof getQueryClient>
+> {
   const queryClient = getQueryClient();
-  queryClient.setQueryData(['all-config'], CONFIG_DATA);
-  createBrowserSoapAPIInterceptor('GetAllConfig', { a: CONFIG_DATA });
+  queryClient.setQueryData(['all-config'], configData);
+  createBrowserSoapAPIInterceptor('GetAllConfig', { a: configData });
   await setupBrowserTest(<GlobalWhiteLabel />, {
     queryClient,
     grantRights: 'config',
   });
+  return queryClient;
 }
 
 describe('GlobalWhiteLabel', () => {
@@ -113,6 +116,40 @@ describe('GlobalWhiteLabel', () => {
         .element(page.getByText('The change has been saved successfully'))
         .toBeVisible();
     });
+
+    it('should clear dirty state after a successful save', async () => {
+      // stateful server config so the post-save refetch returns the saved values
+      const serverConfig: Array<ConfigItem> = CONFIG_DATA.map((item) => ({ ...item }));
+      const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+      void modifyConfigInterceptor.then((params) => {
+        const attributes = (params as { a: Array<ConfigItem> }).a;
+        attributes.forEach((attr) => {
+          const item = serverConfig.find((config) => config.n === attr.n);
+          if (item) {
+            item._content = attr._content;
+          } else {
+            serverConfig.push(attr);
+          }
+        });
+      });
+      await setup(serverConfig);
+
+      const primaryColorInput = page
+        .getByTestId('inherited-carbonioWebUiPrimaryColor')
+        .getByRole('textbox');
+      await userEvent.clear(primaryColorInput);
+      await userEvent.type(primaryColorInput, '#00FF00');
+
+      await page.getByRole('button', { name: /^save$/i }).click();
+
+      // wait for the save + refetch to converge before asserting the dirty state cleared
+      await vi.waitFor(
+        () => {
+          expect(page.getByRole('button', { name: /^save$/i }).elements().length).toBe(0);
+        },
+        { timeout: 5000 },
+      );
+    });
   });
 
   describe('Cancel editing', () => {
@@ -178,7 +215,7 @@ describe('GlobalWhiteLabel', () => {
   });
 
   describe('Validation', () => {
-    it('should show error and not save when light primary color is invalid hex', async () => {
+    it('should show inline error and disable save when light primary color is invalid hex', async () => {
       const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
@@ -188,11 +225,10 @@ describe('GlobalWhiteLabel', () => {
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, 'INVALID');
 
-      await page.getByRole('button', { name: /^save$/i }).click();
-
       await expect
         .element(page.getByText('Primary Color for Light Mode is not valid'))
         .toBeVisible();
+      await expect.element(page.getByRole('button', { name: /^save$/i })).toBeDisabled();
 
       const settled = await Promise.race([
         modifyConfigInterceptor.then(() => true),
@@ -201,7 +237,7 @@ describe('GlobalWhiteLabel', () => {
       expect(settled).toBe(false);
     });
 
-    it('should show error and not save when dark primary color is invalid hex', async () => {
+    it('should show inline error and disable save when dark primary color is invalid hex', async () => {
       const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
@@ -211,11 +247,10 @@ describe('GlobalWhiteLabel', () => {
       await userEvent.clear(darkColorInput);
       await userEvent.type(darkColorInput, 'NOTHEX');
 
-      await page.getByRole('button', { name: /^save$/i }).click();
-
       await expect
         .element(page.getByText('Primary Color for Dark Mode is not valid'))
         .toBeVisible();
+      await expect.element(page.getByRole('button', { name: /^save$/i })).toBeDisabled();
 
       const settled = await Promise.race([
         modifyConfigInterceptor.then(() => true),

@@ -66,7 +66,7 @@ const GlobalWhiteLabelContent = ({
         _content: _content as string,
       }));
       await modifyConfigMutation.mutateAsync(attributes);
-      form.reset(value, { keepDefaultValues: true });
+      form.reset(value);
       invalidate();
     },
   });
