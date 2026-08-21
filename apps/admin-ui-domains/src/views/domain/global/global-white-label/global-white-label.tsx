@@ -63,7 +63,7 @@ const GlobalWhiteLabelContent = ({
     onSubmit: async ({ value }) => {
       const attributes = Object.entries(value).map(([n, _content]) => ({
         n,
-        _content: _content as string,
+        _content,
       }));
       await modifyConfigMutation.mutateAsync(attributes);
       form.reset(value);

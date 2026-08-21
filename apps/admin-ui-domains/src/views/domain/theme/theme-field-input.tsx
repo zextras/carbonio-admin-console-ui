@@ -12,7 +12,7 @@ import type { themeConfigStore } from '../../../../types';
 
 type ThemeFieldInputProps = {
   form: AnyFormApi;
-  name: keyof themeConfigStore & string;
+  name: keyof themeConfigStore;
   label: string;
   globalTheme?: themeConfigStore;
   isGlobalTheme?: boolean;

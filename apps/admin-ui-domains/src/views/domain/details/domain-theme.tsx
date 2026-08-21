@@ -119,7 +119,7 @@ const DomainTheme = () => {
       const body = {
         id: zimbraId,
         _jsns: ZIMBRA_ADMIN_URN,
-        a: modified.map(([n, _content]) => ({ n, _content: _content as string })),
+        a: modified.map(([n, _content]) => ({ n, _content })),
       };
       await modifyDomainRequest(body);
       form.reset(value, { keepDefaultValues: true });

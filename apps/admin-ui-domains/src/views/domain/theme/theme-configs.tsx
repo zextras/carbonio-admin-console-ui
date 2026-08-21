@@ -72,7 +72,7 @@ export const ThemeConfigs = ({
   onResetTheme,
 }: {
   form: AnyFormApi;
-  globalTheme?: themeConfigStore | undefined;
+  globalTheme?: themeConfigStore;
   isGlobalTheme?: boolean;
   onResetTheme: () => void;
 }) => {
