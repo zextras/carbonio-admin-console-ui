@@ -5,7 +5,7 @@
  */
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { Button, RouteLeavingGuard, useSnackbar } from '@zextras/ui-components';
+import { FormPageLayout, useSnackbar } from '@zextras/ui-components';
 import { isEqual } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
@@ -114,37 +114,17 @@ export const GlobalTwoFactorAuthContent = ({ policies }: GlobalTwoFactorAuthCont
   });
 
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
-  const canSubmit = useSelector(form.store, (s) => s.canSubmit);
-
-  const onSave = (): void => {
-    void form.handleSubmit();
-  };
-
-  const onCancel = (): void => {
-    form.reset();
-  };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <ds-text as="h1" size="medium" weight="bold" color="gray0">
-          {t('label.2-factor-authentication', '2-Factor-Authentication')}
-        </ds-text>
-        {isDirty && (
-          <div className={styles.actions}>
-            <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
-            <Button
-              label={t('label.save', 'Save')}
-              color="primary"
-              onClick={onSave}
-              disabled={!canSubmit}
-            />
-          </div>
-        )}
-      </div>
-      <ds-divider></ds-divider>
-      <TwoFactorPoliciesForm form={form} services={twoFactorPolicyArray} />
-      <RouteLeavingGuard when={isDirty} onSave={onSave} />
+    <div className={styles.page}>
+      <FormPageLayout
+        title={t('label.2-factor-authentication', '2-Factor-Authentication')}
+        unsavedChanges={isDirty}
+        onCancel={() => form.reset()}
+        onSave={() => form.handleSubmit()}
+      >
+        <TwoFactorPoliciesForm form={form} services={twoFactorPolicyArray} />
+      </FormPageLayout>
     </div>
   );
 };

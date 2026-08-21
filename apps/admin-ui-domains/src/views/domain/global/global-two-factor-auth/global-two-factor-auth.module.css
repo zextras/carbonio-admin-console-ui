@@ -4,30 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-.container {
+.page {
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 105px);
+  overflow-y: auto;
   background: var(--color-gray6-regular);
-  padding: var(--padding-size-large);
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  min-height: 3.5rem;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  gap: var(--padding-size-small);
 }
 
 .form {
@@ -37,8 +19,6 @@
   justify-content: flex-start;
   align-items: flex-start;
   width: 100%;
-  height: calc(100vh - 9.375rem);
-  overflow: auto;
 }
 
 .card {

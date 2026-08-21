@@ -95,7 +95,10 @@ export const TwoFactorPoliciesForm = ({ form, services }: TwoFactorPoliciesFormP
             type="outlined"
             label={t('label.apply_to_all', 'APPLY TO ALL SERVICES')}
             color="primary"
-            onClick={applyToAll}
+            onClick={(e) => {
+              e.preventDefault();
+              applyToAll();
+            }}
           />
         </div>
         {services.map((service) => (
