@@ -57,7 +57,10 @@ function buildDefaultValues(): PoliciesValues {
   return SERVICE_KEYS.map((key) => ({ [key]: { trustedDevice: 0, trustedIpRange: [] } }));
 }
 
-function setup2faInterceptor(initialValues: PoliciesValues = buildDefaultValues()): {
+function setup2faInterceptor(
+  initialValues: PoliciesValues = buildDefaultValues(),
+  setPolicyResult: { ok: boolean; message?: string; error?: string } = { ok: true, message: 'ok' },
+): {
   capturedSetPolicies: Array<ZextrasRequestBody['Body']['zextras']>;
 } {
   const capturedSetPolicies: Array<ZextrasRequestBody['Body']['zextras']> = [];
@@ -79,26 +82,30 @@ function setup2faInterceptor(initialValues: PoliciesValues = buildDefaultValues(
       }
 
       if (zextrasBody?.module === 'ZxAuth' && zextrasBody.action === 'setPolicy') {
-        capturedSetPolicies.push(zextrasBody);
-        const service = zextrasBody.service ?? '';
-        const trustedIpRange =
-          zextrasBody.trustedIpRange === 'empty' || zextrasBody.trustedIpRange === undefined
-            ? []
-            : zextrasBody.trustedIpRange.split(',');
-        serverValues = serverValues.map((entry) =>
-          Object.hasOwn(entry, service)
-            ? {
-                [service]: {
-                  trustedDevice: zextrasBody.trustedDevice ?? 0,
-                  trustedIpRange,
-                },
-              }
-            : entry,
-        );
+        if (setPolicyResult.ok) {
+          capturedSetPolicies.push(zextrasBody);
+          const service = zextrasBody.service ?? '';
+          const trustedIpRange =
+            zextrasBody.trustedIpRange === 'empty' || zextrasBody.trustedIpRange === undefined
+              ? []
+              : zextrasBody.trustedIpRange.split(',');
+          serverValues = serverValues.map((entry) =>
+            Object.hasOwn(entry, service)
+              ? {
+                  [service]: {
+                    trustedDevice: zextrasBody.trustedDevice ?? 0,
+                    trustedIpRange,
+                  },
+                }
+              : entry,
+          );
+        } else {
+          capturedSetPolicies.push(zextrasBody);
+        }
         return HttpResponse.json({
           Body: {
             response: {
-              content: JSON.stringify({ ok: true, message: 'ok' }),
+              content: JSON.stringify(setPolicyResult),
             },
           },
         });
@@ -113,8 +120,9 @@ function setup2faInterceptor(initialValues: PoliciesValues = buildDefaultValues(
 
 async function setup(
   initialValues?: PoliciesValues,
+  setPolicyResult?: { ok: boolean; message?: string; error?: string },
 ): Promise<{ capturedSetPolicies: Array<ZextrasRequestBody['Body']['zextras']> }> {
-  const interceptor = setup2faInterceptor(initialValues);
+  const interceptor = setup2faInterceptor(initialValues, setPolicyResult);
   await setupBrowserTest(<GlobalTwoFactorAuth />, { queryClient: getQueryClient() });
   await expect.element(page.getByText('2-Factor-Authentication')).toBeVisible();
   return interceptor;
@@ -219,6 +227,16 @@ describe('GlobalTwoFactorAuth (browser)', () => {
         trustedDevice: 2,
         trustedIpRange: 'empty',
       });
+    });
+
+    it('shows an error snackbar and keeps the dirty state when saving a policy fails', async () => {
+      await setup(undefined, { ok: false, error: 'Policy could not be saved' });
+
+      await userEvent.type(firstServiceChipInput(), '192.168.1.1{Enter}');
+      await page.getByRole('button', { name: /^save$/i }).click();
+
+      await expect.element(page.getByText('Policy could not be saved')).toBeVisible();
+      await expect.element(page.getByRole('button', { name: /^save$/i })).toBeVisible();
     });
   });
 
