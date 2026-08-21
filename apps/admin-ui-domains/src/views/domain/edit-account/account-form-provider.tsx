@@ -92,9 +92,9 @@ export function splitMembership(dl: Array<any> = []): {
   return { direct, inDirect };
 }
 
-function buildQuotaValues(
-  quota: Extract<GetAccountQuotaResponse, { type: 'success' }>,
-): Record<string, unknown> {
+type SuccessfulAccountQuota = Extract<GetAccountQuotaResponse, { type: 'success' }>;
+
+function buildQuotaValues(quota: SuccessfulAccountQuota): Record<string, unknown> {
   return {
     [TOTAL_COMPUTED_QUOTA_LIMIT]: quota.totalComputedLimit,
     [TOTAL_QUOTA_USED]: quota.totalUsed,
@@ -113,6 +113,65 @@ function buildCoreAttrValues(coreAttrs: AccountCoreAttributes): Record<string, u
 }
 
 const VALUE_BLOCKED = 'VALUE-BLOCKED';
+
+type SavedValuesBaseline = {
+  detail: FlattenedAccount | undefined;
+  quota: SuccessfulAccountQuota | undefined;
+  coreAttrs: AccountCoreAttributes | undefined;
+  values: AccountFormValues;
+};
+
+type BaselineSyncInputs = {
+  formUntouched: boolean;
+  accountDetailData: FlattenedAccount | undefined;
+  accountQuota: SuccessfulAccountQuota | undefined;
+  accountCoreAttributes: AccountCoreAttributes | undefined;
+  baseline: SavedValuesBaseline | null;
+};
+
+function computeNextBaseline({
+  formUntouched,
+  accountDetailData,
+  accountQuota,
+  accountCoreAttributes,
+  baseline,
+}: BaselineSyncInputs): SavedValuesBaseline | null {
+  if (!formUntouched) {
+    return null;
+  }
+  if (accountDetailData !== undefined && accountDetailData !== baseline?.detail) {
+    const quotaIsNew = accountQuota !== undefined && accountQuota !== baseline?.quota;
+    const coreAttrsAreNew =
+      accountCoreAttributes !== undefined && accountCoreAttributes !== baseline?.coreAttrs;
+    return {
+      detail: accountDetailData,
+      quota: accountQuota,
+      coreAttrs: accountCoreAttributes,
+      values: {
+        ...buildAccountFormValues(accountDetailData),
+        ...(quotaIsNew ? buildQuotaValues(accountQuota) : {}),
+        ...(coreAttrsAreNew ? buildCoreAttrValues(accountCoreAttributes) : {}),
+      },
+    };
+  }
+  if (accountQuota !== undefined && accountQuota !== baseline?.quota) {
+    return {
+      detail: baseline?.detail,
+      quota: accountQuota,
+      coreAttrs: baseline?.coreAttrs,
+      values: { ...baseline?.values, ...buildQuotaValues(accountQuota) },
+    };
+  }
+  if (accountCoreAttributes !== undefined && accountCoreAttributes !== baseline?.coreAttrs) {
+    return {
+      detail: baseline?.detail,
+      quota: baseline?.quota,
+      coreAttrs: accountCoreAttributes,
+      values: { ...baseline?.values, ...buildCoreAttrValues(accountCoreAttributes) },
+    };
+  }
+  return null;
+}
 
 type AccountFormProviderParams = {
   account: { id: string; name: string; [key: string]: any };
@@ -152,12 +211,6 @@ export function useAccountFormProvider({
   );
   const membership = splitMembership(membershipDl);
 
-  type SavedValuesBaseline = {
-    detail: FlattenedAccount | undefined;
-    quota: typeof accountQuota;
-    coreAttrs: AccountCoreAttributes | undefined;
-    values: AccountFormValues;
-  };
   const [baseline, setBaseline] = useState<SavedValuesBaseline | null>(null);
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
@@ -515,38 +568,15 @@ export function useAccountFormProvider({
   });
 
   const formUntouched = !form.state.isTouched && !form.state.isDirty;
-  if (formUntouched && accountDetailData !== undefined && accountDetailData !== baseline?.detail) {
-    const quotaIsNew = accountQuota !== undefined && accountQuota !== baseline?.quota;
-    const coreAttrsAreNew =
-      accountCoreAttributes !== undefined && accountCoreAttributes !== baseline?.coreAttrs;
-    setBaseline({
-      detail: accountDetailData,
-      quota: accountQuota,
-      coreAttrs: accountCoreAttributes,
-      values: {
-        ...buildAccountFormValues(accountDetailData),
-        ...(quotaIsNew ? buildQuotaValues(accountQuota) : {}),
-        ...(coreAttrsAreNew ? buildCoreAttrValues(accountCoreAttributes) : {}),
-      },
-    });
-  } else if (formUntouched && accountQuota !== undefined && accountQuota !== baseline?.quota) {
-    setBaseline({
-      detail: baseline?.detail,
-      quota: accountQuota,
-      coreAttrs: baseline?.coreAttrs,
-      values: { ...baseline?.values, ...buildQuotaValues(accountQuota) },
-    });
-  } else if (
-    formUntouched &&
-    accountCoreAttributes !== undefined &&
-    accountCoreAttributes !== baseline?.coreAttrs
-  ) {
-    setBaseline({
-      detail: baseline?.detail,
-      quota: baseline?.quota,
-      coreAttrs: accountCoreAttributes,
-      values: { ...baseline?.values, ...buildCoreAttrValues(accountCoreAttributes) },
-    });
+  const nextBaseline = computeNextBaseline({
+    formUntouched,
+    accountDetailData,
+    accountQuota,
+    accountCoreAttributes,
+    baseline,
+  });
+  if (nextBaseline !== null) {
+    setBaseline(nextBaseline);
   }
 
   // sync form with server data while the user has not touched it yet
@@ -596,7 +626,31 @@ export function useAccountFormProvider({
   }
 
   const resetToSaved = (): void => {
+    console.error(
+      'DEBUG resetToSaved pre',
+      JSON.stringify({
+        hasBaseline: !!baseline,
+        baselineBackup: (baseline?.values as Record<string, unknown>)
+          ?.backupSelfUndeleteAllowed,
+        valuesBackup: (form.state.values as Record<string, unknown>)
+          ?.backupSelfUndeleteAllowed,
+        fieldMetaKeys: Object.keys(form.state.fieldMeta ?? {}),
+      }),
+    );
     form.reset(baseline?.values ?? {}, { keepDefaultValues: true });
+    setTimeout(() => {
+      console.error(
+        'DEBUG resetToSaved post',
+        JSON.stringify({
+          isDirty: form.state.isDirty,
+          isDefaultValue: form.state.isDefaultValue,
+          isTouched: form.state.isTouched,
+          valuesBackup: (form.state.values as Record<string, unknown>)
+            ?.backupSelfUndeleteAllowed,
+          fieldMeta: JSON.stringify(form.state.fieldMeta ?? {}),
+        }),
+      );
+    }, 500);
   };
 
   const contextValue: AccountFormContextValue = {
