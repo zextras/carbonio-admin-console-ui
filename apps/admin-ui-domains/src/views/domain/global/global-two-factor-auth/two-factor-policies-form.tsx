@@ -34,9 +34,9 @@ export const TwoFactorPoliciesForm = ({ form, services }: TwoFactorPoliciesFormP
       form.setFieldValue(serviceKey, {
         trustedDevice: applyAllTrustedDevice,
         trustedIpRange:
-          applyAllIpRange !== undefined
-            ? applyAllIpRange.map((ip) => ip.label ?? '')
-            : entry?.trustedIpRange ?? [],
+          applyAllIpRange === undefined
+            ? entry?.trustedIpRange ?? []
+            : applyAllIpRange.map((ip) => ip.label ?? ''),
       });
     });
   };
